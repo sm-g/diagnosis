@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="Diagnosis.Controls.FullTree"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:Diagnosis.Controls"
+             xmlns:conv="clr-namespace:Diagnosis.Converters"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/TreeStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}" x:Key="fullTreeItemStyle" >
+                <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
+
+                <!-- Region Events -->
+
+                <EventSetter Event="GotFocus" Handler="item_GotFocus" />
+                <EventSetter Event="LostFocus" Handler="item_LostFocus" />
+                <EventSetter Event="KeyUp" Handler="item_KeyUp" />
+                <EventSetter Event="MouseUp" Handler="item_MouseUp" />
+                <EventSetter Event="MouseDoubleClick" Handler="item_MouseDoubleClick" />
+
+                <!-- EndRegion -->
+            </Style>
+
+            <HierarchicalDataTemplate
+                x:Key="fullTreeItemTemplate"
+                ItemsSource="{Binding Children, Mode=OneTime}">
+                <controls:TreeItem />
+            </HierarchicalDataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <TreeView
+            x:Name="tree"
+            HorizontalContentAlignment="Stretch"
+            ItemContainerStyle="{StaticResource fullTreeItemStyle}"
+            ItemTemplate="{StaticResource fullTreeItemTemplate}"
+            ItemsSource="{Binding}" 
+            Loaded="TreeView_Loaded">
+        </TreeView>
+
+        <ListView ItemsSource="{Binding Symptoms}" Grid.Row="1">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <controls:TreeItem />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+
+    </Grid>
+</UserControl>

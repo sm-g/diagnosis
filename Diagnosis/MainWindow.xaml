@@ -1,0 +1,35 @@
+﻿<Window
+        x:Class="Diagnosis.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Diagnosis"
+        xmlns:controls="clr-namespace:Diagnosis.Controls"
+        xmlns:vm="clr-namespace:Diagnosis.ViewModels"
+    xmlns:screen="clr-namespace:Diagnosis.Screens"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.DataContext>
+            <ObjectDataProvider
+                  MethodName="CreatePatient"
+                  ObjectType="{x:Type vm:PatientViewModel}" />
+        </Grid.DataContext>
+
+        <TabControl>
+            <TabItem Header="first">
+                <screen:Card Margin="10" x:Name="first">
+
+                </screen:Card>
+            </TabItem>
+            <TabItem Header="second">
+                <screen:Card2 Margin="10" x:Name="second">
+                    
+                </screen:Card2>
+            </TabItem>
+        </TabControl>
+             
+    </Grid>
+</Window>
