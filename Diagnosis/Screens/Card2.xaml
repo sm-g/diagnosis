@@ -175,15 +175,7 @@
 
                     <Separator />
 
-                    <ComboBox>
-                        <TextBlock>Высшее</TextBlock>
-                        <TextBlock>Неоконченное высшее</TextBlock>
-                        <TextBlock>Среднее</TextBlock>
-
-                        <controls:WatermarkService.Watermark>
-                            <TextBlock Style="{StaticResource watermark}">Образование</TextBlock>
-                        </controls:WatermarkService.Watermark>
-                    </ComboBox>
+                    <controls:EducationChooser Margin="0,5" />
                 </StackPanel>
             </TabItem>
             <TabItem Header="Симптомы">

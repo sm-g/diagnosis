@@ -139,6 +139,9 @@
     <Compile Include="Controls\ComboBoxDatePicker.xaml.cs">
       <DependentUpon>ComboBoxDatePicker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\EducationChooser.xaml.cs">
+      <DependentUpon>EducationChooser.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FloatSearch.xaml.cs">
       <DependentUpon>FloatSearch.xaml</DependentUpon>
     </Compile>
@@ -160,10 +163,12 @@
     <Compile Include="Converters\SymptomToBackground.cs" />
     <Compile Include="Converters\NegateBool.cs" />
     <Compile Include="Converters\TreeDepthToMargin.cs" />
+    <Compile Include="DataCreator.cs" />
     <Compile Include="Helpers\ChildFinder.cs" />
     <Compile Include="Helpers\EnhancedFocusScope.cs" />
     <Compile Include="Helpers\TreeViewItemExtenstions.cs" />
     <Compile Include="Messages.cs" />
+    <Compile Include="Models\Education.cs" />
     <Compile Include="Models\JournalEntry.cs" />
     <Compile Include="Models\Patient.cs" />
     <Compile Include="Models\Symptom.cs" />
@@ -189,6 +194,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ComboBoxDatePicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\EducationChooser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

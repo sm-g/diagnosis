@@ -19,7 +19,7 @@ namespace Diagnosis.Controls
 
         private void TreeView_Loaded(object sender, RoutedEventArgs e)
         {
-            tree.DataContext = Diagnosis.ViewModels.SymptomViewModel.CreateSymptoms();
+            tree.DataContext = Diagnosis.DataCreator.CreateSymptoms();
         }
 
         TreeItem FindTreeItem(object sender)
@@ -80,6 +80,6 @@ namespace Diagnosis.Controls
             var q = FindTreeItem(sender);
             if ((sender as TreeViewItem).IsSelected) // to prevent multiplay raising http://stackoverflow.com/questions/2280049
                 q.BeginEdit();
-        }       
+        }
     }
 }

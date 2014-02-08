@@ -123,55 +123,6 @@ namespace Diagnosis.ViewModels
             Children = new ObservableCollection<SymptomViewModel>();
         }
 
-        public static List<SymptomViewModel> CreateSymptoms()
-        {
-            SymptomViewModel root1 = new SymptomViewModel(new Symptom()
-            {
-                Title = "голова",
-                IsGroup = true
-            })
-            {
-                Children =
-                {
-                    new SymptomViewModel(new Symptom()
-                    {
-                        Title = "нос"
-                    }),
-                    new SymptomViewModel(new Symptom()
-                    {
-                        Title = "больные зубы"
-                    })
-                    {
-                        Children = {
-                            new SymptomViewModel(new Symptom()
-                            {
-                                Title = "боль в зубе"
-                            }),
-                            new SymptomViewModel(new Symptom()
-                            {
-                                Title = "шатается зуб"
-                            })
-                        }
-                    },
-                    new SymptomViewModel(new Symptom()
-                    {
-                        Title = "уши"
-                    }),
-                }
-            };
-            SymptomViewModel root2 = new SymptomViewModel(new Symptom()
-            {
-                Title = "ноги",
-                IsGroup = true
-
-            });
-
-            root1.Initialize();
-            root2.Initialize();
-
-            return new List<SymptomViewModel>() { root1, root2 };
-        }
-
         public void ToggleChecked()
         {
             IsChecked = !IsChecked;
@@ -181,7 +132,7 @@ namespace Diagnosis.ViewModels
         {
             if (Parent != null && IsChecked)
             {
-                    Parent.IsChecked = true;
+                Parent.IsChecked = true;
             }
 
             if (!IsChecked)
@@ -194,7 +145,7 @@ namespace Diagnosis.ViewModels
 
         }
 
-        private void Initialize()
+        internal void Initialize()
         {
             foreach (SymptomViewModel child in Children)
             {

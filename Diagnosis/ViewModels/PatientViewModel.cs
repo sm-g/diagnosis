@@ -209,17 +209,5 @@ namespace Diagnosis.ViewModels
                 Symptoms.Remove(symptom);
             }
         }
-
-        public static PatientViewModel CreatePatient()
-        {
-            return new PatientViewModel(new Patient() { })
-            {
-                FirstName = "Иван",
-                LastName = "Грибоедов",
-                MiddleName = "Константинович",
-                Age = 37,
-                IsMale = true
-            };
-        }
     }
 }

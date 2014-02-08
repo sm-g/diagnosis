@@ -15,18 +15,13 @@ using System.Windows.Shapes;
 namespace Diagnosis.Controls
 {
     /// <summary>
-    /// Interaction logic for GroupsTree.xaml
+    /// Interaction logic for EducationChooser.xaml
     /// </summary>
-    public partial class GroupsTree : UserControl
+    public partial class EducationChooser : UserControl
     {
-        public GroupsTree()
+        public EducationChooser()
         {
             InitializeComponent();
-        }
-        private void TreeView_Loaded(object sender, RoutedEventArgs e)
-        {
-            DataContext = Diagnosis.DataCreator.CreateSymptoms();
-
         }
     }
 }

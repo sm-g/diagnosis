@@ -7,7 +7,6 @@
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="600">
     <UserControl.Resources>
-        
     </UserControl.Resources>
 
     <Grid>
@@ -31,19 +30,10 @@
 
                 <controls:SexChooser Margin="0,5" Width="100" HorizontalAlignment="Left" />
                 <controls:AgePicker Margin="0,5" />
-                
-                <Separator/>
 
-                
-                <ComboBox>
-                    <TextBlock>Высшее</TextBlock>
-                    <TextBlock>Неоконченное высшее</TextBlock>
-                    <TextBlock>Среднее</TextBlock>
-                    
-                    <controls:WatermarkService.Watermark>
-                        <TextBlock Style="{StaticResource watermark}">Образование</TextBlock>
-                    </controls:WatermarkService.Watermark>
-                </ComboBox>
+                <Separator />
+
+                <controls:EducationChooser Margin="0,5" />
             </StackPanel>
 
             <controls:FullTree Grid.Column="2" />
