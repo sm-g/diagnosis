@@ -133,13 +133,13 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
-    <Compile Include="Controls\AgePicker.xaml.cs">
+    <Compile Include="Controls\Forms\AgePicker.xaml.cs">
       <DependentUpon>AgePicker.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ComboBoxDatePicker.xaml.cs">
+    <Compile Include="Controls\Forms\ComboBoxDatePicker.xaml.cs">
       <DependentUpon>ComboBoxDatePicker.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\EducationChooser.xaml.cs">
+    <Compile Include="Controls\Forms\EducationChooser.xaml.cs">
       <DependentUpon>EducationChooser.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\FloatSearch.xaml.cs">
@@ -148,10 +148,10 @@
     <Compile Include="Controls\GroupsTree.xaml.cs">
       <DependentUpon>GroupsTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\NameEditor.xaml.cs">
+    <Compile Include="Controls\Forms\NameEditor.xaml.cs">
       <DependentUpon>NameEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\SexChooser.xaml.cs">
+    <Compile Include="Controls\Forms\SexChooser.xaml.cs">
       <DependentUpon>SexChooser.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\WatermarkAdorner.cs" />
@@ -190,15 +190,15 @@
     </Compile>
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\PatientViewModel.cs" />
-    <Page Include="Controls\AgePicker.xaml">
+    <Page Include="Controls\Forms\AgePicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\ComboBoxDatePicker.xaml">
+    <Page Include="Controls\Forms\ComboBoxDatePicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\EducationChooser.xaml">
+    <Page Include="Controls\Forms\EducationChooser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -210,11 +210,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\NameEditor.xaml">
+    <Page Include="Controls\Forms\NameEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\SexChooser.xaml">
+    <Page Include="Controls\Forms\SexChooser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -298,6 +298,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,0 +1,32 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:Converters="clr-namespace:Diagnosis.Converters" x:Class="Diagnosis.Controls.ComboBoxDatePicker"
+             mc:Ignorable="d"
+             d:DesignHeight="30" d:DesignWidth="300"
+             x:Name="root">
+    <UserControl.Resources>
+        <Converters:MonthToString x:Key="MonthToString" />
+    </UserControl.Resources>
+    <StackPanel Orientation="Horizontal">
+        <StackPanel.Resources>
+            <Style TargetType="{x:Type ComboBox}">
+                <Setter Property="Margin" Value="0,0,5,0" />
+            </Style>
+        </StackPanel.Resources>
+        <ComboBox x:Name="comboYears"
+			SelectionChanged="comboYears_SelectionChanged"
+			IsEditable="True"
+			SelectedValue="{Binding Year, Mode=TwoWay, ElementName=root}" />
+        <ComboBox x:Name="comboMonths"
+			Width="80"
+			SelectionChanged="comboMonths_SelectionChanged"
+			SelectedValue="{Binding Month, Mode=TwoWay, Converter={StaticResource MonthToString}, ElementName=root}" />
+        <ComboBox x:Name="comboDays"
+			Width="40"
+			IsEditable="True"
+            SelectedValue="{Binding Day, Mode=TwoWay, ElementName=root}" />
+    </StackPanel>
+</UserControl>
