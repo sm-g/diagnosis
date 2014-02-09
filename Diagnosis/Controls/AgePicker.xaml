@@ -13,12 +13,12 @@
         <conv:AgeToYearsLabel x:Key="ageLabel" />
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal">
-        <TextBox Text="{Binding Age, Mode=TwoWay}" Width="50" Margin="0,0,5,0" HorizontalContentAlignment="Right">
+        <TextBox Text="{Binding Age, Mode=TwoWay}" Width="50" Margin="0,0,5,0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center">
             <controls:WatermarkService.Watermark>
                 <TextBlock Style="{StaticResource watermark}">Возраст</TextBlock>
             </controls:WatermarkService.Watermark>
         </TextBox>
-        <TextBlock Text="{Binding Age, Converter={StaticResource ageLabel}}" Width="40"></TextBlock>
+        <TextBlock Text="{Binding Age, Converter={StaticResource ageLabel}}" Width="40" VerticalAlignment="Center"></TextBlock>
 
         <controls:ComboBoxDatePicker Year="{Binding BirthYear, Mode=TwoWay}"
                                      Month="{Binding BirthMonth, Mode=TwoWay}"

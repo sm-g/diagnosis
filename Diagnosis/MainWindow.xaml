@@ -6,7 +6,7 @@
         xmlns:controls="clr-namespace:Diagnosis.Controls"
         xmlns:vm="clr-namespace:Diagnosis.ViewModels"
     xmlns:screen="clr-namespace:Diagnosis.Screens"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="570">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*" />
