@@ -21,18 +21,21 @@
         <Grid Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
-                <ColumnDefinition Width="30" />
+                <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <TextBox x:Name="input"
                      Text="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      KeyDown="input_KeyDown"
  />
-            <Button Grid.Column="1" Content="искать" />
+            <Button Grid.Column="1" 
+                    Content="×" 
+                    Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                    Command="{Binding ClearCommand}"/>
         </Grid>
         <ListView x:Name="results"
 			ItemsSource="{Binding Results}"
 			SelectionChanged="results_SelectionChanged"
-			SelectedIndex="{Binding SelectedIndex}"
+			SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
 			IsTabStop="True"
 			Visibility="{Binding ResultsCount, Converter={StaticResource CountToVisability}, Mode=OneWay}"
 >

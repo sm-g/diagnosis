@@ -28,6 +28,7 @@ namespace Diagnosis.Styles
             catch
             {
                 // IsSelected trigger sets Background
+                Console.WriteLine("Bd_SourceUpdated");
             }
         }
         private void Bd_TargetUpdated(object sender, DataTransferEventArgs e)
@@ -40,6 +41,7 @@ namespace Diagnosis.Styles
             catch
             {
                 // IsSelected trigger sets Background
+                Console.WriteLine("Bd_TargetUpdated");
             }
         }
     }

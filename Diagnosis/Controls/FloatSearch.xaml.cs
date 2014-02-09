@@ -45,10 +45,7 @@ namespace Diagnosis.Controls
 
         private void input_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
-            {
-                (DataContext as SearchViewModel).SelectedItem.IsChecked = true;
-            }
+
         }
     }
 }

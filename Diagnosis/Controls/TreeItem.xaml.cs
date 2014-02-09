@@ -44,11 +44,6 @@ namespace Diagnosis.Controls
             search.Focus();
         }
 
-        //internal void CheckSearchResult(SymptomViewModel)
-        //{
-        //    (DataContext as SymptomViewModel).IsChecked = true;
-        //}
-
         private void ShowEditor()
         {
             editor.Visibility = System.Windows.Visibility.Visible;
@@ -57,6 +52,11 @@ namespace Diagnosis.Controls
         private void HideEditor()
         {
             editor.Visibility = System.Windows.Visibility.Collapsed;
+        }
+
+        private void HideSearch()
+        {
+            search.Visibility = System.Windows.Visibility.Collapsed;
         }
 
         private void editor_LostFocus(object sender, RoutedEventArgs e)
@@ -71,12 +71,16 @@ namespace Diagnosis.Controls
 
         private void search_KeyUp(object sender, KeyEventArgs e)
         {
+            var searchVM = search.DataContext as SearchViewModel;
             if (e.Key == Key.Escape)
             {
                 search.Visibility = System.Windows.Visibility.Collapsed;
             }
-            if (e.Key == Key.Space)
+            if (e.Key == Key.Enter)
             {
+                if (searchVM.SelectedItem != null)
+                    searchVM.SelectedItem.IsChecked = true;
+                searchVM.Clear();
             }
         }
     }

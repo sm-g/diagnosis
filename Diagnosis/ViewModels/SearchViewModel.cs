@@ -3,13 +3,15 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
     public class SearchViewModel : ViewModelBase
     {
         private string _query;
-        private int _selectedIndex;
+        private ICommand _clear;
+        private int _selectedIndex = -1;
 
         public ObservableCollection<SymptomViewModel> Results { get; private set; }
 
@@ -26,9 +28,9 @@ namespace Diagnosis.ViewModels
                 if (_query != value)
                 {
                     _query = value;
-                    MakeResults(_query);
                     OnPropertyChanged(() => Query);
                 }
+                MakeResults(_query);
             }
         }
 
@@ -36,7 +38,10 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return Results[SelectedIndex];
+                if (SelectedIndex != -1)
+                    return Results[SelectedIndex];
+                else
+                    return null;
             }
         }
 
@@ -65,16 +70,31 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        public ICommand ClearCommand
+        {
+            get
+            {
+                return _clear ?? (_clear = new RelayCommand(Clear, () => Query != ""));
+            }
+        }
+
+        public void Clear()
+        {
+            Query = "";
+        }
+
         private void MakeResults(string query)
         {
             Contract.Requires(query != null);
 
             Results = new ObservableCollection<SymptomViewModel>(
-                Parent.Children.Where(c => c.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)));
+                Parent.Children.Where(c => c.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)
+                    && !c.IsChecked));
 
             if (!Parent.Children.Any(c => c.Name.Equals(query, StringComparison.InvariantCultureIgnoreCase)) &&
                 query != string.Empty)
             {
+                // добавляем запрос к результатам
                 Results.Add(new SymptomViewModel(new Symptom()
                 {
                     Parent = Parent.Symptom,
@@ -84,7 +104,9 @@ namespace Diagnosis.ViewModels
 
             OnPropertyChanged(() => Results);
             OnPropertyChanged(() => ResultsCount);
-            SelectedIndex = 0;
+
+            if (ResultsCount > 0)
+                SelectedIndex = 0;
         }
 
         public SearchViewModel(SymptomViewModel parent)
@@ -93,6 +115,7 @@ namespace Diagnosis.ViewModels
 
             Results = new ObservableCollection<SymptomViewModel>();
             Parent = parent;
+            Clear();
         }
     }
 }
