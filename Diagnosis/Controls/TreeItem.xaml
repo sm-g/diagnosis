@@ -10,12 +10,12 @@
              d:DesignHeight="20" d:DesignWidth="300"
 >
     <UserControl.Resources>
-        <Converters:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter"/>
+        <Converters:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
 
     <d:DataContext>
-        <StaticResource ResourceKey="symptomVM"/>
+        <StaticResource ResourceKey="symptomVM" />
     </d:DataContext>
 
     <Grid>
@@ -44,19 +44,19 @@
 >
             <TextBox x:Name="titleEditor"
 				Text="{Binding Name, UpdateSourceTrigger=LostFocus}"
-                 
+
  />
             <CheckBox x:Name="isGroup"
 				IsChecked="{Binding IsGroup}"
                   Content="Группа"
-                  />
+ />
         </StackPanel>
 
         <controls:FloatSearch x:Name="search"
 			Grid.Row="1"
 			Grid.Column="1"
 			Visibility="Collapsed"
-			KeyUp="search_KeyUp"
-/>
+			KeyUp="search_KeyUp"
+ />
     </Grid>
 </UserControl>

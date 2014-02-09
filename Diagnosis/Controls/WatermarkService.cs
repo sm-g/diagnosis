@@ -8,7 +8,6 @@ using System.Windows.Documents;
 
 namespace Diagnosis.Controls
 {
-
     /// <summary>
     /// Class that provides the Watermark attached property
     /// </summary>
@@ -30,7 +29,7 @@ namespace Diagnosis.Controls
         /// </summary>
         private static readonly Dictionary<object, ItemsControl> itemsControls = new Dictionary<object, ItemsControl>();
 
-        #endregion
+        #endregion Private Fields
 
         /// <summary>
         /// Gets the Watermark property.  This dependency property indicates the watermark for the control.
@@ -74,11 +73,11 @@ namespace Diagnosis.Controls
             {
                 ItemsControl i = (ItemsControl)d;
 
-                // for Items property  
+                // for Items property
                 i.ItemContainerGenerator.ItemsChanged += ItemsChanged;
                 itemsControls.Add(i.ItemContainerGenerator, i);
 
-                // for ItemsSource property  
+                // for ItemsSource property
                 DependencyPropertyDescriptor prop = DependencyPropertyDescriptor.FromProperty(ItemsControl.ItemsSourceProperty, i.GetType());
                 prop.AddValueChanged(i, ItemsSourceChanged);
             }
@@ -160,7 +159,7 @@ namespace Diagnosis.Controls
             }
         }
 
-        #endregion
+        #endregion Event Handlers
 
         #region Helper Methods
 
@@ -232,6 +231,6 @@ namespace Diagnosis.Controls
             }
         }
 
-        #endregion
+        #endregion Helper Methods
     }
 }

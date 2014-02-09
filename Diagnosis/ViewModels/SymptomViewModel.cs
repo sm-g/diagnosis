@@ -1,9 +1,8 @@
 ﻿using Diagnosis.Models;
-using System.Collections.Generic;
+using EventAggregator;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using EventAggregator;
 
 namespace Diagnosis.ViewModels
 {
@@ -13,6 +12,7 @@ namespace Diagnosis.ViewModels
         private bool _isChecked;
 
         public Symptom Symptom { get; private set; }
+
         public string Name
         {
             get
@@ -38,6 +38,7 @@ namespace Diagnosis.ViewModels
         }
 
         public ObservableCollection<SymptomViewModel> Children { get; private set; }
+
         public ObservableCollection<SymptomViewModel> GroupChildren
         {
             get
@@ -45,6 +46,7 @@ namespace Diagnosis.ViewModels
                 return new ObservableCollection<SymptomViewModel>(Children.Where(i => !i.IsTerminal));
             }
         }
+
         public ObservableCollection<SymptomViewModel> TerminalChildren
         {
             get
@@ -71,7 +73,6 @@ namespace Diagnosis.ViewModels
                 }
             }
         }
-
 
         public bool IsGroup
         {
@@ -128,7 +129,7 @@ namespace Diagnosis.ViewModels
             IsChecked = !IsChecked;
         }
 
-        void VerifyTreeState()
+        private void VerifyTreeState()
         {
             if (Parent != null && IsChecked)
             {
@@ -142,7 +143,6 @@ namespace Diagnosis.ViewModels
                     item.IsChecked = false;
                 }
             }
-
         }
 
         internal void Initialize()

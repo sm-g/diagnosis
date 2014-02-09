@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Diagnosis.Helpers;
+using Diagnosis.ViewModels;
+using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.ComponentModel;
-using Diagnosis.Helpers;
-using Diagnosis.ViewModels;
 
 namespace Diagnosis.Controls
 {
@@ -38,14 +30,12 @@ namespace Diagnosis.Controls
         {
         }
 
-        void results_ItemsSourceChanged(object sender, EventArgs e)
+        private void results_ItemsSourceChanged(object sender, EventArgs e)
         {
-           // results.SelectedIndex = 0;
         }
 
         private void results_SourceUpdated(object sender, DataTransferEventArgs e)
         {
-
         }
 
         private void results_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -60,6 +50,5 @@ namespace Diagnosis.Controls
                 (DataContext as SearchViewModel).SelectedItem.IsChecked = true;
             }
         }
-
     }
 }

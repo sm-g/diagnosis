@@ -159,7 +159,7 @@
                     <StackPanel>
                         <TextBlock>
                             <TextBlock Text="{Binding LastName}" />
-                            <TextBlock Text="{Binding FirstName[0]}" />. 
+                            <TextBlock Text="{Binding FirstName[0]}" />.
                             <TextBlock Text="{Binding MiddleName[0]}" />.
                         </TextBlock>
                         <TextBlock Text="{Binding Age, StringFormat='{}{0} лет'}"></TextBlock>

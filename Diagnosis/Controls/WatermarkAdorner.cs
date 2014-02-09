@@ -6,7 +6,6 @@ using System.Windows.Media;
 
 namespace Diagnosis.Controls
 {
-
     /// <summary>
     /// Adorner for the watermark
     /// </summary>
@@ -19,7 +18,7 @@ namespace Diagnosis.Controls
         /// </summary>
         private readonly ContentPresenter contentPresenter;
 
-        #endregion
+        #endregion Private Fields
 
         #region Constructor
 
@@ -51,7 +50,7 @@ namespace Diagnosis.Controls
             this.SetBinding(VisibilityProperty, binding);
         }
 
-        #endregion
+        #endregion Constructor
 
         #region Protected Properties
 
@@ -63,7 +62,7 @@ namespace Diagnosis.Controls
             get { return 1; }
         }
 
-        #endregion
+        #endregion Protected Properties
 
         #region Private Properties
 
@@ -75,7 +74,7 @@ namespace Diagnosis.Controls
             get { return (Control)this.AdornedElement; }
         }
 
-        #endregion
+        #endregion Private Properties
 
         #region Protected Overrides
 
@@ -102,7 +101,7 @@ namespace Diagnosis.Controls
         }
 
         /// <summary>
-        /// When overridden in a derived class, positions child elements and determines a size for a <see cref="FrameworkElement"/> derived class. 
+        /// When overridden in a derived class, positions child elements and determines a size for a <see cref="FrameworkElement"/> derived class.
         /// </summary>
         /// <param name="finalSize">The final area within the parent that this element should use to arrange itself and its children.</param>
         /// <returns>The actual size used.</returns>
@@ -112,6 +111,6 @@ namespace Diagnosis.Controls
             return finalSize;
         }
 
-        #endregion
+        #endregion Protected Overrides
     }
 }

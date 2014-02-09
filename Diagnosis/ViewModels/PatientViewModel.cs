@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Collections.ObjectModel;
-using Diagnosis.Models;
-using System.Diagnostics.Contracts;
+﻿using Diagnosis.Models;
 using EventAggregator;
+using System;
+using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
 
 namespace Diagnosis.ViewModels
 {
     public class PatientViewModel : ViewModelBase
     {
-        Patient patient;
-        ObservableCollection<SymptomViewModel> _symptoms;
+        private Patient patient;
+        private ObservableCollection<SymptomViewModel> _symptoms;
 
         public string FirstName
         {
@@ -187,7 +184,7 @@ namespace Diagnosis.ViewModels
             Subscribe();
         }
 
-        void Subscribe()
+        private void Subscribe()
         {
             this.Subscribe((int)EventID.SymptomCheckedChanged, (e) =>
             {
@@ -198,7 +195,7 @@ namespace Diagnosis.ViewModels
             });
         }
 
-        void OnSymptomCheckedChanged(SymptomViewModel symptom, bool isChecked)
+        private void OnSymptomCheckedChanged(SymptomViewModel symptom, bool isChecked)
         {
             if (isChecked && !symptom.IsGroup)
             {

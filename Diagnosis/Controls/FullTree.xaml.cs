@@ -1,7 +1,7 @@
-﻿using System.Windows;
+﻿using Diagnosis.Helpers;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Diagnosis.Helpers;
 
 namespace Diagnosis.Controls
 {
@@ -10,8 +10,6 @@ namespace Diagnosis.Controls
     /// </summary>
     public partial class FullTree : UserControl
     {
-        TreeItem currentItem;
-
         public FullTree()
         {
             InitializeComponent();
@@ -22,14 +20,13 @@ namespace Diagnosis.Controls
             tree.DataContext = Diagnosis.DataCreator.CreateSymptoms();
         }
 
-        TreeItem FindTreeItem(object sender)
+        private TreeItem FindTreeItem(object sender)
         {
             return ChildFinder.FindChild<TreeItem>((DependencyObject)sender, "treeItem");
         }
 
         private void item_GotFocus(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void item_LostFocus(object sender, RoutedEventArgs e)
@@ -51,7 +48,6 @@ namespace Diagnosis.Controls
             if (e.Key == Key.F2)
             {
                 q.BeginEdit();
-                currentItem = q;
             }
             if (e.Key == Key.Enter)
             {

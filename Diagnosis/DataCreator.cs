@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Diagnosis.Models;
 using Diagnosis.ViewModels;
-using Diagnosis.Models;
-
+using System.Collections.Generic;
 
 namespace Diagnosis
 {
     public static class DataCreator
     {
-
         public static PatientViewModel CreatePatient()
         {
             return new PatientViewModel(new Patient() { })
@@ -73,7 +68,6 @@ namespace Diagnosis
             {
                 Title = "ноги",
                 IsGroup = true
-
             });
 
             root1.Initialize();

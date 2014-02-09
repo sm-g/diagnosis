@@ -13,7 +13,7 @@
                 <ResourceDictionary Source="../Styles/TreeStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}" x:Key="fullTreeItemStyle" >
+            <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}" x:Key="fullTreeItemStyle">
                 <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
 
                 <!-- Region Events -->
@@ -36,15 +36,15 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="3*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
         <TreeView
             x:Name="tree"
             HorizontalContentAlignment="Stretch"
             ItemContainerStyle="{StaticResource fullTreeItemStyle}"
             ItemTemplate="{StaticResource fullTreeItemTemplate}"
-            ItemsSource="{Binding}" 
+            ItemsSource="{Binding}"
             Loaded="TreeView_Loaded">
         </TreeView>
 
@@ -54,8 +54,6 @@
                     <controls:TreeItem />
                 </DataTemplate>
             </ListView.ItemTemplate>
-
         </ListView>
-
     </Grid>
 </UserControl>

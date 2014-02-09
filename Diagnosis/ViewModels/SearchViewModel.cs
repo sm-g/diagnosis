@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Diagnosis.Models;
+using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using Diagnosis.Models;
 
 namespace Diagnosis.ViewModels
 {
@@ -66,7 +65,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        void MakeResults(string query)
+        private void MakeResults(string query)
         {
             Contract.Requires(query != null);
 
@@ -94,8 +93,6 @@ namespace Diagnosis.ViewModels
 
             Results = new ObservableCollection<SymptomViewModel>();
             Parent = parent;
-
         }
     }
-
 }

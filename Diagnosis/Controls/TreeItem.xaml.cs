@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Diagnosis.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Diagnosis.ViewModels;
 
 namespace Diagnosis.Controls
 {
@@ -20,21 +10,14 @@ namespace Diagnosis.Controls
     /// </summary>
     public partial class TreeItem : UserControl
     {
-        //List<Control> editor = new List<Control>();
-
         public TreeItem()
         {
             InitializeComponent();
-            //editor.Add(titleEditor);
-            //editor.Add(isGroup);
         }
 
         internal void ToggleCheckedState()
         {
-            if (DataContext is SymptomViewModel)
-            {
-                (DataContext as SymptomViewModel).ToggleChecked();
-            }
+            (DataContext as SymptomViewModel).ToggleChecked();
         }
 
         internal void BeginEdit()
@@ -42,6 +25,7 @@ namespace Diagnosis.Controls
             ShowEditor();
             titleEditor.Focus();
         }
+
         internal void CommitChanges()
         {
             HideEditor();
@@ -60,12 +44,17 @@ namespace Diagnosis.Controls
             search.Focus();
         }
 
-        void ShowEditor()
+        //internal void CheckSearchResult(SymptomViewModel)
+        //{
+        //    (DataContext as SymptomViewModel).IsChecked = true;
+        //}
+
+        private void ShowEditor()
         {
             editor.Visibility = System.Windows.Visibility.Visible;
         }
 
-        void HideEditor()
+        private void HideEditor()
         {
             editor.Visibility = System.Windows.Visibility.Collapsed;
         }
@@ -88,10 +77,7 @@ namespace Diagnosis.Controls
             }
             if (e.Key == Key.Space)
             {
-
             }
         }
-
-
     }
 }

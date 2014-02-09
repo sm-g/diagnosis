@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -41,7 +40,7 @@ namespace Diagnosis.Helpers
                 typeof(EnhancedFocusScope),
                 new UIPropertyMetadata(false, OnIsEnhancedFocusScopeChanged));
 
-        static void OnIsEnhancedFocusScopeChanged(DependencyObject depObj, DependencyPropertyChangedEventArgs e)
+        private static void OnIsEnhancedFocusScopeChanged(DependencyObject depObj, DependencyPropertyChangedEventArgs e)
         {
             UIElement item = depObj as UIElement;
             if (item == null)
@@ -59,7 +58,7 @@ namespace Diagnosis.Helpers
             }
         }
 
-        static void OnGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        private static void OnGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             IInputElement focusedElement = e.NewFocus;
             for (DependencyObject d = focusedElement as DependencyObject; d != null; d = VisualTreeHelper.GetParent(d))

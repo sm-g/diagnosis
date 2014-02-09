@@ -5,17 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:h="clr-namespace:Diagnosis.Helpers"
              xmlns:Converters="clr-namespace:Diagnosis.Converters" x:Class="Diagnosis.Controls.FloatSearch"
-             mc:Ignorable="d"             
-             d:DesignHeight="100" d:DesignWidth="300" 
+             mc:Ignorable="d"
+             d:DesignHeight="100" d:DesignWidth="300"
              x:Name="floatSearch"
-             GotFocus="UserControl_GotFocus" 
+             GotFocus="UserControl_GotFocus"
              KeyUp="UserControl_KeyUp"
              h:EnhancedFocusScope.IsEnhancedFocusScope="True" Background="#FFFFE0E0">
     <UserControl.Resources>
-        <Converters:CountToVisability x:Key="CountToVisability"/>
+        <Converters:CountToVisability x:Key="CountToVisability" />
     </UserControl.Resources>
     <d:DataContext>
-        <StaticResource ResourceKey="searchVM"/>
+        <StaticResource ResourceKey="searchVM" />
     </d:DataContext>
     <StackPanel>
         <Grid Margin="0,0,0,10">
@@ -23,28 +23,26 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="30" />
             </Grid.ColumnDefinitions>
-            <TextBox x:Name="input" 
+            <TextBox x:Name="input"
                      Text="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      KeyDown="input_KeyDown"
-                 />
+ />
             <Button Grid.Column="1" Content="искать" />
         </Grid>
-        <ListView x:Name="results" 
-			ItemsSource="{Binding Results}" 
-			SelectionChanged="results_SelectionChanged" 
-			SelectedIndex="{Binding SelectedIndex}" 
-			IsTabStop="True" 
+        <ListView x:Name="results"
+			ItemsSource="{Binding Results}"
+			SelectionChanged="results_SelectionChanged"
+			SelectedIndex="{Binding SelectedIndex}"
+			IsTabStop="True"
 			Visibility="{Binding ResultsCount, Converter={StaticResource CountToVisability}, Mode=OneWay}"
 >
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <DockPanel>
-                        <TextBlock Text="{Binding Name}"/>
+                        <TextBlock Text="{Binding Name}" />
                     </DockPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
-
-
         </ListView>
     </StackPanel>
 </UserControl>
