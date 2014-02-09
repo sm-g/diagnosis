@@ -48,12 +48,16 @@
             Loaded="TreeView_Loaded">
         </TreeView>
 
-        <ListView ItemsSource="{Binding Symptoms}" Grid.Row="1">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <controls:TreeItem />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <DockPanel Grid.Row="1">
+            <TextBlock DockPanel.Dock="Top">Выбранные симптомы:</TextBlock>
+            <ListView ItemsSource="{Binding Symptoms}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <controls:TreeItem />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </DockPanel>
+        
     </Grid>
 </UserControl>
