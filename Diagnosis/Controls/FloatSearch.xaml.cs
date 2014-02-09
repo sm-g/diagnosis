@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using Diagnosis.Helpers;
+using Diagnosis.ViewModels;
 
 namespace Diagnosis.Controls
 {
@@ -50,6 +51,14 @@ namespace Diagnosis.Controls
         private void results_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Console.WriteLine(results.SelectedIndex + " selected");
+        }
+
+        private void input_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                (DataContext as SearchViewModel).SelectedItem.IsChecked = true;
+            }
         }
 
     }

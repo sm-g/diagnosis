@@ -33,6 +33,14 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        public SymptomViewModel SelectedItem
+        {
+            get
+            {
+                return Results[SelectedIndex];
+            }
+        }
+
         public int SelectedIndex
         {
             get
@@ -45,6 +53,7 @@ namespace Diagnosis.ViewModels
                 {
                     _selectedIndex = value;
                     OnPropertyChanged(() => SelectedIndex);
+                    OnPropertyChanged(() => SelectedItem);
                 }
             }
         }

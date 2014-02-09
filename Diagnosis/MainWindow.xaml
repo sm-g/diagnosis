@@ -15,7 +15,7 @@
         <Grid.DataContext>
             <ObjectDataProvider
                   MethodName="CreatePatient"
-                  ObjectType="{x:Type vm:PatientViewModel}" />
+                  ObjectType="{x:Type local:DataCreator}" />
         </Grid.DataContext>
 
         <TabControl>

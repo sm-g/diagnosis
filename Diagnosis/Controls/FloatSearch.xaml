@@ -23,7 +23,9 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="30" />
             </Grid.ColumnDefinitions>
-            <TextBox x:Name="input" Text="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox x:Name="input" 
+                     Text="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     KeyDown="input_KeyDown"
                  />
             <Button Grid.Column="1" Content="искать" />
         </Grid>
