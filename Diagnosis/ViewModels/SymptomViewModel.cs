@@ -63,7 +63,7 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                if (_isChecked != value)
+                if (_isChecked != value && !IsGroup)
                 {
                     _isChecked = value;
                     OnPropertyChanged(() => IsChecked);
