@@ -11,35 +11,7 @@
     <SolidColorBrush x:Key="itemSelectedNotActiveBrush"
                              Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}">
     </SolidColorBrush>
-
-    <Style x:Key="ExpandCollapseToggleStyle1" TargetType="ToggleButton">
-        <Setter Property="Focusable" Value="False" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ToggleButton">
-                    <Grid
-                          Width="15"
-                          Height="13"
-                          Background="Transparent">
-                        <Path x:Name="ExpandPath"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Margin="1,1,1,1"
-                            Fill="{StaticResource GlyphBrush}"
-                            Data="M 4 0 L 8 4 L 4 8 Z" />
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsChecked"
-                                Value="True">
-                            <Setter Property="Data"
-                                    TargetName="ExpandPath"
-                                    Value="M 0 4 L 8 4 L 4 8 Z" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+    
     <Style x:Key="TreeViewItemFocusVisual">
         <Setter Property="Control.Template">
             <Setter.Value>
@@ -56,16 +28,6 @@
         </Setter>
     </Style>
 
-    <Style x:Key="TreeViewItemFocusVisual0">
-        <Setter Property="Control.Template">
-            <Setter.Value>
-                <ControlTemplate>
-                    <Rectangle />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <PathGeometry x:Key="TreeArrow" Figures="M0,0 L0,6 L6,0 z" />
 
     <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
@@ -77,7 +39,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
                     <Border Width="16" Height="16" Background="Transparent" Padding="5,5,5,5">
-                        <Path x:Name="ExpandPath" Fill="Transparent" Stroke="#FF989898" Data="{StaticResource TreeArrow}">
+                        <Path x:Name="ExpandPath" Fill="Transparent" Stroke="#FF262626" Data="{StaticResource TreeArrow}">
                             <Path.RenderTransform>
                                 <RotateTransform Angle="-45" CenterX="3" CenterY="3" />
                             </Path.RenderTransform>
@@ -91,7 +53,7 @@
                         <Trigger Property="IsChecked" Value="True">
                             <Setter Property="RenderTransform" TargetName="ExpandPath">
                                 <Setter.Value>
-                                    <RotateTransform Angle="-90" CenterX="3" CenterY="3" />
+                                    <RotateTransform Angle="-135" CenterX="3" CenterY="3" />
                                 </Setter.Value>
                             </Setter>
                             <Setter Property="Fill" TargetName="ExpandPath" Value="#FF595959" />
