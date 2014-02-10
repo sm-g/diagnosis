@@ -75,6 +75,7 @@
                 <controls:GroupsTree />
             </TabItem>
             <TabItem Header="Диагноз">
+                <controls:TileView />
             </TabItem>
         </TabControl>
     </Grid>
