@@ -5,11 +5,39 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.Controls"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{StaticResource symptomExplorerVM}">
+    <Grid
+        Loaded="Grid_Loaded">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+            <Button Content="↑" 
+                    Command="{Binding GoUp, Mode=OneWay}"
+                    Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}" 
+                    />
+
+            <ItemsControl x:Name="breadcrumbs"
+                ItemsSource="{Binding Breadcrumbs}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <controls:TreeItem />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+        
         <ItemsControl x:Name="list"
-            ItemsSource="{Binding}"
-            Loaded="list_Loaded">
+            ItemsSource="{Binding Symptoms}"
+            Grid.Row="2">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal" />

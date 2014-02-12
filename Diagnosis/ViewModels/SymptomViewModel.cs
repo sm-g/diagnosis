@@ -98,6 +98,14 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        public bool IsRoot
+        {
+            get
+            {
+                return Parent == null; ;
+            }
+        }
+
         public int CheckedChildren
         {
             get
@@ -131,7 +139,7 @@ namespace Diagnosis.ViewModels
 
         private void VerifyTreeState()
         {
-            if (Parent != null && IsChecked)
+            if (IsChecked && !IsRoot)
             {
                 Parent.IsChecked = true;
             }

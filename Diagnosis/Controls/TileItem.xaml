@@ -9,21 +9,33 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{StaticResource symptomVM}">
+    <UserControl.Resources>
+        <Converters:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
 
-    <Border BorderThickness="5" >
-        <Button>
-            <Grid Width="100" Height="100" Margin="5">
+    <Border BorderThickness="5">
+        <Grid Width="100" Height="100" Margin="5" Focusable="True">
+            <Button Command="{Binding DataContext.ClickItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}}"
+                CommandParameter="{Binding}" Margin="30" Focusable="False">
                 <TextBlock x:Name="title"
 			               Text="{Binding Name}"
                            TextWrapping="Wrap"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center" />
+            </Button>
+            <CheckBox x:Name="checkbox"
+			                IsChecked="{Binding IsChecked, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True}"
+			                Focusable="False"
+			                Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}" VerticalAlignment="Center" HorizontalAlignment="Left"
+ />
+
+                
 
                 <TextBlock x:Name="checkedChildren"
-                           Text="{Binding CheckedChildren, Mode=OneWay}" 
-                           HorizontalAlignment="Right" 
-                           VerticalAlignment="Bottom" />
-            </Grid>
-        </Button>
+                           Text="{Binding CheckedChildren, Mode=OneWay}"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Bottom" />            
+        </Grid>
     </Border>
 </UserControl>
