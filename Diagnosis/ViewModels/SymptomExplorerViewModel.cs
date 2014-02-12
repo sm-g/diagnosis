@@ -51,15 +51,15 @@ namespace Diagnosis.ViewModels
 
         private void CreateBreadcrumbs()
         {
-            Breadcrumbs = new ObservableCollection<SymptomViewModel>();
+            var list = new List<SymptomViewModel>();
             SymptomViewModel s = CurrentSymptom;
-            do
+            while (!s.IsRoot)
             {
-                Breadcrumbs.Add(s);
+                list.Add(s);
                 s = s.Parent;
             }
-            while (s != null);
-            Breadcrumbs.Reverse();
+            list.Reverse();
+            Breadcrumbs = new ObservableCollection<SymptomViewModel>(list);
 
             OnPropertyChanged(() => Breadcrumbs);
         }

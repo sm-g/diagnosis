@@ -30,9 +30,9 @@ namespace Diagnosis
 
         public static List<SymptomViewModel> CreateSymptoms()
         {
-            SymptomViewModel root1 = new SymptomViewModel(new Symptom()
+            SymptomViewModel root = new SymptomViewModel(new Symptom()
             {
-                Title = "голова",
+                Title = "root",
                 IsGroup = true
             })
             {
@@ -40,40 +40,49 @@ namespace Diagnosis
                 {
                     new SymptomViewModel(new Symptom()
                     {
-                        Title = "нос"
-                    }),
-                    new SymptomViewModel(new Symptom()
-                    {
-                        Title = "больные зубы"
+                        Title = "голова",
+                        IsGroup = true
                     })
                     {
-                        Children = {
+                        Children =
+                        {
                             new SymptomViewModel(new Symptom()
                             {
-                                Title = "боль в зубе"
+                                Title = "нос"
                             }),
                             new SymptomViewModel(new Symptom()
                             {
-                                Title = "шатается зуб"
+                                Title = "больные зубы"
                             })
+                            {
+                                Children = {
+                                    new SymptomViewModel(new Symptom()
+                                    {
+                                        Title = "боль в зубе"
+                                    }),
+                                    new SymptomViewModel(new Symptom()
+                                    {
+                                        Title = "шатается зуб"
+                                    })
+                                }
+                            },
+                            new SymptomViewModel(new Symptom()
+                            {
+                                Title = "уши"
+                            }),
                         }
                     },
                     new SymptomViewModel(new Symptom()
                     {
-                        Title = "уши"
-                    }),
+                        Title = "ноги",
+                        IsGroup = true
+                    })
                 }
             };
-            SymptomViewModel root2 = new SymptomViewModel(new Symptom()
-            {
-                Title = "ноги",
-                IsGroup = true
-            });
 
-            root1.Initialize();
-            root2.Initialize();
+            root.Initialize();
 
-            return new List<SymptomViewModel>() { root1, root2 };
+            return new List<SymptomViewModel>(root.Children);
         }
     }
 }
