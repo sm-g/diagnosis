@@ -3,6 +3,7 @@ using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
@@ -170,10 +171,8 @@ namespace Diagnosis.ViewModels
 
         public ObservableCollection<SymptomViewModel> Symptoms
         {
-            get
-            {
-                return _symptoms ?? (_symptoms = new ObservableCollection<SymptomViewModel>());
-            }
+            get;
+            private set;
         }
 
         public PatientViewModel(Patient p)
@@ -181,6 +180,7 @@ namespace Diagnosis.ViewModels
             Contract.Requires(p != null);
             patient = p;
 
+            Symptoms = new ObservableCollection<SymptomViewModel>();
             Subscribe();
         }
 
@@ -205,6 +205,8 @@ namespace Diagnosis.ViewModels
             {
                 Symptoms.Remove(symptom);
             }
+            Symptoms = new ObservableCollection<SymptomViewModel>(Symptoms.OrderBy(s => s.Order));
+            OnPropertyChanged(() => Symptoms);
         }
     }
 }

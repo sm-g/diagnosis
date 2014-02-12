@@ -11,6 +11,8 @@ namespace Diagnosis.ViewModels
         private SymptomViewModel _parent;
         private bool _isChecked;
 
+        public string Order { get; private set; }
+
         public Symptom Symptom { get; private set; }
 
         public string Name
@@ -102,7 +104,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return Parent == null; ;
+                return Parent == null;
             }
         }
 
@@ -155,9 +157,11 @@ namespace Diagnosis.ViewModels
 
         internal void Initialize()
         {
+            int i = 1;
             foreach (SymptomViewModel child in Children)
             {
                 child._parent = this;
+                child.Order = this.Order + i++;
                 child.Initialize();
             }
         }

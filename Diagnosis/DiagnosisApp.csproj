@@ -176,7 +176,6 @@
     <Compile Include="DataCreator.cs" />
     <Compile Include="Helpers\ChildFinder.cs" />
     <Compile Include="Helpers\EnhancedFocusScope.cs" />
-    <Compile Include="Helpers\TileHelpers.cs" />
     <Compile Include="Helpers\TreeViewItemExtenstions.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="Models\Education.cs" />
