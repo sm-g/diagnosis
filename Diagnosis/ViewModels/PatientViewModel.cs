@@ -10,7 +10,6 @@ namespace Diagnosis.ViewModels
     public class PatientViewModel : ViewModelBase
     {
         private Patient patient;
-        private ObservableCollection<SymptomViewModel> _symptoms;
 
         public string FirstName
         {

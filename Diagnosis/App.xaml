@@ -2,9 +2,12 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:Diagnosis.ViewModels"
+             xmlns:conv="clr-namespace:Diagnosis.Converters"
              
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <conv:SymptomToBackground x:Key="symptomToBackground" />
+        
         <vm:PatientViewModel x:Key="patientVM" />
         <vm:SymptomViewModel x:Key="symptomVM" />
         <vm:SearchViewModel x:Key="searchVM" />
