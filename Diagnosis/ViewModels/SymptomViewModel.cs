@@ -71,8 +71,8 @@ namespace Diagnosis.ViewModels
                     OnPropertyChanged(() => IsChecked);
                     if (!IsGroup)
                     {
-                        OnPropertyChanged(() => CheckedChildren);
-                        VerifyTreeState(value);
+                        PropagateTreeState(value);
+                        BubbleCheckedChildren();
                     }
                     this.Send((int)EventID.SymptomCheckedChanged, new SymptomCheckedChangedParams(this, IsChecked).Params);
                 }
@@ -144,7 +144,7 @@ namespace Diagnosis.ViewModels
             IsChecked = !IsChecked;
         }
 
-        private void VerifyTreeState(bool newState)
+        private void PropagateTreeState(bool newState)
         {
             if (newState && !IsRoot)
             {
@@ -158,6 +158,13 @@ namespace Diagnosis.ViewModels
                     item.IsChecked = false;
                 }
             }
+        }
+
+        protected void BubbleCheckedChildren()
+        {
+            OnPropertyChanged(() => CheckedChildren);
+            if (!IsRoot)
+                Parent.BubbleCheckedChildren();
         }
 
         internal void Initialize()
