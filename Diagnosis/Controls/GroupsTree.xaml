@@ -17,11 +17,10 @@
                 <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
                 <!-- Region Events -->
 
-                <!--<EventSetter Event="GotFocus" Handler="item_GotFocus" />
                 <EventSetter Event="LostFocus" Handler="item_LostFocus" />
                 <EventSetter Event="KeyUp" Handler="item_KeyUp" />
                 <EventSetter Event="MouseUp" Handler="item_MouseUp" />
-                <EventSetter Event="MouseDoubleClick" Handler="item_MouseDoubleClick" />-->
+                <EventSetter Event="MouseDoubleClick" Handler="item_MouseDoubleClick" />
 
                 <!-- EndRegion -->
             </Style>
@@ -38,6 +37,10 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
         <TreeView
             x:Name="tree"
             HorizontalContentAlignment="Stretch"
@@ -48,6 +51,7 @@
         </TreeView>
         <ListView DataContext="{Binding SelectedItem, ElementName=tree, Mode=OneWay}"
                   ItemsSource="{Binding TerminalChildren}" Grid.Column="1"
+                  Margin="10,0,0,0"
 >
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -55,5 +59,16 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+
+        <DockPanel Grid.Row="1" Grid.ColumnSpan="2">
+            <TextBlock DockPanel.Dock="Top">Выбранные симптомы:</TextBlock>
+            <ListView ItemsSource="{Binding Symptoms}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <controls:TreeItem />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </DockPanel>
     </Grid>
 </UserControl>

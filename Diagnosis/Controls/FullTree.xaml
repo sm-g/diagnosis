@@ -18,7 +18,6 @@
 
                 <!-- Region Events -->
 
-                <EventSetter Event="GotFocus" Handler="item_GotFocus" />
                 <EventSetter Event="LostFocus" Handler="item_LostFocus" />
                 <EventSetter Event="KeyUp" Handler="item_KeyUp" />
                 <EventSetter Event="MouseUp" Handler="item_MouseUp" />
