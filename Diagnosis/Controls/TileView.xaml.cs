@@ -13,10 +13,9 @@ namespace Diagnosis.Controls
             InitializeComponent();
         }
 
-
-        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        private void explorer_Loaded(object sender, RoutedEventArgs e)
         {
-            this.DataContext = new Diagnosis.ViewModels.SymptomExplorerViewModel(Diagnosis.DataCreator.CreateSymptoms());
+            explorer.DataContext = new Diagnosis.ViewModels.SymptomExplorerViewModel(Diagnosis.DataCreator.CreateSymptoms());
         }
     }
 }
