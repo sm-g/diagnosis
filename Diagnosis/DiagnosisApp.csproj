@@ -168,6 +168,7 @@
     <Compile Include="Controls\WatermarkService.cs" />
     <Compile Include="Converters\AgeToYearsLabel.cs" />
     <Compile Include="Converters\BoolToVis.cs" />
+    <Compile Include="Converters\BoolToAligment.cs" />
     <Compile Include="Converters\MonthToString.cs" />
     <Compile Include="Converters\CountToVisability.cs" />
     <Compile Include="Converters\SymptomToBackground.cs" />

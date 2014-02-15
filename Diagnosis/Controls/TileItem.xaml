@@ -6,36 +6,54 @@
              xmlns:controls="clr-namespace:Diagnosis.Controls"
              xmlns:local="clr-namespace:Diagnosis"
              xmlns:Converters="clr-namespace:Diagnosis.Converters"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{StaticResource symptomVM}">
     <UserControl.Resources>
+        <Converters:BoolToCenterAligmentConverter x:Key="BoolToCenterAligmentConverter"/>
         <Converters:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <sys:Double x:Key="margin">20</sys:Double>
     </UserControl.Resources>
 
     <Border BorderThickness="5">
-        <Grid Width="100" Height="100" Margin="5" Focusable="True">
-            <Button Command="{Binding DataContext.ClickItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}}"
-                CommandParameter="{Binding}" Margin="30" Focusable="False">
-                <TextBlock x:Name="title"
-			               Text="{Binding Name}"
-                           TextWrapping="Wrap"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
-            </Button>
+        <Grid Width="150" Height="50" Margin="5" Focusable="True">           
             <CheckBox x:Name="checkbox"
-			                IsChecked="{Binding IsChecked, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True}"
-			                Focusable="False"
-			                Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}" VerticalAlignment="Center" HorizontalAlignment="Left"
+                      IsChecked="{Binding IsChecked, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True}"
+                      Focusable="False"
+                      Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}" 
+                      VerticalContentAlignment="Center"
  />
+            <Button Command="{Binding DataContext.ClickItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}}"
+                    CommandParameter="{Binding}"
+                    Focusable="False"
+                    Visibility="{Binding IsTerminal, Converter={StaticResource NegBooleanToVisibilityConverter}, Mode=OneWay}">
+                <Button.Margin>
+                    <Thickness Left="{StaticResource margin}" />
+                </Button.Margin>
+            </Button>
 
-                
+            <TextBlock x:Name="title"
+                       Text="{Binding Name}"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="{Binding IsGroup, Converter={StaticResource BoolToCenterAligmentConverter}}"
+                       VerticalAlignment="Center"
+                       IsHitTestVisible="False" 
+                       Padding="5">
+                <TextBlock.Margin>
+                    <Thickness Left="{StaticResource margin}" />
+                </TextBlock.Margin>
+            </TextBlock>
 
-                <TextBlock x:Name="checkedChildren"
-                           Text="{Binding CheckedChildren, Mode=OneWay}"
-                           HorizontalAlignment="Right"
-                           VerticalAlignment="Bottom" />            
+            <TextBlock x:Name="checkedChildren"
+                       Text="{Binding CheckedChildren, Mode=OneWay}"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Bottom"
+                       IsHitTestVisible="False"
+                       Margin="0,0,5,5"
+                       Visibility="{Binding IsTerminal, Converter={StaticResource NegBooleanToVisibilityConverter}, Mode=OneWay}" />            
         </Grid>
     </Border>
 </UserControl>
