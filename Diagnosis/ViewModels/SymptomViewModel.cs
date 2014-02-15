@@ -65,13 +65,16 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                if (_isChecked != value && !IsGroup)
+                if (_isChecked != value)
                 {
                     _isChecked = value;
                     OnPropertyChanged(() => IsChecked);
-                    OnPropertyChanged(() => CheckedChildren);
+                    if (!IsGroup)
+                    {
+                        OnPropertyChanged(() => CheckedChildren);
+                        VerifyTreeState(value);
+                    }
                     this.Send((int)EventID.SymptomCheckedChanged, new SymptomCheckedChangedParams(this, IsChecked).Params);
-                    VerifyTreeState();
                 }
             }
         }
@@ -87,6 +90,8 @@ namespace Diagnosis.ViewModels
                 if (Symptom.IsGroup != value)
                 {
                     Symptom.IsGroup = value;
+                    IsChecked = !value;
+
                     OnPropertyChanged(() => IsGroup);
                 }
             }
@@ -139,14 +144,14 @@ namespace Diagnosis.ViewModels
             IsChecked = !IsChecked;
         }
 
-        private void VerifyTreeState()
+        private void VerifyTreeState(bool newState)
         {
-            if (IsChecked && !IsRoot)
+            if (newState && !IsRoot)
             {
                 Parent.IsChecked = true;
             }
 
-            if (!IsChecked)
+            if (!newState)
             {
                 foreach (var item in Children)
                 {
