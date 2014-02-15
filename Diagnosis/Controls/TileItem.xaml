@@ -9,9 +9,11 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{StaticResource symptomVM}">
+             d:DataContext="{StaticResource symptomVM}"
+             KeyUp="UserControl_KeyUp"
+             >
     <UserControl.Resources>
-        <Converters:BoolToCenterAligmentConverter x:Key="BoolToCenterAligmentConverter"/>
+        <Converters:BoolToCenterAligmentConverter x:Key="BoolToCenterAligmentConverter" />
         <Converters:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
@@ -19,11 +21,11 @@
     </UserControl.Resources>
 
     <Border BorderThickness="5">
-        <Grid Width="150" Height="50" Margin="5" Focusable="True">           
+        <Grid Width="150" Height="50" Margin="5" Focusable="True">
             <CheckBox x:Name="checkbox"
                       IsChecked="{Binding IsChecked, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True}"
                       Focusable="False"
-                      Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}" 
+                      Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}"
                       VerticalContentAlignment="Center"
  />
             <Button Command="{Binding DataContext.ClickItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}}"
@@ -40,7 +42,7 @@
                        TextWrapping="Wrap"
                        HorizontalAlignment="{Binding IsGroup, Converter={StaticResource BoolToCenterAligmentConverter}}"
                        VerticalAlignment="Center"
-                       IsHitTestVisible="False" 
+                       IsHitTestVisible="False"
                        Padding="5">
                 <TextBlock.Margin>
                     <Thickness Left="{StaticResource margin}" />
@@ -53,7 +55,28 @@
                        VerticalAlignment="Bottom"
                        IsHitTestVisible="False"
                        Margin="0,0,5,5"
-                       Visibility="{Binding IsTerminal, Converter={StaticResource NegBooleanToVisibilityConverter}, Mode=OneWay}" />            
+                       Visibility="{Binding IsTerminal, Converter={StaticResource NegBooleanToVisibilityConverter}, Mode=OneWay}" />
+
+            <StackPanel x:Name="editor"
+                        LostFocus="editor_LostFocus"
+                        Visibility="Collapsed"
+>
+                <StackPanel.Background>
+                    <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.AppWorkspaceColorKey}}"/>
+                </StackPanel.Background>
+                <StackPanel.Margin>
+                    <Thickness Left="{StaticResource margin}" />
+                </StackPanel.Margin>
+
+                <TextBox x:Name="titleEditor"
+                         Text="{Binding Name, UpdateSourceTrigger=LostFocus}"
+
+ />
+                <CheckBox x:Name="isGroup"
+                          IsChecked="{Binding IsGroup}"
+                          Content="Группа"
+ />
+            </StackPanel>
         </Grid>
     </Border>
 </UserControl>
