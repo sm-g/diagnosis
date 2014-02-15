@@ -43,8 +43,8 @@
             </StackPanel>
 
             <ItemsControl x:Name="list"
-            ItemsSource="{Binding Symptoms}"
-            Grid.Row="1">
+                ItemsSource="{Binding Symptoms}"
+                Grid.Row="1">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal" />

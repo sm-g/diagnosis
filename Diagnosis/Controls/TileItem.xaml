@@ -21,7 +21,13 @@
     </UserControl.Resources>
 
     <Border BorderThickness="5">
-        <Grid Width="150" Height="50" Margin="5" Focusable="True">
+        <Border.Background>
+            <RadialGradientBrush>
+                <GradientStop Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"/>
+                <GradientStop Color="{DynamicResource {x:Static SystemColors.ControlLightColorKey}}" Offset="1"/>
+            </RadialGradientBrush>
+        </Border.Background>
+        <Grid Width="150" Height="50" Focusable="True">
             <CheckBox x:Name="checkbox"
                       IsChecked="{Binding IsChecked, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True}"
                       Focusable="False"
