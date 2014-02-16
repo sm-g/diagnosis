@@ -81,14 +81,22 @@ namespace Diagnosis.Controls
         private void search_KeyUp(object sender, KeyEventArgs e)
         {
             var searchVM = search.DataContext as SearchViewModel;
+            var symptomVM = DataContext as SymptomViewModel;
+
             if (e.Key == Key.Escape)
             {
                 EndSearch();
             }
             if (e.Key == Key.Enter)
             {
+                if (symptomVM.Children.IndexOf(searchVM.SelectedItem) == -1)
+                {
+                    symptomVM.Add(searchVM.SelectedItem);
+                }
+
                 if (searchVM.SelectedItem != null)
-                    searchVM.SelectedItem.IsChecked = true;
+                    searchVM.SelectedItem.ToggleChecked();
+
                 searchVM.Clear();
             }
         }

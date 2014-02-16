@@ -150,7 +150,16 @@ namespace Diagnosis.ViewModels
 
         public void Add(Symptom symptom)
         {
-            Children.Add(new SymptomViewModel(symptom));
+            var vm = new SymptomViewModel(symptom);
+            vm.Parent = this;
+            Children.Add(vm);
+            BubbleAddingChild();
+        }
+
+        public void Add(SymptomViewModel symptomVM)
+        {
+            symptomVM.Parent = this;
+            Children.Add(symptomVM);
             BubbleAddingChild();
         }
 
