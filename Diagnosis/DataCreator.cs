@@ -30,6 +30,17 @@ namespace Diagnosis
 
         public static List<SymptomViewModel> CreateSymptoms()
         {
+            var teeth = new SymptomViewModel("больные зубы");
+            teeth.Add(new Symptom()
+                                    {
+                                        Title = "боль в зубе"
+                                    });
+
+            teeth.Add(new Symptom()
+                                    {
+                                        Title = "шатается зуб"
+                                    });
+
             SymptomViewModel root = new SymptomViewModel(new Symptom()
             {
                 Title = "root",
@@ -50,22 +61,7 @@ namespace Diagnosis
                             {
                                 Title = "нос"
                             }),
-                            new SymptomViewModel(new Symptom()
-                            {
-                                Title = "больные зубы"
-                            })
-                            {
-                                Children = {
-                                    new SymptomViewModel(new Symptom()
-                                    {
-                                        Title = "боль в зубе"
-                                    }),
-                                    new SymptomViewModel(new Symptom()
-                                    {
-                                        Title = "шатается зуб"
-                                    })
-                                }
-                            },
+                            teeth,
                             new SymptomViewModel(new Symptom()
                             {
                                 Title = "уши"

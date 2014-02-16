@@ -148,6 +148,18 @@ namespace Diagnosis.ViewModels
             IsChecked = !IsChecked;
         }
 
+        public void Add(Symptom symptom)
+        {
+            Children.Add(new SymptomViewModel(symptom));
+            BubbleAddingChild();
+        }
+
+        public void Remove(SymptomViewModel symptomVM)
+        {
+            Children.Remove(symptomVM);
+            BubbleRemovingChild();
+        }
+
         private void PropagateTreeState(bool newState)
         {
             if (newState && !IsRoot)
@@ -164,11 +176,33 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        protected void BubbleCheckedChildren()
+        private void BubbleCheckedChildren()
         {
             OnPropertyChanged(() => CheckedChildren);
             if (!IsRoot)
                 Parent.BubbleCheckedChildren();
+        }
+
+        private void BubbleAddingChild()
+        {
+            OnPropertyChanged(() => TerminalChildren);
+            if (!IsRoot)
+            {
+                Parent.OnPropertyChanged(() => NonTerminalChildren);
+                Parent.BubbleAddingChild();
+            }
+        }
+
+        private void BubbleRemovingChild()
+        {
+            OnPropertyChanged(() => TerminalChildren);
+            OnPropertyChanged(() => NonTerminalChildren);
+            if (!IsRoot)
+            {
+                Parent.OnPropertyChanged(() => TerminalChildren);
+                Parent.OnPropertyChanged(() => NonTerminalChildren);
+                Parent.BubbleRemovingChild();
+            }
         }
 
         internal void Initialize()
