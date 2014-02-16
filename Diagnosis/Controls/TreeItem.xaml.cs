@@ -10,60 +10,62 @@ namespace Diagnosis.Controls
     /// </summary>
     public partial class TreeItem : UserControl
     {
+        bool isReady = true;
+
         public TreeItem()
         {
             InitializeComponent();
-            IsReady = true;
+            isReady = true;
         }
 
-        internal bool IsReady { get; private set; }
+
+        internal void BeginEdit()
+        {
+            if (isReady)
+            {
+                isReady = false;
+                editor.Visibility = System.Windows.Visibility.Visible;
+                titleEditor.Focus();
+            }
+        }
+
+        internal void BeginSearch()
+        {
+            if (isReady)
+            {
+                isReady = false;
+                search.DataContext = new SearchViewModel(this.DataContext as SymptomViewModel);
+                search.Visibility = System.Windows.Visibility.Visible;
+                search.Focus();
+            }
+        }
 
         internal void ToggleCheckedState()
         {
             (DataContext as SymptomViewModel).ToggleChecked();
         }
 
-        internal void BeginEdit()
-        {
-            ShowEditor();
-            titleEditor.Focus();
-        }
-
         internal void CommitChanges()
         {
-            HideEditor();
+            EndEdit();
         }
 
         internal void RevertChanges()
         {
             titleEditor.Text = title.Text;
-            HideEditor();
+            EndEdit();
         }
 
-        internal void BeginSearch()
-        {
-            search.DataContext = new SearchViewModel(this.DataContext as SymptomViewModel);
-            search.Visibility = System.Windows.Visibility.Visible;
-            search.Focus();
-            IsReady = false;
-        }
-
-        private void ShowEditor()
-        {
-            editor.Visibility = System.Windows.Visibility.Visible;
-            IsReady = false;
-        }
-
-        private void HideEditor()
+        private void EndEdit()
         {
             editor.Visibility = System.Windows.Visibility.Collapsed;
-            IsReady = true;
+            isReady = true;
         }
 
-        private void HideSearch()
+        private void EndSearch()
         {
             search.Visibility = System.Windows.Visibility.Collapsed;
-            IsReady = true;
+            isReady = true;
         }
 
         private void editor_LostFocus(object sender, RoutedEventArgs e)
@@ -81,7 +83,7 @@ namespace Diagnosis.Controls
             var searchVM = search.DataContext as SearchViewModel;
             if (e.Key == Key.Escape)
             {
-                HideSearch();
+                EndSearch();
             }
             if (e.Key == Key.Enter)
             {
