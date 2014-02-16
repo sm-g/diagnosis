@@ -13,7 +13,10 @@ namespace Diagnosis.Controls
         public TreeItem()
         {
             InitializeComponent();
+            IsReady = true;
         }
+
+        internal bool IsReady { get; private set; }
 
         internal void ToggleCheckedState()
         {
@@ -42,21 +45,25 @@ namespace Diagnosis.Controls
             search.DataContext = new SearchViewModel(this.DataContext as SymptomViewModel);
             search.Visibility = System.Windows.Visibility.Visible;
             search.Focus();
+            IsReady = false;
         }
 
         private void ShowEditor()
         {
             editor.Visibility = System.Windows.Visibility.Visible;
+            IsReady = false;
         }
 
         private void HideEditor()
         {
             editor.Visibility = System.Windows.Visibility.Collapsed;
+            IsReady = true;
         }
 
         private void HideSearch()
         {
             search.Visibility = System.Windows.Visibility.Collapsed;
+            IsReady = true;
         }
 
         private void editor_LostFocus(object sender, RoutedEventArgs e)
@@ -74,7 +81,7 @@ namespace Diagnosis.Controls
             var searchVM = search.DataContext as SearchViewModel;
             if (e.Key == Key.Escape)
             {
-                search.Visibility = System.Windows.Visibility.Collapsed;
+                HideSearch();
             }
             if (e.Key == Key.Enter)
             {

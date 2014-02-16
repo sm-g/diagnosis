@@ -74,7 +74,8 @@ namespace Diagnosis.Controls
         {
             e.Handled = true;
             var q = FindTreeItem(sender);
-            if ((sender as TreeViewItem).IsSelected) // to prevent multiplay raising http://stackoverflow.com/questions/2280049
+
+            if (q.IsReady && (sender as TreeViewItem).IsSelected) // to prevent multiplay raising http://stackoverflow.com/questions/2280049
                 q.BeginEdit();
         }
     }
