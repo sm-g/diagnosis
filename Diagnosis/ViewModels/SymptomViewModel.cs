@@ -13,7 +13,7 @@ namespace Diagnosis.ViewModels
 
         public string Order { get; private set; }
 
-        public Symptom Symptom { get; private set; }
+        internal Symptom Symptom { get; private set; }
 
         public string Name
         {
@@ -37,11 +37,15 @@ namespace Diagnosis.ViewModels
             {
                 return _parent;
             }
+            private set
+            {
+                _parent = value;
+            }
         }
 
         public ObservableCollection<SymptomViewModel> Children { get; private set; }
 
-        public ObservableCollection<SymptomViewModel> GroupChildren
+        public ObservableCollection<SymptomViewModel> NonTerminalChildren
         {
             get
             {
@@ -172,7 +176,7 @@ namespace Diagnosis.ViewModels
             int i = 1;
             foreach (SymptomViewModel child in Children)
             {
-                child._parent = this;
+                child.Parent = this;
                 child.Order = this.Order + i++;
                 child.Initialize();
             }

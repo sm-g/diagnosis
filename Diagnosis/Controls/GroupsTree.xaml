@@ -27,7 +27,7 @@
 
             <HierarchicalDataTemplate
                 x:Key="fullTreeItemTemplate"
-                ItemsSource="{Binding GroupChildren, Mode=OneTime}">
+                ItemsSource="{Binding NonTerminalChildren, Mode=OneTime}">
                 <controls:TreeItem />
             </HierarchicalDataTemplate>
         </ResourceDictionary>
