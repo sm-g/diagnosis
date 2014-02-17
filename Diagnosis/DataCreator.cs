@@ -28,6 +28,16 @@ namespace Diagnosis
             };
         }
 
+        public static List<PropertyViewModel> CreateProperties()
+        {
+            return new List<PropertyViewModel>()
+            {
+                (new PropertyViewModel("Образование")).AddValue("Высшее").AddValue("Неоконченное высшее").AddValue("Среднее"),
+                (new PropertyViewModel("Характер работы")).AddValue("Сидячая").AddValue("Подвижная"),
+                (new PropertyViewModel("Место жительства")).AddValue("Город").AddValue("Деревня"),
+            };
+        }
+
         public static List<SymptomViewModel> CreateSymptoms()
         {
             var teeth = new SymptomViewModel("больные зубы");

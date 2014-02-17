@@ -182,6 +182,8 @@
     <Compile Include="Models\Education.cs" />
     <Compile Include="Models\JournalEntry.cs" />
     <Compile Include="Models\Patient.cs" />
+    <Compile Include="Models\Property.cs" />
+    <Compile Include="Models\PropertyValue.cs" />
     <Compile Include="Models\Symptom.cs" />
     <Compile Include="Screens\Card.xaml.cs">
       <DependentUpon>Card.xaml</DependentUpon>
@@ -193,6 +195,7 @@
       <DependentUpon>Card2.xaml</DependentUpon>
     </Compile>
     <Compile Include="Styles\TreeStyle.cs" />
+    <Compile Include="ViewModels\PropertyViewModel.cs" />
     <Compile Include="ViewModels\SymptomExplorerViewModel.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
     <Compile Include="ViewModels\SearchViewModel.cs" />
