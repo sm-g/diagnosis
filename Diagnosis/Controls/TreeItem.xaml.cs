@@ -82,6 +82,7 @@ namespace Diagnosis.Controls
         {
             var searchVM = search.DataContext as SearchViewModel;
             var symptomVM = this.DataContext as SymptomViewModel;
+            e.Handled = true;
 
             if (e.Key == Key.Escape)
             {
