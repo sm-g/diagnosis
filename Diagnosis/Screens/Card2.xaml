@@ -43,7 +43,14 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <TabControl TabStripPlacement="Left" Padding="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <TextBlock FontSize="24">Карточка пациента</TextBlock>
+        
+        <TabControl TabStripPlacement="Left" Padding="0" Grid.Row="1">
             <TabItem Style="{StaticResource tabHeaderSpecial}">
                 <TabItem.Header>
                     <StackPanel>
@@ -65,7 +72,7 @@
 
                     <Separator />
 
-                    <controls:EducationChooser Margin="0,5" />
+                    <controls:PropertiesChooser Margin="0,5" />
                 </StackPanel>
             </TabItem>
             <TabItem Header="Симптомы">

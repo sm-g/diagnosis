@@ -33,7 +33,7 @@
 
                 <Separator />
 
-                <controls:EducationChooser Margin="0,5" />
+                <controls:PropertiesChooser Margin="0,5" />
             </StackPanel>
 
             <controls:FullTree Grid.Column="2" />
