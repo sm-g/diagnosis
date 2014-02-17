@@ -40,7 +40,7 @@ namespace Diagnosis.ViewModels
                 {
                     _current = value;
 
-                    Symptoms = new ObservableCollection<SymptomViewModel>(_current.Children);
+                    Symptoms = _current.Children;
                     OnPropertyChanged(() => CurrentSymptom);
                     OnPropertyChanged(() => Symptoms);
 
