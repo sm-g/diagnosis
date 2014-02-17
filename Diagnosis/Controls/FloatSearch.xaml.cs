@@ -43,9 +43,16 @@ namespace Diagnosis.Controls
             Console.WriteLine(results.SelectedIndex + " selected");
         }
 
-        private void input_KeyDown(object sender, KeyEventArgs e)
+        private void input_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-
+            if (e.Key == Key.Up && results.SelectedIndex > 0)
+            {
+                results.SelectedIndex--;
+            }
+            if (e.Key == Key.Down && results.SelectedIndex < results.Items.Count - 1)
+            {
+                results.SelectedIndex++;
+            }
         }
     }
 }
