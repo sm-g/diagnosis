@@ -81,7 +81,7 @@ namespace Diagnosis.Controls
         private void search_KeyUp(object sender, KeyEventArgs e)
         {
             var searchVM = search.DataContext as SearchViewModel;
-            var symptomVM = DataContext as SymptomViewModel;
+            var symptomVM = this.DataContext as SymptomViewModel;
 
             if (e.Key == Key.Escape)
             {
