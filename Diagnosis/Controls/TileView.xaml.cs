@@ -57,6 +57,13 @@ namespace Diagnosis.Controls
 
         private void explorer_KeyUp(object sender, KeyEventArgs e)
         {
+            if (e.Key == Key.Back)
+            {
+                if (up.Command.CanExecute(null))
+                {
+                    up.Command.Execute(null);
+                }
+            }
             if (e.Key == Key.Insert || e.Key == Key.F && ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control))
             {
                 BeginSearch();

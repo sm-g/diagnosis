@@ -24,7 +24,8 @@
             </Grid.RowDefinitions>
 
             <StackPanel Orientation="Horizontal">
-                <Button Content="↑"
+                <Button x:Name="up"
+                    Content="↑"
                     Command="{Binding GoUp, Mode=OneWay}"
                     Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"
  />
