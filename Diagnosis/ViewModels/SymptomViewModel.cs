@@ -3,6 +3,7 @@ using EventAggregator;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Diagnosis.ViewModels
 {
@@ -44,6 +45,19 @@ namespace Diagnosis.ViewModels
         }
 
         public ObservableCollection<SymptomViewModel> Children { get; private set; }
+
+        public IEnumerable<SymptomViewModel> AllChildren
+        {
+            get
+            {
+                List<SymptomViewModel> result = Children.ToList();
+                foreach (var child in Children)
+                {
+                    result.AddRange(child.AllChildren);
+                }
+                return result;
+            }
+        }
 
         public ObservableCollection<SymptomViewModel> NonTerminalChildren
         {
