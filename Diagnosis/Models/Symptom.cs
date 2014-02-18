@@ -10,5 +10,12 @@ namespace Diagnosis.Models
         public string Title { get; set; }
         public Symptom Parent { get; set; }
         public bool IsGroup { get; set; }
+
+        public Symptom(string title)
+        {
+            Title = title;
+        }
+
+        public Symptom() { }
     }
 }

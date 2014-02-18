@@ -148,19 +148,23 @@ namespace Diagnosis.ViewModels
             IsChecked = !IsChecked;
         }
 
-        public void Add(Symptom symptom)
+        public SymptomViewModel Add(Symptom symptom)
         {
             var vm = new SymptomViewModel(symptom);
             vm.Parent = this;
             Children.Add(vm);
             BubbleAddingChild();
+            return this;
         }
 
-        public void Add(SymptomViewModel symptomVM)
+        public SymptomViewModel Add(SymptomViewModel symptomVM)
         {
+            Contract.Requires(symptomVM != null);
+
             symptomVM.Parent = this;
             Children.Add(symptomVM);
             BubbleAddingChild();
+            return this;
         }
 
         public void Remove(SymptomViewModel symptomVM)

@@ -40,51 +40,37 @@ namespace Diagnosis
 
         public static List<SymptomViewModel> CreateSymptoms()
         {
-            var teeth = new SymptomViewModel("больные зубы");
-            teeth.Add(new Symptom()
-                                    {
-                                        Title = "боль в зубе"
-                                    });
+            var teeth = new SymptomViewModel("зубная боль");
+            teeth.Add(new Symptom("после приёма пищи")).Add(new Symptom("шатается зуб"));
 
-            teeth.Add(new Symptom()
-                                    {
-                                        Title = "шатается зуб"
-                                    });
+            var throat = new SymptomViewModel(new Symptom()
+                {
+                    Title = "горло",
+                    IsGroup = true
+                });
+            throat.Add(new SymptomViewModel("боль в горле")
+                    .Add(new Symptom("при глотании"))
+                    .Add(new Symptom("после разговора")))
+                .Add(new Symptom("красное"));
 
-            SymptomViewModel root = new SymptomViewModel(new Symptom()
+            SymptomViewModel root = (new SymptomViewModel(new Symptom()
             {
                 Title = "root",
                 IsGroup = true
-            })
-            {
-                Children =
-                {
-                    new SymptomViewModel(new Symptom()
+            })).Add(
+                    (new SymptomViewModel(new Symptom()
                     {
                         Title = "голова",
                         IsGroup = true
-                    })
-                    {
-                        Children =
-                        {
-                            new SymptomViewModel(new Symptom()
-                            {
-                                Title = "нос"
-                            }),
-                            teeth,
-                            new SymptomViewModel(new Symptom()
-                            {
-                                Title = "уши"
-                            }),
-                        }
-                    },
-                    new SymptomViewModel(new Symptom()
-                    {
-                        Title = "ноги",
-                        IsGroup = true
-                    })
-                }
-            };
+                    })).Add(throat)
+                        .Add(teeth)
+                        .Add(new SymptomViewModel(new Symptom("уши")))
+                ).Add(
+                new SymptomViewModel(new Symptom()
+                {
+                    Title = "ноги",
+                    IsGroup = true
+                }));
 
             root.Initialize();
 
