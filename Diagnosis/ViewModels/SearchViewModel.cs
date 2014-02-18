@@ -89,7 +89,7 @@ namespace Diagnosis.ViewModels
 
             Results = new ObservableCollection<SymptomViewModel>(
                 Parent.Children.Where(c => c.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)
-                    && !c.IsChecked));
+                    && !c.IsChecked && !c.IsGroup));
 
             if (!Parent.Children.Any(c => c.Name.Equals(query, StringComparison.InvariantCultureIgnoreCase)) &&
                 query != string.Empty)
