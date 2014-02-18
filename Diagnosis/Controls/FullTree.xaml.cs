@@ -68,6 +68,7 @@ namespace Diagnosis.Controls
             e.Handled = true;
             var q = FindTreeItem(sender);
             q.ToggleCheckedState();
+            (sender as TreeViewItem).IsExpanded = true;
         }
 
         private void item_MouseDoubleClick(object sender, MouseButtonEventArgs e)
