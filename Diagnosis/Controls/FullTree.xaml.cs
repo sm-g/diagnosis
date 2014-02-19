@@ -25,18 +25,6 @@ namespace Diagnosis.Controls
             return ChildFinder.FindChild<TreeItem>((DependencyObject)sender, "treeItem");
         }
 
-        private void item_GotFocus(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void item_LostFocus(object sender, RoutedEventArgs e)
-        {
-            e.Handled = true;
-            var q = FindTreeItem(sender);
-
-            //q.CommitChanges();
-        }
-
         private void item_KeyUp(object sender, KeyEventArgs e)
         {
             e.Handled = true;

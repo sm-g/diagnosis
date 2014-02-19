@@ -17,7 +17,6 @@
                 <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
                 <!-- Region Events -->
 
-                <EventSetter Event="LostFocus" Handler="item_LostFocus" />
                 <EventSetter Event="KeyUp" Handler="item_KeyUp" />
                 <EventSetter Event="MouseUp" Handler="item_MouseUp" />
                 <EventSetter Event="MouseDoubleClick" Handler="item_MouseDoubleClick" />
