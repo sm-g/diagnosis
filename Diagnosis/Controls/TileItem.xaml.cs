@@ -18,28 +18,28 @@ namespace Diagnosis.Controls
     /// <summary>
     /// Interaction logic for TileItem.xaml
     /// </summary>
-    public partial class TileItem : UserControl
+    public partial class TileItem : UserControl, IEditableItem
     {
         public TileItem()
         {
             InitializeComponent();
         }
 
-        internal void BeginEdit()
+        public void BeginEdit()
         {
             ShowEditor();
             titleEditor.Focus();
         }
 
-        internal void CommitChanges()
+        public void CommitChanges()
         {
-            HideEditor();
+            EndEdit();
         }
 
-        internal void RevertChanges()
+        public void RevertChanges()
         {
             titleEditor.Text = title.Text;
-            HideEditor();
+            EndEdit();
         }
 
         private void ShowEditor()
@@ -47,7 +47,7 @@ namespace Diagnosis.Controls
             editor.Visibility = System.Windows.Visibility.Visible;
         }
 
-        private void HideEditor()
+        private void EndEdit()
         {
             editor.Visibility = System.Windows.Visibility.Collapsed;
         }

@@ -8,7 +8,7 @@ namespace Diagnosis.Controls
     /// <summary>
     /// Interaction logic for TreeItem.xaml
     /// </summary>
-    public partial class TreeItem : UserControl
+    public partial class TreeItem : UserControl, IEditableItem
     {
         bool isReady = true;
 
@@ -19,7 +19,7 @@ namespace Diagnosis.Controls
         }
 
 
-        internal void BeginEdit()
+        public void BeginEdit()
         {
             if (isReady)
             {
@@ -45,12 +45,12 @@ namespace Diagnosis.Controls
             (DataContext as SymptomViewModel).ToggleChecked();
         }
 
-        internal void CommitChanges()
+        public void CommitChanges()
         {
             EndEdit();
         }
 
-        internal void RevertChanges()
+        public void RevertChanges()
         {
             titleEditor.Text = title.Text;
             EndEdit();
