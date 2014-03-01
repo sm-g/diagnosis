@@ -17,6 +17,8 @@ namespace Diagnosis.ViewModels
 
         public SymptomViewModel Parent { get; private set; }
 
+        public bool WithGroups { get; set; }
+
         public string Query
         {
             get
@@ -89,7 +91,8 @@ namespace Diagnosis.ViewModels
 
             Results = new ObservableCollection<SymptomViewModel>(
                 Parent.Children.Where(c => c.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)
-                    && !c.IsChecked && !c.IsGroup));
+                    && !c.IsChecked
+                    && (WithGroups || !c.IsGroup)));
 
             if (!Parent.Children.Any(c => c.Name.Equals(query, StringComparison.InvariantCultureIgnoreCase)) &&
                 query != string.Empty)
@@ -109,12 +112,13 @@ namespace Diagnosis.ViewModels
                 SelectedIndex = 0;
         }
 
-        public SearchViewModel(SymptomViewModel parent)
+        public SearchViewModel(SymptomViewModel parent, bool withGroups = false)
         {
             Contract.Requires(parent != null);
 
             Results = new ObservableCollection<SymptomViewModel>();
             Parent = parent;
+            WithGroups = withGroups;
             Clear();
         }
     }
