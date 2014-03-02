@@ -12,7 +12,6 @@ namespace Diagnosis.ViewModels
         private RelayCommand<SymptomViewModel> _clickItem;
         private SymptomViewModel _current;
         private RelayCommand _goUp;
-        private List<SymptomViewModel> symptoms;
 
         public SymptomExplorerViewModel(List<SymptomViewModel> symptoms)
         {

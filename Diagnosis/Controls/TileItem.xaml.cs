@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Diagnosis.ViewModels;
+using Diagnosis.Helpers;
 
 namespace Diagnosis.Controls
 {
@@ -20,6 +21,8 @@ namespace Diagnosis.Controls
     /// </summary>
     public partial class TileItem : UserControl, IEditableItem
     {
+        bool isEditing;
+
         public TileItem()
         {
             InitializeComponent();
@@ -27,8 +30,21 @@ namespace Diagnosis.Controls
 
         public void BeginEdit()
         {
-            ShowEditor();
+            isEditing = true;
+            editor.Visibility = System.Windows.Visibility.Visible;
             titleEditor.Focus();
+        }
+
+        public void ToggleEditState()
+        {
+            if (!isEditing)
+            {
+                BeginEdit();
+            }
+            else
+            {
+                EndEdit();
+            }
         }
 
         public void CommitChanges()
@@ -42,13 +58,9 @@ namespace Diagnosis.Controls
             EndEdit();
         }
 
-        private void ShowEditor()
-        {
-            editor.Visibility = System.Windows.Visibility.Visible;
-        }
-
         private void EndEdit()
         {
+            isEditing = false;
             editor.Visibility = System.Windows.Visibility.Collapsed;
         }
 
@@ -56,7 +68,7 @@ namespace Diagnosis.Controls
         {
             var element = FocusManager.GetFocusedElement(Application.Current.MainWindow);
 
-            if (editor.Children.IndexOf((UIElement)element) == -1)
+            if (ChildFinder.FindVisualChildren((DependencyObject)root).FirstOrDefault(child => child == element) == null)
             {
                 CommitChanges();
             }
@@ -80,6 +92,11 @@ namespace Diagnosis.Controls
             {
                 RevertChanges();
             }
+        }
+
+        private void toggleEdit_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleEditState();
         }
     }
 }

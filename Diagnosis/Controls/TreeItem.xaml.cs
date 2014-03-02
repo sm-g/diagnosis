@@ -12,6 +12,7 @@ namespace Diagnosis.Controls
     public partial class TreeItem : UserControl, IEditableItem
     {
         bool isReady = true;
+        bool isEditing;
 
         public TreeItem()
         {
@@ -24,6 +25,7 @@ namespace Diagnosis.Controls
         {
             if (isReady)
             {
+                isEditing = true;
                 isReady = false;
                 editor.Visibility = System.Windows.Visibility.Visible;
                 titleEditor.Focus();
@@ -46,6 +48,18 @@ namespace Diagnosis.Controls
             (DataContext as SymptomViewModel).ToggleChecked();
         }
 
+        public void ToggleEditState()
+        {
+            if (!isEditing)
+            {
+                BeginEdit();
+            }
+            else
+            {
+                EndEdit();
+            }
+        }
+
         public void CommitChanges()
         {
             EndEdit();
@@ -59,6 +73,7 @@ namespace Diagnosis.Controls
 
         private void EndEdit()
         {
+            isEditing = false;
             editor.Visibility = System.Windows.Visibility.Collapsed;
             isReady = true;
         }

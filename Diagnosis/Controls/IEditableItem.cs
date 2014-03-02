@@ -6,5 +6,6 @@ namespace Diagnosis.Controls
         void BeginEdit();
         void CommitChanges();
         void RevertChanges();
+        void ToggleEditState();
     }
 }

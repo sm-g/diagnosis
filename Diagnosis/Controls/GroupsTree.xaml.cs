@@ -14,10 +14,10 @@ namespace Diagnosis.Controls
         {
             InitializeComponent();
         }
+
         private void TreeView_Loaded(object sender, RoutedEventArgs e)
         {
             tree.DataContext = Diagnosis.DataCreator.CreateSymptoms();
-
         }
 
         private TreeItem FindTreeItem(object sender)

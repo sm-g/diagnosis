@@ -9,7 +9,7 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{StaticResource symptomVM}"
+             d:DataContext="{StaticResource symptomVM}"            
              KeyUp="UserControl_KeyUp"
              >
     <UserControl.Resources>
@@ -17,7 +17,7 @@
         <Converters:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
-        <sys:Double x:Key="margin">20</sys:Double>
+        <sys:Double x:Key="buttonsWidth">20</sys:Double>
     </UserControl.Resources>
 
     <Border BorderThickness="5">
@@ -27,21 +27,26 @@
                 <GradientStop Color="{DynamicResource {x:Static SystemColors.ControlLightColorKey}}" Offset="1"/>
             </RadialGradientBrush>
         </Border.Background>
-        <Grid Width="150" Height="50" Focusable="True">
+        <Grid Width="150" Height="50" Focusable="True" x:Name="root">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="{Binding Mode=OneWay, Source={StaticResource buttonsWidth}}"/>
+            </Grid.ColumnDefinitions>
+            
             <CheckBox x:Name="checkbox"
                       IsChecked="{Binding IsChecked, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True}"
                       Focusable="False"
                       Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}"
-                      VerticalContentAlignment="Center"
+                      VerticalContentAlignment="Center" 
+                      Grid.ColumnSpan="3"
  />
             <Button Command="{Binding DataContext.ClickItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}}"
                     CommandParameter="{Binding}"
                     Focusable="False"
-                    Visibility="{Binding IsTerminal, Converter={StaticResource NegBooleanToVisibilityConverter}, Mode=OneWay}">
-                <Button.Margin>
-                    <Thickness Left="{StaticResource margin}" />
-                </Button.Margin>
-            </Button>
+                    Visibility="{Binding IsTerminal, Converter={StaticResource NegBooleanToVisibilityConverter}, Mode=OneWay}" 
+                    Grid.Column="1"
+                    Grid.ColumnSpan="2"/>
 
             <TextBlock x:Name="title"
                        Text="{Binding Name}"
@@ -49,10 +54,9 @@
                        HorizontalAlignment="{Binding IsGroup, Converter={StaticResource BoolToCenterAligmentConverter}}"
                        VerticalAlignment="Center"
                        IsHitTestVisible="False"
-                       Padding="5">
-                <TextBlock.Margin>
-                    <Thickness Left="{StaticResource margin}" />
-                </TextBlock.Margin>
+                       Padding="5" 
+                       Grid.Column="1"
+                       Grid.ColumnSpan="2">
             </TextBlock>
 
             <TextBlock x:Name="checkedChildren"
@@ -60,28 +64,43 @@
                        HorizontalAlignment="Right"
                        VerticalAlignment="Bottom"
                        IsHitTestVisible="False"
-                       Margin="0,0,5,5"
-                       Visibility="{Binding IsTerminal, Converter={StaticResource NegBooleanToVisibilityConverter}, Mode=OneWay}" />
+                       Margin="5"
+                       Visibility="{Binding IsTerminal, Converter={StaticResource NegBooleanToVisibilityConverter}, Mode=OneWay}" 
+                       Grid.Column="2" />
 
             <StackPanel x:Name="editor"
                         LostFocus="editor_LostFocus"
                         Visibility="Collapsed"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="3"
 >
+                
                 <StackPanel.Background>
                     <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.AppWorkspaceColorKey}}"/>
                 </StackPanel.Background>
-                <StackPanel.Margin>
-                    <Thickness Left="{StaticResource margin}" />
-                </StackPanel.Margin>
 
                 <TextBox x:Name="titleEditor"
                          Text="{Binding Name, UpdateSourceTrigger=LostFocus}"
-
- />
+ >
+                    <TextBox.Margin>
+                        <Thickness Right="{StaticResource buttonsWidth}" />
+                    </TextBox.Margin>
+                    
+                </TextBox>
                 <CheckBox x:Name="isGroup"
                           IsChecked="{Binding IsGroup}"
                           Content="Группа"
  />
+            </StackPanel>
+
+            <StackPanel x:Name="buttons"
+                        Grid.Column="2">
+                <Button x:Name="toggleEdit" 
+                        Click="toggleEdit_Click"
+                        Height="20"
+                        >
+                    e
+                </Button>
             </StackPanel>
         </Grid>
     </Border>
