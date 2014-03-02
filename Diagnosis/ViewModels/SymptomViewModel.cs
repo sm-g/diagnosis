@@ -220,12 +220,14 @@ namespace Diagnosis.ViewModels
         private void OnChildAdded()
         {
             OnPropertyChanged(() => TerminalChildren);
+            OnPropertyChanged(() => IsTerminal);
         }
 
         private void OnChildRemoved()
         {
             OnPropertyChanged(() => TerminalChildren);
             OnPropertyChanged(() => NonTerminalChildren);
+            OnPropertyChanged(() => IsTerminal);
         }
 
         internal void Initialize()
