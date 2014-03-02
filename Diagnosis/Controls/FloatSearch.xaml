@@ -9,8 +9,7 @@
              x:Name="floatSearch"
              GotFocus="UserControl_GotFocus"
              KeyUp="UserControl_KeyUp"
-             h:EnhancedFocusScope.IsEnhancedFocusScope="True"
-             Background="#FFFFE0E0">
+             h:EnhancedFocusScope.IsEnhancedFocusScope="True">
     <UserControl.Resources>
         <Converters:CountToVisability x:Key="CountToVisability" />
     </UserControl.Resources>
@@ -18,7 +17,7 @@
         <StaticResource ResourceKey="searchVM" />
     </d:DataContext>
     <StackPanel>
-        <Grid Margin="0,0,0,10">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="auto" />
