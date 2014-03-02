@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Linq;
 
 namespace Diagnosis.Controls
 {
@@ -90,7 +91,7 @@ namespace Diagnosis.Controls
             }
             if (e.Key == Key.Enter)
             {
-                if (symptomVM.Children.IndexOf(searchVM.SelectedItem) == -1)
+                if (symptomVM.AllChildren.SingleOrDefault(child => child == searchVM.SelectedItem) == null)
                 {
                     symptomVM.Add(searchVM.SelectedItem);
                 }

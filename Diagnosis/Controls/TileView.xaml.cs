@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Linq;
 
 namespace Diagnosis.Controls
 {
@@ -36,6 +37,7 @@ namespace Diagnosis.Controls
         {
             var searchVM = search.DataContext as SearchViewModel;
             var symptomVM = (explorer.DataContext as SymptomExplorerViewModel).CurrentSymptom;
+            e.Handled = true;
 
             if (e.Key == Key.Escape)
             {
@@ -43,7 +45,7 @@ namespace Diagnosis.Controls
             }
             if (e.Key == Key.Enter)
             {
-                if (symptomVM.Children.IndexOf(searchVM.SelectedItem) == -1)
+                if (symptomVM.AllChildren.SingleOrDefault(child => child == searchVM.SelectedItem) == null)
                 {
                     symptomVM.Add(searchVM.SelectedItem);
                 }

@@ -90,11 +90,11 @@ namespace Diagnosis.ViewModels
             Contract.Requires(query != null);
 
             Results = new ObservableCollection<SymptomViewModel>(
-                Parent.Children.Where(c => c.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)
+                Parent.AllChildren.Where(c => c.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)
                     && !c.IsChecked
                     && (WithGroups || !c.IsGroup)));
 
-            if (!Parent.Children.Any(c => c.Name.Equals(query, StringComparison.InvariantCultureIgnoreCase)) &&
+            if (!Results.Any(c => c.Name.Equals(query, StringComparison.InvariantCultureIgnoreCase)) &&
                 query != string.Empty)
             {
                 // добавляем запрос к результатам
