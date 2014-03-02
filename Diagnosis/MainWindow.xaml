@@ -14,7 +14,7 @@
 
         <Grid.DataContext>
             <ObjectDataProvider
-                  MethodName="CreatePatient"
+                  MethodName="GetPatient"
                   ObjectType="{x:Type local:DataCreator}" />
         </Grid.DataContext>
 

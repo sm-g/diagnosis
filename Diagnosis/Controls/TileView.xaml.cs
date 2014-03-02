@@ -25,7 +25,7 @@ namespace Diagnosis.Controls
 
         private void explorer_Loaded(object sender, RoutedEventArgs e)
         {
-            explorer.DataContext = new Diagnosis.ViewModels.SymptomExplorerViewModel(Diagnosis.DataCreator.CreateSymptoms());
+            explorer.DataContext = new Diagnosis.ViewModels.SymptomExplorerViewModel(Diagnosis.DataCreator.Symptoms);
         }
 
         private void EndSearch()

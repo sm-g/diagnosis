@@ -6,39 +6,43 @@ namespace Diagnosis
 {
     public static class DataCreator
     {
-        public static PatientViewModel CreatePatient()
+        private static PatientViewModel _Patient;
+
+        public static PatientViewModel GetPatient()
         {
-            return new PatientViewModel(new Patient() { })
+            return _Patient ?? (_Patient = new PatientViewModel(new Patient() { })
             {
                 FirstName = "Иван",
                 LastName = "Грибоедов",
                 MiddleName = "Константинович",
                 Age = 37,
                 IsMale = true
-            };
+            });
         }
 
-        public static List<Education> CreateEducationList()
-        {
-            return new List<Education>()
-            {
-                new Education() { Title = "Высшее"},
-                new Education() { Title = "Неоконченное высшее"},
-                new Education() { Title = "Среднее"},
-            };
-        }
+        private static List<PropertyViewModel> _Properties;
 
-        public static List<PropertyViewModel> CreateProperties()
+        public static List<PropertyViewModel> GetProperties()
         {
-            return new List<PropertyViewModel>()
+            return _Properties ?? (_Properties = new List<PropertyViewModel>()
             {
                 (new PropertyViewModel("Образование")).AddValue("Высшее").AddValue("Неоконченное высшее").AddValue("Среднее"),
                 (new PropertyViewModel("Характер работы")).AddValue("Сидячая").AddValue("Подвижная"),
                 (new PropertyViewModel("Место жительства")).AddValue("Город").AddValue("Деревня"),
-            };
+            });
         }
 
-        public static List<SymptomViewModel> CreateSymptoms()
+        private static List<SymptomViewModel> _Symptoms;
+
+        public static List<SymptomViewModel> Symptoms
+        {
+            get
+            {
+                return _Symptoms ?? (_Symptoms = CreateSymptoms());
+            }
+        }
+
+        private static List<SymptomViewModel> CreateSymptoms()
         {
             var teeth = new SymptomViewModel("зубная боль");
             teeth.Add(new Symptom("после приёма пищи")).Add(new Symptom("шатается зуб"));

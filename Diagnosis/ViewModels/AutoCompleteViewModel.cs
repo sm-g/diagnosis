@@ -181,7 +181,7 @@ namespace Diagnosis.ViewModels
                 i--;
             }
             if (i < 0)
-                search = new SearchViewModel(DataCreator.CreateSymptoms()[0]);
+                search = new SearchViewModel(DataCreator.Symptoms[0]);
             else
                 search = new SearchViewModel(symptoms[i]);
             search.WithGroups = true;

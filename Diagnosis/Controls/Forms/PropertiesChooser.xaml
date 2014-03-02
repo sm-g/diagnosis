@@ -9,7 +9,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.DataContext>
         <ObjectDataProvider
-                          MethodName="CreateProperties"
+                          MethodName="GetProperties"
                           ObjectType="{x:Type local:DataCreator}" />
     </UserControl.DataContext>
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
