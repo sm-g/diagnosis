@@ -24,8 +24,6 @@ namespace Diagnosis.Controls
         string[] monthNames;
         List<int> years = new List<int>();
 
-
-
         public int Year
         {
             get { return (int)GetValue(YearProperty); }
@@ -62,9 +60,6 @@ namespace Diagnosis.Controls
 
         public static readonly DependencyProperty YearsDepthProperty =
             DependencyProperty.Register("YearsDepth", typeof(int), typeof(ComboBoxDatePicker), new PropertyMetadata(120));
-
-
-
 
         public ComboBoxDatePicker()
         {
@@ -127,7 +122,7 @@ namespace Diagnosis.Controls
         private void comboMonths_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             e.Handled = true;
-             InitDays();
+            InitDays();
             LoadDaysCombo();
         }
     }

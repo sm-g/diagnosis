@@ -9,37 +9,31 @@ namespace Diagnosis.Converters
 {
     public class MonthToString : IValueConverter
     {
-        string ThirteenMonth = "";
+        static string ThirteenMonth = DateTimeFormatInfo.CurrentInfo.MonthNames.ToArray().Last();
 
         public object Convert(object value, Type targetType,
             object parameter, CultureInfo culture)
         {
             int month = (int)value;
-            if (month > 11)
+            if (month == 13)
             {
                 return ThirteenMonth;
             }
 
-            return DateTimeFormatInfo.CurrentInfo.GetMonthName(month + 1);
+            return DateTimeFormatInfo.CurrentInfo.GetMonthName(month);
         }
 
         public object ConvertBack(object value, Type targetType,
             object parameter, CultureInfo culture)
         {
             string name = (string)value;
-            if (name == ThirteenMonth)
+            if (value == null || name == ThirteenMonth)
             {
                 return 13;
             }
-            var q = DateTimeFormatInfo.CurrentInfo.MonthNames.ToList();
             return DateTimeFormatInfo.CurrentInfo.MonthNames.ToList().IndexOf(name) + 1;
         }
 
         public MonthToString() { }
-
-        public MonthToString(string thirteenMonth)
-        {
-            ThirteenMonth = thirteenMonth;
-        }
     }
 }

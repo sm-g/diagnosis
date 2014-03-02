@@ -85,8 +85,7 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                Console.WriteLine(string.Format("set yaer {0}", value));
-                if (patient.BirthDate.Year != value && value >= 1900 && value <= DateTime.Today.Year)
+                if (patient.BirthDate.Year != value && value >= 0 && value <= DateTime.Today.Year)
                 {
                     patient.BirthDate = new DateTime(value, patient.BirthDate.Month, patient.BirthDate.Day);
                     OnPropertyChanged(() => Age);
@@ -105,7 +104,6 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                Console.WriteLine(string.Format("set month {0}", value));
                 if (patient.BirthDate.Month != value && value >= 1 && value <= 13)
                 {
                     if (value == 13)
@@ -133,19 +131,10 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                Console.WriteLine(string.Format("set day {0}", value));
-
-                if (patient.BirthDate.Day != value && value >= 0 && value <= 31)
+                if (patient.BirthDate.Day != value && value >= 1 && value <= 31)
                 {
-                    if (value == 0)
-                    {
-                        patient.OnlyBirthYear = true;
-                    }
-                    else
-                    {
-                        patient.OnlyBirthYear = false;
-                        patient.BirthDate = new DateTime(patient.BirthDate.Year, patient.BirthDate.Month, value);
-                    }
+                    patient.BirthDate = new DateTime(patient.BirthDate.Year, patient.BirthDate.Month, value);
+                    
                     OnPropertyChanged(() => Age);
                     OnPropertyChanged(() => BirthDay);
                 }
