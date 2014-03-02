@@ -1,18 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Diagnosis.Helpers;
+using Diagnosis.ViewModels;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Diagnosis.ViewModels;
-using Diagnosis.Helpers;
 
 namespace Diagnosis.Controls
 {
@@ -21,18 +12,12 @@ namespace Diagnosis.Controls
     /// </summary>
     public partial class TileItem : UserControl, IEditableItem
     {
-        bool isEditing;
+        private bool isEditing;
+        private bool isSearching;
 
         public TileItem()
         {
             InitializeComponent();
-        }
-
-        public void BeginEdit()
-        {
-            isEditing = true;
-            editor.Visibility = System.Windows.Visibility.Visible;
-            titleEditor.Focus();
         }
 
         public void ToggleEditState()
@@ -45,6 +30,25 @@ namespace Diagnosis.Controls
             {
                 EndEdit();
             }
+        }
+
+        public void ToggleSearchState()
+        {
+            if (!isSearching)
+            {
+                BeginSearch();
+            }
+            else
+            {
+                EndSearch();
+            }
+        }
+
+        public void BeginEdit()
+        {
+            isEditing = true;
+            editor.Visibility = System.Windows.Visibility.Visible;
+            titleEditor.Focus();
         }
 
         public void CommitChanges()
@@ -80,23 +84,70 @@ namespace Diagnosis.Controls
             {
                 (DataContext as SymptomViewModel).ToggleChecked();
             }
-            if (e.Key == Key.F2)
+            else if (e.Key == Key.F2)
             {
                 BeginEdit();
             }
-            if (e.Key == Key.Enter)
+            else if (e.Key == Key.Enter)
             {
                 CommitChanges();
             }
-            if (e.Key == Key.Escape)
+            else if (e.Key == Key.Escape)
             {
                 RevertChanges();
+            }
+            else if (e.Key == Key.Insert || e.Key == Key.F && ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control))
+            {
+                BeginSearch();
             }
         }
 
         private void toggleEdit_Click(object sender, RoutedEventArgs e)
         {
             ToggleEditState();
+        }
+
+        private void toggleSearch_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleSearchState();
+        }
+
+        private void BeginSearch()
+        {
+            isSearching = true;
+            search.DataContext = new SearchViewModel(DataContext as SymptomViewModel);
+            search.Visibility = System.Windows.Visibility.Visible;
+            search.Focus();
+        }
+
+        private void EndSearch()
+        {
+            isSearching = false;
+            search.Visibility = System.Windows.Visibility.Collapsed;
+        }
+
+        private void search_KeyUp(object sender, KeyEventArgs e)
+        {
+            var searchVM = search.DataContext as SearchViewModel;
+            var symptomVM = DataContext as SymptomViewModel;
+            e.Handled = true;
+
+            if (e.Key == Key.Escape)
+            {
+                EndSearch();
+            }
+            if (e.Key == Key.Enter)
+            {
+                if (symptomVM.AllChildren.SingleOrDefault(child => child == searchVM.SelectedItem) == null)
+                {
+                    symptomVM.Add(searchVM.SelectedItem);
+                }
+
+                if (searchVM.SelectedItem != null)
+                    searchVM.SelectedItem.ToggleChecked();
+
+                searchVM.Clear();
+            }
         }
     }
 }

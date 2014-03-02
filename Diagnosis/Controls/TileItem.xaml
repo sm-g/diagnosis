@@ -27,7 +27,7 @@
                 <GradientStop Color="{DynamicResource {x:Static SystemColors.ControlLightColorKey}}" Offset="1"/>
             </RadialGradientBrush>
         </Border.Background>
-        <Grid Width="150" Height="50" Focusable="True" x:Name="root">
+        <Grid Width="150" Height="80" Focusable="True" x:Name="root">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="20"/>
                 <ColumnDefinition Width="*"/>
@@ -93,6 +93,14 @@
  />
             </StackPanel>
 
+            <controls:FloatSearch x:Name="search"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Visibility="Collapsed"
+                        KeyUp="search_KeyUp"
+
+ />
+
             <StackPanel x:Name="buttons"
                         Grid.Column="2">
                 <Button x:Name="toggleEdit" 
@@ -100,6 +108,12 @@
                         Height="20"
                         >
                     e
+                </Button>
+                <Button x:Name="toggleSearch" 
+                        Click="toggleSearch_Click"
+                        Height="20"
+                        >
+                    +
                 </Button>
             </StackPanel>
         </Grid>

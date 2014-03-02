@@ -16,7 +16,7 @@ namespace Diagnosis.Controls
             InitializeComponent();
         }
 
-        internal void BeginSearch()
+        void BeginSearch()
         {
             search.DataContext = new SearchViewModel((explorer.DataContext as SymptomExplorerViewModel).CurrentSymptom);
             search.Visibility = System.Windows.Visibility.Visible;
