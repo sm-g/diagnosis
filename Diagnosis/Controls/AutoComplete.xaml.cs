@@ -16,7 +16,7 @@ namespace Diagnosis.Controls
         {
             get
             {
-                return (DataContext ?? (DataContext = new AutoCompleteViewModel())) as AutoCompleteViewModel;
+                return (autocomplete.DataContext ?? (autocomplete.DataContext = new AutoCompleteViewModel())) as AutoCompleteViewModel;
             }
         }
 
@@ -24,7 +24,7 @@ namespace Diagnosis.Controls
         {
             InitializeComponent();
 
-            DataContext = new AutoCompleteViewModel();
+            autocomplete.DataContext = new AutoCompleteViewModel();
         }
 
         private void input_TextChanged(object sender, TextChangedEventArgs e)

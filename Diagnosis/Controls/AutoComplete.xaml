@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:xwt="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:vm="clr-namespace:Diagnosis.ViewModels"
+             xmlns:controls="clr-namespace:Diagnosis.Controls"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{DynamicResource vm}">
     <UserControl.Resources>
@@ -12,44 +13,57 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="24" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
-            <TextBox x:Name="input"
-                 TextChanged="input_TextChanged"
-                 KeyUp="input_KeyUp"
-                 Text="{Binding FullSymptom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 PreviewKeyDown="input_PreviewKeyDown" GotFocus="input_GotFocus" KeyDown="input_KeyDown" GotMouseCapture="input_GotMouseCapture"
- />
+        <StackPanel x:Name="autocomplete">
+            <Grid>
+                <TextBox x:Name="input"
+                     TextChanged="input_TextChanged"
+                     KeyUp="input_KeyUp"
+                     Text="{Binding FullSymptom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     PreviewKeyDown="input_PreviewKeyDown" GotFocus="input_GotFocus" KeyDown="input_KeyDown" GotMouseCapture="input_GotMouseCapture"
+     />
 
-            <Popup x:Name="popup" Height="Auto" Width="auto"
-                   StaysOpen="False" Placement="Bottom" IsOpen="false"
-                   d:LayoutOverrides="Width, Margin"
-                   HorizontalAlignment="Left">
+                <Popup x:Name="popup" Height="Auto" Width="auto"
+                       StaysOpen="False" Placement="Bottom" IsOpen="false"
+                       d:LayoutOverrides="Width, Margin"
+                       HorizontalAlignment="Left">
 
-                <Grid Width="Auto" Height="Auto">
+                    <Grid Width="Auto" Height="Auto">
 
-                    <ListBox x:Name="suggestions"
-                         ItemsSource="{Binding Suggestions}"
-                        KeyDown="suggestions_KeyDown"
-                        SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
->
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <DockPanel MouseUp="DockPanel_MouseUp">
-                                    <TextBlock Text="{Binding Name}" />
-                                </DockPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Grid>
-            </Popup>
-        </Grid>
+                        <ListBox x:Name="suggestions"
+                             ItemsSource="{Binding Suggestions}"
+                            KeyDown="suggestions_KeyDown"
+                            SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
+    >
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <DockPanel MouseUp="DockPanel_MouseUp">
+                                        <TextBlock Text="{Binding Name}" />
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </Popup>
+            </Grid>
         
-        <StackPanel Grid.Row="1">
-            <CheckBox IsChecked="{Binding IsSymptomCompleted}">IsSymptomCompleted</CheckBox>
+            <StackPanel>
+                <CheckBox IsChecked="{Binding IsSymptomCompleted}">IsSymptomCompleted</CheckBox>
+            </StackPanel>
         </StackPanel>
+
+        <DockPanel Grid.Row="1">
+            <TextBlock DockPanel.Dock="Top">Выбранные симптомы:</TextBlock>
+            <ListView ItemsSource="{Binding Symptoms}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <controls:TreeItem />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </DockPanel>
     </Grid>
 </UserControl>

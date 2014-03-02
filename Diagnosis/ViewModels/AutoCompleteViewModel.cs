@@ -72,7 +72,7 @@ namespace Diagnosis.ViewModels
                 if (IsSymptomCompleted)
                 {
                     // удаляем последний символ симптома
-                    symptoms.RemoveAt(symptoms.Count - 1);
+                    UncheckLastSymptom();
                     SetSearchContext(true);
                 }
                 else if (FullSymptom[FullSymptom.Length - 1] == SymptomSeparator)
@@ -96,6 +96,12 @@ namespace Diagnosis.ViewModels
                     SetSearchContext(true);
                 }
             }
+        }
+
+        private void UncheckLastSymptom()
+        {
+            symptoms.Last().IsChecked = false;
+            symptoms.RemoveAt(symptoms.Count - 1);
         }
 
         private void MakeSuggestions()
@@ -163,6 +169,7 @@ namespace Diagnosis.ViewModels
         void AddSymptom()
         {
             symptoms.Add(search.SelectedItem);
+            search.SelectedItem.IsChecked = true;
             IsSymptomCompleted = true;
         }
 

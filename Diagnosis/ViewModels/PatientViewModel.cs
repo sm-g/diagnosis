@@ -134,7 +134,7 @@ namespace Diagnosis.ViewModels
                 if (patient.BirthDate.Day != value && value >= 1 && value <= 31)
                 {
                     patient.BirthDate = new DateTime(patient.BirthDate.Year, patient.BirthDate.Month, value);
-                    
+
                     OnPropertyChanged(() => Age);
                     OnPropertyChanged(() => BirthDay);
                 }
@@ -185,7 +185,7 @@ namespace Diagnosis.ViewModels
 
         private void OnSymptomCheckedChanged(SymptomViewModel symptom, bool isChecked)
         {
-            if (isChecked && !symptom.IsGroup)
+            if (isChecked)
             {
                 Symptoms.Add(symptom);
             }
