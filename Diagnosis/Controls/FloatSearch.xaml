@@ -16,7 +16,11 @@
     <d:DataContext>
         <StaticResource ResourceKey="searchVM" />
     </d:DataContext>
-    <StackPanel>
+    <Grid MaxHeight="100">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -36,8 +40,8 @@
 			SelectionChanged="results_SelectionChanged"
 			SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
 			IsTabStop="True"
-                  MaxHeight="100"
-			Visibility="{Binding ResultsCount, Converter={StaticResource CountToVisability}, Mode=OneWay}"
+			Visibility="{Binding ResultsCount, Converter={StaticResource CountToVisability}, Mode=OneWay}" 
+                  Grid.Row="1"
 >
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -47,5 +51,5 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-    </StackPanel>
+    </Grid>
 </UserControl>
