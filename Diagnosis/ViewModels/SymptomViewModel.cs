@@ -12,7 +12,7 @@ namespace Diagnosis.ViewModels
         private SymptomViewModel _parent;
         private bool _isChecked;
 
-        public string Order { get; private set; }
+        public string SortingOrder { get; private set; }
 
         internal Symptom Symptom { get; private set; }
 
@@ -85,11 +85,19 @@ namespace Diagnosis.ViewModels
             {
                 if (_isChecked != value)
                 {
-                    _isChecked = value;
+                    if (IsGroup)
+                    {
+                        _isChecked = false;
+                    }
+                    else
+                    {
+                        _isChecked = value;
+                    }
+
                     OnPropertyChanged(() => IsChecked);
                     if (!IsGroup)
                     {
-                        PropagateTreeState(value);
+                        PropagateCheckedState(value);
                         BubbleCheckedChildren();
                     }
                     this.Send((int)EventID.SymptomCheckedChanged, new SymptomCheckedChangedParams(this, IsChecked).Params);
@@ -108,7 +116,7 @@ namespace Diagnosis.ViewModels
                 if (Symptom.IsGroup != value)
                 {
                     Symptom.IsGroup = value;
-                    IsChecked = !value;
+                    IsChecked = !value; // группа не может быть отмечена
 
                     OnPropertyChanged(() => IsGroup);
                 }
@@ -164,11 +172,7 @@ namespace Diagnosis.ViewModels
 
         public SymptomViewModel Add(Symptom symptom)
         {
-            var vm = new SymptomViewModel(symptom);
-            vm.Parent = this;
-            Children.Add(vm);
-            BubbleAddingChild();
-            return this;
+            return Add(new SymptomViewModel(symptom));
         }
 
         public SymptomViewModel Add(SymptomViewModel symptomVM)
@@ -177,17 +181,18 @@ namespace Diagnosis.ViewModels
 
             symptomVM.Parent = this;
             Children.Add(symptomVM);
-            BubbleAddingChild();
+            OnChildAdded();
             return this;
         }
 
-        public void Remove(SymptomViewModel symptomVM)
+        public SymptomViewModel Remove(SymptomViewModel symptomVM)
         {
             Children.Remove(symptomVM);
-            BubbleRemovingChild();
+            OnChildRemoved();
+            return this;
         }
 
-        private void PropagateTreeState(bool newState)
+        private void PropagateCheckedState(bool newState)
         {
             if (newState && !IsRoot)
             {
@@ -207,29 +212,20 @@ namespace Diagnosis.ViewModels
         {
             OnPropertyChanged(() => CheckedChildren);
             if (!IsRoot)
-                Parent.BubbleCheckedChildren();
-        }
-
-        private void BubbleAddingChild()
-        {
-            OnPropertyChanged(() => TerminalChildren);
-            if (!IsRoot)
             {
-                Parent.OnPropertyChanged(() => NonTerminalChildren);
-                Parent.BubbleAddingChild();
+                Parent.BubbleCheckedChildren();
             }
         }
 
-        private void BubbleRemovingChild()
+        private void OnChildAdded()
+        {
+            OnPropertyChanged(() => TerminalChildren);
+        }
+
+        private void OnChildRemoved()
         {
             OnPropertyChanged(() => TerminalChildren);
             OnPropertyChanged(() => NonTerminalChildren);
-            if (!IsRoot)
-            {
-                Parent.OnPropertyChanged(() => TerminalChildren);
-                Parent.OnPropertyChanged(() => NonTerminalChildren);
-                Parent.BubbleRemovingChild();
-            }
         }
 
         internal void Initialize()
@@ -238,7 +234,7 @@ namespace Diagnosis.ViewModels
             foreach (SymptomViewModel child in Children)
             {
                 child.Parent = this;
-                child.Order = this.Order + i++;
+                child.SortingOrder = this.SortingOrder + i++;
                 child.Initialize();
             }
         }

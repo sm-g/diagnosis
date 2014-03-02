@@ -204,7 +204,7 @@ namespace Diagnosis.ViewModels
             {
                 Symptoms.Remove(symptom);
             }
-            Symptoms = new ObservableCollection<SymptomViewModel>(Symptoms.OrderBy(s => s.Order));
+            Symptoms = new ObservableCollection<SymptomViewModel>(Symptoms.OrderBy(s => s.SortingOrder));
             OnPropertyChanged(() => Symptoms);
         }
     }
