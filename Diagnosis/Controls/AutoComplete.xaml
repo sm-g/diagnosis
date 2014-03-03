@@ -20,10 +20,14 @@
         <StackPanel x:Name="autocomplete">
             <Grid>
                 <TextBox x:Name="input"
-                     TextChanged="input_TextChanged"
-                     KeyUp="input_KeyUp"
-                     Text="{Binding FullSymptom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     PreviewKeyDown="input_PreviewKeyDown" GotFocus="input_GotFocus" KeyDown="input_KeyDown" GotMouseCapture="input_GotMouseCapture"
+                        Text="{Binding FullSymptom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        TextChanged="input_TextChanged"
+                        KeyUp="input_KeyUp"                         
+                         KeyDown="input_KeyDown" 
+                        PreviewKeyDown="input_PreviewKeyDown" 
+                         GotFocus="input_GotFocus" 
+                         GotMouseCapture="input_GotMouseCapture"
+                         LostFocus="input_LostFocus"
      />
 
                 <Popup x:Name="popup" Height="Auto" Width="auto"
@@ -51,19 +55,11 @@
             </Grid>
         
             <StackPanel>
-                <CheckBox IsChecked="{Binding IsSymptomCompleted}">IsSymptomCompleted</CheckBox>
+                <CheckBox IsChecked="{Binding IsSymptomCompleted}" Visibility="Collapsed">IsSymptomCompleted</CheckBox>
             </StackPanel>
         </StackPanel>
 
-        <DockPanel Grid.Row="1">
-            <TextBlock DockPanel.Dock="Top">Выбранные симптомы:</TextBlock>
-            <ListView ItemsSource="{Binding Symptoms}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <controls:TreeItem />
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </DockPanel>
+        <controls:FullTree Grid.Row="1"/>
+        
     </Grid>
 </UserControl>

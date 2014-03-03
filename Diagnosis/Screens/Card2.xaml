@@ -75,13 +75,13 @@
                     <controls:PropertiesChooser Margin="0,5" />
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Симптомы">
+            <TabItem Header="FullTree">
                 <controls:FullTree />
             </TabItem>
-            <TabItem Header="Анализы">
+            <TabItem Header="GroupsTree">
                 <controls:GroupsTree />
             </TabItem>
-            <TabItem Header="Диагноз">
+            <TabItem Header="Плитки">
                 <controls:TileView />
             </TabItem>
             <TabItem Header="Автодополнение">

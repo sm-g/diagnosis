@@ -18,15 +18,7 @@
                   ObjectType="{x:Type local:DataCreator}" />
         </Grid.DataContext>
 
-        <TabControl>
-            <TabItem Header="first">
-                <screen:Card Margin="10" x:Name="first">
-                </screen:Card>
-            </TabItem>
-            <TabItem Header="second">
-                <screen:Card2 Margin="10" x:Name="second">
-                </screen:Card2>
-            </TabItem>
-        </TabControl>
+        <screen:Card2 Margin="10" x:Name="second">
+        </screen:Card2>
     </Grid>
 </Window>
