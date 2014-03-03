@@ -174,7 +174,7 @@ namespace Diagnosis.ViewModels
         private void AddSymptom()
         {
             symptoms.Add(search.SelectedItem);
-            search.SelectedItem.IsChecked = true;
+            search.CheckSelectedItem();
             IsSymptomCompleted = true;
         }
 
