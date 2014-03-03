@@ -1,8 +1,9 @@
-﻿using Diagnosis.ViewModels;
+﻿using Diagnosis.Helpers;
+using Diagnosis.ViewModels;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Linq;
 
 namespace Diagnosis.Controls
 {
@@ -11,15 +12,16 @@ namespace Diagnosis.Controls
     /// </summary>
     public partial class TreeItem : UserControl, IEditableItem
     {
-        bool isReady = true;
-        bool isEditing;
+        private bool isReady = true;
+        private bool isEditing;
 
         public TreeItem()
         {
             InitializeComponent();
             isReady = true;
-        }
 
+            search.ResultItemClicked += search_ResultItemClicked;
+        }
 
         public void BeginEdit()
         {
@@ -96,8 +98,6 @@ namespace Diagnosis.Controls
 
         private void search_KeyUp(object sender, KeyEventArgs e)
         {
-            var searchVM = search.DataContext as SearchViewModel;
-            var symptomVM = this.DataContext as SymptomViewModel;
             e.Handled = true;
 
             if (e.Key == Key.Escape)
@@ -106,16 +106,28 @@ namespace Diagnosis.Controls
             }
             if (e.Key == Key.Enter)
             {
-                if (symptomVM.AllChildren.SingleOrDefault(child => child == searchVM.SelectedItem) == null)
-                {
-                    symptomVM.Add(searchVM.SelectedItem);
-                }
-
-                if (searchVM.SelectedItem != null)
-                    searchVM.SelectedItem.ToggleChecked();
-
-                searchVM.Clear();
+                OnResultItemSelected();
             }
+        }
+
+        private void search_ResultItemClicked(object sender, System.EventArgs e)
+        {
+            OnResultItemSelected();
+        }
+
+        private void OnResultItemSelected()
+        {
+            var searchVM = search.DataContext as SearchViewModel;
+            var symptomVM = this.DataContext as SymptomViewModel;
+            if (symptomVM.AllChildren.SingleOrDefault(child => child == searchVM.SelectedItem) == null)
+            {
+                symptomVM.Add(searchVM.SelectedItem);
+            }
+
+            if (searchVM.SelectedItem != null)
+                searchVM.SelectedItem.ToggleChecked();
+
+            searchVM.Clear();
         }
     }
 }

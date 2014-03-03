@@ -14,11 +14,22 @@ namespace Diagnosis.Controls
     /// </summary>
     public partial class FloatSearch : UserControl
     {
+        int selectedIndex = -1;
+        bool selectionChanged;
+
+        SearchViewModel vm
+        {
+            get
+            {
+                return DataContext as SearchViewModel;
+            }
+        }
+
+        public event EventHandler ResultItemClicked;
+
         public FloatSearch()
         {
             InitializeComponent();
-
-            TypeDescriptor.GetProperties(this.results)["ItemsSource"].AddValueChanged(this.results, new EventHandler(results_ItemsSourceChanged));
         }
 
         private void UserControl_GotFocus(object sender, RoutedEventArgs e)
@@ -26,21 +37,13 @@ namespace Diagnosis.Controls
             EnhancedFocusScope.SetFocusOnActiveElementInScope(floatSearch);
         }
 
-        private void UserControl_KeyUp(object sender, KeyEventArgs e)
-        {
-        }
-
-        private void results_ItemsSourceChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void results_SourceUpdated(object sender, DataTransferEventArgs e)
-        {
-        }
-
         private void results_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Console.WriteLine(results.SelectedIndex + " selected");
+            if (selectedIndex == -1)
+            {
+                selectedIndex = results.SelectedIndex;
+            }
+            selectionChanged = true;
         }
 
         private void input_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -53,6 +56,20 @@ namespace Diagnosis.Controls
             {
                 results.SelectedIndex++;
             }
+        }
+
+        private void results_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (!selectionChanged || selectedIndex == results.SelectedIndex)
+            {
+                var h = ResultItemClicked;
+                if (h != null)
+                {
+                    h(sender, new EventArgs());
+                }
+            }
+            selectedIndex = -1;
+            selectionChanged = false;
         }
     }
 }
