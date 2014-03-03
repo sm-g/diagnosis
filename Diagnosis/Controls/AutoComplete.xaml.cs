@@ -1,9 +1,8 @@
-﻿using Diagnosis.ViewModels;
-using System.Runtime.InteropServices;
+﻿using Diagnosis.Helpers;
+using Diagnosis.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Collections.Generic;
 
 namespace Diagnosis.Controls
 {
@@ -12,7 +11,9 @@ namespace Diagnosis.Controls
     /// </summary>
     public partial class AutoComplete : UserControl
     {
-        AutoCompleteViewModel vm
+        private bool focusFromPopup;
+
+        private AutoCompleteViewModel vm
         {
             get
             {
@@ -57,6 +58,7 @@ namespace Diagnosis.Controls
                     break;
             }
         }
+
         private void input_KeyDown(object sender, KeyEventArgs e)
         {
         }
@@ -95,23 +97,30 @@ namespace Diagnosis.Controls
             popup.IsOpen = suggestions.Items.Count > 0;
         }
 
-
         private void AddSuggestion()
         {
             vm.Accept();
 
             input.CaretIndex = input.Text.Length;
+            ShowSuggestionsPopup();
         }
 
         private void input_GotFocus(object sender, RoutedEventArgs e)
         {
-            vm.Reset();
+            if (!focusFromPopup)
+            {
+                vm.Reset();
+            }
+            focusFromPopup = false;
             ShowSuggestionsPopup();
         }
 
         private void input_LostFocus(object sender, RoutedEventArgs e)
         {
-            popup.IsOpen = false;
+            if (FocusChecker.IsFocusOutsideDepObject(autocomplete) && FocusChecker.IsFocusOutsideDepObject(popup.Child))
+            {
+                popup.IsOpen = false;
+            }
         }
 
         private void input_GotMouseCapture(object sender, MouseEventArgs e)
@@ -123,6 +132,7 @@ namespace Diagnosis.Controls
         private void DockPanel_MouseUp(object sender, MouseButtonEventArgs e)
         {
             AddSuggestion();
+            focusFromPopup = true;
             input.Focus();
         }
     }
