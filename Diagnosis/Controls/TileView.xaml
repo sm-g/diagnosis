@@ -9,13 +9,17 @@
              d:DataContext="{StaticResource symptomExplorerVM}">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="3*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        
+        <controls:AutoComplete />
 
         <Grid x:Name="explorer"
               Loaded="explorer_Loaded" 
               KeyUp="explorer_KeyUp"
+              Grid.Row="1"
 >
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -71,7 +75,7 @@
             </ScrollViewer>
         </Grid>
 
-        <DockPanel Grid.Row="1">
+        <DockPanel Grid.Row="2">
             <TextBlock DockPanel.Dock="Top">Выбранные симптомы:</TextBlock>
             <ListView ItemsSource="{Binding Symptoms}">
                 <ListView.ItemTemplate>

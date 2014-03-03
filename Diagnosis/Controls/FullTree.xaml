@@ -34,11 +34,16 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
             <RowDefinition Height="3*" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
+        
+        <controls:AutoComplete />
+        
         <TreeView
             x:Name="tree"
+            Grid.Row="1"
             HorizontalContentAlignment="Stretch"
             ItemContainerStyle="{StaticResource fullTreeItemStyle}"
             ItemTemplate="{StaticResource fullTreeItemTemplate}"
@@ -46,7 +51,7 @@
             Loaded="TreeView_Loaded">
         </TreeView>
 
-        <DockPanel Grid.Row="1">
+        <DockPanel Grid.Row="2">
             <TextBlock DockPanel.Dock="Top">Выбранные симптомы:</TextBlock>
             <ListView ItemsSource="{Binding Symptoms}">
                 <ListView.ItemTemplate>

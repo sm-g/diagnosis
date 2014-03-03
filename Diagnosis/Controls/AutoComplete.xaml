@@ -9,57 +9,51 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{DynamicResource vm}">
     <UserControl.Resources>
-        <vm:AutoCompleteViewModel x:Key="vm"/>
+        <vm:AutoCompleteViewModel x:Key="vm" />
     </UserControl.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <StackPanel x:Name="autocomplete">
-            <Grid>
-                <TextBox x:Name="input"
+    <StackPanel x:Name="autocomplete"
+                Margin="5">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock>Симптомы через запятую:</TextBlock>
+            
+            <TextBox x:Name="input"
                         Text="{Binding FullSymptom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextChanged="input_TextChanged"
-                        KeyUp="input_KeyUp"                         
-                         KeyDown="input_KeyDown" 
-                        PreviewKeyDown="input_PreviewKeyDown" 
-                         GotFocus="input_GotFocus" 
-                         GotMouseCapture="input_GotMouseCapture"
-                         LostFocus="input_LostFocus"
-     />
+                        KeyUp="input_KeyUp"
+                        PreviewKeyDown="input_PreviewKeyDown"
+                        GotFocus="input_GotFocus"
+                        GotMouseCapture="input_GotMouseCapture"
+                        LostFocus="input_LostFocus" Grid.Row="1"
+ />
 
-                <Popup x:Name="popup" Height="Auto" Width="auto"
+            <Popup x:Name="popup" Height="Auto" Width="auto"
                        StaysOpen="False" Placement="Bottom" IsOpen="false"
-                       d:LayoutOverrides="Width, Margin"
-                       HorizontalAlignment="Left">
+                       HorizontalAlignment="Left" Grid.RowSpan="2">
 
-                    <Grid Width="Auto" Height="Auto">
+                <Grid Width="Auto" Height="Auto">
 
-                        <ListBox x:Name="suggestions"
+                    <ListBox x:Name="suggestions"
                              ItemsSource="{Binding Suggestions}"
-                            KeyDown="suggestions_KeyDown"
-                            SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
-    >
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <DockPanel MouseUp="DockPanel_MouseUp">
-                                        <TextBlock Text="{Binding Name}" />
-                                    </DockPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Grid>
-                </Popup>
-            </Grid>
-        
-            <StackPanel>
-                <CheckBox IsChecked="{Binding IsSymptomCompleted}" Visibility="Collapsed">IsSymptomCompleted</CheckBox>
-            </StackPanel>
-        </StackPanel>
+                             SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
+>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <DockPanel MouseUp="DockPanel_MouseUp">
+                                    <TextBlock Text="{Binding Name}" />
+                                </DockPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Popup>
+        </Grid>
 
-        <controls:FullTree Grid.Row="1"/>
-        
-    </Grid>
+        <StackPanel>
+            <CheckBox IsChecked="{Binding IsSymptomCompleted}" Visibility="Collapsed">IsSymptomCompleted</CheckBox>
+        </StackPanel>
+    </StackPanel>
 </UserControl>

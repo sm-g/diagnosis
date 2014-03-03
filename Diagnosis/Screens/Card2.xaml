@@ -84,9 +84,6 @@
             <TabItem Header="Плитки">
                 <controls:TileView />
             </TabItem>
-            <TabItem Header="Автодополнение">
-                <controls:AutoComplete />
-            </TabItem>
         </TabControl>
     </Grid>
 </UserControl>
