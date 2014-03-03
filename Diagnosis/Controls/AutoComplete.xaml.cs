@@ -45,24 +45,6 @@ namespace Diagnosis.Controls
             }
         }
 
-        private void suggestions_KeyDown(object sender, KeyEventArgs e)
-        {
-            switch (e.Key)
-            {
-                case Key.Enter:
-                    AddSuggestion();
-                    break;
-
-                case Key.Escape:
-                    input.Focus();
-                    break;
-            }
-        }
-
-        private void input_KeyDown(object sender, KeyEventArgs e)
-        {
-        }
-
         private void input_KeyUp(object sender, KeyEventArgs e)
         {
             switch (e.Key)
@@ -76,6 +58,9 @@ namespace Diagnosis.Controls
                     {
                         AddSuggestion();
                     }
+                    break;
+                case Key.Escape:
+                    HidePopup();
                     break;
             }
         }
@@ -95,6 +80,12 @@ namespace Diagnosis.Controls
             popup.PlacementRectangle = placementRect;
 
             popup.IsOpen = suggestions.Items.Count > 0;
+        }
+
+
+        private void HidePopup()
+        {
+            popup.IsOpen = false;
         }
 
         private void AddSuggestion()
@@ -119,7 +110,7 @@ namespace Diagnosis.Controls
         {
             if (FocusChecker.IsFocusOutsideDepObject(autocomplete) && FocusChecker.IsFocusOutsideDepObject(popup.Child))
             {
-                popup.IsOpen = false;
+                HidePopup();
             }
         }
 
