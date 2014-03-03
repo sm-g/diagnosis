@@ -88,9 +88,7 @@ namespace Diagnosis.Controls
 
         private void editor_LostFocus(object sender, RoutedEventArgs e)
         {
-            var element = FocusManager.GetFocusedElement(Application.Current.MainWindow);
-
-            if (editor.Children.IndexOf((UIElement)element) == -1)
+            if (FocusChecker.IsFocusOutsideDepObject(editor))
             {
                 CommitChanges();
             }

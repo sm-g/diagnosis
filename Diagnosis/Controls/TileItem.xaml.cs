@@ -72,9 +72,7 @@ namespace Diagnosis.Controls
 
         private void editor_LostFocus(object sender, RoutedEventArgs e)
         {
-            var element = FocusManager.GetFocusedElement(Application.Current.MainWindow);
-
-            if (ChildFinder.FindVisualChildren((DependencyObject)root).FirstOrDefault(child => child == element) == null)
+            if (FocusChecker.IsFocusOutsideDepObject(root))
             {
                 CommitChanges();
             }
