@@ -116,15 +116,8 @@ namespace Diagnosis.Controls
         private void OnResultItemSelected()
         {
             var searchVM = search.DataContext as SearchViewModel;
-            var symptomVM = this.DataContext as SymptomViewModel;
-            if (symptomVM.AllChildren.SingleOrDefault(child => child == searchVM.SelectedItem) == null)
-            {
-                symptomVM.Add(searchVM.SelectedItem);
-            }
 
-            if (searchVM.SelectedItem != null)
-                searchVM.SelectedItem.ToggleChecked();
-
+            searchVM.CheckSelectedItem();
             searchVM.Clear();
         }
     }
