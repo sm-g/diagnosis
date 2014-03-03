@@ -37,8 +37,6 @@ namespace Diagnosis.Controls
 
         private void search_KeyUp(object sender, KeyEventArgs e)
         {
-            var searchVM = search.DataContext as SearchViewModel;
-            var symptomVM = (explorer.DataContext as SymptomExplorerViewModel).CurrentSymptom;
             e.Handled = true;
 
             if (e.Key == Key.Escape)
@@ -59,7 +57,7 @@ namespace Diagnosis.Controls
         private void OnResultItemSelected()
         {
             var searchVM = search.DataContext as SearchViewModel;
-            var symptomVM = this.DataContext as SymptomViewModel;
+            var symptomVM = (explorer.DataContext as SymptomExplorerViewModel).CurrentSymptom;
             if (symptomVM.AllChildren.SingleOrDefault(child => child == searchVM.SelectedItem) == null)
             {
                 symptomVM.Add(searchVM.SelectedItem);
