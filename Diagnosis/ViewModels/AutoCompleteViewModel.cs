@@ -1,21 +1,18 @@
-﻿using Diagnosis.Models;
-using EventAggregator;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace Diagnosis.ViewModels
 {
     public class AutoCompleteViewModel : ViewModelBase
     {
-        List<SymptomViewModel> symptoms;
-        SearchViewModel search;
+        private List<SymptomViewModel> symptoms;
+        private SearchViewModel search;
 
         private string _fullSymptom = "";
         private bool _isSymptomCompleted;
-        int _selectedIndex;
-        const char SymptomSeparator = ',';
+        private int _selectedIndex;
+        private const char SymptomSeparator = ',';
 
         public string FullSymptom
         {
@@ -54,7 +51,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        bool IsCompleted()
+        private bool IsCompleted()
         {
             return !IsSymptomCompleted && search.SelectedItem != null && LastPart == search.SelectedItem.Name;
         }
@@ -117,8 +114,8 @@ namespace Diagnosis.ViewModels
             Suggestions = search.Results;
             OnPropertyChanged(() => Suggestions);
             SelectedIndex = 0;
-
         }
+
         public ObservableCollection<SymptomViewModel> Suggestions { get; private set; }
 
         public int SelectedIndex
@@ -159,6 +156,7 @@ namespace Diagnosis.ViewModels
             AddSymptom();
             FullSymptom = SymptomsChainString;
         }
+
         public void Clear()
         {
             symptoms.Clear();
@@ -166,14 +164,14 @@ namespace Diagnosis.ViewModels
             FullSymptom = "";
         }
 
-        void AddSymptom()
+        private void AddSymptom()
         {
             symptoms.Add(search.SelectedItem);
             search.SelectedItem.IsChecked = true;
             IsSymptomCompleted = true;
         }
 
-        void SetSearchContext(bool symptomStarted)
+        private void SetSearchContext(bool symptomStarted)
         {
             var i = symptoms.Count - 1;
             if (!symptomStarted)
@@ -192,13 +190,17 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public AutoCompleteViewModel()
+        public void Reset()
         {
-            symptoms = new List<SymptomViewModel>();
-
             SetSearchContext(true);
             MakeSuggestions();
         }
 
+        public AutoCompleteViewModel()
+        {
+            symptoms = new List<SymptomViewModel>();
+
+            Reset();
+        }
     }
 }

@@ -105,11 +105,18 @@ namespace Diagnosis.Controls
 
         private void input_GotFocus(object sender, RoutedEventArgs e)
         {
+            vm.Reset();
             ShowSuggestionsPopup();
+        }
+
+        private void input_LostFocus(object sender, RoutedEventArgs e)
+        {
+            popup.IsOpen = false;
         }
 
         private void input_GotMouseCapture(object sender, MouseEventArgs e)
         {
+            vm.Reset();
             ShowSuggestionsPopup();
         }
 
