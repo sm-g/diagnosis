@@ -18,6 +18,8 @@ namespace Diagnosis.ViewModels
         public SymptomViewModel Parent { get; private set; }
 
         public bool WithGroups { get; set; }
+        public bool WithChecked { get; set; }
+        public bool AllChildren { get; set; }
 
         public string Query
         {
@@ -90,8 +92,14 @@ namespace Diagnosis.ViewModels
             Contract.Requires(query != null);
 
             Results = new ObservableCollection<SymptomViewModel>(
+                AllChildren
+                ?
                 Parent.AllChildren.Where(c => c.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)
-                    && !c.IsChecked
+                    && (WithChecked || !c.IsChecked)
+                    && (WithGroups || !c.IsGroup))
+                :
+                Parent.Children.Where(c => c.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)
+                    && (WithChecked || !c.IsChecked)
                     && (WithGroups || !c.IsGroup)));
 
             if (!Results.Any(c => c.Name.Equals(query, StringComparison.InvariantCultureIgnoreCase)) &&
@@ -112,13 +120,15 @@ namespace Diagnosis.ViewModels
                 SelectedIndex = 0;
         }
 
-        public SearchViewModel(SymptomViewModel parent, bool withGroups = false)
+        public SearchViewModel(SymptomViewModel parent, bool withGroups = false, bool withChecked = false, bool allChildren = true)
         {
             Contract.Requires(parent != null);
 
             Results = new ObservableCollection<SymptomViewModel>();
             Parent = parent;
             WithGroups = withGroups;
+            WithChecked = withChecked;
+            AllChildren = allChildren;
             Clear();
         }
     }

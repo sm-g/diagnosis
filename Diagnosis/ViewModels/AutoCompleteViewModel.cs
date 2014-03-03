@@ -28,7 +28,14 @@ namespace Diagnosis.ViewModels
 
                     _fullSymptom = value;
 
-                    MakeSuggestions();
+                    try
+                    {
+                        MakeSuggestions();
+                    }
+                    catch (System.Exception e)
+                    {
+                        System.Windows.MessageBox.Show(e.Message);
+                    }
 
                     OnPropertyChanged(() => FullSymptom);
                 }
@@ -179,10 +186,9 @@ namespace Diagnosis.ViewModels
                 i--;
             }
             if (i < 0)
-                search = new SearchViewModel(DataCreator.Symptoms[0]);
+                search = new SearchViewModel(DataCreator.Symptoms[0], true, true, false); // groups and cheked, but not all children
             else
-                search = new SearchViewModel(symptoms[i]);
-            search.WithGroups = true;
+                search = new SearchViewModel(symptoms[i], true, true, false);
 
             if (symptomStarted)
             {
