@@ -126,5 +126,10 @@ namespace Diagnosis.Controls
             focusFromPopup = true;
             input.Focus();
         }
+
+        private void suggestions_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            suggestions.ScrollIntoView(suggestions.SelectedItem);
+        }
     }
 }

@@ -44,6 +44,7 @@ namespace Diagnosis.Controls
                 selectedIndex = results.SelectedIndex;
             }
             selectionChanged = true;
+            results.ScrollIntoView(results.SelectedItem);
         }
 
         private void input_PreviewKeyDown(object sender, KeyEventArgs e)

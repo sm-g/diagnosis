@@ -39,6 +39,7 @@
                     <ListBox x:Name="suggestions"
                              ItemsSource="{Binding Suggestions}"
                              SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
+                             SelectionChanged="suggestions_SelectionChanged"
 >
                         <ListBox.ItemTemplate>
                             <DataTemplate>
