@@ -80,6 +80,8 @@ namespace Diagnosis.Controls
 
         private void UserControl_KeyUp(object sender, KeyEventArgs e)
         {
+            e.Handled = true;
+
             if (e.Key == Key.Space)
             {
                 (DataContext as SymptomViewModel).ToggleChecked();
