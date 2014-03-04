@@ -96,7 +96,7 @@ namespace Diagnosis.ViewModels
                 if (query.SingleOrDefault(child => child == SelectedItem) == null)
                     Parent.Add(SelectedItem);
 
-                SelectedItem.ToggleChecked();
+                SelectedItem.IsChecked = true;
             }
         }
 
