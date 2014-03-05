@@ -33,6 +33,11 @@ namespace Diagnosis.Controls
             {
                 q.ToggleCheckedState();
             }
+            else if (e.Key == Key.Delete)
+            {
+                q.Delete();
+                tree.Focus();
+            }
             else if (e.Key == Key.F2)
             {
                 q.BeginEdit();

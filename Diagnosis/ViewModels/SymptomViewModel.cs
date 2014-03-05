@@ -192,6 +192,15 @@ namespace Diagnosis.ViewModels
             return this;
         }
 
+        public void Delete()
+        {
+            if (!IsRoot)
+            {
+                IsChecked = false;
+                Parent.Remove(this);
+            }
+        }
+
         private void PropagateCheckedState(bool newState)
         {
             if (newState && !IsRoot)

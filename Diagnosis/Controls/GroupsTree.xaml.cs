@@ -33,19 +33,24 @@ namespace Diagnosis.Controls
             {
                 q.ToggleCheckedState();
             }
-            if (e.Key == Key.F2)
+            else if (e.Key == Key.Delete)
+            {
+                q.Delete();
+                tree.Focus();
+            }
+            else if (e.Key == Key.F2)
             {
                 q.BeginEdit();
             }
-            if (e.Key == Key.Enter)
+            else if (e.Key == Key.Enter)
             {
                 q.CommitChanges();
             }
-            if (e.Key == Key.Escape)
+            else if (e.Key == Key.Escape)
             {
                 q.RevertChanges();
             }
-            if (e.Key == Key.Insert || e.Key == Key.F && ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control))
+            else if (e.Key == Key.Insert || e.Key == Key.F && ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control))
             {
                 q.BeginSearch();
             }

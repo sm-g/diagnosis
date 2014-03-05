@@ -50,6 +50,11 @@ namespace Diagnosis.Controls
             (DataContext as SymptomViewModel).ToggleChecked();
         }
 
+        public void Delete()
+        {
+            (DataContext as SymptomViewModel).Delete();
+        }
+
         public void ToggleEditState()
         {
             if (!isEditing)

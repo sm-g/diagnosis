@@ -15,6 +15,14 @@ namespace Diagnosis.Controls
         private bool isEditing;
         private bool isSearching;
 
+        private SymptomViewModel vm
+        {
+            get
+            {
+                return DataContext as SymptomViewModel;
+            }
+        }
+
         public TileItem()
         {
             InitializeComponent();
@@ -84,7 +92,11 @@ namespace Diagnosis.Controls
 
             if (e.Key == Key.Space)
             {
-                (DataContext as SymptomViewModel).ToggleChecked();
+                vm.ToggleChecked();
+            }
+            else if (e.Key == Key.Delete)
+            {
+                vm.Delete();
             }
             else if (e.Key == Key.F2)
             {
@@ -112,6 +124,11 @@ namespace Diagnosis.Controls
         private void toggleSearch_Click(object sender, RoutedEventArgs e)
         {
             ToggleSearchState();
+        }
+
+        private void delete_Click(object sender, RoutedEventArgs e)
+        {
+            vm.Delete();
         }
 
         private void BeginSearch()
