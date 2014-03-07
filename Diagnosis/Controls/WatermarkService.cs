@@ -61,13 +61,8 @@ namespace Diagnosis.Controls
             Control control = (Control)d;
             control.Loaded += Control_Loaded;
 
-            if (d is ComboBox || d is TextBox)
-            {
-                control.GotKeyboardFocus += Control_GotKeyboardFocus;
-                control.LostKeyboardFocus += Control_Loaded;
-                control.KeyDown += (sender, args) => RemoveWatermark(sender as Control);
-                control.KeyUp += Control_Loaded;
-            }
+            if (d is TextBox)
+                (control as TextBox).TextChanged += TextBox_TextChanged;
 
             if (d is ItemsControl && !(d is ComboBox))
             {
@@ -80,6 +75,19 @@ namespace Diagnosis.Controls
                 // for ItemsSource property
                 DependencyPropertyDescriptor prop = DependencyPropertyDescriptor.FromProperty(ItemsControl.ItemsSourceProperty, i.GetType());
                 prop.AddValueChanged(i, ItemsSourceChanged);
+            }
+        }
+
+        static void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Control c = (Control)sender;
+            if (ShouldShowWatermark(c))
+            {
+                ShowWatermark(c);
+            }
+            else
+            {
+                RemoveWatermark(c);
             }
         }
 
