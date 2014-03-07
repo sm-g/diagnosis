@@ -201,6 +201,19 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        public void CheckChild(SymptomViewModel symptom, bool inAllChildren)
+        {
+            if (symptom != null)
+            {
+                var query = inAllChildren ? Parent.AllChildren : Parent.Children;
+
+                if (query.SingleOrDefault(child => child == symptom) == null)
+                    Parent.Add(symptom);
+
+                symptom.IsChecked = true;
+            }
+        }
+
         private void PropagateCheckedState(bool newState)
         {
             if (newState && !IsRoot)

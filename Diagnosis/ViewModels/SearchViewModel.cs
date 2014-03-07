@@ -87,19 +87,6 @@ namespace Diagnosis.ViewModels
             Query = "";
         }
 
-        public void CheckSelectedItem()
-        {
-            if (SelectedItem != null)
-            {
-                var query = this.AllChildren ? Parent.AllChildren : Parent.Children;
-
-                if (query.SingleOrDefault(child => child == SelectedItem) == null)
-                    Parent.Add(SelectedItem);
-
-                SelectedItem.IsChecked = true;
-            }
-        }
-
         private void MakeResults(string query)
         {
             Contract.Requires(query != null);

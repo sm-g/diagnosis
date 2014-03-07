@@ -122,7 +122,8 @@ namespace Diagnosis.Controls
         {
             var searchVM = search.DataContext as SearchViewModel;
 
-            searchVM.CheckSelectedItem();
+            (DataContext as SymptomViewModel).CheckChild(searchVM.SelectedItem, searchVM.AllChildren);
+
             searchVM.Clear();
         }
     }
