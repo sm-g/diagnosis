@@ -10,7 +10,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../Styles/TreeStyle.xaml" />
+                <ResourceDictionary Source="../../Styles/TreeStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}" x:Key="fullTreeItemStyle">
