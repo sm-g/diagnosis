@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 namespace Diagnosis.Screens
 {
     /// <summary>
-    /// Interaction logic for Card.xaml
+    /// Interaction logic for Card2.xaml
     /// </summary>
     public partial class Card : UserControl
     {

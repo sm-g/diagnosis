@@ -18,7 +18,7 @@
                   ObjectType="{x:Type local:DataCreator}" />
         </Grid.DataContext>
 
-        <screen:Card2 Margin="10" x:Name="second">
-        </screen:Card2>
+        <screen:Card Margin="10">
+        </screen:Card>
     </Grid>
 </Window>

@@ -4,39 +4,92 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.Controls"
+             xmlns:conv="clr-namespace:Diagnosis.Converters"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="600">
     <UserControl.Resources>
+        <conv:AgeToYearsLabel x:Key="ageLabel" />
+        <Style x:Key="tabHeaderSpecial" TargetType="{x:Type TabItem}">
+            <Setter Property="IsEnabled" Value="False" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Border x:Name="Spacer"
+                                       Width="Auto"
+                                       Height="Auto"
+                                       Padding="0 0 0 0"
+                                       Margin="0 0 0 0"
+                                       BorderBrush="Transparent"
+                                       BorderThickness="0">
+                            <Border
+                                           x:Name="Border"
+                                           Width="Auto"
+                                           Height="Auto"
+                                           BorderBrush="DarkGray"
+                                           BorderThickness="0,0,0,0"
+                                           CornerRadius="6,6,0,0"
+                                           VerticalAlignment="Bottom">
+                                <ContentPresenter
+                                               x:Name="ContentSite"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center"
+                                               ContentSource="Header"
+                                               Margin="8,3,8,3"
+                                               Width="Auto"
+                                               Height="Auto" />
+                            </Border>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        
         <TextBlock FontSize="24">Карточка пациента</TextBlock>
+        
+        <TabControl TabStripPlacement="Left" Padding="0" Grid.Row="1">
+            <TabItem Style="{StaticResource tabHeaderSpecial}">
+                <TabItem.Header>
+                    <StackPanel>
+                        <TextBlock>
+                            <TextBlock Text="{Binding LastName}" />
+                            <TextBlock Text="{Binding FirstName[0]}" />.
+                            <TextBlock Text="{Binding MiddleName[0]}" />.
+                        </TextBlock>
+                        <TextBlock>
+                            <TextBlock Text="{Binding Age}" />
+                            <TextBlock Text="{Binding Age, Converter={StaticResource ageLabel}}"></TextBlock>                            
+                        </TextBlock>
+                       
+                    </StackPanel>
+                </TabItem.Header>
+            </TabItem>
 
-        <Grid Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="5*" />
-                <ColumnDefinition Width="4*" />
-            </Grid.ColumnDefinitions>
+            <TabItem Header="Инфо" IsEnabled="True" IsSelected="True">
+                <StackPanel Margin="10">
+                    <controls:NameEditor />
+                    <controls:SexChooser Margin="0,5" Width="100" HorizontalAlignment="Left" />
+                    <controls:AgePicker Margin="0,5" />
 
-            <StackPanel Margin="0,0,10,0">
-                <controls:NameEditor />
+                    <Separator />
 
-                <controls:SexChooser Margin="0,5" Width="100" HorizontalAlignment="Left" />
-                <controls:AgePicker Margin="0,5" />
-
-                <Separator />
-
-                <controls:PropertiesChooser Margin="0,5" />
-            </StackPanel>
-
-            <controls:FullTree Grid.Column="2" />
-        </Grid>
+                    <controls:PropertiesChooser Margin="0,5" />
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="FullTree">
+                <controls:FullTree />
+            </TabItem>
+            <TabItem Header="GroupsTree">
+                <controls:GroupsTree />
+            </TabItem>
+            <TabItem Header="Плитки">
+                <controls:TileView />
+            </TabItem>
+        </TabControl>
     </Grid>
 </UserControl>
