@@ -49,23 +49,24 @@
             <RowDefinition Height="50" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
-        <TextBlock FontSize="24">Карточка пациента</TextBlock>
-        
-        <TabControl TabStripPlacement="Left" Padding="0" Grid.Row="1">
-            <TabItem Style="{StaticResource tabHeaderSpecial}">
-                <TabItem.Header>
-                    <StackPanel>
-                        <TextBlock Text="{Binding ShortName}" />
-                        <TextBlock>
-                            <TextBlock Text="{Binding Age}" />
-                            <TextBlock Text="{Binding Age, Converter={StaticResource ageLabel}}"></TextBlock>                            
-                        </TextBlock>
-                       
-                    </StackPanel>
-                </TabItem.Header>
-            </TabItem>
 
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock FontSize="24">Карточка пациента</TextBlock>
+            <StackPanel Grid.Column="1">
+                <TextBlock Text="{Binding ShortName}" />
+                <TextBlock>
+                    <TextBlock Text="{Binding Age}" />
+                    <TextBlock Text="{Binding Age, Converter={StaticResource ageLabel}}"></TextBlock>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+
+        <TabControl TabStripPlacement="Left" Padding="0" Grid.Row="1">
             <TabItem Header="Инфо" IsEnabled="True" IsSelected="True">
                 <StackPanel Margin="10">
                     <controls:NameEditor />
