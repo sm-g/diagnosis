@@ -23,6 +23,7 @@ namespace Diagnosis.ViewModels
                 {
                     patient.FirstName = value;
                     OnPropertyChanged(() => FirstName);
+                    OnPropertyChanged(() => ShortName);
                 }
             }
         }
@@ -39,6 +40,7 @@ namespace Diagnosis.ViewModels
                 {
                     patient.MiddleName = value;
                     OnPropertyChanged(() => MiddleName);
+                    OnPropertyChanged(() => ShortName);
                 }
             }
         }
@@ -55,6 +57,7 @@ namespace Diagnosis.ViewModels
                 {
                     patient.LastName = value;
                     OnPropertyChanged(() => LastName);
+                    OnPropertyChanged(() => ShortName);
                 }
             }
         }
@@ -154,6 +157,14 @@ namespace Diagnosis.ViewModels
                     patient.IsMale = value;
                     OnPropertyChanged(() => IsMale);
                 }
+            }
+        }
+
+        public string ShortName
+        {
+            get
+            {
+                return LastName + ' ' + FirstName[0] + ". " + MiddleName[0] + '.';
             }
         }
 

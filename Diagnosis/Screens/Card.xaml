@@ -56,11 +56,7 @@
             <TabItem Style="{StaticResource tabHeaderSpecial}">
                 <TabItem.Header>
                     <StackPanel>
-                        <TextBlock>
-                            <TextBlock Text="{Binding LastName}" />
-                            <TextBlock Text="{Binding FirstName[0]}" />.
-                            <TextBlock Text="{Binding MiddleName[0]}" />.
-                        </TextBlock>
+                        <TextBlock Text="{Binding ShortName}" />
                         <TextBlock>
                             <TextBlock Text="{Binding Age}" />
                             <TextBlock Text="{Binding Age, Converter={StaticResource ageLabel}}"></TextBlock>                            
