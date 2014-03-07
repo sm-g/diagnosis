@@ -204,6 +204,7 @@
     </Compile>
     <Compile Include="Styles\TreeStyle.cs" />
     <Compile Include="ViewModels\AutoCompleteViewModel.cs" />
+    <Compile Include="ViewModels\PatientsListVewModel.cs" />
     <Compile Include="ViewModels\PropertyViewModel.cs" />
     <Compile Include="ViewModels\SymptomExplorerViewModel.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
@@ -274,7 +275,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Screens\Card2.xaml">
+    <Page Include="Screens\Patients.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

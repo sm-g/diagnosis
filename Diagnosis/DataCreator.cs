@@ -6,17 +6,36 @@ namespace Diagnosis
 {
     public static class DataCreator
     {
-        private static PatientViewModel _Patient;
+        private static List<PatientViewModel> _Patients;
 
-        public static PatientViewModel GetPatient()
+        public static List<PatientViewModel> GetPatients()
         {
-            return _Patient ?? (_Patient = new PatientViewModel(new Patient() { })
+            return _Patients ?? (_Patients = new List<PatientViewModel>()
             {
-                FirstName = "Иван",
-                LastName = "Грибоедов",
-                MiddleName = "Константинович",
-                Age = 37,
-                IsMale = true
+                new PatientViewModel(new Patient())
+                {
+                    FirstName = "Иван",
+                    LastName = "Грибоедов",
+                    MiddleName = "Константинович",
+                    Age = 37,
+                    IsMale = true
+                },
+                new PatientViewModel(new Patient())
+                {
+                    FirstName = "Петр",
+                    LastName = "Сидоров",
+                    MiddleName = "Иванович",
+                    Age = 25,
+                    IsMale = true
+                },
+                new PatientViewModel(new Patient())
+                {
+                    FirstName = "Дарья",
+                    LastName = "Смирнова",
+                    MiddleName = "Ивановна",
+                    Age = 30,
+                    IsMale = false
+                },
             });
         }
 

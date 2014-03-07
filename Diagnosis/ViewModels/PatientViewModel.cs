@@ -2,6 +2,7 @@
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -10,6 +11,7 @@ namespace Diagnosis.ViewModels
     public class PatientViewModel : ViewModelBase
     {
         private Patient patient;
+        List<EventMessageHandler> msgHandlers;
 
         public string FirstName
         {
@@ -180,18 +182,21 @@ namespace Diagnosis.ViewModels
             patient = p;
 
             Symptoms = new ObservableCollection<SymptomViewModel>();
-            Subscribe();
+            msgHandlers = Subscribe();
         }
 
-        private void Subscribe()
+        private List<EventMessageHandler> Subscribe()
         {
-            this.Subscribe((int)EventID.SymptomCheckedChanged, (e) =>
-            {
-                var symptom = e.GetValue<SymptomViewModel>(Messages.Symptom);
-                var isChecked = e.GetValue<bool>(Messages.CheckedState);
+            return new List<EventMessageHandler>()
+            { 
+                this.Subscribe((int)EventID.SymptomCheckedChanged, (e) =>
+                {
+                    var symptom = e.GetValue<SymptomViewModel>(Messages.Symptom);
+                    var isChecked = e.GetValue<bool>(Messages.CheckedState);
 
-                OnSymptomCheckedChanged(symptom, isChecked);
-            });
+                    OnSymptomCheckedChanged(symptom, isChecked);
+                })
+            };
         }
 
         private void OnSymptomCheckedChanged(SymptomViewModel symptom, bool isChecked)
@@ -206,6 +211,14 @@ namespace Diagnosis.ViewModels
             }
             Symptoms = new ObservableCollection<SymptomViewModel>(Symptoms.OrderBy(s => s.SortingOrder));
             OnPropertyChanged(() => Symptoms);
+        }
+
+        ~PatientViewModel()
+        {
+            foreach (var h in msgHandlers)
+            {
+                h.Dispose();
+            }
         }
     }
 }

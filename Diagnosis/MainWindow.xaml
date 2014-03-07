@@ -8,17 +8,27 @@
     xmlns:screen="clr-namespace:Diagnosis.Screens"
         Title="MainWindow" Height="450" Width="570">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Grid.DataContext>
-            <ObjectDataProvider
-                  MethodName="GetPatient"
-                  ObjectType="{x:Type local:DataCreator}" />
-        </Grid.DataContext>
+        
 
-        <screen:Card Margin="10">
+        <Menu Grid.ColumnSpan="2">
+            <MenuItem Header="Файл"></MenuItem>
+        </Menu>
+
+
+        <screen:Patients Grid.Row="1" x:Name="patients">
+        </screen:Patients>
+
+        <screen:Card Margin="10" Grid.Row="1" Grid.Column="1" x:Name="card">
         </screen:Card>
+        
     </Grid>
 </Window>

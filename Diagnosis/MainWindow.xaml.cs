@@ -11,6 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using EventAggregator;
+using Diagnosis.ViewModels;
 
 namespace Diagnosis
 {
@@ -22,6 +24,13 @@ namespace Diagnosis
         public MainWindow()
         {
             InitializeComponent();
+
+            patients.DataContext = new Diagnosis.ViewModels.PatientsListVewModel(DataCreator.GetPatients());
+            this.Subscribe((int)EventID.CurrentPatientChanged, (e) =>
+            {
+                var patient = e.GetValue<PatientViewModel>(Messages.Patient);
+                card.DataContext = patient;
+            });
         }
     }
 }
