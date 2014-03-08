@@ -134,7 +134,7 @@ namespace Diagnosis.Controls
         private void BeginSearch()
         {
             isSearching = true;
-            search.DataContext = new SearchViewModel(DataContext as SymptomViewModel);
+            search.DataContext = new SymptomSearchViewModel(DataContext as SymptomViewModel);
             search.Visibility = System.Windows.Visibility.Visible;
             search.Focus();
         }
@@ -147,7 +147,7 @@ namespace Diagnosis.Controls
 
         private void search_KeyUp(object sender, KeyEventArgs e)
         {
-            var searchVM = search.DataContext as SearchViewModel;
+            var searchVM = search.DataContext as SymptomSearchViewModel;
             var symptomVM = DataContext as SymptomViewModel;
             e.Handled = true;
 
@@ -168,7 +168,7 @@ namespace Diagnosis.Controls
 
         private void OnResultItemSelected()
         {
-            var searchVM = search.DataContext as SearchViewModel;
+            var searchVM = search.DataContext as SymptomSearchViewModel;
 
             vm.CheckChild(searchVM.SelectedItem, searchVM.AllChildren);
             searchVM.Clear();

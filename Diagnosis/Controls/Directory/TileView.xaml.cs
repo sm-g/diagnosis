@@ -20,7 +20,7 @@ namespace Diagnosis.Controls
 
         void BeginSearch()
         {
-            search.DataContext = new SearchViewModel((explorer.DataContext as SymptomExplorerViewModel).CurrentSymptom);
+            search.DataContext = new SymptomSearchViewModel((explorer.DataContext as SymptomExplorerViewModel).CurrentSymptom);
             search.Visibility = System.Windows.Visibility.Visible;
             search.Focus();
         }
@@ -56,7 +56,7 @@ namespace Diagnosis.Controls
 
         private void OnResultItemSelected()
         {
-            var searchVM = search.DataContext as SearchViewModel;
+            var searchVM = search.DataContext as SymptomSearchViewModel;
 
             (explorer.DataContext as SymptomExplorerViewModel).CurrentSymptom.CheckChild(searchVM.SelectedItem, searchVM.AllChildren);
             searchVM.Clear();

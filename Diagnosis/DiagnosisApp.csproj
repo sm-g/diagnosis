@@ -204,6 +204,8 @@
     </Compile>
     <Compile Include="Styles\TreeStyle.cs" />
     <Compile Include="ViewModels\AutoCompleteViewModel.cs" />
+    <Compile Include="ViewModels\ISearchable.cs" />
+    <Compile Include="ViewModels\ISearchViewModel.cs" />
     <Compile Include="ViewModels\PatientsListVewModel.cs" />
     <Compile Include="ViewModels\PropertyViewModel.cs" />
     <Compile Include="ViewModels\SymptomExplorerViewModel.cs" />

@@ -7,7 +7,7 @@ namespace Diagnosis.ViewModels
     public class AutoCompleteViewModel : ViewModelBase
     {
         private List<SymptomViewModel> symptoms;
-        private SearchViewModel search;
+        private SymptomSearchViewModel search;
 
         private string _fullSymptom = "";
         private bool _isSymptomCompleted;
@@ -186,9 +186,9 @@ namespace Diagnosis.ViewModels
                 i--;
             }
             if (i < 0)
-                search = new SearchViewModel(DataCreator.Symptoms[0], true, true, false); // groups and cheked, but not all children
+                search = new SymptomSearchViewModel(DataCreator.Symptoms[0], true, true, false); // groups and cheked, but not all children
             else
-                search = new SearchViewModel(symptoms[i], true, true, false);
+                search = new SymptomSearchViewModel(symptoms[i], true, true, false);
 
             if (symptomStarted)
             {

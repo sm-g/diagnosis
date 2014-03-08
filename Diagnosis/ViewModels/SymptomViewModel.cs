@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Diagnosis.ViewModels
 {
-    public class SymptomViewModel : ViewModelBase
+    public class SymptomViewModel : ViewModelBase, ISearchable
     {
         private SymptomViewModel _parent;
         private bool _isChecked;
@@ -29,6 +29,14 @@ namespace Diagnosis.ViewModels
                     Symptom.Title = value;
                     OnPropertyChanged(() => Name);
                 }
+            }
+        }
+
+        public string Representation
+        {
+            get
+            {
+                return Name;
             }
         }
 
@@ -162,6 +170,12 @@ namespace Diagnosis.ViewModels
             Contract.Requires(title.Length > 0);
 
             Symptom = new Symptom() { Title = title };
+            Children = new ObservableCollection<SymptomViewModel>();
+        }
+
+        internal SymptomViewModel()
+        {
+            Symptom = new Symptom();
             Children = new ObservableCollection<SymptomViewModel>();
         }
 

@@ -17,11 +17,11 @@ namespace Diagnosis.Controls
         int selectedIndex = -1;
         bool selectionChanged;
 
-        SearchViewModel vm
+        SymptomSearchViewModel vm
         {
             get
             {
-                return DataContext as SearchViewModel;
+                return DataContext as SymptomSearchViewModel;
             }
         }
 

@@ -1,25 +1,73 @@
 ﻿using Diagnosis.Models;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
-    public class SearchViewModel : ViewModelBase
+    public class SymptomSearchViewModel : SearchViewModel<SymptomViewModel>
+    {
+        public SymptomViewModel Parent { get; private set; }
+        public bool WithGroups { get; set; }
+        public bool WithChecked { get; set; }
+        public bool AllChildren { get; set; }
+
+        protected override void MakeResults(string query)
+        {
+            base.MakeResults(query);
+            Results = new ObservableCollection<SymptomViewModel>(
+                AllChildren
+                ?
+                Parent.AllChildren.Where(c => c.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)
+                    && (WithChecked || !c.IsChecked)
+                    && (WithGroups || !c.IsGroup))
+                :
+                Parent.Children.Where(c => c.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)
+                    && (WithChecked || !c.IsChecked)
+                    && (WithGroups || !c.IsGroup)));
+
+            if (!Results.Any(c => c.Name.Equals(query, StringComparison.InvariantCultureIgnoreCase)) &&
+                query != string.Empty)
+            {
+                // добавляем запрос к результатам
+                Results.Add(new SymptomViewModel(new Symptom()
+                {
+                    Parent = Parent.Symptom,
+                    Title = query
+                }));
+            }
+
+            OnPropertyChanged(() => Results);
+            OnPropertyChanged(() => ResultsCount);
+
+            if (ResultsCount > 0)
+                SelectedIndex = 0;
+        }
+
+        public SymptomSearchViewModel(SymptomViewModel parent, bool withGroups = false, bool withChecked = false, bool allChildren = true)
+            : base()
+        {
+            Contract.Requires(parent != null);
+
+            Parent = parent;
+            WithGroups = withGroups;
+            WithChecked = withChecked;
+            AllChildren = allChildren;
+
+            Clear();
+        }
+    }
+
+    public abstract class SearchViewModel<T> : ViewModelBase, ISearchViewModel<T> where T : class, ISearchable
     {
         private string _query;
         private ICommand _clear;
         private int _selectedIndex = -1;
 
-        public ObservableCollection<SymptomViewModel> Results { get; private set; }
-
-        public SymptomViewModel Parent { get; private set; }
-
-        public bool WithGroups { get; set; }
-        public bool WithChecked { get; set; }
-        public bool AllChildren { get; set; }
+        public ObservableCollection<T> Results { get; protected set; }
 
         public string Query
         {
@@ -38,7 +86,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public SymptomViewModel SelectedItem
+        public T SelectedItem
         {
             get
             {
@@ -87,49 +135,13 @@ namespace Diagnosis.ViewModels
             Query = "";
         }
 
-        private void MakeResults(string query)
+        protected virtual void MakeResults(string query)
         {
             Contract.Requires(query != null);
-
-            Results = new ObservableCollection<SymptomViewModel>(
-                AllChildren
-                ?
-                Parent.AllChildren.Where(c => c.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)
-                    && (WithChecked || !c.IsChecked)
-                    && (WithGroups || !c.IsGroup))
-                :
-                Parent.Children.Where(c => c.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)
-                    && (WithChecked || !c.IsChecked)
-                    && (WithGroups || !c.IsGroup)));
-
-            if (!Results.Any(c => c.Name.Equals(query, StringComparison.InvariantCultureIgnoreCase)) &&
-                query != string.Empty)
-            {
-                // добавляем запрос к результатам
-                Results.Add(new SymptomViewModel(new Symptom()
-                {
-                    Parent = Parent.Symptom,
-                    Title = query
-                }));
-            }
-
-            OnPropertyChanged(() => Results);
-            OnPropertyChanged(() => ResultsCount);
-
-            if (ResultsCount > 0)
-                SelectedIndex = 0;
         }
 
-        public SearchViewModel(SymptomViewModel parent, bool withGroups = false, bool withChecked = false, bool allChildren = true)
+        public SearchViewModel()
         {
-            Contract.Requires(parent != null);
-
-            Results = new ObservableCollection<SymptomViewModel>();
-            Parent = parent;
-            WithGroups = withGroups;
-            WithChecked = withChecked;
-            AllChildren = allChildren;
-            Clear();
         }
     }
 }
