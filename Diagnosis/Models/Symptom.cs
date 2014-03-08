@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
@@ -13,6 +14,8 @@ namespace Diagnosis.Models
 
         public Symptom(string title)
         {
+            Contract.Requires(title != null);
+            Contract.Requires(title.Length > 0);
             Title = title;
         }
 

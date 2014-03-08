@@ -11,6 +11,7 @@ namespace Diagnosis.ViewModels
     public class PatientsListVewModel : ViewModelBase
     {
         private int _curPatientIndex;
+        PatientSearchViewModel _search;
 
         public ObservableCollection<PatientViewModel> Patients { get; private set; }
 
@@ -42,6 +43,24 @@ namespace Diagnosis.ViewModels
                     this.Send((int)EventID.CurrentPatientChanged, new CurrentPatientChangedParams(CurrentPatient).Params);
                 }
             }
+        }
+        public PatientSearchViewModel Search
+        {
+            get
+            {
+                if (_search == null)
+                {
+                    _search = new PatientSearchViewModel(this);
+                    _search.ResultItemSelected += _search_ResultItemSelected;
+                }
+                return _search;
+            }
+        }
+
+        void _search_ResultItemSelected(object sender, EventArgs e)
+        {
+            CurrentPatientIndex = Search.SelectedIndex;
+            Search.Clear();
         }
 
         public PatientsListVewModel(IEnumerable<PatientViewModel> patients)

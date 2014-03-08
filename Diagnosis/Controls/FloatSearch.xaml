@@ -9,6 +9,7 @@
              d:DesignHeight="100" d:DesignWidth="300"
              x:Name="floatSearch"
              GotFocus="UserControl_GotFocus"
+             KeyUp="floatSearch_KeyUp"
              h:EnhancedFocusScope.IsEnhancedFocusScope="True">
     <UserControl.Resources>
         <Converters:CountToVisability x:Key="CountToVisability" />
@@ -38,7 +39,7 @@
         <ListView x:Name="results"
 			ItemsSource="{Binding Results}"
 			SelectionChanged="results_SelectionChanged"
-                  MouseUp="results_MouseUp"
+            MouseUp="results_MouseUp"
 			SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
 			IsTabStop="True"
 			Visibility="{Binding ResultsCount, Converter={StaticResource CountToVisability}, Mode=OneWay}" 
@@ -47,7 +48,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <DockPanel>
-                        <TextBlock Text="{Binding Name}" />
+                        <TextBlock Text="{Binding Representation}" />
                     </DockPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

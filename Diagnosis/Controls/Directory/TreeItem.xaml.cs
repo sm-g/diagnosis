@@ -19,8 +19,6 @@ namespace Diagnosis.Controls
         {
             InitializeComponent();
             isReady = true;
-
-            search.ResultItemClicked += search_ResultItemClicked;
         }
 
         public void BeginEdit()
@@ -39,7 +37,6 @@ namespace Diagnosis.Controls
             if (isReady)
             {
                 isReady = false;
-                search.DataContext = new SymptomSearchViewModel(this.DataContext as SymptomViewModel);
                 search.Visibility = System.Windows.Visibility.Visible;
                 search.Focus();
             }
@@ -107,24 +104,6 @@ namespace Diagnosis.Controls
             {
                 EndSearch();
             }
-            if (e.Key == Key.Enter)
-            {
-                OnResultItemSelected();
-            }
-        }
-
-        private void search_ResultItemClicked(object sender, System.EventArgs e)
-        {
-            OnResultItemSelected();
-        }
-
-        private void OnResultItemSelected()
-        {
-            var searchVM = search.DataContext as SymptomSearchViewModel;
-
-            (DataContext as SymptomViewModel).CheckChild(searchVM.SelectedItem, searchVM.AllChildren);
-
-            searchVM.Clear();
         }
     }
 }

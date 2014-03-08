@@ -14,14 +14,12 @@ namespace Diagnosis.Controls
         public TileView()
         {
             InitializeComponent();
-
-            search.ResultItemClicked += search_ResultItemClicked;
         }
 
         void BeginSearch()
         {
-            search.DataContext = new SymptomSearchViewModel((explorer.DataContext as SymptomExplorerViewModel).CurrentSymptom);
             search.Visibility = System.Windows.Visibility.Visible;
+
             search.Focus();
         }
 
@@ -43,23 +41,6 @@ namespace Diagnosis.Controls
             {
                 EndSearch();
             }
-            if (e.Key == Key.Enter)
-            {
-                OnResultItemSelected();
-            }
-        }
-
-        private void search_ResultItemClicked(object sender, System.EventArgs e)
-        {
-            OnResultItemSelected();
-        }
-
-        private void OnResultItemSelected()
-        {
-            var searchVM = search.DataContext as SymptomSearchViewModel;
-
-            (explorer.DataContext as SymptomExplorerViewModel).CurrentSymptom.CheckChild(searchVM.SelectedItem, searchVM.AllChildren);
-            searchVM.Clear();
         }
 
         private void explorer_KeyUp(object sender, KeyEventArgs e)

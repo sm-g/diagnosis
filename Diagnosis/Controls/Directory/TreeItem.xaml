@@ -54,6 +54,7 @@
 			Grid.Column="1"
 			Visibility="Collapsed"
 			KeyUp="search_KeyUp"
+                              DataContext="{Binding Search}"
 
  />
     </Grid>

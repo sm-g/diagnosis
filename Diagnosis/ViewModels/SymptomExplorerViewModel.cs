@@ -41,6 +41,8 @@ namespace Diagnosis.ViewModels
                     _current = value;
 
                     Symptoms = _current.Children;
+                    Search = new SymptomSearchViewModel(_current);
+
                     OnPropertyChanged(() => CurrentSymptom);
                     OnPropertyChanged(() => Symptoms);
 
@@ -94,6 +96,35 @@ namespace Diagnosis.ViewModels
                                           p => p != null && !p.IsTerminal
                                           ));
             }
+        }
+
+
+        private SymptomSearchViewModel _search;
+        public SymptomSearchViewModel Search
+        {
+            get
+            {
+                return _search;
+            }
+            set
+            {
+                if (_search != value)
+                {
+                    if (_search != null)
+                    {
+                        _search.ResultItemSelected -= _search_ResultItemSelected;
+                    }
+                    _search = value;
+                    _search.ResultItemSelected += _search_ResultItemSelected;
+                    OnPropertyChanged(() => Search);
+                }
+            }
+        }
+
+        void _search_ResultItemSelected(object sender, System.EventArgs e)
+        {
+            CurrentSymptom.CheckChild(Search.SelectedItem, Search.AllChildren);
+            Search.Clear();
         }
     }
 }

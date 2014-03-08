@@ -26,8 +26,6 @@ namespace Diagnosis.Controls
         public TileItem()
         {
             InitializeComponent();
-
-            search.ResultItemClicked += search_ResultItemClicked;
         }
 
         public void ToggleEditState()
@@ -134,7 +132,6 @@ namespace Diagnosis.Controls
         private void BeginSearch()
         {
             isSearching = true;
-            search.DataContext = new SymptomSearchViewModel(DataContext as SymptomViewModel);
             search.Visibility = System.Windows.Visibility.Visible;
             search.Focus();
         }
@@ -147,31 +144,12 @@ namespace Diagnosis.Controls
 
         private void search_KeyUp(object sender, KeyEventArgs e)
         {
-            var searchVM = search.DataContext as SymptomSearchViewModel;
-            var symptomVM = DataContext as SymptomViewModel;
             e.Handled = true;
 
             if (e.Key == Key.Escape)
             {
                 EndSearch();
             }
-            if (e.Key == Key.Enter)
-            {
-                OnResultItemSelected();
-            }
-        }
-
-        private void search_ResultItemClicked(object sender, System.EventArgs e)
-        {
-            OnResultItemSelected();
-        }
-
-        private void OnResultItemSelected()
-        {
-            var searchVM = search.DataContext as SymptomSearchViewModel;
-
-            vm.CheckChild(searchVM.SelectedItem, searchVM.AllChildren);
-            searchVM.Clear();
         }
     }
 }

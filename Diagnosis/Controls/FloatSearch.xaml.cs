@@ -17,16 +17,6 @@ namespace Diagnosis.Controls
         int selectedIndex = -1;
         bool selectionChanged;
 
-        SymptomSearchViewModel vm
-        {
-            get
-            {
-                return DataContext as SymptomSearchViewModel;
-            }
-        }
-
-        public event EventHandler ResultItemClicked;
-
         public FloatSearch()
         {
             InitializeComponent();
@@ -63,14 +53,26 @@ namespace Diagnosis.Controls
         {
             if (!selectionChanged || selectedIndex == results.SelectedIndex)
             {
-                var h = ResultItemClicked;
-                if (h != null)
-                {
-                    h(sender, new EventArgs());
-                }
+                RaiseResultItemSelected();
             }
             selectedIndex = -1;
             selectionChanged = false;
+        }
+
+        private void floatSearch_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                RaiseResultItemSelected();
+            }
+        }
+
+        private void RaiseResultItemSelected()
+        {
+            if (DataContext is SearchViewModel<SymptomViewModel>)
+                (DataContext as SearchViewModel<SymptomViewModel>).RaiseResultItemSelected();
+            else if (DataContext is SearchViewModel<PatientViewModel>)
+                (DataContext as SearchViewModel<PatientViewModel>).RaiseResultItemSelected();
         }
     }
 }

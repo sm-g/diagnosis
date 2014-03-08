@@ -53,6 +53,7 @@
                                 Grid.Row="1"
                                 Visibility="Collapsed"
                                 KeyUp="search_KeyUp"
+                                  DataContext="{Binding Search}"
 
  />
             <ScrollViewer x:Name="list" 

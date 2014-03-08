@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
-    public class PatientViewModel : ViewModelBase
+    public class PatientViewModel : ViewModelBase, ISearchable
     {
         private Patient patient;
         List<EventMessageHandler> msgHandlers;
@@ -63,7 +63,6 @@ namespace Diagnosis.ViewModels
                 }
             }
         }
-
         public int Age
         {
             get
@@ -168,6 +167,11 @@ namespace Diagnosis.ViewModels
             {
                 return LastName + ' ' + FirstName[0] + ". " + MiddleName[0] + '.';
             }
+        }
+
+        public string Representation
+        {
+            get { return ShortName; }
         }
 
         public ObservableCollection<SymptomViewModel> Symptoms

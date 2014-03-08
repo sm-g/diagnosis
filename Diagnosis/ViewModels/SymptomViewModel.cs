@@ -12,6 +12,8 @@ namespace Diagnosis.ViewModels
         private SymptomViewModel _parent;
         private bool _isChecked;
 
+        private SymptomSearchViewModel _search;
+
         public string SortingOrder { get; private set; }
 
         internal Symptom Symptom { get; private set; }
@@ -157,6 +159,18 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        public SymptomSearchViewModel Search
+        {
+            get
+            {
+                if (_search == null)
+                {
+                    _search = new SymptomSearchViewModel(this);
+                    _search.ResultItemSelected += _search_ResultItemSelected;
+                }
+                return _search;
+            }
+        }
         public SymptomViewModel(Symptom s)
         {
             Contract.Requires(s != null);
@@ -165,18 +179,13 @@ namespace Diagnosis.ViewModels
         }
 
         public SymptomViewModel(string title)
+            : this(new Symptom() { Title = title })
         {
-            Contract.Requires(title != null);
-            Contract.Requires(title.Length > 0);
-
-            Symptom = new Symptom() { Title = title };
-            Children = new ObservableCollection<SymptomViewModel>();
         }
 
         internal SymptomViewModel()
+            : this(new Symptom())
         {
-            Symptom = new Symptom();
-            Children = new ObservableCollection<SymptomViewModel>();
         }
 
         public void ToggleChecked()
@@ -219,10 +228,10 @@ namespace Diagnosis.ViewModels
         {
             if (symptom != null)
             {
-                var query = inAllChildren ? Parent.AllChildren : Parent.Children;
+                var query = inAllChildren ? AllChildren : Children;
 
                 if (query.SingleOrDefault(child => child == symptom) == null)
-                    Parent.Add(symptom);
+                    Add(symptom);
 
                 symptom.IsChecked = true;
             }
@@ -264,6 +273,12 @@ namespace Diagnosis.ViewModels
             OnPropertyChanged(() => TerminalChildren);
             OnPropertyChanged(() => NonTerminalChildren);
             OnPropertyChanged(() => IsTerminal);
+        }
+
+        void _search_ResultItemSelected(object sender, System.EventArgs e)
+        {
+            CheckChild(Search.SelectedItem, Search.AllChildren);
+            Search.Clear();
         }
 
         internal void Initialize()

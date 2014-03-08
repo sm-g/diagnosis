@@ -173,8 +173,9 @@ namespace Diagnosis.ViewModels
 
         private void AddSymptom()
         {
+            if (symptoms.Count > 0)
+                symptoms[symptoms.Count - 1].CheckChild(search.SelectedItem, search.AllChildren);
             symptoms.Add(search.SelectedItem);
-            search.SelectedItem.IsChecked = true;
             IsSymptomCompleted = true;
         }
 
@@ -186,7 +187,7 @@ namespace Diagnosis.ViewModels
                 i--;
             }
             if (i < 0)
-                search = new SymptomSearchViewModel(DataCreator.Symptoms[0], true, true, false); // groups and cheked, but not all children
+                search = new SymptomSearchViewModel(DataCreator.Symptoms[0], true, true, false); // groups and cheсked, but not all children
             else
                 search = new SymptomSearchViewModel(symptoms[i], true, true, false);
 
