@@ -9,15 +9,20 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <controls:FloatSearch x:Name="search" DataContext="{Binding Search}" />
+        <TextBlock FontSize="24">Пациенты</TextBlock>
+        
+        <controls:FloatSearch x:Name="search" 
+                              DataContext="{Binding Search}"
+                              Grid.Row="1"/>
         
         <ListBox x:Name="patients"
                  ItemsSource="{Binding Patients}"
-                 SelectedIndex="{Binding CurrentPatientIndex}" 
-                 Grid.Row="1">
+                 SelectedItem="{Binding CurrentPatient}"
+                 Grid.Row="2">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <DockPanel>

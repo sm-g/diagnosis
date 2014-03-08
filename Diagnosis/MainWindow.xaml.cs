@@ -25,12 +25,13 @@ namespace Diagnosis
         {
             InitializeComponent();
 
-            patients.DataContext = new Diagnosis.ViewModels.PatientsListVewModel(DataCreator.GetPatients());
             this.Subscribe((int)EventID.CurrentPatientChanged, (e) =>
             {
                 var patient = e.GetValue<PatientViewModel>(Messages.Patient);
                 card.DataContext = patient;
             });
+
+            patients.DataContext = new Diagnosis.ViewModels.PatientsListVewModel(DataCreator.GetPatients());
         }
     }
 }

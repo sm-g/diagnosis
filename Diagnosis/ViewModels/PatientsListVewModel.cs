@@ -1,17 +1,15 @@
-﻿using Diagnosis.Models;
-using EventAggregator;
+﻿using EventAggregator;
 using System;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
     public class PatientsListVewModel : ViewModelBase
     {
-        private int _curPatientIndex;
-        PatientSearchViewModel _search;
+        private PatientSearchViewModel _search;
+        private PatientViewModel _current;
 
         public ObservableCollection<PatientViewModel> Patients { get; private set; }
 
@@ -19,31 +17,20 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                if (CurrentPatientIndex >= 0)
-                {
-                    return Patients[CurrentPatientIndex];
-                }
-                return null;
-            }
-        }
-
-        public int CurrentPatientIndex
-        {
-            get
-            {
-                return _curPatientIndex;
+                return _current;
             }
             set
             {
-                if (_curPatientIndex != value)
+                if (_current != value)
                 {
-                    _curPatientIndex = value;
-                    OnPropertyChanged(() => CurrentPatientIndex);
+                    _current = value;
 
+                    OnPropertyChanged(() => CurrentPatient);
                     this.Send((int)EventID.CurrentPatientChanged, new CurrentPatientChangedParams(CurrentPatient).Params);
                 }
             }
         }
+
         public PatientSearchViewModel Search
         {
             get
@@ -57,9 +44,9 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        void _search_ResultItemSelected(object sender, EventArgs e)
+        private void _search_ResultItemSelected(object sender, EventArgs e)
         {
-            CurrentPatientIndex = Search.SelectedIndex;
+            CurrentPatient = Search.SelectedItem;
             Search.Clear();
         }
 
@@ -68,6 +55,10 @@ namespace Diagnosis.ViewModels
             Contract.Requires(patients != null);
 
             Patients = new ObservableCollection<PatientViewModel>(patients);
+            if (Patients.Count > 0)
+            {
+                CurrentPatient = Patients[0];
+            }
         }
     }
 }
