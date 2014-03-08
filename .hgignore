@@ -5,3 +5,5 @@ syntax: glob
 Debug/
 Release/
 CodeAnalyst/
+Thumbs.db
+*.laccdb
