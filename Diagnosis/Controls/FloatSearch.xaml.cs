@@ -1,10 +1,7 @@
 ﻿using Diagnosis.Helpers;
 using Diagnosis.ViewModels;
-using System;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Diagnosis.Controls
@@ -14,8 +11,8 @@ namespace Diagnosis.Controls
     /// </summary>
     public partial class FloatSearch : UserControl
     {
-        int selectedIndex = -1;
-        bool selectionChanged;
+        private int selectedIndex = -1;
+        private bool selectionChanged;
 
         public FloatSearch()
         {
@@ -27,6 +24,20 @@ namespace Diagnosis.Controls
             EnhancedFocusScope.SetFocusOnActiveElementInScope(floatSearch);
         }
 
+        private void floatSearch_KeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Enter:
+                    OnResultItemSelected();
+                    break;
+
+                case Key.Escape:
+                    HidePopup();
+                    break;
+            }
+        }
+
         private void results_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (selectedIndex == -1)
@@ -35,6 +46,11 @@ namespace Diagnosis.Controls
             }
             selectionChanged = true;
             results.ScrollIntoView(results.SelectedItem);
+        }
+
+        private void input_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ShowResultsPopup();
         }
 
         private void input_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -49,26 +65,47 @@ namespace Diagnosis.Controls
             }
         }
 
+        private void input_GotFocus(object sender, RoutedEventArgs e)
+        {
+            ShowResultsPopup();
+        }
+
+        private void input_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (FocusChecker.IsFocusOutsideDepObject(floatSearch) && FocusChecker.IsFocusOutsideDepObject(popup.Child))
+            {
+                HidePopup();
+            }
+        }
+
+        private void input_GotMouseCapture(object sender, MouseEventArgs e)
+        {
+            ShowResultsPopup();
+        }
+
         private void results_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (!selectionChanged || selectedIndex == results.SelectedIndex)
             {
-                RaiseResultItemSelected();
+                OnResultItemSelected();
             }
             selectedIndex = -1;
             selectionChanged = false;
         }
 
-        private void floatSearch_KeyUp(object sender, KeyEventArgs e)
+        private void ShowResultsPopup()
         {
-            if (e.Key == Key.Enter)
-            {
-                RaiseResultItemSelected();
-            }
+            popup.IsOpen = true;
         }
 
-        private void RaiseResultItemSelected()
+        private void HidePopup()
         {
+            popup.IsOpen = false;
+        }
+
+        private void OnResultItemSelected()
+        {
+            HidePopup();
             if (DataContext is SearchViewModel<SymptomViewModel>)
                 (DataContext as SearchViewModel<SymptomViewModel>).RaiseResultItemSelected();
             else if (DataContext is SearchViewModel<PatientViewModel>)

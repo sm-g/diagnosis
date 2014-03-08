@@ -27,7 +27,8 @@
                         PreviewKeyDown="input_PreviewKeyDown"
                         GotFocus="input_GotFocus"
                         GotMouseCapture="input_GotMouseCapture"
-                        LostFocus="input_LostFocus" Grid.Row="1"
+                        LostFocus="input_LostFocus" 
+                     Grid.Row="1"
  />
 
             <Popup x:Name="popup" Height="Auto" Width="auto"

@@ -3,7 +3,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:h="clr-namespace:Diagnosis.Helpers"
-             xmlns:Converters="clr-namespace:Diagnosis.Converters" 
+             xmlns:Converters="clr-namespace:Diagnosis.Converters"
              x:Class="Diagnosis.Controls.FloatSearch"
              mc:Ignorable="d"
              d:DesignHeight="100" d:DesignWidth="300"
@@ -19,8 +19,8 @@
     </d:DataContext>
     <Grid MaxHeight="100">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -29,29 +29,36 @@
             </Grid.ColumnDefinitions>
             <TextBox x:Name="input"
                      Text="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     TextChanged="input_TextChanged"
                      PreviewKeyDown="input_PreviewKeyDown"
+                     GotFocus="input_GotFocus"
+                     GotMouseCapture="input_GotMouseCapture"
+                     LostFocus="input_LostFocus" 
  />
             <Button Grid.Column="1"
                     Content="×"
                     Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"
                     Command="{Binding ClearCommand}" />
         </Grid>
-        <ListView x:Name="results"
-			ItemsSource="{Binding Results}"
-			SelectionChanged="results_SelectionChanged"
-            MouseUp="results_MouseUp"
-			SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
-			IsTabStop="True"
-			Visibility="{Binding ResultsCount, Converter={StaticResource CountToVisability}, Mode=OneWay}" 
+        <Popup x:Name="popup"
+               PlacementTarget="{Binding ElementName=input, Mode=OneWay}" >
+            <ListView x:Name="results"
+			    ItemsSource="{Binding Results}"
+			    SelectionChanged="results_SelectionChanged"
+                MouseUp="results_MouseUp"
+			    SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
+			    IsTabStop="True"
+			    Visibility="{Binding ResultsCount, Converter={StaticResource CountToVisability}, Mode=OneWay}"
                   Grid.Row="1"
 >
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <DockPanel>
-                        <TextBlock Text="{Binding Representation}" />
-                    </DockPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel>
+                            <TextBlock Text="{Binding Representation}" />
+                        </DockPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Popup>
     </Grid>
 </UserControl>
