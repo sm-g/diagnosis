@@ -7,11 +7,11 @@ namespace Diagnosis.Models
 {
     public class Property
     {
-        public string Name { get; set; }
+        public string Title { get; set; }
 
-        public Property(string name)
+        public Property(string title)
         {
-            Name = name;
+            Title = title;
         }
     }
 }

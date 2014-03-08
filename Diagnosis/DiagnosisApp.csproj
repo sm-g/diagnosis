@@ -187,7 +187,7 @@
     <Compile Include="Helpers\FocusChecker.cs" />
     <Compile Include="Helpers\TreeViewItemExtenstions.cs" />
     <Compile Include="Messages.cs" />
-    <Compile Include="Models\Education.cs" />
+    <Compile Include="Models\Diagnosis.cs" />
     <Compile Include="Models\JournalEntry.cs" />
     <Compile Include="Models\Patient.cs" />
     <Compile Include="Models\Property.cs" />

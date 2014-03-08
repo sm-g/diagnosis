@@ -13,7 +13,7 @@ namespace Diagnosis.Models
         public DateTime BirthDate { get; set; }
         public bool IsMale { get; set; }
         public bool OnlyBirthYear { get; set; }
-        public Education Education { get; set; }
+        public int SNILS { get; set; }
 
         public Patient()
         {

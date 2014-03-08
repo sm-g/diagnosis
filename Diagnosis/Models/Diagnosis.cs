@@ -6,18 +6,19 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class Symptom
+    public class Diagnosis
     {
         public string Title { get; set; }
-        public int Level { get; set; }
+        public string Code { get; set; }
+        public Diagnosis Parent { get; set; }
 
-        public Symptom(string title)
+        public Diagnosis(string title)
         {
             Contract.Requires(title != null);
             Contract.Requires(title.Length > 0);
             Title = title;
         }
 
-        public Symptom() { }
+        public Diagnosis() { }
     }
 }

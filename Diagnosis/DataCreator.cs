@@ -68,8 +68,7 @@ namespace Diagnosis
 
             var throat = new SymptomViewModel(new Symptom()
                 {
-                    Title = "горло",
-                    IsGroup = true
+                    Title = "горло"
                 });
             throat.Add(new SymptomViewModel("боль в горле")
                     .Add(new Symptom("при глотании"))
@@ -78,21 +77,18 @@ namespace Diagnosis
 
             SymptomViewModel root = (new SymptomViewModel(new Symptom()
             {
-                Title = "root",
-                IsGroup = true
+                Title = "root"
             })).Add(
                     (new SymptomViewModel(new Symptom()
                     {
-                        Title = "голова",
-                        IsGroup = true
+                        Title = "голова"
                     })).Add(throat)
                         .Add(teeth)
                         .Add(new SymptomViewModel(new Symptom("уши")))
                 ).Add(
                 new SymptomViewModel(new Symptom()
                 {
-                    Title = "ноги",
-                    IsGroup = true
+                    Title = "ноги"
                 }));
 
             root.Initialize();

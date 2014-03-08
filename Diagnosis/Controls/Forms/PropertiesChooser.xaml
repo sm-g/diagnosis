@@ -22,7 +22,7 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <DockPanel Margin="0,5">
-                        <TextBlock Text="{Binding Name}" Margin="5,0" Width="150" />
+                        <TextBlock Text="{Binding Title}" Margin="5,0" Width="150" />
                         <ComboBox ItemsSource="{Binding Values}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
