@@ -127,7 +127,8 @@ namespace Diagnosis.ViewModels
 
         protected virtual bool CheckConditions(T obj)
         {
-            return true;
+            return (WithChecked || !obj.IsChecked)
+                   && (WithNonCheckable || !obj.IsNonCheckable);
         }
 
         protected abstract T Add(string query);

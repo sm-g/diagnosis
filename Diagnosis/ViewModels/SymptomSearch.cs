@@ -39,8 +39,7 @@ namespace Diagnosis.ViewModels
 
         protected override bool CheckConditions(SymptomViewModel obj)
         {
-            return (WithChecked || !obj.IsChecked)
-                   && (WithNonCheckable || !obj.IsNonCheckable)
+            return base.CheckConditions(obj)
                    && (UpperLevel <= obj.Level);
         }
     }
