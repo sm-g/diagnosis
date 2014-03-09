@@ -106,10 +106,10 @@ namespace Diagnosis.Controls
         private void OnResultItemSelected()
         {
             HidePopup();
-            if (DataContext is SearchViewModel<SymptomViewModel>)
-                (DataContext as SearchViewModel<SymptomViewModel>).RaiseResultItemSelected();
-            else if (DataContext is SearchViewModel<PatientViewModel>)
-                (DataContext as SearchViewModel<PatientViewModel>).RaiseResultItemSelected();
+            if (DataContext is SearchBase<SymptomViewModel>)
+                (DataContext as SearchBase<SymptomViewModel>).RaiseResultItemSelected();
+            else if (DataContext is SearchBase<PatientViewModel>)
+                (DataContext as SearchBase<PatientViewModel>).RaiseResultItemSelected();
         }
     }
 }

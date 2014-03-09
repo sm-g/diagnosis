@@ -10,8 +10,8 @@
         
         <vm:PatientViewModel x:Key="patientVM" />
         <vm:SymptomViewModel x:Key="symptomVM" />
-        <vm:SymptomSearchViewModel x:Key="searchVM" />
-        <vm:SymptomExplorerViewModel x:Key="symptomExplorerVM" />
+        <vm:SymptomSearch x:Key="searchVM" />
+        <vm:SymptomExplorer x:Key="symptomExplorerVM" />
 
         <Style TargetType="TextBlock" x:Key="watermark">
             <Setter Property="VerticalAlignment" Value="Center"/>

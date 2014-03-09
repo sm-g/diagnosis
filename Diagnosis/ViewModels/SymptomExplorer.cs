@@ -7,13 +7,13 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
-    public class SymptomExplorerViewModel : ViewModelBase
+    public class SymptomExplorer : ViewModelBase
     {
         private RelayCommand<SymptomViewModel> _clickItem;
         private SymptomViewModel _current;
         private RelayCommand _goUp;
 
-        public SymptomExplorerViewModel(List<SymptomViewModel> symptoms)
+        public SymptomExplorer(List<SymptomViewModel> symptoms)
         {
             Contract.Requires(symptoms != null);
 
@@ -41,7 +41,7 @@ namespace Diagnosis.ViewModels
                     _current = value;
 
                     Symptoms = _current.Children;
-                    Search = new SymptomSearchViewModel(_current);
+                    Search = new SymptomSearch(_current);
 
                     OnPropertyChanged(() => CurrentSymptom);
                     OnPropertyChanged(() => Symptoms);
@@ -99,8 +99,8 @@ namespace Diagnosis.ViewModels
         }
 
 
-        private SymptomSearchViewModel _search;
-        public SymptomSearchViewModel Search
+        private SymptomSearch _search;
+        public SymptomSearch Search
         {
             get
             {

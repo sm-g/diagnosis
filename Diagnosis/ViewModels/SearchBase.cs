@@ -8,13 +8,18 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
-    public abstract class SearchViewModel<T> : ViewModelBase, ISearchViewModel<T> where T : class, ISearchable
+    public abstract class SearchBase<T> : ViewModelBase, ISearch<T> where T : class, ICheckable, ISearchable
     {
         private string _query;
         private ICommand _clear;
         private int _selectedIndex = -1;
 
         public event EventHandler ResultItemSelected;
+
+        public IEnumerable<T> Collection { get; protected set; }
+
+        public bool WithNonCheckable { get; set; }
+        public bool WithChecked { get; set; }
 
         public ObservableCollection<T> Results { get; protected set; }
 
@@ -93,13 +98,44 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        protected virtual void MakeResults(string query)
+        private void MakeResults(string query)
         {
             Contract.Requires(query != null);
+
+            Results = new ObservableCollection<T>(
+               Collection.Where(c => c.Representation.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)
+                   && CheckConditions(c)));
+
+            if (!Results.Any(c => c.Representation.Equals(query, StringComparison.InvariantCultureIgnoreCase)) &&
+                query != string.Empty)
+            {
+                // добавляем запрос к результатам
+                Results.Add(Add(query));
+            }
+
+            OnPropertyChanged(() => Results);
+            OnPropertyChanged(() => ResultsCount);
+
+            if (ResultsCount > 0)
+                SelectedIndex = 0;
         }
 
-        public SearchViewModel()
+        protected virtual void InitQuery()
         {
+            Clear();
+        }
+
+        protected virtual bool CheckConditions(T obj)
+        {
+            return true;
+        }
+
+        protected abstract T Add(string query);
+
+        public SearchBase(bool withNonCheckable = false, bool withChecked = false)
+        {
+            WithNonCheckable = withNonCheckable;
+            WithChecked = withChecked;
         }
     }
 }

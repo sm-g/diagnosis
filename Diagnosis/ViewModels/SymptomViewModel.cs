@@ -12,7 +12,7 @@ namespace Diagnosis.ViewModels
         private bool _isChecked;
         Symptom symptom;
 
-        private SymptomSearchViewModel _search;
+        private SymptomSearch _search;
 
         public string SortingOrder { get; private set; }
 
@@ -157,13 +157,13 @@ namespace Diagnosis.ViewModels
         #endregion
 
 
-        public SymptomSearchViewModel Search
+        public SymptomSearch Search
         {
             get
             {
                 if (_search == null)
                 {
-                    _search = new SymptomSearchViewModel(this);
+                    _search = new SymptomSearch(this);
                     _search.ResultItemSelected += _search_ResultItemSelected;
                 }
                 return _search;

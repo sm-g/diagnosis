@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
@@ -46,6 +47,10 @@ namespace Diagnosis.ViewModels
 
         private void _search_ResultItemSelected(object sender, EventArgs e)
         {
+            if (Patients.SingleOrDefault(p => p == Search.SelectedItem) == null)
+            {
+                Patients.Add(Search.SelectedItem);
+            }
             CurrentPatient = Search.SelectedItem;
             Search.Clear();
         }
