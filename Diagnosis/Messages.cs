@@ -15,6 +15,8 @@ namespace Diagnosis
         public const string Symptom = "symptom";
         public const string CheckedState = "checked";
         public const string Patient = "patient";
+        public const string Diagnosis = "diagnosis";
+
     }
 
     class SymptomCheckedChangedParams : IEventParams
@@ -27,6 +29,21 @@ namespace Diagnosis
 
             Params = new[] {
                 new KeyValuePair<string,object>(Messages.Symptom, symtpom),
+                new KeyValuePair<string,object>(Messages.CheckedState, isChecked)
+            };
+        }
+    }
+
+    class DiagnosisCheckedChangedParams : IEventParams
+    {
+        public KeyValuePair<string, object>[] Params { get; private set; }
+
+        public DiagnosisCheckedChangedParams(DiagnosisViewModel diagnosis, bool isChecked)
+        {
+            Contract.Requires(diagnosis != null);
+
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.Diagnosis, diagnosis),
                 new KeyValuePair<string,object>(Messages.CheckedState, isChecked)
             };
         }
