@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
-    public abstract class HierarchicalBaseViewModel<T> : ViewModelBase, IHierarchical<T> where T : HierarchicalBaseViewModel<T>
+    public abstract class HierarchicalBase<T> : ViewModelBase, IHierarchical<T> where T : HierarchicalBase<T>
     {
         private T _parent;
 
@@ -76,8 +76,6 @@ namespace Diagnosis.ViewModels
 
         public T Add(T vm)
         {
-            Contract.Requires(vm != null);
-
             vm.Parent = (T)this;
             Children.Add(vm);
             OnChildAdded();
@@ -119,7 +117,7 @@ namespace Diagnosis.ViewModels
             OnPropertyChanged(() => IsTerminal);
         }
 
-        public HierarchicalBaseViewModel()
+        public HierarchicalBase()
         {
             Children = new ObservableCollection<T>();
         }

@@ -7,9 +7,8 @@ using System.Collections.Generic;
 
 namespace Diagnosis.ViewModels
 {
-    public class SymptomViewModel : HierarchicalBaseViewModel<SymptomViewModel>, ISearchable, ICheckableHierarchical<SymptomViewModel>
+    public class SymptomViewModel : CheckableHierarchicalBase<SymptomViewModel>, ISearchable
     {
-        private bool _isChecked;
         Symptom symptom;
 
         private SymptomSearch _search;
@@ -32,15 +31,6 @@ namespace Diagnosis.ViewModels
                 }
             }
         }
-
-        public string Representation
-        {
-            get
-            {
-                return Name;
-            }
-        }
-
         #region IHierarchical
 
         public override string Name
@@ -63,99 +53,24 @@ namespace Diagnosis.ViewModels
 
         #region ICheckableHierarchical
 
-        bool _isNonCheckable;
-        public bool IsNonCheckable
+        protected override void OnCheckedChanged()
         {
-            get
-            {
-                return
-                    _isNonCheckable;
-            }
-            set
-            {
-                if (_isNonCheckable != value)
-                {
-                    _isNonCheckable = value;
-                    IsChecked = !value;
-
-                    OnPropertyChanged(() => IsNonCheckable);
-                }
-            }
-        }
-
-        public bool IsChecked
-        {
-            get
-            {
-                return _isChecked;
-            }
-            set
-            {
-                if (_isChecked != value)
-                {
-                    if (IsNonCheckable)
-                    {
-                        _isChecked = false;
-                    }
-                    else
-                    {
-                        _isChecked = value;
-                    }
-
-                    OnPropertyChanged(() => IsChecked);
-                    if (!IsNonCheckable)
-                    {
-                        PropagateCheckedState(value);
-                        BubbleCheckedChildren();
-                    }
-
-                    this.Send((int)EventID.SymptomCheckedChanged, new SymptomCheckedChangedParams(this, IsChecked).Params);
-                }
-            }
-        }
-
-        public void ToggleChecked()
-        {
-            IsChecked = !IsChecked;
-        }
-
-        public int CheckedChildren
-        {
-            get
-            {
-                if (IsTerminal)
-                    return 0;
-                return Children.Sum(s => s.CheckedChildren + (s.IsChecked ? 1 : 0));
-            }
-        }
-
-        private void PropagateCheckedState(bool newState)
-        {
-            if (newState && !IsRoot)
-            {
-                Parent.IsChecked = true;
-            }
-
-            if (!newState)
-            {
-                foreach (var item in Children)
-                {
-                    item.IsChecked = false;
-                }
-            }
-        }
-
-        private void BubbleCheckedChildren()
-        {
-            OnPropertyChanged(() => CheckedChildren);
-            if (!IsRoot)
-            {
-                Parent.BubbleCheckedChildren();
-            }
+            this.Send((int)EventID.SymptomCheckedChanged, new SymptomCheckedChangedParams(this, IsChecked).Params);
         }
 
         #endregion
 
+        #region ISearchable
+
+        public string Representation
+        {
+            get
+            {
+                return Name;
+            }
+        }
+
+        #endregion
 
         public SymptomSearch Search
         {
@@ -169,6 +84,7 @@ namespace Diagnosis.ViewModels
                 return _search;
             }
         }
+
         public SymptomViewModel(Symptom s)
         {
             Contract.Requires(s != null);
@@ -184,6 +100,7 @@ namespace Diagnosis.ViewModels
             : this(new Symptom())
         {
         }
+
         void _search_ResultItemSelected(object sender, System.EventArgs e)
         {
             this.AddIfNotExists(Search.SelectedItem, Search.AllChildren);
