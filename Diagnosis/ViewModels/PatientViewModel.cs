@@ -199,7 +199,7 @@ namespace Diagnosis.ViewModels
 
                     OnPropertyChanged(() => IsChecked);
 
-                    this.Send((int)EventID.SymptomCheckedChanged, new PatientCheckedChangedParams(this, IsChecked).Params);
+                    this.Send((int)EventID.PatientCheckedChanged, new PatientCheckedChangedParams(this, IsChecked).Params);
                 }
             }
         }

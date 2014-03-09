@@ -64,7 +64,9 @@ namespace Diagnosis
     enum EventID
     {
         SymptomCheckedChanged,
-        CurrentPatientChanged
+        CurrentPatientChanged,
+        PatientCheckedChanged,
+        DiagnosisCheckedChanged
     }
 
     interface IEventParams
