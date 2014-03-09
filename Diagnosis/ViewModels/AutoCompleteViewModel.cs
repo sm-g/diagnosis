@@ -174,7 +174,9 @@ namespace Diagnosis.ViewModels
         private void AddSymptom()
         {
             if (symptoms.Count > 0)
-                symptoms[symptoms.Count - 1].CheckChild(search.SelectedItem, search.AllChildren);
+                symptoms[symptoms.Count - 1].AddIfNotExists(search.SelectedItem, search.AllChildren);
+            search.SelectedItem.IsChecked = true;
+
             symptoms.Add(search.SelectedItem);
             IsSymptomCompleted = true;
         }

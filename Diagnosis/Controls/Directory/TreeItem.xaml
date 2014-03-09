@@ -28,7 +28,7 @@
         <CheckBox x:Name="checkbox"
 			IsChecked="{Binding IsChecked, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True}"
 			Focusable="False"
-			Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+			Visibility="{Binding IsNonCheckable, Converter={StaticResource NegBooleanToVisibilityConverter}}"
  />
 
         <TextBlock x:Name="title"
@@ -44,7 +44,7 @@
 
  />
             <CheckBox x:Name="isGroup"
-				IsChecked="{Binding IsGroup}"
+				IsChecked="{Binding IsNonCheckable}"
                   Content="Группа"
  />
         </StackPanel>

@@ -8,8 +8,9 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
-    public class PatientViewModel : ViewModelBase, ISearchable
+    public class PatientViewModel : ViewModelBase, ISearchable, ICheckable
     {
+        private bool _isChecked;
         private Patient patient;
         List<EventMessageHandler> msgHandlers;
 
@@ -165,7 +166,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return LastName + ' ' + FirstName[0] + ". " + MiddleName[0] + '.';
+                return LastName + (FirstName.Length > 0 ? " " + FirstName[0] + "." + (MiddleName.Length > 0 ? " " + MiddleName[0] + "." : "") : "");
             }
         }
 
@@ -179,6 +180,36 @@ namespace Diagnosis.ViewModels
             get;
             private set;
         }
+
+        #region ICheckable
+
+        public bool IsNonCheckable { get; set; }
+
+        public bool IsChecked
+        {
+            get
+            {
+                return _isChecked;
+            }
+            set
+            {
+                if (_isChecked != value)
+                {
+                    _isChecked = value;
+
+                    OnPropertyChanged(() => IsChecked);
+
+                    this.Send((int)EventID.SymptomCheckedChanged, new PatientCheckedChangedParams(this, IsChecked).Params);
+                }
+            }
+        }
+
+        public void ToggleChecked()
+        {
+            IsChecked = !IsChecked;
+        }
+
+        #endregion
 
         public PatientViewModel(Patient p)
         {

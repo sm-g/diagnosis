@@ -37,7 +37,7 @@
             <CheckBox x:Name="checkbox"
                       IsChecked="{Binding IsChecked, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True}"
                       Focusable="False"
-                      Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                      Visibility="{Binding IsNonCheckable, Converter={StaticResource NegBooleanToVisibilityConverter}}"
                       VerticalContentAlignment="Center" 
                       Grid.ColumnSpan="3"
  />
@@ -51,7 +51,7 @@
             <TextBlock x:Name="title"
                        Text="{Binding Name}"
                        TextWrapping="Wrap"
-                       HorizontalAlignment="{Binding IsGroup, Converter={StaticResource BoolToCenterAligmentConverter}}"
+                       HorizontalAlignment="{Binding IsNonCheckable, Converter={StaticResource BoolToCenterAligmentConverter}}"
                        VerticalAlignment="Center"
                        IsHitTestVisible="False"
                        Padding="5" 
@@ -88,7 +88,7 @@
                     
                 </TextBox>
                 <CheckBox x:Name="isGroup"
-                          IsChecked="{Binding IsGroup}"
+                          IsChecked="{Binding IsNonCheckable}"
                           Content="Группа"
  />
             </StackPanel>

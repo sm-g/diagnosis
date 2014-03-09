@@ -32,6 +32,21 @@ namespace Diagnosis
         }
     }
 
+    class PatientCheckedChangedParams : IEventParams
+    {
+        public KeyValuePair<string, object>[] Params { get; private set; }
+
+        public PatientCheckedChangedParams(PatientViewModel patient, bool isChecked)
+        {
+            Contract.Requires(patient != null);
+
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.Patient, patient),
+                new KeyValuePair<string,object>(Messages.CheckedState, isChecked)
+            };
+        }
+    }
+
     class CurrentPatientChangedParams : IEventParams
     {
         public KeyValuePair<string, object>[] Params { get; private set; }

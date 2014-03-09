@@ -204,6 +204,11 @@
     </Compile>
     <Compile Include="Styles\TreeStyle.cs" />
     <Compile Include="ViewModels\AutoCompleteViewModel.cs" />
+    <Compile Include="ViewModels\DiagnosisViewModel.cs" />
+    <Compile Include="ViewModels\HierarchicalBaseViewModel.cs" />
+    <Compile Include="ViewModels\ICheckable.cs" />
+    <Compile Include="ViewModels\ICheckableHierarchical.cs" />
+    <Compile Include="ViewModels\IHierarchical.cs" />
     <Compile Include="ViewModels\ISearchable.cs" />
     <Compile Include="ViewModels\ISearchViewModel.cs" />
     <Compile Include="ViewModels\PatientSearchViewModel.cs" />

@@ -64,32 +64,20 @@ namespace Diagnosis
         private static List<SymptomViewModel> CreateSymptoms()
         {
             var teeth = new SymptomViewModel("зубная боль");
-            teeth.Add(new Symptom("после приёма пищи")).Add(new Symptom("шатается зуб"));
+            teeth.Add(new SymptomViewModel("после приёма пищи")).Add(new SymptomViewModel("шатается зуб"));
 
-            var throat = new SymptomViewModel(new Symptom()
-                {
-                    Title = "горло"
-                });
+            var throat = new SymptomViewModel(new Symptom("горло")) { IsNonCheckable = true };
             throat.Add(new SymptomViewModel("боль в горле")
-                    .Add(new Symptom("при глотании"))
-                    .Add(new Symptom("после разговора")))
-                .Add(new Symptom("красное"));
+                    .Add(new SymptomViewModel("при глотании"))
+                    .Add(new SymptomViewModel("после разговора")))
+                .Add(new SymptomViewModel("красное"));
 
-            SymptomViewModel root = (new SymptomViewModel(new Symptom()
-            {
-                Title = "root"
-            })).Add(
-                    (new SymptomViewModel(new Symptom()
-                    {
-                        Title = "голова"
-                    })).Add(throat)
+            SymptomViewModel root = (new SymptomViewModel(new Symptom("root")).Add(
+                    (new SymptomViewModel("голова") { IsNonCheckable = true }).Add(throat)
                         .Add(teeth)
-                        .Add(new SymptomViewModel(new Symptom("уши")))
+                        .Add(new SymptomViewModel("уши"))
                 ).Add(
-                new SymptomViewModel(new Symptom()
-                {
-                    Title = "ноги"
-                }));
+                new SymptomViewModel("ноги") { IsNonCheckable = true }));
 
             root.Initialize();
 

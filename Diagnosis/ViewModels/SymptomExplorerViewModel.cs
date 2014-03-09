@@ -123,7 +123,8 @@ namespace Diagnosis.ViewModels
 
         void _search_ResultItemSelected(object sender, System.EventArgs e)
         {
-            CurrentSymptom.CheckChild(Search.SelectedItem, Search.AllChildren);
+            CurrentSymptom.AddIfNotExists(Search.SelectedItem, Search.AllChildren);
+            Search.SelectedItem.IsChecked = true;
             Search.Clear();
         }
     }
