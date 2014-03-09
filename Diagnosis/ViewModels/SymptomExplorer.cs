@@ -13,13 +13,13 @@ namespace Diagnosis.ViewModels
         private SymptomViewModel _current;
         private RelayCommand _goUp;
 
-        public SymptomExplorer(List<SymptomViewModel> symptoms)
+        public SymptomExplorer(IList<SymptomViewModel> symptoms)
         {
             Contract.Requires(symptoms != null);
+            Contract.Requires(symptoms.Count > 0);
 
             Symptoms = new ObservableCollection<SymptomViewModel>(symptoms);
-            if (symptoms.Count > 0)
-                CurrentSymptom = symptoms[0].Parent;
+            CurrentSymptom = symptoms[0].Parent;
         }
 
         public ObservableCollection<SymptomViewModel> Symptoms
