@@ -9,7 +9,7 @@ namespace Diagnosis.ViewModels
 {
     public class PatientsListVewModel : ViewModelBase
     {
-        private PatientSearchViewModel _search;
+        private PatientSearch _search;
         private PatientViewModel _current;
 
         public ObservableCollection<PatientViewModel> Patients { get; private set; }
@@ -32,13 +32,13 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public PatientSearchViewModel Search
+        public PatientSearch Search
         {
             get
             {
                 if (_search == null)
                 {
-                    _search = new PatientSearchViewModel(this);
+                    _search = new PatientSearch(this);
                     _search.ResultItemSelected += _search_ResultItemSelected;
                 }
                 return _search;

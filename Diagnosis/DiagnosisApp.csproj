@@ -213,7 +213,7 @@
     <Compile Include="ViewModels\IHierarchical.cs" />
     <Compile Include="ViewModels\ISearchable.cs" />
     <Compile Include="ViewModels\ISearch.cs" />
-    <Compile Include="ViewModels\PatientSearchViewModel.cs" />
+    <Compile Include="ViewModels\PatientSearch.cs" />
     <Compile Include="ViewModels\PatientsListVewModel.cs" />
     <Compile Include="ViewModels\PropertyViewModel.cs" />
     <Compile Include="ViewModels\SymptomExplorer.cs" />

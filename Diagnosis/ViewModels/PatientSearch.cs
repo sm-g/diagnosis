@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
-    public class PatientSearchViewModel : SearchBase<PatientViewModel>
+    public class PatientSearch : SearchBase<PatientViewModel>
     {
-        public PatientSearchViewModel(PatientsListVewModel patients)
+        public PatientSearch(PatientsListVewModel patients)
             : base()
         {
             Contract.Requires(patients != null);
