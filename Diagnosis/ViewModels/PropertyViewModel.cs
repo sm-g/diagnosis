@@ -11,18 +11,18 @@ namespace Diagnosis.ViewModels
     {
         private Property property;
 
-        public string Name
+        public string Title
         {
             get
             {
-                return property.Name;
+                return property.Title;
             }
             set
             {
-                if (property.Name != value)
+                if (property.Title != value)
                 {
-                    property.Name = value;
-                    OnPropertyChanged(() => Name);
+                    property.Title = value;
+                    OnPropertyChanged(() => Title);
                 }
             }
         }
