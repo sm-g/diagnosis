@@ -7,20 +7,28 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{StaticResource symptomExplorerVM}">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto" />
             <RowDefinition Height="3*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+
         <controls:AutoComplete />
 
         <Grid x:Name="explorer"
-              Loaded="explorer_Loaded" 
-              KeyUp="explorer_KeyUp"
+              Loaded="explorer_Loaded"
               Grid.Row="1"
 >
+            <Grid.InputBindings>
+                <KeyBinding Key="Back" Command="{Binding GoUp}" />
+                <KeyBinding Key="Insert" Command="{Binding CurrentItem.SearchCommand}" />
+                <KeyBinding Key="F" Modifiers="Control" Command="{Binding CurrentItem.SearchCommand}" />
+            </Grid.InputBindings>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" MaxHeight="200" />
@@ -48,20 +56,19 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </StackPanel>
-            
+
             <controls:FloatSearch x:Name="search"
                                 Grid.Row="1"
-                                Visibility="Collapsed"
-                                KeyUp="search_KeyUp"
-                                  DataContext="{Binding Search}"
+                                Visibility="{Binding DataContext.IsSearchActive, ElementName=explorer, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                DataContext="{Binding Search}"
 
  />
-            <ScrollViewer x:Name="list" 
+            <ScrollViewer x:Name="list"
                           Grid.Row="2"
-                          VerticalScrollBarVisibility="Auto" >
-                <ItemsControl 
-                    ItemsSource="{Binding Symptoms}"
-                    >
+                          VerticalScrollBarVisibility="Auto">
+                <ItemsControl
+                    ItemsSource="{Binding Items}"
+>
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Horizontal" />

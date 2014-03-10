@@ -13,16 +13,23 @@
                 <ResourceDictionary Source="../../Styles/TreeStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <InputBindingCollection x:Shared="False" x:Key="InputBindings">
+                <KeyBinding Key="Space" Command="{Binding ToggleCommand}" />
+                <KeyBinding Key="Delete" Command="{Binding DeleteCommand}" />
+                <KeyBinding Key="Enter" Command="{Binding CommitCommand}" />
+                <KeyBinding Key="F2" Command="{Binding EditCommand}" />
+                <KeyBinding Key="Escape" Command="{Binding RevertCommand}" />
+                <KeyBinding Key="Insert" Command="{Binding SearchCommand}" />
+                <KeyBinding Key="F" Modifiers="Control" Command="{Binding SearchCommand}" />
+
+                <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleCommand}" />
+                <MouseBinding MouseAction="RightClick" Command="{Binding EditCommand}" />
+            </InputBindingCollection>
+
             <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}" x:Key="fullTreeItemStyle">
                 <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
-
-                <!-- Region Events -->
-
-                <EventSetter Event="KeyUp" Handler="item_KeyUp" />
-                <EventSetter Event="MouseUp" Handler="item_MouseUp" />
-                <EventSetter Event="MouseDoubleClick" Handler="item_MouseDoubleClick" />
-
-                <!-- EndRegion -->
+                <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                <Setter Property="controls:Attached.InputBindings" Value="{StaticResource InputBindings}" />
             </Style>
 
             <HierarchicalDataTemplate
@@ -38,9 +45,9 @@
             <RowDefinition Height="3*" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        
+
         <controls:AutoComplete />
-        
+
         <TreeView
             x:Name="tree"
             Grid.Row="1"
@@ -61,6 +68,5 @@
                 </ListView.ItemTemplate>
             </ListView>
         </DockPanel>
-        
     </Grid>
 </UserControl>

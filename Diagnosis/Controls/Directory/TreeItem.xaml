@@ -1,15 +1,16 @@
-﻿<UserControl
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.Controls"
              xmlns:local="clr-namespace:Diagnosis"
-             xmlns:Converters="clr-namespace:Diagnosis.Converters" x:Name="treeItem" x:Class="Diagnosis.Controls.TreeItem"
+             xmlns:Converters="clr-namespace:Diagnosis.Converters"
+             x:Name="treeItem"
+             x:Class="Diagnosis.Controls.TreeItem"
              mc:Ignorable="d"
              d:DesignHeight="20" d:DesignWidth="300"
-             d:DataContext="{StaticResource symptomVM}"             
-    >
+             d:DataContext="{StaticResource symptomVM}"
+>
     <UserControl.Resources>
         <Converters:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -37,10 +38,12 @@
         <StackPanel x:Name="editor"
 			Grid.Column="1"
 			LostFocus="editor_LostFocus"
-			Visibility="Collapsed"
+			Visibility="{Binding IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}"
+
 >
             <TextBox x:Name="titleEditor"
 				Text="{Binding Name, UpdateSourceTrigger=LostFocus}"
+                local:FocusExtension.IsFocused="{Binding IsEditorFocused}"
 
  />
             <CheckBox x:Name="isGroup"
@@ -52,10 +55,13 @@
         <controls:FloatSearch x:Name="search"
 			Grid.Row="1"
 			Grid.Column="1"
-			Visibility="Collapsed"
-			KeyUp="search_KeyUp"
-                              DataContext="{Binding Search}"
-
- />
+			Visibility="{Binding DataContext.IsSearchActive, ElementName=treeItem, Converter={StaticResource BooleanToVisibilityConverter}}"
+            local:FocusExtension.IsFocused="{Binding DataContext.IsSearchFocused, ElementName=treeItem}"
+            DataContext="{Binding Search}"
+>
+            <controls:FloatSearch.InputBindings>
+                <KeyBinding Key="Escape" Command="{Binding DataContext.SearchCommand, ElementName=treeItem}"></KeyBinding>
+            </controls:FloatSearch.InputBindings>
+        </controls:FloatSearch>
     </Grid>
 </UserControl>
