@@ -15,6 +15,18 @@ namespace Diagnosis.ViewModels
 
         public string SortingOrder { get; private set; }
 
+        public new bool IsNonCheckable
+        {
+            get
+            {
+                return !IsTerminal;
+            }
+            set
+            {
+
+            }
+        }
+
         #region HierarchicalBase
 
         public override string Name
@@ -133,8 +145,6 @@ namespace Diagnosis.ViewModels
         {
             Contract.Requires(d != null);
             diagnosis = d;
-
-            IsNonCheckable = true;
         }
 
         public DiagnosisViewModel(string title)
