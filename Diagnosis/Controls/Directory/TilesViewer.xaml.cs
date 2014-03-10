@@ -6,12 +6,9 @@ using System.Linq;
 
 namespace Diagnosis.Controls
 {
-    /// <summary>
-    /// Interaction logic for TileView.xaml
-    /// </summary>
-    public partial class TileView : UserControl
+    public partial class TilesViewer : UserControl
     {
-        public TileView()
+        public TilesViewer()
         {
             InitializeComponent();
         }

@@ -85,7 +85,7 @@
                 <controls:GroupsTree />
             </TabItem>
             <TabItem Header="Плитки">
-                <controls:TileView />
+                <controls:TilesViewer />
             </TabItem>
         </TabControl>
     </Grid>

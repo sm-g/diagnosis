@@ -172,8 +172,8 @@
     <Compile Include="Controls\Directory\TileItem.xaml.cs">
       <DependentUpon>TileItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Directory\TileView.xaml.cs">
-      <DependentUpon>TileView.xaml</DependentUpon>
+    <Compile Include="Controls\Directory\TilesViewer.xaml.cs">
+      <DependentUpon>TilesViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\WatermarkAdorner.cs" />
     <Compile Include="Controls\WatermarkService.cs" />
@@ -269,7 +269,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Directory\TileView.xaml">
+    <Page Include="Controls\Directory\TilesViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
