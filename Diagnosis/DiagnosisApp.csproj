@@ -219,7 +219,7 @@
     <Compile Include="ViewModels\PatientSearch.cs" />
     <Compile Include="ViewModels\PatientsListVewModel.cs" />
     <Compile Include="ViewModels\PropertyViewModel.cs" />
-    <Compile Include="ViewModels\SymptomExplorer.cs" />
+    <Compile Include="ViewModels\HierarchicalExplorer.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
     <Compile Include="ViewModels\SearchBase.cs" />
     <Compile Include="ViewModels\SymptomSearch.cs" />
