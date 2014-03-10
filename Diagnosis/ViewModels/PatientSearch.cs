@@ -17,7 +17,7 @@ namespace Diagnosis.ViewModels
             InitQuery();
         }
 
-        protected override PatientViewModel Add(string query)
+        protected override PatientViewModel FromQuery(string query)
         {
             return new PatientViewModel(new Patient()
                  {

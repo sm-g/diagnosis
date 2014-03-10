@@ -23,7 +23,7 @@ namespace Diagnosis.ViewModels
             InitQuery();
         }
 
-        protected override DiagnosisViewModel Add(string query)
+        protected override DiagnosisViewModel FromQuery(string query)
         {
             return new DiagnosisViewModel(new Diagnosis.Models.Diagnosis()
                 {

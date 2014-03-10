@@ -110,7 +110,7 @@ namespace Diagnosis.ViewModels
                 query != string.Empty)
             {
                 // добавляем запрос к результатам
-                Results.Add(Add(query));
+                Results.Add(FromQuery(query));
             }
 
             OnPropertyChanged(() => Results);
@@ -131,7 +131,7 @@ namespace Diagnosis.ViewModels
                    && (WithNonCheckable || !obj.IsNonCheckable);
         }
 
-        protected abstract T Add(string query);
+        protected abstract T FromQuery(string query);
 
         public SearchBase(bool withNonCheckable = false, bool withChecked = false)
         {
