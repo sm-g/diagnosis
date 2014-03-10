@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 
-namespace Diagnosis.Helpers
+namespace Diagnosis.Controls
 {
     public class FocusChecker
     {

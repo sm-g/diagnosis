@@ -6,7 +6,7 @@ using System.Windows.Data;
 using System.Globalization;
 using System.Windows.Controls;
 using System.Windows;
-using Diagnosis.Helpers;
+
 using Diagnosis.ViewModels;
 using System.Windows.Media;
 

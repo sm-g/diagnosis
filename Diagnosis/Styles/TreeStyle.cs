@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Diagnosis.Helpers;
+
 
 
 namespace Diagnosis.Styles

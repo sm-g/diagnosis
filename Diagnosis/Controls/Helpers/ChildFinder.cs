@@ -2,7 +2,7 @@
 using System.Windows.Media;
 using System.Collections.Generic;
 
-namespace Diagnosis.Helpers
+namespace Diagnosis.Controls
 {
     internal static class ChildFinder
     {

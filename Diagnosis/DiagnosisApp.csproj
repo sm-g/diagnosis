@@ -164,7 +164,10 @@
     <Compile Include="Controls\Forms\SexChooser.xaml.cs">
       <DependentUpon>SexChooser.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Directory\IEditableItem.cs" />
+    <Compile Include="Controls\Helpers\Attached.cs" />
+    <Compile Include="Extensions\FocusExtension.cs" />
+    <Compile Include="ViewModels\EditableBase.cs" />
+    <Compile Include="ViewModels\IEditable.cs" />
     <Compile Include="Controls\Directory\TileItem.xaml.cs">
       <DependentUpon>TileItem.xaml</DependentUpon>
     </Compile>
@@ -182,10 +185,10 @@
     <Compile Include="Converters\NegateBool.cs" />
     <Compile Include="Converters\TreeDepthToMargin.cs" />
     <Compile Include="DataCreator.cs" />
-    <Compile Include="Helpers\ChildFinder.cs" />
-    <Compile Include="Helpers\EnhancedFocusScope.cs" />
-    <Compile Include="Helpers\FocusChecker.cs" />
-    <Compile Include="Helpers\TreeViewItemExtenstions.cs" />
+    <Compile Include="Controls\Helpers\ChildFinder.cs" />
+    <Compile Include="Controls\Helpers\EnhancedFocusScope.cs" />
+    <Compile Include="Controls\Helpers\FocusChecker.cs" />
+    <Compile Include="Extensions\TreeViewItemExtenstions.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="Models\Diagnosis.cs" />
     <Compile Include="Models\JournalEntry.cs" />
