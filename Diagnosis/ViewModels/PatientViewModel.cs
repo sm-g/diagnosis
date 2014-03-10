@@ -1,18 +1,18 @@
 ﻿using Diagnosis.Models;
 using EventAggregator;
 using System;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
-    public class PatientViewModel : ViewModelBase, ISearchable, ICheckable
+    public class PatientViewModel : CheckableBase, ISearchable
     {
-        private bool _isChecked;
         private Patient patient;
-        List<EventMessageHandler> msgHandlers;
+        private List<EventMessageHandler> msgHandlers;
 
         public string FirstName
         {
@@ -64,6 +64,7 @@ namespace Diagnosis.ViewModels
                 }
             }
         }
+
         public int Age
         {
             get
@@ -170,46 +171,102 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public string Representation
-        {
-            get { return ShortName; }
-        }
-
         public ObservableCollection<SymptomViewModel> Symptoms
         {
             get;
             private set;
         }
 
-        #region ICheckable
+        #region CheckableBase
 
-        public bool IsNonCheckable { get; set; }
-
-        public bool IsChecked
+        public override bool IsReady
         {
             get
             {
-                return _isChecked;
+                return base.IsReady && !IsSearchActive;
+            }
+        }
+
+        public override string Name
+        {
+            get
+            {
+                return ShortName;
             }
             set
             {
-                if (_isChecked != value)
+                throw new NotImplementedException();
+            }
+        }
+
+        protected override void OnCheckedChanged()
+        {
+
+        }
+
+        #endregion CheckableBase
+
+        #region ISearchable
+
+        private ICommand _searchCommand;
+        private bool _searchActive;
+        private bool _searchFocused;
+
+        public string Representation
+        {
+            get
+            {
+                return ShortName;
+            }
+        }
+
+        public bool IsSearchActive
+        {
+            get
+            {
+                return _searchActive;
+            }
+            set
+            {
+                if (_searchActive != value && (IsReady || !value))
                 {
-                    _isChecked = value;
-
-                    OnPropertyChanged(() => IsChecked);
-
-                    this.Send((int)EventID.PatientCheckedChanged, new PatientCheckedChangedParams(this, IsChecked).Params);
+                    _searchActive = value;
+                    OnPropertyChanged(() => IsSearchActive);
                 }
             }
         }
 
-        public void ToggleChecked()
+        public bool IsSearchFocused
         {
-            IsChecked = !IsChecked;
+            get
+            {
+                return _searchFocused;
+            }
+            set
+            {
+                if (_searchFocused != value)
+                {
+                    _searchFocused = value;
+                    OnPropertyChanged(() => IsSearchFocused);
+                }
+            }
         }
 
-        #endregion
+        public ICommand SearchCommand
+        {
+            get
+            {
+                return _searchCommand
+                    ?? (_searchCommand = new RelayCommand(
+                                          () =>
+                                          {
+                                              IsSearchActive = !IsSearchActive;
+                                          }
+                                          ));
+            }
+        }
+
+        #endregion ISearchable
 
         public PatientViewModel(Patient p)
         {
@@ -223,7 +280,7 @@ namespace Diagnosis.ViewModels
         private List<EventMessageHandler> Subscribe()
         {
             return new List<EventMessageHandler>()
-            { 
+            {
                 this.Subscribe((int)EventID.SymptomCheckedChanged, (e) =>
                 {
                     var symptom = e.GetValue<SymptomViewModel>(Messages.Symptom);

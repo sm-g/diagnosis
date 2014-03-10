@@ -1,20 +1,17 @@
 ﻿using Diagnosis.Models;
 using EventAggregator;
-using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Collections.Generic;
+using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
-    public class SymptomViewModel : CheckableHierarchicalBase<SymptomViewModel>, ISearchable
+    public class SymptomViewModel : HierarchicalBase<SymptomViewModel>, ISearchable
     {
-        Symptom symptom;
+        private Symptom symptom;
 
         private SymptomSearch _search;
 
         public string SortingOrder { get; private set; }
-
 
         public int Level
         {
@@ -31,7 +28,8 @@ namespace Diagnosis.ViewModels
                 }
             }
         }
-        #region IHierarchical
+
+        #region HierarchicalBase
 
         public override string Name
         {
@@ -49,18 +47,28 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        #endregion
-
-        #region ICheckableHierarchical
+        public override bool IsReady
+        {
+            get
+            {
+                return base.IsReady && !IsSearchActive;
+            }
+        }
 
         protected override void OnCheckedChanged()
         {
+            base.OnCheckedChanged();
+
             this.Send((int)EventID.SymptomCheckedChanged, new SymptomCheckedChangedParams(this, IsChecked).Params);
         }
 
-        #endregion
+        #endregion HierarchicalBase
 
         #region ISearchable
+
+        private ICommand _searchCommand;
+        private bool _searchActive;
+        private bool _searchFocused;
 
         public string Representation
         {
@@ -70,7 +78,53 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        #endregion
+        public bool IsSearchActive
+        {
+            get
+            {
+                return _searchActive;
+            }
+            set
+            {
+                if (_searchActive != value && (IsReady || !value))
+                {
+                    _searchActive = value;
+                    OnPropertyChanged(() => IsSearchActive);
+                }
+            }
+        }
+
+        public bool IsSearchFocused
+        {
+            get
+            {
+                return _searchFocused;
+            }
+            set
+            {
+                if (_searchFocused != value)
+                {
+                    _searchFocused = value;
+                    OnPropertyChanged(() => IsSearchFocused);
+                }
+            }
+        }
+
+        public ICommand SearchCommand
+        {
+            get
+            {
+                return _searchCommand
+                    ?? (_searchCommand = new RelayCommand(
+                                          () =>
+                                          {
+                                              IsSearchActive = !IsSearchActive;
+                                          }
+                                          ));
+            }
+        }
+
+        #endregion ISearchable
 
         public SymptomSearch Search
         {
@@ -101,7 +155,7 @@ namespace Diagnosis.ViewModels
         {
         }
 
-        void _search_ResultItemSelected(object sender, System.EventArgs e)
+        private void _search_ResultItemSelected(object sender, System.EventArgs e)
         {
             this.AddIfNotExists(Search.SelectedItem, Search.AllChildren);
             Search.SelectedItem.IsChecked = true;

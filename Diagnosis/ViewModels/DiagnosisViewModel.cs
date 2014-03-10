@@ -3,19 +3,19 @@ using EventAggregator;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Windows.Input;
 using System.Collections.Generic;
 
 namespace Diagnosis.ViewModels
 {
-    public class DiagnosisViewModel : CheckableHierarchicalBase<DiagnosisViewModel>, ISearchable
+    public class DiagnosisViewModel : HierarchicalBase<DiagnosisViewModel>, ISearchable
     {
         Diagnosis.Models.Diagnosis diagnosis;
         private DiagnosisSearch _search;
 
         public string SortingOrder { get; private set; }
 
-
-        #region IHierarchical
+        #region HierarchicalBase
 
         public override string Name
         {
@@ -33,9 +33,26 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        #endregion
+        public override bool IsReady
+        {
+            get
+            {
+                return base.IsReady && !IsSearchActive;
+            }
+        }
 
+        protected override void OnCheckedChanged()
+        {
+            base.OnCheckedChanged();
+            this.Send((int)EventID.DiagnosisCheckedChanged, new DiagnosisCheckedChangedParams(this, IsChecked).Params);
+        }
+
+        #endregion HierarchicalBase
         #region ISearchable
+
+        private ICommand _searchCommand;
+        private bool _searchActive;
+        private bool _searchFocused;
 
         public string Representation
         {
@@ -45,14 +62,49 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        #endregion
-
-        #region ICheckableHierarchical
-
-        protected override void OnCheckedChanged()
+        public bool IsSearchActive
         {
-            this.Send((int)EventID.DiagnosisCheckedChanged, new DiagnosisCheckedChangedParams(this, IsChecked).Params);
+            get
+            {
+                return _searchActive;
+            }
+            set
+            {
+                if (_searchActive != value && (IsReady || !value))
+                {
+                    _searchActive = value;
+                    OnPropertyChanged(() => IsSearchActive);
+                }
+            }
+        }
+        public bool IsSearchFocused
+        {
+            get
+            {
+                return _searchFocused;
+            }
+            set
+            {
+                if (_searchFocused != value)
+                {
+                    _searchFocused = value;
+                    OnPropertyChanged(() => IsSearchFocused);
+                }
+            }
+        }
 
+        public ICommand SearchCommand
+        {
+            get
+            {
+                return _searchCommand
+                    ?? (_searchCommand = new RelayCommand(
+                                          () =>
+                                          {
+                                              IsSearchActive = !IsSearchActive;
+                                          }
+                                          ));
+            }
         }
 
         #endregion
@@ -81,6 +133,8 @@ namespace Diagnosis.ViewModels
         {
             Contract.Requires(d != null);
             diagnosis = d;
+
+            IsNonCheckable = true;
         }
 
         public DiagnosisViewModel(string title)
@@ -92,12 +146,6 @@ namespace Diagnosis.ViewModels
             : this(new Diagnosis.Models.Diagnosis())
         {
         }
-
-        //void _search_ResultItemSelected(object sender, System.EventArgs e)
-        //{
-        //    CheckChild(Search.SelectedItem, Search.AllChildren);
-        //    Search.Clear();
-        //}
 
         internal void Initialize()
         {
