@@ -1,12 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
-    public abstract class HierarchicalBase<T> : ViewModelBase, IHierarchical<T> where T : HierarchicalBase<T>
+    public abstract class HierarchicalBase<T> : CheckableBase, IHierarchical<T> where T : HierarchicalBase<T>
     {
+        #region IEditable
+
+        public override abstract string Name
+        {
+            get;
+            set;
+        }
+
+        #endregion IEditable
+
+        #region IHierarchical
+
         private T _parent;
 
         public T Parent
@@ -19,12 +30,6 @@ namespace Diagnosis.ViewModels
             {
                 _parent = value;
             }
-        }
-
-        public abstract string Name
-        {
-            get;
-            set;
         }
 
         public ObservableCollection<T> Children { get; private set; }
@@ -102,6 +107,56 @@ namespace Diagnosis.ViewModels
         public void Delete()
         {
             // TODO
+        }
+
+        #endregion IHierarchical
+
+        #region CheckableBase
+
+        protected override void OnCheckedChanged()
+        {
+            if (!IsNonCheckable)
+            {
+                PropagateCheckedState(IsChecked);
+                BubbleCheckedChildren();
+            }
+        }
+
+        #endregion CheckableBase
+
+        public int CheckedChildren
+        {
+            get
+            {
+                if (IsTerminal)
+                    return 0;
+                return Children.Sum(s => s.CheckedChildren + (s.IsChecked ? 1 : 0));
+            }
+        }
+
+        private void PropagateCheckedState(bool newState)
+        {
+            if (newState && !IsRoot)
+            {
+                Parent.IsChecked = true;
+            }
+
+            if (!newState)
+            {
+                foreach (var item in Children)
+                {
+                    item.IsChecked = false;
+                }
+            }
+        }
+
+        private void BubbleCheckedChildren()
+        {
+            OnPropertyChanged(() => CheckedChildren);
+            if (!IsRoot)
+            {
+                Parent.BubbleCheckedChildren();
+            }
         }
 
         private void OnChildAdded()

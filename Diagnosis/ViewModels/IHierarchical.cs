@@ -9,8 +9,6 @@ namespace Diagnosis.ViewModels
 
         bool IsTerminal { get; }
 
-        string Name { get; set; }
-
         T Parent { get; }
 
         ObservableCollection<T> Children { get; }
@@ -21,7 +19,9 @@ namespace Diagnosis.ViewModels
 
         IEnumerable<T> AllChildren { get; }
 
-        T Add(T symptomVM);
+        int CheckedChildren { get; }
+
+        T Add(T item);
 
         T AddIfNotExists(T vm, bool checkAllChildren);
 
