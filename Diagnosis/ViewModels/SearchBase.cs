@@ -1,7 +1,6 @@
-﻿using Diagnosis.Models;
-using System;
-using System.Collections.ObjectModel;
+﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
@@ -19,6 +18,7 @@ namespace Diagnosis.ViewModels
         public IEnumerable<T> Collection { get; protected set; }
 
         public bool WithNonCheckable { get; set; }
+
         public bool WithChecked { get; set; }
 
         public ObservableCollection<T> Results { get; protected set; }

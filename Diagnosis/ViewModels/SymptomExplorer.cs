@@ -1,9 +1,6 @@
-﻿using Diagnosis.Models;
-using EventAggregator;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
@@ -98,8 +95,8 @@ namespace Diagnosis.ViewModels
             }
         }
 
-
         private SymptomSearch _search;
+
         public SymptomSearch Search
         {
             get
@@ -121,7 +118,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        void _search_ResultItemSelected(object sender, System.EventArgs e)
+        private void _search_ResultItemSelected(object sender, System.EventArgs e)
         {
             CurrentSymptom.AddIfNotExists(Search.SelectedItem, Search.AllChildren);
             Search.SelectedItem.IsChecked = true;

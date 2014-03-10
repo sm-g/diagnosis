@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Windows.Input;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
@@ -10,12 +10,17 @@ namespace Diagnosis.ViewModels
         event EventHandler ResultItemSelected;
 
         string Query { get; set; }
+
         ObservableCollection<T> Results { get; }
+
         int ResultsCount { get; }
+
         int SelectedIndex { get; set; }
+
         T SelectedItem { get; }
 
         void Clear();
+
         ICommand ClearCommand { get; }
 
         void RaiseResultItemSelected();

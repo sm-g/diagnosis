@@ -1,9 +1,5 @@
 ﻿using Diagnosis.Models;
-using System;
-using System.Collections.ObjectModel;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
@@ -13,6 +9,7 @@ namespace Diagnosis.ViewModels
         /// Уровень (глубина), ниже которого и включая который искать симптомы.
         /// </summary>
         public int UpperLevel { get; set; }
+
         public bool AllChildren { get; set; }
 
         public SymptomSearch(SymptomViewModel parent, bool withNonCheckable = false, bool withChecked = false, bool allChildren = true, int upperLevel = 0)

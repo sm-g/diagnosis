@@ -1,5 +1,4 @@
-﻿using Diagnosis.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Diagnosis.ViewModels
@@ -23,7 +22,9 @@ namespace Diagnosis.ViewModels
         IEnumerable<T> AllChildren { get; }
 
         T Add(T symptomVM);
+
         T AddIfNotExists(T vm, bool checkAllChildren);
+
         T Remove(T symptomVM);
 
         void Delete();
