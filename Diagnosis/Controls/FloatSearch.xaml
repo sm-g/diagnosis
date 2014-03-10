@@ -14,9 +14,7 @@
     <UserControl.Resources>
         <Converters:CountToVisability x:Key="CountToVisability" />
     </UserControl.Resources>
-    <d:DataContext>
-        <StaticResource ResourceKey="searchVM" />
-    </d:DataContext>
+
     <Grid MaxHeight="100">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />

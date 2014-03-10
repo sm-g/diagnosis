@@ -9,7 +9,6 @@
              x:Class="Diagnosis.Controls.TreeItem"
              mc:Ignorable="d"
              d:DesignHeight="20" d:DesignWidth="300"
-             d:DataContext="{StaticResource symptomVM}"
 >
     <UserControl.Resources>
         <Converters:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />

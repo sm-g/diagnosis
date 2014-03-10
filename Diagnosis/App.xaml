@@ -7,11 +7,6 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <conv:SymptomToBackground x:Key="symptomToBackground" />
-        
-        <vm:PatientViewModel x:Key="patientVM" />
-        <vm:SymptomViewModel x:Key="symptomVM" />
-        <vm:SymptomSearch x:Key="searchVM" />
-        <vm:SymptomExplorer x:Key="symptomExplorerVM" />
 
         <Style TargetType="TextBlock" x:Key="watermark">
             <Setter Property="VerticalAlignment" Value="Center"/>

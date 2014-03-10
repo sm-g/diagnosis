@@ -7,8 +7,7 @@
              xmlns:conv="clr-namespace:Diagnosis.Converters"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"
-             d:DesignHeight="30" d:DesignWidth="300"
-             d:DataContext="{StaticResource patientVM}">
+             d:DesignHeight="30" d:DesignWidth="300">
     <UserControl.Resources>
         <conv:AgeToYearsLabel x:Key="ageLabel" />
     </UserControl.Resources>
