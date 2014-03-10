@@ -7,19 +7,11 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
-    public class DiagnosisSearch : SearchBase<DiagnosisViewModel>
+    public class DiagnosisSearch : HierarchicalSearch<DiagnosisViewModel>
     {
-        public bool AllChildren { get; set; }
-
         public DiagnosisSearch(DiagnosisViewModel parent, bool withNonCheckable = false, bool withChecked = false, bool allChildren = true, int upperLevel = 0)
-            : base(withNonCheckable, withChecked)
+            : base(parent, withNonCheckable, withChecked, allChildren)
         {
-            Contract.Requires(parent != null);
-
-            AllChildren = allChildren;
-
-            Collection = AllChildren ? parent.AllChildren : parent.Children;
-
             InitQuery();
         }
 

@@ -3,24 +3,17 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.ViewModels
 {
-    public class SymptomSearch : SearchBase<SymptomViewModel>
+    public class SymptomSearch : HierarchicalSearch<SymptomViewModel>
     {
         /// <summary>
         /// Уровень (глубина), ниже которого и включая который искать симптомы.
         /// </summary>
         public int UpperLevel { get; set; }
 
-        public bool AllChildren { get; set; }
-
         public SymptomSearch(SymptomViewModel parent, bool withNonCheckable = false, bool withChecked = false, bool allChildren = true, int upperLevel = 0)
-            : base(withNonCheckable, withChecked)
+            : base(parent, withNonCheckable, withChecked, allChildren)
         {
-            Contract.Requires(parent != null);
-
-            AllChildren = allChildren;
             UpperLevel = upperLevel;
-
-            Collection = AllChildren ? parent.AllChildren : parent.Children;
 
             InitQuery();
         }

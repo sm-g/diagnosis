@@ -167,6 +167,7 @@
     <Compile Include="Controls\Helpers\Attached.cs" />
     <Compile Include="Extensions\FocusExtension.cs" />
     <Compile Include="ViewModels\EditableBase.cs" />
+    <Compile Include="ViewModels\HierarchicalSearch.cs" />
     <Compile Include="ViewModels\IEditable.cs" />
     <Compile Include="Controls\Directory\TileItem.xaml.cs">
       <DependentUpon>TileItem.xaml</DependentUpon>
