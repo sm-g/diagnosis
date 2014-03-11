@@ -1,27 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Data;
+﻿using Diagnosis.ViewModels;
+using System;
 using System.Globalization;
-using System.Windows.Controls;
-using System.Windows;
-
-using Diagnosis.ViewModels;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace Diagnosis.Converters
 {
-    public class SymptomToBackground : IValueConverter
+    public class IHierarchicalCheckableToBackground : IValueConverter
     {
-        static Brush noCheckedChildBrush = new LinearGradientBrush(Colors.Beige, Colors.Transparent, 0);
-        static Brush isCheckedChildBrush = new LinearGradientBrush(Colors.Turquoise, Colors.Transparent, 0);
+        private static Brush noCheckedChildBrush = new LinearGradientBrush(Colors.Beige, Colors.Transparent, 0);
+        private static Brush isCheckedChildBrush = new LinearGradientBrush(Colors.Turquoise, Colors.Transparent, 0);
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            try // because value is DisconnectedItem when switching back to tabItem with DataContext=PatientViewModel 
+            try
             {
-                var s = value as SymptomViewModel;
+                var s = value as IHierarchicalCheckable;
                 if (s.CheckedChildren == 0)
                     return noCheckedChildBrush;
                 else

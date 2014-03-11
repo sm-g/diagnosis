@@ -188,7 +188,7 @@
     <Compile Include="Converters\BoolToAligment.cs" />
     <Compile Include="Converters\MonthToString.cs" />
     <Compile Include="Converters\CountToVisability.cs" />
-    <Compile Include="Converters\SymptomToBackground.cs" />
+    <Compile Include="Converters\IHierarchicalCheckableToBackground.cs" />
     <Compile Include="Converters\NegateBool.cs" />
     <Compile Include="Converters\TreeDepthToMargin.cs" />
     <Compile Include="DataCreator.cs" />

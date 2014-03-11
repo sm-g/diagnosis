@@ -6,7 +6,7 @@
              
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <conv:SymptomToBackground x:Key="symptomToBackground" />
+        <conv:IHierarchicalCheckableToBackground x:Key="IHierarchicalCheckableToBackground" />
 
         <Style TargetType="TextBlock" x:Key="watermark">
             <Setter Property="VerticalAlignment" Value="Center"/>

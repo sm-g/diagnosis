@@ -81,7 +81,7 @@
         <Border Name="Bd"
                 Binding.SourceUpdated ="Bd_SourceUpdated"
                 Binding.TargetUpdated ="Bd_TargetUpdated"
-                Background="{Binding Content, ElementName=PART_Header, Converter={StaticResource symptomToBackground}}"
+                Background="{Binding Content, ElementName=PART_Header, Converter={StaticResource IHierarchicalCheckableToBackground}}"
                 BorderBrush="{TemplateBinding BorderBrush}"
                 BorderThickness="{TemplateBinding BorderThickness}"
                 Padding="0,5"
