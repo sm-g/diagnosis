@@ -19,13 +19,11 @@ namespace Diagnosis.ViewModels
 
         IEnumerable<T> AllChildren { get; }
 
-        int CheckedChildren { get; }
-
         T Add(T item);
 
-        T AddIfNotExists(T vm, bool checkAllChildren);
+        T AddIfNotExists(T item, bool lookupAllChildren);
 
-        T Remove(T symptomVM);
+        T Remove(T item);
 
         void Delete();
     }

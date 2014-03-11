@@ -214,6 +214,7 @@
     <Compile Include="ViewModels\HierarchicalBase.cs" />
     <Compile Include="ViewModels\ICheckable.cs" />
     <Compile Include="ViewModels\IHierarchical.cs" />
+    <Compile Include="ViewModels\IHierarchicalCheckable.cs" />
     <Compile Include="ViewModels\ISearchable.cs" />
     <Compile Include="ViewModels\ISearch.cs" />
     <Compile Include="ViewModels\PatientSearch.cs" />

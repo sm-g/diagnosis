@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
-    public abstract class HierarchicalBase<T> : CheckableBase, IHierarchical<T> where T : HierarchicalBase<T>
+    public abstract class HierarchicalBase<T> : CheckableBase, IHierarchical<T>, IHierarchicalCheckable where T : HierarchicalBase<T>
     {
         #region IEditable
 
@@ -124,6 +124,8 @@ namespace Diagnosis.ViewModels
 
         #endregion CheckableBase
 
+        #region IHierarchicalCheckable
+
         public int CheckedChildren
         {
             get
@@ -133,6 +135,8 @@ namespace Diagnosis.ViewModels
                 return Children.Sum(s => s.CheckedChildren + (s.IsChecked ? 1 : 0));
             }
         }
+
+        #endregion IHierarchicalCheckable
 
         private void PropagateCheckedState(bool newState)
         {
