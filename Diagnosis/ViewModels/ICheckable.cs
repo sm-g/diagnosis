@@ -8,8 +8,6 @@ namespace Diagnosis.ViewModels
 
         bool IsNonCheckable { get; }
 
-        void ToggleChecked();
-
         ICommand ToggleCommand { get; }
     }
 }

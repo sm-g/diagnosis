@@ -73,11 +73,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public void ToggleChecked()
-        {
-            IsChecked = !IsChecked;
-        }
-
         public ICommand ToggleCommand
         {
             get
@@ -86,7 +81,7 @@ namespace Diagnosis.ViewModels
                     ?? (_toggle = new RelayCommand(
                         () =>
                         {
-                            ToggleChecked();
+                            IsChecked = !IsChecked;
                             IsSelected = true;
                         }));
             }
