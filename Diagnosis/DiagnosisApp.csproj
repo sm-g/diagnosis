@@ -166,7 +166,10 @@
     </Compile>
     <Compile Include="Controls\Helpers\Attached.cs" />
     <Compile Include="Extensions\FocusExtension.cs" />
+    <Compile Include="Models\Appointment.cs" />
+    <Compile Include="Models\Course.cs" />
     <Compile Include="Models\Doctor.cs" />
+    <Compile Include="Models\HealthRecord.cs" />
     <Compile Include="Models\Man.cs" />
     <Compile Include="ViewModels\DoctorViewModel.cs" />
     <Compile Include="ViewModels\EditableBase.cs" />
