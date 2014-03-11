@@ -166,6 +166,9 @@
     </Compile>
     <Compile Include="Controls\Helpers\Attached.cs" />
     <Compile Include="Extensions\FocusExtension.cs" />
+    <Compile Include="Models\Doctor.cs" />
+    <Compile Include="Models\Man.cs" />
+    <Compile Include="ViewModels\DoctorViewModel.cs" />
     <Compile Include="ViewModels\EditableBase.cs" />
     <Compile Include="ViewModels\HierarchicalSearch.cs" />
     <Compile Include="ViewModels\IEditable.cs" />
