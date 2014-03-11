@@ -175,8 +175,8 @@
     <Compile Include="Controls\Directory\TilesViewer.xaml.cs">
       <DependentUpon>TilesViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\WatermarkAdorner.cs" />
-    <Compile Include="Controls\WatermarkService.cs" />
+    <Compile Include="Controls\Helpers\WatermarkAdorner.cs" />
+    <Compile Include="Controls\Helpers\WatermarkService.cs" />
     <Compile Include="Converters\AgeToYearsLabel.cs" />
     <Compile Include="Converters\BoolToVis.cs" />
     <Compile Include="Converters\BoolToAligment.cs" />
