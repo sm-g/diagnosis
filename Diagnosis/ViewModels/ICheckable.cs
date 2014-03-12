@@ -6,7 +6,7 @@ namespace Diagnosis.ViewModels
     {
         bool IsChecked { get; set; }
 
-        bool IsNonCheckable { get; }
+        bool IsNonCheckable { get; set; }
 
         ICommand ToggleCommand { get; }
     }
