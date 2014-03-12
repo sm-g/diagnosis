@@ -46,7 +46,7 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -56,9 +56,18 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Style="{StaticResource ScreenTitle}">Карточка пациента</TextBlock>
+            <TextBlock Style="{StaticResource ScreenTitle}">
+                <TextBlock Text="{Binding LastName}"/>
+                <TextBlock>
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat='{}{0} {1}'>
+                            <Binding Path="FirstName"/>
+                            <Binding Path="MiddleName"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </TextBlock>
             <StackPanel Grid.Column="1">
-                <TextBlock Text="{Binding ShortName}" />
                 <TextBlock>
                     <TextBlock Text="{Binding Age}" />
                     <TextBlock Text="{Binding Age, Converter={StaticResource ageLabel}}"></TextBlock>
