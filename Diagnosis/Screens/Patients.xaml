@@ -13,7 +13,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock FontSize="24">Пациенты</TextBlock>
+        <TextBlock Style="{StaticResource ScreenTitle}">Пациенты</TextBlock>
         
         <controls:FloatSearch x:Name="search" 
                               DataContext="{Binding Search}"

@@ -9,7 +9,11 @@
         <conv:IHierarchicalCheckableToBackground x:Key="IHierarchicalCheckableToBackground" />
         <conv:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        
+
+        <Style TargetType="TextBlock" x:Key="ScreenTitle">
+            <Setter Property="FontSize" Value="24"/>
+        </Style>
+
         <Style TargetType="TextBlock" x:Key="watermark">
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Margin">
