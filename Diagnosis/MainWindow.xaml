@@ -5,8 +5,9 @@
         xmlns:local="clr-namespace:Diagnosis"
         xmlns:controls="clr-namespace:Diagnosis.Controls"
         xmlns:vm="clr-namespace:Diagnosis.ViewModels"
-    xmlns:screen="clr-namespace:Diagnosis.Screens"
-        Title="MainWindow" Height="450" Width="570">
+        xmlns:screen="clr-namespace:Diagnosis.Screens"
+        x:Name="root"
+        Title="MainWindow" Height="450" Width="600">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -16,13 +17,16 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
         
-
         <Menu Grid.ColumnSpan="2">
-            <MenuItem Header="Файл"></MenuItem>
+            <MenuItem Header="Файл">
+                <MenuItem Header="Выйти"/>
+            </MenuItem>            
         </Menu>
 
+        <TextBlock Grid.Column="1"
+                   HorizontalAlignment="Right"
+                   Text="{Binding Login.SelectedDoctor.ShortName}"></TextBlock>
 
         <screen:Patients Grid.Row="1" x:Name="patients">
         </screen:Patients>
@@ -30,5 +34,10 @@
         <screen:Card Margin="10" Grid.Row="1" Grid.Column="1" x:Name="card">
         </screen:Card>
         
+        <screen:Login Grid.Row="1" 
+                      Grid.ColumnSpan="2"
+                      DataContext="{Binding Login}"
+                      Visibility="{Binding DataContext.IsLoginActive, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}"
+            />
     </Grid>
 </Window>

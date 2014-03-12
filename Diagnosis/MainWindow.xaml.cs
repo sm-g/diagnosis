@@ -25,6 +25,8 @@ namespace Diagnosis
         {
             InitializeComponent();
 
+            DataContext = new MainWindowViewModel();
+
             this.Subscribe((int)EventID.CurrentPatientChanged, (e) =>
             {
                 var patient = e.GetValue<PatientViewModel>(Messages.Patient);

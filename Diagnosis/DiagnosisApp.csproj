@@ -171,6 +171,9 @@
     <Compile Include="Models\Doctor.cs" />
     <Compile Include="Models\HealthRecord.cs" />
     <Compile Include="Models\Man.cs" />
+    <Compile Include="Screens\Login.xaml.cs">
+      <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\DoctorViewModel.cs" />
     <Compile Include="ViewModels\EditableBase.cs" />
     <Compile Include="ViewModels\HierarchicalSearch.cs" />
@@ -223,6 +226,8 @@
     <Compile Include="ViewModels\IHierarchicalCheckable.cs" />
     <Compile Include="ViewModels\ISearchable.cs" />
     <Compile Include="ViewModels\ISearch.cs" />
+    <Compile Include="ViewModels\LoginViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\PatientSearch.cs" />
     <Compile Include="ViewModels\PatientsListVewModel.cs" />
     <Compile Include="ViewModels\PropertyViewModel.cs" />
@@ -293,6 +298,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Screens\Card.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Screens\Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

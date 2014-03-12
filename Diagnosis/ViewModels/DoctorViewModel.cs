@@ -76,6 +76,24 @@ namespace Diagnosis.ViewModels
             }
         }
 
+
+        private string _speciality;
+        public string Speciality
+        {
+            get
+            {
+                return _speciality;
+            }
+            set
+            {
+                if (_speciality != value)
+                {
+                    _speciality = value;
+                    OnPropertyChanged(() => Speciality);
+                }
+            }
+        }
+
         public string ShortName
         {
             get
