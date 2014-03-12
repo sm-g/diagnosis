@@ -7,7 +7,7 @@
         xmlns:vm="clr-namespace:Diagnosis.ViewModels"
         xmlns:screen="clr-namespace:Diagnosis.Screens"
         mc:Ignorable="d"
-        d:DataContext="{DynamicResource vm}"
+        DataContext="{DynamicResource vm}"        
         x:Class="Diagnosis.MainWindow"
         x:Name="root"
         Title="MainWindow" Height="450" Width="600">
@@ -44,6 +44,7 @@
             </Grid.ColumnDefinitions>
 
             <screen:Card x:Name="card"
+                         DataContext="{Binding CardVM}"
                          Grid.Column="1"
                          Margin="10" />
 
@@ -59,12 +60,13 @@
                         </TextBlock.LayoutTransform><Run Text="Пациенты" /></TextBlock>
                 </Expander.Header>
                 <screen:Patients x:Name="patients"
+                                 DataContext="{Binding PatientsVM}"
                                  Margin="10" />
             </Expander>
         </Grid>
 
         <screen:Login
-			    DataContext="{Binding Login}"
+			    DataContext="{Binding LoginVM}"
 			    Visibility="{Binding DataContext.IsLoginActive, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=root}"
                 Grid.RowSpan="2"
  />

@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
+using EventAggregator;
 
 namespace Diagnosis.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
         private bool _loginActive;
-        private LoginViewModel _loginContext;
+        private LoginViewModel _loginVM;
+        private PatientsListVewModel _patientsVM;
+        private PatientViewModel _patientVM;
         private ICommand _logout;
 
         public bool IsLoginActive
@@ -33,21 +36,52 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public LoginViewModel Login
+        public LoginViewModel LoginVM
         {
             get
             {
-                return _loginContext;
+                return _loginVM;
             }
             set
             {
-                if (_loginContext != value)
+                if (_loginVM != value)
                 {
-                    _loginContext = value;
-                    OnPropertyChanged(() => Login);
+                    _loginVM = value;
+                    OnPropertyChanged(() => LoginVM);
                 }
             }
         }
+        public PatientsListVewModel PatientsVM
+        {
+            get
+            {
+                return _patientsVM;
+            }
+            set
+            {
+                if (_patientsVM != value)
+                {
+                    _patientsVM = value;
+                    OnPropertyChanged(() => PatientsVM);
+                }
+            }
+        }
+        public PatientViewModel CardVM
+        {
+            get
+            {
+                return _patientVM;
+            }
+            set
+            {
+                if (_patientVM != value)
+                {
+                    _patientVM = value;
+                    OnPropertyChanged(() => CardVM);
+                }
+            }
+        }
+
         public ICommand LogoutCommand
         {
             get
@@ -63,12 +97,12 @@ namespace Diagnosis.ViewModels
 
         private void MakeLoginDataContext()
         {
-            if (Login != null)
+            if (LoginVM != null)
             {
-                Login.LoggedIn -= OnLoggedIn;
+                LoginVM.LoggedIn -= OnLoggedIn;
             }
-            Login = new LoginViewModel();
-            Login.LoggedIn += OnLoggedIn;
+            LoginVM = new LoginViewModel();
+            LoginVM.LoggedIn += OnLoggedIn;
         }
 
         void OnLoggedIn(object sender, LoggedEventArgs e)
@@ -81,6 +115,13 @@ namespace Diagnosis.ViewModels
 #if RELEASE
             IsLoginActive = true;
 #endif
+
+            PatientsVM = new PatientsListVewModel(DataCreator.GetPatients());
+            this.Subscribe((int)EventID.CurrentPatientChanged, (e) =>
+            {
+                var patient = e.GetValue<PatientViewModel>(Messages.Patient);
+                CardVM = patient;
+            });
         }
     }
 }

@@ -24,16 +24,6 @@ namespace Diagnosis
         public MainWindow()
         {
             InitializeComponent();
-
-            DataContext = new MainWindowViewModel();
-
-            this.Subscribe((int)EventID.CurrentPatientChanged, (e) =>
-            {
-                var patient = e.GetValue<PatientViewModel>(Messages.Patient);
-                card.DataContext = patient;
-            });
-
-            patients.DataContext = new Diagnosis.ViewModels.PatientsListVewModel(DataCreator.GetPatients());
         }
     }
 }
