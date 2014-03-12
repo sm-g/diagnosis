@@ -12,8 +12,6 @@
 >
     <UserControl.Resources>
         <Converters:BoolToCenterAligmentConverter x:Key="BoolToCenterAligmentConverter" />
-        <Converters:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
         <sys:Double x:Key="buttonsWidth">20</sys:Double>
     </UserControl.Resources>

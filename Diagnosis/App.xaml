@@ -7,7 +7,9 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <conv:IHierarchicalCheckableToBackground x:Key="IHierarchicalCheckableToBackground" />
-
+        <conv:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        
         <Style TargetType="TextBlock" x:Key="watermark">
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Margin">
