@@ -6,6 +6,31 @@ namespace Diagnosis
 {
     public static class DataCreator
     {
+        private static List<DoctorViewModel> _Doctors;
+
+        public static List<DoctorViewModel> GetDoctors()
+        {
+            return _Doctors ?? (_Doctors = new List<DoctorViewModel>()
+            {
+                new DoctorViewModel(new Doctor())
+                {
+                    FirstName = "Иван",
+                    LastName = "Охлобыстин",
+                    MiddleName = "Иванович",
+                    Speciality = "Хирург"
+
+                },
+                new DoctorViewModel(new Doctor())
+                {
+                    FirstName = "Петр",
+                    LastName = "Сидоров",
+                    MiddleName = "Иванович",
+                    Speciality = "Невролог"
+
+                }
+            });
+        }
+
         private static List<PatientViewModel> _Patients;
 
         public static List<PatientViewModel> GetPatients()
@@ -17,16 +42,14 @@ namespace Diagnosis
                     FirstName = "Иван",
                     LastName = "Грибоедов",
                     MiddleName = "Константинович",
-                    Age = 37,
-                    IsMale = true
+                    Age = 37
                 },
                 new PatientViewModel(new Patient())
                 {
                     FirstName = "Петр",
                     LastName = "Сидоров",
                     MiddleName = "Иванович",
-                    Age = 25,
-                    IsMale = true
+                    Age = 25
                 },
                 new PatientViewModel(new Patient())
                 {
