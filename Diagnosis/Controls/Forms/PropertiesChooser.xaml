@@ -29,10 +29,6 @@
                                     <TextBlock Text="{Binding Value}" />
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
-
-                            <controls:WatermarkService.Watermark>
-                                <TextBlock Style="{StaticResource watermark}" Text="{Binding Name}"></TextBlock>
-                            </controls:WatermarkService.Watermark>
                         </ComboBox>
                     </DockPanel>
                 </DataTemplate>
