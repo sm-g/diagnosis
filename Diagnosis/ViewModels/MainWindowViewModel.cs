@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
         private bool _loginActive;
+        private LoginViewModel _loginContext;
+        private ICommand _logout;
+
         public bool IsLoginActive
         {
             get
@@ -21,8 +25,7 @@ namespace Diagnosis.ViewModels
                     _loginActive = value;
                     if (value)
                     {
-                        Login = new LoginViewModel();
-                        Login.LoggedIn += LoginDataContext_LoggedIn;
+                        MakeLoginDataContext();
                     }
 
                     OnPropertyChanged(() => IsLoginActive);
@@ -30,13 +33,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        void LoginDataContext_LoggedIn(object sender, LoggedEventArgs e)
-        {
-            IsLoginActive = false;
-        }
-
-
-        private LoginViewModel _loginContext;
         public LoginViewModel Login
         {
             get
@@ -51,6 +47,33 @@ namespace Diagnosis.ViewModels
                     OnPropertyChanged(() => Login);
                 }
             }
+        }
+        public ICommand LogoutCommand
+        {
+            get
+            {
+                return _logout ?? (_logout = new RelayCommand(
+                                          () =>
+                                          {
+                                              IsLoginActive = true;
+                                          },
+                                          () => !IsLoginActive));
+            }
+        }
+
+        private void MakeLoginDataContext()
+        {
+            if (Login != null)
+            {
+                Login.LoggedIn -= OnLoggedIn;
+            }
+            Login = new LoginViewModel();
+            Login.LoggedIn += OnLoggedIn;
+        }
+
+        void OnLoggedIn(object sender, LoggedEventArgs e)
+        {
+            IsLoginActive = false;
         }
 
         public MainWindowViewModel()

@@ -20,7 +20,8 @@
         
         <Menu Grid.ColumnSpan="2">
             <MenuItem Header="Файл">
-                <MenuItem Header="Выйти"/>
+                <MenuItem Header="Выйти"
+                          Command="{Binding LogoutCommand}"/>
             </MenuItem>            
         </Menu>
 
