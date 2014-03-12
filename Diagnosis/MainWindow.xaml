@@ -1,44 +1,72 @@
-﻿<Window
-        x:Class="Diagnosis.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:Diagnosis"
         xmlns:controls="clr-namespace:Diagnosis.Controls"
         xmlns:vm="clr-namespace:Diagnosis.ViewModels"
         xmlns:screen="clr-namespace:Diagnosis.Screens"
+        mc:Ignorable="d"
+        d:DataContext="{DynamicResource vm}"
+        x:Class="Diagnosis.MainWindow"
         x:Name="root"
         Title="MainWindow" Height="450" Width="600">
+    <Window.Resources>
+        <vm:MainWindowViewModel x:Key="vm" />
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        
-        <Menu Grid.ColumnSpan="2">
-            <MenuItem Header="Файл">
+
+        <Grid x:Name="header">
+            <TextBlock Text="{Binding Login.SelectedDoctor.ShortName}"
+				Margin="5,0"
+				HorizontalAlignment="Left" />
+
+            <CheckBox IsChecked="{Binding FastAddingMode}"
+				HorizontalAlignment="Center" Content="Приём" />
+
+            <Menu HorizontalAlignment="Right">
                 <MenuItem Header="Выйти"
-                          Command="{Binding LogoutCommand}"/>
-            </MenuItem>            
-        </Menu>
+					Command="{Binding LogoutCommand}" />
+            </Menu>
+        </Grid>
 
-        <TextBlock Grid.Column="1"
-                   HorizontalAlignment="Right"
-                   Text="{Binding Login.SelectedDoctor.ShortName}"></TextBlock>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-        <screen:Patients Grid.Row="1" x:Name="patients">
-        </screen:Patients>
+            <screen:Card x:Name="card"
+                         Grid.Column="1"
+                         Margin="10" />
 
-        <screen:Card Margin="10" Grid.Row="1" Grid.Column="1" x:Name="card">
-        </screen:Card>
-        
-        <screen:Login Grid.Row="1" 
-                      Grid.ColumnSpan="2"
-                      DataContext="{Binding Login}"
-                      Visibility="{Binding DataContext.IsLoginActive, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}"
-            />
+            <Expander ExpandDirection="Right"
+			          RenderTransformOrigin="0.5,0.5"
+			          HorizontalAlignment="Left">
+                <Expander.Header>
+                    <TextBlock RenderTransformOrigin="0.5,0.5">
+                        <TextBlock.LayoutTransform>
+                            <TransformGroup>
+                                <RotateTransform Angle="-90" />
+                            </TransformGroup>
+                        </TextBlock.LayoutTransform><Run Text="Пациенты" /></TextBlock>
+                </Expander.Header>
+                <screen:Patients x:Name="patients"
+                                 Margin="10" />
+            </Expander>
+        </Grid>
+
+        <screen:Login
+			    DataContext="{Binding Login}"
+			    Visibility="{Binding DataContext.IsLoginActive, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=root}"
+                Grid.RowSpan="2"
+ />
     </Grid>
 </Window>

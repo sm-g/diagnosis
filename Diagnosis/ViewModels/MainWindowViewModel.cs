@@ -78,7 +78,9 @@ namespace Diagnosis.ViewModels
 
         public MainWindowViewModel()
         {
+#if RELEASE
             IsLoginActive = true;
+#endif
         }
     }
 }
