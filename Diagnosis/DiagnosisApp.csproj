@@ -166,11 +166,6 @@
     </Compile>
     <Compile Include="Controls\Helpers\Attached.cs" />
     <Compile Include="Extensions\FocusExtension.cs" />
-    <Compile Include="Models\Appointment.cs" />
-    <Compile Include="Models\Course.cs" />
-    <Compile Include="Models\Doctor.cs" />
-    <Compile Include="Models\HealthRecord.cs" />
-    <Compile Include="Models\Man.cs" />
     <Compile Include="Screens\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
@@ -200,12 +195,6 @@
     <Compile Include="Controls\Helpers\FocusChecker.cs" />
     <Compile Include="Extensions\TreeViewItemExtenstions.cs" />
     <Compile Include="Messages.cs" />
-    <Compile Include="Models\Diagnosis.cs" />
-    <Compile Include="Models\JournalEntry.cs" />
-    <Compile Include="Models\Patient.cs" />
-    <Compile Include="Models\Property.cs" />
-    <Compile Include="Models\PropertyValue.cs" />
-    <Compile Include="Models\Symptom.cs" />
     <Compile Include="Controls\Directory\TreeItem.xaml.cs">
       <DependentUpon>TreeItem.xaml</DependentUpon>
     </Compile>
@@ -370,6 +359,12 @@
       <ProductName>Windows Installer 4.5</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Diagnosis.Data\Diagnosis.Data.csproj">
+      <Project>{3ec8d3df-aa44-4cb8-8847-d4b4872e9dad}</Project>
+      <Name>Diagnosis.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
