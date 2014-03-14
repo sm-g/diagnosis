@@ -7,9 +7,9 @@ namespace Diagnosis.Models
 {
     public class Patient : Man
     {
-        public DateTime BirthDate { get; set; }
-        public bool OnlyBirthYear { get; set; }
-        public int SNILS { get; set; }
+        public virtual int Id { get; protected set; }
+        public virtual DateTime BirthDate { get; set; }
+        public virtual int SNILS { get; set; }
 
         public Patient()
         {

@@ -70,14 +70,14 @@ namespace Diagnosis.ViewModels
             get
             {
                 int age = DateTime.Today.Year - patient.BirthDate.Year;
-                if (!patient.OnlyBirthYear && patient.BirthDate > DateTime.Today.AddYears(-age))
+                if (patient.BirthDate > DateTime.Today.AddYears(-age))
                     age--;
                 return age;
             }
             set
             {
                 int year = DateTime.Today.Year - value;
-                if (!patient.OnlyBirthYear && new DateTime(value, patient.BirthDate.Month, patient.BirthDate.Day) < DateTime.Today.AddYears(-value)) // TODO
+                if (new DateTime(value, patient.BirthDate.Month, patient.BirthDate.Day) < DateTime.Today.AddYears(-value)) // TODO
                     year--;
                 BirthYear = year;
             }
@@ -104,23 +104,13 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                if (patient.OnlyBirthYear)
-                    return 13;
                 return patient.BirthDate.Month;
             }
             set
             {
-                if (patient.BirthDate.Month != value && value >= 1 && value <= 13)
+                if (patient.BirthDate.Month != value && value >= 1 && value <= 12)
                 {
-                    if (value == 13)
-                    {
-                        patient.OnlyBirthYear = true;
-                    }
-                    else
-                    {
-                        patient.OnlyBirthYear = false;
-                        patient.BirthDate = new DateTime(patient.BirthDate.Year, value, patient.BirthDate.Day);
-                    }
+                    patient.BirthDate = new DateTime(patient.BirthDate.Year, value, patient.BirthDate.Day);
                     OnPropertyChanged(() => Age);
                     OnPropertyChanged(() => BirthMonth);
                 }
@@ -131,8 +121,6 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                if (patient.OnlyBirthYear)
-                    return 0;
                 return patient.BirthDate.Day;
             }
             set
