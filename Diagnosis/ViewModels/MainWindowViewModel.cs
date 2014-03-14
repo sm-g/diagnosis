@@ -36,6 +36,23 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        private bool _isPatientsVisible;
+        public bool IsPatientsVisible
+        {
+            get
+            {
+                return _isPatientsVisible;
+            }
+            set
+            {
+                if (_isPatientsVisible != value)
+                {
+                    _isPatientsVisible = value;
+                    OnPropertyChanged(() => IsPatientsVisible);
+                }
+            }
+        }
+
         public LoginViewModel LoginVM
         {
             get
@@ -108,6 +125,7 @@ namespace Diagnosis.ViewModels
         void OnLoggedIn(object sender, LoggedEventArgs e)
         {
             IsLoginActive = false;
+            IsPatientsVisible = true;
         }
 
         public MainWindowViewModel()
@@ -116,12 +134,13 @@ namespace Diagnosis.ViewModels
             IsLoginActive = true;
 #endif
 
-            PatientsVM = new PatientsListVewModel(DataCreator.Patients);
             this.Subscribe((int)EventID.CurrentPatientChanged, (e) =>
             {
                 var patient = e.GetValue<PatientViewModel>(Messages.Patient);
                 CardVM = patient;
             });
+
+            PatientsVM = new PatientsListVewModel(DataCreator.Patients);
         }
     }
 }
