@@ -68,13 +68,13 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return course.Start;
+                return course.Start.Date;
             }
             set
             {
-                if (course.Start != value)
+                if (course.Start.Date != value.Date)
                 {
-                    course.Start = value;
+                    course.Start = value.Date;
                     OnPropertyChanged(() => Start);
                 }
             }
@@ -84,19 +84,19 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return course.End;
+                return course.End.Date;
             }
             set
             {
-                if (course.End != value)
+                if (course.End.Date != value.Date)
                 {
-                    course.End = value;
+                    course.End = value.Date;
                     OnPropertyChanged(() => End);
                 }
             }
         }
 
-        public ObservableCollection<Appointment> Appointments { get; private set; }
+        public ObservableCollection<AppointmentViewModel> Appointments { get; private set; }
 
         public CourseViewModel(Course course)
         {
@@ -104,7 +104,7 @@ namespace Diagnosis.ViewModels
 
             this.course = course;
             LeadDoctor = new DoctorViewModel(course.LeadDoctor);
-            Appointments = new ObservableCollection<Appointment>();
+            Appointments = new ObservableCollection<AppointmentViewModel>();
         }
     }
 }

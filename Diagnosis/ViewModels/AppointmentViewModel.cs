@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Diagnosis.ViewModels
 {
-    public class Appointment : ViewModelBase
+    public class AppointmentViewModel : ViewModelBase
     {
     }
 }
