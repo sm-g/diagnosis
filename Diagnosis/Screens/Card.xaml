@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.Controls"
+             xmlns:card="clr-namespace:Diagnosis.Controls.Card"
              xmlns:conv="clr-namespace:Diagnosis.Converters"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="600">
@@ -57,12 +58,12 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Style="{StaticResource ScreenTitle}">
-                <TextBlock Text="{Binding LastName}"/>
+                <TextBlock Text="{Binding LastName}" />
                 <TextBlock>
                     <TextBlock.Text>
                         <MultiBinding StringFormat='{}{0} {1}'>
-                            <Binding Path="FirstName"/>
-                            <Binding Path="MiddleName"/>
+                            <Binding Path="FirstName" />
+                            <Binding Path="MiddleName" />
                         </MultiBinding>
                     </TextBlock.Text>
                 </TextBlock>
@@ -81,6 +82,11 @@
                     <controls:NameEditor />
                     <controls:SexChooser Margin="0,5" Width="100" HorizontalAlignment="Left" />
                     <controls:AgePicker Margin="0,5" />
+
+                    <DockPanel Margin="0,5">
+                        <TextBlock Text="СНИЛС" Style="{StaticResource label}" />
+                        <TextBox Text="{Binding Snils}" />
+                    </DockPanel>
 
                     <Separator />
 
