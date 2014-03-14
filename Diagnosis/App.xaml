@@ -13,7 +13,12 @@
         <Style TargetType="TextBlock" x:Key="ScreenTitle">
             <Setter Property="FontSize" Value="24"/>
         </Style>
-
+        
+        <Style TargetType="TextBlock" x:Key="label">
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="Width" Value="150"/>
+        </Style>
+        
         <Style TargetType="TextBlock" x:Key="watermark">
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Margin">
