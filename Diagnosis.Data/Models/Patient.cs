@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
@@ -13,7 +11,7 @@ namespace Diagnosis.Models
         public virtual string LastName { get; set; }
         public virtual bool IsMale { get; set; }
         public virtual DateTime BirthDate { get; set; }
-        public virtual int SNILS { get; set; }
+        public virtual string SNILS { get; set; }
 
         public Patient()
         {

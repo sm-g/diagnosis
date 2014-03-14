@@ -9,7 +9,7 @@ namespace Diagnosis.Models
     public class Symptom
     {
         public string Title { get; set; }
-        public int Level { get; set; }
+        public byte Priority { get; set; }
 
         public Symptom(string title)
         {

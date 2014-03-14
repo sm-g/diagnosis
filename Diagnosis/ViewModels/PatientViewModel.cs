@@ -169,7 +169,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public int Snils
+        public string Snils
         {
             get
             {

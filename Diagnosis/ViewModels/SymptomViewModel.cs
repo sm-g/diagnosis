@@ -13,18 +13,18 @@ namespace Diagnosis.ViewModels
 
         public string SortingOrder { get; private set; }
 
-        public int Level
+        public byte Priority
         {
             get
             {
-                return symptom.Level;
+                return symptom.Priority;
             }
             set
             {
-                if (symptom.Level != value)
+                if (symptom.Priority != value)
                 {
-                    symptom.Level = value;
-                    OnPropertyChanged(() => Level);
+                    symptom.Priority = value;
+                    OnPropertyChanged(() => Priority);
                 }
             }
         }

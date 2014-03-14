@@ -6,14 +6,14 @@ namespace Diagnosis.ViewModels
     public class SymptomSearch : HierarchicalSearch<SymptomViewModel>
     {
         /// <summary>
-        /// Уровень (глубина), ниже которого и включая который искать симптомы.
+        /// Верхняя граница приоритета симптома. Поиск выдаёт симптомы с приоритетом, численно большим верхней границы.
         /// </summary>
-        public int UpperLevel { get; set; }
+        public byte UpperPriority { get; set; }
 
-        public SymptomSearch(SymptomViewModel parent, bool withNonCheckable = false, bool withChecked = false, bool allChildren = true, int upperLevel = 0)
+        public SymptomSearch(SymptomViewModel parent, bool withNonCheckable = false, bool withChecked = false, bool allChildren = true, byte upperPriority = 0)
             : base(parent, withNonCheckable, withChecked, allChildren)
         {
-            UpperLevel = upperLevel;
+            UpperPriority = upperPriority;
 
             InitQuery();
         }
@@ -22,7 +22,7 @@ namespace Diagnosis.ViewModels
         {
             return new SymptomViewModel(new Symptom()
                 {
-                    Level = UpperLevel,
+                    Priority = UpperPriority,
                     Title = query
                 });
         }
@@ -30,7 +30,7 @@ namespace Diagnosis.ViewModels
         protected override bool CheckConditions(SymptomViewModel obj)
         {
             return base.CheckConditions(obj)
-                   && (UpperLevel <= obj.Level);
+                   && (UpperPriority <= obj.Priority);
         }
     }
 }

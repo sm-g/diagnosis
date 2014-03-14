@@ -10,6 +10,6 @@ namespace Diagnosis.Models
         public Patient Patient { get; set; }
         public Doctor LeadDoctor { get; set; }
         public DateTime Start { get; set; }
-        public DateTime End { get; set; }
+        public DateTime? End { get; set; }
     }
 }
