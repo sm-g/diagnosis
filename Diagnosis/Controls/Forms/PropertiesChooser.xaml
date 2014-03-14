@@ -7,11 +7,6 @@
              xmlns:local="clr-namespace:Diagnosis"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-    <UserControl.DataContext>
-        <ObjectDataProvider
-                          MethodName="GetProperties"
-                          ObjectType="{x:Type local:DataCreator}" />
-    </UserControl.DataContext>
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
         <ItemsControl ItemsSource="{Binding}">
             <ItemsControl.ItemsPanel>
