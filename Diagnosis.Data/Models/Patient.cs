@@ -5,9 +5,13 @@ using System.Text;
 
 namespace Diagnosis.Models
 {
-    public class Patient : Man
+    public class Patient
     {
         public virtual int Id { get; protected set; }
+        public virtual string FirstName { get; set; }
+        public virtual string MiddleName { get; set; }
+        public virtual string LastName { get; set; }
+        public virtual bool IsMale { get; set; }
         public virtual DateTime BirthDate { get; set; }
         public virtual int SNILS { get; set; }
 
