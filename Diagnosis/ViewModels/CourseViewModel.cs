@@ -9,6 +9,7 @@ namespace Diagnosis.ViewModels
     {
         private Course course;
         private bool _appointmentsVis;
+        private bool _isEnded;
         private DoctorViewModel _leadDoctor;
 
         #region CheckableBase
@@ -80,18 +81,27 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        public bool IsEnded
+        {
+            get
+            {
+                return course.End.HasValue;
+            }
+        }
+
         public DateTime End
         {
             get
             {
-                return course.End.Date;
+                return course.End.HasValue ? course.End.Value.Date : new DateTime();
             }
             set
             {
-                if (course.End.Date != value.Date)
+                if (!course.End.HasValue || course.End.Value.Date != value.Date)
                 {
                     course.End = value.Date;
                     OnPropertyChanged(() => End);
+                    OnPropertyChanged(() => IsEnded);
                 }
             }
         }
