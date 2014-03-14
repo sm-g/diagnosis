@@ -116,7 +116,7 @@ namespace Diagnosis.ViewModels
             IsLoginActive = true;
 #endif
 
-            PatientsVM = new PatientsListVewModel(DataCreator.GetPatients());
+            PatientsVM = new PatientsListVewModel(DataCreator.Patients);
             this.Subscribe((int)EventID.CurrentPatientChanged, (e) =>
             {
                 var patient = e.GetValue<PatientViewModel>(Messages.Patient);

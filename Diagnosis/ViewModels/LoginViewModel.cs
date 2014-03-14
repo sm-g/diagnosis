@@ -86,7 +86,7 @@ namespace Diagnosis.ViewModels
 
         public LoginViewModel()
         {
-            Doctors = new ObservableCollection<DoctorViewModel>(DataCreator.GetDoctors());
+            Doctors = new ObservableCollection<DoctorViewModel>(DataCreator.Doctors);
         }
 
         private void LogIn()

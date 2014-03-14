@@ -177,6 +177,12 @@ namespace Diagnosis.ViewModels
             private set;
         }
 
+        public ObservableCollection<CourseViewModel> Courses
+        {
+            get;
+            private set;
+        }
+
         #region CheckableBase
 
         public override bool IsReady
@@ -274,6 +280,7 @@ namespace Diagnosis.ViewModels
             patient = p;
 
             Symptoms = new ObservableCollection<SymptomViewModel>();
+            Courses = new ObservableCollection<CourseViewModel>(DataCreator.Courses);
             msgHandlers = Subscribe();
         }
 
