@@ -17,15 +17,17 @@
         <Expander Grid.RowSpan="2"
                   IsExpanded="{Binding IsAppointmentsVisible}"/>
         <StackPanel Grid.Column="1">
-            <TextBlock Text="{Binding Text}"/>
+            <TextBlock Text="{Binding Name}"/>
             <TextBlock>
-                <TextBlock Text="{Binding Start}"/>—<TextBlock Text="{Binding End}"/>
+                <TextBlock Text="{Binding Start, StringFormat='{}{0:d}'}"/>—<TextBlock Text="{Binding End, StringFormat='{}{0:d}'}"/>
             </TextBlock>
-            <TextBlock Text="{Binding LeaadDoctor.ShortName}"/>
+            <TextBlock Text="{Binding LeadDoctor.ShortName}"/>
         </StackPanel>
         <ItemsControl x:Name="appointments"
                       ItemsSource="{Binding Appointments}"
-                      Visibility="{Binding IsAppointmentsVisible}">
+                      Visibility="{Binding IsAppointmentsVisible}" 
+                      Grid.Column="1" 
+                      Grid.Row="1">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>
