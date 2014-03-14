@@ -11,14 +11,25 @@ namespace Diagnosis.ViewModels
 {
     public class PatientViewModel : CheckableBase, ISearchable
     {
-        private Patient patient;
+        internal Patient patient;
         private List<EventMessageHandler> msgHandlers;
+
+        public event EventHandler ModelPropertyChanged;
+
+        public void OnModelPropertyChanged()
+        {
+            var h = ModelPropertyChanged;
+            if (h != null)
+            {
+                h(this, new EventArgs());
+            }
+        }
 
         public string FirstName
         {
             get
             {
-                return patient.FirstName;
+                return patient.FirstName ?? "";
             }
             set
             {
@@ -27,6 +38,7 @@ namespace Diagnosis.ViewModels
                     patient.FirstName = value;
                     OnPropertyChanged(() => FirstName);
                     OnPropertyChanged(() => ShortName);
+                    OnModelPropertyChanged();
                 }
             }
         }
@@ -35,7 +47,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return patient.MiddleName;
+                return patient.MiddleName ?? "";
             }
             set
             {
@@ -44,6 +56,7 @@ namespace Diagnosis.ViewModels
                     patient.MiddleName = value;
                     OnPropertyChanged(() => MiddleName);
                     OnPropertyChanged(() => ShortName);
+                    OnModelPropertyChanged();
                 }
             }
         }
@@ -52,7 +65,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return patient.LastName;
+                return patient.LastName ?? "";
             }
             set
             {
@@ -61,6 +74,7 @@ namespace Diagnosis.ViewModels
                     patient.LastName = value;
                     OnPropertyChanged(() => LastName);
                     OnPropertyChanged(() => ShortName);
+                    OnModelPropertyChanged();
                 }
             }
         }
@@ -96,6 +110,7 @@ namespace Diagnosis.ViewModels
                     patient.BirthDate = new DateTime(value, patient.BirthDate.Month, patient.BirthDate.Day);
                     OnPropertyChanged(() => Age);
                     OnPropertyChanged(() => BirthYear);
+                    OnModelPropertyChanged();
                 }
             }
         }
@@ -113,6 +128,7 @@ namespace Diagnosis.ViewModels
                     patient.BirthDate = new DateTime(patient.BirthDate.Year, value, patient.BirthDate.Day);
                     OnPropertyChanged(() => Age);
                     OnPropertyChanged(() => BirthMonth);
+                    OnModelPropertyChanged();
                 }
             }
         }
@@ -131,6 +147,7 @@ namespace Diagnosis.ViewModels
 
                     OnPropertyChanged(() => Age);
                     OnPropertyChanged(() => BirthDay);
+                    OnModelPropertyChanged();
                 }
             }
         }
@@ -147,6 +164,24 @@ namespace Diagnosis.ViewModels
                 {
                     patient.IsMale = value;
                     OnPropertyChanged(() => IsMale);
+                    OnModelPropertyChanged();
+                }
+            }
+        }
+
+        public int Snils
+        {
+            get
+            {
+                return patient.SNILS;
+            }
+            set
+            {
+                if (patient.SNILS != value)
+                {
+                    patient.SNILS = value;
+                    OnPropertyChanged(() => Snils);
+                    OnModelPropertyChanged();
                 }
             }
         }

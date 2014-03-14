@@ -19,11 +19,17 @@ namespace Diagnosis.ViewModels
 
         protected override PatientViewModel FromQuery(string query)
         {
+            var lfmNames = query.Split().ToList();
+
+            while (lfmNames.Count < 3)
+            {
+                lfmNames.Add("");
+            }
             return new PatientViewModel(new Patient()
                  {
-                     LastName = query,
-                     MiddleName = "",
-                     FirstName = ""
+                     LastName = lfmNames[0],
+                     FirstName = lfmNames[1],
+                     MiddleName = lfmNames[2],
                  });
         }
     }
