@@ -89,8 +89,8 @@
     <Compile Include="Mappings\PatientPropertyMap.cs" />
     <Compile Include="Mappings\PatientMap.cs" />
     <Compile Include="Models\PatientProperty.cs" />
-    <Compile Include="NHibernate\NamingStrategy.cs" />
     <Compile Include="NHibernate\Net4Collections.cs" />
+    <Compile Include="NHibernate\NamingStrategy.cs" />
     <Compile Include="NHibernate\NHibHelper.cs" />
     <Compile Include="Repositories\PropertyValueRepository.cs" />
     <Compile Include="Repositories\PatientPropertyRepository.cs" />

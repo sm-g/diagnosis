@@ -8,7 +8,7 @@ namespace Diagnosis.Models
 {
     public class PropertyValue
     {
-        Iesi.Collections.Generic.ISet<PatientProperty> patientProperties;
+        ISet<PatientProperty> patientProperties;
         internal static IEqualityComparer<PropertyValue> equalityComparer = new PropertyValueEqualityComparer();
 
         public virtual int Id { get; protected set; }
@@ -32,7 +32,7 @@ namespace Diagnosis.Models
 
         protected PropertyValue()
         {
-            patientProperties = new Iesi.Collections.Generic.HashedSet<PatientProperty>();
+            patientProperties = new HashSet<PatientProperty>();
         }
     }
 

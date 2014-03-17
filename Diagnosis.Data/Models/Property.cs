@@ -7,8 +7,8 @@ namespace Diagnosis.Models
 {
     public class Property
     {
-        Iesi.Collections.Generic.ISet<PropertyValue> values;
-        Iesi.Collections.Generic.ISet<PatientProperty> patientProperties;
+        ISet<PropertyValue> values;
+        ISet<PatientProperty> patientProperties;
 
         public virtual int Id { get; protected set; }
         public virtual string Title { get; set; }
@@ -49,8 +49,8 @@ namespace Diagnosis.Models
         }
         protected Property()
         {
-            values = new Iesi.Collections.Generic.HashedSet<PropertyValue>();
-            patientProperties = new Iesi.Collections.Generic.HashedSet<PatientProperty>();
+            values = new HashSet<PropertyValue>();
+            patientProperties = new HashSet<PatientProperty>();
         }
     }
 }

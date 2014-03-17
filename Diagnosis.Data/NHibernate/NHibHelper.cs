@@ -4,7 +4,6 @@ using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Cfg.MappingSchema;
 using NHibernate.Mapping.ByCode;
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -51,6 +50,7 @@ namespace Diagnosis.Data
             var cfg = new Configuration();
 
             cfg.Configure("..\\..\\..\\Diagnosis.Data\\NHibernate\\hibernate.cfg.xml");
+            cfg.Properties[Environment.CollectionTypeFactoryClass] = typeof(Net4CollectionTypeFactory).AssemblyQualifiedName;
             cfg.AddAssembly(typeof(Patient).Assembly);
             cfg.AddMapping(Mapping);
 

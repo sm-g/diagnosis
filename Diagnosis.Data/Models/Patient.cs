@@ -1,11 +1,11 @@
-﻿using Iesi.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
 
 namespace Diagnosis.Models
 {
     public class Patient
     {
-        ISet<PatientProperty> patientProperties = new HashedSet<PatientProperty>();
+        ISet<PatientProperty> patientProperties = new HashSet<PatientProperty>();
         string _snils;
 
         public virtual int Id { get; protected set; }
