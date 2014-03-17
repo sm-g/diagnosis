@@ -12,6 +12,5 @@ namespace Diagnosis.Data.Repositories
         void Remove(T entity);
         IEnumerable<T> GetAll();
         T GetById(int entityId);
-        T GetByName(string name);
     }
 }

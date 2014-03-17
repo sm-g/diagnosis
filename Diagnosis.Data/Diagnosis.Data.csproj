@@ -84,9 +84,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Mappings\PatientMapping.cs" />
-    <Compile Include="NHibHelper.cs" />
-    <Compile Include="Repositories\IPatientRepository.cs" />
+    <Compile Include="Mappings\PropertyValueMap.cs" />
+    <Compile Include="Mappings\PropertyMap.cs" />
+    <Compile Include="Mappings\PatientPropertyMap.cs" />
+    <Compile Include="Mappings\PatientMap.cs" />
+    <Compile Include="Models\PatientProperty.cs" />
+    <Compile Include="NHibernate\NamingStrategy.cs" />
+    <Compile Include="NHibernate\Net4Collections.cs" />
+    <Compile Include="NHibernate\NHibHelper.cs" />
+    <Compile Include="Repositories\PropertyValueRepository.cs" />
+    <Compile Include="Repositories\PatientPropertyRepository.cs" />
+    <Compile Include="Repositories\PropertyRepository.cs" />
+    <Compile Include="Repositories\IModelRepositories.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Models\Appointment.cs" />
     <Compile Include="Models\Course.cs" />
@@ -101,7 +110,7 @@
     <Compile Include="Repositories\PatientRepository.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="hibernate.cfg.xml">
+    <Content Include="NHibernate\hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

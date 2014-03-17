@@ -1,10 +1,13 @@
-﻿using System;
-using Iesi.Collections.Generic;
+﻿using Iesi.Collections.Generic;
+using System;
 
 namespace Diagnosis.Models
 {
     public class Patient
     {
+        ISet<PatientProperty> patientProperties = new HashedSet<PatientProperty>();
+        string _snils;
+
         public virtual int Id { get; protected set; }
         public virtual string FirstName { get; set; }
         public virtual string MiddleName { get; set; }
@@ -57,6 +60,25 @@ namespace Diagnosis.Models
             return 0 == control;
         }
 
+        public virtual ISet<PatientProperty> PatientProperties
+        {
+            get
+            {
+                return patientProperties;
+            }
+        }
+
+        public virtual void AddPatientProperty(PatientProperty property)
+        {
+            if (property == null)
+                throw new ArgumentNullException("property");
+
+            if (!patientProperties.Contains(property))
+            {
+                patientProperties.Add(property);
+                property.Patient = this;
+            }
+        }
 
         public Patient()
         {
