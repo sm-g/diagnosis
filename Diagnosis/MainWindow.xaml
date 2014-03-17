@@ -24,7 +24,7 @@
         </Grid.ColumnDefinitions>
 
         <Grid x:Name="header">
-            <TextBlock Text="{Binding Login.SelectedDoctor.ShortName}"
+            <TextBlock Text="{Binding LoginVM.SelectedDoctor.ShortName}"
 				Margin="5,0"
 				HorizontalAlignment="Left" />
 

@@ -34,12 +34,7 @@
                     
                 </ComboBox>
             </DockPanel>
-            <DockPanel>
-                <TextBlock Style="{StaticResource label}">Логин:</TextBlock>
-                <TextBox x:Name="username"
-                         TextWrapping="Wrap"
-                         Text="{Binding Username}" />
-            </DockPanel>
+
             <DockPanel>
                 <TextBlock Style="{StaticResource label}">Пароль:</TextBlock>
                 <Border DataContext="{Binding IsWrongPassword}">
