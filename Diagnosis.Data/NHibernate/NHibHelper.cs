@@ -15,6 +15,7 @@ namespace Diagnosis.Data
         private static Configuration _configuration;
         private static HbmMapping _mapping;
         private static ISessionFactory _sessionFactory;
+        static ISession _session;
 
         public static Configuration Configuration
         {
@@ -40,16 +41,16 @@ namespace Diagnosis.Data
             }
         }
 
-        public static ISession OpenSession()
+        public static ISession GetSession()
         {
-            return SessionFactory.OpenSession();
+            return _session ?? (_session = SessionFactory.OpenSession());
         }
 
         private static Configuration CreateConfiguration()
         {
             var cfg = new Configuration();
 
-            cfg.Configure("..\\..\\..\\Diagnosis.Data\\hibernate.cfg.xml");
+            cfg.Configure("..\\..\\..\\Diagnosis.Data\\NHibernate\\hibernate.cfg.xml");
             cfg.AddAssembly(typeof(Patient).Assembly);
             cfg.AddMapping(Mapping);
 

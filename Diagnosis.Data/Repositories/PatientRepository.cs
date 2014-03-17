@@ -13,7 +13,7 @@ namespace Diagnosis.Data.Repositories
     {
         public void Add(Patient entity)
         {
-            using (ISession session = NHibernateHelper.OpenSession())
+            ISession session = NHibernateHelper.GetSession();
             using (ITransaction transaction = session.BeginTransaction())
             {
                 session.Save(entity);
@@ -22,7 +22,7 @@ namespace Diagnosis.Data.Repositories
         }
         public void Update(Patient entity)
         {
-            using (ISession session = NHibernateHelper.OpenSession())
+            ISession session = NHibernateHelper.GetSession();
             using (ITransaction transaction = session.BeginTransaction())
             {
                 session.Update(entity);
@@ -31,7 +31,7 @@ namespace Diagnosis.Data.Repositories
         }
         public void Remove(Patient entity)
         {
-            using (ISession session = NHibernateHelper.OpenSession())
+            ISession session = NHibernateHelper.GetSession();
             using (ITransaction transaction = session.BeginTransaction())
             {
                 session.Delete(entity);
@@ -40,17 +40,17 @@ namespace Diagnosis.Data.Repositories
         }
         public IEnumerable<Patient> GetAll()
         {
-            using (ISession session = NHibernateHelper.OpenSession())
-                return session.CreateCriteria(typeof(Patient)).List<Patient>().AsQueryable();
+            ISession session = NHibernateHelper.GetSession();
+                return session.CreateCriteria(typeof(Patient)).List<Patient>();
         }
         public Patient GetById(int entityId)
         {
-            using (ISession session = NHibernateHelper.OpenSession())
+            ISession session = NHibernateHelper.GetSession();
                 return session.Get<Patient>(entityId);
         }
         public Patient GetByName(string name)
         {
-            using (ISession session = NHibernateHelper.OpenSession())
+            ISession session = NHibernateHelper.GetSession();
             {
                 Patient patient = session
                     .CreateCriteria(typeof(Patient))
