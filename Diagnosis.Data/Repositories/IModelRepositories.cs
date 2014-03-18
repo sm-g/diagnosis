@@ -1,8 +1,5 @@
-﻿using System;
+﻿using Diagnosis.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Diagnosis.Models;
 
 namespace Diagnosis.Data.Repositories
 {
@@ -20,7 +17,27 @@ namespace Diagnosis.Data.Repositories
     }
     public interface IPatientPropertyRepository : IRepository<PatientProperty>
     {
-        IEnumerable<PatientProperty> GetByPatient(Patient patient);
     }
-
+    public interface IDoctorRepository : IRepository<Doctor>
+    {
+        Doctor GetByName(string name);
+    }
+    public interface ICourseRepository : IRepository<Course>
+    {
+    }
+    public interface IAppointmentRepository : IRepository<Appointment>
+    {
+    }
+    public interface IHealthRecordRepository : IRepository<HealthRecord>
+    {
+    }
+    public interface ISymptomRepository : IRepository<Symptom>
+    {
+        Symptom GetByTitle(string title);
+    }
+    public interface IDiagnosisRepository : IRepository<Diagnosis.Models.Diagnosis>
+    {
+        Diagnosis.Models.Diagnosis GetByTitle(string title);
+        Diagnosis.Models.Diagnosis GetByCode(string code);
+    }
 }

@@ -5,8 +5,7 @@ using System.Collections.Generic;
 
 namespace Diagnosis.Data.Repositories
 {
-    public class PatientPropertyRepository : ModelRepository<PatientProperty>, IPatientPropertyRepository
+    public class AppointmentRepository : ModelRepository<Appointment>, IAppointmentRepository
     {
-
     }
 }
