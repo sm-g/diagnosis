@@ -58,7 +58,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return !String.IsNullOrWhiteSpace(Username ?? "") && Password != null && Password.Length > 0;
+                return true; //!String.IsNullOrWhiteSpace(Username ?? "") && Password != null && Password.Length > 0;
             }
         }
 
@@ -91,7 +91,9 @@ namespace Diagnosis.ViewModels
 
         private void LogIn()
         {
-            Password.MakeReadOnly();
+            // Password.MakeReadOnly();
+
+            // always successful
 
             var h = LoggedIn;
             if (h != null)
