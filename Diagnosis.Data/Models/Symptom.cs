@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
     public class Symptom
     {
-        public string Title { get; set; }
-        public byte Priority { get; set; }
+        public virtual int Id { get; protected set; }
+        public virtual string Title { get; set; }
+        public virtual byte Priority { get; set; }
 
         public Symptom(string title)
         {

@@ -4,9 +4,9 @@ using NHibernate.Mapping.ByCode.Conformist;
 
 namespace Diagnosis.Data.Mappings
 {
-    public class PropertyMap : ClassMapping<Property>
+    public class DiagnosisMap : ClassMapping<Diagnosis.Models.Diagnosis>
     {
-        public PropertyMap()
+        public DiagnosisMap()
         {
             Id(x => x.Id, m =>
             {
@@ -14,12 +14,13 @@ namespace Diagnosis.Data.Mappings
             });
 
             Property(x => x.Title);
+            Property(x => x.Code);
 
-            Set(x => x.Values, s =>
+            Set(x => x.HealthRecords, s =>
             {
                 s.Key(k =>
                 {
-                    k.Column("PropertyID");
+                    k.Column("DiagnosisID");
                 });
                 s.Inverse(true);
                 s.Access(Accessor.Field);
@@ -27,17 +28,21 @@ namespace Diagnosis.Data.Mappings
             {
                 r.OneToMany();
             });
-            Set(x => x.PatientProperties, s =>
+            Set(x => x.Children, s =>
             {
                 s.Key(k =>
                 {
-                    k.Column("PropertyID");
+                    k.Column("ID");
                 });
                 s.Inverse(true);
                 s.Access(Accessor.Field);
             }, r =>
             {
                 r.OneToMany();
+            });
+            ManyToOne(x => x.Parent, m =>
+            {
+                m.Column("ParentID");
             });
         }
     }

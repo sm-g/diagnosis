@@ -84,6 +84,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mappings\AppointmentMap.cs" />
+    <Compile Include="Mappings\DiagnosisMap.cs" />
+    <Compile Include="Mappings\SymptomMap.cs" />
+    <Compile Include="Mappings\HealthRecordMap.cs" />
+    <Compile Include="Mappings\DoctorMap.cs" />
+    <Compile Include="Mappings\CourseMap.cs" />
     <Compile Include="Mappings\PropertyValueMap.cs" />
     <Compile Include="Mappings\PropertyMap.cs" />
     <Compile Include="Mappings\PatientPropertyMap.cs" />

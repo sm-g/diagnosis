@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System;
 
 namespace Diagnosis.Models
@@ -6,6 +7,8 @@ namespace Diagnosis.Models
     public class Patient
     {
         ISet<PatientProperty> patientProperties = new HashSet<PatientProperty>();
+        ISet<Course> courses = new HashSet<Course>();
+
         string _snils;
 
         public virtual int Id { get; protected set; }
@@ -26,6 +29,36 @@ namespace Diagnosis.Models
                 {
                     _snils = value;
                 }
+            }
+        }
+
+        public virtual ReadOnlyCollection<PatientProperty> PatientProperties
+        {
+            get
+            {
+                return new ReadOnlyCollection<PatientProperty>(
+                    new List<PatientProperty>(patientProperties));
+            }
+        }
+
+        public virtual ReadOnlyCollection<Course> Courses
+        {
+            get
+            {
+                return new ReadOnlyCollection<Course>(
+                    new List<Course>(courses));
+            }
+        }
+
+        public virtual void AddPatientProperty(PatientProperty property)
+        {
+            if (property == null)
+                throw new ArgumentNullException("property");
+
+            if (!patientProperties.Contains(property))
+            {
+                patientProperties.Add(property);
+                property.Patient = this;
             }
         }
 
@@ -58,26 +91,6 @@ namespace Diagnosis.Models
                 return sum == control % 101;
             }
             return 0 == control;
-        }
-
-        public virtual ISet<PatientProperty> PatientProperties
-        {
-            get
-            {
-                return patientProperties;
-            }
-        }
-
-        public virtual void AddPatientProperty(PatientProperty property)
-        {
-            if (property == null)
-                throw new ArgumentNullException("property");
-
-            if (!patientProperties.Contains(property))
-            {
-                patientProperties.Add(property);
-                property.Patient = this;
-            }
         }
 
         public Patient()

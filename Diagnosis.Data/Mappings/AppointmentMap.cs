@@ -4,21 +4,21 @@ using NHibernate.Mapping.ByCode.Conformist;
 
 namespace Diagnosis.Data.Mappings
 {
-    public class PropertyValueMap : ClassMapping<PropertyValue>
+    public class AppointmentMap : ClassMapping<Appointment>
     {
-        public PropertyValueMap()
+        public AppointmentMap()
         {
             Id(x => x.Id, m =>
             {
                 m.Generator(Generators.Native);
             });
 
-            Property(x => x.Title);
-            Set(x => x.PatientProperties, s =>
+            Property(x => x.DateTime);
+            Set(x => x.HealthRecords, s =>
             {
                 s.Key(k =>
                 {
-                    k.Column("ValueID");
+                    k.Column("AppointmentID");
                 });
                 s.Inverse(true);
                 s.Access(Accessor.Field);
@@ -26,9 +26,13 @@ namespace Diagnosis.Data.Mappings
             {
                 r.OneToMany();
             });
-            ManyToOne(x => x.Property, m =>
+            ManyToOne(x => x.Course, m =>
             {
-                m.Column("PropertyID");
+                m.Column("CourseID");
+            });
+            ManyToOne(x => x.Doctor, m =>
+            {
+                m.Column("DoctorID");
             });
         }
     }

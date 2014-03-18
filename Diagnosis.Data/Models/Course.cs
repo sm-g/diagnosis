@@ -1,15 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections.ObjectModel;
 
 namespace Diagnosis.Models
 {
     public class Course
     {
-        public Patient Patient { get; set; }
-        public Doctor LeadDoctor { get; set; }
-        public DateTime Start { get; set; }
-        public DateTime? End { get; set; }
+        ISet<Appointment> appointments = new HashSet<Appointment>();
+
+        public virtual int Id { get; protected set; }
+        public virtual Patient Patient { get; set; }
+        public virtual Doctor LeadDoctor { get; set; }
+        public virtual DateTime Start { get; set; }
+        public virtual DateTime? End { get; set; }
+        public virtual ReadOnlyCollection<Appointment> Appointments
+        {
+            get
+            {
+                return new ReadOnlyCollection<Appointment>(
+                    new List<Appointment>(appointments));
+            }
+        }
     }
 }
