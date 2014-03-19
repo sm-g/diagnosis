@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Diagnosis.Models.Appointment">
+    <Position X="8" Y="4.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAABAAAAAIAAAAQAAAAEAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Appointment.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Doctor" />
+      <Property Name="Course" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="HealthRecords" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Diagnosis.Models.Course">
+    <Position X="6.5" Y="0.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAICAAAAACAAAAAAAABQAAAAQAAAAAAAAAgAAAAACAA=</HashCode>
+      <FileName>Models\Course.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.Models.Diagnosis">
+    <Position X="10.25" Y="9.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAEQAAAAkQAQAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Diagnosis.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Parent" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="HealthRecords" />
+      <Property Name="Children" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Diagnosis.Models.Doctor">
+    <Position X="10.5" Y="0.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACAEAAAAAAAAAAAABQAAAAQAAAgAAAEAAAABICAAg=</HashCode>
+      <FileName>Models\Doctor.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Courses" />
+      <Property Name="Appointments" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Diagnosis.Models.HealthRecord">
+    <Position X="10.25" Y="6.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACAABAAAAgQBAAAAAAAAAAQAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\HealthRecord.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Appointment" />
+      <Property Name="Diagnosis" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Symptoms" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Diagnosis.Models.Patient">
+    <Position X="0.75" Y="0.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAGAEgAAAAAAAAAAAAQAARAAAAAgAEAEEAAABAAIAg=</HashCode>
+      <FileName>Models\Patient.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Courses" />
+      <Property Name="PatientProperties" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Diagnosis.Models.PatientProperty">
+    <Position X="4" Y="1.75" Width="1.5" />
+    <AssociationLine Name="Value" Type="Diagnosis.Models.PropertyValue" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5" Y="3.305" />
+        <Point X="5" Y="6.25" />
+        <Point X="5.75" Y="6.25" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Property" Type="Diagnosis.Models.Property" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.562" Y="3.305" />
+        <Point X="4.562" Y="6.273" />
+        <Point X="2.5" Y="6.273" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAQAACAA=</HashCode>
+      <FileName>Models\PatientProperty.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Patient" />
+      <Property Name="Value" />
+      <Property Name="Property" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Diagnosis.Models.Property">
+    <Position X="1" Y="5.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAGAAAAAAAAAEAAAQAgAAAAAAAAACAAAEAgAAAAAAA=</HashCode>
+      <FileName>Models\Property.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="PatientProperties" />
+      <Property Name="Values" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Diagnosis.Models.PropertyValue">
+    <Position X="5.75" Y="5.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="PatientProperties" Type="Diagnosis.Models.PatientProperty" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.75" Y="5.812" />
+        <Point X="5.312" Y="5.812" />
+        <Point X="5.312" Y="3.305" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Property" Type="Diagnosis.Models.Property" FixedFromPoint="true">
+      <Path>
+        <Point X="5.75" Y="6.938" />
+        <Point X="2.5" Y="6.938" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAGAAAAAIAAAEAAAAAAAAAAAAEAAAAAAEAAAQAAAAA=</HashCode>
+      <FileName>Models\PropertyValue.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Property" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="PatientProperties" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Diagnosis.Models.EmptyPropertyValue" Collapsed="true">
+    <Position X="5.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\PropertyValue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.Models.Symptom">
+    <Position X="12.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAEAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Symptom.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
