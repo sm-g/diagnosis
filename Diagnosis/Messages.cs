@@ -14,7 +14,7 @@ namespace Diagnosis
     {
         public const string Symptom = "symptom";
         public const string CheckedState = "checked";
-        public const string Patient = "patient";
+        public const string Patient = "patientVM";
         public const string Diagnosis = "diagnosis";
 
     }

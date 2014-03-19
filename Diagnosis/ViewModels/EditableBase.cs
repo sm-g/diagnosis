@@ -8,23 +8,6 @@ namespace Diagnosis.ViewModels
 {
     public abstract class EditableBase : ViewModelBase, IEditable
     {
-        private bool _selected;
-        public bool IsSelected
-        {
-            get
-            {
-                return _selected;
-            }
-            set
-            {
-                if (_selected != value)
-                {
-                    _selected = value;
-                    OnPropertyChanged(() => IsSelected);
-                }
-            }
-        }
-
         #region IEditable
 
         private ICommand _commit;

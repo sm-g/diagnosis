@@ -8,9 +8,9 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Diagnosis.ViewModels.CheckableBase" Collapsed="true">
-    <Position X="10" Y="3.75" Width="1.5" />
+    <Position X="11" Y="3.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACQQAAAAAAIAAAQQAAAAAAAACAAAAABAgAA=</HashCode>
+      <HashCode>AAAAAAAAACQQEAAAAAIAAAQQAAAAAAEACAAAAABAgAA=</HashCode>
       <FileName>ViewModels\CheckableBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -27,14 +27,6 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAgFAAAgQAIAAIQAAQQAAAQAEAAiAAAAAwgAAA=</HashCode>
       <FileName>ViewModels\DiagnosisViewModel.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Diagnosis.ViewModels.EditableBase" Collapsed="true">
-    <Position X="10" Y="2.25" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAQAAAAAUAEAAEQAAIQAAAAQAgEACkAAAAAAAAQ=</HashCode>
-      <FileName>ViewModels\EditableBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -64,21 +56,21 @@
   <Class Name="Diagnosis.ViewModels.PatientSearch" Collapsed="true">
     <Position X="21.25" Y="3.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAACAAAAAAA=</HashCode>
       <FileName>ViewModels\PatientSearch.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Diagnosis.ViewModels.PatientsListVewModel" Collapsed="true">
     <Position X="14.5" Y="2.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAQAAAAhAAABAAgAAA=</HashCode>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAgAAAAgQAAAAhAAABAAgAAA=</HashCode>
       <FileName>ViewModels\PatientsListVewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Diagnosis.ViewModels.PatientViewModel">
-    <Position X="12.25" Y="5.25" Width="1.5" />
+    <Position X="12.25" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAIAEDgEAAAgAAIAEBQAAQQAAAKgMAECAAAAAwAAAg=</HashCode>
+      <HashCode>AAAIAEDgEAIAkAAIAEBQAAQQAAAKgMAECAAAABwCAAg=</HashCode>
       <FileName>ViewModels\PatientViewModel.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -86,7 +78,7 @@
   <Class Name="Diagnosis.ViewModels.PropertyViewModel" Collapsed="true">
     <Position X="5.5" Y="2.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAEAAAQAAAAAAAAAAAAAAAAAgAAAAAAE=</HashCode>
+      <HashCode>AAAACAACAAAAAEAAAAAAAAAAAAAAEAAAAAAgAAAIAAE=</HashCode>
       <FileName>ViewModels\PropertyViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -101,14 +93,14 @@
   <Class Name="Diagnosis.ViewModels.SymptomSearch" Collapsed="true">
     <Position X="16.75" Y="5.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAACAAABAAAAAAAACAAAAAAA=</HashCode>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAABAAAAAAAACAAAAAAA=</HashCode>
       <FileName>ViewModels\SymptomSearch.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Diagnosis.ViewModels.SymptomViewModel">
     <Position X="7.75" Y="6.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAgFAAAgQAIAAAAAAQQCAAQAEABiAAAAAwgAAA=</HashCode>
+      <HashCode>AAAAAAAgFAAAgQAMAAAAAAQQCAAQAEAAiAAAAAwgAAA=</HashCode>
       <FileName>ViewModels\SymptomViewModel.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -122,24 +114,39 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.ViewModels.DoctorViewModel">
-    <Position X="14.25" Y="5.25" Width="1.5" />
+    <Position X="14.25" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAEAgEAAAgAAIAAAQAAQQBAAAgMAACAAAAAwAAAg=</HashCode>
+      <HashCode>AAAAAEAgEAAAgAAIAAAQAAQQBAAAgMAACAAAAAwCAAg=</HashCode>
       <FileName>ViewModels\DoctorViewModel.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
+  <Class Name="Diagnosis.ViewModels.EditableBase" Collapsed="true">
+    <Position X="11" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAwAAAAAQCEAIEQAFIQAAAAQAgAACkABAAAAAIQ=</HashCode>
+      <FileName>ViewModels\EditableBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.CourseViewModel" Collapsed="true">
+    <Position X="5.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABIAAAAAACAAgAAAAAEQAAQQQAABAAAAAAAAEgAAAAA=</HashCode>
+      <FileName>ViewModels\CourseViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Interface Name="Diagnosis.ViewModels.ICheckable">
     <Position X="23.75" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAQAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAACAQEAAAAAIAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ViewModels\ICheckable.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Diagnosis.ViewModels.IEditable">
     <Position X="25.5" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAQAAAAAQAEAAAAAAAQAAAAQAAAACEAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAwAAAAAQCEAAAAAEAQAAAAQAAAACEABAAAAAIA=</HashCode>
       <FileName>ViewModels\IEditable.cs</FileName>
     </TypeIdentifier>
   </Interface>

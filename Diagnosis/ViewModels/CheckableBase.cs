@@ -28,6 +28,24 @@ namespace Diagnosis.ViewModels
         private bool _isNonCheckable;
         private bool _isChecked;
         private ICommand _toggle;
+        private bool _selected;
+
+        public bool IsSelected
+        {
+            get
+            {
+                return _selected;
+            }
+            set
+            {
+                if (_selected != value)
+                {
+                    _selected = value;
+                    OnPropertyChanged(() => IsSelected);
+                }
+            }
+        }
+
 
         public bool IsNonCheckable
         {
