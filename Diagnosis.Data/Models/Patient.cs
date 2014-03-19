@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System;
+using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.Models
 {
@@ -25,7 +27,7 @@ namespace Diagnosis.Models
             }
             set
             {
-                if (_snils != value && CheckSnils(value))
+                if (CheckSnils(value))
                 {
                     _snils = value;
                 }
@@ -50,21 +52,32 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual void AddPatientProperty(PatientProperty property)
+        /// <summary>
+        /// Добавляет свойство со значением или изменяет значение, если такое свойство уже есть.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="value"></param>
+        public virtual void SetPropertyValue(Property property, PropertyValue value)
         {
-            if (property == null)
-                throw new ArgumentNullException("property");
+            Contract.Requires(property != null);
+            Contract.Requires(value != null);
 
-            if (!patientProperties.Contains(property))
+            var existingPatientProperty = patientProperties.FirstOrDefault(
+                pp => pp.Patient == this && pp.Property == property);
+
+            if (existingPatientProperty == null)
             {
-                patientProperties.Add(property);
-                property.Patient = this;
+                patientProperties.Add(new PatientProperty(this, property, value));
+            }
+            else
+            {
+                existingPatientProperty.Value = value;
             }
         }
 
         static bool CheckSnils(string snils)
         {
-            if (snils.Length != 11)
+            if (snils == null || snils.Length != 11)
                 return false;
 
             int number;
@@ -93,10 +106,20 @@ namespace Diagnosis.Models
             return 0 == control;
         }
 
-        public Patient()
+        public Patient(string lastName, string firstName, DateTime birthDate, string middleName = null)
         {
-            BirthDate = new DateTime(1980, 6, 15);
+            Contract.Requires(lastName != null);
+            Contract.Requires(firstName != null);
+
+            LastName = lastName;
+            FirstName = firstName;
+            MiddleName = middleName;
+            BirthDate = birthDate;
             IsMale = true;
+        }
+
+        protected Patient()
+        {
         }
     }
 }

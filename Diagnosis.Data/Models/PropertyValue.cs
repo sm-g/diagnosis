@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
+using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
     public class PropertyValue
     {
-        ISet<PatientProperty> patientProperties;
+        ISet<PatientProperty> patientProperties = new HashSet<PatientProperty>();
         internal static IEqualityComparer<PropertyValue> equalityComparer = new PropertyValueEqualityComparer();
 
         public virtual int Id { get; protected set; }
         public virtual string Title { get; set; }
-        public virtual Property Property { get; set; }
+        public virtual Property Property { get; protected set; }
         public virtual ReadOnlyCollection<PatientProperty> PatientProperties
         {
             get
@@ -23,16 +22,21 @@ namespace Diagnosis.Models
             }
         }
 
-        public PropertyValue(String value, Property property)
-            : base()
+        public virtual void Delete()
         {
+            Property.RemoveValue(this);
+        }
+
+        public PropertyValue(Property property, string value)
+        {
+            Contract.Requires(property != null);
+            Contract.Requires(!String.IsNullOrEmpty(value));
             Title = value;
             Property = property;
         }
 
         protected PropertyValue()
         {
-            patientProperties = new HashSet<PatientProperty>();
         }
     }
 

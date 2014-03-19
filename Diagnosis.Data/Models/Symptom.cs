@@ -10,11 +10,11 @@ namespace Diagnosis.Models
         public virtual string Title { get; set; }
         public virtual byte Priority { get; set; }
 
-        public Symptom(string title)
+        public Symptom(string title, byte priority = 0)
         {
-            Contract.Requires(title != null);
-            Contract.Requires(title.Length > 0);
+            Contract.Requires(!string.IsNullOrEmpty(title));
             Title = title;
+            Priority = priority;
         }
 
         public Symptom() { }

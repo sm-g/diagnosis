@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,8 +8,8 @@ namespace Diagnosis.Models
 {
     public class Property
     {
-        ISet<PropertyValue> values;
-        ISet<PatientProperty> patientProperties;
+        ISet<PropertyValue> values = new HashSet<PropertyValue>();
+        ISet<PatientProperty> patientProperties = new HashSet<PatientProperty>();
 
         public virtual int Id { get; protected set; }
         public virtual string Title { get; set; }
@@ -31,10 +32,9 @@ namespace Diagnosis.Models
 
         public virtual void AddValue(string value)
         {
-            if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentException("value");
+            Contract.Requires(!String.IsNullOrEmpty(value));
 
-            var pv = new PropertyValue(value, this);
+            var pv = new PropertyValue(this, value);
 
             if (!values.Contains(pv, PropertyValue.equalityComparer))
             {
@@ -42,15 +42,18 @@ namespace Diagnosis.Models
             }
         }
 
-        public Property(string title)
-            : base()
+        public virtual void RemoveValue(PropertyValue value)
         {
+            values.Remove(value);
+        }
+
+        public Property(string title)
+        {
+            Contract.Requires(!String.IsNullOrEmpty(title));
             Title = title;
         }
         protected Property()
         {
-            values = new HashSet<PropertyValue>();
-            patientProperties = new HashSet<PatientProperty>();
         }
     }
 }

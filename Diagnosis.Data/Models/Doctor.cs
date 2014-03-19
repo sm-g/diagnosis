@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
@@ -30,5 +31,26 @@ namespace Diagnosis.Models
                     new List<Appointment>(appointments));
             }
         }
+
+        public virtual void StartCourse(Patient patient)
+        {
+            Contract.Requires(patient != null);
+
+            var course = new Course(patient, this);
+            courses.Add(course);
+        }
+
+        public Doctor(string lastName, string firstName, string speciality = "")
+        {
+            Contract.Requires(lastName != null);
+            Contract.Requires(firstName != null);
+
+            LastName = lastName;
+            FirstName = firstName;
+            Speciality = speciality;
+            IsMale = true;
+        }
+
+        protected Doctor() { }
     }
 }

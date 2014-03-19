@@ -30,11 +30,14 @@ namespace Diagnosis.Models
             }
         }
 
-        public Diagnosis(string title)
+        public Diagnosis(string code, string title, Diagnosis parent = null)
         {
-            Contract.Requires(title != null);
-            Contract.Requires(title.Length > 0);
+            Contract.Requires(!string.IsNullOrEmpty(title));
+            Contract.Requires(code != null && code.Length == 5);
+
+            Code = code;
             Title = title;
+            Parent = parent;
         }
 
         public Diagnosis() { }
