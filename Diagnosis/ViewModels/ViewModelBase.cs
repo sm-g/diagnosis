@@ -8,12 +8,6 @@ namespace Diagnosis.ViewModels
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
-
-        public ViewModelBase()
-        {
-
-        }
-
         #region  INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;

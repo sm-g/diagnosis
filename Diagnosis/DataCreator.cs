@@ -7,25 +7,9 @@ namespace Diagnosis
 {
     public static class DataCreator
     {
-        private static List<CourseViewModel> _courses;
-
         private static List<DiagnosisViewModel> _Diagnoses;
 
-        private static List<DoctorViewModel> _Doctors;
-
-        private static List<PatientViewModel> _Patients;
-
-        private static List<PropertyViewModel> _Properties;
-
         private static List<SymptomViewModel> _Symptoms;
-
-        public static List<CourseViewModel> Courses
-        {
-            get
-            {
-                return _courses ?? (_courses = CreateCourses());
-            }
-        }
 
         public static List<DiagnosisViewModel> Diagnoses
         {
@@ -35,29 +19,6 @@ namespace Diagnosis
             }
         }
 
-        public static List<DoctorViewModel> Doctors
-        {
-            get
-            {
-                return _Doctors ?? (_Doctors = CreateDoctors());
-            }
-        }
-
-        public static List<PatientViewModel> Patients
-        {
-            get
-            {
-                return _Patients ?? (_Patients = CreatePatients());
-            }
-        }
-
-        public static List<PropertyViewModel> Properties
-        {
-            get
-            {
-                return _Properties ?? (_Properties = CreateProperties());
-            }
-        }
 
         public static List<SymptomViewModel> Symptoms
         {
@@ -65,25 +26,6 @@ namespace Diagnosis
             {
                 return _Symptoms ?? (_Symptoms = CreateSymptoms());
             }
-        }
-
-        private static List<CourseViewModel> CreateCourses()
-        {
-            return _courses ?? (_courses = new List<CourseViewModel>()
-            {
-                new CourseViewModel(new Course())
-                {
-                    Start = new DateTime(2013,11,19),
-                    End = new DateTime(2013,12,31),
-                    LeadDoctor = Doctors[0]
-                },
-                new CourseViewModel(new Course())
-                {
-                    Start = new DateTime(2013,10,10),
-                    End = new DateTime(2014,2,10),
-                    LeadDoctor = Doctors[1]
-                },
-            });
         }
 
         private static List<DiagnosisViewModel> CreateDiagnoses()
@@ -107,65 +49,6 @@ namespace Diagnosis
             return new List<DiagnosisViewModel>(root.Children);
         }
 
-        private static List<DoctorViewModel> CreateDoctors()
-        {
-            return _Doctors ?? (_Doctors = new List<DoctorViewModel>()
-            {
-                new DoctorViewModel(new Doctor())
-                {
-                    FirstName = "Иван",
-                    LastName = "Охлобыстин",
-                    MiddleName = "Иванович",
-                    Speciality = "Хирург"
-                },
-                new DoctorViewModel(new Doctor())
-                {
-                    FirstName = "Петр",
-                    LastName = "Сидоров",
-                    MiddleName = "Иванович",
-                    Speciality = "Невролог"
-                }
-            });
-        }
-
-        private static List<PatientViewModel> CreatePatients()
-        {
-            return _Patients ?? (_Patients = new List<PatientViewModel>()
-            {
-                new PatientViewModel(new Patient())
-                {
-                    FirstName = "Иван",
-                    LastName = "Грибоедов",
-                    MiddleName = "Константинович",
-                    Age = 37
-                },
-                new PatientViewModel(new Patient())
-                {
-                    FirstName = "Петр",
-                    LastName = "Сидоров",
-                    MiddleName = "Иванович",
-                    Age = 25
-                },
-                new PatientViewModel(new Patient())
-                {
-                    FirstName = "Дарья",
-                    LastName = "Смирнова",
-                    MiddleName = "Ивановна",
-                    Age = 30,
-                    IsMale = false
-                },
-            });
-        }
-
-        private static List<PropertyViewModel> CreateProperties()
-        {
-            return _Properties ?? (_Properties = new List<PropertyViewModel>()
-            {
-                (new PropertyViewModel("Образование")).AddValue("Высшее").AddValue("Неоконченное высшее").AddValue("Среднее"),
-                (new PropertyViewModel("Характер работы")).AddValue("Сидячая").AddValue("Подвижная"),
-                (new PropertyViewModel("Место жительства")).AddValue("Город").AddValue("Деревня"),
-            });
-        }
         private static List<SymptomViewModel> CreateSymptoms()
         {
             var teeth = new SymptomViewModel("зубная боль");

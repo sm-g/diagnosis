@@ -22,8 +22,6 @@ namespace Diagnosis.Controls
         public PropertiesChooser()
         {
             InitializeComponent();
-
-            DataContext = DataCreator.Properties;
         }
     }
 }
