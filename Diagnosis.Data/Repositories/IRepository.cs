@@ -9,6 +9,7 @@ namespace Diagnosis.Data.Repositories
     {
         void Add(T entity);
         void Update(T entity);
+        void SaveOrUpdate(T entity);
         void Remove(T entity);
         IEnumerable<T> GetAll();
         T GetById(int entityId);

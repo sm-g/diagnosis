@@ -25,6 +25,15 @@ namespace Diagnosis.Data.Repositories
                 transaction.Commit();
             }
         }
+        public void SaveOrUpdate(T entity)
+        {
+            ISession session = NHibernateHelper.GetSession();
+            using (ITransaction transaction = session.BeginTransaction())
+            {
+                session.SaveOrUpdate(entity);
+                transaction.Commit();
+            }
+        }
         public void Remove(T entity)
         {
             ISession session = NHibernateHelper.GetSession();
