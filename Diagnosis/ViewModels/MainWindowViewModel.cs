@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Input;
 using EventAggregator;
+using Diagnosis.Data.Repositories;
 
 namespace Diagnosis.ViewModels
 {
@@ -118,7 +119,11 @@ namespace Diagnosis.ViewModels
             {
                 LoginVM.LoggedIn -= OnLoggedIn;
             }
-            LoginVM = new LoginViewModel();
+
+            var doctorRepo = new DoctorRepository();
+            var doctorVMs = doctorRepo.GetAll().Select(d => new DoctorViewModel(d));
+
+            LoginVM = new LoginViewModel(doctorVMs);
             LoginVM.LoggedIn += OnLoggedIn;
         }
 

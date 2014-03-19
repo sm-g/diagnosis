@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Security;
-using System.Windows.Input;
-using EventAggregator;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
+using System.Security;
+using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
@@ -84,9 +84,10 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public LoginViewModel()
+        public LoginViewModel(IEnumerable<DoctorViewModel> doctors)
         {
-            Doctors = new ObservableCollection<DoctorViewModel>(DataCreator.Doctors);
+            Contract.Requires(doctors != null);
+            Doctors = new ObservableCollection<DoctorViewModel>(doctors);
         }
 
         private void LogIn()
