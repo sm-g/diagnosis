@@ -71,14 +71,6 @@ namespace Diagnosis.ViewModels
             {
                 return course.Start.Date;
             }
-            set
-            {
-                if (course.Start.Date != value.Date)
-                {
-                    course.Start = value.Date;
-                    OnPropertyChanged(() => Start);
-                }
-            }
         }
 
         public bool IsEnded

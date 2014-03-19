@@ -91,6 +91,8 @@
                     <Separator />
 
                     <controls:PropertiesChooser Margin="0,5" />
+                    
+                    <Button Command="{Binding CommitCommand}">Сохранить</Button>
                 </StackPanel>
             </TabItem>
             <TabItem Header="FullTree">
