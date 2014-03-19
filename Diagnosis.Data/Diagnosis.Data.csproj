@@ -98,15 +98,10 @@
     <Compile Include="NHibernate\Net4Collections.cs" />
     <Compile Include="NHibernate\NamingStrategy.cs" />
     <Compile Include="NHibernate\NHibHelper.cs" />
-    <Compile Include="Repositories\AppointmentRepository.cs" />
     <Compile Include="Repositories\DiagnosisRepository.cs" />
     <Compile Include="Repositories\SymptomRepository.cs" />
-    <Compile Include="Repositories\HealthRecordRepository.cs" />
-    <Compile Include="Repositories\CourseRepository.cs" />
     <Compile Include="Repositories\ModelRepository.cs" />
     <Compile Include="Repositories\DoctorRepository.cs" />
-    <Compile Include="Repositories\PropertyValueRepository.cs" />
-    <Compile Include="Repositories\PatientPropertyRepository.cs" />
     <Compile Include="Repositories\PropertyRepository.cs" />
     <Compile Include="Repositories\IModelRepositories.cs" />
     <Compile Include="Repositories\IRepository.cs" />
