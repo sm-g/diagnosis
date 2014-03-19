@@ -12,7 +12,8 @@ namespace Diagnosis.ViewModels
     {
         private PatientSearch _search;
         private PatientViewModel _current;
-        IPatientRepository repo;
+        IPatientRepository patientRepo;
+        IPropertyManager propManager;
 
         public ObservableCollection<PatientViewModel> Patients { get; private set; }
 
@@ -40,7 +41,7 @@ namespace Diagnosis.ViewModels
             {
                 if (_search == null)
                 {
-                    _search = new PatientSearch(this);
+                    _search = new PatientSearch(this, propManager);
                     _search.ResultItemSelected += _search_ResultItemSelected;
                 }
                 return _search;
@@ -61,10 +62,12 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public PatientsListVewModel(IPatientRepository repo)
+        public PatientsListVewModel(IPatientRepository patientRepo, IPropertyManager propManager)
         {
-            Contract.Requires(repo != null);
-            this.repo = repo;
+            Contract.Requires(patientRepo != null);
+            Contract.Requires(propManager != null);
+            this.patientRepo = patientRepo;
+            this.propManager = propManager;
 
             var patientVMs = patientRepo.GetAll().Select(p => new PatientViewModel(p, propManager)).ToList();
             foreach (var pvm in patientVMs)

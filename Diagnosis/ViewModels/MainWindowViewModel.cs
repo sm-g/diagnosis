@@ -145,7 +145,7 @@ namespace Diagnosis.ViewModels
                 CardVM = patient;
             });
 
-            PatientsVM = new PatientsListVewModel(new Diagnosis.Data.Repositories.PatientRepository());
+            PatientsVM = new PatientsListVewModel(new PatientRepository(), new PropertyManager(new PropertyRepository()));
         }
     }
 }

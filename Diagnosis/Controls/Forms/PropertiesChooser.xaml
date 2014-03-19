@@ -8,7 +8,7 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-        <ItemsControl ItemsSource="{Binding}">
+        <ItemsControl ItemsSource="{Binding Properties}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel />
@@ -18,10 +18,11 @@
                 <DataTemplate>
                     <DockPanel Margin="0,5">
                         <TextBlock Text="{Binding Title}" Style="{StaticResource label}"/>
-                        <ComboBox ItemsSource="{Binding Values}">
+                        <ComboBox ItemsSource="{Binding Values}"
+                                  SelectedItem="{Binding SelectedValue}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Value}" />
+                                    <TextBlock Text="{Binding Title}" />
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>

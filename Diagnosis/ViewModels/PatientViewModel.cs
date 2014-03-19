@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using Diagnosis.Data.Repositories;
 using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
@@ -12,6 +13,8 @@ namespace Diagnosis.ViewModels
     public class PatientViewModel : CheckableBase, ISearchable
     {
         internal Patient patient;
+
+        private IPropertyManager _propManager;
         private List<EventMessageHandler> msgHandlers;
 
         public string FirstName
@@ -203,6 +206,29 @@ namespace Diagnosis.ViewModels
             private set;
         }
 
+        public ObservableCollection<PropertyViewModel> Properties
+        {
+            get;
+            private set;
+        }
+
+        public IPropertyManager PropertyManager
+        {
+            get
+            {
+                return _propManager;
+            }
+            set
+            {
+                if (_propManager != value)
+                {
+                    _propManager = value;
+                    OnPropertyChanged(() => PropertyManager);
+                }
+            }
+        }
+
+
         #region CheckableBase
 
         public override bool IsReady
@@ -294,13 +320,17 @@ namespace Diagnosis.ViewModels
 
         #endregion ISearchable
 
-        public PatientViewModel(Patient p)
+        public PatientViewModel(Patient p, IPropertyManager propManager)
         {
             Contract.Requires(p != null);
+            Contract.Requires(propManager != null);
             patient = p;
+            PropertyManager = propManager;
 
+            Properties = new ObservableCollection<PropertyViewModel>(propManager.GetPatientProperties(p));
+            // propManager.FillPropertiesSelectedValue(p);
             Symptoms = new ObservableCollection<SymptomViewModel>();
-            Courses = new ObservableCollection<CourseViewModel>(DataCreator.Courses);
+            Courses = new ObservableCollection<CourseViewModel>();
             msgHandlers = Subscribe();
         }
 
