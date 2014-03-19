@@ -16,6 +16,11 @@ namespace Diagnosis.ViewModels
         private bool _editActive;
         private bool _editorFocused;
         private ICommand _revert;
+
+        public event EventHandler Committed;
+        public event EventHandler Deleted;
+        public event EventHandler ModelPropertyChanged;
+
         public abstract string Name
         {
             get;
@@ -62,6 +67,12 @@ namespace Diagnosis.ViewModels
             get { return !IsEditorActive; }
         }
 
+        public bool IsDirty
+        {
+            get;
+            set;
+        }
+
         #region Commands
 
         public ICommand CommitCommand
@@ -69,11 +80,7 @@ namespace Diagnosis.ViewModels
             get
             {
                 return _commit
-                    ?? (_commit = new RelayCommand(
-                                          () =>
-                                          {
-                                              IsEditorActive = false;
-                                          }));
+                    ?? (_commit = new RelayCommand(OnCommit, () => IsDirty));
             }
         }
 
@@ -82,10 +89,7 @@ namespace Diagnosis.ViewModels
             get
             {
                 return _delete
-                    ?? (_delete = new RelayCommand(
-                                          () =>
-                                          {
-                                          }));
+                    ?? (_delete = new RelayCommand(OnDelete));
             }
         }
 
@@ -117,7 +121,40 @@ namespace Diagnosis.ViewModels
 
         #endregion Commands
 
+        public void MarkDirty()
+        {
+            IsDirty = true;
+
+            var h = ModelPropertyChanged;
+            if (h != null)
+            {
+                h(this, new EventArgs());
+            }
+        }
+
+
         #endregion IEditable
 
+        void OnCommit()
+        {
+            IsEditorActive = false;
+
+            var h = Committed;
+            if (h != null)
+            {
+                h(this, new EventArgs());
+            }
+
+            IsDirty = false;
+        }
+
+        void OnDelete()
+        {
+            var h = Deleted;
+            if (h != null)
+            {
+                h(this, new EventArgs());
+            }
+        }
     }
 }

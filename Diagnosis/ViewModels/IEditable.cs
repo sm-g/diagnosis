@@ -1,9 +1,14 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
     public interface IEditable
     {
+        event EventHandler Committed;
+        event EventHandler Deleted;
+        event EventHandler ModelPropertyChanged;
+
         ICommand CommitCommand { get; }
 
         ICommand DeleteCommand { get; }
@@ -18,6 +23,10 @@ namespace Diagnosis.ViewModels
 
         bool IsReady { get; }
 
+        bool IsDirty { get; }
+
         string Name { get; set; }
+
+        void MarkDirty();
     }
 }

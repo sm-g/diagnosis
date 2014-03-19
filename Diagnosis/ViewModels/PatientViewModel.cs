@@ -14,31 +14,24 @@ namespace Diagnosis.ViewModels
         internal Patient patient;
         private List<EventMessageHandler> msgHandlers;
 
-        public event EventHandler ModelPropertyChanged;
-
-        public void OnModelPropertyChanged()
-        {
-            var h = ModelPropertyChanged;
-            if (h != null)
-            {
-                h(this, new EventArgs());
-            }
-        }
-
         public string FirstName
         {
             get
             {
-                return patient.FirstName ?? "";
+                Contract.Ensures(!String.IsNullOrEmpty(Contract.Result<string>()));
+                return patient.FirstName;
             }
             set
             {
                 if (patient.FirstName != value)
                 {
-                    patient.FirstName = value;
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        patient.FirstName = value;
+                    }
                     OnPropertyChanged(() => FirstName);
                     OnPropertyChanged(() => ShortName);
-                    OnModelPropertyChanged();
+                    MarkDirty();
                 }
             }
         }
@@ -56,7 +49,7 @@ namespace Diagnosis.ViewModels
                     patient.MiddleName = value;
                     OnPropertyChanged(() => MiddleName);
                     OnPropertyChanged(() => ShortName);
-                    OnModelPropertyChanged();
+                    MarkDirty();
                 }
             }
         }
@@ -65,16 +58,20 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return patient.LastName ?? "";
+                Contract.Ensures(!String.IsNullOrEmpty(Contract.Result<string>()));
+                return patient.LastName;
             }
             set
             {
                 if (patient.LastName != value)
                 {
-                    patient.LastName = value;
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        patient.LastName = value;
+                    }
                     OnPropertyChanged(() => LastName);
                     OnPropertyChanged(() => ShortName);
-                    OnModelPropertyChanged();
+                    MarkDirty();
                 }
             }
         }
@@ -110,7 +107,7 @@ namespace Diagnosis.ViewModels
                     patient.BirthDate = new DateTime(value, patient.BirthDate.Month, patient.BirthDate.Day);
                     OnPropertyChanged(() => Age);
                     OnPropertyChanged(() => BirthYear);
-                    OnModelPropertyChanged();
+                    MarkDirty();
                 }
             }
         }
@@ -128,7 +125,7 @@ namespace Diagnosis.ViewModels
                     patient.BirthDate = new DateTime(patient.BirthDate.Year, value, patient.BirthDate.Day);
                     OnPropertyChanged(() => Age);
                     OnPropertyChanged(() => BirthMonth);
-                    OnModelPropertyChanged();
+                    MarkDirty();
                 }
             }
         }
@@ -147,7 +144,7 @@ namespace Diagnosis.ViewModels
 
                     OnPropertyChanged(() => Age);
                     OnPropertyChanged(() => BirthDay);
-                    OnModelPropertyChanged();
+                    MarkDirty();
                 }
             }
         }
@@ -164,7 +161,7 @@ namespace Diagnosis.ViewModels
                 {
                     patient.IsMale = value;
                     OnPropertyChanged(() => IsMale);
-                    OnModelPropertyChanged();
+                    MarkDirty();
                 }
             }
         }
@@ -181,7 +178,7 @@ namespace Diagnosis.ViewModels
                 {
                     patient.SNILS = value;
                     OnPropertyChanged(() => Snils);
-                    OnModelPropertyChanged();
+                    MarkDirty();
                 }
             }
         }

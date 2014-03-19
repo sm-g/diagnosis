@@ -50,14 +50,15 @@ namespace Diagnosis.ViewModels
         private void _search_ResultItemSelected(object sender, EventArgs e)
         {
             var patientVM = Search.SelectedItem;
-            if (Patients.SingleOrDefault(p => p == patientVM) == null)
+            if (patientVM != null)
             {
-                Patients.Add(patientVM);
-                patientVM.ModelPropertyChanged += patientModelPropertyChanged;
-                repo.Add(patientVM.patient);
+                if (Patients.SingleOrDefault(p => p == patientVM) == null)
+                {
+                    Patients.Add(patientVM);
+                }
+                CurrentPatient = patientVM;
+                Search.Clear();
             }
-            CurrentPatient = patientVM;
-            Search.Clear();
         }
 
         public PatientsListVewModel(IPatientRepository repo)
@@ -65,25 +66,25 @@ namespace Diagnosis.ViewModels
             Contract.Requires(repo != null);
             this.repo = repo;
 
-            var patients = repo.GetAll().Select(p => new PatientViewModel(p)).ToList();
-            foreach (var p in patients)
+            var patientVMs = patientRepo.GetAll().Select(p => new PatientViewModel(p, propManager)).ToList();
+            foreach (var pvm in patientVMs)
             {
-                p.ModelPropertyChanged += patientModelPropertyChanged;
+                pvm.Committed += p_Committed;
             }
 
-            Patients = new ObservableCollection<PatientViewModel>(patients);
+            Patients = new ObservableCollection<PatientViewModel>(patientVMs);
             if (Patients.Count > 0)
             {
                 CurrentPatient = Patients[0];
             }
         }
 
-        void patientModelPropertyChanged(object sender, EventArgs e)
+        void p_Committed(object sender, EventArgs e)
         {
-            var patient = (sender as PatientViewModel);
-            if (patient != null)
+            var patientVM = (sender as PatientViewModel);
+            if (patientVM != null)
             {
-                repo.Update(patient.patient);
+                patientRepo.SaveOrUpdate(patientVM.patient);
             }
         }
     }
