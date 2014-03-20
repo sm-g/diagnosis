@@ -1,18 +1,18 @@
 ﻿using Diagnosis.Models;
 using EventAggregator;
-using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
-    public class PropertyViewModel : ViewModelBase
+    public class PropertyViewModel : EditableBase
     {
         private Property property;
         private PropertyValue _selectedValue;
 
-        public string Title
+        #region EditableBase
+
+        public override string Name
         {
             get
             {
@@ -23,10 +23,12 @@ namespace Diagnosis.ViewModels
                 if (property.Title != value)
                 {
                     property.Title = value;
-                    OnPropertyChanged(() => Title);
+                    OnPropertyChanged(() => Name);
                 }
             }
         }
+
+        #endregion EditableBase
 
         public int PropertyId
         {
@@ -48,6 +50,8 @@ namespace Diagnosis.ViewModels
                 {
                     _selectedValue = value;
                     OnPropertyChanged(() => SelectedValue);
+
+                    this.Send((int)EventID.PropertySelectedValueChanged, new PropertySelectedValueChangedParams(this).Params);
                 }
             }
         }

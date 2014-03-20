@@ -1,19 +1,18 @@
-﻿using EventAggregator;
+﻿using Diagnosis.Data.Repositories;
+using EventAggregator;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using Diagnosis.Data.Repositories;
 
 namespace Diagnosis.ViewModels
 {
-    public class PatientsListVewModel : ViewModelBase
+    public class PatientsListViewModel : ViewModelBase
     {
         private PatientSearch _search;
         private PatientViewModel _current;
-        IPatientRepository patientRepo;
-        IPropertyManager propManager;
+        private IPatientRepository patientRepo;
+        private IPropertyManager propManager;
 
         public ObservableCollection<PatientViewModel> Patients { get; private set; }
 
@@ -30,6 +29,16 @@ namespace Diagnosis.ViewModels
                     _current = value;
 
                     OnPropertyChanged(() => CurrentPatient);
+
+                    foreach (var patient in Patients)
+                    {
+                        if (patient != value)
+                        {
+                            patient.Unsubscribe();
+                        }
+                    }
+                    value.Subscribe();
+
                     this.Send((int)EventID.CurrentPatientChanged, new CurrentPatientChangedParams(CurrentPatient).Params);
                 }
             }
@@ -62,7 +71,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public PatientsListVewModel(IPatientRepository patientRepo, IPropertyManager propManager)
+        public PatientsListViewModel(IPatientRepository patientRepo, IPropertyManager propManager)
         {
             Contract.Requires(patientRepo != null);
             Contract.Requires(propManager != null);
@@ -82,7 +91,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        void p_Committed(object sender, EventArgs e)
+        private void p_Committed(object sender, EventArgs e)
         {
             var patientVM = (sender as PatientViewModel);
             if (patientVM != null)

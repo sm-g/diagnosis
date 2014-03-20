@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using Diagnosis.Data.Repositories;
 using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
@@ -15,7 +14,7 @@ namespace Diagnosis.ViewModels
         internal Patient patient;
 
         private IPropertyManager _propManager;
-        private List<EventMessageHandler> msgHandlers;
+        private List<EventMessageHandler> msgHandlers = new List<EventMessageHandler>();
 
         public string FirstName
         {
@@ -228,7 +227,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-
         #region CheckableBase
 
         public override bool IsReady
@@ -253,7 +251,6 @@ namespace Diagnosis.ViewModels
 
         protected override void OnCheckedChanged()
         {
-
         }
 
         #endregion CheckableBase
@@ -327,16 +324,14 @@ namespace Diagnosis.ViewModels
             patient = p;
             PropertyManager = propManager;
 
-            Properties = new ObservableCollection<PropertyViewModel>(propManager.GetPatientProperties(p));
-            // propManager.FillPropertiesSelectedValue(p);
+            Properties = new ObservableCollection<PropertyViewModel>(PropertyManager.GetPatientProperties(patient));
             Symptoms = new ObservableCollection<SymptomViewModel>();
             Courses = new ObservableCollection<CourseViewModel>();
-            msgHandlers = Subscribe();
         }
 
-        private List<EventMessageHandler> Subscribe()
+        public void Subscribe()
         {
-            return new List<EventMessageHandler>()
+            msgHandlers = new List<EventMessageHandler>()
             {
                 this.Subscribe((int)EventID.SymptomCheckedChanged, (e) =>
                 {
@@ -344,8 +339,27 @@ namespace Diagnosis.ViewModels
                     var isChecked = e.GetValue<bool>(Messages.CheckedState);
 
                     OnSymptomCheckedChanged(symptom, isChecked);
+                }),
+                this.Subscribe((int)EventID.PropertySelectedValueChanged, (e) =>
+                {
+                    var property = e.GetValue<PropertyViewModel>(Messages.Property);
+
+                    OnPropertyValueChanged(property);
                 })
             };
+        }
+
+        public void Unsubscribe()
+        {
+            foreach (var h in msgHandlers)
+            {
+                h.Dispose();
+            }
+        }
+
+        private void OnPropertyValueChanged(PropertyViewModel property)
+        {
+            MarkDirty();
         }
 
         private void OnSymptomCheckedChanged(SymptomViewModel symptom, bool isChecked)
@@ -360,14 +374,6 @@ namespace Diagnosis.ViewModels
             }
             Symptoms = new ObservableCollection<SymptomViewModel>(Symptoms.OrderBy(s => s.SortingOrder));
             OnPropertyChanged(() => Symptoms);
-        }
-
-        ~PatientViewModel()
-        {
-            foreach (var h in msgHandlers)
-            {
-                h.Dispose();
-            }
         }
     }
 }

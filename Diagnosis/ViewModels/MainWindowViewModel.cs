@@ -12,7 +12,7 @@ namespace Diagnosis.ViewModels
     {
         private bool _loginActive;
         private LoginViewModel _loginVM;
-        private PatientsListVewModel _patientsVM;
+        private PatientsListViewModel _patientsVM;
         private PatientViewModel _patientVM;
         private ICommand _logout;
 
@@ -69,7 +69,7 @@ namespace Diagnosis.ViewModels
                 }
             }
         }
-        public PatientsListVewModel PatientsVM
+        public PatientsListViewModel PatientsVM
         {
             get
             {
@@ -145,7 +145,7 @@ namespace Diagnosis.ViewModels
                 CardVM = patient;
             });
 
-            PatientsVM = new PatientsListVewModel(new PatientRepository(), new PropertyManager(new PropertyRepository()));
+            PatientsVM = new PatientsListViewModel(new PatientRepository(), new PropertyManager(new PropertyRepository()));
         }
     }
 }

@@ -17,7 +17,7 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <DockPanel Margin="0,5">
-                        <TextBlock Text="{Binding Title}" Style="{StaticResource label}"/>
+                        <TextBlock Text="{Binding Name}" Style="{StaticResource label}"/>
                         <ComboBox ItemsSource="{Binding Values}"
                                   SelectedItem="{Binding SelectedValue}">
                             <ComboBox.ItemTemplate>

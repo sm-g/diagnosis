@@ -241,7 +241,7 @@
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\PatientSearch.cs" />
-    <Compile Include="ViewModels\PatientsListVewModel.cs" />
+    <Compile Include="ViewModels\PatientsListViewModel.cs" />
     <Compile Include="ViewModels\PropertyManager.cs" />
     <Compile Include="ViewModels\PropertyViewModel.cs" />
     <Compile Include="ViewModels\HierarchicalExplorer.cs" />

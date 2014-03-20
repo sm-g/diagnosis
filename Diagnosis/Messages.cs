@@ -16,6 +16,7 @@ namespace Diagnosis
         public const string CheckedState = "checked";
         public const string Patient = "patientVM";
         public const string Diagnosis = "diagnosis";
+        public const string Property = "property";
 
     }
 
@@ -78,12 +79,27 @@ namespace Diagnosis
         }
     }
 
+    class PropertySelectedValueChangedParams : IEventParams
+    {
+        public KeyValuePair<string, object>[] Params { get; private set; }
+
+        public PropertySelectedValueChangedParams(PropertyViewModel property)
+        {
+            Contract.Requires(property != null);
+
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.Property, property)
+            };
+        }
+    }
+
     enum EventID
     {
         SymptomCheckedChanged,
         CurrentPatientChanged,
         PatientCheckedChanged,
-        DiagnosisCheckedChanged
+        DiagnosisCheckedChanged,
+        PropertySelectedValueChanged
     }
 
     interface IEventParams
