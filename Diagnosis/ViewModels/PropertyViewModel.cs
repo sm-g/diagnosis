@@ -7,7 +7,6 @@ namespace Diagnosis.ViewModels
 {
     public class PropertyViewModel : EditableBase
     {
-        private Property property;
         private PropertyValue _selectedValue;
 
         #region EditableBase
@@ -16,13 +15,13 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return property.Title;
+                return Property.Title;
             }
             set
             {
-                if (property.Title != value)
+                if (Property.Title != value)
                 {
-                    property.Title = value;
+                    Property.Title = value;
                     OnPropertyChanged(() => Name);
                 }
             }
@@ -30,12 +29,10 @@ namespace Diagnosis.ViewModels
 
         #endregion EditableBase
 
-        public int PropertyId
+        internal Property Property
         {
-            get
-            {
-                return property.Id;
-            }
+            get;
+            private set;
         }
 
         public PropertyValue SelectedValue
@@ -65,7 +62,7 @@ namespace Diagnosis.ViewModels
         public PropertyViewModel(Property p)
         {
             Contract.Requires(p != null);
-            property = p;
+            Property = p;
 
             Values = new ObservableCollection<PropertyValue>(p.Values);
         }

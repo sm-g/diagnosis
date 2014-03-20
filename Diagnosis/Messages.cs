@@ -16,7 +16,7 @@ namespace Diagnosis
         public const string CheckedState = "checked";
         public const string Patient = "patientVM";
         public const string Diagnosis = "diagnosis";
-        public const string Property = "property";
+        public const string Property = "propertyVM";
 
     }
 

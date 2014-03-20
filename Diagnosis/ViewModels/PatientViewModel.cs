@@ -357,9 +357,10 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        private void OnPropertyValueChanged(PropertyViewModel property)
+        private void OnPropertyValueChanged(PropertyViewModel propertyVM)
         {
             MarkDirty();
+            patient.SetPropertyValue(propertyVM.Property, propertyVM.SelectedValue);
         }
 
         private void OnSymptomCheckedChanged(SymptomViewModel symptom, bool isChecked)
