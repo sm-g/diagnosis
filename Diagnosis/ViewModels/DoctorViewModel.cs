@@ -7,7 +7,7 @@ namespace Diagnosis.ViewModels
 {
     public class DoctorViewModel : CheckableBase, ISearchable
     {
-        private Doctor doctor;
+        internal Doctor doctor;
 
         public string FirstName
         {
@@ -30,7 +30,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return doctor.MiddleName;
+                return doctor.MiddleName ?? "";
             }
             set
             {

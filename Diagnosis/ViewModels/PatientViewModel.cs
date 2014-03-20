@@ -227,6 +227,31 @@ namespace Diagnosis.ViewModels
             }
         }
 
+
+        private DoctorViewModel _doctor;
+        public DoctorViewModel CurrentDoctor
+        {
+            get
+            {
+                return _doctor;
+            }
+            set
+            {
+                if (_doctor != value)
+                {
+                    _doctor = value;
+                    OnPropertyChanged(() => CurrentDoctor);
+                }
+            }
+        }
+
+        public void SetDoctorVM(DoctorViewModel doctor)
+        {
+            Contract.Requires(doctor != null);
+
+            CurrentDoctor = doctor;
+        }
+
         #region CheckableBase
 
         public override bool IsReady
@@ -321,6 +346,7 @@ namespace Diagnosis.ViewModels
         {
             Contract.Requires(p != null);
             Contract.Requires(propManager != null);
+
             patient = p;
             PropertyManager = propManager;
 

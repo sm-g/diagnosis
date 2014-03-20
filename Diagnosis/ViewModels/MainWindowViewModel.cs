@@ -27,10 +27,6 @@ namespace Diagnosis.ViewModels
                 if (_loginActive != value)
                 {
                     _loginActive = value;
-                    if (value)
-                    {
-                        MakeLoginDataContext();
-                    }
 
                     OnPropertyChanged(() => IsLoginActive);
                 }
@@ -112,27 +108,6 @@ namespace Diagnosis.ViewModels
                                           () => !IsLoginActive));
             }
         }
-
-        private void MakeLoginDataContext()
-        {
-            if (LoginVM != null)
-            {
-                LoginVM.LoggedIn -= OnLoggedIn;
-            }
-
-            var doctorRepo = new DoctorRepository();
-            var doctorVMs = doctorRepo.GetAll().Select(d => new DoctorViewModel(d));
-
-            LoginVM = new LoginViewModel(doctorVMs);
-            LoginVM.LoggedIn += OnLoggedIn;
-        }
-
-        void OnLoggedIn(object sender, LoggedEventArgs e)
-        {
-            IsLoginActive = false;
-            IsPatientsVisible = true;
-        }
-
         public MainWindowViewModel()
         {
 #if RELEASE
@@ -142,10 +117,20 @@ namespace Diagnosis.ViewModels
             this.Subscribe((int)EventID.CurrentPatientChanged, (e) =>
             {
                 var patient = e.GetValue<PatientViewModel>(Messages.Patient);
+                patient.SetDoctorVM(LoginVM.DoctorsManager.CurrentDoctor);
                 CardVM = patient;
             });
 
+            LoginVM = new LoginViewModel(new DoctorsManager(new DoctorRepository()));
             PatientsVM = new PatientsListViewModel(new PatientRepository(), new PropertyManager(new PropertyRepository()));
+
+            LoginVM.LoggedIn += OnLoggedIn;
+        }
+
+        void OnLoggedIn(object sender, LoggedEventArgs e)
+        {
+            IsLoginActive = false;
+            IsPatientsVisible = true;
         }
     }
 }

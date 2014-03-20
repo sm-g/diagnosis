@@ -17,23 +17,22 @@ namespace Diagnosis.ViewModels
 
         public event EventHandler<LoggedEventArgs> LoggedIn;
 
-        public DoctorViewModel SelectedDoctor
+        private DoctorsManager _docManager;
+        public DoctorsManager DoctorsManager
         {
             get
             {
-                return _selectedDoctor;
+                return _docManager;
             }
             set
             {
-                if (_selectedDoctor != value)
+                if (_docManager != value)
                 {
-                    _selectedDoctor = value;
-                    OnPropertyChanged(() => SelectedDoctor);
+                    _docManager = value;
+                    OnPropertyChanged(() => DoctorsManager);
                 }
             }
         }
-
-        public ObservableCollection<DoctorViewModel> Doctors { get; private set; }
 
         public string Username
         {
@@ -84,10 +83,10 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public LoginViewModel(IEnumerable<DoctorViewModel> doctors)
+        public LoginViewModel(DoctorsManager manager)
         {
-            Contract.Requires(doctors != null);
-            Doctors = new ObservableCollection<DoctorViewModel>(doctors);
+            Contract.Requires(manager != null);
+            DoctorsManager = manager;
         }
 
         private void LogIn()
@@ -99,7 +98,7 @@ namespace Diagnosis.ViewModels
             var h = LoggedIn;
             if (h != null)
             {
-                h(this, new LoggedEventArgs(SelectedDoctor));
+                h(this, new LoggedEventArgs(DoctorsManager.CurrentDoctor));
             }
         }
     }

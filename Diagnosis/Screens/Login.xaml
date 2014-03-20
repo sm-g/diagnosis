@@ -23,9 +23,8 @@
             <DockPanel>
                 <TextBlock Style="{StaticResource label}">Доктор:</TextBlock>
                 <ComboBox x:Name="doctors"
-                          ItemsSource="{Binding Doctors}"
-                          SelectedItem="{Binding SelectedDoctor}"
-                          Text="{Binding ShortName}">
+                          SelectedItem="{Binding DoctorsManager.CurrentDoctor}"
+                          ItemsSource="{Binding DoctorsManager.Doctors}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding ShortName}" />
