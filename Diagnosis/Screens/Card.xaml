@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.Controls"
              xmlns:card="clr-namespace:Diagnosis.Controls.Card"
+             xmlns:screen="clr-namespace:Diagnosis.Screens"
              xmlns:conv="clr-namespace:Diagnosis.Converters"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="600">
@@ -69,10 +70,7 @@
                 </TextBlock>
             </TextBlock>
             <StackPanel Grid.Column="1">
-                <TextBlock>
-                    <TextBlock Text="{Binding Age}" />
-                    <TextBlock Text="{Binding Age, Converter={StaticResource ageLabel}}"></TextBlock>
-                </TextBlock>
+                <Button Command="{Binding CommitCommand}">Сохранить</Button>
             </StackPanel>
         </Grid>
 
@@ -91,8 +89,6 @@
                     <Separator />
 
                     <controls:PropertiesChooser Margin="0,5" />
-                    
-                    <Button Command="{Binding CommitCommand}">Сохранить</Button>
                 </StackPanel>
             </TabItem>
             <TabItem Header="FullTree">
@@ -103,6 +99,19 @@
             </TabItem>
             <TabItem Header="Плитки">
                 <controls:TilesViewer />
+            </TabItem>
+            <TabItem Header="Курсы">
+                <StackPanel>
+                    <Button Command="{Binding CurrentDoctor.StartCourseCommand}" 
+                            CommandParameter="{Binding}">Начать курс</Button>
+                    <ItemsControl ItemsSource="{Binding Courses}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <card:Course />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
             </TabItem>
         </TabControl>
     </Grid>

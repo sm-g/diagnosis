@@ -352,7 +352,7 @@ namespace Diagnosis.ViewModels
 
             Properties = new ObservableCollection<PropertyViewModel>(PropertyManager.GetPatientProperties(patient));
             Symptoms = new ObservableCollection<SymptomViewModel>();
-            Courses = new ObservableCollection<CourseViewModel>();
+            Courses = new ObservableCollection<CourseViewModel>(patient.Courses.Select(i => new CourseViewModel(i)));
         }
 
         public void Subscribe()
@@ -371,7 +371,13 @@ namespace Diagnosis.ViewModels
                     var property = e.GetValue<PropertyViewModel>(Messages.Property);
 
                     OnPropertyValueChanged(property);
-                })
+                }),
+                 this.Subscribe((int)EventID.CourseStarted, (e) =>
+                {
+                    var course = e.GetValue<Course>(Messages.Course);
+
+                    OnCourseStarted(course);
+                }),
             };
         }
 
@@ -401,6 +407,12 @@ namespace Diagnosis.ViewModels
             }
             Symptoms = new ObservableCollection<SymptomViewModel>(Symptoms.OrderBy(s => s.SortingOrder));
             OnPropertyChanged(() => Symptoms);
+        }
+
+        private void OnCourseStarted(Course course)
+        {
+            Courses.Add(new CourseViewModel(course));
+            MarkDirty();
         }
     }
 }

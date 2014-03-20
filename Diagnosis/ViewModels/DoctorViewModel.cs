@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Windows.Input;
+using EventAggregator;
 
 namespace Diagnosis.ViewModels
 {
@@ -191,6 +192,25 @@ namespace Diagnosis.ViewModels
         }
 
         #endregion ISearchable
+
+        private ICommand _startCourse;
+
+        public ICommand StartCourseCommand
+        {
+            get
+            {
+                return _startCourse
+                    ?? (_startCourse = new RelayCommand<PatientViewModel>(
+                                          (patientVM) =>
+                                          {
+                                              var course = doctor.StartCourse(patientVM.patient);
+                                              MarkDirty();
+                                              //  CommitCommand.Execute(null);
+
+                                              this.Send((int)EventID.CourseStarted, new CourseStartesParams(course).Params);
+                                          }));
+            }
+        }
 
         public DoctorViewModel(Doctor d)
         {

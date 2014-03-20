@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics.Contracts;
 using Diagnosis.ViewModels;
+using Diagnosis.Models;
 
 namespace Diagnosis
 {
@@ -12,11 +13,12 @@ namespace Diagnosis
     /// </summary>
     static class Messages
     {
-        public const string Symptom = "symptom";
+        public const string Symptom = "symptomVM";
         public const string CheckedState = "checked";
         public const string Patient = "patientVM";
-        public const string Diagnosis = "diagnosis";
+        public const string Diagnosis = "diagnosisVM";
         public const string Property = "propertyVM";
+        public const string Course = "course";
 
     }
 
@@ -93,13 +95,28 @@ namespace Diagnosis
         }
     }
 
+    class CourseStartesParams : IEventParams
+    {
+        public KeyValuePair<string, object>[] Params { get; private set; }
+
+        public CourseStartesParams(Course course)
+        {
+            Contract.Requires(course != null);
+
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.Course, course)
+            };
+        }
+    }
+
     enum EventID
     {
         SymptomCheckedChanged,
         CurrentPatientChanged,
         PatientCheckedChanged,
         DiagnosisCheckedChanged,
-        PropertySelectedValueChanged
+        PropertySelectedValueChanged,
+        CourseStarted
     }
 
     interface IEventParams

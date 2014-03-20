@@ -32,21 +32,23 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual void StartCourse(Patient patient)
+        public virtual Course StartCourse(Patient patient)
         {
             Contract.Requires(patient != null);
 
             var course = new Course(patient, this);
             courses.Add(course);
+            return course;
         }
 
-        public Doctor(string lastName, string firstName, string speciality = "")
+        public Doctor(string lastName, string firstName, string middleName = null, string speciality = "")
         {
             Contract.Requires(lastName != null);
             Contract.Requires(firstName != null);
 
             LastName = lastName;
             FirstName = firstName;
+            MiddleName = middleName;
             Speciality = speciality;
             IsMale = true;
         }
