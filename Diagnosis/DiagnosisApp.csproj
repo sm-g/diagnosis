@@ -169,9 +169,6 @@
     <Compile Include="Controls\Forms\PropertiesChooser.xaml.cs">
       <DependentUpon>PropertiesChooser.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Forms\EducationChooser.xaml.cs">
-      <DependentUpon>EducationChooser.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\FloatSearch.xaml.cs">
       <DependentUpon>FloatSearch.xaml</DependentUpon>
     </Compile>
@@ -274,10 +271,6 @@
     <Page Include="Controls\Forms\PropertiesChooser.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\Forms\EducationChooser.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\FloatSearch.xaml">
       <SubType>Designer</SubType>
