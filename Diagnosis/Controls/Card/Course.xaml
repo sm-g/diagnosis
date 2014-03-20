@@ -19,13 +19,15 @@
         <StackPanel Grid.Column="1">
             <TextBlock Text="{Binding Name}"/>
             <TextBlock>
-                <TextBlock Text="{Binding Start, StringFormat='{}{0:d}'}"/>—<TextBlock Text="{Binding End, StringFormat='{}{0:d}'}"/>
+                <TextBlock Text="{Binding Start, StringFormat='{}с {0:d}'}"/>
+                <TextBlock Text="{Binding End, StringFormat='{}по {0:d}'}" Visibility="{Binding IsEnded, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </TextBlock>
             <TextBlock Text="{Binding LeadDoctor.ShortName}"/>
+            <Button Command="{Binding AddAppointmentCommand}">Добавить осмотр</Button>
         </StackPanel>
         <ItemsControl x:Name="appointments"
                       ItemsSource="{Binding Appointments}"
-                      Visibility="{Binding IsAppointmentsVisible}" 
+                      Visibility="{Binding IsAppointmentsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" 
                       Grid.Column="1" 
                       Grid.Row="1">
             <ItemsControl.ItemTemplate>

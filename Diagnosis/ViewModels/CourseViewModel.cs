@@ -2,6 +2,8 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using System.Windows.Input;
+using EventAggregator;
 
 namespace Diagnosis.ViewModels
 {
@@ -11,6 +13,7 @@ namespace Diagnosis.ViewModels
         private bool _appointmentsVis;
         private bool _isEnded;
         private DoctorViewModel _leadDoctor;
+        private ICommand _addApp;
 
         #region CheckableBase
 
@@ -99,6 +102,21 @@ namespace Diagnosis.ViewModels
         }
 
         public ObservableCollection<AppointmentViewModel> Appointments { get; private set; }
+
+        public ICommand AddAppointmentCommand
+        {
+            get
+            {
+                return _addApp
+                    ?? (_addApp = new RelayCommand(() =>
+                        {
+                            var app = course.AddAppointment();
+                            Appointments.Add(new AppointmentViewModel(app));
+
+                            this.Send((int)EventID.AppointmentAdded, new AppointmentAddedParams(app).Params);
+                        }));
+            }
+        }
 
         public CourseViewModel(Course course)
         {

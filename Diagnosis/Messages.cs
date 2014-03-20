@@ -19,6 +19,7 @@ namespace Diagnosis
         public const string Diagnosis = "diagnosisVM";
         public const string Property = "propertyVM";
         public const string Course = "course";
+        public const string Appointment = "appointment";
 
     }
 
@@ -95,16 +96,30 @@ namespace Diagnosis
         }
     }
 
-    class CourseStartesParams : IEventParams
+    class CourseStartedParams : IEventParams
     {
         public KeyValuePair<string, object>[] Params { get; private set; }
 
-        public CourseStartesParams(Course course)
+        public CourseStartedParams(Course course)
         {
             Contract.Requires(course != null);
 
             Params = new[] {
                 new KeyValuePair<string,object>(Messages.Course, course)
+            };
+        }
+    }
+
+    class AppointmentAddedParams : IEventParams
+    {
+        public KeyValuePair<string, object>[] Params { get; private set; }
+
+        public AppointmentAddedParams(Appointment appointment)
+        {
+            Contract.Requires(appointment != null);
+
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.Appointment, appointment)
             };
         }
     }
@@ -116,7 +131,8 @@ namespace Diagnosis
         PatientCheckedChanged,
         DiagnosisCheckedChanged,
         PropertySelectedValueChanged,
-        CourseStarted
+        CourseStarted,
+        AppointmentAdded
     }
 
     interface IEventParams

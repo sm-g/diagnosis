@@ -205,9 +205,8 @@ namespace Diagnosis.ViewModels
                                           {
                                               var course = doctor.StartCourse(patientVM.patient);
                                               MarkDirty();
-                                              //  CommitCommand.Execute(null);
 
-                                              this.Send((int)EventID.CourseStarted, new CourseStartesParams(course).Params);
+                                              this.Send((int)EventID.CourseStarted, new CourseStartedParams(course).Params);
                                           }));
             }
         }
