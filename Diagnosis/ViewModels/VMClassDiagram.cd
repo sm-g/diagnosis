@@ -72,14 +72,14 @@
       <FileName>ViewModels\PatientSearch.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diagnosis.ViewModels.PatientsListVewModel" Collapsed="true">
+  <Class Name="Diagnosis.ViewModels.PatientsListViewModel" Collapsed="true">
     <Position X="26.5" Y="3.25" Width="1.75" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAABAAAAAAAAAAAAAAgAAAAgQAAAAhAAABAAgAAA=</HashCode>
-      <FileName>ViewModels\PatientsListVewModel.cs</FileName>
+      <FileName>ViewModels\PatientsListViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
       <Property Name="Patients" />
@@ -91,18 +91,18 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAIAEDgEAIAgAAIAEBQAAQQAAAKgMAECAAAABwCAAg=</HashCode>
+      <HashCode>AAAIAEDgEAJAgABIAEBQIAQQAAAKgMAECAAAABwCAAg=</HashCode>
       <FileName>ViewModels\PatientViewModel.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.ViewModels.PropertyViewModel">
-    <Position X="12" Y="3.25" Width="1.5" />
+    <Position X="15.75" Y="5.25" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAACAACAAAAAEAAAAAAAAAAAAAAEAAAAAAgAAAIAAE=</HashCode>
+      <HashCode>AAAACAECAAAAAAAAAAAAAAQAAAEAEAAAAAAgAAAAAAE=</HashCode>
       <FileName>ViewModels\PropertyViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -138,7 +138,7 @@
   <Class Name="Diagnosis.ViewModels.ViewModelBase" Collapsed="true">
     <Position X="16.75" Y="2" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAIAAACAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ViewModels\ViewModelBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -208,18 +208,18 @@
       <FileName>ViewModels\MainWindowViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="CardVM" />
       <Property Name="LoginVM" />
       <Property Name="PatientsVM" />
+      <Property Name="CardVM" />
     </ShowAsAssociation>
   </Class>
   <Class Name="Diagnosis.ViewModels.PropertyManager" BaseTypeListCollapsed="true">
-    <Position X="15" Y="3.75" Width="1.5" />
+    <Position X="13.25" Y="4" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAIAAAAAAABAAAAAAAAAAAAAgAAAAAAAAAAAAgAAAAA=</HashCode>
+      <HashCode>AAEAAAEAAABAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAA=</HashCode>
       <FileName>ViewModels\PropertyManager.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -262,7 +262,7 @@
   <Interface Name="Diagnosis.ViewModels.IPropertyManager">
     <Position X="39" Y="4.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAEAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ViewModels\IPropertyManager.cs</FileName>
     </TypeIdentifier>
   </Interface>

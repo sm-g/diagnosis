@@ -10,8 +10,8 @@
       <FileName>Models\Appointment.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="Doctor" />
       <Property Name="Course" />
+      <Property Name="Doctor" />
     </ShowAsAssociation>
     <ShowAsCollectionAssociation>
       <Property Name="HealthRecords" />
@@ -85,8 +85,8 @@
       <FileName>Models\Patient.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
-      <Property Name="Courses" />
       <Property Name="PatientProperties" />
+      <Property Name="Courses" />
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Diagnosis.Models.PatientProperty">
@@ -120,13 +120,20 @@
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
+    <AssociationLine Name="PatientProperties" Type="Diagnosis.Models.PatientProperty" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="2.5" Y="5.875" />
+        <Point X="4.281" Y="5.875" />
+        <Point X="4.281" Y="3.305" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAAGAAAAAAAAAEAAAQAgAAAAAAAAACAAAEAgAAAAAAA=</HashCode>
       <FileName>Models\Property.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
-      <Property Name="PatientProperties" />
       <Property Name="Values" />
+      <Property Name="PatientProperties" />
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Diagnosis.Models.PropertyValue">
@@ -134,17 +141,17 @@
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
+    <AssociationLine Name="Property" Type="Diagnosis.Models.Property" FixedFromPoint="true">
+      <Path>
+        <Point X="5.75" Y="6.938" />
+        <Point X="2.5" Y="6.938" />
+      </Path>
+    </AssociationLine>
     <AssociationLine Name="PatientProperties" Type="Diagnosis.Models.PatientProperty" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="5.75" Y="5.812" />
         <Point X="5.312" Y="5.812" />
         <Point X="5.312" Y="3.305" />
-      </Path>
-    </AssociationLine>
-    <AssociationLine Name="Property" Type="Diagnosis.Models.Property" FixedFromPoint="true">
-      <Path>
-        <Point X="5.75" Y="6.938" />
-        <Point X="2.5" Y="6.938" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
