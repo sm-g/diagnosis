@@ -13,8 +13,8 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.Native);
             });
 
-            Property(x => x.Start);
-            Property(x => x.End);
+            Property(x => x.Start, m => m.Column("StartDate"));
+            Property(x => x.End, m => m.Column("EndDate"));
             Set(x => x.Appointments, s =>
             {
                 s.Key(k =>
@@ -22,6 +22,7 @@ namespace Diagnosis.Data.Mappings
                     k.Column("CourseID");
                 });
                 s.Inverse(true);
+                s.Cascade(Cascade.All);
                 s.Access(Accessor.Field);
             }, r =>
             {

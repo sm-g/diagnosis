@@ -26,6 +26,7 @@ namespace Diagnosis.Data.Mappings
                     k.Column("DoctorID");
                 });
                 s.Inverse(true);
+                s.Cascade(Cascade.All);
                 s.Access(Accessor.Field);
             }, r =>
             {

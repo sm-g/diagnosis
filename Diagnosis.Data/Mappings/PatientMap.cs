@@ -19,6 +19,20 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.IsMale);
             Property(x => x.BirthDate);
             Property(x => x.SNILS);
+
+            Set(x => x.Courses, s =>
+            {
+                s.Key(k =>
+                {
+                    k.Column("PatientID");
+                });
+                s.Inverse(true);
+                s.Cascade(Cascade.All);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.OneToMany();
+            });
             Set(x => x.PatientProperties, s =>
             {
                 s.Key(k =>

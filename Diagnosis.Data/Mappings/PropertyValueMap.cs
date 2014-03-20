@@ -21,6 +21,7 @@ namespace Diagnosis.Data.Mappings
                     k.Column("ValueID");
                 });
                 s.Inverse(true);
+                s.Cascade(Cascade.All | Cascade.DeleteOrphans);
                 s.Access(Accessor.Field);
             }, r =>
             {

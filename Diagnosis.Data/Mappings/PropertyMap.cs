@@ -22,6 +22,7 @@ namespace Diagnosis.Data.Mappings
                     k.Column("PropertyID");
                 });
                 s.Inverse(true);
+                s.Cascade(Cascade.All | Cascade.DeleteOrphans);
                 s.Access(Accessor.Field);
             }, r =>
             {
@@ -34,6 +35,7 @@ namespace Diagnosis.Data.Mappings
                     k.Column("PropertyID");
                 });
                 s.Inverse(true);
+                s.Cascade(Cascade.All);
                 s.Access(Accessor.Field);
             }, r =>
             {
