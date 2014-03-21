@@ -220,8 +220,8 @@
       <Property Name="CardVM" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="Diagnosis.ViewModels.PropertyManager" BaseTypeListCollapsed="true">
-    <Position X="6.25" Y="3.75" Width="1.5" />
+  <Class Name="Diagnosis.ViewModels.PropertyManager" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9" Y="5" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
