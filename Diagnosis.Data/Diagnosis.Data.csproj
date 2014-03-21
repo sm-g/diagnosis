@@ -96,7 +96,6 @@
     <Compile Include="Mappings\PatientMap.cs" />
     <Compile Include="Models\PatientProperty.cs" />
     <Compile Include="NHibernate\Net4Collections.cs" />
-    <Compile Include="NHibernate\NamingStrategy.cs" />
     <Compile Include="NHibernate\NHibHelper.cs" />
     <Compile Include="Repositories\DiagnosisRepository.cs" />
     <Compile Include="Repositories\SymptomRepository.cs" />
