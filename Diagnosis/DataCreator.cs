@@ -3,7 +3,7 @@ using Diagnosis.ViewModels;
 using System;
 using System.Collections.Generic;
 
-namespace Diagnosis
+namespace Diagnosis.App
 {
     public static class DataCreator
     {

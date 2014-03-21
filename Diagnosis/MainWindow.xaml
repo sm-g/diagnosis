@@ -7,7 +7,7 @@
         xmlns:screen="clr-namespace:Diagnosis.Screens"
         mc:Ignorable="d"
         DataContext="{DynamicResource vm}"        
-        x:Class="Diagnosis.MainWindow"
+        x:Class="Diagnosis.App.MainWindow"
         x:Name="root"
         Title="MainWindow" Height="450" Width="600">
     <Window.Resources>

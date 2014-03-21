@@ -14,7 +14,7 @@ using System.Windows.Shapes;
 using EventAggregator;
 using Diagnosis.ViewModels;
 
-namespace Diagnosis
+namespace Diagnosis.App
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
