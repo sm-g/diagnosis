@@ -205,6 +205,25 @@ namespace Diagnosis.ViewModels
             private set;
         }
 
+        
+        private CourseViewModel _selectedCourse;
+        public CourseViewModel SelectedCourse
+        {
+            get
+            {
+                return _selectedCourse;
+            }
+            set
+            {
+                if (_selectedCourse != value)
+                {
+                    _selectedCourse = value;
+                    _selectedCourse.IsSelected = true;
+                    OnPropertyChanged(() => SelectedCourse);
+                }
+            }
+        }
+
         public ObservableCollection<PropertyViewModel> Properties
         {
             get;
@@ -353,6 +372,11 @@ namespace Diagnosis.ViewModels
             Properties = new ObservableCollection<PropertyViewModel>(PropertyManager.GetPatientProperties(patient));
             Symptoms = new ObservableCollection<SymptomViewModel>();
             Courses = new ObservableCollection<CourseViewModel>(patient.Courses.Select(i => new CourseViewModel(i)));
+
+            if (Courses.Count > 0)
+            {
+                SelectedCourse = Courses.Last();
+            }
         }
 
         public void Subscribe()
@@ -399,7 +423,7 @@ namespace Diagnosis.ViewModels
         {
             if (isChecked)
             {
-                Symptoms.Add(symptom);
+               Symptoms.Add(symptom);
             }
             else
             {

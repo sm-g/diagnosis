@@ -3,6 +3,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Windows.Input;
+using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
@@ -57,7 +58,26 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public ObservableCollection<HealthRecord> HealthRecords { get; private set; }
+        public ObservableCollection<HealthRecordViewModel> HealthRecords { get; private set; }
+
+
+        private HealthRecordViewModel _selectedHealthRecord;
+        public HealthRecordViewModel SelectedHealthRecord
+        {
+            get
+            {
+                return _selectedHealthRecord;
+            }
+            set
+            {
+                if (_selectedHealthRecord != value)
+                {
+                    _selectedHealthRecord = value;
+                    _selectedHealthRecord.IsSelected = true;
+                    OnPropertyChanged(() => SelectedHealthRecord);
+                }
+            }
+        }
 
         public ICommand AddHealthRecordCommand
         {
@@ -67,7 +87,7 @@ namespace Diagnosis.ViewModels
                     ?? (_addHealthRecord = new RelayCommand(() =>
                         {
                             var hr = appointment.AddHealthRecord();
-                            HealthRecords.Add(hr);
+                            HealthRecords.Add(new HealthRecordViewModel(hr));
                         }));
             }
         }
@@ -78,7 +98,7 @@ namespace Diagnosis.ViewModels
 
             this.appointment = appointment;
             Doctor = new DoctorViewModel(appointment.Doctor);
-            HealthRecords = new ObservableCollection<HealthRecord>();
+            HealthRecords = new ObservableCollection<HealthRecordViewModel>(appointment.HealthRecords.Select(hr => new HealthRecordViewModel(hr)));
         }
     }
 }

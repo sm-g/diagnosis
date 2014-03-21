@@ -15,6 +15,8 @@ namespace Diagnosis.ViewModels
         private PatientsListViewModel _patientsVM;
         private PatientViewModel _patientVM;
         private ICommand _logout;
+        private bool _fastAddingMode;
+        private bool _isPatientsVisible;
 
         public bool IsLoginActive
         {
@@ -32,8 +34,6 @@ namespace Diagnosis.ViewModels
                 }
             }
         }
-
-        private bool _isPatientsVisible;
         public bool IsPatientsVisible
         {
             get
@@ -46,6 +46,22 @@ namespace Diagnosis.ViewModels
                 {
                     _isPatientsVisible = value;
                     OnPropertyChanged(() => IsPatientsVisible);
+                }
+            }
+        }
+
+        public bool FastAddingMode
+        {
+            get
+            {
+                return _fastAddingMode;
+            }
+            set
+            {
+                if (_fastAddingMode != value)
+                {
+                    _fastAddingMode = value;
+                    OnPropertyChanged(() => FastAddingMode);
                 }
             }
         }

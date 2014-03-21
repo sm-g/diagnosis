@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Windows.Input;
 using EventAggregator;
+using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
@@ -11,7 +12,6 @@ namespace Diagnosis.ViewModels
     {
         private Course course;
         private bool _appointmentsVis;
-        private bool _isEnded;
         private DoctorViewModel _leadDoctor;
         private ICommand _addApp;
 
@@ -103,6 +103,24 @@ namespace Diagnosis.ViewModels
 
         public ObservableCollection<AppointmentViewModel> Appointments { get; private set; }
 
+
+        private AppointmentViewModel _selectedAppointment;
+        public AppointmentViewModel SelectedAppointment
+        {
+            get
+            {
+                return _selectedAppointment;
+            }
+            set
+            {
+                if (_selectedAppointment != value)
+                {
+                    _selectedAppointment = value;
+                    OnPropertyChanged(() => SelectedAppointment);
+                }
+            }
+        }
+
         public ICommand AddAppointmentCommand
         {
             get
@@ -124,7 +142,12 @@ namespace Diagnosis.ViewModels
 
             this.course = course;
             LeadDoctor = new DoctorViewModel(course.LeadDoctor);
-            Appointments = new ObservableCollection<AppointmentViewModel>();
+            Appointments = new ObservableCollection<AppointmentViewModel>(course.Appointments.Select(app => new AppointmentViewModel(app)));
+
+            if (Appointments.Count > 0)
+            {
+                SelectedAppointment = Appointments.Last();
+            }
         }
     }
 }

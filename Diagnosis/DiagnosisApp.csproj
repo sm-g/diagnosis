@@ -157,6 +157,12 @@
     <Compile Include="Controls\AutoComplete.xaml.cs">
       <DependentUpon>AutoComplete.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Card\Appointment.xaml.cs">
+      <DependentUpon>Appointment.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Card\HealthRecord.xaml.cs">
+      <DependentUpon>HealthRecord.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Card\Course.xaml.cs">
       <DependentUpon>Course.xaml</DependentUpon>
     </Compile>
@@ -187,6 +193,7 @@
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\AppointmentViewModel.cs" />
+    <Compile Include="ViewModels\HealthRecordViewModel.cs" />
     <Compile Include="ViewModels\DoctorsManager.cs" />
     <Compile Include="ViewModels\CourseViewModel.cs" />
     <Compile Include="ViewModels\DoctorViewModel.cs" />
@@ -255,6 +262,14 @@
     <Page Include="Controls\AutoComplete.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Card\Appointment.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Card\HealthRecord.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\Card\Course.xaml">
       <SubType>Designer</SubType>

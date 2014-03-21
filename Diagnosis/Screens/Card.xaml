@@ -101,17 +101,27 @@
                 <controls:TilesViewer />
             </TabItem>
             <TabItem Header="Курсы">
+                <DockPanel>
                 <StackPanel>
                     <Button Command="{Binding CurrentDoctor.StartCourseCommand}" 
                             CommandParameter="{Binding}">Начать курс</Button>
-                    <ItemsControl ItemsSource="{Binding Courses}">
-                        <ItemsControl.ItemTemplate>
+                    <ListView ItemsSource="{Binding Courses}"
+                              SelectedItem="{Binding SelectedCourse}">
+                        <ListView.ItemTemplate>
                             <DataTemplate>
                                 <card:Course />
                             </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                        </ListView.ItemTemplate>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
                 </StackPanel>
+
+                    <card:Appointment DataContext="{Binding SelectedCourse.SelectedAppointment}"/>
+                </DockPanel>
             </TabItem>
         </TabControl>
     </Grid>
