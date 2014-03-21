@@ -3,7 +3,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.Controls"
-             xmlns:local="clr-namespace:Diagnosis"
              xmlns:Converters="clr-namespace:Diagnosis.Converters"
              x:Name="treeItem"
              x:Class="Diagnosis.Controls.TreeItem"
@@ -37,7 +36,7 @@
 >
             <TextBox x:Name="titleEditor"
 				Text="{Binding Name, UpdateSourceTrigger=LostFocus}"
-                local:FocusExtension.IsFocused="{Binding IsEditorFocused}"
+                controls:FocusExtension.IsFocused="{Binding IsEditorFocused}"
 
  />
             <CheckBox x:Name="isGroup"
@@ -50,7 +49,7 @@
 			Grid.Row="1"
 			Grid.Column="1"
 			Visibility="{Binding DataContext.IsSearchActive, ElementName=treeItem, Converter={StaticResource BooleanToVisibilityConverter}}"
-            local:FocusExtension.IsFocused="{Binding DataContext.IsSearchFocused, ElementName=treeItem}"
+            controls:FocusExtension.IsFocused="{Binding DataContext.IsSearchFocused, ElementName=treeItem}"
             DataContext="{Binding Search}"
 >
             <controls:FloatSearch.InputBindings>
