@@ -25,7 +25,7 @@
             </TextBlock>
 
             <TextBlock Grid.Column="1"
-                Visibility="{Binding DataContext.FastAddingMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                Visibility="{Binding DataContext.FastAddingMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource NegBooleanToVisibilityConverter}}">
                 Описание
             </TextBlock>
         </Grid>

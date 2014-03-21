@@ -87,18 +87,29 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Diagnosis.ViewModels.PatientViewModel" Collapsed="true">
-    <Position X="17.5" Y="11" Width="1.5" />
+    <Position X="17.25" Y="11" Width="2" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
+    <AssociationLine Name="Properties" Type="Diagnosis.ViewModels.PropertyViewModel" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="17.833" Y="11" />
+        <Point X="17.833" Y="8.396" />
+        <Point X="14.25" Y="8.396" />
+        <Point X="14.25" Y="8.021" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAQIAEDwEAIAgAAIAMBQAAQQAAAKgMAkSAACABwCAAg=</HashCode>
+      <HashCode>CAQIAGDwEAIAgAAIAMBQAAQQAAAKgMAkSAACABwCAAg=</HashCode>
       <FileName>ViewModels\PatientViewModel.cs</FileName>
     </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Properties" />
+    </ShowAsCollectionAssociation>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.ViewModels.PropertyViewModel">
-    <Position X="8.75" Y="5" Width="1.5" />
+    <Position X="13.5" Y="5.5" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
@@ -172,9 +183,12 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>ABIAAAAAACAAgAAAAAEQAAQQQAABAAAAAAAAEgAAAAA=</HashCode>
+      <HashCode>ABIAAQAAACAAgAAAgAAQAAQQQEABAAAAAAAAEgAAAAA=</HashCode>
       <FileName>ViewModels\CourseViewModel.cs</FileName>
     </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Appointments" />
+    </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Diagnosis.ViewModels.LoginViewModel" Collapsed="true">
     <Position X="14" Y="3" Width="1.5" />
@@ -187,12 +201,18 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Diagnosis.ViewModels.MainWindowViewModel">
-    <Position X="17" Y="4" Width="1.5" />
+    <Position X="17.5" Y="4" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
+    <AssociationLine Name="CardVM" Type="Diagnosis.ViewModels.PatientViewModel" FixedToPoint="true">
+      <Path>
+        <Point X="19" Y="6.905" />
+        <Point X="19" Y="11" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AgAAAgAAQAAAiAAAgEAAAAAQAAACAAEABAAAEAAAAIA=</HashCode>
+      <HashCode>AgAAAhAAQAAAiAAAgEAAAAAQAAACAAEAFAAAEAAAAIA=</HashCode>
       <FileName>ViewModels\MainWindowViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -221,7 +241,7 @@
         <Point X="21.5" Y="4.846" />
         <Point X="20.34" Y="4.846" />
         <Point X="20.34" Y="11.312" />
-        <Point X="19" Y="11.312" />
+        <Point X="19.25" Y="11.312" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
@@ -230,6 +250,32 @@
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
       <Property Name="Patients" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.AppointmentViewModel" Collapsed="true">
+    <Position X="14" Y="12.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>CAAAABAQAAAAAAAAAABAAAYQAAAECAQAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\AppointmentViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="HealthRecords" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.HealthRecordViewModel">
+    <Position X="15.25" Y="14" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAgAABAAAAgAAAAAAAAAAQQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\HealthRecordViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Symptoms" />
     </ShowAsCollectionAssociation>
   </Class>
   <Interface Name="Diagnosis.ViewModels.ICheckable">
