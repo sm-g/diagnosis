@@ -135,7 +135,7 @@ namespace Diagnosis.App.ViewModels
             });
 
             LoginVM = new LoginViewModel(new DoctorsManager(new DoctorRepository()));
-            PatientsVM = new PatientsListViewModel(new PatientRepository(), new PropertyManager(new PropertyRepository()));
+            PatientsVM = new PatientsListViewModel(new PatientRepository(), EntityManagers.PropertyManager);
 
             LoginVM.LoggedIn += OnLoggedIn;
         }

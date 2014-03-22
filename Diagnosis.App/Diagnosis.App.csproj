@@ -189,10 +189,12 @@
     </Compile>
     <Compile Include="Controls\Helpers\Attached.cs" />
     <Compile Include="Controls\FocusExtension.cs" />
+    <Compile Include="EntityManagers.cs" />
     <Compile Include="MessagingParams.cs" />
     <Compile Include="Screens\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\SymptomsManager.cs" />
     <Compile Include="ViewModels\AppointmentViewModel.cs" />
     <Compile Include="ViewModels\HealthRecordViewModel.cs" />
     <Compile Include="ViewModels\DoctorsManager.cs" />

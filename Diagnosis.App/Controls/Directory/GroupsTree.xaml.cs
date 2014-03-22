@@ -17,7 +17,7 @@ namespace Diagnosis.App.Controls
 
         private void TreeView_Loaded(object sender, RoutedEventArgs e)
         {
-            tree.DataContext = DataCreator.Symptoms;
+            tree.DataContext = EntityManagers.SymptomsManager.Symptoms;
         }
     }
 }
