@@ -13,6 +13,7 @@ namespace Diagnosis.App
         public const string Property = "propertyVM";
         public const string Course = "course";
         public const string Appointment = "appointment";
+        public const string HealthRecord = "healthRecord";
 
     }
 
@@ -24,6 +25,7 @@ namespace Diagnosis.App
         DiagnosisCheckedChanged,
         PropertySelectedValueChanged,
         CourseStarted,
-        AppointmentAdded
+        AppointmentAdded,
+        HealthRecordSelected
     }
 }
