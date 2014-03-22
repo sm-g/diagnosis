@@ -13,14 +13,6 @@ namespace Diagnosis.App.ViewModels
             set;
         }
 
-        public override bool IsReady
-        {
-            get
-            {
-                return base.IsReady;
-            }
-        }
-
         #endregion IEditable
 
         #region ICheckable

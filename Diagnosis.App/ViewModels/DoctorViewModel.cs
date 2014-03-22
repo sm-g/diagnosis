@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class DoctorViewModel : CheckableBase, ISearchable
+    public class DoctorViewModel : CheckableBase
     {
         internal Doctor doctor;
 
@@ -106,14 +106,6 @@ namespace Diagnosis.App.ViewModels
 
         #region CheckableBase
 
-        public override bool IsReady
-        {
-            get
-            {
-                return base.IsReady && !IsSearchActive;
-            }
-        }
-
         public override string Name
         {
             get
@@ -131,68 +123,6 @@ namespace Diagnosis.App.ViewModels
         }
 
         #endregion CheckableBase
-
-        #region ISearchable
-
-        private ICommand _searchCommand;
-        private bool _searchActive;
-        private bool _searchFocused;
-
-        public string Representation
-        {
-            get
-            {
-                return ShortName;
-            }
-        }
-
-        public bool IsSearchActive
-        {
-            get
-            {
-                return _searchActive;
-            }
-            set
-            {
-                if (_searchActive != value && (IsReady || !value))
-                {
-                    _searchActive = value;
-                    OnPropertyChanged(() => IsSearchActive);
-                }
-            }
-        }
-
-        public bool IsSearchFocused
-        {
-            get
-            {
-                return _searchFocused;
-            }
-            set
-            {
-                if (_searchFocused != value)
-                {
-                    _searchFocused = value;
-                    OnPropertyChanged(() => IsSearchFocused);
-                }
-            }
-        }
-
-        public ICommand SearchCommand
-        {
-            get
-            {
-                return _searchCommand
-                    ?? (_searchCommand = new RelayCommand(
-                                          () =>
-                                          {
-                                              IsSearchActive = !IsSearchActive;
-                                          }
-                                          ));
-            }
-        }
-
-        #endregion ISearchable
 
         public ICommand StartCourseCommand
         {

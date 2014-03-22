@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.App.ViewModels
 {
-    public abstract class HierarchicalSearch<T> : SearchBase<T> where T : class, IHierarchical<T>, ICheckable, ISearchable
+    public abstract class HierarchicalSearch<T> : SearchBase<T> where T : class, IHierarchical<T>, ICheckable, IEditable
     {
         public bool AllChildren { get; set; }
 

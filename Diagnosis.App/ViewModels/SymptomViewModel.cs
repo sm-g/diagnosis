@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class SymptomViewModel : HierarchicalBase<SymptomViewModel>, ISearchable
+    public class SymptomViewModel : HierarchicalBase<SymptomViewModel>
     {
         internal Symptom symptom;
 
@@ -52,7 +52,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return base.IsReady && !IsSearchActive;
+                return base.IsReady;
             }
         }
 
@@ -64,68 +64,6 @@ namespace Diagnosis.App.ViewModels
         }
 
         #endregion HierarchicalBase
-
-        #region ISearchable
-
-        private ICommand _searchCommand;
-        private bool _searchActive;
-        private bool _searchFocused;
-
-        public string Representation
-        {
-            get
-            {
-                return Name;
-            }
-        }
-
-        public bool IsSearchActive
-        {
-            get
-            {
-                return _searchActive;
-            }
-            set
-            {
-                if (_searchActive != value && (IsReady || !value))
-                {
-                    _searchActive = value;
-                    OnPropertyChanged(() => IsSearchActive);
-                }
-            }
-        }
-
-        public bool IsSearchFocused
-        {
-            get
-            {
-                return _searchFocused;
-            }
-            set
-            {
-                if (_searchFocused != value)
-                {
-                    _searchFocused = value;
-                    OnPropertyChanged(() => IsSearchFocused);
-                }
-            }
-        }
-
-        public ICommand SearchCommand
-        {
-            get
-            {
-                return _searchCommand
-                    ?? (_searchCommand = new RelayCommand(
-                                          () =>
-                                          {
-                                              IsSearchActive = !IsSearchActive;
-                                          }
-                                          ));
-            }
-        }
-
-        #endregion ISearchable
 
         public SymptomSearch Search
         {

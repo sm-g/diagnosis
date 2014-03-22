@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class HierarchicalExplorer<T> : ViewModelBase, ISearchable where T : HierarchicalBase<T>, ISearchable
+    public class HierarchicalExplorer<T> : ViewModelBase where T : HierarchicalBase<T>
     {
         private RelayCommand<T> _clickItem;
         private T _current;
@@ -40,19 +40,12 @@ namespace Diagnosis.App.ViewModels
 
                     Items = _current.Children;
 
-                    DirtySearchCreation();
-
                     OnPropertyChanged(() => CurrentItem);
                     OnPropertyChanged(() => Items);
 
                     CreateBreadcrumbs();
                 }
             }
-        }
-
-        private void DirtySearchCreation()
-        {
-            // TODO
         }
 
         private void CreateBreadcrumbs()
@@ -101,72 +94,6 @@ namespace Diagnosis.App.ViewModels
                                           ));
             }
         }
-
-
-        #region ISearchable
-
-        private ICommand _searchCommand;
-        private bool _searchActive;
-        private bool _searchFocused;
-
-        public string Representation
-        {
-            get
-            {
-                return CurrentItem.Name;
-            }
-        }
-
-        public bool IsSearchActive
-        {
-            get
-            {
-                return _searchActive;
-            }
-            set
-            {
-                if (_searchActive != value)
-                {
-                    _searchActive = value;
-                    IsSearchFocused = value;
-
-                    OnPropertyChanged(() => IsSearchActive);
-                }
-            }
-        }
-
-        public bool IsSearchFocused
-        {
-            get
-            {
-                return _searchFocused;
-            }
-            set
-            {
-                if (_searchFocused != value)
-                {
-                    _searchFocused = value;
-                    OnPropertyChanged(() => IsSearchFocused);
-                }
-            }
-        }
-
-        public ICommand SearchCommand
-        {
-            get
-            {
-                return _searchCommand
-                    ?? (_searchCommand = new RelayCommand(
-                                          () =>
-                                          {
-                                              IsSearchActive = !IsSearchActive;
-                                          }
-                                          ));
-            }
-        }
-
-        #endregion ISearchable
-
 
         private HierarchicalSearch<T> _search;
 

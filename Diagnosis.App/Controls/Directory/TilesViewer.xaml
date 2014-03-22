@@ -26,8 +26,8 @@
 >
             <Grid.InputBindings>
                 <KeyBinding Key="Back" Command="{Binding GoUp}" />
-                <KeyBinding Key="Insert" Command="{Binding CurrentItem.SearchCommand}" />
-                <KeyBinding Key="F" Modifiers="Control" Command="{Binding CurrentItem.SearchCommand}" />
+                <KeyBinding Key="Insert" Command="{Binding CurrentItem.Search.SearchCommand}" />
+                <KeyBinding Key="F" Modifiers="Control" Command="{Binding CurrentItem.Search.SearchCommand}" />
             </Grid.InputBindings>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -59,7 +59,7 @@
 
             <controls:FloatSearch x:Name="search"
                                 Grid.Row="1"
-                                Visibility="{Binding DataContext.IsSearchActive, ElementName=explorer, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Visibility="{Binding DataContext.Search.IsSearchActive, ElementName=explorer, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 DataContext="{Binding Search}"
 
  />

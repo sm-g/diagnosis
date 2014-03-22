@@ -7,11 +7,14 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public abstract class SearchBase<T> : ViewModelBase, ISearch<T> where T : class, ICheckable, ISearchable
+    public abstract class SearchBase<T> : ViewModelBase, ISearch<T> where T : class, ICheckable, IEditable
     {
         private string _query;
-        private ICommand _clear;
         private int _selectedIndex = -1;
+        private ICommand _clear;
+        private ICommand _searchCommand;
+        private bool _searchActive;
+        private bool _searchFocused;
 
         public event EventHandler ResultItemSelected;
 
@@ -84,6 +87,52 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public ICommand SearchCommand
+        {
+            get
+            {
+                return _searchCommand
+                    ?? (_searchCommand = new RelayCommand(
+                                          () =>
+                                          {
+                                              IsSearchActive = !IsSearchActive;
+                                          }
+                                          ));
+            }
+        }
+
+        public bool IsSearchActive
+        {
+            get
+            {
+                return _searchActive;
+            }
+            set
+            {
+                if (_searchActive != value)
+                {
+                    _searchActive = value;
+                    OnPropertyChanged(() => IsSearchActive);
+                }
+            }
+        }
+
+        public bool IsSearchFocused
+        {
+            get
+            {
+                return _searchFocused;
+            }
+            set
+            {
+                if (_searchFocused != value)
+                {
+                    _searchFocused = value;
+                    OnPropertyChanged(() => IsSearchFocused);
+                }
+            }
+        }
+
         public void Clear()
         {
             Query = "";
@@ -103,10 +152,10 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(query != null);
 
             Results = new ObservableCollection<T>(
-               Collection.Where(c => c.Representation.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)
+               Collection.Where(c => c.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)
                    && CheckConditions(c)));
 
-            if (!Results.Any(c => c.Representation.Equals(query, StringComparison.InvariantCultureIgnoreCase)) &&
+            if (!Results.Any(c => c.Name.Equals(query, StringComparison.InvariantCultureIgnoreCase)) &&
                 query != string.Empty)
             {
                 // добавляем запрос к результатам

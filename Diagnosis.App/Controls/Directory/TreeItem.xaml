@@ -48,12 +48,12 @@
         <controls:FloatSearch x:Name="search"
 			Grid.Row="1"
 			Grid.Column="1"
-			Visibility="{Binding DataContext.IsSearchActive, ElementName=treeItem, Converter={StaticResource BooleanToVisibilityConverter}}"
-            controls:FocusExtension.IsFocused="{Binding DataContext.IsSearchFocused, ElementName=treeItem}"
+			Visibility="{Binding DataContext.Search.IsSearchActive, ElementName=treeItem, Converter={StaticResource BooleanToVisibilityConverter}}"
+            controls:FocusExtension.IsFocused="{Binding DataContext.Search.IsSearchFocused, ElementName=treeItem}"
             DataContext="{Binding Search}"
 >
             <controls:FloatSearch.InputBindings>
-                <KeyBinding Key="Escape" Command="{Binding DataContext.SearchCommand, ElementName=treeItem}"></KeyBinding>
+                <KeyBinding Key="Escape" Command="{Binding DataContext.Search.SearchCommand, ElementName=treeItem}"></KeyBinding>
             </controls:FloatSearch.InputBindings>
         </controls:FloatSearch>
     </Grid>

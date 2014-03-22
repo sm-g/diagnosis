@@ -52,7 +52,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <DockPanel>
-                            <TextBlock Text="{Binding Representation}" />
+                            <TextBlock Text="{Binding Name}" />
                         </DockPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
