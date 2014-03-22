@@ -9,14 +9,11 @@ namespace Diagnosis.App.ViewModels
 {
     public class PatientSearch : SearchBase<PatientViewModel>
     {
-        PropertyManager propManager;
-
-        public PatientSearch(PatientsManager patients, PropertyManager propManager)
+        public PatientSearch(PatientsManager patients)
             : base()
         {
             Contract.Requires(patients != null);
             Collection = patients.Patients;
-            this.propManager = propManager;
 
             InitQuery();
         }
@@ -32,7 +29,7 @@ namespace Diagnosis.App.ViewModels
             }
 
             string middleName = lfmNames.Count < 3 ? null : lfmNames[2];
-            return new PatientViewModel(new Patient(lfmNames[0], lfmNames[1], new DateTime(1980, 6, 15), middleName), propManager);
+            return new PatientViewModel(new Patient(lfmNames[0], lfmNames[1], new DateTime(1980, 6, 15), middleName));
         }
     }
 }

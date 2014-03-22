@@ -13,7 +13,6 @@ namespace Diagnosis.App.ViewModels
     {
         internal Patient patient;
 
-        private PropertyManager _propManager;
         private CourseViewModel _selectedCourse;
         private DoctorViewModel _doctor;
         private List<EventMessageHandler> msgHandlers = new List<EventMessageHandler>();
@@ -223,21 +222,6 @@ namespace Diagnosis.App.ViewModels
             private set;
         }
 
-        public PropertyManager PropertyManager
-        {
-            get
-            {
-                return _propManager;
-            }
-            set
-            {
-                if (_propManager != value)
-                {
-                    _propManager = value;
-                    OnPropertyChanged(() => PropertyManager);
-                }
-            }
-        }
         public DoctorViewModel CurrentDoctor
         {
             get
@@ -397,15 +381,13 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public PatientViewModel(Patient p, PropertyManager propManager)
+        public PatientViewModel(Patient p)
         {
             Contract.Requires(p != null);
-            Contract.Requires(propManager != null);
 
             patient = p;
-            PropertyManager = propManager;
 
-            Properties = new ObservableCollection<PropertyViewModel>(PropertyManager.GetPatientProperties(patient));
+            Properties = new ObservableCollection<PropertyViewModel>(EntityManagers.PropertyManager.GetPatientProperties(patient));
             Courses = new ObservableCollection<CourseViewModel>(patient.Courses.Select(i => new CourseViewModel(i)));
 
             if (Courses.Count > 0)

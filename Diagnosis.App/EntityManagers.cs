@@ -22,7 +22,7 @@ namespace Diagnosis.App
         {
             get
             {
-                return _patientsManager ?? (_patientsManager = new PatientsManager(new PatientRepository(), PropertyManager));
+                return _patientsManager ?? (_patientsManager = new PatientsManager(new PatientRepository()));
             }
         }
 
