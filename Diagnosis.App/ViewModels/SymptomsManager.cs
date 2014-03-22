@@ -26,9 +26,26 @@ namespace Diagnosis.App.ViewModels
         {
             Contract.Requires(hr != null);
 
-            var intersect = Symptoms.Select(s => s.symptom).Intersect(hr.Symptoms);
+            if (Symptoms.Count > 0)
+            {
+                var intersect = Symptoms[0].Parent.AllChildren.Select(s => s.symptom).Intersect(hr.Symptoms);
 
-            return Symptoms.Where(s => intersect.Contains(s.symptom));
+                return Symptoms[0].Parent.AllChildren.Where(s => intersect.Contains(s.symptom));
+            }
+
+            return Enumerable.Empty<SymptomViewModel>();
+        }
+
+        public void CheckThese(IEnumerable<SymptomViewModel> symptoms)
+        {
+            foreach (var item in Symptoms[0].Parent.AllChildren)
+            {
+                item.IsChecked = false;
+            }
+            foreach (var item in symptoms)
+            {
+                item.IsChecked = true;
+            }
         }
 
         public SymptomsManager(ISymptomRepository repo)

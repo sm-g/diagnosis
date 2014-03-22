@@ -30,6 +30,7 @@ namespace Diagnosis.Data.Mappings
                 {
                     k.Column("RecordID");
                 });
+                s.Cascade(Cascade.All);
                 s.Access(Accessor.Field);
             }, r =>
             {

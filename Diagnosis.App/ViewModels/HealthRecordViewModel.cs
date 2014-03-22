@@ -66,7 +66,7 @@ namespace Diagnosis.App.ViewModels
 
             this.healthRecord = hr;
             Symptoms = new ObservableCollection<SymptomViewModel>(
-                EntityManagers.SymptomsManager.GetHealthRecordSymptoms(hr));
+                EntityManagers.SymptomsManager.GetHealthRecordSymptoms(healthRecord));
             Subscribe();
         }
 
@@ -95,6 +95,8 @@ namespace Diagnosis.App.ViewModels
         public void MakeCurrent()
         {
             current = this;
+
+            EntityManagers.SymptomsManager.CheckThese(Symptoms);
         }
 
         private void OnSymptomCheckedChanged(SymptomViewModel symptomVM, bool isChecked)
@@ -103,8 +105,11 @@ namespace Diagnosis.App.ViewModels
             {
                 if (isChecked)
                 {
-                    Symptoms.Add(symptomVM);
-                    healthRecord.AddSymptom(symptomVM.symptom);
+                    if (!Symptoms.Contains(symptomVM))
+                    {
+                        Symptoms.Add(symptomVM);
+                        healthRecord.AddSymptom(symptomVM.symptom);
+                    }
                 }
                 else
                 {
