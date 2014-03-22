@@ -14,7 +14,7 @@ namespace Diagnosis.App.ViewModels
     {
         internal Patient patient;
 
-        private IPropertyManager _propManager;
+        private PropertyManager _propManager;
         private List<EventMessageHandler> msgHandlers = new List<EventMessageHandler>();
 
         public string FirstName
@@ -206,7 +206,7 @@ namespace Diagnosis.App.ViewModels
             private set;
         }
 
-        
+
         private CourseViewModel _selectedCourse;
         public CourseViewModel SelectedCourse
         {
@@ -231,7 +231,7 @@ namespace Diagnosis.App.ViewModels
             private set;
         }
 
-        public IPropertyManager PropertyManager
+        public PropertyManager PropertyManager
         {
             get
             {
@@ -362,7 +362,7 @@ namespace Diagnosis.App.ViewModels
 
         #endregion ISearchable
 
-        public PatientViewModel(Patient p, IPropertyManager propManager)
+        public PatientViewModel(Patient p, PropertyManager propManager)
         {
             Contract.Requires(p != null);
             Contract.Requires(propManager != null);

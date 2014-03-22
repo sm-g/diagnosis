@@ -13,7 +13,7 @@ namespace Diagnosis.App.ViewModels
         private PatientSearch _search;
         private PatientViewModel _current;
         private IPatientRepository patientRepo;
-        private IPropertyManager propManager;
+        private PropertyManager propManager;
 
         public ObservableCollection<PatientViewModel> Patients { get; private set; }
 
@@ -72,7 +72,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public PatientsListViewModel(IPatientRepository patientRepo, IPropertyManager propManager)
+        public PatientsListViewModel(IPatientRepository patientRepo, PropertyManager propManager)
         {
             Contract.Requires(patientRepo != null);
             Contract.Requires(propManager != null);

@@ -9,7 +9,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class PropertyManager : IPropertyManager
+    public class PropertyManager
     {
         IPropertyRepository propRepo;
 

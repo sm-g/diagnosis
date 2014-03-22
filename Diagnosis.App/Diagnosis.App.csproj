@@ -241,7 +241,6 @@
     <Compile Include="ViewModels\ICheckable.cs" />
     <Compile Include="ViewModels\IHierarchical.cs" />
     <Compile Include="ViewModels\IHierarchicalCheckable.cs" />
-    <Compile Include="ViewModels\IPropertyManager.cs" />
     <Compile Include="ViewModels\ISearchable.cs" />
     <Compile Include="ViewModels\ISearch.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
