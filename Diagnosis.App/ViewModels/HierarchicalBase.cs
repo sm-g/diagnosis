@@ -87,6 +87,15 @@ namespace Diagnosis.App.ViewModels
             return (T)this;
         }
 
+        public T Add(IEnumerable<T> vms)
+        {
+            foreach (var vm in vms)
+            {
+                Add(vm);
+            }
+            return (T)this;
+        }
+
         public T AddIfNotExists(T vm, bool checkAllChildren)
         {
             var query = checkAllChildren ? AllChildren : Children;
