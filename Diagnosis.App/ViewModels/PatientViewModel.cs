@@ -389,6 +389,12 @@ namespace Diagnosis.App.ViewModels
 
                     OnCourseStarted(course);
                 }),
+                 this.Subscribe((int)EventID.AppointmentAdded, (e) =>
+                {
+                    var app = e.GetValue<Appointment>(Messages.Appointment);
+
+                    OnAppointmentAdded(app);
+                }),
                 this.Subscribe((int)EventID.HealthRecordSelected, (e) =>
                 {
                     var hr = e.GetValue<HealthRecordViewModel>(Messages.HealthRecord);
@@ -422,6 +428,11 @@ namespace Diagnosis.App.ViewModels
         private void OnCourseStarted(Course course)
         {
             Courses.Add(new CourseViewModel(course));
+            MarkDirty();
+        }
+
+        private void OnAppointmentAdded(Appointment app)
+        {
             MarkDirty();
         }
 
