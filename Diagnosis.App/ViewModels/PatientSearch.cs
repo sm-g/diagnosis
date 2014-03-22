@@ -11,7 +11,7 @@ namespace Diagnosis.App.ViewModels
     {
         PropertyManager propManager;
 
-        public PatientSearch(PatientsListViewModel patients, PropertyManager propManager)
+        public PatientSearch(PatientsManager patients, PropertyManager propManager)
             : base()
         {
             Contract.Requires(patients != null);

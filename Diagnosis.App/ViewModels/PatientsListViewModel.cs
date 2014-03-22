@@ -1,5 +1,4 @@
-﻿using Diagnosis.App;
-using Diagnosis.Data.Repositories;
+﻿using Diagnosis.Data.Repositories;
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
@@ -8,7 +7,7 @@ using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class PatientsListViewModel : ViewModelBase
+    public class PatientsManager : ViewModelBase
     {
         private PatientSearch _search;
         private PatientViewModel _current;
@@ -58,21 +57,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private void _search_ResultItemSelected(object sender, EventArgs e)
-        {
-            var patientVM = Search.SelectedItem;
-            if (patientVM != null)
-            {
-                if (Patients.SingleOrDefault(p => p == patientVM) == null)
-                {
-                    Patients.Add(patientVM);
-                }
-                CurrentPatient = patientVM;
-                Search.Clear();
-            }
-        }
-
-        public PatientsListViewModel(IPatientRepository patientRepo, PropertyManager propManager)
+        public PatientsManager(IPatientRepository patientRepo, PropertyManager propManager)
         {
             Contract.Requires(patientRepo != null);
             Contract.Requires(propManager != null);
@@ -89,6 +74,20 @@ namespace Diagnosis.App.ViewModels
             if (Patients.Count > 0)
             {
                 CurrentPatient = Patients[0];
+            }
+        }
+
+        private void _search_ResultItemSelected(object sender, EventArgs e)
+        {
+            var patientVM = Search.SelectedItem;
+            if (patientVM != null)
+            {
+                if (Patients.SingleOrDefault(p => p == patientVM) == null)
+                {
+                    Patients.Add(patientVM);
+                }
+                CurrentPatient = patientVM;
+                Search.Clear();
             }
         }
 

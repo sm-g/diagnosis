@@ -14,10 +14,10 @@ namespace Diagnosis.App.ViewModels
         private SecureString _password;
         private bool _wrongpassword;
         private DoctorViewModel _selectedDoctor;
+        private DoctorsManager _docManager;
 
         public event EventHandler<LoggedEventArgs> LoggedIn;
 
-        private DoctorsManager _docManager;
         public DoctorsManager DoctorsManager
         {
             get

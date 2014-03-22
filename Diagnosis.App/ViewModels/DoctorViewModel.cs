@@ -1,15 +1,17 @@
-﻿using Diagnosis.App;
-using Diagnosis.Models;
+﻿using Diagnosis.Models;
+using EventAggregator;
 using System;
 using System.Diagnostics.Contracts;
 using System.Windows.Input;
-using EventAggregator;
 
 namespace Diagnosis.App.ViewModels
 {
     public class DoctorViewModel : CheckableBase, ISearchable
     {
         internal Doctor doctor;
+
+        private string _speciality;
+        private ICommand _startCourse;
 
         public string FirstName
         {
@@ -78,8 +80,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-
-        private string _speciality;
         public string Speciality
         {
             get
@@ -193,8 +193,6 @@ namespace Diagnosis.App.ViewModels
         }
 
         #endregion ISearchable
-
-        private ICommand _startCourse;
 
         public ICommand StartCourseCommand
         {

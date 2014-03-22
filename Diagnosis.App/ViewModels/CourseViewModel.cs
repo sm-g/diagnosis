@@ -1,5 +1,4 @@
-﻿using Diagnosis.App;
-using Diagnosis.Models;
+﻿using Diagnosis.Models;
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
@@ -12,9 +11,11 @@ namespace Diagnosis.App.ViewModels
     public class CourseViewModel : CheckableBase
     {
         private Course course;
+
         private bool _appointmentsVis;
+        private AppointmentViewModel _selectedAppointment;
         private DoctorViewModel _leadDoctor;
-        private ICommand _addApp;
+        private ICommand _addAppointment;
 
         #region CheckableBase
 
@@ -104,8 +105,6 @@ namespace Diagnosis.App.ViewModels
 
         public ObservableCollection<AppointmentViewModel> Appointments { get; private set; }
 
-
-        private AppointmentViewModel _selectedAppointment;
         public AppointmentViewModel SelectedAppointment
         {
             get
@@ -126,8 +125,8 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _addApp
-                    ?? (_addApp = new RelayCommand(() =>
+                return _addAppointment
+                    ?? (_addAppointment = new RelayCommand(() =>
                         {
                             var app = course.AddAppointment();
                             Appointments.Add(new AppointmentViewModel(app));

@@ -10,7 +10,7 @@ namespace Diagnosis.App.ViewModels
     public class DoctorsManager : ViewModelBase
     {
         private DoctorViewModel _current;
-        IDoctorRepository doctorRepo;
+        IDoctorRepository repository;
 
         public ObservableCollection<DoctorViewModel> Doctors { get; private set; }
 
@@ -31,11 +31,12 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public DoctorsManager(IDoctorRepository docRepo)
+        public DoctorsManager(IDoctorRepository repo)
         {
-            Contract.Requires(docRepo != null);
-            this.doctorRepo = docRepo;
-            var doctorVMs = doctorRepo.GetAll().Select(d => new DoctorViewModel(d)).ToList();
+            Contract.Requires(repo != null);
+            this.repository = repo;
+
+            var doctorVMs = repository.GetAll().Select(d => new DoctorViewModel(d)).ToList();
             foreach (var dvm in doctorVMs)
             {
                 dvm.Committed += d_Committed;
@@ -53,7 +54,7 @@ namespace Diagnosis.App.ViewModels
             var doctorVM = (sender as DoctorViewModel);
             if (doctorVM != null)
             {
-                doctorRepo.SaveOrUpdate(doctorVM.doctor);
+                repository.SaveOrUpdate(doctorVM.doctor);
             }
         }
     }

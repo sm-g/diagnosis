@@ -1,11 +1,9 @@
-﻿using System;
+﻿using Diagnosis.Data.Repositories;
+using Diagnosis.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using Diagnosis.Models;
-using Diagnosis.Data.Repositories;
 using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -14,7 +12,7 @@ namespace Diagnosis.App.ViewModels
     /// </summary>
     public class SymptomsManager
     {
-        ISymptomRepository repository;
+        private ISymptomRepository repository;
 
         public ObservableCollection<SymptomViewModel> Symptoms
         {

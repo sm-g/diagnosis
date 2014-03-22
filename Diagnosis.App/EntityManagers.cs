@@ -1,15 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Diagnosis.App.ViewModels;
+﻿using Diagnosis.App.ViewModels;
 using Diagnosis.Data.Repositories;
 
 namespace Diagnosis.App
 {
-    static class EntityManagers
+    internal static class EntityManagers
     {
-        static PropertyManager _propertyManager;
+        private static DoctorsManager _doctorsManager;
+        private static PatientsManager _patientsManager;
+        private static PropertyManager _propertyManager;
+        private static SymptomsManager _symptomsManager;
+
+        public static DoctorsManager DoctorsManager
+        {
+            get
+            {
+                return _doctorsManager ?? (_doctorsManager = new DoctorsManager(new DoctorRepository()));
+            }
+        }
+
+        public static PatientsManager PatientsManager
+        {
+            get
+            {
+                return _patientsManager ?? (_patientsManager = new PatientsManager(new PatientRepository(), PropertyManager));
+            }
+        }
+
         public static PropertyManager PropertyManager
         {
             get
@@ -17,8 +33,6 @@ namespace Diagnosis.App
                 return _propertyManager ?? (_propertyManager = new PropertyManager(new PropertyRepository()));
             }
         }
-
-        static SymptomsManager _symptomsManager;
         public static SymptomsManager SymptomsManager
         {
             get

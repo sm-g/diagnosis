@@ -9,7 +9,7 @@ namespace Diagnosis.App.ViewModels
     {
         private bool _loginActive;
         private LoginViewModel _loginVM;
-        private PatientsListViewModel _patientsVM;
+        private PatientsManager _patientsVM;
         private PatientViewModel _patientVM;
         private ICommand _logout;
         private bool _fastAddingMode;
@@ -78,7 +78,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-        public PatientsListViewModel PatientsVM
+        public PatientsManager PatientsVM
         {
             get
             {
@@ -134,8 +134,8 @@ namespace Diagnosis.App.ViewModels
                 CardVM = patient;
             });
 
-            LoginVM = new LoginViewModel(new DoctorsManager(new DoctorRepository()));
-            PatientsVM = new PatientsListViewModel(new PatientRepository(), EntityManagers.PropertyManager);
+            LoginVM = new LoginViewModel(EntityManagers.DoctorsManager);
+            PatientsVM = EntityManagers.PatientsManager;
 
             LoginVM.LoggedIn += OnLoggedIn;
         }

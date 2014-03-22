@@ -1,17 +1,19 @@
 ﻿using Diagnosis.Models;
+using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using System.Windows.Input;
 using System.Linq;
-using EventAggregator;
+using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
     public class AppointmentViewModel : CheckableBase
     {
         private Appointment appointment;
+
         private DoctorViewModel _doctor;
+        private HealthRecordViewModel _selectedHealthRecord;
         private ICommand _addHealthRecord;
 
         #region CheckableBase
@@ -61,8 +63,6 @@ namespace Diagnosis.App.ViewModels
 
         public ObservableCollection<HealthRecordViewModel> HealthRecords { get; private set; }
 
-
-        private HealthRecordViewModel _selectedHealthRecord;
         public HealthRecordViewModel SelectedHealthRecord
         {
             get

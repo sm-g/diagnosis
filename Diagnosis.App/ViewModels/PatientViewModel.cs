@@ -1,5 +1,4 @@
-﻿using Diagnosis.App;
-using Diagnosis.Models;
+﻿using Diagnosis.Models;
 using EventAggregator;
 using System;
 using System.Collections.Generic;
@@ -15,6 +14,8 @@ namespace Diagnosis.App.ViewModels
         internal Patient patient;
 
         private PropertyManager _propManager;
+        private CourseViewModel _selectedCourse;
+        private DoctorViewModel _doctor;
         private List<EventMessageHandler> msgHandlers = new List<EventMessageHandler>();
 
         public string FirstName
@@ -199,9 +200,6 @@ namespace Diagnosis.App.ViewModels
             get;
             private set;
         }
-
-
-        private CourseViewModel _selectedCourse;
         public CourseViewModel SelectedCourse
         {
             get
@@ -240,9 +238,6 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-
-
-        private DoctorViewModel _doctor;
         public DoctorViewModel CurrentDoctor
         {
             get
@@ -356,23 +351,6 @@ namespace Diagnosis.App.ViewModels
 
         #endregion ISearchable
 
-        public PatientViewModel(Patient p, PropertyManager propManager)
-        {
-            Contract.Requires(p != null);
-            Contract.Requires(propManager != null);
-
-            patient = p;
-            PropertyManager = propManager;
-
-            Properties = new ObservableCollection<PropertyViewModel>(PropertyManager.GetPatientProperties(patient));
-            Courses = new ObservableCollection<CourseViewModel>(patient.Courses.Select(i => new CourseViewModel(i)));
-
-            if (Courses.Count > 0)
-            {
-                SelectedCourse = Courses.Last();
-            }
-        }
-
         public void Subscribe()
         {
             msgHandlers = new List<EventMessageHandler>()
@@ -416,6 +394,23 @@ namespace Diagnosis.App.ViewModels
             foreach (var h in msgHandlers)
             {
                 h.Dispose();
+            }
+        }
+
+        public PatientViewModel(Patient p, PropertyManager propManager)
+        {
+            Contract.Requires(p != null);
+            Contract.Requires(propManager != null);
+
+            patient = p;
+            PropertyManager = propManager;
+
+            Properties = new ObservableCollection<PropertyViewModel>(PropertyManager.GetPatientProperties(patient));
+            Courses = new ObservableCollection<CourseViewModel>(patient.Courses.Select(i => new CourseViewModel(i)));
+
+            if (Courses.Count > 0)
+            {
+                SelectedCourse = Courses.Last();
             }
         }
 

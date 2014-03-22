@@ -1,17 +1,12 @@
-﻿using Diagnosis.App;
-using Diagnosis.Models;
-using EventAggregator;
-using System.Collections.ObjectModel;
+﻿using EventAggregator;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Windows.Input;
-using System.Collections.Generic;
 
 namespace Diagnosis.App.ViewModels
 {
     public class DiagnosisViewModel : HierarchicalBase<DiagnosisViewModel>, ISearchable
     {
-        Diagnosis.Models.Diagnosis diagnosis;
+        private Diagnosis.Models.Diagnosis diagnosis;
         private DiagnosisSearch _search;
 
         public string SortingOrder { get; private set; }
@@ -24,7 +19,6 @@ namespace Diagnosis.App.ViewModels
             }
             set
             {
-
             }
         }
 
@@ -61,6 +55,7 @@ namespace Diagnosis.App.ViewModels
         }
 
         #endregion HierarchicalBase
+
         #region ISearchable
 
         private ICommand _searchCommand;
@@ -90,6 +85,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
         public bool IsSearchFocused
         {
             get
@@ -120,7 +116,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        #endregion
+        #endregion ISearchable
 
         public DiagnosisSearch Search
         {

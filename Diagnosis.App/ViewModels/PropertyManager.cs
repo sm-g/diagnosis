@@ -11,13 +11,13 @@ namespace Diagnosis.App.ViewModels
 {
     public class PropertyManager
     {
-        IPropertyRepository propRepo;
+        IPropertyRepository repository;
 
         public List<PropertyViewModel> GetPatientProperties(Patient patient)
         {
             Contract.Requires(patient != null);
 
-            var allProperties = propRepo.GetAll();
+            var allProperties = repository.GetAll();
 
             var existingPatProps = patient.PatientProperties;
             var properties = new List<PropertyViewModel>(allProperties.Select(p => new PropertyViewModel(p)));
@@ -40,10 +40,10 @@ namespace Diagnosis.App.ViewModels
             return properties;
         }
 
-        public PropertyManager(IPropertyRepository propRepository)
+        public PropertyManager(IPropertyRepository repo)
         {
-            Contract.Requires(propRepository != null);
-            propRepo = propRepository;
+            Contract.Requires(repo != null);
+            repository = repo;
         }
     }
 }

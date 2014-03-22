@@ -1,18 +1,18 @@
 ﻿using Diagnosis.Models;
-using System;
-using System.Collections.ObjectModel;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Windows.Input;
-using System.Linq;
 using EventAggregator;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
     public class HealthRecordViewModel : CheckableBase
     {
+        private static HealthRecordViewModel current;
         private HealthRecord healthRecord;
-        List<EventMessageHandler> msgHandlers;
+        private List<EventMessageHandler> msgHandlers;
 
         #region CheckableBase
 
@@ -57,19 +57,6 @@ namespace Diagnosis.App.ViewModels
             private set;
         }
 
-
-        private static HealthRecordViewModel current;
-
-        public HealthRecordViewModel(HealthRecord hr)
-        {
-            Contract.Requires(hr != null);
-
-            this.healthRecord = hr;
-            Symptoms = new ObservableCollection<SymptomViewModel>(
-                EntityManagers.SymptomsManager.GetHealthRecordSymptoms(healthRecord));
-            Subscribe();
-        }
-
         public void Subscribe()
         {
             msgHandlers = new List<EventMessageHandler>()
@@ -99,6 +86,16 @@ namespace Diagnosis.App.ViewModels
             EntityManagers.SymptomsManager.CheckThese(Symptoms);
         }
 
+        public HealthRecordViewModel(HealthRecord hr)
+        {
+            Contract.Requires(hr != null);
+
+            this.healthRecord = hr;
+            Symptoms = new ObservableCollection<SymptomViewModel>(
+                EntityManagers.SymptomsManager.GetHealthRecordSymptoms(healthRecord));
+            Subscribe();
+        }
+
         private void OnSymptomCheckedChanged(SymptomViewModel symptomVM, bool isChecked)
         {
             if (this == current)
@@ -120,6 +117,5 @@ namespace Diagnosis.App.ViewModels
                 OnPropertyChanged(() => Symptoms);
             }
         }
-
     }
 }
