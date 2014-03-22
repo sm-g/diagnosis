@@ -194,12 +194,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public ObservableCollection<SymptomViewModel> Symptoms
-        {
-            get;
-            private set;
-        }
-
         public ObservableCollection<CourseViewModel> Courses
         {
             get;
@@ -371,7 +365,6 @@ namespace Diagnosis.App.ViewModels
             PropertyManager = propManager;
 
             Properties = new ObservableCollection<PropertyViewModel>(PropertyManager.GetPatientProperties(patient));
-            Symptoms = new ObservableCollection<SymptomViewModel>();
             Courses = new ObservableCollection<CourseViewModel>(patient.Courses.Select(i => new CourseViewModel(i)));
 
             if (Courses.Count > 0)
@@ -418,20 +411,6 @@ namespace Diagnosis.App.ViewModels
         {
             MarkDirty();
             patient.SetPropertyValue(propertyVM.Property, propertyVM.SelectedValue);
-        }
-
-        private void OnSymptomCheckedChanged(SymptomViewModel symptom, bool isChecked)
-        {
-            if (isChecked)
-            {
-               Symptoms.Add(symptom);
-            }
-            else
-            {
-                Symptoms.Remove(symptom);
-            }
-            Symptoms = new ObservableCollection<SymptomViewModel>(Symptoms.OrderBy(s => s.SortingOrder));
-            OnPropertyChanged(() => Symptoms);
         }
 
         private void OnCourseStarted(Course course)

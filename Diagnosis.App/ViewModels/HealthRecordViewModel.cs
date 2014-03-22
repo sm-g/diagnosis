@@ -1,15 +1,18 @@
 ﻿using Diagnosis.Models;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Windows.Input;
 using System.Linq;
+using EventAggregator;
 
 namespace Diagnosis.App.ViewModels
 {
     public class HealthRecordViewModel : CheckableBase
     {
         private HealthRecord healthRecord;
+        List<EventMessageHandler> msgHandlers;
 
         #region CheckableBase
 
@@ -54,12 +57,64 @@ namespace Diagnosis.App.ViewModels
             private set;
         }
 
+
+        private static HealthRecordViewModel current;
+
         public HealthRecordViewModel(HealthRecord hr)
         {
             Contract.Requires(hr != null);
 
             this.healthRecord = hr;
-            Symptoms = new ObservableCollection<SymptomViewModel>();
+            Symptoms = new ObservableCollection<SymptomViewModel>(
+                EntityManagers.SymptomsManager.GetHealthRecordSymptoms(hr));
+            Subscribe();
         }
+
+        public void Subscribe()
+        {
+            msgHandlers = new List<EventMessageHandler>()
+            {
+                this.Subscribe((int)EventID.SymptomCheckedChanged, (e) =>
+                {
+                    var symptom = e.GetValue<SymptomViewModel>(Messages.Symptom);
+                    var isChecked = e.GetValue<bool>(Messages.CheckedState);
+
+                    OnSymptomCheckedChanged(symptom, isChecked);
+                }),
+            };
+        }
+
+        public void Unsubscribe()
+        {
+            foreach (var h in msgHandlers)
+            {
+                h.Dispose();
+            }
+        }
+
+        public void MakeCurrent()
+        {
+            current = this;
+        }
+
+        private void OnSymptomCheckedChanged(SymptomViewModel symptomVM, bool isChecked)
+        {
+            if (this == current)
+            {
+                if (isChecked)
+                {
+                    Symptoms.Add(symptomVM);
+                    healthRecord.AddSymptom(symptomVM.symptom);
+                }
+                else
+                {
+                    Symptoms.Remove(symptomVM);
+                    healthRecord.RemoveSymptom(symptomVM.symptom);
+                }
+                Symptoms = new ObservableCollection<SymptomViewModel>(Symptoms.OrderBy(s => s.SortingOrder));
+                OnPropertyChanged(() => Symptoms);
+            }
+        }
+
     }
 }
