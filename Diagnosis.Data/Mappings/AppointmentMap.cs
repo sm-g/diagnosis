@@ -13,7 +13,7 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.Native);
             });
 
-            Property(x => x.DateTime);
+            Property(x => x.DateAndTime);
             Set(x => x.HealthRecords, s =>
             {
                 s.Key(k =>

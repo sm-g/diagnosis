@@ -14,7 +14,7 @@ namespace Diagnosis.Models
         public virtual int Id { get; protected set; }
         public virtual Course Course { get; protected set; }
         public virtual Doctor Doctor { get; set; }
-        public virtual DateTime DateTime { get; set; }
+        public virtual DateTime DateAndTime { get; set; }
         public virtual ReadOnlyCollection<HealthRecord> HealthRecords
         {
             get
@@ -38,7 +38,7 @@ namespace Diagnosis.Models
 
             Course = course;
             Doctor = doctor;
-            DateTime = DateTime.UtcNow;
+            DateAndTime = DateTime.UtcNow;
         }
 
         protected Appointment() { }

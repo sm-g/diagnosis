@@ -55,7 +55,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return appointment.DateTime;
+                return appointment.DateAndTime;
             }
         }
 
