@@ -21,6 +21,18 @@ namespace Diagnosis.Models
             }
         }
 
+        public virtual void AddSymptom(Symptom symptom)
+        {
+            Contract.Requires(symptom != null);
+            symptoms.Add(symptom);
+        }
+
+        public virtual void RemoveSymptom(Symptom symptom)
+        {
+            Contract.Requires(symptom != null);
+            symptoms.Remove(symptom);
+        }
+
         public HealthRecord(Appointment appointment)
         {
             Contract.Requires(appointment != null);
