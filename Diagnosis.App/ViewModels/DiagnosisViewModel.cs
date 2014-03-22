@@ -83,14 +83,10 @@ namespace Diagnosis.App.ViewModels
         }
 
         public DiagnosisViewModel(string title)
-            : this(new Diagnosis.Models.Diagnosis() { Title = title })
+            : this(new Diagnosis.Models.Diagnosis("12345", title))
         {
         }
 
-        internal DiagnosisViewModel()
-            : this(new Diagnosis.Models.Diagnosis())
-        {
-        }
 
         internal void Initialize()
         {

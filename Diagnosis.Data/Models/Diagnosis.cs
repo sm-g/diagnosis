@@ -40,6 +40,6 @@ namespace Diagnosis.Models
             Parent = parent;
         }
 
-        public Diagnosis() { }
+        protected Diagnosis() { }
     }
 }
