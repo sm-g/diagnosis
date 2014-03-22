@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 using System.Security;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.App.ViewModels
 {
     public class LoginViewModel : ViewModelBase
     {

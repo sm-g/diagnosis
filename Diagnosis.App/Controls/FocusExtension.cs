@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 
-namespace Diagnosis.Controls
+namespace Diagnosis.App.Controls
 {
     public static class FocusExtension
     {

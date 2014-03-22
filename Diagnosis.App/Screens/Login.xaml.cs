@@ -1,8 +1,8 @@
-﻿using Diagnosis.ViewModels;
+﻿using Diagnosis.App.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Diagnosis.Screens
+namespace Diagnosis.App.Screens
 {
     /// <summary>
     /// Interaction logic for Login.xaml

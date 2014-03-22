@@ -1,12 +1,13 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.App;
+using Diagnosis.Models;
+using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using System.Windows.Input;
-using EventAggregator;
 using System.Linq;
+using System.Windows.Input;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.App.ViewModels
 {
     public class CourseViewModel : CheckableBase
     {

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.App.ViewModels
 {
     public abstract class CheckableBase : EditableBase, ICheckable
     {

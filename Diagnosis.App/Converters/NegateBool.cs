@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Diagnosis.Converters
+namespace Diagnosis.App.Converters
 {
     public class NegateConverter : IValueConverter
     {

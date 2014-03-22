@@ -1,4 +1,5 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.App;
+using Diagnosis.Models;
 using EventAggregator;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Windows.Input;
 using System.Collections.Generic;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.App.ViewModels
 {
     public class DiagnosisViewModel : HierarchicalBase<DiagnosisViewModel>, ISearchable
     {

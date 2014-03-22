@@ -1,4 +1,4 @@
-﻿using Diagnosis.Controls;
+﻿using Diagnosis.App.Controls;
 using System;
 using System.Globalization;
 using System.Windows;
@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 
 
-namespace Diagnosis.Converters
+namespace Diagnosis.App.Converters
 {
     public class TreeDepthToMargin : IValueConverter
     {

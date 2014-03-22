@@ -6,7 +6,7 @@ using System.Windows.Data;
 using System.Globalization;
 using System.Windows;
 
-namespace Diagnosis.Converters
+namespace Diagnosis.App.Converters
 {
     public class BooleanToVisibilityConverter<T> : IValueConverter
     {

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Input;
-using EventAggregator;
+﻿using Diagnosis.App;
 using Diagnosis.Data.Repositories;
+using EventAggregator;
+using System.Windows.Input;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.App.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {

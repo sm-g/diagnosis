@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Data;
 using System.Globalization;
 
-namespace Diagnosis.Converters
+namespace Diagnosis.App.Converters
 {
     public class MonthToString : IValueConverter
     {

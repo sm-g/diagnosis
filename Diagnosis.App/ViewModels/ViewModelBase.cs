@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Collections.Generic;
 using System.Collections;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.App.ViewModels
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {

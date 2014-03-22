@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics.Contracts;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.App.ViewModels
 {
     public abstract class HierarchicalSearch<T> : SearchBase<T> where T : class, IHierarchical<T>, ICheckable, ISearchable
     {

@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 
 
-namespace Diagnosis.Styles
+namespace Diagnosis.App.Styles
 {
     partial class TreeStyle : ResourceDictionary
     {

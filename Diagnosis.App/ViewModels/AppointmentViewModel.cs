@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 using System.Windows.Input;
 using System.Linq;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.App.ViewModels
 {
     public class AppointmentViewModel : CheckableBase
     {

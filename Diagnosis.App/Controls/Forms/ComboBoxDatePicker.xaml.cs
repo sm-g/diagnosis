@@ -13,7 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Globalization;
 
-namespace Diagnosis.Controls
+namespace Diagnosis.App.Controls
 {
     /// <summary>
     /// Interaction logic for ComboBoxDatePicker.xaml

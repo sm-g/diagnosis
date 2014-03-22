@@ -1,8 +1,9 @@
-﻿using System.Windows;
+﻿using Diagnosis.App;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Diagnosis.Controls
+namespace Diagnosis.App.Controls
 {
     /// <summary>
     /// Interaction logic for TreeView.xaml
@@ -16,7 +17,7 @@ namespace Diagnosis.Controls
 
         private void TreeView_Loaded(object sender, RoutedEventArgs e)
         {
-            tree.DataContext = Diagnosis.DataCreator.Diagnoses;
+            tree.DataContext = DataCreator.Diagnoses;
         }
     }
 }

@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Diagnosis.App;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.App.ViewModels
 {
     public class AutoCompleteViewModel : ViewModelBase
     {

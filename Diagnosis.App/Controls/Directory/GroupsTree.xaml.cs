@@ -1,9 +1,9 @@
-﻿
+﻿using Diagnosis.App;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Diagnosis.Controls
+namespace Diagnosis.App.Controls
 {
     /// <summary>
     /// Interaction logic for GroupsTree.xaml
@@ -17,7 +17,7 @@ namespace Diagnosis.Controls
 
         private void TreeView_Loaded(object sender, RoutedEventArgs e)
         {
-            tree.DataContext = Diagnosis.DataCreator.Symptoms;
+            tree.DataContext = DataCreator.Symptoms;
         }
     }
 }

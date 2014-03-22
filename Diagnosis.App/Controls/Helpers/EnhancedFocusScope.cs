@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace Diagnosis.Controls
+namespace Diagnosis.App.Controls
 {
     /// <summary>
     /// Attached behavior for improved focus scope handling.

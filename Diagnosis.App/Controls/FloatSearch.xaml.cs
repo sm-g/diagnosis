@@ -1,10 +1,10 @@
 ﻿
-using Diagnosis.ViewModels;
+using Diagnosis.App.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Diagnosis.Controls
+namespace Diagnosis.App.Controls
 {
     /// <summary>
     /// Interaction logic for FloatSearch.xaml

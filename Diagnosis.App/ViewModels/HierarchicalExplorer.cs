@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.App.ViewModels
 {
     public class HierarchicalExplorer<T> : ViewModelBase, ISearchable where T : HierarchicalBase<T>, ISearchable
     {

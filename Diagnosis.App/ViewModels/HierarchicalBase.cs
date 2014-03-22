@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.App.ViewModels
 {
     public abstract class HierarchicalBase<T> : CheckableBase, IHierarchical<T>, IHierarchicalCheckable where T : HierarchicalBase<T>
     {

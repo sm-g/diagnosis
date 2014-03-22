@@ -1,5 +1,5 @@
 ﻿using Diagnosis.Models;
-using Diagnosis.ViewModels;
+using Diagnosis.App.ViewModels;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 

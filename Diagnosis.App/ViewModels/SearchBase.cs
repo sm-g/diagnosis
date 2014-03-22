@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.App.ViewModels
 {
     public abstract class SearchBase<T> : ViewModelBase, ISearch<T> where T : class, ICheckable, ISearchable
     {

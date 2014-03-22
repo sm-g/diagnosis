@@ -1,9 +1,10 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.App;
+using Diagnosis.Models;
 using EventAggregator;
 using System.Diagnostics.Contracts;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.App.ViewModels
 {
     public class SymptomViewModel : HierarchicalBase<SymptomViewModel>, ISearchable
     {

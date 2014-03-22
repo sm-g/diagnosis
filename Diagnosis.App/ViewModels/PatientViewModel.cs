@@ -1,4 +1,5 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.App;
+using Diagnosis.Models;
 using EventAggregator;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.App.ViewModels
 {
     public class PatientViewModel : CheckableBase, ISearchable
     {

@@ -1,10 +1,11 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.App;
+using Diagnosis.Models;
 using System;
 using System.Diagnostics.Contracts;
 using System.Windows.Input;
 using EventAggregator;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.App.ViewModels
 {
     public class DoctorViewModel : CheckableBase, ISearchable
     {

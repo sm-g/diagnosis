@@ -1,10 +1,10 @@
-﻿using Diagnosis.ViewModels;
+﻿using Diagnosis.App.ViewModels;
 using System;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace Diagnosis.Converters
+namespace Diagnosis.App.Converters
 {
     public class IHierarchicalCheckableToBackground : IValueConverter
     {

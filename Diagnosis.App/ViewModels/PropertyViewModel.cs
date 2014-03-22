@@ -2,8 +2,9 @@
 using EventAggregator;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using Diagnosis.App;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.App.ViewModels
 {
     public class PropertyViewModel : EditableBase
     {

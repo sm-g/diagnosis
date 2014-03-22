@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Diagnosis.Screens
+namespace Diagnosis.App.Screens
 {
     /// <summary>
     /// Interaction logic for Patients.xaml

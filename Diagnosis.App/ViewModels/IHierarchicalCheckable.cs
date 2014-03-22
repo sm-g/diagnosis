@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Diagnosis.ViewModels
+namespace Diagnosis.App.ViewModels
 {
     public interface IHierarchicalCheckable
     {

@@ -7,7 +7,7 @@ using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
 using System.Diagnostics.Contracts;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.App.ViewModels
 {
     public class PropertyManager : IPropertyManager
     {

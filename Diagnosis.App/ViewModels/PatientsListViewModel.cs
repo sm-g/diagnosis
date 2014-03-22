@@ -1,11 +1,12 @@
-﻿using Diagnosis.Data.Repositories;
+﻿using Diagnosis.App;
+using Diagnosis.Data.Repositories;
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.App.ViewModels
 {
     public class PatientsListViewModel : ViewModelBase
     {
