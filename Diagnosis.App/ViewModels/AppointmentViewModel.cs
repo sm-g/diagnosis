@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Windows.Input;
 using System.Linq;
+using EventAggregator;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -75,6 +76,8 @@ namespace Diagnosis.App.ViewModels
                     _selectedHealthRecord = value;
                     _selectedHealthRecord.IsSelected = true;
                     OnPropertyChanged(() => SelectedHealthRecord);
+
+                    this.Send((int)EventID.HealthRecordSelected, new HealthRecordSelectedParams(_selectedHealthRecord).Params);
                 }
             }
         }

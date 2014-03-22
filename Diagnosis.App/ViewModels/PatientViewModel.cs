@@ -377,24 +377,30 @@ namespace Diagnosis.App.ViewModels
         {
             msgHandlers = new List<EventMessageHandler>()
             {
-                this.Subscribe((int)EventID.SymptomCheckedChanged, (e) =>
-                {
-                    var symptom = e.GetValue<SymptomViewModel>(Messages.Symptom);
-                    var isChecked = e.GetValue<bool>(Messages.CheckedState);
-
-                    OnSymptomCheckedChanged(symptom, isChecked);
-                }),
                 this.Subscribe((int)EventID.PropertySelectedValueChanged, (e) =>
                 {
                     var property = e.GetValue<PropertyViewModel>(Messages.Property);
 
                     OnPropertyValueChanged(property);
                 }),
-                 this.Subscribe((int)EventID.CourseStarted, (e) =>
+                this.Subscribe((int)EventID.CourseStarted, (e) =>
                 {
                     var course = e.GetValue<Course>(Messages.Course);
 
                     OnCourseStarted(course);
+                }),
+                this.Subscribe((int)EventID.HealthRecordSelected, (e) =>
+                {
+                    var hr = e.GetValue<HealthRecordViewModel>(Messages.HealthRecord);
+
+                    OnHealthRecordSelected(hr);
+                }),
+                this.Subscribe((int)EventID.SymptomCheckedChanged, (e) =>
+                {
+                    var symptom = e.GetValue<SymptomViewModel>(Messages.Symptom);
+                    var isChecked = e.GetValue<bool>(Messages.CheckedState);
+
+                    OnSymptomCheckedChanged(symptom, isChecked);
                 }),
             };
         }
@@ -416,6 +422,16 @@ namespace Diagnosis.App.ViewModels
         private void OnCourseStarted(Course course)
         {
             Courses.Add(new CourseViewModel(course));
+            MarkDirty();
+        }
+
+        private void OnHealthRecordSelected(HealthRecordViewModel hr)
+        {
+            hr.MakeCurrent();
+        }
+
+        private void OnSymptomCheckedChanged(SymptomViewModel symptom, bool isChecked)
+        {
             MarkDirty();
         }
     }
