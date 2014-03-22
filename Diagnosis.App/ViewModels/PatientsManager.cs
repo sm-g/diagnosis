@@ -49,7 +49,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_search == null)
                 {
-                    _search = new PatientSearch(this);
+                    _search = new PatientSearch(Patients);
                     _search.ResultItemSelected += _search_ResultItemSelected;
                 }
                 return _search;

@@ -10,16 +10,7 @@ namespace Diagnosis.App.ViewModels
         private RelayCommand<T> _clickItem;
         private T _current;
         private RelayCommand _goUp;
-
-        public HierarchicalExplorer(IList<T> items)
-        {
-            Contract.Requires(items != null);
-            Contract.Requires(items.Count > 0);
-
-            Items = new ObservableCollection<T>(items);
-            CurrentItem = items[0].Parent;
-        }
-
+        private HierarchicalSearch<T> _search;
         public ObservableCollection<T> Items
         {
             get;
@@ -47,22 +38,6 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-
-        private void CreateBreadcrumbs()
-        {
-            var list = new List<T>();
-            T s = CurrentItem;
-            while (!s.IsRoot)
-            {
-                list.Add(s);
-                s = s.Parent;
-            }
-            list.Reverse();
-            Breadcrumbs = new ObservableCollection<T>(list);
-
-            OnPropertyChanged(() => Breadcrumbs);
-        }
-
         public ObservableCollection<T> Breadcrumbs
         {
             get;
@@ -94,9 +69,6 @@ namespace Diagnosis.App.ViewModels
                                           ));
             }
         }
-
-        private HierarchicalSearch<T> _search;
-
         public HierarchicalSearch<T> Search
         {
             get
@@ -116,6 +88,30 @@ namespace Diagnosis.App.ViewModels
                     OnPropertyChanged(() => Search);
                 }
             }
+        }
+
+        public HierarchicalExplorer(IList<T> items)
+        {
+            Contract.Requires(items != null);
+            Contract.Requires(items.Count > 0);
+
+            Items = new ObservableCollection<T>(items);
+            CurrentItem = items[0].Parent;
+        }
+
+        private void CreateBreadcrumbs()
+        {
+            var list = new List<T>();
+            T s = CurrentItem;
+            while (!s.IsRoot)
+            {
+                list.Add(s);
+                s = s.Parent;
+            }
+            list.Reverse();
+            Breadcrumbs = new ObservableCollection<T>(list);
+
+            OnPropertyChanged(() => Breadcrumbs);
         }
 
         private void _search_ResultItemSelected(object sender, System.EventArgs e)

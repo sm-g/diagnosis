@@ -1,7 +1,6 @@
 ﻿using Diagnosis.Models;
-using Diagnosis.Data.Repositories;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -9,11 +8,11 @@ namespace Diagnosis.App.ViewModels
 {
     public class PatientSearch : SearchBase<PatientViewModel>
     {
-        public PatientSearch(PatientsManager patients)
+        public PatientSearch(IEnumerable<PatientViewModel> patients)
             : base()
         {
             Contract.Requires(patients != null);
-            Collection = patients.Patients;
+            Collection = patients;
 
             InitQuery();
         }
