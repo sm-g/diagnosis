@@ -8,6 +8,7 @@ namespace Diagnosis.App.ViewModels
 {
     public abstract class HierarchicalSearch<T> : SearchBase<T> where T : class, IHierarchical<T>, ICheckable, IEditable
     {
+        protected T Parent { get; private set; }
         public bool AllChildren { get; set; }
 
         public HierarchicalSearch(T parent, bool withNonCheckable = false, bool withChecked = false, bool allChildren = true)
@@ -16,6 +17,7 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(parent != null);
 
             AllChildren = allChildren;
+            Parent = parent;
 
             Collection = AllChildren ? parent.AllChildren : parent.Children;
         }

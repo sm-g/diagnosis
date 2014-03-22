@@ -17,7 +17,7 @@ namespace Diagnosis.App.ViewModels
 
         protected override DiagnosisViewModel FromQuery(string query)
         {
-            return new DiagnosisViewModel(new Diagnosis.Models.Diagnosis("12345", query));
+            return new DiagnosisViewModel(new Diagnosis.Models.Diagnosis("12345", query, Parent.diagnosis));
         }
     }
 }

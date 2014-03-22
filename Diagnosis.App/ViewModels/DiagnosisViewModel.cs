@@ -6,7 +6,7 @@ namespace Diagnosis.App.ViewModels
 {
     public class DiagnosisViewModel : HierarchicalBase<DiagnosisViewModel>
     {
-        private Diagnosis.Models.Diagnosis diagnosis;
+        internal Diagnosis.Models.Diagnosis diagnosis;
         private DiagnosisSearch _search;
 
         public string SortingOrder { get; private set; }
