@@ -8,7 +8,7 @@ namespace Diagnosis.App.ViewModels
 {
     public class SymptomViewModel : HierarchicalBase<SymptomViewModel>, ISearchable
     {
-        private Symptom symptom;
+        internal Symptom symptom;
 
         private SymptomSearch _search;
 
@@ -147,12 +147,7 @@ namespace Diagnosis.App.ViewModels
         }
 
         public SymptomViewModel(string title)
-            : this(new Symptom() { Title = title })
-        {
-        }
-
-        internal SymptomViewModel()
-            : this(new Symptom())
+            : this(new Symptom(title))
         {
         }
 

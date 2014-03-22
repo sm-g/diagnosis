@@ -17,6 +17,6 @@ namespace Diagnosis.Models
             Priority = priority;
         }
 
-        public Symptom() { }
+        protected Symptom() { }
     }
 }

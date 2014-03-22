@@ -20,11 +20,7 @@ namespace Diagnosis.App.ViewModels
 
         protected override SymptomViewModel FromQuery(string query)
         {
-            return new SymptomViewModel(new Symptom()
-                {
-                    Priority = UpperPriority,
-                    Title = query
-                });
+            return new SymptomViewModel(new Symptom(query, UpperPriority));
         }
 
         protected override bool CheckConditions(SymptomViewModel obj)
