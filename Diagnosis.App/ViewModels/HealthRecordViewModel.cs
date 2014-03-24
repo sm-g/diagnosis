@@ -11,7 +11,7 @@ namespace Diagnosis.App.ViewModels
     public class HealthRecordViewModel : CheckableBase
     {
         private static HealthRecordViewModel current;
-        private HealthRecord healthRecord;
+        private readonly HealthRecord healthRecord;
         private List<EventMessageHandler> msgHandlers;
 
         #region CheckableBase

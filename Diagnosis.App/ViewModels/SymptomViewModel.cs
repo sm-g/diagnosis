@@ -8,8 +8,7 @@ namespace Diagnosis.App.ViewModels
 {
     public class SymptomViewModel : HierarchicalBase<SymptomViewModel>
     {
-        internal Symptom symptom;
-
+        internal readonly Symptom symptom;
         private SymptomSearch _search;
 
         public string SortingOrder { get; private set; }

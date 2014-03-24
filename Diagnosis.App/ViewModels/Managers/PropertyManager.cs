@@ -26,14 +26,14 @@ namespace Diagnosis.App.ViewModels
             // если у пацента не указано какое-то свойство — добавляем это свойство с пустым значением
             foreach (var propVM in properties)
             {
-                var pp = existingPatProps.FirstOrDefault(patProp => patProp.Property == propVM.Property);
+                var pp = existingPatProps.FirstOrDefault(patProp => patProp.Property == propVM.property);
                 if (pp != null)
                 {
                     propVM.SelectedValue = pp.Value;
                 }
                 else
                 {
-                    propVM.SelectedValue = new EmptyPropertyValue(propVM.Property);
+                    propVM.SelectedValue = new EmptyPropertyValue(propVM.property);
                 }
             }
 

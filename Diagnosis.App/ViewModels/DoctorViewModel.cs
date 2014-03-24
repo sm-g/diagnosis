@@ -8,7 +8,7 @@ namespace Diagnosis.App.ViewModels
 {
     public class DoctorViewModel : CheckableBase
     {
-        internal Doctor doctor;
+        internal readonly Doctor doctor;
 
         private string _speciality;
         private ICommand _startCourse;

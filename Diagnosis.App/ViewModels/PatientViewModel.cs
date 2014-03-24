@@ -9,7 +9,7 @@ namespace Diagnosis.App.ViewModels
 {
     public class PatientViewModel : CheckableBase
     {
-        internal Patient patient;
+        internal readonly Patient patient;
 
         private DoctorViewModel _doctor;
         private CoursesManager _coursesManager;
@@ -316,7 +316,7 @@ namespace Diagnosis.App.ViewModels
         private void OnPropertyValueChanged(PropertyViewModel propertyVM)
         {
             MarkDirty();
-            patient.SetPropertyValue(propertyVM.Property, propertyVM.SelectedValue);
+            patient.SetPropertyValue(propertyVM.property, propertyVM.SelectedValue);
         }
 
         private void OnCourseStarted(Course course)
