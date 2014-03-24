@@ -110,11 +110,14 @@
                         
                         <Button Command="{Binding CurrentDoctor.StartCourseCommand}"
                             CommandParameter="{Binding}">Начать курс</Button>
-                        
-                        <ListView ItemsSource="{Binding Courses}"
-                                  SelectedItem="{Binding SelectedCourse}"
+
+                        <ListView ItemsSource="{Binding CoursesManager.Courses}"
+                                  SelectedItem="{Binding CoursesManager.SelectedCourse}"
                                   Grid.Row="2" 
                                   SelectionMode="Single">
+                            <ListView.InputBindings>
+                                <KeyBinding Key="Delete" Command="{Binding CoursesManager.SelectedCourse.DeleteCommand}" />
+                            </ListView.InputBindings>
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <card:Course />
@@ -128,7 +131,7 @@
                         </ListView>
                     </Grid>
 
-                    <card:Appointment DataContext="{Binding SelectedCourse.SelectedAppointment}" />
+                    <card:Appointment DataContext="{Binding CoursesManager.SelectedCourse.SelectedAppointment}" />
                 </DockPanel>
             </TabItem>
         </TabControl>

@@ -52,6 +52,11 @@ namespace Diagnosis.Models
             }
         }
 
+        public virtual void DeleteCourse(Course course)
+        {
+            courses.Remove(course);
+        }
+
         /// <summary>
         /// Добавляет свойство со значением или изменяет значение, если такое свойство уже есть.
         /// </summary>

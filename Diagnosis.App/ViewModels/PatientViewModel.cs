@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -13,8 +11,8 @@ namespace Diagnosis.App.ViewModels
     {
         internal Patient patient;
 
-        private CourseViewModel _selectedCourse;
         private DoctorViewModel _doctor;
+        private CoursesManager _coursesManager;
         private List<EventMessageHandler> msgHandlers = new List<EventMessageHandler>();
 
         public string FirstName
@@ -194,24 +192,18 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public ObservableCollection<CourseViewModel> Courses
-        {
-            get;
-            private set;
-        }
-        public CourseViewModel SelectedCourse
+        public CoursesManager CoursesManager
         {
             get
             {
-                return _selectedCourse;
+                return _coursesManager;
             }
             set
             {
-                if (_selectedCourse != value)
+                if (_coursesManager != value)
                 {
-                    _selectedCourse = value;
-
-                    OnPropertyChanged(() => SelectedCourse);
+                    _coursesManager = value;
+                    OnPropertyChanged(() => CoursesManager);
                 }
             }
         }
@@ -318,12 +310,7 @@ namespace Diagnosis.App.ViewModels
             patient = p;
 
             Properties = new ObservableCollection<PropertyViewModel>(EntityManagers.PropertyManager.GetPatientProperties(patient));
-            Courses = new ObservableCollection<CourseViewModel>(patient.Courses.Select(i => new CourseViewModel(i)));
-
-            if (Courses.Count > 0)
-            {
-                SelectedCourse = Courses.Last();
-            }
+            CoursesManager = new CoursesManager(this);
         }
 
         private void OnPropertyValueChanged(PropertyViewModel propertyVM)
@@ -334,8 +321,7 @@ namespace Diagnosis.App.ViewModels
 
         private void OnCourseStarted(Course course)
         {
-            var courseVM = new CourseViewModel(course);
-            Courses.Add(courseVM);
+            CoursesManager.AddCourse(course);
             MarkDirty();
         }
 

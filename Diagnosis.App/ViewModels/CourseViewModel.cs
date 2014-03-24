@@ -10,7 +10,7 @@ namespace Diagnosis.App.ViewModels
 {
     public class CourseViewModel : CheckableBase
     {
-        private Course course;
+        internal Course course;
 
         private bool _appointmentsVis;
         private AppointmentViewModel _selectedAppointment;
