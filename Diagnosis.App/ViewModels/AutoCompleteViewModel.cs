@@ -190,7 +190,7 @@ namespace Diagnosis.App.ViewModels
                 i--;
             }
             if (i < 0)
-                search = new SymptomSearch(DataCreator.Symptoms[0], true, true, false); // groups and cheсked, but not all children
+                search = new SymptomSearch(EntityManagers.SymptomsManager.Symptoms[0].Parent, true, true, false); // groups and cheсked, but not all children
             else
                 search = new SymptomSearch(symptoms[i], true, true, false);
 
