@@ -102,25 +102,33 @@
             </TabItem>
             <TabItem Header="Курсы">
                 <DockPanel>
-                <StackPanel>
-                    <Button Command="{Binding CurrentDoctor.StartCourseCommand}" 
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        
+                        <Button Command="{Binding CurrentDoctor.StartCourseCommand}"
                             CommandParameter="{Binding}">Начать курс</Button>
-                    <ListView ItemsSource="{Binding Courses}"
-                              SelectedItem="{Binding SelectedCourse}">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <card:Course />
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListViewItem}">
-                                <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                    </ListView>
-                </StackPanel>
+                        
+                        <ListView ItemsSource="{Binding Courses}"
+                                  SelectedItem="{Binding SelectedCourse}"
+                                  Grid.Row="2" 
+                                  SelectionMode="Single">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <card:Course />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+                    </Grid>
 
-                    <card:Appointment DataContext="{Binding SelectedCourse.SelectedAppointment}"/>
+                    <card:Appointment DataContext="{Binding SelectedCourse.SelectedAppointment}" />
                 </DockPanel>
             </TabItem>
         </TabControl>

@@ -115,6 +115,7 @@ namespace Diagnosis.App.ViewModels
                 }
                 Symptoms = new ObservableCollection<SymptomViewModel>(Symptoms.OrderBy(s => s.SortingOrder));
                 OnPropertyChanged(() => Symptoms);
+                OnPropertyChanged(() => Name);
             }
         }
     }

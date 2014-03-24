@@ -210,7 +210,7 @@ namespace Diagnosis.App.ViewModels
                 if (_selectedCourse != value)
                 {
                     _selectedCourse = value;
-                    _selectedCourse.IsSelected = true;
+
                     OnPropertyChanged(() => SelectedCourse);
                 }
             }
@@ -334,7 +334,8 @@ namespace Diagnosis.App.ViewModels
 
         private void OnCourseStarted(Course course)
         {
-            Courses.Add(new CourseViewModel(course));
+            var courseVM = new CourseViewModel(course);
+            Courses.Add(courseVM);
             MarkDirty();
         }
 

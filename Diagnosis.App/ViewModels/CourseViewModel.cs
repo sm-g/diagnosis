@@ -49,6 +49,9 @@ namespace Diagnosis.App.ViewModels
                 if (_appointmentsVis != value)
                 {
                     _appointmentsVis = value;
+
+                    IsSelected = value;
+
                     OnPropertyChanged(() => IsAppointmentsVisible);
                 }
             }
@@ -130,10 +133,17 @@ namespace Diagnosis.App.ViewModels
                         {
                             var app = course.AddAppointment();
                             Appointments.Add(new AppointmentViewModel(app));
+                            IsAppointmentsVisible = true;
 
                             this.Send((int)EventID.AppointmentAdded, new AppointmentAddedParams(app).Params);
                         }));
             }
+        }
+
+        public void Select()
+        {
+            IsSelected = true;
+            IsAppointmentsVisible = true;
         }
 
         public CourseViewModel(Course course)
@@ -147,6 +157,16 @@ namespace Diagnosis.App.ViewModels
             if (Appointments.Count > 0)
             {
                 SelectedAppointment = Appointments.Last();
+            }
+
+            this.PropertyChanged += CourseViewModel_PropertyChanged;
+        }
+
+        void CourseViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsSelected")
+            {
+                IsAppointmentsVisible = IsSelected;
             }
         }
     }
