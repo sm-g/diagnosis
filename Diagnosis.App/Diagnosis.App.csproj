@@ -194,17 +194,17 @@
     <Compile Include="Screens\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\CoursesManager.cs" />
-    <Compile Include="ViewModels\ISearchCommon.cs" />
-    <Compile Include="ViewModels\SymptomsManager.cs" />
+    <Compile Include="ViewModels\Managers\CoursesManager.cs" />
+    <Compile Include="ViewModels\Interfaces\ISearchCommon.cs" />
+    <Compile Include="ViewModels\Managers\SymptomsManager.cs" />
     <Compile Include="ViewModels\AppointmentViewModel.cs" />
     <Compile Include="ViewModels\HealthRecordViewModel.cs" />
-    <Compile Include="ViewModels\DoctorsManager.cs" />
+    <Compile Include="ViewModels\Managers\DoctorsManager.cs" />
     <Compile Include="ViewModels\CourseViewModel.cs" />
     <Compile Include="ViewModels\DoctorViewModel.cs" />
     <Compile Include="ViewModels\EditableBase.cs" />
-    <Compile Include="ViewModels\HierarchicalSearch.cs" />
-    <Compile Include="ViewModels\IEditable.cs" />
+    <Compile Include="ViewModels\Search\HierarchicalSearch.cs" />
+    <Compile Include="ViewModels\Interfaces\IEditable.cs" />
     <Compile Include="Controls\Directory\TileItem.xaml.cs">
       <DependentUpon>TileItem.xaml</DependentUpon>
     </Compile>
@@ -237,25 +237,25 @@
       <DependentUpon>Patients.xaml</DependentUpon>
     </Compile>
     <Compile Include="Styles\TreeStyle.cs" />
-    <Compile Include="ViewModels\AutoCompleteViewModel.cs" />
+    <Compile Include="ViewModels\Search\AutoCompleteViewModel.cs" />
     <Compile Include="ViewModels\CheckableBase.cs" />
-    <Compile Include="ViewModels\DiagnosisSearch.cs" />
+    <Compile Include="ViewModels\Search\DiagnosisSearch.cs" />
     <Compile Include="ViewModels\DiagnosisViewModel.cs" />
     <Compile Include="ViewModels\HierarchicalBase.cs" />
-    <Compile Include="ViewModels\ICheckable.cs" />
-    <Compile Include="ViewModels\IHierarchical.cs" />
-    <Compile Include="ViewModels\IHierarchicalCheckable.cs" />
-    <Compile Include="ViewModels\ISearch.cs" />
+    <Compile Include="ViewModels\Interfaces\ICheckable.cs" />
+    <Compile Include="ViewModels\Interfaces\IHierarchical.cs" />
+    <Compile Include="ViewModels\Interfaces\IHierarchicalCheckable.cs" />
+    <Compile Include="ViewModels\Interfaces\ISearch.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="ViewModels\PatientSearch.cs" />
-    <Compile Include="ViewModels\PatientsManager.cs" />
-    <Compile Include="ViewModels\PropertyManager.cs" />
+    <Compile Include="ViewModels\Search\PatientSearch.cs" />
+    <Compile Include="ViewModels\Managers\PatientsManager.cs" />
+    <Compile Include="ViewModels\Managers\PropertyManager.cs" />
     <Compile Include="ViewModels\PropertyViewModel.cs" />
     <Compile Include="ViewModels\HierarchicalExplorer.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
-    <Compile Include="ViewModels\SearchBase.cs" />
-    <Compile Include="ViewModels\SymptomSearch.cs" />
+    <Compile Include="ViewModels\Search\SearchBase.cs" />
+    <Compile Include="ViewModels\Search\SymptomSearch.cs" />
     <Compile Include="ViewModels\SymptomViewModel.cs" />
     <Compile Include="Controls\Directory\FullTree.xaml.cs">
       <DependentUpon>FullTree.xaml</DependentUpon>
