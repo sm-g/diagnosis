@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
+using System;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -13,7 +15,10 @@ namespace Diagnosis.App.ViewModels
         private string _fullSymptom = "";
         private bool _isSymptomCompleted;
         private int _selectedIndex;
+        private ICommand _enterCommand;
         private const char SymptomSeparator = ',';
+
+        public event EventHandler SuggestionAccepted;
 
         public string FullSymptom
         {
@@ -56,6 +61,61 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return FullSymptom.Substring(SymptomsChainString.Length).Trim(SymptomSeparator);
+            }
+        }
+
+        public ObservableCollection<SymptomViewModel> Suggestions { get; private set; }
+
+        public int SelectedIndex
+        {
+            get
+            {
+                return _selectedIndex;
+            }
+            set
+            {
+                if (_selectedIndex != value)
+                {
+                    _selectedIndex = value;
+                    search.SelectedIndex = value;
+                    OnPropertyChanged(() => SelectedIndex);
+                }
+            }
+        }
+
+        public bool IsSymptomCompleted
+        {
+            get
+            {
+                return _isSymptomCompleted;
+            }
+            set
+            {
+                if (_isSymptomCompleted != value)
+                {
+                    _isSymptomCompleted = value;
+                    OnPropertyChanged(() => IsSymptomCompleted);
+                }
+            }
+        }
+
+        public ICommand EnterCommand
+        {
+            get
+            {
+                return _enterCommand
+                    ?? (_enterCommand = new RelayCommand(
+                                          () =>
+                                          {
+                                              if (IsSymptomCompleted)
+                                              {
+                                                  Clear();
+                                              }
+                                              else
+                                              {
+                                                  Accept();
+                                              }
+                                          }));
             }
         }
 
@@ -124,45 +184,17 @@ namespace Diagnosis.App.ViewModels
             SelectedIndex = 0;
         }
 
-        public ObservableCollection<SymptomViewModel> Suggestions { get; private set; }
-
-        public int SelectedIndex
-        {
-            get
-            {
-                return _selectedIndex;
-            }
-            set
-            {
-                if (_selectedIndex != value)
-                {
-                    _selectedIndex = value;
-                    search.SelectedIndex = value;
-                    OnPropertyChanged(() => SelectedIndex);
-                }
-            }
-        }
-
-        public bool IsSymptomCompleted
-        {
-            get
-            {
-                return _isSymptomCompleted;
-            }
-            set
-            {
-                if (_isSymptomCompleted != value)
-                {
-                    _isSymptomCompleted = value;
-                    OnPropertyChanged(() => IsSymptomCompleted);
-                }
-            }
-        }
-
         public void Accept()
         {
             AddSymptom();
             FullSymptom = SymptomsChainString;
+
+            var h = SuggestionAccepted;
+            if (h != null)
+            {
+                h(this, new EventArgs());
+            }
+
         }
 
         public void Clear()

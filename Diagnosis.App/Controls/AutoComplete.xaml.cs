@@ -25,7 +25,7 @@ namespace Diagnosis.App.Controls
         {
             InitializeComponent();
 
-            autocomplete.DataContext = new AutoCompleteViewModel();
+            vm.SuggestionAccepted += vm_SuggestionAccepted;
         }
 
         private void input_TextChanged(object sender, TextChangedEventArgs e)
@@ -49,16 +49,6 @@ namespace Diagnosis.App.Controls
         {
             switch (e.Key)
             {
-                case Key.Enter:
-                    if (vm.IsSymptomCompleted)
-                    {
-                        vm.Clear();
-                    }
-                    else
-                    {
-                        AddSuggestion();
-                    }
-                    break;
                 case Key.Escape:
                     HidePopup();
                     break;
@@ -88,10 +78,8 @@ namespace Diagnosis.App.Controls
             popup.IsOpen = false;
         }
 
-        private void AddSuggestion()
+        void vm_SuggestionAccepted(object sender, System.EventArgs e)
         {
-            vm.Accept();
-
             input.CaretIndex = input.Text.Length;
             ShowSuggestionsPopup();
         }
@@ -122,7 +110,7 @@ namespace Diagnosis.App.Controls
 
         private void DockPanel_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            AddSuggestion();
+            vm.EnterCommand.Execute(null);
             focusFromPopup = true;
             input.Focus();
         }

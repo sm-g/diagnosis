@@ -29,7 +29,12 @@
                         GotMouseCapture="input_GotMouseCapture"
                         LostFocus="input_LostFocus" 
                      Grid.Row="1"
- />
+ >
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding EnterCommand}"/>
+                </TextBox.InputBindings>
+                
+            </TextBox>
 
             <Popup x:Name="popup" Height="Auto" Width="auto"
                        StaysOpen="False" Placement="Bottom" IsOpen="false"
