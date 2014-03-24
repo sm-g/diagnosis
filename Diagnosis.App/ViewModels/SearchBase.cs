@@ -13,6 +13,7 @@ namespace Diagnosis.App.ViewModels
         private int _selectedIndex = -1;
         private ICommand _clear;
         private ICommand _searchCommand;
+        private ICommand _selectCommand;
         private bool _searchActive;
         private bool _searchFocused;
 
@@ -101,6 +102,14 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public ICommand SelectCommand
+        {
+            get
+            {
+                return _selectCommand ?? (_selectCommand = new RelayCommand(RaiseResultItemSelected));
+            }
+        }
+
         public bool IsSearchActive
         {
             get
@@ -165,7 +174,7 @@ namespace Diagnosis.App.ViewModels
             OnPropertyChanged(() => Results);
             OnPropertyChanged(() => ResultsCount);
 
-            if (ResultsCount > 0)
+            if (Results.Count > 0)
                 SelectedIndex = 0;
         }
 

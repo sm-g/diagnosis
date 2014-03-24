@@ -104,6 +104,7 @@
                         DataContext="{Binding Search}">
                 <controls:FloatSearch.InputBindings>
                     <KeyBinding Key="Escape" Command="{Binding DataContext.Search.SearchCommand, ElementName=root}"></KeyBinding>
+                    <KeyBinding Key="Enter" Command="{Binding DataContext.Search.SelectCommand, ElementName=root}"></KeyBinding>
                 </controls:FloatSearch.InputBindings>
             </controls:FloatSearch>
 

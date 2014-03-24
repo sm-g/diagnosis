@@ -9,7 +9,6 @@
              d:DesignHeight="100" d:DesignWidth="300"
              x:Name="floatSearch"
              GotFocus="UserControl_GotFocus"
-             KeyUp="floatSearch_KeyUp"
              controls:EnhancedFocusScope.IsEnhancedFocusScope="True">
     <UserControl.Resources>
         <Converters:CountToVisability x:Key="CountToVisability" />

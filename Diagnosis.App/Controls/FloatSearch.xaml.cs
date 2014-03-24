@@ -1,5 +1,4 @@
-﻿
-using Diagnosis.App.ViewModels;
+﻿using Diagnosis.App.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -19,24 +18,47 @@ namespace Diagnosis.App.Controls
             InitializeComponent();
         }
 
+        #region Focus stuff
+
         private void UserControl_GotFocus(object sender, RoutedEventArgs e)
         {
             EnhancedFocusScope.SetFocusOnActiveElementInScope(floatSearch);
         }
 
-        private void floatSearch_KeyUp(object sender, KeyEventArgs e)
+        private void input_TextChanged(object sender, TextChangedEventArgs e)
         {
-            switch (e.Key)
-            {
-                case Key.Enter:
-                    OnResultItemSelected();
-                    break;
+            ShowPopup();
+        }
 
-                case Key.Escape:
-                    HidePopup();
-                    break;
+        private void input_GotFocus(object sender, RoutedEventArgs e)
+        {
+            ShowPopup();
+        }
+
+        private void input_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (FocusChecker.IsFocusOutsideDepObject(floatSearch) && FocusChecker.IsFocusOutsideDepObject(popup.Child))
+            {
+                HidePopup();
             }
         }
+
+        private void input_GotMouseCapture(object sender, MouseEventArgs e)
+        {
+            ShowPopup();
+        }
+
+        private void ShowPopup()
+        {
+            popup.IsOpen = true;
+        }
+
+        private void HidePopup()
+        {
+            popup.IsOpen = false;
+        }
+
+        #endregion Focus stuff
 
         private void results_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -46,11 +68,6 @@ namespace Diagnosis.App.Controls
             }
             selectionChanged = true;
             results.ScrollIntoView(results.SelectedItem);
-        }
-
-        private void input_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            ShowResultsPopup();
         }
 
         private void input_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -65,24 +82,6 @@ namespace Diagnosis.App.Controls
             }
         }
 
-        private void input_GotFocus(object sender, RoutedEventArgs e)
-        {
-            ShowResultsPopup();
-        }
-
-        private void input_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (FocusChecker.IsFocusOutsideDepObject(floatSearch) && FocusChecker.IsFocusOutsideDepObject(popup.Child))
-            {
-                HidePopup();
-            }
-        }
-
-        private void input_GotMouseCapture(object sender, MouseEventArgs e)
-        {
-            ShowResultsPopup();
-        }
-
         private void results_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (!selectionChanged || selectedIndex == results.SelectedIndex)
@@ -93,26 +92,14 @@ namespace Diagnosis.App.Controls
             selectionChanged = false;
         }
 
-        private void ShowResultsPopup()
-        {
-            popup.IsOpen = true;
-        }
-
-        private void HidePopup()
-        {
-            popup.IsOpen = false;
-        }
-
         private void OnResultItemSelected()
         {
             HidePopup();
-            if (DataContext is SymptomSearch)
-                (DataContext as SymptomSearch).RaiseResultItemSelected();
-            else if (DataContext is PatientSearch)
-                (DataContext as PatientSearch).RaiseResultItemSelected();
-            else if (DataContext is DiagnosisSearch)
-                (DataContext as DiagnosisSearch).RaiseResultItemSelected();
-
+            var context = DataContext as ISearchCommon;
+            if (context != null)
+            {
+                context.RaiseResultItemSelected();
+            }
         }
     }
 }
