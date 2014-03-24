@@ -24,43 +24,43 @@
             <TextBlock Text="{Binding Name}" />
             <TextBlock>
                 <TextBlock Text="{Binding Start, StringFormat='{}с {0:d}'}" />
-                <TextBlock Text="{Binding End, StringFormat='{}по {0:d}'}" Visibility="{Binding IsEnded, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <TextBlock Text="{Binding End, StringFormat='{}по {0:d}', TargetNullValue=''}" />
             </TextBlock>
             <TextBlock Text="{Binding LeadDoctor.ShortName}" />
         </StackPanel>
 
-        <StackPanel Grid.Column="1" 
-                    Grid.Row="1" 
+        <StackPanel Grid.Column="1"
+                    Grid.Row="1"
                     Visibility="{Binding IsAppointmentsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock>Осмотры</TextBlock>
-            
-        <ListView x:Name="appointments"
+            <TextBlock>Осмотры</TextBlock>
+
+            <ListView x:Name="appointments"
                   ItemsSource="{Binding Appointments}"
                   SelectedItem="{Binding SelectedAppointment}"
                   MaxHeight="200">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel>
-                        <DockPanel>
-                            <TextBlock Text="{Binding DateTime, StringFormat='{}{0:d}'}" />
-                            <TextBlock Text="{Binding Doctor.ShortName}"
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <DockPanel>
+                                <TextBlock Text="{Binding DateTime, StringFormat='{}{0:d}'}" />
+                                <TextBlock Text="{Binding Doctor.ShortName}"
                                        HorizontalAlignment="Right" />
-                        </DockPanel>
-                        <ItemsControl ItemsSource="{Binding HealthRecords}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Name}" />
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                            </DockPanel>
+                            <ItemsControl ItemsSource="{Binding HealthRecords}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackPanel>
 
-        <Button Grid.Column="1" 
-                Grid.Row="2" 
+        <Button Grid.Column="1"
+                Grid.Row="2"
                 Command="{Binding AddAppointmentCommand}">Добавить осмотр</Button>
     </Grid>
 </UserControl>

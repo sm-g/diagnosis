@@ -89,17 +89,17 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public DateTime End
+        public DateTime? End
         {
             get
             {
-                return course.End.HasValue ? course.End.Value.Date : new DateTime();
+                return course.End;
             }
             set
             {
-                if (!course.End.HasValue || course.End.Value.Date != value.Date)
+                if (!course.End.HasValue || course.End.Value.Date != value.Value.Date)
                 {
-                    course.End = value.Date;
+                    course.End = value.Value.Date;
                     OnPropertyChanged(() => End);
                     OnPropertyChanged(() => IsEnded);
                 }
