@@ -33,7 +33,7 @@ namespace Diagnosis.Models
         public Diagnosis(string code, string title, Diagnosis parent = null)
         {
             Contract.Requires(!string.IsNullOrEmpty(title));
-            Contract.Requires(code != null && code.Length == 5);
+            Contract.Requires(code != null && code.Length <= 7);
 
             Code = code;
             Title = title;
