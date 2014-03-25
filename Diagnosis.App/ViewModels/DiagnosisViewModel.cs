@@ -11,7 +11,7 @@ namespace Diagnosis.App.ViewModels
 
         public string SortingOrder { get; private set; }
 
-        public new bool IsNonCheckable
+        public override bool IsNonCheckable
         {
             get
             {
@@ -80,6 +80,13 @@ namespace Diagnosis.App.ViewModels
         {
             Contract.Requires(d != null);
             diagnosis = d;
+
+            ChildrenChanged += DiagnosisViewModel_ChildrenChanged;
+        }
+
+        void DiagnosisViewModel_ChildrenChanged(object sender, System.EventArgs e)
+        {
+            OnPropertyChanged(() => IsNonCheckable);
         }
 
         public DiagnosisViewModel(string title)

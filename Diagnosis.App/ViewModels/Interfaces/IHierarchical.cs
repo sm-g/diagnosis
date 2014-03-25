@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System;
 
 namespace Diagnosis.App.ViewModels
 {
     public interface IHierarchical<T> where T : class
     {
+        event EventHandler ChildrenChanged;
+
         bool IsRoot { get; }
 
         bool IsTerminal { get; }

@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System;
 
 namespace Diagnosis.App.ViewModels
 {
     public abstract class HierarchicalBase<T> : CheckableBase, IHierarchical<T>, IHierarchicalCheckable where T : HierarchicalBase<T>
     {
+        public event EventHandler ChildrenChanged;
+
         #region IEditable
 
         public override abstract string Name
@@ -147,6 +150,15 @@ namespace Diagnosis.App.ViewModels
 
         #endregion IHierarchicalCheckable
 
+        protected virtual void OnChildrenChanged()
+        {
+            var h = ChildrenChanged;
+            if (h != null)
+            {
+                h(this, new EventArgs());
+            }
+        }
+
         private void PropagateCheckedState(bool newState)
         {
             if (newState && !IsRoot)
@@ -176,6 +188,7 @@ namespace Diagnosis.App.ViewModels
         {
             OnPropertyChanged(() => TerminalChildren);
             OnPropertyChanged(() => IsTerminal);
+            OnChildrenChanged();
         }
 
         private void OnChildRemoved()
@@ -183,6 +196,7 @@ namespace Diagnosis.App.ViewModels
             OnPropertyChanged(() => TerminalChildren);
             OnPropertyChanged(() => NonTerminalChildren);
             OnPropertyChanged(() => IsTerminal);
+            OnChildrenChanged();
         }
 
         public HierarchicalBase()

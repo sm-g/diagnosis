@@ -39,7 +39,7 @@ namespace Diagnosis.App.ViewModels
         }
 
 
-        public bool IsNonCheckable
+        public virtual bool IsNonCheckable
         {
             get
             {
@@ -49,8 +49,9 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_isNonCheckable != value)
                 {
-                    _isNonCheckable = value;
                     IsChecked = !value;
+
+                    _isNonCheckable = value;
 
                     OnPropertyChanged(() => IsNonCheckable);
                 }
@@ -65,16 +66,9 @@ namespace Diagnosis.App.ViewModels
             }
             set
             {
-                if (_isChecked != value)
+                if (_isChecked != value && !IsNonCheckable)
                 {
-                    if (IsNonCheckable)
-                    {
-                        _isChecked = false;
-                    }
-                    else
-                    {
-                        _isChecked = value;
-                    }
+                    _isChecked = value;
 
                     OnPropertyChanged(() => IsChecked);
 
