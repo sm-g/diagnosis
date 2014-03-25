@@ -10,8 +10,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <Grid>
@@ -28,25 +27,31 @@
             </TextBlock>
         </Grid>
 
-        <ScrollViewer Grid.Row="1">
-            <ListView x:Name="records"
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                
+                <ListView x:Name="records"
                   ItemsSource="{Binding HealthRecords}"
                   SelectedItem="{Binding SelectedHealthRecord}"
                   HorizontalContentAlignment="Stretch">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <card:HealthRecord />
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListViewItem}">
-                        <Setter Property="IsSelected" Value="{Binding IsSelected}" />
-                    </Style>
-                </ListView.ItemContainerStyle>
-            </ListView>
-        </ScrollViewer>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <card:HealthRecord />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
 
-        <Button Command="{Binding AddHealthRecordCommand}"
-                Grid.Row="2">+</Button>
+                <Button Command="{Binding AddHealthRecordCommand}" Grid.Row="1">+</Button>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </UserControl>
