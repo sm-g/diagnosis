@@ -23,6 +23,7 @@ namespace Diagnosis.Data.Mappings
                     k.Column("DiagnosisID");
                 });
                 s.Inverse(true);
+                s.Cascade(Cascade.DeleteOrphans);
                 s.Access(Accessor.Field);
             }, r =>
             {
@@ -32,9 +33,10 @@ namespace Diagnosis.Data.Mappings
             {
                 s.Key(k =>
                 {
-                    k.Column("ID");
+                    k.Column("ParentID");
                 });
                 s.Inverse(true);
+                s.Cascade(Cascade.All | Cascade.DeleteOrphans);
                 s.Access(Accessor.Field);
             }, r =>
             {

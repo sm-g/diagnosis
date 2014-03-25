@@ -1,0 +1,68 @@
+﻿using Diagnosis.Data.Repositories;
+using Diagnosis.Models;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
+using System.Linq;
+
+namespace Diagnosis.App.ViewModels
+{
+    /// <summary>
+    /// Содержит ViewModels всех диагнозов.
+    /// </summary>
+    public class DiagnosisManager
+    {
+        private IDiagnosisRepository repository;
+
+        public ObservableCollection<DiagnosisViewModel> Diagnoses
+        {
+            get;
+            private set;
+        }
+
+        public DiagnosisViewModel GetHealthRecordDiagnosis(HealthRecord hr)
+        {
+            Contract.Requires(hr != null);
+
+            if (Diagnoses.Count > 0)
+            {
+                return Diagnoses[0].Parent.AllChildren.Where(d => d.diagnosis == hr.Diagnosis).SingleOrDefault();
+            }
+
+            return null;
+        }
+
+        public void CheckThese(IEnumerable<DiagnosisViewModel> diagnoses)
+        {
+            foreach (var item in Diagnoses[0].Parent.AllChildren)
+            {
+                item.IsChecked = false;
+            }
+            foreach (var item in diagnoses)
+            {
+                item.IsChecked = true;
+            }
+        }
+
+        public DiagnosisManager(IDiagnosisRepository repo)
+        {
+            Contract.Requires(repo != null);
+
+            repository = repo;
+
+            var allDiagnoses = repository.GetAll().Select(d => new DiagnosisViewModel(d)).ToList();
+
+            foreach (var item in allDiagnoses)
+            {
+                item.Add(allDiagnoses.Where(d => d.diagnosis.Parent == item.diagnosis));
+            }
+
+            var root = new DiagnosisViewModel("root");
+            root.Add(allDiagnoses.Where(d => d.IsRoot));
+
+            root.Initialize();
+
+            Diagnoses = new ObservableCollection<DiagnosisViewModel>(root.Children);
+        }
+    }
+}

@@ -194,6 +194,7 @@
     <Compile Include="Screens\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\Managers\DiagnosisManager.cs" />
     <Compile Include="ViewModels\Managers\CoursesManager.cs" />
     <Compile Include="ViewModels\Interfaces\ISearchCommon.cs" />
     <Compile Include="ViewModels\Managers\SymptomsManager.cs" />

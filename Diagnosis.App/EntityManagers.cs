@@ -9,6 +9,7 @@ namespace Diagnosis.App
         private static PatientsManager _patientsManager;
         private static PropertyManager _propertyManager;
         private static SymptomsManager _symptomsManager;
+        private static DiagnosisManager _diagnosisManager;
 
         public static DoctorsManager DoctorsManager
         {
@@ -38,6 +39,13 @@ namespace Diagnosis.App
             get
             {
                 return _symptomsManager ?? (_symptomsManager = new SymptomsManager(new SymptomRepository()));
+            }
+        }
+        public static DiagnosisManager DiagnosisManager
+        {
+            get
+            {
+                return _diagnosisManager ?? (_diagnosisManager = new DiagnosisManager(new DiagnosisRepository()));
             }
         }
     }
