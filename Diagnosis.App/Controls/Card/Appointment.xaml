@@ -1,28 +1,26 @@
 ﻿<UserControl x:Class="Diagnosis.App.Controls.Card.Appointment"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:card="clr-namespace:Diagnosis.App.Controls.Card"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              x:Name="appointment">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        
+
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock>
-                Симптомы
-            </TextBlock>
+            <TextBlock>Признаки</TextBlock>
 
             <TextBlock Grid.Column="1"
                 Visibility="{Binding DataContext.FastAddingMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource NegBooleanToVisibilityConverter}}">
@@ -30,22 +28,23 @@
             </TextBlock>
         </Grid>
 
-        <ListView x:Name="records"
-                  Grid.Row="1"
+        <ScrollViewer Grid.Row="1">
+            <ListView x:Name="records"
                   ItemsSource="{Binding HealthRecords}"
                   SelectedItem="{Binding SelectedHealthRecord}"
                   HorizontalContentAlignment="Stretch">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <card:HealthRecord />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-            <ListView.ItemContainerStyle>
-                <Style TargetType="{x:Type ListViewItem}">
-                    <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
-                </Style>
-            </ListView.ItemContainerStyle>
-        </ListView>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <card:HealthRecord />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+        </ScrollViewer>
 
         <Button Command="{Binding AddHealthRecordCommand}"
                 Grid.Row="2">+</Button>

@@ -5,18 +5,26 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:constols="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300" 
+             d:DesignHeight="300" d:DesignWidth="300"
              MinHeight="50"
-             Focusable="True" 
+             Focusable="True"
              IsTabStop="True">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        
+
         <StackPanel>
-            <constols:GroupsTree Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <StackPanel Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Orientation="Horizontal">
+                    <ToggleButton x:Name="symptomsToogle"
+                              IsChecked="{Binding IsSelectingSymptomsActive}">Симптомы</ToggleButton>
+                    <ToggleButton IsChecked="{Binding IsChecked, ElementName=symptomsToogle, Converter={StaticResource NegateBoolean}}">Диагнозы</ToggleButton>
+                </StackPanel>
+                <constols:GroupsTree Visibility="{Binding IsSelectingSymptomsActive, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <constols:FullTree Visibility="{Binding IsSelectingSymptomsActive, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
+            </StackPanel>
             <ItemsControl x:Name="symptoms"
                           ItemsSource="{Binding Symptoms}">
                 <ItemsControl.ItemTemplate>
@@ -25,12 +33,12 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            
+            <TextBlock Text="{Binding Diagnosis.Name}" />
         </StackPanel>
 
         <DockPanel Grid.Column="1"
                    Visibility="{Binding DataContext.FastAddingMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-            <TextBox Text="{Binding Description}"/>
+            <TextBox Text="{Binding Description}" />
         </DockPanel>
     </Grid>
 </UserControl>

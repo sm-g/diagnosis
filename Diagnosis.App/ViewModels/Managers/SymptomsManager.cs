@@ -36,6 +36,8 @@ namespace Diagnosis.App.ViewModels
 
         public void CheckThese(IEnumerable<SymptomViewModel> symptoms)
         {
+            Contract.Assume(Symptoms.Count > 0);
+
             foreach (var item in Symptoms[0].Parent.AllChildren)
             {
                 item.IsChecked = false;

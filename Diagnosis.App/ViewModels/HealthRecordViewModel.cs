@@ -10,8 +10,10 @@ namespace Diagnosis.App.ViewModels
 {
     public class HealthRecordViewModel : CheckableBase
     {
-        private static HealthRecordViewModel current;
         private readonly HealthRecord healthRecord;
+        private static HealthRecordViewModel current;
+        private DiagnosisViewModel _diagnosis;
+        private bool _selectingSymptomsActive;
         private List<EventMessageHandler> msgHandlers;
 
         #region CheckableBase
@@ -20,7 +22,8 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return string.Concat(Symptoms.OrderBy(s => s.Priority).Select(s => s.Name + " "));
+                return (Diagnosis != null ? Diagnosis.Name + ". " : "") +
+                    string.Concat(Symptoms.OrderBy(s => s.Priority).Select(s => s.Name + " "));
             }
             set
             {
@@ -57,6 +60,38 @@ namespace Diagnosis.App.ViewModels
             private set;
         }
 
+        public DiagnosisViewModel Diagnosis
+        {
+            get
+            {
+                return _diagnosis;
+            }
+            set
+            {
+                if (_diagnosis != value)
+                {
+                    _diagnosis = value;
+
+                    OnPropertyChanged(() => Diagnosis);
+                }
+            }
+        }
+        public bool IsSelectingSymptomsActive
+        {
+            get
+            {
+                return _selectingSymptomsActive;
+            }
+            set
+            {
+                if (_selectingSymptomsActive != value)
+                {
+                    _selectingSymptomsActive = value;
+                    OnPropertyChanged(() => IsSelectingSymptomsActive);
+                }
+            }
+        }
+
         public void Subscribe()
         {
             msgHandlers = new List<EventMessageHandler>()
@@ -68,6 +103,13 @@ namespace Diagnosis.App.ViewModels
 
                     OnSymptomCheckedChanged(symptom, isChecked);
                 }),
+                this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
+                {
+                    var diagnosis = e.GetValue<DiagnosisViewModel>(Messages.Diagnosis);
+                    var isChecked = e.GetValue<bool>(Messages.CheckedState);
+
+                    OnDiagnosisCheckedChanged(diagnosis, isChecked);
+                })
             };
         }
 
@@ -84,6 +126,8 @@ namespace Diagnosis.App.ViewModels
             current = this;
 
             EntityManagers.SymptomsManager.CheckThese(Symptoms);
+            if (Diagnosis != null)
+                EntityManagers.DiagnosisManager.Check(Diagnosis);
         }
 
         public HealthRecordViewModel(HealthRecord hr)
@@ -91,8 +135,13 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(hr != null);
 
             this.healthRecord = hr;
+
             Symptoms = new ObservableCollection<SymptomViewModel>(
                 EntityManagers.SymptomsManager.GetHealthRecordSymptoms(healthRecord));
+            Diagnosis = EntityManagers.DiagnosisManager.GetHealthRecordDiagnosis(healthRecord);
+
+            IsSelectingSymptomsActive = Diagnosis == null;
+
             Subscribe();
         }
 
@@ -115,6 +164,24 @@ namespace Diagnosis.App.ViewModels
                 }
                 Symptoms = new ObservableCollection<SymptomViewModel>(Symptoms.OrderBy(s => s.SortingOrder));
                 OnPropertyChanged(() => Symptoms);
+                OnPropertyChanged(() => Name);
+            }
+        }
+
+        private void OnDiagnosisCheckedChanged(DiagnosisViewModel diagnosisVM, bool isChecked)
+        {
+            if (this == current)
+            {
+                if (isChecked)
+                {
+                    Diagnosis = diagnosisVM;
+                    healthRecord.Diagnosis = diagnosisVM.diagnosis;
+                }
+                else
+                {
+                    Diagnosis = null;
+                    healthRecord.Diagnosis = null;
+                }
                 OnPropertyChanged(() => Name);
             }
         }

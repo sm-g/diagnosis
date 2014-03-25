@@ -32,16 +32,16 @@ namespace Diagnosis.App.ViewModels
             return null;
         }
 
-        public void CheckThese(IEnumerable<DiagnosisViewModel> diagnoses)
+        public void Check(DiagnosisViewModel diagnosis)
         {
+            Contract.Requires(diagnosis != null);
+            Contract.Assume(Diagnoses.Count > 0);
+
             foreach (var item in Diagnoses[0].Parent.AllChildren)
             {
                 item.IsChecked = false;
             }
-            foreach (var item in diagnoses)
-            {
-                item.IsChecked = true;
-            }
+            diagnosis.IsChecked = true;
         }
 
         public DiagnosisManager(IDiagnosisRepository repo)
