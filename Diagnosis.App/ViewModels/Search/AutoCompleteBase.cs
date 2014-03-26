@@ -74,11 +74,11 @@ namespace Diagnosis.App.ViewModels
                                           {
                                               if (IsItemCompleted)
                                               {
-                                                  Clear();
+                                                  CheckItems();
                                               }
                                               else
                                               {
-                                                  Accept();
+                                                  AcceptSuggestion();
                                               }
                                           }));
             }
@@ -170,7 +170,6 @@ namespace Diagnosis.App.ViewModels
         {
             if (items.Count > 0)
                 items[items.Count - 1].AddIfNotExists(search.SelectedItem, search.AllChildren);
-            search.SelectedItem.checkable.IsChecked = true;
 
             items.Add(search.SelectedItem);
             IsItemCompleted = true;
@@ -195,7 +194,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private void Accept()
+        private void AcceptSuggestion()
         {
             AddItem();
             FullString = ItemsChain;
@@ -207,8 +206,12 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private void Clear()
+        private void CheckItems()
         {
+            foreach (var item in items)
+            {
+                item.checkable.IsChecked = true;
+            }
             items.Clear();
             SetSearchContext(true);
             FullString = "";
