@@ -18,19 +18,7 @@ namespace Diagnosis.App.ViewModels
 
         #region CheckableBase
 
-        public override string Name
-        {
-            get
-            {
-                return "Осмотр";
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        protected override void OnCheckedChanged()
+        public override void OnCheckedChanged()
         {
             throw new NotImplementedException();
         }

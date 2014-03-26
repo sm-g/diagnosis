@@ -39,7 +39,7 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(course != null);
 
             var courseVM = new CourseViewModel(course);
-            courseVM.Deleted += course_Deleted;
+            courseVM.Editable.Deleted += course_Deleted;
             Courses.Add(courseVM);
         }
 
@@ -52,7 +52,7 @@ namespace Diagnosis.App.ViewModels
             Courses = new ObservableCollection<CourseViewModel>(patientVM.patient.Courses.Select(i => new CourseViewModel(i)));
             foreach (var course in Courses)
             {
-                course.Deleted += course_Deleted;
+                course.Editable.Deleted += course_Deleted;
             }
 
             if (Courses.Count > 0)
@@ -65,7 +65,7 @@ namespace Diagnosis.App.ViewModels
         {
             var courseVM = sender as CourseViewModel;
             patientVM.patient.DeleteCourse(courseVM.course);
-            patientVM.MarkDirty();
+            patientVM.Editable.MarkDirty();
             Courses.Remove(courseVM);
         }
     }

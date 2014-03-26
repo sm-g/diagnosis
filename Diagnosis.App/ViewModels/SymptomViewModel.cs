@@ -1,15 +1,16 @@
-﻿using Diagnosis.App;
-using Diagnosis.Models;
+﻿using Diagnosis.Models;
 using EventAggregator;
 using System.Diagnostics.Contracts;
-using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class SymptomViewModel : HierarchicalBase<SymptomViewModel>
+    public class SymptomViewModel : HierarchicalCheckable<SymptomViewModel>
     {
         internal readonly Symptom symptom;
+
         private SymptomSearch _search;
+
+        public EditableBase Editable { get; private set; }
 
         public string SortingOrder { get; private set; }
 
@@ -29,9 +30,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        #region HierarchicalBase
-
-        public override string Name
+        public string Name
         {
             get
             {
@@ -47,22 +46,12 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public override bool IsReady
-        {
-            get
-            {
-                return base.IsReady;
-            }
-        }
-
-        protected override void OnCheckedChanged()
+        public override void OnCheckedChanged()
         {
             base.OnCheckedChanged();
 
             this.Send((int)EventID.SymptomCheckedChanged, new SymptomCheckedChangedParams(this, IsChecked).Params);
         }
-
-        #endregion HierarchicalBase
 
         public SymptomSearch Search
         {
@@ -81,6 +70,8 @@ namespace Diagnosis.App.ViewModels
         {
             Contract.Requires(s != null);
             symptom = s;
+
+            Editable = new EditableBase();
         }
 
         public SymptomViewModel(string title)
@@ -91,7 +82,7 @@ namespace Diagnosis.App.ViewModels
         private void _search_ResultItemSelected(object sender, System.EventArgs e)
         {
             this.AddIfNotExists(Search.SelectedItem, Search.AllChildren);
-            Search.SelectedItem.IsChecked = true;
+            Search.SelectedItem.checkable.IsChecked = true;
             Search.Clear();
         }
 

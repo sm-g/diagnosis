@@ -16,14 +16,14 @@
     </UserControl.Resources>
     <UserControl.InputBindings>
         <KeyBinding Key="Space" Command="{Binding ToggleCommand}" />
-        <KeyBinding Key="Delete" Command="{Binding DeleteCommand}" />
-        <KeyBinding Key="Enter" Command="{Binding CommitCommand}" />
-        <KeyBinding Key="F2" Command="{Binding EditCommand}" />
-        <KeyBinding Key="Escape" Command="{Binding RevertCommand}" />
+        <KeyBinding Key="Delete" Command="{Binding Editable.DeleteCommand}" />
+        <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
+        <KeyBinding Key="F2" Command="{Binding Editable.EditCommand}" />
+        <KeyBinding Key="Escape" Command="{Binding Editable.RevertCommand}" />
         <KeyBinding Key="Insert" Command="{Binding Search.SearchCommand}" />
         <KeyBinding Key="F" Modifiers="Control" Command="{Binding Search.SearchCommand}" />
 
-        <MouseBinding MouseAction="RightClick" Command="{Binding EditCommand}" />
+        <MouseBinding MouseAction="RightClick" Command="{Binding Editable.EditCommand}" />
     </UserControl.InputBindings>
     <Border BorderThickness="5">
         <Border.Background>
@@ -56,7 +56,7 @@
             <TextBlock x:Name="title"
                        Text="{Binding Name}"
                        TextWrapping="Wrap"
-                       HorizontalAlignment="{Binding IsNonCheckable, Converter={StaticResource BoolToCenterAligmentConverter}}"
+                       HorizontalAlignment="{Binding Checkable.IsNonCheckable, Converter={StaticResource BoolToCenterAligmentConverter}}"
                        VerticalAlignment="Center"
                        IsHitTestVisible="False"
                        Padding="5"
@@ -75,7 +75,7 @@
 
             <StackPanel x:Name="editor"
                         LostFocus="editor_LostFocus"
-                        Visibility="{Binding IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Grid.Column="0"
                         Grid.ColumnSpan="3"
 >
@@ -111,7 +111,7 @@
             <StackPanel x:Name="buttons"
                         Grid.Column="2">
                 <Button x:Name="toggleEdit"
-                        Command="{Binding EditCommand}"
+                        Command="{Binding Editable.EditCommand}"
                         Height="20"
 >
                     e
@@ -123,7 +123,7 @@
                     +
                 </Button>
                 <Button x:Name="delete"
-                        Command="{Binding DeleteCommand}"
+                        Command="{Binding Editable.DeleteCommand}"
                         Height="20"
 >
                     x

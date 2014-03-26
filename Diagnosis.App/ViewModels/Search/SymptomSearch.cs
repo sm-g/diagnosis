@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Models;
+using System;
 using System.Diagnostics.Contracts;
 
 namespace Diagnosis.App.ViewModels
@@ -27,6 +28,11 @@ namespace Diagnosis.App.ViewModels
         {
             return base.CheckConditions(obj)
                    && (UpperPriority <= obj.Priority);
+        }
+
+        protected override bool Filter(SymptomViewModel item, string query)
+        {
+            return item.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }

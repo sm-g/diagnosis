@@ -7,10 +7,8 @@
              xmlns:vm="clr-namespace:Diagnosis.App.ViewModels"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{DynamicResource vm}">
-    <UserControl.Resources>
-        <vm:AutoCompleteViewModel x:Key="vm" />
-    </UserControl.Resources>
+             d:DesignHeight="300" d:DesignWidth="300"
+             Loaded="UserControl_Loaded">
     <StackPanel x:Name="autocomplete"
                 Margin="5">
         <Grid>
@@ -18,10 +16,10 @@
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <TextBlock>Симптомы через запятую:</TextBlock>
+            <TextBlock>Признаки через запятую:</TextBlock>
             
             <TextBox x:Name="input"
-                        Text="{Binding FullSymptom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding FullString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextChanged="input_TextChanged"
                         KeyUp="input_KeyUp"
                         PreviewKeyDown="input_PreviewKeyDown"
@@ -58,9 +56,5 @@
                 </Grid>
             </Popup>
         </Grid>
-
-        <StackPanel>
-            <CheckBox IsChecked="{Binding IsSymptomCompleted}" Visibility="Collapsed">IsSymptomCompleted</CheckBox>
-        </StackPanel>
     </StackPanel>
 </UserControl>

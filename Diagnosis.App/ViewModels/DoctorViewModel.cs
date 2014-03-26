@@ -10,8 +10,9 @@ namespace Diagnosis.App.ViewModels
     {
         internal readonly Doctor doctor;
 
-        private string _speciality;
         private ICommand _startCourse;
+
+        public EditableBase Editable { get; private set; }
 
         public string FirstName
         {
@@ -84,13 +85,13 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _speciality;
+                return doctor.Speciality;
             }
             set
             {
-                if (_speciality != value)
+                if (doctor.Speciality != value)
                 {
-                    _speciality = value;
+                    doctor.Speciality = value;
                     OnPropertyChanged(() => Speciality);
                 }
             }
@@ -106,7 +107,7 @@ namespace Diagnosis.App.ViewModels
 
         #region CheckableBase
 
-        public override string Name
+        public string Name
         {
             get
             {
@@ -118,7 +119,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        protected override void OnCheckedChanged()
+        public override void OnCheckedChanged()
         {
         }
 
@@ -133,7 +134,7 @@ namespace Diagnosis.App.ViewModels
                                           (patientVM) =>
                                           {
                                               var course = doctor.StartCourse(patientVM.patient);
-                                              MarkDirty();
+                                              Editable.MarkDirty();
 
                                               this.Send((int)EventID.CourseStarted, new CourseStartedParams(course).Params);
                                           }));
@@ -144,6 +145,8 @@ namespace Diagnosis.App.ViewModels
         {
             Contract.Requires(d != null);
             doctor = d;
+
+            Editable = new EditableBase();
         }
     }
 }

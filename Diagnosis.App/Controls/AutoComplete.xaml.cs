@@ -13,18 +13,21 @@ namespace Diagnosis.App.Controls
     {
         private bool focusFromPopup;
 
-        private AutoCompleteViewModel vm
+        private IAutoComplete vm
         {
             get
             {
-                return (autocomplete.DataContext ?? (autocomplete.DataContext = new AutoCompleteViewModel())) as AutoCompleteViewModel;
+                return autocomplete.DataContext as IAutoComplete;
             }
         }
 
         public AutoComplete()
         {
             InitializeComponent();
+        }
 
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
             vm.SuggestionAccepted += vm_SuggestionAccepted;
         }
 

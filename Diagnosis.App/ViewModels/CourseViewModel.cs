@@ -17,21 +17,11 @@ namespace Diagnosis.App.ViewModels
         private DoctorViewModel _leadDoctor;
         private ICommand _addAppointment;
 
+        public EditableBase Editable { get; private set; }
+
         #region CheckableBase
 
-        public override string Name
-        {
-            get
-            {
-                return "Курс";
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        protected override void OnCheckedChanged()
+        public override void OnCheckedChanged()
         {
             throw new NotImplementedException();
         }
@@ -160,6 +150,8 @@ namespace Diagnosis.App.ViewModels
             }
 
             this.PropertyChanged += CourseViewModel_PropertyChanged;
+
+            Editable = new EditableBase();
         }
 
         void CourseViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

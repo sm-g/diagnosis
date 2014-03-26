@@ -1,20 +1,9 @@
-﻿using System.Linq;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public abstract class CheckableBase : EditableBase, ICheckable
+    public class CheckableBase : ViewModelBase, ICheckable
     {
-        #region IEditable
-
-        public override abstract string Name
-        {
-            get;
-            set;
-        }
-
-        #endregion IEditable
-
         #region ICheckable
 
         private bool _isNonCheckable;
@@ -37,7 +26,6 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-
 
         public virtual bool IsNonCheckable
         {
@@ -91,8 +79,10 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        #endregion ICheckableHierarchical
+        public virtual void OnCheckedChanged()
+        {
+        }
 
-        protected abstract void OnCheckedChanged();
+        #endregion ICheckable
     }
 }

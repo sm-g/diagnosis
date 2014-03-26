@@ -18,8 +18,6 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <controls:AutoComplete />
-
         <Grid x:Name="explorer"
               Loaded="explorer_Loaded"
               Grid.Row="1"

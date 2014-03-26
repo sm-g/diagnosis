@@ -31,12 +31,12 @@
         <StackPanel x:Name="editor"
 			Grid.Column="1"
 			LostFocus="editor_LostFocus"
-			Visibility="{Binding IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}"
+			Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}"
 
 >
             <TextBox x:Name="titleEditor"
 				Text="{Binding Name, UpdateSourceTrigger=LostFocus}"
-                controls:FocusExtension.IsFocused="{Binding IsEditorFocused}"
+                controls:FocusExtension.IsFocused="{Binding Editable.IsEditorFocused}"
 
  />
             <CheckBox x:Name="isGroup"

@@ -15,15 +15,15 @@
 
             <InputBindingCollection x:Shared="False" x:Key="InputBindings">
                 <KeyBinding Key="Space" Command="{Binding ToggleCommand}" />
-                <KeyBinding Key="Delete" Command="{Binding DeleteCommand}" />
-                <KeyBinding Key="Enter" Command="{Binding CommitCommand}" />
-                <KeyBinding Key="F2" Command="{Binding EditCommand}" />
-                <KeyBinding Key="Escape" Command="{Binding RevertCommand}" />
+                <KeyBinding Key="Delete" Command="{Binding Editable.DeleteCommand}" />
+                <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
+                <KeyBinding Key="F2" Command="{Binding Editable.EditCommand}" />
+                <KeyBinding Key="Escape" Command="{Binding Editable.RevertCommand}" />
                 <KeyBinding Key="Insert" Command="{Binding Search.SearchCommand}" />
                 <KeyBinding Key="F" Modifiers="Control" Command="{Binding Search.SearchCommand}" />
 
                 <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleCommand}" />
-                <MouseBinding MouseAction="RightClick" Command="{Binding EditCommand}" />
+                <MouseBinding MouseAction="RightClick" Command="{Binding Editable.EditCommand}" />
             </InputBindingCollection>
 
             <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}" x:Key="fullTreeItemStyle">
@@ -45,8 +45,6 @@
             <RowDefinition Height="3*" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-
-        <controls:AutoComplete />
 
         <TreeView
             x:Name="tree"

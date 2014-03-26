@@ -30,5 +30,10 @@ namespace Diagnosis.App.ViewModels
             string middleName = lfmNames.Count < 3 ? null : lfmNames[2];
             return new PatientViewModel(new Patient(lfmNames[0], lfmNames[1], new DateTime(1980, 6, 15), middleName));
         }
+
+        protected override bool Filter(PatientViewModel item, string query)
+        {
+            return item.ShortName.StartsWith(query, StringComparison.InvariantCultureIgnoreCase);
+        }
     }
 }

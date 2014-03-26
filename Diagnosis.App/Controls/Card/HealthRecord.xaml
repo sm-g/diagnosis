@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:constols="clr-namespace:Diagnosis.App.Controls"
+             xmlns:app="clr-namespace:Diagnosis.App"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              MinHeight="50"
@@ -22,8 +23,15 @@
                               IsChecked="{Binding IsSelectingSymptomsActive}">Симптомы</ToggleButton>
                     <ToggleButton IsChecked="{Binding IsChecked, ElementName=symptomsToogle, Converter={StaticResource NegateBoolean}}">Диагнозы</ToggleButton>
                 </StackPanel>
-                <constols:GroupsTree Visibility="{Binding IsSelectingSymptomsActive, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <constols:FullTree Visibility="{Binding IsSelectingSymptomsActive, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
+
+                <StackPanel x:Name="symptomsSelector" Visibility="{Binding IsSelectingSymptomsActive, Converter={StaticResource BooleanToVisibilityConverter}}" >
+                    <constols:AutoComplete DataContext="{Binding SymptomAutoComplete}"/>
+                    <constols:GroupsTree DataContext="{Binding Path=Symptoms, Source={x:Static app:EntityManagers.SymptomsManager}}" />
+                </StackPanel>
+                <StackPanel x:Name="diagnosesSelector" Visibility="{Binding IsSelectingSymptomsActive, Converter={StaticResource NegBooleanToVisibilityConverter}}" >
+                    <constols:AutoComplete DataContext="{Binding DiagnosisAutoComplete}"/>
+                    <constols:FullTree DataContext="{Binding Path=Diagnoses, Source={x:Static app:EntityManagers.DiagnosisManager}}"/>
+                </StackPanel>
             </StackPanel>
             <ItemsControl x:Name="symptoms"
                           ItemsSource="{Binding Symptoms}">

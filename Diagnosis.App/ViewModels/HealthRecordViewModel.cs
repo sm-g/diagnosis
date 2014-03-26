@@ -14,11 +14,11 @@ namespace Diagnosis.App.ViewModels
         private static HealthRecordViewModel current;
         private DiagnosisViewModel _diagnosis;
         private bool _selectingSymptomsActive;
+        private SymptomAutoComplete _symptomAutoComplete;
+        private DiagnosisAutoComplete _diagnosisAutoComplete;
         private List<EventMessageHandler> msgHandlers;
 
-        #region CheckableBase
-
-        public override string Name
+        public string Name
         {
             get
             {
@@ -31,7 +31,9 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        protected override void OnCheckedChanged()
+        #region CheckableBase
+
+        public override void OnCheckedChanged()
         {
             throw new NotImplementedException();
         }
@@ -76,6 +78,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
         public bool IsSelectingSymptomsActive
         {
             get
@@ -89,6 +92,22 @@ namespace Diagnosis.App.ViewModels
                     _selectingSymptomsActive = value;
                     OnPropertyChanged(() => IsSelectingSymptomsActive);
                 }
+            }
+        }
+
+        public SymptomAutoComplete SymptomAutoComplete
+        {
+            get
+            {
+                return _symptomAutoComplete ?? (_symptomAutoComplete = new SymptomAutoComplete());
+            }
+        }
+
+        public DiagnosisAutoComplete DiagnosisAutoComplete
+        {
+            get
+            {
+                return _diagnosisAutoComplete ?? (_diagnosisAutoComplete = new DiagnosisAutoComplete());
             }
         }
 

@@ -1,7 +1,7 @@
 ﻿using System;
 namespace Diagnosis.App.ViewModels
 {
-    public interface IHierarchicalCheckable
+    public interface IHierarchicalCheckable : ICheckable
     {
         int CheckedChildren { get; }
     }

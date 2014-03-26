@@ -6,10 +6,8 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public abstract class EditableBase : ViewModelBase, IEditable
+    public class EditableBase : ViewModelBase, IEditable
     {
-        #region IEditable
-
         private ICommand _commit;
         private ICommand _delete;
         private ICommand _edit;
@@ -17,15 +15,11 @@ namespace Diagnosis.App.ViewModels
         private bool _editorFocused;
         private ICommand _revert;
 
+        #region IEditable
+
         public event EventHandler Committed;
         public event EventHandler Deleted;
         public event EventHandler ModelPropertyChanged;
-
-        public abstract string Name
-        {
-            get;
-            set;
-        }
 
         public bool IsEditorActive
         {

@@ -39,7 +39,7 @@ namespace Diagnosis.App.ViewModels
             var doctorVMs = repository.GetAll().Select(d => new DoctorViewModel(d)).ToList();
             foreach (var dvm in doctorVMs)
             {
-                dvm.Committed += d_Committed;
+                dvm.Editable.Committed += d_Committed;
             }
 
             Doctors = new ObservableCollection<DoctorViewModel>(doctorVMs);

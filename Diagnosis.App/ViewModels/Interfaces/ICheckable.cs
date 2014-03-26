@@ -11,5 +11,7 @@ namespace Diagnosis.App.ViewModels
         bool IsNonCheckable { get; set; }
 
         ICommand ToggleCommand { get; }
+
+        void OnCheckedChanged();
     }
 }

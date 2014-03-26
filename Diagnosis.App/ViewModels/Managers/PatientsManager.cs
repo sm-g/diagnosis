@@ -64,7 +64,7 @@ namespace Diagnosis.App.ViewModels
             var patientVMs = patientRepo.GetAll().Select(p => new PatientViewModel(p)).ToList();
             foreach (var pvm in patientVMs)
             {
-                pvm.Committed += p_Committed;
+                pvm.Editable.Committed += p_Committed;
             }
 
             Patients = new ObservableCollection<PatientViewModel>(patientVMs);

@@ -2,7 +2,6 @@
 using EventAggregator;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using Diagnosis.App;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -11,10 +10,7 @@ namespace Diagnosis.App.ViewModels
         internal readonly Property property;
         private PropertyValue _selectedValue;
 
-
-        #region EditableBase
-
-        public override string Name
+        public string Name
         {
             get
             {
@@ -29,8 +25,6 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-
-        #endregion EditableBase
 
         public PropertyValue SelectedValue
         {

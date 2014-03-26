@@ -15,6 +15,8 @@ namespace Diagnosis.App.ViewModels
         private CoursesManager _coursesManager;
         private List<EventMessageHandler> msgHandlers = new List<EventMessageHandler>();
 
+        public EditableBase Editable { get; private set; }
+
         public string FirstName
         {
             get
@@ -32,7 +34,7 @@ namespace Diagnosis.App.ViewModels
                     }
                     OnPropertyChanged(() => FirstName);
                     OnPropertyChanged(() => ShortName);
-                    MarkDirty();
+                    Editable.MarkDirty();
                 }
             }
         }
@@ -50,7 +52,7 @@ namespace Diagnosis.App.ViewModels
                     patient.MiddleName = value;
                     OnPropertyChanged(() => MiddleName);
                     OnPropertyChanged(() => ShortName);
-                    MarkDirty();
+                    Editable.MarkDirty();
                 }
             }
         }
@@ -72,7 +74,7 @@ namespace Diagnosis.App.ViewModels
                     }
                     OnPropertyChanged(() => LastName);
                     OnPropertyChanged(() => ShortName);
-                    MarkDirty();
+                    Editable.MarkDirty();
                 }
             }
         }
@@ -108,7 +110,7 @@ namespace Diagnosis.App.ViewModels
                     patient.BirthDate = new DateTime(value, patient.BirthDate.Month, patient.BirthDate.Day);
                     OnPropertyChanged(() => Age);
                     OnPropertyChanged(() => BirthYear);
-                    MarkDirty();
+                    Editable.MarkDirty();
                 }
             }
         }
@@ -126,7 +128,7 @@ namespace Diagnosis.App.ViewModels
                     patient.BirthDate = new DateTime(patient.BirthDate.Year, value, patient.BirthDate.Day);
                     OnPropertyChanged(() => Age);
                     OnPropertyChanged(() => BirthMonth);
-                    MarkDirty();
+                    Editable.MarkDirty();
                 }
             }
         }
@@ -145,7 +147,7 @@ namespace Diagnosis.App.ViewModels
 
                     OnPropertyChanged(() => Age);
                     OnPropertyChanged(() => BirthDay);
-                    MarkDirty();
+                    Editable.MarkDirty();
                 }
             }
         }
@@ -162,7 +164,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     patient.IsMale = value;
                     OnPropertyChanged(() => IsMale);
-                    MarkDirty();
+                    Editable.MarkDirty();
                 }
             }
         }
@@ -179,7 +181,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     patient.SNILS = value;
                     OnPropertyChanged(() => Snils);
-                    MarkDirty();
+                    Editable.MarkDirty();
                 }
             }
         }
@@ -237,25 +239,13 @@ namespace Diagnosis.App.ViewModels
             CurrentDoctor = doctor;
         }
 
-        #region CheckableBase
-
-        public override string Name
+        public string Name
         {
             get
             {
                 return ShortName;
             }
-            set
-            {
-                throw new NotImplementedException();
-            }
         }
-
-        protected override void OnCheckedChanged()
-        {
-        }
-
-        #endregion CheckableBase
 
         public void Subscribe()
         {
@@ -308,6 +298,7 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(p != null);
 
             patient = p;
+            Editable = new EditableBase();
 
             Properties = new ObservableCollection<PropertyViewModel>(EntityManagers.PropertyManager.GetPatientProperties(patient));
             CoursesManager = new CoursesManager(this);
@@ -315,19 +306,19 @@ namespace Diagnosis.App.ViewModels
 
         private void OnPropertyValueChanged(PropertyViewModel propertyVM)
         {
-            MarkDirty();
+            Editable.MarkDirty();
             patient.SetPropertyValue(propertyVM.property, propertyVM.SelectedValue);
         }
 
         private void OnCourseStarted(Course course)
         {
             CoursesManager.AddCourse(course);
-            MarkDirty();
+            Editable.MarkDirty();
         }
 
         private void OnAppointmentAdded(Appointment app)
         {
-            MarkDirty();
+            Editable.MarkDirty();
         }
 
         private void OnHealthRecordSelected(HealthRecordViewModel hr)
@@ -337,7 +328,7 @@ namespace Diagnosis.App.ViewModels
 
         private void OnSymptomCheckedChanged(SymptomViewModel symptom, bool isChecked)
         {
-            MarkDirty();
+            Editable.MarkDirty();
         }
     }
 }

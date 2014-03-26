@@ -1,13 +1,15 @@
 ﻿using EventAggregator;
 using System.Diagnostics.Contracts;
-using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class DiagnosisViewModel : HierarchicalBase<DiagnosisViewModel>
+    public class DiagnosisViewModel : HierarchicalCheckable<DiagnosisViewModel>
     {
         internal readonly Diagnosis.Models.Diagnosis diagnosis;
+
         private DiagnosisSearch _search;
+
+        public EditableBase Editable { get; private set; }
 
         public string SortingOrder { get; private set; }
 
@@ -22,9 +24,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        #region HierarchicalBase
-
-        public override string Name
+        public string Name
         {
             get
             {
@@ -40,21 +40,27 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public override bool IsReady
+        public string Code
         {
             get
             {
-                return base.IsReady;
+                return diagnosis.Code;
+            }
+            set
+            {
+                if (diagnosis.Code != value)
+                {
+                    diagnosis.Code = value;
+                    OnPropertyChanged(() => Code);
+                }
             }
         }
 
-        protected override void OnCheckedChanged()
+        public override void OnCheckedChanged()
         {
             base.OnCheckedChanged();
-            this.Send((int)EventID.DiagnosisCheckedChanged, new DiagnosisCheckedChangedParams(this, IsChecked).Params);
+            this.Send((int)EventID.DiagnosisCheckedChanged, new DiagnosisCheckedChangedParams(this, checkable.IsChecked).Params);
         }
-
-        #endregion HierarchicalBase
 
         public DiagnosisSearch Search
         {
@@ -72,7 +78,7 @@ namespace Diagnosis.App.ViewModels
         private void _search_ResultItemSelected(object sender, System.EventArgs e)
         {
             this.AddIfNotExists(Search.SelectedItem, Search.AllChildren);
-            Search.SelectedItem.IsChecked = true;
+            Search.SelectedItem.checkable.IsChecked = true;
             Search.Clear();
         }
 
@@ -81,12 +87,9 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(d != null);
             diagnosis = d;
 
-            ChildrenChanged += DiagnosisViewModel_ChildrenChanged;
-        }
+            Editable = new EditableBase();
 
-        void DiagnosisViewModel_ChildrenChanged(object sender, System.EventArgs e)
-        {
-            OnPropertyChanged(() => IsNonCheckable);
+            ChildrenChanged += DiagnosisViewModel_ChildrenChanged;
         }
 
         public DiagnosisViewModel(string title)
@@ -94,6 +97,10 @@ namespace Diagnosis.App.ViewModels
         {
         }
 
+        private void DiagnosisViewModel_ChildrenChanged(object sender, System.EventArgs e)
+        {
+            OnPropertyChanged(() => IsNonCheckable);
+        }
 
         internal void Initialize()
         {

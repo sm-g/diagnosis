@@ -25,8 +25,6 @@ namespace Diagnosis.App.ViewModels
 
         bool IsDirty { get; }
 
-        string Name { get; set; }
-
         void MarkDirty();
     }
 }

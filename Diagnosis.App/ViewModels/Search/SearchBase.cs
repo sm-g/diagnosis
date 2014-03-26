@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public abstract class SearchBase<T> : ViewModelBase, ISearch<T> where T : class, ICheckable, IEditable
+    public abstract class SearchBase<T> : ViewModelBase, ISearch<T> where T : class, ICheckable
     {
         private string _query;
         private int _selectedIndex = -1;
@@ -161,11 +161,11 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(query != null);
 
             Results = new ObservableCollection<T>(
-               Collection.Where(c => c.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)
+               Collection.Where(c => Filter(c, query)
                    && CheckConditions(c)));
 
-            if (!Results.Any(c => c.Name.Equals(query, StringComparison.InvariantCultureIgnoreCase)) &&
-                query != string.Empty)
+            if (!Results.Any(c => Filter(c, query))
+                && query != string.Empty)
             {
                 // добавляем запрос к результатам
                 Results.Add(FromQuery(query));
@@ -190,6 +190,8 @@ namespace Diagnosis.App.ViewModels
         }
 
         protected abstract T FromQuery(string query);
+
+        protected abstract bool Filter(T item, string query);
 
         public SearchBase(bool withNonCheckable = false, bool withChecked = false)
         {
