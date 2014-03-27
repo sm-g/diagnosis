@@ -14,6 +14,7 @@ namespace Diagnosis.App
         public const string Course = "course";
         public const string Appointment = "appointment";
         public const string HealthRecord = "healthRecord";
+        public const string Boolean = "bool";
 
     }
 
@@ -26,6 +27,7 @@ namespace Diagnosis.App
         PropertySelectedValueChanged,
         CourseStarted,
         AppointmentAdded,
-        HealthRecordSelected
+        HealthRecordSelected,
+        DirectoryEditingModeChanged
     }
 }

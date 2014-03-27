@@ -61,8 +61,6 @@ namespace Diagnosis.App
 
         public CurrentPatientChangedParams(PatientViewModel patient)
         {
-            Contract.Requires(patient != null);
-
             Params = new[] {
                 new KeyValuePair<string,object>(Messages.Patient, patient)
             };
@@ -121,6 +119,18 @@ namespace Diagnosis.App
 
             Params = new[] {
                 new KeyValuePair<string,object>(Messages.HealthRecord, hrVM)
+            };
+        }
+    }
+
+    class DirectoryEditingModeChangedParams : IEventParams
+    {
+        public KeyValuePair<string, object>[] Params { get; private set; }
+
+        public DirectoryEditingModeChangedParams(bool isEditing)
+        {
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.Boolean, isEditing)
             };
         }
     }

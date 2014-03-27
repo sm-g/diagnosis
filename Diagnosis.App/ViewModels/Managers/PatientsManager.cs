@@ -36,7 +36,9 @@ namespace Diagnosis.App.ViewModels
                             patient.Unsubscribe();
                         }
                     }
-                    value.Subscribe();
+
+                    if (value != null)
+                        value.Subscribe();
 
                     this.Send((int)EventID.CurrentPatientChanged, new CurrentPatientChangedParams(CurrentPatient).Params);
                 }
@@ -54,6 +56,12 @@ namespace Diagnosis.App.ViewModels
                 }
                 return _search;
             }
+        }
+
+        public void NoCurrent()
+        {
+            CurrentPatient.CoursesManager.SelectedCourse.SelectedAppointment.SelectedHealthRecord.Unsubscribe();
+            CurrentPatient = null;
         }
 
         public PatientsManager(IPatientRepository patientRepo)

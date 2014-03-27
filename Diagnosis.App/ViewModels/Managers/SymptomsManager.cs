@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
+using EventAggregator;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
@@ -36,12 +37,8 @@ namespace Diagnosis.App.ViewModels
 
         public void CheckThese(IEnumerable<SymptomViewModel> symptoms)
         {
-            Contract.Assume(Symptoms.Count > 0);
+            UnCheckAll();
 
-            foreach (var item in Symptoms[0].Parent.AllChildren)
-            {
-                item.IsChecked = false;
-            }
             foreach (var item in symptoms)
             {
                 item.IsChecked = true;
@@ -61,6 +58,28 @@ namespace Diagnosis.App.ViewModels
             root.Initialize();
 
             Symptoms = new ObservableCollection<SymptomViewModel>(root.Children);
+
+            this.Subscribe((int)EventID.DirectoryEditingModeChanged, (e) =>
+            {
+                var isEditing = e.GetValue<bool>(Messages.Boolean);
+
+                foreach (var item in Symptoms)
+                {
+                    item.Editable.SwitchedOn = isEditing;
+                }
+
+                UnCheckAll();
+            });
+        }
+
+        private void UnCheckAll()
+        {
+            Contract.Assume(Symptoms.Count > 0);
+
+            foreach (var item in Symptoms[0].Parent.AllChildren)
+            {
+                item.IsChecked = false;
+            }
         }
     }
 }

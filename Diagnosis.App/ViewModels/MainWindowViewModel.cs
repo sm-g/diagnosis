@@ -1,6 +1,4 @@
-﻿using Diagnosis.App;
-using Diagnosis.Data.Repositories;
-using EventAggregator;
+﻿using EventAggregator;
 using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
@@ -11,9 +9,13 @@ namespace Diagnosis.App.ViewModels
         private LoginViewModel _loginVM;
         private PatientsManager _patientsVM;
         private PatientViewModel _patientVM;
+        private object _directoryVM;
         private ICommand _logout;
+        private ICommand _editDiagnosisDirectory;
+        private ICommand _editSymptomsDirectory;
         private bool _fastAddingMode;
         private bool _isPatientsVisible;
+        private bool _isDirectoryEditing;
 
         public bool IsLoginActive
         {
@@ -31,6 +33,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
         public bool IsPatientsVisible
         {
             get
@@ -43,6 +46,44 @@ namespace Diagnosis.App.ViewModels
                 {
                     _isPatientsVisible = value;
                     OnPropertyChanged(() => IsPatientsVisible);
+                }
+            }
+        }
+
+        public bool IsDirectoryEditing
+        {
+            get
+            {
+                return _isDirectoryEditing;
+            }
+            set
+            {
+                if (_isDirectoryEditing != value)
+                {
+                    _isDirectoryEditing = value;
+
+                    if (value)
+                    {
+                        PatientsVM.NoCurrent();
+                    }
+
+                    this.Send((int)EventID.DirectoryEditingModeChanged, new DirectoryEditingModeChangedParams(value).Params);
+                    OnPropertyChanged(() => IsDirectoryEditing);
+                }
+            }
+        }
+        public object DirectoryVM
+        {
+            get
+            {
+                return _directoryVM;
+            }
+            set
+            {
+                if (_directoryVM != value)
+                {
+                    _directoryVM = value;
+                    OnPropertyChanged(() => DirectoryVM);
                 }
             }
         }
@@ -78,6 +119,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
         public PatientsManager PatientsVM
         {
             get
@@ -93,6 +135,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
         public PatientViewModel CardVM
         {
             get
@@ -121,6 +164,35 @@ namespace Diagnosis.App.ViewModels
                                           () => !IsLoginActive));
             }
         }
+
+        public ICommand EditSymptomsDirectoryCommand
+        {
+            get
+            {
+                return _editSymptomsDirectory
+                    ?? (_editSymptomsDirectory = new RelayCommand(
+                                          () =>
+                                          {
+                                              DirectoryVM = EntityManagers.SymptomsManager.Symptoms;
+                                              IsDirectoryEditing = true;
+                                          }));
+            }
+        }
+
+        public ICommand EditDiagnosisDirectoryCommand
+        {
+            get
+            {
+                return _editDiagnosisDirectory
+                    ?? (_editDiagnosisDirectory = new RelayCommand(
+                                          () =>
+                                          {
+                                              DirectoryVM = EntityManagers.DiagnosisManager.Diagnoses;
+                                              IsDirectoryEditing = true;
+                                          }));
+            }
+        }
+
         public MainWindowViewModel()
         {
 #if RELEASE
@@ -130,8 +202,7 @@ namespace Diagnosis.App.ViewModels
             this.Subscribe((int)EventID.CurrentPatientChanged, (e) =>
             {
                 var patient = e.GetValue<PatientViewModel>(Messages.Patient);
-                patient.SetDoctorVM(LoginVM.DoctorsManager.CurrentDoctor);
-                CardVM = patient;
+                SetCurrentPatient(patient);
             });
 
             LoginVM = new LoginViewModel(EntityManagers.DoctorsManager);
@@ -140,7 +211,18 @@ namespace Diagnosis.App.ViewModels
             LoginVM.LoggedIn += OnLoggedIn;
         }
 
-        void OnLoggedIn(object sender, LoggedEventArgs e)
+        private void SetCurrentPatient(PatientViewModel patient)
+        {
+            if (patient != null)
+            {
+                patient.SetDoctorVM(LoginVM.DoctorsManager.CurrentDoctor);
+
+                IsDirectoryEditing = false;
+            }
+            CardVM = patient;
+        }
+
+        private void OnLoggedIn(object sender, LoggedEventArgs e)
         {
             IsLoginActive = false;
             IsPatientsVisible = true;
