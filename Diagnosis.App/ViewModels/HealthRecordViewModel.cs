@@ -111,6 +111,32 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public void MakeCurrent()
+        {
+            current = this;
+
+            EntityManagers.SymptomsManager.CheckThese(Symptoms);
+            if (Diagnosis != null)
+                EntityManagers.DiagnosisManager.Check(Diagnosis);
+        }
+
+        public HealthRecordViewModel(HealthRecord hr)
+        {
+            Contract.Requires(hr != null);
+
+            this.healthRecord = hr;
+
+            Symptoms = new ObservableCollection<SymptomViewModel>(
+                EntityManagers.SymptomsManager.GetHealthRecordSymptoms(healthRecord));
+            Diagnosis = EntityManagers.DiagnosisManager.GetHealthRecordDiagnosis(healthRecord);
+
+            IsSelectingSymptomsActive = Diagnosis == null;
+
+            Subscribe();
+        }
+
+        #region Event handlers
+
         public void Subscribe()
         {
             msgHandlers = new List<EventMessageHandler>()
@@ -138,30 +164,6 @@ namespace Diagnosis.App.ViewModels
             {
                 h.Dispose();
             }
-        }
-
-        public void MakeCurrent()
-        {
-            current = this;
-
-            EntityManagers.SymptomsManager.CheckThese(Symptoms);
-            if (Diagnosis != null)
-                EntityManagers.DiagnosisManager.Check(Diagnosis);
-        }
-
-        public HealthRecordViewModel(HealthRecord hr)
-        {
-            Contract.Requires(hr != null);
-
-            this.healthRecord = hr;
-
-            Symptoms = new ObservableCollection<SymptomViewModel>(
-                EntityManagers.SymptomsManager.GetHealthRecordSymptoms(healthRecord));
-            Diagnosis = EntityManagers.DiagnosisManager.GetHealthRecordDiagnosis(healthRecord);
-
-            IsSelectingSymptomsActive = Diagnosis == null;
-
-            Subscribe();
         }
 
         private void OnSymptomCheckedChanged(SymptomViewModel symptomVM, bool isChecked)
@@ -204,5 +206,7 @@ namespace Diagnosis.App.ViewModels
                 OnPropertyChanged(() => Name);
             }
         }
+
+        #endregion Event handlers
     }
 }

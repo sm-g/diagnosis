@@ -17,6 +17,8 @@ namespace Diagnosis.App.ViewModels
 
         public EditableBase Editable { get; private set; }
 
+        #region Model related
+
         public string FirstName
         {
             get
@@ -194,6 +196,14 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public ObservableCollection<PropertyViewModel> Properties
+        {
+            get;
+            private set;
+        }
+
+        #endregion Model related
+
         public CoursesManager CoursesManager
         {
             get
@@ -208,12 +218,6 @@ namespace Diagnosis.App.ViewModels
                     OnPropertyChanged(() => CoursesManager);
                 }
             }
-        }
-
-        public ObservableCollection<PropertyViewModel> Properties
-        {
-            get;
-            private set;
         }
 
         public DoctorViewModel CurrentDoctor
@@ -231,6 +235,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
         public string Name
         {
             get
@@ -245,6 +250,19 @@ namespace Diagnosis.App.ViewModels
 
             CurrentDoctor = doctor;
         }
+
+        public PatientViewModel(Patient p)
+        {
+            Contract.Requires(p != null);
+
+            patient = p;
+            Editable = new EditableBase();
+
+            Properties = new ObservableCollection<PropertyViewModel>(EntityManagers.PropertyManager.GetPatientProperties(patient));
+            CoursesManager = new CoursesManager(this);
+        }
+
+        #region Event handlers
 
         public void Subscribe()
         {
@@ -281,6 +299,13 @@ namespace Diagnosis.App.ViewModels
 
                     OnSymptomCheckedChanged(symptom, isChecked);
                 }),
+                this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
+                {
+                    var diagnosis = e.GetValue<DiagnosisViewModel>(Messages.Diagnosis);
+                    var isChecked = e.GetValue<bool>(Messages.CheckedState);
+
+                    OnDiagnosisCheckedChanged(diagnosis, isChecked);
+                }),
             };
         }
 
@@ -292,21 +317,10 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public PatientViewModel(Patient p)
-        {
-            Contract.Requires(p != null);
-
-            patient = p;
-            Editable = new EditableBase();
-
-            Properties = new ObservableCollection<PropertyViewModel>(EntityManagers.PropertyManager.GetPatientProperties(patient));
-            CoursesManager = new CoursesManager(this);
-        }
-
         private void OnPropertyValueChanged(PropertyViewModel propertyVM)
         {
-            Editable.MarkDirty();
             patient.SetPropertyValue(propertyVM.property, propertyVM.SelectedValue);
+            Editable.MarkDirty();
         }
 
         private void OnCourseStarted(Course course)
@@ -330,6 +344,13 @@ namespace Diagnosis.App.ViewModels
             Editable.MarkDirty();
         }
 
+        private void OnDiagnosisCheckedChanged(DiagnosisViewModel diagnosis, bool isChecked)
+        {
+            Editable.MarkDirty();
+        }
+
+        #endregion
+
         #region Comparsion
 
         public static int CompareByName(PatientViewModel x, PatientViewModel y)
@@ -350,6 +371,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        #endregion
+        #endregion Comparsion
     }
 }
