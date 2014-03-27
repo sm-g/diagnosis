@@ -189,6 +189,7 @@
     </Compile>
     <Compile Include="Controls\Helpers\Attached.cs" />
     <Compile Include="Controls\FocusExtension.cs" />
+    <Compile Include="Converters\BooleanConverter.cs" />
     <Compile Include="Converters\CountToAppointmentsLabel.cs" />
     <Compile Include="EntityManagers.cs" />
     <Compile Include="MessagingParams.cs" />
