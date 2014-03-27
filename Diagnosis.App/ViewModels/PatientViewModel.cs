@@ -231,20 +231,19 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-
-        public void SetDoctorVM(DoctorViewModel doctor)
-        {
-            Contract.Requires(doctor != null);
-
-            CurrentDoctor = doctor;
-        }
-
         public string Name
         {
             get
             {
                 return ShortName;
             }
+        }
+
+        public void SetDoctorVM(DoctorViewModel doctor)
+        {
+            Contract.Requires(doctor != null);
+
+            CurrentDoctor = doctor;
         }
 
         public void Subscribe()
@@ -330,5 +329,27 @@ namespace Diagnosis.App.ViewModels
         {
             Editable.MarkDirty();
         }
+
+        #region Comparsion
+
+        public static int CompareByName(PatientViewModel x, PatientViewModel y)
+        {
+            if (x == null)
+            {
+                if (y == null)
+                    return 0;
+                else
+                    return -1; // y greater
+            }
+            else
+            {
+                if (y == null)
+                    return 1;
+                else
+                    return x.Name.CompareTo(y.Name);
+            }
+        }
+
+        #endregion
     }
 }

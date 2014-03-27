@@ -66,8 +66,9 @@ namespace Diagnosis.App.ViewModels
             {
                 pvm.Editable.Committed += p_Committed;
             }
-
+            patientVMs.Sort(PatientViewModel.CompareByName);
             Patients = new ObservableCollection<PatientViewModel>(patientVMs);
+
             if (Patients.Count > 0)
             {
                 CurrentPatient = Patients[0];
