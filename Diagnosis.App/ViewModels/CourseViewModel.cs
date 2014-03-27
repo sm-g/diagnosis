@@ -142,7 +142,11 @@ namespace Diagnosis.App.ViewModels
 
             this.course = course;
             LeadDoctor = new DoctorViewModel(course.LeadDoctor);
-            Appointments = new ObservableCollection<AppointmentViewModel>(course.Appointments.Select(app => new AppointmentViewModel(app)));
+
+            var appVMs = course.Appointments.
+                Select(app => new AppointmentViewModel(app)).
+                Reverse();
+            Appointments = new ObservableCollection<AppointmentViewModel>(appVMs);
 
             if (Appointments.Count > 0)
             {

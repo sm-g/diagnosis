@@ -36,11 +36,16 @@ namespace Diagnosis.App.ViewModels
 
         public void AddCourse(Course course)
         {
-            Contract.Requires(course != null);
-
             var courseVM = new CourseViewModel(course);
             courseVM.Editable.Deleted += course_Deleted;
+
             Courses.Add(courseVM);
+            Courses = new ObservableCollection<CourseViewModel>(
+                Courses.OrderByDescending(cvm => cvm.course, new CompareCourseByDate()));
+
+            SelectedCourse = Courses[0];
+
+            OnPropertyChanged(() => Courses);
         }
 
         public CoursesManager(PatientViewModel patientVM)
@@ -49,7 +54,12 @@ namespace Diagnosis.App.ViewModels
 
             this.patientVM = patientVM;
 
-            Courses = new ObservableCollection<CourseViewModel>(patientVM.patient.Courses.Select(i => new CourseViewModel(i)));
+            var courseVMs = patientVM.patient.Courses.
+                Select(i => new CourseViewModel(i)).
+                OrderByDescending(cvm => cvm.course, new CompareCourseByDate());
+
+            Courses = new ObservableCollection<CourseViewModel>(courseVMs);
+
             foreach (var course in Courses)
             {
                 course.Editable.Deleted += course_Deleted;
@@ -57,7 +67,7 @@ namespace Diagnosis.App.ViewModels
 
             if (Courses.Count > 0)
             {
-                SelectedCourse = Courses.Last();
+                SelectedCourse = Courses[0];
             }
         }
 

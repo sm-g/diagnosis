@@ -42,4 +42,28 @@ namespace Diagnosis.Models
 
         protected Course() { }
     }
+
+    public class CompareCourseByDate : IComparer<Course>
+    {
+        public int Compare(Course x, Course y)
+        {
+            if (x.End.HasValue && y.End.HasValue)
+            {
+                // оба курса закончились — больше тот, что кончился позже
+                return x.End.Value.CompareTo(y.End.Value);
+            }
+            else
+            {
+                // больше тот, что продолжается
+                if (x.End.HasValue)
+                    return -1;
+                if (y.End.HasValue)
+                    return 1;
+
+                // оба продолжабтся — больше тот, что начался позже
+                return x.Start.CompareTo(y.Start);
+            }
+        }
+
+    }
 }
