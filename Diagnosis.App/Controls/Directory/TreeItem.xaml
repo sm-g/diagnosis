@@ -17,6 +17,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
         <CheckBox x:Name="checkbox"
@@ -26,28 +27,29 @@
  />
 
         <TextBlock x:Name="title"
-			Text="{Binding Name}" Grid.Column="2" />
+			       Text="{Binding Name}" 
+                   Grid.Column="1" />
+        <TextBlock x:Name="checkedChildren"
+			       Text="{Binding CheckedChildren}" 
+                   Visibility="{Binding CheckedChildren, Converter={StaticResource CountToVisability}, Mode=OneWay}"
+                   Grid.Column="2" />
 
         <StackPanel x:Name="editor"
 			Grid.Column="1"
 			LostFocus="editor_LostFocus"
-			Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}"
-
->
+			Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">
             <TextBox x:Name="titleEditor"
 				Text="{Binding Name, UpdateSourceTrigger=LostFocus}"
-                controls:FocusExtension.IsFocused="{Binding Editable.IsEditorFocused}"
-
- />
+                controls:FocusExtension.IsFocused="{Binding Editable.IsEditorFocused}" />
             <CheckBox x:Name="isGroup"
 				IsChecked="{Binding IsNonCheckable}"
-                  Content="Группа"
- />
+                  Content="Группа" />
         </StackPanel>
 
         <controls:FloatSearch x:Name="search"
 			Grid.Row="1"
 			Grid.Column="1"
+            Grid.ColumnSpan="2"
 			Visibility="{Binding DataContext.Search.IsSearchActive, ElementName=treeItem, Converter={StaticResource BooleanToVisibilityConverter}}"
             controls:FocusExtension.IsFocused="{Binding DataContext.Search.IsSearchFocused, ElementName=treeItem}"
             DataContext="{Binding Search}"
