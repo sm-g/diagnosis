@@ -10,11 +10,5 @@ namespace Diagnosis.App.Controls
         {
             InitializeComponent();
         }
-
-
-        private void explorer_Loaded(object sender, RoutedEventArgs e)
-        {
-            explorer.DataContext = new HierarchicalExplorer<SymptomViewModel>(EntityManagers.SymptomsManager.Symptoms);
-        }
     }
 }

@@ -6,90 +6,67 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             >
+>
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
     </UserControl.Resources>
-    <Grid>
+    <Grid x:Name="explorer">
+        <Grid.InputBindings>
+            <KeyBinding Key="Back" Command="{Binding GoUp}" />
+            <KeyBinding Key="Insert" Command="{Binding CurrentItem.Search.SearchCommand}" />
+            <KeyBinding Key="F" Modifiers="Control" Command="{Binding CurrentItem.Search.SearchCommand}" />
+        </Grid.InputBindings>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
-            <RowDefinition Height="3*" />
+            <RowDefinition Height="auto" MaxHeight="200" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid x:Name="explorer"
-              Loaded="explorer_Loaded"
-              Grid.Row="1"
->
-            <Grid.InputBindings>
-                <KeyBinding Key="Back" Command="{Binding GoUp}" />
-                <KeyBinding Key="Insert" Command="{Binding CurrentItem.Search.SearchCommand}" />
-                <KeyBinding Key="F" Modifiers="Control" Command="{Binding CurrentItem.Search.SearchCommand}" />
-            </Grid.InputBindings>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" MaxHeight="200" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
-            <StackPanel Orientation="Horizontal">
-                <Button x:Name="up"
+        <StackPanel Orientation="Horizontal">
+            <Button x:Name="up"
                     Content="↑"
                     Command="{Binding GoUp, Mode=OneWay}"
                     Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"
  />
 
-                <ItemsControl x:Name="breadcrumbs"
+            <ItemsControl x:Name="breadcrumbs"
                 ItemsSource="{Binding Breadcrumbs}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" Margin="5,0" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" Margin="5,0" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
 
-            <controls:FloatSearch x:Name="search"
+        <controls:FloatSearch x:Name="search"
                                 Grid.Row="1"
                                 Visibility="{Binding DataContext.Search.IsSearchActive, ElementName=explorer, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 DataContext="{Binding Search}"
 
  />
-            <ScrollViewer x:Name="list"
+        <ScrollViewer x:Name="list"
                           Grid.Row="2"
                           VerticalScrollBarVisibility="Auto">
-                <ItemsControl
+            <ItemsControl
                     ItemsSource="{Binding Items}"
 >
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <controls:TileItem />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
-        </Grid>
-
-        <DockPanel Grid.Row="2">
-            <TextBlock DockPanel.Dock="Top">Выбранные симптомы:</TextBlock>
-            <ListView ItemsSource="{Binding Symptoms}">
-                <ListView.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <controls:TreeItem />
+                        <controls:TileItem />
                     </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </DockPanel>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </UserControl>
