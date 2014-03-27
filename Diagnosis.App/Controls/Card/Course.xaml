@@ -37,11 +37,11 @@
                     <TextBlock Text="{Binding End, StringFormat='{}по {0:d}', TargetNullValue=''}" />
                 </TextBlock>
                 <TextBlock Text="{Binding LeadDoctor.ShortName}" />
-            </TextBlock>
-            <TextBlock Visibility="{Binding Appointments.Count, Converter={StaticResource CountToVisability}}">
+            </StackPanel>
+            <TextBlock Visibility="{Binding Appointments.Count, Converter={StaticResource CountToVisibility}}">
                 <TextBlock Text="{Binding Appointments.Count}" />
                 <TextBlock Text="{Binding Appointments.Count, Converter={StaticResource CountToAppLabel}}" /><TextBlock Text="{Binding LastAppointment.DateTime, StringFormat='{}, последний {0:d}'}"
-                           Visibility="{Binding Appointments.Count, Converter={StaticResource CountToVisability}, ConverterParameter=3}" />
+                           Visibility="{Binding Appointments.Count, Converter={StaticResource CountToVisibility}, ConverterParameter=3}" />
             </TextBlock>
         </StackPanel>
 

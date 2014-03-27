@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Data;
 using System.Globalization;
+using System.Windows.Data;
 
 namespace Diagnosis.App.Converters
 {
-    public class CountToVisability : IValueConverter
+    public class CountToVisibility : IValueConverter
     {
         public object Convert(object value, Type targetType,
             object parameter, CultureInfo culture)

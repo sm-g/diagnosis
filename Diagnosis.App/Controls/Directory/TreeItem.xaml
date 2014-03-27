@@ -31,7 +31,7 @@
                    Grid.Column="1" />
         <TextBlock x:Name="checkedChildren"
 			       Text="{Binding CheckedChildren}" 
-                   Visibility="{Binding CheckedChildren, Converter={StaticResource CountToVisability}, Mode=OneWay}"
+                   Visibility="{Binding CheckedChildren, Converter={StaticResource CountToVisibility}, Mode=OneWay}"
                    Grid.Column="2" />
 
         <StackPanel x:Name="editor"

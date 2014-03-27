@@ -9,7 +9,7 @@
         <conv:IHierarchicalCheckableToBackground x:Key="IHierarchicalCheckableToBackground" />
         <conv:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />
         <conv:NegateConverter x:Key="NegateBoolean" />
-        <conv:CountToVisability x:Key="CountToVisability" />
+        <conv:CountToVisibility x:Key="CountToVisibility" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
         <Style TargetType="TextBlock" x:Key="ScreenTitle">
