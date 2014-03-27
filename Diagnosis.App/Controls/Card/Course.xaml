@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:Diagnosis.App.Converters"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -10,7 +11,9 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../../Styles/Expander.xaml" />
             </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
+
+            <conv:CountToAppointmentsLabel x:Key="CountToAppLabel"/>
+        </ResourceDictionary>        
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -27,19 +30,21 @@
                   IsExpanded="{Binding IsAppointmentsVisible}"
                   Focusable="False" />
         <StackPanel Grid.Column="1">
-            <TextBlock Text="Курс" />
             <TextBlock>
                 <TextBlock Text="{Binding Start, StringFormat='{}с {0:d}'}" />
                 <TextBlock Text="{Binding End, StringFormat='{}по {0:d}', TargetNullValue=''}" />
             </TextBlock>
             <TextBlock Text="{Binding LeadDoctor.ShortName}" />
+            <TextBlock Visibility="{Binding Appointments.Count, Converter={StaticResource CountToVisability}}" >
+                <TextBlock Text="{Binding Appointments.Count}"/>
+                <TextBlock Text="{Binding Appointments.Count, Converter={StaticResource CountToAppLabel}}" /><TextBlock Text="{Binding LastAppointment.DateTime, StringFormat='{}, последний {0:d}'}" 
+                           Visibility="{Binding Appointments.Count, Converter={StaticResource CountToVisability}, ConverterParameter=3}"/>
+            </TextBlock>
         </StackPanel>
 
         <StackPanel Grid.Column="1"
                     Grid.Row="1"
                     Visibility="{Binding IsAppointmentsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <TextBlock>Осмотры</TextBlock>
-
             <ListView x:Name="appointments"
                   ItemsSource="{Binding Appointments}"
                   SelectedItem="{Binding SelectedAppointment}"
@@ -67,6 +72,6 @@
 
         <Button Grid.Column="1"
                 Grid.Row="2"
-                Command="{Binding AddAppointmentCommand}">Добавить осмотр</Button>
+                Command="{Binding AddAppointmentCommand}">Новый осмотр</Button>
     </Grid>
 </UserControl>

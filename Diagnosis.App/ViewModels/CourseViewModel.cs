@@ -36,7 +36,7 @@ namespace Diagnosis.App.ViewModels
             }
             set
             {
-                if (_appointmentsVis != value)
+                if (_appointmentsVis != value && Appointments.Count > 0)
                 {
                     _appointmentsVis = value;
 
@@ -114,6 +114,14 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public AppointmentViewModel LastAppointment
+        {
+            get
+            {
+                return Appointments.LastOrDefault();
+            }
+        }
+
         public ICommand AddAppointmentCommand
         {
             get
@@ -122,18 +130,16 @@ namespace Diagnosis.App.ViewModels
                     ?? (_addAppointment = new RelayCommand(() =>
                         {
                             var app = course.AddAppointment();
-                            Appointments.Add(new AppointmentViewModel(app));
+                            var appVM = new AppointmentViewModel(app);
+
+                            Appointments.Add(appVM);
                             IsAppointmentsVisible = true;
+
+                            OnPropertyChanged(() => LastAppointment);
 
                             this.Send((int)EventID.AppointmentAdded, new AppointmentAddedParams(app).Params);
                         }));
             }
-        }
-
-        public void Select()
-        {
-            IsSelected = true;
-            IsAppointmentsVisible = true;
         }
 
         public CourseViewModel(Course course)
