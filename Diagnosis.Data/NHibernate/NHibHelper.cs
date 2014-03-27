@@ -49,7 +49,7 @@ namespace Diagnosis.Data
         {
             var cfg = new Configuration();
 
-            cfg.Configure("..\\..\\..\\Diagnosis.Data\\NHibernate\\hibernate.cfg.xml");
+            cfg.Configure("NHibernate\\hibernate.cfg.xml");
             cfg.Properties[Environment.CollectionTypeFactoryClass] = typeof(Net4CollectionTypeFactory).AssemblyQualifiedName;
             cfg.AddAssembly(typeof(Patient).Assembly);
             cfg.AddMapping(Mapping);
