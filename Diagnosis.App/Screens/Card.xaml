@@ -44,9 +44,14 @@
             <TabItem Header="Инфо" IsEnabled="True" IsSelected="True">
                 <StackPanel Margin="10">
                     <controls:NameEditor />
-                    <controls:SexChooser Margin="0,5" Width="100" HorizontalAlignment="Left" />
-                    <controls:AgePicker Margin="0,5" />
-
+                    <DockPanel Margin="0,5">
+                        <TextBlock Text="Дата рождения" Style="{StaticResource label}" />
+                        <controls:AgePicker />
+                    </DockPanel>
+                    <DockPanel Margin="0,5">
+                        <TextBlock Text="Пол"  Style="{StaticResource label}" />
+                        <controls:SexChooser Width="100" HorizontalAlignment="Left" />
+                    </DockPanel>  
                     <DockPanel Margin="0,5">
                         <TextBlock Text="СНИЛС" Style="{StaticResource label}" />
                         <TextBox Text="{Binding Snils}" />

@@ -12,8 +12,8 @@
                 <ResourceDictionary Source="../../Styles/Expander.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <conv:CountToAppointmentsLabel x:Key="CountToAppLabel"/>
-        </ResourceDictionary>        
+            <conv:CountToAppointmentsLabel x:Key="CountToAppLabel" />
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -28,17 +28,20 @@
         <Expander Grid.RowSpan="2"
                   Style="{StaticResource ExpanderStyleFixed}"
                   IsExpanded="{Binding IsAppointmentsVisible}"
-                  Focusable="False" />
+                  Focusable="False">
+        </Expander>
         <StackPanel Grid.Column="1">
-            <TextBlock>
-                <TextBlock Text="{Binding Start, StringFormat='{}с {0:d}'}" />
-                <TextBlock Text="{Binding End, StringFormat='{}по {0:d}', TargetNullValue=''}" />
+            <TextBlock x:Name="description">
+                <TextBlock>
+                    <TextBlock Text="{Binding Start, StringFormat='{}с {0:d}'}" />
+                    <TextBlock Text="{Binding End, StringFormat='{}по {0:d}', TargetNullValue=''}" />
+                </TextBlock>
+                <TextBlock Text="{Binding LeadDoctor.ShortName}" />
             </TextBlock>
-            <TextBlock Text="{Binding LeadDoctor.ShortName}" />
-            <TextBlock Visibility="{Binding Appointments.Count, Converter={StaticResource CountToVisability}}" >
-                <TextBlock Text="{Binding Appointments.Count}"/>
-                <TextBlock Text="{Binding Appointments.Count, Converter={StaticResource CountToAppLabel}}" /><TextBlock Text="{Binding LastAppointment.DateTime, StringFormat='{}, последний {0:d}'}" 
-                           Visibility="{Binding Appointments.Count, Converter={StaticResource CountToVisability}, ConverterParameter=3}"/>
+            <TextBlock Visibility="{Binding Appointments.Count, Converter={StaticResource CountToVisability}}">
+                <TextBlock Text="{Binding Appointments.Count}" />
+                <TextBlock Text="{Binding Appointments.Count, Converter={StaticResource CountToAppLabel}}" /><TextBlock Text="{Binding LastAppointment.DateTime, StringFormat='{}, последний {0:d}'}"
+                           Visibility="{Binding Appointments.Count, Converter={StaticResource CountToVisability}, ConverterParameter=3}" />
             </TextBlock>
         </StackPanel>
 

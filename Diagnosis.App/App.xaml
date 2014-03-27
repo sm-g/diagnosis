@@ -17,7 +17,6 @@
         </Style>
         
         <Style TargetType="TextBlock" x:Key="label">
-            <Setter Property="Margin" Value="5,0"/>
             <Setter Property="Width" Value="150"/>
         </Style>
         
