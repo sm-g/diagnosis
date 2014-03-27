@@ -36,7 +36,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public virtual bool IsNonCheckable
+        public bool IsNonCheckable
         {
             get
             {

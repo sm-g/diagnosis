@@ -13,17 +13,6 @@ namespace Diagnosis.App.ViewModels
 
         public string SortingOrder { get; private set; }
 
-        public override bool IsNonCheckable
-        {
-            get
-            {
-                return !IsTerminal;
-            }
-            set
-            {
-            }
-        }
-
         public string Name
         {
             get
@@ -99,7 +88,7 @@ namespace Diagnosis.App.ViewModels
 
         private void DiagnosisViewModel_ChildrenChanged(object sender, System.EventArgs e)
         {
-            OnPropertyChanged(() => IsNonCheckable);
+            IsNonCheckable = !IsTerminal;
         }
 
         internal void Initialize()
