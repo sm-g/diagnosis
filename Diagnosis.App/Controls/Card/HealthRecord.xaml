@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:constols="clr-namespace:Diagnosis.App.Controls"
+             xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:app="clr-namespace:Diagnosis.App"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
@@ -25,12 +25,22 @@
                 </StackPanel>
 
                 <StackPanel x:Name="symptomsSelector" Visibility="{Binding IsSelectingSymptomsActive, Converter={StaticResource BooleanToVisibilityConverter}}" >
-                    <constols:AutoComplete DataContext="{Binding SymptomAutoComplete}"/>
-                    <constols:GroupsTree DataContext="{Binding Path=Symptoms, Source={x:Static app:EntityManagers.SymptomsManager}}" />
+                    <controls:AutoComplete DataContext="{Binding SymptomAutoComplete}"/>
+                    <controls:GroupsTree DataContext="{Binding Path=Symptoms, Source={x:Static app:EntityManagers.SymptomsManager}}" />
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Top">Выбранные симптомы:</TextBlock>
+                        <ListView ItemsSource="{Binding Symptoms}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <controls:TreeItem />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </DockPanel>
                 </StackPanel>
                 <StackPanel x:Name="diagnosesSelector" Visibility="{Binding IsSelectingSymptomsActive, Converter={StaticResource NegBooleanToVisibilityConverter}}" >
-                    <constols:AutoComplete DataContext="{Binding DiagnosisAutoComplete}"/>
-                    <constols:FullTree DataContext="{Binding Path=Diagnoses, Source={x:Static app:EntityManagers.DiagnosisManager}}"/>
+                    <controls:AutoComplete DataContext="{Binding DiagnosisAutoComplete}"/>
+                    <controls:FullTree DataContext="{Binding Path=Diagnoses, Source={x:Static app:EntityManagers.DiagnosisManager}}"/>
                 </StackPanel>
             </StackPanel>
             <ItemsControl x:Name="symptoms"

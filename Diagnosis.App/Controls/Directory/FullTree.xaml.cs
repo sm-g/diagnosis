@@ -14,10 +14,5 @@ namespace Diagnosis.App.Controls
         {
             InitializeComponent();
         }
-
-        private void TreeView_Loaded(object sender, RoutedEventArgs e)
-        {
-            tree.DataContext = EntityManagers.DiagnosisManager.Diagnoses;
-        }
     }
 }

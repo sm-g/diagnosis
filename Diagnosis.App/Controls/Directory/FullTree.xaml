@@ -40,31 +40,12 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="3*" />
-            <RowDefinition Height="1*" />
-        </Grid.RowDefinitions>
-
         <TreeView
             x:Name="tree"
-            Grid.Row="1"
             HorizontalContentAlignment="Stretch"
             ItemContainerStyle="{StaticResource fullTreeItemStyle}"
             ItemTemplate="{StaticResource fullTreeItemTemplate}"
-            ItemsSource="{Binding}"
-            Loaded="TreeView_Loaded">
+            ItemsSource="{Binding}">
         </TreeView>
-
-        <DockPanel Grid.Row="2">
-            <TextBlock DockPanel.Dock="Top">Выбранные симптомы:</TextBlock>
-            <ListView ItemsSource="{Binding Symptoms}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <controls:TreeItem />
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </DockPanel>
     </Grid>
 </UserControl>

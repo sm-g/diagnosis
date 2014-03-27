@@ -44,15 +44,9 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="3*" />
-            <RowDefinition Height="1*" />
-        </Grid.RowDefinitions>
         
         <TreeView
             x:Name="tree"
-            Grid.Row="1"
             HorizontalContentAlignment="Stretch"
             ItemContainerStyle="{StaticResource fullTreeItemStyle}"
             ItemTemplate="{StaticResource groupTreeItemTemplate}"
@@ -60,8 +54,7 @@
         </TreeView>
         <ListView DataContext="{Binding SelectedItem, ElementName=tree, Mode=OneWay}"
                   ItemsSource="{Binding TerminalChildren}" 
-                  Grid.Column="1"
-                  Grid.Row="1"                  
+                  Grid.Column="1"               
                   Margin="10,0,0,0"
 >
             <ListView.ItemTemplate>
@@ -70,16 +63,5 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-
-        <DockPanel Grid.Row="2" Grid.ColumnSpan="2">
-            <TextBlock DockPanel.Dock="Top">Выбранные симптомы:</TextBlock>
-            <ListView ItemsSource="{Binding Symptoms}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <controls:TreeItem />
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </DockPanel>
     </Grid>
 </UserControl>
