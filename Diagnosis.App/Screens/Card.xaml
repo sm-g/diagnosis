@@ -10,41 +10,7 @@
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="600">
     <UserControl.Resources>
-        <conv:AgeToYearsLabel x:Key="ageLabel" />
-        <Style x:Key="tabHeaderSpecial" TargetType="{x:Type TabItem}">
-            <Setter Property="IsEnabled" Value="False" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TabItem}">
-                        <Border x:Name="Spacer"
-                                       Width="Auto"
-                                       Height="Auto"
-                                       Padding="0 0 0 0"
-                                       Margin="0 0 0 0"
-                                       BorderBrush="Transparent"
-                                       BorderThickness="0">
-                            <Border
-                                           x:Name="Border"
-                                           Width="Auto"
-                                           Height="Auto"
-                                           BorderBrush="DarkGray"
-                                           BorderThickness="0,0,0,0"
-                                           CornerRadius="6,6,0,0"
-                                           VerticalAlignment="Bottom">
-                                <ContentPresenter
-                                               x:Name="ContentSite"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Center"
-                                               ContentSource="Header"
-                                               Margin="8,3,8,3"
-                                               Width="Auto"
-                                               Height="Auto" />
-                            </Border>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <conv:AgeToYearsLabel x:Key="ageLabel" />        
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -90,15 +56,6 @@
 
                     <controls:PropertiesChooser Margin="0,5" />
                 </StackPanel>
-            </TabItem>
-            <TabItem Header="FullTree">
-                <controls:FullTree />
-            </TabItem>
-            <TabItem Header="GroupsTree">
-                <controls:GroupsTree />
-            </TabItem>
-            <TabItem Header="Плитки">
-                <controls:TilesViewer />
             </TabItem>
             <TabItem Header="Курсы">
                 <DockPanel>
