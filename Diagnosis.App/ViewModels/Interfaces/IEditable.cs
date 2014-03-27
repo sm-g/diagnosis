@@ -10,16 +10,14 @@ namespace Diagnosis.App.ViewModels
         event EventHandler ModelPropertyChanged;
 
         ICommand CommitCommand { get; }
-
         ICommand DeleteCommand { get; }
-
         ICommand EditCommand { get; }
-
         ICommand RevertCommand { get; }
 
         bool IsEditorActive { get; set; }
-
         bool IsEditorFocused { get; set; }
+
+        bool SwitchedOn { get; set; }
 
         bool IsReady { get; }
 

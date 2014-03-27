@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Input;
+using EventAggregator;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -14,11 +12,14 @@ namespace Diagnosis.App.ViewModels
         private bool _editActive;
         private bool _editorFocused;
         private ICommand _revert;
+        private bool _switchedOn;
 
         #region IEditable
 
         public event EventHandler Committed;
+
         public event EventHandler Deleted;
+
         public event EventHandler ModelPropertyChanged;
 
         public bool IsEditorActive
@@ -53,6 +54,22 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public bool SwitchedOn
+        {
+            get
+            {
+                return _switchedOn;
+            }
+            set
+            {
+                if (_switchedOn != value)
+                {
+                    _switchedOn = value;
+                    OnPropertyChanged(() => SwitchedOn);
+                }
+            }
+        }
+
         /// <summary>
         /// Показывает, что элемент в состоянии готовности (никаких действий над ним).
         /// </summary>
@@ -74,7 +91,7 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _commit
-                    ?? (_commit = new RelayCommand(OnCommit, () => IsDirty));
+                    ?? (_commit = new RelayCommand(OnCommit, () => IsDirty && SwitchedOn));
             }
         }
 
@@ -83,7 +100,7 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _delete
-                    ?? (_delete = new RelayCommand(OnDelete));
+                    ?? (_delete = new RelayCommand(OnDelete, () => SwitchedOn));
             }
         }
 
@@ -96,7 +113,8 @@ namespace Diagnosis.App.ViewModels
                                           () =>
                                           {
                                               IsEditorActive = !IsEditorActive;
-                                          }));
+                                          },
+                                          () => SwitchedOn));
             }
         }
 
@@ -109,7 +127,8 @@ namespace Diagnosis.App.ViewModels
                                           () =>
                                           {
                                               IsEditorActive = false;
-                                          }));
+                                          },
+                                          () => SwitchedOn));
             }
         }
 
@@ -126,10 +145,9 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-
         #endregion IEditable
 
-        void OnCommit()
+        private void OnCommit()
         {
             IsEditorActive = false;
 
@@ -142,7 +160,7 @@ namespace Diagnosis.App.ViewModels
             IsDirty = false;
         }
 
-        void OnDelete()
+        private void OnDelete()
         {
             var h = Deleted;
             if (h != null)
