@@ -7,17 +7,17 @@
              xmlns:conv="clr-namespace:Diagnosis.App.Converters"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"
-             d:DesignHeight="30" d:DesignWidth="300">
+             d:DesignHeight="30"
+             MinWidth="300">
     <UserControl.Resources>
         <conv:AgeToYearsLabel x:Key="ageLabel" />
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal">
         <controls:ComboBoxDatePicker Year="{Binding BirthYear, Mode=TwoWay}"
                                      Month="{Binding BirthMonth, Mode=TwoWay}"
-                                     Day="{Binding BirthDay, Mode=TwoWay}"
-            ></controls:ComboBoxDatePicker>
+                                     Day="{Binding BirthDay, Mode=TwoWay}" />
 
-        <TextBox Text="{Binding Age, Mode=TwoWay}" Width="50" Margin="50,0,5,0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center">
+        <TextBox Text="{Binding Age, Mode=TwoWay}" Width="50" Margin="20,0,5,0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center">
             <controls:WatermarkService.Watermark>
                 <TextBlock Style="{StaticResource watermark}">Возраст</TextBlock>
             </controls:WatermarkService.Watermark>

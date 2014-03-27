@@ -8,9 +8,9 @@
              xmlns:screen="clr-namespace:Diagnosis.App.Screens"
              xmlns:conv="clr-namespace:Diagnosis.App.Converters"
              mc:Ignorable="d"
-             d:DesignHeight="400" d:DesignWidth="600">
+             d:DesignHeight="400" d:DesignWidth="500">
     <UserControl.Resources>
-        <conv:AgeToYearsLabel x:Key="ageLabel" />        
+        <conv:AgeToYearsLabel x:Key="ageLabel" />
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -42,25 +42,27 @@
 
         <TabControl TabStripPlacement="Left" Padding="0" Grid.Row="1">
             <TabItem Header="Инфо" IsEnabled="True" IsSelected="True">
-                <StackPanel Margin="10">
-                    <controls:NameEditor />
-                    <DockPanel Margin="0,5">
-                        <TextBlock Text="Дата рождения" Style="{StaticResource label}" />
-                        <controls:AgePicker />
-                    </DockPanel>
-                    <DockPanel Margin="0,5">
-                        <TextBlock Text="Пол"  Style="{StaticResource label}" />
-                        <controls:SexChooser Width="100" HorizontalAlignment="Left" />
-                    </DockPanel>  
-                    <DockPanel Margin="0,5">
-                        <TextBlock Text="СНИЛС" Style="{StaticResource label}" />
-                        <TextBox Text="{Binding Snils}" />
-                    </DockPanel>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    <StackPanel Margin="10">
+                        <controls:NameEditor />
+                        <DockPanel Margin="0,5">
+                            <TextBlock Text="Дата рождения" Style="{StaticResource label}" />
+                            <controls:AgePicker />
+                        </DockPanel>
+                        <DockPanel Margin="0,5">
+                            <TextBlock Text="Пол"  Style="{StaticResource label}" />
+                            <controls:SexChooser Width="100" HorizontalAlignment="Left" />
+                        </DockPanel>
+                        <DockPanel Margin="0,5">
+                            <TextBlock Text="СНИЛС" Style="{StaticResource label}" />
+                            <TextBox Text="{Binding Snils}" />
+                        </DockPanel>
 
-                    <Separator />
+                        <Separator />
 
-                    <controls:PropertiesChooser Margin="0,5" />
-                </StackPanel>
+                        <controls:PropertiesChooser Margin="0,5" />
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
             <TabItem Header="Курсы">
                 <DockPanel>
@@ -69,13 +71,13 @@
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        
+
                         <Button Command="{Binding CurrentDoctor.StartCourseCommand}"
                             CommandParameter="{Binding}">Начать курс</Button>
 
                         <ListView ItemsSource="{Binding CoursesManager.Courses}"
                                   SelectedItem="{Binding CoursesManager.SelectedCourse}"
-                                  Grid.Row="2" 
+                                  Grid.Row="2"
                                   SelectionMode="Single">
                             <ListView.InputBindings>
                                 <KeyBinding Key="Delete" Command="{Binding CoursesManager.SelectedCourse.DeleteCommand}" />
