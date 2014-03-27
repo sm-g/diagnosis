@@ -31,7 +31,7 @@
                   Focusable="False">
         </Expander>
         <StackPanel Grid.Column="1">
-            <TextBlock x:Name="description">
+            <StackPanel x:Name="description">
                 <TextBlock>
                     <TextBlock Text="{Binding Start, StringFormat='{}с {0:d}'}" />
                     <TextBlock Text="{Binding End, StringFormat='{}по {0:d}', TargetNullValue=''}" />
@@ -51,11 +51,12 @@
             <ListView x:Name="appointments"
                   ItemsSource="{Binding Appointments}"
                   SelectedItem="{Binding SelectedAppointment}"
+                  Style="{StaticResource list}"                      
                   MaxHeight="200">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel MaxWidth="150">
-                            <DockPanel>
+                        <DockPanel MinWidth="150">
+                            <DockPanel DockPanel.Dock="Top">
                                 <TextBlock Text="{Binding DateTime, StringFormat='{}{0:d}'}" />
                                 <TextBlock Text="{Binding Doctor.ShortName}"
                                        HorizontalAlignment="Right" />
@@ -67,7 +68,7 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                        </StackPanel>
+                        </DockPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

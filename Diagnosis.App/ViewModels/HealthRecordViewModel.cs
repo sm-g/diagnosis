@@ -22,7 +22,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return (Diagnosis != null ? Diagnosis.Name + ". " : "") +
+                return (HasDiagnosis ? Diagnosis.Name + ". " : "") +
                     string.Concat(Symptoms.OrderBy(s => s.Priority).Select(s => s.Name + " "));
             }
             set
@@ -75,7 +75,16 @@ namespace Diagnosis.App.ViewModels
                     _diagnosis = value;
 
                     OnPropertyChanged(() => Diagnosis);
+                    OnPropertyChanged(() => HasDiagnosis);
                 }
+            }
+        }
+
+        public bool HasDiagnosis
+        {
+            get
+            {
+                return Diagnosis != null;
             }
         }
 
@@ -116,7 +125,7 @@ namespace Diagnosis.App.ViewModels
             current = this;
 
             EntityManagers.SymptomsManager.CheckThese(Symptoms);
-            if (Diagnosis != null)
+            if (HasDiagnosis)
                 EntityManagers.DiagnosisManager.Check(Diagnosis);
         }
 
@@ -130,7 +139,7 @@ namespace Diagnosis.App.ViewModels
                 EntityManagers.SymptomsManager.GetHealthRecordSymptoms(healthRecord));
             Diagnosis = EntityManagers.DiagnosisManager.GetHealthRecordDiagnosis(healthRecord);
 
-            IsSelectingSymptomsActive = Diagnosis == null;
+            IsSelectingSymptomsActive = !HasDiagnosis;
 
             Subscribe();
         }

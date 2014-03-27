@@ -54,9 +54,9 @@
         </TreeView>
         <ListView DataContext="{Binding SelectedItem, ElementName=tree, Mode=OneWay}"
                   ItemsSource="{Binding TerminalChildren}" 
+                  Style="{StaticResource list}"                  
                   Grid.Column="1"               
-                  Margin="10,0,0,0"
->
+                  Margin="10,0,0,0">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <controls:TreeItem />

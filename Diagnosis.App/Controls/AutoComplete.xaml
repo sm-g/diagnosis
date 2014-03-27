@@ -38,8 +38,6 @@
                        StaysOpen="False" Placement="Bottom" IsOpen="false"
                        HorizontalAlignment="Left" Grid.RowSpan="2">
 
-                <Grid Width="Auto" Height="Auto">
-
                     <ListBox x:Name="suggestions"
                              ItemsSource="{Binding Suggestions}"
                              SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
@@ -53,7 +51,6 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-                </Grid>
             </Popup>
         </Grid>
     </StackPanel>

@@ -27,16 +27,19 @@
             </TextBlock>
         </Grid>
 
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <Grid >
+        <ScrollViewer Grid.Row="1" 
+                      VerticalScrollBarVisibility="Auto" 
+                      Margin="0,5,0,0">
+            <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
-                
+
                 <ListView x:Name="records"
                   ItemsSource="{Binding HealthRecords}"
                   SelectedItem="{Binding SelectedHealthRecord}"
+                  Style="{StaticResource list}"
                   HorizontalContentAlignment="Stretch">
                     <ListView.ItemTemplate>
                         <DataTemplate>

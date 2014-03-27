@@ -18,16 +18,16 @@
 
         <StackPanel>
             <StackPanel Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <ToggleButton x:Name="symptomsToogle"
                               IsChecked="{Binding IsSelectingSymptomsActive}">Симптомы</ToggleButton>
                     <ToggleButton IsChecked="{Binding IsChecked, ElementName=symptomsToogle, Converter={StaticResource NegateBoolean}}">Диагнозы</ToggleButton>
                 </StackPanel>
 
-                <StackPanel x:Name="symptomsSelector" Visibility="{Binding IsSelectingSymptomsActive, Converter={StaticResource BooleanToVisibilityConverter}}" >
-                    <controls:AutoComplete DataContext="{Binding SymptomAutoComplete}"/>
+                <StackPanel x:Name="symptomsSelector" Visibility="{Binding IsSelectingSymptomsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <controls:AutoComplete DataContext="{Binding SymptomAutoComplete}" />
                     <controls:GroupsTree DataContext="{Binding Path=Symptoms, Source={x:Static app:EntityManagers.SymptomsManager}}" />
-                    <DockPanel>
+                    <DockPanel Visibility="{Binding Symptoms.Count, Converter={StaticResource CountToVisibility}}">
                         <TextBlock DockPanel.Dock="Top">Выбранные симптомы:</TextBlock>
                         <ListView ItemsSource="{Binding Symptoms}">
                             <ListView.ItemTemplate>
@@ -38,20 +38,27 @@
                         </ListView>
                     </DockPanel>
                 </StackPanel>
-                <StackPanel x:Name="diagnosesSelector" Visibility="{Binding IsSelectingSymptomsActive, Converter={StaticResource NegBooleanToVisibilityConverter}}" >
-                    <controls:AutoComplete DataContext="{Binding DiagnosisAutoComplete}"/>
-                    <controls:FullTree DataContext="{Binding Path=Diagnoses, Source={x:Static app:EntityManagers.DiagnosisManager}}"/>
+                <StackPanel x:Name="diagnosesSelector" Visibility="{Binding IsSelectingSymptomsActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                    <controls:AutoComplete DataContext="{Binding DiagnosisAutoComplete}" />
+                    <controls:FullTree DataContext="{Binding Path=Diagnoses, Source={x:Static app:EntityManagers.DiagnosisManager}}" />
+                    <DockPanel Visibility="{Binding HasDiagnosis, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBlock DockPanel.Dock="Top">Выбранный диагноз:</TextBlock>
+                        <controls:TreeItem DataContext="{Binding Diagnosis}" />
+                    </DockPanel>
                 </StackPanel>
             </StackPanel>
-            <ItemsControl x:Name="symptoms"
+
+            <StackPanel Visibility="{Binding IsSelected, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                <TextBlock Text="{Binding Diagnosis.Name}" />
+                <ItemsControl x:Name="symptoms"
                           ItemsSource="{Binding Symptoms}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Name}" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-            <TextBlock Text="{Binding Diagnosis.Name}" />
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
         </StackPanel>
 
         <DockPanel Grid.Column="1"
