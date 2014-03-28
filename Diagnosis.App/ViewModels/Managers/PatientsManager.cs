@@ -60,7 +60,11 @@ namespace Diagnosis.App.ViewModels
 
         public void NoCurrent()
         {
-            CurrentPatient.CoursesManager.SelectedCourse.SelectedAppointment.SelectedHealthRecord.Unsubscribe();
+            if (CurrentPatient.CoursesManager.SelectedCourse.SelectedAppointment != null &&
+                CurrentPatient.CoursesManager.SelectedCourse.SelectedAppointment.SelectedHealthRecord != null)
+            {
+                CurrentPatient.CoursesManager.SelectedCourse.SelectedAppointment.SelectedHealthRecord.Unsubscribe();
+            }
             CurrentPatient = null;
         }
 
