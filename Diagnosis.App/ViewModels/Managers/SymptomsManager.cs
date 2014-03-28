@@ -63,10 +63,7 @@ namespace Diagnosis.App.ViewModels
             {
                 var isEditing = e.GetValue<bool>(Messages.Boolean);
 
-                foreach (var item in Symptoms)
-                {
-                    item.Editable.SwitchedOn = isEditing;
-                }
+                Symptoms.ForAll((svm) => svm.Editable.SwitchedOn = isEditing);
 
                 UnCheckAll();
             });
@@ -74,12 +71,7 @@ namespace Diagnosis.App.ViewModels
 
         private void UnCheckAll()
         {
-            Contract.Assume(Symptoms.Count > 0);
-
-            foreach (var item in Symptoms[0].Parent.AllChildren)
-            {
-                item.IsChecked = false;
-            }
+            Symptoms.ForAll((svm) => svm.IsChecked = false);
         }
     }
 }

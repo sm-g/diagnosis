@@ -192,6 +192,7 @@
     <Compile Include="Converters\BooleanConverter.cs" />
     <Compile Include="Converters\CountToAppointmentsLabel.cs" />
     <Compile Include="EntityManagers.cs" />
+    <Compile Include="Extensions\HierarchicalExtensions.cs" />
     <Compile Include="MessagingParams.cs" />
     <Compile Include="Screens\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
@@ -421,9 +422,7 @@
       <Name>Diagnosis.Data</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
