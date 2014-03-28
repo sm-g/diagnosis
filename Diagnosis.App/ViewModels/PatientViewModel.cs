@@ -14,6 +14,7 @@ namespace Diagnosis.App.ViewModels
         private DoctorViewModel _doctor;
         private CoursesManager _coursesManager;
         private List<EventMessageHandler> msgHandlers = new List<EventMessageHandler>();
+        private bool hrSelecting;
 
         public EditableBase Editable { get; private set; }
 
@@ -256,7 +257,7 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(p != null);
 
             patient = p;
-            Editable = new EditableBase();
+            Editable = new EditableBase(switchedOn: true);
 
             Properties = new ObservableCollection<PropertyViewModel>(EntityManagers.PropertyManager.GetPatientProperties(patient));
             CoursesManager = new CoursesManager(this);
@@ -336,20 +337,24 @@ namespace Diagnosis.App.ViewModels
 
         private void OnHealthRecordSelected(HealthRecordViewModel hr)
         {
+            hrSelecting = true;
             hr.MakeCurrent();
+            hrSelecting = false;
         }
 
         private void OnSymptomCheckedChanged(SymptomViewModel symptom, bool isChecked)
         {
-            Editable.MarkDirty();
+            if (!hrSelecting)
+                Editable.MarkDirty();
         }
 
         private void OnDiagnosisCheckedChanged(DiagnosisViewModel diagnosis, bool isChecked)
         {
-            Editable.MarkDirty();
+            if (!hrSelecting)
+                Editable.MarkDirty();
         }
 
-        #endregion
+        #endregion Event handlers
 
         #region Comparsion
 

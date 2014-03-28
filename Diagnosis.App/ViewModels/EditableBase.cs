@@ -145,6 +145,11 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public EditableBase(bool switchedOn = false)
+        {
+            SwitchedOn = switchedOn;
+        }
+
         #endregion IEditable
 
         private void OnCommit()
