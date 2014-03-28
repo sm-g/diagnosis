@@ -161,7 +161,7 @@ namespace Diagnosis.App.ViewModels
 
             this.PropertyChanged += CourseViewModel_PropertyChanged;
 
-            Editable = new EditableBase();
+            Editable = new EditableBase(this);
         }
 
         void CourseViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

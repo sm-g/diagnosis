@@ -49,9 +49,9 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private void d_Committed(object sender, EventArgs e)
+        private void d_Committed(object sender, EditableEventArgs e)
         {
-            var doctorVM = (sender as DoctorViewModel);
+            var doctorVM = e.viewModel as DoctorViewModel;
             if (doctorVM != null)
             {
                 repository.SaveOrUpdate(doctorVM.doctor);

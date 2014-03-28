@@ -71,7 +71,7 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(s != null);
             symptom = s;
 
-            Editable = new EditableBase();
+            Editable = new EditableBase(this);
         }
 
         public SymptomViewModel(string title)

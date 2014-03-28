@@ -257,7 +257,7 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(p != null);
 
             patient = p;
-            Editable = new EditableBase(switchedOn: true);
+            Editable = new EditableBase(this, switchedOn: true);
 
             Properties = new ObservableCollection<PropertyViewModel>(EntityManagers.PropertyManager.GetPatientProperties(patient));
             CoursesManager = new CoursesManager(this);

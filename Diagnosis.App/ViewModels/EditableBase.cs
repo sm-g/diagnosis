@@ -14,13 +14,15 @@ namespace Diagnosis.App.ViewModels
         private ICommand _revert;
         private bool _switchedOn;
 
+        ViewModelBase vm;
+
         #region IEditable
 
-        public event EventHandler Committed;
+        public event EditableEventHandler Committed;
 
-        public event EventHandler Deleted;
+        public event EditableEventHandler Deleted;
 
-        public event EventHandler ModelPropertyChanged;
+        public event EditableEventHandler ModelPropertyChanged;
 
         public bool IsEditorActive
         {
@@ -141,12 +143,19 @@ namespace Diagnosis.App.ViewModels
             var h = ModelPropertyChanged;
             if (h != null)
             {
-                h(this, new EventArgs());
+                h(this, new EditableEventArgs(vm));
             }
+        }
+
+        public EditableBase(ViewModelBase vm, bool switchedOn = false)
+        {
+            this.vm = vm;
+            SwitchedOn = switchedOn;
         }
 
         public EditableBase(bool switchedOn = false)
         {
+            vm = this; // if vm inherited from EditableBase
             SwitchedOn = switchedOn;
         }
 
@@ -159,7 +168,7 @@ namespace Diagnosis.App.ViewModels
             var h = Committed;
             if (h != null)
             {
-                h(this, new EventArgs());
+                h(this, new EditableEventArgs(vm));
             }
 
             IsDirty = false;
@@ -170,7 +179,7 @@ namespace Diagnosis.App.ViewModels
             var h = Deleted;
             if (h != null)
             {
-                h(this, new EventArgs());
+                h(this, new EditableEventArgs(vm));
             }
         }
     }

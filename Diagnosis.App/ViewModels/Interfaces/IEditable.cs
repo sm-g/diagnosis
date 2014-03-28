@@ -3,11 +3,22 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
+    public delegate void EditableEventHandler(object sender, EditableEventArgs fe);
+
+    public class EditableEventArgs : EventArgs
+    {
+        public ViewModelBase viewModel;
+        public EditableEventArgs(ViewModelBase vm)
+        {
+            viewModel = vm;
+        }
+    }
+
     public interface IEditable
     {
-        event EventHandler Committed;
-        event EventHandler Deleted;
-        event EventHandler ModelPropertyChanged;
+        event EditableEventHandler Committed;
+        event EditableEventHandler Deleted;
+        event EditableEventHandler ModelPropertyChanged;
 
         ICommand CommitCommand { get; }
         ICommand DeleteCommand { get; }

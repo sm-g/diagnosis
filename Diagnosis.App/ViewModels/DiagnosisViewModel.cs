@@ -76,7 +76,7 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(d != null);
             diagnosis = d;
 
-            Editable = new EditableBase();
+            Editable = new EditableBase(this);
 
             ChildrenChanged += DiagnosisViewModel_ChildrenChanged;
         }

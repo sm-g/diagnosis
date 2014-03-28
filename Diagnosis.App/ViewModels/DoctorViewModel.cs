@@ -146,7 +146,7 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(d != null);
             doctor = d;
 
-            Editable = new EditableBase();
+            Editable = new EditableBase(this);
         }
     }
 }
