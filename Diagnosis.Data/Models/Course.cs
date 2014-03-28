@@ -25,6 +25,8 @@ namespace Diagnosis.Models
 
         public virtual Appointment AddAppointment(Doctor doctor = null)
         {
+            Contract.Requires(!End.HasValue);
+
             var a = new Appointment(this, doctor ?? LeadDoctor);
             appointments.Add(a);
             return a;

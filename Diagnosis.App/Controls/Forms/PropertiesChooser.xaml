@@ -6,7 +6,7 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-    <ItemsControl ItemsSource="{Binding Properties}">
+    <ItemsControl ItemsSource="{Binding Properties}" Focusable="False">
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
                 <StackPanel />

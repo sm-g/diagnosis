@@ -138,7 +138,7 @@ namespace Diagnosis.App.ViewModels
                             OnPropertyChanged(() => LastAppointment);
 
                             this.Send((int)EventID.AppointmentAdded, new AppointmentAddedParams(app).Params);
-                        }));
+                        }, () => !IsEnded));
             }
         }
 
