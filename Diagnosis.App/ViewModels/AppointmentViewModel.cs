@@ -78,7 +78,10 @@ namespace Diagnosis.App.ViewModels
                     ?? (_addHealthRecord = new RelayCommand(() =>
                         {
                             var hr = appointment.AddHealthRecord();
-                            HealthRecords.Add(new HealthRecordViewModel(hr));
+                            var hrVM = new HealthRecordViewModel(hr);
+                            HealthRecords.Add(hrVM);
+
+                            SelectedHealthRecord = hrVM;
                         }));
             }
         }
