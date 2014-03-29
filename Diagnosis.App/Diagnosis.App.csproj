@@ -251,7 +251,7 @@
     <Compile Include="ViewModels\Interfaces\ICheckable.cs" />
     <Compile Include="ViewModels\Interfaces\IHierarchical.cs" />
     <Compile Include="ViewModels\Interfaces\IHierarchicalCheckable.cs" />
-    <Compile Include="ViewModels\Interfaces\ISearch.cs" />
+    <Compile Include="ViewModels\Interfaces\ISearchCheckable.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IAutoComplete.cs" />

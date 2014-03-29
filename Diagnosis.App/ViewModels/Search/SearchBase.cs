@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public abstract class SearchBase<T> : ViewModelBase, ISearch<T> where T : class, ICheckable
+    public abstract class SearchBase<T> : ViewModelBase, ISearchCheckable<T> where T : class, ICheckable
     {
         private string _query;
         private int _selectedIndex = -1;
@@ -21,14 +21,6 @@ namespace Diagnosis.App.ViewModels
         #region ISearch
 
         public event EventHandler ResultItemSelected;
-
-        public IEnumerable<T> Collection { get; protected set; }
-
-        public bool WithNonCheckable { get; set; }
-
-        public bool WithChecked { get; set; }
-
-        public ObservableCollection<T> Results { get; protected set; }
 
         public string Query
         {
@@ -44,17 +36,6 @@ namespace Diagnosis.App.ViewModels
                     OnPropertyChanged(() => Query);
                 }
                 MakeResults(_query);
-            }
-        }
-
-        public T SelectedItem
-        {
-            get
-            {
-                if (SelectedIndex != -1)
-                    return Results[SelectedIndex];
-                else
-                    return null;
             }
         }
 
@@ -157,6 +138,8 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public bool WithCreatingNew { get; set; }
+
         public void Clear()
         {
             Query = "";
@@ -176,15 +159,32 @@ namespace Diagnosis.App.ViewModels
 
         #endregion ISearch
 
+        #region ISearchCheckable
+
+        public bool WithNonCheckable { get; set; }
+
+        public bool WithChecked { get; set; }
+
+        public ObservableCollection<T> Results { get; protected set; }
+
+        public T SelectedItem
+        {
+            get
+            {
+                if (SelectedIndex != -1)
+                    return Results[SelectedIndex];
+                else
+                    return null;
+            }
+        }
+
+        #endregion ISearchCheckable
+
+        protected IEnumerable<T> Collection { get; set; }
+
         protected virtual void InitQuery()
         {
             Clear();
-        }
-
-        protected virtual bool CheckConditions(T obj)
-        {
-            return (WithChecked || !obj.IsChecked)
-                   && (WithNonCheckable || !obj.IsNonCheckable);
         }
 
         protected abstract T FromQuery(string query);
@@ -195,12 +195,14 @@ namespace Diagnosis.App.ViewModels
         {
             Contract.Requires(query != null);
 
+            // фильтруем коллекцию
             Results = new ObservableCollection<T>(
                Collection.Where(c => Filter(c, query)
-                   && CheckConditions(c)));
+                   && Filter(c)));
 
-            if (!Results.Any(c => Filter(c, query))
-                && query != string.Empty)
+            if (WithCreatingNew
+                && query != string.Empty
+                && !Results.Any(c => Filter(c, query)))
             {
                 // добавляем запрос к результатам
                 Results.Add(FromQuery(query));
@@ -212,10 +214,17 @@ namespace Diagnosis.App.ViewModels
                 SelectedIndex = 0;
         }
 
-        public SearchBase(bool withNonCheckable = false, bool withChecked = false, bool switchedOn = true)
+        private bool Filter(T obj)
+        {
+            return (WithChecked || !obj.IsChecked)
+                   && (WithNonCheckable || !obj.IsNonCheckable);
+        }
+
+        public SearchBase(bool withNonCheckable = false, bool withChecked = false, bool withCreatingNew = true, bool switchedOn = true)
         {
             WithNonCheckable = withNonCheckable;
             WithChecked = withChecked;
+            WithCreatingNew = withCreatingNew;
             SwitchedOn = switchedOn;
         }
     }

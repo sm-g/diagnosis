@@ -21,18 +21,13 @@ namespace Diagnosis.App.ViewModels
 
         protected override SymptomViewModel FromQuery(string query)
         {
-            return new SymptomViewModel(new Symptom(query, UpperPriority));
-        }
-
-        protected override bool CheckConditions(SymptomViewModel obj)
-        {
-            return base.CheckConditions(obj)
-                   && (UpperPriority <= obj.Priority);
+            return EntityManagers.SymptomsManager.Create(query);
         }
 
         protected override bool Filter(SymptomViewModel item, string query)
         {
-            return item.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase);
+            return item.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)
+                 && (UpperPriority <= item.Priority); ;
         }
     }
 }

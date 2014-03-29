@@ -23,13 +23,5 @@ namespace Diagnosis.App.ViewModels
         }
 
         protected override abstract T FromQuery(string query);
-        protected override bool CheckConditions(T obj)
-        {
-            return base.CheckConditions(obj);
-        }
-        protected override void InitQuery()
-        {
-            base.InitQuery();
-        }
     }
 }

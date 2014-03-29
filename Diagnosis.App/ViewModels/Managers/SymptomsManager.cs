@@ -45,6 +45,13 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public SymptomViewModel Create(string title)
+        {
+            var vm = new SymptomViewModel(new Symptom(title));
+            vm.Editable.MarkDirty();
+            return vm;
+        }
+
         public SymptomsManager(ISymptomRepository repo)
         {
             Contract.Requires(repo != null);
@@ -69,7 +76,8 @@ namespace Diagnosis.App.ViewModels
 
         private void OnDirectoryEditingModeChanged(bool isEditing)
         {
-            Symptoms.ForAll((svm) => {
+            Symptoms.ForAll((svm) =>
+            {
                 svm.Editable.SwitchedOn = isEditing;
                 svm.Search.SwitchedOn = !isEditing;
             });
