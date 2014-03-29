@@ -25,5 +25,11 @@ namespace Diagnosis.App.Controls
 
             }
         }
+
+        private void tileItem_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (FocusChecker.IsFocusOutsideDepObject(tileItem))
+                search.Visibility = System.Windows.Visibility.Collapsed;
+        }
     }
 }

@@ -63,10 +63,19 @@ namespace Diagnosis.App.ViewModels
             {
                 var isEditing = e.GetValue<bool>(Messages.Boolean);
 
-                Diagnoses.ForAll((dvm) => dvm.Editable.SwitchedOn = isEditing);
-
-                UnCheckAll();
+                OnDirectoryEditingModeChanged(isEditing);
             });
+        }
+
+        private void OnDirectoryEditingModeChanged(bool isEditing)
+        {
+            Diagnoses.ForAll((dvm) =>
+            {
+                dvm.Editable.SwitchedOn = isEditing;
+                dvm.Search.SwitchedOn = !isEditing;
+            });
+
+            UnCheckAll();
         }
 
         private void UnCheckAll()

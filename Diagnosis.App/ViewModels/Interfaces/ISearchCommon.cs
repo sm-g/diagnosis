@@ -16,6 +16,8 @@ namespace Diagnosis.App.ViewModels
         bool IsSearchActive { get; set; }
         bool IsSearchFocused { get; set; }
 
+        bool SwitchedOn { get; set; }
+
         void Clear();
         void RaiseResultItemSelected();
     }

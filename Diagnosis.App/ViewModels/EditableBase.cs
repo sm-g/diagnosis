@@ -147,6 +147,8 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        #endregion IEditable
+
         public EditableBase(ViewModelBase vm, bool switchedOn = false)
         {
             this.vm = vm;
@@ -158,8 +160,6 @@ namespace Diagnosis.App.ViewModels
             vm = this; // if vm inherited from EditableBase
             SwitchedOn = switchedOn;
         }
-
-        #endregion IEditable
 
         private void OnCommit()
         {

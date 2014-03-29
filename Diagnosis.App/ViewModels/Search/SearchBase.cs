@@ -16,6 +16,9 @@ namespace Diagnosis.App.ViewModels
         private ICommand _selectCommand;
         private bool _searchActive;
         private bool _searchFocused;
+        private bool _switchedOn;
+
+        #region ISearch
 
         public event EventHandler ResultItemSelected;
 
@@ -72,19 +75,12 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public int ResultsCount
-        {
-            get
-            {
-                return Results.Count;
-            }
-        }
-
         public ICommand ClearCommand
         {
             get
             {
-                return _clear ?? (_clear = new RelayCommand(Clear, () => Query != ""));
+                return _clear ?? (_clear = new RelayCommand(Clear,
+                    () => Query != "" && SwitchedOn));
             }
         }
 
@@ -97,8 +93,9 @@ namespace Diagnosis.App.ViewModels
                                           () =>
                                           {
                                               IsSearchActive = !IsSearchActive;
-                                          }
-                                          ));
+                                          },
+                                          () => SwitchedOn
+                       ));
             }
         }
 
@@ -106,7 +103,8 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _selectCommand ?? (_selectCommand = new RelayCommand(RaiseResultItemSelected));
+                return _selectCommand ?? (_selectCommand = new RelayCommand(RaiseResultItemSelected,
+                    () => SwitchedOn));
             }
         }
 
@@ -122,6 +120,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     _searchActive = value;
                     OnPropertyChanged(() => IsSearchActive);
+                    IsSearchFocused = value;
                 }
             }
         }
@@ -142,6 +141,22 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public bool SwitchedOn
+        {
+            get
+            {
+                return _switchedOn;
+            }
+            set
+            {
+                if (_switchedOn != value)
+                {
+                    _switchedOn = value;
+                    OnPropertyChanged(() => SwitchedOn);
+                }
+            }
+        }
+
         public void Clear()
         {
             Query = "";
@@ -149,12 +164,32 @@ namespace Diagnosis.App.ViewModels
 
         public void RaiseResultItemSelected()
         {
-            var h = ResultItemSelected;
-            if (h != null)
+            if (SwitchedOn)
             {
-                h(this, new EventArgs());
+                var h = ResultItemSelected;
+                if (h != null)
+                {
+                    h(this, new EventArgs());
+                }
             }
         }
+
+        #endregion ISearch
+
+        protected virtual void InitQuery()
+        {
+            Clear();
+        }
+
+        protected virtual bool CheckConditions(T obj)
+        {
+            return (WithChecked || !obj.IsChecked)
+                   && (WithNonCheckable || !obj.IsNonCheckable);
+        }
+
+        protected abstract T FromQuery(string query);
+
+        protected abstract bool Filter(T item, string query);
 
         private void MakeResults(string query)
         {
@@ -172,31 +207,16 @@ namespace Diagnosis.App.ViewModels
             }
 
             OnPropertyChanged(() => Results);
-            OnPropertyChanged(() => ResultsCount);
 
             if (Results.Count > 0)
                 SelectedIndex = 0;
         }
 
-        protected virtual void InitQuery()
-        {
-            Clear();
-        }
-
-        protected virtual bool CheckConditions(T obj)
-        {
-            return (WithChecked || !obj.IsChecked)
-                   && (WithNonCheckable || !obj.IsNonCheckable);
-        }
-
-        protected abstract T FromQuery(string query);
-
-        protected abstract bool Filter(T item, string query);
-
-        public SearchBase(bool withNonCheckable = false, bool withChecked = false)
+        public SearchBase(bool withNonCheckable = false, bool withChecked = false, bool switchedOn = true)
         {
             WithNonCheckable = withNonCheckable;
             WithChecked = withChecked;
+            SwitchedOn = switchedOn;
         }
     }
 }

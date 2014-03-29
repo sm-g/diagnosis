@@ -7,7 +7,7 @@
              x:Name="treeItem"
              x:Class="Diagnosis.App.Controls.TreeItem"
              mc:Ignorable="d"
-             d:DesignHeight="20" d:DesignWidth="300"
+             d:DesignHeight="20" d:DesignWidth="300" LostFocus="treeItem_LostFocus"
 >
     <Grid>
         <Grid.RowDefinitions>
@@ -50,7 +50,7 @@
 			Grid.Row="1"
 			Grid.Column="1"
             Grid.ColumnSpan="2"
-			Visibility="{Binding DataContext.Search.IsSearchActive, ElementName=treeItem, Converter={StaticResource BooleanToVisibilityConverter}}"
+			Visibility="{Binding DataContext.Search.IsSearchActive, ElementName=treeItem, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}"
             controls:FocusExtension.IsFocused="{Binding DataContext.Search.IsSearchFocused, ElementName=treeItem}"
             DataContext="{Binding Search}"
 >

@@ -21,8 +21,14 @@ namespace Diagnosis.App.Controls
         {
             if (FocusChecker.IsFocusOutsideDepObject(editor))
             {
-                
+
             }
+        }
+
+        private void treeItem_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (FocusChecker.IsFocusOutsideDepObject(treeItem))
+                search.Visibility = System.Windows.Visibility.Collapsed;
         }
 
     }
