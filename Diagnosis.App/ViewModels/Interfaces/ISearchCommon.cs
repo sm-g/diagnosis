@@ -11,7 +11,7 @@ namespace Diagnosis.App.ViewModels
         string Query { get; set; }
         int SelectedIndex { get; set; }
         ICommand ClearCommand { get; }
-        ICommand SearchCommand { get; }
+        ICommand ToggleSearchCommand { get; }
         ICommand SelectCommand { get; }
         bool IsSearchActive { get; set; }
         bool IsSearchFocused { get; set; }

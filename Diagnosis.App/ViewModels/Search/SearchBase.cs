@@ -88,7 +88,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public ICommand SearchCommand
+        public ICommand ToggleSearchCommand
         {
             get
             {

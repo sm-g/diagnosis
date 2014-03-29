@@ -20,8 +20,8 @@
         <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
         <KeyBinding Key="F2" Command="{Binding Editable.EditCommand}" />
         <KeyBinding Key="Escape" Command="{Binding Editable.RevertCommand}" />
-        <KeyBinding Key="Insert" Command="{Binding Search.SearchCommand}" />
-        <KeyBinding Key="F" Modifiers="Control" Command="{Binding Search.SearchCommand}" />
+        <KeyBinding Key="Insert" Command="{Binding Search.ToggleSearchCommand}" />
+        <KeyBinding Key="F" Modifiers="Control" Command="{Binding Search.ToggleSearchCommand}" />
 
         <MouseBinding MouseAction="RightClick" Command="{Binding Editable.EditCommand}" />
     </UserControl.InputBindings>
@@ -103,7 +103,7 @@
                         Visibility="{Binding DataContext.Search.IsSearchActive, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}"
                         DataContext="{Binding Search}">
                 <controls:FloatSearch.InputBindings>
-                    <KeyBinding Key="Escape" Command="{Binding DataContext.Search.SearchCommand, ElementName=root}"></KeyBinding>
+                    <KeyBinding Key="Escape" Command="{Binding DataContext.Search.ToggleSearchCommand, ElementName=root}"></KeyBinding>
                     <KeyBinding Key="Enter" Command="{Binding DataContext.Search.SelectCommand, ElementName=root}"></KeyBinding>
                 </controls:FloatSearch.InputBindings>
             </controls:FloatSearch>
@@ -117,7 +117,7 @@
                     e
                 </Button>
                 <Button x:Name="toggleSearch"
-                        Command="{Binding Search.SearchCommand}"
+                        Command="{Binding Search.ToggleSearchCommand}"
                         Height="20"
 >
                     +
