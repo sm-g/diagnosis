@@ -65,14 +65,24 @@
                        Grid.ColumnSpan="2">
             </TextBlock>
 
-            <TextBlock x:Name="checkedChildren"
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        IsHitTestVisible="False"
+                        Margin="5"
+                        Grid.Column="2">
+                <TextBlock x:Name="unsaved" 
+                       Text="new"
+                       Visibility="{Binding Editable.IsDirty, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
+                
+                <TextBlock x:Name="checkedChildren"
                        Text="{Binding CheckedChildren, Mode=OneWay}"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Bottom"
-                       IsHitTestVisible="False"
-                       Margin="5"
                        Visibility="{Binding IsTerminal, Converter={StaticResource NegBooleanToVisibilityConverter}, Mode=OneWay}"
-                       Grid.Column="2" />
+                        />
+            </StackPanel>
+               
+
+           
 
             <StackPanel x:Name="editor"
                         LostFocus="editor_LostFocus"

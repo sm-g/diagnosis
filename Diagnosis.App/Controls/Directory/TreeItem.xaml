@@ -27,12 +27,18 @@
  />
 
         <TextBlock x:Name="title"
-			       Text="{Binding Name}" 
+			       Text="{Binding Name}"
                    Grid.Column="1" />
-        <TextBlock x:Name="checkedChildren"
-			       Text="{Binding CheckedChildren}" 
-                   Visibility="{Binding CheckedChildren, Converter={StaticResource CountToVisibility}, Mode=OneWay}"
-                   Grid.Column="2" />
+
+        <StackPanel Orientation="Horizontal"
+                    Grid.Column="2">
+            <TextBlock x:Name="unsaved" 
+                       Text="new"
+                       Visibility="{Binding Editable.IsDirty, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
+            <TextBlock x:Name="checkedChildren"
+			       Text="{Binding CheckedChildren}"
+                   Visibility="{Binding CheckedChildren, Converter={StaticResource CountToVisibility}, Mode=OneWay}" />
+        </StackPanel>
 
         <StackPanel x:Name="editor"
 			Grid.Column="1"
