@@ -7,11 +7,14 @@ namespace Diagnosis.Models
     public class HealthRecord
     {
         ISet<Symptom> symptoms = new HashSet<Symptom>();
+        ISet<PatientRecordProperty> recordProperties = new HashSet<PatientRecordProperty>();
 
         public virtual int Id { get; protected set; }
         public virtual Appointment Appointment { get; protected set; }
-        public virtual string Description { get; set; }
+        public virtual string Comment { get; set; }
+        public virtual byte Category { get; set; }
         public virtual Diagnosis Diagnosis { get; set; }
+        public virtual IcdDisease IcdDisease { get; set; }
         public virtual ReadOnlyCollection<Symptom> Symptoms
         {
             get
@@ -20,6 +23,15 @@ namespace Diagnosis.Models
                     new List<Symptom>(symptoms));
             }
         }
+        public virtual ReadOnlyCollection<PatientRecordProperty> RecordProperties
+        {
+            get
+            {
+                return new ReadOnlyCollection<PatientRecordProperty>(
+                    new List<PatientRecordProperty>(recordProperties));
+            }
+        }
+
 
         public virtual void AddSymptom(Symptom symptom)
         {
@@ -33,11 +45,12 @@ namespace Diagnosis.Models
             symptoms.Remove(symptom);
         }
 
-        public HealthRecord(Appointment appointment)
+        public HealthRecord(Appointment appointment, byte category = 0)
         {
             Contract.Requires(appointment != null);
 
             Appointment = appointment;
+            Category = category;
         }
 
         protected HealthRecord() { }

@@ -63,7 +63,7 @@
 
         <DockPanel Grid.Column="1"
                    Visibility="{Binding DataContext.FastAddingMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-            <TextBox Text="{Binding Description}" />
+            <TextBox Text="{Binding Comment}" />
         </DockPanel>
     </Grid>
 </UserControl>

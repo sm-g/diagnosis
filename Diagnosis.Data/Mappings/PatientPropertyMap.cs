@@ -4,11 +4,11 @@ using NHibernate.Mapping.ByCode.Conformist;
 
 namespace Diagnosis.Data.Mappings
 {
-    public class PatientPropertyMap : ClassMapping<PatientProperty>
+    public class PatientRecordPropertyMap : ClassMapping<PatientRecordProperty>
     {
-        public PatientPropertyMap()
+        public PatientRecordPropertyMap()
         {
-            Table("PatientProperties");
+            Table("PatientRecordProperties");
             Id(x => x.Id, m =>
             {
                 m.Generator(Generators.Native);
@@ -25,6 +25,10 @@ namespace Diagnosis.Data.Mappings
             ManyToOne(x => x.Value, m =>
             {
                 m.Column("ValueID");
+            });
+            ManyToOne(x => x.HealthRecord, m =>
+            {
+                m.Column("RecordID");
             });
         }
     }

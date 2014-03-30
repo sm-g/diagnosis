@@ -7,18 +7,18 @@ namespace Diagnosis.Models
 {
     public class PropertyValue
     {
-        ISet<PatientProperty> patientProperties = new HashSet<PatientProperty>();
+        ISet<PatientRecordProperty> patientProperties = new HashSet<PatientRecordProperty>();
         internal static IEqualityComparer<PropertyValue> equalityComparer = new PropertyValueEqualityComparer();
 
         public virtual int Id { get; protected set; }
         public virtual string Title { get; set; }
         public virtual Property Property { get; protected set; }
-        public virtual ReadOnlyCollection<PatientProperty> PatientProperties
+        public virtual ReadOnlyCollection<PatientRecordProperty> PatientProperties
         {
             get
             {
-                return new ReadOnlyCollection<PatientProperty>(
-                    new List<PatientProperty>(patientProperties));
+                return new ReadOnlyCollection<PatientRecordProperty>(
+                    new List<PatientRecordProperty>(patientProperties));
             }
         }
 

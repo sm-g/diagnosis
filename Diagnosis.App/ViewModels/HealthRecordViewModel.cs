@@ -40,18 +40,18 @@ namespace Diagnosis.App.ViewModels
 
         #endregion CheckableBase
 
-        public string Description
+        public string Comment
         {
             get
             {
-                return healthRecord.Description;
+                return healthRecord.Comment;
             }
             set
             {
-                if (healthRecord.Description != value)
+                if (healthRecord.Comment != value)
                 {
-                    healthRecord.Description = value;
-                    OnPropertyChanged(() => Description);
+                    healthRecord.Comment = value;
+                    OnPropertyChanged(() => Comment);
                 }
             }
         }

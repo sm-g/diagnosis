@@ -9,7 +9,7 @@ namespace Diagnosis.Models
     public class Property
     {
         ISet<PropertyValue> values = new HashSet<PropertyValue>();
-        ISet<PatientProperty> patientProperties = new HashSet<PatientProperty>();
+        ISet<PatientRecordProperty> patientProperties = new HashSet<PatientRecordProperty>();
 
         public virtual int Id { get; protected set; }
         public virtual string Title { get; set; }
@@ -21,12 +21,12 @@ namespace Diagnosis.Models
                     new List<PropertyValue>(values));
             }
         }
-        public virtual ReadOnlyCollection<PatientProperty> PatientProperties
+        public virtual ReadOnlyCollection<PatientRecordProperty> PatientProperties
         {
             get
             {
-                return new ReadOnlyCollection<PatientProperty>(
-                    new List<PatientProperty>(patientProperties));
+                return new ReadOnlyCollection<PatientRecordProperty>(
+                    new List<PatientRecordProperty>(patientProperties));
             }
         }
 

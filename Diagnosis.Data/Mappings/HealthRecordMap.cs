@@ -13,7 +13,8 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.Native);
             });
 
-            Property(x => x.Description);
+            Property(x => x.Comment);
+            Property(x => x.Category);
 
             ManyToOne(x => x.Appointment, m =>
             {

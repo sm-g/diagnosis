@@ -85,15 +85,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return doctor.Speciality;
-            }
-            set
-            {
-                if (doctor.Speciality != value)
-                {
-                    doctor.Speciality = value;
-                    OnPropertyChanged(() => Speciality);
-                }
+                return doctor.Speciality.Title;
             }
         }
 

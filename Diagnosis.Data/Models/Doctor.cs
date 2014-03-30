@@ -14,7 +14,7 @@ namespace Diagnosis.Models
         public virtual string MiddleName { get; set; }
         public virtual string LastName { get; set; }
         public virtual bool IsMale { get; set; }
-        public virtual string Speciality { get; set; }
+        public virtual Speciality Speciality { get; set; }
         public virtual ReadOnlyCollection<Course> Courses
         {
             get
@@ -41,7 +41,7 @@ namespace Diagnosis.Models
             return course;
         }
 
-        public Doctor(string lastName, string firstName, string middleName = null, string speciality = "")
+        public Doctor(string lastName, string firstName, string middleName = null, Speciality speciality = null)
         {
             Contract.Requires(lastName != null);
             Contract.Requires(firstName != null);

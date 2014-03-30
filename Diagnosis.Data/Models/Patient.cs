@@ -8,7 +8,7 @@ namespace Diagnosis.Models
 {
     public class Patient
     {
-        ISet<PatientProperty> patientProperties = new HashSet<PatientProperty>();
+        ISet<PatientRecordProperty> patientProperties = new HashSet<PatientRecordProperty>();
         ISet<Course> courses = new HashSet<Course>();
 
         string _snils;
@@ -33,16 +33,14 @@ namespace Diagnosis.Models
                 }
             }
         }
-
-        public virtual ReadOnlyCollection<PatientProperty> PatientProperties
+        public virtual ReadOnlyCollection<PatientRecordProperty> PatientProperties
         {
             get
             {
-                return new ReadOnlyCollection<PatientProperty>(
-                    new List<PatientProperty>(patientProperties));
+                return new ReadOnlyCollection<PatientRecordProperty>(
+                    new List<PatientRecordProperty>(patientProperties));
             }
         }
-
         public virtual ReadOnlyCollection<Course> Courses
         {
             get
@@ -72,7 +70,7 @@ namespace Diagnosis.Models
 
             if (existingPatientProperty == null)
             {
-                patientProperties.Add(new PatientProperty(this, property, value));
+                patientProperties.Add(new PatientRecordProperty(property, value, this));
             }
             else
             {

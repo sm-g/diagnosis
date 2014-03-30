@@ -17,7 +17,6 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.MiddleName);
             Property(x => x.LastName);
             Property(x => x.IsMale);
-            Property(x => x.Speciality);
 
             Set(x => x.Courses, s =>
             {
@@ -43,6 +42,11 @@ namespace Diagnosis.Data.Mappings
             }, r =>
             {
                 r.OneToMany();
+            });
+
+            ManyToOne(x => x.Speciality, m =>
+            {
+                m.Column("SpecialityID");
             });
         }
     }
