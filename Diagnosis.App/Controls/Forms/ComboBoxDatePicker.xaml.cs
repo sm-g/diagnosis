@@ -66,7 +66,7 @@ namespace Diagnosis.App.Controls
             InitializeComponent();
 
             monthNames = DateTimeFormatInfo.CurrentInfo.MonthNames.ToArray();
-            years = Enumerable.Range(DateTime.Now.Year - YearsDepth, YearsDepth + 1).ToList();
+            years = Enumerable.Range(DateTime.Now.Year - YearsDepth, YearsDepth + 1).Reverse().ToList();
 
             LoadYearsCombo();
 
@@ -76,7 +76,8 @@ namespace Diagnosis.App.Controls
         private void LoadYearsCombo()
         {
             comboYears.ItemsSource = years;
-            comboYears.SelectedValue = Year;
+            if (years.Contains(Year))
+                comboYears.SelectedValue = Year;
         }
 
         private void LoadMonthsCombo()
@@ -93,14 +94,12 @@ namespace Diagnosis.App.Controls
 
         private void InitDays()
         {
-            if (Month == 13)
-            {
-                Days = new int[0];
-            }
-            else
+            try
             {
                 var daysInMonth = DateTime.DaysInMonth(Year, Month);
-                Days = new int[DateTime.DaysInMonth(Year, Month)];
+                // exception when month == 13 or year == 0, ie not set
+
+                Days = new int[daysInMonth];
                 for (int i = 0; i < Days.Count(); i++)
                 {
                     Days[i] = i + 1;
@@ -109,6 +108,10 @@ namespace Diagnosis.App.Controls
                 {
                     Day = daysInMonth;
                 }
+            }
+            catch
+            {
+                Days = new int[0];
             }
         }
 

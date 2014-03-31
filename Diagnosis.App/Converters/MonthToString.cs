@@ -15,12 +15,12 @@ namespace Diagnosis.App.Converters
             object parameter, CultureInfo culture)
         {
             int month = (int)value;
-            if (month == 13)
-            {
-                return ThirteenMonth;
-            }
 
-            return DateTimeFormatInfo.CurrentInfo.GetMonthName(month);
+            if (month > 0 && month < 13)
+            {
+                return DateTimeFormatInfo.CurrentInfo.GetMonthName(month);
+            }
+            return ThirteenMonth;
         }
 
         public object ConvertBack(object value, Type targetType,

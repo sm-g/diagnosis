@@ -12,6 +12,9 @@ namespace Diagnosis.App.Converters
         public object Convert(object value, Type targetType,
             object parameter, CultureInfo culture)
         {
+            if (value == null)
+                return null;
+
             int age = (int)value;
             if (age % 10 == 0 || age % 10 >= 5 || (age >= 11 && age <= 14))
             {

@@ -18,6 +18,7 @@
             </Style>
         </StackPanel.Resources>
         <ComboBox x:Name="comboYears"
+            Width="50"
 			SelectionChanged="comboYears_SelectionChanged"
 			IsEditable="True"
 			SelectedValue="{Binding Year, Mode=TwoWay, ElementName=root}" />
