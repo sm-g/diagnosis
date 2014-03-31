@@ -14,12 +14,9 @@ using System.Windows.Shapes;
 
 namespace Diagnosis.App.Controls
 {
-    /// <summary>
-    /// Interaction logic for NameEditor.xaml
-    /// </summary>
-    public partial class NameEditor : UserControl
+    public partial class PatientEditor : UserControl
     {
-        public NameEditor()
+        public PatientEditor()
         {
             InitializeComponent();
         }

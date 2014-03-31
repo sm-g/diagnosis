@@ -18,16 +18,16 @@
             </Style>
         </StackPanel.Resources>
         <ComboBox x:Name="comboYears"
-            Width="50"
+            MinWidth="50"
 			SelectionChanged="comboYears_SelectionChanged"
 			IsEditable="True"
 			SelectedValue="{Binding Year, Mode=TwoWay, ElementName=root}" />
         <ComboBox x:Name="comboMonths"
-			Width="80"
+			MinWidth="80"
 			SelectionChanged="comboMonths_SelectionChanged"
 			SelectedValue="{Binding Month, Mode=TwoWay, Converter={StaticResource MonthToString}, ElementName=root}" />
         <ComboBox x:Name="comboDays"
-			Width="40"
+			MinWidth="40"
 			IsEditable="True"
             SelectedValue="{Binding Day, Mode=TwoWay, ElementName=root}" />
     </StackPanel>

@@ -17,7 +17,8 @@
         </Style>
         
         <Style TargetType="TextBlock" x:Key="label">
-            <Setter Property="Width" Value="150"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
         
         <Style TargetType="TextBlock" x:Key="watermark">

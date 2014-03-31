@@ -42,21 +42,9 @@
 
         <TabControl TabStripPlacement="Left" Padding="0" Grid.Row="1">
             <TabItem Header="Инфо" IsEnabled="True" IsSelected="True">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                    <StackPanel Margin="10">
-                        <controls:NameEditor />
-                        <DockPanel Margin="0,5">
-                            <TextBlock Text="Дата рождения" Style="{StaticResource label}" />
-                            <controls:AgePicker />
-                        </DockPanel>
-                        <DockPanel Margin="0,5">
-                            <TextBlock Text="Пол"  Style="{StaticResource label}" />
-                            <controls:SexChooser Width="100" HorizontalAlignment="Left" />
-                        </DockPanel>
-                        <DockPanel Margin="0,5">
-                            <TextBlock Text="СНИЛС" Style="{StaticResource label}" />
-                            <TextBox Text="{Binding Snils}" />
-                        </DockPanel>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="10">
+                    <StackPanel>
+                        <controls:PatientEditor />                        
 
                         <Separator />
 
