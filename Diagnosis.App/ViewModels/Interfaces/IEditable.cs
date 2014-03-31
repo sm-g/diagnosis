@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public delegate void EditableEventHandler(object sender, EditableEventArgs fe);
+    public delegate void EditableEventHandler(object sender, EditableEventArgs e);
 
     public class EditableEventArgs : EventArgs
     {

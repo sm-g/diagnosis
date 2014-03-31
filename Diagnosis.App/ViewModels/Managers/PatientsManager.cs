@@ -4,6 +4,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -11,6 +12,7 @@ namespace Diagnosis.App.ViewModels
     {
         private PatientSearch _search;
         private PatientViewModel _current;
+        private ICommand _addPatient;
         private IPatientRepository patientRepo;
 
         public ObservableCollection<PatientViewModel> Patients { get; private set; }
@@ -37,7 +39,7 @@ namespace Diagnosis.App.ViewModels
                         }
                     }
 
-                    if (value != null)
+                    if (value != null && !(value is NewPatientViewModel))
                         value.Subscribe();
 
                     this.Send((int)EventID.CurrentPatientChanged, new CurrentPatientChangedParams(CurrentPatient).Params);
@@ -67,6 +69,26 @@ namespace Diagnosis.App.ViewModels
             }
             CurrentPatient = null;
         }
+        public ICommand AddPatientCommand
+        {
+            get
+            {
+                return _addPatient
+                    ?? (_addPatient = new RelayCommand(
+                                          () =>
+                                          {
+                                              var newPatientVM = new NewPatientViewModel();
+                                              CurrentPatient = newPatientVM;
+                                              newPatientVM.PatientCreated += (s, e) =>
+                                              {
+                                                  patientRepo.SaveOrUpdate(e.patientVM.patient);
+                                                  Patients.Add(e.patientVM);
+                                                  CurrentPatient = e.patientVM;
+                                                  Subscribe(CurrentPatient);
+                                              };
+                                          }));
+            }
+        }
 
         public PatientsManager(IPatientRepository patientRepo)
         {
@@ -76,7 +98,7 @@ namespace Diagnosis.App.ViewModels
             var patientVMs = patientRepo.GetAll().Select(p => new PatientViewModel(p)).ToList();
             foreach (var pvm in patientVMs)
             {
-                pvm.Editable.Committed += p_Committed;
+                Subscribe(pvm);
             }
             patientVMs.Sort(PatientViewModel.CompareByName);
             Patients = new ObservableCollection<PatientViewModel>(patientVMs);
@@ -85,6 +107,11 @@ namespace Diagnosis.App.ViewModels
             {
                 CurrentPatient = Patients[0];
             }
+        }
+
+        private void Subscribe(PatientViewModel pvm)
+        {
+            pvm.Editable.Committed += p_Committed;
         }
 
         private void _search_ResultItemSelected(object sender, EventArgs e)

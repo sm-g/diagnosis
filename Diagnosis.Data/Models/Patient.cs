@@ -109,7 +109,7 @@ namespace Diagnosis.Models
             return 0 == control;
         }
 
-        public Patient(string lastName, string firstName, DateTime birthDate, string middleName = null)
+        public Patient(string lastName, string firstName, string middleName, DateTime birthDate, bool isMale = true)
         {
             Contract.Requires(lastName != null);
             Contract.Requires(firstName != null);
@@ -118,7 +118,7 @@ namespace Diagnosis.Models
             FirstName = firstName;
             MiddleName = middleName;
             BirthDate = birthDate;
-            IsMale = true;
+            IsMale = isMale;
         }
 
         protected Patient()

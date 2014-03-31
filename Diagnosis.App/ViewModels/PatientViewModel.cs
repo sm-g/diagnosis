@@ -263,6 +263,12 @@ namespace Diagnosis.App.ViewModels
             CoursesManager = new CoursesManager(this);
         }
 
+        protected PatientViewModel()
+        {
+            Editable = new EditableBase(this, switchedOn: true);
+            Properties = new ObservableCollection<PropertyViewModel>();
+        }
+
         #region Event handlers
 
         public void Subscribe()
@@ -377,5 +383,231 @@ namespace Diagnosis.App.ViewModels
         }
 
         #endregion Comparsion
+    }
+
+    class NewPatientViewModel : PatientViewModel
+    {
+        #region Fields
+
+        string fn;
+        string mn;
+        string ln;
+        int by;
+        int bm;
+        int bd;
+        bool isMale;
+        string snils;
+
+        #endregion
+
+        public event PatientEventHandler PatientCreated;
+
+        public new string FirstName
+        {
+            get
+            {
+                return fn;
+            }
+            set
+            {
+                if (fn != value)
+                {
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        fn = value;
+                    }
+                    OnPropertyChanged(() => FirstName);
+                    OnPropertyChanged(() => ShortName);
+                    Editable.MarkDirty();
+                }
+            }
+        }
+
+        public new string MiddleName
+        {
+            get
+            {
+                return mn;
+            }
+            set
+            {
+                if (mn != value)
+                {
+                    mn = value;
+                    OnPropertyChanged(() => MiddleName);
+                    OnPropertyChanged(() => ShortName);
+                    Editable.MarkDirty();
+                }
+            }
+        }
+
+        public new string LastName
+        {
+            get
+            {
+                return ln;
+            }
+            set
+            {
+                if (ln != value)
+                {
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        ln = value;
+                    }
+                    OnPropertyChanged(() => LastName);
+                    OnPropertyChanged(() => ShortName);
+                    Editable.MarkDirty();
+                }
+            }
+        }
+
+        public new int? Age
+        {
+            get
+            {
+                int age = DateTime.Today.Year - by;
+                try
+                {
+                    if (new DateTime(by, bm, bd) > DateTime.Today.AddYears(-age))
+                        age--;
+                    return age;
+                }
+                catch
+                {
+                    return null;
+                }
+
+            }
+            set
+            {
+
+            }
+        }
+
+        public new int BirthYear
+        {
+            get
+            {
+                return by;
+            }
+            set
+            {
+                if (by != value && value >= 0 && value <= DateTime.Today.Year)
+                {
+                    by = value;
+                    OnPropertyChanged(() => Age);
+                    OnPropertyChanged(() => BirthYear);
+                    Editable.MarkDirty();
+                }
+            }
+        }
+
+        public new int BirthMonth
+        {
+            get
+            {
+                return bm;
+            }
+            set
+            {
+                if (bm != value && value >= 1 && value <= 12)
+                {
+                    bm = value;
+                    OnPropertyChanged(() => Age);
+                    OnPropertyChanged(() => BirthMonth);
+                    Editable.MarkDirty();
+                }
+            }
+        }
+
+        public new int BirthDay
+        {
+            get
+            {
+                return bd;
+            }
+            set
+            {
+                if (bd != value && value >= 1 && value <= 31)
+                {
+                    bd = value;
+
+                    OnPropertyChanged(() => Age);
+                    OnPropertyChanged(() => BirthDay);
+                    Editable.MarkDirty();
+                }
+            }
+        }
+
+        public new bool IsMale
+        {
+            get
+            {
+                return isMale;
+            }
+            set
+            {
+                if (isMale != value)
+                {
+                    isMale = value;
+                    OnPropertyChanged(() => IsMale);
+                    Editable.MarkDirty();
+                }
+            }
+        }
+
+        public new string Snils
+        {
+            get
+            {
+                return snils;
+            }
+            set
+            {
+                if (snils != value)
+                {
+                    snils = value;
+                    OnPropertyChanged(() => Snils);
+                    Editable.MarkDirty();
+                }
+            }
+        }
+
+        public NewPatientViewModel()
+        {
+            Editable.Committed += (s, e) =>
+                OnPatientCreated(new PatientEventArgs(
+                    new PatientViewModel(
+                        new Patient(LastName,
+                                    FirstName,
+                                    MiddleName,
+                                    new DateTime(BirthYear, BirthMonth, BirthDay),
+                                    IsMale))
+                        {
+                            Snils = this.Snils
+                        }
+                    ));
+        }
+
+        protected virtual void OnPatientCreated(PatientEventArgs e)
+        {
+            var h = PatientCreated;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
+    }
+
+    public delegate void PatientEventHandler(object sender, PatientEventArgs e);
+
+    public class PatientEventArgs : EventArgs
+    {
+        public PatientViewModel patientVM;
+        public PatientEventArgs(PatientViewModel p)
+        {
+            patientVM = p;
+        }
     }
 }

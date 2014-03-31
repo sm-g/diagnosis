@@ -187,7 +187,10 @@ namespace Diagnosis.App.ViewModels
             Clear();
         }
 
-        protected abstract T FromQuery(string query);
+        protected virtual T FromQuery(string query)
+        {
+            return null;
+        }
 
         protected abstract bool Filter(T item, string query);
 
