@@ -11,6 +11,8 @@
         <conv:NegateConverter x:Key="NegateBoolean" />
         <conv:CountToVisibility x:Key="CountToVisibility" />
         <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <conv:AgeToYearsLabel x:Key="AgeToLabel" />
+        <conv:BoolToSexSign x:Key="SexToSign" />
 
         <Style TargetType="TextBlock" x:Key="ScreenTitle">
             <Setter Property="FontSize" Value="24"/>

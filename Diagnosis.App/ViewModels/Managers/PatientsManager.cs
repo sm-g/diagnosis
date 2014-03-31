@@ -27,6 +27,11 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_current != value)
                 {
+                    if (_current != null)
+                    {
+                        value.Editable.IsEditorActive = _current.Editable.IsEditorActive;
+                    }
+
                     _current = value;
 
                     OnPropertyChanged(() => CurrentPatient);

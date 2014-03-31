@@ -166,6 +166,9 @@
     <Compile Include="Controls\Card\Course.xaml.cs">
       <DependentUpon>Course.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Card\PatientHeader.xaml.cs">
+      <DependentUpon>PatientHeader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Forms\AgePicker.xaml.cs">
       <DependentUpon>AgePicker.xaml</DependentUpon>
     </Compile>
@@ -181,8 +184,8 @@
     <Compile Include="Controls\Directory\GroupsTree.xaml.cs">
       <DependentUpon>GroupsTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Forms\NameEditor.xaml.cs">
-      <DependentUpon>NameEditor.xaml</DependentUpon>
+    <Compile Include="Controls\Forms\PatientEditor.xaml.cs">
+      <DependentUpon>PatientEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Forms\SexChooser.xaml.cs">
       <DependentUpon>SexChooser.xaml</DependentUpon>
@@ -190,6 +193,7 @@
     <Compile Include="Controls\Helpers\Attached.cs" />
     <Compile Include="Controls\FocusExtension.cs" />
     <Compile Include="Converters\BooleanConverter.cs" />
+    <Compile Include="Converters\BoolToSexSign.cs" />
     <Compile Include="Converters\CountToAppointmentsLabel.cs" />
     <Compile Include="EntityManagers.cs" />
     <Compile Include="Extensions\HierarchicalExtensions.cs" />
@@ -286,6 +290,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\Card\PatientHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Forms\AgePicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -306,7 +314,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Forms\NameEditor.xaml">
+    <Page Include="Controls\Forms\PatientEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

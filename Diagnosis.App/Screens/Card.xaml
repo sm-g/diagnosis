@@ -9,9 +9,6 @@
              xmlns:conv="clr-namespace:Diagnosis.App.Converters"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="500">
-    <UserControl.Resources>
-        <conv:AgeToYearsLabel x:Key="ageLabel" />
-    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -24,19 +21,11 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Style="{StaticResource ScreenTitle}">
-                <TextBlock Text="{Binding LastName}" />
-                <TextBlock>
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat='{}{0} {1}'>
-                            <Binding Path="FirstName" />
-                            <Binding Path="MiddleName" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
-            </TextBlock>
+            <controls:PatientHeader />
+
             <StackPanel Grid.Column="1">
                 <Button Command="{Binding Editable.CommitCommand}">Сохранить</Button>
+                <ToggleButton Command="{Binding Editable.EditCommand}">Редактировать</ToggleButton>
             </StackPanel>
         </Grid>
 
@@ -44,7 +33,14 @@
             <TabItem Header="Инфо" IsEnabled="True" IsSelected="True">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="10">
                     <StackPanel>
-                        <controls:PatientEditor />                        
+                        <controls:PatientEditor Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                        <StackPanel Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                            <DockPanel Margin="0,5">
+                                <TextBlock Text="СНИЛС" Style="{StaticResource label}" />
+                                <TextBlock Text="{Binding Snils}" />
+                            </DockPanel>
+                        </StackPanel>
 
                         <Separator />
 
@@ -84,8 +80,8 @@
                         </ListView>
                     </Grid>
 
-                    <card:Appointment DataContext="{Binding CoursesManager.SelectedCourse.SelectedAppointment}" 
-                                      Margin="10"/>
+                    <card:Appointment DataContext="{Binding CoursesManager.SelectedCourse.SelectedAppointment}"
+                                      Margin="10" />
                 </DockPanel>
             </TabItem>
         </TabControl>
