@@ -48,6 +48,24 @@ namespace Diagnosis.App.ViewModels
 
         public ObservableCollection<T> Suggestions { get; private set; }
 
+        
+        private int _selectedIndex;
+        public int SelectedIndex
+        {
+            get
+            {
+                return search.SelectedIndex;
+            }
+            set
+            {
+                if (search.SelectedIndex != value)
+                {
+                    search.SelectedIndex = value;
+                    OnPropertyChanged(() => SelectedIndex);
+                }
+            }
+        }
+
         public bool IsItemCompleted
         {
             get
@@ -163,7 +181,7 @@ namespace Diagnosis.App.ViewModels
             }
             Suggestions = new ObservableCollection<T>(search.Results);
             OnPropertyChanged(() => Suggestions);
-            search.SelectedIndex = 0;
+            SelectedIndex = 0;
         }
 
         private void AddItem()

@@ -6,11 +6,11 @@
         {
             if (parent == null)
             {
-                return new SymptomSearch(EntityManagers.SymptomsManager.Symptoms[0].Parent, true, true, false);  // groups and cheсked, but not all children
+                return new SymptomSearch(EntityManagers.SymptomsManager.Symptoms[0].Parent, false, false, true);
             }
-            else
+            else                                                                // groups, cheсked, all children
             {
-                return new SymptomSearch(parent, true, true, false);
+                return new SymptomSearch(parent, false, false, true);
             }
         }
 
