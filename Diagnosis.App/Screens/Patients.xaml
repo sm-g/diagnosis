@@ -16,12 +16,16 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Style="{StaticResource ScreenTitle}" Grid.ColumnSpan="2"><Run Text="Пациенты" /></TextBlock>
-            <Button Content="Новый" Grid.Column="2" VerticalAlignment="Center" Command="{Binding AddPatientCommand}"/>
+            <TextBlock Style="{StaticResource ScreenTitle}">Пациенты</TextBlock>
+            <Button Content="Новый" 
+                    Grid.Column="1" 
+                    VerticalAlignment="Center" 
+                    Command="{Binding AddPatientCommand}" 
+                    Margin="50,10,0,6"/>
         </Grid>
 
         <controls:FloatSearch x:Name="search"
