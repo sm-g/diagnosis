@@ -27,7 +27,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_current != value)
                 {
-                    if (_current != null)
+                    if (_current != null && value != null)
                     {
                         value.Editable.IsEditorActive = _current.Editable.IsEditorActive;
                     }
