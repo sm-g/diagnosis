@@ -6,7 +6,7 @@
         xmlns:vm="clr-namespace:Diagnosis.App.ViewModels"
         xmlns:screen="clr-namespace:Diagnosis.App.Screens"
         mc:Ignorable="d"
-        DataContext="{DynamicResource vm}"        
+        DataContext="{DynamicResource vm}"
         x:Class="Diagnosis.App.MainWindow"
         x:Name="root"
         Title="MainWindow" Height="450" Width="650">
@@ -23,20 +23,23 @@
         </Grid.ColumnDefinitions>
 
         <Grid x:Name="header">
-            <TextBlock Text="{Binding LoginVM.DoctorsManager.CurrentDoctor.ShortName}"
-				Margin="5,0"
-				HorizontalAlignment="Left" />
+            <Grid.Background>
+                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}" />
+            </Grid.Background>
+            <Menu>
+                <MenuItem Header="Справочники">
+                    <MenuItem Header="Симптомы" Command="{Binding EditSymptomsDirectoryCommand}" />
+                    <MenuItem Header="Диагнозы" Command="{Binding EditDiagnosisDirectoryCommand}" />
+                </MenuItem>
+            </Menu>
 
             <CheckBox IsChecked="{Binding FastAddingMode}"
 				HorizontalAlignment="Center" Content="Приём" />
 
             <Menu HorizontalAlignment="Right">
-                <MenuItem Header="Редактировать" >
-                    <MenuItem Header="Симптомы" Command="{Binding EditSymptomsDirectoryCommand}"/>
-                    <MenuItem Header="Диагнозы" Command="{Binding EditDiagnosisDirectoryCommand}"/>
+                <MenuItem Header="{Binding LoginVM.DoctorsManager.CurrentDoctor.ShortName}">
+                    <MenuItem Header="Выйти" Command="{Binding LogoutCommand}" />
                 </MenuItem>
-                <MenuItem Header="Выйти"
-					Command="{Binding LogoutCommand}" />
             </Menu>
         </Grid>
 
@@ -45,12 +48,12 @@
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            
+
             <controls:FullTree x:Name="directory"
                                DataContext="{Binding DirectoryVM}"
                                Visibility="{Binding DataContext.IsDirectoryEditing, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=root}"
                                Grid.Column="1"
-                               Margin="10"/>
+                               Margin="10" />
 
             <screen:Card x:Name="card"
                          DataContext="{Binding CardVM}"
