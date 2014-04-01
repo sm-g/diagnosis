@@ -19,10 +19,12 @@
         </TextBlock>
 
         <TextBlock Text="{Binding IsMale, Converter={StaticResource SexToSign}}" 
+                   Visibility="{Binding LastName.Length, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}"
                    FontSize="20"
                    Margin="20,0,5,0"
                    VerticalAlignment="Center"/>
         <TextBlock Margin="5,0,10,0"
+                   Visibility="{Binding LastName.Length, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}"
                    VerticalAlignment="Center">
             <TextBlock Text="{Binding Age}" />
             <TextBlock Text="{Binding Age, Converter={StaticResource AgeToLabel}}" />

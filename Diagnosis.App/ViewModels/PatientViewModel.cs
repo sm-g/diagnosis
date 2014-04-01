@@ -576,6 +576,8 @@ namespace Diagnosis.App.ViewModels
 
         public NewPatientViewModel()
         {
+            IsMale = true;
+
             Editable.Committed += (s, e) =>
                 OnPatientCreated(new PatientEventArgs(
                     new PatientViewModel(

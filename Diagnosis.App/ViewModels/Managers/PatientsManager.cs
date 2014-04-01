@@ -27,7 +27,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_current != value)
                 {
-                    if (_current != null && value != null)
+                    if (_current != null && value != null && !(value is NewPatientViewModel))
                     {
                         value.Editable.IsEditorActive = _current.Editable.IsEditorActive;
                     }
@@ -83,6 +83,7 @@ namespace Diagnosis.App.ViewModels
                                           () =>
                                           {
                                               var newPatientVM = new NewPatientViewModel();
+                                              newPatientVM.Editable.IsEditorActive = true;
                                               CurrentPatient = newPatientVM;
                                               newPatientVM.PatientCreated += (s, e) =>
                                               {

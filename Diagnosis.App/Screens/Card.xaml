@@ -25,7 +25,8 @@
 
             <StackPanel Grid.Column="1">
                 <Button Command="{Binding Editable.CommitCommand}">Сохранить</Button>
-                <ToggleButton Command="{Binding Editable.EditCommand}">Редактировать</ToggleButton>
+                <ToggleButton Command="{Binding Editable.EditCommand}" 
+                              IsChecked="{Binding Editable.IsEditorActive, Mode=OneWay}">Редактировать</ToggleButton>
             </StackPanel>
         </Grid>
 
