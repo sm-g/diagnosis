@@ -35,7 +35,8 @@
         </Grid>
         <Popup x:Name="popup"
                PlacementTarget="{Binding ElementName=input, Mode=OneWay}" >
-            <ListView x:Name="results"
+            <ListView x:Name="results"                      
+                MaxHeight="100"
 			    ItemsSource="{Binding Results}"
 			    SelectionChanged="results_SelectionChanged"
                 MouseUp="results_MouseUp"

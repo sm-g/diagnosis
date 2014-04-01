@@ -38,7 +38,8 @@
                        StaysOpen="False" Placement="Bottom" IsOpen="false"
                        HorizontalAlignment="Left" Grid.RowSpan="2">
 
-                    <ListBox x:Name="suggestions"
+                    <ListBox x:Name="suggestions"                             
+                             MaxHeight="100"
                              ItemsSource="{Binding Suggestions}"
                              SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
                              SelectionChanged="suggestions_SelectionChanged"
