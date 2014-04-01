@@ -21,13 +21,16 @@ namespace Diagnosis.App
     enum EventID
     {
         SymptomCheckedChanged,
-        CurrentPatientChanged,
         PatientCheckedChanged,
         DiagnosisCheckedChanged,
+
+        CurrentPatientChanged,
         PropertySelectedValueChanged,
+        HealthRecordSelected,
+
         CourseStarted,
         AppointmentAdded,
-        HealthRecordSelected,
-        DirectoryEditingModeChanged
+
+        SymptomsEditingModeChanged
     }
 }

@@ -22,7 +22,14 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Grid x:Name="header">
+        <screen:Login x:Name="login"
+			    DataContext="{Binding LoginVM}"
+			    Visibility="{Binding DataContext.IsLoginActive, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=root}"
+                Grid.RowSpan="2"
+ />
+        
+        <Grid x:Name="header"
+              Visibility="{Binding IsLoginActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
             <Grid.Background>
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}" />
             </Grid.Background>
@@ -43,21 +50,23 @@
             </Menu>
         </Grid>
 
-        <Grid Grid.Row="1" x:Name="workbench">
+        <Grid x:Name="workbench" 
+              Grid.Row="1" 
+              Visibility="{Binding IsLoginActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <controls:FullTree x:Name="directory"
-                               DataContext="{Binding DirectoryVM}"
-                               Visibility="{Binding DataContext.IsDirectoryEditing, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=root}"
+            <screen:Symptoms x:Name="directory"
+                               DataContext="{Binding SymptomsManager}"
+                               Visibility="{Binding DataContext.IsSymptomsEditing, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=root}"
                                Grid.Column="1"
                                Margin="10" />
 
             <screen:Card x:Name="card"
                          DataContext="{Binding CardVM}"
-                         Visibility="{Binding DataContext.IsDirectoryEditing, Converter={StaticResource NegBooleanToVisibilityConverter}, ElementName=root}"
+                         Visibility="{Binding DataContext.IsSymptomsEditing, Converter={StaticResource NegBooleanToVisibilityConverter}, ElementName=root}"
                          Grid.Column="1"
                          Margin="10" />
 
@@ -78,11 +87,5 @@
                                  Margin="10" />
             </Expander>
         </Grid>
-
-        <screen:Login x:Name="login"
-			    DataContext="{Binding LoginVM}"
-			    Visibility="{Binding DataContext.IsLoginActive, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=root}"
-                Grid.RowSpan="2"
- />
     </Grid>
 </Window>

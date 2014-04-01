@@ -59,7 +59,7 @@ namespace Diagnosis.App.ViewModels
 
             Diagnoses = new ObservableCollection<DiagnosisViewModel>(root.Children);
 
-            this.Subscribe((int)EventID.DirectoryEditingModeChanged, (e) =>
+            this.Subscribe((int)EventID.SymptomsEditingModeChanged, (e) =>
             {
                 var isEditing = e.GetValue<bool>(Messages.Boolean);
 

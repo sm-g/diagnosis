@@ -30,8 +30,6 @@ namespace Diagnosis.App.ViewModels
 
         bool SwitchedOn { get; set; }
 
-        bool IsReady { get; }
-
         bool IsDirty { get; }
 
         void MarkDirty();

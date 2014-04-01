@@ -9,9 +9,10 @@ namespace Diagnosis.App.ViewModels
         private ICommand _commit;
         private ICommand _delete;
         private ICommand _edit;
+        private ICommand _revert;
         private bool _editActive;
         private bool _editorFocused;
-        private ICommand _revert;
+        bool _isDirty;
         private bool _switchedOn;
 
         ViewModelBase vm;
@@ -32,7 +33,7 @@ namespace Diagnosis.App.ViewModels
             }
             set
             {
-                if (_editActive != value && (IsReady || !value))
+                if (_editActive != value)
                 {
                     _editActive = value;
                     OnPropertyChanged(() => IsEditorActive);
@@ -72,18 +73,17 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        /// <summary>
-        /// Показывает, что элемент в состоянии готовности (никаких действий над ним).
-        /// </summary>
-        public virtual bool IsReady
-        {
-            get { return !IsEditorActive; }
-        }
-
         public bool IsDirty
         {
-            get;
-            set;
+            get { return _isDirty; }
+            private set
+            {
+                if (_isDirty != value)
+                {
+                    _isDirty = value;
+                    OnPropertyChanged(() => IsDirty);
+                }
+            }
         }
 
         #region Commands

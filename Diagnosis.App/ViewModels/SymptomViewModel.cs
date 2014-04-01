@@ -26,6 +26,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     symptom.Priority = value;
                     OnPropertyChanged(() => Priority);
+                    Editable.MarkDirty();
                 }
             }
         }
@@ -42,6 +43,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     symptom.Title = value;
                     OnPropertyChanged(() => Name);
+                    Editable.MarkDirty();
                 }
             }
         }
