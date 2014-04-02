@@ -73,7 +73,12 @@
             <Expander IsExpanded="{Binding IsPatientsVisible}"
                       ExpandDirection="Right"
 			          RenderTransformOrigin="0.5,0.5"
+                      BorderThickness="0,0,1,0"
+                      Padding="1,0,3,0"
 			          HorizontalAlignment="Left">
+                <Expander.BorderBrush>
+                    <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}"/>
+                </Expander.BorderBrush>
                 <Expander.Header>
                     <TextBlock RenderTransformOrigin="0.5,0.5">
                         <TextBlock.LayoutTransform>

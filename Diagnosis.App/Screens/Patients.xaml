@@ -37,17 +37,18 @@
             </controls:FloatSearch.InputBindings>
         </controls:FloatSearch>
 
-        <ListBox x:Name="patients"
-                 ItemsSource="{Binding Patients}"
-                 SelectedItem="{Binding CurrentPatient}"
-                 Grid.Row="3">
-            <ListBox.ItemTemplate>
+        <ListView x:Name="patients"
+                  ItemsSource="{Binding Patients}"
+                  SelectedItem="{Binding CurrentPatient}"
+                  Style="{StaticResource list}"
+                  Grid.Row="3">
+            <ListView.ItemTemplate>
                 <DataTemplate>
                     <DockPanel>
                         <TextBlock Text="{Binding ShortName}" />
                     </DockPanel>
                 </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </UserControl>
