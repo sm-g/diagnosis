@@ -15,6 +15,7 @@ namespace Diagnosis.App.ViewModels
         ICommand SelectCommand { get; }
         bool IsSearchActive { get; set; }
         bool IsSearchFocused { get; set; }
+        bool IsResultsVisible { get; }
 
         bool SwitchedOn { get; set; }
         bool WithCreatingNew { get; set; }

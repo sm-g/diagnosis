@@ -25,16 +25,6 @@ namespace Diagnosis.App.Controls
             EnhancedFocusScope.SetFocusOnActiveElementInScope(floatSearch);
         }
 
-        private void input_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            ShowPopup();
-        }
-
-        private void input_GotFocus(object sender, RoutedEventArgs e)
-        {
-            ShowPopup();
-        }
-
         private void input_LostFocus(object sender, RoutedEventArgs e)
         {
             if (FocusChecker.IsFocusOutsideDepObject(floatSearch) && FocusChecker.IsFocusOutsideDepObject(popup.Child))
@@ -94,7 +84,6 @@ namespace Diagnosis.App.Controls
 
         private void OnResultItemSelected()
         {
-            HidePopup();
             var context = DataContext as ISearchCommon;
             if (context != null)
             {

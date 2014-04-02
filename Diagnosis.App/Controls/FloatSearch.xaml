@@ -22,20 +22,23 @@
             </Grid.ColumnDefinitions>
             <TextBox x:Name="input"
                      Text="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     TextChanged="input_TextChanged"
                      PreviewKeyDown="input_PreviewKeyDown"
-                     GotFocus="input_GotFocus"
                      GotMouseCapture="input_GotMouseCapture"
-                     LostFocus="input_LostFocus" 
- />
+                     controls:FocusExtension.IsFocused="{Binding IsSearchFocused, Mode=TwoWay}"
+                     LostFocus="input_LostFocus">
+                <controls:WatermarkService.Watermark>
+                    <TextBlock Style="{StaticResource watermark}">Поиск</TextBlock>
+                </controls:WatermarkService.Watermark>
+            </TextBox>
             <Button Grid.Column="1"
                     Content="×"
                     Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"
                     Command="{Binding ClearCommand}" />
         </Grid>
         <Popup x:Name="popup"
-               PlacementTarget="{Binding ElementName=input, Mode=OneWay}" >
-            <ListView x:Name="results"                      
+               IsOpen="{Binding IsResultsVisible, Mode=TwoWay}"
+               PlacementTarget="{Binding ElementName=input, Mode=OneWay}">
+            <ListView x:Name="results"
                 MaxHeight="100"
 			    ItemsSource="{Binding Results}"
 			    SelectionChanged="results_SelectionChanged"

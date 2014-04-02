@@ -30,8 +30,12 @@
 
         <controls:FloatSearch x:Name="search"
                               DataContext="{Binding Search}"
-                                   Grid.Row="2"
- />
+                              Grid.Row="2" >
+            <controls:FloatSearch.InputBindings>
+                <KeyBinding Key="Escape" Command="{Binding ToggleSearchCommand}"></KeyBinding>
+                <KeyBinding Key="Enter" Command="{Binding SelectCommand}"></KeyBinding>
+            </controls:FloatSearch.InputBindings>
+        </controls:FloatSearch>
 
         <ListBox x:Name="patients"
                  ItemsSource="{Binding Patients}"

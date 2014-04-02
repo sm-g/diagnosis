@@ -125,10 +125,6 @@ namespace Diagnosis.App.ViewModels
             var patientVM = Search.SelectedItem;
             if (patientVM != null)
             {
-                if (Patients.SingleOrDefault(p => p == patientVM) == null)
-                {
-                    Patients.Add(patientVM);
-                }
                 CurrentPatient = patientVM;
                 Search.Clear();
             }

@@ -16,6 +16,7 @@ namespace Diagnosis.App.ViewModels
         private ICommand _selectCommand;
         private bool _searchActive;
         private bool _searchFocused;
+        private bool _isResultsVisible;
         private bool _switchedOn;
 
         #region ISearch
@@ -33,6 +34,7 @@ namespace Diagnosis.App.ViewModels
                 if (_query != value)
                 {
                     _query = value;
+                    IsResultsVisible = true;
                     OnPropertyChanged(() => Query);
                 }
                 MakeResults(_query);
@@ -117,7 +119,34 @@ namespace Diagnosis.App.ViewModels
                 if (_searchFocused != value)
                 {
                     _searchFocused = value;
+                    if (value)
+                    {
+                        IsResultsVisible = true;
+                    }
                     OnPropertyChanged(() => IsSearchFocused);
+                }
+            }
+        }
+
+        public bool IsResultsVisible
+        {
+            get
+            {
+                return _isResultsVisible;
+            }
+            set
+            {
+                Console.Write("{0} -> {1}", _isResultsVisible, value);
+                if (_isResultsVisible != value && (value == IsSearchFocused || IsSearchFocused)) // set to true only if IsSearchFocused
+                {
+                    Console.WriteLine(" YES");
+                    _isResultsVisible = value;
+
+                    OnPropertyChanged(() => IsResultsVisible);
+                }
+                else
+                {
+                    Console.WriteLine(" no");
                 }
             }
         }
@@ -155,6 +184,7 @@ namespace Diagnosis.App.ViewModels
                     h(this, new EventArgs());
                 }
             }
+            IsResultsVisible = false;
         }
 
         #endregion ISearch
