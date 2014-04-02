@@ -36,7 +36,7 @@ namespace Diagnosis.App.ViewModels
             }
             set
             {
-                if (_appointmentsVis != value && Appointments.Count > 0)
+                if (_appointmentsVis != value)
                 {
                     _appointmentsVis = value;
 
@@ -129,11 +129,10 @@ namespace Diagnosis.App.ViewModels
                 return _addAppointment
                     ?? (_addAppointment = new RelayCommand(() =>
                         {
-                            var app = course.AddAppointment();
-                            var appVM = new AppointmentViewModel(app);
+                            var app = AddAppointment();
 
-                            Appointments.Add(appVM);
                             IsAppointmentsVisible = true;
+                            Editable.CanBeDeleted = false;
 
                             OnPropertyChanged(() => LastAppointment);
 
@@ -154,17 +153,26 @@ namespace Diagnosis.App.ViewModels
                 Reverse();
             Appointments = new ObservableCollection<AppointmentViewModel>(appVMs);
 
+            this.PropertyChanged += CourseViewModel_PropertyChanged;
+
+            Editable = new EditableBase(this, true);
+
             if (Appointments.Count > 0)
             {
                 SelectedAppointment = Appointments.Last();
             }
-
-            this.PropertyChanged += CourseViewModel_PropertyChanged;
-
-            Editable = new EditableBase(this);
         }
 
-        void CourseViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private Appointment AddAppointment()
+        {
+            var app = course.AddAppointment();
+            var appVM = new AppointmentViewModel(app);
+
+            Appointments.Add(appVM);
+            return app;
+        }
+
+        private void CourseViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "IsSelected")
             {

@@ -14,6 +14,7 @@ namespace Diagnosis.App.ViewModels
         private bool _editorFocused;
         bool _isDirty;
         private bool _switchedOn;
+        private bool _deletable;
 
         ViewModelBase vm;
 
@@ -86,6 +87,22 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public bool CanBeDeleted
+        {
+            get
+            {
+                return _deletable;
+            }
+            set
+            {
+                if (_deletable != value)
+                {
+                    _deletable = value;
+                    OnPropertyChanged(() => CanBeDeleted);
+                }
+            }
+        }
+
         #region Commands
 
         public ICommand CommitCommand
@@ -102,7 +119,7 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _delete
-                    ?? (_delete = new RelayCommand(OnDelete, () => SwitchedOn));
+                    ?? (_delete = new RelayCommand(OnDelete, () => CanBeDeleted && SwitchedOn));
             }
         }
 

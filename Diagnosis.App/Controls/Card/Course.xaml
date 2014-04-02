@@ -21,32 +21,43 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="30" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Expander Grid.RowSpan="2"
-                  Style="{StaticResource ExpanderStyleFixed}"
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Expander Style="{StaticResource ExpanderStyleFixed}"
                   IsExpanded="{Binding IsAppointmentsVisible}"
                   Focusable="False">
-        </Expander>
-        <StackPanel Grid.Column="1">
-            <StackPanel x:Name="description">
-                <TextBlock>
+            </Expander>
+
+            <StackPanel Grid.Column="1">
+                <StackPanel x:Name="description">
+                    <TextBlock>
                     <TextBlock Text="{Binding Start, StringFormat='{}с {0:d}'}" />
                     <TextBlock Text="{Binding End, StringFormat='{}по {0:d}', TargetNullValue=''}" />
                 </TextBlock>
-                <TextBlock Text="{Binding LeadDoctor.ShortName}" />
-            </StackPanel>
-            <TextBlock Visibility="{Binding Appointments.Count, Converter={StaticResource CountToVisibility}}">
+                    <TextBlock Text="{Binding LeadDoctor.ShortName}" />
+                </StackPanel>
+                <TextBlock Visibility="{Binding Appointments.Count, Converter={StaticResource CountToVisibility}}">
                 <TextBlock Text="{Binding Appointments.Count}" />
                 <TextBlock Text="{Binding Appointments.Count, Converter={StaticResource CountToAppLabel}}" /><TextBlock Text="{Binding LastAppointment.DateTime, StringFormat='{}, последний {0:d}'}"
                            Visibility="{Binding Appointments.Count, Converter={StaticResource CountToVisibility}, ConverterParameter=3}" />
             </TextBlock>
-        </StackPanel>
+            </StackPanel>
 
-        <StackPanel Grid.Column="1"
-                    Grid.Row="1"
+            <Button Command="{Binding Editable.DeleteCommand}" 
+                Grid.Column="1"
+                Height="24"
+                Width="24" 
+                HorizontalAlignment="Right" 
+                VerticalAlignment="Top"
+                Visibility="{Binding Editable.CanBeDeleted, Converter={StaticResource BooleanToVisibilityConverter}}">×</Button>
+        </Grid>        
+
+        <StackPanel Grid.Row="1"
                     Visibility="{Binding IsAppointmentsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ListView x:Name="appointments"
                   ItemsSource="{Binding Appointments}"
@@ -72,12 +83,11 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-        </StackPanel>
-
-        <Button Grid.Column="1"
-                Grid.Row="2"
+            <Button
                 Command="{Binding AddAppointmentCommand}"
+                Margin="0,5,0,0"
                 Visibility="{Binding IsEnded, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-            Новый осмотр</Button>
+                Новый осмотр</Button>
+        </StackPanel>        
     </Grid>
 </UserControl>

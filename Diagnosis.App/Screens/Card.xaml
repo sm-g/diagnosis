@@ -66,7 +66,7 @@
                                   Grid.Row="2"
                                   SelectionMode="Single">
                             <ListView.InputBindings>
-                                <KeyBinding Key="Delete" Command="{Binding CoursesManager.SelectedCourse.DeleteCommand}" />
+                                <KeyBinding Key="Delete" Command="{Binding CoursesManager.SelectedCourse.Editable.DeleteCommand}" />
                             </ListView.InputBindings>
                             <ListView.ItemTemplate>
                                 <DataTemplate>
@@ -76,6 +76,7 @@
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListViewItem}">
                                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
                                 </Style>
                             </ListView.ItemContainerStyle>
                         </ListView>
