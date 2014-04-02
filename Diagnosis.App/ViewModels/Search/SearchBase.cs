@@ -136,17 +136,11 @@ namespace Diagnosis.App.ViewModels
             }
             set
             {
-                Console.Write("{0} -> {1}", _isResultsVisible, value);
                 if (_isResultsVisible != value && (value == IsSearchFocused || IsSearchFocused)) // set to true only if IsSearchFocused
                 {
-                    Console.WriteLine(" YES");
                     _isResultsVisible = value;
 
                     OnPropertyChanged(() => IsResultsVisible);
-                }
-                else
-                {
-                    Console.WriteLine(" no");
                 }
             }
         }
