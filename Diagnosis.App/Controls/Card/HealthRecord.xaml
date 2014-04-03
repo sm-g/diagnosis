@@ -26,7 +26,7 @@
 
                 <StackPanel x:Name="symptomsSelector" Visibility="{Binding IsSelectingSymptomsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <controls:AutoComplete DataContext="{Binding SymptomAutoComplete}" />
-                    <controls:GroupsTree DataContext="{Binding Path=Symptoms, Source={x:Static app:EntityManagers.SymptomsManager}}" MaxHeight="200" />
+                    <!--<controls:GroupsTree DataContext="{Binding Path=Symptoms, Source={x:Static app:EntityManagers.SymptomsManager}}" MaxHeight="200" />-->
                     <DockPanel Visibility="{Binding Symptoms.Count, Converter={StaticResource CountToVisibility}}">
                         <TextBlock DockPanel.Dock="Top">Выбранные симптомы:</TextBlock>
                         <ListView ItemsSource="{Binding Symptoms}">

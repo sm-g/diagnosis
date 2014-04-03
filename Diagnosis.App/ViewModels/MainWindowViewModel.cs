@@ -8,7 +8,6 @@ namespace Diagnosis.App.ViewModels
     {
         private bool _loginActive;
         private LoginViewModel _loginVM;
-        private PatientsManager _patientsVM;
         private PatientViewModel _patientVM;
         private ICommand _logout;
         private ICommand _editDiagnosisDirectory;

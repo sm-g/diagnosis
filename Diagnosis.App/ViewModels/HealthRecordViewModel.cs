@@ -22,7 +22,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return (HasDiagnosis ? Diagnosis.Name + ". " : "") +
+                return (HasDiagnosis ? Diagnosis.Code + ". " : "") +
                     string.Concat(Symptoms.OrderBy(s => s.Priority).Select(s => s.Name + " "));
             }
             set

@@ -48,8 +48,6 @@ namespace Diagnosis.App.ViewModels
 
         public ObservableCollection<T> Suggestions { get; private set; }
 
-        
-        private int _selectedIndex;
         public int SelectedIndex
         {
             get

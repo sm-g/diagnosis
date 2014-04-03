@@ -42,10 +42,10 @@
     <Grid>
         <TreeView
             x:Name="tree"
-            HorizontalContentAlignment="Stretch"
             ItemContainerStyle="{StaticResource fullTreeItemStyle}"
             ItemTemplate="{StaticResource fullTreeItemTemplate}"
-            ItemsSource="{Binding}">
+            ItemsSource="{Binding}" 
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled">
         </TreeView>
     </Grid>
 </UserControl>

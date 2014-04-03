@@ -70,13 +70,14 @@
                             </ListView.InputBindings>
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <card:Course />
+                                    <card:Course Width="170" />
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListViewItem}">
                                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Margin" Value="0,5,0,5" />
                                 </Style>
                             </ListView.ItemContainerStyle>
                         </ListView>
