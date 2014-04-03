@@ -106,6 +106,15 @@ namespace Diagnosis.App.ViewModels
             return (T)this;
         }
 
+        public T Remove(IEnumerable<T> vms)
+        {
+            foreach (var vm in vms)
+            {
+                Remove(vm);
+            }
+            return (T)this;
+        }
+
         public void Delete()
         {
             // TODO

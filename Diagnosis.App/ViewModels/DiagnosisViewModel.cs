@@ -82,7 +82,7 @@ namespace Diagnosis.App.ViewModels
         }
 
         public DiagnosisViewModel(string title)
-            : this(new Diagnosis.Models.Diagnosis("12345", title))
+            : this(new Diagnosis.Models.Diagnosis("code", title))
         {
         }
 
@@ -96,7 +96,6 @@ namespace Diagnosis.App.ViewModels
             int i = 1;
             foreach (DiagnosisViewModel child in Children)
             {
-                child.Parent = this;
                 child.SortingOrder = this.SortingOrder + i++;
                 child.Initialize();
             }

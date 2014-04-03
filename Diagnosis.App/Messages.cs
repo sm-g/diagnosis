@@ -9,6 +9,7 @@ namespace Diagnosis.App
         public const string Symptom = "symptomVM";
         public const string CheckedState = "checked";
         public const string Patient = "patientVM";
+        public const string Doctor = "doctorVM";
         public const string Diagnosis = "diagnosisVM";
         public const string Property = "propertyVM";
         public const string Course = "course";
@@ -25,6 +26,7 @@ namespace Diagnosis.App
         DiagnosisCheckedChanged,
 
         CurrentPatientChanged,
+        CurrentDoctorChanged,
         PropertySelectedValueChanged,
         HealthRecordSelected,
 

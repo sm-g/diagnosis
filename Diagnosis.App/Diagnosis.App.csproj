@@ -216,7 +216,6 @@
     <Compile Include="Converters\IHierarchicalCheckableToBackground.cs" />
     <Compile Include="Converters\NegateBool.cs" />
     <Compile Include="Converters\TreeDepthToMargin.cs" />
-    <Compile Include="DataCreator.cs" />
     <Compile Include="Controls\Helpers\ChildFinder.cs" />
     <Compile Include="Controls\Helpers\EnhancedFocusScope.cs" />
     <Compile Include="Controls\Helpers\FocusChecker.cs" />

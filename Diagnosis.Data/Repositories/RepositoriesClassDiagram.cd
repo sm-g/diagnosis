@@ -48,6 +48,14 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
+  <Class Name="Diagnosis.Data.Repositories.IcdChapterRepository" Collapsed="true">
+    <Position X="1.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAIAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\IcdChapterRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
   <Interface Name="Diagnosis.Data.Repositories.IPatientRepository">
     <Position X="8.25" Y="5.75" Width="1.5" />
     <TypeIdentifier>

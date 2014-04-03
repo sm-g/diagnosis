@@ -4,20 +4,26 @@ using EventAggregator;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Diagnosis.App.ViewModels
 {
     /// <summary>
     /// Содержит ViewModels всех диагнозов.
     /// </summary>
-    public class DiagnosisManager
+    public class DiagnosisManager : ViewModelBase
     {
-        private IDiagnosisRepository repository;
+        private IcdChapterRepository repository;
+        ObservableCollection<DiagnosisViewModel> _diagnoses;
 
         public ObservableCollection<DiagnosisViewModel> Diagnoses
         {
-            get;
-            private set;
+            get { return _diagnoses; }
+            private set
+            {
+                _diagnoses = value;
+                OnPropertyChanged(() => Diagnoses);
+            }
         }
 
         public DiagnosisViewModel GetHealthRecordDiagnosis(HealthRecord hr)
@@ -39,25 +45,26 @@ namespace Diagnosis.App.ViewModels
             diagnosis.IsChecked = true;
         }
 
-        public DiagnosisManager(IDiagnosisRepository repo)
+        public DiagnosisManager(IcdChapterRepository repo)
         {
             Contract.Requires(repo != null);
 
             repository = repo;
 
-            var allDiagnoses = repository.GetAll().Select(d => new DiagnosisViewModel(d)).ToList();
+            var chapters = repository.GetAll().ToList();
+            var chapterDiagnoses = chapters.Select(ch =>
+                new Diagnosis.Models.Diagnosis(ch.Code, ch.Title)).ToList();
+            var chapterVms = chapterDiagnoses.Select(ch => new DiagnosisViewModel(ch)).ToList();
 
-            foreach (var item in allDiagnoses)
+            SetDiagnosesForDoctor(chapterVms, EntityManagers.DoctorsManager.CurrentDoctor);
+
+
+            this.Subscribe((int)EventID.CurrentDoctorChanged, (e) =>
             {
-                item.Add(allDiagnoses.Where(d => d.diagnosis.Parent == item.diagnosis));
-            }
+                var doctorVM = e.GetValue<DoctorViewModel>(Messages.Doctor);
 
-            var root = new DiagnosisViewModel("root");
-            root.Add(allDiagnoses.Where(d => d.IsRoot));
-
-            root.Initialize();
-
-            Diagnoses = new ObservableCollection<DiagnosisViewModel>(root.Children);
+                SetDiagnosesForDoctor(chapterVms, doctorVM);
+            });
 
             this.Subscribe((int)EventID.SymptomsEditingModeChanged, (e) =>
             {
@@ -65,6 +72,45 @@ namespace Diagnosis.App.ViewModels
 
                 OnDirectoryEditingModeChanged(isEditing);
             });
+        }
+
+        private void SetDiagnosesForDoctor(
+            IEnumerable<DiagnosisViewModel> chapterVms,
+            DoctorViewModel doctorVM)
+        {
+            var blocks = doctorVM.doctor.Speciality.IcdBlocks;
+            var blockDiagnoses = blocks.Select(b =>
+                new Diagnosis.Models.Diagnosis(b.Code, b.Title, chapterVms.Select(ch => ch.diagnosis).Where(ch =>
+                    ch.Code == b.IcdChapter.Code).SingleOrDefault())).ToList();
+            var blockVms = blockDiagnoses.Select(b => new DiagnosisViewModel(b)).ToList();
+
+            foreach (var item in chapterVms)
+            {
+                item.Add(blockVms.Where(b => b.diagnosis.Parent == item.diagnosis));
+            }
+
+            var diseases = blocks.SelectMany(b => b.IcdDiseases).ToList(); ;
+            var diseaseDiagnoses = diseases.Select(d =>
+                new Diagnosis.Models.Diagnosis(d.Code, d.Title, blockDiagnoses.Where(b =>
+                    b.Code == d.IcdBlock.Code).SingleOrDefault())).ToList();
+            var diseaseVms = diseaseDiagnoses.Select(d => new DiagnosisViewModel(d)).ToList();
+
+            foreach (var item in blockVms)
+            {
+                item.Add(diseaseVms.Where(d => d.diagnosis.Parent == item.diagnosis));
+            }
+
+            chapterVms = chapterVms.Where(ch => ch.AllChildren.Count() > ch.Children.Count);
+            foreach (var item in chapterVms)
+            {
+                item.Remove(blockVms.Where(b => b.Children.Count == 0));
+            }
+
+            var root = new DiagnosisViewModel("root");
+            root.Add(chapterVms);
+            root.Initialize();
+
+            Diagnoses = new ObservableCollection<DiagnosisViewModel>(root.Children);
         }
 
         private void OnDirectoryEditingModeChanged(bool isEditing)

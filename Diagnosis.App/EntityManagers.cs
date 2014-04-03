@@ -45,7 +45,7 @@ namespace Diagnosis.App
         {
             get
             {
-                return _diagnosisManager ?? (_diagnosisManager = new DiagnosisManager(new DiagnosisRepository()));
+                return _diagnosisManager ?? (_diagnosisManager = new DiagnosisManager(new IcdChapterRepository()));
             }
         }
     }

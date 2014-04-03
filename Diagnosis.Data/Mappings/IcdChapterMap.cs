@@ -14,6 +14,7 @@ namespace Diagnosis.Data.Mappings
             });
 
             Property(x => x.Title);
+            Property(x => x.Code);
             Set(x => x.IclBlocks, s =>
             {
                 s.Key(k =>

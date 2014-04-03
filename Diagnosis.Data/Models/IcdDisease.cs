@@ -9,8 +9,8 @@ namespace Diagnosis.Models
 
         public virtual int Id { get; protected set; }
         public virtual IcdBlock IcdBlock { get; protected set; }
-        public virtual string Title { get; protected set; }
-        public virtual string Code { get; protected set; }
+        public virtual string Title { get; set; }
+        public virtual string Code { get; set; }
         public virtual ReadOnlyCollection<HealthRecord> HealthRecords
         {
             get

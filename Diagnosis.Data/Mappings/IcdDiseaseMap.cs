@@ -16,6 +16,7 @@ namespace Diagnosis.Data.Mappings
             });
 
             Property(x => x.Title);
+            Property(x => x.Code);
             Set(x => x.HealthRecords, s =>
             {
                 s.Key(k =>

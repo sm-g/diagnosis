@@ -2,6 +2,7 @@
 using Diagnosis.App.ViewModels;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Windows;
 
 namespace Diagnosis.App
 {
@@ -63,6 +64,18 @@ namespace Diagnosis.App
         {
             Params = new[] {
                 new KeyValuePair<string,object>(Messages.Patient, patient)
+            };
+        }
+    }
+
+    class CurrentDoctorChangedParams : IEventParams
+    {
+        public KeyValuePair<string, object>[] Params { get; private set; }
+
+        public CurrentDoctorChangedParams(DoctorViewModel doctor)
+        {
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.Doctor, doctor)
             };
         }
     }

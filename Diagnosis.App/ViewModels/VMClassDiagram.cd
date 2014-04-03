@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Diagnosis.App.ViewModels.CheckableBase">
-    <Position X="9.5" Y="9" Width="1.5" />
+    <Position X="8.5" Y="9" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
@@ -24,7 +24,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAABAAAAQAAAAIwAAQQAAAQAAAAgAACAAAhAAA=</HashCode>
+      <HashCode>AAAAAAAABAAAAQAAAAAwAAQQAAAQAAAAgAACAAAhAAA=</HashCode>
       <FileName>ViewModels\DiagnosisViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -52,14 +52,14 @@
   <Class Name="Diagnosis.App.ViewModels.HierarchicalSearch&lt;T&gt;">
     <Position X="26.75" Y="7.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAIAAAQAAAAABAAAAAAAACAAAAAAg=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAACAAAAAAg=</HashCode>
       <FileName>ViewModels\Search\HierarchicalSearch.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Diagnosis.App.ViewModels.PatientSearch" Collapsed="true">
     <Position X="26.75" Y="6.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAACAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ViewModels\Search\PatientSearch.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -86,6 +86,8 @@
       <Path>
         <Point X="18.333" Y="10.5" />
         <Point X="18.333" Y="9.75" />
+        <Point X="17.208" Y="9.75" Type="JumpStart" />
+        <Point X="17.042" Y="9.75" Type="JumpEnd" />
         <Point X="16.193" Y="9.75" Type="JumpStart" />
         <Point X="16.026" Y="9.75" Type="JumpEnd" />
         <Point X="15.74" Y="9.75" Type="JumpStart" />
@@ -97,7 +99,7 @@
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAQIAEKQAAAAAAAAAMBQAAQABAAKgYAkQIACAAQCAAg=</HashCode>
+      <HashCode>ACQIAEKQAAABAAAAAMBQAAQABAAKgYAkQIACAAQCIAg=</HashCode>
       <FileName>ViewModels\PatientViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -123,7 +125,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAgkEAAwAAoIAggRABACBRAAEgAApACAATAAAA=</HashCode>
+      <HashCode>AAAAAAIgEEAAQAAoKAgiRABACBQAAFiAApAGAATAAAA=</HashCode>
       <FileName>ViewModels\Search\SearchBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -131,7 +133,7 @@
   <Class Name="Diagnosis.App.ViewModels.SymptomSearch">
     <Position X="24.25" Y="9.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAABBAAAAAAAACAAAAAAA=</HashCode>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAABAAAAAAAAACAAAAAAA=</HashCode>
       <FileName>ViewModels\Search\SymptomSearch.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -169,7 +171,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAwAAAAAQCEAIEQAFIQAAAAQAgAACkABAAAAAIQ=</HashCode>
+      <HashCode>AAAAAAwAAAAgQCEAIERAFIQAASAQAgCAAkAFAAAAAIQ=</HashCode>
       <FileName>ViewModels\EditableBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -180,7 +182,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>ABIAAQAAACAAgAAAAAAQAAAQQEABACAAAACCUgAAAAA=</HashCode>
+      <HashCode>ABIAAQAAQCAAgAAAAAAQAAAQQEABACAAAAiCEgAAAAA=</HashCode>
       <FileName>ViewModels\CourseViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -202,14 +204,8 @@
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
-    <AssociationLine Name="CardVM" Type="Diagnosis.App.ViewModels.PatientViewModel" FixedToPoint="true">
-      <Path>
-        <Point X="19.5" Y="5.713" />
-        <Point X="19.5" Y="10.5" />
-      </Path>
-    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AgAAAhAAQAAAiAAAgEAAAAAQAAACAAEAFAAAEAAAAIA=</HashCode>
+      <HashCode>AgBCghAASAAECACAgEAAAAAUAAAKAAEAFAAAFAAAAIA=</HashCode>
       <FileName>ViewModels\MainWindowViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -243,7 +239,7 @@
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAAAAABAAAAAAAAAAAAAAgAAAAAQAAAAhAAABAAgAAA=</HashCode>
+      <HashCode>AAAAAABAIAAAAgAAAAAAAgAAAAASAAIAhAAABAAgAAA=</HashCode>
       <FileName>ViewModels\Managers\PatientsManager.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -269,7 +265,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAQhAABQAAQiEBEAAABAAAQQgAACAAAAQAAAAgQAIAA=</HashCode>
+      <HashCode>AAQhAABUAAQCEBEAAABAAAQQgAACAAAAQAAAAgQAIgA=</HashCode>
       <FileName>ViewModels\HealthRecordViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -282,7 +278,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AACAAABgAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AACAAARgAAAGAAAAAAAAAAAAQAACAEAAEAAAAAAAAAQ=</HashCode>
       <FileName>ViewModels\Managers\SymptomsManager.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -291,14 +287,6 @@
   </Class>
   <Class Name="Diagnosis.App.EntityManagers" Collapsed="true">
     <Position X="17.75" Y="17.5" Width="1.5" />
-    <AssociationLine Name="DiagnosisManager" Type="Diagnosis.App.ViewModels.DiagnosisManager" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="18.375" Y="18.062" />
-        <Point X="18.375" Y="18.437" />
-        <Point X="10.375" Y="18.437" />
-        <Point X="10.375" Y="14.997" />
-      </Path>
-    </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAAAAAgAAAAAQAAQAAAAAAAQAACIAJAAAAAgAAAAAAA=</HashCode>
       <FileName>EntityManagers.cs</FileName>
@@ -317,7 +305,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>KAAAACAAAAAAAAAAAAAABABAAAAAAAAAAAAAABAAAAA=</HashCode>
+      <HashCode>KAAAACAAAAAAAAAAAAAABABAAAACAAAAAAAAABAAAAA=</HashCode>
       <FileName>ViewModels\Managers\CoursesManager.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -330,7 +318,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAQgAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <HashCode>AAABAQgAAAACAAAAAAAAAAAAQAAAAAAAEAAAAAAACgA=</HashCode>
       <FileName>ViewModels\Managers\DiagnosisManager.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -343,7 +331,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AIQQIAAACAEABAAAAAkMAAABgQAAJDAAIKAEAABAAAA=</HashCode>
+      <HashCode>AAQQIAAACAEABAAAAAkMAAABgwAAJDAAIKAEAEAAAAA=</HashCode>
       <FileName>ViewModels\Search\AutoCompleteBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -384,7 +372,7 @@
   <Interface Name="Diagnosis.App.ViewModels.IEditable">
     <Position X="26.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAwAAAAAQCEAAAAAEAQAAAAQAAAACEABAAAAAIA=</HashCode>
+      <HashCode>AAAAAAwAAAAAQCEAAAAAEAQAAAAQAAAAAEAFAAAAAIA=</HashCode>
       <FileName>ViewModels\Interfaces\IEditable.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -393,13 +381,6 @@
     <TypeIdentifier>
       <HashCode>AAIAACAAAAAAAAAAAIAEREAIAAEAAAAAAQAAAAQAAAg=</HashCode>
       <FileName>ViewModels\Interfaces\IHierarchical.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="Diagnosis.App.ViewModels.ISearch&lt;T&gt;">
-    <Position X="33.25" Y="3" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAABAAAAAAAAA=</HashCode>
-      <FileName>ViewModels\Interfaces\ISearch.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Diagnosis.App.ViewModels.IAutoComplete">
@@ -419,8 +400,15 @@
   <Interface Name="Diagnosis.App.ViewModels.ISearchCommon">
     <Position X="31.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAgAAAAgAAIAAAgBAAAAAAAAAgAAoAAAADAAAA=</HashCode>
+      <HashCode>AAAAAAIgAAAAAAAICAAiBAAAAAAAAAgAAoAEAADAAAA=</HashCode>
       <FileName>ViewModels\Interfaces\ISearchCommon.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Diagnosis.App.ViewModels.ISearchCheckable&lt;T&gt;">
+    <Position X="33.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAgAAAAACAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Interfaces\ISearchCheckable.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

@@ -14,11 +14,12 @@ namespace Diagnosis.Data.Mappings
             });
 
             Property(x => x.Title);
+            Property(x => x.Code);
             Set(x => x.IcdDiseases, s =>
             {
                 s.Key(k =>
                 {
-                    k.Column("BlokID");
+                    k.Column("BlockID");
                 });
                 s.Inverse(true);
                 s.Cascade(Cascade.All);
