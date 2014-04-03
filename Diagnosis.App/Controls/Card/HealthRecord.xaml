@@ -39,7 +39,7 @@
                     </DockPanel>
                 </StackPanel>
                 <StackPanel x:Name="diagnosesSelector" Visibility="{Binding IsSelectingSymptomsActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-                    <controls:AutoComplete DataContext="{Binding DiagnosisAutoComplete}" />
+                    <!--<controls:AutoComplete DataContext="{Binding DiagnosisAutoComplete}" />-->
                     <controls:FullTree DataContext="{Binding Path=Diagnoses, Source={x:Static app:EntityManagers.DiagnosisManager}}" MaxHeight="200"/>
                     <DockPanel Visibility="{Binding HasDiagnosis, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <TextBlock DockPanel.Dock="Top">Выбранный диагноз:</TextBlock>

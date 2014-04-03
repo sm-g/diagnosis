@@ -21,16 +21,16 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Style="{StaticResource ScreenTitle}">Пациенты</TextBlock>
-            <Button Content="Новый" 
-                    Grid.Column="1" 
-                    VerticalAlignment="Center" 
-                    Command="{Binding AddPatientCommand}" 
-                    Margin="50,10,0,6"/>
+            <Button Content="Новый"
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Command="{Binding AddPatientCommand}"
+                    Margin="50,10,0,6" />
         </Grid>
 
         <controls:FloatSearch x:Name="search"
                               DataContext="{Binding Search}"
-                              Grid.Row="2" >
+                              Grid.Row="2">
             <controls:FloatSearch.InputBindings>
                 <KeyBinding Key="Escape" Command="{Binding ToggleSearchCommand}"></KeyBinding>
                 <KeyBinding Key="Enter" Command="{Binding SelectCommand}"></KeyBinding>
@@ -41,12 +41,18 @@
                   ItemsSource="{Binding Patients}"
                   SelectedItem="{Binding CurrentPatient}"
                   Style="{StaticResource list}"
-                  Grid.Row="3">
+                  Grid.Row="3" 
+                  Margin="0,5,0,0" 
+                  HorizontalContentAlignment="Stretch">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <DockPanel>
+                    <Grid>
                         <TextBlock Text="{Binding ShortName}" />
-                    </DockPanel>
+                        <TextBlock x:Name="unsaved"
+                                   HorizontalAlignment="Right"
+                                   Text="new"
+                                   Visibility="{Binding Editable.IsDirty, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
+                    </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

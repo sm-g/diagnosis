@@ -42,6 +42,8 @@
     <Grid>
         <TreeView
             x:Name="tree"
+            MinWidth="50"
+            HorizontalContentAlignment="Stretch"
             ItemContainerStyle="{StaticResource fullTreeItemStyle}"
             ItemTemplate="{StaticResource fullTreeItemTemplate}"
             ItemsSource="{Binding}" 
