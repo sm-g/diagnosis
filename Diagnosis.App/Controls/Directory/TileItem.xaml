@@ -55,14 +55,15 @@
                     Grid.ColumnSpan="2" />
 
             <TextBlock x:Name="title"
-                       Text="{Binding Name}"
-                       TextWrapping="Wrap"
                        HorizontalAlignment="{Binding Checkable.IsNonCheckable, Converter={StaticResource BoolToCenterAligmentConverter}}"
                        VerticalAlignment="Center"
                        IsHitTestVisible="False"
                        Padding="5"
                        Grid.Column="1"
                        Grid.ColumnSpan="2">
+                <TextBlock Text="{Binding Code}" />
+                <TextBlock Text="{Binding Name}"
+                       TextWrapping="Wrap" />
             </TextBlock>
 
             <StackPanel Orientation="Horizontal"
@@ -71,18 +72,15 @@
                         IsHitTestVisible="False"
                         Margin="5"
                         Grid.Column="2">
-                <TextBlock x:Name="unsaved" 
+                <TextBlock x:Name="unsaved"
                        Text="new"
                        Visibility="{Binding Editable.IsDirty, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
-                
+
                 <TextBlock x:Name="checkedChildren"
                        Text="{Binding CheckedChildren, Mode=OneWay}"
                        Visibility="{Binding IsTerminal, Converter={StaticResource NegBooleanToVisibilityConverter}, Mode=OneWay}"
-                        />
+ />
             </StackPanel>
-               
-
-           
 
             <StackPanel x:Name="editor"
                         LostFocus="editor_LostFocus"
@@ -102,10 +100,6 @@
                         <Thickness Right="{StaticResource buttonsWidth}" />
                     </TextBox.Margin>
                 </TextBox>
-                <CheckBox x:Name="isGroup"
-                          IsChecked="{Binding IsNonCheckable}"
-                          Content="Группа"
- />
             </StackPanel>
 
             <controls:FloatSearch x:Name="search"

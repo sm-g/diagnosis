@@ -7,8 +7,7 @@
              x:Name="treeItem"
              x:Class="Diagnosis.App.Controls.TreeItem"
              mc:Ignorable="d"
-             d:DesignHeight="20" d:DesignWidth="300" LostFocus="treeItem_LostFocus"
->
+             d:DesignHeight="20" d:DesignWidth="300" LostFocus="treeItem_LostFocus">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -23,16 +22,24 @@
         <CheckBox x:Name="checkbox"
 			IsChecked="{Binding IsChecked, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True}"
 			Focusable="False"
-			Visibility="{Binding IsNonCheckable, Converter={StaticResource NegBooleanToVisibilityConverter}}"
- />
+			Visibility="{Binding IsNonCheckable, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
 
-        <TextBlock x:Name="title"
-			       Text="{Binding Name}"
-                   Grid.Column="1" />
+        <DockPanel x:Name="title" Grid.Column="1">
+            <TextBlock Text="{Binding Code}" Margin="0,0,3,0"/>
+            <TextBlock Text="{Binding Name}"
+                       TextWrapping="Wrap" 
+                       MaxWidth="200" /> <!--TODO--> 
+        </DockPanel>
 
         <StackPanel Orientation="Horizontal"
                     Grid.Column="2">
-            <TextBlock x:Name="unsaved" 
+            <StackPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Margin" Value="5,0,0,0" />
+                </Style>
+            </StackPanel.Resources>
+
+            <TextBlock x:Name="unsaved"
                        Text="new"
                        Visibility="{Binding Editable.IsDirty, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
             <TextBlock x:Name="checkedChildren"
@@ -45,11 +52,7 @@
 			LostFocus="editor_LostFocus"
 			Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">
             <TextBox x:Name="titleEditor"
-				Text="{Binding Name, UpdateSourceTrigger=LostFocus}"
-                controls:FocusExtension.IsFocused="{Binding Editable.IsEditorFocused}" />
-            <CheckBox x:Name="isGroup"
-				IsChecked="{Binding IsNonCheckable}"
-                  Content="Группа" />
+				Text="{Binding Name, UpdateSourceTrigger=LostFocus}" />
         </StackPanel>
 
         <controls:FloatSearch x:Name="search"
