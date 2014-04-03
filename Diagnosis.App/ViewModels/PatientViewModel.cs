@@ -289,7 +289,7 @@ namespace Diagnosis.App.ViewModels
                 }),
                  this.Subscribe((int)EventID.AppointmentAdded, (e) =>
                 {
-                    var app = e.GetValue<Appointment>(Messages.Appointment);
+                    var app = e.GetValue<AppointmentViewModel>(Messages.Appointment);
 
                     OnAppointmentAdded(app);
                 }),
@@ -336,7 +336,7 @@ namespace Diagnosis.App.ViewModels
             Editable.MarkDirty();
         }
 
-        private void OnAppointmentAdded(Appointment app)
+        private void OnAppointmentAdded(AppointmentViewModel app)
         {
             Editable.MarkDirty();
         }

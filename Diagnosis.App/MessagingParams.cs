@@ -112,7 +112,7 @@ namespace Diagnosis.App
     {
         public KeyValuePair<string, object>[] Params { get; private set; }
 
-        public AppointmentAddedParams(Appointment appointment)
+        public AppointmentAddedParams(AppointmentViewModel appointment)
         {
             Contract.Requires(appointment != null);
 

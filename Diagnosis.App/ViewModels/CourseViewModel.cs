@@ -129,14 +129,15 @@ namespace Diagnosis.App.ViewModels
                 return _addAppointment
                     ?? (_addAppointment = new RelayCommand(() =>
                         {
-                            var app = AddAppointment();
+                            var appVM = AddAppointment();
 
+                            SelectedAppointment = appVM;
                             IsAppointmentsVisible = true;
                             Editable.CanBeDeleted = false;
 
                             OnPropertyChanged(() => LastAppointment);
 
-                            this.Send((int)EventID.AppointmentAdded, new AppointmentAddedParams(app).Params);
+                            this.Send((int)EventID.AppointmentAdded, new AppointmentAddedParams(appVM).Params);
                         }, () => !IsEnded));
             }
         }
@@ -163,13 +164,13 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private Appointment AddAppointment()
+        private AppointmentViewModel AddAppointment()
         {
             var app = course.AddAppointment();
             var appVM = new AppointmentViewModel(app);
 
             Appointments.Add(appVM);
-            return app;
+            return appVM;
         }
 
         private void CourseViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
