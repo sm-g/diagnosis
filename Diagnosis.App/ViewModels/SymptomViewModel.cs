@@ -48,6 +48,14 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public string SearchText
+        {
+            get
+            {
+                return Name;
+            }
+        }
+
         public override void OnCheckedChanged()
         {
             base.OnCheckedChanged();

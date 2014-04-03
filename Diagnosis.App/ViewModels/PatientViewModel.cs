@@ -245,6 +245,14 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public string SearchText
+        {
+            get
+            {
+                return Name;
+            }
+        }
+
         public void SetDoctorVM(DoctorViewModel doctor)
         {
             Contract.Requires(doctor != null);
