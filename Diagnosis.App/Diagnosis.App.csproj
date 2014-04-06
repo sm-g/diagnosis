@@ -151,6 +151,10 @@
     <Compile Include="Controls\Card\PatientHeader.xaml.cs">
       <DependentUpon>PatientHeader.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Directory\TreeItemLight.xaml.cs">
+      <DependentUpon>TreeItemLight.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Directory\TreeTemplateSelector.cs" />
     <Compile Include="Controls\Forms\AgePicker.xaml.cs">
       <DependentUpon>AgePicker.xaml</DependentUpon>
     </Compile>
@@ -277,6 +281,10 @@
     <Page Include="Controls\Card\PatientHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Directory\TreeItemLight.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\Forms\AgePicker.xaml">
       <SubType>Designer</SubType>

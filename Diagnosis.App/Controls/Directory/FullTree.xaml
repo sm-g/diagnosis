@@ -35,8 +35,9 @@
             <HierarchicalDataTemplate
                 x:Key="fullTreeItemTemplate"
                 ItemsSource="{Binding Children}">
-                <controls:TreeItem />
+                <controls:TreeItemLight />
             </HierarchicalDataTemplate>
+
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
