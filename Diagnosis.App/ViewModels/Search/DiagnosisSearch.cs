@@ -10,14 +10,9 @@ namespace Diagnosis.App.ViewModels
     public class DiagnosisSearch : HierarchicalSearch<DiagnosisViewModel>
     {
         public DiagnosisSearch(DiagnosisViewModel parent, bool withNonCheckable = false, bool withChecked = false, bool allChildren = true)
-            : base(parent, withNonCheckable, withChecked, allChildren)
+            : base(parent, withNonCheckable, withChecked, false, allChildren)
         {
             InitQuery();
-        }
-
-        protected override DiagnosisViewModel FromQuery(string query)
-        {
-            return new DiagnosisViewModel(new Diagnosis.Models.Diagnosis("12345", query, Parent.diagnosis));
         }
 
         protected override bool Filter(DiagnosisViewModel item, string query)

@@ -11,8 +11,8 @@ namespace Diagnosis.App.ViewModels
         protected T Parent { get; private set; }
         public bool AllChildren { get; set; }
 
-        public HierarchicalSearch(T parent, bool withNonCheckable = false, bool withChecked = false, bool allChildren = true)
-            : base(withNonCheckable, withChecked)
+        public HierarchicalSearch(T parent, bool withNonCheckable = false, bool withChecked = false, bool withCreatingNew = true, bool allChildren = true)
+            : base(withNonCheckable, withChecked, withCreatingNew)
         {
             Contract.Requires(parent != null);
 
@@ -21,7 +21,5 @@ namespace Diagnosis.App.ViewModels
 
             Collection = AllChildren ? parent.AllChildren : parent.Children;
         }
-
-        protected override abstract T FromQuery(string query);
     }
 }
