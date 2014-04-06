@@ -17,7 +17,7 @@ namespace Diagnosis.App.ViewModels
 
         protected override bool Filter(DiagnosisViewModel item, string query)
         {
-            return item.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase) ||
+            return item.Name.ToLower().Contains(query.ToLower()) ||
                 item.Code.StartsWith(query, StringComparison.InvariantCultureIgnoreCase);
         }
     }
