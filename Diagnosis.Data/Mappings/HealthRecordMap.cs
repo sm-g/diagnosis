@@ -14,32 +14,27 @@ namespace Diagnosis.Data.Mappings
             });
 
             Property(x => x.Comment);
-            Property(x => x.Category);
+            Property(x => x.FromYear);
+            Property(x => x.FromMonth);
+            Property(x => x.FromDay);
+            Property(x => x.NumValue);
 
             ManyToOne(x => x.Appointment, m =>
             {
                 m.Column("AppointmentID");
             });
-            ManyToOne(x => x.Diagnosis, m =>
+            ManyToOne(x => x.Disease, m =>
             {
-                m.Column("DiagnosisID");
+                m.Column("DiseaseID");
             });
-            Set(x => x.Symptoms, s =>
+            ManyToOne(x => x.Symptom, m =>
             {
-                s.Table("RecordSymptoms");
-                s.Key(k =>
-                {
-                    k.Column("RecordID");
-                });
-                s.Cascade(Cascade.All);
-                s.Access(Accessor.Field);
-            }, r =>
+                m.Column("SymptomID");
+                m.Cascade(Cascade.All);
+            });
+            ManyToOne(x => x.Category, m =>
             {
-                r.ManyToMany(x =>
-                {
-                    x.Column("SymptomID");
-                    x.Class(typeof(Symptom));
-                });
+                m.Column("CategoryID");
             });
         }
     }

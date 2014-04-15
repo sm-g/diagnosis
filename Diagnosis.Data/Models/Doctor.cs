@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using System;
 
 namespace Diagnosis.Models
 {
@@ -8,11 +9,53 @@ namespace Diagnosis.Models
     {
         ISet<Course> courses = new HashSet<Course>();
         ISet<Appointment> appointments = new HashSet<Appointment>();
+        string _fn;
+        string _ln;
+        string _mn;
 
         public virtual int Id { get; protected set; }
-        public virtual string FirstName { get; set; }
-        public virtual string MiddleName { get; set; }
-        public virtual string LastName { get; set; }
+        public virtual string FirstName
+        {
+            get
+            {
+                return _fn;
+            }
+            set
+            {
+                Contract.Requires(!String.IsNullOrEmpty(value));
+                _fn = value;
+            }
+        }
+        public virtual string MiddleName
+        {
+            get
+            {
+                return _mn;
+            }
+            set
+            {
+                if (value == "")
+                {
+                    _mn = null;
+                }
+                else
+                {
+                    _mn = value;
+                }
+            }
+        }
+        public virtual string LastName
+        {
+            get
+            {
+                return _ln;
+            }
+            set
+            {
+                Contract.Requires(!String.IsNullOrEmpty(value));
+                _ln = value;
+            }
+        }
         public virtual bool IsMale { get; set; }
         public virtual Speciality Speciality { get; set; }
         public virtual ReadOnlyCollection<Course> Courses

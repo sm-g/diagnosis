@@ -2,21 +2,24 @@
 using NHibernate;
 using NHibernate.Criterion;
 using System.Collections.Generic;
+using System;
 
 namespace Diagnosis.Data.Repositories
 {
     public class SymptomRepository : ModelRepository<Symptom>, ISymptomRepository
     {
-        public Symptom GetByTitle(string title)
+        public IEnumerable<Symptom> GetByWord(string word)
         {
-            ISession session = NHibernateHelper.GetSession();
-            {
-                Symptom symptom = session
-                    .CreateCriteria(typeof(Symptom))
-                    .Add(Restrictions.Eq("Title", title))
-                    .UniqueResult<Symptom>();
-                return symptom;
-            }
+            throw new NotImplementedException();
+            //ISession session = NHibernateHelper.GetSession();
+            //{
+            //    var symptoms = session
+            //        .CreateCriteria<Symptom>()
+            //        .CreateCriteria("Words")
+            //        .Add(Expression.In("Id", word.Id))
+            //        .List<Symptom>();
+            //    return symptoms;
+            //}
         }
     }
 }

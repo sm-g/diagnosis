@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Diagnosis.Data.Repositories
 {
-    public class IcdDiseaseRepository : ModelRepository<IcdDisease>, IRepository<IcdDisease>
+    public class IcdDiseaseRepository : ModelRepository<IcdDisease>, IIcdDiseaseRepository
     {
         public IcdDisease GetByTitle(string title)
         {

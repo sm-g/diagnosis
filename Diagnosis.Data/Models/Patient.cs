@@ -12,13 +12,116 @@ namespace Diagnosis.Models
         ISet<Course> courses = new HashSet<Course>();
 
         string _snils;
+        int? _year;
+        byte? _month;
+        byte? _day;
+        string _fn;
+        string _ln;
+        string _mn;
 
         public virtual int Id { get; protected set; }
-        public virtual string FirstName { get; set; }
-        public virtual string MiddleName { get; set; }
-        public virtual string LastName { get; set; }
+        public virtual string FirstName
+        {
+            get
+            {
+                return _fn;
+            }
+            set
+            {
+                if (value == "")
+                {
+                    _fn = null;
+                }
+                else
+                {
+                    _fn = value;
+                }
+            }
+        }
+        public virtual string MiddleName
+        {
+            get
+            {
+                return _mn;
+            }
+            set
+            {
+                if (value == "")
+                {
+                    _mn = null;
+                }
+                else
+                {
+                    _mn = value;
+                }
+            }
+        }
+        public virtual string LastName
+        {
+            get
+            {
+                return _ln;
+            }
+            set
+            {
+                if (value == "")
+                {
+                    _ln = null;
+                }
+                else
+                {
+                    _ln = value;
+                }
+            }
+        }
         public virtual bool IsMale { get; set; }
-        public virtual DateTime BirthDate { get; set; }
+        public virtual int? BirthYear
+        {
+            get
+            {
+                return _year;
+            }
+            set
+            {
+                if (value <= DateTime.Today.Year)
+                {
+                    _year = value;
+                    CheckDate();
+                }
+            }
+        }
+        public virtual byte? BirthMonth
+        {
+            get
+            {
+                return _month;
+            }
+            set
+            {
+                if (value >= 0 && value <= 12)
+                {
+                    _month = value > 0 ? value : null;
+                    CheckDate();
+
+                }
+            }
+        }
+        public virtual byte? BirthDay
+        {
+            get
+            {
+                return _day;
+            }
+            set
+            {
+                if (value >= 0 && value <= 31)
+                {
+                    _day = value > 0 ? value : null;
+                    CheckDate();
+                }
+            }
+        }
+
         public virtual string SNILS
         {
             get
@@ -50,6 +153,39 @@ namespace Diagnosis.Models
             }
         }
 
+        public virtual int? Age
+        {
+            get
+            {
+                int age = DateTime.Today.Year - BirthYear.Value;
+
+                try
+                {
+                    if (new DateTime(BirthYear.Value, BirthMonth.Value, BirthDay.Value) > DateTime.Today.AddYears(-age))
+                        age--;
+                }
+                catch
+                {
+                }
+                return age;
+            }
+            set
+            {
+                if (value.HasValue)
+                {
+                    int year = DateTime.Today.Year - value.Value;
+
+                    if (BirthMonth.HasValue && BirthDay.HasValue &&
+                        new DateTime(year, BirthMonth.Value, BirthDay.Value) > DateTime.Today.AddYears(-value.Value))
+                        year--;
+
+                    Checkers.CheckDate(year, BirthMonth, BirthDay);
+
+                    BirthYear = year;
+                }
+            }
+        }
+
         public virtual void DeleteCourse(Course course)
         {
             courses.Remove(course);
@@ -76,6 +212,11 @@ namespace Diagnosis.Models
             {
                 existingPatientProperty.Value = value;
             }
+        }
+
+        void CheckDate()
+        {
+            Checkers.CheckDate(BirthYear, BirthMonth, BirthDay);
         }
 
         static bool CheckSnils(string snils)
@@ -109,7 +250,7 @@ namespace Diagnosis.Models
             return 0 == control;
         }
 
-        public Patient(string lastName, string firstName, string middleName, DateTime birthDate, bool isMale = true)
+        public Patient(string lastName, string firstName, string middleName, int? year = null, byte? month = null, byte? day = null, bool isMale = true)
         {
             Contract.Requires(lastName != null);
             Contract.Requires(firstName != null);
@@ -117,7 +258,9 @@ namespace Diagnosis.Models
             LastName = lastName;
             FirstName = firstName;
             MiddleName = middleName;
-            BirthDate = birthDate;
+            BirthYear = year;
+            BirthMonth = month;
+            BirthDay = day;
             IsMale = isMale;
         }
 

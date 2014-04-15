@@ -17,7 +17,9 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.MiddleName);
             Property(x => x.LastName);
             Property(x => x.IsMale);
-            Property(x => x.BirthDate);
+            Property(x => x.BirthYear);
+            Property(x => x.BirthMonth);
+            Property(x => x.BirthDay);
             Property(x => x.SNILS);
 
             Set(x => x.Courses, s =>

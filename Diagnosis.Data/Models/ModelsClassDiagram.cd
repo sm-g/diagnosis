@@ -25,12 +25,12 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Diagnosis.Models.Diagnosis">
-    <Position X="10.25" Y="9.75" Width="1.5" />
+    <Position X="15" Y="11.5" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAACAAAAAAAAEEQAAAAkQAQAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAACAAAAAAAAAEQAAAAkQAQAAAAEAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Diagnosis.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -62,17 +62,15 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAACAABEAABAQBAAIAAAAAAAQAAAAAAAIAAAAAgAAAA=</HashCode>
+      <HashCode>AAACAAAEAABEAAAIIAAAAAAEQAAAAAgAIBAAAAgACAA=</HashCode>
       <FileName>Models\HealthRecord.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Appointment" />
-      <Property Name="Diagnosis" />
-      <Property Name="IcdDisease" />
+      <Property Name="Category" />
+      <Property Name="Disease" />
+      <Property Name="Symptom" />
     </ShowAsAssociation>
-    <ShowAsCollectionAssociation>
-      <Property Name="Symptoms" />
-    </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Diagnosis.Models.Patient">
     <Position X="0.75" Y="0.75" Width="1.5" />
@@ -80,28 +78,28 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAGAEgAAAAAAAAAAAAQAARAAAAAgAEAEEAAIBAAIAg=</HashCode>
+      <HashCode>AAAGAEiAAAAAAAAAAAAQAABAAAAIgAEEEEAAIBAAIAg=</HashCode>
       <FileName>Models\Patient.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
       <Property Name="Courses" />
     </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="Diagnosis.Models.PatientRecordProperty">
+  <Class Name="Diagnosis.Models.PatientRecordProperty" Collapsed="true">
     <Position X="4" Y="2.75" Width="1.5" />
     <AssociationLine Name="Value" Type="Diagnosis.Models.PropertyValue" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="5" Y="4.305" />
+        <Point X="5" Y="3.312" />
         <Point X="5" Y="6.381" />
         <Point X="5.75" Y="6.381" />
       </Path>
     </AssociationLine>
     <AssociationLine Name="HealthRecord" Type="Diagnosis.Models.HealthRecord" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="5.5" Y="3.961" />
-        <Point X="7.656" Y="3.961" />
-        <Point X="7.656" Y="6.75" />
-        <Point X="8.75" Y="6.75" />
+        <Point X="5.5" Y="3.187" />
+        <Point X="7.656" Y="3.187" />
+        <Point X="7.656" Y="6.677" />
+        <Point X="8.75" Y="6.677" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
@@ -111,8 +109,8 @@
     <ShowAsAssociation>
       <Property Name="Patient" />
       <Property Name="Value" />
-      <Property Name="HealthRecord" />
       <Property Name="Property" />
+      <Property Name="HealthRecord" />
     </ShowAsAssociation>
   </Class>
   <Class Name="Diagnosis.Models.Property">
@@ -145,12 +143,19 @@
       <FileName>Models\PropertyValue.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diagnosis.Models.Symptom">
-    <Position X="11.75" Y="6.5" Width="1.5" />
+  <Class Name="Diagnosis.Models.Symptom" Collapsed="true">
+    <Position X="11.5" Y="6.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACAAAAAAAAAEAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAACAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAQAAAgAAA=</HashCode>
       <FileName>Models\Symptom.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="DefaultCategory" />
+      <Property Name="Disease" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Words" />
+    </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Diagnosis.Models.IcdBlock" Collapsed="true">
     <Position X="1" Y="10.25" Width="1.5" />
@@ -186,13 +191,13 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Diagnosis.Models.Speciality">
-    <Position X="12.75" Y="9.5" Width="1.5" />
+    <Position X="12.75" Y="11" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <AssociationLine Name="IcdBlocks" Type="Diagnosis.Models.IcdBlock" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="13.562" Y="11.699" />
+        <Point X="13.562" Y="13.199" />
         <Point X="13.562" Y="13.18" />
         <Point X="1.625" Y="13.18" />
         <Point X="1.625" Y="10.812" />
@@ -205,6 +210,24 @@
     <ShowAsCollectionAssociation>
       <Property Name="IcdBlocks" />
     </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Diagnosis.Models.Word" Collapsed="true">
+    <Position X="14.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAEAEAIAAQAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Models\Word.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="DefaultCategory" />
+      <Property Name="Parent" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Diagnosis.Models.RecordCategory" Collapsed="true">
+    <Position X="11.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\RecordCategory.cs</FileName>
+    </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

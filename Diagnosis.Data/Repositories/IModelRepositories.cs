@@ -18,14 +18,36 @@ namespace Diagnosis.Data.Repositories
         Doctor GetByName(string name);
     }
 
+    public interface IWordRepository : IRepository<Word>
+    {
+        Word GetByTitle(string title);
+    }
+
+    public interface ICategoryRepository : IRepository<Category>
+    {
+        Category GetByTitle(string title);
+    }
+
     public interface ISymptomRepository : IRepository<Symptom>
     {
-        Symptom GetByTitle(string title);
+        IEnumerable<Symptom> GetByWord(string title);
     }
 
     public interface IDiagnosisRepository : IRepository<Diagnosis.Models.Diagnosis>
     {
         Diagnosis.Models.Diagnosis GetByTitle(string title);
         Diagnosis.Models.Diagnosis GetByCode(string code);
+    }
+
+    public interface IIcdChapterRepository : IRepository<IcdChapter>
+    {
+        IcdChapter GetByTitle(string title);
+        IcdChapter GetByCode(string code);
+    }
+
+    public interface IIcdDiseaseRepository : IRepository<IcdDisease>
+    {
+        IcdDisease GetByTitle(string title);
+        IcdDisease GetByCode(string code);
     }
 }

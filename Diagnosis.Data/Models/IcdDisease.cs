@@ -6,6 +6,7 @@ namespace Diagnosis.Models
     public class IcdDisease
     {
         ISet<HealthRecord> healthRecords = new HashSet<HealthRecord>();
+        ISet<Symptom> symptoms = new HashSet<Symptom>();
 
         public virtual int Id { get; protected set; }
         public virtual IcdBlock IcdBlock { get; protected set; }
@@ -17,6 +18,14 @@ namespace Diagnosis.Models
             {
                 return new ReadOnlyCollection<HealthRecord>(
                     new List<HealthRecord>(healthRecords));
+            }
+        }
+        public virtual ReadOnlyCollection<Symptom> Symptoms
+        {
+            get
+            {
+                return new ReadOnlyCollection<Symptom>(
+                    new List<Symptom>(symptoms));
             }
         }
 

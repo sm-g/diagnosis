@@ -1,28 +1,71 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Collections.ObjectModel;
+using System;
 
 namespace Diagnosis.Models
 {
     public class HealthRecord
     {
-        ISet<Symptom> symptoms = new HashSet<Symptom>();
         ISet<PatientRecordProperty> recordProperties = new HashSet<PatientRecordProperty>();
+        int? _year;
+        byte? _month;
+        byte? _day;
 
         public virtual int Id { get; protected set; }
         public virtual Appointment Appointment { get; protected set; }
         public virtual string Comment { get; set; }
-        public virtual byte Category { get; set; }
-        public virtual Diagnosis Diagnosis { get; set; }
-        public virtual IcdDisease IcdDisease { get; set; }
-        public virtual ReadOnlyCollection<Symptom> Symptoms
+        public virtual Category Category { get; set; }
+        public virtual IcdDisease Disease { get; set; }
+        public virtual Symptom Symptom { get; set; }
+        public virtual decimal? NumValue { get; set; }
+        public virtual int? FromYear
         {
             get
             {
-                return new ReadOnlyCollection<Symptom>(
-                    new List<Symptom>(symptoms));
+                return _year;
+            }
+            set
+            {
+                if (value <= DateTime.Today.Year)
+                {
+                    _year = value;
+                    CheckDate();
+                }
             }
         }
+        public virtual byte? FromMonth
+        {
+            get
+            {
+                return _month;
+            }
+            set
+            {
+                if (value >= 0 && value <= 12)
+                {
+                    _month = value > 0 ? value : null;
+                    CheckDate();
+
+                }
+            }
+        }
+        public virtual byte? FromDay
+        {
+            get
+            {
+                return _day;
+            }
+            set
+            {
+                if (value >= 0 && value <= 31)
+                {
+                    _day = value > 0 ? value : null;
+                    CheckDate();
+                }
+            }
+        }
+
         public virtual ReadOnlyCollection<PatientRecordProperty> RecordProperties
         {
             get
@@ -32,25 +75,16 @@ namespace Diagnosis.Models
             }
         }
 
-
-        public virtual void AddSymptom(Symptom symptom)
-        {
-            Contract.Requires(symptom != null);
-            symptoms.Add(symptom);
-        }
-
-        public virtual void RemoveSymptom(Symptom symptom)
-        {
-            Contract.Requires(symptom != null);
-            symptoms.Remove(symptom);
-        }
-
-        public HealthRecord(Appointment appointment, byte category = 0)
+        public HealthRecord(Appointment appointment)
         {
             Contract.Requires(appointment != null);
 
             Appointment = appointment;
-            Category = category;
+        }
+
+        void CheckDate()
+        {
+            Checkers.CheckDate(FromYear, FromMonth, FromDay);
         }
 
         protected HealthRecord() { }
