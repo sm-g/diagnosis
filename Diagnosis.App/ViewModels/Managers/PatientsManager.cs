@@ -107,7 +107,7 @@ namespace Diagnosis.App.ViewModels
             {
                 Subscribe(pvm);
             }
-            patientVMs.Sort(PatientViewModel.CompareByName);
+            patientVMs.Sort(PatientViewModel.CompareByFullName);
             Patients = new ObservableCollection<PatientViewModel>(patientVMs);
 
             if (Patients.Count > 0)

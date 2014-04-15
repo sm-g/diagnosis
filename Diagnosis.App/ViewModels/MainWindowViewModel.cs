@@ -14,7 +14,7 @@ namespace Diagnosis.App.ViewModels
         private ICommand _editSymptomsDirectory;
         private bool _fastAddingMode;
         private bool _isPatientsVisible;
-        private bool _isSymptomsEditing;
+        private bool _isWordsEditing;
         private object _directoryExplorer;
 
         public bool IsLoginActive
@@ -50,33 +50,33 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public bool IsSymptomsEditing
+        public bool IsWordsEditing
         {
             get
             {
-                return _isSymptomsEditing;
+                return _isWordsEditing;
             }
             set
             {
-                if (_isSymptomsEditing != value)
+                if (_isWordsEditing != value)
                 {
-                    _isSymptomsEditing = value;
+                    _isWordsEditing = value;
 
                     if (value)
                     {
                         PatientsVM.NoCurrent();
                     }
 
-                    this.Send((int)EventID.SymptomsEditingModeChanged, new DirectoryEditingModeChangedParams(value).Params);
-                    OnPropertyChanged(() => IsSymptomsEditing);
+                    this.Send((int)EventID.WordsEditingModeChanged, new DirectoryEditingModeChangedParams(value).Params);
+                    OnPropertyChanged(() => IsWordsEditing);
                 }
             }
         }
-        public SymptomsManager SymptomsManager
+        public WordsManager WordsManager
         {
             get
             {
-                return EntityManagers.SymptomsManager;
+                return EntityManagers.WordsManager;
             }
         }
 
@@ -173,7 +173,7 @@ namespace Diagnosis.App.ViewModels
                     ?? (_editSymptomsDirectory = new RelayCommand(
                                           () =>
                                           {
-                                              IsSymptomsEditing = true;
+                                              IsWordsEditing = true;
                                           }));
             }
         }
@@ -214,7 +214,7 @@ namespace Diagnosis.App.ViewModels
             {
                 patient.SetDoctorVM(LoginVM.DoctorsManager.CurrentDoctor);
 
-                IsSymptomsEditing = false;
+                IsWordsEditing = false;
             }
             CardVM = patient;
         }

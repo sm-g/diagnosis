@@ -29,10 +29,12 @@ namespace Diagnosis.App.ViewModels
         public DiagnosisViewModel GetHealthRecordDiagnosis(HealthRecord hr)
         {
             Contract.Requires(hr != null);
+            if (hr.Disease == null)
+                return null;
 
             if (Diagnoses.Count > 0)
             {
-                return Diagnoses[0].Parent.AllChildren.Where(d => d.diagnosis == hr.Diagnosis).SingleOrDefault();
+                return Diagnoses[0].Parent.AllChildren.Where(d => d.diagnosis.Code == hr.Disease.Code).SingleOrDefault();
             }
 
             return null;
@@ -66,7 +68,7 @@ namespace Diagnosis.App.ViewModels
                 SetDiagnosesForDoctor(chapterVms, doctorVM);
             });
 
-            this.Subscribe((int)EventID.SymptomsEditingModeChanged, (e) =>
+            this.Subscribe((int)EventID.WordsEditingModeChanged, (e) =>
             {
                 var isEditing = e.GetValue<bool>(Messages.Boolean);
 

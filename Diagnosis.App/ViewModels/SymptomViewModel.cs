@@ -1,53 +1,66 @@
 ﻿using Diagnosis.Models;
 using EventAggregator;
+using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class SymptomViewModel : HierarchicalCheckable<SymptomViewModel>
+    public class SymptomViewModel : CheckableBase
     {
         internal readonly Symptom symptom;
-
-        private SymptomSearch _search;
 
         public EditableBase Editable { get; private set; }
 
         public string SortingOrder { get; private set; }
 
-        public byte Priority
-        {
-            get
-            {
-                return symptom.Priority;
-            }
-            set
-            {
-                if (symptom.Priority != value)
-                {
-                    symptom.Priority = value;
-                    OnPropertyChanged(() => Priority);
-                    Editable.MarkDirty();
-                }
-            }
-        }
-
         public string Name
         {
             get
             {
-                return symptom.Title;
+                return (Disease != null ? Disease.Code + ". " : "") +
+                    string.Concat(Words.OrderBy(w => w.Priority).Select(w => w.Name + " "));
+            }
+        }
+
+        public ObservableCollection<WordViewModel> Words { get; private set; }
+
+
+        private CategoryViewModel _defCat;
+        private IcdDisease _disease;
+        public IcdDisease Disease
+        {
+            get
+            {
+                return _disease;
             }
             set
             {
-                if (symptom.Title != value)
+                if (_disease != value)
                 {
-                    symptom.Title = value;
-                    OnPropertyChanged(() => Name);
+                    _disease = value;
+                    OnPropertyChanged(() => Disease);
+                }
+            }
+        }
+        public CategoryViewModel DefaultCategory
+        {
+            get
+            {
+                return _defCat;
+            }
+            set
+            {
+                if (_defCat != value)
+                {
+                    symptom.DefaultCategory = value.category;
+                    _defCat = EntityManagers.CategoryManager.GetByModel(symptom.DefaultCategory);
+
+                    OnPropertyChanged(() => DefaultCategory);
                     Editable.MarkDirty();
                 }
             }
         }
-
         public string SearchText
         {
             get
@@ -60,51 +73,39 @@ namespace Diagnosis.App.ViewModels
         {
             base.OnCheckedChanged();
 
-            this.Send((int)EventID.SymptomCheckedChanged, new SymptomCheckedChangedParams(this, IsChecked).Params);
+            // this.Send((int)EventID.WordCheckedChanged, new WordCheckedChangedParams(this, IsChecked).Params);
         }
 
-        public SymptomSearch Search
-        {
-            get
-            {
-                if (_search == null)
-                {
-                    _search = new SymptomSearch(this);
-                    _search.ResultItemSelected += _search_ResultItemSelected;
-                }
-                return _search;
-            }
-        }
+        //public WordSearch Search
+        //{
+        //    get
+        //    {
+        //        if (_search == null)
+        //        {
+        //            _search = new WordSearch(this);
+        //            _search.ResultItemSelected += _search_ResultItemSelected;
+        //        }
+        //        return _search;
+        //    }
+        //}
 
         public SymptomViewModel(Symptom s)
         {
             Contract.Requires(s != null);
+
             symptom = s;
+            Words = new ObservableCollection<WordViewModel>(EntityManagers.WordsManager.GetSymptomWords(s));
+            DefaultCategory = EntityManagers.CategoryManager.GetByModel(symptom.DefaultCategory);
 
             Editable = new EditableBase(this);
         }
 
-        public SymptomViewModel(string title)
-            : this(new Symptom(title))
-        {
-        }
 
-        private void _search_ResultItemSelected(object sender, System.EventArgs e)
-        {
-            this.AddIfNotExists(Search.SelectedItem, Search.AllChildren);
-            Search.SelectedItem.checkable.IsChecked = true;
-            Search.Clear();
-        }
-
-        internal void Initialize()
-        {
-            int i = 1;
-            foreach (SymptomViewModel child in Children)
-            {
-                child.Parent = this;
-                child.SortingOrder = this.SortingOrder + i++;
-                child.Initialize();
-            }
-        }
+        //private void _search_ResultItemSelected(object sender, System.EventArgs e)
+        //{
+        //    this.AddIfNotExists(Search.SelectedItem, Search.AllChildren);
+        //    Search.SelectedItem.checkable.IsChecked = true;
+        //    Search.Clear();
+        //}
     }
 }

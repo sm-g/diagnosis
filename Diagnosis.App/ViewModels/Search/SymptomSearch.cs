@@ -1,33 +1,32 @@
 ﻿using Diagnosis.Models;
 using System;
 using System.Diagnostics.Contracts;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class SymptomSearch : HierarchicalSearch<SymptomViewModel>
+    public class SymptomSearch : SearchBase<SymptomViewModel>
     {
-        /// <summary>
-        /// Верхняя граница приоритета симптома. Поиск выдаёт симптомы с приоритетом, численно большим верхней границы.
-        /// </summary>
-        public byte UpperPriority { get; set; }
-
-        public SymptomSearch(SymptomViewModel parent, bool withNonCheckable = false, bool withChecked = false, bool allChildren = true, byte upperPriority = 0)
-            : base(parent, withNonCheckable, withChecked, allChildren)
+        public SymptomSearch(IEnumerable<SymptomViewModel> symptoms)
+            : base(withCreatingNew: false)
         {
-            UpperPriority = upperPriority;
-
+            Collection = symptoms;
             InitQuery();
         }
 
-        protected override SymptomViewModel FromQuery(string query)
-        {
-            return EntityManagers.SymptomsManager.Create(query);
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="query">titles of words, separated by comma</param>
+        /// <returns></returns>
         protected override bool Filter(SymptomViewModel item, string query)
         {
-            return item.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)
-                 && (UpperPriority <= item.Priority); ;
+            var words = query.Split(',')
+                .Select(q => EntityManagers.WordsManager.Find(q));
+
+            return words.IsSubsetOf(item.Words);
         }
     }
 }

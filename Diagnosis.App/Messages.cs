@@ -6,7 +6,7 @@ namespace Diagnosis.App
     /// </summary>
     static class Messages
     {
-        public const string Symptom = "symptomVM";
+        public const string Word = "wordVM";
         public const string CheckedState = "checked";
         public const string Patient = "patientVM";
         public const string Doctor = "doctorVM";
@@ -21,7 +21,7 @@ namespace Diagnosis.App
 
     enum EventID
     {
-        SymptomCheckedChanged,
+        WordCheckedChanged,
         PatientCheckedChanged,
         DiagnosisCheckedChanged,
 
@@ -33,6 +33,6 @@ namespace Diagnosis.App
         CourseStarted,
         AppointmentAdded,
 
-        SymptomsEditingModeChanged
+        WordsEditingModeChanged
     }
 }

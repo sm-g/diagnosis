@@ -7,9 +7,11 @@ namespace Diagnosis.App
     {
         private static DoctorsManager _doctorsManager;
         private static PatientsManager _patientsManager;
+        private static CategoryManager _catManager;
         private static PropertyManager _propertyManager;
-        private static SymptomsManager _symptomsManager;
+        private static WordsManager _wordsManager;
         private static DiagnosisManager _diagnosisManager;
+        private static SymptomsManager _symptomsManager;
 
         public static DoctorsManager DoctorsManager
         {
@@ -27,6 +29,14 @@ namespace Diagnosis.App
             }
         }
 
+        public static CategoryManager CategoryManager
+        {
+            get
+            {
+                return _catManager ?? (_catManager = new CategoryManager(new CategoryRepository()));
+            }
+        }
+
         public static PropertyManager PropertyManager
         {
             get
@@ -34,11 +44,11 @@ namespace Diagnosis.App
                 return _propertyManager ?? (_propertyManager = new PropertyManager(new PropertyRepository()));
             }
         }
-        public static SymptomsManager SymptomsManager
+        public static WordsManager WordsManager
         {
             get
             {
-                return _symptomsManager ?? (_symptomsManager = new SymptomsManager(new SymptomRepository()));
+                return _wordsManager ?? (_wordsManager = new WordsManager(new WordRepository()));
             }
         }
         public static DiagnosisManager DiagnosisManager
@@ -46,6 +56,13 @@ namespace Diagnosis.App
             get
             {
                 return _diagnosisManager ?? (_diagnosisManager = new DiagnosisManager(new IcdChapterRepository()));
+            }
+        }
+        public static SymptomsManager SymptomsManager
+        {
+            get
+            {
+                return _symptomsManager ?? (_symptomsManager = new SymptomsManager(new SymptomRepository()));
             }
         }
     }

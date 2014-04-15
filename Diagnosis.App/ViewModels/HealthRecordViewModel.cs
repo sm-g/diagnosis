@@ -12,18 +12,21 @@ namespace Diagnosis.App.ViewModels
     {
         private readonly HealthRecord healthRecord;
         private static HealthRecordViewModel current;
-        private DiagnosisViewModel _diagnosis;
         private bool _selectingSymptomsActive;
-        private SymptomAutoComplete _symptomAutoComplete;
+        private WordAutoComplete _symptomAutoComplete;
         private DiagnosisAutoComplete _diagnosisAutoComplete;
         private List<EventMessageHandler> msgHandlers;
+
+        public EditableBase Editable { get; private set; }
 
         public string Name
         {
             get
             {
-                return (HasDiagnosis ? Diagnosis.Code + ". " : "") +
-                    string.Concat(Symptoms.OrderBy(s => s.Priority).Select(s => s.Name + " "));
+                if (Symptom != null)
+                    return Symptom.Name;
+                else
+                    return string.Empty;
             }
             set
             {
@@ -40,6 +43,13 @@ namespace Diagnosis.App.ViewModels
 
         #endregion CheckableBase
 
+        #region Model
+
+        private SymptomViewModel _symptom;
+
+        private CategoryViewModel _category;
+        private DiagnosisViewModel _diagnosis;
+
         public string Comment
         {
             get
@@ -55,11 +65,21 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-
-        public ObservableCollection<SymptomViewModel> Symptoms
+        public SymptomViewModel Symptom
         {
-            get;
-            private set;
+            get
+            {
+                return _symptom;
+            }
+            set
+            {
+                if (_symptom != value)
+                {
+                    _symptom = value;
+                    OnPropertyChanged(() => Symptom);
+                    OnPropertyChanged(() => Name);
+                }
+            }
         }
 
         public DiagnosisViewModel Diagnosis
@@ -79,6 +99,126 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
+        public ObservableCollection<CategoryViewModel> Categories
+        {
+            get
+            {
+                return EntityManagers.CategoryManager.Categories;
+            }
+        }
+        public CategoryViewModel Category
+        {
+            get
+            {
+                return _category;
+            }
+            set
+            {
+                if (_category != value)
+                {
+                    _category = value;
+                    OnPropertyChanged(() => Category);
+                }
+            }
+        }
+
+        public decimal? NumValue
+        {
+            get
+            {
+                return healthRecord.NumValue;
+            }
+            set
+            {
+                if (healthRecord.NumValue != value)
+                {
+                    healthRecord.NumValue = value;
+                    OnPropertyChanged(() => NumValue);
+                    Editable.MarkDirty();
+                }
+            }
+        }
+
+        public int? FromYear
+        {
+            get
+            {
+                return healthRecord.FromYear;
+            }
+            set
+            {
+                if (healthRecord.FromYear != value)
+                {
+                    healthRecord.FromYear = value;
+                    OnPropertyChanged(() => FromYear);
+                    OnPropertyChanged(() => DateOffset);
+                    Editable.MarkDirty();
+                }
+            }
+        }
+
+        public byte? FromMonth
+        {
+            get
+            {
+                return healthRecord.FromMonth;
+            }
+            set
+            {
+                if (healthRecord.FromMonth != value)
+                {
+                    healthRecord.FromMonth = value;
+                    OnPropertyChanged(() => FromMonth);
+                    OnPropertyChanged(() => DateOffset);
+                    Editable.MarkDirty();
+                }
+            }
+        }
+
+        public byte? FromDay
+        {
+            get
+            {
+                return healthRecord.FromDay;
+            }
+            set
+            {
+                if (healthRecord.FromDay != value)
+                {
+                    healthRecord.FromDay = value;
+                    OnPropertyChanged(() => FromDay);
+                    OnPropertyChanged(() => DateOffset);
+                    Editable.MarkDirty();
+                }
+            }
+        }
+
+
+        public DateOffset DateOffset
+        {
+            get
+            {
+                return new DateOffset(FromYear, FromMonth, FromDay);
+            }
+            set
+            {
+                int? year;
+                byte? month;
+                byte? day;
+                value.ToDate(out year, out month, out day);
+
+                FromYear = year;
+                FromMonth = month;
+                FromDay = day;
+            }
+        }
+
+
+
+
+
+        #endregion Model
 
         public bool HasDiagnosis
         {
@@ -104,11 +244,11 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public SymptomAutoComplete SymptomAutoComplete
+        public WordAutoComplete SymptomAutoComplete
         {
             get
             {
-                return _symptomAutoComplete ?? (_symptomAutoComplete = new SymptomAutoComplete());
+                return _symptomAutoComplete ?? (_symptomAutoComplete = new WordAutoComplete());
             }
         }
 
@@ -124,7 +264,8 @@ namespace Diagnosis.App.ViewModels
         {
             current = this;
 
-            EntityManagers.SymptomsManager.CheckThese(Symptoms);
+            if (Symptom != null)
+                EntityManagers.WordsManager.CheckThese(Symptom.Words);
             if (HasDiagnosis)
                 EntityManagers.DiagnosisManager.Check(Diagnosis);
         }
@@ -135,8 +276,10 @@ namespace Diagnosis.App.ViewModels
 
             this.healthRecord = hr;
 
-            Symptoms = new ObservableCollection<SymptomViewModel>(
-                EntityManagers.SymptomsManager.GetHealthRecordSymptoms(healthRecord));
+            Editable = new EditableBase();
+
+            Category = EntityManagers.CategoryManager.GetByModel(hr.Category);
+            Symptom = EntityManagers.SymptomsManager.Symptoms.FirstOrDefault(s => s.symptom == hr.Symptom);
             Diagnosis = EntityManagers.DiagnosisManager.GetHealthRecordDiagnosis(healthRecord);
 
             IsSelectingSymptomsActive = !HasDiagnosis;
@@ -150,12 +293,12 @@ namespace Diagnosis.App.ViewModels
         {
             msgHandlers = new List<EventMessageHandler>()
             {
-                this.Subscribe((int)EventID.SymptomCheckedChanged, (e) =>
+                this.Subscribe((int)EventID.WordCheckedChanged, (e) =>
                 {
-                    var symptom = e.GetValue<SymptomViewModel>(Messages.Symptom);
+                    var symptom = e.GetValue<WordViewModel>(Messages.Word);
                     var isChecked = e.GetValue<bool>(Messages.CheckedState);
 
-                    OnSymptomCheckedChanged(symptom, isChecked);
+                    OnWordCheckedChanged(symptom, isChecked);
                 }),
                 this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
                 {
@@ -175,26 +318,25 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private void OnSymptomCheckedChanged(SymptomViewModel symptomVM, bool isChecked)
+        private void OnWordCheckedChanged(WordViewModel word, bool isChecked)
         {
             if (this == current)
             {
+                HashSet<WordViewModel> words;
+                if (Symptom != null)
+                    words = new HashSet<WordViewModel>(Symptom.Words);
+                else
+                    words = new HashSet<WordViewModel>();
                 if (isChecked)
                 {
-                    if (!Symptoms.Contains(symptomVM))
-                    {
-                        Symptoms.Add(symptomVM);
-                        healthRecord.AddSymptom(symptomVM.symptom);
-                    }
+                    words.Add(word);
                 }
                 else
                 {
-                    Symptoms.Remove(symptomVM);
-                    healthRecord.RemoveSymptom(symptomVM.symptom);
+                    words.Remove(word);
                 }
-                Symptoms = new ObservableCollection<SymptomViewModel>(Symptoms.OrderBy(s => s.SortingOrder));
-                OnPropertyChanged(() => Symptoms);
-                OnPropertyChanged(() => Name);
+                this.Symptom = EntityManagers.SymptomsManager.GetSymptomForWords(words);
+                healthRecord.Symptom = Symptom.symptom;
             }
         }
 
@@ -205,12 +347,12 @@ namespace Diagnosis.App.ViewModels
                 if (isChecked)
                 {
                     Diagnosis = diagnosisVM;
-                    healthRecord.Diagnosis = diagnosisVM.diagnosis;
+                    //  healthRecord.Diagnosis = diagnosisVM.diagnosis;
                 }
                 else
                 {
                     Diagnosis = null;
-                    healthRecord.Diagnosis = null;
+                    //   healthRecord.Diagnosis = null;
                 }
                 OnPropertyChanged(() => Name);
             }

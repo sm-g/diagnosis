@@ -58,15 +58,15 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <screen:Symptoms x:Name="directory"
-                               DataContext="{Binding SymptomsManager}"
-                               Visibility="{Binding DataContext.IsSymptomsEditing, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=root}"
+            <screen:Words x:Name="directory"
+                               DataContext="{Binding WordsManager}"
+                               Visibility="{Binding DataContext.IsWordsEditing, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=root}"
                                Grid.Column="1"
                                Margin="10" />
 
             <screen:Card x:Name="card"
                          DataContext="{Binding CardVM}"
-                         Visibility="{Binding DataContext.IsSymptomsEditing, Converter={StaticResource NegBooleanToVisibilityConverter}, ElementName=root}"
+                         Visibility="{Binding DataContext.IsWordsEditing, Converter={StaticResource NegBooleanToVisibilityConverter}, ElementName=root}"
                          Grid.Column="1"
                          Margin="10" />
 

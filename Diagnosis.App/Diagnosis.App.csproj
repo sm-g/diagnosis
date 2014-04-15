@@ -184,17 +184,24 @@
     <Compile Include="EntityManagers.cs" />
     <Compile Include="Extensions\HierarchicalExtensions.cs" />
     <Compile Include="MessagingParams.cs" />
-    <Compile Include="Screens\Symptoms.xaml.cs">
-      <DependentUpon>Symptoms.xaml</DependentUpon>
+    <Compile Include="Screens\Words.xaml.cs">
+      <DependentUpon>Words.xaml</DependentUpon>
     </Compile>
     <Compile Include="Screens\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DateOffset.cs" />
+    <Compile Include="ViewModels\CategoryViewModel.cs" />
+    <Compile Include="ViewModels\Managers\CategoryManager.cs" />
+    <Compile Include="ViewModels\Managers\SymptomsManager.cs" />
+    <Compile Include="ViewModels\Managers\WordsManager.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="ViewModels\Search\SymptomSearch.cs" />
+    <Compile Include="ViewModels\SymptomViewModel.cs" />
     <Compile Include="ViewModels\HierarchicalCheckable.cs" />
     <Compile Include="ViewModels\Managers\DiagnosisManager.cs" />
     <Compile Include="ViewModels\Managers\CoursesManager.cs" />
     <Compile Include="ViewModels\Interfaces\ISearchCommon.cs" />
-    <Compile Include="ViewModels\Managers\SymptomsManager.cs" />
     <Compile Include="ViewModels\AppointmentViewModel.cs" />
     <Compile Include="ViewModels\HealthRecordViewModel.cs" />
     <Compile Include="ViewModels\Managers\DoctorsManager.cs" />
@@ -254,9 +261,9 @@
     <Compile Include="ViewModels\HierarchicalExplorer.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
     <Compile Include="ViewModels\Search\SearchBase.cs" />
-    <Compile Include="ViewModels\Search\SymptomAutoComplete.cs" />
-    <Compile Include="ViewModels\Search\SymptomSearch.cs" />
-    <Compile Include="ViewModels\SymptomViewModel.cs" />
+    <Compile Include="ViewModels\Search\WordAutoComplete.cs" />
+    <Compile Include="ViewModels\Search\WordSearch.cs" />
+    <Compile Include="ViewModels\WordViewModel.cs" />
     <Compile Include="Controls\Directory\FullTree.xaml.cs">
       <DependentUpon>FullTree.xaml</DependentUpon>
     </Compile>
@@ -338,7 +345,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Screens\Symptoms.xaml">
+    <Page Include="Screens\Words.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

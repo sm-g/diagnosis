@@ -14,9 +14,9 @@ using System.Windows.Shapes;
 
 namespace Diagnosis.App.Screens
 {
-    public partial class Symptoms : UserControl
+    public partial class Words : UserControl
     {
-        public Symptoms()
+        public Words()
         {
             InitializeComponent();
         }

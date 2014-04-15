@@ -11,16 +11,16 @@ namespace Diagnosis.App
         KeyValuePair<string, object>[] Params { get; }
     }
 
-    class SymptomCheckedChangedParams : IEventParams
+    class WordCheckedChangedParams : IEventParams
     {
         public KeyValuePair<string, object>[] Params { get; private set; }
 
-        public SymptomCheckedChangedParams(SymptomViewModel symtpom, bool isChecked)
+        public WordCheckedChangedParams(WordViewModel symtpom, bool isChecked)
         {
             Contract.Requires(symtpom != null);
 
             Params = new[] {
-                new KeyValuePair<string,object>(Messages.Symptom, symtpom),
+                new KeyValuePair<string,object>(Messages.Word, symtpom),
                 new KeyValuePair<string,object>(Messages.CheckedState, isChecked)
             };
         }

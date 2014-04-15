@@ -20,21 +20,26 @@ namespace Diagnosis.App.ViewModels
 
         #region Model related
 
+        public int ID
+        {
+            get
+            {
+                return patient.Id;
+            }
+        }
+
         public string FirstName
         {
             get
             {
-                Contract.Ensures(!String.IsNullOrEmpty(Contract.Result<string>()));
-                return patient.FirstName;
+                return patient.FirstName ?? "";
             }
             set
             {
                 if (patient.FirstName != value)
                 {
-                    if (!string.IsNullOrWhiteSpace(value))
-                    {
-                        patient.FirstName = value;
-                    }
+                    patient.FirstName = value;
+
                     OnPropertyChanged(() => FirstName);
                     OnPropertyChanged(() => ShortName);
                     Editable.MarkDirty();
@@ -53,6 +58,7 @@ namespace Diagnosis.App.ViewModels
                 if (patient.MiddleName != value)
                 {
                     patient.MiddleName = value;
+
                     OnPropertyChanged(() => MiddleName);
                     OnPropertyChanged(() => ShortName);
                     Editable.MarkDirty();
@@ -64,17 +70,14 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                Contract.Ensures(!String.IsNullOrEmpty(Contract.Result<string>()));
-                return patient.LastName;
+                return patient.LastName ?? "";
             }
             set
             {
                 if (patient.LastName != value)
                 {
-                    if (!string.IsNullOrWhiteSpace(value))
-                    {
-                        patient.LastName = value;
-                    }
+                    patient.LastName = value;
+
                     OnPropertyChanged(() => LastName);
                     OnPropertyChanged(() => ShortName);
                     Editable.MarkDirty();
@@ -82,35 +85,34 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public int Age
+        public int? Age
         {
             get
             {
-                int age = DateTime.Today.Year - patient.BirthDate.Year;
-                if (patient.BirthDate > DateTime.Today.AddYears(-age))
-                    age--;
-                return age;
+                return patient.Age;
             }
             set
             {
-                int year = DateTime.Today.Year - value;
-                if (new DateTime(value, patient.BirthDate.Month, patient.BirthDate.Day) < DateTime.Today.AddYears(-value)) // TODO
-                    year--;
-                BirthYear = year;
+                if (patient.Age != value)
+                {
+                    patient.Age = value;
+                    OnPropertyChanged(() => Age);
+                    OnPropertyChanged(() => BirthYear);
+                }
             }
         }
 
-        public int BirthYear
+        public int? BirthYear
         {
             get
             {
-                return patient.BirthDate.Year;
+                return patient.BirthYear;
             }
             set
             {
-                if (patient.BirthDate.Year != value && value >= 0 && value <= DateTime.Today.Year)
+                if (patient.BirthYear != value)
                 {
-                    patient.BirthDate = new DateTime(value, patient.BirthDate.Month, patient.BirthDate.Day);
+                    patient.BirthYear = value;
                     OnPropertyChanged(() => Age);
                     OnPropertyChanged(() => BirthYear);
                     Editable.MarkDirty();
@@ -118,17 +120,17 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public int BirthMonth
+        public byte? BirthMonth
         {
             get
             {
-                return patient.BirthDate.Month;
+                return patient.BirthMonth;
             }
             set
             {
-                if (patient.BirthDate.Month != value && value >= 1 && value <= 12)
+                if (patient.BirthMonth != value)
                 {
-                    patient.BirthDate = new DateTime(patient.BirthDate.Year, value, patient.BirthDate.Day);
+                    patient.BirthMonth = value;
                     OnPropertyChanged(() => Age);
                     OnPropertyChanged(() => BirthMonth);
                     Editable.MarkDirty();
@@ -136,18 +138,17 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public int BirthDay
+        public byte? BirthDay
         {
             get
             {
-                return patient.BirthDate.Day;
+                return patient.BirthDay;
             }
             set
             {
-                if (patient.BirthDate.Day != value && value >= 1 && value <= 31)
+                if (patient.BirthDay != value)
                 {
-                    patient.BirthDate = new DateTime(patient.BirthDate.Year, patient.BirthDate.Month, value);
-
+                    patient.BirthDay = value;
                     OnPropertyChanged(() => Age);
                     OnPropertyChanged(() => BirthDay);
                     Editable.MarkDirty();
@@ -197,6 +198,14 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public string FullName
+        {
+            get
+            {
+                return LastName + " " + FirstName + " " + MiddleName;
+            }
+        }
+
         public ObservableCollection<PropertyViewModel> Properties
         {
             get;
@@ -237,19 +246,11 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public string Name
-        {
-            get
-            {
-                return ShortName;
-            }
-        }
-
         public string SearchText
         {
             get
             {
-                return Name;
+                return FullName;
             }
         }
 
@@ -307,9 +308,9 @@ namespace Diagnosis.App.ViewModels
 
                     OnHealthRecordSelected(hr);
                 }),
-                this.Subscribe((int)EventID.SymptomCheckedChanged, (e) =>
+                this.Subscribe((int)EventID.WordCheckedChanged, (e) =>
                 {
-                    var symptom = e.GetValue<SymptomViewModel>(Messages.Symptom);
+                    var symptom = e.GetValue<WordViewModel>(Messages.Word);
                     var isChecked = e.GetValue<bool>(Messages.CheckedState);
 
                     OnSymptomCheckedChanged(symptom, isChecked);
@@ -356,7 +357,7 @@ namespace Diagnosis.App.ViewModels
             hrSelecting = false;
         }
 
-        private void OnSymptomCheckedChanged(SymptomViewModel symptom, bool isChecked)
+        private void OnSymptomCheckedChanged(WordViewModel symptom, bool isChecked)
         {
             if (!hrSelecting)
                 Editable.MarkDirty();
@@ -372,7 +373,7 @@ namespace Diagnosis.App.ViewModels
 
         #region Comparsion
 
-        public static int CompareByName(PatientViewModel x, PatientViewModel y)
+        public static int CompareByFullName(PatientViewModel x, PatientViewModel y)
         {
             if (x == null)
             {
@@ -386,7 +387,7 @@ namespace Diagnosis.App.ViewModels
                 if (y == null)
                     return 1;
                 else
-                    return x.Name.CompareTo(y.Name);
+                    return x.FullName.CompareTo(y.FullName);
             }
         }
 
@@ -400,9 +401,9 @@ namespace Diagnosis.App.ViewModels
         string fn;
         string mn;
         string ln;
-        int by;
-        int bm;
-        int bd;
+        int? by;
+        byte? bm;
+        byte? bd;
         bool isMale;
         string snils;
 
@@ -420,10 +421,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (fn != value)
                 {
-                    if (!string.IsNullOrWhiteSpace(value))
-                    {
-                        fn = value;
-                    }
+                    fn = value;
                     OnPropertyChanged(() => FirstName);
                     OnPropertyChanged(() => ShortName);
                     Editable.MarkDirty();
@@ -459,10 +457,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (ln != value)
                 {
-                    if (!string.IsNullOrWhiteSpace(value))
-                    {
-                        ln = value;
-                    }
+                    ln = value;
                     OnPropertyChanged(() => LastName);
                     OnPropertyChanged(() => ShortName);
                     Editable.MarkDirty();
@@ -474,10 +469,11 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                int age = DateTime.Today.Year - by;
                 try
                 {
-                    if (new DateTime(by, bm, bd) > DateTime.Today.AddYears(-age))
+                    int age = DateTime.Today.Year - BirthYear.Value;
+
+                    if (new DateTime(BirthYear.Value, BirthMonth.Value, BirthDay.Value) > DateTime.Today.AddYears(-age))
                         age--;
                     return age;
                 }
@@ -485,15 +481,24 @@ namespace Diagnosis.App.ViewModels
                 {
                     return null;
                 }
-
             }
             set
             {
+                if (value.HasValue)
+                {
+                    int year = DateTime.Today.Year - value.Value;
 
+                    // TODO check setting year for 29 feb case
+                    if (BirthMonth.HasValue && BirthDay.HasValue &&
+                        new DateTime(year, BirthMonth.Value, BirthDay.Value) < DateTime.Today.AddYears(-value.Value))
+                        year--;
+
+                    BirthYear = year;
+                }
             }
         }
 
-        public new int BirthYear
+        public new int? BirthYear
         {
             get
             {
@@ -511,7 +516,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public new int BirthMonth
+        public new byte? BirthMonth
         {
             get
             {
@@ -529,7 +534,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public new int BirthDay
+        public new byte? BirthDay
         {
             get
             {
@@ -592,7 +597,7 @@ namespace Diagnosis.App.ViewModels
                         new Patient(LastName,
                                     FirstName,
                                     MiddleName,
-                                    new DateTime(BirthYear, BirthMonth, BirthDay),
+                                    BirthYear, BirthMonth, BirthDay,
                                     IsMale))
                         {
                             Snils = this.Snils
