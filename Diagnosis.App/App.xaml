@@ -18,7 +18,7 @@
             <Setter Property="FontSize" Value="24"/>
         </Style>
         
-        <Style TargetType="TextBlock" x:Key="label">
+        <Style TargetType="Label" x:Key="label">
             <Setter Property="Width" Value="120"/>
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>

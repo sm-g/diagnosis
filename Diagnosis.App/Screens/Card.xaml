@@ -38,7 +38,7 @@
 
                         <StackPanel Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
                             <DockPanel Margin="0,5">
-                                <TextBlock Text="СНИЛС" Style="{StaticResource label}" />
+                                <Label Content="СНИЛС" Style="{StaticResource label}" />
                                 <TextBlock Text="{Binding Snils}" />
                             </DockPanel>
                         </StackPanel>

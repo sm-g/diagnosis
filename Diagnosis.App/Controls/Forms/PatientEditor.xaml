@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="400">
     <UserControl.Resources>
         <Style TargetType="DockPanel">
             <Setter Property="Margin">
@@ -18,30 +18,36 @@
             <Setter Property="Height" Value="23" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
+        <Style TargetType="Label" BasedOn="{StaticResource label}">
+        </Style>
     </UserControl.Resources>
     <StackPanel>
         <DockPanel>
-            <TextBlock Text="Фамилия" Style="{StaticResource label}" />
+            <Label Content="Номер" />
+            <TextBox Text="{Binding ID, Mode=OneTime}" IsReadOnly="True"/>
+        </DockPanel>
+        <DockPanel>
+            <Label Content="Фамилия"  />
             <TextBox Text="{Binding LastName}" />
         </DockPanel>
         <DockPanel>
-            <TextBlock Text="Имя" Style="{StaticResource label}" />
+            <Label Content="Имя"  />
             <TextBox Text="{Binding FirstName}" />
         </DockPanel>
         <DockPanel>
-            <TextBlock Text="Отчество" Style="{StaticResource label}" />
+            <Label Content="Отчество"  />
             <TextBox Text="{Binding MiddleName}" />
         </DockPanel>
         <DockPanel>
-            <TextBlock Text="Дата рождения" Style="{StaticResource label}" />
+            <Label Content="Дата рождения"  />
             <controls:AgePicker Margin="0,1,0,0" />
         </DockPanel>
         <DockPanel>
-            <TextBlock Text="Пол"  Style="{StaticResource label}" />
+            <Label Content="Пол"   />
             <controls:SexChooser Width="100" HorizontalAlignment="Left" Margin="0,1,0,0" />
         </DockPanel>
         <DockPanel>
-            <TextBlock Text="СНИЛС" Style="{StaticResource label}" />
+            <Label Content="СНИЛС"  />
             <TextBox Text="{Binding Snils}" />
         </DockPanel>
     </StackPanel>
