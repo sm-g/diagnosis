@@ -250,11 +250,14 @@ namespace Diagnosis.Models
             return 0 == control;
         }
 
-        public Patient(string lastName, string firstName, string middleName, int? year = null, byte? month = null, byte? day = null, bool isMale = true)
+        public Patient(string lastName = null,
+            string firstName = null,
+            string middleName = null,
+            int? year = null,
+            byte? month = null,
+            byte? day = null,
+            bool isMale = true)
         {
-            Contract.Requires(lastName != null);
-            Contract.Requires(firstName != null);
-
             LastName = lastName;
             FirstName = firstName;
             MiddleName = middleName;
