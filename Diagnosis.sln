@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.App", "Diagnosis.App\Diagnosis.App.csproj", "{D7949590-A383-4E34-9C06-A2568DB5CDB6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.Data", "Diagnosis.Data\Diagnosis.Data.csproj", "{3EC8D3DF-AA44-4CB8-8847-D4B4872E9DAD}"
@@ -20,8 +20,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{B431DCFC-50AB-43F2-BAC5-0C37128F5364}"
 	ProjectSection(SolutionItems) = preProject
 		Database\diagnosis.accdb = Database\diagnosis.accdb
-		Database\icd10.accdb = Database\icd10.accdb
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{EC5E581D-F591-4A34-B390-0607BA8EE6FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +38,10 @@ Global
 		{3EC8D3DF-AA44-4CB8-8847-D4B4872E9DAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EC8D3DF-AA44-4CB8-8847-D4B4872E9DAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EC8D3DF-AA44-4CB8-8847-D4B4872E9DAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC5E581D-F591-4A34-B390-0607BA8EE6FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC5E581D-F591-4A34-B390-0607BA8EE6FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC5E581D-F591-4A34-B390-0607BA8EE6FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC5E581D-F591-4A34-B390-0607BA8EE6FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
