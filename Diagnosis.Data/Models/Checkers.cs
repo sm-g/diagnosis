@@ -13,7 +13,7 @@ namespace Diagnosis.Models
         /// Проверяет, допустима ли указанная дата (возможно, неполная).
         /// <exception cref="ArgumentOutOfRange">Если дата невозможна.</exception>
         /// </summary>
-        public static void CheckDate(int? year, byte? month, byte? day)
+        public static void CheckDate(int? year, int? month, int? day)
         {
             if (month.HasValue && day.HasValue)
             {
