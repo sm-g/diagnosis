@@ -20,7 +20,7 @@ namespace Diagnosis.App.ViewModels
     {
         public const int MinYear = 1880;
 
-        private int _offset;
+        private int? _offset;
         private DateUnits _unit;
         private int? _year;
         private int? _month;
@@ -41,7 +41,6 @@ namespace Diagnosis.App.ViewModels
                 if (_year != value)
                 {
                     _year = value;
-
                     if (!setting)
                     {
                         SetDate(value, Month, Day);
@@ -89,7 +88,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public int Offset
+        public int? Offset
         {
             get
             {
@@ -132,17 +131,24 @@ namespace Diagnosis.App.ViewModels
 
         DateTime Now { get { return NowDate(); } }
 
-        public void SetOffset(int offset, DateUnits unit)
+        public void SetOffset(int? offset, DateUnits unit)
         {
             setting = true;
 
             Offset = offset;
             Unit = unit;
 
+            if (Offset == null)
+            {
+                Year = null;
+                Month = null;
+                Day = null;
+            }
+
             switch (Unit)
             {
                 case DateUnits.Day:
-                    var date = Now.AddDays(-Offset);
+                    var date = Now.AddDays(-Offset.Value);
                     Year = date.Year;
                     Month = date.Month;
                     Day = date.Day;
@@ -175,9 +181,6 @@ namespace Diagnosis.App.ViewModels
 
         public void SetDate(int? year, int? month, int? day)
         {
-            if ((year.HasValue || month.HasValue || day.HasValue) == false)
-                throw new ArgumentNullException("Date cannot be empty.");
-
             setting = true;
 
             Year = year;
@@ -229,7 +232,10 @@ namespace Diagnosis.App.ViewModels
                         Month = Now.Month;
                         Year = Now.Year;
                     }
-
+                    else
+                    {
+                        Offset = null;
+                    }
                 }
             }
 
@@ -248,11 +254,11 @@ namespace Diagnosis.App.ViewModels
             SetDate(year, month, day);
         }
 
-        public DateOffset(int offset, DateUnits unit)
+        public DateOffset(int? offset, DateUnits unit)
         {
             SetOffset(offset, unit);
         }
-        public DateOffset(int offset, DateUnits unit, Func<DateTime> now)
+        public DateOffset(int? offset, DateUnits unit, Func<DateTime> now)
         {
             Contract.Requires(now != null);
             NowDate = now;

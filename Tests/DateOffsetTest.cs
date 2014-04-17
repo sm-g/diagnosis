@@ -61,6 +61,22 @@ namespace Tests
         }
 
         [TestMethod]
+        public void TestConstructorOffsetNull()
+        {
+            date = new DateOffset(null, DateUnits.Year);
+
+            var now = DateTime.Today;
+            var d = now.AddYears(-offset);
+
+            Assert.IsTrue(date.Offset == null);
+            Assert.IsTrue(date.Unit == DateUnits.Year);
+            Assert.IsTrue(date.Year == null);
+            Assert.IsTrue(date.Month == null);
+            Assert.IsTrue(date.Day == null);
+        }
+
+
+        [TestMethod]
         public void TestConstructorDateFull()
         {
             var now = DateTime.Today;
@@ -159,10 +175,13 @@ namespace Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void TestConstructorDateNone()
         {
             date = new DateOffset(null, null, null);
+            Assert.IsNull(date.Offset);
+            Assert.IsNull(date.Year);
+            Assert.IsNull(date.Month);
+            Assert.IsNull(date.Day);
         }
 
         #endregion
@@ -201,7 +220,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public void TestSetUnitLess()
+        public void TestSetUnitWider()
         {
             date = new DateOffset(offset, DateUnits.Day, now);
 
@@ -215,7 +234,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public void TestSetUnitGreater()
+        public void TestSetUnitNarrower()
         {
             date = new DateOffset(offset, DateUnits.Year, now);
 
