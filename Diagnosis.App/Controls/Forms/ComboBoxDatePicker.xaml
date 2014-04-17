@@ -10,6 +10,7 @@
              x:Name="root">
     <UserControl.Resources>
         <Converters:MonthToString x:Key="MonthToString" />
+        <Converters:IntToString x:Key="IntToString" />
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal">
         <StackPanel.Resources>
@@ -21,7 +22,7 @@
             MinWidth="50"
 			SelectionChanged="comboYears_SelectionChanged"
 			IsEditable="True"
-			SelectedValue="{Binding Year, Mode=TwoWay, ElementName=root}" />
+			SelectedValue="{Binding Year, Mode=TwoWay, Converter={StaticResource IntToString}, ElementName=root}" />
         <ComboBox x:Name="comboMonths"
 			MinWidth="80"
 			SelectionChanged="comboMonths_SelectionChanged"
@@ -29,6 +30,7 @@
         <ComboBox x:Name="comboDays"
 			MinWidth="40"
 			IsEditable="True"
-            SelectedValue="{Binding Day, Mode=TwoWay, ElementName=root}" />
+            SelectedValue="{Binding Day, Mode=TwoWay, Converter={StaticResource IntToString}, ElementName=root}" >
+        </ComboBox>
     </StackPanel>
 </UserControl>

@@ -20,36 +20,36 @@ namespace Diagnosis.App.Controls
     /// </summary>
     public partial class ComboBoxDatePicker : UserControl
     {
-        int[] Days = new int[31];
+        string[] days;
         string[] monthNames;
-        List<int> years = new List<int>();
+        List<string> years = new List<string>();
 
-        public int Year
+        public int? Year
         {
-            get { return (int)GetValue(YearProperty); }
+            get { return (int?)GetValue(YearProperty); }
             set { SetValue(YearProperty, value); }
         }
 
         public static readonly DependencyProperty YearProperty =
-            DependencyProperty.Register("Year", typeof(int), typeof(ComboBoxDatePicker), new PropertyMetadata(DateTime.Now.Year));
+            DependencyProperty.Register("Year", typeof(int?), typeof(ComboBoxDatePicker));
 
-        public int Month
+        public int? Month
         {
-            get { return (int)GetValue(MonthProperty); }
+            get { return (int?)GetValue(MonthProperty); }
             set { SetValue(MonthProperty, value); }
         }
 
         public static readonly DependencyProperty MonthProperty =
-            DependencyProperty.Register("Month", typeof(int), typeof(ComboBoxDatePicker), new PropertyMetadata(13));
+            DependencyProperty.Register("Month", typeof(int?), typeof(ComboBoxDatePicker), new PropertyMetadata(13));
 
-        public int Day
+        public int? Day
         {
-            get { return (int)GetValue(DayProperty); }
+            get { return (int?)GetValue(DayProperty); }
             set { SetValue(DayProperty, value); }
         }
 
         public static readonly DependencyProperty DayProperty =
-            DependencyProperty.Register("Day", typeof(int), typeof(ComboBoxDatePicker), new PropertyMetadata(DateTime.Now.Day));
+            DependencyProperty.Register("Day", typeof(int?), typeof(ComboBoxDatePicker), new PropertyMetadata(DateTime.Now.Day));
 
 
         public int YearsDepth
@@ -66,7 +66,9 @@ namespace Diagnosis.App.Controls
             InitializeComponent();
 
             monthNames = DateTimeFormatInfo.CurrentInfo.MonthNames.ToArray();
-            years = Enumerable.Range(DateTime.Now.Year - YearsDepth, YearsDepth + 1).Reverse().ToList();
+            years = Enumerable.Range(DateTime.Now.Year - YearsDepth, YearsDepth + 1).Select(y => y.ToString()).ToList();
+            years.Add("");
+            years.Reverse();
 
             LoadYearsCombo();
 
@@ -76,42 +78,59 @@ namespace Diagnosis.App.Controls
         private void LoadYearsCombo()
         {
             comboYears.ItemsSource = years;
-            if (years.Contains(Year))
-                comboYears.SelectedValue = Year;
+            if (Year.HasValue)
+            {
+                var ys = Year.ToString();
+                if (years.Contains(ys))
+                    comboYears.SelectedValue = ys;
+            }
+            else
+            {
+                comboYears.SelectedValue = "";
+            }
         }
 
         private void LoadMonthsCombo()
         {
             comboMonths.ItemsSource = monthNames;
-            comboMonths.SelectedValue = DateTimeFormatInfo.CurrentInfo.GetMonthName(Month);
+            comboMonths.SelectedValue = DateTimeFormatInfo.CurrentInfo.GetMonthName(Month.Value);
         }
 
         private void LoadDaysCombo()
         {
-            comboDays.ItemsSource = Days;
-            comboDays.SelectedValue = Day;
+            comboDays.ItemsSource = days;
+            if (Day.HasValue)
+            {
+                var ds = Day.ToString();
+                if (days.Contains(ds))
+                    comboDays.SelectedValue = ds;
+            }
+            else
+            {
+                comboDays.SelectedValue = "";
+            }
         }
 
         private void InitDays()
         {
+            int daysInMonth = 31;
             try
             {
-                var daysInMonth = DateTime.DaysInMonth(Year, Month);
-                // exception when month == 13 or year == 0, ie not set
-
-                Days = new int[daysInMonth];
-                for (int i = 0; i < Days.Count(); i++)
-                {
-                    Days[i] = i + 1;
-                }
-                if (Day > daysInMonth)
-                {
-                    Day = daysInMonth;
-                }
+                daysInMonth = DateTime.DaysInMonth(Year.Value, Month.Value);
+                // exception when month or year not set
             }
             catch
             {
-                Days = new int[0];
+            }
+            days = new string[daysInMonth + 1];
+            days[0] = "";
+            for (int i = 1; i < days.Length - 1; i++)
+            {
+                days[i] = i.ToString();
+            }
+            if (Day > daysInMonth)
+            {
+                Day = daysInMonth;
             }
         }
 
