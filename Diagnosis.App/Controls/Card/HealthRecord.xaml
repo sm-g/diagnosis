@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
+             xmlns:Forms="clr-namespace:Diagnosis.App.Controls.Forms" 
              xmlns:app="clr-namespace:Diagnosis.App"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
@@ -18,18 +19,13 @@
 
         <StackPanel>
             <StackPanel Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <ToggleButton x:Name="symptomsToogle"
-                              IsChecked="{Binding IsSelectingSymptomsActive}">Симптомы</ToggleButton>
-                    <ToggleButton IsChecked="{Binding IsChecked, ElementName=symptomsToogle, Converter={StaticResource NegateBoolean}}">Диагнозы</ToggleButton>
-                </StackPanel>
-
-                <StackPanel x:Name="symptomsSelector" Visibility="{Binding IsSelectingSymptomsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel x:Name="input">
                     <controls:AutoComplete DataContext="{Binding SymptomAutoComplete}" />
-                    <!--<controls:GroupsTree DataContext="{Binding Path=Symptoms, Source={x:Static app:EntityManagers.SymptomsManager}}" MaxHeight="200" />-->
-                    <DockPanel Visibility="{Binding Symptoms.Count, Converter={StaticResource CountToVisibility}}">
+                    <!--<controls:GroupsTree DataContext="{Binding Path=Words, Source={x:Static app:EntityManagers.WordsManager}}" MaxHeight="200" />-->           
+                    <Forms:HealthRecordEditor />
+                    <DockPanel Visibility="{Binding Words.Count, Converter={StaticResource CountToVisibility}}">
                         <TextBlock DockPanel.Dock="Top">Выбранные симптомы:</TextBlock>
-                        <ListView ItemsSource="{Binding Symptoms}">
+                        <ListView ItemsSource="{Binding Symptom.Words}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <controls:TreeItem />
@@ -38,20 +34,12 @@
                         </ListView>
                     </DockPanel>
                 </StackPanel>
-                <StackPanel x:Name="diagnosesSelector" Visibility="{Binding IsSelectingSymptomsActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-                    <!--<controls:AutoComplete DataContext="{Binding DiagnosisAutoComplete}" />-->
-                    <controls:FullTree DataContext="{Binding Path=Diagnoses, Source={x:Static app:EntityManagers.DiagnosisManager}}" MaxHeight="200"/>
-                    <DockPanel Visibility="{Binding HasDiagnosis, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock DockPanel.Dock="Top">Выбранный диагноз:</TextBlock>
-                        <controls:TreeItem DataContext="{Binding Diagnosis}" />
-                    </DockPanel>
-                </StackPanel>
             </StackPanel>
 
             <StackPanel Visibility="{Binding IsSelected, Converter={StaticResource NegBooleanToVisibilityConverter}}">
                 <TextBlock Text="{Binding Diagnosis.Name}" />
                 <ItemsControl x:Name="symptoms"
-                          ItemsSource="{Binding Symptoms}">
+                          ItemsSource="{Binding Symptom.Words}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Name}" />
