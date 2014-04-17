@@ -152,13 +152,13 @@ namespace Diagnosis.App.ViewModels
                 {
                     healthRecord.FromYear = value;
                     OnPropertyChanged(() => FromYear);
-                    OnPropertyChanged(() => DateOffset);
+                    DateOffset.Year = value;
                     Editable.MarkDirty();
                 }
             }
         }
 
-        public byte? FromMonth
+        public int? FromMonth
         {
             get
             {
@@ -168,15 +168,15 @@ namespace Diagnosis.App.ViewModels
             {
                 if (healthRecord.FromMonth != value)
                 {
-                    healthRecord.FromMonth = value;
+                    healthRecord.FromMonth = value.ConvertTo<int, byte>();
                     OnPropertyChanged(() => FromMonth);
-                    OnPropertyChanged(() => DateOffset);
+                    DateOffset.Month = value;
                     Editable.MarkDirty();
                 }
             }
         }
 
-        public byte? FromDay
+        public int? FromDay
         {
             get
             {
@@ -186,37 +186,42 @@ namespace Diagnosis.App.ViewModels
             {
                 if (healthRecord.FromDay != value)
                 {
-                    healthRecord.FromDay = value;
+                    healthRecord.FromDay = value.ConvertTo<int, byte>();
                     OnPropertyChanged(() => FromDay);
-                    OnPropertyChanged(() => DateOffset);
+                    DateOffset.Day = value;
                     Editable.MarkDirty();
                 }
             }
         }
 
+        DateOffset _dateOffset;
 
         public DateOffset DateOffset
         {
             get
             {
-                return new DateOffset(FromYear, FromMonth, FromDay);
-            }
-            set
-            {
-                int? year;
-                byte? month;
-                byte? day;
-                value.ToDate(out year, out month, out day);
-
-                FromYear = year;
-                FromMonth = month;
-                FromDay = day;
+                if (_dateOffset == null)
+                {
+                    _dateOffset = new DateOffset(FromYear, FromMonth, FromDay);
+                    _dateOffset.PropertyChanged += (s, e) =>
+                    {
+                        switch (e.PropertyName)
+                        {
+                            case "Year":
+                                FromYear = _dateOffset.Year;
+                                break;
+                            case "Month":
+                                FromMonth = _dateOffset.Month;
+                                break;
+                            case "Day":
+                                FromDay = _dateOffset.Day;
+                                break;
+                        }
+                    };
+                }
+                return _dateOffset;
             }
         }
-
-
-
-
 
         #endregion Model
 
