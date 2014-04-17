@@ -158,11 +158,17 @@
     <Compile Include="Controls\Forms\AgePicker.xaml.cs">
       <DependentUpon>AgePicker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Forms\CategoryChooser.xaml.cs">
+      <DependentUpon>CategoryChooser.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Forms\DateOffsetPicker.xaml.cs">
       <DependentUpon>DateOffsetPicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Forms\ComboBoxDatePicker.xaml.cs">
       <DependentUpon>ComboBoxDatePicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Forms\HealthRecordEditor.xaml.cs">
+      <DependentUpon>HealthRecordEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Forms\PropertiesChooser.xaml.cs">
       <DependentUpon>PropertiesChooser.xaml</DependentUpon>
@@ -302,11 +308,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\Forms\CategoryChooser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Forms\DateOffsetPicker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\Forms\ComboBoxDatePicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Forms\HealthRecordEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
