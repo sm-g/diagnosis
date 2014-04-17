@@ -187,6 +187,9 @@
     </Compile>
     <Compile Include="Controls\Helpers\Attached.cs" />
     <Compile Include="Controls\FocusExtension.cs" />
+    <Compile Include="Controls\RadioListBox.xaml.cs">
+      <DependentUpon>RadioListBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\DateUnitToLabel.cs" />
     <Compile Include="Converters\BooleanConverter.cs" />
     <Compile Include="Converters\BoolToSexSign.cs" />
@@ -350,6 +353,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Directory\TilesViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\RadioListBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
