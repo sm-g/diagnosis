@@ -36,7 +36,7 @@
         </DockPanel>
         <DockPanel>
             <Label Content="категория"/>
-            <Forms:CategoryChooser />
+            <Forms:CategoryChooser MaxWidth="200" HorizontalAlignment="Left" />
         </DockPanel>
     </StackPanel>
 </UserControl>

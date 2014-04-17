@@ -9,7 +9,7 @@
         DataContext="{DynamicResource vm}"
         x:Class="Diagnosis.App.MainWindow"
         x:Name="root"
-        Title="MainWindow" Height="450" Width="650">
+        Title="MainWindow" Height="600" Width="800">
     <Window.Resources>
         <vm:MainWindowViewModel x:Key="vm" />
     </Window.Resources>

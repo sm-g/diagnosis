@@ -12,9 +12,9 @@ namespace Diagnosis.App.ViewModels
     {
         private readonly HealthRecord healthRecord;
         private static HealthRecordViewModel current;
-        private bool _selectingSymptomsActive;
         private WordAutoComplete _symptomAutoComplete;
         private DiagnosisAutoComplete _diagnosisAutoComplete;
+        private DateOffset _dateOffset;
         private List<EventMessageHandler> msgHandlers;
 
         public EditableBase Editable { get; private set; }
@@ -61,10 +61,13 @@ namespace Diagnosis.App.ViewModels
                 if (healthRecord.Comment != value)
                 {
                     healthRecord.Comment = value;
+
+                    Editable.MarkDirty();
                     OnPropertyChanged(() => Comment);
                 }
             }
         }
+
         public SymptomViewModel Symptom
         {
             get
@@ -76,6 +79,8 @@ namespace Diagnosis.App.ViewModels
                 if (_symptom != value)
                 {
                     _symptom = value;
+
+                    Editable.MarkDirty();
                     OnPropertyChanged(() => Symptom);
                     OnPropertyChanged(() => Name);
                 }
@@ -94,19 +99,13 @@ namespace Diagnosis.App.ViewModels
                 {
                     _diagnosis = value;
 
+                    Editable.MarkDirty();
                     OnPropertyChanged(() => Diagnosis);
                     OnPropertyChanged(() => HasDiagnosis);
                 }
             }
         }
 
-        public ObservableCollection<CategoryViewModel> Categories
-        {
-            get
-            {
-                return EntityManagers.CategoryManager.Categories;
-            }
-        }
         public CategoryViewModel Category
         {
             get
@@ -118,6 +117,7 @@ namespace Diagnosis.App.ViewModels
                 if (_category != value)
                 {
                     _category = value;
+                    Editable.MarkDirty();
                     OnPropertyChanged(() => Category);
                 }
             }
@@ -194,7 +194,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        DateOffset _dateOffset;
+        #endregion Model
 
         public DateOffset DateOffset
         {
@@ -210,9 +210,11 @@ namespace Diagnosis.App.ViewModels
                             case "Year":
                                 FromYear = _dateOffset.Year;
                                 break;
+
                             case "Month":
                                 FromMonth = _dateOffset.Month;
                                 break;
+
                             case "Day":
                                 FromDay = _dateOffset.Day;
                                 break;
@@ -223,29 +225,19 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        #endregion Model
+        public ObservableCollection<CategoryViewModel> Categories
+        {
+            get
+            {
+                return EntityManagers.CategoryManager.Categories;
+            }
+        }
 
         public bool HasDiagnosis
         {
             get
             {
                 return Diagnosis != null;
-            }
-        }
-
-        public bool IsSelectingSymptomsActive
-        {
-            get
-            {
-                return _selectingSymptomsActive;
-            }
-            set
-            {
-                if (_selectingSymptomsActive != value)
-                {
-                    _selectingSymptomsActive = value;
-                    OnPropertyChanged(() => IsSelectingSymptomsActive);
-                }
             }
         }
 
@@ -286,8 +278,6 @@ namespace Diagnosis.App.ViewModels
             Category = EntityManagers.CategoryManager.GetByModel(hr.Category);
             Symptom = EntityManagers.SymptomsManager.Symptoms.FirstOrDefault(s => s.symptom == hr.Symptom);
             Diagnosis = EntityManagers.DiagnosisManager.GetHealthRecordDiagnosis(healthRecord);
-
-            IsSelectingSymptomsActive = !HasDiagnosis;
 
             Subscribe();
         }
