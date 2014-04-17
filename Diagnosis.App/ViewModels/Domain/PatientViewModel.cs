@@ -411,6 +411,11 @@ namespace Diagnosis.App.ViewModels
 
         public event PatientEventHandler PatientCreated;
 
+        public new int ID
+        {
+            get { return 0; }
+        }
+
         public new string FirstName
         {
             get
