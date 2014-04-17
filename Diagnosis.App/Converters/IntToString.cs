@@ -7,34 +7,27 @@ using System.Globalization;
 
 namespace Diagnosis.App.Converters
 {
-    public class MonthToString : IValueConverter
+    public class IntToString : IValueConverter
     {
-        static string ThirteenMonth = DateTimeFormatInfo.CurrentInfo.MonthNames.ToArray().Last();
-
         public object Convert(object value, Type targetType,
             object parameter, CultureInfo culture)
         {
             if (value != null)
             {
-                int month = (int)value;
-
-                if (month > 0 && month < 13)
-                {
-                    return DateTimeFormatInfo.CurrentInfo.GetMonthName(month);
-                }
+                return ((int)value).ToString();
             }
-            return ThirteenMonth;
+            return "";
         }
 
         public object ConvertBack(object value, Type targetType,
             object parameter, CultureInfo culture)
         {
-            string name = (string)value;
-            if (value == null || name == ThirteenMonth)
+            if (value == null || (string)value == "")
             {
                 return null;
             }
-            return DateTimeFormatInfo.CurrentInfo.MonthNames.ToList().IndexOf(name) + 1;
+
+            return int.Parse(value as string);
         }
     }
 }

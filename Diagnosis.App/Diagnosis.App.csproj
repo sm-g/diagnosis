@@ -158,6 +158,9 @@
     <Compile Include="Controls\Forms\AgePicker.xaml.cs">
       <DependentUpon>AgePicker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Forms\DateOffsetPicker.xaml.cs">
+      <DependentUpon>DateOffsetPicker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Forms\ComboBoxDatePicker.xaml.cs">
       <DependentUpon>ComboBoxDatePicker.xaml</DependentUpon>
     </Compile>
@@ -178,9 +181,11 @@
     </Compile>
     <Compile Include="Controls\Helpers\Attached.cs" />
     <Compile Include="Controls\FocusExtension.cs" />
+    <Compile Include="Converters\DateUnitToLabel.cs" />
     <Compile Include="Converters\BooleanConverter.cs" />
     <Compile Include="Converters\BoolToSexSign.cs" />
     <Compile Include="Converters\CountToAppointmentsLabel.cs" />
+    <Compile Include="Converters\IntToString.cs" />
     <Compile Include="EntityManagers.cs" />
     <Compile Include="Extensions\HierarchicalExtensions.cs" />
     <Compile Include="MessagingParams.cs" />
@@ -296,6 +301,10 @@
     <Page Include="Controls\Forms\AgePicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Forms\DateOffsetPicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\Forms\ComboBoxDatePicker.xaml">
       <SubType>Designer</SubType>
