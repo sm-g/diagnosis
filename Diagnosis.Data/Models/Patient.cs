@@ -83,11 +83,15 @@ namespace Diagnosis.Models
             }
             set
             {
+                if (value == null)
+                {
+                    _year = value;
+                }
                 if (value <= DateTime.Today.Year)
                 {
                     _year = value;
-                    CheckDate();
                 }
+                CheckDate();
             }
         }
         public virtual byte? BirthMonth
@@ -98,12 +102,15 @@ namespace Diagnosis.Models
             }
             set
             {
+                if (value == null)
+                {
+                    _month = value;
+                }
                 if (value >= 0 && value <= 12)
                 {
                     _month = value > 0 ? value : null;
-                    CheckDate();
-
                 }
+                CheckDate();
             }
         }
         public virtual byte? BirthDay
@@ -114,11 +121,15 @@ namespace Diagnosis.Models
             }
             set
             {
+                if (value == null)
+                {
+                    _day = value;
+                }
                 if (value >= 0 && value <= 31)
                 {
                     _day = value > 0 ? value : null;
-                    CheckDate();
                 }
+                CheckDate();
             }
         }
 
@@ -157,6 +168,11 @@ namespace Diagnosis.Models
         {
             get
             {
+                if (!BirthYear.HasValue)
+                {
+                    return null;
+                }
+
                 int age = DateTime.Today.Year - BirthYear.Value;
 
                 try
