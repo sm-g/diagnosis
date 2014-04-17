@@ -151,8 +151,10 @@ namespace Diagnosis.App.ViewModels
                 if (healthRecord.FromYear != value)
                 {
                     healthRecord.FromYear = value;
-                    OnPropertyChanged(() => FromYear);
                     DateOffset.Year = value;
+
+                    OnPropertyChanged(() => FromYear);
+                    OnPropertyChanged(() => SortingDate);
                     Editable.MarkDirty();
                 }
             }
@@ -169,8 +171,10 @@ namespace Diagnosis.App.ViewModels
                 if (healthRecord.FromMonth != value)
                 {
                     healthRecord.FromMonth = value.ConvertTo<int, byte>();
-                    OnPropertyChanged(() => FromMonth);
                     DateOffset.Month = value;
+
+                    OnPropertyChanged(() => FromMonth);
+                    OnPropertyChanged(() => SortingDate);
                     Editable.MarkDirty();
                 }
             }
@@ -187,8 +191,10 @@ namespace Diagnosis.App.ViewModels
                 if (healthRecord.FromDay != value)
                 {
                     healthRecord.FromDay = value.ConvertTo<int, byte>();
-                    OnPropertyChanged(() => FromDay);
                     DateOffset.Day = value;
+
+                    OnPropertyChanged(() => FromDay);
+                    OnPropertyChanged(() => SortingDate);
                     Editable.MarkDirty();
                 }
             }
@@ -222,6 +228,17 @@ namespace Diagnosis.App.ViewModels
                     };
                 }
                 return _dateOffset;
+            }
+        }
+
+        public DateTime SortingDate
+        {
+            get
+            {
+                int year = FromYear ?? 1;
+                int month = FromMonth ?? 1;
+                int day = FromDay ?? 1;
+                return new DateTime(year, month, day);
             }
         }
 

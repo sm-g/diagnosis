@@ -4,9 +4,21 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:card="clr-namespace:Diagnosis.App.Controls.Card"
+             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:dat="clr-namespace:System.Windows.Data;assembly=PresentationFramework"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              x:Name="appointment">
+    <UserControl.Resources>
+        <CollectionViewSource Source="{Binding HealthRecords}" x:Key="hrs">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="SortingDate" />
+            </CollectionViewSource.SortDescriptions>
+            <CollectionViewSource.GroupDescriptions>
+                <dat:PropertyGroupDescription PropertyName="Category" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -27,8 +39,8 @@
             </TextBlock>
         </Grid>
 
-        <ScrollViewer Grid.Row="1" 
-                      VerticalScrollBarVisibility="Auto" 
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
                       Margin="0,5,0,0">
             <Grid>
                 <Grid.RowDefinitions>
@@ -37,15 +49,37 @@
                 </Grid.RowDefinitions>
 
                 <ListView x:Name="records"
-                  ItemsSource="{Binding HealthRecords}"
+                  ItemsSource="{Binding Source={StaticResource hrs}}"
                   SelectedItem="{Binding SelectedHealthRecord}"
                   Style="{StaticResource list}"
                   HorizontalContentAlignment="Stretch">
+                    <ListView.GroupStyle>
+                        <GroupStyle>
+                            <GroupStyle.ContainerStyle>
+                                <Style TargetType="GroupItem">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate>
+                                                <GroupBox>
+                                                    <GroupBox.Header>
+                                                        <TextBlock Text="{Binding Name}" ></TextBlock>
+                                                    </GroupBox.Header>
+                                                    <ItemsPresenter />
+                                                </GroupBox>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </GroupStyle.ContainerStyle>
+                        </GroupStyle>
+                    </ListView.GroupStyle>
+
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <card:HealthRecord />
                         </DataTemplate>
                     </ListView.ItemTemplate>
+
                     <ListView.ItemContainerStyle>
                         <Style TargetType="{x:Type ListViewItem}">
                             <Setter Property="IsSelected" Value="{Binding IsSelected}" />

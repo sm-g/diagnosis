@@ -24,19 +24,19 @@
     </UserControl.Resources>
     <StackPanel>
         <DockPanel>
-            <Label Content="Дата"/>
+            <Forms:CategoryChooser MaxWidth="200" HorizontalAlignment="Left" />
+        </DockPanel>
+        <DockPanel>
             <Controls:ComboBoxDatePicker Year="{Binding FromYear, Mode=TwoWay}"
                                          Month="{Binding FromMonth, Mode=TwoWay}"
                                          Day="{Binding FromDay, Mode=TwoWay}" />
-            <Controls:DateOffsetPicker DateOffset="{Binding DateOffset}"/>
+            <Controls:DateOffsetPicker DateOffset="{Binding DateOffset}" Margin="20,0,0,0"/>
         </DockPanel>
         <DockPanel>
             <Label Content="число"/>
             <TextBox Text="{Binding NumValue}"/>
         </DockPanel>
-        <DockPanel>
-            <Label Content="категория"/>
-            <Forms:CategoryChooser MaxWidth="200" HorizontalAlignment="Left" />
-        </DockPanel>
+       
+        <TextBox Text="{Binding Comment}" />
     </StackPanel>
 </UserControl>

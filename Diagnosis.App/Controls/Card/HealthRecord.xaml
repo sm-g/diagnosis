@@ -8,18 +8,17 @@
              xmlns:app="clr-namespace:Diagnosis.App"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             MinHeight="50"
+             MinHeight="25"
              Focusable="True"
              IsTabStop="True">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <StackPanel>
             <StackPanel Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <StackPanel x:Name="input">
+                <StackPanel x:Name="editor" >
                     <controls:AutoComplete DataContext="{Binding SymptomAutoComplete}" />
                     <!--<controls:GroupsTree DataContext="{Binding Path=Words, Source={x:Static app:EntityManagers.WordsManager}}" MaxHeight="200" />-->           
                     <Forms:HealthRecordEditor />
@@ -37,21 +36,9 @@
             </StackPanel>
 
             <StackPanel Visibility="{Binding IsSelected, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                <TextBlock Text="{Binding Name}" />
                 <TextBlock Text="{Binding Diagnosis.Name}" />
-                <ItemsControl x:Name="symptoms"
-                          ItemsSource="{Binding Symptom.Words}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
             </StackPanel>
         </StackPanel>
-
-        <DockPanel Grid.Column="1"
-                   Visibility="{Binding DataContext.FastAddingMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-            <TextBox Text="{Binding Comment}" />
-        </DockPanel>
     </Grid>
 </UserControl>

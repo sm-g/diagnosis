@@ -32,6 +32,11 @@ namespace Diagnosis.App.ViewModels
             throw new NotImplementedException();
         }
 
+        public override string ToString()
+        {
+            return Name;
+        }
+
         #endregion CheckableBase
 
 
