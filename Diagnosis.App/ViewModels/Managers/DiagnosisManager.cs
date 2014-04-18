@@ -117,7 +117,7 @@ namespace Diagnosis.App.ViewModels
 
         private void OnDirectoryEditingModeChanged(bool isEditing)
         {
-            Diagnoses.ForAll((dvm) =>
+            Diagnoses.ForBranch((dvm) =>
             {
                 dvm.Editable.SwitchedOn = isEditing;
                 dvm.Search.SwitchedOn = !isEditing;
@@ -128,7 +128,7 @@ namespace Diagnosis.App.ViewModels
 
         private void UnCheckAll()
         {
-            Diagnoses.ForAll((dvm) => dvm.IsChecked = false);
+            Diagnoses.ForBranch((dvm) => dvm.IsChecked = false);
         }
     }
 }

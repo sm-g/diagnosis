@@ -120,7 +120,7 @@ namespace Diagnosis.App.ViewModels
 
         private void OnDirectoryEditingModeChanged(bool isEditing)
         {
-            Words.ForAll((vm) =>
+            Words.ForBranch((vm) =>
             {
                 vm.Editable.SwitchedOn = isEditing;
                 vm.Search.SwitchedOn = !isEditing;
@@ -131,7 +131,7 @@ namespace Diagnosis.App.ViewModels
 
         private void UnCheckAll()
         {
-            Words.ForAll((vm) => vm.IsChecked = false);
+            Words.ForBranch((vm) => vm.IsChecked = false);
         }
     }
 }

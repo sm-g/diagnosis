@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics.Contracts;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -11,6 +12,24 @@ namespace Diagnosis.App.ViewModels
         {
             bool isSubset = !x.Except(y).Any();
             return isSubset;
+        }
+
+        public static void ForBranch<T>(this IList<T> list, Action<T> action) where T : class, IHierarchical<T>
+        {
+            Contract.Assume(list.Count > 0);
+
+            foreach (var item in list[0].Parent.AllChildren)
+            {
+                action(item);
+            }
+        }
+
+        public static void ForAll<T>(this IEnumerable<T> collection, Action<T> action)
+        {
+            foreach (var item in collection)
+            {
+                action(item);
+            }
         }
     }
 }

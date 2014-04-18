@@ -197,7 +197,6 @@
     <Compile Include="Converters\IntToString.cs" />
     <Compile Include="EntityManagers.cs" />
     <Compile Include="Extensions\ConvertExtensions.cs" />
-    <Compile Include="Extensions\HierarchicalExtensions.cs" />
     <Compile Include="MessagingParams.cs" />
     <Compile Include="Screens\Words.xaml.cs">
       <DependentUpon>Words.xaml</DependentUpon>
