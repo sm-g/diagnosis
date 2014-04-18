@@ -18,8 +18,12 @@
             <Setter Property="FontSize" Value="24"/>
         </Style>
         
-        <Style TargetType="Label" x:Key="label">
+        <Style TargetType="Label" x:Key="label120">
             <Setter Property="Width" Value="120"/>
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="Label" x:Key="label60">
+            <Setter Property="Width" Value="60"/>
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
         

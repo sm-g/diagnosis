@@ -19,7 +19,7 @@
             <Setter Property="Height" Value="23" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
-        <Style TargetType="Label" BasedOn="{StaticResource label}">
+        <Style TargetType="Label" BasedOn="{StaticResource label60}">
         </Style>
     </UserControl.Resources>
     <StackPanel>
@@ -27,16 +27,20 @@
             <Forms:CategoryChooser MaxWidth="200" HorizontalAlignment="Left" />
         </DockPanel>
         <DockPanel>
+            <Label Content="дата" />
             <Controls:ComboBoxDatePicker Year="{Binding FromYear, Mode=TwoWay}"
                                          Month="{Binding FromMonth, Mode=TwoWay}"
                                          Day="{Binding FromDay, Mode=TwoWay}" />
-            <Controls:DateOffsetPicker DateOffset="{Binding DateOffset}" Margin="20,0,0,0"/>
+            <Label Content="давность" Margin="10,0,0,0" />
+            <Controls:DateOffsetPicker DateOffset="{Binding DateOffset}" />
         </DockPanel>
         <DockPanel>
             <Label Content="число" />
             <TextBox Text="{Binding NumValue}"/>
         </DockPanel>
-       
-        <TextBox Text="{Binding Comment}" />
+        <DockPanel>
+            <Label Content="коммент" />
+            <TextBox Text="{Binding Comment}" />
+        </DockPanel>
     </StackPanel>
 </UserControl>

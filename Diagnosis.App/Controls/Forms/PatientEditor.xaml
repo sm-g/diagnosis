@@ -18,7 +18,7 @@
             <Setter Property="Height" Value="23" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
-        <Style TargetType="Label" BasedOn="{StaticResource label}">
+        <Style TargetType="Label" BasedOn="{StaticResource label120}">
         </Style>
     </UserControl.Resources>
     <StackPanel>

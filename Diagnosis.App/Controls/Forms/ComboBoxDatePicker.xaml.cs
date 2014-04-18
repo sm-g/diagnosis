@@ -49,7 +49,7 @@ namespace Diagnosis.App.Controls
         }
 
         public static readonly DependencyProperty DayProperty =
-            DependencyProperty.Register("Day", typeof(int?), typeof(ComboBoxDatePicker), new PropertyMetadata(DateTime.Now.Day));
+            DependencyProperty.Register("Day", typeof(int?), typeof(ComboBoxDatePicker));
 
 
         public int YearsDepth

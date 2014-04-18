@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}">
     <UserControl.Resources>
-        <Style TargetType="Label" BasedOn="{StaticResource label}">
+        <Style TargetType="Label" BasedOn="{StaticResource label120}">
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="Width" Value="100" />

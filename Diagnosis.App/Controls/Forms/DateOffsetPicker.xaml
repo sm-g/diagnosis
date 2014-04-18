@@ -19,7 +19,7 @@
         </ObjectDataProvider>
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal">
-        <TextBox x:Name="offset" Text="{Binding DateOffset.Offset, ElementName=root, Mode=TwoWay}" MinWidth="50" Margin="0,0,5,0" />
+        <TextBox x:Name="offset" Text="{Binding DateOffset.Offset, ElementName=root, Mode=TwoWay}" MinWidth="50" Margin="0,0,5,0" TextAlignment="Right" />
         <ComboBox x:Name="units"
                   ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
         	MinWidth="50">
