@@ -58,6 +58,9 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Allows to perform commands.
+        /// </summary>
         public bool SwitchedOn
         {
             get
@@ -166,29 +169,36 @@ namespace Diagnosis.App.ViewModels
 
         #endregion IEditable
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vm">ViewModel to be edited</param>
+        /// <param name="switchedOn">Initial state of commands. Default is "off".</param>
         public EditableBase(ViewModelBase vm, bool switchedOn = false)
         {
             this.vm = vm;
             SwitchedOn = switchedOn;
         }
-
-        public EditableBase(bool switchedOn = false)
+        /// <summary>
+        /// ViewModel to be edited inherits from EditableBase.
+        /// </summary>
+        /// <param name="switchedOn">Initial state of commands. Default is "off".</param>
+        protected EditableBase(bool switchedOn = false)
         {
-            vm = this; // if vm inherited from EditableBase
+            vm = this;
             SwitchedOn = switchedOn;
         }
 
         private void OnCommit()
         {
             IsEditorActive = false;
+            IsDirty = false;
 
             var h = Committed;
             if (h != null)
             {
                 h(this, new EditableEventArgs(vm));
             }
-
-            IsDirty = false;
         }
 
         private void OnDelete()

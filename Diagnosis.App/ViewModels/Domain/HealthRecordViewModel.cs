@@ -290,7 +290,7 @@ namespace Diagnosis.App.ViewModels
 
             this.healthRecord = hr;
 
-            Editable = new EditableBase();
+            Editable = new EditableBase(this);
 
             Category = EntityManagers.CategoryManager.GetByModel(hr.Category);
             Symptom = EntityManagers.SymptomsManager.Symptoms.FirstOrDefault(s => s.symptom == hr.Symptom);

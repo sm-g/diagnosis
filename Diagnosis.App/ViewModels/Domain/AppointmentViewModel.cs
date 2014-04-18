@@ -88,6 +88,7 @@ namespace Diagnosis.App.ViewModels
         {
             var hr = appointment.AddHealthRecord();
             var hrVM = new HealthRecordViewModel(hr);
+            SubscribeHR(hrVM);
             HealthRecords.Add(hrVM);
             return hrVM;
         }
@@ -98,7 +99,19 @@ namespace Diagnosis.App.ViewModels
 
             this.appointment = appointment;
             Doctor = new DoctorViewModel(appointment.Doctor);
-            HealthRecords = new ObservableCollection<HealthRecordViewModel>(appointment.HealthRecords.Select(hr => new HealthRecordViewModel(hr)));
+
+            var hrVMs = appointment.HealthRecords.Select(hr => new HealthRecordViewModel(hr)).ToList();
+            hrVMs.ForAll(hr => SubscribeHR(hr));
+            HealthRecords = new ObservableCollection<HealthRecordViewModel>(hrVMs);
+        }
+
+        private void SubscribeHR(HealthRecordViewModel hr)
+        {
+            hr.Editable.ModelPropertyChanged += (s, e) =>
+            {
+                this.Send((int)EventID.HealthRecordChanged,
+                    new HealthRecordChangedParams(e.viewModel as HealthRecordViewModel).Params);
+            };
         }
     }
 }

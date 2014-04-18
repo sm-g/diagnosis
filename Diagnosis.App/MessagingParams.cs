@@ -147,4 +147,18 @@ namespace Diagnosis.App
             };
         }
     }
+
+    class HealthRecordChangedParams : IEventParams
+    {
+        public KeyValuePair<string, object>[] Params { get; private set; }
+
+        public HealthRecordChangedParams(HealthRecordViewModel hrVM)
+        {
+            Contract.Requires(hrVM != null);
+
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.HealthRecord, hrVM)
+            };
+        }
+    }
 }

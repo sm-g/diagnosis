@@ -6,12 +6,12 @@ namespace Diagnosis.App
     /// </summary>
     static class Messages
     {
-        public const string Word = "wordVM";
+        public const string Word = "word";
         public const string CheckedState = "checked";
-        public const string Patient = "patientVM";
-        public const string Doctor = "doctorVM";
-        public const string Diagnosis = "diagnosisVM";
-        public const string Property = "propertyVM";
+        public const string Patient = "patient";
+        public const string Doctor = "doctor";
+        public const string Diagnosis = "diagnosis";
+        public const string Property = "property";
         public const string Course = "course";
         public const string Appointment = "appointment";
         public const string HealthRecord = "healthRecord";
@@ -33,6 +33,8 @@ namespace Diagnosis.App
         CourseStarted,
         AppointmentAdded,
 
-        WordsEditingModeChanged
+        WordsEditingModeChanged,
+
+        HealthRecordChanged
     }
 }

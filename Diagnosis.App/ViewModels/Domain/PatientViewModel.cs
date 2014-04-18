@@ -98,6 +98,7 @@ namespace Diagnosis.App.ViewModels
                     patient.Age = value;
                     OnPropertyChanged(() => Age);
                     OnPropertyChanged(() => BirthYear);
+                    Editable.MarkDirty();
                 }
             }
         }
@@ -308,19 +309,11 @@ namespace Diagnosis.App.ViewModels
 
                     OnHealthRecordSelected(hr);
                 }),
-                this.Subscribe((int)EventID.WordCheckedChanged, (e) =>
+                this.Subscribe((int)EventID.HealthRecordChanged, (e) =>
                 {
-                    var symptom = e.GetValue<WordViewModel>(Messages.Word);
-                    var isChecked = e.GetValue<bool>(Messages.CheckedState);
+                    var hr = e.GetValue<HealthRecordViewModel>(Messages.HealthRecord);
 
-                    OnSymptomCheckedChanged(symptom, isChecked);
-                }),
-                this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
-                {
-                    var diagnosis = e.GetValue<DiagnosisViewModel>(Messages.Diagnosis);
-                    var isChecked = e.GetValue<bool>(Messages.CheckedState);
-
-                    OnDiagnosisCheckedChanged(diagnosis, isChecked);
+                    OnHealthRecordChanged(hr);
                 }),
             };
         }
@@ -357,13 +350,7 @@ namespace Diagnosis.App.ViewModels
             hrSelecting = false;
         }
 
-        private void OnSymptomCheckedChanged(WordViewModel symptom, bool isChecked)
-        {
-            if (!hrSelecting)
-                Editable.MarkDirty();
-        }
-
-        private void OnDiagnosisCheckedChanged(DiagnosisViewModel diagnosis, bool isChecked)
+        private void OnHealthRecordChanged(HealthRecordViewModel hr)
         {
             if (!hrSelecting)
                 Editable.MarkDirty();
