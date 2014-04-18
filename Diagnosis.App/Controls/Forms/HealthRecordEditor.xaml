@@ -33,7 +33,7 @@
             <Controls:DateOffsetPicker DateOffset="{Binding DateOffset}" Margin="20,0,0,0"/>
         </DockPanel>
         <DockPanel>
-            <Label Content="число"/>
+            <Label Content="число" />
             <TextBox Text="{Binding NumValue}"/>
         </DockPanel>
        

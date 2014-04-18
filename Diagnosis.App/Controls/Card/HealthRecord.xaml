@@ -20,9 +20,9 @@
             <StackPanel Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <StackPanel x:Name="editor" >
                     <controls:AutoComplete DataContext="{Binding SymptomAutoComplete}" />
-                    <!--<controls:GroupsTree DataContext="{Binding Path=Words, Source={x:Static app:EntityManagers.WordsManager}}" MaxHeight="200" />-->           
+                    <!--<controls:GroupsTree DataContext="{Binding Path=Words, Source={x:Static app:EntityManagers.WordsManager}}" MaxHeight="200" />-->
                     <Forms:HealthRecordEditor />
-                    <DockPanel Visibility="{Binding Words.Count, Converter={StaticResource CountToVisibility}}">
+                    <DockPanel Visibility="{Binding Symptom.Words.Count, Converter={StaticResource CountToVisibility}}">
                         <TextBlock DockPanel.Dock="Top">Выбранные симптомы:</TextBlock>
                         <ListView ItemsSource="{Binding Symptom.Words}">
                             <ListView.ItemTemplate>
@@ -33,12 +33,29 @@
                         </ListView>
                     </DockPanel>
                 </StackPanel>
+
+                <!--<StackPanel x:Name="print" Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                    <Forms:HealthRecordEditor />                  
+                </StackPanel>-->
             </StackPanel>
 
-            <StackPanel Visibility="{Binding IsSelected, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+            <Grid Visibility="{Binding IsSelected, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                
                 <TextBlock Text="{Binding Name}" />
-                <TextBlock Text="{Binding Diagnosis.Name}" />
-            </StackPanel>
+                <TextBlock Grid.Column="1" Text="{Binding Diagnosis.Name}" />
+                <TextBlock Grid.Row="1" Text="{Binding Date}" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding NumValue, StringFormat={}{0:G6}}" />
+                <TextBlock Grid.Row="2" Text="{Binding Category}" />
+            </Grid>
         </StackPanel>
     </Grid>
 </UserControl>

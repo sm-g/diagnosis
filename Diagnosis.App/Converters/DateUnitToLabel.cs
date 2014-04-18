@@ -55,16 +55,6 @@ namespace Diagnosis.App.Converters
             object parameter, CultureInfo culture)
         {
             return new object[] { value };
-            var val = (string)value;
-
-            if (days.Contains(val))
-                return new object[] { DateUnits.Day };
-            if (months.Contains(val))
-                return new object[] { DateUnits.Month };
-            if (years.Contains(val))
-                return new object[] { DateUnits.Year };
-
-            throw new ArgumentOutOfRangeException("value");
         }
     }
 }
