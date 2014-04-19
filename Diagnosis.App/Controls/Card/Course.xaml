@@ -71,7 +71,8 @@
                             <DockPanel DockPanel.Dock="Top">
                                 <TextBlock Text="{Binding DateTime, StringFormat='{}{0:d}'}" />
                                 <TextBlock Text="{Binding Doctor.ShortName}"
-                                       HorizontalAlignment="Right" />
+                                           HorizontalAlignment="Right"
+                                           Visibility="{Binding IsDoctorFromCourse, Converter={StaticResource NegBooleanToVisibilityConverter}}"/>
                             </DockPanel>
                             <ItemsControl ItemsSource="{Binding HealthRecords}">
                                 <ItemsControl.ItemTemplate>

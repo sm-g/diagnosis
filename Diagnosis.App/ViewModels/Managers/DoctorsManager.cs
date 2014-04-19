@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Data.Repositories;
+using Diagnosis.Models;
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
@@ -13,6 +14,11 @@ namespace Diagnosis.App.ViewModels
         IDoctorRepository repository;
 
         public ObservableCollection<DoctorViewModel> Doctors { get; private set; }
+
+        public DoctorViewModel GetByModel(Doctor doctor)
+        {
+            return Doctors.FirstOrDefault(a => a.doctor == doctor);
+        }
 
         public DoctorViewModel CurrentDoctor
         {

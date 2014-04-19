@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace Diagnosis.App.Controls.Card
 {
     /// <summary>
-    /// Interaction logic for PatientHeader.xaml
+    /// Interaction logic for AppointmentsList.xaml
     /// </summary>
-    public partial class PatientHeader : UserControl
+    public partial class AppointmentsList : UserControl
     {
-        public PatientHeader()
+        public AppointmentsList()
         {
             InitializeComponent();
         }

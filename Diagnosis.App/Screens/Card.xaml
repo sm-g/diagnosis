@@ -21,7 +21,7 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
 
-            <controls:PatientHeader />
+            <card:PatientHeader />
 
             <StackPanel Grid.Column="1">
                 <Button Command="{Binding Editable.CommitCommand}">Сохранить</Button>
@@ -82,7 +82,9 @@
                             </ListView.ItemContainerStyle>
                         </ListView>
                     </Grid>
-
+                    <card:AppointmentsList DataContext="{Binding CoursesManager.SelectedCourse}" 
+                                           DockPanel.Dock="Top"
+                                           Margin="10" />
                     <card:Appointment DataContext="{Binding CoursesManager.SelectedCourse.SelectedAppointment}"
                                       Margin="10" />
                 </DockPanel>

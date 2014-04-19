@@ -147,10 +147,11 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(course != null);
 
             this.course = course;
-            LeadDoctor = new DoctorViewModel(course.LeadDoctor);
+
+            LeadDoctor = EntityManagers.DoctorsManager.GetByModel(course.LeadDoctor);
 
             var appVMs = course.Appointments.
-                Select(app => new AppointmentViewModel(app)).
+                Select(app => new AppointmentViewModel(app, this)).
                 Reverse();
             Appointments = new ObservableCollection<AppointmentViewModel>(appVMs);
 
@@ -167,7 +168,7 @@ namespace Diagnosis.App.ViewModels
         private AppointmentViewModel AddAppointment()
         {
             var app = course.AddAppointment();
-            var appVM = new AppointmentViewModel(app);
+            var appVM = new AppointmentViewModel(app, this);
 
             Appointments.Add(appVM);
             return appVM;

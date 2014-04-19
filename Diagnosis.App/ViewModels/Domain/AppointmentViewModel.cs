@@ -12,6 +12,8 @@ namespace Diagnosis.App.ViewModels
     {
         private Appointment appointment;
 
+        CourseViewModel courseVM;
+
         private DoctorViewModel _doctor;
         private HealthRecordViewModel _selectedHealthRecord;
         private ICommand _addHealthRecord;
@@ -37,6 +39,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     _doctor = value;
                     OnPropertyChanged(() => Doctor);
+                    OnPropertyChanged(() => IsDoctorFromCourse);
                 }
             }
         }
@@ -50,6 +53,14 @@ namespace Diagnosis.App.ViewModels
         }
 
         public ObservableCollection<HealthRecordViewModel> HealthRecords { get; private set; }
+
+        public bool IsDoctorFromCourse
+        {
+            get
+            {
+                return Doctor == courseVM.LeadDoctor;
+            }
+        }
 
         public HealthRecordViewModel SelectedHealthRecord
         {
@@ -93,12 +104,15 @@ namespace Diagnosis.App.ViewModels
             return hrVM;
         }
 
-        public AppointmentViewModel(Appointment appointment)
+        public AppointmentViewModel(Appointment appointment, CourseViewModel courseVM)
         {
             Contract.Requires(appointment != null);
+            Contract.Requires(courseVM != null);
 
             this.appointment = appointment;
-            Doctor = new DoctorViewModel(appointment.Doctor);
+            this.courseVM = courseVM;
+
+            Doctor = EntityManagers.DoctorsManager.GetByModel(appointment.Doctor);
 
             var hrVMs = appointment.HealthRecords.Select(hr => new HealthRecordViewModel(hr)).ToList();
             hrVMs.ForAll(hr => SubscribeHR(hr));

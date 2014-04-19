@@ -142,6 +142,9 @@
     <Compile Include="Controls\Card\Appointment.xaml.cs">
       <DependentUpon>Appointment.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Card\AppointmentsList.xaml.cs">
+      <DependentUpon>AppointmentsList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Card\HealthRecord.xaml.cs">
       <DependentUpon>HealthRecord.xaml</DependentUpon>
     </Compile>
@@ -288,6 +291,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Card\Appointment.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Card\AppointmentsList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
