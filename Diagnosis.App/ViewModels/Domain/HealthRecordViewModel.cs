@@ -46,7 +46,6 @@ namespace Diagnosis.App.ViewModels
         #region Model
 
         private SymptomViewModel _symptom;
-
         private CategoryViewModel _category;
         private DiagnosisViewModel _diagnosis;
 
@@ -116,7 +115,10 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_category != value)
                 {
+                    if (value != null)
+                        healthRecord.Category = value.category;
                     _category = value;
+
                     Editable.MarkDirty();
                     OnPropertyChanged(() => Category);
                 }

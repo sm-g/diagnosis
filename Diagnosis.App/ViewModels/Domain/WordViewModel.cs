@@ -75,8 +75,9 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_defCat != value)
                 {
-                    word.DefaultCategory = value.category;
-                    _defCat = EntityManagers.CategoryManager.GetByModel(word.DefaultCategory);
+                    if (value != null)
+                        word.DefaultCategory = value.category;
+                    _defCat = value;
 
                     OnPropertyChanged(() => DefaultCategory);
                     Editable.MarkDirty();
