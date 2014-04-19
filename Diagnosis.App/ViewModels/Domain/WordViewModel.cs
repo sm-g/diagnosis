@@ -144,5 +144,10 @@ namespace Diagnosis.App.ViewModels
                 child.Initialize();
             }
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

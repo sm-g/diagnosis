@@ -28,10 +28,6 @@ namespace Diagnosis.App.ViewModels
                 else
                     return string.Empty;
             }
-            set
-            {
-                throw new NotImplementedException();
-            }
         }
 
         #region CheckableBase

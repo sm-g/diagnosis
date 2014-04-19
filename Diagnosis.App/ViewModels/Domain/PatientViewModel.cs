@@ -379,6 +379,11 @@ namespace Diagnosis.App.ViewModels
         }
 
         #endregion Comparsion
+
+        public override string ToString()
+        {
+            return FullName;
+        }
     }
 
     class NewPatientViewModel : PatientViewModel

@@ -181,5 +181,10 @@ namespace Diagnosis.App.ViewModels
                 IsAppointmentsVisible = IsSelected;
             }
         }
+
+        public override string ToString()
+        {
+            return Start.ToShortDateString() + ' ' + LeadDoctor.ToString();
+        }
     }
 }

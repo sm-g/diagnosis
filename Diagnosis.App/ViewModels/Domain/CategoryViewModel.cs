@@ -32,11 +32,6 @@ namespace Diagnosis.App.ViewModels
             throw new NotImplementedException();
         }
 
-        public override string ToString()
-        {
-            return Name;
-        }
-
         #endregion CheckableBase
 
 
@@ -61,6 +56,9 @@ namespace Diagnosis.App.ViewModels
                 throw new ArgumentException("Object is not a CategoryViewModel");
         }
 
-
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

@@ -73,22 +73,7 @@ namespace Diagnosis.App.ViewModels
         public override void OnCheckedChanged()
         {
             base.OnCheckedChanged();
-
-            // this.Send((int)EventID.WordCheckedChanged, new WordCheckedChangedParams(this, IsChecked).Params);
         }
-
-        //public WordSearch Search
-        //{
-        //    get
-        //    {
-        //        if (_search == null)
-        //        {
-        //            _search = new WordSearch(this);
-        //            _search.ResultItemSelected += _search_ResultItemSelected;
-        //        }
-        //        return _search;
-        //    }
-        //}
 
         public SymptomViewModel(Symptom s)
         {
@@ -102,11 +87,9 @@ namespace Diagnosis.App.ViewModels
         }
 
 
-        //private void _search_ResultItemSelected(object sender, System.EventArgs e)
-        //{
-        //    this.AddIfNotExists(Search.SelectedItem, Search.AllChildren);
-        //    Search.SelectedItem.checkable.IsChecked = true;
-        //    Search.Clear();
-        //}
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

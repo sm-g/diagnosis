@@ -96,21 +96,7 @@ namespace Diagnosis.App.ViewModels
                 return LastName + (FirstName.Length > 0 ? " " + FirstName[0] + "." + (MiddleName.Length > 0 ? " " + MiddleName[0] + "." : "") : "");
             }
         }
-
         #region CheckableBase
-
-        public string Name
-        {
-            get
-            {
-                return ShortName;
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         public override void OnCheckedChanged()
         {
         }
@@ -139,6 +125,11 @@ namespace Diagnosis.App.ViewModels
             doctor = d;
 
             Editable = new EditableBase(this);
+        }
+
+        public override string ToString()
+        {
+            return ShortName;
         }
     }
 }

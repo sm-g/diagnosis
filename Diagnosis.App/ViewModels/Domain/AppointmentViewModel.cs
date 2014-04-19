@@ -127,5 +127,10 @@ namespace Diagnosis.App.ViewModels
                     new HealthRecordChangedParams(e.viewModel as HealthRecordViewModel).Params);
             };
         }
+
+        public override string ToString()
+        {
+            return DateTime.ToShortDateString() + ' ' + Doctor;
+        }
     }
 }
