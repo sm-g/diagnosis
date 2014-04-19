@@ -12,6 +12,7 @@ namespace Diagnosis.App.ViewModels
     public class CategoryManager : ViewModelBase
     {
         private ICategoryRepository repository;
+        static CategoryViewModel noCategory = new CategoryViewModel( new Category() { Title = "", Order = int.MaxValue });
 
         public ObservableCollection<CategoryViewModel> Categories
         {
@@ -26,7 +27,7 @@ namespace Diagnosis.App.ViewModels
 
         public CategoryViewModel GetByModel(Category cat)
         {
-            return Categories.FirstOrDefault(a => a.category == cat);
+            return Categories.FirstOrDefault(a => a.category == cat) ?? noCategory;
         }
 
         public CategoryManager(ICategoryRepository repo)

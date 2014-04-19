@@ -117,9 +117,9 @@ namespace Diagnosis.App.ViewModels
         {
             Contract.Requires(w != null);
             word = w;
-            DefaultCategory = EntityManagers.CategoryManager.GetByModel(w.DefaultCategory);
-
             Editable = new EditableBase(this);
+
+            DefaultCategory = EntityManagers.CategoryManager.GetByModel(w.DefaultCategory);
         }
 
         public WordViewModel(string title)

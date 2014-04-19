@@ -95,10 +95,10 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(s != null);
 
             symptom = s;
+            Editable = new EditableBase(this);
+
             Words = new ObservableCollection<WordViewModel>(EntityManagers.WordsManager.GetSymptomWords(s));
             DefaultCategory = EntityManagers.CategoryManager.GetByModel(symptom.DefaultCategory);
-
-            Editable = new EditableBase(this);
         }
 
 

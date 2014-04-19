@@ -12,10 +12,11 @@
     <UserControl.Resources>
         <CollectionViewSource Source="{Binding HealthRecords}" x:Key="hrs">
             <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Category" />
                 <scm:SortDescription PropertyName="SortingDate" />
             </CollectionViewSource.SortDescriptions>
-            <CollectionViewSource.GroupDescriptions>
-                <dat:PropertyGroupDescription PropertyName="Category" />
+            <CollectionViewSource.GroupDescriptions>                
+                <dat:PropertyGroupDescription PropertyName="Category" />                
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
     </UserControl.Resources>
@@ -60,12 +61,12 @@
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate>
-                                                <GroupBox>
-                                                    <GroupBox.Header>
+                                                <Expander IsExpanded="True">
+                                                    <Expander.Header>
                                                         <TextBlock Text="{Binding Name}" ></TextBlock>
-                                                    </GroupBox.Header>
+                                                    </Expander.Header>
                                                     <ItemsPresenter />
-                                                </GroupBox>
+                                                </Expander>
                                             </ControlTemplate>
                                         </Setter.Value>
                                     </Setter>
