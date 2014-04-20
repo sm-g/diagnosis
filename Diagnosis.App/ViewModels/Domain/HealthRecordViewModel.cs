@@ -112,8 +112,16 @@ namespace Diagnosis.App.ViewModels
                 if (_category != value)
                 {
                     if (value != null)
+                    {
                         healthRecord.Category = value.category;
-                    _category = value;
+                        _category = value;
+                    }
+                    else
+                    {
+                        healthRecord.Category = null;
+                        _category = CategoryManager.NoCategory;
+                    }
+
 
                     Editable.MarkDirty();
                     OnPropertyChanged(() => Category);

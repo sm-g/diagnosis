@@ -1,18 +1,16 @@
 ﻿using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
-using EventAggregator;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
     public class CategoryManager : ViewModelBase
     {
         private ICategoryRepository repository;
-        static CategoryViewModel noCategory = new CategoryViewModel( new Category() { Title = "", Order = int.MaxValue });
+
+        public static CategoryViewModel NoCategory = new CategoryViewModel(new Category() { Title = "", Order = int.MaxValue });
 
         public ObservableCollection<CategoryViewModel> Categories
         {
@@ -27,7 +25,7 @@ namespace Diagnosis.App.ViewModels
 
         public CategoryViewModel GetByModel(Category cat)
         {
-            return Categories.FirstOrDefault(a => a.category == cat) ?? noCategory;
+            return Categories.FirstOrDefault(a => a.category == cat);
         }
 
         public CategoryManager(ICategoryRepository repo)
