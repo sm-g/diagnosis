@@ -1,5 +1,4 @@
-﻿<UserControl xmlns:Forms="clr-namespace:Diagnosis.App.Controls.Forms"  
-             xmlns:Controls="clr-namespace:Diagnosis.App.Controls"  
+﻿<UserControl xmlns:forms="clr-namespace:Diagnosis.App.Controls.Forms"
              x:Class="Diagnosis.App.Controls.Forms.HealthRecordEditor"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -24,15 +23,15 @@
     </UserControl.Resources>
     <StackPanel>
         <DockPanel>
-            <Forms:CategoryChooser MaxWidth="200" HorizontalAlignment="Left" />
+            <forms:CategoryChooser MaxWidth="200" HorizontalAlignment="Left" />
         </DockPanel>
         <DockPanel>
             <Label Content="дата" />
-            <Controls:ComboBoxDatePicker Year="{Binding FromYear, Mode=TwoWay}"
+            <forms:ComboBoxDatePicker Year="{Binding FromYear, Mode=TwoWay}"
                                          Month="{Binding FromMonth, Mode=TwoWay}"
                                          Day="{Binding FromDay, Mode=TwoWay}" />
             <Label Content="давность" Margin="10,0,0,0" />
-            <Controls:DateOffsetPicker DateOffset="{Binding DateOffset}" />
+            <forms:DateOffsetPicker DateOffset="{Binding DateOffset}" />
         </DockPanel>
         <DockPanel>
             <Label Content="число" />
