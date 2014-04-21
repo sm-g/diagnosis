@@ -64,7 +64,7 @@ namespace Diagnosis.App.ViewModels
 
                     if (value)
                     {
-                        PatientsVM.NoCurrent();
+                        PatientsVM.RemoveCurrent();
                     }
 
                     this.Send((int)EventID.WordsEditingModeChanged, new DirectoryEditingModeChangedParams(value).Params);

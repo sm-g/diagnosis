@@ -27,7 +27,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_current != value)
                 {
-                    if (_current != null && value != null && !(value is NewPatientViewModel))
+                    if (_current != null && value != null && !(value is UnsavedPatientViewModel))
                     {
                         value.Editable.IsEditorActive = _current.Editable.IsEditorActive;
                     }
@@ -44,7 +44,7 @@ namespace Diagnosis.App.ViewModels
                         }
                     }
 
-                    if (value != null && !(value is NewPatientViewModel))
+                    if (value != null && !(value is UnsavedPatientViewModel))
                         value.Subscribe();
 
                     this.Send((int)EventID.CurrentPatientChanged, new CurrentPatientChangedParams(CurrentPatient).Params);
@@ -65,7 +65,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public void NoCurrent()
+        public void RemoveCurrent()
         {
             if (CurrentPatient.CoursesManager.SelectedCourse != null &&
                 CurrentPatient.CoursesManager.SelectedCourse.SelectedAppointment != null &&
@@ -83,12 +83,13 @@ namespace Diagnosis.App.ViewModels
                     ?? (_addPatient = new RelayCommand(
                                           () =>
                                           {
-                                              var newPatientVM = new NewPatientViewModel();
+                                              var newPatientVM = new UnsavedPatientViewModel();
                                               newPatientVM.Editable.IsEditorActive = true;
                                               CurrentPatient = newPatientVM;
                                               newPatientVM.PatientCreated += (s, e) =>
                                               {
                                                   patientRepo.SaveOrUpdate(e.patientVM.patient);
+                                                  e.patientVM.AfterPatientLoaded();
                                                   Patients.Add(e.patientVM);
                                                   CurrentPatient = e.patientVM;
                                                   Subscribe(CurrentPatient);

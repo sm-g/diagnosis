@@ -15,7 +15,6 @@ namespace Diagnosis.App.ViewModels
         private CoursesManager _coursesManager;
         private List<EventMessageHandler> msgHandlers = new List<EventMessageHandler>();
         private bool hrSelecting;
-
         public EditableBase Editable { get; private set; }
 
         #region Model related
@@ -269,14 +268,14 @@ namespace Diagnosis.App.ViewModels
             patient = p;
             Editable = new EditableBase(this, switchedOn: true);
 
-            Properties = new ObservableCollection<PropertyViewModel>(EntityManagers.PropertyManager.GetPatientProperties(patient));
-            CoursesManager = new CoursesManager(this);
+            if (!(this is UnsavedPatientViewModel))
+                AfterPatientLoaded();
         }
 
-        protected PatientViewModel()
+        public void AfterPatientLoaded()
         {
-            Editable = new EditableBase(this, switchedOn: true);
-            Properties = new ObservableCollection<PropertyViewModel>();
+            Properties = new ObservableCollection<PropertyViewModel>(EntityManagers.PropertyManager.GetPatientProperties(patient));
+            CoursesManager = new CoursesManager(this);
         }
 
         #region Event handlers
@@ -355,7 +354,6 @@ namespace Diagnosis.App.ViewModels
             if (!hrSelecting)
                 Editable.MarkDirty();
         }
-
         #endregion Event handlers
 
         #region Comparsion
@@ -386,230 +384,28 @@ namespace Diagnosis.App.ViewModels
         }
     }
 
-    class NewPatientViewModel : PatientViewModel
+    class UnsavedPatientViewModel : PatientViewModel
     {
-        #region Fields
-
-        string fn;
-        string mn;
-        string ln;
-        int? by;
-        byte? bm;
-        byte? bd;
-        bool isMale;
-        string snils;
-
-        #endregion
-
         public event PatientEventHandler PatientCreated;
 
-        public new int ID
+        /// <summary>
+        /// For patient registration. First Editable.Committed raises PatientCreated.
+        /// </summary>
+        public UnsavedPatientViewModel()
+            : base(new Patient())
         {
-            get { return 0; }
+            Editable.Committed += OnFirstCommit;
         }
-
-        public new string FirstName
+        private void OnFirstCommit(object sender, EditableEventArgs e)
         {
-            get
-            {
-                return fn;
-            }
-            set
-            {
-                if (fn != value)
-                {
-                    fn = value;
-                    OnPropertyChanged(() => FirstName);
-                    OnPropertyChanged(() => ShortName);
-                    Editable.MarkDirty();
-                }
-            }
-        }
-
-        public new string MiddleName
-        {
-            get
-            {
-                return mn;
-            }
-            set
-            {
-                if (mn != value)
-                {
-                    mn = value;
-                    OnPropertyChanged(() => MiddleName);
-                    OnPropertyChanged(() => ShortName);
-                    Editable.MarkDirty();
-                }
-            }
-        }
-
-        public new string LastName
-        {
-            get
-            {
-                return ln;
-            }
-            set
-            {
-                if (ln != value)
-                {
-                    ln = value;
-                    OnPropertyChanged(() => LastName);
-                    OnPropertyChanged(() => ShortName);
-                    Editable.MarkDirty();
-                }
-            }
-        }
-
-        public new int? Age
-        {
-            get
-            {
-                try
-                {
-                    int age = DateTime.Today.Year - BirthYear.Value;
-
-                    if (new DateTime(BirthYear.Value, BirthMonth.Value, BirthDay.Value) > DateTime.Today.AddYears(-age))
-                        age--;
-                    return age;
-                }
-                catch
-                {
-                    return null;
-                }
-            }
-            set
-            {
-                if (value.HasValue)
-                {
-                    int year = DateTime.Today.Year - value.Value;
-
-                    // TODO check setting year for 29 feb case
-                    if (BirthMonth.HasValue && BirthDay.HasValue &&
-                        new DateTime(year, BirthMonth.Value, BirthDay.Value) < DateTime.Today.AddYears(-value.Value))
-                        year--;
-
-                    BirthYear = year;
-                }
-            }
-        }
-
-        public new int? BirthYear
-        {
-            get
-            {
-                return by;
-            }
-            set
-            {
-                if (by != value && value >= 0 && value <= DateTime.Today.Year)
-                {
-                    by = value;
-                    OnPropertyChanged(() => Age);
-                    OnPropertyChanged(() => BirthYear);
-                    Editable.MarkDirty();
-                }
-            }
-        }
-
-        public new byte? BirthMonth
-        {
-            get
-            {
-                return bm;
-            }
-            set
-            {
-                if (bm != value && value >= 1 && value <= 12)
-                {
-                    bm = value;
-                    OnPropertyChanged(() => Age);
-                    OnPropertyChanged(() => BirthMonth);
-                    Editable.MarkDirty();
-                }
-            }
-        }
-
-        public new byte? BirthDay
-        {
-            get
-            {
-                return bd;
-            }
-            set
-            {
-                if (bd != value && value >= 1 && value <= 31)
-                {
-                    bd = value;
-
-                    OnPropertyChanged(() => Age);
-                    OnPropertyChanged(() => BirthDay);
-                    Editable.MarkDirty();
-                }
-            }
-        }
-
-        public new bool IsMale
-        {
-            get
-            {
-                return isMale;
-            }
-            set
-            {
-                if (isMale != value)
-                {
-                    isMale = value;
-                    OnPropertyChanged(() => IsMale);
-                    Editable.MarkDirty();
-                }
-            }
-        }
-
-        public new string Snils
-        {
-            get
-            {
-                return snils;
-            }
-            set
-            {
-                if (snils != value)
-                {
-                    snils = value;
-                    OnPropertyChanged(() => Snils);
-                    Editable.MarkDirty();
-                }
-            }
-        }
-
-        public NewPatientViewModel()
-        {
-            IsMale = true;
-
-            Editable.Committed += (s, e) =>
-                OnPatientCreated(new PatientEventArgs(
-                    new PatientViewModel(
-                        new Patient(LastName,
-                                    FirstName,
-                                    MiddleName,
-                                    BirthYear, BirthMonth, BirthDay,
-                                    IsMale))
-                        {
-                            Snils = this.Snils
-                        }
-                    ));
-        }
-
-        protected virtual void OnPatientCreated(PatientEventArgs e)
-        {
+            Editable.Committed -= OnFirstCommit;
             var h = PatientCreated;
             if (h != null)
             {
-                h(this, e);
+                h(this, new PatientEventArgs(this));
             }
         }
+
     }
 
     public delegate void PatientEventHandler(object sender, PatientEventArgs e);
@@ -617,6 +413,7 @@ namespace Diagnosis.App.ViewModels
     public class PatientEventArgs : EventArgs
     {
         public PatientViewModel patientVM;
+
         public PatientEventArgs(PatientViewModel p)
         {
             patientVM = p;
