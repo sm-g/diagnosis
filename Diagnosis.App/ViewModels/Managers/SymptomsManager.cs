@@ -21,13 +21,18 @@ namespace Diagnosis.App.ViewModels
 
         public SymptomViewModel GetSymptomForWords(IEnumerable<WordViewModel> words)
         {
+            Contract.Requires(words != null);
+
+            // ищем среди симптомов такой, в котором все слова соответствуют словам words
             var comparator = new CompareWord();
             var existing = Symptoms.FirstOrDefault(
                 s => s.Words.OrderBy(w => w.word, comparator).SequenceEqual(
                        words.OrderBy(w => w.word, comparator)));
+
             if (existing != null)
                 return existing;
 
+            // если такого нет, создаём новый симптом с этими словами
             var sym = new Symptom(words.Select(w => w.word));
             var svm = new SymptomViewModel(sym);
             Symptoms.Add(svm);

@@ -1,5 +1,4 @@
 ﻿using Diagnosis.Models;
-using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -9,7 +8,7 @@ namespace Diagnosis.App.ViewModels
     public class CoursesManager : ViewModelBase
     {
         private CourseViewModel _selectedCourse;
-        PatientViewModel patientVM;
+        private PatientViewModel patientVM;
 
         public ObservableCollection<CourseViewModel> Courses
         {

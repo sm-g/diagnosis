@@ -1,24 +1,31 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System;
+using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
     public class HealthRecord
     {
-        ISet<PatientRecordProperty> recordProperties = new HashSet<PatientRecordProperty>();
-        int? _year;
-        byte? _month;
-        byte? _day;
+        private ISet<PatientRecordProperty> recordProperties = new HashSet<PatientRecordProperty>();
+        private int? _year;
+        private byte? _month;
+        private byte? _day;
 
         public virtual int Id { get; protected set; }
+
         public virtual Appointment Appointment { get; protected set; }
+
         public virtual string Comment { get; set; }
+
         public virtual Category Category { get; set; }
+
         public virtual IcdDisease Disease { get; set; }
+
         public virtual Symptom Symptom { get; set; }
+
         public virtual decimal? NumValue { get; set; }
+
         public virtual int? FromYear
         {
             get
@@ -38,6 +45,7 @@ namespace Diagnosis.Models
                 CheckDate();
             }
         }
+
         public virtual byte? FromMonth
         {
             get
@@ -54,9 +62,10 @@ namespace Diagnosis.Models
                 {
                     _month = value > 0 ? value : null;
                 }
-                    CheckDate();
+                CheckDate();
             }
         }
+
         public virtual byte? FromDay
         {
             get
@@ -73,7 +82,7 @@ namespace Diagnosis.Models
                 {
                     _day = value > 0 ? value : null;
                 }
-                    CheckDate();
+                CheckDate();
             }
         }
 
@@ -93,11 +102,13 @@ namespace Diagnosis.Models
             Appointment = appointment;
         }
 
-        void CheckDate()
+        private void CheckDate()
         {
             Checkers.CheckDate(FromYear, FromMonth, FromDay);
         }
 
-        protected HealthRecord() { }
+        protected HealthRecord()
+        {
+        }
     }
 }

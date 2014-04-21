@@ -30,7 +30,7 @@ namespace Diagnosis.Data.Repositories
 
     public interface ISymptomRepository : IRepository<Symptom>
     {
-        IEnumerable<Symptom> GetByWord(string title);
+        IEnumerable<Symptom> GetByWord(Word word);
     }
 
     public interface IDiagnosisRepository : IRepository<Diagnosis.Models.Diagnosis>

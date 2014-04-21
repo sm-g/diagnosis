@@ -18,11 +18,6 @@ namespace Diagnosis.App.ViewModels
             private set;
         }
 
-        public CategoryViewModel Find(string title)
-        {
-            return Categories.Where(w => w.Name == title).SingleOrDefault();
-        }
-
         public CategoryViewModel GetByModel(Category cat)
         {
             return Categories.FirstOrDefault(a => a.category == cat);

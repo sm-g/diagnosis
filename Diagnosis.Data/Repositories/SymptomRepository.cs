@@ -8,7 +8,7 @@ namespace Diagnosis.Data.Repositories
 {
     public class SymptomRepository : ModelRepository<Symptom>, ISymptomRepository
     {
-        public IEnumerable<Symptom> GetByWord(string word)
+        public IEnumerable<Symptom> GetByWord(Word word)
         {
             throw new NotImplementedException();
             //ISession session = NHibernateHelper.GetSession();
