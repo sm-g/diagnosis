@@ -18,34 +18,7 @@ namespace Diagnosis.App.ViewModels
         private ICommand _addAppointment;
 
         public EditableBase Editable { get; private set; }
-
-        #region CheckableBase
-
-        public override void OnCheckedChanged()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion CheckableBase
-
-        public bool IsAppointmentsVisible
-        {
-            get
-            {
-                return _appointmentsVis;
-            }
-            set
-            {
-                if (_appointmentsVis != value)
-                {
-                    _appointmentsVis = value;
-
-                    IsSelected = value;
-
-                    OnPropertyChanged(() => IsAppointmentsVisible);
-                }
-            }
-        }
+        #region Model
 
         public DoctorViewModel LeadDoctor
         {
@@ -59,6 +32,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     _leadDoctor = value;
                     OnPropertyChanged(() => LeadDoctor);
+                    Editable.MarkDirty();
                 }
             }
         }
@@ -97,6 +71,27 @@ namespace Diagnosis.App.ViewModels
         }
 
         public ObservableCollection<AppointmentViewModel> Appointments { get; private set; }
+
+        #endregion
+
+        public bool IsAppointmentsVisible
+        {
+            get
+            {
+                return _appointmentsVis;
+            }
+            set
+            {
+                if (_appointmentsVis != value)
+                {
+                    _appointmentsVis = value;
+
+                    IsSelected = value;
+
+                    OnPropertyChanged(() => IsAppointmentsVisible);
+                }
+            }
+        }
 
         public AppointmentViewModel SelectedAppointment
         {
@@ -148,22 +143,31 @@ namespace Diagnosis.App.ViewModels
 
             this.course = course;
 
+            Editable = new EditableBase(this, switchedOn: true, dirtImmunity: true);
+
             LeadDoctor = EntityManagers.DoctorsManager.GetByModel(course.LeadDoctor);
 
-            var appVMs = course.Appointments.
-                Select(app => new AppointmentViewModel(app, this)).
-                Reverse();
+            var appVMs = course.Appointments.Select(app => new AppointmentViewModel(app, this)).Reverse();
             Appointments = new ObservableCollection<AppointmentViewModel>(appVMs);
 
             this.PropertyChanged += CourseViewModel_PropertyChanged;
-
-            Editable = new EditableBase(this, true);
 
             if (Appointments.Count > 0)
             {
                 SelectedAppointment = Appointments.Last();
             }
+
+            Editable.StartTrackDirt();
         }
+
+        #region CheckableBase
+
+        public override void OnCheckedChanged()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion CheckableBase
 
         private AppointmentViewModel AddAppointment()
         {

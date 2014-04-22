@@ -12,9 +12,10 @@ namespace Diagnosis.App.ViewModels
         private ICommand _revert;
         private bool _editActive;
         private bool _editorFocused;
+        private bool _canBeDirty;
         bool _isDirty;
         private bool _switchedOn;
-        private bool _deletable;
+        private bool _canBeDeleted;
 
         ViewModelBase vm;
 
@@ -89,18 +90,33 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+        public bool CanBeDirty
+        {
+            get
+            {
+                return _canBeDirty;
+            }
+            set
+            {
+                if (_canBeDirty != value)
+                {
+                    _canBeDirty = value;
+                    OnPropertyChanged(() => CanBeDirty);
+                }
+            }
+        }
 
         public bool CanBeDeleted
         {
             get
             {
-                return _deletable;
+                return _canBeDeleted;
             }
             set
             {
-                if (_deletable != value)
+                if (_canBeDeleted != value)
                 {
-                    _deletable = value;
+                    _canBeDeleted = value;
                     OnPropertyChanged(() => CanBeDeleted);
                 }
             }
@@ -158,13 +174,21 @@ namespace Diagnosis.App.ViewModels
 
         public void MarkDirty()
         {
-            IsDirty = true;
-
-            var h = ModelPropertyChanged;
-            if (h != null)
+            if (CanBeDirty)
             {
-                h(this, new EditableEventArgs(vm));
+                IsDirty = true;
+
+                var h = ModelPropertyChanged;
+                if (h != null)
+                {
+                    h(this, new EditableEventArgs(vm));
+                }
             }
+        }
+
+        public void StartTrackDirt()
+        {
+            CanBeDirty = true;
         }
 
         #endregion IEditable
@@ -174,19 +198,23 @@ namespace Diagnosis.App.ViewModels
         /// </summary>
         /// <param name="vm">ViewModel to be edited</param>
         /// <param name="switchedOn">Initial state of commands. Default is "off".</param>
-        public EditableBase(ViewModelBase vm, bool switchedOn = false)
+        /// <param name="dirtImmunity">Initial state of CanBeDirty. Default is "true".</param>
+        public EditableBase(ViewModelBase vm, bool switchedOn = false, bool dirtImmunity = false)
         {
             this.vm = vm;
             SwitchedOn = switchedOn;
+            CanBeDirty = !dirtImmunity;
         }
         /// <summary>
         /// ViewModel to be edited inherits from EditableBase.
         /// </summary>
         /// <param name="switchedOn">Initial state of commands. Default is "off".</param>
-        protected EditableBase(bool switchedOn = false)
+        /// <param name="dirtImmunity">Initial state of CanBeDirty. Default is "true".</param>
+        protected EditableBase(bool switchedOn = false, bool dirtImmunity = false)
         {
             vm = this;
             SwitchedOn = switchedOn;
+            CanBeDirty = !dirtImmunity;
         }
 
         private void OnCommit()

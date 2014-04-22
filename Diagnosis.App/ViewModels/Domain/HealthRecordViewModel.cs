@@ -310,13 +310,16 @@ namespace Diagnosis.App.ViewModels
 
             this.healthRecord = hr;
 
-            Editable = new EditableBase(this);
+            Editable = new EditableBase(this, dirtImmunity: true);
 
             Category = EntityManagers.CategoryManager.GetByModel(hr.Category);
             Symptom = EntityManagers.SymptomsManager.Symptoms.FirstOrDefault(s => s.symptom == hr.Symptom);
             Diagnosis = EntityManagers.DiagnosisManager.GetHealthRecordDiagnosis(healthRecord);
 
+
             Subscribe();
+
+            Editable.StartTrackDirt();
         }
 
         #region Event handlers

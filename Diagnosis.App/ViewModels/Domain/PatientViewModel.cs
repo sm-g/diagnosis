@@ -14,7 +14,6 @@ namespace Diagnosis.App.ViewModels
         private DoctorViewModel _doctor;
         private CoursesManager _coursesManager;
         private List<EventMessageHandler> msgHandlers = new List<EventMessageHandler>();
-        private bool hrSelecting;
         public EditableBase Editable { get; private set; }
 
         #region Model related
@@ -344,15 +343,12 @@ namespace Diagnosis.App.ViewModels
 
         private void OnHealthRecordSelected(HealthRecordViewModel hr)
         {
-            hrSelecting = true;
             hr.MakeCurrent();
-            hrSelecting = false;
         }
 
         private void OnHealthRecordChanged(HealthRecordViewModel hr)
         {
-            if (!hrSelecting)
-                Editable.MarkDirty();
+            Editable.MarkDirty();
         }
         #endregion Event handlers
 

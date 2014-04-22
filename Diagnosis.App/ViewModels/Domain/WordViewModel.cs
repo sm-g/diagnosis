@@ -117,9 +117,12 @@ namespace Diagnosis.App.ViewModels
         {
             Contract.Requires(w != null);
             word = w;
-            Editable = new EditableBase(this);
+
+            Editable = new EditableBase(this, dirtImmunity: true);
 
             DefaultCategory = EntityManagers.CategoryManager.GetByModel(w.DefaultCategory);
+
+            Editable.StartTrackDirt();
         }
 
         public WordViewModel(string title)

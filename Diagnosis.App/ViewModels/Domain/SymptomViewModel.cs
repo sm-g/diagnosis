@@ -9,6 +9,9 @@ namespace Diagnosis.App.ViewModels
     public class SymptomViewModel : CheckableBase
     {
         internal readonly Symptom symptom;
+        private CategoryViewModel _defCat;
+
+        private IcdDisease _disease;
 
         public EditableBase Editable { get; private set; }
 
@@ -23,11 +26,9 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        #region Model
+
         public ObservableCollection<WordViewModel> Words { get; private set; }
-
-
-        private CategoryViewModel _defCat;
-        private IcdDisease _disease;
         public IcdDisease Disease
         {
             get
@@ -62,6 +63,9 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
+        #endregion
+
         public string SearchText
         {
             get
@@ -70,20 +74,18 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public override void OnCheckedChanged()
-        {
-            base.OnCheckedChanged();
-        }
-
         public SymptomViewModel(Symptom s)
         {
             Contract.Requires(s != null);
 
             symptom = s;
-            Editable = new EditableBase(this);
+
+            Editable = new EditableBase(this, dirtImmunity: true);
 
             Words = new ObservableCollection<WordViewModel>(EntityManagers.WordsManager.GetSymptomWords(s));
             DefaultCategory = EntityManagers.CategoryManager.GetByModel(symptom.DefaultCategory);
+
+            Editable.StartTrackDirt();
         }
 
 
