@@ -19,7 +19,7 @@
         <StackPanel>
             <StackPanel Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <StackPanel x:Name="editor" >
-                    <controls:AutoComplete DataContext="{Binding SymptomAutoComplete}" />
+                    <controls:InputTextBox DataContext="{Binding AutoComplete}" />
                     <!--<controls:GroupsTree DataContext="{Binding Path=Words, Source={x:Static app:EntityManagers.WordsManager}}" MaxHeight="200" />-->
                     <Forms:HealthRecordEditor />
                     <DockPanel Visibility="{Binding Symptom.Words.Count, Converter={StaticResource CountToVisibility}}">

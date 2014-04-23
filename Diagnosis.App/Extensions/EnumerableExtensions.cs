@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.App.ViewModels
 {
-    static class EnumerableExtensions
+    public static class EnumerableExtensions
     {
         public static bool IsSubsetOf<T>(this IEnumerable<T> x, IEnumerable<T> y)
         {
@@ -30,6 +30,11 @@ namespace Diagnosis.App.ViewModels
             {
                 action(item);
             }
+        }
+
+        public static IEnumerable<T> ToEnumerable<T>(this T item) where T : class
+        {
+            return new[] { item };
         }
     }
 }

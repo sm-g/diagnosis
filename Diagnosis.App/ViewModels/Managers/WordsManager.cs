@@ -74,6 +74,7 @@ namespace Diagnosis.App.ViewModels
         {
             var vm = new WordViewModel(new Word(title));
             vm.Editable.MarkDirty();
+            Words.Add(vm);
             Subscribe(vm);
             return vm;
         }

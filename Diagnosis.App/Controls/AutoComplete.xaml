@@ -35,7 +35,11 @@
             </TextBox>
 
             <Popup x:Name="popup" Height="Auto" Width="auto"
-                       StaysOpen="False" Placement="Bottom" IsOpen="false"
+                       StaysOpen="False" 
+                   Placement="Bottom" 
+                   PlacementTarget="{Binding ElementName=input}"
+                   IsOpen="false"
+                   
                        HorizontalAlignment="Left" Grid.RowSpan="2">
 
                     <ListBox x:Name="suggestions"                             

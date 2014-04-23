@@ -69,7 +69,6 @@ namespace Diagnosis.App.Controls
             {
                 placementRect = new Rect(1, 1, 0, input.ActualHeight);
             }
-            popup.PlacementTarget = input;
             popup.PlacementRectangle = placementRect;
 
             popup.IsOpen = suggestions.Items.Count > 0;

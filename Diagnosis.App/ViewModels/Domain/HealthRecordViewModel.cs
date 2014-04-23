@@ -12,7 +12,7 @@ namespace Diagnosis.App.ViewModels
     {
         private readonly HealthRecord healthRecord;
         private static HealthRecordViewModel current;
-        private WordAutoComplete _symptomAutoComplete;
+        private AutoComplete _autoComplete;
         private DiagnosisAutoComplete _diagnosisAutoComplete;
         private DateOffset _dateOffset;
         private List<EventMessageHandler> msgHandlers;
@@ -278,11 +278,11 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public WordAutoComplete SymptomAutoComplete
+        public AutoComplete AutoComplete
         {
             get
             {
-                return _symptomAutoComplete ?? (_symptomAutoComplete = new WordAutoComplete());
+                return _autoComplete ?? (_autoComplete = new AutoComplete());
             }
         }
 
