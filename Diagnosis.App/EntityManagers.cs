@@ -3,7 +3,7 @@ using Diagnosis.Data.Repositories;
 
 namespace Diagnosis.App
 {
-    internal static class EntityManagers
+    public static class EntityManagers
     {
         private static DoctorsManager _doctorsManager;
         private static PatientsManager _patientsManager;

@@ -22,7 +22,7 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return (Disease != null ? Disease.Code + ". " : "") +
-                    string.Concat(Words.OrderBy(w => w.Priority).Select(w => w.Name + " "));
+                    string.Join(" ", Words.OrderBy(w => w.Priority).Select(w => w.Name));
             }
         }
 

@@ -228,6 +228,7 @@
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="ViewModels\Search\AutoComplete.cs" />
     <Compile Include="ViewModels\Search\SearchWrap.cs" />
+    <Compile Include="ViewModels\Search\SequencePartition.cs" />
     <Compile Include="ViewModels\Search\SymptomSearch.cs" />
     <Compile Include="ViewModels\Domain\SymptomViewModel.cs" />
     <Compile Include="ViewModels\HierarchicalCheckable.cs" />

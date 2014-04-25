@@ -11,7 +11,7 @@
 
     <StackPanel>
         <controls:MyAutoCompleteBox x:Name="auto"
-                             ItemsSource="{Binding Words }" 
+                             ItemsSource="{Binding Results }" 
                              SelectedItem="{Binding Selected, Mode=TwoWay}"
                              IsTextCompletionEnabled="True"
                              FilterMode="Custom"
