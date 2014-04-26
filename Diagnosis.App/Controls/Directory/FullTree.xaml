@@ -26,9 +26,13 @@
                 <MouseBinding MouseAction="RightClick" Command="{Binding Editable.EditCommand}" />
             </InputBindingCollection>
 
-            <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}" x:Key="fullTreeItemStyle">
+            <Style x:Key="fullTreeItemContainerStyle" 
+                   TargetType="TreeViewItem" 
+                   BasedOn="{StaticResource TreeViewItemStyle}" >
                 <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
                 <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="controls:Attached.InputBindings" Value="{StaticResource InputBindings}" />
             </Style>
 
@@ -45,7 +49,7 @@
             x:Name="tree"
             MinWidth="50"
             HorizontalContentAlignment="Stretch"
-            ItemContainerStyle="{StaticResource fullTreeItemStyle}"
+            ItemContainerStyle="{StaticResource fullTreeItemContainerStyle}"
             ItemTemplate="{StaticResource fullTreeItemTemplate}"
             ItemsSource="{Binding}" 
             ScrollViewer.HorizontalScrollBarVisibility="Disabled">

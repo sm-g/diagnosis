@@ -25,10 +25,14 @@
                 <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleCommand}" />
                 <MouseBinding MouseAction="RightClick" Command="{Binding Editable.EditCommand}" />
             </InputBindingCollection>
-            
-            <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}" x:Key="fullTreeItemStyle">
+
+            <Style  x:Key="groupsTreeItemContainerStyle"
+                    TargetType="TreeViewItem"
+                    BasedOn="{StaticResource TreeViewItemStyle}">
                 <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
                 <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
                 <Setter Property="controls:Attached.InputBindings" Value="{StaticResource InputBindings}" />
             </Style>
 
@@ -44,24 +48,23 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        
+
         <TreeView
             x:Name="tree"
             HorizontalContentAlignment="Stretch"
-            ItemContainerStyle="{StaticResource fullTreeItemStyle}"
+            ItemContainerStyle="{StaticResource groupsTreeItemContainerStyle}"
             ItemTemplate="{StaticResource groupTreeItemTemplate}"
             ItemsSource="{Binding}">
         </TreeView>
-        <ListView DataContext="{Binding SelectedItem, ElementName=tree, Mode=OneWay}"
-                  ItemsSource="{Binding TerminalChildren}" 
-                  Style="{StaticResource list}"                  
-                  Grid.Column="1"               
+        <TreeView DataContext="{Binding SelectedItem, ElementName=tree, Mode=OneWay}"
+                  ItemsSource="{Binding TerminalChildren}"
+                  Grid.Column="1"
                   Margin="10,0,0,0">
-            <ListView.ItemTemplate>
+            <TreeView.ItemTemplate>
                 <DataTemplate>
-                    <controls:TreeItem />
+                    <controls:TreeItemLight />
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            </TreeView.ItemTemplate>
+        </TreeView>
     </Grid>
 </UserControl>

@@ -16,6 +16,6 @@
             <Button Command="{Binding CommitCommand}">Сохранить</Button>
         </StackPanel>
 
-        <controls:FullTree DataContext="{Binding Words}" Grid.Row="1" />
+        <controls:GroupsTree DataContext="{Binding Words}" Grid.Row="1" />
     </Grid>
 </UserControl>

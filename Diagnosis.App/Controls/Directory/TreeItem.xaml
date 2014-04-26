@@ -20,15 +20,16 @@
         </Grid.ColumnDefinitions>
 
         <CheckBox x:Name="checkbox"
-			IsChecked="{Binding IsChecked, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True}"
-			Focusable="False"
-			Visibility="{Binding IsNonCheckable, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
+            IsChecked="{Binding IsChecked, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True}"
+            Focusable="False"
+            Visibility="{Binding IsNonCheckable, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
 
         <DockPanel x:Name="title" Grid.Column="1">
-            <TextBlock Text="{Binding Code}" Margin="0,0,3,0"/>
+            <TextBlock Text="{Binding Code, FallbackValue=''}" Margin="0,0,3,0"/>
             <TextBlock Text="{Binding Name}"
                        TextWrapping="Wrap" 
-                       MaxWidth="200" /> <!--TODO--> 
+                       MaxWidth="200" 
+                       HorizontalAlignment="Left"/>
         </DockPanel>
 
         <StackPanel Orientation="Horizontal"
@@ -43,23 +44,23 @@
                        Text="new"
                        Visibility="{Binding Editable.IsDirty, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
             <TextBlock x:Name="checkedChildren"
-			       Text="{Binding CheckedChildren}"
+                   Text="{Binding CheckedChildren}"
                    Visibility="{Binding CheckedChildren, Converter={StaticResource CountToVisibility}, Mode=OneWay}" />
         </StackPanel>
 
         <StackPanel x:Name="editor"
-			Grid.Column="1"
-			LostFocus="editor_LostFocus"
-			Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+            Grid.Column="1"
+            LostFocus="editor_LostFocus"
+            Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">
             <TextBox x:Name="titleEditor"
-				Text="{Binding Name, UpdateSourceTrigger=LostFocus}" />
+                Text="{Binding Name, UpdateSourceTrigger=LostFocus}" />
         </StackPanel>
 
         <controls:FloatSearch x:Name="search"
-			Grid.Row="1"
-			Grid.Column="1"
+            Grid.Row="1"
+            Grid.Column="1"
             Grid.ColumnSpan="2"
-			Visibility="{Binding IsSearchActive, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}"
+            Visibility="{Binding IsSearchActive, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}"
             controls:FocusExtension.IsFocused="{Binding IsSearchFocused}"
             DataContext="{Binding Search}"
 >
