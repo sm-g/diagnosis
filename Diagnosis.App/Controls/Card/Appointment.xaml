@@ -15,8 +15,8 @@
                 <scm:SortDescription PropertyName="Category" />
                 <scm:SortDescription PropertyName="SortingDate" />
             </CollectionViewSource.SortDescriptions>
-            <CollectionViewSource.GroupDescriptions>                
-                <dat:PropertyGroupDescription PropertyName="Category" />                
+            <CollectionViewSource.GroupDescriptions>
+                <dat:PropertyGroupDescription PropertyName="Category" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
     </UserControl.Resources>
@@ -25,20 +25,6 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-
-            <TextBlock>Признаки</TextBlock>
-
-            <TextBlock Grid.Column="1"
-                Visibility="{Binding DataContext.FastAddingMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-                Описание
-            </TextBlock>
-        </Grid>
 
         <ScrollViewer Grid.Row="1"
                       VerticalScrollBarVisibility="Auto"
@@ -61,12 +47,11 @@
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate>
-                                                <Expander IsExpanded="True">
-                                                    <Expander.Header>
-                                                        <TextBlock Text="{Binding Name}" ></TextBlock>
-                                                    </Expander.Header>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Name, Mode=OneWay}" FontWeight="Bold"></TextBlock>
+                                                    <Separator/>
                                                     <ItemsPresenter />
-                                                </Expander>
+                                                </StackPanel>
                                             </ControlTemplate>
                                         </Setter.Value>
                                     </Setter>

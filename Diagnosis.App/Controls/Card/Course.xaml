@@ -74,13 +74,6 @@
                                            HorizontalAlignment="Right"
                                            Visibility="{Binding IsDoctorFromCourse, Converter={StaticResource NegBooleanToVisibilityConverter}}"/>
                             </DockPanel>
-                            <ItemsControl ItemsSource="{Binding HealthRecords}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Name}" TextWrapping="Wrap"/>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>                                
-                            </ItemsControl>
                         </DockPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>

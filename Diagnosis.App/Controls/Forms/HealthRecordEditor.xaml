@@ -23,7 +23,7 @@
     </UserControl.Resources>
     <StackPanel>
         <DockPanel>
-            <forms:CategoryChooser MaxWidth="200" HorizontalAlignment="Left" />
+            <forms:CategoryChooser HorizontalAlignment="Left" />
         </DockPanel>
         <DockPanel>
             <Label Content="дата" />

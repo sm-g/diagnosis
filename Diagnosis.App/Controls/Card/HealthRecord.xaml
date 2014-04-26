@@ -19,11 +19,9 @@
         <StackPanel>
             <StackPanel Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <StackPanel x:Name="editor" >
-                    <controls:InputTextBox DataContext="{Binding AutoComplete}" />
-                    <!--<controls:GroupsTree DataContext="{Binding Path=Words, Source={x:Static app:EntityManagers.WordsManager}}" MaxHeight="200" />-->
-                    <Forms:HealthRecordEditor />
-                    <DockPanel Visibility="{Binding Symptom.Words.Count, Converter={StaticResource CountToVisibility}}">
-                        <TextBlock DockPanel.Dock="Top">Выбранные симптомы:</TextBlock>
+                    <controls:InputTextBox DataContext="{Binding AutoComplete}" />                    
+                    <DockPanel Visibility="{Binding Symptom.Words.Count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
+                        <TextBlock DockPanel.Dock="Top">Слова:</TextBlock>
                         <ListView ItemsSource="{Binding Symptom.Words}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
@@ -32,11 +30,9 @@
                             </ListView.ItemTemplate>
                         </ListView>
                     </DockPanel>
+                    <Forms:HealthRecordEditor />
                 </StackPanel>
 
-                <!--<StackPanel x:Name="print" Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-                    <Forms:HealthRecordEditor />                  
-                </StackPanel>-->
             </StackPanel>
 
             <Grid Visibility="{Binding IsSelected, Converter={StaticResource NegBooleanToVisibilityConverter}}">
