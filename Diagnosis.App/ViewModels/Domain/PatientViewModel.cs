@@ -40,6 +40,9 @@ namespace Diagnosis.App.ViewModels
 
                     OnPropertyChanged(() => FirstName);
                     OnPropertyChanged(() => ShortName);
+                    OnPropertyChanged(() => FullName);
+                    OnPropertyChanged(() => SearchText);
+                    OnPropertyChanged(() => NoName);
                     Editable.MarkDirty();
                 }
             }
@@ -59,6 +62,9 @@ namespace Diagnosis.App.ViewModels
 
                     OnPropertyChanged(() => MiddleName);
                     OnPropertyChanged(() => ShortName);
+                    OnPropertyChanged(() => FullName);
+                    OnPropertyChanged(() => SearchText);
+                    OnPropertyChanged(() => NoName);
                     Editable.MarkDirty();
                 }
             }
@@ -78,6 +84,9 @@ namespace Diagnosis.App.ViewModels
 
                     OnPropertyChanged(() => LastName);
                     OnPropertyChanged(() => ShortName);
+                    OnPropertyChanged(() => FullName);
+                    OnPropertyChanged(() => SearchText);
+                    OnPropertyChanged(() => NoName);
                     Editable.MarkDirty();
                 }
             }
@@ -187,6 +196,15 @@ namespace Diagnosis.App.ViewModels
                 return LastName + " " + FirstName + " " + MiddleName;
             }
         }
+
+        public bool NoName
+        {
+            get
+            {
+                return patient.LastName == null && patient.MiddleName == null && patient.FirstName == null;
+            }
+        }
+
 
         public ObservableCollection<PropertyViewModel> Properties
         {

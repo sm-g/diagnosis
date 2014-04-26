@@ -47,8 +47,15 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
-                        <TextBlock Text="{Binding ShortName}" />
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock Text="{Binding ID}" />
+                        <TextBlock Text="{Binding ShortName}" Grid.Column="1" />
                         <TextBlock x:Name="unsaved"
+                                   Grid.Column="1"
                                    HorizontalAlignment="Right"
                                    Text="new"
                                    Visibility="{Binding Editable.IsDirty, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />

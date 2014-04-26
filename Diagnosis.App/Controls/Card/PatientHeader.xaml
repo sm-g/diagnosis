@@ -5,29 +5,43 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DesignHeight="30" d:DesignWidth="300">
-    <DockPanel>
-        <TextBlock Style="{StaticResource ScreenTitle}" 
-                   TextWrapping="Wrap"
-                   MinWidth="100" >
-            <TextBlock.Text>
-                <MultiBinding StringFormat='{}{0} {1} {2}'>
-                    <Binding Path="LastName" />
-                    <Binding Path="FirstName" />
-                    <Binding Path="MiddleName" />
-                </MultiBinding>
-            </TextBlock.Text>
-        </TextBlock>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
 
-        <TextBlock Text="{Binding IsMale, Converter={StaticResource SexToSign}}" 
-                   Visibility="{Binding LastName.Length, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}"
+        <TextBlock Text="{Binding ID}"
+                   VerticalAlignment="Center"
+                   Visibility="{Binding NoName, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
+
+        <DockPanel Grid.Row="1">
+            <TextBlock Text="{Binding ID}"
+                       VerticalAlignment="Center"
+                       Visibility="{Binding NoName, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            <TextBlock Style="{StaticResource ScreenTitle}"
+                   TextWrapping="Wrap"
+                   MinWidth="100">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat='{}{0} {1} {2}'>
+                        <Binding Path="LastName" />
+                        <Binding Path="FirstName" />
+                        <Binding Path="MiddleName" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+
+            
+
+            <TextBlock Text="{Binding IsMale, Converter={StaticResource SexToSign}}"
                    FontSize="20"
                    Margin="20,0,5,0"
-                   VerticalAlignment="Center"/>
-        <TextBlock Margin="5,0,10,0"
-                   Visibility="{Binding LastName.Length, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}"
+                   VerticalAlignment="Center" />
+            <TextBlock Margin="5,0,10,0"
                    VerticalAlignment="Center">
             <TextBlock Text="{Binding Age}" />
             <TextBlock Text="{Binding Age, Converter={StaticResource AgeToLabel}}" />
         </TextBlock>
-    </DockPanel>
+        </DockPanel>
+    </Grid>
 </UserControl>
