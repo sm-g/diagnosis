@@ -334,11 +334,13 @@ namespace Diagnosis.App.ViewModels
         private void OnCourseStarted(Course course)
         {
             CoursesManager.AddCourse(course);
+            CoursesManager.SelectedCourse.AddAppointmentCommand.Execute(null);
             Editable.MarkDirty();
         }
 
         private void OnAppointmentAdded(AppointmentViewModel app)
         {
+            CoursesManager.SelectedCourse.SelectedAppointment.AddHealthRecordCommand.Execute(null);
             Editable.MarkDirty();
         }
 
