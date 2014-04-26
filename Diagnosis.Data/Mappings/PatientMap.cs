@@ -20,7 +20,6 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.BirthYear);
             Property(x => x.BirthMonth);
             Property(x => x.BirthDay);
-            Property(x => x.SNILS);
 
             Set(x => x.Courses, s =>
             {

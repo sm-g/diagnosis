@@ -11,7 +11,6 @@ namespace Diagnosis.Models
         ISet<PatientRecordProperty> patientProperties = new HashSet<PatientRecordProperty>();
         ISet<Course> courses = new HashSet<Course>();
 
-        string _snils;
         int? _year;
         byte? _month;
         byte? _day;
@@ -133,20 +132,6 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual string SNILS
-        {
-            get
-            {
-                return _snils;
-            }
-            set
-            {
-                if (CheckSnils(value))
-                {
-                    _snils = value;
-                }
-            }
-        }
         public virtual ReadOnlyCollection<PatientRecordProperty> PatientProperties
         {
             get
@@ -233,37 +218,6 @@ namespace Diagnosis.Models
         void CheckDate()
         {
             Checkers.CheckDate(BirthYear, BirthMonth, BirthDay);
-        }
-
-        static bool CheckSnils(string snils)
-        {
-            if (snils == null || snils.Length != 11)
-                return false;
-
-            int number;
-            int control;
-            if (!int.TryParse(snils.Substring(0, 9), out number) ||
-                !int.TryParse(snils.Substring(9, 2), out control))
-                return false;
-
-            if (number <= 1001998)
-                return true;
-
-            int sum = 0;
-            for (int i = 1; i <= 9; i++)
-            {
-                sum += (number % 10) * i;
-                number /= 10;
-            }
-            if (sum < 100)
-            {
-                return sum == control;
-            }
-            if (sum > 101)
-            {
-                return sum == control % 101;
-            }
-            return 0 == control;
         }
 
         public Patient(string lastName = null,

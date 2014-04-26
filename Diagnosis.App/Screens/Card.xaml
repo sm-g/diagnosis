@@ -36,13 +36,6 @@
                     <StackPanel>
                         <forms:PatientEditor Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                        <StackPanel Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-                            <DockPanel Margin="0,5">
-                                <Label Content="СНИЛС" Style="{StaticResource label120}" />
-                                <TextBlock Text="{Binding Snils}" />
-                            </DockPanel>
-                        </StackPanel>
-
                         <Separator />
 
                         <forms:PropertiesChooser Margin="0,5" />

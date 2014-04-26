@@ -43,12 +43,8 @@
             <forms:AgePicker Margin="0,1,0,0" />
         </DockPanel>
         <DockPanel>
-            <Label Content="Пол"   />
-            <forms:SexChooser Width="100" HorizontalAlignment="Left" Margin="0,1,0,0" />
-        </DockPanel>
-        <DockPanel>
-            <Label Content="СНИЛС"  />
-            <TextBox Text="{Binding Snils}" />
+            <Label Content="Пол" />
+            <forms:SexChooser Width="100" HorizontalAlignment="Left" Margin="0,6,0,0" />
         </DockPanel>
     </StackPanel>
 </UserControl>

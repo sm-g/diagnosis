@@ -172,23 +172,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public string Snils
-        {
-            get
-            {
-                return patient.SNILS;
-            }
-            set
-            {
-                if (patient.SNILS != value)
-                {
-                    patient.SNILS = value;
-                    OnPropertyChanged(() => Snils);
-                    Editable.MarkDirty();
-                }
-            }
-        }
-
         public string ShortName
         {
             get
