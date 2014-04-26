@@ -19,7 +19,12 @@
                 <dat:PropertyGroupDescription PropertyName="Category" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
+        
     </UserControl.Resources>
+    
+    <UserControl.InputBindings>
+        <KeyBinding Modifiers="Control" Key="N" Command="{Binding AddHealthRecordCommand}" />
+    </UserControl.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -73,7 +78,7 @@
                     </ListView.ItemContainerStyle>
                 </ListView>
 
-                <Button Command="{Binding AddHealthRecordCommand}" Grid.Row="1">+</Button>
+                <Button Command="{Binding AddHealthRecordCommand}" Grid.Row="1">добавить запись (Ctrl + N)</Button>
             </Grid>
         </ScrollViewer>
     </Grid>

@@ -10,31 +10,32 @@
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="500">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
-
-            <card:PatientHeader />
-
+            
             <StackPanel Grid.Column="1">
-                <Button Command="{Binding Editable.CommitCommand}">Сохранить</Button>
-                <ToggleButton Command="{Binding Editable.EditCommand}" 
-                              IsChecked="{Binding Editable.IsEditorActive, Mode=OneWay}">Редактировать</ToggleButton>
+                <Button Command="{Binding Editable.CommitCommand}" Content="Сохранить"/>
             </StackPanel>
         </Grid>
 
-        <TabControl TabStripPlacement="Left" Padding="0" Grid.Row="1">
-            <TabItem Header="Инфо" IsEnabled="True" >
+        <TabControl Padding="0">
+            <TabControl.Resources>
+                <ResourceDictionary>
+                    <ResourceDictionary.MergedDictionaries>
+                        <ResourceDictionary Source="../Styles/TabControl.xaml" />
+                    </ResourceDictionary.MergedDictionaries>
+                </ResourceDictionary>
+            </TabControl.Resources>
+            <TabItem >
+                <TabItem.Header>
+                    <card:PatientHeader />
+                </TabItem.Header>
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="10">
                     <StackPanel>
-                        <forms:PatientEditor Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <forms:PatientEditor/>
 
                         <Separator />
 
@@ -42,7 +43,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="Курсы" IsSelected="True">
+            <TabItem Header="Курсы" IsSelected="True" HorizontalContentAlignment="Stretch">
                 <DockPanel>
                     <Grid Margin="10,10,0,10">
                         <Grid.RowDefinitions>
@@ -77,7 +78,7 @@
                     </Grid>
                     <card:AppointmentsList DataContext="{Binding CoursesManager.SelectedCourse}" 
                                            DockPanel.Dock="Top"
-                                           Margin="10" />
+                                           Margin="10,10,10,0" />
                     <card:Appointment DataContext="{Binding CoursesManager.SelectedCourse.SelectedAppointment}"
                                       Margin="10" />
                 </DockPanel>

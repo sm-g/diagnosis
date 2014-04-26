@@ -7,21 +7,14 @@
              d:DesignHeight="30" d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition />
+            <RowDefinition Height="auto"/>
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <TextBlock Text="{Binding ID}"
-                   VerticalAlignment="Center"
-                   Visibility="{Binding NoName, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
-
-        <DockPanel Grid.Row="1">
-            <TextBlock Text="{Binding ID}"
-                       VerticalAlignment="Center"
-                       Visibility="{Binding NoName, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <DockPanel>
             <TextBlock Style="{StaticResource ScreenTitle}"
-                   TextWrapping="Wrap"
-                   MinWidth="100">
+                       TextWrapping="Wrap"
+                       Visibility="{Binding NoName, Converter={StaticResource NegBooleanToVisibilityConverter}}">
                 <TextBlock.Text>
                     <MultiBinding StringFormat='{}{0} {1} {2}'>
                         <Binding Path="LastName" />
@@ -30,9 +23,12 @@
                     </MultiBinding>
                 </TextBlock.Text>
             </TextBlock>
+        </DockPanel>
 
-            
-
+        <DockPanel Grid.Row="1">
+            <TextBlock Text="{Binding ID}"
+                       VerticalAlignment="Center" 
+                       MinWidth="100"/>
             <TextBlock Text="{Binding IsMale, Converter={StaticResource SexToSign}}"
                    FontSize="20"
                    Margin="20,0,5,0"
