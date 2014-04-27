@@ -217,7 +217,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_dateOffset == null)
                 {
-                    _dateOffset = new DateOffset(FromYear, FromMonth, FromDay);
+                    _dateOffset = new DateOffset(FromYear, FromMonth, FromDay, () => healthRecord.Appointment.DateAndTime);
                     _dateOffset.PropertyChanged += (s, e) =>
                     {
                         switch (e.PropertyName)
