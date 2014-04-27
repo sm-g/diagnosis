@@ -88,22 +88,17 @@ namespace Diagnosis.App.ViewModels
                 return _addHealthRecord
                     ?? (_addHealthRecord = new RelayCommand(() =>
                         {
-                            var hrVM = AddHealthRecord();
-
-                            SelectedHealthRecord = hrVM;
+                            AddHealthRecord();
                         }));
             }
         }
 
-        private HealthRecordViewModel AddHealthRecord()
+        public void AddHealthRecord()
         {
-            var hr = appointment.AddHealthRecord();
-            var hrVM = new HealthRecordViewModel(hr);
-            SubscribeHR(hrVM);
-            HealthRecords.Add(hrVM);
-            return hrVM;
-        }
+            var hrVM = NewHealthRecord();
 
+            SelectedHealthRecord = hrVM;
+        }
         public AppointmentViewModel(Appointment appointment, CourseViewModel courseVM)
         {
             Contract.Requires(appointment != null);
@@ -117,6 +112,15 @@ namespace Diagnosis.App.ViewModels
             var hrVMs = appointment.HealthRecords.Select(hr => new HealthRecordViewModel(hr)).ToList();
             hrVMs.ForAll(hr => SubscribeHR(hr));
             HealthRecords = new ObservableCollection<HealthRecordViewModel>(hrVMs);
+        }
+
+        private HealthRecordViewModel NewHealthRecord()
+        {
+            var hr = appointment.AddHealthRecord();
+            var hrVM = new HealthRecordViewModel(hr);
+            SubscribeHR(hrVM);
+            HealthRecords.Add(hrVM);
+            return hrVM;
         }
 
         private void SubscribeHR(HealthRecordViewModel hr)

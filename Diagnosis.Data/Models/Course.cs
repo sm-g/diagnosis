@@ -67,7 +67,7 @@ namespace Diagnosis.Models
                 if (y.End.HasValue)
                     return 1;
 
-                // оба продолжабтся — больше тот, что начался позже
+                // оба продолжаются — больше тот, что начался позже
                 return x.Start.CompareTo(y.Start);
             }
         }

@@ -29,6 +29,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     if (_current != null && value != null && !(value is UnsavedPatientViewModel))
                     {
+                        // save editor state between patients
                         value.Editable.IsEditorActive = _current.Editable.IsEditorActive;
                     }
 
@@ -36,22 +37,12 @@ namespace Diagnosis.App.ViewModels
 
                     OnPropertyChanged(() => CurrentPatient);
 
-                    foreach (var patient in Patients)
-                    {
-                        if (patient != value)
-                        {
-                            patient.Unsubscribe();
-                        }
-                    }
-
-                    if (value != null && !(value is UnsavedPatientViewModel))
-                        value.Subscribe();
+                    SetSubscriptions(value);
 
                     this.Send((int)EventID.CurrentPatientChanged, new CurrentPatientChangedParams(CurrentPatient).Params);
                 }
             }
         }
-
         public PatientSearch Search
         {
             get
@@ -115,6 +106,20 @@ namespace Diagnosis.App.ViewModels
             {
                 CurrentPatient = Patients[0];
             }
+        }
+
+        private void SetSubscriptions(PatientViewModel newPatient)
+        {
+            foreach (var patient in Patients)
+            {
+                if (patient != newPatient)
+                {
+                    patient.Unsubscribe();
+                }
+            }
+
+            if (newPatient != null && !(newPatient is UnsavedPatientViewModel))
+                newPatient.Subscribe();
         }
 
         private void Subscribe(PatientViewModel pvm)

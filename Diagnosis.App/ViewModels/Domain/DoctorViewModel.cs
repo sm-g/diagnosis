@@ -111,12 +111,17 @@ namespace Diagnosis.App.ViewModels
                     ?? (_startCourse = new RelayCommand<PatientViewModel>(
                                           (patientVM) =>
                                           {
-                                              var course = doctor.StartCourse(patientVM.patient);
-                                              Editable.MarkDirty();
-
-                                              this.Send((int)EventID.CourseStarted, new CourseStartedParams(course).Params);
+                                              StartCourse(patientVM);
                                           }));
             }
+        }
+
+        public void StartCourse(PatientViewModel patientVM)
+        {
+            var course = doctor.StartCourse(patientVM.patient);
+            Editable.MarkDirty();
+
+            this.Send((int)EventID.CourseStarted, new CourseStartedParams(course).Params);
         }
 
         public DoctorViewModel(Doctor d)

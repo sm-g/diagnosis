@@ -27,7 +27,6 @@ namespace Diagnosis.App.ViewModels
                 if (_selectedCourse != value)
                 {
                     _selectedCourse = value;
-
                     OnPropertyChanged(() => SelectedCourse);
                 }
             }
@@ -43,7 +42,7 @@ namespace Diagnosis.App.ViewModels
             Courses = new ObservableCollection<CourseViewModel>(
                 Courses.OrderByDescending(cvm => cvm.course, new CompareCourseByDate()));
 
-            SelectedCourse = Courses[0];
+            SelectedCourse = courseVM;
 
             OnPropertyChanged(() => Courses);
         }

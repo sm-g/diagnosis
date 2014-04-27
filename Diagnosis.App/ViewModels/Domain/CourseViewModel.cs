@@ -113,6 +113,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
+                Contract.Ensures(Contract.Result<AppointmentViewModel>() != null);
                 return Appointments.LastOrDefault();
             }
         }
@@ -124,17 +125,22 @@ namespace Diagnosis.App.ViewModels
                 return _addAppointment
                     ?? (_addAppointment = new RelayCommand(() =>
                         {
-                            var appVM = AddAppointment();
-
-                            SelectedAppointment = appVM;
-                            IsAppointmentsVisible = true;
-                            Editable.CanBeDeleted = false;
-
-                            OnPropertyChanged(() => LastAppointment);
-
-                            this.Send((int)EventID.AppointmentAdded, new AppointmentAddedParams(appVM).Params);
+                            AddAppointment();
                         }, () => !IsEnded));
             }
+        }
+
+        public void AddAppointment()
+        {
+            var appVM = NewAppointment();
+
+            SelectedAppointment = appVM;
+            IsAppointmentsVisible = true;
+            Editable.CanBeDeleted = false;
+
+            OnPropertyChanged(() => LastAppointment);
+
+            this.Send((int)EventID.AppointmentAdded, new AppointmentAddedParams(appVM).Params);
         }
 
         public CourseViewModel(Course course)
@@ -169,7 +175,7 @@ namespace Diagnosis.App.ViewModels
 
         #endregion CheckableBase
 
-        private AppointmentViewModel AddAppointment()
+        private AppointmentViewModel NewAppointment()
         {
             var app = course.AddAppointment();
             var appVM = new AppointmentViewModel(app, this);

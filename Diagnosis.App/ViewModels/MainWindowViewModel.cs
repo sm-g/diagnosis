@@ -213,9 +213,12 @@ namespace Diagnosis.App.ViewModels
             if (patient != null)
             {
                 patient.SetDoctorVM(LoginVM.DoctorsManager.CurrentDoctor);
-
-                IsWordsEditing = false;
+                if (FastAddingMode && !(patient is UnsavedPatientViewModel))
+                {
+                    patient.OpenLastAppointment();
+                }
             }
+            IsWordsEditing = false;
             CardVM = patient;
         }
 
