@@ -17,7 +17,7 @@ namespace Diagnosis.App.ViewModels
         private DoctorViewModel _leadDoctor;
         private ICommand _addAppointment;
 
-        public EditableBase Editable { get; private set; }
+        public IEditable Editable { get; private set; }
         #region Model
 
         public DoctorViewModel LeadDoctor
@@ -157,7 +157,7 @@ namespace Diagnosis.App.ViewModels
                 SelectedAppointment = Appointments.Last();
             }
 
-            Editable.StartTrackDirt();
+            Editable.CanBeDirty = true;
         }
 
         #region CheckableBase

@@ -11,7 +11,7 @@ namespace Diagnosis.App.ViewModels
         private CategoryViewModel _defCat;
         private WordSearch _search;
 
-        public EditableBase Editable { get; private set; }
+        public IEditable Editable { get; private set; }
 
         public string SortingOrder { get; private set; }
 
@@ -122,7 +122,7 @@ namespace Diagnosis.App.ViewModels
 
             DefaultCategory = EntityManagers.CategoryManager.GetByModel(w.DefaultCategory);
 
-            Editable.StartTrackDirt();
+            Editable.CanBeDirty = true;
         }
 
         public WordViewModel(string title)

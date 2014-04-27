@@ -14,7 +14,7 @@ namespace Diagnosis.App.ViewModels
         private DoctorViewModel _doctor;
         private CoursesManager _coursesManager;
         private List<EventMessageHandler> msgHandlers = new List<EventMessageHandler>();
-        public EditableBase Editable { get; private set; }
+        public IEditable Editable { get; private set; }
 
         #region Model related
 

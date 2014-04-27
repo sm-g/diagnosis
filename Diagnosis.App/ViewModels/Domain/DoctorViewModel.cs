@@ -12,7 +12,7 @@ namespace Diagnosis.App.ViewModels
 
         private ICommand _startCourse;
 
-        public EditableBase Editable { get; private set; }
+        public IEditable Editable { get; private set; }
 
         public string FirstName
         {

@@ -17,7 +17,7 @@ namespace Diagnosis.App.ViewModels
         private DateOffset _dateOffset;
         private List<EventMessageHandler> msgHandlers;
 
-        public EditableBase Editable { get; private set; }
+        public IEditable Editable { get; private set; }
 
         public string Name
         {
@@ -319,7 +319,7 @@ namespace Diagnosis.App.ViewModels
 
             Subscribe();
 
-            Editable.StartTrackDirt();
+            Editable.CanBeDirty = true;
         }
 
         #region Event handlers

@@ -13,7 +13,7 @@ namespace Diagnosis.App.ViewModels
 
         private IcdDisease _disease;
 
-        public EditableBase Editable { get; private set; }
+        public IEditable Editable { get; private set; }
 
         public string SortingOrder { get; private set; }
 
@@ -85,7 +85,7 @@ namespace Diagnosis.App.ViewModels
             Words = new ObservableCollection<WordViewModel>(EntityManagers.WordsManager.GetSymptomWords(s));
             DefaultCategory = EntityManagers.CategoryManager.GetByModel(symptom.DefaultCategory);
 
-            Editable.StartTrackDirt();
+            Editable.CanBeDirty = true;
         }
 
 

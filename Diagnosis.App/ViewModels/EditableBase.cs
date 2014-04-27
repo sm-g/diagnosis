@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows.Input;
-using EventAggregator;
+﻿using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -13,11 +11,12 @@ namespace Diagnosis.App.ViewModels
         private bool _editActive;
         private bool _editorFocused;
         private bool _canBeDirty;
-        bool _isDirty;
+        private bool _isDirty;
+        private bool _isEmpty;
         private bool _switchedOn;
         private bool _canBeDeleted;
 
-        ViewModelBase vm;
+        private ViewModelBase vm;
 
         #region IEditable
 
@@ -90,6 +89,20 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
+        public bool IsEmpty
+        {
+            get { return _isEmpty; }
+            private set
+            {
+                if (_isEmpty != value)
+                {
+                    _isEmpty = value;
+                    OnPropertyChanged(() => IsEmpty);
+                }
+            }
+        }
+
         public bool CanBeDirty
         {
             get
@@ -186,15 +199,10 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public void StartTrackDirt()
-        {
-            CanBeDirty = true;
-        }
-
         #endregion IEditable
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="vm">ViewModel to be edited</param>
         /// <param name="switchedOn">Initial state of commands. Default is "off".</param>
@@ -205,6 +213,7 @@ namespace Diagnosis.App.ViewModels
             SwitchedOn = switchedOn;
             CanBeDirty = !dirtImmunity;
         }
+
         /// <summary>
         /// ViewModel to be edited inherits from EditableBase.
         /// </summary>

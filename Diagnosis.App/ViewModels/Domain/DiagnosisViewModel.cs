@@ -9,7 +9,7 @@ namespace Diagnosis.App.ViewModels
 
         private DiagnosisSearch _search;
 
-        public EditableBase Editable { get; private set; }
+        public IEditable Editable { get; private set; }
 
         public string SortingOrder { get; private set; }
 
