@@ -16,73 +16,27 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <Expander Style="{StaticResource ExpanderStyleFixed}"
-                  IsExpanded="{Binding IsAppointmentsVisible}"
-                  Focusable="False">
-            </Expander>
-
-            <StackPanel Grid.Column="1">
-                <StackPanel x:Name="description">
-                    <TextBlock>
+        <StackPanel>
+            <StackPanel x:Name="description">
+                <TextBlock>
                     <TextBlock Text="{Binding Start, StringFormat='{}с {0:d}'}" />
                     <TextBlock Text="{Binding End, StringFormat='{}по {0:d}', TargetNullValue=''}" />
                 </TextBlock>
-                    <TextBlock Text="{Binding LeadDoctor.ShortName}" />
-                </StackPanel>
-                <TextBlock Visibility="{Binding Appointments.Count, Converter={StaticResource CountToVisibility}}">
+                <TextBlock Text="{Binding LeadDoctor.ShortName}" />
+            </StackPanel>
+            <TextBlock Visibility="{Binding Appointments.Count, Converter={StaticResource CountToVisibility}}">
                 <TextBlock Text="{Binding Appointments.Count}" />
                 <TextBlock Text="{Binding Appointments.Count, Converter={StaticResource CountToAppLabel}}" /><TextBlock Text="{Binding LastAppointment.DateTime, StringFormat='{}, последний {0:d}'}"
                            Visibility="{Binding Appointments.Count, Converter={StaticResource CountToVisibility}, ConverterParameter=3}" />
             </TextBlock>
-            </StackPanel>
+        </StackPanel>
 
-            <Button Command="{Binding Editable.DeleteCommand}" 
-                Grid.Column="1"
+        <Button Command="{Binding Editable.DeleteCommand}"
                 Height="24"
-                Width="24" 
-                HorizontalAlignment="Right" 
+                Width="24"
+                HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Visibility="{Binding Editable.CanBeDeleted, Converter={StaticResource BooleanToVisibilityConverter}}">×</Button>
-        </Grid>
-
-        <StackPanel Grid.Row="1"
-                    Visibility="{Binding IsAppointmentsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <ListView x:Name="appointments"
-                      HorizontalContentAlignment="Stretch"
-                  ItemsSource="{Binding Appointments}"
-                  SelectedItem="{Binding SelectedAppointment}"
-                  Style="{StaticResource list}"                      
-                  MaxHeight="200">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <DockPanel>
-                            <DockPanel DockPanel.Dock="Top">
-                                <TextBlock Text="{Binding DateTime, StringFormat='{}{0:d}'}" />
-                                <TextBlock Text="{Binding Doctor.ShortName}"
-                                           HorizontalAlignment="Right"
-                                           Visibility="{Binding IsDoctorFromCourse, Converter={StaticResource NegBooleanToVisibilityConverter}}"/>
-                            </DockPanel>
-                        </DockPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            <Button
-                Command="{Binding AddAppointmentCommand}"
-                Margin="0,5,0,0"
-                Visibility="{Binding IsEnded, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-                Повторный осмотр</Button>
-        </StackPanel>
     </Grid>
 </UserControl>
