@@ -23,12 +23,9 @@
         <ComboBox x:Name="units"
                   ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
         	MinWidth="50">
-            <ComboBox.SelectedValue>
-                <MultiBinding Converter="{StaticResource unitConverter}">
-                    <Binding Path="DateOffset.Unit" ElementName="root" Mode="TwoWay" />
-                    <Binding Path="DateOffset.Offset" ElementName="root" />
-                </MultiBinding>
-            </ComboBox.SelectedValue>
+            <ComboBox.SelectedItem>
+                <Binding Path="DateOffset.Unit" ElementName="root" Mode="TwoWay" />
+            </ComboBox.SelectedItem>
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock>
