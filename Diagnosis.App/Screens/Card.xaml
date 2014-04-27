@@ -10,18 +10,12 @@
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="500">
     <Grid>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-            
-            <StackPanel Grid.Column="1">
-                <Button Command="{Binding Editable.CommitCommand}" Content="Сохранить"/>
-            </StackPanel>
-        </Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
 
-        <TabControl Padding="0">
+        <TabControl Padding="0" Grid.ColumnSpan="2">
             <TabControl.Resources>
                 <ResourceDictionary>
                     <ResourceDictionary.MergedDictionaries>
@@ -29,13 +23,13 @@
                     </ResourceDictionary.MergedDictionaries>
                 </ResourceDictionary>
             </TabControl.Resources>
-            <TabItem >
+            <TabItem>
                 <TabItem.Header>
                     <card:PatientHeader />
                 </TabItem.Header>
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="10">
                     <StackPanel>
-                        <forms:PatientEditor/>
+                        <forms:PatientEditor />
 
                         <Separator />
 
@@ -52,13 +46,13 @@
                         </Grid.RowDefinitions>
 
                         <Button Command="{Binding CurrentDoctor.StartCourseCommand}"
-                            CommandParameter="{Binding}">Начать курс</Button>
+        					CommandParameter="{Binding}" Content="Начать курс"/>
 
                         <ListView ItemsSource="{Binding CoursesManager.Courses}"
-                                  SelectedItem="{Binding CoursesManager.SelectedCourse}"
-                                  Style="{StaticResource list}"
-                                  Grid.Row="2"
-                                  SelectionMode="Single">
+        					SelectedItem="{Binding CoursesManager.SelectedCourse}"
+        					Style="{StaticResource list}"
+        					Grid.Row="2"
+        					SelectionMode="Single">
                             <ListView.InputBindings>
                                 <KeyBinding Key="Delete" Command="{Binding CoursesManager.SelectedCourse.Editable.DeleteCommand}" />
                             </ListView.InputBindings>
@@ -69,19 +63,23 @@
                             </ListView.ItemTemplate>
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListViewItem}">
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                     <Setter Property="Margin" Value="0,5,0,5" />
                                 </Style>
                             </ListView.ItemContainerStyle>
                         </ListView>
                     </Grid>
-                    <card:AppointmentsList DataContext="{Binding CoursesManager.SelectedCourse}" 
-                                           DockPanel.Dock="Top"
-                                           Margin="10,10,10,0" />
+                    <card:AppointmentsList DataContext="{Binding CoursesManager.SelectedCourse}"
+        				DockPanel.Dock="Top"
+        				Margin="10,10,10,0" />
                     <card:Appointment DataContext="{Binding CoursesManager.SelectedCourse.SelectedAppointment}"
-                                      Margin="10" />
+        				Margin="10" />
                 </DockPanel>
             </TabItem>
         </TabControl>
+
+        <StackPanel Grid.Column="1">
+            <Button Command="{Binding Editable.CommitCommand}" Content="Сохранить" />
+        </StackPanel>
     </Grid>
 </UserControl>

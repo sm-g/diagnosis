@@ -23,10 +23,6 @@
     </UserControl.Resources>
     <StackPanel>
         <DockPanel>
-            <Label Content="Номер" />
-            <TextBox Text="{Binding ID, Mode=OneTime}" IsReadOnly="True"/>
-        </DockPanel>
-        <DockPanel>
             <Label Content="Фамилия"  />
             <TextBox Text="{Binding LastName}" />
         </DockPanel>
