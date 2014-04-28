@@ -10,7 +10,7 @@ namespace Diagnosis.App.ViewModels
     {
         private ICategoryRepository repository;
 
-        public static CategoryViewModel NoCategory = new CategoryViewModel(new Category() { Title = "", Order = int.MaxValue });
+        public static CategoryViewModel NoCategory = new CategoryViewModel(new Category() { Title = "", Order = int.MinValue });
 
         public ObservableCollection<CategoryViewModel> Categories
         {

@@ -2,8 +2,11 @@
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
@@ -12,8 +15,7 @@ namespace Diagnosis.App.ViewModels
     {
         private Appointment appointment;
 
-        CourseViewModel courseVM;
-
+        private CourseViewModel courseVM;
         private DoctorViewModel _doctor;
         private HealthRecordViewModel _selectedHealthRecord;
         private ICommand _addHealthRecord;
@@ -53,6 +55,8 @@ namespace Diagnosis.App.ViewModels
         }
 
         public ObservableCollection<HealthRecordViewModel> HealthRecords { get; private set; }
+
+        public ICollectionView HealthRecordsView { get; private set; }
 
         public bool IsDoctorFromCourse
         {
@@ -99,6 +103,7 @@ namespace Diagnosis.App.ViewModels
 
             SelectedHealthRecord = hrVM;
         }
+
         public AppointmentViewModel(Appointment appointment, CourseViewModel courseVM)
         {
             Contract.Requires(appointment != null);
@@ -112,6 +117,19 @@ namespace Diagnosis.App.ViewModels
             var hrVMs = appointment.HealthRecords.Select(hr => new HealthRecordViewModel(hr)).ToList();
             hrVMs.ForAll(hr => SubscribeHR(hr));
             HealthRecords = new ObservableCollection<HealthRecordViewModel>(hrVMs);
+
+            SetupHealthRecordsView();
+        }
+
+        private void SetupHealthRecordsView()
+        {
+            HealthRecordsView = (CollectionView)CollectionViewSource.GetDefaultView(HealthRecords);
+            PropertyGroupDescription groupDescription = new PropertyGroupDescription("Category");
+            SortDescription sort1 = new SortDescription("Category", ListSortDirection.Ascending);
+            SortDescription sort2 = new SortDescription("SortingDate", ListSortDirection.Ascending);
+            HealthRecordsView.GroupDescriptions.Add(groupDescription);
+            HealthRecordsView.SortDescriptions.Add(sort1);
+            HealthRecordsView.SortDescriptions.Add(sort2);
         }
 
         private HealthRecordViewModel NewHealthRecord()
@@ -129,6 +147,9 @@ namespace Diagnosis.App.ViewModels
             {
                 this.Send((int)EventID.HealthRecordChanged,
                     new HealthRecordChangedParams(e.viewModel as HealthRecordViewModel).Params);
+
+                HealthRecords.Remove(hr);
+                HealthRecords.Add(hr);
             };
         }
 

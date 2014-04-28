@@ -111,7 +111,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_category != value)
                 {
-                    if (value != null)
+                    if (value != null && value != CategoryManager.NoCategory)
                     {
                         healthRecord.Category = value.category;
                         _category = value;
@@ -121,7 +121,6 @@ namespace Diagnosis.App.ViewModels
                         healthRecord.Category = null;
                         _category = CategoryManager.NoCategory;
                     }
-
 
                     Editable.MarkDirty();
                     OnPropertyChanged(() => Category);
@@ -312,10 +311,9 @@ namespace Diagnosis.App.ViewModels
 
             Editable = new EditableBase(this, dirtImmunity: true);
 
-            Category = EntityManagers.CategoryManager.GetByModel(hr.Category);
+            Category = EntityManagers.CategoryManager.GetByModel(hr.Category) ?? CategoryManager.NoCategory;
             Symptom = EntityManagers.SymptomsManager.Symptoms.FirstOrDefault(s => s.symptom == hr.Symptom);
             Diagnosis = EntityManagers.DiagnosisManager.GetHealthRecordDiagnosis(healthRecord);
-
 
             Subscribe();
 
