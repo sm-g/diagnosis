@@ -75,7 +75,6 @@ namespace Diagnosis.App.ViewModels
                                           () =>
                                           {
                                               var newPatientVM = new UnsavedPatientViewModel();
-                                              newPatientVM.Editable.IsEditorActive = true;
                                               CurrentPatient = newPatientVM;
                                               newPatientVM.PatientCreated += (s, e) =>
                                               {
@@ -118,7 +117,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
 
-            if (newPatient != null && !(newPatient is UnsavedPatientViewModel))
+            if (newPatient != null)
                 newPatient.Subscribe();
         }
 

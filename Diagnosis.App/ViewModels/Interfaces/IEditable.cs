@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
@@ -14,7 +15,7 @@ namespace Diagnosis.App.ViewModels
         }
     }
 
-    public interface IEditable
+    public interface IEditable : INotifyPropertyChanged
     {
         event EditableEventHandler Committed;
         event EditableEventHandler Deleted;

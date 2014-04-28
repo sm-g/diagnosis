@@ -8,6 +8,7 @@
              xmlns:screen="clr-namespace:Diagnosis.App.Screens"
              xmlns:conv="clr-namespace:Diagnosis.App.Converters"
              mc:Ignorable="d"
+             x:Name="root"
              d:DesignHeight="400" d:DesignWidth="500">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -23,7 +24,7 @@
                     </ResourceDictionary.MergedDictionaries>
                 </ResourceDictionary>
             </TabControl.Resources>
-            <TabItem>
+            <TabItem IsSelected="{Binding Editable.IsEditorActive, Mode=TwoWay}" >
                 <TabItem.Header>
                     <card:PatientHeader />
                 </TabItem.Header>
@@ -68,12 +69,21 @@
                                 </Style>
                             </ListView.ItemContainerStyle>
                         </ListView>
+
+                        <TextBlock Grid.Row="2" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                                   Visibility="{Binding NoCourses, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            У пациента нет курсов.
+                        </TextBlock>
                     </Grid>
                     <card:AppointmentsList DataContext="{Binding CoursesManager.SelectedCourse}"
-        				DockPanel.Dock="Top"
-        				Margin="10,10,10,0" />
+        				                   DockPanel.Dock="Top"
+        				                   Margin="10,10,10,0"
+                                           Visibility="{Binding DataContext.NoCourses, ElementName=root, Converter={StaticResource NegBooleanToVisibilityConverter}}"/>
                     <card:Appointment DataContext="{Binding CoursesManager.SelectedCourse.SelectedAppointment}"
-        				Margin="10" />
+        				              Margin="10" 
+                                      Visibility="{Binding DataContext.NoCourses, ElementName=root, Converter={StaticResource NegBooleanToVisibilityConverter}}"/>
                 </DockPanel>
             </TabItem>
         </TabControl>

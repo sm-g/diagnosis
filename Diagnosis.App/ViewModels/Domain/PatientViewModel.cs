@@ -246,6 +246,13 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+        public bool NoCourses
+        {
+            get
+            {
+                return CoursesManager.Courses.Count == 0;
+            }
+        }
 
         public string SearchText
         {
@@ -293,7 +300,7 @@ namespace Diagnosis.App.ViewModels
 
             patient = p;
             Editable = new EditableBase(this, switchedOn: true);
-
+            CoursesManager = new CoursesManager(this);
             if (!(this is UnsavedPatientViewModel))
                 AfterPatientLoaded();
         }
@@ -301,7 +308,7 @@ namespace Diagnosis.App.ViewModels
         public void AfterPatientLoaded()
         {
             Properties = new ObservableCollection<PropertyViewModel>(EntityManagers.PropertyManager.GetPatientProperties(patient));
-            CoursesManager = new CoursesManager(this);
+            OnPropertyChanged(() => Properties);
         }
 
         #region Event handlers
@@ -356,6 +363,7 @@ namespace Diagnosis.App.ViewModels
             CoursesManager.AddCourse(course);
             CoursesManager.SelectedCourse.AddAppointment();
             Editable.MarkDirty();
+            OnPropertyChanged(() => NoCourses);
         }
 
         private void OnAppointmentAdded(AppointmentViewModel app)
@@ -408,11 +416,32 @@ namespace Diagnosis.App.ViewModels
         public UnsavedPatientViewModel()
             : base(new Patient())
         {
+            Editable.IsEditorActive = true;
+
+            Editable.PropertyChanged += OnPropertyChanged;
             Editable.Committed += OnFirstCommit;
+        }
+
+        void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsEditorActive")
+            {
+                // go to courses tabitem - save patient first
+                if (!Editable.IsEditorActive)
+                {
+                    Editable.CommitCommand.Execute(null);
+                }
+            }
+        }
+
+        private void OnPropertyChanged(object sender, EditableEventArgs e)
+        {
+            
         }
         private void OnFirstCommit(object sender, EditableEventArgs e)
         {
             Editable.Committed -= OnFirstCommit;
+            Editable.PropertyChanged -= OnPropertyChanged;
             var h = PatientCreated;
             if (h != null)
             {
