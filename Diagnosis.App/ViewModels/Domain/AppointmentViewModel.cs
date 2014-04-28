@@ -77,10 +77,13 @@ namespace Diagnosis.App.ViewModels
                 if (_selectedHealthRecord != value)
                 {
                     _selectedHealthRecord = value;
-                    _selectedHealthRecord.IsSelected = true;
-                    OnPropertyChanged(() => SelectedHealthRecord);
+                    if (value != null)
+                    {
+                        _selectedHealthRecord.IsSelected = true;
+                        // this.Send((int)EventID.HealthRecordSelected, new HealthRecordSelectedParams(_selectedHealthRecord).Params);
+                    }
 
-                    this.Send((int)EventID.HealthRecordSelected, new HealthRecordSelectedParams(_selectedHealthRecord).Params);
+                    OnPropertyChanged(() => SelectedHealthRecord);
                 }
             }
         }

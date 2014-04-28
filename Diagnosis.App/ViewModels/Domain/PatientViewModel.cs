@@ -328,12 +328,6 @@ namespace Diagnosis.App.ViewModels
 
                     OnAppointmentAdded(app);
                 }),
-                this.Subscribe((int)EventID.HealthRecordSelected, (e) =>
-                {
-                    var hr = e.GetValue<HealthRecordViewModel>(Messages.HealthRecord);
-
-                    OnHealthRecordSelected(hr);
-                }),
                 this.Subscribe((int)EventID.HealthRecordChanged, (e) =>
                 {
                     var hr = e.GetValue<HealthRecordViewModel>(Messages.HealthRecord);
@@ -368,11 +362,6 @@ namespace Diagnosis.App.ViewModels
         {
             CoursesManager.SelectedCourse.SelectedAppointment.AddHealthRecord();
             Editable.MarkDirty();
-        }
-
-        private void OnHealthRecordSelected(HealthRecordViewModel hr)
-        {
-            hr.MakeCurrent();
         }
 
         private void OnHealthRecordChanged(HealthRecordViewModel hr)

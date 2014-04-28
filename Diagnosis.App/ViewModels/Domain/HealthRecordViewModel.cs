@@ -11,7 +11,6 @@ namespace Diagnosis.App.ViewModels
     public class HealthRecordViewModel : CheckableBase
     {
         private readonly HealthRecord healthRecord;
-        private static HealthRecordViewModel current;
         private AutoComplete _autoComplete;
         private DiagnosisAutoComplete _diagnosisAutoComplete;
         private DateOffset _dateOffset;
@@ -293,10 +292,9 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public void MakeCurrent()
+        private void MakeCurrent()
         {
-            current = this;
-
+            IsSelected = true;
             if (Symptom != null)
                 EntityManagers.WordsManager.CheckThese(Symptom.Words);
             if (HasDiagnosis)
@@ -328,19 +326,35 @@ namespace Diagnosis.App.ViewModels
             {
                 this.Subscribe((int)EventID.WordCheckedChanged, (e) =>
                 {
-                    var symptom = e.GetValue<WordViewModel>(Messages.Word);
-                    var isChecked = e.GetValue<bool>(Messages.CheckedState);
+                    if (this.IsSelected)
+                    {
+                        var symptom = e.GetValue<WordViewModel>(Messages.Word);
+                        var isChecked = e.GetValue<bool>(Messages.CheckedState);
 
-                    OnWordCheckedChanged(symptom, isChecked);
+                        OnWordCheckedChanged(symptom, isChecked);
+                    }
                 }),
                 this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
                 {
-                    var diagnosis = e.GetValue<DiagnosisViewModel>(Messages.Diagnosis);
-                    var isChecked = e.GetValue<bool>(Messages.CheckedState);
+                    if (this.IsSelected)
+                    {
+                        var diagnosis = e.GetValue<DiagnosisViewModel>(Messages.Diagnosis);
+                        var isChecked = e.GetValue<bool>(Messages.CheckedState);
 
-                    OnDiagnosisCheckedChanged(diagnosis, isChecked);
+                        OnDiagnosisCheckedChanged(diagnosis, isChecked);
+                    }
                 })
             };
+            this.PropertyChanged += HealthRecordViewModel_PropertyChanged;
+        }
+
+        private void HealthRecordViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsSelected")
+            {
+                if (IsSelected)
+                    MakeCurrent();
+            }
         }
 
         public void Unsubscribe()
@@ -353,42 +367,39 @@ namespace Diagnosis.App.ViewModels
 
         private void OnWordCheckedChanged(WordViewModel word, bool isChecked)
         {
-            if (this == current)
+            HashSet<WordViewModel> words;
+
+            if (Symptom != null)
+                words = new HashSet<WordViewModel>(Symptom.Words);
+            else
+                words = new HashSet<WordViewModel>();
+
+            if (isChecked)
             {
-                HashSet<WordViewModel> words;
-                if (Symptom != null)
-                    words = new HashSet<WordViewModel>(Symptom.Words);
-                else
-                    words = new HashSet<WordViewModel>();
-                if (isChecked)
-                {
-                    words.Add(word);
-                }
-                else
-                {
-                    words.Remove(word);
-                }
-                this.Symptom = EntityManagers.SymptomsManager.GetSymptomForWords(words);
-                healthRecord.Symptom = Symptom.symptom;
+                words.Add(word);
             }
+            else
+            {
+                words.Remove(word);
+            }
+
+            this.Symptom = EntityManagers.SymptomsManager.GetSymptomForWords(words);
+            healthRecord.Symptom = Symptom.symptom;
         }
 
         private void OnDiagnosisCheckedChanged(DiagnosisViewModel diagnosisVM, bool isChecked)
         {
-            if (this == current)
+            if (isChecked)
             {
-                if (isChecked)
-                {
-                    Diagnosis = diagnosisVM;
-                    //  healthRecord.Diagnosis = diagnosisVM.diagnosis;
-                }
-                else
-                {
-                    Diagnosis = null;
-                    //   healthRecord.Diagnosis = null;
-                }
-                OnPropertyChanged(() => Name);
+                Diagnosis = diagnosisVM;
+                //  healthRecord.Diagnosis = diagnosisVM.diagnosis;
             }
+            else
+            {
+                Diagnosis = null;
+                //   healthRecord.Diagnosis = null;
+            }
+            OnPropertyChanged(() => Name);
         }
 
         #endregion Event handlers

@@ -47,7 +47,7 @@
                 </Grid.ColumnDefinitions>
                 
                 <TextBlock Text="{Binding Name}" />
-                <TextBlock Grid.Column="1" Text="{Binding Diagnosis.Name}" />
+                <TextBlock Grid.Column="1" Text="{Binding Diagnosis.Name, FallbackValue=''}" />
                 <TextBlock Grid.Row="1" Text="{Binding Date}" />
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding NumValue, StringFormat={}{0:G6}}" />
                 <TextBlock Grid.Row="2" Text="{Binding Category}" />
