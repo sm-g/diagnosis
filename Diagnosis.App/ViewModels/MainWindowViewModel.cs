@@ -217,8 +217,8 @@ namespace Diagnosis.App.ViewModels
                 {
                     patient.OpenLastAppointment();
                 }
+                IsWordsEditing = false;
             }
-            IsWordsEditing = false;
             CardVM = patient;
         }
 
