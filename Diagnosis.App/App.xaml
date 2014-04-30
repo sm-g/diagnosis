@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:Diagnosis.App.ViewModels"
              xmlns:conv="clr-namespace:Diagnosis.App.Converters"
-             
+             Startup="Application_Startup"  
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <conv:IHierarchicalCheckableToBackground x:Key="IHierarchicalCheckableToBackground" />

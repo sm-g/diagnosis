@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
+﻿using System.Globalization;
 using System.Windows;
+using System.Windows.Markup;
 
 namespace Diagnosis.App
 {
@@ -12,5 +9,13 @@ namespace Diagnosis.App
     /// </summary>
     public partial class App : Application
     {
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            FrameworkElement.LanguageProperty.OverrideMetadata(
+                typeof(FrameworkElement),
+                new FrameworkPropertyMetadata(
+                XmlLanguage.GetLanguage(
+                CultureInfo.CurrentCulture.IetfLanguageTag)));
+        }
     }
 }
