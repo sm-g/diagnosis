@@ -17,6 +17,7 @@ namespace Diagnosis.App.ViewModels
         private bool _isWordsEditing;
         private object _directoryExplorer;
 
+        #region Flags
         public bool IsLoginActive
         {
             get
@@ -72,14 +73,6 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-        public WordsManager WordsManager
-        {
-            get
-            {
-                return EntityManagers.WordsManager;
-            }
-        }
-
         public bool FastAddingMode
         {
             get
@@ -95,6 +88,18 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+        #endregion
+
+        #region ViewModels
+
+        public WordsManager WordsManager
+        {
+            get
+            {
+                return EntityManagers.WordsManager;
+            }
+        }
+
 
         public LoginViewModel LoginVM
         {
@@ -151,6 +156,9 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+        #endregion
+
+        #region Commands
 
         public ICommand LogoutCommand
         {
@@ -190,13 +198,13 @@ namespace Diagnosis.App.ViewModels
                                           }));
             }
         }
+        #endregion
 
         public MainWindowViewModel()
         {
 #if RELEASE
             IsLoginActive = true;
 #endif
-
             this.Subscribe((int)EventID.CurrentPatientChanged, (e) =>
             {
                 var patient = e.GetValue<PatientViewModel>(Messages.Patient);

@@ -436,7 +436,7 @@ namespace Diagnosis.App.ViewModels
 
         private void OnPropertyChanged(object sender, EditableEventArgs e)
         {
-            
+
         }
         private void OnFirstCommit(object sender, EditableEventArgs e)
         {

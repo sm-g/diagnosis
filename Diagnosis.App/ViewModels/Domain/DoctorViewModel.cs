@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class DoctorViewModel : CheckableBase
+    public class DoctorViewModel : ViewModelBase
     {
         internal readonly Doctor doctor;
 
@@ -96,12 +96,6 @@ namespace Diagnosis.App.ViewModels
                 return LastName + (FirstName.Length > 0 ? " " + FirstName[0] + "." + (MiddleName.Length > 0 ? " " + MiddleName[0] + "." : "") : "");
             }
         }
-        #region CheckableBase
-        public override void OnCheckedChanged()
-        {
-        }
-
-        #endregion CheckableBase
 
         public ICommand StartCourseCommand
         {

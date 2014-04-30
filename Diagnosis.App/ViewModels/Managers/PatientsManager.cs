@@ -58,7 +58,8 @@ namespace Diagnosis.App.ViewModels
 
         public void RemoveCurrent()
         {
-            if (CurrentPatient.CoursesManager.SelectedCourse != null &&
+            if (CurrentPatient != null &&
+                CurrentPatient.CoursesManager.SelectedCourse != null &&
                 CurrentPatient.CoursesManager.SelectedCourse.SelectedAppointment != null &&
                 CurrentPatient.CoursesManager.SelectedCourse.SelectedAppointment.SelectedHealthRecord != null)
             {

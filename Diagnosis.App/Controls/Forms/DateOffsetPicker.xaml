@@ -2,15 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:Converters="clr-namespace:Diagnosis.App.Converters"
              xmlns:app="clr-namespace:Diagnosis.App"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              x:Class="Diagnosis.App.Controls.Forms.DateOffsetPicker"
              mc:Ignorable="d"
              d:DesignHeight="30" d:DesignWidth="300"
              x:Name="root">
-    <UserControl.Resources>
-        <Converters:DateUnitToLabel x:Key="unitConverter" />
+    <UserControl.Resources>        
         <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
                             ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>

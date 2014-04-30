@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class AppointmentViewModel : CheckableBase
+    public class AppointmentViewModel : ViewModelBase
     {
         private Appointment appointment;
 
@@ -19,15 +19,6 @@ namespace Diagnosis.App.ViewModels
         private DoctorViewModel _doctor;
         private HealthRecordViewModel _selectedHealthRecord;
         private ICommand _addHealthRecord;
-
-        #region CheckableBase
-
-        public override void OnCheckedChanged()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion CheckableBase
 
         public DoctorViewModel Doctor
         {

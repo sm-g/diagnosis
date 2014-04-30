@@ -13,6 +13,7 @@
         <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <conv:AgeToYearsLabel x:Key="AgeToLabel" />
         <conv:BoolToSexSign x:Key="SexToSign" />
+        <conv:DateUnitToLabel x:Key="unitConverter" />
 
         <Style TargetType="TextBlock" x:Key="ScreenTitle">
             <Setter Property="FontSize" Value="24"/>

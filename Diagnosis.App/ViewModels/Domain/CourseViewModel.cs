@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class CourseViewModel : CheckableBase
+    public class CourseViewModel : ViewModelBase
     {
         internal readonly Course course;
 
@@ -74,25 +74,6 @@ namespace Diagnosis.App.ViewModels
 
         #endregion
 
-        public bool IsAppointmentsVisible
-        {
-            get
-            {
-                return _appointmentsVis;
-            }
-            set
-            {
-                if (_appointmentsVis != value)
-                {
-                    _appointmentsVis = value;
-
-                    IsSelected = value;
-
-                    OnPropertyChanged(() => IsAppointmentsVisible);
-                }
-            }
-        }
-
         public AppointmentViewModel SelectedAppointment
         {
             get
@@ -135,7 +116,6 @@ namespace Diagnosis.App.ViewModels
             var appVM = NewAppointment();
 
             SelectedAppointment = appVM;
-            IsAppointmentsVisible = true;
             Editable.CanBeDeleted = false;
 
             OnPropertyChanged(() => LastAppointment);
@@ -155,9 +135,7 @@ namespace Diagnosis.App.ViewModels
 
             var appVMs = course.Appointments.Select(app => new AppointmentViewModel(app, this)).Reverse();
             Appointments = new ObservableCollection<AppointmentViewModel>(appVMs);
-
-            this.PropertyChanged += CourseViewModel_PropertyChanged;
-
+            
             if (Appointments.Count > 0)
             {
                 SelectedAppointment = Appointments.Last();
@@ -165,15 +143,6 @@ namespace Diagnosis.App.ViewModels
 
             Editable.CanBeDirty = true;
         }
-
-        #region CheckableBase
-
-        public override void OnCheckedChanged()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion CheckableBase
 
         private AppointmentViewModel NewAppointment()
         {
@@ -184,13 +153,6 @@ namespace Diagnosis.App.ViewModels
             return appVM;
         }
 
-        private void CourseViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "IsSelected")
-            {
-                IsAppointmentsVisible = IsSelected;
-            }
-        }
 
         public override string ToString()
         {

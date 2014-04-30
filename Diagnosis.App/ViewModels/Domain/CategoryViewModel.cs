@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class CategoryViewModel : CheckableBase, IComparable
+    public class CategoryViewModel : ViewModelBase, IComparable
     {
         internal readonly Category category;
 
@@ -24,15 +24,6 @@ namespace Diagnosis.App.ViewModels
                 throw new NotImplementedException();
             }
         }
-
-        #region CheckableBase
-
-        public override void OnCheckedChanged()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion CheckableBase
 
 
         public CategoryViewModel(Category category)
