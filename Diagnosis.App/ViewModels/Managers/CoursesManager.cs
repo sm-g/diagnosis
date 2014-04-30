@@ -35,7 +35,7 @@ namespace Diagnosis.App.ViewModels
         public void AddCourse(Course course)
         {
             var courseVM = new CourseViewModel(course);
-            Subscribe(courseVM);
+            SubscribeCourse(courseVM);
             courseVM.Editable.CanBeDeleted = true;
 
             Courses.Add(courseVM);
@@ -61,7 +61,7 @@ namespace Diagnosis.App.ViewModels
 
             foreach (var course in Courses)
             {
-                Subscribe(course);
+                SubscribeCourse(course);
             }
 
             if (Courses.Count > 0)
@@ -70,7 +70,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private void Subscribe(CourseViewModel course)
+        private void SubscribeCourse(CourseViewModel course)
         {
             course.Editable.Deleted += course_Deleted;
         }
@@ -78,6 +78,8 @@ namespace Diagnosis.App.ViewModels
         private void course_Deleted(object sender, EditableEventArgs e)
         {
             var courseVM = e.viewModel as CourseViewModel;
+            courseVM.Editable.Deleted -= course_Deleted;
+
             patientVM.patient.DeleteCourse(courseVM.course);
             patientVM.Editable.MarkDirty();
             Courses.Remove(courseVM);

@@ -10,7 +10,7 @@ namespace Diagnosis.App.ViewModels
 {
     public class HealthRecordViewModel : CheckableBase
     {
-        private readonly HealthRecord healthRecord;
+        internal readonly HealthRecord healthRecord;
         private AutoComplete _autoComplete;
         private DiagnosisAutoComplete _diagnosisAutoComplete;
         private DateOffset _dateOffset;
@@ -33,7 +33,6 @@ namespace Diagnosis.App.ViewModels
 
         public override void OnCheckedChanged()
         {
-            throw new NotImplementedException();
         }
 
         #endregion CheckableBase
@@ -307,7 +306,7 @@ namespace Diagnosis.App.ViewModels
 
             this.healthRecord = hr;
 
-            Editable = new EditableBase(this, dirtImmunity: true);
+            Editable = new EditableBase(this, dirtImmunity: true, switchedOn: true, deletable: true);
 
             Category = EntityManagers.CategoryManager.GetByModel(hr.Category) ?? EntityManagers.CategoryManager.Default;
             Symptom = EntityManagers.SymptomsManager.Symptoms.FirstOrDefault(s => s.symptom == hr.Symptom);

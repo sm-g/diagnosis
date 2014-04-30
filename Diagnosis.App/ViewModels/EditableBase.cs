@@ -206,12 +206,14 @@ namespace Diagnosis.App.ViewModels
         /// </summary>
         /// <param name="vm">ViewModel to be edited</param>
         /// <param name="switchedOn">Initial state of commands. Default is "off".</param>
-        /// <param name="dirtImmunity">Initial state of CanBeDirty. Default is "true".</param>
-        public EditableBase(ViewModelBase vm, bool switchedOn = false, bool dirtImmunity = false)
+        /// <param name="dirtImmunity">Initial state of CanBeDirty. Default is "true" (no immunity).</param>
+        /// <param name="deletable">Initial state of CanBeDeleted. Default is "false".</param>
+        public EditableBase(ViewModelBase vm, bool switchedOn = false, bool dirtImmunity = false, bool deletable = false)
         {
             this.vm = vm;
             SwitchedOn = switchedOn;
             CanBeDirty = !dirtImmunity;
+            CanBeDeleted = deletable;
         }
 
         /// <summary>

@@ -67,12 +67,18 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_selectedHealthRecord != value)
                 {
-                    _selectedHealthRecord = value;
+                    if (_selectedHealthRecord != null && value != null)
+                    {
+                        // оставляем редактор открытым при смене выбранной записи
+                        value.Editable.IsEditorActive = _selectedHealthRecord.Editable.IsEditorActive;
+                        _selectedHealthRecord.Editable.IsEditorActive = false;
+                    }
                     if (value != null)
                     {
-                        _selectedHealthRecord.IsSelected = true;
+                        value.IsSelected = true;
                         // this.Send((int)EventID.HealthRecordSelected, new HealthRecordSelectedParams(_selectedHealthRecord).Params);
                     }
+                    _selectedHealthRecord = value;
 
                     OnPropertyChanged(() => SelectedHealthRecord);
                 }
@@ -94,8 +100,8 @@ namespace Diagnosis.App.ViewModels
         public void AddHealthRecord()
         {
             var hrVM = NewHealthRecord();
-
             SelectedHealthRecord = hrVM;
+            hrVM.Editable.IsEditorActive = true;
         }
 
         public AppointmentViewModel(Appointment appointment, CourseViewModel courseVM)
@@ -135,16 +141,48 @@ namespace Diagnosis.App.ViewModels
             return hrVM;
         }
 
-        private void SubscribeHR(HealthRecordViewModel hr)
+        private void SubscribeHR(HealthRecordViewModel hrVM)
         {
-            hr.Editable.ModelPropertyChanged += (s, e) =>
+            hrVM.PropertyChanged += hr_PropertyChanged;
+            hrVM.Editable.Deleted += hr_Deleted;
+            hrVM.Editable.ModelPropertyChanged += (s, e) =>
             {
                 this.Send((int)EventID.HealthRecordChanged,
                     new HealthRecordChangedParams(e.viewModel as HealthRecordViewModel).Params);
-
-                HealthRecords.Remove(hr);
-                HealthRecords.Add(hr);
             };
+
+        }
+
+        void hr_Deleted(object sender, EditableEventArgs e)
+        {
+            var hrVM = e.viewModel as HealthRecordViewModel;
+            hrVM.Editable.Deleted -= hr_Deleted;
+
+            appointment.DeleteHealthRecord(hrVM.healthRecord);
+
+            var i = HealthRecords.IndexOf(hrVM);
+            if (HealthRecords.Count > 1)
+                if (i == HealthRecords.Count - 1)
+                {
+                    // удаляем последний в списке - выбирааем предыдущий
+                    SelectedHealthRecord = HealthRecords[i - 1];
+                }
+                else
+                {
+                    SelectedHealthRecord = HealthRecords[i + 1];
+                }
+            HealthRecords.Remove(hrVM);
+        }
+
+        void hr_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var hrVM = sender as HealthRecordViewModel;
+            if (e.PropertyName == "Category")
+            {
+                // move to other group in view
+                HealthRecords.Remove(hrVM);
+                HealthRecords.Add(hrVM);
+            }
         }
 
         public override string ToString()

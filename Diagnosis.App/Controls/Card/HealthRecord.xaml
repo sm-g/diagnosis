@@ -11,13 +11,17 @@
              MinHeight="25"
              Focusable="True"
              IsTabStop="True">
+    
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel>
-            <StackPanel Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <CheckBox IsChecked="{Binding IsChecked}" HorizontalAlignment="Center" />
+        
+        <StackPanel Grid.Column="1">
+            <StackPanel Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <StackPanel x:Name="editor" >
                     <controls:InputTextBox DataContext="{Binding AutoComplete}" />                    
                     <DockPanel Visibility="{Binding Symptom.Words.Count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
@@ -35,7 +39,7 @@
 
             </StackPanel>
 
-            <Grid Visibility="{Binding IsSelected, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+            <Grid Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
@@ -48,9 +52,16 @@
                 
                 <TextBlock Text="{Binding Name}" />
                 <TextBlock Grid.Column="1" Text="{Binding Diagnosis.Name, FallbackValue=''}" />
-                <TextBlock Grid.Row="1" Text="{Binding Date}" />
+                <TextBlock Grid.Row="1">
+                    <Run Text="{Binding DateOffset.Offset}"/>
+                    <Run>
+                        <MultiBinding Converter="{StaticResource unitConverter}">
+                            <Binding Path="DateOffset.Unit" />
+                            <Binding Path="DateOffset.Offset" />
+                        </MultiBinding>
+                    </Run>
+                </TextBlock>
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding NumValue, StringFormat={}{0:G6}}" />
-                <TextBlock Grid.Row="2" Text="{Binding Category}" />
             </Grid>
         </StackPanel>
     </Grid>

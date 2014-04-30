@@ -36,6 +36,11 @@ namespace Diagnosis.Models
             return hr;
         }
 
+        public virtual void DeleteHealthRecord(HealthRecord hr)
+        {
+            healthRecords.Remove(hr);
+        }
+
         public Appointment(Course course, Doctor doctor)
         {
             Contract.Requires(course != null);
