@@ -18,6 +18,14 @@ namespace Diagnosis.App.ViewModels
             private set;
         }
 
+        public CategoryViewModel Default
+        {
+            get
+            {
+                return Categories.FirstOrDefault();
+            }
+        }
+
         public CategoryViewModel GetByModel(Category cat)
         {
             return Categories.FirstOrDefault(a => a.category == cat);
@@ -29,8 +37,8 @@ namespace Diagnosis.App.ViewModels
 
             repository = repo;
 
-            var all = repository.GetAll().Select(s => new CategoryViewModel(s));
-
+            var all = repository.GetAll().Select(s => new CategoryViewModel(s)).ToList();
+            all.Sort();
             Categories = new ObservableCollection<CategoryViewModel>(all);
         }
     }

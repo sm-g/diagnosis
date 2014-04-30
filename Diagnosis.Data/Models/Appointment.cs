@@ -27,6 +27,11 @@ namespace Diagnosis.Models
         public virtual HealthRecord AddHealthRecord()
         {
             var hr = new HealthRecord(this);
+            if (HealthRecords.Count > 0)
+            {
+                // копируем категории из последней записи
+                hr.Category = HealthRecords.Last().Category;
+            }
             healthRecords.Add(hr);
             return hr;
         }

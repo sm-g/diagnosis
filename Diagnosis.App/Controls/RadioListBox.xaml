@@ -10,9 +10,9 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBoxItem">
-                        <CheckBox x:Name="radio" 
+                        <RadioButton x:Name="radio" 
                                   IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected, Mode=TwoWay}">
-                            <CheckBox.Content>
+                            <RadioButton.Content>
                                 <ContentPresenter
                                     Content="{TemplateBinding ContentControl.Content}"
                                     ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
@@ -20,8 +20,8 @@
                                     HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
                                     VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
                                     SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-                            </CheckBox.Content>
-                        </CheckBox>
+                            </RadioButton.Content>
+                        </RadioButton>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>

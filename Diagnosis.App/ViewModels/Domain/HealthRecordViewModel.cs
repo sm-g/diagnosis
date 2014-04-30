@@ -309,7 +309,7 @@ namespace Diagnosis.App.ViewModels
 
             Editable = new EditableBase(this, dirtImmunity: true);
 
-            Category = EntityManagers.CategoryManager.GetByModel(hr.Category) ?? CategoryManager.NoCategory;
+            Category = EntityManagers.CategoryManager.GetByModel(hr.Category) ?? EntityManagers.CategoryManager.Default;
             Symptom = EntityManagers.SymptomsManager.Symptoms.FirstOrDefault(s => s.symptom == hr.Symptom);
             Diagnosis = EntityManagers.DiagnosisManager.GetHealthRecordDiagnosis(healthRecord);
 
