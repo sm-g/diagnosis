@@ -19,8 +19,8 @@
                 <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
                 <KeyBinding Key="F2" Command="{Binding Editable.EditCommand}" />
                 <KeyBinding Key="Escape" Command="{Binding Editable.RevertCommand}" />
-                <KeyBinding Key="Insert" Command="{Binding Search.ToggleSearchCommand}" />
-                <KeyBinding Key="F" Modifiers="Control" Command="{Binding Search.ToggleSearchCommand}" />
+                <KeyBinding Key="Insert" Command="{Binding Search.ToggleSearchActiveCommand}" />
+                <KeyBinding Key="F" Modifiers="Control" Command="{Binding Search.ToggleSearchActiveCommand}" />
 
                 <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleCommand}" />
                 <MouseBinding MouseAction="RightClick" Command="{Binding Editable.EditCommand}" />

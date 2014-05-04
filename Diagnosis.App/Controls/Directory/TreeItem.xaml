@@ -65,7 +65,7 @@
             DataContext="{Binding Search}"
 >
             <controls:FloatSearch.InputBindings>
-                <KeyBinding Key="Escape" Command="{Binding ToggleSearchCommand}"></KeyBinding>
+                <KeyBinding Key="Escape" Command="{Binding ToggleSearchActiveCommand}"></KeyBinding>
                 <KeyBinding Key="Enter" Command="{Binding SelectCommand}"></KeyBinding>
             </controls:FloatSearch.InputBindings>
         </controls:FloatSearch>

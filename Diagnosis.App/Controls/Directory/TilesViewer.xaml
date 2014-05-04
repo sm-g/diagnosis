@@ -13,8 +13,8 @@
     <Grid x:Name="explorer">
         <Grid.InputBindings>
             <KeyBinding Key="Back" Command="{Binding GoUp}" />
-            <KeyBinding Key="Insert" Command="{Binding CurrentItem.Search.ToggleSearchCommand}" />
-            <KeyBinding Key="F" Modifiers="Control" Command="{Binding CurrentItem.Search.ToggleSearchCommand}" />
+            <KeyBinding Key="Insert" Command="{Binding CurrentItem.Search.ToggleSearchActiveCommand}" />
+            <KeyBinding Key="F" Modifiers="Control" Command="{Binding CurrentItem.Search.ToggleSearchActiveCommand}" />
         </Grid.InputBindings>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
