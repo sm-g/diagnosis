@@ -9,7 +9,7 @@ namespace Diagnosis.App.ViewModels
     public abstract class AutoCompleteBase<T> : ViewModelBase, IAutoComplete where T : HierarchicalCheckable<T>
     {
         private List<T> items;
-        private HierarchicalSearch<T> search;
+        private SearchBase<T> search;
 
         private string _fullString = "";
         private bool _isItemCompleted;
@@ -185,7 +185,7 @@ namespace Diagnosis.App.ViewModels
         private void AddItem()
         {
             if (items.Count > 0)
-                items[items.Count - 1].AddIfNotExists(search.SelectedItem, search.AllChildren);
+                items[items.Count - 1].AddIfNotExists(search.SelectedItem, search.searcher.AllChildren);
 
             items.Add(search.SelectedItem);
             IsItemCompleted = true;
@@ -233,7 +233,7 @@ namespace Diagnosis.App.ViewModels
             FullString = "";
         }
 
-        protected abstract HierarchicalSearch<T> MakeSearch(T parent);
+        protected abstract SearchBase<T> MakeSearch(T parent);
 
         protected abstract string GetQueryString(T item);
 

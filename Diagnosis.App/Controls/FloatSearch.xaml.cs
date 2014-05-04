@@ -84,11 +84,9 @@ namespace Diagnosis.App.Controls
 
         private void OnResultItemSelected()
         {
-            var context = DataContext as ISearchCommon;
-            if (context != null)
-            {
-                context.RaiseResultItemSelected();
-            }
+
+            dynamic isearch = DataContext;
+            isearch.RaiseResultItemSelected();
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Diagnosis.App.ViewModels
 {
     public class PatientsManager : ViewModelBase
     {
-        private PatientSearch _search;
+        private SearchBase<PatientViewModel> _search;
         private PatientViewModel _current;
         private ICommand _addPatient;
         private IPatientRepository patientRepo;
@@ -43,13 +43,13 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-        public PatientSearch Search
+        public SearchBase<PatientViewModel> Search
         {
             get
             {
                 if (_search == null)
                 {
-                    _search = new PatientSearch(Patients);
+                    _search = new SearchBase<PatientViewModel>(new PatientSearcher(Patients));
                     _search.ResultItemSelected += _search_ResultItemSelected;
                 }
                 return _search;
@@ -129,7 +129,7 @@ namespace Diagnosis.App.ViewModels
 
         private void _search_ResultItemSelected(object sender, EventArgs e)
         {
-            var patientVM = Search.SelectedItem;
+            var patientVM = Search.SelectedItem as PatientViewModel;
             if (patientVM != null)
             {
                 CurrentPatient = patientVM;

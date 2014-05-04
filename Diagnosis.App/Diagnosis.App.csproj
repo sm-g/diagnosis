@@ -221,6 +221,10 @@
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
     <Compile Include="DateOffset.cs" />
+    <Compile Include="ViewModels\Search\DiagnosisSearcher.cs" />
+    <Compile Include="ViewModels\Search\WordSearcher.cs" />
+    <Compile Include="ViewModels\Search\PatientSearcher.cs" />
+    <Compile Include="ViewModels\Search\Search.cs" />
     <Compile Include="ViewModels\Domain\CategoryViewModel.cs" />
     <Compile Include="ViewModels\Managers\CategoryManager.cs" />
     <Compile Include="ViewModels\Managers\SymptomsManager.cs" />
@@ -234,7 +238,7 @@
     <Compile Include="ViewModels\HierarchicalCheckable.cs" />
     <Compile Include="ViewModels\Managers\DiagnosisManager.cs" />
     <Compile Include="ViewModels\Managers\CoursesManager.cs" />
-    <Compile Include="ViewModels\Interfaces\ISearchCommon.cs" />
+    <Compile Include="ViewModels\Interfaces\ISearch.cs" />
     <Compile Include="ViewModels\Domain\AppointmentViewModel.cs" />
     <Compile Include="ViewModels\Domain\HealthRecordViewModel.cs" />
     <Compile Include="ViewModels\Managers\DoctorsManager.cs" />
@@ -283,7 +287,7 @@
     <Compile Include="ViewModels\Interfaces\ICheckable.cs" />
     <Compile Include="ViewModels\Interfaces\IHierarchical.cs" />
     <Compile Include="ViewModels\Interfaces\IHierarchicalCheckable.cs" />
-    <Compile Include="ViewModels\Interfaces\ISearchCheckable.cs" />
+    <Compile Include="ViewModels\Interfaces\ISearcher.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IAutoComplete.cs" />

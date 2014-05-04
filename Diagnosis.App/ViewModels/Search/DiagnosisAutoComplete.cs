@@ -7,15 +7,16 @@ namespace Diagnosis.App.ViewModels
 {
     public class DiagnosisAutoComplete : AutoCompleteBase<DiagnosisViewModel>
     {
-        protected override HierarchicalSearch<DiagnosisViewModel> MakeSearch(DiagnosisViewModel parent)
+        protected override SearchBase<DiagnosisViewModel> MakeSearch(DiagnosisViewModel parent)
         {
             if (parent == null)
             {
-                return new DiagnosisSearch(EntityManagers.DiagnosisManager.Diagnoses[0].Parent, true, true, false);  // groups and cheсked, but not all children
+                return new SearchBase<DiagnosisViewModel>(new DiagnosisSearcher(
+                    EntityManagers.DiagnosisManager.Diagnoses[0].Parent, true, true, false));
             }
-            else
+            else                                                        // groups, cheсked, all children
             {
-                return new DiagnosisSearch(parent, true, true, false);
+                return new SearchBase<DiagnosisViewModel>(new DiagnosisSearcher(parent, true, true, false));
             }
         }
 

@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public abstract class SearchBase<T> : ViewModelBase, ISearchCheckable<T> where T : class, ICheckable
+    public class SearchBase<T> : ViewModelBase, ISearch<T> where T : class
     {
+        internal readonly ISearcher<T> searcher;
         private string _query;
         private int _selectedIndex = -1;
         private ICommand _clear;
@@ -37,7 +35,20 @@ namespace Diagnosis.App.ViewModels
                     IsResultsVisible = true;
                     OnPropertyChanged(() => Query);
                 }
-                MakeResults(_query);
+                MakeResults();
+            }
+        }
+
+        public ObservableCollection<T> Results { get; protected set; }
+
+        public T SelectedItem
+        {
+            get
+            {
+                if (SelectedIndex != -1)
+                    return Results[SelectedIndex];
+                else
+                    return null;
             }
         }
 
@@ -63,11 +74,11 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _clear ?? (_clear = new RelayCommand(Clear,
-                    () => Query != "" && SwitchedOn));
+                    () => !IsQueryEmpty && SwitchedOn));
             }
         }
 
-        public ICommand ToggleSearchCommand
+        public ICommand ToggleSearchActiveCommand
         {
             get
             {
@@ -161,8 +172,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public bool WithCreatingNew { get; set; }
-
         public void Clear()
         {
             Query = "";
@@ -183,56 +192,20 @@ namespace Diagnosis.App.ViewModels
 
         #endregion ISearch
 
-        #region ISearchCheckable
-
-        public bool WithNonCheckable { get; set; }
-
-        public bool WithChecked { get; set; }
-
-        public ObservableCollection<T> Results { get; protected set; }
-
-        public T SelectedItem
+        private bool IsQueryEmpty
         {
-            get
+            get { return string.IsNullOrWhiteSpace(Query); }
+        }
+
+        private void MakeResults()
+        {
+            if (IsQueryEmpty)
             {
-                if (SelectedIndex != -1)
-                    return Results[SelectedIndex];
-                else
-                    return null;
+                Results = new ObservableCollection<T>(searcher.Collection);
             }
-        }
-
-        #endregion ISearchCheckable
-
-        protected IEnumerable<T> Collection { get; set; }
-
-        protected virtual void InitQuery()
-        {
-            Clear();
-        }
-
-        protected virtual T FromQuery(string query)
-        {
-            return null;
-        }
-
-        protected abstract bool Filter(T item, string query);
-
-        private void MakeResults(string query)
-        {
-            Contract.Requires(query != null);
-
-            // фильтруем коллекцию
-            Results = new ObservableCollection<T>(
-               Collection.Where(c => Filter(c, query)
-                   && Filter(c)));
-
-            if (WithCreatingNew
-                && query != string.Empty
-                && !Results.Any(c => Filter(c, query)))
+            else
             {
-                // добавляем запрос к результатам
-                Results.Add(FromQuery(query));
+                Results = new ObservableCollection<T>(searcher.Search(Query));
             }
 
             OnPropertyChanged(() => Results);
@@ -241,18 +214,13 @@ namespace Diagnosis.App.ViewModels
                 SelectedIndex = 0;
         }
 
-        private bool Filter(T obj)
+        public SearchBase(ISearcher<T> searcher, bool switchedOn = true)
         {
-            return (WithChecked || !obj.IsChecked)
-                   && (WithNonCheckable || !obj.IsNonCheckable);
-        }
+            this.searcher = searcher;
 
-        public SearchBase(bool withNonCheckable = false, bool withChecked = false, bool withCreatingNew = true, bool switchedOn = true)
-        {
-            WithNonCheckable = withNonCheckable;
-            WithChecked = withChecked;
-            WithCreatingNew = withCreatingNew;
             SwitchedOn = switchedOn;
+
+            Clear();
         }
     }
 }

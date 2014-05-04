@@ -10,7 +10,7 @@ namespace Diagnosis.App.ViewModels
         private RelayCommand<T> _clickItem;
         private T _current;
         private RelayCommand _goUp;
-        private HierarchicalSearch<T> _search;
+        private SearchBase<T> _search;
         public ObservableCollection<T> Items
         {
             get;
@@ -69,7 +69,7 @@ namespace Diagnosis.App.ViewModels
                                           ));
             }
         }
-        public HierarchicalSearch<T> Search
+        public SearchBase<T> Search
         {
             get
             {
@@ -116,7 +116,7 @@ namespace Diagnosis.App.ViewModels
 
         private void _search_ResultItemSelected(object sender, System.EventArgs e)
         {
-            CurrentItem.AddIfNotExists(Search.SelectedItem, Search.AllChildren);
+            CurrentItem.AddIfNotExists(Search.SelectedItem, Search.searcher.AllChildren);
             Search.SelectedItem.checkable.IsChecked = true;
             Search.Clear();
         }

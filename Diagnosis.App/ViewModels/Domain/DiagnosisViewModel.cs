@@ -7,7 +7,7 @@ namespace Diagnosis.App.ViewModels
     {
         internal readonly Diagnosis.Models.Diagnosis diagnosis;
 
-        private DiagnosisSearch _search;
+        private SearchBase<DiagnosisViewModel> _search;
 
         public IEditable Editable { get; private set; }
 
@@ -59,13 +59,13 @@ namespace Diagnosis.App.ViewModels
             this.Send((int)EventID.DiagnosisCheckedChanged, new DiagnosisCheckedChangedParams(this, checkable.IsChecked).Params);
         }
 
-        public DiagnosisSearch Search
+        public SearchBase<DiagnosisViewModel> Search
         {
             get
             {
                 if (_search == null)
                 {
-                    _search = new DiagnosisSearch(this);
+                    _search = new SearchBase<DiagnosisViewModel>(new DiagnosisSearcher(this));
                     _search.ResultItemSelected += _search_ResultItemSelected;
                 }
                 return _search;
@@ -74,8 +74,8 @@ namespace Diagnosis.App.ViewModels
 
         private void _search_ResultItemSelected(object sender, System.EventArgs e)
         {
-            this.AddIfNotExists(Search.SelectedItem, Search.AllChildren);
-            Search.SelectedItem.checkable.IsChecked = true;
+            this.AddIfNotExists(Search.SelectedItem as DiagnosisViewModel, Search.searcher.AllChildren);
+            (Search.SelectedItem as DiagnosisViewModel).checkable.IsChecked = true;
             Search.Clear();
         }
 
