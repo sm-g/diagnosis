@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Windows.Input;
+using System;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -7,6 +8,7 @@ namespace Diagnosis.App.ViewModels
     {
         readonly internal CheckableBase checkable;
 
+        public event HierarhicalCheckableEventHandler CheckedChanged;
         #region IHierarchicalCheckable
 
         public int CheckedChildren
@@ -76,6 +78,7 @@ namespace Diagnosis.App.ViewModels
             {
                 PropagateCheckedState(IsChecked);
                 BubbleCheckedChildren();
+                RaiseCheckedChanged(new HierarhicalCheckableEventArgs(this));
             }
         }
 
@@ -119,6 +122,27 @@ namespace Diagnosis.App.ViewModels
             {
                 Parent.BubbleCheckedChildren();
             }
+        }
+
+        protected virtual void RaiseCheckedChanged(HierarhicalCheckableEventArgs e)
+        {
+            var h = CheckedChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
+    }
+
+
+    public delegate void HierarhicalCheckableEventHandler(object sender, HierarhicalCheckableEventArgs e);
+    public class HierarhicalCheckableEventArgs : EventArgs
+    {
+        public ICheckable vm;
+
+        public HierarhicalCheckableEventArgs(ICheckable vm)
+        {
+            this.vm = vm;
         }
     }
 }
