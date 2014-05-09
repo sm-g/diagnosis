@@ -233,7 +233,6 @@
     <Compile Include="ViewModels\Search\AutoComplete.cs" />
     <Compile Include="ViewModels\Search\SearchWrap.cs" />
     <Compile Include="ViewModels\Search\SequencePartition.cs" />
-    <Compile Include="ViewModels\Search\SymptomSearch.cs" />
     <Compile Include="ViewModels\Domain\SymptomViewModel.cs" />
     <Compile Include="ViewModels\HierarchicalCheckable.cs" />
     <Compile Include="ViewModels\Managers\DiagnosisManager.cs" />
@@ -246,7 +245,6 @@
     <Compile Include="ViewModels\Domain\DoctorViewModel.cs" />
     <Compile Include="ViewModels\EditableBase.cs" />
     <Compile Include="ViewModels\Search\DiagnosisAutoComplete.cs" />
-    <Compile Include="ViewModels\Search\HierarchicalSearch.cs" />
     <Compile Include="ViewModels\Interfaces\IEditable.cs" />
     <Compile Include="Controls\Directory\TileItem.xaml.cs">
       <DependentUpon>TileItem.xaml</DependentUpon>
@@ -281,7 +279,6 @@
     <Compile Include="Styles\TreeStyle.cs" />
     <Compile Include="ViewModels\Search\AutoCompleteBase.cs" />
     <Compile Include="ViewModels\CheckableBase.cs" />
-    <Compile Include="ViewModels\Search\DiagnosisSearch.cs" />
     <Compile Include="ViewModels\Domain\DiagnosisViewModel.cs" />
     <Compile Include="ViewModels\HierarchicalBase.cs" />
     <Compile Include="ViewModels\Interfaces\ICheckable.cs" />
@@ -291,7 +288,6 @@
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IAutoComplete.cs" />
-    <Compile Include="ViewModels\Search\PatientSearch.cs" />
     <Compile Include="ViewModels\Managers\PatientsManager.cs" />
     <Compile Include="ViewModels\Managers\PropertyManager.cs" />
     <Compile Include="ViewModels\Domain\PropertyViewModel.cs" />
@@ -299,7 +295,6 @@
     <Compile Include="ViewModels\RelayCommand.cs" />
     <Compile Include="ViewModels\Search\SearchBase.cs" />
     <Compile Include="ViewModels\Search\WordAutoComplete.cs" />
-    <Compile Include="ViewModels\Search\WordSearch.cs" />
     <Compile Include="ViewModels\Domain\WordViewModel.cs" />
     <Compile Include="Controls\Directory\FullTree.xaml.cs">
       <DependentUpon>FullTree.xaml</DependentUpon>
