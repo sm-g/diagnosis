@@ -16,6 +16,8 @@ namespace Diagnosis.App
                 new FrameworkPropertyMetadata(
                 XmlLanguage.GetLanguage(
                 CultureInfo.CurrentCulture.IetfLanguageTag)));
+
+            new DebugOutput();
         }
     }
 }
