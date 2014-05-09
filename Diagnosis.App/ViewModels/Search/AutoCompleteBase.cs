@@ -9,7 +9,8 @@ namespace Diagnosis.App.ViewModels
     public abstract class AutoCompleteBase<T> : ViewModelBase, IAutoComplete where T : HierarchicalCheckable<T>
     {
         private List<T> items;
-        private SearchBase<T> search;
+        private ISearcher<T> searcher;
+        private int _index;
 
         private string _fullString = "";
         private bool _isItemCompleted;
@@ -52,13 +53,13 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return search.SelectedIndex;
+                return _index;
             }
             set
             {
-                if (search.SelectedIndex != value)
+                if (_index != value)
                 {
-                    search.SelectedIndex = value;
+                    _index = value;
                     OnPropertyChanged(() => SelectedIndex);
                 }
             }
@@ -169,15 +170,16 @@ namespace Diagnosis.App.ViewModels
 
         private void MakeSuggestions()
         {
+            string query;
             if (!IsItemCompleted)
             {
-                search.Query = LastPart;
+                query = LastPart;
             }
             else
             {
-                search.Query = GetQueryString(items[items.Count - 1]);
+                query = GetQueryString(items[items.Count - 1]);
             }
-            Suggestions = new ObservableCollection<T>(search.Results);
+            Suggestions = new ObservableCollection<T>(searcher.Search(query));
             OnPropertyChanged(() => Suggestions);
             SelectedIndex = 0;
         }
@@ -185,9 +187,9 @@ namespace Diagnosis.App.ViewModels
         private void AddItem()
         {
             if (items.Count > 0)
-                items[items.Count - 1].AddIfNotExists(search.SelectedItem, search.searcher.AllChildren);
+                items[items.Count - 1].AddIfNotExists(Suggestions[SelectedIndex], searcher.AllChildren);
 
-            items.Add(search.SelectedItem);
+            items.Add(Suggestions[SelectedIndex]);
             IsItemCompleted = true;
         }
 
@@ -200,9 +202,9 @@ namespace Diagnosis.App.ViewModels
             }
 
             if (i < 0)
-                search = MakeSearch(null);
+                searcher = MakeSearch(null);
             else
-                search = MakeSearch(items[i]);
+                searcher = MakeSearch(items[i]);
 
             if (itemStarted)
             {
@@ -233,7 +235,7 @@ namespace Diagnosis.App.ViewModels
             FullString = "";
         }
 
-        protected abstract SearchBase<T> MakeSearch(T parent);
+        protected abstract ISearcher<T> MakeSearch(T parent);
 
         protected abstract string GetQueryString(T item);
 
