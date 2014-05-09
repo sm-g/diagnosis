@@ -264,5 +264,10 @@ namespace Diagnosis.App.ViewModels
             NowDate = now;
             SetOffset(offset, unit);
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}.{1}.{2}", Year ?? 0, Month ?? 0, Day ?? 0);
+        }
     }
 }

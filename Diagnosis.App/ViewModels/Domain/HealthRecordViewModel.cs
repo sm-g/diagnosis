@@ -291,13 +291,24 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        private static bool makingCurrent;
+        private static HealthRecordViewModel currentHr;
+
         private void MakeCurrent()
         {
-            IsSelected = true;
+            if (currentHr != null)
+            {
+                currentHr.Unsubscribe();
+            }
+            currentHr = this;
+            this.Subscribe();
+
+            makingCurrent = true;
             if (Symptom != null)
                 EntityManagers.WordsManager.CheckThese(Symptom.Words);
             if (HasDiagnosis)
                 EntityManagers.DiagnosisManager.Check(Diagnosis);
+            makingCurrent = false;
         }
 
         public HealthRecordViewModel(HealthRecord hr)
@@ -312,9 +323,13 @@ namespace Diagnosis.App.ViewModels
             Symptom = EntityManagers.SymptomsManager.Symptoms.FirstOrDefault(s => s.symptom == hr.Symptom);
             Diagnosis = EntityManagers.DiagnosisManager.GetHealthRecordDiagnosis(healthRecord);
 
-            Subscribe();
-
+            this.PropertyChanged += HealthRecordViewModel_PropertyChanged;
             Editable.CanBeDirty = true;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} {1} {2}", DateOffset, Category, Symptom);
         }
 
         #region Event handlers
@@ -325,7 +340,7 @@ namespace Diagnosis.App.ViewModels
             {
                 this.Subscribe((int)EventID.WordCheckedChanged, (e) =>
                 {
-                    if (this.IsSelected)
+                    if (this.IsSelected && !makingCurrent)
                     {
                         var symptom = e.GetValue<WordViewModel>(Messages.Word);
                         var isChecked = e.GetValue<bool>(Messages.CheckedState);
@@ -335,7 +350,7 @@ namespace Diagnosis.App.ViewModels
                 }),
                 this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
                 {
-                    if (this.IsSelected)
+                    if (this.IsSelected && !makingCurrent)
                     {
                         var diagnosis = e.GetValue<DiagnosisViewModel>(Messages.Diagnosis);
                         var isChecked = e.GetValue<bool>(Messages.CheckedState);
@@ -344,13 +359,13 @@ namespace Diagnosis.App.ViewModels
                     }
                 })
             };
-            this.PropertyChanged += HealthRecordViewModel_PropertyChanged;
         }
 
         private void HealthRecordViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "IsSelected")
             {
+                Console.WriteLine("{0} selected = {1}", this, IsSelected);
                 if (IsSelected)
                     MakeCurrent();
             }
@@ -366,6 +381,8 @@ namespace Diagnosis.App.ViewModels
 
         private void OnWordCheckedChanged(WordViewModel word, bool isChecked)
         {
+            // меняем симптом у открытой записи
+
             HashSet<WordViewModel> words;
 
             if (Symptom != null)
