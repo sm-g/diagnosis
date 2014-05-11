@@ -38,7 +38,7 @@ namespace Diagnosis.App.ViewModels
             results.AddRange(Collection.Where(word => Filter(word, query) && Filter(word)));
             if (WithCreatingNew
                && query != string.Empty
-               && !results.Any(word => Filter(word, query)))
+               && !results.Any(word => Equals(word, query)))
             {
                 // добавляем запрос к результатам
                 results.Add(FromQuery(query));
@@ -55,6 +55,11 @@ namespace Diagnosis.App.ViewModels
         {
             return item.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase);
             // && (UpperPriority <= item.Priority);
+        }
+
+        bool Equals(WordViewModel item, string query)
+        {
+            return item.Name.ToLower().Equals(query.ToLower());
         }
 
         private bool Filter(ICheckable obj)

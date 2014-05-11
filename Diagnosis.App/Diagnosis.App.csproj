@@ -224,11 +224,10 @@
     </Compile>
     <Compile Include="DateOffset.cs" />
     <Compile Include="ViewModels\Search\DiagnosisSearcher.cs" />
-    <Compile Include="ViewModels\Search\Permutation.cs" />
+    <Compile Include="ViewModels\Search\Combination.cs" />
     <Compile Include="ViewModels\Search\SearchOptions.cs" />
     <Compile Include="ViewModels\Search\WordSearcher.cs" />
     <Compile Include="ViewModels\Search\PatientSearcher.cs" />
-    <Compile Include="ViewModels\Search\Search.cs" />
     <Compile Include="ViewModels\Domain\CategoryViewModel.cs" />
     <Compile Include="ViewModels\Managers\CategoryManager.cs" />
     <Compile Include="ViewModels\Managers\SymptomsManager.cs" />

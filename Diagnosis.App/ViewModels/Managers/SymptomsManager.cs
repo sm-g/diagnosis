@@ -58,6 +58,12 @@ namespace Diagnosis.App.ViewModels
                 s => s.Words.OrderBy(w => w.word, comparator).SequenceEqual(
                        words.OrderBy(w => w.word, comparator)));
         }
+        public void WipeUnsaved()
+        {
+            System.Console.WriteLine(Symptoms.Count);
+            var toRemove = Symptoms.Where(sym => sym.Unsaved).ToList();
+            toRemove.ForAll((sym) => Symptoms.Remove(sym));
+        }
 
         public SymptomsManager(ISymptomRepository repo)
         {

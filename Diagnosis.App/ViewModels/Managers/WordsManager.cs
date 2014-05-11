@@ -95,12 +95,26 @@ namespace Diagnosis.App.ViewModels
             var vm = new WordViewModel(new Word(title));
             vm.Editable.MarkDirty();
             Root.Add(vm);
+            Words.Add(vm);
             Subscribe(vm);
-            // Searcher = new WordSearcher(Words[0].Parent);
 
             System.Console.WriteLine("new word: {0}", vm);
             return vm;
         }
+        /// <summary>
+        /// Уничтожает созданные слова, которые не были использованы в записи.
+        /// </summary>
+        public void WipeUnsaved()
+        {
+            System.Console.WriteLine(Words.Count);
+            var toRemove = Words.Where(word => word.Unsaved).ToList();
+            toRemove.ForAll((word) =>
+            {
+                Root.Remove(word);
+                Words.Remove(word);
+            });
+        }
+
         /// <summary>
         /// Возвращает слово с указанным заголовком.
         /// </summary>

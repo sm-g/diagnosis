@@ -73,6 +73,13 @@ namespace Diagnosis.App.ViewModels
                 return Name;
             }
         }
+        public bool Unsaved
+        {
+            get
+            {
+                return symptom.Id == 0;
+            }
+        }
 
         public SymptomViewModel(Symptom s)
         {

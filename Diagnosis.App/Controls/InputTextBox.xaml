@@ -11,11 +11,10 @@
 
     <StackPanel>
         <controls:MyAutoCompleteBox x:Name="auto"
+                                    Text="{Binding Query, Mode=TwoWay}"
                              ItemsSource="{Binding Results }" 
                              SelectedItem="{Binding Selected, Mode=TwoWay}"
-                             IsTextCompletionEnabled="True"
-                             FilterMode="Custom"
-                             ItemFilter="{Binding ItemFilter}">
+                             FilterMode="None">
             <controls:MyAutoCompleteBox.InputBindings>
                 <KeyBinding Key="Enter" Command="{Binding SelectCommand}"/>
             </controls:MyAutoCompleteBox.InputBindings>

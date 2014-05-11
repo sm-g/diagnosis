@@ -113,6 +113,14 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public bool Unsaved
+        {
+            get
+            {
+                return word.Id == 0;
+            }
+        }
+
         public WordViewModel(Word w)
         {
             Contract.Requires(w != null);
