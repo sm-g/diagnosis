@@ -148,6 +148,7 @@
     <Compile Include="Controls\AutoComplete.xaml.cs">
       <DependentUpon>AutoComplete.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\AutocompleteDataTemplateSelector.cs" />
     <Compile Include="Controls\Card\Appointment.xaml.cs">
       <DependentUpon>Appointment.xaml</DependentUpon>
     </Compile>

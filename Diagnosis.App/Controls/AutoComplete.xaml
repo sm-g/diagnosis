@@ -9,6 +9,32 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              Loaded="UserControl_Loaded">
+    <UserControl.Resources>
+        <DataTemplate x:Key="DiagnosisTemplate">
+            <DockPanel MouseUp="DockPanel_MouseUp">
+                <TextBlock Text="{Binding Code, FallbackValue=''}" Margin="0,0,3,0"/>
+                <TextBlock Text="{Binding Name}" />
+            </DockPanel>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="SymptomTemplate">
+            <DockPanel MouseUp="DockPanel_MouseUp">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="{Binding Name}" />
+                    <TextBlock Grid.Column="1" Text="{Binding Category}" />
+                </Grid>
+            </DockPanel>
+        </DataTemplate>
+
+        <controls:AutocompleteDataTemplateSelector x:Key="AutocompleteTemplateSelector"
+                                                   DiagnosisTemplate="{StaticResource DiagnosisTemplate}"
+                                                   SymptomTemplate="{StaticResource SymptomTemplate}"/>
+    </UserControl.Resources>
     <StackPanel x:Name="autocomplete"
                 Margin="5">
         <Grid>
@@ -42,20 +68,12 @@
                    
                        HorizontalAlignment="Left" Grid.RowSpan="2">
 
-                    <ListBox x:Name="suggestions"                             
+                <ListBox x:Name="suggestions"                             
                              MaxHeight="100"
                              ItemsSource="{Binding Suggestions}"
                              SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
                              SelectionChanged="suggestions_SelectionChanged"
->
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <DockPanel MouseUp="DockPanel_MouseUp">
-                                    <TextBlock Text="{Binding Name}" />
-                                </DockPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                             ItemTemplateSelector="{StaticResource AutocompleteTemplateSelector}" />
             </Popup>
         </Grid>
     </StackPanel>
