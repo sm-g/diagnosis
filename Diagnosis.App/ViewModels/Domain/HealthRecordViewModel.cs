@@ -399,7 +399,7 @@ namespace Diagnosis.App.ViewModels
                 words.Remove(word);
             }
 
-            this.Symptom = EntityManagers.SymptomsManager.GetSymptomForWords(words);
+            this.Symptom = EntityManagers.SymptomsManager.Create(words);
             healthRecord.Symptom = Symptom.symptom;
         }
 

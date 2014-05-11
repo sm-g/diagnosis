@@ -19,25 +19,44 @@ namespace Diagnosis.App.ViewModels
             private set;
         }
 
+        /// <summary>
+        /// Возвращает симптомы, содержащие указанные слова.
+        /// </summary>
+        public IEnumerable<SymptomViewModel> GetSymptomsWithWords(IEnumerable<WordViewModel> words)
+        {
+            Contract.Requires(words != null);
+
+            return Symptoms.Where(
+                s => words.IsSubsetOf(s.Words));
+        }
+        /// <summary>
+        /// Создает симптом и добавляет в коллекцию Symptoms, если требуется.
+        /// </summary>
+        public SymptomViewModel Create(IEnumerable<WordViewModel> words)
+        {
+            var existing = GetSymptomForWords(words);
+            if (existing != null)
+                return existing;
+
+            var sym = new Symptom(words.Select(w => w.word));
+            var svm = new SymptomViewModel(sym);
+            svm.Editable.MarkDirty();
+
+            Symptoms.Add(svm);
+            System.Console.WriteLine("new symptom: {0}", svm);
+            return svm;
+        }
+        /// <summary>
+        /// Возвращает симптом, содержащий только указанные слова.
+        /// </summary>
         public SymptomViewModel GetSymptomForWords(IEnumerable<WordViewModel> words)
         {
             Contract.Requires(words != null);
 
-            // ищем среди симптомов такой, в котором все слова соответствуют словам words
             var comparator = new CompareWord();
-            var existing = Symptoms.FirstOrDefault(
+            return Symptoms.FirstOrDefault(
                 s => s.Words.OrderBy(w => w.word, comparator).SequenceEqual(
                        words.OrderBy(w => w.word, comparator)));
-
-            if (existing != null)
-                return existing;
-
-            // если такого нет, создаём новый симптом с этими словами
-            var sym = new Symptom(words.Select(w => w.word));
-            var svm = new SymptomViewModel(sym);
-            Symptoms.Add(svm);
-
-            return svm;
         }
 
         public SymptomsManager(ISymptomRepository repo)

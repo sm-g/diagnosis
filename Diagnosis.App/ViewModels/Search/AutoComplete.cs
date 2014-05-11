@@ -25,7 +25,6 @@ namespace Diagnosis.App.ViewModels
                 if (_selected != value)
                 {
                     _selected = value;
-                    Console.WriteLine(value);
                 }
             }
         }
@@ -46,10 +45,7 @@ namespace Diagnosis.App.ViewModels
                                                   var svm = Selected.entity as SymptomViewModel;
                                                   if (svm != null)
                                                   {
-                                                      foreach (var wordVM in svm.Words)
-                                                      {
-                                                          wordVM.checkable.IsChecked = true;
-                                                      }
+                                                      svm.Words.ForAll(w => w.checkable.IsChecked = true);
                                                   }
                                               }
                                           }));
@@ -60,12 +56,26 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return new AutoCompleteFilterPredicate<object>((query, obj) => Filter(query, obj as SearchWrap));
+                return new AutoCompleteFilterPredicate<object>((query, obj) => FilterItem(query, obj as SearchWrap));
             }
         }
 
-        public static bool Filter(string query, SearchWrap wrap)
+        public AutoCompleteFilterPredicate<string> TextFilter
         {
+            get
+            {
+                return new AutoCompleteFilterPredicate<string>((query, value) => FilterText(query, value));
+            }
+        }
+
+        public static bool FilterText(string query, string value)
+        {
+            return true;
+        }
+
+        public static bool FilterItem(string query, SearchWrap wrap)
+        {
+            return true;
             var vm = wrap.entity;
             var wvm = vm as WordViewModel;
             if (wvm != null)
