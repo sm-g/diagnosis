@@ -224,6 +224,8 @@
     </Compile>
     <Compile Include="DateOffset.cs" />
     <Compile Include="ViewModels\Search\DiagnosisSearcher.cs" />
+    <Compile Include="ViewModels\Search\Permutation.cs" />
+    <Compile Include="ViewModels\Search\SearchOptions.cs" />
     <Compile Include="ViewModels\Search\WordSearcher.cs" />
     <Compile Include="ViewModels\Search\PatientSearcher.cs" />
     <Compile Include="ViewModels\Search\Search.cs" />
