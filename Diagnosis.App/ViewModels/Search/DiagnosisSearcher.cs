@@ -14,7 +14,7 @@ namespace Diagnosis.App.ViewModels
         public bool WithCreatingNew { get; set; }
         public bool AllChildren { get; set; }
 
-        public IEnumerable<DiagnosisViewModel> Collection { get; set; }
+        public IEnumerable<DiagnosisViewModel> Collection { get; private set; }
 
         public DiagnosisSearcher(DiagnosisViewModel parent, bool withNonCheckable = false, bool withChecked = false, bool allChildren = true)
         {
@@ -31,7 +31,7 @@ namespace Diagnosis.App.ViewModels
         {
             List<DiagnosisViewModel> results = new List<DiagnosisViewModel>();
 
-            results.AddRange(Collection.Where(c => Filter(c as DiagnosisViewModel, query) && Filter(c as DiagnosisViewModel)));
+            results.AddRange(Collection.Where(diagnosis => Filter(diagnosis, query) && Filter(diagnosis)));
 
             return results;
         }

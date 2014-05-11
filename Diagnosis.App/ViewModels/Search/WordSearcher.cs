@@ -26,15 +26,19 @@ namespace Diagnosis.App.ViewModels
             WithChecked = withChecked;
             WithCreatingNew = withCreatingNew;
         }
-
+        /// <summary>
+        /// Вовращает слова, которые начинаются на указанную строку.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
         public IEnumerable<WordViewModel> Search(string query)
         {
             List<WordViewModel> results = new List<WordViewModel>();
 
-            results.AddRange(Collection.Where(c => Filter(c as WordViewModel, query) && Filter(c as WordViewModel)));
+            results.AddRange(Collection.Where(word => Filter(word, query) && Filter(word)));
             if (WithCreatingNew
                && query != string.Empty
-               && !results.Any(c => Filter(c as WordViewModel, query)))
+               && !results.Any(word => Filter(word, query)))
             {
                 // добавляем запрос к результатам
                 results.Add(FromQuery(query));

@@ -13,11 +13,22 @@ namespace Diagnosis.App.ViewModels
     {
         private IWordRepository repository;
         private RelayCommand _commit;
+        WordSearcher _searcher;
 
         public ObservableCollection<WordViewModel> Words
         {
             get;
             private set;
+        }
+        /// <summary>
+        /// Поисковик по всем словам, создает новые из запроса.
+        /// </summary>
+        public WordSearcher Searcher
+        {
+            get
+            {
+                return _searcher ?? (_searcher = new WordSearcher(Root, withChecked: true));
+            }
         }
 
         private IEnumerable<WordViewModel> DirtyWords
@@ -27,6 +38,8 @@ namespace Diagnosis.App.ViewModels
                 return Words.Where(s => s.Editable.IsDirty);
             }
         }
+
+        WordViewModel Root { get; set; }
 
         public ICommand CommitCommand
         {
@@ -52,9 +65,9 @@ namespace Diagnosis.App.ViewModels
 
             if (Words.Count > 0)
             {
-                var intersect = Words[0].Parent.AllChildren.Select(w => w.word).Intersect(s.Words);
+                var intersect = Root.AllChildren.Select(w => w.word).Intersect(s.Words);
 
-                return Words[0].Parent.AllChildren.Where(w => intersect.Contains(w.word));
+                return Root.AllChildren.Where(w => intersect.Contains(w.word));
             }
 
             return Enumerable.Empty<WordViewModel>();
@@ -69,16 +82,28 @@ namespace Diagnosis.App.ViewModels
                 item.IsChecked = true;
             }
         }
-
+        /// <summary>
+        /// Создает слово и добавляет в коллекцию Words, если требуется.
+        /// </summary>
         public WordViewModel Create(string title)
         {
+            var existing = Find(title);
+
+            if (existing != null)
+                return existing;
+
             var vm = new WordViewModel(new Word(title));
             vm.Editable.MarkDirty();
-            Words.Add(vm);
+            Root.Add(vm);
             Subscribe(vm);
+            // Searcher = new WordSearcher(Words[0].Parent);
+
+            System.Console.WriteLine("new word: {0}", vm);
             return vm;
         }
-
+        /// <summary>
+        /// Возвращает слово с указанным заголовком.
+        /// </summary>
         public WordViewModel Find(string title)
         {
             return Words.Where(w => w.Name == title).SingleOrDefault();
@@ -97,17 +122,17 @@ namespace Diagnosis.App.ViewModels
                 Subscribe(item);
             }
 
-            var root = new WordViewModel("root") { IsNonCheckable = true };
-            root.Add(all);
-            root.Initialize();
+            Root = new WordViewModel("root") { IsNonCheckable = true };
+            Root.Add(all);
+            Root.Initialize();
 
-            Words = new ObservableCollection<WordViewModel>(root.Children);
+            Words = new ObservableCollection<WordViewModel>(Root.Children);
 
             this.Subscribe((int)EventID.WordsEditingModeChanged, (e) =>
             {
                 var isEditing = e.GetValue<bool>(Messages.Boolean);
 
-                OnDirectoryEditingModeChanged(isEditing);
+                OnWordsEditingModeChanged(isEditing);
             });
         }
 
@@ -119,12 +144,12 @@ namespace Diagnosis.App.ViewModels
             };
         }
 
-        private void OnDirectoryEditingModeChanged(bool isEditing)
+        private void OnWordsEditingModeChanged(bool isEditing)
         {
             Words.ForBranch((vm) =>
             {
                 vm.Editable.SwitchedOn = isEditing;
-                vm.Search.SwitchedOn = !isEditing;
+                //  vm.Search.SwitchedOn = !isEditing;
             });
 
             UnCheckAll();

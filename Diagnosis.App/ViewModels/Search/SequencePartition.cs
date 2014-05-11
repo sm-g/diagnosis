@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Diagnosis.App.ViewModels
 {
-     /// <summary>
+    /// <summary>
     /// Выполняет разбиение данной последовательности n элементов
     /// c сохранением порядка на все возможные группы (всего 2^(n-1)).
     /// <para> </para>
