@@ -76,7 +76,7 @@ namespace Diagnosis.App.ViewModels
                     if (value != null)
                     {
                         value.IsSelected = true;
-                        // this.Send((int)EventID.HealthRecordSelected, new HealthRecordSelectedParams(_selectedHealthRecord).Params);
+                        this.Send((int)EventID.HealthRecordSelected, new HealthRecordSelectedParams(value).Params);
                     }
                     _selectedHealthRecord = value;
 

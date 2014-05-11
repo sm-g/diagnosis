@@ -113,6 +113,8 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
+                Console.WriteLine("ItemsChain: {0}", ItemsChain);
+                Console.WriteLine("FullString: {0}", FullString);
                 return FullString.Substring(ItemsChain.Length).Trim(Separator);
             }
         }
@@ -145,6 +147,10 @@ namespace Diagnosis.App.ViewModels
                     IsItemCompleted = true;
                     SetSearchContext(false);
                 }
+                else
+                {
+                    // удаляем не последний символ слова
+                }
             }
             else if (value[value.Length - 1] == Separator)
             {
@@ -160,6 +166,12 @@ namespace Diagnosis.App.ViewModels
                     SetSearchContext(true);
                 }
             }
+            else
+            {
+                // добавляем символ слова
+            }
+
+            EntityManagers.WordsManager.WipeUnsaved();
         }
 
         private void UncheckLast()

@@ -21,18 +21,6 @@ namespace Diagnosis.Models
             }
         }
 
-        //public virtual void AddWord(Word word)
-        //{
-        //    Contract.Requires(word != null);
-        //    words.Add(word);
-        //}
-
-        //public virtual void RemoveWord(Word word)
-        //{
-        //    Contract.Requires(word != null);
-        //    words.Remove(word);
-        //}
-
         public Symptom(IEnumerable<Word> words)
         {
             Contract.Requires(words != null);

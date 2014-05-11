@@ -70,7 +70,6 @@
     <Compile Include="DateOffsetTest.cs" />
     <Compile Include="PatientTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SearchTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Diagnosis.App\Diagnosis.App.csproj">
