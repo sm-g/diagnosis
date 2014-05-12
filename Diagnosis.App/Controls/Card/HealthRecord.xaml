@@ -23,7 +23,7 @@
         <StackPanel Grid.Column="1">
             <StackPanel Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <StackPanel x:Name="editor" >
-                    <controls:InputTextBox DataContext="{Binding AutoComplete}" />                    
+                    <controls:InputTextBox DataContext="{Binding AutoComplete}" />
                     <DockPanel Visibility="{Binding Symptom.Words.Count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
                         <TextBlock DockPanel.Dock="Top">Слова:</TextBlock>
                         <ListView ItemsSource="{Binding Symptom.Words}">
@@ -51,7 +51,7 @@
                 </Grid.ColumnDefinitions>
                 
                 <TextBlock Text="{Binding Name}" />
-                <TextBlock Grid.Column="1" Text="{Binding Diagnosis.Name, FallbackValue=''}" />
+                <TextBlock Grid.Column="1" Text="{Binding Diagnosis.Code, FallbackValue=''}" />
                 <TextBlock Grid.Row="1">
                     <Run Text="{Binding DateOffset.Offset}"/>
                     <Run>

@@ -7,7 +7,7 @@
              x:Name="treeItem"
              x:Class="Diagnosis.App.Controls.TreeItemLight"
              mc:Ignorable="d"
-             d:DesignHeight="20" d:DesignWidth="300" >
+             d:DesignHeight="20" d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -39,20 +39,9 @@
                     <Setter Property="Margin" Value="5,0,0,0" />
                 </Style>
             </StackPanel.Resources>
-
-            <TextBlock x:Name="unsaved"
-                       Text="new"
-                       Visibility="{Binding Editable.IsDirty, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
             <TextBlock x:Name="checkedChildren"
                    Text="{Binding CheckedChildren}"
                    Visibility="{Binding CheckedChildren, Converter={StaticResource CountToVisibility}, Mode=OneWay}" />
-        </StackPanel>
-
-        <StackPanel x:Name="editor"
-            Grid.Column="1"
-            Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <TextBox x:Name="titleEditor"
-                Text="{Binding Name, UpdateSourceTrigger=LostFocus}" />
         </StackPanel>
     </Grid>
 </UserControl>

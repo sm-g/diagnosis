@@ -74,8 +74,8 @@ namespace Diagnosis.App.ViewModels
 
         private void _search_ResultItemSelected(object sender, System.EventArgs e)
         {
-            this.AddIfNotExists(Search.SelectedItem as DiagnosisViewModel, Search.searcher.AllChildren);
-            (Search.SelectedItem as DiagnosisViewModel).checkable.IsChecked = true;
+            this.AddIfNotExists(Search.SelectedItem, Search.searcher.AllChildren);
+            Search.SelectedItem.checkable.IsChecked = true;
             Search.Clear();
         }
 
@@ -87,11 +87,6 @@ namespace Diagnosis.App.ViewModels
             Editable = new EditableBase(this);
 
             ChildrenChanged += DiagnosisViewModel_ChildrenChanged;
-        }
-
-        public DiagnosisViewModel(string title)
-            : this(new Diagnosis.Models.Diagnosis("code", title))
-        {
         }
 
         private void DiagnosisViewModel_ChildrenChanged(object sender, System.EventArgs e)

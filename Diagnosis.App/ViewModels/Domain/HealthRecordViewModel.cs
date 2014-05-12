@@ -12,9 +12,10 @@ namespace Diagnosis.App.ViewModels
     {
         internal readonly HealthRecord healthRecord;
         private AutoComplete _autoComplete;
-        private DiagnosisAutoComplete _diagnosisAutoComplete;
+        SearchBase<DiagnosisViewModel> _diagnosisSearch;
         private DateOffset _dateOffset;
         private List<EventMessageHandler> msgHandlers;
+
 
         public IEditable Editable { get; private set; }
 
@@ -283,11 +284,12 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public DiagnosisAutoComplete DiagnosisAutoComplete
+        public ISearch<DiagnosisViewModel> DiagnosisSearch
         {
             get
             {
-                return _diagnosisAutoComplete ?? (_diagnosisAutoComplete = new DiagnosisAutoComplete());
+                return _diagnosisSearch ?? (_diagnosisSearch = new SearchBase<DiagnosisViewModel>(
+                    EntityManagers.DiagnosisManager.FiltratingSearcher));
             }
         }
 

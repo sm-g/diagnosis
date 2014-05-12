@@ -15,6 +15,7 @@ namespace Diagnosis.App.ViewModels
     {
         private IcdChapterRepository repository;
         ObservableCollection<DiagnosisViewModel> _diagnoses;
+        DiagnosisFiltratingSearcher _diagnosisSearcher;
 
         public ObservableCollection<DiagnosisViewModel> Diagnoses
         {
@@ -23,6 +24,15 @@ namespace Diagnosis.App.ViewModels
             {
                 _diagnoses = value;
                 OnPropertyChanged(() => Diagnoses);
+            }
+        }
+
+        public DiagnosisFiltratingSearcher FiltratingSearcher
+        {
+            get
+            {
+                return _diagnosisSearcher ?? (_diagnosisSearcher =
+                  new DiagnosisFiltratingSearcher(EntityManagers.DiagnosisManager.Diagnoses[0].Parent));
             }
         }
 
@@ -107,8 +117,8 @@ namespace Diagnosis.App.ViewModels
             {
                 item.Remove(blockVms.Where(b => b.Children.Count == 0));
             }
-
-            var root = new DiagnosisViewModel("root");
+            var dia = new Diagnosis.Models.Diagnosis("code", "root");
+            var root = new DiagnosisViewModel(dia);
             root.Add(chapterVms);
             root.Initialize();
 

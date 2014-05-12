@@ -22,12 +22,12 @@ namespace Diagnosis.App.Controls
 
         private void UserControl_GotFocus(object sender, RoutedEventArgs e)
         {
-            EnhancedFocusScope.SetFocusOnActiveElementInScope(floatSearch);
+            EnhancedFocusScope.SetFocusOnActiveElementInScope(this);
         }
 
         private void input_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (FocusChecker.IsFocusOutsideDepObject(floatSearch) && FocusChecker.IsFocusOutsideDepObject(popup.Child))
+            if (FocusChecker.IsFocusOutsideDepObject(this) && FocusChecker.IsFocusOutsideDepObject(popup.Child))
             {
                 HidePopup();
             }

@@ -13,15 +13,15 @@ namespace Diagnosis.App.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            try
+            var s = value as IHierarchicalCheckable;
+            if (s != null)
             {
-                var s = value as IHierarchicalCheckable;
                 if (s.CheckedChildren == 0)
                     return noCheckedChildBrush;
                 else
                     return isCheckedChildBrush;
             }
-            catch (Exception)
+            else
             {
                 return null;
             }
