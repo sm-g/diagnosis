@@ -1,0 +1,85 @@
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:Diagnosis.App.Controls"
+             x:Class="Diagnosis.App.Controls.SearchTree"
+             mc:Ignorable="d"
+             d:DesignHeight="100" d:DesignWidth="300"
+             x:Name="searchTree"
+             GotFocus="UserControl_GotFocus"
+             controls:EnhancedFocusScope.IsEnhancedFocusScope="True">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/TreeStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <InputBindingCollection x:Shared="False" x:Key="InputBindings">
+                <KeyBinding Key="Space" Command="{Binding ToggleCommand}" />
+                <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
+                <KeyBinding Key="Escape" Command="{Binding Editable.RevertCommand}" />
+
+                <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleCommand}" />
+            </InputBindingCollection>
+
+            <Style x:Key="simpleTreeItemContainerStyle"
+                   TargetType="TreeViewItem"
+                   BasedOn="{StaticResource TreeViewItemStyle}">
+                <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
+                <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                <Setter Property="IsExpanded" Value="{Binding IsFiltered}" />
+                <Setter Property="Visibility" Value="{Binding IsFiltered, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="controls:Attached.InputBindings" Value="{StaticResource InputBindings}" />
+            </Style>
+
+            <HierarchicalDataTemplate
+                x:Key="simpleTreeItemTemplate"
+                ItemsSource="{Binding Children}">
+                <controls:TreeItemLight />
+            </HierarchicalDataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid MaxHeight="100">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox x:Name="input"
+                     Text="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     PreviewKeyDown="input_PreviewKeyDown"
+                     GotMouseCapture="input_GotMouseCapture"
+                     controls:FocusExtension.IsFocused="{Binding IsSearchFocused, Mode=TwoWay}"
+                     LostFocus="input_LostFocus">
+                <controls:WatermarkService.Watermark>
+                    <TextBlock Style="{StaticResource watermark}">Поиск</TextBlock>
+                </controls:WatermarkService.Watermark>
+            </TextBox>
+            <Button Grid.Column="1"
+                    Content="×"
+                    Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                    Command="{Binding ClearCommand}" />
+        </Grid>
+
+        <Popup x:Name="popup"
+               IsOpen="{Binding IsResultsVisible, Mode=TwoWay}"
+               PlacementTarget="{Binding ElementName=input, Mode=OneWay}">
+            <TreeView x:Name="results"
+                HorizontalContentAlignment="Stretch"
+                ItemContainerStyle="{StaticResource simpleTreeItemContainerStyle}"
+                ItemTemplate="{StaticResource simpleTreeItemTemplate}"
+                ItemsSource="{Binding Results}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            </TreeView>
+        </Popup>
+    </Grid>
+</UserControl>

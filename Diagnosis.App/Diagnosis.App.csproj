@@ -168,6 +168,9 @@
       <DependentUpon>TreeItemLight.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Directory\TreeTemplateSelector.cs" />
+    <Compile Include="Controls\SearchTree.xaml.cs">
+      <DependentUpon>SearchTree.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Forms\AgePicker.xaml.cs">
       <DependentUpon>AgePicker.xaml</DependentUpon>
     </Compile>
@@ -330,6 +333,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Directory\TreeItemLight.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SearchTree.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
