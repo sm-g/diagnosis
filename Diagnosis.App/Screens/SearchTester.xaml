@@ -1,0 +1,21 @@
+﻿<UserControl xmlns:Controls="clr-namespace:Diagnosis.App.Controls"  x:Class="Diagnosis.App.Screens.SearchTester"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Background="White"
+        >
+    <StackPanel>
+        <TextBlock>Word AutoComplete</TextBlock>
+        <Controls:AutoComplete DataContext="{Binding WordAutoComplete}" />
+        
+        <TextBlock>Diagnosis AutoComplete</TextBlock>
+        <Controls:AutoComplete DataContext="{Binding DiagnosisAutoComplete}" />
+        
+        <TextBlock>Diagnosis Float</TextBlock>
+        <Controls:FloatSearch DataContext="{Binding DiagnosisSearch}"/>
+
+        <TextBlock>Diagnosis SearchTree</TextBlock>
+        <Controls:SearchTree DataContext="{Binding DiagnosisFilteringSearch}" />
+
+        <TextBlock>Complex AutoCompleteBox</TextBlock>
+        <Controls:InputTextBox DataContext="{Binding AutoComplete}" />
+    </StackPanel>
+</UserControl>

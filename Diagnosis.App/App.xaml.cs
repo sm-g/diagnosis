@@ -18,6 +18,8 @@ namespace Diagnosis.App
                 CultureInfo.CurrentCulture.IetfLanguageTag)));
 
             new DebugOutput();
+
+            System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Error;
         }
     }
 }

@@ -219,6 +219,9 @@
     <Compile Include="EntityManagers.cs" />
     <Compile Include="Extensions\ConvertExtensions.cs" />
     <Compile Include="MessagingParams.cs" />
+    <Compile Include="Screens\SearchTester.xaml.cs">
+      <DependentUpon>SearchTester.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Screens\Words.xaml.cs">
       <DependentUpon>Words.xaml</DependentUpon>
     </Compile>
@@ -230,6 +233,7 @@
     <Compile Include="ViewModels\Search\DiagnosisSearcher.cs" />
     <Compile Include="ViewModels\Search\Combination.cs" />
     <Compile Include="ViewModels\Search\SearchOptions.cs" />
+    <Compile Include="ViewModels\Search\SearchTester.cs" />
     <Compile Include="ViewModels\Search\WordSearcher.cs" />
     <Compile Include="ViewModels\Search\PatientSearcher.cs" />
     <Compile Include="ViewModels\Domain\CategoryViewModel.cs" />
@@ -409,6 +413,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Screens\Card.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Screens\SearchTester.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

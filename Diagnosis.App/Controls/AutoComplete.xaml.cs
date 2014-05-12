@@ -28,6 +28,7 @@ namespace Diagnosis.App.Controls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            if (vm != null)
             vm.SuggestionAccepted += vm_SuggestionAccepted;
         }
 
