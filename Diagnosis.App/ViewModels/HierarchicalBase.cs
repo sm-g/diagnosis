@@ -5,14 +5,23 @@ using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
+    /// <summary>
+    /// Элемент иерархии.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class HierarchicalBase<T> : ViewModelBase, IHierarchical<T> where T : HierarchicalBase<T>
     {
         private T _parent;
 
         #region IHierarchical
-
+        /// <summary>
+        /// Возникает при добвляении или удалении ребенка.
+        /// </summary>
         public event EventHandler ChildrenChanged;
 
+        /// <summary>
+        /// Родитель элемента. Элемент можеть быть ребенком только одного родителя.
+        /// </summary>
         public T Parent
         {
             get
@@ -24,9 +33,13 @@ namespace Diagnosis.App.ViewModels
                 _parent = value;
             }
         }
-
+        /// <summary>
+        /// Дети на следующем уровне иерархии.
+        /// </summary>
         public ObservableCollection<T> Children { get; private set; }
-
+        /// <summary>
+        /// Дети со всех уровней иерархии.
+        /// </summary>
         public IEnumerable<T> AllChildren
         {
             get
@@ -39,7 +52,9 @@ namespace Diagnosis.App.ViewModels
                 return result;
             }
         }
-
+        /// <summary>
+        /// Дети, у которых есть дети.
+        /// </summary>
         public ObservableCollection<T> NonTerminalChildren
         {
             get
@@ -47,7 +62,9 @@ namespace Diagnosis.App.ViewModels
                 return new ObservableCollection<T>(Children.Where(i => !i.IsTerminal));
             }
         }
-
+        /// <summary>
+        /// Дети без детей, листья.
+        /// </summary>
         public ObservableCollection<T> TerminalChildren
         {
             get
@@ -55,7 +72,9 @@ namespace Diagnosis.App.ViewModels
                 return new ObservableCollection<T>(Children.Where(i => i.IsTerminal));
             }
         }
-
+        /// <summary>
+        /// Элемент конечный в иерархии, лист.
+        /// </summary>
         public bool IsTerminal
         {
             get
@@ -63,7 +82,9 @@ namespace Diagnosis.App.ViewModels
                 return Children.Count == 0;
             }
         }
-
+        /// <summary>
+        /// Корневой элемент, без родителя.
+        /// </summary>
         public bool IsRoot
         {
             get
@@ -71,53 +92,77 @@ namespace Diagnosis.App.ViewModels
                 return Parent == null;
             }
         }
-
-        public T Add(T vm)
+        /// <summary>
+        /// Добавляет элемент к детям. Возвращает текущий элемент.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public T Add(T item)
         {
-            vm.Parent = (T)this;
-            Children.Add(vm);
+            if (item.Parent != null)
+            {
+                item.Parent.Remove(item);
+            }
+
+            item.Parent = (T)this;
+            Children.Add(item);
             OnChildAdded();
             return (T)this;
         }
-
-        public T Add(IEnumerable<T> vms)
+        /// <summary>
+        /// Добавляет несколько элементов к детям. Возвращает текущий элемент.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        public T Add(IEnumerable<T> items)
         {
-            foreach (var vm in vms)
+            foreach (var vm in items)
             {
                 Add(vm);
             }
             return (T)this;
         }
 
-        public T AddIfNotExists(T vm, bool checkAllChildren)
+        /// <summary>
+        /// Добавляет элемент к детям, если его нет среди прямых детей или всех детей. Возвращает текущий элемент.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="checkAllChildren">Проверять ли наличие элемента на всех уровнях иерархии.</param>
+        /// <returns></returns>
+        public T AddIfNotExists(T item, bool checkAllChildren)
         {
             var query = checkAllChildren ? AllChildren : Children;
 
-            if (query.SingleOrDefault(child => child == vm) == null)
-                Add(vm);
+            if (query.SingleOrDefault(child => child == item) == null)
+                Add(item);
 
             return (T)this;
         }
-
-        public T Remove(T vm)
+        /// <summary>
+        /// Удаляет элемент из детей, если он там был. Возвращает текущий элемент.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public T Remove(T item)
         {
-            Children.Remove(vm);
-            OnChildRemoved();
+            if (Children.Remove(item))
+            {
+                OnChildRemoved();
+            }
             return (T)this;
         }
-
-        public T Remove(IEnumerable<T> vms)
+        /// <summary>
+        /// Удаляет несколько элементов из детей. Возвращает текущий элемент.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        public T Remove(IEnumerable<T> items)
         {
-            foreach (var vm in vms)
+            foreach (var vm in items)
             {
                 Remove(vm);
             }
             return (T)this;
-        }
-
-        public void Delete()
-        {
-            // TODO
         }
 
         #endregion IHierarchical
@@ -134,6 +179,7 @@ namespace Diagnosis.App.ViewModels
         private void OnChildAdded()
         {
             OnPropertyChanged(() => TerminalChildren);
+            OnPropertyChanged(() => NonTerminalChildren);
             OnPropertyChanged(() => IsTerminal);
             OnChildrenChanged();
         }

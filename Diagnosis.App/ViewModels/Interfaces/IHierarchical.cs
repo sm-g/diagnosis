@@ -24,10 +24,12 @@ namespace Diagnosis.App.ViewModels
 
         T Add(T item);
 
+        T Add(IEnumerable<T> items);
+
         T AddIfNotExists(T item, bool lookupAllChildren);
 
         T Remove(T item);
 
-        void Delete();
+        T Remove(IEnumerable<T> items);
     }
 }
