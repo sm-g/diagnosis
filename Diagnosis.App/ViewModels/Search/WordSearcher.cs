@@ -19,7 +19,7 @@ namespace Diagnosis.App.ViewModels
         public WordSearcher(WordViewModel parent, bool withNonCheckable = false, bool withChecked = false, bool withCreatingNew = true, bool allChildren = true)
         {
             Contract.Requires(parent != null);
-            Collection = AllChildren ? parent.AllChildren : parent.Children;
+            Collection = allChildren ? parent.AllChildren : parent.Children;
 
             AllChildren = allChildren;
             WithNonCheckable = withNonCheckable;

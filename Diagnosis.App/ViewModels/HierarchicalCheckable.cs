@@ -7,6 +7,7 @@ namespace Diagnosis.App.ViewModels
     public abstract class HierarchicalCheckable<T> : HierarchicalBase<T>, IHierarchicalCheckable where T : HierarchicalCheckable<T>
     {
         readonly internal CheckableBase checkable;
+        private bool _isFiltered;
 
         public event HierarhicalCheckableEventHandler CheckedChanged;
         #region IHierarchicalCheckable
@@ -61,6 +62,22 @@ namespace Diagnosis.App.ViewModels
             {
                 checkable.IsChecked = value;
                 OnPropertyChanged(() => IsChecked);
+            }
+        }
+
+        public bool IsFiltered
+        {
+            get
+            {
+                return _isFiltered;
+            }
+            set
+            {
+                if (_isFiltered != value)
+                {
+                    _isFiltered = value;
+                    OnPropertyChanged(() => IsFiltered);
+                }
             }
         }
 

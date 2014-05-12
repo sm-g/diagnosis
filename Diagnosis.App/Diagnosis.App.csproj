@@ -223,6 +223,7 @@
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
     <Compile Include="DateOffset.cs" />
+    <Compile Include="ViewModels\Search\DiagnosisFiltratingSearcher.cs" />
     <Compile Include="ViewModels\Search\DiagnosisSearcher.cs" />
     <Compile Include="ViewModels\Search\Combination.cs" />
     <Compile Include="ViewModels\Search\SearchOptions.cs" />

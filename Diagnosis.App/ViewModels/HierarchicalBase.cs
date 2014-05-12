@@ -31,6 +31,7 @@ namespace Diagnosis.App.ViewModels
             protected set
             {
                 _parent = value;
+                OnPropertyChanged(() => Parent);
             }
         }
         /// <summary>
@@ -92,6 +93,7 @@ namespace Diagnosis.App.ViewModels
                 return Parent == null;
             }
         }
+
         /// <summary>
         /// Добавляет элемент к детям. Возвращает текущий элемент.
         /// </summary>
