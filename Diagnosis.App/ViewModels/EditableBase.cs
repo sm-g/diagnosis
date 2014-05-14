@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using System.ComponentModel;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -21,10 +22,10 @@ namespace Diagnosis.App.ViewModels
         #region IEditable
 
         public event EditableEventHandler Committed;
-
+        public event EditableEventHandler Reverted;
         public event EditableEventHandler Deleted;
-
         public event EditableEventHandler ModelPropertyChanged;
+
 
         public bool IsEditorActive
         {
@@ -36,6 +37,11 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_editActive != value)
                 {
+                    if (value)
+                    {
+                        //vm.BeginEdit();
+                    }
+
                     _editActive = value;
                     OnPropertyChanged(() => IsEditorActive);
                 }
@@ -160,12 +166,7 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _edit
-                    ?? (_edit = new RelayCommand(
-                                          () =>
-                                          {
-                                              IsEditorActive = !IsEditorActive;
-                                          },
-                                          () => SwitchedOn));
+                    ?? (_edit = new RelayCommand(ToggleEditor, () => SwitchedOn));
             }
         }
 
@@ -174,12 +175,7 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _revert
-                    ?? (_revert = new RelayCommand(
-                                          () =>
-                                          {
-                                              IsEditorActive = false;
-                                          },
-                                          () => SwitchedOn));
+                    ?? (_revert = new RelayCommand(OnRevert, () => IsEditorActive && SwitchedOn));
             }
         }
 
@@ -223,17 +219,38 @@ namespace Diagnosis.App.ViewModels
         /// <param name="dirtImmunity">Initial state of CanBeDirty. Default is "true".</param>
         protected EditableBase(bool switchedOn = false, bool dirtImmunity = false)
         {
-            vm = this;
+            vm = this as ViewModelBase;
             SwitchedOn = switchedOn;
             CanBeDirty = !dirtImmunity;
         }
 
+        void ToggleEditor()
+        {
+            IsEditorActive = !IsEditorActive;
+        }
+
         private void OnCommit()
         {
+            // vm.EndEdit();
+
             IsEditorActive = false;
             IsDirty = false;
 
             var h = Committed;
+            if (h != null)
+            {
+                h(this, new EditableEventArgs(vm));
+            }
+        }
+
+        private void OnRevert()
+        {
+            //vm.CancelEdit();
+
+            IsEditorActive = false;
+            IsDirty = false;
+
+            var h = Reverted;
             if (h != null)
             {
                 h(this, new EditableEventArgs(vm));

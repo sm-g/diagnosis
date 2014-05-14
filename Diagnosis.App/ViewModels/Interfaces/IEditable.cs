@@ -18,6 +18,7 @@ namespace Diagnosis.App.ViewModels
     public interface IEditable : INotifyPropertyChanged
     {
         event EditableEventHandler Committed;
+        event EditableEventHandler Reverted;
         event EditableEventHandler Deleted;
         event EditableEventHandler ModelPropertyChanged;
 
