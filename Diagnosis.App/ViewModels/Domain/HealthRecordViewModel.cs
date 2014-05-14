@@ -309,8 +309,7 @@ namespace Diagnosis.App.ViewModels
             makingCurrent = true;
             if (Symptom != null)
                 EntityManagers.WordsManager.CheckThese(Symptom.Words);
-            if (HasDiagnosis)
-                EntityManagers.DiagnosisManager.Check(Diagnosis);
+            EntityManagers.DiagnosisManager.Check(Diagnosis);
             makingCurrent = false;
         }
 
@@ -410,13 +409,13 @@ namespace Diagnosis.App.ViewModels
         {
             if (isChecked)
             {
-                Diagnosis = diagnosisVM;
-                //  healthRecord.Diagnosis = diagnosisVM.diagnosis;
+                this.Diagnosis = diagnosisVM;
+                healthRecord.Disease = diagnosisVM.diagnosis.Disease;
             }
-            else
+            else if (diagnosisVM == this.Diagnosis)
             {
-                Diagnosis = null;
-                //   healthRecord.Diagnosis = null;
+                this.Diagnosis = null;
+                healthRecord.Disease = null;
             }
             OnPropertyChanged(() => Name);
         }

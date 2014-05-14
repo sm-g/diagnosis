@@ -12,6 +12,7 @@ namespace Diagnosis.Models
         public virtual int Id { get; protected set; }
         public virtual string Title { get; set; }
         public virtual string Code { get; set; }
+        public virtual IcdDisease Disease { get; set; }
         public virtual Diagnosis Parent { get; set; }
         public virtual ReadOnlyCollection<HealthRecord> HealthRecords
         {
@@ -30,7 +31,7 @@ namespace Diagnosis.Models
             }
         }
 
-        public Diagnosis(string code, string title, Diagnosis parent = null)
+        public Diagnosis(string code, string title, Diagnosis parent = null, IcdDisease disease = null)
         {
             Contract.Requires(!string.IsNullOrEmpty(title));
             Contract.Requires(code != null && code.Length <= 10);
@@ -38,6 +39,7 @@ namespace Diagnosis.Models
             Code = code;
             Title = title;
             Parent = parent;
+            Disease = disease;
         }
 
         protected Diagnosis() { }

@@ -52,9 +52,11 @@ namespace Diagnosis.App.ViewModels
 
         public void Check(DiagnosisViewModel diagnosis)
         {
-            Contract.Requires(diagnosis != null);
             UnCheckAll();
-            diagnosis.IsChecked = true;
+            if (diagnosis != null)
+            {
+                diagnosis.IsChecked = true;
+            }
         }
 
         public DiagnosisManager(IcdChapterRepository repo)
@@ -84,8 +86,29 @@ namespace Diagnosis.App.ViewModels
 
                 OnDirectoryEditingModeChanged(isEditing);
             });
+
+            this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
+            {
+                var diagnosis = e.GetValue<DiagnosisViewModel>(Messages.Diagnosis);
+                var isChecked = e.GetValue<bool>(Messages.CheckedState);
+
+                OnDiagnosisCheckedChanged(diagnosis, isChecked);
+            });
         }
 
+        private void OnDiagnosisCheckedChanged(DiagnosisViewModel diagnosis, bool isChecked)
+        {
+            if (isChecked)
+                Diagnoses.ForBranch(d =>
+                {
+                    if (d.IsChecked && d != diagnosis)
+                        d.IsChecked = false;
+                });
+        }
+
+        /// <summary>
+        /// Set Diagnoses collection in accordance to doctor's speciality.
+        /// </summary>
         private void SetDiagnosesForDoctor(
             IEnumerable<DiagnosisViewModel> chapterVms,
             DoctorViewModel doctorVM)
@@ -101,10 +124,10 @@ namespace Diagnosis.App.ViewModels
                 item.Add(blockVms.Where(b => b.diagnosis.Parent == item.diagnosis));
             }
 
-            var diseases = blocks.SelectMany(b => b.IcdDiseases).ToList(); ;
+            var diseases = blocks.SelectMany(b => b.IcdDiseases).ToList();
             var diseaseDiagnoses = diseases.Select(d =>
                 new Diagnosis.Models.Diagnosis(d.Code, d.Title, blockDiagnoses.Where(b =>
-                    b.Code == d.IcdBlock.Code).SingleOrDefault())).ToList();
+                    b.Code == d.IcdBlock.Code).SingleOrDefault(), d)).ToList();
             var diseaseVms = diseaseDiagnoses.Select(d => new DiagnosisViewModel(d)).ToList();
 
             foreach (var item in blockVms)
