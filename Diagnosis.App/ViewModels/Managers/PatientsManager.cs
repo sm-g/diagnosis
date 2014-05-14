@@ -31,6 +31,12 @@ namespace Diagnosis.App.ViewModels
                     {
                         // save editor state between patients
                         value.Editable.IsEditorActive = _current.Editable.IsEditorActive;
+
+                        // у старого пациента был открыт редактор — сохраняем изменения в нем
+                        if (_current.Editable.IsEditorActive)
+                        {
+                            value.Editable.CommitCommand.Execute(null);
+                        }
                     }
 
                     _current = value;

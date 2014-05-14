@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace Diagnosis.Data
 {
-    internal class NHibernateHelper
+    public class NHibernateHelper
     {
         private static Configuration _configuration;
         private static HbmMapping _mapping;

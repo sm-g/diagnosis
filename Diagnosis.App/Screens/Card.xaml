@@ -24,7 +24,7 @@
                     </ResourceDictionary.MergedDictionaries>
                 </ResourceDictionary>
             </TabControl.Resources>
-            <TabItem IsSelected="{Binding Editable.IsEditorActive, Mode=TwoWay}" >
+            <TabItem IsSelected="{Binding EditorActive, Mode=TwoWay}" >
                 <TabItem.Header>
                     <card:PatientHeader />
                 </TabItem.Header>

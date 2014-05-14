@@ -12,6 +12,7 @@
         <InputBindingCollection x:Shared="False" x:Key="HRInputBindings">
             <KeyBinding Key="Space" Command="{Binding ToggleCommand}" />
             <KeyBinding Key="F2" Command="{Binding Editable.EditCommand}" />
+            <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
             <KeyBinding Key="Escape" Command="{Binding Editable.RevertCommand}" />
             <KeyBinding Key="Delete" Command="{Binding Editable.DeleteCommand}" />
             <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding Editable.EditCommand}" />

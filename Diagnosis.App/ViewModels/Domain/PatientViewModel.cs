@@ -246,6 +246,33 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
+        /// <summary>
+        /// For making commit on turnoff editor.
+        /// </summary>
+        public bool EditorActive
+        {
+            get
+            {
+                return Editable.IsEditorActive;
+            }
+            set
+            {
+                if (Editable.IsEditorActive != value)
+                {
+                    if (value)
+                    {
+                        Editable.IsEditorActive = true;
+                    }
+                    else
+                    {
+                        Editable.CommitCommand.Execute(null);
+                    }
+                    OnPropertyChanged(() => EditorActive);
+                }
+            }
+        }
+
         public bool NoCourses
         {
             get

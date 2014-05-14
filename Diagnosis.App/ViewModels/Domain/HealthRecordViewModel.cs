@@ -300,6 +300,7 @@ namespace Diagnosis.App.ViewModels
         {
             if (currentHr != null)
             {
+                currentHr.Editable.CommitCommand.Execute(null);
                 currentHr.Unsubscribe();
             }
             currentHr = this;

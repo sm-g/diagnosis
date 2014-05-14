@@ -4,39 +4,48 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
-             xmlns:Forms="clr-namespace:Diagnosis.App.Controls.Forms" 
+             xmlns:Forms="clr-namespace:Diagnosis.App.Controls.Forms"
              xmlns:app="clr-namespace:Diagnosis.App"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              MinHeight="25"
              Focusable="True"
              IsTabStop="True">
-    
+
     <Grid>
+        <Grid.Style>
+            <Style TargetType="Grid">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Editable.IsDirty}" Value="True">
+                        <Setter Property="Background" Value="#FFFFCCCC" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Style>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <CheckBox IsChecked="{Binding IsChecked}" HorizontalAlignment="Center" />
-        
-        <StackPanel Grid.Column="1">
-            <StackPanel Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <StackPanel x:Name="editor" >
-                    <controls:InputTextBox DataContext="{Binding AutoComplete}" />
-                    <DockPanel Visibility="{Binding Symptom.Words.Count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
-                        <TextBlock DockPanel.Dock="Top">Слова:</TextBlock>
-                        <ListView ItemsSource="{Binding Symptom.Words}">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <controls:TreeItem />
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </DockPanel>
-                    <Forms:HealthRecordEditor />
-                </StackPanel>
 
+        <StackPanel Grid.Column="1">
+            <StackPanel x:Name="editor" Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <controls:InputTextBox DataContext="{Binding AutoComplete}" />
+                <DockPanel Visibility="{Binding Symptom.Words.Count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
+                    <TextBlock DockPanel.Dock="Top">Слова:</TextBlock>
+                    <ListView ItemsSource="{Binding Symptom.Words}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <controls:TreeItem />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </DockPanel>
+                <Forms:HealthRecordEditor />
+
+                <StackPanel.InputBindings>
+                </StackPanel.InputBindings>
             </StackPanel>
 
             <Grid Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
@@ -49,11 +58,11 @@
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                
+
                 <TextBlock Text="{Binding Name}" />
                 <TextBlock Grid.Column="1" Text="{Binding Diagnosis.Code, FallbackValue=''}" />
                 <TextBlock Grid.Row="1">
-                    <Run Text="{Binding DateOffset.Offset}"/>
+                    <Run Text="{Binding DateOffset.Offset}" />
                     <Run>
                         <MultiBinding Converter="{StaticResource unitConverter}">
                             <Binding Path="DateOffset.Unit" />

@@ -7,6 +7,8 @@ using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Data;
+using NHibernate;
+using NHibernate.Criterion;
 using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
@@ -145,12 +147,24 @@ namespace Diagnosis.App.ViewModels
         {
             hrVM.PropertyChanged += hr_PropertyChanged;
             hrVM.Editable.Deleted += hr_Deleted;
+            hrVM.Editable.Committed += hr_Committed;
             hrVM.Editable.ModelPropertyChanged += (s, e) =>
             {
                 this.Send((int)EventID.HealthRecordChanged,
                     new HealthRecordChangedParams(e.viewModel as HealthRecordViewModel).Params);
             };
 
+        }
+
+        void hr_Committed(object sender, EditableEventArgs e)
+        {
+            var hrVM = e.viewModel as HealthRecordViewModel;
+            ISession session = Diagnosis.Data.NHibernateHelper.GetSession();
+            using (ITransaction transaction = session.BeginTransaction())
+            {
+                session.SaveOrUpdate(hrVM.healthRecord);
+                transaction.Commit();
+            }
         }
 
         void hr_Deleted(object sender, EditableEventArgs e)
