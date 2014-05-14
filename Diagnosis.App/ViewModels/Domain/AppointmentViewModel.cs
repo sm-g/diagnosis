@@ -160,17 +160,21 @@ namespace Diagnosis.App.ViewModels
 
             appointment.DeleteHealthRecord(hrVM.healthRecord);
 
-            var i = HealthRecords.IndexOf(hrVM);
-            if (HealthRecords.Count > 1)
+            if (SelectedHealthRecord == hrVM)
+            {
+                // удалена выделенная запись - меняем выделение
+                var i = HealthRecordsView.CurrentPosition;
                 if (i == HealthRecords.Count - 1)
                 {
-                    // удаляем последний в списке - выбирааем предыдущий
-                    SelectedHealthRecord = HealthRecords[i - 1];
+                    // удалили последную запись в списке
+                    HealthRecordsView.MoveCurrentToPrevious();
                 }
                 else
                 {
-                    SelectedHealthRecord = HealthRecords[i + 1];
+                    HealthRecordsView.MoveCurrentToNext();
                 }
+            }
+
             HealthRecords.Remove(hrVM);
         }
 

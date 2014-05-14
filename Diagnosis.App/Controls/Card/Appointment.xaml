@@ -38,6 +38,7 @@
 
                 <ListView x:Name="records"
                           ItemsSource="{Binding HealthRecordsView}"
+                          IsSynchronizedWithCurrentItem="True"
                           SelectedItem="{Binding SelectedHealthRecord}"
                           Style="{StaticResource list}"
                           HorizontalContentAlignment="Stretch"
