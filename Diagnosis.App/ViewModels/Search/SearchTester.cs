@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Diagnosis.App.ViewModels.Search
+namespace Diagnosis.App.ViewModels
 {
-    public class SearchTester
+    public class SearchTester : ViewModelBase
     {
         AutoCompleteBase<WordViewModel> _wordAutoComplete;
         public AutoCompleteBase<WordViewModel> WordAutoComplete

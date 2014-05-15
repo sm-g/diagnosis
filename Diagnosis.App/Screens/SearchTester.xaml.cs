@@ -21,7 +21,7 @@ namespace Diagnosis.App.Screens
         public SearchTester()
         {
             InitializeComponent();
-            DataContext = new Diagnosis.App.ViewModels.Search.SearchTester();
+            DataContext = new Diagnosis.App.ViewModels.SearchTester();
         }
     }
 }
