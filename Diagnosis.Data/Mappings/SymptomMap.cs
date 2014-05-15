@@ -13,6 +13,8 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.Native);
             });
 
+            Property(x => x.IsDiagnosis);
+
             ManyToOne(x => x.Disease, m =>
             {
                 m.Column("DiseaseID");

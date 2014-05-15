@@ -12,6 +12,7 @@ namespace Diagnosis.Models
         public virtual int Id { get; protected set; }
         public virtual IcdDisease Disease { get; set; }
         public virtual Category DefaultCategory { get; set; }
+        public virtual bool IsDiagnosis { get; set; }
         public virtual ReadOnlyCollection<Word> Words
         {
             get

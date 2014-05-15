@@ -28,7 +28,6 @@ namespace Diagnosis.App.ViewModels
                 {
                     _query = trimed;
 
-                    List<SymptomViewModel> results = new List<SymptomViewModel>();
                     EntityManagers.WordsManager.WipeUnsaved();
                     EntityManagers.SymptomsManager.WipeUnsaved();
 

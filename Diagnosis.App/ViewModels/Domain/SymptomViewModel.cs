@@ -64,6 +64,22 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public bool IsDiagnosis
+        {
+            get
+            {
+                return symptom.IsDiagnosis;
+            }
+            set
+            {
+                if (symptom.IsDiagnosis != value)
+                {
+                    symptom.IsDiagnosis = value;
+                    OnPropertyChanged(() => IsDiagnosis);
+                }
+            }
+        }
+
         #endregion
 
         public string SearchText
