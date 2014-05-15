@@ -11,7 +11,6 @@ namespace Diagnosis.App.ViewModels
         private List<T> items;
         private ISearcher<T> searcher;
         private int _index;
-
         private string _fullString = "";
         private bool _isItemCompleted;
         private ICommand _enterCommand;
@@ -19,6 +18,9 @@ namespace Diagnosis.App.ViewModels
 
         public event EventHandler SuggestionAccepted;
 
+        /// <summary>
+        /// Запрос целиком.
+        /// </summary>
         public string FullString
         {
             get
@@ -80,7 +82,10 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-
+        /// <summary>
+        /// Ввод. Если элемент завершён, отмечает все элементы из коллекции, 
+        /// иначе принимает выбранное предложение.
+        /// </summary>
         public ICommand EnterCommand
         {
             get
@@ -92,6 +97,7 @@ namespace Diagnosis.App.ViewModels
                                               if (IsItemCompleted)
                                               {
                                                   CheckItems();
+                                                  Reset();
                                               }
                                               else
                                               {
@@ -100,7 +106,9 @@ namespace Diagnosis.App.ViewModels
                                           }));
             }
         }
-
+        /// <summary>
+        /// Строка из разделённых элементов из коллекции.
+        /// </summary>
         private string ItemsChain
         {
             get
@@ -108,7 +116,9 @@ namespace Diagnosis.App.ViewModels
                 return items.Aggregate("", (full, s) => full += GetQueryString(s).ToLower() + Separator).TrimEnd(Separator);
             }
         }
-
+        /// <summary>
+        /// Последняя часть запроса, после разделителя.
+        /// </summary>
         private string LastPart
         {
             get
@@ -121,14 +131,15 @@ namespace Diagnosis.App.ViewModels
 
         public void Reset()
         {
+            items.Clear();
             SetSearchContext(true);
-            MakeSuggestions();
+            FullString = "";
         }
 
         /// <summary>
-        /// Проверка завершенности в строке
+        /// Проверка завершенности элемента в запросе.
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">Новое значение строки запроса для анализа.</param>
         private void CheckCompleted(string value)
         {
             if (value.Length < FullString.Length)
@@ -162,7 +173,7 @@ namespace Diagnosis.App.ViewModels
                 }
                 else
                 {
-                    AddItem();
+                    AddItem(Suggestions[SelectedIndex]);
                     SetSearchContext(true);
                 }
             }
@@ -191,20 +202,27 @@ namespace Diagnosis.App.ViewModels
             {
                 query = GetQueryString(items[items.Count - 1]);
             }
+            Console.WriteLine("query: {0}", query);
             Suggestions = new ObservableCollection<T>(searcher.Search(query));
             OnPropertyChanged(() => Suggestions);
             SelectedIndex = 0;
         }
-
-        private void AddItem()
+        /// <summary>
+        /// Добавляет элемент в коллекцию.
+        /// </summary>
+        private void AddItem(T item)
         {
             if (items.Count > 0)
-                items[items.Count - 1].AddIfNotExists(Suggestions[SelectedIndex], searcher.AllChildren);
+                items[items.Count - 1].AddIfNotExists(item, searcher.AllChildren);
 
-            items.Add(Suggestions[SelectedIndex]);
+            items.Add(item);
             IsItemCompleted = true;
         }
 
+        /// <summary>
+        /// Меняет поисковик, для поиска по детям последнего элемента.
+        /// </summary>
+        /// <param name="itemStarted"></param>
         private void SetSearchContext(bool itemStarted)
         {
             var i = items.Count - 1;
@@ -223,10 +241,12 @@ namespace Diagnosis.App.ViewModels
                 IsItemCompleted = false;
             }
         }
-
+        /// <summary>
+        /// Принимает предложение.
+        /// </summary>
         private void AcceptSuggestion()
         {
-            AddItem();
+            AddItem(Suggestions[SelectedIndex]);
             FullString = ItemsChain;
 
             var h = SuggestionAccepted;
@@ -235,16 +255,15 @@ namespace Diagnosis.App.ViewModels
                 h(this, new EventArgs());
             }
         }
-
+        /// <summary>
+        /// Отмечает элементы из коллекции.
+        /// </summary>
         private void CheckItems()
         {
             foreach (var item in items)
             {
                 item.checkable.IsChecked = true;
             }
-            items.Clear();
-            SetSearchContext(true);
-            FullString = "";
         }
 
         protected abstract ISearcher<T> MakeSearch(T parent);
