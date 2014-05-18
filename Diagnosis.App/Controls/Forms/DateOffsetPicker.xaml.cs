@@ -1,5 +1,6 @@
 ﻿using Diagnosis.App.ViewModels;
 using System.Windows;
+using Diagnosis.Core;
 using System.Windows.Controls;
 
 namespace Diagnosis.App.Controls.Forms

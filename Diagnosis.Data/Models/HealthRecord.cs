@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using Diagnosis.Core;
 
 namespace Diagnosis.Models
 {
@@ -83,6 +84,14 @@ namespace Diagnosis.Models
                     _day = value > 0 ? value : null;
                 }
                 CheckDate();
+            }
+        }
+
+        public virtual DateOffset DateOffset
+        {
+            get
+            {
+                return new DateOffset(FromYear, FromMonth, FromDay, () => Appointment.DateAndTime);
             }
         }
 

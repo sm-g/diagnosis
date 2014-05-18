@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 
-namespace Diagnosis.App
+namespace Diagnosis.Core
 {
     public enum DateUnits
     {
@@ -11,11 +11,11 @@ namespace Diagnosis.App
     }
 }
 
-namespace Diagnosis.App.ViewModels
+namespace Diagnosis.Core
 {
     /// <summary>
     /// Неполная дата со смещением относительно сегодня в днях, месяцах или годах, зависит от полноты даты.
-    /// </summary>
+    /// </summary>    /// 
     public class DateOffset : ViewModelBase
     {
         public const int MinYear = 1880;
@@ -144,38 +144,39 @@ namespace Diagnosis.App.ViewModels
                 Month = null;
                 Day = null;
             }
-
-            switch (Unit)
+            else
             {
-                case DateUnits.Day:
-                    var date = Now.AddDays(-Offset.Value);
-                    Year = date.Year;
-                    Month = date.Month;
-                    Day = date.Day;
-                    break;
-                case DateUnits.Month:
-                    if (Offset < Now.Month)
-                    {
-                        Year = Now.Year;
-                        Month = Now.Month - Offset;
-                    }
-                    else
-                    {
-                        var a = Offset - Now.Month;
-                        Year = Now.Year - a / 12 - 1;
-                        Month = 12 - a % 12;
-                    }
-                    Day = null;
-                    break;
-                case DateUnits.Year:
-                    Year = Now.Year - Offset;
-                    Month = null;
-                    Day = null;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException("Unit");
+                switch (Unit)
+                {
+                    case DateUnits.Day:
+                        var date = Now.AddDays(-Offset.Value);
+                        Year = date.Year;
+                        Month = date.Month;
+                        Day = date.Day;
+                        break;
+                    case DateUnits.Month:
+                        if (Offset < Now.Month)
+                        {
+                            Year = Now.Year;
+                            Month = Now.Month - Offset;
+                        }
+                        else
+                        {
+                            var a = Offset - Now.Month;
+                            Year = Now.Year - a / 12 - 1;
+                            Month = 12 - a % 12;
+                        }
+                        Day = null;
+                        break;
+                    case DateUnits.Year:
+                        Year = Now.Year - Offset;
+                        Month = null;
+                        Day = null;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException("Unit");
+                }
             }
-
             setting = false;
         }
 
@@ -242,6 +243,14 @@ namespace Diagnosis.App.ViewModels
             setting = false;
         }
 
+        /// <summary>
+        /// Возвращает DateTime, отсутствующие части даты - 0.
+        /// </summary>
+        public DateTime GetDateTime()
+        {
+            return new DateTime(Year ?? 0, Month ?? 0, Day ?? 0);
+        }
+
         public DateOffset(int? year, int? month, int? day)
         {
             SetDate(year, month, day);
@@ -263,6 +272,35 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(now != null);
             NowDate = now;
             SetOffset(offset, unit);
+        }
+
+        public static bool operator <(DateOffset do1, DateOffset do2)
+        {
+            if (do1.Unit == do2.Unit)
+            {
+                // давность больше - дата меньше
+                return do1.Offset > do2.Offset;
+            }
+            if (!do1.Month.HasValue || !do2.Month.HasValue)
+            {
+                // месяц и год или день и год
+                return do1.Year < do2.Year;
+            }
+            // день и месяц
+            return do1.Month < do2.Month;
+        }
+
+        public static bool operator >(DateOffset do1, DateOffset do2)
+        {
+            if (do1.Unit == do2.Unit)
+            {
+                return do1.Offset < do2.Offset;
+            }
+            if (!do1.Month.HasValue || !do2.Month.HasValue)
+            {
+                return do1.Year > do2.Year;
+            }
+            return do1.Month > do2.Month;
         }
 
         public override string ToString()

@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:app="clr-namespace:Diagnosis.App"
+             xmlns:core="clr-namespace:Diagnosis.Core;assembly=Diagnosis.Core"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              x:Class="Diagnosis.App.Controls.Forms.DateOffsetPicker"
              mc:Ignorable="d"
@@ -12,7 +12,7 @@
         <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
                             ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="app:DateUnits" />
+                <x:Type TypeName="core:DateUnits" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </UserControl.Resources>

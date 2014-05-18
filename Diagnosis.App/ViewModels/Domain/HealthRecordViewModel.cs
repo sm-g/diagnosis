@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Models;
 using EventAggregator;
+using Diagnosis.Core;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -344,10 +345,10 @@ namespace Diagnosis.App.ViewModels
                 {
                     if (this.IsSelected && !makingCurrent)
                     {
-                        var symptom = e.GetValue<WordViewModel>(Messages.Word);
+                        var word = e.GetValue<WordViewModel>(Messages.Word);
                         var isChecked = e.GetValue<bool>(Messages.CheckedState);
 
-                        OnWordCheckedChanged(symptom, isChecked);
+                        OnWordCheckedChanged(word, isChecked);
                     }
                 }),
                 this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>

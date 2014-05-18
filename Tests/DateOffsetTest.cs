@@ -1,6 +1,5 @@
 ﻿using System;
-using Diagnosis.App.ViewModels;
-using Diagnosis.App;
+using Diagnosis.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests
@@ -63,13 +62,12 @@ namespace Tests
         [TestMethod]
         public void TestConstructorOffsetNull()
         {
-            date = new DateOffset(null, DateUnits.Year);
+            date = new DateOffset(null, DateUnits.Day);
 
             var now = DateTime.Today;
-            var d = now.AddYears(-offset);
 
             Assert.IsTrue(date.Offset == null);
-            Assert.IsTrue(date.Unit == DateUnits.Year);
+            Assert.IsTrue(date.Unit == DateUnits.Day);
             Assert.IsTrue(date.Year == null);
             Assert.IsTrue(date.Month == null);
             Assert.IsTrue(date.Day == null);
@@ -186,6 +184,8 @@ namespace Tests
 
         #endregion
 
+        #region Setters
+
         [TestMethod]
         public void TestSetDay()
         {
@@ -260,5 +260,57 @@ namespace Tests
             Assert.IsTrue(date.Month == 4);
             Assert.IsTrue(date.Day == null);
         }
+
+        #endregion
+
+        #region compare
+
+        [TestMethod]
+        public void TestLtDayMonth()
+        {
+            var date1 = new DateOffset(40, DateUnits.Day);
+            var date2 = new DateOffset(0, DateUnits.Month);
+
+            Assert.IsTrue(date1 < date2);
+        }
+
+        [TestMethod]
+        public void TestGtDayYear()
+        {
+            var date1 = new DateOffset(40, DateUnits.Day);
+            var date2 = new DateOffset(1, DateUnits.Year);
+
+            Assert.IsTrue(date1 > date2);
+        }
+
+        [TestMethod]
+        public void TestLtMonthYear()
+        {
+            var date1 = new DateOffset(40, DateUnits.Month);
+            var date2 = new DateOffset(2, DateUnits.Year);
+
+            Assert.IsTrue(date1 < date2);
+        }
+
+        [TestMethod]
+        public void TestLtSameUnit()
+        {
+            var date1 = new DateOffset(40, DateUnits.Day);
+            var date2 = new DateOffset(0, DateUnits.Day);
+
+            Assert.IsTrue(date1 < date2);
+        }
+
+        [TestMethod]
+        public void TestLtNull()
+        {
+            var date1 = new DateOffset(null, DateUnits.Month);
+            var date2 = new DateOffset(5, DateUnits.Year);
+
+            Assert.IsFalse(date1 < date2);
+            Assert.IsFalse(date1 > date2);
+        }
+
+        #endregion
     }
 }
