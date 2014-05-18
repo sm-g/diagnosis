@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="Diagnosis.App.Screens.Search"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:сontrols="clr-namespace:Diagnosis.App.Controls"
+             xmlns:forms="clr-namespace:Diagnosis.App.Controls.Forms"
+             xmlns:card="clr-namespace:Diagnosis.App.Controls.Card"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <StackPanel>
+        <сontrols:AutoComplete DataContext="{Binding WordSearch}" />
+        <StackPanel Visibility="{Binding Words.Count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
+            <TextBlock>Выбранные слова:</TextBlock>
+            <ListView ItemsSource="{Binding Words}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <сontrols:TreeItemLight />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            
+            <TextBlock>Искать с</TextBlock>
+            <CheckBox IsChecked="{Binding AnyWord}">любым из слов</CheckBox>
+        </StackPanel>
+        <forms:CategoryChooser CategoryMultiSelection="{StaticResource True}" />
+        <DockPanel>
+            <TextBlock DockPanel.Dock="Top">Дата приема в интервале</TextBlock>
+            <forms:ComboBoxDatePicker Year="{Binding AppYearLower, Mode=TwoWay}"
+                                      Month="{Binding AppMonthLower, Mode=TwoWay}"
+                                      Day="{Binding AppDayLower, Mode=TwoWay}" />
+            <TextBlock>—</TextBlock>
+            <forms:ComboBoxDatePicker Year="{Binding AppYearUpper, Mode=TwoWay}"
+                                      Month="{Binding AppMonthUpper, Mode=TwoWay}"
+                                      Day="{Binding AppDayUpper, Mode=TwoWay}" />
+        </DockPanel>
+        <DockPanel>
+            <TextBlock DockPanel.Dock="Top">Давность в интервале</TextBlock>
+            <forms:DateOffsetPicker DateOffset="{Binding HrDateOffsetLower}" />
+            <TextBlock>—</TextBlock>
+            <forms:DateOffsetPicker DateOffset="{Binding HrDateOffsetUpper}" />
+        </DockPanel>
+        <Button Command="{Binding SearchCommand}">Искать</Button>
+        <ListView ItemsSource="{Binding Results}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <card:HealthRecord />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackPanel>
+</UserControl>

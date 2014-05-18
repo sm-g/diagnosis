@@ -1,23 +1,29 @@
 ﻿using EventAggregator;
 using System.Windows.Input;
-using Diagnosis.Data.Repositories;
 
 namespace Diagnosis.App.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        #region Fields
+
         private bool _loginActive;
         private LoginViewModel _loginVM;
-        private PatientViewModel _patientVM;
         private ICommand _logout;
         private ICommand _editDiagnosisDirectory;
         private ICommand _editSymptomsDirectory;
         private bool _fastAddingMode;
         private bool _isPatientsVisible;
         private bool _isWordsEditing;
+        private bool _searchTester;
+        private bool _search;
+        private ViewModelBase _currentScreen;
         private object _directoryExplorer;
 
+        #endregion
+
         #region Flags
+
         public bool IsLoginActive
         {
             get
@@ -82,6 +88,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
         public bool FastAddingMode
         {
             get
@@ -98,7 +105,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private bool _searchTester;
         public bool SearchTesterState
         {
             get
@@ -122,12 +128,35 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-        #endregion
+
+        public bool SearchState
+        {
+            get
+            {
+                return _search;
+            }
+            set
+            {
+                if (_search != value)
+                {
+                    _search = value;
+                    if (value)
+                    {
+                        CurrentScreen = new SearchViewModel();
+                    }
+                    else
+                    {
+                        CurrentScreen = EntityManagers.PatientsManager.CurrentPatient;
+                    }
+                    OnPropertyChanged(() => SearchState);
+                }
+            }
+        }
+
+        #endregion Flags
 
         #region ViewModels
 
-
-        private ViewModelBase _currentScreen;
         public ViewModelBase CurrentScreen
         {
             get
@@ -183,7 +212,8 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-        #endregion
+
+        #endregion ViewModels
 
         #region Commands
 
@@ -225,7 +255,8 @@ namespace Diagnosis.App.ViewModels
                                           }));
             }
         }
-        #endregion
+
+        #endregion Commands
 
         public MainWindowViewModel()
         {

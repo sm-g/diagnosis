@@ -24,6 +24,9 @@
         <DataTemplate DataType="{x:Type vm:SearchTester}">
             <screen:SearchTester />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SearchViewModel}">
+            <screen:Search />
+        </DataTemplate>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -51,8 +54,10 @@
                     <MenuItem Header="Симптомы" Command="{Binding EditSymptomsDirectoryCommand}" />
                     <MenuItem Header="Диагнозы" Command="{Binding EditDiagnosisDirectoryCommand}" />
                 </MenuItem>
-                <CheckBox x:Name="searchesChk" IsChecked="{Binding SearchTesterState}"
-				    Content="Поиски" />
+                <CheckBox IsChecked="{Binding SearchTesterState}"
+				          Content="Автокомплиты" />
+                <CheckBox IsChecked="{Binding SearchState}"
+				    Content="Поиск" />
             </Menu>
 
             <CheckBox IsChecked="{Binding FastAddingMode}"

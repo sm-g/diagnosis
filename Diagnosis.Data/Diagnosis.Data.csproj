@@ -114,6 +114,7 @@
     <Compile Include="Repositories\IcdChapterRepository.cs" />
     <Compile Include="Repositories\IcdDiseaseRepository.cs" />
     <Compile Include="Repositories\DiagnosisRepository.cs" />
+    <Compile Include="Repositories\HealthRecordRepository.cs" />
     <Compile Include="Repositories\WordRepository.cs" />
     <Compile Include="Repositories\ModelRepository.cs" />
     <Compile Include="Repositories\DoctorRepository.cs" />
@@ -141,6 +142,12 @@
     <None Include="Models\ModelsClassDiagram.cd" />
     <None Include="packages.config" />
     <None Include="Repositories\RepositoriesClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Diagnosis.Core\Diagnosis.Core.csproj">
+      <Project>{a91ad3b7-cb0f-426c-a539-1cffc13df0ee}</Project>
+      <Name>Diagnosis.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

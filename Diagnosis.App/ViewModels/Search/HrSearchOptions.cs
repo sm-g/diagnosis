@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Diagnosis.Core;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class SearchOptions
+    public class HrSearchOptions
     {
         /// <summary>
         /// Слова, которые есть в симптоме
@@ -22,11 +23,11 @@ namespace Diagnosis.App.ViewModels
         /// <summary>
         /// Нижняя грань даты приема
         /// </summary>
-        public DateOffset AppointmentDateGt { get; set; }
+        public DateTime? AppointmentDateGt { get; set; }
         /// <summary>
         /// Верхняя грань даты приема
         /// </summary>
-        public DateOffset AppointmentDateLt { get; set; }
+        public DateTime? AppointmentDateLt { get; set; }
         /// <summary>
         /// Нижняя грань давности симптома
         /// </summary>

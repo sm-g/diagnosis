@@ -219,6 +219,9 @@
     <Compile Include="EntityManagers.cs" />
     <Compile Include="Extensions\ConvertExtensions.cs" />
     <Compile Include="MessagingParams.cs" />
+    <Compile Include="Screens\Search.xaml.cs">
+      <DependentUpon>Search.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Screens\SearchTester.xaml.cs">
       <DependentUpon>SearchTester.xaml</DependentUpon>
     </Compile>
@@ -228,12 +231,13 @@
     <Compile Include="Screens\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DateOffset.cs" />
     <Compile Include="ViewModels\Search\DiagnosisFiltratingSearcher.cs" />
     <Compile Include="ViewModels\Search\DiagnosisSearcher.cs" />
     <Compile Include="ViewModels\Search\Combination.cs" />
-    <Compile Include="ViewModels\Search\SearchOptions.cs" />
+    <Compile Include="ViewModels\Search\HrSearcher.cs" />
+    <Compile Include="ViewModels\Search\HrSearchOptions.cs" />
     <Compile Include="ViewModels\Search\SearchTester.cs" />
+    <Compile Include="ViewModels\Search\SearchViewModel.cs" />
     <Compile Include="ViewModels\Search\WordSearcher.cs" />
     <Compile Include="ViewModels\Search\PatientSearcher.cs" />
     <Compile Include="ViewModels\Domain\CategoryViewModel.cs" />
@@ -310,8 +314,8 @@
     <Compile Include="Controls\Directory\FullTree.xaml.cs">
       <DependentUpon>FullTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\Domain\PatientViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Page Include="Controls\AutoComplete.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -416,6 +420,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Screens\Search.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Screens\SearchTester.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -503,6 +511,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Diagnosis.Core\Diagnosis.Core.csproj">
+      <Project>{a91ad3b7-cb0f-426c-a539-1cffc13df0ee}</Project>
+      <Name>Diagnosis.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Diagnosis.Data\Diagnosis.Data.csproj">
       <Project>{3ec8d3df-aa44-4cb8-8847-d4b4872e9dad}</Project>
       <Name>Diagnosis.Data</Name>

@@ -70,11 +70,16 @@
     <Compile Include="DateOffsetTest.cs" />
     <Compile Include="PatientTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RepositoryTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Diagnosis.App\Diagnosis.App.csproj">
       <Project>{d7949590-a383-4e34-9c06-a2568db5cdb6}</Project>
       <Name>Diagnosis.App</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Diagnosis.Core\Diagnosis.Core.csproj">
+      <Project>{a91ad3b7-cb0f-426c-a539-1cffc13df0ee}</Project>
+      <Name>Diagnosis.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Diagnosis.Data\Diagnosis.Data.csproj">
       <Project>{3ec8d3df-aa44-4cb8-8847-d4b4872e9dad}</Project>
