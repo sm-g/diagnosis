@@ -22,43 +22,15 @@ namespace Diagnosis.App.Controls
         public RadioListBox()
         {
             InitializeComponent();
-
-            SelectionMode = SelectionMode.Single;
         }
 
-        public new SelectionMode SelectionMode
+        public bool MultiSelection
         {
-            get
-            {
-                return base.SelectionMode;
-            }
-            private set
-            {
-                base.SelectionMode = value;
-            }
+            get { return (bool)GetValue(MultiSelectionProperty); }
+            set { SetValue(MultiSelectionProperty, value); }
         }
 
-        protected override void OnSelectionChanged(SelectionChangedEventArgs e)
-        {
-            base.OnSelectionChanged(e);
-
-            CheckRadioButtons(e.RemovedItems, false);
-            CheckRadioButtons(e.AddedItems, true);
-        }
-
-        private void CheckRadioButtons(System.Collections.IList radioButtons, bool isChecked)
-        {
-            foreach (object item in radioButtons)
-            {
-                ListBoxItem lbi = this.ItemContainerGenerator.ContainerFromItem(item) as ListBoxItem;
-
-                if (lbi != null)
-                {
-                    RadioButton radio = lbi.Template.FindName("radio", lbi) as RadioButton;
-                    if (radio != null)
-                        radio.IsChecked = isChecked;
-                }
-            }
-        }
+        public static readonly DependencyProperty MultiSelectionProperty =
+            DependencyProperty.Register("MultiSelection", typeof(bool), typeof(RadioListBox));
     }
 }

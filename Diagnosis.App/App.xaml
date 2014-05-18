@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:Diagnosis.App.ViewModels"
              xmlns:conv="clr-namespace:Diagnosis.App.Converters"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
              Startup="Application_Startup"  
              StartupUri="MainWindow.xaml">
     <Application.Resources>
@@ -14,6 +15,8 @@
         <conv:AgeToYearsLabel x:Key="AgeToLabel" />
         <conv:BoolToSexSign x:Key="SexToSign" />
         <conv:DateUnitToLabel x:Key="unitConverter" />
+        
+        <s:Boolean x:Key="True">True</s:Boolean>
 
         <Style TargetType="TextBlock" x:Key="ScreenTitle">
             <Setter Property="FontSize" Value="24"/>
@@ -40,5 +43,6 @@
         <Style TargetType="ListView" x:Key="list">
             <Setter Property="BorderThickness" Value="0" />
         </Style>
+
     </Application.Resources>
 </Application>

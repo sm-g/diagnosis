@@ -23,5 +23,15 @@ namespace Diagnosis.App.Controls.Forms
         {
             InitializeComponent();
         }
+
+        public bool CategoryMultiSelection
+        {
+            get { return (bool)GetValue(CategoryMultiSelectionProperty); }
+            set { SetValue(CategoryMultiSelectionProperty, value); }
+        }
+
+        public static readonly DependencyProperty CategoryMultiSelectionProperty =
+            DependencyProperty.Register("CategoryMultiSelection", typeof(bool), typeof(CategoryChooser));
+
     }
 }
