@@ -72,7 +72,11 @@ namespace Diagnosis.App.ViewModels
 
             SetDiagnosesForDoctor(chapterVms, EntityManagers.DoctorsManager.CurrentDoctor);
 
+            Subscribe(chapterVms);
+        }
 
+        private void Subscribe(List<DiagnosisViewModel> chapterVms)
+        {
             this.Subscribe((int)EventID.CurrentDoctorChanged, (e) =>
             {
                 var doctorVM = e.GetValue<DoctorViewModel>(Messages.Doctor);
@@ -98,6 +102,7 @@ namespace Diagnosis.App.ViewModels
 
         private void OnDiagnosisCheckedChanged(DiagnosisViewModel diagnosis, bool isChecked)
         {
+            // снимаем флаг со всех диагнозов, кроме отмеченного
             if (isChecked)
                 Diagnoses.ForBranch(d =>
                 {

@@ -8,6 +8,7 @@
              d:DesignHeight="100" d:DesignWidth="300"
              x:Name="searchTree"
              GotFocus="UserControl_GotFocus"
+             LostFocus="UserControl_LostFocus"
              controls:EnhancedFocusScope.IsEnhancedFocusScope="True">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -17,8 +18,6 @@
 
             <InputBindingCollection x:Shared="False" x:Key="InputBindings">
                 <KeyBinding Key="Space" Command="{Binding ToggleCommand}" />
-                <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
-                <KeyBinding Key="Escape" Command="{Binding Editable.RevertCommand}" />
 
                 <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleCommand}" />
             </InputBindingCollection>
@@ -33,12 +32,13 @@
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 <Setter Property="VerticalContentAlignment" Value="Center" />
                 <Setter Property="controls:Attached.InputBindings" Value="{StaticResource InputBindings}" />
+                <EventSetter Event="Selected" Handler="item_selected"/>
             </Style>
 
             <HierarchicalDataTemplate
                 x:Key="simpleTreeItemTemplate"
                 ItemsSource="{Binding Children}">
-                <controls:TreeItemLight />
+                <TextBlock Text="{Binding}"/>
             </HierarchicalDataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -63,6 +63,10 @@
                 <controls:WatermarkService.Watermark>
                     <TextBlock Style="{StaticResource watermark}">Поиск</TextBlock>
                 </controls:WatermarkService.Watermark>
+
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Escape" Command="{Binding ToggleSearchActiveCommand}"></KeyBinding>
+                </TextBox.InputBindings>
             </TextBox>
             <Button Grid.Column="1"
                     Content="×"
@@ -71,7 +75,7 @@
         </Grid>
 
         <Popup x:Name="popup"
-               IsOpen="{Binding IsResultsVisible, Mode=TwoWay}"
+               IsOpen="{Binding IsSearchActive, Mode=TwoWay}"
                PlacementTarget="{Binding ElementName=input, Mode=OneWay}">
             <TreeView x:Name="results"
                 HorizontalContentAlignment="Stretch"

@@ -141,7 +141,7 @@ namespace Diagnosis.App.ViewModels
         private void _search_ResultItemSelected(object sender, System.EventArgs e)
         {
             this.AddIfNotExists(Search.SelectedItem, Search.searcher.AllChildren);
-            Search.SelectedItem.checkable.IsChecked = true;
+            Search.SelectedItem.IsChecked = true;
             Search.Clear();
         }
 

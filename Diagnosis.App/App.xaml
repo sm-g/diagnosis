@@ -19,7 +19,7 @@
         <s:Boolean x:Key="True">True</s:Boolean>
 
         <Style TargetType="TextBlock" x:Key="ScreenTitle">
-            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontSize" Value="20"/>
         </Style>
         
         <Style TargetType="Label" x:Key="label120">

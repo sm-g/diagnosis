@@ -289,8 +289,17 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _diagnosisSearch ?? (_diagnosisSearch = new SearchBase<DiagnosisViewModel>(
-                    EntityManagers.DiagnosisManager.FiltratingSearcher));
+                if (_diagnosisSearch == null)
+                {
+                    _diagnosisSearch = new SearchBase<DiagnosisViewModel>(
+                        EntityManagers.DiagnosisManager.FiltratingSearcher);
+                    _diagnosisSearch.ResultItemSelected += (s, e) =>
+                    {
+                        Console.WriteLine("selected {0}", _diagnosisSearch.SelectedItem);
+                        _diagnosisSearch.SelectedItem.IsChecked = true;
+                    };
+                }
+                return _diagnosisSearch;
             }
         }
 

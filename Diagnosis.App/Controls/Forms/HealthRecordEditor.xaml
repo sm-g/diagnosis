@@ -36,7 +36,10 @@
         </DockPanel>
         <DockPanel>
             <Label Content="диагноз" />
-            <controls:SearchTree DataContext="{Binding DiagnosisSearch}" />
+            <StackPanel>
+                <TextBlock Text="{Binding Diagnosis}" />
+                <controls:SearchTree DataContext="{Binding DiagnosisSearch}" />
+            </StackPanel>
         </DockPanel>
         <DockPanel>
             <Label Content="число" />
