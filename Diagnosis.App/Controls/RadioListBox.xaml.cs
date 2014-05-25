@@ -32,5 +32,21 @@ namespace Diagnosis.App.Controls
 
         public static readonly DependencyProperty MultiSelectionProperty =
             DependencyProperty.Register("MultiSelection", typeof(bool), typeof(RadioListBox));
+
+        /// <summary>
+        /// Changes IsSelected for parent ListBoxItem.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void chkBox_CheckedChanged(object sender, RoutedEventArgs e)
+        {
+            var chkBox = sender as CheckBox;
+            if (chkBox != null)
+            {
+                var parent = ParentFinder.FindAncestorOrSelf<ListBoxItem>(chkBox);
+                parent.IsSelected = chkBox.IsChecked.Value;
+            }
+
+        }
     }
 }

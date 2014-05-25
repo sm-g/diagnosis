@@ -168,6 +168,7 @@
       <DependentUpon>TreeItemLight.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Directory\TreeTemplateSelector.cs" />
+    <Compile Include="Controls\Helpers\ParentFinder.cs" />
     <Compile Include="Controls\SearchTree.xaml.cs">
       <DependentUpon>SearchTree.xaml</DependentUpon>
     </Compile>

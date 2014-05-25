@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class CategoryViewModel : ViewModelBase, IComparable
+    public class CategoryViewModel : CheckableBase, IComparable
     {
         internal readonly Category category;
 
