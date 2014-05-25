@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Diagnosis.Models
+namespace Diagnosis.Core
 {
     static class Checkers
     {
