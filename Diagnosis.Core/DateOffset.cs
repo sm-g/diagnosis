@@ -15,11 +15,9 @@ namespace Diagnosis.Core
 {
     /// <summary>
     /// Неполная дата со смещением относительно сегодня в днях, месяцах или годах, зависит от полноты даты.
-    /// </summary>    /// 
+    /// </summary>
     public class DateOffset : ViewModelBase
     {
-        public const int MinYear = 1880;
-
         private int? _offset;
         private DateUnits _unit;
         private int? _year;
@@ -131,7 +129,7 @@ namespace Diagnosis.Core
 
         DateTime Now { get { return NowDate(); } }
 
-        public void SetOffset(int? offset, DateUnits unit)
+        void SetOffset(int? offset, DateUnits unit)
         {
             setting = true;
 
@@ -180,52 +178,54 @@ namespace Diagnosis.Core
             setting = false;
         }
 
-        public void SetDate(int? year, int? month, int? day)
+        void SetDate(int? year, int? month, int? day)
         {
             setting = true;
 
-            Year = year;
-            Month = month;
-            Day = day;
+            Year = year != 0 ? year : null;
+            Month = month != 0 ? month : null;
+            Day = day != 0 ? day : null;
+
+            Checkers.CheckDate(Year, Month, Day);
 
             int y;
-            if (year.HasValue)
+            if (Year.HasValue)
             {
-                y = year.Value;
+                y = Year.Value;
             }
             else
             {
                 y = Now.Year;
             }
 
-            if (month.HasValue)
+            if (Month.HasValue)
             {
-                if (day.HasValue)
+                if (Day.HasValue)
                 {
-                    Offset = (Now - new DateTime(y, month.Value, day.Value)).Days;
+                    Offset = (Now - new DateTime(y, Month.Value, Day.Value)).Days;
                     Unit = DateUnits.Day;
                 }
                 else
                 {
-                    Offset = (Now.Year - y) * 12 + Now.Month - month.Value;
+                    Offset = (Now.Year - y) * 12 + Now.Month - Month.Value;
                     Unit = DateUnits.Month;
                 }
 
-                if (!year.HasValue)
+                if (!Year.HasValue)
                 {
                     Year = Now.Year;
                 }
             }
             else
             {
-                if (year.HasValue)
+                if (Year.HasValue)
                 {
                     Offset = Now.Year - y;
                     Unit = DateUnits.Year;
                 }
                 else
                 {
-                    if (day.HasValue)
+                    if (Day.HasValue)
                     {
                         Offset = 0;
                         Unit = DateUnits.Day;
@@ -244,11 +244,18 @@ namespace Diagnosis.Core
         }
 
         /// <summary>
-        /// Возвращает DateTime, отсутствующие части даты - 0.
+        /// Возвращает DateTime, если возможно.
         /// </summary>
-        public DateTime GetDateTime()
+        public DateTime? GetDateTime()
         {
-            return new DateTime(Year ?? 0, Month ?? 0, Day ?? 0);
+            try
+            {
+                return new DateTime(Year.Value, Month.Value, Day.Value);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public DateOffset(int? year, int? month, int? day)
@@ -272,6 +279,14 @@ namespace Diagnosis.Core
             Contract.Requires(now != null);
             NowDate = now;
             SetOffset(offset, unit);
+        }
+
+        public DateOffset(DateOffset dateOffset, Func<DateTime> now)
+        {
+            Contract.Requires(dateOffset != null);
+            Contract.Requires(now != null);
+            NowDate = now;
+            SetOffset(dateOffset.Offset, dateOffset.Unit);
         }
 
         public static bool operator <(DateOffset do1, DateOffset do2)
@@ -301,6 +316,31 @@ namespace Diagnosis.Core
                 return do1.Year > do2.Year;
             }
             return do1.Month > do2.Month;
+        }
+
+        public static bool operator <=(DateOffset do1, DateOffset do2)
+        {
+            if (do1.Unit == do2.Unit)
+            {
+                return do1.Offset >= do2.Offset;
+            }
+            if (!do1.Month.HasValue || !do2.Month.HasValue)
+            {
+                return do1.Year <= do2.Year;
+            }
+            return do1.Month <= do2.Month;
+        }
+        public static bool operator >=(DateOffset do1, DateOffset do2)
+        {
+            if (do1.Unit == do2.Unit)
+            {
+                return do1.Offset <= do2.Offset;
+            }
+            if (!do1.Month.HasValue || !do2.Month.HasValue)
+            {
+                return do1.Year >= do2.Year;
+            }
+            return do1.Month >= do2.Month;
         }
 
         public override string ToString()
