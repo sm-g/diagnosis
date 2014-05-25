@@ -7,23 +7,24 @@ namespace Diagnosis.Core
 {
     static class Checkers
     {
-        public const int MinYear = 1880;
-
         /// <summary>
         /// Проверяет, допустима ли указанная дата (возможно, неполная).
-        /// <exception cref="ArgumentOutOfRange">Если дата невозможна.</exception>
+        /// <exception cref="ArgumentOutOfRange"/>
         /// </summary>
         public static void CheckDate(int? year, int? month, int? day)
         {
+            if (month.HasValue)
+                if (!(month >= 1 && month <= 12))
+                    throw new ArgumentOutOfRangeException("month");
+
+            if (day.HasValue)
+                if (!(day >= 1 && day <= 31))
+                    throw new ArgumentOutOfRangeException("day");
+
             if (month.HasValue && day.HasValue)
             {
                 if (year.HasValue)
                 {
-                    if (year < MinYear)
-                    {
-                        throw new ArgumentOutOfRangeException("year");
-                    }
-
                     // пробуем создать дату
                     new DateTime(year.Value, month.Value, day.Value);
                 }
