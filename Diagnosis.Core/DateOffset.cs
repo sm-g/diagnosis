@@ -244,18 +244,26 @@ namespace Diagnosis.Core
         }
 
         /// <summary>
-        /// Возвращает DateTime, если возможно.
+        /// Возвращает DateTime, если возможно для указанных аргументов.
         /// </summary>
-        public DateTime? GetDateTime()
+        public static DateTime? NullableDate(int? year, int? month, int? day)
         {
             try
             {
-                return new DateTime(Year.Value, Month.Value, Day.Value);
+                return new DateTime(year.Value, month.Value, day.Value);
             }
             catch
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Возвращает DateTime представление для объекта DateOffset, если возможно.
+        /// </summary>
+        public DateTime? GetDateTime()
+        {
+            return NullableDate(Year, Month, Day);
         }
 
         public DateOffset(int? year, int? month, int? day)

@@ -15,7 +15,7 @@ namespace Diagnosis.App.Converters
         public object Convert(object[] values, Type targetType,
             object parameter, CultureInfo culture)
         {
-            if (values.Length < 2 || !(values[0] is DateUnits) || values[1] == null)
+            if (values.Length < 2 || !(values[0] is DateUnits) || !(values[1] is int))
                 return null;
 
             var unit = (DateUnits)values[0];
