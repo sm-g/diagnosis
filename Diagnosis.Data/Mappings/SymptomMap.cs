@@ -24,6 +24,20 @@ namespace Diagnosis.Data.Mappings
                 m.Column("DefaultCategoryID");
             });
 
+            Set(x => x.SymptomWords, s =>
+            {
+                s.Key(k =>
+                {
+                    k.Column("SymptomID");
+                });
+                s.Inverse(true);
+                s.Cascade(Cascade.All);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.OneToMany();
+            });
+
             Set(x => x.Words, s =>
             {
                 s.Table("SymptomWords");

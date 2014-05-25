@@ -8,6 +8,7 @@ namespace Diagnosis.Models
     public class Symptom
     {
         ISet<Word> words = new HashSet<Word>();
+        ISet<SymptomWords> symptomWords = new HashSet<SymptomWords>();
 
         public virtual int Id { get; protected set; }
         public virtual IcdDisease Disease { get; set; }
@@ -19,6 +20,15 @@ namespace Diagnosis.Models
             {
                 return new ReadOnlyCollection<Word>(
                     new List<Word>(words));
+            }
+        }
+
+        public virtual ReadOnlyCollection<SymptomWords> SymptomWords
+        {
+            get
+            {
+                return new ReadOnlyCollection<SymptomWords>(
+                    new List<SymptomWords>(symptomWords));
             }
         }
 
