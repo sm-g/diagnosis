@@ -11,6 +11,7 @@ namespace Diagnosis.App.ViewModels
         private int _selectedIndex = -1;
         private ICommand _clear;
         private ICommand _searchCommand;
+        private ICommand _resultsCommand;
         private ICommand _selectCommand;
         private bool _searchActive;
         private bool _searchFocused;
@@ -87,6 +88,21 @@ namespace Diagnosis.App.ViewModels
                                           () =>
                                           {
                                               IsSearchActive = !IsSearchActive;
+                                          },
+                                          () => SwitchedOn
+                       ));
+            }
+        }
+
+        public ICommand ToggleResultsVisibleCommand
+        {
+            get
+            {
+                return _resultsCommand
+                    ?? (_resultsCommand = new RelayCommand(
+                                          () =>
+                                          {
+                                              IsResultsVisible = !IsResultsVisible;
                                           },
                                           () => SwitchedOn
                        ));

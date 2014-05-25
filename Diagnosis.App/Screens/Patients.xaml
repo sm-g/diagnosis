@@ -31,8 +31,8 @@
                               DataContext="{Binding Search}"
                               Grid.Row="1">
             <controls:FloatSearch.InputBindings>
-                <KeyBinding Key="Escape" Command="{Binding ToggleSearchActiveCommand}"></KeyBinding>
-                <KeyBinding Key="Enter" Command="{Binding SelectCommand}"></KeyBinding>
+                <KeyBinding Key="Escape" Command="{Binding DataContext.ToggleResultsVisibleCommand, ElementName=search}"></KeyBinding>
+                <KeyBinding Key="Enter" Command="{Binding DataContext.SelectCommand, ElementName=search}"></KeyBinding>
             </controls:FloatSearch.InputBindings>
         </controls:FloatSearch>
 

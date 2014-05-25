@@ -65,7 +65,7 @@
                 </controls:WatermarkService.Watermark>
 
                 <TextBox.InputBindings>
-                    <KeyBinding Key="Escape" Command="{Binding ToggleSearchActiveCommand}"></KeyBinding>
+                    <KeyBinding Key="Escape" Command="{Binding ToggleResultsVisibleCommand}"></KeyBinding>
                 </TextBox.InputBindings>
             </TextBox>
             <Button Grid.Column="1"
@@ -75,7 +75,7 @@
         </Grid>
 
         <Popup x:Name="popup"
-               IsOpen="{Binding IsSearchActive, Mode=TwoWay}"
+               IsOpen="{Binding IsResultsVisible, Mode=TwoWay}"
                PlacementTarget="{Binding ElementName=input, Mode=OneWay}">
             <TreeView x:Name="results"
                 HorizontalContentAlignment="Stretch"
