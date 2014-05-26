@@ -8,13 +8,14 @@ namespace Diagnosis.App.ViewModels
 {
     public abstract class AutoCompleteBase<T> : ViewModelBase, IAutoComplete where T : HierarchicalCheckable<T>
     {
-        private List<T> items;
-        private ISearcher<T> searcher;
         private int _index;
         private string _fullString = "";
         private bool _isItemCompleted;
         private ICommand _enterCommand;
-        private const char Separator = ',';
+
+        protected readonly char separator;
+        protected List<T> items;
+        protected ISearcher<T> searcher;
 
         public event EventHandler SuggestionAccepted;
 
@@ -78,6 +79,7 @@ namespace Diagnosis.App.ViewModels
                 if (_isItemCompleted != value)
                 {
                     _isItemCompleted = value;
+                    Console.WriteLine("IsItemCompleted = {0}", value);
                     OnPropertyChanged(() => IsItemCompleted);
                 }
             }
@@ -113,7 +115,9 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return items.Aggregate("", (full, s) => full += GetQueryString(s).ToLower() + Separator).TrimEnd(Separator);
+                var chain = items.Aggregate("", (full, s) => full += GetQueryString(s).ToLower() + separator).TrimEnd(separator);
+                Console.WriteLine("Get ItemsChain: {0} ", chain);
+                return chain;
             }
         }
         /// <summary>
@@ -123,9 +127,8 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                Console.WriteLine("ItemsChain: {0}", ItemsChain);
-                Console.WriteLine("FullString: {0}", FullString);
-                return FullString.Substring(ItemsChain.Length).Trim(Separator);
+                Console.WriteLine("Get lastpart: {0} ", FullString.Substring(ItemsChain.Length).Trim(separator));
+                return FullString.Substring(ItemsChain.Length).Trim(separator);
             }
         }
 
@@ -142,6 +145,7 @@ namespace Diagnosis.App.ViewModels
         /// <param name="value">Новое значение строки запроса для анализа.</param>
         private void CheckCompleted(string value)
         {
+            Console.WriteLine("check completed for {0}", value);
             if (value.Length < FullString.Length)
             {
                 // символ удалён
@@ -152,7 +156,7 @@ namespace Diagnosis.App.ViewModels
                     UncheckLast();
                     SetSearchContext(true);
                 }
-                else if (FullString[FullString.Length - 1] == Separator)
+                else if (FullString.LastOrDefault() == separator)
                 {
                     // удаляем разделитель
                     IsItemCompleted = true;
@@ -163,7 +167,7 @@ namespace Diagnosis.App.ViewModels
                     // удаляем не последний символ слова
                 }
             }
-            else if (value[value.Length - 1] == Separator)
+            else if (value.LastOrDefault() == separator)
             {
                 // добавляем разделитель
 
@@ -187,7 +191,7 @@ namespace Diagnosis.App.ViewModels
 
         private void UncheckLast()
         {
-            items.Last().checkable.IsChecked = false;
+            items.Last().IsChecked = false;
             items.RemoveAt(items.Count - 1);
         }
 
@@ -212,13 +216,12 @@ namespace Diagnosis.App.ViewModels
         /// </summary>
         private void AddItem(T item)
         {
-            if (items.Count > 0)
-                items[items.Count - 1].AddIfNotExists(item, searcher.AllChildren);
+            Console.WriteLine("add {0}", item);
+            BeforeAddItem(item);
 
             items.Add(item);
             IsItemCompleted = true;
         }
-
         /// <summary>
         /// Меняет поисковик, для поиска по детям последнего элемента.
         /// </summary>
@@ -262,17 +265,22 @@ namespace Diagnosis.App.ViewModels
         {
             foreach (var item in items)
             {
-                item.checkable.IsChecked = true;
+                item.IsChecked = true;
             }
+        }
+
+        protected virtual void BeforeAddItem(T item)
+        {
         }
 
         protected abstract ISearcher<T> MakeSearch(T parent);
 
         protected abstract string GetQueryString(T item);
 
-        public AutoCompleteBase()
+        public AutoCompleteBase(char separator = '.')
         {
             items = new List<T>();
+            this.separator = separator;
 
             Reset();
         }

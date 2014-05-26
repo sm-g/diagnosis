@@ -32,6 +32,7 @@
         <StackPanel Grid.Column="1">
             <StackPanel x:Name="editor" Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <controls:InputTextBox DataContext="{Binding AutoComplete}" />
+                <controls:AutoComplete DataContext="{Binding AutoComplete2}" />
                 <DockPanel Visibility="{Binding Symptom.Words.Count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
                     <TextBlock DockPanel.Dock="Top">Слова:</TextBlock>
                     <ListView ItemsSource="{Binding Symptom.Words}">
