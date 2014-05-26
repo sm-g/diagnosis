@@ -133,11 +133,6 @@ namespace Diagnosis.App.ViewModels
             Editable.CanBeDirty = true;
         }
 
-        public WordViewModel(string title)
-            : this(new Word(title))
-        {
-        }
-
         private void _search_ResultItemSelected(object sender, System.EventArgs e)
         {
             this.AddIfNotExists(Search.SelectedItem, Search.searcher.AllChildren);
@@ -150,6 +145,7 @@ namespace Diagnosis.App.ViewModels
             int i = 1;
             foreach (WordViewModel child in Children)
             {
+                System.Console.WriteLine("set parent. before {0} after {1}", child.Parent, this);
                 child.Parent = this;
                 child.SortingOrder = this.SortingOrder + i++;
                 child.Initialize();

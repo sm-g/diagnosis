@@ -60,7 +60,6 @@ namespace Diagnosis.App.ViewModels
         }
         public void WipeUnsaved()
         {
-            System.Console.WriteLine(Symptoms.Count);
             var toRemove = Symptoms.Where(sym => sym.Unsaved).ToList();
             toRemove.ForAll((sym) => Symptoms.Remove(sym));
         }

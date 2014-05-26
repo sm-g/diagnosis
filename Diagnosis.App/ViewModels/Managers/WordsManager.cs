@@ -106,7 +106,6 @@ namespace Diagnosis.App.ViewModels
         /// </summary>
         public void WipeUnsaved()
         {
-            System.Console.WriteLine(Words.Count);
             var toRemove = Words.Where(word => word.Unsaved).ToList();
             toRemove.ForAll((word) =>
             {

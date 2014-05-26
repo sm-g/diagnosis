@@ -8,7 +8,7 @@ namespace Diagnosis.App.ViewModels
 {
     public class SearchWrap
     {
-        public readonly object entity;
+        public readonly ICheckable entity;
 
         public string Name { get; private set; }
         public string Category { get; private set; }

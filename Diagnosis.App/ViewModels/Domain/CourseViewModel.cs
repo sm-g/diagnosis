@@ -12,7 +12,6 @@ namespace Diagnosis.App.ViewModels
     {
         internal readonly Course course;
 
-        private bool _appointmentsVis;
         private AppointmentViewModel _selectedAppointment;
         private DoctorViewModel _leadDoctor;
         private ICommand _addAppointment;
@@ -135,7 +134,7 @@ namespace Diagnosis.App.ViewModels
 
             var appVMs = course.Appointments.Select(app => new AppointmentViewModel(app, this)).Reverse();
             Appointments = new ObservableCollection<AppointmentViewModel>(appVMs);
-            
+
             if (Appointments.Count > 0)
             {
                 SelectedAppointment = Appointments.Last();

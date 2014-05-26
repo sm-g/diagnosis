@@ -8,7 +8,6 @@ namespace Diagnosis.App.Controls
     public partial class SearchTree : UserControl
     {
         private int selectedIndex = -1;
-        private bool selectionChanged;
 
         public SearchTree()
         {

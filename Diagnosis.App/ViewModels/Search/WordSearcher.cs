@@ -8,9 +8,7 @@ namespace Diagnosis.App.ViewModels
     public class WordSearcher : ISearcher<WordViewModel>
     {
         public bool WithNonCheckable { get; set; }
-
         public bool WithChecked { get; set; }
-
         public bool WithCreatingNew { get; set; }
         public bool AllChildren { get; set; }
 
@@ -27,7 +25,7 @@ namespace Diagnosis.App.ViewModels
             WithCreatingNew = withCreatingNew;
         }
         /// <summary>
-        /// Вовращает слова, которые начинаются на указанную строку.
+        /// Вовращает слова из колллекции, которые начинаются на указанную строку.
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
