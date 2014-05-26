@@ -132,12 +132,15 @@ namespace Diagnosis.App.ViewModels
 
             foreach (var item in all)
             {
+                if (item.IsEnum)
+                {
+                    item.Add(all.Where(w => w.word.Parent == item.word));
+                }
                 Subscribe(item);
             }
 
-            Root = new WordViewModel("root") { IsNonCheckable = true };
-            Root.Add(all);
-            Root.Initialize();
+            Root = new WordViewModel(new Word("root")) { IsNonCheckable = true };
+            Root.Add(all.Where(w => w.IsRoot)); // в корне только слова верхнего уровня
 
             Words = new ObservableCollection<WordViewModel>(Root.Children);
 
