@@ -12,6 +12,7 @@ namespace Diagnosis.App.Controls
     {
         public DataTemplate DiagnosisTemplate { get; set; }
         public DataTemplate SymptomTemplate { get; set; }
+        public DataTemplate WordTemplate { get; set; }
 
         public override DataTemplate
               SelectTemplate(object item, DependencyObject container)
@@ -22,9 +23,13 @@ namespace Diagnosis.App.Controls
                 {
                     return DiagnosisTemplate;
                 }
-                if (item is SymptomViewModel)
+                else if (item is SymptomViewModel)
                 {
                     return SymptomTemplate;
+                }
+                else if (item is WordViewModel)
+                {
+                    return WordTemplate;
                 }
             }
 

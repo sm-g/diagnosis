@@ -12,28 +12,30 @@
     <UserControl.Resources>
         <DataTemplate x:Key="DiagnosisTemplate">
             <DockPanel MouseUp="DockPanel_MouseUp">
-                <TextBlock Text="{Binding Code, FallbackValue=''}" Margin="0,0,3,0"/>
+                <TextBlock Text="{Binding Code, FallbackValue=''}" Margin="0,0,3,0" />
                 <TextBlock Text="{Binding Name}" />
             </DockPanel>
         </DataTemplate>
-        
-        <DataTemplate x:Key="SymptomTemplate">
-            <DockPanel MouseUp="DockPanel_MouseUp">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="{Binding Name}" />
-                    <TextBlock Grid.Column="1" Text="{Binding Category}" />
-                </Grid>
-            </DockPanel>
+        <DataTemplate x:Key="SymptomTemplate">
+            <Grid MouseUp="DockPanel_MouseUp">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" MinWidth="20" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="{Binding Name}" />
+                <TextBlock Grid.Column="2"
+                           HorizontalAlignment="Right"
+                           Text="{Binding DefaultCategory}" />
+            </Grid>
         </DataTemplate>
 
         <controls:AutocompleteDataTemplateSelector x:Key="AutocompleteTemplateSelector"
                                                    DiagnosisTemplate="{StaticResource DiagnosisTemplate}"
-                                                   SymptomTemplate="{StaticResource SymptomTemplate}"/>
+                                                   WordTemplate="{StaticResource SymptomTemplate}"
+                                                   SymptomTemplate="{StaticResource SymptomTemplate}" />
     </UserControl.Resources>
     <StackPanel x:Name="autocomplete"
                 Margin="5">
@@ -43,7 +45,7 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <TextBlock>Признаки через запятую:</TextBlock>
-            
+
             <TextBox x:Name="input"
                         Text="{Binding FullString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextChanged="input_TextChanged"
@@ -51,29 +53,27 @@
                         PreviewKeyDown="input_PreviewKeyDown"
                         GotFocus="input_GotFocus"
                         GotMouseCapture="input_GotMouseCapture"
-                        LostFocus="input_LostFocus" 
-                     Grid.Row="1"
- >
+                        LostFocus="input_LostFocus"
+                     Grid.Row="1">
                 <TextBox.InputBindings>
-                    <KeyBinding Key="Enter" Command="{Binding EnterCommand}"/>
+                    <KeyBinding Key="Enter" Command="{Binding EnterCommand}" />
                 </TextBox.InputBindings>
-                
             </TextBox>
 
             <Popup x:Name="popup" Height="Auto" Width="auto"
-                       StaysOpen="False" 
-                   Placement="Bottom" 
-                   PlacementTarget="{Binding ElementName=input}"
-                   IsOpen="false"
-                   
+                       StaysOpen="False"
+                       Placement="Bottom"
+                       PlacementTarget="{Binding ElementName=input}"
+                       IsOpen="false"
                        HorizontalAlignment="Left" Grid.RowSpan="2">
 
-                <ListBox x:Name="suggestions"                             
-                             MaxHeight="100"
-                             ItemsSource="{Binding Suggestions}"
-                             SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
-                             SelectionChanged="suggestions_SelectionChanged"
-                             ItemTemplateSelector="{StaticResource AutocompleteTemplateSelector}" />
+                <ListBox x:Name="suggestions"
+                        MaxHeight="100"
+                        ItemsSource="{Binding Suggestions}"
+                        SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
+                        SelectionChanged="suggestions_SelectionChanged"
+                        HorizontalContentAlignment="Stretch"
+                        ItemTemplateSelector="{StaticResource AutocompleteTemplateSelector}" />
             </Popup>
         </Grid>
     </StackPanel>
