@@ -12,9 +12,7 @@ namespace Diagnosis.App.ViewModels
         private SearchBase<WordViewModel> _search;
 
         public IEditable Editable { get; private set; }
-
-        public string SortingOrder { get; private set; }
-
+        
         public byte Priority
         {
             get
@@ -138,18 +136,6 @@ namespace Diagnosis.App.ViewModels
             this.AddIfNotExists(Search.SelectedItem, Search.searcher.AllChildren);
             Search.SelectedItem.IsChecked = true;
             Search.Clear();
-        }
-
-        internal void Initialize()
-        {
-            int i = 1;
-            foreach (WordViewModel child in Children)
-            {
-                System.Console.WriteLine("set parent. before {0} after {1}", child.Parent, this);
-                child.Parent = this;
-                child.SortingOrder = this.SortingOrder + i++;
-                child.Initialize();
-            }
         }
 
         public override string ToString()

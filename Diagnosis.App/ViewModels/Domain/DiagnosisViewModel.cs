@@ -11,8 +11,6 @@ namespace Diagnosis.App.ViewModels
 
         public IEditable Editable { get; private set; }
 
-        public string SortingOrder { get; private set; }
-
         public string Name
         {
             get
@@ -92,16 +90,6 @@ namespace Diagnosis.App.ViewModels
         private void DiagnosisViewModel_ChildrenChanged(object sender, System.EventArgs e)
         {
             IsNonCheckable = !IsTerminal;
-        }
-
-        internal void Initialize()
-        {
-            int i = 1;
-            foreach (DiagnosisViewModel child in Children)
-            {
-                child.SortingOrder = this.SortingOrder + i++;
-                child.Initialize();
-            }
         }
 
         public override string ToString()

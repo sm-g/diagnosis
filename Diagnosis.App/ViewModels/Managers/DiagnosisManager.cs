@@ -148,7 +148,6 @@ namespace Diagnosis.App.ViewModels
             var dia = new Diagnosis.Models.Diagnosis("code", "root");
             var root = new DiagnosisViewModel(dia);
             root.Add(chapterVms);
-            root.Initialize();
 
             Diagnoses = new ObservableCollection<DiagnosisViewModel>(root.Children);
         }
