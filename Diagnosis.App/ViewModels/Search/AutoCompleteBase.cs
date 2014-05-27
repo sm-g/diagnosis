@@ -15,10 +15,12 @@ namespace Diagnosis.App.ViewModels
         private bool _isItemCompleted;
         private ICommand _enterCommand;
 
+        private QuerySeparator separator;
+        private bool settingFullStringFromCode;
+
         protected List<T> items;
         protected ISearcher<T> searcher;
         protected SearcherSettings settings;
-        QuerySeparator separator;
 
         public event EventHandler SuggestionAccepted;
 
@@ -37,7 +39,7 @@ namespace Diagnosis.App.ViewModels
         }
 
         /// <summary>
-        /// Завершенность слова, true, после ввода или удаления разделителя.
+        /// Завершенность слова, true, после ввода или удаления разделителя или подтверждения выбранного предположения.
         /// </summary>
         public bool IsItemCompleted
         {
@@ -72,17 +74,18 @@ namespace Diagnosis.App.ViewModels
                     Console.WriteLine();
                     try
                     {
-                        if (value.Length < FullString.Length)
+                        if (!settingFullStringFromCode)
                         {
-                            AfterQueryShrink();
+                            if (value.Length < FullString.Length)
+                            {
+                                AfterQueryShrink();
+                            }
+                            else
+                            {
+                                value = AfterQueryGrow(value);
+                            }
                         }
-                        else
-                        {
-                            value = AfterQueryGrow(value);
-                        }
-
                         _fullString = value;
-
                         MakeSuggestions();
                     }
                     catch (System.Exception e)
@@ -307,7 +310,10 @@ namespace Diagnosis.App.ViewModels
         private void AcceptSuggestion()
         {
             AddItem(Suggestions[SelectedIndex]);
+
+            settingFullStringFromCode = true;
             FullString = ItemsChain;
+            settingFullStringFromCode = false;
 
             var h = SuggestionAccepted;
             if (h != null)
@@ -347,7 +353,7 @@ namespace Diagnosis.App.ViewModels
             this.separator = separator;
 
             items = new List<T>();
-
+            Suggestions = new ObservableCollection<T>();
             Reset();
         }
     }
