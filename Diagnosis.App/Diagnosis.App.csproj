@@ -211,6 +211,10 @@
     <Compile Include="Controls\RadioListBox.xaml.cs">
       <DependentUpon>RadioListBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TextBoxInfo.xaml.cs">
+      <DependentUpon>TextBoxInfo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\Summator.cs" />
     <Compile Include="Converters\DateUnitToLabel.cs" />
     <Compile Include="Converters\BooleanConverter.cs" />
     <Compile Include="Converters\BoolToSexSign.cs" />
@@ -402,6 +406,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\RadioListBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TextBoxInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

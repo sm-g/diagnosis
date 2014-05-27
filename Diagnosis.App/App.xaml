@@ -15,8 +15,10 @@
         <conv:AgeToYearsLabel x:Key="AgeToLabel" />
         <conv:BoolToSexSign x:Key="SexToSign" />
         <conv:DateUnitToLabel x:Key="unitConverter" />
-        
+        <conv:Summator x:Key="summatorConverter" />
+
         <s:Boolean x:Key="True">True</s:Boolean>
+        <s:Boolean x:Key="False">False</s:Boolean>
 
         <Style TargetType="TextBlock" x:Key="ScreenTitle">
             <Setter Property="FontSize" Value="20"/>
