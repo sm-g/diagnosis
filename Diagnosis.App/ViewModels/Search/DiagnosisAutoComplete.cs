@@ -23,8 +23,8 @@ namespace Diagnosis.App.ViewModels
             return item.Name;
         }
 
-        public DiagnosisAutoComplete(SearcherSettings settings = new SearcherSettings(), char delimeter = '.')
-            : base(settings, delimeter)
+        public DiagnosisAutoComplete(QuerySeparator separator, SearcherSettings settings = new SearcherSettings())
+            : base(separator, settings)
         { }
     }
 }

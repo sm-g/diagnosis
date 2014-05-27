@@ -15,14 +15,10 @@ namespace Diagnosis.App.ViewModels
         private bool _isItemCompleted;
         private ICommand _enterCommand;
 
-        protected readonly char separator;
         protected List<T> items;
         protected ISearcher<T> searcher;
         protected SearcherSettings settings;
-
-        string delimGroup;
-        string separatorEsc;
-        public char DelimSpacer { get { return ' '; } }
+        QuerySeparator separator;
 
         public event EventHandler SuggestionAccepted;
 
@@ -30,6 +26,14 @@ namespace Diagnosis.App.ViewModels
         void ObjectInvariant()
         {
             Contract.Invariant(FullString.Length >= ItemsChain.Length);
+        }
+
+        public char DelimSpacer
+        {
+            get
+            {
+                return separator.Spacer;
+            }
         }
 
         /// <summary>
@@ -90,22 +94,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-        /// <summary>
-        /// Удаляет лишние разделительные символы.
-        /// Например, "абв..  где.  ." → "абс. где. "
-        /// </summary>
-        private string TrimExcessDelimeters(string value)
-        {
-            Console.WriteLine("before trim '{0}'", value);
 
-            // оставляем по одному пробелу
-            var trimed = Regex.Replace(value, @"\s+", DelimSpacer.ToString());
-            // повторные группы разделительных символов заменяем на одну группу
-            trimed = Regex.Replace(trimed, @"[\s" + separatorEsc + "]+", delimGroup);
-
-            Console.WriteLine("after trim '{0}'", trimed);
-            return trimed;
-        }
         /// <summary>
         /// Строка из разделённых элементов из коллекции.
         /// </summary>
@@ -113,10 +102,10 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                var chain = items.Aggregate("", (full, s) => full += GetQueryString(s).ToLower() + delimGroup);
+                var chain = items.Aggregate("", (full, s) => full += GetQueryString(s).ToLower() + separator.DelimGroup);
                 if (items.Count > 0)
                 {
-                    chain = chain.Substring(0, chain.Length - delimGroup.Length);
+                    chain = chain.Substring(0, chain.Length - separator.DelimGroup.Length);
                 }
                 Console.WriteLine("Get ItemsChain: '{0}'", chain);
                 return chain;
@@ -132,13 +121,13 @@ namespace Diagnosis.App.ViewModels
                 string last = "";
 
                 int delimOffset = 0;
-                if (FullString.EndsWith(delimGroup))
-                    delimOffset = delimGroup.Length;
+                if (FullString.EndsWith(separator.DelimGroup))
+                    delimOffset = separator.DelimGroup.Length;
                 else if (FullString.EndsWith(separator.ToString()))
                     delimOffset = 1;
                 else if (items.Count > 0)
                 {
-                    delimOffset = delimGroup.Length;
+                    delimOffset = separator.DelimGroup.Length;
                 }
 
                 if (ItemsChain.Length + delimOffset < FullString.Length)
@@ -206,8 +195,8 @@ namespace Diagnosis.App.ViewModels
         /// <param name="value">Новое значение строки запроса для анализа.</param>
         private string CheckAfterAdding(string value)
         {
-            var trimed = TrimExcessDelimeters(value);
-            if (value.LastOrDefault() == separator)
+            var trimed = separator.TrimExcessDelimiters(value);
+            if (value.LastOrDefault() == separator.Delimiter)
             {
                 // добавляем разделитель
                 if (IsItemCompleted)
@@ -218,7 +207,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     Console.WriteLine("добавляем разделитель, слово не было завершено");
                     AddItem(Suggestions[SelectedIndex]);
-                    trimed = ItemsChain + delimGroup;
+                    trimed = ItemsChain + separator.DelimGroup;
                 }
                 IsItemCompleted = false;
                 SetSearchContext();
@@ -246,9 +235,9 @@ namespace Diagnosis.App.ViewModels
                 IsItemCompleted = false;
                 SetSearchContext();
             }
-            else if (FullString.EndsWith(delimGroup) || FullString.LastOrDefault() == separator)
+            else if (FullString.EndsWith(separator.DelimGroup) || FullString.LastOrDefault() == separator.Delimiter)
             {
-                if (FullString.LastOrDefault() == separator)
+                if (FullString.LastOrDefault() == separator.Delimiter)
                 {
                     Console.WriteLine("удаляем разделитель");
                     // удаляем разделитель
@@ -349,14 +338,13 @@ namespace Diagnosis.App.ViewModels
 
         protected abstract string GetQueryString(T item);
 
-        public AutoCompleteBase(SearcherSettings settings, char separator = '.')
+        public AutoCompleteBase(QuerySeparator separator, SearcherSettings settings)
         {
-            items = new List<T>();
-
-            this.separator = separator;
-            delimGroup = separator.ToString() + DelimSpacer.ToString();
-            separatorEsc = Regex.Escape(separator.ToString());
+            Contract.Requires(separator != null);
             this.settings = settings;
+            this.separator = separator;
+
+            items = new List<T>();
 
             Reset();
         }

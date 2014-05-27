@@ -25,7 +25,7 @@ namespace Diagnosis.App.ViewModels
 
         public SearchViewModel()
         {
-            WordSearch = new WordAutoCompleteComposite();
+            WordSearch = new WordAutoCompleteComposite(QuerySeparator.Default);
             Words = new ObservableCollection<WordViewModel>();
             Results = new ObservableCollection<HealthRecordViewModel>();
 

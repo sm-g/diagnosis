@@ -17,7 +17,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _wordAutoComplete ?? (_wordAutoComplete = new WordAutoComplete());
+                return _wordAutoComplete ?? (_wordAutoComplete = new WordAutoComplete(QuerySeparator.Default));
             }
         }
 
@@ -25,7 +25,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _diaAutoComplete ?? (_diaAutoComplete = new DiagnosisAutoComplete(new SearcherSettings(true, true, false)));
+                return _diaAutoComplete ?? (_diaAutoComplete = new DiagnosisAutoComplete(QuerySeparator.Default, new SearcherSettings(true, true, false)));
             }
         }
 
@@ -42,7 +42,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _autoComplete ?? (_autoComplete = new AutoComplete());
+                return _autoComplete ?? (_autoComplete = new AutoComplete(QuerySeparator.Default));
             }
         }
 
