@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Diagnosis.App.ViewModels
+namespace Diagnosis.Core
 {
     /// <summary>
     /// Выполняет разбиение данной последовательности n элементов

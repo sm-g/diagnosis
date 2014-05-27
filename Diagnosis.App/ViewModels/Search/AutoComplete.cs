@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Diagnostics.Contracts;
 using System.Windows.Input;
+using Diagnosis.Core;
 
 namespace Diagnosis.App.ViewModels
 {

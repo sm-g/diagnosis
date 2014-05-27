@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections.ObjectModel;
 using EventAggregator;
+using Diagnosis.Core;
 using System.Text;
 
 namespace Diagnosis.App.ViewModels

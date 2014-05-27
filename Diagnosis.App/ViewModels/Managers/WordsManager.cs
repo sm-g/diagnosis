@@ -1,4 +1,5 @@
-﻿using Diagnosis.Data.Repositories;
+﻿using Diagnosis.Core;
+using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
 using EventAggregator;
 using System.Collections.Generic;

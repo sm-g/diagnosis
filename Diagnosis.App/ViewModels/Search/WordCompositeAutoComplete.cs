@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Diagnosis.Core;
 
 namespace Diagnosis.App.ViewModels
 {

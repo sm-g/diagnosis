@@ -1,14 +1,13 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.Core;
+using Diagnosis.Models;
 using EventAggregator;
+using NHibernate;
 using System;
 using System.Collections.ObjectModel;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Data;
-using NHibernate;
-using NHibernate.Criterion;
 using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels

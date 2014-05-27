@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Linq;
 
-namespace Diagnosis.App.ViewModels
+namespace Diagnosis.Core
 {
     public class QuerySeparator
     {

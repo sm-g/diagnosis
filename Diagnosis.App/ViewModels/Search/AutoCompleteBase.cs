@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Diagnosis.Core;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Windows.Input;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {

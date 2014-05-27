@@ -218,7 +218,6 @@
     <Compile Include="Converters\IntToString.cs" />
     <Compile Include="DebugOutput.cs" />
     <Compile Include="EntityManagers.cs" />
-    <Compile Include="Extensions\ConvertExtensions.cs" />
     <Compile Include="MessagingParams.cs" />
     <Compile Include="Screens\Search.xaml.cs">
       <DependentUpon>Search.xaml</DependentUpon>
@@ -234,10 +233,8 @@
     </Compile>
     <Compile Include="ViewModels\Search\DiagnosisFiltratingSearcher.cs" />
     <Compile Include="ViewModels\Search\DiagnosisSearcher.cs" />
-    <Compile Include="ViewModels\Search\Combination.cs" />
     <Compile Include="ViewModels\Search\HrSearcher.cs" />
     <Compile Include="ViewModels\Search\HrSearchOptions.cs" />
-    <Compile Include="ViewModels\Search\QuerySeparator.cs" />
     <Compile Include="ViewModels\Search\SearcherSettings.cs" />
     <Compile Include="ViewModels\Search\SearchTester.cs" />
     <Compile Include="ViewModels\Search\SearchViewModel.cs" />
@@ -249,10 +246,9 @@
     <Compile Include="ViewModels\Managers\CategoryManager.cs" />
     <Compile Include="ViewModels\Managers\SymptomsManager.cs" />
     <Compile Include="ViewModels\Managers\WordsManager.cs" />
-    <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="ViewModels\Extensions\HierarchicalExtensions.cs" />
     <Compile Include="ViewModels\Search\AutoComplete.cs" />
     <Compile Include="ViewModels\Search\SearchWrap.cs" />
-    <Compile Include="ViewModels\Search\SequencePartition.cs" />
     <Compile Include="ViewModels\Domain\SymptomViewModel.cs" />
     <Compile Include="ViewModels\HierarchicalCheckable.cs" />
     <Compile Include="ViewModels\Managers\DiagnosisManager.cs" />

@@ -1,11 +1,10 @@
-﻿using Diagnosis.Data.Repositories;
+﻿using Diagnosis.Core;
+using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
-using EventAggregator;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {

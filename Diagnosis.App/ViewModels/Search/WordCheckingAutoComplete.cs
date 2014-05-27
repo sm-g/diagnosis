@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Diagnosis.Core;
+using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -8,7 +9,6 @@ namespace Diagnosis.App.ViewModels
         {
             WordSearcher searcher;
             searcher = new WordSearcher(EntityManagers.WordsManager.Root, settings);
-            searcher.UpperPriority = parent.Priority;
             return searcher;
         }
 

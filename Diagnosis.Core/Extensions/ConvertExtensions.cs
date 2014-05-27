@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Diagnosis.App.ViewModels
 {
-    static class ConvertExtensions
+    public static class ConvertExtensions
     {
         public static TDest? ConvertTo<TSource, TDest>(this TSource? source)
             where TDest : struct
