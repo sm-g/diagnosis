@@ -1,10 +1,11 @@
 ﻿using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
 using EventAggregator;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Collections.Generic;
+using System;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -13,9 +14,34 @@ namespace Diagnosis.App.ViewModels
     /// </summary>
     public class DiagnosisManager : ViewModelBase
     {
-        private IcdChapterRepository repository;
-        ObservableCollection<DiagnosisViewModel> _diagnoses;
-        DiagnosisFiltratingSearcher _diagnosisSearcher;
+        private readonly IcdChapterRepository repository;
+        DiagnosisViewModel _root;
+        private ObservableCollection<DiagnosisViewModel> _diagnoses;
+        private DiagnosisFiltratingSearcher _diaFiltratingSearcher;
+        private DiagnosisSearcher _diaSearcher;
+
+        public event EventHandler RootChanged;
+
+        private DiagnosisViewModel Root
+        {
+            get
+            {
+                return _root;
+            }
+            set
+            {
+                if (_root != value)
+                {
+                    _root = value;
+                    _diaFiltratingSearcher = new DiagnosisFiltratingSearcher(_root);
+                    _diaSearcher = new DiagnosisSearcher(_root, new SearcherSettings() { WithChecked = true, AllChildren = true });
+
+                    OnPropertyChanged(() => RootSearcher);
+                    OnPropertyChanged(() => FiltratingSearcher);
+                    OnRootChanged(EventArgs.Empty);
+                }
+            }
+        }
 
         public ObservableCollection<DiagnosisViewModel> Diagnoses
         {
@@ -27,12 +53,22 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Поисковик по всем диагнозам, кроме групп, создает новые из запроса.
+        /// </summary>
+        public DiagnosisSearcher RootSearcher
+        {
+            get
+            {
+                return _diaSearcher;
+            }
+        }
+
         public DiagnosisFiltratingSearcher FiltratingSearcher
         {
             get
             {
-                return _diagnosisSearcher ?? (_diagnosisSearcher =
-                  new DiagnosisFiltratingSearcher(EntityManagers.DiagnosisManager.Diagnoses[0].Parent));
+                return _diaFiltratingSearcher;
             }
         }
 
@@ -148,8 +184,9 @@ namespace Diagnosis.App.ViewModels
             var dia = new Diagnosis.Models.Diagnosis("code", "root");
             var root = new DiagnosisViewModel(dia);
             root.Add(chapterVms);
+            Root = root; // IEnumarable
 
-            Diagnoses = new ObservableCollection<DiagnosisViewModel>(root.Children);
+            Diagnoses = new ObservableCollection<DiagnosisViewModel>(Root.Children);
         }
 
         private void OnDirectoryEditingModeChanged(bool isEditing)
@@ -166,6 +203,14 @@ namespace Diagnosis.App.ViewModels
         private void UnCheckAll()
         {
             Diagnoses.ForBranch((dvm) => dvm.IsChecked = false);
+        }
+        protected virtual void OnRootChanged(EventArgs e)
+        {
+            var h = RootChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
         }
     }
 }

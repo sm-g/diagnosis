@@ -1,6 +1,6 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.Core;
+using Diagnosis.Models;
 using EventAggregator;
-using Diagnosis.Core;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,11 +13,10 @@ namespace Diagnosis.App.ViewModels
     {
         internal readonly HealthRecord healthRecord;
         private AutoComplete _autoComplete;
-        AutoCompleteBase<WordViewModel> _autoComplete2;
-        SearchBase<DiagnosisViewModel> _diagnosisSearch;
+        private AutoCompleteBase<WordViewModel> _autoComplete2;
+        private ISearch<DiagnosisViewModel> _diagnosisSearch;
         private DateOffset _dateOffset;
         private List<EventMessageHandler> msgHandlers;
-
 
         public IEditable Editable { get; private set; }
 
@@ -286,6 +285,7 @@ namespace Diagnosis.App.ViewModels
                     QuerySeparator.Default));
             }
         }
+
         public AutoCompleteBase<WordViewModel> AutoComplete2
         {
             get
@@ -295,22 +295,29 @@ namespace Diagnosis.App.ViewModels
                     new SearcherSettings() { AllChildren = true, WithCreatingNew = true }));
             }
         }
+
         public ISearch<DiagnosisViewModel> DiagnosisSearch
         {
             get
             {
-                if (_diagnosisSearch == null)
-                {
-                    _diagnosisSearch = new SearchBase<DiagnosisViewModel>(
-                        EntityManagers.DiagnosisManager.FiltratingSearcher);
-                    _diagnosisSearch.ResultItemSelected += (s, e) =>
-                    {
-                        Console.WriteLine("selected {0}", _diagnosisSearch.SelectedItem);
-                        _diagnosisSearch.SelectedItem.IsChecked = true;
-                    };
-                }
                 return _diagnosisSearch;
             }
+            set
+            {
+                if (_diagnosisSearch != value)
+                {
+                    _diagnosisSearch = value;
+                    OnPropertyChanged(() => DiagnosisSearch);
+                }
+            }
+        }
+
+        private void CreateDiagnosisSearch()
+        {
+            DiagnosisSearch = new SearchBase<DiagnosisViewModel>(
+                   EntityManagers.DiagnosisManager.FiltratingSearcher);
+
+            DiagnosisSearch.ResultItemSelected += OnDiagnosisSearchItemSelected;
         }
 
         private static bool makingCurrent;
@@ -324,7 +331,7 @@ namespace Diagnosis.App.ViewModels
                 currentHr.Unsubscribe();
             }
             currentHr = this;
-            this.Subscribe();
+            this.SubscribeToCheckedChanges();
 
             makingCurrent = true;
             if (Symptom != null)
@@ -345,18 +352,38 @@ namespace Diagnosis.App.ViewModels
             Symptom = EntityManagers.SymptomsManager.Symptoms.FirstOrDefault(s => s.symptom == hr.Symptom);
             Diagnosis = EntityManagers.DiagnosisManager.GetHealthRecordDiagnosis(healthRecord);
 
-            this.PropertyChanged += HealthRecordViewModel_PropertyChanged;
+            SubscribeToPropertyChanges();
+
             Editable.CanBeDirty = true;
+
+            CreateDiagnosisSearch();
         }
 
-        public override string ToString()
+        public void Unsubscribe()
         {
-            return string.Format("{0} {1} {2}", DateOffset, Category, Symptom);
+            foreach (var h in msgHandlers)
+            {
+                h.Dispose();
+            }
         }
 
         #region Event handlers
+        private void SubscribeToPropertyChanges()
+        {
+            this.PropertyChanged += HealthRecordViewModel_PropertyChanged;
+            EntityManagers.DiagnosisManager.RootChanged += (s, e) =>
+            {
+                if (DiagnosisSearch != null)
+                {
+                    DiagnosisSearch.ResultItemSelected -= OnDiagnosisSearchItemSelected;
+                }
 
-        public void Subscribe()
+                CreateDiagnosisSearch();
+            };
+        }
+
+
+        private void SubscribeToCheckedChanges()
         {
             msgHandlers = new List<EventMessageHandler>()
             {
@@ -383,6 +410,12 @@ namespace Diagnosis.App.ViewModels
             };
         }
 
+        private void OnDiagnosisSearchItemSelected(object s, EventArgs e)
+        {
+            Console.WriteLine("selected {0}", DiagnosisSearch.SelectedItem);
+            DiagnosisSearch.SelectedItem.IsChecked = true;
+        }
+
         private void HealthRecordViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "IsSelected")
@@ -392,15 +425,6 @@ namespace Diagnosis.App.ViewModels
                     MakeCurrent();
             }
         }
-
-        public void Unsubscribe()
-        {
-            foreach (var h in msgHandlers)
-            {
-                h.Dispose();
-            }
-        }
-
         private void OnWordCheckedChanged(WordViewModel word, bool isChecked)
         {
             // меняем симптом у открытой записи
@@ -441,5 +465,10 @@ namespace Diagnosis.App.ViewModels
         }
 
         #endregion Event handlers
+        public override string ToString()
+        {
+            return string.Format("{0} {1} {2}", DateOffset, Category, Symptom);
+        }
+
     }
 }
