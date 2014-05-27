@@ -9,7 +9,7 @@ namespace Diagnosis.App.ViewModels
             WordSearcher searcher;
             if (parent == null)
             {
-                parent = EntityManagers.WordsManager.Words[0].Parent;
+                parent = EntityManagers.WordsManager.Root;
             }
             searcher = new WordSearcher(parent, settings);
             searcher.UpperPriority = parent.Priority;

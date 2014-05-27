@@ -22,13 +22,13 @@ namespace Diagnosis.App.ViewModels
 
         public event EventHandler RootChanged;
 
-        private DiagnosisViewModel Root
+        public DiagnosisViewModel Root
         {
             get
             {
                 return _root;
             }
-            set
+            private set
             {
                 if (_root != value)
                 {
@@ -80,7 +80,7 @@ namespace Diagnosis.App.ViewModels
 
             if (Diagnoses.Count > 0)
             {
-                return Diagnoses[0].Parent.AllChildren.Where(d => d.diagnosis.Code == hr.Disease.Code).SingleOrDefault();
+                return Root.AllChildren.Where(d => d.diagnosis.Code == hr.Disease.Code).SingleOrDefault();
             }
 
             return null;

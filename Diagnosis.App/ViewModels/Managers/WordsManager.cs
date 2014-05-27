@@ -22,6 +22,8 @@ namespace Diagnosis.App.ViewModels
             get;
             private set;
         }
+        public WordViewModel Root { get { return root; } }
+
 
         /// <summary>
         /// Поисковик по всем словам, кроме групп, создает новые из запроса.
