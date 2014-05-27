@@ -11,8 +11,8 @@ namespace Diagnosis.App.ViewModels
     /// </summary>
     public class WordSearcherComposite : WordSearcher
     {
-        public WordSearcherComposite(WordViewModel parent, bool withNonCheckable = false, bool withChecked = false, bool withCreatingNew = true, bool allChildren = true) :
-            base(parent, withNonCheckable, withChecked, withCreatingNew, allChildren)
+        public WordSearcherComposite(WordViewModel parent, SearcherSettings settings) :
+            base(parent, settings)
         {
         }
         /// <summary>

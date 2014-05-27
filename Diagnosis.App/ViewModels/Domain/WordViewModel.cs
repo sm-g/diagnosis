@@ -12,7 +12,7 @@ namespace Diagnosis.App.ViewModels
         private SearchBase<WordViewModel> _search;
 
         public IEditable Editable { get; private set; }
-        
+
         public byte Priority
         {
             get
@@ -104,7 +104,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_search == null)
                 {
-                    _search = new SearchBase<WordViewModel>(new WordSearcher(this));
+                    _search = new SearchBase<WordViewModel>(new WordSearcher(this, new SearcherSettings()));
                     _search.ResultItemSelected += _search_ResultItemSelected;
                 }
                 return _search;

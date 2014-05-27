@@ -11,7 +11,7 @@ namespace Diagnosis.App.ViewModels
             {
                 parent = EntityManagers.WordsManager.Words[0].Parent;
             }
-            searcher = new WordSearcher(parent, false, false, true); // groups, cheсked, all children
+            searcher = new WordSearcher(parent, settings);
             searcher.UpperPriority = parent.Priority;
             return searcher;
         }
@@ -26,5 +26,9 @@ namespace Diagnosis.App.ViewModels
             if (items.Count > 0)
                 items.Last().AddIfNotExists(item, searcher.AllChildren);
         }
+
+        public WordAutoComplete(SearcherSettings settings = new SearcherSettings(), char delimeter = '.')
+            : base(settings, delimeter)
+        { }
     }
 }

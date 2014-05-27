@@ -15,15 +15,15 @@ namespace Diagnosis.App.ViewModels
 
         public IEnumerable<WordViewModel> Collection { get; private set; }
 
-        public WordSearcher(WordViewModel parent, bool withNonCheckable = false, bool withChecked = false, bool withCreatingNew = true, bool allChildren = true)
+        public WordSearcher(WordViewModel parent, SearcherSettings settings)
         {
             Contract.Requires(parent != null);
-            Collection = allChildren ? parent.AllChildren : parent.Children;
+            Collection = settings.AllChildren ? parent.AllChildren : parent.Children;
 
-            AllChildren = allChildren;
-            WithNonCheckable = withNonCheckable;
-            WithChecked = withChecked;
-            WithCreatingNew = withCreatingNew;
+            AllChildren = settings.AllChildren;
+            WithNonCheckable = settings.WithNonCheckable;
+            WithChecked = settings.WithChecked;
+            WithCreatingNew = settings.WithCreatingNew;
         }
 
         /// <summary>

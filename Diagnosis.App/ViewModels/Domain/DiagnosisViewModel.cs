@@ -63,7 +63,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_search == null)
                 {
-                    _search = new SearchBase<DiagnosisViewModel>(new DiagnosisSearcher(this));
+                    _search = new SearchBase<DiagnosisViewModel>(new DiagnosisSearcher(this, new SearcherSettings()));
                     _search.ResultItemSelected += _search_ResultItemSelected;
                 }
                 return _search;

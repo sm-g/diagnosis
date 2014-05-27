@@ -13,6 +13,7 @@ namespace Diagnosis.App.ViewModels
     {
         internal readonly HealthRecord healthRecord;
         private AutoComplete _autoComplete;
+        AutoCompleteBase<WordViewModel> _autoComplete2;
         SearchBase<DiagnosisViewModel> _diagnosisSearch;
         private DateOffset _dateOffset;
         private List<EventMessageHandler> msgHandlers;
@@ -284,8 +285,7 @@ namespace Diagnosis.App.ViewModels
                 return _autoComplete ?? (_autoComplete = new AutoComplete());
             }
         }
-        WordAutoCompleteComposite _autoComplete2;
-        public WordAutoCompleteComposite AutoComplete2
+        public AutoCompleteBase<WordViewModel> AutoComplete2
         {
             get
             {

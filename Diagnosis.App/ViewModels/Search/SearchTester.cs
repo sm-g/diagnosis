@@ -7,7 +7,12 @@ namespace Diagnosis.App.ViewModels
 {
     public class SearchTester : ViewModelBase
     {
-        AutoCompleteBase<WordViewModel> _wordAutoComplete;
+        private AutoCompleteBase<WordViewModel> _wordAutoComplete;
+        private AutoCompleteBase<DiagnosisViewModel> _diaAutoComplete;
+        private SearchBase<DiagnosisViewModel> _diagnosisSearch;
+        private AutoComplete _autoComplete;
+        private SearchBase<DiagnosisViewModel> _diaSearch;
+
         public AutoCompleteBase<WordViewModel> WordAutoComplete
         {
             get
@@ -16,16 +21,14 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        AutoCompleteBase<DiagnosisViewModel> _diaAutoComplete;
         public AutoCompleteBase<DiagnosisViewModel> DiagnosisAutoComplete
         {
             get
             {
-                return _diaAutoComplete ?? (_diaAutoComplete = new DiagnosisAutoComplete());
+                return _diaAutoComplete ?? (_diaAutoComplete = new DiagnosisAutoComplete(new SearcherSettings(true, true, false)));
             }
         }
 
-        SearchBase<DiagnosisViewModel> _diagnosisSearch;
         public ISearch<DiagnosisViewModel> DiagnosisFilteringSearch
         {
             get
@@ -35,7 +38,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private AutoComplete _autoComplete;
         public AutoComplete AutoComplete
         {
             get
@@ -44,12 +46,12 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private SearchBase<DiagnosisViewModel> _diaSearch;
         public SearchBase<DiagnosisViewModel> DiagnosisSearch
         {
             get
             {
-                return _diaSearch ?? (_diaSearch = new SearchBase<DiagnosisViewModel>(new DiagnosisSearcher(EntityManagers.DiagnosisManager.Diagnoses[0].Children[1])));
+                return _diaSearch ?? (_diaSearch = new SearchBase<DiagnosisViewModel>(
+                    new DiagnosisSearcher(EntityManagers.DiagnosisManager.Diagnoses[0].Children[1], new SearcherSettings())));
             }
         }
     }

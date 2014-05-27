@@ -16,14 +16,19 @@ namespace Diagnosis.App.ViewModels
 
         public IEnumerable<DiagnosisViewModel> Collection { get; private set; }
 
-        public DiagnosisSearcher(DiagnosisViewModel parent, bool withNonCheckable = false, bool withChecked = false, bool allChildren = true)
+        /// <summary>
+        /// WithCreatingNew in settings will be set to false.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="settings"></param>
+        public DiagnosisSearcher(DiagnosisViewModel parent, SearcherSettings settings)
         {
             Contract.Requires(parent != null);
-            Collection = allChildren ? parent.AllChildren : parent.Children;
+            Collection = settings.AllChildren ? parent.AllChildren : parent.Children;
 
-            AllChildren = allChildren;
-            WithNonCheckable = withNonCheckable;
-            WithChecked = withChecked;
+            AllChildren = settings.AllChildren;
+            WithNonCheckable = settings.WithNonCheckable;
+            WithChecked = settings.WithChecked;
             WithCreatingNew = false;
         }
 

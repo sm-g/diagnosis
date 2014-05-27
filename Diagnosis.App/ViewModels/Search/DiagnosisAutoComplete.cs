@@ -14,7 +14,7 @@ namespace Diagnosis.App.ViewModels
             {
                 parent = EntityManagers.DiagnosisManager.Diagnoses[0].Parent;
             }
-            searcher = new DiagnosisSearcher(parent, true, true, false); // groups, cheсked, all children
+            searcher = new DiagnosisSearcher(parent, settings);
             return searcher;
         }
 
@@ -22,5 +22,9 @@ namespace Diagnosis.App.ViewModels
         {
             return item.Name;
         }
+
+        public DiagnosisAutoComplete(SearcherSettings settings = new SearcherSettings(), char delimeter = '.')
+            : base(settings, delimeter)
+        { }
     }
 }

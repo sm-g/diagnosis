@@ -27,7 +27,8 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _searcher ?? (_searcher = new WordSearcher(Root, withChecked: true));
+                return _searcher ?? (_searcher = new WordSearcher(Root,
+                    new SearcherSettings() { WithChecked = true }));
             }
         }
 

@@ -18,6 +18,7 @@ namespace Diagnosis.App.ViewModels
         protected readonly char separator;
         protected List<T> items;
         protected ISearcher<T> searcher;
+        protected SearcherSettings settings;
 
         string delimGroup;
         string separatorEsc;
@@ -348,12 +349,14 @@ namespace Diagnosis.App.ViewModels
 
         protected abstract string GetQueryString(T item);
 
-        public AutoCompleteBase(char separator = '.')
+        public AutoCompleteBase(SearcherSettings settings, char separator = '.')
         {
             items = new List<T>();
+
             this.separator = separator;
             delimGroup = separator.ToString() + DelimSpacer.ToString();
             separatorEsc = Regex.Escape(separator.ToString());
+            this.settings = settings;
 
             Reset();
         }
