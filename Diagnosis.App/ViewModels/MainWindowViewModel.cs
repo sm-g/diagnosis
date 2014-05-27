@@ -15,12 +15,12 @@ namespace Diagnosis.App.ViewModels
         private bool _fastAddingMode;
         private bool _isPatientsVisible;
         private bool _isWordsEditing;
-        private bool _searchTester;
-        private bool _search;
+        private bool _searchTesterState;
+        private bool _searchState;
         private ViewModelBase _currentScreen;
         private object _directoryExplorer;
 
-        #endregion
+        #endregion Fields
 
         #region Flags
 
@@ -109,13 +109,13 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _searchTester;
+                return _searchTesterState;
             }
             set
             {
-                if (_searchTester != value)
+                if (_searchTesterState != value)
                 {
-                    _searchTester = value;
+                    _searchTesterState = value;
                     if (value)
                     {
                         CurrentScreen = new SearchTester();
@@ -133,21 +133,13 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _search;
+                return _searchState;
             }
             set
             {
-                if (_search != value)
+                if (_searchState != value)
                 {
-                    _search = value;
-                    if (value)
-                    {
-                        CurrentScreen = new SearchViewModel();
-                    }
-                    else
-                    {
-                        CurrentScreen = EntityManagers.PatientsManager.CurrentPatient;
-                    }
+                    _searchState = value;
                     OnPropertyChanged(() => SearchState);
                 }
             }
@@ -211,6 +203,13 @@ namespace Diagnosis.App.ViewModels
                     OnPropertyChanged(() => DirectoryExplorer);
                 }
             }
+        }
+
+        private SearchViewModel _search;
+
+        public SearchViewModel Search
+        {
+            get { return _search ?? (_search = new SearchViewModel()); }
         }
 
         #endregion ViewModels

@@ -31,18 +31,14 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-
-        <ContentControl Content="{Binding CurrentScreen}"
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Margin="10" />
-
+        
         <Grid x:Name="header"
               Grid.ColumnSpan="2"
               Visibility="{Binding IsLoginActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
@@ -54,14 +50,12 @@
                     <MenuItem Header="Симптомы" Command="{Binding EditSymptomsDirectoryCommand}" />
                     <MenuItem Header="Диагнозы" Command="{Binding EditDiagnosisDirectoryCommand}" />
                 </MenuItem>
-                <CheckBox IsChecked="{Binding SearchTesterState}"
-				          Content="Автокомплиты" />
-                <CheckBox IsChecked="{Binding SearchState}"
-				    Content="Поиск" />
+                <CheckBox IsChecked="{Binding SearchTesterState}">Автокомплиты</CheckBox>
+                <CheckBox IsChecked="{Binding SearchState}">Поиск</CheckBox>
             </Menu>
-
-            <CheckBox IsChecked="{Binding FastAddingMode}"
-				HorizontalAlignment="Center" Content="Приём" />
+            <Menu HorizontalAlignment="Center">
+                <CheckBox IsChecked="{Binding FastAddingMode}">Приём</CheckBox>
+            </Menu>
 
             <Menu HorizontalAlignment="Right">
                 <MenuItem Header="{Binding LoginVM.DoctorsManager.CurrentDoctor.ShortName}">
@@ -69,9 +63,16 @@
                 </MenuItem>
             </Menu>
         </Grid>
+        <Border Grid.Row="1" 
+                Grid.Column="1" 
+                Margin="10" 
+                Visibility="{Binding SearchState, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <screen:Search DataContext="{Binding Search}" />
+        </Border>
         <Expander IsExpanded="{Binding IsPatientsVisible}"
                   Visibility="{Binding IsLoginActive, Converter={StaticResource NegBooleanToVisibilityConverter}}"                  
-                  Grid.Row="2"
+                  Grid.Row="1"
+                  Grid.RowSpan="2"
         		ExpandDirection="Right"
         		RenderTransformOrigin="0.5,0.5"
         		BorderThickness="0,0,1,0"
@@ -92,5 +93,10 @@
         			DataContext="{Binding PatientsManager}"
         			Margin="10" />
         </Expander>
+
+        <ContentControl Content="{Binding CurrentScreen}"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Margin="10" />
     </Grid>
 </Window>
