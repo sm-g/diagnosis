@@ -327,6 +327,9 @@ namespace Diagnosis.App.ViewModels
         {
             if (currentHr != null)
             {
+                // оставляем редактор открытым при смене выбранной записи
+                this.Editable.IsEditorActive = currentHr.Editable.IsEditorActive;
+
                 currentHr.Editable.CommitCommand.Execute(null);
                 currentHr.Unsubscribe();
             }

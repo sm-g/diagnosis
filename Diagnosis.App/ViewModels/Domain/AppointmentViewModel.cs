@@ -68,12 +68,6 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_selectedHealthRecord != value)
                 {
-                    if (_selectedHealthRecord != null && value != null)
-                    {
-                        // оставляем редактор открытым при смене выбранной записи
-                        value.Editable.IsEditorActive = _selectedHealthRecord.Editable.IsEditorActive;
-                        _selectedHealthRecord.Editable.IsEditorActive = false;
-                    }
                     if (value != null)
                     {
                         value.IsSelected = true;
