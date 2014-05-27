@@ -290,7 +290,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _autoComplete2 ?? (_autoComplete2 = new WordAutoCompleteComposite(
+                return _autoComplete2 ?? (_autoComplete2 = new WordCompositeAutoComplete(
                     QuerySeparator.Default,
                     new SearcherSettings() { AllChildren = true, WithCreatingNew = true }));
             }

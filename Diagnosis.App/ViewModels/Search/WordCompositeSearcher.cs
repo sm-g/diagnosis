@@ -9,9 +9,9 @@ namespace Diagnosis.App.ViewModels
     /// Ищет по детям переданного родителя и всем словам отдельно. 
     /// Результаты поиска по всем словам возвращаются только если строка запроса не пуста.
     /// </summary>
-    public class WordSearcherComposite : WordSearcher
+    public class WordCompositeSearcher : WordSearcher
     {
-        public WordSearcherComposite(WordViewModel parent, SearcherSettings settings) :
+        public WordCompositeSearcher(WordViewModel parent, SearcherSettings settings) :
             base(parent, settings)
         {
         }

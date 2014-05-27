@@ -241,8 +241,8 @@
     <Compile Include="ViewModels\Search\SearcherSettings.cs" />
     <Compile Include="ViewModels\Search\SearchTester.cs" />
     <Compile Include="ViewModels\Search\SearchViewModel.cs" />
-    <Compile Include="ViewModels\Search\WordAutoCompleteComposite.cs" />
-    <Compile Include="ViewModels\Search\WordSearcherComposite.cs" />
+    <Compile Include="ViewModels\Search\WordCompositeAutoComplete.cs" />
+    <Compile Include="ViewModels\Search\WordCompositeSearcher.cs" />
     <Compile Include="ViewModels\Search\WordSearcher.cs" />
     <Compile Include="ViewModels\Search\PatientSearcher.cs" />
     <Compile Include="ViewModels\Domain\CategoryViewModel.cs" />
@@ -314,7 +314,7 @@
     <Compile Include="ViewModels\HierarchicalExplorer.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
     <Compile Include="ViewModels\Search\SearchBase.cs" />
-    <Compile Include="ViewModels\Search\WordAutoComplete.cs" />
+    <Compile Include="ViewModels\Search\WordCheckingAutoComplete.cs" />
     <Compile Include="ViewModels\Domain\WordViewModel.cs" />
     <Compile Include="Controls\Directory\FullTree.xaml.cs">
       <DependentUpon>FullTree.xaml</DependentUpon>

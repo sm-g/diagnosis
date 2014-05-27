@@ -2,16 +2,12 @@
 
 namespace Diagnosis.App.ViewModels
 {
-    public class WordAutoCompleteComposite : AutoCompleteBase<WordViewModel>
+    public class WordCheckingAutoComplete : AutoCompleteBase<WordViewModel>
     {
         protected override ISearcher<WordViewModel> MakeSearch(WordViewModel parent)
         {
             WordSearcher searcher;
-            if (parent == null)
-            {
-                parent = EntityManagers.WordsManager.Root;
-            }
-            searcher = new WordSearcherComposite(parent, settings);
+            searcher = new WordSearcher(EntityManagers.WordsManager.Root, settings);
             searcher.UpperPriority = parent.Priority;
             return searcher;
         }
@@ -20,7 +16,13 @@ namespace Diagnosis.App.ViewModels
         {
             return item.Name;
         }
-        public WordAutoCompleteComposite(QuerySeparator separator, SearcherSettings settings)
+
+        protected override void BeforeAddItem(WordViewModel item)
+        {
+            item.IsChecked = true;
+        }
+
+        public WordCheckingAutoComplete(QuerySeparator separator, SearcherSettings settings)
             : base(separator, settings)
         { }
     }

@@ -29,7 +29,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _wordAutoComplete ?? (_wordAutoComplete = new WordAutoComplete(
+                return _wordAutoComplete ?? (_wordAutoComplete = new WordCheckingAutoComplete(
                     QuerySeparator.Default, new SearcherSettings(false, false, true, true)));
             }
         }
@@ -38,7 +38,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _wordAutoCompleteComposite ?? (_wordAutoCompleteComposite = new WordAutoCompleteComposite(
+                return _wordAutoCompleteComposite ?? (_wordAutoCompleteComposite = new WordCompositeAutoComplete(
                     QuerySeparator.Default, new SearcherSettings(false, false, true, true)));
             }
         }
