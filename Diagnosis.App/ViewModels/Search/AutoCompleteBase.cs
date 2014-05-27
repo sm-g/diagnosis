@@ -171,7 +171,7 @@ namespace Diagnosis.App.ViewModels
             {
                 return _enterCommand ?? (_enterCommand = new RelayCommand(() =>
                 {
-                    if (IsItemCompleted)
+                    if (IsItemCompleted || Suggestions.Count == 0)
                     {
                         CheckItems();
                         Reset();
