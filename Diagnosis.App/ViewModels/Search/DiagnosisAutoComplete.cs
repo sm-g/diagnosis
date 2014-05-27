@@ -9,15 +9,13 @@ namespace Diagnosis.App.ViewModels
     {
         protected override ISearcher<DiagnosisViewModel> MakeSearch(DiagnosisViewModel parent)
         {
+            DiagnosisSearcher searcher;
             if (parent == null)
             {
-                return new DiagnosisSearcher(
-                    EntityManagers.DiagnosisManager.Diagnoses[0].Parent, true, true, false);
+                parent = EntityManagers.DiagnosisManager.Diagnoses[0].Parent;
             }
-            else                                                        // groups, cheсked, all children
-            {
-                return new DiagnosisSearcher(parent, true, true, false);
-            }
+            searcher = new DiagnosisSearcher(parent, true, true, false); // groups, cheсked, all children
+            return searcher;
         }
 
         protected override string GetQueryString(DiagnosisViewModel item)

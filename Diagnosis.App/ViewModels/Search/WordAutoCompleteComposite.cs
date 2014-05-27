@@ -2,7 +2,7 @@
 
 namespace Diagnosis.App.ViewModels
 {
-    public class WordAutoComplete : AutoCompleteBase<WordViewModel>
+    public class WordAutoCompleteComposite : AutoCompleteBase<WordViewModel>
     {
         protected override ISearcher<WordViewModel> MakeSearch(WordViewModel parent)
         {
@@ -11,7 +11,7 @@ namespace Diagnosis.App.ViewModels
             {
                 parent = EntityManagers.WordsManager.Words[0].Parent;
             }
-            searcher = new WordSearcher(parent, false, false, true); // groups, cheсked, all children
+            searcher = new WordSearcherComposite(parent, false, false, true); // groups, cheсked, all children
             searcher.UpperPriority = parent.Priority;
             return searcher;
         }
@@ -19,12 +19,6 @@ namespace Diagnosis.App.ViewModels
         protected override string GetQueryString(WordViewModel item)
         {
             return item.Name;
-        }
-
-        protected override void BeforeAddItem(WordViewModel item)
-        {
-            if (items.Count > 0)
-                items.Last().AddIfNotExists(item, searcher.AllChildren);
         }
     }
 }

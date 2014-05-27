@@ -239,7 +239,8 @@
     <Compile Include="ViewModels\Search\HrSearchOptions.cs" />
     <Compile Include="ViewModels\Search\SearchTester.cs" />
     <Compile Include="ViewModels\Search\SearchViewModel.cs" />
-    <Compile Include="ViewModels\Search\WordAutoComplete2.cs" />
+    <Compile Include="ViewModels\Search\WordAutoCompleteComposite.cs" />
+    <Compile Include="ViewModels\Search\WordSearcherComposite.cs" />
     <Compile Include="ViewModels\Search\WordSearcher.cs" />
     <Compile Include="ViewModels\Search\PatientSearcher.cs" />
     <Compile Include="ViewModels\Domain\CategoryViewModel.cs" />

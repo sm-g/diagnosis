@@ -16,7 +16,6 @@ namespace Diagnosis.App.ViewModels
         private int? _appMonthUpper;
         private int? _appYearLower;
         private int? _appYearUpper;
-        private bool _categoryMultiSelection;
         private DateOffset _hrDateOffsetLower;
         private DateOffset _hrDateOffsetUpper;
         private RelayCommand _searchCommand;
@@ -26,7 +25,7 @@ namespace Diagnosis.App.ViewModels
 
         public SearchViewModel()
         {
-            WordSearch = new WordAutoComplete();
+            WordSearch = new WordAutoCompleteComposite();
             Words = new ObservableCollection<WordViewModel>();
             Results = new ObservableCollection<HealthRecordViewModel>();
 
@@ -225,7 +224,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public WordAutoComplete WordSearch
+        public AutoCompleteBase<WordViewModel> WordSearch
         {
             get;
             private set;

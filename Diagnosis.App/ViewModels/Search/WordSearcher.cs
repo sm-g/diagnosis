@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System;
 using System.Linq;
 
 namespace Diagnosis.App.ViewModels
@@ -11,6 +11,7 @@ namespace Diagnosis.App.ViewModels
         public bool WithChecked { get; set; }
         public bool WithCreatingNew { get; set; }
         public bool AllChildren { get; set; }
+        public byte UpperPriority { get; set; }
 
         public IEnumerable<WordViewModel> Collection { get; private set; }
 
@@ -24,16 +25,17 @@ namespace Diagnosis.App.ViewModels
             WithChecked = withChecked;
             WithCreatingNew = withCreatingNew;
         }
+
         /// <summary>
         /// Вовращает слова из колллекции, которые начинаются на указанную строку.
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        public IEnumerable<WordViewModel> Search(string query)
+        public virtual IEnumerable<WordViewModel> Search(string query)
         {
             List<WordViewModel> results = new List<WordViewModel>();
 
-            results.AddRange(Collection.Where(word => Filter(word, query) && Filter(word)));
+            results.AddRange(Collection.Where(word => Filter(word, query) && FilterCheckable(word)));
             if (WithCreatingNew
                && query != string.Empty
                && !results.Any(word => Equals(word, query)))
@@ -51,16 +53,16 @@ namespace Diagnosis.App.ViewModels
 
         protected bool Filter(WordViewModel item, string query)
         {
-            return item.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase);
-            // && (UpperPriority <= item.Priority);
+            return item.Name.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)
+                && UpperPriority <= item.Priority;
         }
 
-        bool Equals(WordViewModel item, string query)
+        private bool Equals(WordViewModel item, string query)
         {
             return item.Name.ToLower().Equals(query.ToLower());
         }
 
-        private bool Filter(ICheckable obj)
+        protected bool FilterCheckable(ICheckable obj)
         {
             return (WithChecked || !obj.IsChecked)
                    && (WithNonCheckable || !obj.IsNonCheckable);

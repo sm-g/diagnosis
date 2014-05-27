@@ -5,7 +5,7 @@ namespace Diagnosis.App.ViewModels
 {
     interface IAutoComplete
     {
-        string FullString { get; set; }
+        char DelimSpacer { get; }
         void Reset();
         ICommand EnterCommand { get; }
         event EventHandler SuggestionAccepted;

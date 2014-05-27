@@ -284,12 +284,12 @@ namespace Diagnosis.App.ViewModels
                 return _autoComplete ?? (_autoComplete = new AutoComplete());
             }
         }
-        WordAutoComplete2 _autoComplete2;
-        public WordAutoComplete2 AutoComplete2
+        WordAutoCompleteComposite _autoComplete2;
+        public WordAutoCompleteComposite AutoComplete2
         {
             get
             {
-                return _autoComplete2 ?? (_autoComplete2 = new WordAutoComplete2());
+                return _autoComplete2 ?? (_autoComplete2 = new WordAutoCompleteComposite());
             }
         }
         public ISearch<DiagnosisViewModel> DiagnosisSearch

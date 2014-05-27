@@ -23,7 +23,7 @@ namespace Diagnosis.App.ViewModels
         /// <summary>
         /// Поисковик по всем словам, создает новые из запроса.
         /// </summary>
-        public WordSearcher Searcher
+        public WordSearcher RootSearcher
         {
             get
             {
