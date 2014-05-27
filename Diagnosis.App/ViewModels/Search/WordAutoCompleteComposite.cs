@@ -20,7 +20,7 @@ namespace Diagnosis.App.ViewModels
         {
             return item.Name;
         }
-        public WordAutoCompleteComposite(QuerySeparator separator, SearcherSettings settings = new SearcherSettings())
+        public WordAutoCompleteComposite(QuerySeparator separator, SearcherSettings settings)
             : base(separator, settings)
         { }
     }

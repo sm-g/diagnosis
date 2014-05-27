@@ -104,7 +104,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_search == null)
                 {
-                    _search = new SearchBase<WordViewModel>(new WordSearcher(this, new SearcherSettings()));
+                    _search = new SearchBase<WordViewModel>(new WordSearcher(this, new SearcherSettings() { AllChildren = true }));
                     _search.ResultItemSelected += _search_ResultItemSelected;
                 }
                 return _search;

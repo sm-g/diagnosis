@@ -12,12 +12,12 @@ namespace Diagnosis.App.ViewModels
         public bool WithCreatingNew;
         public bool AllChildren;
 
-        public SearcherSettings(bool withNonCheckable = false, bool withChecked = false, bool withCreatingNew = true, bool allChildren = true)
+        public SearcherSettings(bool withNonCheckable, bool withChecked, bool withCreatingNew, bool allChildren)
         {
-            AllChildren = allChildren;
             WithNonCheckable = withNonCheckable;
             WithChecked = withChecked;
             WithCreatingNew = withCreatingNew;
+            AllChildren = allChildren;
         }
     }
 }

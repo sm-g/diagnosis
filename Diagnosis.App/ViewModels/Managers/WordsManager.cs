@@ -11,24 +11,27 @@ namespace Diagnosis.App.ViewModels
 {
     public class WordsManager : ViewModelBase
     {
-        private IWordRepository repository;
+        private readonly IWordRepository repository;
+        private readonly WordViewModel root;
+
         private RelayCommand _commit;
-        WordSearcher _searcher;
+        private WordSearcher _searcher;
 
         public ObservableCollection<WordViewModel> Words
         {
             get;
             private set;
         }
+
         /// <summary>
-        /// Поисковик по всем словам, создает новые из запроса.
+        /// Поисковик по всем словам, кроме групп, создает новые из запроса.
         /// </summary>
         public WordSearcher RootSearcher
         {
             get
             {
-                return _searcher ?? (_searcher = new WordSearcher(Root,
-                    new SearcherSettings() { WithChecked = true }));
+                return _searcher ?? (_searcher = new WordSearcher(root,
+                    new SearcherSettings() { WithChecked = true, WithCreatingNew = true, AllChildren = true }));
             }
         }
 
@@ -39,8 +42,6 @@ namespace Diagnosis.App.ViewModels
                 return Words.Where(s => s.Editable.IsDirty);
             }
         }
-
-        WordViewModel Root { get; set; }
 
         public ICommand CommitCommand
         {
@@ -66,9 +67,9 @@ namespace Diagnosis.App.ViewModels
 
             if (Words.Count > 0)
             {
-                var intersect = Root.AllChildren.Select(w => w.word).Intersect(s.Words);
+                var intersect = root.AllChildren.Select(w => w.word).Intersect(s.Words);
 
-                return Root.AllChildren.Where(w => intersect.Contains(w.word));
+                return root.AllChildren.Where(w => intersect.Contains(w.word));
             }
 
             return Enumerable.Empty<WordViewModel>();
@@ -83,6 +84,7 @@ namespace Diagnosis.App.ViewModels
                 item.IsChecked = true;
             }
         }
+
         /// <summary>
         /// Создает слово и добавляет в коллекцию Words, если требуется.
         /// </summary>
@@ -95,13 +97,14 @@ namespace Diagnosis.App.ViewModels
 
             var vm = new WordViewModel(new Word(title));
             vm.Editable.MarkDirty();
-            Root.Add(vm);
+            root.Add(vm);
             Words.Add(vm);
             Subscribe(vm);
 
             System.Console.WriteLine("new word: {0}", vm);
             return vm;
         }
+
         /// <summary>
         /// Уничтожает созданные слова, которые не были использованы в записи.
         /// </summary>
@@ -110,7 +113,7 @@ namespace Diagnosis.App.ViewModels
             var toRemove = Words.Where(word => word.Unsaved).ToList();
             toRemove.ForAll((word) =>
             {
-                Root.Remove(word);
+                root.Remove(word);
                 Words.Remove(word);
             });
         }
@@ -140,10 +143,10 @@ namespace Diagnosis.App.ViewModels
                 Subscribe(item);
             }
 
-            Root = new WordViewModel(new Word("root")) { IsNonCheckable = true };
-            Root.Add(all.Where(w => w.IsRoot)); // в корне только слова верхнего уровня
+            root = new WordViewModel(new Word("root")) { IsNonCheckable = true };
+            root.Add(all.Where(w => w.IsRoot)); // в корне только слова верхнего уровня
 
-            Words = new ObservableCollection<WordViewModel>(Root.Children);
+            Words = new ObservableCollection<WordViewModel>(root.Children);
 
             this.Subscribe((int)EventID.WordsEditingModeChanged, (e) =>
             {

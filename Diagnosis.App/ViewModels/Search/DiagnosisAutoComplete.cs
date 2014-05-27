@@ -23,7 +23,7 @@ namespace Diagnosis.App.ViewModels
             return item.Name;
         }
 
-        public DiagnosisAutoComplete(QuerySeparator separator, SearcherSettings settings = new SearcherSettings())
+        public DiagnosisAutoComplete(QuerySeparator separator, SearcherSettings settings)
             : base(separator, settings)
         { }
     }

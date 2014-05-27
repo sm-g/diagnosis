@@ -27,7 +27,7 @@ namespace Diagnosis.App.ViewModels
                 items.Last().AddIfNotExists(item, searcher.AllChildren);
         }
 
-        public WordAutoComplete(QuerySeparator separator, SearcherSettings settings = new SearcherSettings())
+        public WordAutoComplete(QuerySeparator separator, SearcherSettings settings)
             : base(separator, settings)
         { }
     }
