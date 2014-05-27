@@ -3,6 +3,7 @@ using Diagnosis.App.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Linq;
 
 namespace Diagnosis.App.Controls
 {
@@ -29,12 +30,19 @@ namespace Diagnosis.App.Controls
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             if (vm != null)
-            vm.SuggestionAccepted += vm_SuggestionAccepted;
+                vm.SuggestionAccepted += vm_SuggestionAccepted;
         }
 
         private void input_TextChanged(object sender, TextChangedEventArgs e)
         {
             ShowSuggestionsPopup();
+
+            // после курсора разделительный пробел
+            if (input.Text.Length == input.CaretIndex + 1 && input.Text.Last() == vm.DelimSpacer)
+            {
+                System.Console.WriteLine("move caret");
+                input.CaretIndex = input.Text.Length;
+            }
         }
 
         private void input_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -107,7 +115,10 @@ namespace Diagnosis.App.Controls
 
         private void input_GotMouseCapture(object sender, MouseEventArgs e)
         {
-            vm.Reset();
+            if (FocusChecker.IsFocusOutsideDepObject(autocomplete) && FocusChecker.IsFocusOutsideDepObject(popup.Child))
+            {
+                vm.Reset();
+            }
             ShowSuggestionsPopup();
         }
 

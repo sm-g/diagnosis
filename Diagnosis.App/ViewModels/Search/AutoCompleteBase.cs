@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
+using System.Diagnostics.Contracts;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -17,7 +19,37 @@ namespace Diagnosis.App.ViewModels
         protected List<T> items;
         protected ISearcher<T> searcher;
 
+        string delimGroup;
+        string separatorEsc;
+        public char DelimSpacer { get { return ' '; } }
+
         public event EventHandler SuggestionAccepted;
+
+        [ContractInvariantMethod]
+        void ObjectInvariant()
+        {
+            Contract.Invariant(FullString.Length >= ItemsChain.Length);
+        }
+
+        /// <summary>
+        /// Завершенность слова, true, после ввода или удаления разделителя.
+        /// </summary>
+        public bool IsItemCompleted
+        {
+            get
+            {
+                return _isItemCompleted;
+            }
+            private set
+            {
+                if (_isItemCompleted != value)
+                {
+                    _isItemCompleted = value;
+                    Console.WriteLine("IsItemCompleted = {0}", value);
+                    OnPropertyChanged(() => IsItemCompleted);
+                }
+            }
+        }
 
         /// <summary>
         /// Запрос целиком.
@@ -32,23 +64,92 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_fullString != value)
                 {
-                    CheckCompleted(value);
-
-                    _fullString = value;
-
+                    Console.WriteLine();
                     try
                     {
+                        if (value.Length < FullString.Length)
+                        {
+                            CheckAfterDeletion();
+                        }
+                        else
+                        {
+                            value = CheckAfterAdding(value);
+                        }
+
+                        _fullString = value;
+
                         MakeSuggestions();
                     }
                     catch (System.Exception e)
                     {
-                        System.Windows.MessageBox.Show(e.Message);
+                        Console.WriteLine("FullString setter error: {0}", e.Message);
                     }
 
                     OnPropertyChanged(() => FullString);
                 }
             }
         }
+        /// <summary>
+        /// Удаляет лишние разделительные символы.
+        /// Например, "абв..  где.  ." → "абс. где. "
+        /// </summary>
+        private string TrimExcessDelimeters(string value)
+        {
+            Console.WriteLine("before trim '{0}'", value);
+
+            // оставляем по одному пробелу
+            var trimed = Regex.Replace(value, @"\s+", DelimSpacer.ToString());
+            // повторные группы разделительных символов заменяем на одну группу
+            trimed = Regex.Replace(trimed, @"[\s" + separatorEsc + "]+", delimGroup);
+
+            Console.WriteLine("after trim '{0}'", trimed);
+            return trimed;
+        }
+        /// <summary>
+        /// Строка из разделённых элементов из коллекции.
+        /// </summary>
+        private string ItemsChain
+        {
+            get
+            {
+                var chain = items.Aggregate("", (full, s) => full += GetQueryString(s).ToLower() + delimGroup);
+                if (items.Count > 0)
+                {
+                    chain = chain.Substring(0, chain.Length - delimGroup.Length);
+                }
+                Console.WriteLine("Get ItemsChain: '{0}'", chain);
+                return chain;
+            }
+        }
+        /// <summary>
+        /// Последняя часть запроса, после разделителя.
+        /// </summary>
+        private string LastPart
+        {
+            get
+            {
+                string last = "";
+
+                int delimOffset = 0;
+                if (FullString.EndsWith(delimGroup))
+                    delimOffset = delimGroup.Length;
+                else if (FullString.EndsWith(separator.ToString()))
+                    delimOffset = 1;
+                else if (items.Count > 0)
+                {
+                    delimOffset = delimGroup.Length;
+                }
+
+                if (ItemsChain.Length + delimOffset < FullString.Length)
+                {
+                    last = FullString.Substring(ItemsChain.Length + delimOffset);
+                }
+
+                Console.WriteLine("fullstring '{1}'. Get lastpart: '{0}'", last, FullString);
+                return last;
+            }
+        }
+
 
         public ObservableCollection<T> Suggestions { get; private set; }
 
@@ -67,23 +168,6 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-
-        public bool IsItemCompleted
-        {
-            get
-            {
-                return _isItemCompleted;
-            }
-            private set
-            {
-                if (_isItemCompleted != value)
-                {
-                    _isItemCompleted = value;
-                    Console.WriteLine("IsItemCompleted = {0}", value);
-                    OnPropertyChanged(() => IsItemCompleted);
-                }
-            }
-        }
         /// <summary>
         /// Ввод. Если элемент завершён, отмечает все элементы из коллекции, 
         /// иначе принимает выбранное предложение.
@@ -92,109 +176,96 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _enterCommand
-                    ?? (_enterCommand = new RelayCommand(
-                                          () =>
-                                          {
-                                              if (IsItemCompleted)
-                                              {
-                                                  CheckItems();
-                                                  Reset();
-                                              }
-                                              else
-                                              {
-                                                  AcceptSuggestion();
-                                              }
-                                          }));
-            }
-        }
-        /// <summary>
-        /// Строка из разделённых элементов из коллекции.
-        /// </summary>
-        private string ItemsChain
-        {
-            get
-            {
-                var chain = items.Aggregate("", (full, s) => full += GetQueryString(s).ToLower() + separator).TrimEnd(separator);
-                Console.WriteLine("Get ItemsChain: {0} ", chain);
-                return chain;
-            }
-        }
-        /// <summary>
-        /// Последняя часть запроса, после разделителя.
-        /// </summary>
-        private string LastPart
-        {
-            get
-            {
-                Console.WriteLine("Get lastpart: {0} ", FullString.Substring(ItemsChain.Length).Trim(separator));
-                return FullString.Substring(ItemsChain.Length).Trim(separator);
+                return _enterCommand ?? (_enterCommand = new RelayCommand(() =>
+                {
+                    if (IsItemCompleted)
+                    {
+                        CheckItems();
+                        Reset();
+                    }
+                    else
+                    {
+                        AcceptSuggestion();
+                    }
+                }));
             }
         }
 
         public void Reset()
         {
             items.Clear();
-            SetSearchContext(true);
+            IsItemCompleted = false;
+            SetSearchContext();
             FullString = "";
         }
 
         /// <summary>
-        /// Проверка завершенности элемента в запросе.
+        /// Проверка завершенности элемента в запросе после добавления символа.
         /// </summary>
         /// <param name="value">Новое значение строки запроса для анализа.</param>
-        private void CheckCompleted(string value)
+        private string CheckAfterAdding(string value)
         {
-            Console.WriteLine("check completed for {0}", value);
-            if (value.Length < FullString.Length)
-            {
-                // символ удалён
-
-                if (IsItemCompleted)
-                {
-                    // удаляем последний символ
-                    UncheckLast();
-                    SetSearchContext(true);
-                }
-                else if (FullString.LastOrDefault() == separator)
-                {
-                    // удаляем разделитель
-                    IsItemCompleted = true;
-                    SetSearchContext(false);
-                }
-                else
-                {
-                    // удаляем не последний символ слова
-                }
-            }
-            else if (value.LastOrDefault() == separator)
+            var trimed = TrimExcessDelimeters(value);
+            if (value.LastOrDefault() == separator)
             {
                 // добавляем разделитель
-
                 if (IsItemCompleted)
                 {
-                    SetSearchContext(true);
+                    Console.WriteLine("добавляем разделитель, слово было завершено");
                 }
                 else
                 {
+                    Console.WriteLine("добавляем разделитель, слово не было завершено");
                     AddItem(Suggestions[SelectedIndex]);
-                    SetSearchContext(true);
+                    trimed = ItemsChain + delimGroup;
+                }
+                IsItemCompleted = false;
+                SetSearchContext();
+            }
+            else if (IsItemCompleted)
+            {
+                Console.WriteLine("дописываем символ к слову");
+                // дописываем символ к слову
+                UncheckLastItem();
+                IsItemCompleted = false;
+            }
+
+            return trimed;
+        }
+        /// <summary>
+        /// Проверка завершенности элемента в запросе после удаления символа.
+        /// </summary>
+        private void CheckAfterDeletion()
+        {
+            if (IsItemCompleted)
+            {
+                Console.WriteLine("удаляем последний символ");
+                // удаляем последний символ
+                UncheckLastItem();
+                IsItemCompleted = false;
+                SetSearchContext();
+            }
+            else if (FullString.EndsWith(delimGroup) || FullString.LastOrDefault() == separator)
+            {
+                if (FullString.LastOrDefault() == separator)
+                {
+                    Console.WriteLine("удаляем разделитель");
+                    // удаляем разделитель
+                    IsItemCompleted = true;
+                    SetSearchContext();
+                }
+                else
+                {
+                    Console.WriteLine("удаляем разделительный пробел");
+                    // удаляем разделительный пробел
                 }
             }
             else
             {
-                // добавляем символ слова
+                Console.WriteLine("удаляем не последний символ слова");
+                // удаляем не последний символ слова
             }
-
-            EntityManagers.WordsManager.WipeUnsaved();
         }
-
-        private void UncheckLast()
-        {
-            items.Last().IsChecked = false;
-            items.RemoveAt(items.Count - 1);
-        }
-
         private void MakeSuggestions()
         {
             string query;
@@ -223,13 +294,12 @@ namespace Diagnosis.App.ViewModels
             IsItemCompleted = true;
         }
         /// <summary>
-        /// Меняет поисковик, для поиска по детям последнего элемента.
+        /// Меняет поисковик, для поиска по последнему элементу.
         /// </summary>
-        /// <param name="itemStarted"></param>
-        private void SetSearchContext(bool itemStarted)
+        private void SetSearchContext()
         {
             var i = items.Count - 1;
-            if (!itemStarted)
+            if (IsItemCompleted)
             {
                 i--;
             }
@@ -238,11 +308,6 @@ namespace Diagnosis.App.ViewModels
                 searcher = MakeSearch(null);
             else
                 searcher = MakeSearch(items[i]);
-
-            if (itemStarted)
-            {
-                IsItemCompleted = false;
-            }
         }
         /// <summary>
         /// Принимает предложение.
@@ -269,6 +334,12 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        private void UncheckLastItem()
+        {
+            items.Last().IsChecked = false;
+            items.RemoveAt(items.Count - 1);
+        }
+
         protected virtual void BeforeAddItem(T item)
         {
         }
@@ -281,6 +352,8 @@ namespace Diagnosis.App.ViewModels
         {
             items = new List<T>();
             this.separator = separator;
+            delimGroup = separator.ToString() + DelimSpacer.ToString();
+            separatorEsc = Regex.Escape(separator.ToString());
 
             Reset();
         }
