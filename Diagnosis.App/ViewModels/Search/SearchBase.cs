@@ -200,7 +200,7 @@ namespace Diagnosis.App.ViewModels
                 var h = ResultItemSelected;
                 if (h != null)
                 {
-                    h(this, new EventArgs());
+                    h(this, EventArgs.Empty);
                 }
             }
             IsResultsVisible = false;

@@ -174,7 +174,7 @@ namespace Diagnosis.App.ViewModels
             var h = ChildrenChanged;
             if (h != null)
             {
-                h(this, new EventArgs());
+                h(this, EventArgs.Empty);
             }
         }
 

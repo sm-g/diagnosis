@@ -312,7 +312,7 @@ namespace Diagnosis.App.ViewModels
             var h = SuggestionAccepted;
             if (h != null)
             {
-                h(this, new EventArgs());
+                h(this, EventArgs.Empty);
             }
         }
         /// <summary>
