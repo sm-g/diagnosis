@@ -195,7 +195,7 @@ namespace Diagnosis.App.ViewModels
         /// <param name="value">Новое значение строки запроса для анализа.</param>
         private string CheckAfterAdding(string value)
         {
-            var trimed = separator.TrimExcessDelimiters(value);
+            var trimed = separator.FormatDelimiters(value);
             if (value.LastOrDefault() == separator.Delimiter)
             {
                 // добавляем разделитель

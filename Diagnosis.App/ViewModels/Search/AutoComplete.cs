@@ -26,7 +26,7 @@ namespace Diagnosis.App.ViewModels
             {
                 Console.WriteLine("Query: {0}", value);
 
-                var trimed = separator.TrimExcessDelimiters(value);
+                var trimed = separator.FormatDelimiters(value);
                 if (_query != trimed)
                 {
                     MakeSuggestions(separator.RemoveSpacers(trimed));

@@ -11,7 +11,7 @@ namespace Diagnosis.App.ViewModels
         public readonly string DelimGroup;
 
         private static readonly Lazy<QuerySeparator> lazyInstance = new Lazy<QuerySeparator>(() => new QuerySeparator());
-        private string delimeterEsc;
+        private readonly string repeatingRegex;
 
         public static QuerySeparator Default
         {
@@ -19,17 +19,17 @@ namespace Diagnosis.App.ViewModels
         }
 
         /// <summary>
-        /// Удаляет лишние разделительные символы. Delimiter меняет на DelimGroup.
-        /// Например, "абв..  где.  .ё." → "абс. где. ё. "
+        /// Расставляет разделительные символы в нужном формате, удаляя лишие. Delimiter меняет на DelimGroup.
+        /// Например, "а.. б г .ё." → "а. б г. ё. "
         /// </summary>
-        public string TrimExcessDelimiters(string value)
+        public string FormatDelimiters(string value)
         {
             Console.WriteLine("before trim '{0}'", value);
 
             // оставляем по одному пробелу
             var trimed = Regex.Replace(value, @"\s+", Spacer.ToString());
             // повторные группы разделительных символов заменяем на одну группу
-            trimed = Regex.Replace(trimed, @"[\s" + delimeterEsc + "]+", DelimGroup);
+            trimed = Regex.Replace(trimed, repeatingRegex, DelimGroup);
 
             Console.WriteLine("after trim '{0}'", trimed);
             return trimed;
@@ -64,7 +64,11 @@ namespace Diagnosis.App.ViewModels
             Delimiter = delimiter;
             Spacer = spacer;
             DelimGroup = delimiter.ToString() + spacer;
-            delimeterEsc = Regex.Escape(delimiter.ToString());
+
+            var delimiterEsc = Regex.Escape(delimiter.ToString());
+            var spacerEsc = Regex.Escape(spacer.ToString());
+
+            repeatingRegex = string.Format(@"{0}*{1}[{0}{1}]*", spacerEsc, delimiterEsc);
         }
     }
 }
