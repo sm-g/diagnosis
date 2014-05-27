@@ -145,10 +145,10 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
-    <Compile Include="Controls\AutoComplete.xaml.cs">
+    <Compile Include="Controls\Search\AutoComplete.xaml.cs">
       <DependentUpon>AutoComplete.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\AutocompleteDataTemplateSelector.cs" />
+    <Compile Include="Controls\Search\AutocompleteDataTemplateSelector.cs" />
     <Compile Include="Controls\Card\Appointment.xaml.cs">
       <DependentUpon>Appointment.xaml</DependentUpon>
     </Compile>
@@ -169,7 +169,7 @@
     </Compile>
     <Compile Include="Controls\Directory\TreeTemplateSelector.cs" />
     <Compile Include="Controls\Helpers\ParentFinder.cs" />
-    <Compile Include="Controls\SearchTree.xaml.cs">
+    <Compile Include="Controls\Search\SearchTree.xaml.cs">
       <DependentUpon>SearchTree.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Forms\AgePicker.xaml.cs">
@@ -190,7 +190,7 @@
     <Compile Include="Controls\Forms\PropertiesChooser.xaml.cs">
       <DependentUpon>PropertiesChooser.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\FloatSearch.xaml.cs">
+    <Compile Include="Controls\Search\FloatSearch.xaml.cs">
       <DependentUpon>FloatSearch.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Directory\GroupsTree.xaml.cs">
@@ -203,11 +203,11 @@
       <DependentUpon>SexChooser.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Helpers\Attached.cs" />
-    <Compile Include="Controls\FocusExtension.cs" />
-    <Compile Include="Controls\InputTextBox.xaml.cs">
+    <Compile Include="Controls\Helpers\FocusExtension.cs" />
+    <Compile Include="Controls\Search\InputTextBox.xaml.cs">
       <DependentUpon>InputTextBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\MyAutoCompleteBox.cs" />
+    <Compile Include="Controls\Search\MyAutoCompleteBox.cs" />
     <Compile Include="Controls\RadioListBox.xaml.cs">
       <DependentUpon>RadioListBox.xaml</DependentUpon>
     </Compile>
@@ -285,7 +285,7 @@
     <Compile Include="Controls\Helpers\ChildFinder.cs" />
     <Compile Include="Controls\Helpers\EnhancedFocusScope.cs" />
     <Compile Include="Controls\Helpers\FocusChecker.cs" />
-    <Compile Include="Controls\TreeViewItemExtenstions.cs" />
+    <Compile Include="Controls\Helpers\TreeViewItemExtenstions.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="Controls\Directory\TreeItem.xaml.cs">
       <DependentUpon>TreeItem.xaml</DependentUpon>
@@ -321,7 +321,7 @@
     </Compile>
     <Compile Include="ViewModels\Domain\PatientViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
-    <Page Include="Controls\AutoComplete.xaml">
+    <Page Include="Controls\Search\AutoComplete.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -349,7 +349,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\SearchTree.xaml">
+    <Page Include="Controls\Search\SearchTree.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -377,7 +377,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\FloatSearch.xaml">
+    <Page Include="Controls\Search\FloatSearch.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -401,7 +401,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\InputTextBox.xaml">
+    <Page Include="Controls\Search\InputTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

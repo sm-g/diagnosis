@@ -38,6 +38,14 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public char Delimiter
+        {
+            get
+            {
+                return separator.Delimiter;
+            }
+        }
+
         /// <summary>
         /// Завершенность слова, true, после ввода или удаления разделителя или подтверждения выбранного предположения.
         /// </summary>

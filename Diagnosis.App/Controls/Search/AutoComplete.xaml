@@ -3,8 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:xwt="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:vm="clr-namespace:Diagnosis.App.ViewModels"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
@@ -37,28 +35,22 @@
                                                    WordTemplate="{StaticResource SymptomTemplate}"
                                                    SymptomTemplate="{StaticResource SymptomTemplate}" />
     </UserControl.Resources>
-    <StackPanel x:Name="autocomplete"
-                Margin="5">
+    <StackPanel x:Name="autocomplete">
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <TextBlock>Признаки через запятую:</TextBlock>
-
-            <TextBox x:Name="input"
-                        Text="{Binding FullString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        TextChanged="input_TextChanged"
-                        KeyUp="input_KeyUp"
-                        PreviewKeyDown="input_PreviewKeyDown"
-                        GotFocus="input_GotFocus"
-                        GotMouseCapture="input_GotMouseCapture"
-                        LostFocus="input_LostFocus"
-                     Grid.Row="1">
+            <controls:TextBoxInfo x:Name="input"
+                                  InfoText="{Binding Delimiter, StringFormat='Признаки через «{0}»'}"
+                                  Text="{Binding FullString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                TextChanged="input_TextChanged"
+                                KeyUp="input_KeyUp"
+                                PreviewKeyDown="input_PreviewKeyDown"
+                                GotFocus="input_GotFocus"
+                                GotMouseCapture="input_GotMouseCapture"
+                                LostFocus="input_LostFocus"
+                                Height="23">
                 <TextBox.InputBindings>
                     <KeyBinding Key="Enter" Command="{Binding EnterCommand}" />
                 </TextBox.InputBindings>
-            </TextBox>
+            </controls:TextBoxInfo>
 
             <Popup x:Name="popup" Height="Auto" Width="auto"
                        StaysOpen="False"

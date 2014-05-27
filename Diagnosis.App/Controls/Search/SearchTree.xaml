@@ -13,7 +13,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../Styles/TreeStyle.xaml" />
+                <ResourceDictionary Source="../../Styles/TreeStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <InputBindingCollection x:Shared="False" x:Key="InputBindings">
