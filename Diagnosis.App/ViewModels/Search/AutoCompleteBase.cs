@@ -74,11 +74,11 @@ namespace Diagnosis.App.ViewModels
                     {
                         if (value.Length < FullString.Length)
                         {
-                            CheckAfterDeletion();
+                            AfterQueryShrink();
                         }
                         else
                         {
-                            value = CheckAfterAdding(value);
+                            value = AfterQueryGrow(value);
                         }
 
                         _fullString = value;
@@ -193,7 +193,7 @@ namespace Diagnosis.App.ViewModels
         /// Проверка завершенности элемента в запросе после добавления символа.
         /// </summary>
         /// <param name="value">Новое значение строки запроса для анализа.</param>
-        private string CheckAfterAdding(string value)
+        private string AfterQueryGrow(string value)
         {
             var trimed = separator.FormatDelimiters(value);
             if (value.LastOrDefault() == separator.Delimiter)
@@ -225,7 +225,7 @@ namespace Diagnosis.App.ViewModels
         /// <summary>
         /// Проверка завершенности элемента в запросе после удаления символа.
         /// </summary>
-        private void CheckAfterDeletion()
+        private void AfterQueryShrink()
         {
             if (IsItemCompleted)
             {
