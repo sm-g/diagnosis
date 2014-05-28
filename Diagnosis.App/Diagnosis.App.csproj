@@ -252,7 +252,7 @@
     <Compile Include="ViewModels\Managers\SymptomsManager.cs" />
     <Compile Include="ViewModels\Managers\WordsManager.cs" />
     <Compile Include="ViewModels\Extensions\HierarchicalExtensions.cs" />
-    <Compile Include="ViewModels\Search\AutoComplete.cs" />
+    <Compile Include="ViewModels\Search\AutoCompleteBoxViewModel.cs" />
     <Compile Include="ViewModels\Search\SearchWrap.cs" />
     <Compile Include="ViewModels\Domain\SymptomViewModel.cs" />
     <Compile Include="ViewModels\HierarchicalCheckable.cs" />

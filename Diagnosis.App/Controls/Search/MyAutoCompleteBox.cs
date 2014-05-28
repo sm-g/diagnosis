@@ -9,6 +9,8 @@ namespace Diagnosis.App.Controls
 {
     public class MyAutoCompleteBox : AutoCompleteBox
     {
+        TextBox _textBox;
+
         protected override void OnKeyDown(KeyEventArgs e)
         {
             if (!IsDropDownOpen && SelectedItem != null && (e.Key == Key.Enter || e.Key == Key.Return))
@@ -22,5 +24,41 @@ namespace Diagnosis.App.Controls
             // Drop down is open so user must be selecting an AutoComplete list item
             base.OnKeyDown(e);
         }
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            if (Template == null)
+                return;
+            _textBox = Template.FindName("Text", this) as TextBox;
+            _textBox.SelectionChanged += _textBox_SelectionChanged;
+        }
+
+        void _textBox_SelectionChanged(object sender, System.Windows.RoutedEventArgs e)
+        {
+            Console.WriteLine("CaretIndex = {0}", CaretIndex);
+        }
+        public void Select(int start, int length)
+        {
+            if (_textBox == null)
+                return;
+            _textBox.Select(start, length);
+        }
+
+        public int CaretIndex
+        {
+            get
+            {
+                return _textBox != null ? _textBox.CaretIndex : -1;
+            }
+            set
+            {
+                if (_textBox != null)
+                {
+                    _textBox.CaretIndex = value;
+                }
+            }
+        }
+
     }
 }

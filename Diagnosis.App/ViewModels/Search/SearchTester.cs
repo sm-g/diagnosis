@@ -14,7 +14,7 @@ namespace Diagnosis.App.ViewModels
         private AutoCompleteBase<WordViewModel> _wordAutoCompleteComposite;
         private AutoCompleteBase<DiagnosisViewModel> _diaAutoComplete;
         private SearchBase<DiagnosisViewModel> _diaFilteringSearch;
-        private AutoComplete _autoComplete;
+        private AutoCompleteBoxViewModel _autoComplete;
         private SearchBase<DiagnosisViewModel> _diaSearch;
         private SearchBase<WordViewModel> _wordSearch;
 
@@ -70,11 +70,11 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public AutoComplete AutoComplete
+        public AutoCompleteBoxViewModel AutoComplete
         {
             get
             {
-                return _autoComplete ?? (_autoComplete = new AutoComplete(QuerySeparator.Default));
+                return _autoComplete ?? (_autoComplete = new AutoCompleteBoxViewModel(QuerySeparator.Default));
             }
         }
         public ObservableCollection<WordViewModel> Words

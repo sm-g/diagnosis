@@ -14,7 +14,7 @@
                                     Text="{Binding Query, Mode=TwoWay}"
                              ItemsSource="{Binding Results }" 
                              SelectedItem="{Binding Selected, Mode=TwoWay}"
-                             FilterMode="None">
+                             FilterMode="None" TextChanged="auto_TextChanged">
             <controls:MyAutoCompleteBox.InputBindings>
                 <KeyBinding Key="Enter" Command="{Binding SelectCommand}"/>
             </controls:MyAutoCompleteBox.InputBindings>

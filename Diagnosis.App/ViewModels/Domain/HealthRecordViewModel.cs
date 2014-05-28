@@ -12,7 +12,7 @@ namespace Diagnosis.App.ViewModels
     public class HealthRecordViewModel : CheckableBase
     {
         internal readonly HealthRecord healthRecord;
-        private AutoComplete _autoComplete;
+        private AutoCompleteBoxViewModel _autoComplete;
         private AutoCompleteBase<WordViewModel> _autoComplete2;
         private ISearch<DiagnosisViewModel> _diagnosisSearch;
         private DateOffset _dateOffset;
@@ -277,11 +277,11 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public AutoComplete AutoComplete
+        public AutoCompleteBoxViewModel AutoComplete
         {
             get
             {
-                return _autoComplete ?? (_autoComplete = new AutoComplete(
+                return _autoComplete ?? (_autoComplete = new AutoCompleteBoxViewModel(
                     QuerySeparator.Default));
             }
         }

@@ -9,13 +9,21 @@ using Diagnosis.Core;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class AutoComplete : ViewModelBase
+    public class AutoCompleteBoxViewModel : ViewModelBase
     {
         readonly QuerySeparator separator;
 
         private SearchWrap _selected;
         private RelayCommand _selectCommand;
         private string _query;
+
+        public char DelimSpacer
+        {
+            get
+            {
+                return separator.Spacer;
+            }
+        }
 
         public string Query
         {
@@ -32,7 +40,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     MakeSuggestions(separator.RemoveSpacers(trimed));
 
-                    _query = trimed;
+                    _query = separator.RestoreLastDelimGroup(trimed);
 
                     OnPropertyChanged(() => Query);
                 }
@@ -104,7 +112,7 @@ namespace Diagnosis.App.ViewModels
             OnPropertyChanged(() => Results);
         }
 
-        public AutoComplete(QuerySeparator separator)
+        public AutoCompleteBoxViewModel(QuerySeparator separator)
         {
             Contract.Requires(separator != null);
 
