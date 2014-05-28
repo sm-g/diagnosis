@@ -16,8 +16,20 @@ namespace Diagnosis.App
                    {
                        var word = e.GetValue<WordViewModel>(Messages.Word);
                        var isChecked = e.GetValue<bool>(Messages.CheckedState);
-                       Console.WriteLine("word {0} {1}", word, isChecked ? "checked" : "unchecked");
+                       Console.WriteLine("word '{0}' {1}", word, isChecked ? "checked" : "unchecked");
                    });
+            this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
+                 {
+                     var dia = e.GetValue<WordViewModel>(Messages.Diagnosis);
+                     var isChecked = e.GetValue<bool>(Messages.CheckedState);
+                     Console.WriteLine("dia '{0}' {1}", dia, isChecked ? "checked" : "unchecked");
+                 });
+            this.Subscribe((int)EventID.PatientCheckedChanged, (e) =>
+                 {
+                     var pat = e.GetValue<WordViewModel>(Messages.Patient);
+                     var isChecked = e.GetValue<bool>(Messages.CheckedState);
+                     Console.WriteLine("patient '{0}' {1}", pat, isChecked ? "checked" : "unchecked");
+                 });
 
             this.Subscribe((int)EventID.AppointmentAdded, (e) =>
             {
@@ -29,11 +41,18 @@ namespace Diagnosis.App
                 var c = e.GetValue<Course>(Messages.Course);
                 Console.WriteLine("course {0} started", c);
             });
+
             this.Subscribe((int)EventID.CurrentPatientChanged, (e) =>
             {
                 var p = e.GetValue<PatientViewModel>(Messages.Patient);
-                Console.WriteLine("cur patient is {0}", p);
+                Console.WriteLine("cur patient is '{0}'", p);
             });
+            this.Subscribe((int)EventID.CurrentDoctorChanged, (e) =>
+          {
+              var d = e.GetValue<DoctorViewModel>(Messages.Doctor);
+              Console.WriteLine("cur doctor is '{0}'", d);
+          });
+
             this.Subscribe((int)EventID.HealthRecordChanged, (e) =>
             {
                 var hr = e.GetValue<HealthRecordViewModel>(Messages.HealthRecord);
@@ -43,6 +62,17 @@ namespace Diagnosis.App
             {
                 var hr = e.GetValue<HealthRecordViewModel>(Messages.HealthRecord);
                 Console.WriteLine("hr {0} selected", hr);
+            });
+
+            this.Subscribe((int)EventID.WordsEditingModeChanged, (e) =>
+            {
+                var isEditing = e.GetValue<bool>(Messages.Boolean);
+                Console.WriteLine("words editing is {0}", isEditing);
+            });
+            this.Subscribe((int)EventID.PropertySelectedValueChanged, (e) =>
+            {
+                var property = e.GetValue<PropertyViewModel>(Messages.Property);
+                Console.WriteLine("property {0} changed", property);
             });
         }
     }

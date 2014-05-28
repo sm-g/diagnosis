@@ -415,7 +415,6 @@ namespace Diagnosis.App.ViewModels
 
         private void OnDiagnosisSearchItemSelected(object s, EventArgs e)
         {
-            Console.WriteLine("selected {0}", DiagnosisSearch.SelectedItem);
             DiagnosisSearch.SelectedItem.IsChecked = true;
         }
 
@@ -423,7 +422,6 @@ namespace Diagnosis.App.ViewModels
         {
             if (e.PropertyName == "IsSelected")
             {
-                Console.WriteLine("{0} selected = {1}", this, IsSelected);
                 if (IsSelected)
                     MakeCurrent();
             }
