@@ -2,6 +2,7 @@
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Windows.Input;
 using System.Linq;
 
@@ -19,6 +20,7 @@ namespace Diagnosis.App.ViewModels
         private DateOffset _hrDateOffsetLower;
         private DateOffset _hrDateOffsetUpper;
         private RelayCommand _searchCommand;
+        private bool _controlsVisible;
 
         private bool searchWas;
         private HrSearcher searcher = new HrSearcher();
@@ -27,7 +29,8 @@ namespace Diagnosis.App.ViewModels
         {
             WordSearch = new WordCheckingAutoComplete(QuerySeparator.Default, new SearcherSettings() { AllChildren = true });
             Words = new ObservableCollection<WordViewModel>();
-            Results = new ObservableCollection<HealthRecordViewModel>();
+            Results = new ObservableCollection<SearchResultViewModel>();
+            ControlsVisible = true;
 
             this.Subscribe((int)EventID.WordCheckedChanged, (e) =>
             {
@@ -36,9 +39,13 @@ namespace Diagnosis.App.ViewModels
 
                 OnWordCheckedChanged(word, isChecked);
             });
+            this.Subscribe((int)EventID.CategoryCheckedChanged, (e) =>
+            {
+                OnPropertyChanged(() => SelectedCategories);
+            });
         }
 
-        #region Options
+        #region Options bindings
 
         public int? AppDayLower
         {
@@ -53,6 +60,8 @@ namespace Diagnosis.App.ViewModels
                     _appDayLower = value;
 
                     OnPropertyChanged(() => AppDayLower);
+                    OnPropertyChanged(() => AppDateVisible);
+                    OnPropertyChanged(() => AppDateGt);
                 }
             }
         }
@@ -70,6 +79,8 @@ namespace Diagnosis.App.ViewModels
                     _appDayUpper = value;
 
                     OnPropertyChanged(() => AppDayUpper);
+                    OnPropertyChanged(() => AppDateVisible);
+                    OnPropertyChanged(() => AppDateLt);
                 }
             }
         }
@@ -87,6 +98,8 @@ namespace Diagnosis.App.ViewModels
                     _appMonthLower = value;
 
                     OnPropertyChanged(() => AppMonthLower);
+                    OnPropertyChanged(() => AppDateVisible);
+                    OnPropertyChanged(() => AppDateGt);
                 }
             }
         }
@@ -104,6 +117,8 @@ namespace Diagnosis.App.ViewModels
                     _appMonthUpper = value;
 
                     OnPropertyChanged(() => AppMonthUpper);
+                    OnPropertyChanged(() => AppDateVisible);
+                    OnPropertyChanged(() => AppDateLt);
                 }
             }
         }
@@ -121,6 +136,8 @@ namespace Diagnosis.App.ViewModels
                     _appYearLower = value;
 
                     OnPropertyChanged(() => AppYearLower);
+                    OnPropertyChanged(() => AppDateVisible);
+                    OnPropertyChanged(() => AppDateGt);
                 }
             }
         }
@@ -138,6 +155,8 @@ namespace Diagnosis.App.ViewModels
                     _appYearUpper = value;
 
                     OnPropertyChanged(() => AppYearUpper);
+                    OnPropertyChanged(() => AppDateVisible);
+                    OnPropertyChanged(() => AppDateLt);
                 }
             }
         }
@@ -154,15 +173,22 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _hrDateOffsetLower ?? (_hrDateOffsetLower = new DateOffset(null, DateUnits.Day));
-            }
-            set
-            {
-                if (_hrDateOffsetLower != value)
+                if (_hrDateOffsetLower == null)
                 {
-                    _hrDateOffsetLower = value;
-                    OnPropertyChanged(() => HrDateOffsetLower);
+                    _hrDateOffsetLower = new DateOffset(null, DateUnits.Day);
+                    _hrDateOffsetLower.PropertyChanged += (s, e) =>
+                    {
+                        if (e.PropertyName == "Offset" || e.PropertyName == "Unit")
+                        {
+                            OnPropertyChanged(() => HrDateOffsetLower);
+                            OnPropertyChanged(() => HrDateVisible);
+                            OnPropertyChanged(() => HrDateLt);
+                            OnPropertyChanged(() => HrDateGt);
+                            PrintHrDate();
+                        }
+                    };
                 }
+                return _hrDateOffsetLower;
             }
         }
 
@@ -170,18 +196,24 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _hrDateOffsetUpper ?? (_hrDateOffsetUpper = new DateOffset(null, DateUnits.Day));
-            }
-            set
-            {
-                if (_hrDateOffsetUpper != value)
+                if (_hrDateOffsetUpper == null)
                 {
-                    _hrDateOffsetUpper = value;
-                    OnPropertyChanged(() => HrDateOffsetUpper);
+                    _hrDateOffsetUpper = new DateOffset(null, DateUnits.Day);
+                    _hrDateOffsetUpper.PropertyChanged += (s, e) =>
+                    {
+                        if (e.PropertyName == "Offset" || e.PropertyName == "Unit")
+                        {
+                            OnPropertyChanged(() => HrDateOffsetUpper);
+                            OnPropertyChanged(() => HrDateVisible);
+                            OnPropertyChanged(() => HrDateLt);
+                            OnPropertyChanged(() => HrDateGt);
+                            PrintHrDate();
+                        }
+                    };
                 }
+                return _hrDateOffsetUpper;
             }
         }
-
         public bool AnyWord
         {
             get
@@ -206,6 +238,67 @@ namespace Diagnosis.App.ViewModels
 
         #endregion
 
+        #region Options results
+
+        public IEnumerable<CategoryViewModel> SelectedCategories
+        {
+            get { return Categories.Where(cat => cat.IsChecked); }
+        }
+        /// <summary>
+        /// Дата приёма, для поиска достаточно любой границы.
+        /// </summary>
+        public bool AppDateVisible
+        {
+            get
+            {
+                return AppDateGt != null || AppDateLt != null;
+            }
+        }
+
+        public DateTime? AppDateGt
+        {
+            get
+            {
+                return DateOffset.NullableDate(AppYearLower, AppMonthLower, AppDayLower);
+            }
+        }
+        public DateTime? AppDateLt
+        {
+            get
+            {
+                return DateOffset.NullableDate(AppYearUpper, AppMonthUpper, AppDayUpper);
+            }
+        }
+        /// <summary>
+        /// Давность признака в записи между двумя обязательными значениями.
+        /// </summary>
+        public bool HrDateVisible
+        {
+            get
+            {
+                return HrDateGt.Offset != null && HrDateLt.Offset != null;
+            }
+        }
+
+        // границы интервала давности могут быть введены в любом порядке
+
+        public DateOffset HrDateGt
+        {
+            get
+            {
+                return HrDateOffsetLower < HrDateOffsetUpper ? HrDateOffsetLower : HrDateOffsetUpper;
+            }
+        }
+        public DateOffset HrDateLt
+        {
+            get
+            {
+                return HrDateOffsetUpper > HrDateOffsetLower ? HrDateOffsetUpper : HrDateOffsetLower;
+            }
+        }
+
+        #endregion
+
         public ICommand SearchCommand
         {
             get
@@ -215,8 +308,9 @@ namespace Diagnosis.App.ViewModels
                                           () =>
                                           {
                                               Results.Clear();
-                                              searcher.Search(GetOptions()).
-                                                  ForAll(hr => Results.Add(new HealthRecordViewModel(hr)));
+                                              var options = GetOptions();
+                                              searcher.Search(options).
+                                                  ForAll(hr => Results.Add(new SearchResultViewModel(hr, options)));
 
                                               searchWas = true;
                                               OnPropertyChanged(() => NoResultsVisible);
@@ -230,12 +324,11 @@ namespace Diagnosis.App.ViewModels
             private set;
         }
 
-        public ObservableCollection<HealthRecordViewModel> Results
+        public ObservableCollection<SearchResultViewModel> Results
         {
             get;
             private set;
         }
-
         public bool NoResultsVisible
         {
             get
@@ -243,22 +336,33 @@ namespace Diagnosis.App.ViewModels
                 return Results.Count == 0 && searchWas;
             }
         }
+        public bool ControlsVisible
+        {
+            get
+            {
+                return _controlsVisible;
+            }
+            set
+            {
+                if (_controlsVisible != value)
+                {
+                    _controlsVisible = value;
+                    OnPropertyChanged(() => ControlsVisible);
+                }
+            }
+        }
 
         private HrSearchOptions GetOptions()
         {
             var options = new HrSearchOptions();
 
-            if (HrDateOffsetLower != null && HrDateOffsetUpper != null)
-            {
-                // границы интервала давности могут быть введены в любом порядке
-                options.HealthRecordFromDateGt = HrDateOffsetLower < HrDateOffsetUpper ? HrDateOffsetLower : HrDateOffsetUpper;
-                options.HealthRecordFromDateLt = HrDateOffsetUpper > HrDateOffsetLower ? HrDateOffsetUpper : HrDateOffsetLower;
-            }
-            options.AppointmentDateGt = DateOffset.NullableDate(AppYearLower, AppMonthLower, AppDayLower);
-            options.AppointmentDateLt = DateOffset.NullableDate(AppYearUpper, AppMonthUpper, AppDayUpper);
+            options.HealthRecordFromDateGt = HrDateGt;
+            options.HealthRecordFromDateLt = HrDateLt;
+            options.AppointmentDateGt = AppDateGt;
+            options.AppointmentDateLt = AppDateLt;
             options.AnyWord = AnyWord;
             options.Words = Words;
-            options.Categories = Categories.Where(cat => cat.IsChecked);
+            options.Categories = SelectedCategories.ToList();
 
             return options;
         }
@@ -273,6 +377,14 @@ namespace Diagnosis.App.ViewModels
             {
                 Words.Remove(word);
             }
+        }
+
+        void PrintHrDate()
+        {
+            Console.WriteLine("HrDateOffsetUpper = {0}", HrDateOffsetUpper);
+            Console.WriteLine("HrDateOffsetLower = {0}", HrDateOffsetLower);
+            Console.WriteLine("HrDateLt = {0}", HrDateLt);
+            Console.WriteLine("HrDateGt = {0}", HrDateGt);
         }
     }
 }

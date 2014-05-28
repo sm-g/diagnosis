@@ -145,6 +145,12 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Controls\Card\SearchResult.xaml.cs">
+      <DependentUpon>SearchResult.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CommaList.xaml.cs">
+      <DependentUpon>CommaList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Search\AutoComplete.xaml.cs">
       <DependentUpon>AutoComplete.xaml</DependentUpon>
     </Compile>
@@ -244,6 +250,7 @@
     <Compile Include="ViewModels\Search\HrSearchOptions.cs" />
     <Compile Include="ViewModels\Search\SearcherSettings.cs" />
     <Compile Include="ViewModels\Search\SearchTester.cs" />
+    <Compile Include="ViewModels\Search\SearchResultViewModel.cs" />
     <Compile Include="ViewModels\Search\SearchViewModel.cs" />
     <Compile Include="ViewModels\Search\WordCompositeAutoComplete.cs" />
     <Compile Include="ViewModels\Search\WordCompositeSearcher.cs" />
@@ -324,6 +331,14 @@
     </Compile>
     <Compile Include="ViewModels\Domain\PatientViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Page Include="Controls\Card\SearchResult.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\CommaList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Search\AutoComplete.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

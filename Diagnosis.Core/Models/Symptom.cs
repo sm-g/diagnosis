@@ -41,5 +41,10 @@ namespace Diagnosis.Models
         }
 
         protected Symptom() { }
+
+        public override string ToString()
+        {
+            return string.Join(". ", Words.OrderBy(w => w.Priority).Select(w => w.Title));
+        }
     }
 }
