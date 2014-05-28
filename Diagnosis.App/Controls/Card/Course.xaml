@@ -9,7 +9,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../../Styles/Expander.xaml" />
+                <ResourceDictionary Source="../../Styles/ExpanderFixed.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <conv:CountToAppointmentsLabel x:Key="CountToAppLabel" />

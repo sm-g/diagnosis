@@ -27,7 +27,32 @@
         <DataTemplate DataType="{x:Type vm:SearchViewModel}">
             <screen:Search />
         </DataTemplate>
+
+        <Style x:Key="leftSideExpander" TargetType="Expander">
+            <Setter Property="ExpandDirection" Value="Right" />
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+            <Setter Property="BorderThickness" Value="0,0,1,0" />
+            <Setter Property="Padding" Value="1,0,3,0" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="BorderBrush">
+                <Setter.Value>
+                    <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="verticalTextBlock" TargetType="TextBlock">
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+            <Setter Property="LayoutTransform">
+                <Setter.Value>
+                    <TransformGroup>
+                        <RotateTransform Angle="-90" />
+                    </TransformGroup>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
