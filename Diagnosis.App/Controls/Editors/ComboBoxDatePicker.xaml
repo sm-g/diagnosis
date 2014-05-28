@@ -14,16 +14,18 @@
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal">
         <StackPanel.Resources>
-            <Style TargetType="{x:Type ComboBox}">
+            <Style x:Key="comboRight" TargetType="{x:Type ComboBox}">
                 <Setter Property="Margin" Value="0,0,5,0" />
             </Style>
         </StackPanel.Resources>
         <ComboBox x:Name="comboYears"
+                  Style="{StaticResource comboRight}"
             MinWidth="50"
 			SelectionChanged="comboYears_SelectionChanged"
 			IsEditable="True"
 			SelectedValue="{Binding Year, Mode=TwoWay, Converter={StaticResource IntToString}, ElementName=root}" />
         <ComboBox x:Name="comboMonths"
+                  Style="{StaticResource comboRight}"
 			MinWidth="80"
 			SelectionChanged="comboMonths_SelectionChanged"
 			SelectedValue="{Binding Month, Mode=TwoWay, Converter={StaticResource MonthToString}, ElementName=root}" />

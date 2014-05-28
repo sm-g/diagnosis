@@ -8,7 +8,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="60" />
+            <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
         <ListBox x:Name="appointments"
@@ -42,6 +42,8 @@
 
         <Button Grid.Column="1"
                 Command="{Binding AddAppointmentCommand}"
+                Margin="3"
+                Padding="3"
                 Visibility="{Binding IsEnded, Converter={StaticResource NegBooleanToVisibilityConverter}}">
             + осмотр</Button>
     </Grid>
