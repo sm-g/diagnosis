@@ -11,48 +11,47 @@
         x:Name="root"
         Title="MainWindow" Height="700" Width="800">
     <Window.Resources>
-        <vm:MainWindowViewModel x:Key="vm" />
-        <DataTemplate DataType="{x:Type vm:LoginViewModel}">
-            <screen:Login />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:WordsManager}">
-            <screen:Words />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:PatientViewModel}">
-            <screen:Card />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:SearchTester}">
-            <screen:SearchTester />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:SearchViewModel}">
-            <screen:Search />
-        </DataTemplate>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/TabControl.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style x:Key="leftSideExpander" TargetType="Expander">
-            <Setter Property="ExpandDirection" Value="Right" />
-            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
-            <Setter Property="BorderThickness" Value="0,0,1,0" />
-            <Setter Property="Padding" Value="1,0,3,0" />
-            <Setter Property="HorizontalAlignment" Value="Left" />
-            <Setter Property="BorderBrush">
-                <Setter.Value>
-                    <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}" />
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <vm:MainWindowViewModel x:Key="vm" />
+            <DataTemplate DataType="{x:Type vm:LoginViewModel}">
+                <screen:Login />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:WordsManager}">
+                <screen:Words />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:PatientViewModel}">
+                <screen:Card />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:SearchTester}">
+                <screen:SearchTester />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:SearchViewModel}">
+                <screen:Search />
+            </DataTemplate>
 
-        <Style x:Key="verticalTextBlock" TargetType="TextBlock">
-            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
-            <Setter Property="LayoutTransform">
-                <Setter.Value>
-                    <TransformGroup>
-                        <RotateTransform Angle="-90" />
-                    </TransformGroup>
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <Style x:Key="leftSideExpander" TargetType="Expander">
+                <Setter Property="ExpandDirection" Value="Right" />
+                <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+                <Setter Property="Padding" Value="1,0,3,0" />
+            </Style>
+
+            <Style x:Key="verticalTextBlock" TargetType="TextBlock">
+                <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+                <Setter Property="LayoutTransform">
+                    <Setter.Value>
+                        <TransformGroup>
+                            <RotateTransform Angle="-90" />
+                        </TransformGroup>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
     </Window.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -63,7 +62,7 @@
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        
+
         <Grid x:Name="header"
               Grid.ColumnSpan="2"
               Visibility="{Binding IsLoginActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
@@ -75,8 +74,10 @@
                     <MenuItem Header="Симптомы" Command="{Binding EditSymptomsDirectoryCommand}" />
                     <MenuItem Header="Диагнозы" Command="{Binding EditDiagnosisDirectoryCommand}" />
                 </MenuItem>
-                <CheckBox IsChecked="{Binding SearchTesterState}">Автокомплиты</CheckBox>
-                <CheckBox IsChecked="{Binding SearchState}">Поиск</CheckBox>
+                <MenuItem Header="Поиск">
+                    <MenuItem IsCheckable="true" IsChecked="{Binding SearchTesterState}" Header="Все поиски" />
+                    <MenuItem IsCheckable="true" IsChecked="{Binding SearchState}" Header="Поиск" />
+                </MenuItem>
             </Menu>
             <Menu HorizontalAlignment="Center">
                 <CheckBox IsChecked="{Binding FastAddingMode}">Приём</CheckBox>
@@ -88,36 +89,43 @@
                 </MenuItem>
             </Menu>
         </Grid>
-        <Border Grid.Row="1" 
-                Grid.Column="1" 
-                Margin="10" 
-                Visibility="{Binding SearchState, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <screen:Search DataContext="{Binding Search}" />
-        </Border>
-        <Expander IsExpanded="{Binding IsPatientsVisible}"
-                  Visibility="{Binding IsLoginActive, Converter={StaticResource NegBooleanToVisibilityConverter}}"                  
-                  Grid.Row="1"
-                  Grid.RowSpan="2"
-        		ExpandDirection="Right"
-        		RenderTransformOrigin="0.5,0.5"
-        		BorderThickness="0,0,1,0"
-        		Padding="1,0,3,0"
-        		HorizontalAlignment="Left">
-            <Expander.BorderBrush>
-                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}" />
-            </Expander.BorderBrush>
-            <Expander.Header>
-                <TextBlock RenderTransformOrigin="0.5,0.5">
-                    <TextBlock.LayoutTransform>
-                        <TransformGroup>
-                            <RotateTransform Angle="-90" />
-                        </TransformGroup>
-                    </TextBlock.LayoutTransform><Run Text="Пациенты" /></TextBlock>
-            </Expander.Header>
-            <screen:Patients x:Name="patients"
-        			DataContext="{Binding PatientsManager}"
-        			Margin="10" />
-        </Expander>
+
+        <DockPanel x:Name="aside"
+                   Visibility="{Binding IsLoginActive, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                   Grid.Row="1"
+                   Grid.RowSpan="2">
+            <TabControl TabStripPlacement="Left"
+                        BorderThickness="0,0,1,0">
+                <TabItem IsSelected="{Binding IsPatientsVisible}"
+                         Style="{StaticResource tabHeaderWithExpander}">
+                    <TabItem.Header>
+                        <Expander IsExpanded="{Binding IsPatientsVisible}"
+                                  Style="{StaticResource leftSideExpander}">
+                            <Expander.Header>
+                                <TextBlock Style="{StaticResource verticalTextBlock}">Пациенты</TextBlock>
+                            </Expander.Header>
+                        </Expander>
+                    </TabItem.Header>
+                    <screen:Patients x:Name="patients"
+                                     Visibility="{Binding IsPatientsVisible, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+        			                 DataContext="{Binding PatientsManager}"
+        			                 Margin="10" />
+                </TabItem>
+                <TabItem IsSelected="{Binding SearchState}"
+                         Style="{StaticResource tabHeaderWithExpander}">
+                    <TabItem.Header>
+                        <Expander IsExpanded="{Binding SearchState}"
+                                  Style="{StaticResource leftSideExpander}">
+                            <Expander.Header>
+                                <TextBlock Style="{StaticResource verticalTextBlock}">Поиск</TextBlock>
+                            </Expander.Header>
+                        </Expander>
+                    </TabItem.Header>
+                    <screen:Search x:Name="search"
+                                   DataContext="{Binding Search}" />
+                </TabItem>
+            </TabControl>
+        </DockPanel>
 
         <ContentControl Content="{Binding CurrentScreen}"
                         Grid.Row="2"
