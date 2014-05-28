@@ -10,6 +10,20 @@ namespace Diagnosis.App
     {
         KeyValuePair<string, object>[] Params { get; }
     }
+    class CategoryCheckedChangedParams : IEventParams
+    {
+        public KeyValuePair<string, object>[] Params { get; private set; }
+
+        public CategoryCheckedChangedParams(CategoryViewModel category, bool isChecked)
+        {
+            Contract.Requires(category != null);
+
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.Category, category),
+                new KeyValuePair<string,object>(Messages.CheckedState, isChecked)
+            };
+        }
+    }
 
     class WordCheckedChangedParams : IEventParams
     {

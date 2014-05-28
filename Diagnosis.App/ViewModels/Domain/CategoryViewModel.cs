@@ -31,8 +31,13 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(category != null);
 
             this.category = category;
-
         }
+
+        public override void OnCheckedChanged()
+        {
+            this.Send((int)EventID.CategoryCheckedChanged, new CategoryCheckedChangedParams(this, IsChecked).Params);
+        }
+
         public int CompareTo(object obj)
         {
             if (obj == null)

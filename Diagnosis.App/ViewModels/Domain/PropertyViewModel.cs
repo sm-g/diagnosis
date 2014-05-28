@@ -57,5 +57,10 @@ namespace Diagnosis.App.ViewModels
 
             Values = new ObservableCollection<PropertyValue>(p.Values);
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
