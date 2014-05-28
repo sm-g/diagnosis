@@ -20,13 +20,13 @@ namespace Diagnosis.App
                    });
             this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
                  {
-                     var dia = e.GetValue<WordViewModel>(Messages.Diagnosis);
+                     var dia = e.GetValue<DiagnosisViewModel>(Messages.Diagnosis);
                      var isChecked = e.GetValue<bool>(Messages.CheckedState);
                      Console.WriteLine("dia '{0}' {1}", dia, isChecked ? "checked" : "unchecked");
                  });
             this.Subscribe((int)EventID.PatientCheckedChanged, (e) =>
                  {
-                     var pat = e.GetValue<WordViewModel>(Messages.Patient);
+                     var pat = e.GetValue<PatientViewModel>(Messages.Patient);
                      var isChecked = e.GetValue<bool>(Messages.CheckedState);
                      Console.WriteLine("patient '{0}' {1}", pat, isChecked ? "checked" : "unchecked");
                  });
