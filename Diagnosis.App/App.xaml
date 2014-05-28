@@ -16,6 +16,7 @@
         <conv:BoolToSexSign x:Key="SexToSign" />
         <conv:DateUnitToLabel x:Key="unitConverter" />
         <conv:Summator x:Key="summatorConverter" />
+        <conv:ManToShortName x:Key="shortName" />
 
         <s:Boolean x:Key="True">True</s:Boolean>
         <s:Boolean x:Key="False">False</s:Boolean>

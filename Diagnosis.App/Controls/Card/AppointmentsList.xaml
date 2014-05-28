@@ -24,7 +24,7 @@
                     <DockPanel>
                         <DockPanel DockPanel.Dock="Top" MinWidth="150">
                             <TextBlock Text="{Binding DateTime, StringFormat='{}{0:d}'}" />
-                            <TextBlock Text="{Binding Doctor.ShortName}"
+                            <TextBlock Text="{Binding Doctor, Converter={StaticResource shortName}}"
                                        HorizontalAlignment="Right" 
                                        Visibility="{Binding IsDoctorFromCourse, Converter={StaticResource NegBooleanToVisibilityConverter}}"/>
                         </DockPanel>

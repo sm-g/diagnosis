@@ -26,7 +26,6 @@ namespace Diagnosis.App.ViewModels
                 {
                     doctor.FirstName = value;
                     OnPropertyChanged(() => FirstName);
-                    OnPropertyChanged(() => ShortName);
                 }
             }
         }
@@ -43,7 +42,6 @@ namespace Diagnosis.App.ViewModels
                 {
                     doctor.MiddleName = value;
                     OnPropertyChanged(() => MiddleName);
-                    OnPropertyChanged(() => ShortName);
                 }
             }
         }
@@ -60,7 +58,6 @@ namespace Diagnosis.App.ViewModels
                 {
                     doctor.LastName = value;
                     OnPropertyChanged(() => LastName);
-                    OnPropertyChanged(() => ShortName);
                 }
             }
         }
@@ -89,11 +86,11 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public string ShortName
+        private string FullName
         {
             get
             {
-                return LastName + (FirstName.Length > 0 ? " " + FirstName[0] + "." + (MiddleName.Length > 0 ? " " + MiddleName[0] + "." : "") : "");
+                return LastName + " " + FirstName + " " + MiddleName;
             }
         }
 
@@ -128,7 +125,7 @@ namespace Diagnosis.App.ViewModels
 
         public override string ToString()
         {
-            return ShortName;
+            return FullName;
         }
     }
 }

@@ -40,10 +40,9 @@ namespace Diagnosis.App.ViewModels
                     patient.FirstName = value;
 
                     OnPropertyChanged(() => FirstName);
-                    OnPropertyChanged(() => ShortName);
-                    OnPropertyChanged(() => FullName);
                     OnPropertyChanged(() => SearchText);
                     OnPropertyChanged(() => NoName);
+                    OnPropertyChanged(() => Self);
                     Editable.MarkDirty();
                 }
             }
@@ -62,10 +61,9 @@ namespace Diagnosis.App.ViewModels
                     patient.MiddleName = value;
 
                     OnPropertyChanged(() => MiddleName);
-                    OnPropertyChanged(() => ShortName);
-                    OnPropertyChanged(() => FullName);
                     OnPropertyChanged(() => SearchText);
                     OnPropertyChanged(() => NoName);
+                    OnPropertyChanged(() => Self);
                     Editable.MarkDirty();
                 }
             }
@@ -84,10 +82,9 @@ namespace Diagnosis.App.ViewModels
                     patient.LastName = value;
 
                     OnPropertyChanged(() => LastName);
-                    OnPropertyChanged(() => ShortName);
-                    OnPropertyChanged(() => FullName);
                     OnPropertyChanged(() => SearchText);
                     OnPropertyChanged(() => NoName);
+                    OnPropertyChanged(() => Self);
                     Editable.MarkDirty();
                 }
             }
@@ -182,22 +179,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public string ShortName
-        {
-            get
-            {
-                return LastName + (FirstName.Length > 0 ? " " + FirstName[0] + "." + (MiddleName.Length > 0 ? " " + MiddleName[0] + "." : "") : "");
-            }
-        }
-
-        public string FullName
-        {
-            get
-            {
-                return LastName + " " + FirstName + " " + MiddleName;
-            }
-        }
-
         public bool NoName
         {
             get
@@ -211,6 +192,19 @@ namespace Diagnosis.App.ViewModels
         {
             get;
             private set;
+        }
+
+        public PatientViewModel Self
+        {
+            get { return this; }
+        }
+
+        internal string FullName
+        {
+            get
+            {
+                return LastName + " " + FirstName + " " + MiddleName;
+            }
         }
 
         #endregion Model related

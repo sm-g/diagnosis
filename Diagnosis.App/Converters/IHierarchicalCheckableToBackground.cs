@@ -29,7 +29,7 @@ namespace Diagnosis.App.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new System.NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 }

@@ -84,7 +84,7 @@
             </Menu>
 
             <Menu HorizontalAlignment="Right">
-                <MenuItem Header="{Binding LoginVM.DoctorsManager.CurrentDoctor.ShortName}">
+                <MenuItem Header="{Binding LoginVM.DoctorsManager.CurrentDoctor, Converter={StaticResource shortName}}">
                     <MenuItem Header="Выйти" Command="{Binding LogoutCommand}" />
                 </MenuItem>
             </Menu>

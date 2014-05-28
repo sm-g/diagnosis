@@ -214,6 +214,7 @@
     <Compile Include="Controls\TextBoxInfo.xaml.cs">
       <DependentUpon>TextBoxInfo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\ManToShortName.cs" />
     <Compile Include="Converters\Summator.cs" />
     <Compile Include="Converters\DateUnitToLabel.cs" />
     <Compile Include="Converters\BooleanConverter.cs" />
@@ -449,7 +450,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\Expander.xaml">
+    <Page Include="Styles\ExpanderFixed.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
