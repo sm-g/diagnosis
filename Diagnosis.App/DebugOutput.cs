@@ -10,6 +10,8 @@ namespace Diagnosis.App
 {
     class DebugOutput
     {
+        bool showPropertySelectedValueChanged = false;
+
         public DebugOutput()
         {
             this.Subscribe((int)EventID.WordCheckedChanged, (e) =>
@@ -48,10 +50,10 @@ namespace Diagnosis.App
                 Console.WriteLine("cur patient is '{0}'", p);
             });
             this.Subscribe((int)EventID.CurrentDoctorChanged, (e) =>
-          {
-              var d = e.GetValue<DoctorViewModel>(Messages.Doctor);
-              Console.WriteLine("cur doctor is '{0}'", d);
-          });
+            {
+                var d = e.GetValue<DoctorViewModel>(Messages.Doctor);
+                Console.WriteLine("cur doctor is '{0}'", d);
+            });
 
             this.Subscribe((int)EventID.HealthRecordChanged, (e) =>
             {
@@ -72,7 +74,8 @@ namespace Diagnosis.App
             this.Subscribe((int)EventID.PropertySelectedValueChanged, (e) =>
             {
                 var property = e.GetValue<PropertyViewModel>(Messages.Property);
-                Console.WriteLine("property {0} changed", property);
+                if (showPropertySelectedValueChanged)
+                    Console.WriteLine("property {0} changed", property);
             });
         }
     }

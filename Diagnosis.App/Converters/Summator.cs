@@ -18,8 +18,9 @@ namespace Diagnosis.App.Converters
 
             double b = 0;
             double.TryParse(parameter as string, out b);
-
-            return a + b;
+            if (a > b)
+                return a + b;
+            return 0; // no negative values
         }
 
         public object ConvertBack(object value, Type targetType,

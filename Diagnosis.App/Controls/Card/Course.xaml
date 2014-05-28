@@ -23,7 +23,7 @@
                     <TextBlock Text="{Binding Start, StringFormat='{}с {0:d}'}" />
                     <TextBlock Text="{Binding End, StringFormat='{}по {0:d}', TargetNullValue=''}" />
                 </TextBlock>
-                <TextBlock Text="{Binding LeadDoctor, Converter={StaticResource shortName}}" />
+                <TextBlock Text="{Binding LeadDoctor, Converter={StaticResource ManToShortName}}" />
             </StackPanel>
             <TextBlock Visibility="{Binding Appointments.Count, Converter={StaticResource CountToVisibility}}">
                 <TextBlock Text="{Binding Appointments.Count}" />

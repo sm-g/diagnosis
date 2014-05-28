@@ -16,16 +16,15 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type TextBoxBase}">
-                        <Border
-                        Background="{TemplateBinding Panel.Background}"
-                        BorderBrush="{TemplateBinding Border.BorderBrush}"
-                        BorderThickness="{TemplateBinding Border.BorderThickness}"
-                        x:Name="Bd"
-                        SnapsToDevicePixels="True">
+                        <Border  x:Name="Bd"
+                                Background="{TemplateBinding Panel.Background}"
+                                BorderBrush="{TemplateBinding Border.BorderBrush}"
+                                BorderThickness="{TemplateBinding Border.BorderThickness}"                       
+                                SnapsToDevicePixels="True">
                             <DockPanel>
                                 <Grid x:Name="Info"
                                       DockPanel.Dock="Right"
-                                      Width="{Binding ActualHeight, ElementName=Bd, ConverterParameter=-5, Converter={StaticResource summatorConverter}}"
+                                      Width="{Binding ActualHeight, ElementName=Bd, ConverterParameter=-5, Converter={StaticResource SummatorConverter}}"
                                       Height="{Binding ActualWidth, ElementName=Info}"
                                       ToolTip="{Binding InfoText, RelativeSource={RelativeSource TemplatedParent}}" 
                                       Margin="0,0,2,0">

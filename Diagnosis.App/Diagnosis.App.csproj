@@ -214,6 +214,8 @@
     <Compile Include="Controls\TextBoxInfo.xaml.cs">
       <DependentUpon>TextBoxInfo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\IsLastItem.cs" />
+    <Compile Include="Converters\EqualityToBool.cs" />
     <Compile Include="Converters\ManToShortName.cs" />
     <Compile Include="Converters\Summator.cs" />
     <Compile Include="Converters\DateUnitToLabel.cs" />
