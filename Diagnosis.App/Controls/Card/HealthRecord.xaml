@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
-             xmlns:Forms="clr-namespace:Diagnosis.App.Controls.Forms"
+             xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
              xmlns:app="clr-namespace:Diagnosis.App"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
@@ -43,7 +43,7 @@
                         </ListView.ItemTemplate>
                     </ListView>
                 </DockPanel>
-                <Forms:HealthRecordEditor />
+                <editors:HealthRecordEditor />
 
                 <StackPanel.InputBindings>
                 </StackPanel.InputBindings>

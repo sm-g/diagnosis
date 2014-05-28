@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Diagnosis.App.Controls.Forms
+namespace Diagnosis.App.Controls.Editors
 {
     /// <summary>
     /// Interaction logic for PropertiesChooser.xaml

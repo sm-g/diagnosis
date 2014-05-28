@@ -172,22 +172,22 @@
     <Compile Include="Controls\Search\SearchTree.xaml.cs">
       <DependentUpon>SearchTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Forms\AgePicker.xaml.cs">
+    <Compile Include="Controls\Editors\AgePicker.xaml.cs">
       <DependentUpon>AgePicker.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Forms\CategoryChooser.xaml.cs">
+    <Compile Include="Controls\Editors\CategoryChooser.xaml.cs">
       <DependentUpon>CategoryChooser.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Forms\DateOffsetPicker.xaml.cs">
+    <Compile Include="Controls\Editors\DateOffsetPicker.xaml.cs">
       <DependentUpon>DateOffsetPicker.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Forms\ComboBoxDatePicker.xaml.cs">
+    <Compile Include="Controls\Editors\ComboBoxDatePicker.xaml.cs">
       <DependentUpon>ComboBoxDatePicker.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Forms\HealthRecordEditor.xaml.cs">
+    <Compile Include="Controls\Editors\HealthRecordEditor.xaml.cs">
       <DependentUpon>HealthRecordEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Forms\PropertiesChooser.xaml.cs">
+    <Compile Include="Controls\Editors\PropertiesChooser.xaml.cs">
       <DependentUpon>PropertiesChooser.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Search\FloatSearch.xaml.cs">
@@ -196,10 +196,10 @@
     <Compile Include="Controls\Directory\GroupsTree.xaml.cs">
       <DependentUpon>GroupsTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Forms\PatientEditor.xaml.cs">
+    <Compile Include="Controls\Editors\PatientEditor.xaml.cs">
       <DependentUpon>PatientEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Forms\SexChooser.xaml.cs">
+    <Compile Include="Controls\Editors\SexChooser.xaml.cs">
       <DependentUpon>SexChooser.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Helpers\Attached.cs" />
@@ -354,27 +354,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\Forms\AgePicker.xaml">
+    <Page Include="Controls\Editors\AgePicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Forms\CategoryChooser.xaml">
+    <Page Include="Controls\Editors\CategoryChooser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Forms\DateOffsetPicker.xaml">
+    <Page Include="Controls\Editors\DateOffsetPicker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\Forms\ComboBoxDatePicker.xaml">
+    <Page Include="Controls\Editors\ComboBoxDatePicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Forms\HealthRecordEditor.xaml">
+    <Page Include="Controls\Editors\HealthRecordEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Forms\PropertiesChooser.xaml">
+    <Page Include="Controls\Editors\PropertiesChooser.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -386,11 +386,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Forms\PatientEditor.xaml">
+    <Page Include="Controls\Editors\PatientEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Forms\SexChooser.xaml">
+    <Page Include="Controls\Editors\SexChooser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -12,14 +12,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Diagnosis.App.Controls.Forms
+namespace Diagnosis.App.Controls.Editors
 {
-    /// <summary>
-    /// Interaction logic for AgePicker.xaml
-    /// </summary>
-    public partial class AgePicker : UserControl
+    public partial class PatientEditor : UserControl
     {
-        public AgePicker()
+        public PatientEditor()
         {
             InitializeComponent();
         }

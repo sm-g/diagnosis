@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:Converters="clr-namespace:Diagnosis.App.Converters" 
-             x:Class="Diagnosis.App.Controls.Forms.ComboBoxDatePicker"
+             x:Class="Diagnosis.App.Controls.Editors.ComboBoxDatePicker"
              mc:Ignorable="d"
              d:DesignHeight="30" d:DesignWidth="300"
              x:Name="root">
