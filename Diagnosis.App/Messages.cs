@@ -36,7 +36,8 @@ namespace Diagnosis.App
         AppointmentAdded,
 
         WordsEditingModeChanged,
+        HealthRecordChanged,
 
-        HealthRecordChanged
+        OpenHealthRecord
     }
 }

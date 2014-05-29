@@ -6,14 +6,25 @@ using System.Windows;
 
 namespace Diagnosis.App
 {
-    interface IEventParams
+    abstract class EventParams
     {
-        KeyValuePair<string, object>[] Params { get; }
+        public KeyValuePair<string, object>[] Params { get; protected set; }
     }
-    class CategoryCheckedChangedParams : IEventParams
-    {
-        public KeyValuePair<string, object>[] Params { get; private set; }
 
+    abstract class HealthRecordParams : EventParams
+    {
+        public HealthRecordParams(HealthRecordViewModel hrVM)
+        {
+            Contract.Requires(hrVM != null);
+
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.HealthRecord, hrVM)
+            };
+        }
+    }
+
+    class CategoryCheckedChangedParams : EventParams
+    {
         public CategoryCheckedChangedParams(CategoryViewModel category, bool isChecked)
         {
             Contract.Requires(category != null);
@@ -25,10 +36,8 @@ namespace Diagnosis.App
         }
     }
 
-    class WordCheckedChangedParams : IEventParams
+    class WordCheckedChangedParams : EventParams
     {
-        public KeyValuePair<string, object>[] Params { get; private set; }
-
         public WordCheckedChangedParams(WordViewModel symtpom, bool isChecked)
         {
             Contract.Requires(symtpom != null);
@@ -40,10 +49,8 @@ namespace Diagnosis.App
         }
     }
 
-    class DiagnosisCheckedChangedParams : IEventParams
+    class DiagnosisCheckedChangedParams : EventParams
     {
-        public KeyValuePair<string, object>[] Params { get; private set; }
-
         public DiagnosisCheckedChangedParams(DiagnosisViewModel diagnosis, bool isChecked)
         {
             Contract.Requires(diagnosis != null);
@@ -55,10 +62,8 @@ namespace Diagnosis.App
         }
     }
 
-    class PatientCheckedChangedParams : IEventParams
+    class PatientCheckedChangedParams : EventParams
     {
-        public KeyValuePair<string, object>[] Params { get; private set; }
-
         public PatientCheckedChangedParams(PatientViewModel patient, bool isChecked)
         {
             Contract.Requires(patient != null);
@@ -70,10 +75,8 @@ namespace Diagnosis.App
         }
     }
 
-    class CurrentPatientChangedParams : IEventParams
+    class CurrentPatientChangedParams : EventParams
     {
-        public KeyValuePair<string, object>[] Params { get; private set; }
-
         public CurrentPatientChangedParams(PatientViewModel patient)
         {
             Params = new[] {
@@ -82,10 +85,8 @@ namespace Diagnosis.App
         }
     }
 
-    class CurrentDoctorChangedParams : IEventParams
+    class CurrentDoctorChangedParams : EventParams
     {
-        public KeyValuePair<string, object>[] Params { get; private set; }
-
         public CurrentDoctorChangedParams(DoctorViewModel doctor)
         {
             Params = new[] {
@@ -94,10 +95,8 @@ namespace Diagnosis.App
         }
     }
 
-    class PropertySelectedValueChangedParams : IEventParams
+    class PropertySelectedValueChangedParams : EventParams
     {
-        public KeyValuePair<string, object>[] Params { get; private set; }
-
         public PropertySelectedValueChangedParams(PropertyViewModel property)
         {
             Contract.Requires(property != null);
@@ -108,10 +107,8 @@ namespace Diagnosis.App
         }
     }
 
-    class CourseStartedParams : IEventParams
+    class CourseStartedParams : EventParams
     {
-        public KeyValuePair<string, object>[] Params { get; private set; }
-
         public CourseStartedParams(Course course)
         {
             Contract.Requires(course != null);
@@ -122,10 +119,8 @@ namespace Diagnosis.App
         }
     }
 
-    class AppointmentAddedParams : IEventParams
+    class AppointmentAddedParams : EventParams
     {
-        public KeyValuePair<string, object>[] Params { get; private set; }
-
         public AppointmentAddedParams(AppointmentViewModel appointment)
         {
             Contract.Requires(appointment != null);
@@ -136,24 +131,9 @@ namespace Diagnosis.App
         }
     }
 
-    class HealthRecordSelectedParams : IEventParams
+
+    class DirectoryEditingModeChangedParams : EventParams
     {
-        public KeyValuePair<string, object>[] Params { get; private set; }
-
-        public HealthRecordSelectedParams(HealthRecordViewModel hrVM)
-        {
-            Contract.Requires(hrVM != null);
-
-            Params = new[] {
-                new KeyValuePair<string,object>(Messages.HealthRecord, hrVM)
-            };
-        }
-    }
-
-    class DirectoryEditingModeChangedParams : IEventParams
-    {
-        public KeyValuePair<string, object>[] Params { get; private set; }
-
         public DirectoryEditingModeChangedParams(bool isEditing)
         {
             Params = new[] {
@@ -162,17 +142,16 @@ namespace Diagnosis.App
         }
     }
 
-    class HealthRecordChangedParams : IEventParams
+    class HealthRecordChangedParams : HealthRecordParams
     {
-        public KeyValuePair<string, object>[] Params { get; private set; }
-
-        public HealthRecordChangedParams(HealthRecordViewModel hrVM)
-        {
-            Contract.Requires(hrVM != null);
-
-            Params = new[] {
-                new KeyValuePair<string,object>(Messages.HealthRecord, hrVM)
-            };
-        }
+        public HealthRecordChangedParams(HealthRecordViewModel hrVM) : base(hrVM) { }
+    }
+    class HealthRecordSelectedParams : HealthRecordParams
+    {
+        public HealthRecordSelectedParams(HealthRecordViewModel hrVM) : base(hrVM) { }
+    }
+    class OpenHealthRecordParams : HealthRecordParams
+    {
+        public OpenHealthRecordParams(HealthRecordViewModel hrVM) : base(hrVM) { }
     }
 }
