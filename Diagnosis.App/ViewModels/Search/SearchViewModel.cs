@@ -17,6 +17,7 @@ namespace Diagnosis.App.ViewModels
         private int? _appMonthUpper;
         private int? _appYearLower;
         private int? _appYearUpper;
+        private string _comment;
         private DateOffset _hrDateOffsetLower;
         private DateOffset _hrDateOffsetUpper;
         private RelayCommand _searchCommand;
@@ -27,9 +28,9 @@ namespace Diagnosis.App.ViewModels
 
         public SearchViewModel()
         {
-            WordSearch = new WordCheckingAutoComplete(QuerySeparator.Default, new SearcherSettings() { AllChildren = true });
+            WordSearch = new WordCheckingAutoComplete(QuerySeparator.Default, new SimpleSearcherSettings() { AllChildren = true });
             Words = new ObservableCollection<WordViewModel>();
-            Results = new ObservableCollection<SearchResultViewModel>();
+            Results = new ObservableCollection<HrSearchResultViewModel>();
             ControlsVisible = true;
 
             this.Subscribe((int)EventID.WordCheckedChanged, (e) =>
@@ -236,6 +237,22 @@ namespace Diagnosis.App.ViewModels
             private set;
         }
 
+        public string Comment
+        {
+            get
+            {
+                return _comment;
+            }
+            set
+            {
+                if (_comment != value)
+                {
+                    _comment = value;
+                    OnPropertyChanged(() => Comment);
+                }
+            }
+        }
+
         #endregion
 
         #region Options results
@@ -310,7 +327,7 @@ namespace Diagnosis.App.ViewModels
                                               Results.Clear();
                                               var options = GetOptions();
                                               searcher.Search(options).
-                                                  ForAll(hr => Results.Add(new SearchResultViewModel(hr, options)));
+                                                  ForAll(hr => Results.Add(new HrSearchResultViewModel(hr, options)));
 
                                               searchWas = true;
                                               OnPropertyChanged(() => NoResultsVisible);
@@ -324,7 +341,7 @@ namespace Diagnosis.App.ViewModels
             private set;
         }
 
-        public ObservableCollection<SearchResultViewModel> Results
+        public ObservableCollection<HrSearchResultViewModel> Results
         {
             get;
             private set;
@@ -363,6 +380,7 @@ namespace Diagnosis.App.ViewModels
             options.AnyWord = AnyWord;
             options.Words = Words;
             options.Categories = SelectedCategories.ToList();
+            options.Comment = Comment;
 
             return options;
         }

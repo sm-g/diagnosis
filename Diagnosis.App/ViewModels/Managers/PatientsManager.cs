@@ -11,7 +11,7 @@ namespace Diagnosis.App.ViewModels
 {
     public class PatientsManager : ViewModelBase
     {
-        private SearchBase<PatientViewModel> _search;
+        private PopupSearch<PatientViewModel> _search;
         private PatientViewModel _current;
         private ICommand _addPatient;
         private IPatientRepository patientRepo;
@@ -50,13 +50,13 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-        public SearchBase<PatientViewModel> Search
+        public PopupSearch<PatientViewModel> Search
         {
             get
             {
                 if (_search == null)
                 {
-                    _search = new SearchBase<PatientViewModel>(new PatientSearcher(Patients));
+                    _search = new PopupSearch<PatientViewModel>(new PatientSearcher(Patients));
                     _search.ResultItemSelected += _search_ResultItemSelected;
                 }
                 return _search;

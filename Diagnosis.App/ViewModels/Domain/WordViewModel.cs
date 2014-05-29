@@ -9,7 +9,7 @@ namespace Diagnosis.App.ViewModels
         internal readonly Word word;
 
         private CategoryViewModel _defCat;
-        private SearchBase<WordViewModel> _search;
+        private PopupSearch<WordViewModel> _search;
 
         public IEditable Editable { get; private set; }
 
@@ -98,13 +98,13 @@ namespace Diagnosis.App.ViewModels
             this.Send((int)EventID.WordCheckedChanged, new WordCheckedChangedParams(this, IsChecked).Params);
         }
 
-        public SearchBase<WordViewModel> Search
+        public PopupSearch<WordViewModel> Search
         {
             get
             {
                 if (_search == null)
                 {
-                    _search = new SearchBase<WordViewModel>(new WordSearcher(this, new SearcherSettings() { AllChildren = true }));
+                    _search = new PopupSearch<WordViewModel>(new WordSearcher(this, new SimpleSearcherSettings() { AllChildren = true }));
                     _search.ResultItemSelected += _search_ResultItemSelected;
                 }
                 return _search;

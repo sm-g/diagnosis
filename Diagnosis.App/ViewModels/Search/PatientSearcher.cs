@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class PatientSearcher : ISearcher<PatientViewModel>
+    public class PatientSearcher : ISimpleSearcher<PatientViewModel>
     {
         public bool WithNonCheckable { get; private set; }
 

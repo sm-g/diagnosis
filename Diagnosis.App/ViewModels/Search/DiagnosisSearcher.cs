@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class DiagnosisSearcher : ISearcher<DiagnosisViewModel>
+    public class DiagnosisSearcher : ISimpleSearcher<DiagnosisViewModel>
     {
         public bool WithNonCheckable { get; set; }
 
@@ -21,7 +21,7 @@ namespace Diagnosis.App.ViewModels
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="settings"></param>
-        public DiagnosisSearcher(DiagnosisViewModel parent, SearcherSettings settings)
+        public DiagnosisSearcher(DiagnosisViewModel parent, SimpleSearcherSettings settings)
         {
             Contract.Requires(parent != null);
             Collection = settings.AllChildren ? parent.AllChildren : parent.Children;

@@ -34,7 +34,7 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _searcher ?? (_searcher = new WordSearcher(root,
-                    new SearcherSettings() { WithChecked = true, WithCreatingNew = true, AllChildren = true }));
+                    new SimpleSearcherSettings() { WithChecked = true, WithCreatingNew = true, AllChildren = true }));
             }
         }
 

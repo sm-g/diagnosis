@@ -14,7 +14,7 @@ namespace Diagnosis.App.ViewModels
         internal readonly HealthRecord healthRecord;
         private AutoCompleteBoxViewModel _autoComplete;
         private AutoCompleteBase<WordViewModel> _autoComplete2;
-        private ISearch<DiagnosisViewModel> _diagnosisSearch;
+        private PopupSearch<DiagnosisViewModel> _diagnosisSearch;
         private DateOffset _dateOffset;
         private List<EventMessageHandler> msgHandlers;
 
@@ -292,11 +292,11 @@ namespace Diagnosis.App.ViewModels
             {
                 return _autoComplete2 ?? (_autoComplete2 = new WordCompositeAutoComplete(
                     QuerySeparator.Default,
-                    new SearcherSettings() { AllChildren = true, WithCreatingNew = true }));
+                    new SimpleSearcherSettings() { AllChildren = true, WithCreatingNew = true }));
             }
         }
 
-        public ISearch<DiagnosisViewModel> DiagnosisSearch
+        public PopupSearch<DiagnosisViewModel> DiagnosisSearch
         {
             get
             {
@@ -314,7 +314,7 @@ namespace Diagnosis.App.ViewModels
 
         private void CreateDiagnosisSearch()
         {
-            DiagnosisSearch = new SearchBase<DiagnosisViewModel>(
+            DiagnosisSearch = new PopupSearch<DiagnosisViewModel>(
                    EntityManagers.DiagnosisManager.FiltratingSearcher);
 
             DiagnosisSearch.ResultItemSelected += OnDiagnosisSearchItemSelected;

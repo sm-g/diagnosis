@@ -13,16 +13,16 @@ namespace Diagnosis.App.ViewModels
         private AutoCompleteBase<WordViewModel> _wordAutoComplete;
         private AutoCompleteBase<WordViewModel> _wordAutoCompleteComposite;
         private AutoCompleteBase<DiagnosisViewModel> _diaAutoComplete;
-        private SearchBase<DiagnosisViewModel> _diaFilteringSearch;
+        private PopupSearch<DiagnosisViewModel> _diaFilteringSearch;
         private AutoCompleteBoxViewModel _autoComplete;
-        private SearchBase<DiagnosisViewModel> _diaSearch;
-        private SearchBase<WordViewModel> _wordSearch;
+        private PopupSearch<DiagnosisViewModel> _diaSearch;
+        private PopupSearch<WordViewModel> _wordSearch;
 
-        public SearchBase<WordViewModel> WordSearch
+        public PopupSearch<WordViewModel> WordSearch
         {
             get
             {
-                return _wordSearch ?? (_wordSearch = new SearchBase<WordViewModel>(
+                return _wordSearch ?? (_wordSearch = new PopupSearch<WordViewModel>(
                     EntityManagers.WordsManager.RootSearcher));
             }
         }
@@ -31,7 +31,7 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _wordAutoComplete ?? (_wordAutoComplete = new WordCheckingAutoComplete(
-                    QuerySeparator.Default, new SearcherSettings(false, false, true, true)));
+                    QuerySeparator.Default, new SimpleSearcherSettings(false, false, true, true)));
             }
         }
 
@@ -40,15 +40,15 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _wordAutoCompleteComposite ?? (_wordAutoCompleteComposite = new WordCompositeAutoComplete(
-                    QuerySeparator.Default, new SearcherSettings(false, false, true, true)));
+                    QuerySeparator.Default, new SimpleSearcherSettings(false, false, true, true)));
             }
         }
 
-        public SearchBase<DiagnosisViewModel> DiagnosisSearch
+        public PopupSearch<DiagnosisViewModel> DiagnosisSearch
         {
             get
             {
-                return _diaSearch ?? (_diaSearch = new SearchBase<DiagnosisViewModel>(EntityManagers.DiagnosisManager.RootSearcher));
+                return _diaSearch ?? (_diaSearch = new PopupSearch<DiagnosisViewModel>(EntityManagers.DiagnosisManager.RootSearcher));
             }
         }
 
@@ -57,15 +57,15 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _diaAutoComplete ?? (_diaAutoComplete = new DiagnosisAutoComplete(
-                    QuerySeparator.Default, new SearcherSettings(true, true, false, true)));
+                    QuerySeparator.Default, new SimpleSearcherSettings(true, true, false, true)));
             }
         }
 
-        public ISearch<DiagnosisViewModel> DiagnosisFilteringSearch
+        public PopupSearch<DiagnosisViewModel> DiagnosisFilteringSearch
         {
             get
             {
-                return _diaFilteringSearch ?? (_diaFilteringSearch = new SearchBase<DiagnosisViewModel>(
+                return _diaFilteringSearch ?? (_diaFilteringSearch = new PopupSearch<DiagnosisViewModel>(
                     EntityManagers.DiagnosisManager.FiltratingSearcher));
             }
         }

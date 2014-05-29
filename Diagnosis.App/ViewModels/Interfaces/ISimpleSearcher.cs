@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public interface ISearcher<T>
+    public interface ISimpleSearcher<T>
     {
         IEnumerable<T> Collection { get; }
         IEnumerable<T> Search(string query);

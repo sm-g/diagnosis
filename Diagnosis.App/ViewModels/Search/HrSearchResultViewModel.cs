@@ -1,20 +1,20 @@
-﻿using Diagnosis.Core;
+﻿using Diagnosis.Models;
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
-using System.Linq;
 using System.Diagnostics.Contracts;
-using Diagnosis.Models;
+using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class SearchResultViewModel : ViewModelBase
+    public class HrSearchResultViewModel : ViewModelBase
     {
         readonly HealthRecord hr;
         readonly HrSearchOptions options;
 
-        public SearchResultViewModel(HealthRecord hr, HrSearchOptions options)
+        private RelayCommand _openHr;
+
+        public HrSearchResultViewModel(HealthRecord hr, HrSearchOptions options)
         {
             Contract.Requires(hr != null);
             Contract.Requires(options != null);
@@ -62,9 +62,6 @@ namespace Diagnosis.App.ViewModels
                 return hr;
             }
         }
-
-        private RelayCommand _openHr;
-
         /// <summary>
         /// Gets the OpenHealthRecord.
         /// </summary>

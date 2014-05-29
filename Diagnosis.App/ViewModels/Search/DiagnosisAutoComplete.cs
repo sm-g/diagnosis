@@ -4,7 +4,7 @@ namespace Diagnosis.App.ViewModels
 {
     public class DiagnosisAutoComplete : AutoCompleteBase<DiagnosisViewModel>
     {
-        protected override ISearcher<DiagnosisViewModel> MakeSearch(DiagnosisViewModel parent)
+        protected override ISimpleSearcher<DiagnosisViewModel> MakeSearch(DiagnosisViewModel parent)
         {
             DiagnosisSearcher searcher;
             if (parent == null)
@@ -20,7 +20,7 @@ namespace Diagnosis.App.ViewModels
             return item.Name;
         }
 
-        public DiagnosisAutoComplete(QuerySeparator separator, SearcherSettings settings)
+        public DiagnosisAutoComplete(QuerySeparator separator, SimpleSearcherSettings settings)
             : base(separator, settings)
         { }
     }

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class WordSearcher : ISearcher<WordViewModel>
+    public class WordSearcher : ISimpleSearcher<WordViewModel>
     {
         public bool WithNonCheckable { get; set; }
         public bool WithChecked { get; set; }
@@ -15,7 +15,7 @@ namespace Diagnosis.App.ViewModels
 
         public IEnumerable<WordViewModel> Collection { get; private set; }
 
-        public WordSearcher(WordViewModel parent, SearcherSettings settings)
+        public WordSearcher(WordViewModel parent, SimpleSearcherSettings settings)
         {
             Contract.Requires(parent != null);
             Collection = settings.AllChildren ? parent.AllChildren : parent.Children;

@@ -19,8 +19,8 @@ namespace Diagnosis.App.ViewModels
         private bool settingFullStringFromCode;
 
         protected List<T> items;
-        protected ISearcher<T> searcher;
-        protected SearcherSettings settings;
+        protected ISimpleSearcher<T> searcher;
+        protected SimpleSearcherSettings settings;
 
         public event EventHandler SuggestionAccepted;
 
@@ -350,11 +350,11 @@ namespace Diagnosis.App.ViewModels
         {
         }
 
-        protected abstract ISearcher<T> MakeSearch(T parent);
+        protected abstract ISimpleSearcher<T> MakeSearch(T parent);
 
         protected abstract string GetQueryString(T item);
 
-        public AutoCompleteBase(QuerySeparator separator, SearcherSettings settings)
+        public AutoCompleteBase(QuerySeparator separator, SimpleSearcherSettings settings)
         {
             Contract.Requires(separator != null);
             this.settings = settings;

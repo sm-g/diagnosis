@@ -248,9 +248,9 @@
     <Compile Include="ViewModels\Search\DiagnosisSearcher.cs" />
     <Compile Include="ViewModels\Search\HrSearcher.cs" />
     <Compile Include="ViewModels\Search\HrSearchOptions.cs" />
-    <Compile Include="ViewModels\Search\SearcherSettings.cs" />
+    <Compile Include="ViewModels\Search\SimpleSearcherSettings.cs" />
     <Compile Include="ViewModels\Search\SearchTester.cs" />
-    <Compile Include="ViewModels\Search\SearchResultViewModel.cs" />
+    <Compile Include="ViewModels\Search\HrSearchResultViewModel.cs" />
     <Compile Include="ViewModels\Search\SearchViewModel.cs" />
     <Compile Include="ViewModels\Search\WordCompositeAutoComplete.cs" />
     <Compile Include="ViewModels\Search\WordCompositeSearcher.cs" />
@@ -267,7 +267,6 @@
     <Compile Include="ViewModels\HierarchicalCheckable.cs" />
     <Compile Include="ViewModels\Managers\DiagnosisManager.cs" />
     <Compile Include="ViewModels\Managers\CoursesManager.cs" />
-    <Compile Include="ViewModels\Interfaces\ISearch.cs" />
     <Compile Include="ViewModels\Domain\AppointmentViewModel.cs" />
     <Compile Include="ViewModels\Domain\HealthRecordViewModel.cs" />
     <Compile Include="ViewModels\Managers\DoctorsManager.cs" />
@@ -314,7 +313,7 @@
     <Compile Include="ViewModels\Interfaces\ICheckable.cs" />
     <Compile Include="ViewModels\Interfaces\IHierarchical.cs" />
     <Compile Include="ViewModels\Interfaces\IHierarchicalCheckable.cs" />
-    <Compile Include="ViewModels\Interfaces\ISearcher.cs" />
+    <Compile Include="ViewModels\Interfaces\ISimpleSearcher.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IAutoComplete.cs" />
@@ -323,7 +322,7 @@
     <Compile Include="ViewModels\Domain\PropertyViewModel.cs" />
     <Compile Include="ViewModels\HierarchicalExplorer.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
-    <Compile Include="ViewModels\Search\SearchBase.cs" />
+    <Compile Include="ViewModels\Search\PopupSearch.cs" />
     <Compile Include="ViewModels\Search\WordCheckingAutoComplete.cs" />
     <Compile Include="ViewModels\Domain\WordViewModel.cs" />
     <Compile Include="Controls\Directory\FullTree.xaml.cs">

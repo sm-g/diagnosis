@@ -5,7 +5,7 @@ namespace Diagnosis.App.ViewModels
 {
     public class WordCheckingAutoComplete : AutoCompleteBase<WordViewModel>
     {
-        protected override ISearcher<WordViewModel> MakeSearch(WordViewModel parent)
+        protected override ISimpleSearcher<WordViewModel> MakeSearch(WordViewModel parent)
         {
             WordSearcher searcher;
             searcher = new WordSearcher(EntityManagers.WordsManager.Root, settings);
@@ -22,7 +22,7 @@ namespace Diagnosis.App.ViewModels
             item.IsChecked = true;
         }
 
-        public WordCheckingAutoComplete(QuerySeparator separator, SearcherSettings settings)
+        public WordCheckingAutoComplete(QuerySeparator separator, SimpleSearcherSettings settings)
             : base(separator, settings)
         { }
     }

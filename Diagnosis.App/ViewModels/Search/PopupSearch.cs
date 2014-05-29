@@ -4,9 +4,9 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class SearchBase<T> : ViewModelBase, ISearch<T> where T : class
+    public class PopupSearch<T> : ViewModelBase where T : class
     {
-        internal readonly ISearcher<T> searcher;
+        internal readonly ISimpleSearcher<T> searcher;
         private string _query;
         private int _selectedIndex = -1;
         private ICommand _clear;
@@ -230,7 +230,7 @@ namespace Diagnosis.App.ViewModels
                 SelectedIndex = 0;
         }
 
-        public SearchBase(ISearcher<T> searcher, bool switchedOn = true)
+        public PopupSearch(ISimpleSearcher<T> searcher, bool switchedOn = true)
         {
             this.searcher = searcher;
 

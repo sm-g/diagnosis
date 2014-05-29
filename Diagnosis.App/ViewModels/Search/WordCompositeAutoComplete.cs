@@ -5,7 +5,7 @@ namespace Diagnosis.App.ViewModels
 {
     public class WordCompositeAutoComplete : AutoCompleteBase<WordViewModel>
     {
-        protected override ISearcher<WordViewModel> MakeSearch(WordViewModel parent)
+        protected override ISimpleSearcher<WordViewModel> MakeSearch(WordViewModel parent)
         {
             WordSearcher searcher;
             if (parent == null)
@@ -21,7 +21,7 @@ namespace Diagnosis.App.ViewModels
         {
             return item.Name;
         }
-        public WordCompositeAutoComplete(QuerySeparator separator, SearcherSettings settings)
+        public WordCompositeAutoComplete(QuerySeparator separator, SimpleSearcherSettings settings)
             : base(separator, settings)
         { }
     }
