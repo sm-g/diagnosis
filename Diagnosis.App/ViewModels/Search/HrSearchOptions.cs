@@ -36,5 +36,9 @@ namespace Diagnosis.App.ViewModels
         /// Верхняя грань давности симптома
         /// </summary>
         public DateOffset HealthRecordFromDateLt { get; set; }
+        /// <summary>
+        /// Часть комментария.
+        /// </summary>
+        public string Comment { get; set; }
     }
 }

@@ -19,6 +19,10 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="lineHeader" TargetType="FrameworkElement">
+            <Setter Property="DockPanel.Dock" Value="Top"/>
+            <Setter Property="Margin" Value="0,0,0,2"/>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -81,7 +85,7 @@
                 <DockPanel Style="{StaticResource line}">
                     <StackPanel DockPanel.Dock="Top"
                         Visibility="{Binding Words.Count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
-                        <TextBlock Margin="0,0,0,2">Слова:</TextBlock>
+                        <TextBlock Style="{StaticResource lineHeader}">Слова:</TextBlock>
                         <ListView ItemsSource="{Binding Words}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
@@ -96,7 +100,7 @@
                     <editors:CategoryChooser CategoryMultiSelection="{StaticResource True}" />
                 </DockPanel>
                 <DockPanel>
-                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,2">Дата приема</TextBlock>
+                    <TextBlock Style="{StaticResource lineHeader}">Дата приема</TextBlock>
                     <WrapPanel>
                         <DockPanel>
                             <DockPanel.Style>
@@ -125,15 +129,19 @@
                     </WrapPanel>
                 </DockPanel>
                 <DockPanel Style="{StaticResource line}">
-                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,2">Давность между</TextBlock>
+                    <TextBlock Style="{StaticResource lineHeader}">Давность между</TextBlock>
                     <DockPanel>
                         <editors:DateOffsetPicker DateOffset="{Binding HrDateOffsetLower}" />
                         <TextBlock Margin="5,0,5,0">и</TextBlock>
                         <editors:DateOffsetPicker DateOffset="{Binding HrDateOffsetUpper}" />
                     </DockPanel>
                 </DockPanel>
+                <DockPanel Style="{StaticResource line}">
+                    <TextBlock Style="{StaticResource lineHeader}">Комментарий</TextBlock>
+                    <TextBox Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}"/>
+                </DockPanel>
 
-                <Button Command="{Binding SearchCommand}" Height="25" Width="150" HorizontalAlignment="Left" Style="{StaticResource line}">Искать</Button>
+                <Button Command="{Binding SearchCommand}" Height="25" Width="150" HorizontalAlignment="Left" Style="{StaticResource line}">Найти</Button>
             </StackPanel>
         </Expander>
 

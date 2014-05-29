@@ -103,9 +103,19 @@ namespace Diagnosis.Core
                     }
                     OnPropertyChanged(() => Unit);
                     OnPropertyChanged(() => Offset);
+                    OnPropertyChanged(() => IsEmpty);
                 }
             }
         }
+
+        public bool IsEmpty
+        {
+            get
+            {
+                return Offset == null;
+            }
+        }
+
         public DateUnits Unit
         {
             get
@@ -136,7 +146,7 @@ namespace Diagnosis.Core
             Offset = offset;
             Unit = unit;
 
-            if (Offset == null)
+            if (offset == null)
             {
                 Year = null;
                 Month = null;

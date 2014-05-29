@@ -293,7 +293,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return HrDateGt.Offset != null && HrDateLt.Offset != null;
+                return !HrDateGt.IsEmpty && !HrDateLt.IsEmpty;
             }
         }
 
@@ -331,7 +331,7 @@ namespace Diagnosis.App.ViewModels
 
                                               searchWas = true;
                                               OnPropertyChanged(() => NoResultsVisible);
-                                          }, () => Words.Count > 0));
+                                          }, () => !AllEmpty));
             }
         }
 
@@ -353,6 +353,18 @@ namespace Diagnosis.App.ViewModels
                 return Results.Count == 0 && searchWas;
             }
         }
+        public bool AllEmpty
+        {
+            get
+            {
+                return !AppDateVisible
+                    && !HrDateVisible
+                    && SelectedCategories.Count() == 0
+                    && Words.Count == 0
+                    && string.IsNullOrEmpty(Comment);
+            }
+        }
+
         public bool ControlsVisible
         {
             get

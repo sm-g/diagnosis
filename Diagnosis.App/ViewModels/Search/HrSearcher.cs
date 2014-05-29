@@ -17,17 +17,22 @@ namespace Diagnosis.App.ViewModels
 
             var repo = new HealthRecordRepository();
             IEnumerable<HealthRecord> hrs;
-            if (options.AnyWord)
-            {
-                hrs = repo.GetByWords(options.Words.Select(w => w.word));
-            }
+
+            if (options.Words.Count() > 0)
+                if (options.AnyWord)
+                {
+                    hrs = repo.GetByWords(options.Words.Select(w => w.word));
+                }
+                else
+                {
+                    hrs = repo.GetWithAllWords(options.Words.Select(w => w.word));
+                }
             else
             {
-                hrs = repo.GetWithAllWords(options.Words.Select(w => w.word));
+                hrs = repo.GetAll();
             }
 
-            hrs = hrs.Where(hr => TestHrDate(hr, options)
-            );
+            hrs = hrs.Where(hr => TestHrDate(hr, options));
 
             hrs = hrs.Where(hr =>
                (options.AppointmentDateLt.HasValue ? hr.Appointment.DateAndTime <= options.AppointmentDateLt.Value : true) &&
@@ -37,9 +42,10 @@ namespace Diagnosis.App.ViewModels
             if (options.Categories.Count() > 0)
             {
                 hrs = hrs.Where(hr =>
-                 options.Categories.Any(cat => cat.category == hr.Category)
-                );
+                    options.Categories.Any(cat => cat.category == hr.Category));
             }
+
+            hrs = hrs.Where(hr => hr.Comment != null && hr.Comment.ToLower().Contains(options.Comment.ToLower()));
 
             return hrs;
         }
@@ -53,9 +59,9 @@ namespace Diagnosis.App.ViewModels
             var hrDateLt = new DateOffset(options.HealthRecordFromDateLt, () => hr.Appointment.DateAndTime);
             var grDateGt = new DateOffset(options.HealthRecordFromDateGt, () => hr.Appointment.DateAndTime);
 
-            return hr.DateOffset.Offset == null ||
-                (options.HealthRecordFromDateLt.Offset == null || hr.DateOffset <= hrDateLt) &&
-                (options.HealthRecordFromDateGt.Offset == null || hr.DateOffset >= grDateGt);
+            return hr.DateOffset.IsEmpty ||
+                (options.HealthRecordFromDateLt.IsEmpty || hr.DateOffset <= hrDateLt) &&
+                (options.HealthRecordFromDateGt.IsEmpty || hr.DateOffset >= grDateGt);
         }
     }
 }
