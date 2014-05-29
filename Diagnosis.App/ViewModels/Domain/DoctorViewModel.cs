@@ -12,7 +12,7 @@ namespace Diagnosis.App.ViewModels
 
         private ICommand _startCourse;
 
-        public IEditable Editable { get; private set; }
+        public Editable Editable { get; private set; }
 
         public string FirstName
         {
@@ -120,7 +120,7 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(d != null);
             doctor = d;
 
-            Editable = new EditableBase(this);
+            Editable = new Editable(this);
         }
 
         public override string ToString()

@@ -16,7 +16,7 @@ namespace Diagnosis.App.ViewModels
         private DoctorViewModel _leadDoctor;
         private ICommand _addAppointment;
 
-        public IEditable Editable { get; private set; }
+        public Editable Editable { get; private set; }
         #region Model
 
         public DoctorViewModel LeadDoctor
@@ -131,7 +131,7 @@ namespace Diagnosis.App.ViewModels
 
             this.course = course;
 
-            Editable = new EditableBase(this, switchedOn: true, dirtImmunity: true);
+            Editable = new Editable(this, switchedOn: true, dirtImmunity: true);
 
             LeadDoctor = EntityManagers.DoctorsManager.GetByModel(course.LeadDoctor);
 

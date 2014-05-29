@@ -244,6 +244,7 @@
     <Compile Include="Screens\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\Editable.cs" />
     <Compile Include="ViewModels\Search\DiagnosisFiltratingSearcher.cs" />
     <Compile Include="ViewModels\Search\DiagnosisSearcher.cs" />
     <Compile Include="ViewModels\Search\HrSearcher.cs" />
@@ -272,9 +273,7 @@
     <Compile Include="ViewModels\Managers\DoctorsManager.cs" />
     <Compile Include="ViewModels\Domain\CourseViewModel.cs" />
     <Compile Include="ViewModels\Domain\DoctorViewModel.cs" />
-    <Compile Include="ViewModels\EditableBase.cs" />
     <Compile Include="ViewModels\Search\DiagnosisAutoComplete.cs" />
-    <Compile Include="ViewModels\Interfaces\IEditable.cs" />
     <Compile Include="Controls\Directory\TileItem.xaml.cs">
       <DependentUpon>TileItem.xaml</DependentUpon>
     </Compile>

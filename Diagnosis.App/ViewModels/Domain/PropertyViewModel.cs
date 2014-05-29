@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class PropertyViewModel : EditableBase
+    public class PropertyViewModel : Editable
     {
         internal readonly Property property;
         private PropertyValue _selectedValue;

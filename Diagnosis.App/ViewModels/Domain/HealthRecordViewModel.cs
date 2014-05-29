@@ -18,7 +18,7 @@ namespace Diagnosis.App.ViewModels
         private DateOffset _dateOffset;
         private List<EventMessageHandler> msgHandlers;
 
-        public IEditable Editable { get; private set; }
+        public Editable Editable { get; private set; }
 
         public string Name
         {
@@ -331,7 +331,7 @@ namespace Diagnosis.App.ViewModels
                 this.Editable.IsEditorActive = currentHr.Editable.IsEditorActive;
 
                 currentHr.Editable.CommitCommand.Execute(null);
-                currentHr.Unsubscribe();
+                currentHr.UnsubscribeCheckedChanges();
             }
             currentHr = this;
             this.SubscribeToCheckedChanges();
@@ -349,7 +349,7 @@ namespace Diagnosis.App.ViewModels
 
             this.healthRecord = hr;
 
-            Editable = new EditableBase(this, dirtImmunity: true, switchedOn: true, deletable: true);
+            Editable = new Editable(this, dirtImmunity: true, switchedOn: true, deletable: true);
 
             Category = EntityManagers.CategoryManager.GetByModel(hr.Category) ?? EntityManagers.CategoryManager.Default;
             Symptom = EntityManagers.SymptomsManager.Symptoms.FirstOrDefault(s => s.symptom == hr.Symptom);
@@ -362,7 +362,7 @@ namespace Diagnosis.App.ViewModels
             CreateDiagnosisSearch();
         }
 
-        public void Unsubscribe()
+        public void UnsubscribeCheckedChanges()
         {
             foreach (var h in msgHandlers)
             {

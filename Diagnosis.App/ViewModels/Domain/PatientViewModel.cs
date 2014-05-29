@@ -15,7 +15,7 @@ namespace Diagnosis.App.ViewModels
         private DoctorViewModel _doctor;
         private CoursesManager _coursesManager;
         private List<EventMessageHandler> msgHandlers = new List<EventMessageHandler>();
-        public IEditable Editable { get; private set; }
+        public Editable Editable { get; private set; }
 
         #region Model related
 
@@ -242,7 +242,7 @@ namespace Diagnosis.App.ViewModels
         }
 
         /// <summary>
-        /// For making commit on turnoff editor.
+        /// Для сохранения из отключении редактора.
         /// </summary>
         public bool EditorActive
         {
@@ -295,7 +295,7 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(p != null);
 
             patient = p;
-            Editable = new EditableBase(this, switchedOn: true);
+            Editable = new Editable(this, switchedOn: true);
             CoursesManager = new CoursesManager(this);
             if (!(this is UnsavedPatientViewModel))
                 AfterPatientLoaded();

@@ -9,7 +9,7 @@ namespace Diagnosis.App.ViewModels
 
         private PopupSearch<DiagnosisViewModel> _search;
 
-        public IEditable Editable { get; private set; }
+        public Editable Editable { get; private set; }
 
         public string Name
         {
@@ -82,7 +82,7 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(d != null);
             diagnosis = d;
 
-            Editable = new EditableBase(this);
+            Editable = new Editable(this);
 
             ChildrenChanged += DiagnosisViewModel_ChildrenChanged;
         }

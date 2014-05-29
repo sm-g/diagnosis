@@ -1,9 +1,11 @@
 ﻿using System.Windows.Input;
 using System.ComponentModel;
+using System;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class EditableBase : ViewModelBase, IEditable
+
+    public class Editable : ViewModelBase
     {
         private ICommand _commit;
         private ICommand _delete;
@@ -19,7 +21,7 @@ namespace Diagnosis.App.ViewModels
 
         private ViewModelBase vm;
 
-        #region IEditable
+        #region EditableBase
 
         public event EditableEventHandler Committed;
         public event EditableEventHandler Reverted;
@@ -142,7 +144,9 @@ namespace Diagnosis.App.ViewModels
         }
 
         #region Commands
-
+        /// <summary>
+        /// Сохраняет изменения и закрывает редактор.
+        /// </summary>
         public ICommand CommitCommand
         {
             get
@@ -195,7 +199,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        #endregion IEditable
+        #endregion EditableBase
 
         /// <summary>
         ///
@@ -204,7 +208,7 @@ namespace Diagnosis.App.ViewModels
         /// <param name="switchedOn">Initial state of commands. Default is "off".</param>
         /// <param name="dirtImmunity">Initial state of CanBeDirty. Default is "true" (no immunity).</param>
         /// <param name="deletable">Initial state of CanBeDeleted. Default is "false".</param>
-        public EditableBase(ViewModelBase vm, bool switchedOn = false, bool dirtImmunity = false, bool deletable = false)
+        public Editable(ViewModelBase vm, bool switchedOn = false, bool dirtImmunity = false, bool deletable = false)
         {
             this.vm = vm;
             SwitchedOn = switchedOn;
@@ -217,7 +221,7 @@ namespace Diagnosis.App.ViewModels
         /// </summary>
         /// <param name="switchedOn">Initial state of commands. Default is "off".</param>
         /// <param name="dirtImmunity">Initial state of CanBeDirty. Default is "true".</param>
-        protected EditableBase(bool switchedOn = false, bool dirtImmunity = false)
+        protected Editable(bool switchedOn = false, bool dirtImmunity = false)
         {
             vm = this as ViewModelBase;
             SwitchedOn = switchedOn;
@@ -241,6 +245,8 @@ namespace Diagnosis.App.ViewModels
             {
                 h(this, new EditableEventArgs(vm));
             }
+
+            System.Console.WriteLine("commited {0}", vm);
         }
 
         private void OnRevert()
@@ -264,6 +270,17 @@ namespace Diagnosis.App.ViewModels
             {
                 h(this, new EditableEventArgs(vm));
             }
+        }
+    }
+
+    public delegate void EditableEventHandler(object sender, EditableEventArgs e);
+
+    public class EditableEventArgs : EventArgs
+    {
+        public ViewModelBase viewModel;
+        public EditableEventArgs(ViewModelBase vm)
+        {
+            viewModel = vm;
         }
     }
 }

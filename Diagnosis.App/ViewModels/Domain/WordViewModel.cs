@@ -11,7 +11,7 @@ namespace Diagnosis.App.ViewModels
         private CategoryViewModel _defCat;
         private PopupSearch<WordViewModel> _search;
 
-        public IEditable Editable { get; private set; }
+        public Editable Editable { get; private set; }
 
         public byte Priority
         {
@@ -124,7 +124,7 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(w != null);
             word = w;
 
-            Editable = new EditableBase(this, dirtImmunity: true);
+            Editable = new Editable(this, dirtImmunity: true);
 
             DefaultCategory = EntityManagers.CategoryManager.GetByModel(w.DefaultCategory);
 
