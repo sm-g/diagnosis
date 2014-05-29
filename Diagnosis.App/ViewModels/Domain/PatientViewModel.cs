@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using Diagnosis.Core;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -376,6 +377,7 @@ namespace Diagnosis.App.ViewModels
 
         #region Comparsion
 
+        static IComparer<string> emptyLastComparer = new EmptyStringsAreLast();
         public static int CompareByFullName(PatientViewModel x, PatientViewModel y)
         {
             if (x == null)
@@ -390,7 +392,7 @@ namespace Diagnosis.App.ViewModels
                 if (y == null)
                     return 1;
                 else
-                    return x.FullName.CompareTo(y.FullName);
+                    return emptyLastComparer.Compare(x.FullName, y.FullName);
             }
         }
 

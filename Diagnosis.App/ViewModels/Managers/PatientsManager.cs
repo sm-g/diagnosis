@@ -28,24 +28,33 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_current != value)
                 {
-                    if (_current != null && value != null && !(value is UnsavedPatientViewModel))
+                    if (_current != null)
                     {
-                        // save editor state between patients
-                        value.Editable.IsEditorActive = _current.Editable.IsEditorActive;
-
-                        // у старого пациента был открыт редактор — сохраняем изменения в нем
-                        if (_current.Editable.IsEditorActive)
+                        if (value != null)
                         {
-                            value.Editable.CommitCommand.Execute(null);
+                            if (!(value is UnsavedPatientViewModel))
+                            {
+                                // сохраняем состояние редактора при смене пациента
+                                value.Editable.IsEditorActive = _current.Editable.IsEditorActive;
+                            }
+
+                            // у старого пациента был открыт редактор — сохраняем изменения в нем
+                            if (_current.Editable.IsEditorActive)
+                            {
+                                _current.Editable.CommitCommand.Execute(null);
+                            }
+                        }
+                        else
+                        {
+                            CurrentPatient.CoursesManager.UnsubscribeSelectedHr();
+                            Console.WriteLine("current patient removed");
                         }
                     }
 
                     _current = value;
 
-                    OnPropertyChanged(() => CurrentPatient);
-
                     SetSubscriptions(value);
-
+                    OnPropertyChanged(() => CurrentPatient);
                     this.Send((int)EventID.CurrentPatientChanged, new CurrentPatientChangedParams(CurrentPatient).Params);
                 }
             }
@@ -61,23 +70,6 @@ namespace Diagnosis.App.ViewModels
                 }
                 return _search;
             }
-        }
-
-        public void RemoveCurrent()
-        {
-            if (CurrentPatient != null &&
-                CurrentPatient.CoursesManager.SelectedCourse != null &&
-                CurrentPatient.CoursesManager.SelectedCourse.SelectedAppointment != null &&
-                CurrentPatient.CoursesManager.SelectedCourse.SelectedAppointment.SelectedHealthRecord != null)
-            {
-                CurrentPatient.CoursesManager.SelectedCourse.SelectedAppointment.SelectedHealthRecord.Unsubscribe();
-            }
-            CurrentPatient = null;
-        }
-
-        public PatientViewModel GetByModel(Patient patient)
-        {
-            return Patients.Where(p => p.patient == patient).FirstOrDefault();
         }
 
         public ICommand AddPatientCommand
@@ -96,12 +88,29 @@ namespace Diagnosis.App.ViewModels
                                                   e.patientVM.AfterPatientLoaded();
                                                   Patients.Add(e.patientVM);
                                                   CurrentPatient = e.patientVM;
-                                                  Subscribe(CurrentPatient);
+                                                  SubscribeEdiatble(CurrentPatient);
                                               };
                                           }));
             }
         }
 
+        public void RemoveCurrent()
+        {
+            CurrentPatient = null;
+        }
+
+        public void SetCurrentToLast()
+        {
+            if (Patients.Count > 0)
+            {
+                CurrentPatient = Patients[0];
+            }
+        }
+
+        public PatientViewModel GetByModel(Patient patient)
+        {
+            return Patients.Where(p => p.patient == patient).FirstOrDefault();
+        }
         public void OpenLastAppointment(PatientViewModel patient)
         {
             // последний курс или новый, если курсов нет
@@ -135,17 +144,17 @@ namespace Diagnosis.App.ViewModels
             var patientVMs = patientRepo.GetAll().Select(p => new PatientViewModel(p)).ToList();
             foreach (var pvm in patientVMs)
             {
-                Subscribe(pvm);
+                SubscribeEdiatble(pvm);
             }
             patientVMs.Sort(PatientViewModel.CompareByFullName);
             Patients = new ObservableCollection<PatientViewModel>(patientVMs);
 
-            if (Patients.Count > 0)
-            {
-                CurrentPatient = Patients[0];
-            }
+            SetCurrentToLast();
         }
-
+        /// <summary>
+        /// Отписывает всех пациентов. Подписывает переданного пациента.
+        /// </summary>
+        /// <param name="newPatient"></param>
         private void SetSubscriptions(PatientViewModel newPatient)
         {
             foreach (var patient in Patients)
@@ -160,7 +169,7 @@ namespace Diagnosis.App.ViewModels
                 newPatient.Subscribe();
         }
 
-        private void Subscribe(PatientViewModel pvm)
+        private void SubscribeEdiatble(PatientViewModel pvm)
         {
             pvm.Editable.Committed += p_Committed;
         }

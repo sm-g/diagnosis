@@ -65,7 +65,7 @@
 
         <Grid x:Name="header"
               Grid.ColumnSpan="2"
-              Visibility="{Binding IsLoginActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+              Visibility="{Binding LoginOpened, Converter={StaticResource NegBooleanToVisibilityConverter}}">
             <Grid.Background>
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}" />
             </Grid.Background>
@@ -75,8 +75,8 @@
                     <MenuItem Header="Диагнозы" Command="{Binding EditDiagnosisDirectoryCommand}" />
                 </MenuItem>
                 <MenuItem Header="Поиск">
-                    <MenuItem IsCheckable="true" IsChecked="{Binding SearchTesterState}" Header="Все поиски" />
-                    <MenuItem IsCheckable="true" IsChecked="{Binding SearchState}" Header="Поиск" />
+                    <MenuItem IsCheckable="true" IsChecked="{Binding SearchTesterOpened}" Header="Все поиски" />
+                    <MenuItem IsCheckable="true" IsChecked="{Binding IsSearchVisible}" Header="Поиск" />
                 </MenuItem>
             </Menu>
             <Menu HorizontalAlignment="Center">
@@ -84,14 +84,14 @@
             </Menu>
 
             <Menu HorizontalAlignment="Right">
-                <MenuItem Header="{Binding LoginVM.DoctorsManager.CurrentDoctor, Converter={StaticResource ManToShortName}}">
+                <MenuItem Header="{Binding Login.DoctorsManager.CurrentDoctor, Converter={StaticResource ManToShortName}}">
                     <MenuItem Header="Выйти" Command="{Binding LogoutCommand}" />
                 </MenuItem>
             </Menu>
         </Grid>
 
         <DockPanel x:Name="aside"
-                   Visibility="{Binding IsLoginActive, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                   Visibility="{Binding LoginOpened, Converter={StaticResource NegBooleanToVisibilityConverter}}"
                    Grid.Row="1"
                    Grid.RowSpan="2">
             <TabControl TabStripPlacement="Left"
@@ -107,13 +107,13 @@
                         </Expander>
                     </TabItem.Header>
                     <screen:Patients x:Name="patients"
-        			                 DataContext="{Binding PatientsManager}"
+        			                 DataContext="{Binding Patients}"
         			                 Margin="0,0,5,0" />
                 </TabItem>
-                <TabItem IsSelected="{Binding SearchState}"
+                <TabItem IsSelected="{Binding IsSearchVisible}"
                          Style="{StaticResource tabHeaderWithExpander}">
                     <TabItem.Header>
-                        <Expander IsExpanded="{Binding SearchState}"
+                        <Expander IsExpanded="{Binding IsSearchVisible}"
                                   Style="{StaticResource leftSideExpander}">
                             <Expander.Header>
                                 <TextBlock Style="{StaticResource verticalTextBlock}">Поиск</TextBlock>

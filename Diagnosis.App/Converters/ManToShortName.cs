@@ -20,7 +20,6 @@ namespace Diagnosis.App.Converters
                     string ln = man.LastName ?? "";
                     string mn = man.MiddleName ?? "";
                     string fn = man.FirstName ?? "";
-                    int id = man.Id;
 
                     // короткое имя человека в форматах:
                     // Иванов И. И.
@@ -35,7 +34,7 @@ namespace Diagnosis.App.Converters
                         if (fn.Length > 0)
                             return fn + (mn.Length > 0 ? " " + mn[0] + "." : "");
                         else
-                            return id;
+                            return man.Id;
                 }
                 catch
                 {

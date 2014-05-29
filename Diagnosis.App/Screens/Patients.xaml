@@ -24,7 +24,7 @@
                     Grid.Column="1"
                     HorizontalAlignment="Right"
                     Command="{Binding AddPatientCommand}"
-                    Margin="0,10,0,6" />
+                    Margin="0,6,0,10" />
         </Grid>
 
         <controls:FloatSearch x:Name="search"

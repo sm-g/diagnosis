@@ -15,6 +15,7 @@ namespace Diagnosis.App.ViewModels
         private ICommand _editSymptomsDirectory;
         private bool _fastAddingMode;
         private bool _isPatientsVisible;
+        bool _patientOpened;
         private bool _isWordsEditing;
         private bool _searchTesterState;
         private SearchViewModel _search;
@@ -24,9 +25,29 @@ namespace Diagnosis.App.ViewModels
 
         #endregion Fields
 
-        #region Flags
+        #region CurrentScreen
 
-        public bool IsLoginActive
+        public ViewModelBase CurrentScreen
+        {
+            get
+            {
+                return _currentScreen;
+            }
+            set
+            {
+                if (_currentScreen != value)
+                {
+                    _currentScreen = value;
+                    if (!(value is PatientViewModel))
+                    {
+                        EntityManagers.PatientsManager.RemoveCurrent();
+                    }
+                    OnPropertyChanged(() => CurrentScreen);
+                }
+            }
+        }
+
+        public bool LoginOpened
         {
             get
             {
@@ -39,17 +60,95 @@ namespace Diagnosis.App.ViewModels
                     _loginActive = value;
                     if (value)
                     {
-                        CurrentScreen = LoginVM;
-                    }
-                    else
-                    {
-                        CurrentScreen = EntityManagers.PatientsManager.CurrentPatient;
+                        CurrentScreen = Login;
+
+                        WordsOpened = false;
+                        SearchTesterOpened = false;
+                        PatientOpened = false;
                     }
 
-                    OnPropertyChanged(() => IsLoginActive);
+                    OnPropertyChanged(() => LoginOpened);
                 }
             }
         }
+
+        public bool WordsOpened
+        {
+            get
+            {
+                return _isWordsEditing;
+            }
+            set
+            {
+                if (_isWordsEditing != value)
+                {
+                    _isWordsEditing = value;
+
+                    if (value)
+                    {
+                        CurrentScreen = EntityManagers.WordsManager;
+
+                        LoginOpened = false;
+                        SearchTesterOpened = false;
+                        PatientOpened = false;
+                    }
+
+                    this.Send((int)EventID.WordsEditingModeChanged, new DirectoryEditingModeChangedParams(value).Params);
+                    OnPropertyChanged(() => WordsOpened);
+                }
+            }
+        }
+
+        public bool SearchTesterOpened
+        {
+            get
+            {
+                return _searchTesterState;
+            }
+            set
+            {
+                if (_searchTesterState != value)
+                {
+                    _searchTesterState = value;
+                    if (value)
+                    {
+                        CurrentScreen = new SearchTester();
+
+                        LoginOpened = false;
+                        WordsOpened = false;
+                        PatientOpened = false;
+                    }
+
+                    OnPropertyChanged(() => SearchTesterOpened);
+                }
+            }
+        }
+        public bool PatientOpened
+        {
+            get
+            {
+                return _patientOpened;
+            }
+            set
+            {
+                if (_patientOpened != value)
+                {
+                    _patientOpened = value;
+                    if (value)
+                    {
+                        LoginOpened = false;
+                        WordsOpened = false;
+                        SearchTesterOpened = false;
+                    }
+
+                    OnPropertyChanged(() => PatientOpened);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Flags
 
         public bool IsPatientsVisible
         {
@@ -66,27 +165,18 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-
-        public bool IsWordsEditing
+        public bool IsSearchVisible
         {
             get
             {
-                return _isWordsEditing;
+                return _searchState;
             }
             set
             {
-                if (_isWordsEditing != value)
+                if (_searchState != value)
                 {
-                    _isWordsEditing = value;
-
-                    if (value)
-                    {
-                        PatientsManager.RemoveCurrent();
-                        CurrentScreen = EntityManagers.WordsManager;
-                    }
-
-                    this.Send((int)EventID.WordsEditingModeChanged, new DirectoryEditingModeChangedParams(value).Params);
-                    OnPropertyChanged(() => IsWordsEditing);
+                    _searchState = value;
+                    OnPropertyChanged(() => IsSearchVisible);
                 }
             }
         }
@@ -107,67 +197,10 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public bool SearchTesterState
-        {
-            get
-            {
-                return _searchTesterState;
-            }
-            set
-            {
-                if (_searchTesterState != value)
-                {
-                    _searchTesterState = value;
-                    if (value)
-                    {
-                        CurrentScreen = new SearchTester();
-                    }
-                    else
-                    {
-                        CurrentScreen = EntityManagers.PatientsManager.CurrentPatient;
-                    }
-                    OnPropertyChanged(() => SearchTesterState);
-                }
-            }
-        }
-
-        public bool SearchState
-        {
-            get
-            {
-                return _searchState;
-            }
-            set
-            {
-                if (_searchState != value)
-                {
-                    _searchState = value;
-                    OnPropertyChanged(() => SearchState);
-                }
-            }
-        }
-
         #endregion Flags
 
         #region ViewModels
-
-        public ViewModelBase CurrentScreen
-        {
-            get
-            {
-                return _currentScreen;
-            }
-            set
-            {
-                if (_currentScreen != value)
-                {
-                    _currentScreen = value;
-                    OnPropertyChanged(() => CurrentScreen);
-                }
-            }
-        }
-
-        public LoginViewModel LoginVM
+        public LoginViewModel Login
         {
             get
             {
@@ -178,12 +211,12 @@ namespace Diagnosis.App.ViewModels
                 if (_loginVM != value)
                 {
                     _loginVM = value;
-                    OnPropertyChanged(() => LoginVM);
+                    OnPropertyChanged(() => Login);
                 }
             }
         }
 
-        public PatientsManager PatientsManager
+        public PatientsManager Patients
         {
             get
             {
@@ -222,9 +255,9 @@ namespace Diagnosis.App.ViewModels
                 return _logout ?? (_logout = new RelayCommand(
                                           () =>
                                           {
-                                              IsLoginActive = true;
+                                              LoginOpened = true;
                                           },
-                                          () => !IsLoginActive));
+                                          () => !LoginOpened));
             }
         }
 
@@ -236,7 +269,7 @@ namespace Diagnosis.App.ViewModels
                     ?? (_editSymptomsDirectory = new RelayCommand(
                                           () =>
                                           {
-                                              IsWordsEditing = true;
+                                              WordsOpened = true;
                                           }));
             }
         }
@@ -261,39 +294,38 @@ namespace Diagnosis.App.ViewModels
             this.Subscribe((int)EventID.CurrentPatientChanged, (e) =>
             {
                 var patient = e.GetValue<PatientViewModel>(Messages.Patient);
-                SetCurrentPatient(patient);
+                ShowPatient(patient);
             });
             this.Subscribe((int)EventID.OpenHealthRecord, (e) =>
             {
                 var hr = e.GetValue<HealthRecord>(Messages.HealthRecord);
                 var patVM = EntityManagers.PatientsManager.GetByModel(hr.Appointment.Course.Patient);
-                SetCurrentPatient(patVM);
+                ShowPatient(patVM);
                 patVM.CoursesManager.OpenHr(hr);
             });
-            LoginVM = new LoginViewModel(EntityManagers.DoctorsManager);
-            LoginVM.LoggedIn += OnLoggedIn;
 
-            CurrentScreen = LoginVM;
+            Login = new LoginViewModel(EntityManagers.DoctorsManager);
+            Login.LoggedIn += OnLoggedIn;
         }
 
-        private void SetCurrentPatient(PatientViewModel patient)
+        private void ShowPatient(PatientViewModel patient)
         {
             if (patient != null)
             {
-                patient.SetDoctorVM(LoginVM.DoctorsManager.CurrentDoctor);
+                patient.SetDoctorVM(Login.DoctorsManager.CurrentDoctor);
                 if (FastAddingMode && !(patient is UnsavedPatientViewModel))
                 {
                     EntityManagers.PatientsManager.OpenLastAppointment(patient);
                 }
-                IsWordsEditing = false;
+                CurrentScreen = patient;
             }
-            CurrentScreen = patient;
+            PatientOpened = true;
         }
 
         private void OnLoggedIn(object sender, LoggedEventArgs e)
         {
-            IsLoginActive = false;
             IsPatientsVisible = true;
+            EntityManagers.PatientsManager.SetCurrentToLast();
         }
     }
 }

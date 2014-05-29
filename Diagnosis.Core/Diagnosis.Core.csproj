@@ -45,6 +45,7 @@
     <Compile Include="DateOffset.cs" />
     <Compile Include="Extensions\ConvertExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Comparers.cs" />
     <Compile Include="Models\Appointment.cs" />
     <Compile Include="Checkers.cs" />
     <Compile Include="Models\Course.cs" />

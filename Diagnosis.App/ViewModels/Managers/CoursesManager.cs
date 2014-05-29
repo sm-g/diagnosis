@@ -55,7 +55,16 @@ namespace Diagnosis.App.ViewModels
             course.SelectedAppointment = app;
             var hrVM = app.HealthRecords.Where(x => x.healthRecord == hr).First();
             app.SelectedHealthRecord = hrVM;
+        }
 
+        public void UnsubscribeSelectedHr()
+        {
+            if (SelectedCourse != null &&
+                SelectedCourse.SelectedAppointment != null &&
+                SelectedCourse.SelectedAppointment.SelectedHealthRecord != null)
+            {
+                SelectedCourse.SelectedAppointment.SelectedHealthRecord.UnsubscribeCheckedChanges();
+            }
         }
 
         public CoursesManager(PatientViewModel patientVM)
