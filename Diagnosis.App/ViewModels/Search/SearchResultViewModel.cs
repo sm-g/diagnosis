@@ -62,5 +62,22 @@ namespace Diagnosis.App.ViewModels
                 return hr;
             }
         }
+
+        private RelayCommand _openHr;
+
+        /// <summary>
+        /// Gets the OpenHealthRecord.
+        /// </summary>
+        public ICommand OpenHealthRecord
+        {
+            get
+            {
+                return _openHr ?? (_openHr = new RelayCommand(
+                    () =>
+                    {
+                        this.Send((int)EventID.OpenHealthRecord, new OpenHealthRecordParams(FoundHealthRecord).Params);
+                    }));
+            }
+        }
     }
 }

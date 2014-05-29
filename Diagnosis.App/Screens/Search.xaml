@@ -138,13 +138,21 @@
         </Expander>
 
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-            <ListView ItemsSource="{Binding Results}"
+            <ListView x:Name="results"
+                      ItemsSource="{Binding Results}"
                       Style="{StaticResource list}"
                       HorizontalContentAlignment="Stretch"
                       Visibility="{Binding Results.Count, Converter={StaticResource CountToVisibility}}">
+                <ListView.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding SelectedItem.OpenHealthRecord, ElementName=results}"/>
+                </ListView.InputBindings>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <card:SearchResult />
+                        <card:SearchResult>
+                            <card:SearchResult.InputBindings>                                
+                                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding OpenHealthRecord}"/>
+                            </card:SearchResult.InputBindings>
+                        </card:SearchResult>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

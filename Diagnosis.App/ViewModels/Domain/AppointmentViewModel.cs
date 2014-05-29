@@ -14,7 +14,7 @@ namespace Diagnosis.App.ViewModels
 {
     public class AppointmentViewModel : ViewModelBase
     {
-        private Appointment appointment;
+        internal readonly Appointment appointment;
 
         private CourseViewModel courseVM;
         private DoctorViewModel _doctor;

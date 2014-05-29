@@ -89,12 +89,15 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Последняя встреча всегда есть в курсе.
+        /// </summary>
         public AppointmentViewModel LastAppointment
         {
             get
             {
                 Contract.Ensures(Contract.Result<AppointmentViewModel>() != null);
-                return Appointments.LastOrDefault();
+                return Appointments.Last();
             }
         }
 

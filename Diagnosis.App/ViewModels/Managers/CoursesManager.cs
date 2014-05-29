@@ -47,6 +47,17 @@ namespace Diagnosis.App.ViewModels
             OnPropertyChanged(() => Courses);
         }
 
+        public void OpenHr(HealthRecord hr)
+        {
+            var course = Courses.Where(x => x.course == hr.Appointment.Course).First();
+            SelectedCourse = course;
+            var app = course.Appointments.Where(x => x.appointment == hr.Appointment).First();
+            course.SelectedAppointment = app;
+            var hrVM = app.HealthRecords.Where(x => x.healthRecord == hr).First();
+            app.SelectedHealthRecord = hrVM;
+
+        }
+
         public CoursesManager(PatientViewModel patientVM)
         {
             Contract.Requires(patientVM != null);

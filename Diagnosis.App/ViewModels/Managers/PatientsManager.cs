@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
+using Diagnosis.Models;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -73,6 +74,12 @@ namespace Diagnosis.App.ViewModels
             }
             CurrentPatient = null;
         }
+
+        public PatientViewModel GetByModel(Patient patient)
+        {
+            return Patients.Where(p => p.patient == patient).FirstOrDefault();
+        }
+
         public ICommand AddPatientCommand
         {
             get

@@ -1,5 +1,6 @@
 ﻿using EventAggregator;
 using System.Windows.Input;
+using Diagnosis.Models;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -16,6 +17,7 @@ namespace Diagnosis.App.ViewModels
         private bool _isPatientsVisible;
         private bool _isWordsEditing;
         private bool _searchTesterState;
+        private SearchViewModel _search;
         private bool _searchState;
         private ViewModelBase _currentScreen;
         private object _directoryExplorer;
@@ -204,9 +206,6 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-
-        private SearchViewModel _search;
-
         public SearchViewModel Search
         {
             get { return _search ?? (_search = new SearchViewModel()); }
@@ -264,7 +263,13 @@ namespace Diagnosis.App.ViewModels
                 var patient = e.GetValue<PatientViewModel>(Messages.Patient);
                 SetCurrentPatient(patient);
             });
-
+            this.Subscribe((int)EventID.OpenHealthRecord, (e) =>
+            {
+                var hr = e.GetValue<HealthRecord>(Messages.HealthRecord);
+                var patVM = EntityManagers.PatientsManager.GetByModel(hr.Appointment.Course.Patient);
+                SetCurrentPatient(patVM);
+                patVM.CoursesManager.OpenHr(hr);
+            });
             LoginVM = new LoginViewModel(EntityManagers.DoctorsManager);
             LoginVM.LoggedIn += OnLoggedIn;
 
