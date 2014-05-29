@@ -11,102 +11,7 @@ namespace Diagnosis.App
         public KeyValuePair<string, object>[] Params { get; protected set; }
     }
 
-    abstract class HealthRecordParams : EventParams
-    {
-        public HealthRecordParams(HealthRecordViewModel hrVM)
-        {
-            Contract.Requires(hrVM != null);
-
-            Params = new[] {
-                new KeyValuePair<string,object>(Messages.HealthRecord, hrVM)
-            };
-        }
-    }
-
-    class CategoryCheckedChangedParams : EventParams
-    {
-        public CategoryCheckedChangedParams(CategoryViewModel category, bool isChecked)
-        {
-            Contract.Requires(category != null);
-
-            Params = new[] {
-                new KeyValuePair<string,object>(Messages.Category, category),
-                new KeyValuePair<string,object>(Messages.CheckedState, isChecked)
-            };
-        }
-    }
-
-    class WordCheckedChangedParams : EventParams
-    {
-        public WordCheckedChangedParams(WordViewModel symtpom, bool isChecked)
-        {
-            Contract.Requires(symtpom != null);
-
-            Params = new[] {
-                new KeyValuePair<string,object>(Messages.Word, symtpom),
-                new KeyValuePair<string,object>(Messages.CheckedState, isChecked)
-            };
-        }
-    }
-
-    class DiagnosisCheckedChangedParams : EventParams
-    {
-        public DiagnosisCheckedChangedParams(DiagnosisViewModel diagnosis, bool isChecked)
-        {
-            Contract.Requires(diagnosis != null);
-
-            Params = new[] {
-                new KeyValuePair<string,object>(Messages.Diagnosis, diagnosis),
-                new KeyValuePair<string,object>(Messages.CheckedState, isChecked)
-            };
-        }
-    }
-
-    class PatientCheckedChangedParams : EventParams
-    {
-        public PatientCheckedChangedParams(PatientViewModel patient, bool isChecked)
-        {
-            Contract.Requires(patient != null);
-
-            Params = new[] {
-                new KeyValuePair<string,object>(Messages.Patient, patient),
-                new KeyValuePair<string,object>(Messages.CheckedState, isChecked)
-            };
-        }
-    }
-
-    class CurrentPatientChangedParams : EventParams
-    {
-        public CurrentPatientChangedParams(PatientViewModel patient)
-        {
-            Params = new[] {
-                new KeyValuePair<string,object>(Messages.Patient, patient)
-            };
-        }
-    }
-
-    class CurrentDoctorChangedParams : EventParams
-    {
-        public CurrentDoctorChangedParams(DoctorViewModel doctor)
-        {
-            Params = new[] {
-                new KeyValuePair<string,object>(Messages.Doctor, doctor)
-            };
-        }
-    }
-
-    class PropertySelectedValueChangedParams : EventParams
-    {
-        public PropertySelectedValueChangedParams(PropertyViewModel property)
-        {
-            Contract.Requires(property != null);
-
-            Params = new[] {
-                new KeyValuePair<string,object>(Messages.Property, property)
-            };
-        }
-    }
-
+    #region with Models
     class CourseStartedParams : EventParams
     {
         public CourseStartedParams(Course course)
@@ -119,25 +24,126 @@ namespace Diagnosis.App
         }
     }
 
-    class AppointmentAddedParams : EventParams
+
+    class OpenHealthRecordParams : EventParams
     {
-        public AppointmentAddedParams(AppointmentViewModel appointment)
+        public OpenHealthRecordParams(HealthRecord hr)
         {
-            Contract.Requires(appointment != null);
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.HealthRecord, hr)
+            };
+        }
+    }
+
+    #endregion
+
+    #region with ViewModels
+
+    class CategoryCheckedChangedParams : EventParams
+    {
+        public CategoryCheckedChangedParams(CategoryViewModel categoryVM, bool isChecked)
+        {
+            Contract.Requires(categoryVM != null);
 
             Params = new[] {
-                new KeyValuePair<string,object>(Messages.Appointment, appointment)
+                new KeyValuePair<string,object>(Messages.Category, categoryVM),
+                new KeyValuePair<string,object>(Messages.CheckedState, isChecked)
+            };
+        }
+    }
+
+    class WordCheckedChangedParams : EventParams
+    {
+        public WordCheckedChangedParams(WordViewModel wordVM, bool isChecked)
+        {
+            Contract.Requires(wordVM != null);
+
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.Word, wordVM),
+                new KeyValuePair<string,object>(Messages.CheckedState, isChecked)
+            };
+        }
+    }
+
+    class DiagnosisCheckedChangedParams : EventParams
+    {
+        public DiagnosisCheckedChangedParams(DiagnosisViewModel diagnosisVM, bool isChecked)
+        {
+            Contract.Requires(diagnosisVM != null);
+
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.Diagnosis, diagnosisVM),
+                new KeyValuePair<string,object>(Messages.CheckedState, isChecked)
+            };
+        }
+    }
+
+    class PatientCheckedChangedParams : EventParams
+    {
+        public PatientCheckedChangedParams(PatientViewModel patientVM, bool isChecked)
+        {
+            Contract.Requires(patientVM != null);
+
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.Patient, patientVM),
+                new KeyValuePair<string,object>(Messages.CheckedState, isChecked)
+            };
+        }
+    }
+
+    class CurrentPatientChangedParams : EventParams
+    {
+        public CurrentPatientChangedParams(PatientViewModel patientVM)
+        {
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.Patient, patientVM)
+            };
+        }
+    }
+
+    class CurrentDoctorChangedParams : EventParams
+    {
+        public CurrentDoctorChangedParams(DoctorViewModel doctorVM)
+        {
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.Doctor, doctorVM)
+            };
+        }
+    }
+
+    class PropertySelectedValueChangedParams : EventParams
+    {
+        public PropertySelectedValueChangedParams(PropertyViewModel propertyVM)
+        {
+            Contract.Requires(propertyVM != null);
+
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.Property, propertyVM)
             };
         }
     }
 
 
-    class DirectoryEditingModeChangedParams : EventParams
+    class AppointmentAddedParams : EventParams
     {
-        public DirectoryEditingModeChangedParams(bool isEditing)
+        public AppointmentAddedParams(AppointmentViewModel appointmentVM)
         {
+            Contract.Requires(appointmentVM != null);
+
             Params = new[] {
-                new KeyValuePair<string,object>(Messages.Boolean, isEditing)
+                new KeyValuePair<string,object>(Messages.Appointment, appointmentVM)
+            };
+        }
+    }
+
+    abstract class HealthRecordParams : EventParams
+    {
+        public HealthRecordParams(HealthRecordViewModel hrVM)
+        {
+            Contract.Requires(hrVM != null);
+
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.HealthRecord, hrVM)
             };
         }
     }
@@ -150,8 +156,16 @@ namespace Diagnosis.App
     {
         public HealthRecordSelectedParams(HealthRecordViewModel hrVM) : base(hrVM) { }
     }
-    class OpenHealthRecordParams : HealthRecordParams
+
+    #endregion
+
+    class DirectoryEditingModeChangedParams : EventParams
     {
-        public OpenHealthRecordParams(HealthRecordViewModel hrVM) : base(hrVM) { }
+        public DirectoryEditingModeChangedParams(bool isEditing)
+        {
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.Boolean, isEditing)
+            };
+        }
     }
 }
