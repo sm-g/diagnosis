@@ -17,7 +17,25 @@ namespace Diagnosis.App.Converters
                 dynamic man = value;
                 try
                 {
-                    return man.LastName + (man.FirstName.Length > 0 ? " " + man.FirstName[0] + "." + (man.MiddleName.Length > 0 ? " " + man.MiddleName[0] + "." : "") : "");
+                    string ln = man.LastName ?? "";
+                    string mn = man.MiddleName ?? "";
+                    string fn = man.FirstName ?? "";
+                    int id = man.Id;
+
+                    // короткое имя человека в форматах:
+                    // Иванов И. И.
+                    // Иванов И.
+                    // Иванов
+                    // Иван И.
+                    // Иван
+                    // 123
+                    if (ln.Length > 0)
+                        return ln + (fn.Length > 0 ? " " + fn[0] + "." + (mn.Length > 0 ? " " + mn[0] + "." : "") : "");
+                    else
+                        if (fn.Length > 0)
+                            return fn + (mn.Length > 0 ? " " + mn[0] + "." : "");
+                        else
+                            return id;
                 }
                 catch
                 {

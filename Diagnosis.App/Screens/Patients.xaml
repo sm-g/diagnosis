@@ -51,7 +51,7 @@
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         
-                        <TextBlock Text="{Binding ID}" />
+                        <TextBlock Text="{Binding Id}" />
                         <TextBlock Text="{Binding Self, Converter={StaticResource ManToShortName}}" Grid.Column="1" />
                         <TextBlock x:Name="unsaved"
                                    Grid.Column="1"

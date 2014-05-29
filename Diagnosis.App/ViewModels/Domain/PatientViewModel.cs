@@ -19,7 +19,7 @@ namespace Diagnosis.App.ViewModels
 
         #region Model related
 
-        public int ID
+        public int Id
         {
             get
             {
