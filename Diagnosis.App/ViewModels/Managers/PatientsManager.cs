@@ -95,6 +95,31 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public void OpenLastAppointment(PatientViewModel patient)
+        {
+            // последний курс или новый, если курсов нет
+            var lastCourse = patient.CoursesManager.Courses.FirstOrDefault();
+            if (lastCourse == null)
+            {
+                patient.CurrentDoctor.StartCourse(patient);
+            }
+            else
+            {
+                patient.CoursesManager.SelectedCourse = lastCourse;
+            }
+
+            // последняя встреча в течение часа или новая
+            var lastApp = patient.CoursesManager.SelectedCourse.LastAppointment;
+            if (DateTime.UtcNow - lastApp.DateTime > TimeSpan.FromHours(1))
+            {
+                patient.CoursesManager.SelectedCourse.AddAppointment();
+            }
+            else
+            {
+                patient.CoursesManager.SelectedCourse.SelectedAppointment = lastApp;
+            }
+        }
+
         public PatientsManager(IPatientRepository patientRepo)
         {
             Contract.Requires(patientRepo != null);

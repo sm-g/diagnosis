@@ -278,7 +278,7 @@ namespace Diagnosis.App.ViewModels
                 patient.SetDoctorVM(LoginVM.DoctorsManager.CurrentDoctor);
                 if (FastAddingMode && !(patient is UnsavedPatientViewModel))
                 {
-                    patient.OpenLastAppointment();
+                    EntityManagers.PatientsManager.OpenLastAppointment(patient);
                 }
                 IsWordsEditing = false;
             }

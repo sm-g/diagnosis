@@ -290,31 +290,6 @@ namespace Diagnosis.App.ViewModels
             CurrentDoctor = doctor;
         }
 
-        public void OpenLastAppointment()
-        {
-            // последний курс или новый, если курсов нет
-            var lastCourse = CoursesManager.Courses.FirstOrDefault();
-            if (lastCourse == null)
-            {
-                CurrentDoctor.StartCourse(this);
-            }
-            else
-            {
-                CoursesManager.SelectedCourse = lastCourse;
-            }
-
-            // последняя встреча в течение часа или новая
-            var lastApp = CoursesManager.SelectedCourse.LastAppointment; // в курсе всегда есть встреча
-            if (DateTime.UtcNow - lastApp.DateTime > TimeSpan.FromHours(1))
-            {
-                CoursesManager.SelectedCourse.AddAppointment();
-            }
-            else
-            {
-                CoursesManager.SelectedCourse.SelectedAppointment = lastApp;
-            }
-        }
-
         public PatientViewModel(Patient p)
         {
             Contract.Requires(p != null);
