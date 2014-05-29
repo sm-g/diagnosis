@@ -3,6 +3,9 @@ using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
+    /// <summary>
+    /// Ищет по всем словам, отмечает слово при выборе.
+    /// </summary>
     public class WordCheckingAutoComplete : AutoCompleteBase<WordViewModel>
     {
         protected override ISimpleSearcher<WordViewModel> MakeSearch(WordViewModel parent)

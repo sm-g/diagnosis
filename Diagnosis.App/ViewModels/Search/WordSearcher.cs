@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
+    /// <summary>
+    /// Ищет по детям переданного родителя. 
+    /// </summary>
     public class WordSearcher : ISimpleSearcher<WordViewModel>
     {
         public bool WithNonCheckable { get; set; }

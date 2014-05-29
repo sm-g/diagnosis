@@ -1,4 +1,5 @@
 ﻿using Diagnosis.App;
+using Diagnosis.Core;
 using Diagnosis.App.ViewModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -24,84 +25,6 @@ namespace Tests
         private static SearchWrap sym1wrap = new SearchWrap(sym1);
         private static SearchWrap sym12wrap = new SearchWrap(sym12);
         private static SearchWrap sym23wrap = new SearchWrap(sym23);
-
-        #region Filter
-
-        [TestMethod]
-        public void TestFilterOneWord()
-        {
-            Assert.IsTrue(AutoComplete.FilterItem(w1, word1wrap));
-            Assert.IsFalse(AutoComplete.FilterItem(w2, word1wrap));
-        }
-
-        [TestMethod]
-        public void TestFilterOneWordPart()
-        {
-            Assert.IsTrue(AutoComplete.FilterItem(w1.Substring(0, w1.Length - 2), word1wrap));
-        }
-
-        [TestMethod]
-        public void TestFilterTwoWords()
-        {
-            Assert.IsTrue(AutoComplete.FilterItem(w3, word3wrap));
-        }
-
-        [TestMethod]
-        public void TestFilterWordDuplicates()
-        {
-            Assert.IsFalse(AutoComplete.FilterItem(w1 + delim + w1, word1wrap));
-        }
-
-        [TestMethod]
-        public void TestFilterSymptomFirstWord()
-        {
-            Assert.IsTrue(AutoComplete.FilterItem(w1, sym1wrap));
-            Assert.IsTrue(AutoComplete.FilterItem(w1, sym12wrap));
-        }
-
-        [TestMethod]
-        public void TestFilterSymptomFirstWordAndPart()
-        {
-            var q = w1 + delim + w2.Substring(0, w2.Length - 2);
-
-            Assert.IsFalse(AutoComplete.FilterItem(q, sym1wrap));
-            Assert.IsTrue(AutoComplete.FilterItem(q, sym12wrap));
-        }
-
-        [TestMethod]
-        public void TestFilterSymptomAllWords()
-        {
-            var q = w1 + delim + w2;
-
-            Assert.IsFalse(AutoComplete.FilterItem(q, sym1wrap));
-            Assert.IsTrue(AutoComplete.FilterItem(q, sym12wrap));
-        }
-
-        [TestMethod]
-        public void TestFilterSymptomSecondWord()
-        {
-            Assert.IsTrue(AutoComplete.FilterItem(w2, sym12wrap));
-        }
-
-        [TestMethod]
-        public void TestFilterSymptomSecondWordPart()
-        {
-            Assert.IsTrue(AutoComplete.FilterItem(w2.Substring(0, w2.Length - 2), sym12wrap));
-        }
-
-        [TestMethod]
-        public void TestFilterSymptomComplexWords()
-        {
-            Assert.IsTrue(AutoComplete.FilterItem(w2 + delim + w3, sym23wrap));
-        }
-
-        [TestMethod]
-        public void TestFilterSymptomComplexWordsParts()
-        {
-            Assert.IsTrue(AutoComplete.FilterItem(w2.Substring(0, w2.Length - 2) + delim + w3.Substring(0, w3.Length - 2), sym23wrap));
-        }
-
-        #endregion Filter
 
         #region Partition
 
