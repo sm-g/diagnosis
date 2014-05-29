@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using Diagnosis.Models;
+using Diagnosis.App.ViewModels;
 
 namespace Tests
 {
@@ -21,5 +22,18 @@ namespace Tests
             Assert.IsTrue(p.Age == age);
         }
 
+        [TestMethod]
+        public void TestOrder()
+        {
+            var p1 = new PatientViewModel(new Patient("Иванов", "Иван"));
+            var p2 = new PatientViewModel(new Patient());
+            var p3 = new PatientViewModel(new Patient("Иванов", "Петр"));
+
+            var list = new List<PatientViewModel>() { p1, p2, p3 };
+            list.Sort(PatientViewModel.CompareByFullName);
+            Assert.IsTrue(list[0] == p1);
+            Assert.IsTrue(list[1] == p3);
+            Assert.IsTrue(list[2] == p2);
+        }
     }
 }

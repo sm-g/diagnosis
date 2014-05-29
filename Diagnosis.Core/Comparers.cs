@@ -7,17 +7,17 @@ namespace Diagnosis.Core
 {
 
     /// <summary>
-    /// Returns -1 instead of 1 if y is IsNullOrEmpty when x is Not.
+    /// Returns -1 instead of 1 if y is IsNullOrWhiteSpace when x is Not.
     /// </summary>
     public class EmptyStringsAreLast : IComparer<string>
     {
         public int Compare(string x, string y)
         {
-            if (String.IsNullOrEmpty(y) && !String.IsNullOrEmpty(x))
+            if (String.IsNullOrWhiteSpace(y) && !String.IsNullOrWhiteSpace(x))
             {
                 return -1;
             }
-            else if (!String.IsNullOrEmpty(y) && String.IsNullOrEmpty(x))
+            else if (!String.IsNullOrWhiteSpace(y) && String.IsNullOrWhiteSpace(x))
             {
                 return 1;
             }
