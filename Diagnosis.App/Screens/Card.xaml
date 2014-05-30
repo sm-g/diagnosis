@@ -5,11 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
              xmlns:card="clr-namespace:Diagnosis.App.Controls.Card"
-             xmlns:screen="clr-namespace:Diagnosis.App.Screens"
-             xmlns:conv="clr-namespace:Diagnosis.App.Converters"
+             xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
              x:Name="root"
              d:DesignHeight="400" d:DesignWidth="500">
+    <UserControl.Resources>
+        <InputBindingCollection x:Shared="False" x:Key="CourseInputBindings">
+            <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
+            <KeyBinding Key="Delete" Command="{Binding Editable.DeleteCommand}" />
+        </InputBindingCollection>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -54,18 +59,18 @@
         					Style="{StaticResource list}"
         					Grid.Row="2"
         					SelectionMode="Single">
-                            <ListView.InputBindings>
-                                <KeyBinding Key="Delete" Command="{Binding CoursesManager.SelectedCourse.Editable.DeleteCommand}" />
-                            </ListView.InputBindings>
+                            
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <card:Course Width="170" />
                                 </DataTemplate>
                             </ListView.ItemTemplate>
+                            
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListViewItem}">
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                     <Setter Property="Margin" Value="0,5,0,5" />
+                                    <Setter Property="controls:Attached.InputBindings" Value="{StaticResource CourseInputBindings}" />
                                 </Style>
                             </ListView.ItemContainerStyle>
                         </ListView>

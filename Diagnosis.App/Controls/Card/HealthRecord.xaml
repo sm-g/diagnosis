@@ -11,17 +11,7 @@
              MinHeight="25"
              Focusable="True"
              IsTabStop="True">
-    <UserControl.Resources>
-        <Style TargetType="Grid" x:Key="outer">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Editable.IsDirty}" Value="True">
-                    <Setter Property="Background" Value="#FFFFCCCC" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-    </UserControl.Resources>
-
-    <Grid Style="{StaticResource outer}">
+    <Grid Style="{StaticResource gridIsDirty}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20" />
             <ColumnDefinition Width="*" />

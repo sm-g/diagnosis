@@ -15,7 +15,7 @@
             <conv:CountToAppointmentsLabel x:Key="CountToAppLabel" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
+    <Grid Style="{StaticResource gridIsDirty}">
 
         <StackPanel>
             <StackPanel x:Name="description">

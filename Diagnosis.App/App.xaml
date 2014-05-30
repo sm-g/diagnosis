@@ -48,6 +48,13 @@
         <Style TargetType="ListView" x:Key="list">
             <Setter Property="BorderThickness" Value="0" />
         </Style>
-
+        
+        <Style TargetType="Grid" x:Key="gridIsDirty">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Editable.IsDirty}" Value="True">
+                    <Setter Property="Background" Value="#FFFFCCCC" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Application.Resources>
 </Application>

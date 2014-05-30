@@ -131,6 +131,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        [DebuggerStepThrough]
         public void Execute(object parameter)
         {
             _execute();
