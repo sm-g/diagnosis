@@ -88,7 +88,7 @@ namespace Diagnosis.App.ViewModels
                                                   e.patientVM.AfterPatientLoaded();
                                                   Patients.Add(e.patientVM);
                                                   CurrentPatient = e.patientVM;
-                                                  SubscribeEdiatble(CurrentPatient);
+                                                  SubscribeEditable(CurrentPatient);
                                               };
                                           }));
             }
@@ -144,7 +144,7 @@ namespace Diagnosis.App.ViewModels
             var patientVMs = patientRepo.GetAll().Select(p => new PatientViewModel(p)).ToList();
             foreach (var pvm in patientVMs)
             {
-                SubscribeEdiatble(pvm);
+                SubscribeEditable(pvm);
             }
             patientVMs.Sort(PatientViewModel.CompareByFullName);
             Patients = new ObservableCollection<PatientViewModel>(patientVMs);
@@ -169,7 +169,7 @@ namespace Diagnosis.App.ViewModels
                 newPatient.Subscribe();
         }
 
-        private void SubscribeEdiatble(PatientViewModel pvm)
+        private void SubscribeEditable(PatientViewModel pvm)
         {
             pvm.Editable.Committed += p_Committed;
         }

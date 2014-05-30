@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Models;
+using Diagnosis.Core;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public void AddCourse(Course course)
+        public CourseViewModel AddCourse(Course course)
         {
             var courseVM = new CourseViewModel(course);
             SubscribeCourse(courseVM);
@@ -45,6 +46,7 @@ namespace Diagnosis.App.ViewModels
             SelectedCourse = courseVM;
 
             OnPropertyChanged(() => Courses);
+            return courseVM;
         }
 
         public void OpenHr(HealthRecord hr)
@@ -73,16 +75,13 @@ namespace Diagnosis.App.ViewModels
 
             this.patientVM = patientVM;
 
-            var courseVMs = patientVM.patient.Courses.
-                Select(i => new CourseViewModel(i)).
-                OrderByDescending(cvm => cvm.course, new CompareCourseByDate());
+            var courseVMs = patientVM.patient.Courses
+                .Select(i => new CourseViewModel(i))
+                .OrderByDescending(cvm => cvm.course, new CompareCourseByDate())
+                .ToList();
 
+            courseVMs.ForAll(x => SubscribeCourse(x));
             Courses = new ObservableCollection<CourseViewModel>(courseVMs);
-
-            foreach (var course in Courses)
-            {
-                SubscribeCourse(course);
-            }
 
             if (Courses.Count > 0)
             {
