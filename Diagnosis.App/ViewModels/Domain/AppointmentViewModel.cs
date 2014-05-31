@@ -50,6 +50,17 @@ namespace Diagnosis.App.ViewModels
 
         public ICollectionView HealthRecordsView { get; private set; }
 
+        /// <summary>
+        /// Встреча пустая, если пусты все записи в ней или их нет.
+        /// </summary>
+        public bool IsEmpty
+        {
+            get
+            {
+                return HealthRecords.All(hr => hr.IsEmpty);
+            }
+        }
+
         public bool IsDoctorFromCourse
         {
             get

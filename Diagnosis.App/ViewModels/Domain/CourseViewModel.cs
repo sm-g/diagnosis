@@ -73,6 +73,17 @@ namespace Diagnosis.App.ViewModels
 
         #endregion
 
+        /// <summary>
+        /// Курс пустой, если пусты все встречи в нём.
+        /// </summary>
+        public bool IsEmpty
+        {
+            get
+            {
+                return Appointments.All(app => app.IsEmpty);
+            }
+        }
+
         public AppointmentViewModel SelectedAppointment
         {
             get

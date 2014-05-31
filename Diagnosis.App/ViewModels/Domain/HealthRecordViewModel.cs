@@ -31,6 +31,22 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Запись пустая, если не задано ни одно свойство (кроме категории, которая всегда есть).
+        /// </summary>
+        public bool IsEmpty
+        {
+            get
+            {
+                return String.IsNullOrWhiteSpace(Comment)
+                    && NumValue == null
+                    && DateOffset.IsEmpty
+                    && Diagnosis == null
+                    && Symptom == null;
+            }
+        }
+
+
         #region CheckableBase
 
         public override void OnCheckedChanged()
