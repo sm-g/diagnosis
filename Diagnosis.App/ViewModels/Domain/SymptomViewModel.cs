@@ -41,6 +41,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     _disease = value;
                     OnPropertyChanged(() => Disease);
+                    Editable.MarkDirty();
                 }
             }
         }
@@ -76,6 +77,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     symptom.IsDiagnosis = value;
                     OnPropertyChanged(() => IsDiagnosis);
+                    Editable.MarkDirty();
                 }
             }
         }

@@ -325,19 +325,7 @@ namespace Diagnosis.App.ViewModels
                     var course = e.GetValue<Course>(Messages.Course);
 
                     OnCourseStarted(course);
-                }),
-                 this.Subscribe((int)EventID.AppointmentAdded, (e) =>
-                {
-                    var app = e.GetValue<AppointmentViewModel>(Messages.Appointment);
-
-                    OnAppointmentAdded(app);
-                }),
-                this.Subscribe((int)EventID.HealthRecordChanged, (e) =>
-                {
-                    var hr = e.GetValue<HealthRecordViewModel>(Messages.HealthRecord);
-
-                    OnHealthRecordChanged(hr);
-                }),
+                })
             };
         }
 
@@ -358,21 +346,11 @@ namespace Diagnosis.App.ViewModels
         private void OnCourseStarted(Course course)
         {
             CoursesManager.AddCourse(course);
-            CoursesManager.SelectedCourse.AddAppointment();
             Editable.MarkDirty();
             OnPropertyChanged(() => NoCourses);
         }
 
-        private void OnAppointmentAdded(AppointmentViewModel app)
-        {
-            CoursesManager.SelectedCourse.SelectedAppointment.AddHealthRecord();
-            Editable.MarkDirty();
-        }
 
-        private void OnHealthRecordChanged(HealthRecordViewModel hr)
-        {
-            Editable.MarkDirty();
-        }
         #endregion Event handlers
 
         #region Comparsion
@@ -432,10 +410,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private void OnPropertyChanged(object sender, EditableEventArgs e)
-        {
-
-        }
         private void OnFirstCommit(object sender, EditableEventArgs e)
         {
             Editable.Committed -= OnFirstCommit;

@@ -36,6 +36,10 @@ namespace Diagnosis.Models
             appointments.Add(a);
             return a;
         }
+        public virtual void DeleteAppointment(Appointment app)
+        {
+            appointments.Remove(app);
+        }
 
         public Course(Patient patient, Doctor doctor)
         {

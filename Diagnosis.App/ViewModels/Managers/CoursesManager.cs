@@ -3,13 +3,15 @@ using Diagnosis.Core;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using Diagnosis.Data;
+using NHibernate;
 
 namespace Diagnosis.App.ViewModels
 {
     public class CoursesManager : ViewModelBase
     {
+        private readonly PatientViewModel patientVM;
         private CourseViewModel _selectedCourse;
-        private PatientViewModel patientVM;
 
         public ObservableCollection<CourseViewModel> Courses
         {
@@ -37,7 +39,6 @@ namespace Diagnosis.App.ViewModels
         {
             var courseVM = new CourseViewModel(course);
             SubscribeCourse(courseVM);
-            courseVM.Editable.CanBeDeleted = true;
 
             Courses.Add(courseVM);
             Courses = new ObservableCollection<CourseViewModel>(
@@ -75,6 +76,13 @@ namespace Diagnosis.App.ViewModels
 
             this.patientVM = patientVM;
 
+            SetupCourses();
+
+            Subscribe();
+        }
+
+        private void SetupCourses()
+        {
             var courseVMs = patientVM.patient.Courses
                 .Select(i => new CourseViewModel(i))
                 .OrderByDescending(cvm => cvm.course, new CompareCourseByDate())
@@ -89,19 +97,45 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private void SubscribeCourse(CourseViewModel course)
+        private void Subscribe()
         {
-            course.Editable.Deleted += course_Deleted;
+            Courses.CollectionChanged += (s, e) =>
+            {
+                patientVM.Editable.MarkDirty();
+            };
+        }
+
+        #region Course stuff
+
+        private void SubscribeCourse(CourseViewModel courseVM)
+        {
+            courseVM.Editable.Deleted += course_Deleted;
+            courseVM.Editable.Committed += course_Committed;
+        }
+
+        void course_Committed(object sender, EditableEventArgs e)
+        {
+            var courseVM = e.viewModel as CourseViewModel;
+            ISession session = NHibernateHelper.GetSession();
+            using (ITransaction transaction = session.BeginTransaction())
+            {
+                session.SaveOrUpdate(courseVM.course);
+                transaction.Commit();
+            }
         }
 
         private void course_Deleted(object sender, EditableEventArgs e)
         {
             var courseVM = e.viewModel as CourseViewModel;
             courseVM.Editable.Deleted -= course_Deleted;
+            courseVM.Editable.Committed -= course_Committed;
 
             patientVM.patient.DeleteCourse(courseVM.course);
             patientVM.Editable.MarkDirty();
             Courses.Remove(courseVM);
         }
+
+        #endregion
+
     }
 }

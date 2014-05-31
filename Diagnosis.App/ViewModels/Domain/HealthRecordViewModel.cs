@@ -343,10 +343,15 @@ namespace Diagnosis.App.ViewModels
         {
             if (currentHr != null)
             {
-                // оставляем редактор открытым при смене выбранной записи
-                this.Editable.IsEditorActive = currentHr.Editable.IsEditorActive;
+                // новая выбранная запись в том же приеме
+                if (currentHr.healthRecord.Appointment == this.healthRecord.Appointment)
+                {
+                    // оставляем редактор открытым при смене выбранной записи
+                    this.Editable.IsEditorActive = currentHr.Editable.IsEditorActive;
 
-                currentHr.Editable.CommitCommand.Execute(null);
+                    // сохраняем запись
+                    currentHr.Editable.CommitCommand.Execute(null);
+                }
                 currentHr.UnsubscribeCheckedChanges();
             }
             currentHr = this;
@@ -365,16 +370,15 @@ namespace Diagnosis.App.ViewModels
 
             this.healthRecord = hr;
 
-            Editable = new Editable(this, dirtImmunity: true, switchedOn: true, deletable: true);
+            Editable = new Editable(this, dirtImmunity: true, switchedOn: true);
 
             Category = EntityManagers.CategoryManager.GetByModel(hr.Category) ?? EntityManagers.CategoryManager.Default;
             Symptom = EntityManagers.SymptomsManager.Symptoms.FirstOrDefault(s => s.symptom == hr.Symptom);
             Diagnosis = EntityManagers.DiagnosisManager.GetHealthRecordDiagnosis(healthRecord);
 
-            SubscribeToPropertyChanges();
-
             Editable.CanBeDirty = true;
 
+            Subscribe();
             CreateDiagnosisSearch();
         }
 
@@ -387,7 +391,7 @@ namespace Diagnosis.App.ViewModels
         }
 
         #region Event handlers
-        private void SubscribeToPropertyChanges()
+        private void Subscribe()
         {
             this.PropertyChanged += HealthRecordViewModel_PropertyChanged;
             EntityManagers.DiagnosisManager.RootChanged += (s, e) =>

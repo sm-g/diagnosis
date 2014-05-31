@@ -15,7 +15,6 @@ namespace Diagnosis.App.ViewModels
         private bool _editorFocused;
         private bool _canBeDirty;
         private bool _isDirty;
-        private bool _isEmpty;
         private bool _switchedOn;
         private bool _canBeDeleted;
 
@@ -26,8 +25,7 @@ namespace Diagnosis.App.ViewModels
         public event EditableEventHandler Committed;
         public event EditableEventHandler Reverted;
         public event EditableEventHandler Deleted;
-        public event EditableEventHandler ModelPropertyChanged;
-
+        public event EditableEventHandler DirtyChanged;
 
         public bool IsEditorActive
         {
@@ -93,23 +91,21 @@ namespace Diagnosis.App.ViewModels
                 if (_isDirty != value)
                 {
                     _isDirty = value;
+                    if (value)
+                        WasDirty = true;
+
+                    var h = DirtyChanged;
+                    if (h != null)
+                    {
+                        h(this, new EditableEventArgs(vm));
+                    }
                     OnPropertyChanged(() => IsDirty);
+                    OnPropertyChanged(() => WasDirty);
                 }
             }
         }
 
-        public bool IsEmpty
-        {
-            get { return _isEmpty; }
-            private set
-            {
-                if (_isEmpty != value)
-                {
-                    _isEmpty = value;
-                    OnPropertyChanged(() => IsEmpty);
-                }
-            }
-        }
+        public bool WasDirty { get; private set; }
 
         public bool CanBeDirty
         {
@@ -190,12 +186,6 @@ namespace Diagnosis.App.ViewModels
             if (CanBeDirty)
             {
                 IsDirty = true;
-
-                var h = ModelPropertyChanged;
-                if (h != null)
-                {
-                    h(this, new EditableEventArgs(vm));
-                }
             }
         }
 
@@ -207,8 +197,8 @@ namespace Diagnosis.App.ViewModels
         /// <param name="vm">ViewModel to be edited</param>
         /// <param name="switchedOn">Initial state of commands. Default is "off".</param>
         /// <param name="dirtImmunity">Initial state of CanBeDirty. Default is "true" (no immunity).</param>
-        /// <param name="deletable">Initial state of CanBeDeleted. Default is "false".</param>
-        public Editable(ViewModelBase vm, bool switchedOn = false, bool dirtImmunity = false, bool deletable = false)
+        /// <param name="deletable">Initial state of CanBeDeleted. Default is "true".</param>
+        public Editable(ViewModelBase vm, bool switchedOn = false, bool dirtImmunity = false, bool deletable = true)
         {
             this.vm = vm;
             SwitchedOn = switchedOn;
@@ -221,11 +211,13 @@ namespace Diagnosis.App.ViewModels
         /// </summary>
         /// <param name="switchedOn">Initial state of commands. Default is "off".</param>
         /// <param name="dirtImmunity">Initial state of CanBeDirty. Default is "true".</param>
-        protected Editable(bool switchedOn = false, bool dirtImmunity = false)
+        /// <param name="deletable">Initial state of CanBeDeleted. Default is "true".</param>
+        protected Editable(bool switchedOn = false, bool dirtImmunity = false, bool deletable = true)
         {
             vm = this as ViewModelBase;
             SwitchedOn = switchedOn;
             CanBeDirty = !dirtImmunity;
+            CanBeDeleted = deletable;
         }
 
         void ToggleEditor()
@@ -237,14 +229,14 @@ namespace Diagnosis.App.ViewModels
         {
             // vm.EndEdit();
 
-            IsEditorActive = false;
-            IsDirty = false;
-
             var h = Committed;
             if (h != null)
             {
                 h(this, new EditableEventArgs(vm));
             }
+
+            IsEditorActive = false;
+            IsDirty = false;
 
             System.Console.WriteLine("commited {0}", vm);
         }
@@ -253,14 +245,14 @@ namespace Diagnosis.App.ViewModels
         {
             //vm.CancelEdit();
 
-            IsEditorActive = false;
-            IsDirty = false;
-
             var h = Reverted;
             if (h != null)
             {
                 h(this, new EditableEventArgs(vm));
             }
+
+            IsEditorActive = false;
+            IsDirty = false;
         }
 
         private void OnDelete()
@@ -270,6 +262,8 @@ namespace Diagnosis.App.ViewModels
             {
                 h(this, new EditableEventArgs(vm));
             }
+
+            System.Console.WriteLine("deleted {0}", vm);
         }
     }
 
