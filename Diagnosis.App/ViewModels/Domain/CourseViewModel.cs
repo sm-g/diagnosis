@@ -157,7 +157,7 @@ namespace Diagnosis.App.ViewModels
             }
             else
             {
-                AddAppointment(); // новый курс — добавляем встречу
+                AddAppointment(true); // новый курс — добавляем встречу
             }
         }
 
@@ -207,9 +207,9 @@ namespace Diagnosis.App.ViewModels
 
         #region Appointment stuff
 
-        public AppointmentViewModel AddAppointment()
+        public AppointmentViewModel AddAppointment(bool firstInCourse = false)
         {
-            var appVM = NewAppointment(true);
+            var appVM = NewAppointment(firstInCourse);
             Appointments.Add(appVM);
             SelectedAppointment = appVM;
 
@@ -228,10 +228,10 @@ namespace Diagnosis.App.ViewModels
             return appVM;
         }
 
-        private AppointmentViewModel NewAppointment(bool withFirstHr)
+        private AppointmentViewModel NewAppointment(bool firstInCourse)
         {
             var app = course.AddAppointment();
-            var appVM = new AppointmentViewModel(app, this, withFirstHr);
+            var appVM = new AppointmentViewModel(app, this, firstInCourse);
 
             SubscribeApp(appVM);
             return appVM;

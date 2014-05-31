@@ -112,7 +112,7 @@ namespace Diagnosis.App.ViewModels
                         }));
             }
         }
-        public AppointmentViewModel(Appointment appointment, CourseViewModel courseVM, bool withFirstHr = false)
+        public AppointmentViewModel(Appointment appointment, CourseViewModel courseVM, bool firstInCourse = false)
         {
             Contract.Requires(appointment != null);
             Contract.Requires(courseVM != null);
@@ -121,9 +121,13 @@ namespace Diagnosis.App.ViewModels
             this.courseVM = courseVM;
 
             Editable = new Editable(this, dirtImmunity: true, switchedOn: true);
+            if (firstInCourse)
+            {
+                Editable.CanBeDeleted = false;
+            }
 
             Doctor = EntityManagers.DoctorsManager.GetByModel(appointment.Doctor);
-            SetupHealthRecords(withFirstHr);
+            SetupHealthRecords(true);
 
             Editable.CanBeDirty = true;
 
