@@ -1,9 +1,8 @@
-﻿
-using Diagnosis.App.ViewModels;
+﻿using Diagnosis.App.ViewModels;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Linq;
 
 namespace Diagnosis.App.Controls
 {
@@ -35,12 +34,11 @@ namespace Diagnosis.App.Controls
 
         private void input_TextChanged(object sender, TextChangedEventArgs e)
         {
-            ShowSuggestionsPopup();
+            RefreshPopup();
 
             // после курсора разделительный пробел
             if (input.Text.Length == input.CaretIndex + 1 && input.Text.Last() == vm.DelimSpacer)
             {
-                System.Console.WriteLine("move caret");
                 input.CaretIndex = input.Text.Length;
             }
         }
@@ -51,58 +49,63 @@ namespace Diagnosis.App.Controls
             {
                 suggestions.SelectedIndex--;
             }
-            if (e.Key == Key.Down && suggestions.SelectedIndex < suggestions.Items.Count - 1)
+            else if (e.Key == Key.Down && suggestions.SelectedIndex < suggestions.Items.Count - 1)
             {
                 suggestions.SelectedIndex++;
             }
-        }
-
-        private void input_KeyUp(object sender, KeyEventArgs e)
-        {
-            switch (e.Key)
+            else if (e.Key == Key.Escape)
             {
-                case Key.Escape:
-                    HidePopup();
-                    break;
+                if (popup.IsOpen)
+                {
+                    e.Handled = true;
+                    // повторное нажатие закроет запись
+                }
+                HidePopup();
             }
         }
 
-        private void ShowSuggestionsPopup()
+        private void RefreshPopup()
         {
-            Rect placementRect;
-            if (input.CaretIndex != 0)
+            if (suggestions.Items.Count > 0
+                && !string.IsNullOrWhiteSpace(input.Text))
             {
-                placementRect = input.GetRectFromCharacterIndex(input.CaretIndex, true);
+                Rect placementRect;
+                if (input.CaretIndex != 0)
+                {
+                    placementRect = input.GetRectFromCharacterIndex(input.CaretIndex, true);
+                }
+                else
+                {
+                    placementRect = new Rect(1, 1, 0, input.ActualHeight);
+                }
+                popup.PlacementRectangle = placementRect;
+                popup.IsOpen = true;
             }
             else
             {
-                placementRect = new Rect(1, 1, 0, input.ActualHeight);
+                HidePopup();
             }
-            popup.PlacementRectangle = placementRect;
-
-            popup.IsOpen = suggestions.Items.Count > 0;
         }
-
 
         private void HidePopup()
         {
             popup.IsOpen = false;
         }
 
-        void vm_SuggestionAccepted(object sender, System.EventArgs e)
+        private void vm_SuggestionAccepted(object sender, System.EventArgs e)
         {
             input.CaretIndex = input.Text.Length;
-            ShowSuggestionsPopup();
+            RefreshPopup();
         }
 
         private void input_GotFocus(object sender, RoutedEventArgs e)
         {
             if (!focusFromPopup)
             {
-                vm.Reset();
+                // vm.Reset();
             }
             focusFromPopup = false;
-            ShowSuggestionsPopup();
+            RefreshPopup();
         }
 
         private void input_LostFocus(object sender, RoutedEventArgs e)
@@ -117,21 +120,43 @@ namespace Diagnosis.App.Controls
         {
             if (FocusChecker.IsFocusOutsideDepObject(autocomplete) && FocusChecker.IsFocusOutsideDepObject(popup.Child))
             {
-                vm.Reset();
+                //vm.Reset();
             }
-            ShowSuggestionsPopup();
+            RefreshPopup();
         }
 
-        private void DockPanel_MouseUp(object sender, MouseButtonEventArgs e)
+        private void EnterFormPopup()
         {
             vm.EnterCommand.Execute(null);
             focusFromPopup = true;
             input.Focus();
         }
 
+        private void DockPanel_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            EnterFormPopup();
+        }
+
+        private void suggestions_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+                EnterFormPopup();
+        }
+
         private void suggestions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             suggestions.ScrollIntoView(suggestions.SelectedItem);
+        }
+
+        private void suggestions_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                e.Handled = true;
+                HidePopup();
+                focusFromPopup = true;
+                input.Focus();
+            }
         }
     }
 }
