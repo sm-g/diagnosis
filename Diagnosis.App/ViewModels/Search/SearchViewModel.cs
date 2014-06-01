@@ -43,6 +43,7 @@ namespace Diagnosis.App.ViewModels
             this.Subscribe((int)EventID.CategoryCheckedChanged, (e) =>
             {
                 OnPropertyChanged(() => SelectedCategories);
+                OnPropertyChanged(() => AllEmpty);
             });
         }
 
@@ -63,6 +64,7 @@ namespace Diagnosis.App.ViewModels
                     OnPropertyChanged(() => AppDayLower);
                     OnPropertyChanged(() => AppDateVisible);
                     OnPropertyChanged(() => AppDateGt);
+                    OnPropertyChanged(() => AllEmpty);
                 }
             }
         }
@@ -81,6 +83,7 @@ namespace Diagnosis.App.ViewModels
 
                     OnPropertyChanged(() => AppDayUpper);
                     OnPropertyChanged(() => AppDateVisible);
+                    OnPropertyChanged(() => AllEmpty);
                     OnPropertyChanged(() => AppDateLt);
                 }
             }
@@ -100,6 +103,7 @@ namespace Diagnosis.App.ViewModels
 
                     OnPropertyChanged(() => AppMonthLower);
                     OnPropertyChanged(() => AppDateVisible);
+                    OnPropertyChanged(() => AllEmpty);
                     OnPropertyChanged(() => AppDateGt);
                 }
             }
@@ -119,6 +123,7 @@ namespace Diagnosis.App.ViewModels
 
                     OnPropertyChanged(() => AppMonthUpper);
                     OnPropertyChanged(() => AppDateVisible);
+                    OnPropertyChanged(() => AllEmpty);
                     OnPropertyChanged(() => AppDateLt);
                 }
             }
@@ -138,6 +143,7 @@ namespace Diagnosis.App.ViewModels
 
                     OnPropertyChanged(() => AppYearLower);
                     OnPropertyChanged(() => AppDateVisible);
+                    OnPropertyChanged(() => AllEmpty);
                     OnPropertyChanged(() => AppDateGt);
                 }
             }
@@ -157,6 +163,7 @@ namespace Diagnosis.App.ViewModels
 
                     OnPropertyChanged(() => AppYearUpper);
                     OnPropertyChanged(() => AppDateVisible);
+                    OnPropertyChanged(() => AllEmpty);
                     OnPropertyChanged(() => AppDateLt);
                 }
             }
@@ -184,6 +191,7 @@ namespace Diagnosis.App.ViewModels
                             OnPropertyChanged(() => HrDateOffsetLower);
                             OnPropertyChanged(() => HrDateVisible);
                             OnPropertyChanged(() => HrDateLt);
+                            OnPropertyChanged(() => AllEmpty);
                             OnPropertyChanged(() => HrDateGt);
                             PrintHrDate();
                         }
@@ -207,6 +215,7 @@ namespace Diagnosis.App.ViewModels
                             OnPropertyChanged(() => HrDateOffsetUpper);
                             OnPropertyChanged(() => HrDateVisible);
                             OnPropertyChanged(() => HrDateLt);
+                            OnPropertyChanged(() => AllEmpty);
                             OnPropertyChanged(() => HrDateGt);
                             PrintHrDate();
                         }
@@ -249,6 +258,8 @@ namespace Diagnosis.App.ViewModels
                 {
                     _comment = value;
                     OnPropertyChanged(() => Comment);
+                    OnPropertyChanged(() => CommentVisible);
+                    OnPropertyChanged(() => AllEmpty);
                 }
             }
         }
@@ -314,6 +325,14 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public bool CommentVisible
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(Comment);
+            }
+        }
+
         #endregion
 
         public ICommand SearchCommand
@@ -330,6 +349,8 @@ namespace Diagnosis.App.ViewModels
                                                   ForAll(hr => Results.Add(new HrSearchResultViewModel(hr, options)));
 
                                               searchWas = true;
+                                              ControlsVisible = false;
+
                                               OnPropertyChanged(() => NoResultsVisible);
                                           }, () => !AllEmpty));
             }

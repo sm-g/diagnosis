@@ -14,6 +14,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles/TabControl.xaml" />
+                <ResourceDictionary Source="Styles/EmptyToggle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <vm:MainWindowViewModel x:Key="vm" />
@@ -94,35 +95,39 @@
                    Visibility="{Binding LoginOpened, Converter={StaticResource NegBooleanToVisibilityConverter}}"
                    Grid.Row="1"
                    Grid.RowSpan="2">
-            <TabControl TabStripPlacement="Left"
-                        BorderThickness="0,0,1,0">
+            <TabControl TabStripPlacement="Left" 
+                        Margin="-2,0,0,0"
+                        Padding="0">
+                <TabControl.Style>
+                    <Style TargetType="TabControl">
+                        <Setter Property="BorderThickness" Value="1,0,1,0"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding NoTabVisible}" Value="True">
+                                <Setter Property="BorderThickness" Value="0,0,1,0"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TabControl.Style>
                 <TabItem IsSelected="{Binding IsPatientsVisible}"
-                         Style="{StaticResource tabHeaderWithExpander}">
+                         Style="{StaticResource tabHeaderWithLine}">
                     <TabItem.Header>
-                        <Expander IsExpanded="{Binding IsPatientsVisible}"
-                                  Style="{StaticResource leftSideExpander}">
-                            <Expander.Header>
-                                <TextBlock Style="{StaticResource verticalTextBlock}">Пациенты</TextBlock>
-                            </Expander.Header>
-                        </Expander>
+                        <ToggleButton IsChecked="{Binding IsPatientsVisible}" Style="{StaticResource emptyToggle}">
+                            <TextBlock Style="{StaticResource verticalTextBlock}">Пациенты</TextBlock>
+                        </ToggleButton>
                     </TabItem.Header>
                     <screen:Patients x:Name="patients"
         			                 DataContext="{Binding Patients}"
-        			                 Margin="0,0,5,0" />
+        			                 Margin="5,0,5,0" />
                 </TabItem>
                 <TabItem IsSelected="{Binding IsSearchVisible}"
-                         Style="{StaticResource tabHeaderWithExpander}">
+                         Style="{StaticResource tabHeaderWithLine}">
                     <TabItem.Header>
-                        <Expander IsExpanded="{Binding IsSearchVisible}"
-                                  Style="{StaticResource leftSideExpander}">
-                            <Expander.Header>
-                                <TextBlock Style="{StaticResource verticalTextBlock}">Поиск</TextBlock>
-                            </Expander.Header>
-                        </Expander>
+                        <ToggleButton IsChecked="{Binding IsSearchVisible}" Style="{StaticResource emptyToggle}">
+                            <TextBlock Style="{StaticResource verticalTextBlock}">Поиск</TextBlock>
+                        </ToggleButton>
                     </TabItem.Header>
                     <screen:Search x:Name="search"
-                                   DataContext="{Binding Search}"
-                                   Margin="0,0,5,0" />
+                                   DataContext="{Binding Search}" />
                 </TabItem>
             </TabControl>
         </DockPanel>

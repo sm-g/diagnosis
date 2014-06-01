@@ -8,44 +8,49 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="430" MinWidth="250" MaxWidth="450">
+             d:DesignHeight="400" d:DesignWidth="430" MinWidth="250" MaxWidth="450">
     <UserControl.Resources>
-        <s:Double x:Key="lineMargin">10</s:Double>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/SplitExpander.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <s:Double x:Key="lineMargin">10</s:Double>
 
-        <Style x:Key="line" TargetType="FrameworkElement">
-            <Setter Property="Margin">
-                <Setter.Value>
-                    <Thickness Bottom="{StaticResource lineMargin}"/>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="lineHeader" TargetType="FrameworkElement">
-            <Setter Property="DockPanel.Dock" Value="Top"/>
-            <Setter Property="Margin" Value="0,0,0,2"/>
-        </Style>
+            <Style x:Key="line" TargetType="FrameworkElement">
+                <Setter Property="Margin">
+                    <Setter.Value>
+                        <Thickness Bottom="{StaticResource lineMargin}" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="lineHeader" TargetType="FrameworkElement">
+                <Setter Property="DockPanel.Dock" Value="Top" />
+                <Setter Property="Margin" Value="0,0,0,2" />
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
+    <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <TextBlock Style="{StaticResource ScreenTitle}">Поиск</TextBlock>
+        <TextBlock Style="{StaticResource ScreenTitle}" Margin="5,0,0,0">Поиск</TextBlock>
         <Expander x:Name="searchControls"
+                  Style="{StaticResource SplitExpanderStyle}"            
                   Grid.Row="1"
                   IsExpanded="{Binding ControlsVisible}"
                   ExpandDirection="Up">
             <Expander.Header>
-                <StackPanel x:Name="searchDescription"
-                    Visibility="{Binding ControlsVisible, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                <StackPanel x:Name="searchDescription" Margin="5,0,0,0">
                     <StackPanel Orientation="Horizontal"
-                                Visibility="{Binding Words.Count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
+                                Visibility="{Binding Words.Count, Converter={StaticResource CountToVisibility}}">
                         <TextBlock Text="любое из слов: " Visibility="{Binding AnyWord, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         <TextBlock Text="все слова: " Visibility="{Binding AnyWord, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
                         <controls:CommaList DataContext="{Binding Words}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
-                                Visibility="{Binding SelectedCategories.Count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
+                                Visibility="{Binding SelectedCategories.Count, Converter={StaticResource CountToVisibility}}">
                         <TextBlock Text="типы записи: "></TextBlock>
                         <controls:CommaList DataContext="{Binding SelectedCategories}" />
                     </StackPanel>
@@ -77,10 +82,19 @@
                             </Run>
                         </TextBlock>
                     </StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                Visibility="{Binding CommentVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBlock Text="комментарий: "></TextBlock>
+                        <TextBlock Text="{Binding Comment, StringFormat='«{0}»', TargetNullValue=''}" />
+                    </StackPanel>
+
+                    <TextBlock Text="Не заданы условия поиска." 
+                               Visibility="{Binding AllEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
                 </StackPanel>
             </Expander.Header>
 
-            <StackPanel>
+            <StackPanel Margin="5,10,5,0">
                 <controls:AutoComplete DataContext="{Binding WordSearch}" />
                 <DockPanel Style="{StaticResource line}">
                     <StackPanel DockPanel.Dock="Top"
@@ -108,7 +122,7 @@
                                     <Setter Property="Margin">
                                         <Setter.Value>
                                             <Thickness Bottom="{StaticResource lineMargin}"
-                                                       Right="5"/>
+                                                       Right="5" />
                                         </Setter.Value>
                                     </Setter>
                                 </Style>
@@ -138,27 +152,27 @@
                 </DockPanel>
                 <DockPanel Style="{StaticResource line}">
                     <TextBlock Style="{StaticResource lineHeader}">Комментарий</TextBlock>
-                    <TextBox Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}" />
                 </DockPanel>
 
                 <Button Command="{Binding SearchCommand}" Height="25" Width="150" HorizontalAlignment="Left" Style="{StaticResource line}">Найти</Button>
             </StackPanel>
         </Expander>
 
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="5,10,5,10">
             <ListView x:Name="results"
                       ItemsSource="{Binding Results}"
                       Style="{StaticResource list}"
                       HorizontalContentAlignment="Stretch"
                       Visibility="{Binding Results.Count, Converter={StaticResource CountToVisibility}}">
                 <ListView.InputBindings>
-                    <KeyBinding Key="Enter" Command="{Binding SelectedItem.OpenHealthRecord, ElementName=results}"/>
+                    <KeyBinding Key="Enter" Command="{Binding SelectedItem.OpenHealthRecord, ElementName=results}" />
                 </ListView.InputBindings>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <card:SearchResult>
-                            <card:SearchResult.InputBindings>                                
-                                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding OpenHealthRecord}"/>
+                            <card:SearchResult.InputBindings>
+                                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding OpenHealthRecord}" />
                             </card:SearchResult.InputBindings>
                         </card:SearchResult>
                     </DataTemplate>
@@ -168,6 +182,7 @@
 
         <TextBlock Grid.Row="2"
                    HorizontalAlignment="Center"
+                   Margin="10"
                    Visibility="{Binding NoResultsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             Не найдено подходящих записей.
         </TextBlock>

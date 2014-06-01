@@ -162,6 +162,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     _isPatientsVisible = value;
                     OnPropertyChanged(() => IsPatientsVisible);
+                    OnPropertyChanged(() => NoTabVisible);
                 }
             }
         }
@@ -177,7 +178,16 @@ namespace Diagnosis.App.ViewModels
                 {
                     _searchState = value;
                     OnPropertyChanged(() => IsSearchVisible);
+                    OnPropertyChanged(() => NoTabVisible);
                 }
+            }
+        }
+
+        public bool NoTabVisible
+        {
+            get
+            {
+                return !IsSearchVisible && !IsPatientsVisible;
             }
         }
 
