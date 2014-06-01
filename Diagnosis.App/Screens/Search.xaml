@@ -29,7 +29,7 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid >
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
@@ -37,7 +37,7 @@
         </Grid.RowDefinitions>
         <TextBlock Style="{StaticResource ScreenTitle}" Margin="5,0,0,0">Поиск</TextBlock>
         <Expander x:Name="searchControls"
-                  Style="{StaticResource SplitExpanderStyle}"            
+                  Style="{StaticResource SplitExpanderStyle}"
                   Grid.Row="1"
                   IsExpanded="{Binding ControlsVisible}"
                   ExpandDirection="Up">
@@ -88,9 +88,8 @@
                         <TextBlock Text="{Binding Comment, StringFormat='«{0}»', TargetNullValue=''}" />
                     </StackPanel>
 
-                    <TextBlock Text="Не заданы условия поиска." 
-                               Visibility="{Binding AllEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-
+                    <TextBlock Text="Не заданы условия поиска."
+                               Visibility="{Binding AllEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 </StackPanel>
             </Expander.Header>
 
@@ -159,26 +158,24 @@
             </StackPanel>
         </Expander>
 
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="5,10,5,10">
-            <ListView x:Name="results"
+        <ListView x:Name="results" Grid.Row="2" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,0,0,10"
                       ItemsSource="{Binding Results}"
                       Style="{StaticResource list}"
                       HorizontalContentAlignment="Stretch"
                       Visibility="{Binding Results.Count, Converter={StaticResource CountToVisibility}}">
-                <ListView.InputBindings>
-                    <KeyBinding Key="Enter" Command="{Binding SelectedItem.OpenHealthRecord, ElementName=results}" />
-                </ListView.InputBindings>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <card:SearchResult>
-                            <card:SearchResult.InputBindings>
-                                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding OpenHealthRecord}" />
-                            </card:SearchResult.InputBindings>
-                        </card:SearchResult>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </ScrollViewer>
+            <ListView.InputBindings>
+                <KeyBinding Key="Enter" Command="{Binding SelectedItem.OpenHealthRecord, ElementName=results}" />
+            </ListView.InputBindings>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <card:SearchResult>
+                        <card:SearchResult.InputBindings>
+                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding OpenHealthRecord}" />
+                        </card:SearchResult.InputBindings>
+                    </card:SearchResult>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
         <TextBlock Grid.Row="2"
                    HorizontalAlignment="Center"
