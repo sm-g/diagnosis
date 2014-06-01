@@ -310,7 +310,7 @@ namespace Diagnosis.App.ViewModels
             {
                 var hr = e.GetValue<HealthRecord>(Messages.HealthRecord);
                 var patVM = EntityManagers.PatientsManager.GetByModel(hr.Appointment.Course.Patient);
-                ShowPatient(patVM);
+                EntityManagers.PatientsManager.CurrentPatient = patVM;
                 patVM.CoursesManager.OpenHr(hr);
             });
 
