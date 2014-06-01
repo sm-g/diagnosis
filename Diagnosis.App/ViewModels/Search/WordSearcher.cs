@@ -30,7 +30,8 @@ namespace Diagnosis.App.ViewModels
         }
 
         /// <summary>
-        /// Вовращает слова из колллекции, которые начинаются на указанную строку.
+        /// Вовращает слова из колллекции, которые начинаются на указанную строку
+        /// и у которых приоритет больше или равен <code>UpperPriority</code>.
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>

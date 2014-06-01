@@ -308,7 +308,7 @@ namespace Diagnosis.App.ViewModels
             {
                 return _autoComplete2 ?? (_autoComplete2 = new WordCompositeAutoComplete(
                     QuerySeparator.Default,
-                    new SimpleSearcherSettings() { AllChildren = true, WithCreatingNew = true }));
+                    new SimpleSearcherSettings() { AllChildren = true }));
             }
         }
 
