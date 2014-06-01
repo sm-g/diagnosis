@@ -23,6 +23,19 @@
         </Style>
     </UserControl.Resources>
     <StackPanel>
+        <controls:InputTextBox DataContext="{Binding AutoComplete}" Visibility="Collapsed" />
+        <controls:AutoComplete DataContext="{Binding AutoComplete2}" />
+        <DockPanel Visibility="{Binding Symptom.Words.Count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
+            <TextBlock DockPanel.Dock="Top">Слова:</TextBlock>
+            <ListView ItemsSource="{Binding Symptom.Words}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <controls:TreeItem />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </DockPanel>
+        
         <DockPanel>
             <editors:CategoryChooser HorizontalAlignment="Left" />
         </DockPanel>
@@ -37,7 +50,6 @@
         <DockPanel>
             <Label Content="диагноз" />
             <StackPanel>
-                <TextBlock Text="{Binding Diagnosis}" />
                 <controls:SearchTree DataContext="{Binding DiagnosisSearch}" />
             </StackPanel>
         </DockPanel>

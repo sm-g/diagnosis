@@ -20,23 +20,8 @@
         <CheckBox IsChecked="{Binding IsChecked}" HorizontalAlignment="Center" />
 
         <StackPanel Grid.Column="1">
-            <StackPanel x:Name="editor" Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <controls:InputTextBox DataContext="{Binding AutoComplete}" />
-                <controls:AutoComplete DataContext="{Binding AutoComplete2}" />
-                <DockPanel Visibility="{Binding Symptom.Words.Count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
-                    <TextBlock DockPanel.Dock="Top">Слова:</TextBlock>
-                    <ListView ItemsSource="{Binding Symptom.Words}">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <controls:TreeItem />
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </DockPanel>
+            <StackPanel x:Name="editor" Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">                
                 <editors:HealthRecordEditor />
-
-                <StackPanel.InputBindings>
-                </StackPanel.InputBindings>
             </StackPanel>
 
             <Grid Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
@@ -50,7 +35,10 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="{Binding Name}" />
+                <TextBlock>
+                    <Run Text="{Binding Name, Mode=OneWay}"/>
+                    <Run Text="{Binding NumValue, StringFormat={} {0:G6}}" />
+                </TextBlock>
                 <TextBlock Grid.Column="1" Text="{Binding Diagnosis.Code, FallbackValue=''}" />
                 <TextBlock Grid.Row="1">
                     <Run Text="{Binding DateOffset.Offset}" />
@@ -61,7 +49,7 @@
                         </MultiBinding>
                     </Run>
                 </TextBlock>
-                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding NumValue, StringFormat={}{0:G6}}" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Comment, TargetNullValue=''}" />
             </Grid>
         </StackPanel>
     </Grid>
