@@ -45,7 +45,10 @@ namespace Diagnosis.App.ViewModels
                     options.Categories.Any(cat => cat.category == hr.Category));
             }
 
-            hrs = hrs.Where(hr => hr.Comment != null && hr.Comment.ToLower().Contains(options.Comment.ToLower()));
+            if (options.Comment != null)
+            {
+                hrs = hrs.Where(hr => hr.Comment != null && hr.Comment.ToLower().Contains(options.Comment.ToLower()));
+            }
 
             return hrs;
         }
