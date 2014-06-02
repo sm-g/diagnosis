@@ -331,9 +331,10 @@ namespace Diagnosis.App.ViewModels
         private void CreateDiagnosisSearch()
         {
             DiagnosisSearch = new PopupSearch<DiagnosisViewModel>(
-                   EntityManagers.DiagnosisManager.FiltratingSearcher);
+                   EntityManagers.DiagnosisManager.RootFiltratingSearcher,
+                   onSelected: (dia) => { dia.IsChecked = true; });
 
-            DiagnosisSearch.ResultItemSelected += OnDiagnosisSearchItemSelected;
+            UpdateDiagnosisQueryCode();
         }
 
         private static bool makingCurrent;
@@ -390,21 +391,23 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        void UpdateDiagnosisQueryCode()
+        {
+            if (Diagnosis != null)
+                DiagnosisSearch.Query = Diagnosis.Code;
+            else
+                DiagnosisSearch.Query = "";
+        }
+
         #region Event handlers
         private void Subscribe()
         {
             this.PropertyChanged += HealthRecordViewModel_PropertyChanged;
             EntityManagers.DiagnosisManager.RootChanged += (s, e) =>
             {
-                if (DiagnosisSearch != null)
-                {
-                    DiagnosisSearch.ResultItemSelected -= OnDiagnosisSearchItemSelected;
-                }
-
                 CreateDiagnosisSearch();
             };
         }
-
 
         private void SubscribeToCheckedChanges()
         {
@@ -431,11 +434,6 @@ namespace Diagnosis.App.ViewModels
                     }
                 })
             };
-        }
-
-        private void OnDiagnosisSearchItemSelected(object s, EventArgs e)
-        {
-            DiagnosisSearch.SelectedItem.IsChecked = true;
         }
 
         private void HealthRecordViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -482,6 +480,8 @@ namespace Diagnosis.App.ViewModels
                 this.Diagnosis = null;
                 healthRecord.Disease = null;
             }
+
+            UpdateDiagnosisQueryCode();
             OnPropertyChanged(() => Name);
         }
 

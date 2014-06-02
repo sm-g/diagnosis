@@ -18,7 +18,7 @@ namespace Diagnosis.App.ViewModels
         DiagnosisViewModel _root;
         private ObservableCollection<DiagnosisViewModel> _diagnoses;
         private DiagnosisFiltratingSearcher _diaFiltratingSearcher;
-        private DiagnosisSearcher _diaSearcher;
+        private DiagnosisSearcher _diaRootSearcher;
 
         public event EventHandler RootChanged;
 
@@ -34,10 +34,10 @@ namespace Diagnosis.App.ViewModels
                 {
                     _root = value;
                     _diaFiltratingSearcher = new DiagnosisFiltratingSearcher(_root);
-                    _diaSearcher = new DiagnosisSearcher(_root, new SimpleSearcherSettings() { WithChecked = true, AllChildren = true });
+                    _diaRootSearcher = new DiagnosisSearcher(_root, new SimpleSearcherSettings() { WithChecked = true, AllChildren = true });
 
                     OnPropertyChanged(() => RootSearcher);
-                    OnPropertyChanged(() => FiltratingSearcher);
+                    OnPropertyChanged(() => RootFiltratingSearcher);
                     OnRootChanged(EventArgs.Empty);
                 }
             }
@@ -54,17 +54,19 @@ namespace Diagnosis.App.ViewModels
         }
 
         /// <summary>
-        /// Поисковик по всем диагнозам, кроме групп, создает новые из запроса.
+        /// Поисковик по всем диагнозам, кроме групп.
         /// </summary>
         public DiagnosisSearcher RootSearcher
         {
             get
             {
-                return _diaSearcher;
+                return _diaRootSearcher;
             }
         }
-
-        public DiagnosisFiltratingSearcher FiltratingSearcher
+        /// <summary>
+        /// Поисковик по всем диагнозам, кроме групп. Изменяет значение IsFiltered.
+        /// </summary>
+        public DiagnosisFiltratingSearcher RootFiltratingSearcher
         {
             get
             {

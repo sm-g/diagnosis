@@ -66,7 +66,7 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _diaFilteringSearch ?? (_diaFilteringSearch = new PopupSearch<DiagnosisViewModel>(
-                    EntityManagers.DiagnosisManager.FiltratingSearcher));
+                    EntityManagers.DiagnosisManager.RootFiltratingSearcher));
             }
         }
 
