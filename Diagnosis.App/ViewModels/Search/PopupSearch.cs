@@ -7,6 +7,8 @@ namespace Diagnosis.App.ViewModels
     public class PopupSearch<T> : ViewModelBase where T : class
     {
         internal readonly ISimpleSearcher<T> searcher;
+        readonly Action<T> onSelected;
+
         private string _query;
         private int _selectedIndex = -1;
         private ICommand _clear;
@@ -46,7 +48,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                if (SelectedIndex != -1)
+                if (SelectedIndex > -1 && SelectedIndex < Results.Count)
                     return Results[SelectedIndex];
                 else
                     return null;
@@ -193,7 +195,16 @@ namespace Diagnosis.App.ViewModels
             Query = "";
         }
 
-        public void RaiseResultItemSelected()
+        public void OnSelected(T item)
+        {
+            if (onSelected != null && SwitchedOn)
+            {
+                onSelected(item);
+            }
+            RaiseResultItemSelected();
+        }
+
+        private void RaiseResultItemSelected()
         {
             if (SwitchedOn)
             {
@@ -230,9 +241,10 @@ namespace Diagnosis.App.ViewModels
                 SelectedIndex = 0;
         }
 
-        public PopupSearch(ISimpleSearcher<T> searcher, bool switchedOn = true)
+        public PopupSearch(ISimpleSearcher<T> searcher, bool switchedOn = true, Action<T> onSelected = null)
         {
             this.searcher = searcher;
+            this.onSelected = onSelected;
 
             SwitchedOn = switchedOn;
 
