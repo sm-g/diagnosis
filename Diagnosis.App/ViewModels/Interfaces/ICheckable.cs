@@ -13,5 +13,6 @@ namespace Diagnosis.App.ViewModels
         ICommand ToggleCommand { get; }
 
         void OnCheckedChanged();
+        void OnSelectedChanged();
     }
 }

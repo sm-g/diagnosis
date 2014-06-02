@@ -76,7 +76,7 @@ namespace Diagnosis.App.ViewModels
                                               var svm = Selected.entity as SymptomViewModel;
                                               if (svm != null)
                                               {
-                                                  svm.Words.ForAll(w => w.checkable.IsChecked = true);
+                                                  svm.Words.ForAll(w => w.IsChecked = true);
                                               }
                                           }));
             }

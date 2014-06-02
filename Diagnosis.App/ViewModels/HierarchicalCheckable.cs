@@ -6,7 +6,7 @@ namespace Diagnosis.App.ViewModels
 {
     public abstract class HierarchicalCheckable<T> : HierarchicalBase<T>, IHierarchicalCheckable<T> where T : HierarchicalCheckable<T>
     {
-        readonly internal CheckableBase checkable;
+        readonly private CheckableBase checkable;
         private bool _isFiltered;
 
         public event HierarhicalCheckableEventHandler<T> CheckedChanged;
@@ -39,6 +39,7 @@ namespace Diagnosis.App.ViewModels
         }
 
         #endregion IHierarchicalCheckable
+
         #region ICheckable
 
         public bool IsSelected
@@ -49,8 +50,12 @@ namespace Diagnosis.App.ViewModels
             }
             set
             {
-                checkable.IsSelected = value;
-                OnPropertyChanged(() => IsSelected);
+                if (checkable.IsSelected != value)
+                {
+                    checkable.IsSelected = value;
+                    OnPropertyChanged(() => IsSelected);
+                    OnSelectedChanged();
+                }
             }
         }
 
@@ -62,8 +67,11 @@ namespace Diagnosis.App.ViewModels
             }
             set
             {
-                checkable.IsNonCheckable = value;
-                OnPropertyChanged(() => IsNonCheckable);
+                if (checkable.IsNonCheckable != value)
+                {
+                    checkable.IsNonCheckable = value;
+                    OnPropertyChanged(() => IsNonCheckable);
+                }
             }
         }
 
@@ -75,8 +83,12 @@ namespace Diagnosis.App.ViewModels
             }
             set
             {
-                checkable.IsChecked = value;
-                OnPropertyChanged(() => IsChecked);
+                if (checkable.IsChecked != value)
+                {
+                    checkable.IsChecked = value;
+                    OnPropertyChanged(() => IsChecked);
+                    OnCheckedChanged();
+                }
             }
         }
         public ICommand ToggleCommand
@@ -97,21 +109,15 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public virtual void OnSelectedChanged()
+        {
+        }
+
         #endregion ICheckable
 
         public HierarchicalCheckable()
         {
             checkable = new CheckableBase();
-            checkable.PropertyChanged += checkable_PropertyChanged;
-        }
-
-        private void checkable_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            OnPropertyChanged(e.PropertyName);
-            if (e.PropertyName == "IsChecked")
-            {
-                OnCheckedChanged();
-            }
         }
 
         private void PropagateCheckedState(bool newState)
