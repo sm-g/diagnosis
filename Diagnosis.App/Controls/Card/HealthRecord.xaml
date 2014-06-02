@@ -8,6 +8,7 @@
              xmlns:app="clr-namespace:Diagnosis.App"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
+             Background="Transparent"
              MinHeight="25"
              Focusable="True"
              IsTabStop="True">
@@ -17,10 +18,25 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <CheckBox IsChecked="{Binding IsChecked}" HorizontalAlignment="Center" />
+        <CheckBox IsChecked="{Binding IsChecked}" HorizontalAlignment="Center" VerticalAlignment="Stretch" VerticalContentAlignment="Top">
+            <CheckBox.Style>
+                <Style TargetType="CheckBox">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsChecked}" Value="False" />
+                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Collapsed" />                            
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </CheckBox.Style>
+        </CheckBox>
 
         <StackPanel Grid.Column="1">
-            <StackPanel x:Name="editor" Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">                
+            <StackPanel x:Name="editor" Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <editors:HealthRecordEditor />
             </StackPanel>
 
@@ -36,7 +52,7 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock>
-                    <Run Text="{Binding Name, Mode=OneWay}"/>
+                    <Run Text="{Binding Name, Mode=OneWay}" />
                     <Run Text="{Binding NumValue, StringFormat={} {0:G6}}" />
                 </TextBlock>
                 <TextBlock Grid.Column="1" Text="{Binding Diagnosis.Code, FallbackValue=''}" />
