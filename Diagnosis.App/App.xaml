@@ -56,5 +56,15 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+
+        <Style TargetType="StackPanel" x:Key="buttonsBar">
+            <Setter Property="Orientation" Value="Horizontal"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+
+        <Style TargetType="{x:Type Button}" x:Key="barButton">
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Padding" Value="4"/>
+        </Style>
     </Application.Resources>
 </Application>

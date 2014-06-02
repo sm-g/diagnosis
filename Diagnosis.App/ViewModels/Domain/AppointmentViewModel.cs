@@ -21,6 +21,7 @@ namespace Diagnosis.App.ViewModels
         private DoctorViewModel _doctor;
         private HealthRecordViewModel _selectedHealthRecord;
         private ICommand _addHealthRecord;
+        private ICommand _deleteHealthRecords;
 
         bool movingToViewGroup;
 
@@ -114,6 +115,20 @@ namespace Diagnosis.App.ViewModels
                         }));
             }
         }
+        public ICommand DeleteHealthRecordsCommand
+        {
+            get
+            {
+                return _deleteHealthRecords
+                    ?? (_deleteHealthRecords = new RelayCommand(() =>
+                    {
+                        DeleteCheckedHealthRecords();
+                    }, () => CheckedHealthRecords > 0 || SelectedHealthRecord != null));
+            }
+        }
+
+        int CheckedHealthRecords { get; set; }
+
         public AppointmentViewModel(Appointment appointment, CourseViewModel courseVM, bool firstInCourse = false)
         {
             Contract.Requires(appointment != null);
@@ -224,6 +239,11 @@ namespace Diagnosis.App.ViewModels
             return hrVM;
         }
 
+        public void DeleteCheckedHealthRecords()
+        {
+            HealthRecords.Where(hr => hr.IsChecked).ToList().ForAll(hr => hr.Editable.DeleteCommand.Execute(null));
+        }
+
         private HealthRecordViewModel NewHealthRecord()
         {
             var hr = appointment.AddHealthRecord();
@@ -293,6 +313,10 @@ namespace Diagnosis.App.ViewModels
             if (e.PropertyName == "Category")
             {
                 MoveToOtherViewGroup(hrVM);
+            }
+            else if (e.PropertyName == "IsChecked")
+            {
+                CheckedHealthRecords = HealthRecords.Where(hr => hr.IsChecked).Count();
             }
         }
 

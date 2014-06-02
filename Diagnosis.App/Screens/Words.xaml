@@ -8,11 +8,14 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
-        <StackPanel Orientation="Horizontal">
+
+        <StackPanel Style="{StaticResource buttonsBar}">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource barButton}"/>
+            </StackPanel.Resources>
             <Button Command="{Binding CommitCommand}">Сохранить</Button>
         </StackPanel>
 

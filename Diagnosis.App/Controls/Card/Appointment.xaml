@@ -27,12 +27,15 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
-        <Button Command="{Binding AddHealthRecordCommand}"
-                Height="25"
-                Margin="0,0,0,10">Добавить запись (Ctrl + N)</Button>
-        
-        <ListView x:Name="records"                  
+
+        <StackPanel Style="{StaticResource buttonsBar}">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource barButton}"/>
+            </StackPanel.Resources>
+            <Button Command="{Binding AddHealthRecordCommand}">Добавить запись (Ctrl + N)</Button>
+            <Button Command="{Binding DeleteHealthRecordsCommand}">Удалить</Button>
+        </StackPanel>
+        <ListView x:Name="records"
                   Grid.Row="1"
                   ItemsSource="{Binding HealthRecordsView}"
                   IsSynchronizedWithCurrentItem="True"
@@ -74,6 +77,5 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-       
     </Grid>
 </UserControl>
