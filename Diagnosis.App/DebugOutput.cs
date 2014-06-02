@@ -11,6 +11,16 @@ namespace Diagnosis.App
     class DebugOutput
     {
         bool showPropertySelectedValueChanged = false;
+        public static int GetSubscriberCount(EditableEventHandler eventHandler)
+        {
+            var count = 0;
+            if (eventHandler != null)
+            {
+                count = eventHandler.GetInvocationList().Length;
+            }
+            Console.WriteLine("{0} has {1} subscribers", eventHandler, count);
+            return count;
+        }
 
         public DebugOutput()
         {

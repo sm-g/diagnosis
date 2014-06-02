@@ -58,6 +58,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_editorFocused != value)
                 {
+                    Console.WriteLine("Editor focused = {0}", value);
                     _editorFocused = value;
                     OnPropertyChanged(() => IsEditorFocused);
                 }
