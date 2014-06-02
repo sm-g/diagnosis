@@ -151,6 +151,7 @@
     <Compile Include="Controls\CommaList.xaml.cs">
       <DependentUpon>CommaList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Helpers\ItemCollectionExtensions.cs" />
     <Compile Include="Controls\Search\AutoComplete.xaml.cs">
       <DependentUpon>AutoComplete.xaml</DependentUpon>
     </Compile>
