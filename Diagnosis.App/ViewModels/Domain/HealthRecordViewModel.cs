@@ -327,16 +327,6 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-
-        private void CreateDiagnosisSearch()
-        {
-            DiagnosisSearch = new PopupSearch<DiagnosisViewModel>(
-                   EntityManagers.DiagnosisManager.RootFiltratingSearcher,
-                   onSelected: (dia) => { dia.IsChecked = true; });
-
-            UpdateDiagnosisQueryCode();
-        }
-
         private static bool makingCurrent;
         private static HealthRecordViewModel currentHr;
 
@@ -391,12 +381,40 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        private void CreateDiagnosisSearch()
+        {
+            if (DiagnosisSearch != null)
+            {
+                DiagnosisSearch.Cleared -= DiagnosisSearch_Cleared;
+            }
+            DiagnosisSearch = new PopupSearch<DiagnosisViewModel>(
+                   EntityManagers.DiagnosisManager.RootFiltratingSearcher,
+                   onSelected: (dia) => { dia.IsChecked = true; });
+
+            DiagnosisSearch.Cleared += DiagnosisSearch_Cleared;
+
+            UpdateDiagnosisQueryCode();
+        }
+
+        void DiagnosisSearch_Cleared(object sender, EventArgs e)
+        {
+            Diagnosis = null;
+            // DiagnosisSearch.Query already empty
+        }
+
         void UpdateDiagnosisQueryCode()
         {
-            if (Diagnosis != null)
-                DiagnosisSearch.Query = Diagnosis.Code;
-            else
-                DiagnosisSearch.Query = "";
+            if (DiagnosisSearch != null)
+            {
+                DiagnosisSearch.UpdateResultsOnQueryChanges = false;
+
+                if (Diagnosis != null)
+                    DiagnosisSearch.Query = Diagnosis.Code;
+                else
+                    DiagnosisSearch.Query = "";
+
+                DiagnosisSearch.UpdateResultsOnQueryChanges = true;
+            }
         }
 
         #region Event handlers

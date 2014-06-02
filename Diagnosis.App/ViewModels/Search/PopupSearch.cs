@@ -18,11 +18,13 @@ namespace Diagnosis.App.ViewModels
         private bool _searchActive;
         private bool _searchFocused;
         private bool _isResultsVisible;
+        private bool _resultsOnQueryChanges;
         private bool _switchedOn;
 
         #region ISearch
 
         public event EventHandler ResultItemSelected;
+        public event EventHandler Cleared;
 
         public string Query
         {
@@ -35,10 +37,36 @@ namespace Diagnosis.App.ViewModels
                 if (_query != value)
                 {
                     _query = value;
+
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        RaiseCleared();
+                    }
+
                     IsResultsVisible = true;
+
                     OnPropertyChanged(() => Query);
                 }
-                MakeResults();
+                if (UpdateResultsOnQueryChanges)
+                {
+                    MakeResults();
+                }
+            }
+        }
+
+        public bool UpdateResultsOnQueryChanges
+        {
+            get
+            {
+                return _resultsOnQueryChanges;
+            }
+            set
+            {
+                if (_resultsOnQueryChanges != value)
+                {
+                    _resultsOnQueryChanges = value;
+                    OnPropertyChanged(() => UpdateResultsOnQueryChanges);
+                }
             }
         }
 
@@ -165,7 +193,8 @@ namespace Diagnosis.App.ViewModels
             }
             set
             {
-                if (_isResultsVisible != value && (value == IsSearchFocused || IsSearchFocused)) // set to true only if IsSearchFocused
+                // set to true only if IsSearchFocused
+                if (_isResultsVisible != value && (value == IsSearchFocused || IsSearchFocused))
                 {
                     _isResultsVisible = value;
 
@@ -195,6 +224,7 @@ namespace Diagnosis.App.ViewModels
             Query = "";
         }
 
+
         public void OnSelected(T item)
         {
             if (onSelected != null && SwitchedOn)
@@ -216,6 +246,15 @@ namespace Diagnosis.App.ViewModels
             }
             IsResultsVisible = false;
         }
+        private void RaiseCleared()
+        {
+            var h = Cleared;
+            if (h != null)
+            {
+                h(this, EventArgs.Empty);
+            }
+        }
+
 
         #endregion ISearch
 
@@ -247,8 +286,9 @@ namespace Diagnosis.App.ViewModels
             this.onSelected = onSelected;
 
             SwitchedOn = switchedOn;
+            Clear(); // no results made here
 
-            Clear();
+            UpdateResultsOnQueryChanges = true;
         }
     }
 }
