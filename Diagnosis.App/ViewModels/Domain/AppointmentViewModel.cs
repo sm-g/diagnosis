@@ -20,8 +20,10 @@ namespace Diagnosis.App.ViewModels
         private CourseViewModel courseVM;
         private DoctorViewModel _doctor;
         private HealthRecordViewModel _selectedHealthRecord;
+
         private ICommand _addHealthRecord;
         private ICommand _deleteHealthRecords;
+        private int _checkedHealthRecords;
 
         bool movingToViewGroup;
 
@@ -127,7 +129,21 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        int CheckedHealthRecords { get; set; }
+        public int CheckedHealthRecords
+        {
+            get
+            {
+                return _checkedHealthRecords;
+            }
+            set
+            {
+                if (_checkedHealthRecords != value)
+                {
+                    _checkedHealthRecords = value;
+                    OnPropertyChanged(() => CheckedHealthRecords);
+                }
+            }
+        }
 
         public AppointmentViewModel(Appointment appointment, CourseViewModel courseVM, bool firstInCourse = false)
         {

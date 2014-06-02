@@ -30,10 +30,16 @@
 
         <StackPanel Style="{StaticResource buttonsBar}">
             <StackPanel.Resources>
-                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource barButton}"/>
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource barButton}" />
             </StackPanel.Resources>
             <Button Command="{Binding AddHealthRecordCommand}">Добавить запись (Ctrl + N)</Button>
-            <Button Command="{Binding DeleteHealthRecordsCommand}">Удалить</Button>
+            <Button Command="{Binding DeleteHealthRecordsCommand}">
+                <TextBlock>
+                    <Run>Удалить</Run>
+                    <TextBlock Text="{Binding CheckedHealthRecords, StringFormat='{}({0})'}" 
+                               Visibility="{Binding CheckedHealthRecords, Converter={StaticResource CountToVisibility}, ConverterParameter=1}" />
+                </TextBlock>
+            </Button>
         </StackPanel>
         <ListView x:Name="records"
                   Grid.Row="1"
