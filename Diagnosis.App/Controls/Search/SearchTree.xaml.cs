@@ -2,6 +2,8 @@
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Collections.Generic;
+using Diagnosis.App.ViewModels;
 
 namespace Diagnosis.App.Controls
 {
@@ -63,20 +65,25 @@ namespace Diagnosis.App.Controls
             }
             else if (e.Key == Key.Enter)
             {
-                //dynamic isearch = DataContext;
-                //isearch.SelectedIndex = isearch.searcher.Collection.IndexOf(selectedItem);
-                //isearch.RaiseResultItemSelected();
+                var search = DataContext as PopupSearch<DiagnosisViewModel>;
+                search.OnSelected(selectedItem);
+                //var array = new List<DiagnosisViewModel>(EntityManagers.DiagnosisManager.Root.AllChildren);
+                //search.SelectedIndex = array.IndexOf(selectedItem);
+                //search.RaiseResultItemSelected(); 
+                // нельзя использовать, потому что у PopupSearch в Results только корневые элементы 
             }
         }
-        object selectedItem;
+
+        DiagnosisViewModel selectedItem;
+
         private void MoveSelection(bool down)
         {
-            int currentSelected = SelectedIndex(results);
-            dynamic item;
+            int currentSelected = results.SelectedIndex();
+            dynamic item; // IHierarchicalCheckable
             do
             {
                 selectedIndex += down ? 1 : -1;
-                item = FindInTree(results, selectedIndex);
+                item = results.FindByIndex(selectedIndex);
 
                 // вышли за границы дерева
                 if (item == null)
@@ -91,93 +98,6 @@ namespace Diagnosis.App.Controls
                 item.IsSelected = true;
         }
 
-        private object FindInTree(ItemsControl parentContainer, int searchIndex)
-        {
-            int index = 0;
-            return FindInTree(parentContainer, ref index, searchIndex);
-        }
-
-        private object FindInTree(ItemsControl parentContainer, ref int index, int searchIndex)
-        {
-            foreach (var item in parentContainer.Items)
-            {
-                TreeViewItem currentContainer = parentContainer.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
-                if (currentContainer != null)
-                {
-                    if (index == searchIndex)
-                    {
-                        return item;
-                    }
-
-                    index++;
-
-                    var inner = FindInTree(currentContainer, ref index, searchIndex);
-                    if (inner != null)
-                    {
-                        return inner;
-                    }
-                }
-            }
-            return null;
-        }
-
-        private int FindSelectedIndex(ItemCollection items, int index)
-        {
-            foreach (var _item in items)
-            {
-                if (_item == results.SelectedItem)
-                {
-                    return index;
-                }
-                index++;
-                var inner = FindSelectedIndex(_item as ItemCollection, index);
-                if (inner > -1)
-                {
-                    return inner;
-                }
-            }
-
-            return -1;
-        }
-
-        private static bool FindSelectedIndex(ItemsControl parentContainer, ref int index)
-        {
-            foreach (var item in parentContainer.Items)
-            {
-                TreeViewItem currentContainer = parentContainer.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
-                if (currentContainer != null)
-                {
-                    if (currentContainer.IsSelected && currentContainer.IsVisible)
-                        return true;
-                    index++;
-
-                    if (currentContainer.ItemContainerGenerator.Status == GeneratorStatus.ContainersGenerated)
-                    {
-                        // If the sub containers of current item is ready, we can directly go to the next
-                        // iteration to expand them.
-
-                        if (FindSelectedIndex(currentContainer, ref index))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-
-        int SelectedIndex(ItemsControl parentContainer)
-        {
-            int selectedIndex = 0;
-            if (FindSelectedIndex(results, ref selectedIndex))
-            {
-                return selectedIndex;
-            }
-            else
-            {
-                return -1;
-            }
-        }
         private void item_selected(object sender, RoutedEventArgs e)
         {
             TreeViewItem tvi = sender as TreeViewItem;

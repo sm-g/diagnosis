@@ -18,7 +18,7 @@
 
             <InputBindingCollection x:Shared="False" x:Key="InputBindings">
                 <KeyBinding Key="Space" Command="{Binding ToggleCommand}" />
-
+                <KeyBinding Key="Enter" Command="{Binding ToggleCommand}" />
                 <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleCommand}" />
             </InputBindingCollection>
 
@@ -55,7 +55,7 @@
             </Grid.ColumnDefinitions>
 
             <TextBox x:Name="input"
-                     Text="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
                      PreviewKeyDown="input_PreviewKeyDown"
                      GotMouseCapture="input_GotMouseCapture"
                      controls:FocusExtension.IsFocused="{Binding IsSearchFocused, Mode=TwoWay}"
@@ -65,7 +65,8 @@
                 </controls:WatermarkService.Watermark>
 
                 <TextBox.InputBindings>
-                    <KeyBinding Key="Escape" Command="{Binding ToggleResultsVisibleCommand}"></KeyBinding>
+                    <KeyBinding Key="Escape" Command="{Binding ToggleResultsVisibleCommand}" />
+                    <KeyBinding Key="Enter" Command="{Binding SelectCommand}" />
                 </TextBox.InputBindings>
             </TextBox>
             <Button Grid.Column="1"
