@@ -332,7 +332,7 @@ namespace Diagnosis.App.ViewModels
 
         private void MakeCurrent()
         {
-            if (currentHr != null)
+            if (currentHr != null && currentHr != this)
             {
                 // новая выбранная запись в том же приеме
                 if (currentHr.healthRecord.Appointment == this.healthRecord.Appointment)
@@ -345,9 +345,19 @@ namespace Diagnosis.App.ViewModels
                 }
                 currentHr.UnsubscribeCheckedChanges();
             }
-            currentHr = this;
-            this.SubscribeToCheckedChanges();
 
+            if (currentHr != this)
+            {
+                this.SubscribeToCheckedChanges();
+            }
+
+            currentHr = this;
+
+            CheckInCurrent();
+        }
+
+        private void CheckInCurrent()
+        {
             makingCurrent = true;
             if (Symptom != null)
                 EntityManagers.WordsManager.CheckThese(Symptom.Words);

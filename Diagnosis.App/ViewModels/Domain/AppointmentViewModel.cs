@@ -22,6 +22,8 @@ namespace Diagnosis.App.ViewModels
         private HealthRecordViewModel _selectedHealthRecord;
         private ICommand _addHealthRecord;
 
+        bool movingToViewGroup;
+
         public Editable Editable { get; private set; }
 
         #region Model
@@ -154,7 +156,10 @@ namespace Diagnosis.App.ViewModels
         {
             HealthRecords.CollectionChanged += (s, e) =>
             {
-                Editable.MarkDirty();
+                if (!movingToViewGroup)
+                {
+                    Editable.MarkDirty();
+                }
             };
             Editable.Committed += Editable_Committed;
             Editable.Deleted += Editable_Deleted;
@@ -252,7 +257,10 @@ namespace Diagnosis.App.ViewModels
 
             appointment.DeleteHealthRecord(hrVM.healthRecord);
 
-            MoveHrViewSelection(hrVM);
+            if (SelectedHealthRecord == hrVM)
+            {
+                MoveHrViewSelection();
+            }
 
             HealthRecords.Remove(hrVM);
 
@@ -284,29 +292,34 @@ namespace Diagnosis.App.ViewModels
             var hrVM = sender as HealthRecordViewModel;
             if (e.PropertyName == "Category")
             {
-                // move to other group in view
-                HealthRecords.Remove(hrVM);
-                HealthRecords.Add(hrVM);
+                MoveToOtherViewGroup(hrVM);
             }
+        }
+
+        private void MoveToOtherViewGroup(HealthRecordViewModel hrVM)
+        {
+            movingToViewGroup = true;
+            SelectedHealthRecord = null;
+            HealthRecords.Remove(hrVM);
+            HealthRecords.Add(hrVM);
+            SelectedHealthRecord = hrVM;
+            movingToViewGroup = false;
         }
 
         #endregion
 
-        private void MoveHrViewSelection(HealthRecordViewModel hrVM)
+        private void MoveHrViewSelection()
         {
-            if (SelectedHealthRecord == hrVM)
+            // удалена выделенная запись - меняем выделение
+            var i = HealthRecordsView.CurrentPosition;
+            if (i == HealthRecords.Count - 1)
             {
-                // удалена выделенная запись - меняем выделение
-                var i = HealthRecordsView.CurrentPosition;
-                if (i == HealthRecords.Count - 1)
-                {
-                    // удалили последную запись в списке
-                    HealthRecordsView.MoveCurrentToPrevious();
-                }
-                else
-                {
-                    HealthRecordsView.MoveCurrentToNext();
-                }
+                // удалили последную запись в списке
+                HealthRecordsView.MoveCurrentToPrevious();
+            }
+            else
+            {
+                HealthRecordsView.MoveCurrentToNext();
             }
         }
 
