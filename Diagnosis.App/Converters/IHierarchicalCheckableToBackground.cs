@@ -13,15 +13,21 @@ namespace Diagnosis.App.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var s = value as IHierarchicalCheckable;
-            if (s != null)
+            // trap for DisconnectedITem
+            if (!(value is ICheckable))
+            {
+                return null;
+            }
+
+            dynamic s = value; // IHierarchicalCheckable
+            try
             {
                 if (s.CheckedChildren == 0)
                     return noCheckedChildBrush;
                 else
                     return isCheckedChildBrush;
             }
-            else
+            catch (Exception)
             {
                 return null;
             }
