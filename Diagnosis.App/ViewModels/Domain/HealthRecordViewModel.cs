@@ -49,8 +49,17 @@ namespace Diagnosis.App.ViewModels
 
         #region CheckableBase
 
-        public override void OnCheckedChanged()
+        bool checkedBySelection;
+
+        public override void OnSelectedChanged()
         {
+            // check hr when select it and uncheck when selection goes away
+            // except hr was checked by user before
+            if (!IsChecked || checkedBySelection)
+            {
+                checkedBySelection = IsSelected;
+                IsChecked = IsSelected;
+            }
         }
 
         #endregion CheckableBase
