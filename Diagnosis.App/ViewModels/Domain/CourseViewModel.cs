@@ -231,14 +231,17 @@ namespace Diagnosis.App.ViewModels
 
         private void SetAppointmentsDeletable()
         {
-            // нельзя удалять единственную встречу
+            // проверяем, остался ли курс пустым
+            Editable.CanBeDeleted = IsEmpty;
+
+            // нельзя удалять единственную непустую встречу
             if (Appointments.Count > 1)
             {
                 Appointments.ForAll(app => app.Editable.CanBeDeleted = true);
             }
             else if (Appointments.Count == 1)
             {
-                Appointments.Single().Editable.CanBeDeleted = false;
+                Appointments.Single().Editable.CanBeDeleted = IsEmpty;
             }
         }
 
@@ -288,9 +291,8 @@ namespace Diagnosis.App.ViewModels
         private void app_DirtyChanged(object sender, EditableEventArgs e)
         {
             Editable.IsDirty = Appointments.Any(app => app.Editable.IsDirty);
-
-            // проверяем, остался ли курс пустым
-            Editable.CanBeDeleted = IsEmpty;
+            
+            SetAppointmentsDeletable();
         }
 
         #endregion Appointment stuff
