@@ -269,9 +269,9 @@ namespace Diagnosis.App.ViewModels
 
         #region Options results
 
-        public IEnumerable<CategoryViewModel> SelectedCategories
+        public IList<CategoryViewModel> SelectedCategories
         {
-            get { return Categories.Where(cat => cat.IsChecked); }
+            get { return Categories.Where(cat => cat.IsChecked).ToList(); }
         }
         /// <summary>
         /// Дата приёма, для поиска достаточно любой границы.

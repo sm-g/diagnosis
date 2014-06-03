@@ -47,12 +47,12 @@
                                 Visibility="{Binding Words.Count, Converter={StaticResource CountToVisibility}}">
                         <TextBlock Text="любое из слов: " Visibility="{Binding AnyWord, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         <TextBlock Text="все слова: " Visibility="{Binding AnyWord, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
-                        <controls:CommaList DataContext="{Binding Words}" />
+                        <controls:CommaList ItemsSource="{Binding Words}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
                                 Visibility="{Binding SelectedCategories.Count, Converter={StaticResource CountToVisibility}}">
                         <TextBlock Text="типы записи: "></TextBlock>
-                        <controls:CommaList DataContext="{Binding SelectedCategories}" />
+                        <controls:CommaList ItemsSource="{Binding SelectedCategories}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
                                 Visibility="{Binding AppDateVisible, Converter={StaticResource BooleanToVisibilityConverter}}">

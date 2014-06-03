@@ -17,7 +17,7 @@ namespace Diagnosis.App.Controls
     /// <summary>
     /// Interaction logic for CommaList.xaml
     /// </summary>
-    public partial class CommaList : UserControl
+    public partial class CommaList : ItemsControl
     {
         public CommaList()
         {
