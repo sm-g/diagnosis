@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -317,6 +318,8 @@ namespace Diagnosis.App.ViewModels
             CoursesManager = new CoursesManager(this);
             if (!(this is UnsavedPatientViewModel))
                 AfterPatientLoaded();
+
+            this.SubscribeNesting(CoursesManager.Courses);
         }
 
         public void AfterPatientLoaded()
@@ -329,7 +332,6 @@ namespace Diagnosis.App.ViewModels
 
         public void Subscribe()
         {
-            Editable.Committed += Editable_Committed;
             msgHandlers = new List<EventMessageHandler>()
             {
                 this.Subscribe((int)EventID.PropertySelectedValueChanged, (e) =>
@@ -345,12 +347,6 @@ namespace Diagnosis.App.ViewModels
                     OnCourseStarted(course);
                 })
             };
-        }
-
-        private void Editable_Committed(object sender, EditableEventArgs e)
-        {
-            this.DeleteEmpty(CoursesManager.Courses);
-            CoursesManager.Courses.ForAll(app => app.Editable.Commit());
         }
 
         public void Unsubscribe()

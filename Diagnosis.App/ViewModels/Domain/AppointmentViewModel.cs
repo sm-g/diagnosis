@@ -171,7 +171,8 @@ namespace Diagnosis.App.ViewModels
 
             Editable.CanBeDirty = true;
 
-            Subscribe();
+            this.SubscribeNesting(HealthRecords,
+                innerChangedAndCondition: () => !movingToViewGroup);
 
             SetupHealthRecordsView();
         }
@@ -187,42 +188,6 @@ namespace Diagnosis.App.ViewModels
                 AddHealthRecord();
             }
         }
-
-        #region Subscriptions
-
-        private void Subscribe()
-        {
-            HealthRecords.CollectionChanged += (s, e) =>
-            {
-                // если добавлена запись - она ещё пустая, встреча остается чистой
-                if (e.Action == NotifyCollectionChangedAction.Remove && !movingToViewGroup)
-                {
-                    Editable.MarkDirty();
-                }
-            };
-            Editable.Committed += Editable_Committed;
-            Editable.Deleted += Editable_Deleted;
-        }
-
-        private void Editable_Deleted(object sender, EditableEventArgs e)
-        {
-            // удаляем записи при удалении встречи
-            while (HealthRecords.Count > 0)
-            {
-                HealthRecords[0].Editable.Delete();
-            }
-
-            Editable.Deleted -= Editable_Deleted;
-            Editable.Committed -= Editable_Committed;
-        }
-
-        private void Editable_Committed(object sender, EditableEventArgs e)
-        {
-            this.DeleteEmpty(HealthRecords);
-            HealthRecords.ForAll(x => x.Editable.Commit());
-        }
-
-        #endregion Subscriptions
 
         private void SetupHealthRecordsView()
         {

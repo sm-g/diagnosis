@@ -152,7 +152,11 @@ namespace Diagnosis.App.ViewModels
 
             Editable.CanBeDirty = true;
 
-            Subscribe();
+            this.SubscribeNesting(Appointments,
+                 onDeletedBefore: () => Contract.Requires(Appointments.All(a => a.IsEmpty)),
+                 innerChangedAfter: SetAppointmentsDeletable);
+
+            SetAppointmentsDeletable();
         }
 
         private void SetupAppointments(Course course)
@@ -174,44 +178,6 @@ namespace Diagnosis.App.ViewModels
                 AddAppointment(true); // новый курс — добавляем встречу
             }
         }
-
-        #region Subscriptions
-
-        private void Subscribe()
-        {
-            Editable.Committed += Editable_Committed;
-            Editable.Deleted += Editable_Deleted;
-            Appointments.CollectionChanged += (s, e) =>
-            {
-                // добавленная встреча сначала пустая
-                if (e.Action == NotifyCollectionChangedAction.Remove)
-                {
-                    Editable.MarkDirty();
-                }
-                SetAppointmentsDeletable();
-            };
-        }
-
-        private void Editable_Deleted(object sender, EditableEventArgs e)
-        {
-            Contract.Requires(Appointments.All(a => a.IsEmpty));
-            // удаляем встречи при удалении курса (должны быть пустые)
-            while (Appointments.Count > 0)
-            {
-                Appointments[0].Editable.Delete();
-            }
-
-            Editable.Committed -= Editable_Committed;
-            Editable.Deleted -= Editable_Deleted;
-        }
-
-        private void Editable_Committed(object sender, EditableEventArgs e)
-        {
-            this.DeleteEmpty(Appointments);
-            Appointments.ForAll(app => app.Editable.Commit());
-        }
-
-        #endregion Subscriptions
 
         #region Appointment stuff
 
@@ -270,8 +236,6 @@ namespace Diagnosis.App.ViewModels
                 session.SaveOrUpdate(appVM.appointment);
                 transaction.Commit();
             }
-
-            Editable.IsDirty = Appointments.Any(app => app.Editable.IsDirty);
         }
 
         private void app_Deleted(object sender, EditableEventArgs e)
@@ -291,7 +255,7 @@ namespace Diagnosis.App.ViewModels
         private void app_DirtyChanged(object sender, EditableEventArgs e)
         {
             Editable.IsDirty = Appointments.Any(app => app.Editable.IsDirty);
-            
+
             SetAppointmentsDeletable();
         }
 

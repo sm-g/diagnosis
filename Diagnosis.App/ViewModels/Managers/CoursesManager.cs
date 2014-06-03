@@ -81,8 +81,6 @@ namespace Diagnosis.App.ViewModels
             this.patientVM = patientVM;
 
             SetupCourses();
-
-            Subscribe();
         }
 
         private void SetupCourses()
@@ -99,14 +97,6 @@ namespace Diagnosis.App.ViewModels
             {
                 SelectedCourse = Courses[0];
             }
-        }
-
-        private void Subscribe()
-        {
-            Courses.CollectionChanged += (s, e) =>
-            {
-                patientVM.Editable.MarkDirty();
-            };
         }
 
         #region Course stuff
@@ -127,8 +117,6 @@ namespace Diagnosis.App.ViewModels
                 session.SaveOrUpdate(courseVM.course);
                 transaction.Commit();
             }
-
-            patientVM.Editable.IsDirty = Courses.Any(x => x.Editable.IsDirty);
         }
 
         private void course_Deleted(object sender, EditableEventArgs e)
