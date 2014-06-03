@@ -320,6 +320,10 @@ namespace Diagnosis.App.ViewModels
                 AfterPatientLoaded();
 
             this.SubscribeNesting(CoursesManager.Courses);
+            CoursesManager.Courses.CollectionChanged += (s, e) =>
+            {
+                OnPropertyChanged(() => NoCourses);
+            };
         }
 
         public void AfterPatientLoaded()
@@ -367,7 +371,6 @@ namespace Diagnosis.App.ViewModels
         {
             CoursesManager.AddCourse(course);
             Editable.MarkDirty();
-            OnPropertyChanged(() => NoCourses);
         }
 
         #endregion Subscriptions
@@ -398,7 +401,7 @@ namespace Diagnosis.App.ViewModels
 
         public override string ToString()
         {
-            return FullName;
+            return Id + " " + FullName;
         }
     }
 

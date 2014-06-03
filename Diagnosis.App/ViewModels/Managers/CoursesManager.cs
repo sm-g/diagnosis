@@ -45,12 +45,10 @@ namespace Diagnosis.App.ViewModels
             SubscribeCourse(courseVM);
 
             Courses.Add(courseVM);
-            Courses = new ObservableCollection<CourseViewModel>(
-                Courses.OrderByDescending(cvm => cvm.course, new CompareCourseByDate()));
+            Courses.Move(Courses.Count - 1, 0);
 
             SelectedCourse = courseVM;
 
-            OnPropertyChanged(() => Courses);
             return courseVM;
         }
 
