@@ -246,6 +246,8 @@
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Editable.cs" />
+    <Compile Include="ViewModels\Extensions\IEditableNestingExtensions.cs" />
+    <Compile Include="ViewModels\Interfaces\IEditableNesting.cs" />
     <Compile Include="ViewModels\Search\DiagnosisFiltratingSearcher.cs" />
     <Compile Include="ViewModels\Search\DiagnosisSearcher.cs" />
     <Compile Include="ViewModels\Search\HrSearcher.cs" />
