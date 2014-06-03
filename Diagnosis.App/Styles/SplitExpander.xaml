@@ -6,7 +6,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
                     <Border Padding="{TemplateBinding Padding}">
-                        <Grid SnapsToDevicePixels="False" Background="Transparent">
+                        <Grid SnapsToDevicePixels="False" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="19" />
@@ -20,8 +20,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="true">
-                            <Setter Property="Data" TargetName="arrow" Value="M 1,4.5  L 4.5,1  L 8,4.5" />
-                            <Setter Property="Background" TargetName="arrowContainer" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+                            <Setter Property="Data" TargetName="arrow" Value="M 1,4.5  L 4.5,1  L 8,4.5" />                            
                             <Setter Property="Visibility" TargetName="headerContent" Value="Collapsed"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">
