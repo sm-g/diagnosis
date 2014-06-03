@@ -30,6 +30,7 @@ namespace Diagnosis.Data.Mappings
             ManyToOne(x => x.Course, m =>
             {
                 m.Column("CourseID");
+                m.Cascade(Cascade.Persist);
             });
             ManyToOne(x => x.Doctor, m =>
             {
