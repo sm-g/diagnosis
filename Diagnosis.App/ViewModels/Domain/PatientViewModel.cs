@@ -5,6 +5,7 @@ using EventAggregator;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -451,6 +452,7 @@ namespace Diagnosis.App.ViewModels
     {
         public PatientViewModel patientVM;
 
+        [DebuggerStepThrough]
         public PatientEventArgs(PatientViewModel p)
         {
             patientVM = p;

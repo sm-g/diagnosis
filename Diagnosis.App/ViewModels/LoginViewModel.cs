@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Security;
 using System.Windows.Input;
@@ -106,6 +105,7 @@ namespace Diagnosis.App.ViewModels
     {
         public DoctorViewModel Doctor;
 
+        [DebuggerStepThrough]
         public LoggedEventArgs(DoctorViewModel doctor)
         {
             Doctor = doctor;

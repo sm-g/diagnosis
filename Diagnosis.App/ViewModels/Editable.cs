@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
@@ -297,6 +298,7 @@ namespace Diagnosis.App.ViewModels
     {
         public ViewModelBase viewModel;
 
+        [DebuggerStepThrough]
         public EditableEventArgs(ViewModelBase vm)
         {
             viewModel = vm;

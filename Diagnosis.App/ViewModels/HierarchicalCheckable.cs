@@ -1,6 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows.Input;
-using System;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -10,6 +11,7 @@ namespace Diagnosis.App.ViewModels
         private bool _isFiltered;
 
         public event HierarhicalCheckableEventHandler<T> CheckedChanged;
+
         #region IHierarchicalCheckable
 
         public int CheckedChildren
@@ -91,6 +93,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
         public ICommand ToggleCommand
         {
             get
@@ -155,12 +158,13 @@ namespace Diagnosis.App.ViewModels
         }
     }
 
-
     public delegate void HierarhicalCheckableEventHandler<T>(object sender, HierarhicalCheckableEventArgs<T> e) where T : class;
+
     public class HierarhicalCheckableEventArgs<T> : EventArgs where T : class
     {
         public IHierarchicalCheckable<T> vm;
 
+        [DebuggerStepThrough]
         public HierarhicalCheckableEventArgs(IHierarchicalCheckable<T> vm)
         {
             this.vm = vm;

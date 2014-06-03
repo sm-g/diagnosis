@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Collections.Generic;
 using System.Collections;
+using System.Diagnostics;
 
 namespace Diagnosis.Core
 {
@@ -12,6 +13,7 @@ namespace Diagnosis.Core
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        [DebuggerStepThrough]
         protected void OnPropertyChanged(string name)
         {
             PropertyChangedEventHandler handler = this.PropertyChanged;
@@ -21,6 +23,7 @@ namespace Diagnosis.Core
             }
         }
 
+        [DebuggerStepThrough]
         protected void OnPropertyChanged<T>(Expression<Func<T>> propertyExpression)
         {
             var memberExpr = propertyExpression.Body as MemberExpression;
