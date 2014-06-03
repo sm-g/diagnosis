@@ -1,10 +1,8 @@
-﻿using System.Windows.Input;
-using System.ComponentModel;
-using System;
+﻿using System;
+using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-
     public class Editable : ViewModelBase
     {
         private ICommand _commit;
@@ -23,8 +21,11 @@ namespace Diagnosis.App.ViewModels
         #region EditableBase
 
         public event EditableEventHandler Committed;
+
         public event EditableEventHandler Reverted;
+
         public event EditableEventHandler Deleted;
+
         public event EditableEventHandler DirtyChanged;
 
         public bool IsEditorActive
@@ -84,17 +85,20 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Показывает, что есть несохраненные изенения, разрешает выполнять сохранение.
+        /// </summary>
         public bool IsDirty
         {
             get { return _isDirty; }
-            private set
+            internal set
             {
-                if (_isDirty != value)
+                if (_isDirty != value && CanBeDirty)
                 {
                     _isDirty = value;
                     if (value)
                         WasDirty = true;
-
+                    Console.WriteLine("{0} isdirty = {1}", vm, value);
                     var h = DirtyChanged;
                     if (h != null)
                     {
@@ -141,6 +145,7 @@ namespace Diagnosis.App.ViewModels
         }
 
         #region Commands
+
         /// <summary>
         /// Сохраняет изменения и закрывает редактор.
         /// </summary>
@@ -182,12 +187,9 @@ namespace Diagnosis.App.ViewModels
 
         #endregion Commands
 
-        public void MarkDirty()
+        internal void MarkDirty()
         {
-            if (CanBeDirty)
-            {
-                IsDirty = true;
-            }
+            IsDirty = true;
         }
 
         #endregion EditableBase
@@ -221,7 +223,7 @@ namespace Diagnosis.App.ViewModels
             CanBeDeleted = deletable;
         }
 
-        void ToggleEditor()
+        private void ToggleEditor()
         {
             IsEditorActive = !IsEditorActive;
         }
@@ -231,15 +233,15 @@ namespace Diagnosis.App.ViewModels
             // vm.EndEdit();
 
             var h = Committed;
+            System.Console.WriteLine("on committ {0}", vm);
             if (h != null)
             {
                 h(this, new EditableEventArgs(vm));
+                System.Console.WriteLine("committed {0}", vm);
             }
 
             IsEditorActive = false;
             IsDirty = false;
-
-            System.Console.WriteLine("commited {0}", vm);
         }
 
         private void OnRevert()
@@ -262,9 +264,8 @@ namespace Diagnosis.App.ViewModels
             if (h != null)
             {
                 h(this, new EditableEventArgs(vm));
+                System.Console.WriteLine("deleted {0}", vm);
             }
-
-            System.Console.WriteLine("deleted {0}", vm);
         }
     }
 
@@ -273,6 +274,7 @@ namespace Diagnosis.App.ViewModels
     public class EditableEventArgs : EventArgs
     {
         public ViewModelBase viewModel;
+
         public EditableEventArgs(ViewModelBase vm)
         {
             viewModel = vm;

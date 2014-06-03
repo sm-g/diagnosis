@@ -1,10 +1,10 @@
-﻿using Diagnosis.Models;
-using Diagnosis.Core;
+﻿using Diagnosis.Core;
+using Diagnosis.Data;
+using Diagnosis.Models;
+using NHibernate;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using Diagnosis.Data;
-using NHibernate;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -29,6 +29,10 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_selectedCourse != value)
                 {
+                    if (_selectedCourse != null)
+                    {
+                        _selectedCourse.Editable.CommitCommand.Execute(null);
+                    }
                     _selectedCourse = value;
                     OnPropertyChanged(() => SelectedCourse);
                 }
@@ -111,9 +115,10 @@ namespace Diagnosis.App.ViewModels
         {
             courseVM.Editable.Deleted += course_Deleted;
             courseVM.Editable.Committed += course_Committed;
+            courseVM.Editable.DirtyChanged += Editable_DirtyChanged;
         }
 
-        void course_Committed(object sender, EditableEventArgs e)
+        private void course_Committed(object sender, EditableEventArgs e)
         {
             var courseVM = e.viewModel as CourseViewModel;
             ISession session = NHibernateHelper.GetSession();
@@ -122,6 +127,8 @@ namespace Diagnosis.App.ViewModels
                 session.SaveOrUpdate(courseVM.course);
                 transaction.Commit();
             }
+
+            patientVM.Editable.IsDirty = Courses.Any(x => x.Editable.IsDirty);
         }
 
         private void course_Deleted(object sender, EditableEventArgs e)
@@ -129,13 +136,17 @@ namespace Diagnosis.App.ViewModels
             var courseVM = e.viewModel as CourseViewModel;
             courseVM.Editable.Deleted -= course_Deleted;
             courseVM.Editable.Committed -= course_Committed;
+            courseVM.Editable.DirtyChanged -= Editable_DirtyChanged;
 
             patientVM.patient.DeleteCourse(courseVM.course);
-            patientVM.Editable.MarkDirty();
             Courses.Remove(courseVM);
         }
 
-        #endregion
+        private void Editable_DirtyChanged(object sender, EditableEventArgs e)
+        {
+            patientVM.Editable.IsDirty = Courses.Any(x => x.Editable.IsDirty);
+        }
 
+        #endregion Course stuff
     }
 }

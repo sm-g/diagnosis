@@ -1,20 +1,21 @@
-﻿using Diagnosis.Data;
+﻿using Diagnosis.App.Messaging;
 using Diagnosis.Core;
+using Diagnosis.Data;
 using Diagnosis.Models;
 using EventAggregator;
 using NHibernate;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Data;
-using Diagnosis.App.Messaging;
 using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class AppointmentViewModel : ViewModelBase
+    public class AppointmentViewModel : ViewModelBase, IEditableNesting
     {
         internal readonly Appointment appointment;
 
@@ -26,9 +27,24 @@ namespace Diagnosis.App.ViewModels
         private ICommand _deleteHealthRecords;
         private int _checkedHealthRecords;
 
-        bool movingToViewGroup;
+        private bool movingToViewGroup;
+
+        #region IEditableNesting
 
         public Editable Editable { get; private set; }
+
+        /// <summary>
+        /// Встреча пустая, если пусты все записи в ней или их нет.
+        /// </summary>
+        public bool IsEmpty
+        {
+            get
+            {
+                return HealthRecords.All(hr => hr.IsEmpty);
+            }
+        }
+
+        #endregion IEditableNesting
 
         #region Model
 
@@ -59,19 +75,9 @@ namespace Diagnosis.App.ViewModels
 
         public ObservableCollection<HealthRecordViewModel> HealthRecords { get; private set; }
 
-        #endregion
-        public ICollectionView HealthRecordsView { get; private set; }
+        #endregion Model
 
-        /// <summary>
-        /// Встреча пустая, если пусты все записи в ней или их нет.
-        /// </summary>
-        public bool IsEmpty
-        {
-            get
-            {
-                return HealthRecords.All(hr => hr.IsEmpty);
-            }
-        }
+        public ICollectionView HealthRecordsView { get; private set; }
 
         public bool IsDoctorFromCourse
         {
@@ -98,7 +104,6 @@ namespace Diagnosis.App.ViewModels
                     }
                     else
                     {
-
                     }
                     _selectedHealthRecord = value;
 
@@ -118,6 +123,7 @@ namespace Diagnosis.App.ViewModels
                         }));
             }
         }
+
         public ICommand DeleteHealthRecordsCommand
         {
             get
@@ -188,7 +194,8 @@ namespace Diagnosis.App.ViewModels
         {
             HealthRecords.CollectionChanged += (s, e) =>
             {
-                if (!movingToViewGroup)
+                // если добавлена запись - она ещё пустая, встреча остается чистой
+                if (e.Action == NotifyCollectionChangedAction.Remove && !movingToViewGroup)
                 {
                     Editable.MarkDirty();
                 }
@@ -197,7 +204,7 @@ namespace Diagnosis.App.ViewModels
             Editable.Deleted += Editable_Deleted;
         }
 
-        void Editable_Deleted(object sender, EditableEventArgs e)
+        private void Editable_Deleted(object sender, EditableEventArgs e)
         {
             // удаляем записи при удалении встречи
             while (HealthRecords.Count > 0)
@@ -209,24 +216,14 @@ namespace Diagnosis.App.ViewModels
             Editable.Committed -= Editable_Committed;
         }
 
-        void Editable_Committed(object sender, EditableEventArgs e)
+        private void Editable_Committed(object sender, EditableEventArgs e)
         {
-            // удаляем пустые записи при сохранении встречи
-            var i = 0;
-            while (i < HealthRecords.Count)
-            {
-                if (HealthRecords[i].IsEmpty)
-                {
-                    HealthRecords[i].Editable.DeleteCommand.Execute(null);
-                }
-                else
-                {
-                    i++;
-                }
-            }
+            this.DeleteEmpty(HealthRecords);
+
+            HealthRecords.ForAll(hr => hr.Editable.IsDirty = false); // встреча сохранена - все записи тоже
         }
 
-        #endregion
+        #endregion Subscriptions
 
         private void SetupHealthRecordsView()
         {
@@ -249,8 +246,6 @@ namespace Diagnosis.App.ViewModels
             SelectedHealthRecord = hrVM;
 
             hrVM.Editable.IsEditorActive = true; // открываем запись на редактирование
-
-            Editable.MarkDirty();
 
             OnPropertyChanged(() => IsEmpty);
             return hrVM;
@@ -277,7 +272,7 @@ namespace Diagnosis.App.ViewModels
             hrVM.Editable.DirtyChanged += hr_DirtyChanged;
         }
 
-        void hr_Committed(object sender, EditableEventArgs e)
+        private void hr_Committed(object sender, EditableEventArgs e)
         {
             var hrVM = e.viewModel as HealthRecordViewModel;
             ISession session = NHibernateHelper.GetSession();
@@ -288,7 +283,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        void hr_Deleted(object sender, EditableEventArgs e)
+        private void hr_Deleted(object sender, EditableEventArgs e)
         {
             var hrVM = e.viewModel as HealthRecordViewModel;
 
@@ -309,22 +304,15 @@ namespace Diagnosis.App.ViewModels
             OnPropertyChanged(() => IsEmpty);
         }
 
-        void hr_DirtyChanged(object sender, EditableEventArgs e)
+        private void hr_DirtyChanged(object sender, EditableEventArgs e)
         {
             this.Send((int)EventID.HealthRecordChanged,
                     new HealthRecordChangedParams(e.viewModel as HealthRecordViewModel).Params);
 
-            if (HealthRecords.Any(hr => hr.Editable.IsDirty))
-            {
-                Editable.MarkDirty();
-            }
-            else
-            {
-                Editable.CommitCommand.Execute(null);
-            }
+            Editable.IsDirty = HealthRecords.Any(hr => hr.Editable.IsDirty);
         }
 
-        void hr_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void hr_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var hrVM = sender as HealthRecordViewModel;
             if (e.PropertyName == "Category")
@@ -347,7 +335,7 @@ namespace Diagnosis.App.ViewModels
             movingToViewGroup = false;
         }
 
-        #endregion
+        #endregion HealthRecord stuff
 
         private void MoveHrViewSelection()
         {
@@ -366,7 +354,7 @@ namespace Diagnosis.App.ViewModels
 
         public override string ToString()
         {
-            return DateTime.ToShortDateString() + ' ' + Doctor;
+            return string.Format("{0} hrs {1:d} {2}", HealthRecords.Count, DateTime, Doctor);
         }
     }
 }

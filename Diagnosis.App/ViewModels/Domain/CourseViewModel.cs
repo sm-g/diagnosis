@@ -1,18 +1,19 @@
-﻿using Diagnosis.Core;
+﻿using Diagnosis.App.Messaging;
+using Diagnosis.Core;
 using Diagnosis.Data;
 using Diagnosis.Models;
 using EventAggregator;
 using NHibernate;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
-using Diagnosis.App.Messaging;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class CourseViewModel : ViewModelBase
+    public class CourseViewModel : ViewModelBase, IEditableNesting
     {
         internal readonly Course course;
 
@@ -20,7 +21,22 @@ namespace Diagnosis.App.ViewModels
         private DoctorViewModel _leadDoctor;
         private ICommand _addAppointment;
 
+        #region IEditableNesting
+
         public Editable Editable { get; private set; }
+
+        /// <summary>
+        /// Курс пустой, если пусты все встречи в нём.
+        /// </summary>
+        public bool IsEmpty
+        {
+            get
+            {
+                return Appointments.All(app => app.IsEmpty);
+            }
+        }
+
+        #endregion IEditableNesting
 
         #region Model
 
@@ -78,17 +94,6 @@ namespace Diagnosis.App.ViewModels
 
         #endregion Model
 
-        /// <summary>
-        /// Курс пустой, если пусты все встречи в нём.
-        /// </summary>
-        public bool IsEmpty
-        {
-            get
-            {
-                return Appointments.All(app => app.IsEmpty);
-            }
-        }
-
         public AppointmentViewModel SelectedAppointment
         {
             get
@@ -99,6 +104,11 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_selectedAppointment != value)
                 {
+                    if (_selectedAppointment != null)
+                    {
+                        _selectedAppointment.Editable.CommitCommand.Execute(null);
+                    }
+
                     _selectedAppointment = value;
                     OnPropertyChanged(() => SelectedAppointment);
                 }
@@ -128,6 +138,7 @@ namespace Diagnosis.App.ViewModels
                         }, () => !IsEnded));
             }
         }
+
         public CourseViewModel(Course course)
         {
             Contract.Requires(course != null);
@@ -146,7 +157,9 @@ namespace Diagnosis.App.ViewModels
 
         private void SetupAppointments(Course course)
         {
-            var appVMs = course.Appointments.Select(app => new AppointmentViewModel(app, this)).Reverse().ToList();
+            bool single = course.Appointments.Count == 1; // единственную встречу нельзя будет удалять
+
+            var appVMs = course.Appointments.Select(app => new AppointmentViewModel(app, this, single)).Reverse().ToList();
             appVMs.ForAll(app => SubscribeApp(app));
 
             Appointments = new ObservableCollection<AppointmentViewModel>(appVMs);
@@ -170,7 +183,12 @@ namespace Diagnosis.App.ViewModels
             Editable.Deleted += Editable_Deleted;
             Appointments.CollectionChanged += (s, e) =>
             {
-                Editable.MarkDirty();
+                // добавленная встреча сначала пустая
+                if (e.Action == NotifyCollectionChangedAction.Remove)
+                {
+                    Editable.MarkDirty();
+                }
+                SetAppointmentsDeletable();
             };
         }
 
@@ -189,22 +207,12 @@ namespace Diagnosis.App.ViewModels
 
         private void Editable_Committed(object sender, EditableEventArgs e)
         {
-            // удаляем пустые встречи при сохранении курса
-            var i = 0;
-            while (i < Appointments.Count)
-            {
-                if (Appointments[i].IsEmpty)
-                {
-                    Appointments[i].Editable.DeleteCommand.Execute(null);
-                }
-                else
-                {
-                    i++;
-                }
-            }
+            this.DeleteEmpty(Appointments);
+
+            Appointments.ForAll(app => app.Editable.IsDirty = false); // курс сохранен - все встречи тоже
         }
 
-        #endregion
+        #endregion Subscriptions
 
         #region Appointment stuff
 
@@ -216,17 +224,23 @@ namespace Diagnosis.App.ViewModels
 
             OnPropertyChanged(() => LastAppointment);
             OnPropertyChanged(() => IsEmpty);
-            Editable.MarkDirty();
-
-            // можно удалять встречи, если их больше 1
-            if (Appointments.Count > 1)
-            {
-                Appointments.ForAll(app => app.Editable.CanBeDeleted = true);
-            }
 
             this.Send((int)EventID.AppointmentAdded, new AppointmentAddedParams(appVM).Params);
 
             return appVM;
+        }
+
+        private void SetAppointmentsDeletable()
+        {
+            // нельзя удалять единственную встречу
+            if (Appointments.Count > 1)
+            {
+                Appointments.ForAll(app => app.Editable.CanBeDeleted = true);
+            }
+            else if (Appointments.Count == 1)
+            {
+                Appointments.Single().Editable.CanBeDeleted = false;
+            }
         }
 
         private AppointmentViewModel NewAppointment(bool firstInCourse)
@@ -254,6 +268,8 @@ namespace Diagnosis.App.ViewModels
                 session.SaveOrUpdate(appVM.appointment);
                 transaction.Commit();
             }
+
+            Editable.IsDirty = Appointments.Any(app => app.Editable.IsDirty);
         }
 
         private void app_Deleted(object sender, EditableEventArgs e)
@@ -267,29 +283,22 @@ namespace Diagnosis.App.ViewModels
 
             Appointments.Remove(appVM);
 
-            // нельзя удалять единственную встречу
-            if (Appointments.Count == 1)
-            {
-                Appointments.Single().Editable.CanBeDeleted = false;
-            }
             OnPropertyChanged(() => IsEmpty);
         }
 
         private void app_DirtyChanged(object sender, EditableEventArgs e)
         {
-            if ((e.viewModel as AppointmentViewModel).Editable.IsDirty)
-                Editable.MarkDirty();
+            Editable.IsDirty = Appointments.Any(app => app.Editable.IsDirty);
 
-            // проверяем, что курс остался пустым
+            // проверяем, остался ли курс пустым
             Editable.CanBeDeleted = IsEmpty;
         }
 
-        #endregion
-
+        #endregion Appointment stuff
 
         public override string ToString()
         {
-            return Start.ToShortDateString() + ' ' + LeadDoctor.ToString();
+            return "курс " + Start.ToShortDateString() + ' ' + LeadDoctor.ToString();
         }
     }
 }

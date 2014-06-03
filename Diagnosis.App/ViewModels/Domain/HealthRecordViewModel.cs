@@ -1,16 +1,16 @@
-﻿using Diagnosis.Core;
+﻿using Diagnosis.App.Messaging;
+using Diagnosis.Core;
 using Diagnosis.Models;
 using EventAggregator;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using Diagnosis.App.Messaging;
 using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class HealthRecordViewModel : CheckableBase
+    public class HealthRecordViewModel : CheckableBase, IEditableNesting
     {
         internal readonly HealthRecord healthRecord;
         private AutoCompleteBoxViewModel _autoComplete;
@@ -19,18 +19,9 @@ namespace Diagnosis.App.ViewModels
         private DateOffset _dateOffset;
         private List<EventMessageHandler> msgHandlers;
 
-        public Editable Editable { get; private set; }
+        #region IEditableNesting
 
-        public string Name
-        {
-            get
-            {
-                if (Symptom != null)
-                    return Symptom.Name;
-                else
-                    return string.Empty;
-            }
-        }
+        public Editable Editable { get; private set; }
 
         /// <summary>
         /// Запись пустая, если не задано ни одно свойство (кроме категории, которая всегда есть).
@@ -47,10 +38,22 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        #endregion IEditableNesting
+
+        public string Name
+        {
+            get
+            {
+                if (Symptom != null)
+                    return Symptom.Name;
+                else
+                    return string.Empty;
+            }
+        }
 
         #region CheckableBase
 
-        bool checkedBySelection;
+        private bool checkedBySelection;
 
         public override void OnSelectedChanged()
         {
@@ -337,6 +340,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
         private static bool makingCurrent;
         private static HealthRecordViewModel currentHr;
 
@@ -416,13 +420,13 @@ namespace Diagnosis.App.ViewModels
             UpdateDiagnosisQueryCode();
         }
 
-        void DiagnosisSearch_Cleared(object sender, EventArgs e)
+        private void DiagnosisSearch_Cleared(object sender, EventArgs e)
         {
             Diagnosis = null;
             // DiagnosisSearch.Query already empty
         }
 
-        void UpdateDiagnosisQueryCode()
+        private void UpdateDiagnosisQueryCode()
         {
             if (DiagnosisSearch != null)
             {
@@ -438,6 +442,7 @@ namespace Diagnosis.App.ViewModels
         }
 
         #region Event handlers
+
         private void Subscribe()
         {
             this.PropertyChanged += HealthRecordViewModel_PropertyChanged;
@@ -482,6 +487,7 @@ namespace Diagnosis.App.ViewModels
                     MakeCurrent();
             }
         }
+
         private void OnWordCheckedChanged(WordViewModel word, bool isChecked)
         {
             // меняем симптом у открытой записи
@@ -524,10 +530,10 @@ namespace Diagnosis.App.ViewModels
         }
 
         #endregion Event handlers
+
         public override string ToString()
         {
-            return string.Format("{0} {1} {2}", DateOffset, Category, Symptom);
+            return string.Format("{0} {1} {2} {3} {4} {5}", Category, Symptom, NumValue != null ? NumValue.ToString() : "", Diagnosis, DateOffset, Comment);
         }
-
     }
 }

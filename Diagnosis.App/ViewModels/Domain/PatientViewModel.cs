@@ -1,23 +1,39 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.App.Messaging;
+using Diagnosis.Core;
+using Diagnosis.Models;
 using EventAggregator;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using Diagnosis.App.Messaging;
-using Diagnosis.Core;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class PatientViewModel : CheckableBase
+    public class PatientViewModel : CheckableBase, IEditableNesting
     {
         internal readonly Patient patient;
 
         private DoctorViewModel _doctor;
         private CoursesManager _coursesManager;
         private List<EventMessageHandler> msgHandlers = new List<EventMessageHandler>();
+
+        #region IEditableNesting
+
         public Editable Editable { get; private set; }
+
+        /// <summary>
+        /// Пациент пустой, если пусты все его курсы.
+        /// </summary>
+        public bool IsEmpty
+        {
+            get
+            {
+                return CoursesManager.Courses.All(x => x.IsEmpty);
+            }
+        }
+
+        #endregion IEditableNesting
 
         #region Model related
 
@@ -189,7 +205,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-
         public ObservableCollection<PropertyViewModel> Properties
         {
             get;
@@ -309,10 +324,11 @@ namespace Diagnosis.App.ViewModels
             OnPropertyChanged(() => Properties);
         }
 
-        #region Event handlers
+        #region Subscriptions
 
         public void Subscribe()
         {
+            Editable.Committed += Editable_Committed;
             msgHandlers = new List<EventMessageHandler>()
             {
                 this.Subscribe((int)EventID.PropertySelectedValueChanged, (e) =>
@@ -328,6 +344,11 @@ namespace Diagnosis.App.ViewModels
                     OnCourseStarted(course);
                 })
             };
+        }
+
+        private void Editable_Committed(object sender, EditableEventArgs e)
+        {
+            this.DeleteEmpty(CoursesManager.Courses);
         }
 
         public void Unsubscribe()
@@ -351,12 +372,12 @@ namespace Diagnosis.App.ViewModels
             OnPropertyChanged(() => NoCourses);
         }
 
-
-        #endregion Event handlers
+        #endregion Subscriptions
 
         #region Comparsion
 
-        static IComparer<string> emptyLastComparer = new EmptyStringsAreLast();
+        private static IComparer<string> emptyLastComparer = new EmptyStringsAreLast();
+
         public static int CompareByFullName(PatientViewModel x, PatientViewModel y)
         {
             if (x == null)
@@ -383,7 +404,7 @@ namespace Diagnosis.App.ViewModels
         }
     }
 
-    class UnsavedPatientViewModel : PatientViewModel
+    internal class UnsavedPatientViewModel : PatientViewModel
     {
         public event PatientEventHandler PatientCreated;
 
@@ -399,7 +420,7 @@ namespace Diagnosis.App.ViewModels
             Editable.Committed += OnFirstCommit;
         }
 
-        void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "IsEditorActive")
             {
@@ -421,7 +442,6 @@ namespace Diagnosis.App.ViewModels
                 h(this, new PatientEventArgs(this));
             }
         }
-
     }
 
     public delegate void PatientEventHandler(object sender, PatientEventArgs e);
