@@ -23,5 +23,10 @@ namespace Diagnosis.App.Screens
         {
             InitializeComponent();
         }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            tabControl.Focus();
+        }
     }
 }

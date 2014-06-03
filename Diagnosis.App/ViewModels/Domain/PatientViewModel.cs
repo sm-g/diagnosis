@@ -212,7 +212,9 @@ namespace Diagnosis.App.ViewModels
             get;
             private set;
         }
-
+        /// <summary>
+        /// For binding with converter.
+        /// </summary>
         public PatientViewModel Self
         {
             get { return this; }
@@ -261,9 +263,9 @@ namespace Diagnosis.App.ViewModels
         }
 
         /// <summary>
-        /// Для сохранения из отключении редактора.
+        /// Для сохранения при выходе из редактора.
         /// </summary>
-        public bool EditorActive
+        public virtual bool EditorActive
         {
             get
             {
@@ -280,6 +282,7 @@ namespace Diagnosis.App.ViewModels
                     else
                     {
                         Editable.Commit();
+                        Editable.IsEditorActive = false;
                     }
                     OnPropertyChanged(() => EditorActive);
                 }
@@ -328,7 +331,8 @@ namespace Diagnosis.App.ViewModels
 
         public void AfterPatientLoaded()
         {
-            Properties = new ObservableCollection<PropertyViewModel>(EntityManagers.PropertyManager.GetPatientProperties(patient));
+            Properties = new ObservableCollection<PropertyViewModel>(
+                EntityManagers.PropertyManager.GetPatientProperties(patient));
             OnPropertyChanged(() => Properties);
         }
 
@@ -363,8 +367,11 @@ namespace Diagnosis.App.ViewModels
 
         private void OnPropertyValueChanged(PropertyViewModel propertyVM)
         {
-            patient.SetPropertyValue(propertyVM.property, propertyVM.SelectedValue);
-            Editable.MarkDirty();
+            if (!(propertyVM.SelectedValue is EmptyPropertyValue))
+            {
+                patient.SetPropertyValue(propertyVM.property, propertyVM.SelectedValue);
+                Editable.MarkDirty();
+            }
         }
 
         private void OnCourseStarted(Course course)
@@ -428,7 +435,7 @@ namespace Diagnosis.App.ViewModels
                 // go to courses tabitem - save patient first
                 if (!Editable.IsEditorActive)
                 {
-                    Editable.Commit();
+                    Editable.Commit(true);
                 }
             }
         }
@@ -437,6 +444,7 @@ namespace Diagnosis.App.ViewModels
         {
             Editable.Committed -= OnFirstCommit;
             Editable.PropertyChanged -= OnPropertyChanged;
+
             var h = PatientCreated;
             if (h != null)
             {

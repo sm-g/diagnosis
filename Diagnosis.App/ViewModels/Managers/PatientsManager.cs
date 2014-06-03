@@ -1,12 +1,12 @@
-﻿using Diagnosis.Data.Repositories;
+﻿using Diagnosis.App.Messaging;
+using Diagnosis.Data.Repositories;
+using Diagnosis.Models;
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
-using Diagnosis.App.Messaging;
-using Diagnosis.Models;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -60,6 +60,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
         public PopupSearch<PatientViewModel> Search
         {
             get
@@ -78,20 +79,7 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _addPatient
-                    ?? (_addPatient = new RelayCommand(
-                                          () =>
-                                          {
-                                              var newPatientVM = new UnsavedPatientViewModel();
-                                              CurrentPatient = newPatientVM;
-                                              newPatientVM.PatientCreated += (s, e) =>
-                                              {
-                                                  patientRepo.SaveOrUpdate(e.patientVM.patient);
-                                                  e.patientVM.AfterPatientLoaded();
-                                                  Patients.Add(e.patientVM);
-                                                  CurrentPatient = e.patientVM;
-                                                  SubscribeEditable(CurrentPatient);
-                                              };
-                                          }));
+                    ?? (_addPatient = new RelayCommand(AddPatient));
             }
         }
 
@@ -112,6 +100,7 @@ namespace Diagnosis.App.ViewModels
         {
             return Patients.Where(p => p.patient == patient).FirstOrDefault();
         }
+
         public void OpenLastAppointment(PatientViewModel patient)
         {
             // последний курс или новый, если курсов нет
@@ -152,6 +141,28 @@ namespace Diagnosis.App.ViewModels
 
             SetCurrentToLast();
         }
+
+        private void AddPatient()
+        {
+            var newPatientVM = new UnsavedPatientViewModel();
+            CurrentPatient = newPatientVM;
+            newPatientVM.PatientCreated += OnPatientCreated;
+        }
+
+        private void OnPatientCreated(object s, PatientEventArgs e)
+        {
+            (e.patientVM as UnsavedPatientViewModel).PatientCreated -= OnPatientCreated;
+            patientRepo.SaveOrUpdate(e.patientVM.patient);
+            var modelFromRepo = patientRepo.GetById(e.patientVM.patient.Id);
+
+            var savedVM = new PatientViewModel(modelFromRepo);
+            Patients.Add(savedVM);
+            CurrentPatient = savedVM;
+            SubscribeEditable(savedVM);
+            OpenLastAppointment(savedVM);
+            savedVM.Editable.IsEditorActive = false;
+        }
+
         /// <summary>
         /// Отписывает всех пациентов. Подписывает переданного пациента.
         /// </summary>

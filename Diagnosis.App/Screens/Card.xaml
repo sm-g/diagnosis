@@ -21,7 +21,7 @@
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
-        <TabControl Padding="0" Grid.ColumnSpan="2">
+        <TabControl x:Name="tabControl" Padding="0" Grid.ColumnSpan="2" SelectionChanged="TabControl_SelectionChanged">
             <TabControl.Resources>
                 <ResourceDictionary>
                     <ResourceDictionary.MergedDictionaries>

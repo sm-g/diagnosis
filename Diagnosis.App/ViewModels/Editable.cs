@@ -188,9 +188,10 @@ namespace Diagnosis.App.ViewModels
         /// <summary>
         /// Сохраняет изменения и закрывает редактор.
         /// </summary>
-        public bool Commit()
+        /// <param name="force">Принудительное сохранение игнорируя IsDirty.</param>
+        public bool Commit(bool force = false)
         {
-            if (IsDirty && SwitchedOn)
+            if ((IsDirty || force) && SwitchedOn)
             {
                 OnCommit();
                 return true;
