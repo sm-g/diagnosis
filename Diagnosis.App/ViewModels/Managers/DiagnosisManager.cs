@@ -4,6 +4,7 @@ using EventAggregator;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using Diagnosis.App.Messaging;
 using System.Linq;
 using System;
 

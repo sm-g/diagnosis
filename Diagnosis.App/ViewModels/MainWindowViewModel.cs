@@ -1,5 +1,6 @@
 ﻿using EventAggregator;
 using System.Windows.Input;
+using Diagnosis.App.Messaging;
 using Diagnosis.Models;
 
 namespace Diagnosis.App.ViewModels

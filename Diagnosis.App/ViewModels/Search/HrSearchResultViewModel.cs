@@ -3,6 +3,7 @@ using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using Diagnosis.App.Messaging;
 using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels

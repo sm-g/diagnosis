@@ -1,5 +1,5 @@
 ﻿
-namespace Diagnosis.App
+namespace Diagnosis.App.Messaging
 {
     /// <summary>
     /// Ключи событий для EventAggregator

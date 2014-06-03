@@ -4,6 +4,7 @@ using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using Diagnosis.App.Messaging;
 using System.Linq;
 
 namespace Diagnosis.App.ViewModels

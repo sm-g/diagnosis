@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Models;
 using EventAggregator;
 using System.Collections.ObjectModel;
+using Diagnosis.App.Messaging;
 using System.Diagnostics.Contracts;
 
 namespace Diagnosis.App.ViewModels

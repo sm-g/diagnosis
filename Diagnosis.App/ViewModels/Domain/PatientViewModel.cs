@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using Diagnosis.App.Messaging;
 using Diagnosis.Core;
 
 namespace Diagnosis.App.ViewModels

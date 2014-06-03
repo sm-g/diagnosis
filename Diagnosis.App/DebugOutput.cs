@@ -5,6 +5,7 @@ using System.Text;
 using EventAggregator;
 using Diagnosis.App.ViewModels;
 using Diagnosis.Models;
+using Diagnosis.App.Messaging;
 
 namespace Diagnosis.App
 {

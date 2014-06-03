@@ -4,6 +4,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Windows.Input;
+using Diagnosis.App.Messaging;
 using System.Linq;
 
 namespace Diagnosis.App.ViewModels

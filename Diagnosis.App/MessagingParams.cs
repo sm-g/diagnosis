@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Windows;
 
-namespace Diagnosis.App
+namespace Diagnosis.App.Messaging
 {
     abstract class EventParams
     {

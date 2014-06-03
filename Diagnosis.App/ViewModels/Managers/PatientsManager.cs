@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
+using Diagnosis.App.Messaging;
 using Diagnosis.Models;
 
 namespace Diagnosis.App.ViewModels
