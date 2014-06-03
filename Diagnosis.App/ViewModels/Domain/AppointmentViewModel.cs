@@ -7,6 +7,7 @@ using NHibernate;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -78,6 +79,14 @@ namespace Diagnosis.App.ViewModels
         #endregion Model
 
         public ICollectionView HealthRecordsView { get; private set; }
+
+        public IList<string> HealthRecordsNames
+        {
+            get
+            {
+                return HealthRecords.Select(hr => hr.Name).ToList();
+            }
+        }
 
         public bool IsDoctorFromCourse
         {
@@ -181,12 +190,23 @@ namespace Diagnosis.App.ViewModels
         {
             var hrVMs = appointment.HealthRecords.Select(hr => new HealthRecordViewModel(hr)).ToList();
             hrVMs.ForAll(hr => SubscribeHR(hr));
+
+            if (HealthRecords != null)
+            {
+                HealthRecords.CollectionChanged -= HealthRecords_CollectionChanged;
+            }
             HealthRecords = new ObservableCollection<HealthRecordViewModel>(hrVMs);
 
             if (withFirstHr && HealthRecords.Count == 0)
             {
                 AddHealthRecord();
             }
+            HealthRecords.CollectionChanged += HealthRecords_CollectionChanged;
+        }
+
+        void HealthRecords_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(() => HealthRecordsNames);
         }
 
         private void SetupHealthRecordsView()
