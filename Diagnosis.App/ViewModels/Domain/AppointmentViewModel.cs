@@ -209,7 +209,7 @@ namespace Diagnosis.App.ViewModels
             // удаляем записи при удалении встречи
             while (HealthRecords.Count > 0)
             {
-                HealthRecords[0].Editable.DeleteCommand.Execute(null);
+                HealthRecords[0].Editable.Delete();
             }
 
             Editable.Deleted -= Editable_Deleted;
@@ -219,8 +219,7 @@ namespace Diagnosis.App.ViewModels
         private void Editable_Committed(object sender, EditableEventArgs e)
         {
             this.DeleteEmpty(HealthRecords);
-
-            HealthRecords.ForAll(hr => hr.Editable.IsDirty = false); // встреча сохранена - все записи тоже
+            HealthRecords.ForAll(x => x.Editable.Commit());
         }
 
         #endregion Subscriptions
@@ -253,7 +252,7 @@ namespace Diagnosis.App.ViewModels
 
         public void DeleteCheckedHealthRecords()
         {
-            HealthRecords.Where(hr => hr.IsChecked).ToList().ForAll(hr => hr.Editable.DeleteCommand.Execute(null));
+            HealthRecords.Where(hr => hr.IsChecked).ToList().ForAll(hr => hr.Editable.Delete());
         }
 
         private HealthRecordViewModel NewHealthRecord()

@@ -106,7 +106,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     if (_selectedAppointment != null)
                     {
-                        _selectedAppointment.Editable.CommitCommand.Execute(null);
+                        _selectedAppointment.Editable.Commit();
                     }
 
                     _selectedAppointment = value;
@@ -198,7 +198,7 @@ namespace Diagnosis.App.ViewModels
             // удаляем встречи при удалении курса (должны быть пустые)
             while (Appointments.Count > 0)
             {
-                Appointments[0].Editable.DeleteCommand.Execute(null);
+                Appointments[0].Editable.Delete();
             }
 
             Editable.Committed -= Editable_Committed;
@@ -208,8 +208,7 @@ namespace Diagnosis.App.ViewModels
         private void Editable_Committed(object sender, EditableEventArgs e)
         {
             this.DeleteEmpty(Appointments);
-
-            Appointments.ForAll(app => app.Editable.IsDirty = false); // курс сохранен - все встречи тоже
+            Appointments.ForAll(app => app.Editable.Commit());
         }
 
         #endregion Subscriptions

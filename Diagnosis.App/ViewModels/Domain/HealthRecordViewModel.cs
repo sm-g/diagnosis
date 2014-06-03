@@ -354,8 +354,13 @@ namespace Diagnosis.App.ViewModels
                     // оставляем редактор открытым при смене выбранной записи
                     this.Editable.IsEditorActive = currentHr.Editable.IsEditorActive;
 
+                    if (!currentHr.Editable.IsDirty)
+                    {
+                        currentHr.Editable.IsEditorActive = false;
+                    }
+
                     // сохраняем запись
-                    currentHr.Editable.CommitCommand.Execute(null);
+                    currentHr.Editable.Commit();
                 }
                 currentHr.UnsubscribeCheckedChanges();
             }

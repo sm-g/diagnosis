@@ -277,7 +277,7 @@ namespace Diagnosis.App.ViewModels
                     }
                     else
                     {
-                        Editable.CommitCommand.Execute(null);
+                        Editable.Commit();
                     }
                     OnPropertyChanged(() => EditorActive);
                 }
@@ -349,6 +349,7 @@ namespace Diagnosis.App.ViewModels
         private void Editable_Committed(object sender, EditableEventArgs e)
         {
             this.DeleteEmpty(CoursesManager.Courses);
+            CoursesManager.Courses.ForAll(app => app.Editable.Commit());
         }
 
         public void Unsubscribe()
@@ -427,7 +428,7 @@ namespace Diagnosis.App.ViewModels
                 // go to courses tabitem - save patient first
                 if (!Editable.IsEditorActive)
                 {
-                    Editable.CommitCommand.Execute(null);
+                    Editable.Commit();
                 }
             }
         }

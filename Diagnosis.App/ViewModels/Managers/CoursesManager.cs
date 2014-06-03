@@ -31,7 +31,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     if (_selectedCourse != null)
                     {
-                        _selectedCourse.Editable.CommitCommand.Execute(null);
+                        _selectedCourse.Editable.Commit();
                     }
                     _selectedCourse = value;
                     OnPropertyChanged(() => SelectedCourse);
@@ -115,7 +115,7 @@ namespace Diagnosis.App.ViewModels
         {
             courseVM.Editable.Deleted += course_Deleted;
             courseVM.Editable.Committed += course_Committed;
-            courseVM.Editable.DirtyChanged += Editable_DirtyChanged;
+            courseVM.Editable.DirtyChanged += course_DirtyChanged;
         }
 
         private void course_Committed(object sender, EditableEventArgs e)
@@ -136,13 +136,13 @@ namespace Diagnosis.App.ViewModels
             var courseVM = e.viewModel as CourseViewModel;
             courseVM.Editable.Deleted -= course_Deleted;
             courseVM.Editable.Committed -= course_Committed;
-            courseVM.Editable.DirtyChanged -= Editable_DirtyChanged;
+            courseVM.Editable.DirtyChanged -= course_DirtyChanged;
 
             patientVM.patient.DeleteCourse(courseVM.course);
             Courses.Remove(courseVM);
         }
 
-        private void Editable_DirtyChanged(object sender, EditableEventArgs e)
+        private void course_DirtyChanged(object sender, EditableEventArgs e)
         {
             patientVM.Editable.IsDirty = Courses.Any(x => x.Editable.IsDirty);
         }

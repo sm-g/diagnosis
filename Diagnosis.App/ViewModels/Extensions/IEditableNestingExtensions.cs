@@ -15,7 +15,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (inners[i].IsEmpty)
                 {
-                    inners[i].Editable.DeleteCommand.Execute(null);
+                    inners[i].Editable.Delete();
                 }
                 else
                 {
@@ -23,5 +23,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
+
     }
 }

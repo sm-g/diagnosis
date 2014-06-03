@@ -58,7 +58,7 @@ namespace Diagnosis.App.ViewModels
                                               foreach (var item in DirtyWords)
                                               {
                                                   if (item.IsChecked)
-                                                      item.Editable.CommitCommand.Execute(null);
+                                                      item.Editable.Commit();
                                               }
                                           },
                                           () => DirtyWords.Count() > 0));

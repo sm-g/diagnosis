@@ -184,6 +184,28 @@ namespace Diagnosis.App.ViewModels
                     ?? (_revert = new RelayCommand(OnRevert, () => IsEditorActive && SwitchedOn));
             }
         }
+        /// <summary>
+        /// Сохраняет изменения и закрывает редактор.
+        /// </summary>
+        public bool Commit()
+        {
+            if (IsDirty && SwitchedOn)
+            {
+                OnCommit();
+                return true;
+            }
+            return false;
+        }
+
+        public bool Delete()
+        {
+            if (CanBeDeleted && SwitchedOn)
+            {
+                OnDelete();
+                return true;
+            }
+            return false;
+        }
 
         #endregion Commands
 

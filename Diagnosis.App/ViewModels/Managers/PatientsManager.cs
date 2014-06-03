@@ -42,7 +42,7 @@ namespace Diagnosis.App.ViewModels
                             // у старого пациента был открыт редактор — сохраняем изменения в нем
                             if (_current.Editable.IsEditorActive)
                             {
-                                _current.Editable.CommitCommand.Execute(null);
+                                _current.Editable.Commit();
                             }
                         }
                         else
