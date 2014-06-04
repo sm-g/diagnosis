@@ -157,6 +157,18 @@ namespace Diagnosis.App.Messaging
         public HealthRecordSelectedParams(HealthRecordViewModel hrVM) : base(hrVM) { }
     }
 
+    class OpenSettingsParams : EventParams
+    {
+        public OpenSettingsParams(SettingsViewModel settingsVM)
+        {
+            Contract.Requires(settingsVM != null);
+
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.Settings, settingsVM)
+            };
+        }
+    }
+
     #endregion
 
     class DirectoryEditingModeChangedParams : EventParams

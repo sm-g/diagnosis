@@ -1,10 +1,9 @@
-﻿using Diagnosis.Data.Repositories;
+﻿using Diagnosis.App.Messaging;
+using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
 using EventAggregator;
-using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using Diagnosis.App.Messaging;
 using System.Linq;
 
 namespace Diagnosis.App.ViewModels
@@ -12,14 +11,9 @@ namespace Diagnosis.App.ViewModels
     public class DoctorsManager : ViewModelBase
     {
         private DoctorViewModel _current;
-        IDoctorRepository repository;
+        private IDoctorRepository repository;
 
         public ObservableCollection<DoctorViewModel> Doctors { get; private set; }
-
-        public DoctorViewModel GetByModel(Doctor doctor)
-        {
-            return Doctors.FirstOrDefault(a => a.doctor == doctor);
-        }
 
         public DoctorViewModel CurrentDoctor
         {
@@ -37,6 +31,11 @@ namespace Diagnosis.App.ViewModels
                     this.Send((int)EventID.CurrentDoctorChanged, new CurrentDoctorChangedParams(_current).Params);
                 }
             }
+        }
+
+        public DoctorViewModel GetByModel(Doctor doctor)
+        {
+            return Doctors.FirstOrDefault(a => a.doctor == doctor);
         }
 
         public DoctorsManager(IDoctorRepository repo)

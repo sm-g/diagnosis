@@ -17,6 +17,7 @@ namespace Diagnosis.App.Messaging
         public const string HealthRecord = "healthRecord";
         public const string Category = "category";
         public const string Boolean = "bool";
+        public const string Settings = "settings";
 
     }
 
@@ -38,6 +39,7 @@ namespace Diagnosis.App.Messaging
         WordsEditingModeChanged,
         HealthRecordChanged,
 
-        OpenHealthRecord
+        OpenHealthRecord,
+        OpenSettings
     }
 }

@@ -5,16 +5,16 @@
         xmlns:controls="clr-namespace:Diagnosis.App.Controls"
         xmlns:vm="clr-namespace:Diagnosis.App.ViewModels"
         xmlns:screen="clr-namespace:Diagnosis.App.Screens"
+        x:Class="Diagnosis.App.Windows.MainWindow"
         mc:Ignorable="d"
         DataContext="{DynamicResource vm}"
-        x:Class="Diagnosis.App.MainWindow"
         x:Name="root"
         Title="MainWindow" Height="700" Width="800">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Styles/TabControl.xaml" />
-                <ResourceDictionary Source="Styles/EmptyToggle.xaml" />
+                <ResourceDictionary Source="../Styles/TabControl.xaml" />
+                <ResourceDictionary Source="../Styles/EmptyToggle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <vm:MainWindowViewModel x:Key="vm" />
@@ -71,22 +71,23 @@
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}" />
             </Grid.Background>
             <Menu>
-                <MenuItem Header="Справочники">
-                    <MenuItem Header="Симптомы" Command="{Binding EditSymptomsDirectoryCommand}" />
+                <MenuItem Header="_Справочники">
+                    <MenuItem Header="_Симптомы" Command="{Binding EditSymptomsDirectoryCommand}" />
                     <MenuItem Header="Диагнозы" Command="{Binding EditDiagnosisDirectoryCommand}" />
                 </MenuItem>
-                <MenuItem Header="Поиск">
-                    <MenuItem IsCheckable="true" IsChecked="{Binding SearchTesterOpened}" Header="Все поиски" />
-                    <MenuItem IsCheckable="true" IsChecked="{Binding IsSearchVisible}" Header="Поиск" />
+                <MenuItem Header="_Поиск">
+                    <MenuItem IsCheckable="true" IsChecked="{Binding SearchTesterOpened}" Header="_Все поиски" />
+                    <MenuItem IsCheckable="true" IsChecked="{Binding IsSearchVisible}" Header="_Поиск" />
                 </MenuItem>
             </Menu>
             <Menu HorizontalAlignment="Center">
-                <CheckBox IsChecked="{Binding FastAddingMode}">Приём</CheckBox>
+                <CheckBox IsChecked="{Binding FastAddingMode}">_Приём</CheckBox>
             </Menu>
 
             <Menu HorizontalAlignment="Right">
                 <MenuItem Header="{Binding Login.DoctorsManager.CurrentDoctor, Converter={StaticResource ManToShortName}}">
-                    <MenuItem Header="Выйти" Command="{Binding LogoutCommand}" />
+                    <MenuItem Header="_Выйти" Command="{Binding LogoutCommand}" />
+                    <MenuItem Header="_Настройки..." Command="{Binding OpenSettingsCommand}" />
                 </MenuItem>
             </Menu>
         </Grid>

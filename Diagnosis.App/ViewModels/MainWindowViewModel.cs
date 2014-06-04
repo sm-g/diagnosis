@@ -14,6 +14,7 @@ namespace Diagnosis.App.ViewModels
         private ICommand _logout;
         private ICommand _editDiagnosisDirectory;
         private ICommand _editSymptomsDirectory;
+        private RelayCommand _openSettings;
         private bool _fastAddingMode;
         private bool _isPatientsVisible;
         bool _patientOpened;
@@ -294,6 +295,19 @@ namespace Diagnosis.App.ViewModels
                                           () =>
                                           {
                                               DirectoryExplorer = new HierarchicalExplorer<DiagnosisViewModel>(EntityManagers.DiagnosisManager.Diagnoses);
+                                          }));
+            }
+        }
+        public RelayCommand OpenSettingsCommand
+        {
+            get
+            {
+                return _openSettings
+                    ?? (_openSettings = new RelayCommand(
+                                          () =>
+                                          {
+                                              var settingsVM = new SettingsViewModel(Login.DoctorsManager.CurrentDoctor);
+                                              this.Send((int)EventID.OpenSettings, new OpenSettingsParams(settingsVM).Params);
                                           }));
             }
         }

@@ -5,7 +5,7 @@
              xmlns:conv="clr-namespace:Diagnosis.App.Converters"
              xmlns:s="clr-namespace:System;assembly=mscorlib"
              Startup="Application_Startup"  
-             StartupUri="MainWindow.xaml">
+             StartupUri="Windows/MainWindow.xaml">
     <Application.Resources>
         <conv:IHierarchicalCheckableToBackground x:Key="IHierarchicalCheckableToBackground" />
         <conv:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />

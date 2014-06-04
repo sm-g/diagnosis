@@ -1,19 +1,33 @@
-﻿using System.Collections.Generic;
+﻿using Diagnosis.Core;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using System;
 
 namespace Diagnosis.Models
 {
     public class Doctor
     {
-        ISet<Course> courses = new HashSet<Course>();
-        ISet<Appointment> appointments = new HashSet<Appointment>();
-        string _fn;
-        string _ln;
-        string _mn;
+        private ISet<Course> courses = new HashSet<Course>();
+        private ISet<Appointment> appointments = new HashSet<Appointment>();
+        private string _fn;
+        private string _ln;
+        private string _mn;
+        private int _settings;
+        private DoctorSettings _docSettings;
+
+        public virtual DoctorSettings DoctorSettings
+        {
+            get { return _docSettings; }
+            set
+            {
+                _docSettings = value;
+                _settings = (int)_docSettings;
+            }
+        }
 
         public virtual int Id { get; protected set; }
+
         public virtual string FirstName
         {
             get
@@ -26,6 +40,7 @@ namespace Diagnosis.Models
                 _fn = value;
             }
         }
+
         public virtual string MiddleName
         {
             get
@@ -34,7 +49,7 @@ namespace Diagnosis.Models
             }
             set
             {
-                if (value == "")
+                if (String.IsNullOrEmpty(value))
                 {
                     _mn = null;
                 }
@@ -44,6 +59,7 @@ namespace Diagnosis.Models
                 }
             }
         }
+
         public virtual string LastName
         {
             get
@@ -56,8 +72,24 @@ namespace Diagnosis.Models
                 _ln = value;
             }
         }
+
         public virtual bool IsMale { get; set; }
+
+        public virtual int Settings
+        {
+            get { return _settings; }
+            set
+            {
+                if (value >= 0)
+                {
+                    _settings = value;
+                    _docSettings = (DoctorSettings)value;
+                }
+            }
+        }
+
         public virtual Speciality Speciality { get; set; }
+
         public virtual ReadOnlyCollection<Course> Courses
         {
             get
@@ -66,6 +98,7 @@ namespace Diagnosis.Models
                     new List<Course>(courses));
             }
         }
+
         public virtual ReadOnlyCollection<Appointment> Appointments
         {
             get
@@ -96,6 +129,8 @@ namespace Diagnosis.Models
             IsMale = true;
         }
 
-        protected Doctor() { }
+        protected Doctor()
+        {
+        }
     }
 }

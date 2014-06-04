@@ -13,8 +13,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using EventAggregator;
 using Diagnosis.App.ViewModels;
+using Diagnosis.App.Messaging;
 
-namespace Diagnosis.App
+namespace Diagnosis.App.Windows
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -24,6 +25,14 @@ namespace Diagnosis.App
         public MainWindow()
         {
             InitializeComponent();
+            this.Subscribe((int)EventID.OpenSettings, (e) =>
+            {
+                var settingsVM = e.GetValue<SettingsViewModel>(Messages.Settings);
+                var settingsDialog = new SettingsWindow();
+                settingsDialog.Owner = this;
+                settingsDialog.DataContext = settingsVM;
+                var result = settingsDialog.ShowDialog();
+            });
         }
     }
 }

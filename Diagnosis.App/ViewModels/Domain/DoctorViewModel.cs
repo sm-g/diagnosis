@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Models;
+using Diagnosis.Core;
 using EventAggregator;
 using System;
 using System.Diagnostics.Contracts;
@@ -10,6 +11,7 @@ namespace Diagnosis.App.ViewModels
     public class DoctorViewModel : ViewModelBase
     {
         internal readonly Doctor doctor;
+        SettingsViewModel _settings;
 
         private ICommand _startCourse;
 
@@ -79,6 +81,14 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public SettingsViewModel Settings
+        {
+            get
+            {
+                return _settings ?? (_settings = new SettingsViewModel(this));
+            }
+        }
+
         public string Speciality
         {
             get
@@ -121,7 +131,7 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(d != null);
             doctor = d;
 
-            Editable = new Editable(this);
+            Editable = new Editable(this, switchedOn: true, deletable: false);
         }
 
         public override string ToString()
