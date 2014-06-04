@@ -123,7 +123,7 @@ namespace Diagnosis.App.ViewModels
             var course = doctor.StartCourse(patientVM.patient);
             Editable.MarkDirty();
 
-            this.Send((int)EventID.CourseStarted, new CourseStartedParams(course).Params);
+            this.Send((int)EventID.CourseStarted, new CourseModelParams(course).Params);
         }
 
         public DoctorViewModel(Doctor d)

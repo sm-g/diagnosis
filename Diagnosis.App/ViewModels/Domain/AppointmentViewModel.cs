@@ -109,7 +109,7 @@ namespace Diagnosis.App.ViewModels
                     if (value != null)
                     {
                         value.IsSelected = true;
-                        this.Send((int)EventID.HealthRecordSelected, new HealthRecordSelectedParams(value).Params);
+                        this.Send((int)EventID.HealthRecordSelected, new HealthRecordParams(value).Params);
                     }
                     else
                     {
@@ -291,7 +291,7 @@ namespace Diagnosis.App.ViewModels
         private void hr_DirtyChanged(object sender, EditableEventArgs e)
         {
             this.Send((int)EventID.HealthRecordChanged,
-                    new HealthRecordChangedParams(e.viewModel as HealthRecordViewModel).Params);
+                    new HealthRecordParams(e.viewModel as HealthRecordViewModel).Params);
 
             Editable.IsDirty = HealthRecords.Any(hr => hr.Editable.IsDirty);
         }

@@ -73,7 +73,7 @@ namespace Diagnosis.App.ViewModels
                 return _openHr ?? (_openHr = new RelayCommand(
                     () =>
                     {
-                        this.Send((int)EventID.OpenHealthRecord, new OpenHealthRecordParams(FoundHealthRecord).Params);
+                        this.Send((int)EventID.OpenHealthRecord, new HealthRecordModelParams(FoundHealthRecord).Params);
                     }));
             }
         }

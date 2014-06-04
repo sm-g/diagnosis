@@ -36,7 +36,7 @@ namespace Diagnosis.App.ViewModels
 
         public override void OnCheckedChanged()
         {
-            this.Send((int)EventID.CategoryCheckedChanged, new CategoryCheckedChangedParams(this, IsChecked).Params);
+            this.Send((int)EventID.CategoryCheckedChanged, new CategoryParams(this).Params);
         }
 
         public int CompareTo(object obj)

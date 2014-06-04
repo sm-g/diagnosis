@@ -190,7 +190,7 @@ namespace Diagnosis.App.ViewModels
             OnPropertyChanged("LastAppointment");
             OnPropertyChanged("IsEmpty");
 
-            this.Send((int)EventID.AppointmentAdded, new AppointmentAddedParams(appVM).Params);
+            this.Send((int)EventID.AppointmentAdded, new AppointmentParams(appVM).Params);
 
             return appVM;
         }

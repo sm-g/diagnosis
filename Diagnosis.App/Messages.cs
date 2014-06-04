@@ -7,7 +7,6 @@ namespace Diagnosis.App.Messaging
     static class Messages
     {
         public const string Word = "word";
-        public const string CheckedState = "checked";
         public const string Patient = "patient";
         public const string Doctor = "doctor";
         public const string Diagnosis = "diagnosis";
@@ -25,7 +24,6 @@ namespace Diagnosis.App.Messaging
     {
         CategoryCheckedChanged,
         WordCheckedChanged,
-        PatientCheckedChanged,
         DiagnosisCheckedChanged,
 
         CurrentPatientChanged,

@@ -57,7 +57,7 @@ namespace Diagnosis.App.ViewModels
         public override void OnCheckedChanged()
         {
             base.OnCheckedChanged();
-            this.Send((int)EventID.DiagnosisCheckedChanged, new DiagnosisCheckedChangedParams(this, IsChecked).Params);
+            this.Send((int)EventID.DiagnosisCheckedChanged, new DiagnosisParams(this).Params);
         }
 
         public PopupSearch<DiagnosisViewModel> Search

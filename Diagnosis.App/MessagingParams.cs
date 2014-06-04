@@ -12,9 +12,9 @@ namespace Diagnosis.App.Messaging
     }
 
     #region with Models
-    class CourseStartedParams : EventParams
+    class CourseModelParams : EventParams
     {
-        public CourseStartedParams(Course course)
+        public CourseModelParams(Course course)
         {
             Contract.Requires(course != null);
 
@@ -25,9 +25,9 @@ namespace Diagnosis.App.Messaging
     }
 
 
-    class OpenHealthRecordParams : EventParams
+    class HealthRecordModelParams : EventParams
     {
-        public OpenHealthRecordParams(HealthRecord hr)
+        public HealthRecordModelParams(HealthRecord hr)
         {
             Params = new[] {
                 new KeyValuePair<string,object>(Messages.HealthRecord, hr)
@@ -39,61 +39,45 @@ namespace Diagnosis.App.Messaging
 
     #region with ViewModels
 
-    class CategoryCheckedChangedParams : EventParams
+    class CategoryParams : EventParams
     {
-        public CategoryCheckedChangedParams(CategoryViewModel categoryVM, bool isChecked)
+        public CategoryParams(CategoryViewModel categoryVM)
         {
             Contract.Requires(categoryVM != null);
 
             Params = new[] {
-                new KeyValuePair<string,object>(Messages.Category, categoryVM),
-                new KeyValuePair<string,object>(Messages.CheckedState, isChecked)
+                new KeyValuePair<string,object>(Messages.Category, categoryVM)
             };
         }
     }
 
-    class WordCheckedChangedParams : EventParams
+    class WordParams : EventParams
     {
-        public WordCheckedChangedParams(WordViewModel wordVM, bool isChecked)
+        public WordParams(WordViewModel wordVM)
         {
             Contract.Requires(wordVM != null);
 
             Params = new[] {
-                new KeyValuePair<string,object>(Messages.Word, wordVM),
-                new KeyValuePair<string,object>(Messages.CheckedState, isChecked)
+                new KeyValuePair<string,object>(Messages.Word, wordVM)
             };
         }
     }
 
-    class DiagnosisCheckedChangedParams : EventParams
+    class DiagnosisParams : EventParams
     {
-        public DiagnosisCheckedChangedParams(DiagnosisViewModel diagnosisVM, bool isChecked)
+        public DiagnosisParams(DiagnosisViewModel diagnosisVM)
         {
             Contract.Requires(diagnosisVM != null);
 
             Params = new[] {
-                new KeyValuePair<string,object>(Messages.Diagnosis, diagnosisVM),
-                new KeyValuePair<string,object>(Messages.CheckedState, isChecked)
+                new KeyValuePair<string,object>(Messages.Diagnosis, diagnosisVM)
             };
         }
     }
 
-    class PatientCheckedChangedParams : EventParams
+    class PatientParams : EventParams
     {
-        public PatientCheckedChangedParams(PatientViewModel patientVM, bool isChecked)
-        {
-            Contract.Requires(patientVM != null);
-
-            Params = new[] {
-                new KeyValuePair<string,object>(Messages.Patient, patientVM),
-                new KeyValuePair<string,object>(Messages.CheckedState, isChecked)
-            };
-        }
-    }
-
-    class CurrentPatientChangedParams : EventParams
-    {
-        public CurrentPatientChangedParams(PatientViewModel patientVM)
+        public PatientParams(PatientViewModel patientVM)
         {
             Params = new[] {
                 new KeyValuePair<string,object>(Messages.Patient, patientVM)
@@ -101,9 +85,9 @@ namespace Diagnosis.App.Messaging
         }
     }
 
-    class CurrentDoctorChangedParams : EventParams
+    class DoctorParams : EventParams
     {
-        public CurrentDoctorChangedParams(DoctorViewModel doctorVM)
+        public DoctorParams(DoctorViewModel doctorVM)
         {
             Params = new[] {
                 new KeyValuePair<string,object>(Messages.Doctor, doctorVM)
@@ -111,9 +95,9 @@ namespace Diagnosis.App.Messaging
         }
     }
 
-    class PropertySelectedValueChangedParams : EventParams
+    class PropertyParams : EventParams
     {
-        public PropertySelectedValueChangedParams(PropertyViewModel propertyVM)
+        public PropertyParams(PropertyViewModel propertyVM)
         {
             Contract.Requires(propertyVM != null);
 
@@ -124,9 +108,9 @@ namespace Diagnosis.App.Messaging
     }
 
 
-    class AppointmentAddedParams : EventParams
+    class AppointmentParams : EventParams
     {
-        public AppointmentAddedParams(AppointmentViewModel appointmentVM)
+        public AppointmentParams(AppointmentViewModel appointmentVM)
         {
             Contract.Requires(appointmentVM != null);
 
@@ -136,7 +120,7 @@ namespace Diagnosis.App.Messaging
         }
     }
 
-    abstract class HealthRecordParams : EventParams
+    class HealthRecordParams : EventParams
     {
         public HealthRecordParams(HealthRecordViewModel hrVM)
         {
@@ -148,18 +132,9 @@ namespace Diagnosis.App.Messaging
         }
     }
 
-    class HealthRecordChangedParams : HealthRecordParams
+    class SettingsParams : EventParams
     {
-        public HealthRecordChangedParams(HealthRecordViewModel hrVM) : base(hrVM) { }
-    }
-    class HealthRecordSelectedParams : HealthRecordParams
-    {
-        public HealthRecordSelectedParams(HealthRecordViewModel hrVM) : base(hrVM) { }
-    }
-
-    class OpenSettingsParams : EventParams
-    {
-        public OpenSettingsParams(SettingsViewModel settingsVM)
+        public SettingsParams(SettingsViewModel settingsVM)
         {
             Contract.Requires(settingsVM != null);
 

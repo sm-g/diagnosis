@@ -38,9 +38,8 @@ namespace Diagnosis.App.ViewModels
             this.Subscribe((int)EventID.WordCheckedChanged, (e) =>
             {
                 var word = e.GetValue<WordViewModel>(Messages.Word);
-                var isChecked = e.GetValue<bool>(Messages.CheckedState);
 
-                OnWordCheckedChanged(word, isChecked);
+                OnWordCheckedChanged(word, word.IsChecked);
             });
             this.Subscribe((int)EventID.CategoryCheckedChanged, (e) =>
             {

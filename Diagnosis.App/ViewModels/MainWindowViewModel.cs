@@ -307,7 +307,7 @@ namespace Diagnosis.App.ViewModels
                                           () =>
                                           {
                                               var settingsVM = new SettingsViewModel(Login.DoctorsManager.CurrentDoctor);
-                                              this.Send((int)EventID.OpenSettings, new OpenSettingsParams(settingsVM).Params);
+                                              this.Send((int)EventID.OpenSettings, new SettingsParams(settingsVM).Params);
                                           }));
             }
         }

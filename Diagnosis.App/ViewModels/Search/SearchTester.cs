@@ -96,9 +96,8 @@ namespace Diagnosis.App.ViewModels
             this.Subscribe((int)EventID.WordCheckedChanged, (e) =>
             {
                 var word = e.GetValue<WordViewModel>(Messages.Word);
-                var isChecked = e.GetValue<bool>(Messages.CheckedState);
 
-                if (isChecked)
+                if (word.IsChecked)
                 {
                     Words.Add(word);
                 }
@@ -110,9 +109,8 @@ namespace Diagnosis.App.ViewModels
             this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
             {
                 var dia = e.GetValue<DiagnosisViewModel>(Messages.Diagnosis);
-                var isChecked = e.GetValue<bool>(Messages.CheckedState);
 
-                if (isChecked)
+                if (dia.IsChecked)
                 {
                     Diagnoses.Add(dia);
                 }

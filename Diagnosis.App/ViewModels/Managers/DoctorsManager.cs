@@ -28,7 +28,7 @@ namespace Diagnosis.App.ViewModels
                     _current = value;
 
                     OnPropertyChanged("CurrentDoctor");
-                    this.Send((int)EventID.CurrentDoctorChanged, new CurrentDoctorChangedParams(_current).Params);
+                    this.Send((int)EventID.CurrentDoctorChanged, new DoctorParams(_current).Params);
                 }
             }
         }
@@ -66,7 +66,7 @@ namespace Diagnosis.App.ViewModels
             dvm.Editable.DirtyChanged += (s, e) =>
             {
                 var docVM = e.viewModel as DoctorViewModel;
-                this.Send((int)EventID.CurrentDoctorChanged, new CurrentDoctorChangedParams(docVM).Params);
+                this.Send((int)EventID.CurrentDoctorChanged, new DoctorParams(docVM).Params);
             };
         }
     }

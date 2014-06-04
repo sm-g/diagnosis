@@ -466,9 +466,8 @@ namespace Diagnosis.App.ViewModels
                     if (this.IsSelected && !makingCurrent)
                     {
                         var word = e.GetValue<WordViewModel>(Messages.Word);
-                        var isChecked = e.GetValue<bool>(Messages.CheckedState);
 
-                        OnWordCheckedChanged(word, isChecked);
+                        OnWordCheckedChanged(word, word.IsChecked);
                     }
                 }),
                 this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
@@ -476,9 +475,8 @@ namespace Diagnosis.App.ViewModels
                     if (this.IsSelected && !makingCurrent)
                     {
                         var diagnosis = e.GetValue<DiagnosisViewModel>(Messages.Diagnosis);
-                        var isChecked = e.GetValue<bool>(Messages.CheckedState);
 
-                        OnDiagnosisCheckedChanged(diagnosis, isChecked);
+                        OnDiagnosisCheckedChanged(diagnosis, diagnosis.IsChecked);
                     }
                 })
             };

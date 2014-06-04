@@ -40,7 +40,7 @@ namespace Diagnosis.App.ViewModels
                     _selectedValue = value;
                     OnPropertyChanged(() => SelectedValue);
 
-                    this.Send((int)EventID.PropertySelectedValueChanged, new PropertySelectedValueChangedParams(this).Params);
+                    this.Send((int)EventID.PropertySelectedValueChanged, new PropertyParams(this).Params);
                 }
             }
         }

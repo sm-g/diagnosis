@@ -134,9 +134,8 @@ namespace Diagnosis.App.ViewModels
             this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
             {
                 var diagnosis = e.GetValue<DiagnosisViewModel>(Messages.Diagnosis);
-                var isChecked = e.GetValue<bool>(Messages.CheckedState);
 
-                OnDiagnosisCheckedChanged(diagnosis, isChecked);
+                OnDiagnosisCheckedChanged(diagnosis, diagnosis.IsChecked);
             });
         }
 

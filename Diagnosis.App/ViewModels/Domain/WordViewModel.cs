@@ -96,7 +96,7 @@ namespace Diagnosis.App.ViewModels
         {
             base.OnCheckedChanged();
 
-            this.Send((int)EventID.WordCheckedChanged, new WordCheckedChangedParams(this, IsChecked).Params);
+            this.Send((int)EventID.WordCheckedChanged, new WordParams(this).Params);
         }
 
         public PopupSearch<WordViewModel> Search
