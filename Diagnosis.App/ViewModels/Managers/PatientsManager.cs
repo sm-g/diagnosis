@@ -34,18 +34,15 @@ namespace Diagnosis.App.ViewModels
                         _current.Unsubscribe();
                         if (value != null)
                         {
+                            value.Subscribe();
+
                             if (!(value is UnsavedPatientViewModel))
                             {
                                 // сохраняем состояние редактора при смене пациента
                                 value.Editable.IsEditorActive = _current.Editable.IsEditorActive;
                             }
 
-                            // у старого пациента был открыт редактор — сохраняем изменения в нем
-                            if (_current.Editable.IsEditorActive)
-                            {
-                                _current.Editable.Commit();
-                            }
-                            value.Subscribe();
+                            _current.Editable.Commit();
                         }
                         else
                         {
