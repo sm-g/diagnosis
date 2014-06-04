@@ -107,7 +107,7 @@
                             </ListView.ItemTemplate>
                         </ListView>
                     </StackPanel>
-                    <CheckBox IsChecked="{Binding AnyWord}">Хотя бы одно слово</CheckBox>
+                    <CheckBox IsChecked="{Binding AnyWord}" Margin="0,10,0,0">Хотя бы одно слово</CheckBox>
                 </DockPanel>
                 <DockPanel Style="{StaticResource line}">
                     <editors:CategoryChooser CategoryMultiSelection="{StaticResource True}" />

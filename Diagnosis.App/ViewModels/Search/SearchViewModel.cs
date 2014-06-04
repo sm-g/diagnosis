@@ -33,6 +33,7 @@ namespace Diagnosis.App.ViewModels
             Words = new ObservableCollection<WordViewModel>();
             Results = new ObservableCollection<HrSearchResultViewModel>();
             ControlsVisible = true;
+            AnyWord = true;
 
             this.Subscribe((int)EventID.WordCheckedChanged, (e) =>
             {
@@ -46,6 +47,10 @@ namespace Diagnosis.App.ViewModels
                 OnPropertyChanged("SelectedCategories");
                 OnPropertyChanged("AllEmpty");
             });
+            Words.CollectionChanged += (s, e) =>
+            {
+                OnPropertyChanged("AllEmpty");
+            };
         }
 
         #region Options bindings
