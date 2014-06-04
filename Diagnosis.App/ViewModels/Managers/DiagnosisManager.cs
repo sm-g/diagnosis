@@ -39,7 +39,7 @@ namespace Diagnosis.App.ViewModels
 
                     OnPropertyChanged(() => RootSearcher);
                     OnPropertyChanged(() => RootFiltratingSearcher);
-                    OnRootChanged(EventArgs.Empty);
+                    OnRootChanged();
                 }
             }
         }
@@ -108,7 +108,7 @@ namespace Diagnosis.App.ViewModels
             var chapters = repository.GetAll().ToList();
             var chapterDiagnoses = chapters.Select(ch =>
                 new Diagnosis.Models.Diagnosis(ch.Code, ch.Title)).ToList();
-            var chapterVms = chapterDiagnoses.Select(ch => new DiagnosisViewModel(ch)).ToList();
+            var chapterVms = chapterDiagnoses.Select(ch => new DiagnosisViewModel(ch, RootChanged)).ToList();
 
             SetDiagnosesForDoctor(chapterVms, EntityManagers.DoctorsManager.CurrentDoctor);
 
@@ -163,7 +163,7 @@ namespace Diagnosis.App.ViewModels
             var blockDiagnoses = blocks.Select(b =>
                 new Diagnosis.Models.Diagnosis(b.Code, b.Title, chapterVms.Select(ch => ch.diagnosis).Where(ch =>
                     ch.Code == b.IcdChapter.Code).SingleOrDefault())).ToList();
-            var blockVms = blockDiagnoses.Select(b => new DiagnosisViewModel(b)).ToList();
+            var blockVms = blockDiagnoses.Select(b => new DiagnosisViewModel(b, RootChanged)).ToList();
 
             // добавляем нужные блоки в классы
             foreach (var ch in chapterVms)
@@ -184,7 +184,7 @@ namespace Diagnosis.App.ViewModels
             var diseaseDiagnoses = diseases.Select(d =>
                 new Diagnosis.Models.Diagnosis(d.Code, d.Title, blockDiagnoses.Where(b =>
                     b.Code == d.IcdBlock.Code).SingleOrDefault(), d)).ToList();
-            var diseaseVms = diseaseDiagnoses.Select(d => new DiagnosisViewModel(d)).ToList();
+            var diseaseVms = diseaseDiagnoses.Select(d => new DiagnosisViewModel(d, RootChanged)).ToList();
 
             // добавляем нужные болезни в блоки
             foreach (var item in blockVms)
@@ -200,10 +200,12 @@ namespace Diagnosis.App.ViewModels
             }
 
             var dia = new Diagnosis.Models.Diagnosis("code", "root");
-            var root = new DiagnosisViewModel(dia);
+            var root = new DiagnosisViewModel(dia, RootChanged);
             Root = root.Add(chapterVms);
             // IEnumarable
 
+            if (Diagnoses != null)
+                Diagnoses.ForBranch(dvm => dvm.Unsubscribe());
             Diagnoses = new ObservableCollection<DiagnosisViewModel>(Root.Children);
         }
 
@@ -223,12 +225,12 @@ namespace Diagnosis.App.ViewModels
             Diagnoses.ForBranch((dvm) => dvm.IsChecked = false);
         }
 
-        protected virtual void OnRootChanged(EventArgs e)
+        protected virtual void OnRootChanged()
         {
             var h = RootChanged;
             if (h != null)
             {
-                h(this, e);
+                h(this, EventArgs.Empty);
             }
         }
     }

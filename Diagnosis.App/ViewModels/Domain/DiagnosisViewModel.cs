@@ -1,12 +1,14 @@
 ﻿using EventAggregator;
 using System.Diagnostics.Contracts;
 using Diagnosis.App.Messaging;
+using System;
 
 namespace Diagnosis.App.ViewModels
 {
     public class DiagnosisViewModel : HierarchicalCheckable<DiagnosisViewModel>
     {
         internal readonly Diagnosis.Models.Diagnosis diagnosis;
+        EventHandler diagnosesRootChanged;
 
         private PopupSearch<DiagnosisViewModel> _search;
 
@@ -62,13 +64,32 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                if (_search == null)
-                {
-                    _search = new PopupSearch<DiagnosisViewModel>(new DiagnosisSearcher(this, new SimpleSearcherSettings()));
-                    _search.ResultItemSelected += _search_ResultItemSelected;
-                }
-                return _search;
+                return _search ?? (_search = CreateSearch());
             }
+            set
+            {
+                if (_search != value)
+                {
+                    OnPropertyChanged(() => Search);
+                }
+            }
+        }
+
+        public void Unsubscribe()
+        {
+            diagnosesRootChanged -= RootChanged;
+            ChildrenChanged -= DiagnosisViewModel_ChildrenChanged;
+        }
+
+        public PopupSearch<DiagnosisViewModel> CreateSearch()
+        {
+            if (_search != null)
+            {
+                _search.ResultItemSelected += _search_ResultItemSelected;
+            }
+            var search = new PopupSearch<DiagnosisViewModel>(new DiagnosisSearcher(this, new SimpleSearcherSettings()));
+            search.ResultItemSelected += _search_ResultItemSelected;
+            return search;
         }
 
         private void _search_ResultItemSelected(object sender, System.EventArgs e)
@@ -78,17 +99,24 @@ namespace Diagnosis.App.ViewModels
             Search.Clear();
         }
 
-        public DiagnosisViewModel(Diagnosis.Models.Diagnosis d)
+        public DiagnosisViewModel(Diagnosis.Models.Diagnosis d, EventHandler diagnosesRootChanged)
         {
             Contract.Requires(d != null);
-            diagnosis = d;
+            this.diagnosis = d;
+            this.diagnosesRootChanged = diagnosesRootChanged;
 
             Editable = new Editable(this);
 
             ChildrenChanged += DiagnosisViewModel_ChildrenChanged;
+            diagnosesRootChanged += RootChanged;
         }
 
-        private void DiagnosisViewModel_ChildrenChanged(object sender, System.EventArgs e)
+        void RootChanged(object s, EventArgs e)
+        {
+            Search = CreateSearch();
+        }
+
+        private void DiagnosisViewModel_ChildrenChanged(object sender, EventArgs e)
         {
             IsNonCheckable = !IsTerminal;
         }
@@ -97,5 +125,6 @@ namespace Diagnosis.App.ViewModels
         {
             return SearchText;
         }
+
     }
 }
