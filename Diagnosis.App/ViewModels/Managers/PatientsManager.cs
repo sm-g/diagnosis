@@ -34,8 +34,6 @@ namespace Diagnosis.App.ViewModels
                         _current.Unsubscribe();
                         if (value != null)
                         {
-                            value.Subscribe();
-
                             if (!(value is UnsavedPatientViewModel))
                             {
                                 // сохраняем состояние редактора при смене пациента
@@ -50,7 +48,10 @@ namespace Diagnosis.App.ViewModels
                             Console.WriteLine("current patient removed");
                         }
                     }
-
+                    if (value != null)
+                    {
+                        value.Subscribe();
+                    }
                     _current = value;
 
                     OnPropertyChanged("CurrentPatient");
