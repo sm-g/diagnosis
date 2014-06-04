@@ -227,7 +227,7 @@ namespace Diagnosis.App.ViewModels
 
         public void OnSelected(T item)
         {
-            if (onSelected != null && SwitchedOn)
+            if (onSelected != null && item != null && SwitchedOn)
             {
                 onSelected(item);
             }
