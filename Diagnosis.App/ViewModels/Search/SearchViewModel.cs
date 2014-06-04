@@ -43,8 +43,8 @@ namespace Diagnosis.App.ViewModels
             });
             this.Subscribe((int)EventID.CategoryCheckedChanged, (e) =>
             {
-                OnPropertyChanged(() => SelectedCategories);
-                OnPropertyChanged(() => AllEmpty);
+                OnPropertyChanged("SelectedCategories");
+                OnPropertyChanged("AllEmpty");
             });
         }
 
@@ -62,10 +62,10 @@ namespace Diagnosis.App.ViewModels
                 {
                     _appDayLower = value;
 
-                    OnPropertyChanged(() => AppDayLower);
-                    OnPropertyChanged(() => AppDateVisible);
-                    OnPropertyChanged(() => AppDateGt);
-                    OnPropertyChanged(() => AllEmpty);
+                    OnPropertyChanged("AppDayLower");
+                    OnPropertyChanged("AppDateVisible");
+                    OnPropertyChanged("AppDateGt");
+                    OnPropertyChanged("AllEmpty");
                 }
             }
         }
@@ -82,10 +82,10 @@ namespace Diagnosis.App.ViewModels
                 {
                     _appDayUpper = value;
 
-                    OnPropertyChanged(() => AppDayUpper);
-                    OnPropertyChanged(() => AppDateVisible);
-                    OnPropertyChanged(() => AllEmpty);
-                    OnPropertyChanged(() => AppDateLt);
+                    OnPropertyChanged("AppDayUpper");
+                    OnPropertyChanged("AppDateVisible");
+                    OnPropertyChanged("AllEmpty");
+                    OnPropertyChanged("AppDateLt");
                 }
             }
         }
@@ -102,10 +102,10 @@ namespace Diagnosis.App.ViewModels
                 {
                     _appMonthLower = value;
 
-                    OnPropertyChanged(() => AppMonthLower);
-                    OnPropertyChanged(() => AppDateVisible);
-                    OnPropertyChanged(() => AllEmpty);
-                    OnPropertyChanged(() => AppDateGt);
+                    OnPropertyChanged("AppMonthLower");
+                    OnPropertyChanged("AppDateVisible");
+                    OnPropertyChanged("AllEmpty");
+                    OnPropertyChanged("AppDateGt");
                 }
             }
         }
@@ -122,10 +122,10 @@ namespace Diagnosis.App.ViewModels
                 {
                     _appMonthUpper = value;
 
-                    OnPropertyChanged(() => AppMonthUpper);
-                    OnPropertyChanged(() => AppDateVisible);
-                    OnPropertyChanged(() => AllEmpty);
-                    OnPropertyChanged(() => AppDateLt);
+                    OnPropertyChanged("AppMonthUpper");
+                    OnPropertyChanged("AppDateVisible");
+                    OnPropertyChanged("AllEmpty");
+                    OnPropertyChanged("AppDateLt");
                 }
             }
         }
@@ -142,10 +142,10 @@ namespace Diagnosis.App.ViewModels
                 {
                     _appYearLower = value;
 
-                    OnPropertyChanged(() => AppYearLower);
-                    OnPropertyChanged(() => AppDateVisible);
-                    OnPropertyChanged(() => AllEmpty);
-                    OnPropertyChanged(() => AppDateGt);
+                    OnPropertyChanged("AppYearLower");
+                    OnPropertyChanged("AppDateVisible");
+                    OnPropertyChanged("AllEmpty");
+                    OnPropertyChanged("AppDateGt");
                 }
             }
         }
@@ -162,10 +162,10 @@ namespace Diagnosis.App.ViewModels
                 {
                     _appYearUpper = value;
 
-                    OnPropertyChanged(() => AppYearUpper);
-                    OnPropertyChanged(() => AppDateVisible);
-                    OnPropertyChanged(() => AllEmpty);
-                    OnPropertyChanged(() => AppDateLt);
+                    OnPropertyChanged("AppYearUpper");
+                    OnPropertyChanged("AppDateVisible");
+                    OnPropertyChanged("AllEmpty");
+                    OnPropertyChanged("AppDateLt");
                 }
             }
         }
@@ -189,11 +189,11 @@ namespace Diagnosis.App.ViewModels
                     {
                         if (e.PropertyName == "Offset" || e.PropertyName == "Unit")
                         {
-                            OnPropertyChanged(() => HrDateOffsetLower);
-                            OnPropertyChanged(() => HrDateVisible);
-                            OnPropertyChanged(() => HrDateLt);
-                            OnPropertyChanged(() => AllEmpty);
-                            OnPropertyChanged(() => HrDateGt);
+                            OnPropertyChanged("HrDateOffsetLower");
+                            OnPropertyChanged("HrDateVisible");
+                            OnPropertyChanged("HrDateLt");
+                            OnPropertyChanged("AllEmpty");
+                            OnPropertyChanged("HrDateGt");
                             PrintHrDate();
                         }
                     };
@@ -213,11 +213,11 @@ namespace Diagnosis.App.ViewModels
                     {
                         if (e.PropertyName == "Offset" || e.PropertyName == "Unit")
                         {
-                            OnPropertyChanged(() => HrDateOffsetUpper);
-                            OnPropertyChanged(() => HrDateVisible);
-                            OnPropertyChanged(() => HrDateLt);
-                            OnPropertyChanged(() => AllEmpty);
-                            OnPropertyChanged(() => HrDateGt);
+                            OnPropertyChanged("HrDateOffsetUpper");
+                            OnPropertyChanged("HrDateVisible");
+                            OnPropertyChanged("HrDateLt");
+                            OnPropertyChanged("AllEmpty");
+                            OnPropertyChanged("HrDateGt");
                             PrintHrDate();
                         }
                     };
@@ -236,7 +236,7 @@ namespace Diagnosis.App.ViewModels
                 if (_any != value)
                 {
                     _any = value;
-                    OnPropertyChanged(() => AnyWord);
+                    OnPropertyChanged("AnyWord");
                 }
             }
         }
@@ -258,9 +258,9 @@ namespace Diagnosis.App.ViewModels
                 if (_comment != value)
                 {
                     _comment = value;
-                    OnPropertyChanged(() => Comment);
-                    OnPropertyChanged(() => CommentVisible);
-                    OnPropertyChanged(() => AllEmpty);
+                    OnPropertyChanged("Comment");
+                    OnPropertyChanged("CommentVisible");
+                    OnPropertyChanged("AllEmpty");
                 }
             }
         }
@@ -352,7 +352,7 @@ namespace Diagnosis.App.ViewModels
                                               searchWas = true;
                                               ControlsVisible = false;
 
-                                              OnPropertyChanged(() => NoResultsVisible);
+                                              OnPropertyChanged("NoResultsVisible");
                                           }, () => !AllEmpty));
             }
         }
@@ -398,7 +398,7 @@ namespace Diagnosis.App.ViewModels
                 if (_controlsVisible != value)
                 {
                     _controlsVisible = value;
-                    OnPropertyChanged(() => ControlsVisible);
+                    OnPropertyChanged("ControlsVisible");
                 }
             }
         }

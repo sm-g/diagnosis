@@ -27,7 +27,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     _current = value;
 
-                    OnPropertyChanged(() => CurrentDoctor);
+                    OnPropertyChanged("CurrentDoctor");
                     this.Send((int)EventID.CurrentDoctorChanged, new CurrentDoctorChangedParams(_current).Params);
                 }
             }

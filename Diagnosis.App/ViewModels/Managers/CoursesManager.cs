@@ -34,7 +34,7 @@ namespace Diagnosis.App.ViewModels
                         _selectedCourse.Editable.Commit();
                     }
                     _selectedCourse = value;
-                    OnPropertyChanged(() => SelectedCourse);
+                    OnPropertyChanged("SelectedCourse");
                 }
             }
         }

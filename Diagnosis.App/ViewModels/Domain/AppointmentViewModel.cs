@@ -60,8 +60,8 @@ namespace Diagnosis.App.ViewModels
                 if (_doctor != value)
                 {
                     _doctor = value;
-                    OnPropertyChanged(() => Doctor);
-                    OnPropertyChanged(() => IsDoctorFromCourse);
+                    OnPropertyChanged("Doctor");
+                    OnPropertyChanged("IsDoctorFromCourse");
                 }
             }
         }
@@ -116,7 +116,7 @@ namespace Diagnosis.App.ViewModels
                     }
                     _selectedHealthRecord = value;
 
-                    OnPropertyChanged(() => SelectedHealthRecord);
+                    OnPropertyChanged("SelectedHealthRecord");
                 }
             }
         }
@@ -156,7 +156,7 @@ namespace Diagnosis.App.ViewModels
                 if (_checkedHealthRecords != value)
                 {
                     _checkedHealthRecords = value;
-                    OnPropertyChanged(() => CheckedHealthRecords);
+                    OnPropertyChanged("CheckedHealthRecords");
                 }
             }
         }
@@ -206,7 +206,7 @@ namespace Diagnosis.App.ViewModels
 
         void HealthRecords_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            OnPropertyChanged(() => HealthRecordsNames);
+            OnPropertyChanged("HealthRecordsNames");
         }
 
         private void SetupHealthRecordsView()
@@ -231,7 +231,7 @@ namespace Diagnosis.App.ViewModels
 
             hrVM.Editable.IsEditorActive = true; // открываем запись на редактирование
 
-            OnPropertyChanged(() => IsEmpty);
+            OnPropertyChanged("IsEmpty");
             return hrVM;
         }
 
@@ -285,7 +285,7 @@ namespace Diagnosis.App.ViewModels
             hrVM.Editable.Committed -= hr_Committed;
             hrVM.Editable.DirtyChanged -= hr_DirtyChanged;
 
-            OnPropertyChanged(() => IsEmpty);
+            OnPropertyChanged("IsEmpty");
         }
 
         private void hr_DirtyChanged(object sender, EditableEventArgs e)

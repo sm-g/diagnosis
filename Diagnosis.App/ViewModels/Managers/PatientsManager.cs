@@ -55,7 +55,7 @@ namespace Diagnosis.App.ViewModels
                     _current = value;
 
                     SetSubscriptions(value);
-                    OnPropertyChanged(() => CurrentPatient);
+                    OnPropertyChanged("CurrentPatient");
                     this.Send((int)EventID.CurrentPatientChanged, new CurrentPatientChangedParams(CurrentPatient).Params);
                 }
             }

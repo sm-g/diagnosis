@@ -87,7 +87,7 @@ namespace Diagnosis.App.ViewModels
                     healthRecord.Comment = value;
 
                     Editable.MarkDirty();
-                    OnPropertyChanged(() => Comment);
+                    OnPropertyChanged("Comment");
                 }
             }
         }
@@ -105,8 +105,8 @@ namespace Diagnosis.App.ViewModels
                     _symptom = value;
 
                     Editable.MarkDirty();
-                    OnPropertyChanged(() => Symptom);
-                    OnPropertyChanged(() => Name);
+                    OnPropertyChanged("Symptom");
+                    OnPropertyChanged("Name");
                 }
             }
         }
@@ -124,8 +124,8 @@ namespace Diagnosis.App.ViewModels
                     _diagnosis = value;
 
                     Editable.MarkDirty();
-                    OnPropertyChanged(() => Diagnosis);
-                    OnPropertyChanged(() => HasDiagnosis);
+                    OnPropertyChanged("Diagnosis");
+                    OnPropertyChanged("HasDiagnosis");
                 }
             }
         }
@@ -152,7 +152,7 @@ namespace Diagnosis.App.ViewModels
                     }
 
                     Editable.MarkDirty();
-                    OnPropertyChanged(() => Category);
+                    OnPropertyChanged("Category");
                 }
             }
         }
@@ -168,7 +168,7 @@ namespace Diagnosis.App.ViewModels
                 if (healthRecord.NumValue != value)
                 {
                     healthRecord.NumValue = value;
-                    OnPropertyChanged(() => NumValue);
+                    OnPropertyChanged("NumValue");
                     Editable.MarkDirty();
                 }
             }
@@ -187,9 +187,9 @@ namespace Diagnosis.App.ViewModels
                     healthRecord.FromYear = value;
                     DateOffset.Year = value;
 
-                    OnPropertyChanged(() => FromYear);
-                    OnPropertyChanged(() => SortingDate);
-                    OnPropertyChanged(() => Date);
+                    OnPropertyChanged("FromYear");
+                    OnPropertyChanged("SortingDate");
+                    OnPropertyChanged("Date");
                     Editable.MarkDirty();
                 }
             }
@@ -208,9 +208,9 @@ namespace Diagnosis.App.ViewModels
                     healthRecord.FromMonth = value.ConvertTo<int, byte>();
                     DateOffset.Month = value;
 
-                    OnPropertyChanged(() => FromMonth);
-                    OnPropertyChanged(() => SortingDate);
-                    OnPropertyChanged(() => Date);
+                    OnPropertyChanged("FromMonth");
+                    OnPropertyChanged("SortingDate");
+                    OnPropertyChanged("Date");
                     Editable.MarkDirty();
                 }
             }
@@ -229,9 +229,9 @@ namespace Diagnosis.App.ViewModels
                     healthRecord.FromDay = value.ConvertTo<int, byte>();
                     DateOffset.Day = value;
 
-                    OnPropertyChanged(() => FromDay);
-                    OnPropertyChanged(() => SortingDate);
-                    OnPropertyChanged(() => Date);
+                    OnPropertyChanged("FromDay");
+                    OnPropertyChanged("SortingDate");
+                    OnPropertyChanged("Date");
                     Editable.MarkDirty();
                 }
             }
@@ -336,7 +336,7 @@ namespace Diagnosis.App.ViewModels
                 if (_diagnosisSearch != value)
                 {
                     _diagnosisSearch = value;
-                    OnPropertyChanged(() => DiagnosisSearch);
+                    OnPropertyChanged("DiagnosisSearch");
                 }
             }
         }
@@ -531,7 +531,7 @@ namespace Diagnosis.App.ViewModels
             }
 
             UpdateDiagnosisQueryCode();
-            OnPropertyChanged(() => Name);
+            OnPropertyChanged("Name");
         }
 
         #endregion Event handlers

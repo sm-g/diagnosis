@@ -31,7 +31,7 @@ namespace Diagnosis.App.ViewModels
             protected set
             {
                 _parent = value;
-                OnPropertyChanged(() => Parent);
+                OnPropertyChanged("Parent");
             }
         }
         /// <summary>
@@ -209,17 +209,17 @@ namespace Diagnosis.App.ViewModels
 
         private void OnChildAdded()
         {
-            OnPropertyChanged(() => TerminalChildren);
-            OnPropertyChanged(() => NonTerminalChildren);
-            OnPropertyChanged(() => IsTerminal);
+            OnPropertyChanged("TerminalChildren");
+            OnPropertyChanged("NonTerminalChildren");
+            OnPropertyChanged("IsTerminal");
             OnChildrenChanged();
         }
 
         private void OnChildRemoved()
         {
-            OnPropertyChanged(() => TerminalChildren);
-            OnPropertyChanged(() => NonTerminalChildren);
-            OnPropertyChanged(() => IsTerminal);
+            OnPropertyChanged("TerminalChildren");
+            OnPropertyChanged("NonTerminalChildren");
+            OnPropertyChanged("IsTerminal");
             OnChildrenChanged();
         }
 

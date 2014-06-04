@@ -42,7 +42,7 @@ namespace Diagnosis.App.ViewModels
 
                     _query = separator.RestoreLastDelimGroup(trimed);
 
-                    OnPropertyChanged(() => Query);
+                    OnPropertyChanged("Query");
                 }
                 else
                 {
@@ -109,7 +109,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
             Results = new ObservableCollection<SearchWrap>(symptoms.Select(s => new SearchWrap(s)));
-            OnPropertyChanged(() => Results);
+            OnPropertyChanged("Results");
         }
 
         public AutoCompleteBoxViewModel(QuerySeparator separator)

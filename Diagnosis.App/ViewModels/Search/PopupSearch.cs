@@ -45,7 +45,7 @@ namespace Diagnosis.App.ViewModels
 
                     IsResultsVisible = true;
 
-                    OnPropertyChanged(() => Query);
+                    OnPropertyChanged("Query");
                 }
                 if (UpdateResultsOnQueryChanges)
                 {
@@ -65,7 +65,7 @@ namespace Diagnosis.App.ViewModels
                 if (_resultsOnQueryChanges != value)
                 {
                     _resultsOnQueryChanges = value;
-                    OnPropertyChanged(() => UpdateResultsOnQueryChanges);
+                    OnPropertyChanged("UpdateResultsOnQueryChanges");
                 }
             }
         }
@@ -94,8 +94,8 @@ namespace Diagnosis.App.ViewModels
                 if (_selectedIndex != value)
                 {
                     _selectedIndex = value;
-                    OnPropertyChanged(() => SelectedIndex);
-                    OnPropertyChanged(() => SelectedItem);
+                    OnPropertyChanged("SelectedIndex");
+                    OnPropertyChanged("SelectedItem");
                 }
             }
         }
@@ -159,7 +159,7 @@ namespace Diagnosis.App.ViewModels
                 if (_searchActive != value)
                 {
                     _searchActive = value;
-                    OnPropertyChanged(() => IsSearchActive);
+                    OnPropertyChanged("IsSearchActive");
                     IsSearchFocused = value;
                 }
             }
@@ -180,7 +180,7 @@ namespace Diagnosis.App.ViewModels
                     {
                         IsResultsVisible = true;
                     }
-                    OnPropertyChanged(() => IsSearchFocused);
+                    OnPropertyChanged("IsSearchFocused");
                 }
             }
         }
@@ -198,7 +198,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     _isResultsVisible = value;
 
-                    OnPropertyChanged(() => IsResultsVisible);
+                    OnPropertyChanged("IsResultsVisible");
                 }
             }
         }
@@ -214,7 +214,7 @@ namespace Diagnosis.App.ViewModels
                 if (_switchedOn != value)
                 {
                     _switchedOn = value;
-                    OnPropertyChanged(() => SwitchedOn);
+                    OnPropertyChanged("SwitchedOn");
                 }
             }
         }
@@ -274,7 +274,7 @@ namespace Diagnosis.App.ViewModels
                 Results = new ObservableCollection<T>(searcher.Search(Query));
             }
 
-            OnPropertyChanged(() => Results);
+            OnPropertyChanged("Results");
 
             if (Results.Count > 0)
                 SelectedIndex = 0;

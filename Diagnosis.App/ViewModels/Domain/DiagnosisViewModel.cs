@@ -25,7 +25,7 @@ namespace Diagnosis.App.ViewModels
                 if (diagnosis.Title != value)
                 {
                     diagnosis.Title = value;
-                    OnPropertyChanged(() => Name);
+                    OnPropertyChanged("Name");
                 }
             }
         }
@@ -49,7 +49,7 @@ namespace Diagnosis.App.ViewModels
                 if (diagnosis.Code != value)
                 {
                     diagnosis.Code = value;
-                    OnPropertyChanged(() => Code);
+                    OnPropertyChanged("Code");
                 }
             }
         }
@@ -70,7 +70,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_search != value)
                 {
-                    OnPropertyChanged(() => Search);
+                    OnPropertyChanged("Search");
                 }
             }
         }

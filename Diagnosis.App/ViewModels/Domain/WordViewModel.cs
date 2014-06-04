@@ -25,7 +25,7 @@ namespace Diagnosis.App.ViewModels
                 if (word.Priority != value)
                 {
                     word.Priority = value;
-                    OnPropertyChanged(() => Priority);
+                    OnPropertyChanged("Priority");
                     Editable.MarkDirty();
                 }
             }
@@ -42,7 +42,7 @@ namespace Diagnosis.App.ViewModels
                 if (word.Title != value)
                 {
                     word.Title = value;
-                    OnPropertyChanged(() => Name);
+                    OnPropertyChanged("Name");
                     Editable.MarkDirty();
                 }
             }
@@ -58,7 +58,7 @@ namespace Diagnosis.App.ViewModels
                 if (word.IsEnum != value)
                 {
                     word.IsEnum = value;
-                    OnPropertyChanged(() => IsEnum);
+                    OnPropertyChanged("IsEnum");
                     Editable.MarkDirty();
 
                 }
@@ -78,7 +78,7 @@ namespace Diagnosis.App.ViewModels
                         word.DefaultCategory = value.category;
                     _defCat = value;
 
-                    OnPropertyChanged(() => DefaultCategory);
+                    OnPropertyChanged("DefaultCategory");
                     Editable.MarkDirty();
                 }
             }

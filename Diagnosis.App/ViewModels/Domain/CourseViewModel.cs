@@ -51,7 +51,7 @@ namespace Diagnosis.App.ViewModels
                 if (_leadDoctor != value)
                 {
                     _leadDoctor = value;
-                    OnPropertyChanged(() => LeadDoctor);
+                    OnPropertyChanged("LeadDoctor");
                 }
             }
         }
@@ -83,8 +83,8 @@ namespace Diagnosis.App.ViewModels
                 if (!course.End.HasValue || course.End.Value.Date != value.Value.Date)
                 {
                     course.End = value.Value.Date;
-                    OnPropertyChanged(() => End);
-                    OnPropertyChanged(() => IsEnded);
+                    OnPropertyChanged("End");
+                    OnPropertyChanged("IsEnded");
                     Editable.MarkDirty();
                 }
             }
@@ -110,7 +110,7 @@ namespace Diagnosis.App.ViewModels
                     }
 
                     _selectedAppointment = value;
-                    OnPropertyChanged(() => SelectedAppointment);
+                    OnPropertyChanged("SelectedAppointment");
                 }
             }
         }
@@ -187,8 +187,8 @@ namespace Diagnosis.App.ViewModels
             Appointments.Add(appVM);
             SelectedAppointment = appVM;
 
-            OnPropertyChanged(() => LastAppointment);
-            OnPropertyChanged(() => IsEmpty);
+            OnPropertyChanged("LastAppointment");
+            OnPropertyChanged("IsEmpty");
 
             this.Send((int)EventID.AppointmentAdded, new AppointmentAddedParams(appVM).Params);
 
@@ -249,7 +249,7 @@ namespace Diagnosis.App.ViewModels
 
             Appointments.Remove(appVM);
 
-            OnPropertyChanged(() => IsEmpty);
+            OnPropertyChanged("IsEmpty");
         }
 
         private void app_DirtyChanged(object sender, EditableEventArgs e)

@@ -37,8 +37,8 @@ namespace Diagnosis.App.ViewModels
                     _diaFiltratingSearcher = new DiagnosisFiltratingSearcher(_root);
                     _diaRootSearcher = new DiagnosisSearcher(_root, new SimpleSearcherSettings() { WithChecked = true, AllChildren = true });
 
-                    OnPropertyChanged(() => RootSearcher);
-                    OnPropertyChanged(() => RootFiltratingSearcher);
+                    OnPropertyChanged("RootSearcher");
+                    OnPropertyChanged("RootFiltratingSearcher");
                     OnRootChanged();
                 }
             }
@@ -50,7 +50,7 @@ namespace Diagnosis.App.ViewModels
             private set
             {
                 _diagnoses = value;
-                OnPropertyChanged(() => Diagnoses);
+                OnPropertyChanged("Diagnoses");
             }
         }
 

@@ -43,7 +43,7 @@ namespace Diagnosis.Core
                     {
                         SetDate(value, Month, Day);
                     }
-                    OnPropertyChanged(() => Year);
+                    OnPropertyChanged("Year");
                 }
             }
         }
@@ -62,7 +62,7 @@ namespace Diagnosis.Core
                     {
                         SetDate(Year, value, Day);
                     }
-                    OnPropertyChanged(() => Month);
+                    OnPropertyChanged("Month");
                 }
             }
         }
@@ -81,7 +81,7 @@ namespace Diagnosis.Core
                     {
                         SetDate(Year, Month, value);
                     }
-                    OnPropertyChanged(() => Day);
+                    OnPropertyChanged("Day");
                 }
             }
         }
@@ -101,9 +101,9 @@ namespace Diagnosis.Core
                     {
                         SetOffset(value, Unit);
                     }
-                    OnPropertyChanged(() => Unit);
-                    OnPropertyChanged(() => Offset);
-                    OnPropertyChanged(() => IsEmpty);
+                    OnPropertyChanged("Unit");
+                    OnPropertyChanged("Offset");
+                    OnPropertyChanged("IsEmpty");
                 }
             }
         }
@@ -131,7 +131,7 @@ namespace Diagnosis.Core
                     {
                         SetOffset(Offset, value);
                     }
-                    OnPropertyChanged(() => Unit);
+                    OnPropertyChanged("Unit");
 
                 }
             }

@@ -61,7 +61,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     _isItemCompleted = value;
                     Console.WriteLine("IsItemCompleted = {0}", value);
-                    OnPropertyChanged(() => IsItemCompleted);
+                    OnPropertyChanged("IsItemCompleted");
                 }
             }
         }
@@ -101,7 +101,7 @@ namespace Diagnosis.App.ViewModels
                         Console.WriteLine("FullString setter error: {0}", e.Message);
                     }
 
-                    OnPropertyChanged(() => FullString);
+                    OnPropertyChanged("FullString");
                 }
             }
         }
@@ -165,7 +165,7 @@ namespace Diagnosis.App.ViewModels
                 if (_index != value)
                 {
                     _index = value;
-                    OnPropertyChanged(() => SelectedIndex);
+                    OnPropertyChanged("SelectedIndex");
                 }
             }
         }
@@ -282,7 +282,7 @@ namespace Diagnosis.App.ViewModels
             }
             Console.WriteLine("query: {0}", query);
             Suggestions = new ObservableCollection<T>(searcher.Search(query));
-            OnPropertyChanged(() => Suggestions);
+            OnPropertyChanged("Suggestions");
             SelectedIndex = 0;
         }
         /// <summary>

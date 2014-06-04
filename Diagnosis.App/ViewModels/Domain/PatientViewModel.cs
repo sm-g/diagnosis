@@ -59,10 +59,10 @@ namespace Diagnosis.App.ViewModels
                 {
                     patient.FirstName = value;
 
-                    OnPropertyChanged(() => FirstName);
-                    OnPropertyChanged(() => SearchText);
-                    OnPropertyChanged(() => NoName);
-                    OnPropertyChanged(() => Self);
+                    OnPropertyChanged("FirstName");
+                    OnPropertyChanged("SearchText");
+                    OnPropertyChanged("NoName");
+                    OnPropertyChanged("Self");
                     Editable.MarkDirty();
                 }
             }
@@ -80,10 +80,10 @@ namespace Diagnosis.App.ViewModels
                 {
                     patient.MiddleName = value;
 
-                    OnPropertyChanged(() => MiddleName);
-                    OnPropertyChanged(() => SearchText);
-                    OnPropertyChanged(() => NoName);
-                    OnPropertyChanged(() => Self);
+                    OnPropertyChanged("MiddleName");
+                    OnPropertyChanged("SearchText");
+                    OnPropertyChanged("NoName");
+                    OnPropertyChanged("Self");
                     Editable.MarkDirty();
                 }
             }
@@ -101,10 +101,10 @@ namespace Diagnosis.App.ViewModels
                 {
                     patient.LastName = value;
 
-                    OnPropertyChanged(() => LastName);
-                    OnPropertyChanged(() => SearchText);
-                    OnPropertyChanged(() => NoName);
-                    OnPropertyChanged(() => Self);
+                    OnPropertyChanged("LastName");
+                    OnPropertyChanged("SearchText");
+                    OnPropertyChanged("NoName");
+                    OnPropertyChanged("Self");
                     Editable.MarkDirty();
                 }
             }
@@ -121,8 +121,8 @@ namespace Diagnosis.App.ViewModels
                 if (patient.Age != value)
                 {
                     patient.Age = value;
-                    OnPropertyChanged(() => Age);
-                    OnPropertyChanged(() => BirthYear);
+                    OnPropertyChanged("Age");
+                    OnPropertyChanged("BirthYear");
                     Editable.MarkDirty();
                 }
             }
@@ -139,8 +139,8 @@ namespace Diagnosis.App.ViewModels
                 if (patient.BirthYear != value)
                 {
                     patient.BirthYear = value;
-                    OnPropertyChanged(() => Age);
-                    OnPropertyChanged(() => BirthYear);
+                    OnPropertyChanged("Age");
+                    OnPropertyChanged("BirthYear");
                     Editable.MarkDirty();
                 }
             }
@@ -157,8 +157,8 @@ namespace Diagnosis.App.ViewModels
                 if (patient.BirthMonth != value)
                 {
                     patient.BirthMonth = value;
-                    OnPropertyChanged(() => Age);
-                    OnPropertyChanged(() => BirthMonth);
+                    OnPropertyChanged("Age");
+                    OnPropertyChanged("BirthMonth");
                     Editable.MarkDirty();
                 }
             }
@@ -175,8 +175,8 @@ namespace Diagnosis.App.ViewModels
                 if (patient.BirthDay != value)
                 {
                     patient.BirthDay = value;
-                    OnPropertyChanged(() => Age);
-                    OnPropertyChanged(() => BirthDay);
+                    OnPropertyChanged("Age");
+                    OnPropertyChanged("BirthDay");
                     Editable.MarkDirty();
                 }
             }
@@ -193,7 +193,7 @@ namespace Diagnosis.App.ViewModels
                 if (patient.IsMale != value && EntityManagers.PatientsManager.CurrentPatient == this) // fix binding when change CurrentScreen
                 {
                     patient.IsMale = value;
-                    OnPropertyChanged(() => IsMale);
+                    OnPropertyChanged("IsMale");
                     Editable.MarkDirty();
                 }
             }
@@ -241,7 +241,7 @@ namespace Diagnosis.App.ViewModels
                 if (_coursesManager != value)
                 {
                     _coursesManager = value;
-                    OnPropertyChanged(() => CoursesManager);
+                    OnPropertyChanged("CoursesManager");
                 }
             }
         }
@@ -257,7 +257,7 @@ namespace Diagnosis.App.ViewModels
                 if (_doctor != value)
                 {
                     _doctor = value;
-                    OnPropertyChanged(() => CurrentDoctor);
+                    OnPropertyChanged("CurrentDoctor");
                 }
             }
         }
@@ -284,7 +284,7 @@ namespace Diagnosis.App.ViewModels
                         Editable.Commit();
                         Editable.IsEditorActive = false;
                     }
-                    OnPropertyChanged(() => EditorActive);
+                    OnPropertyChanged("EditorActive");
                 }
             }
         }
@@ -325,7 +325,7 @@ namespace Diagnosis.App.ViewModels
             this.SubscribeNesting(CoursesManager.Courses);
             CoursesManager.Courses.CollectionChanged += (s, e) =>
             {
-                OnPropertyChanged(() => NoCourses);
+                OnPropertyChanged("NoCourses");
             };
         }
 
@@ -333,7 +333,7 @@ namespace Diagnosis.App.ViewModels
         {
             Properties = new ObservableCollection<PropertyViewModel>(
                 EntityManagers.PropertyManager.GetPatientProperties(patient));
-            OnPropertyChanged(() => Properties);
+            OnPropertyChanged("Properties");
         }
 
         #region Subscriptions

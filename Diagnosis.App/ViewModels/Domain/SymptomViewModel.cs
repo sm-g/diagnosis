@@ -40,7 +40,7 @@ namespace Diagnosis.App.ViewModels
                 if (_disease != value)
                 {
                     _disease = value;
-                    OnPropertyChanged(() => Disease);
+                    OnPropertyChanged("Disease");
                     Editable.MarkDirty();
                 }
             }
@@ -59,7 +59,7 @@ namespace Diagnosis.App.ViewModels
                         symptom.DefaultCategory = value.category;
                     _defCat = value;
 
-                    OnPropertyChanged(() => DefaultCategory);
+                    OnPropertyChanged("DefaultCategory");
                     Editable.MarkDirty();
                 }
             }
@@ -76,7 +76,7 @@ namespace Diagnosis.App.ViewModels
                 if (symptom.IsDiagnosis != value)
                 {
                     symptom.IsDiagnosis = value;
-                    OnPropertyChanged(() => IsDiagnosis);
+                    OnPropertyChanged("IsDiagnosis");
                     Editable.MarkDirty();
                 }
             }

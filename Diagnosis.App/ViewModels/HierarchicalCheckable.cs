@@ -35,7 +35,7 @@ namespace Diagnosis.App.ViewModels
                 if (_isFiltered != value)
                 {
                     _isFiltered = value;
-                    OnPropertyChanged(() => IsFiltered);
+                    OnPropertyChanged("IsFiltered");
                 }
             }
         }
@@ -55,7 +55,7 @@ namespace Diagnosis.App.ViewModels
                 if (checkable.IsSelected != value)
                 {
                     checkable.IsSelected = value;
-                    OnPropertyChanged(() => IsSelected);
+                    OnPropertyChanged("IsSelected");
                     OnSelectedChanged();
                 }
             }
@@ -72,7 +72,7 @@ namespace Diagnosis.App.ViewModels
                 if (checkable.IsNonCheckable != value)
                 {
                     checkable.IsNonCheckable = value;
-                    OnPropertyChanged(() => IsNonCheckable);
+                    OnPropertyChanged("IsNonCheckable");
                 }
             }
         }
@@ -88,7 +88,7 @@ namespace Diagnosis.App.ViewModels
                 if (checkable.IsChecked != value)
                 {
                     checkable.IsChecked = value;
-                    OnPropertyChanged(() => IsChecked);
+                    OnPropertyChanged("IsChecked");
                     OnCheckedChanged();
                 }
             }
@@ -141,7 +141,7 @@ namespace Diagnosis.App.ViewModels
 
         private void BubbleCheckedChildren()
         {
-            OnPropertyChanged(() => CheckedChildren);
+            OnPropertyChanged("CheckedChildren");
             if (!IsRoot)
             {
                 Parent.BubbleCheckedChildren();

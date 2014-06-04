@@ -22,7 +22,7 @@ namespace Diagnosis.App.ViewModels
                 if (_selected != value)
                 {
                     _selected = value;
-                    OnPropertyChanged(() => IsSelected);
+                    OnPropertyChanged("IsSelected");
                     OnSelectedChanged();
                 }
             }
@@ -42,7 +42,7 @@ namespace Diagnosis.App.ViewModels
 
                     _isNonCheckable = value;
 
-                    OnPropertyChanged(() => IsNonCheckable);
+                    OnPropertyChanged("IsNonCheckable");
                 }
             }
         }
@@ -58,7 +58,7 @@ namespace Diagnosis.App.ViewModels
                 if (_isChecked != value && !IsNonCheckable)
                 {
                     _isChecked = value;
-                    OnPropertyChanged(() => IsChecked);
+                    OnPropertyChanged("IsChecked");
                     OnCheckedChanged();
                 }
             }

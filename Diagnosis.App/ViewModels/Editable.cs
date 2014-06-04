@@ -45,7 +45,7 @@ namespace Diagnosis.App.ViewModels
                     }
 
                     _editActive = value;
-                    OnPropertyChanged(() => IsEditorActive);
+                    OnPropertyChanged("IsEditorActive");
                 }
             }
         }
@@ -62,7 +62,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     Console.WriteLine("Editor focused = {0}", value);
                     _editorFocused = value;
-                    OnPropertyChanged(() => IsEditorFocused);
+                    OnPropertyChanged("IsEditorFocused");
                 }
             }
         }
@@ -81,7 +81,7 @@ namespace Diagnosis.App.ViewModels
                 if (_switchedOn != value)
                 {
                     _switchedOn = value;
-                    OnPropertyChanged(() => SwitchedOn);
+                    OnPropertyChanged("SwitchedOn");
                 }
             }
         }
@@ -105,8 +105,8 @@ namespace Diagnosis.App.ViewModels
                     {
                         h(this, new EditableEventArgs(vm));
                     }
-                    OnPropertyChanged(() => IsDirty);
-                    OnPropertyChanged(() => WasDirty);
+                    OnPropertyChanged("IsDirty");
+                    OnPropertyChanged("WasDirty");
                 }
             }
         }
@@ -124,7 +124,7 @@ namespace Diagnosis.App.ViewModels
                 if (_canBeDirty != value)
                 {
                     _canBeDirty = value;
-                    OnPropertyChanged(() => CanBeDirty);
+                    OnPropertyChanged("CanBeDirty");
                 }
             }
         }
@@ -140,7 +140,7 @@ namespace Diagnosis.App.ViewModels
                 if (_canBeDeleted != value)
                 {
                     _canBeDeleted = value;
-                    OnPropertyChanged(() => CanBeDeleted);
+                    OnPropertyChanged("CanBeDeleted");
                 }
             }
         }
