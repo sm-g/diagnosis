@@ -31,6 +31,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     if (_current != null)
                     {
+                        _current.Unsubscribe();
                         if (value != null)
                         {
                             if (!(value is UnsavedPatientViewModel))
@@ -44,6 +45,7 @@ namespace Diagnosis.App.ViewModels
                             {
                                 _current.Editable.Commit();
                             }
+                            value.Subscribe();
                         }
                         else
                         {
@@ -54,7 +56,6 @@ namespace Diagnosis.App.ViewModels
 
                     _current = value;
 
-                    SetSubscriptions(value);
                     OnPropertyChanged("CurrentPatient");
                     this.Send((int)EventID.CurrentPatientChanged, new CurrentPatientChangedParams(CurrentPatient).Params);
                 }
@@ -151,38 +152,22 @@ namespace Diagnosis.App.ViewModels
 
         private void OnPatientCreated(object s, PatientEventArgs e)
         {
-            (e.patientVM as UnsavedPatientViewModel).PatientCreated -= OnPatientCreated;
-            patientRepo.SaveOrUpdate(e.patientVM.patient);
-            var modelFromRepo = patientRepo.GetById(e.patientVM.patient.Id);
+            var unsaved = e.patientVM as UnsavedPatientViewModel;
+            unsaved.PatientCreated -= OnPatientCreated;
 
-            var savedVM = new PatientViewModel(modelFromRepo);
-            savedVM.CanAddFirstHr = !e.addFirstHr;
-            Patients.Add(savedVM);
-            CurrentPatient = savedVM;
-            SubscribeEditable(savedVM);
+            patientRepo.SaveOrUpdate(unsaved.patient);
+            var modelFromRepo = patientRepo.GetById(unsaved.patient.Id);
+
+            var saved = new PatientViewModel(modelFromRepo);
+            saved.CanAddFirstHr = !e.addFirstHr;
+            Patients.Add(saved);
+            CurrentPatient = saved;
+            SubscribeEditable(saved);
             if (e.addFirstHr)
             {
-                savedVM.Editable.IsEditorActive = false;
-                OpenLastAppointment(savedVM);
+                saved.Editable.IsEditorActive = false;
+                OpenLastAppointment(saved);
             }
-        }
-
-        /// <summary>
-        /// Отписывает всех пациентов. Подписывает переданного пациента.
-        /// </summary>
-        /// <param name="newPatient"></param>
-        private void SetSubscriptions(PatientViewModel newPatient)
-        {
-            foreach (var patient in Patients)
-            {
-                if (patient != newPatient)
-                {
-                    patient.Unsubscribe();
-                }
-            }
-
-            if (newPatient != null)
-                newPatient.Subscribe();
         }
 
         private void SubscribeEditable(PatientViewModel pvm)
