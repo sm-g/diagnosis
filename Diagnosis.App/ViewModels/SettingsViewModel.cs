@@ -1,7 +1,9 @@
-﻿using Diagnosis.Core;
-using Diagnosis.Models;
+﻿using Diagnosis.Models;
 using System.Diagnostics.Contracts;
 using System.Windows.Input;
+using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -14,6 +16,7 @@ namespace Diagnosis.App.ViewModels
 
         private RelayCommand _save;
         private bool? _dialogResult;
+        Dictionary<DoctorSettings, Func<bool>> map;
 
         public SettingsViewModel(DoctorViewModel doctorVM)
         {
@@ -21,6 +24,10 @@ namespace Diagnosis.App.ViewModels
 
             this.doctor = doctorVM.doctor;
             this.doctorVM = doctorVM;
+
+            map = new Dictionary<DoctorSettings, Func<bool>>();
+            map.Add(DoctorSettings.OnlyTopLevelIcdDisease, () => OnlyTopLevelIcdDisease);
+
             Load();
         }
 
@@ -90,9 +97,31 @@ namespace Diagnosis.App.ViewModels
 
         private void Save()
         {
-            SetFlag(DoctorSettings.OnlyTopLevelIcdDisease, OnlyTopLevelIcdDisease);
-            doctorVM.Editable.Commit(true);
+            var changed = ChangedFlags();
+            foreach (var flag in changed)
+            {
+                SetFlag(flag, map[flag]());
+            }
+
+            if (changed.Count > 0)
+            {
+                doctorVM.Editable.MarkDirty();
+            }
+
+            doctorVM.Editable.Commit();
+
             DialogResult = true;
+        }
+
+        private IList<DoctorSettings> ChangedFlags()
+        {
+            List<DoctorSettings> result = new List<DoctorSettings>();
+
+            result.AddRange(map
+                .Where(kvp => doctor.DoctorSettings.HasFlag(kvp.Key) != kvp.Value())
+                .Select(kvp => kvp.Key));
+
+            return result;
         }
     }
 }
