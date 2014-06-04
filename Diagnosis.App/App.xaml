@@ -27,13 +27,14 @@
             <Setter Property="FontSize" Value="20"/>
         </Style>
         
-        <Style TargetType="Label" x:Key="label120">
-            <Setter Property="Width" Value="120"/>
+        <Style TargetType="Label" x:Key="label">
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
-        <Style TargetType="Label" x:Key="label60">
-            <Setter Property="Width" Value="60"/>
-            <Setter Property="VerticalAlignment" Value="Center" />
+        <Style TargetType="Label" x:Key="label120" BasedOn="{StaticResource label}">
+            <Setter Property="Width" Value="120"/>
+        </Style>
+        <Style TargetType="Label" x:Key="label90" BasedOn="{StaticResource label}">
+            <Setter Property="Width" Value="90"/>
         </Style>
         
         <Style TargetType="TextBlock" x:Key="watermark">
