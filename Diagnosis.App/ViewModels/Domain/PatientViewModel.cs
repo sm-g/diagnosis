@@ -6,9 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -17,6 +17,8 @@ namespace Diagnosis.App.ViewModels
         internal readonly Patient patient;
 
         private DoctorViewModel _doctor;
+        private RelayCommand _firstHr;
+        private bool _canAddFirstHr;
         private CoursesManager _coursesManager;
         private List<EventMessageHandler> msgHandlers = new List<EventMessageHandler>();
 
@@ -212,6 +214,7 @@ namespace Diagnosis.App.ViewModels
             get;
             private set;
         }
+
         /// <summary>
         /// For binding with converter.
         /// </summary>
@@ -229,6 +232,45 @@ namespace Diagnosis.App.ViewModels
         }
 
         #endregion Model related
+
+        public ICommand FirstHrCommand
+        {
+            get
+            {
+                return _firstHr
+                    ?? (_firstHr = new RelayCommand(
+                                          () =>
+                                          {
+                                              // go to courses tabitem - save patient first
+                                              CanAddFirstHr = false;
+                                              Editable.Commit(true);
+                                          }, () => CanAddFirstHr));
+            }
+        }
+
+        public bool CanAddFirstHr
+        {
+            get
+            {
+                return _canAddFirstHr;
+            }
+            set
+            {
+                if (_canAddFirstHr != value)
+                {
+                    _canAddFirstHr = value;
+                    OnPropertyChanged(() => CanAddFirstHr);
+                }
+            }
+        }
+
+        public bool IsUnsaved
+        {
+            get
+            {
+                return this is UnsavedPatientViewModel;
+            }
+        }
 
         public CoursesManager CoursesManager
         {
@@ -264,6 +306,7 @@ namespace Diagnosis.App.ViewModels
 
         /// <summary>
         /// Для сохранения при выходе из редактора.
+        /// При обратном переходе может редактироваться запись — не сохраняем.
         /// </summary>
         public virtual bool EditorActive
         {
@@ -423,32 +466,18 @@ namespace Diagnosis.App.ViewModels
             : base(new Patient())
         {
             Editable.IsEditorActive = true;
-
-            Editable.PropertyChanged += OnPropertyChanged;
+            CanAddFirstHr = true;
             Editable.Committed += OnFirstCommit;
-        }
-
-        private void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "IsEditorActive")
-            {
-                // go to courses tabitem - save patient first
-                if (!Editable.IsEditorActive)
-                {
-                    Editable.Commit(true);
-                }
-            }
         }
 
         private void OnFirstCommit(object sender, EditableEventArgs e)
         {
             Editable.Committed -= OnFirstCommit;
-            Editable.PropertyChanged -= OnPropertyChanged;
 
             var h = PatientCreated;
             if (h != null)
             {
-                h(this, new PatientEventArgs(this));
+                h(this, new PatientEventArgs(this, !CanAddFirstHr));
             }
         }
     }
@@ -458,11 +487,13 @@ namespace Diagnosis.App.ViewModels
     public class PatientEventArgs : EventArgs
     {
         public PatientViewModel patientVM;
+        public bool addFirstHr;
 
         [DebuggerStepThrough]
-        public PatientEventArgs(PatientViewModel p)
+        public PatientEventArgs(PatientViewModel p, bool addFirstHr)
         {
             patientVM = p;
+            this.addFirstHr = addFirstHr;
         }
     }
 }

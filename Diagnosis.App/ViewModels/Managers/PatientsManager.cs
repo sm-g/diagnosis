@@ -156,11 +156,15 @@ namespace Diagnosis.App.ViewModels
             var modelFromRepo = patientRepo.GetById(e.patientVM.patient.Id);
 
             var savedVM = new PatientViewModel(modelFromRepo);
+            savedVM.CanAddFirstHr = !e.addFirstHr;
             Patients.Add(savedVM);
             CurrentPatient = savedVM;
             SubscribeEditable(savedVM);
-            OpenLastAppointment(savedVM);
-            savedVM.Editable.IsEditorActive = false;
+            if (e.addFirstHr)
+            {
+                savedVM.Editable.IsEditorActive = false;
+                OpenLastAppointment(savedVM);
+            }
         }
 
         /// <summary>
