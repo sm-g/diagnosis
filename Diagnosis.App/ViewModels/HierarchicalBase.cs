@@ -140,6 +140,23 @@ namespace Diagnosis.App.ViewModels
 
             return (T)this;
         }
+
+        /// <summary>
+        /// Добавляет элемент к детям, если его нет среди прямых детей или всех детей. Возвращает текущий элемент.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="checkAllChildren">Проверять ли наличие элемента на всех уровнях иерархии.</param>
+        /// <param name="equalsComparator">Делегат, отпределяющий совпадение элемента с детьми.</param>
+        /// <returns></returns>
+        public T AddIfNotExists(T item, bool checkAllChildren, Func<T, T, bool> equalsComparator)
+        {
+            var query = checkAllChildren ? AllChildren : Children;
+
+            if (query.SingleOrDefault(child => equalsComparator(child, item)) == null)
+                Add(item);
+
+            return (T)this;
+        }
         /// <summary>
         /// Удаляет элемент из детей, если он там был. Возвращает текущий элемент.
         /// </summary>
@@ -165,6 +182,18 @@ namespace Diagnosis.App.ViewModels
                 Remove(vm);
             }
             return (T)this;
+        }
+
+        /// <summary>
+        /// Удаляет всех детей на следующем уровне иерархии.
+        /// </summary>
+        public void ClearChildren()
+        {
+            bool notEmpty = Children.Count > 0;
+            Children.Clear();
+
+            if (notEmpty)
+                OnChildRemoved();
         }
 
         #endregion IHierarchical
