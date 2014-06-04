@@ -1,7 +1,6 @@
-﻿using Diagnosis.App.ViewModels;
-using Diagnosis.Data.Repositories;
+﻿using Diagnosis.Data.Repositories;
 
-namespace Diagnosis.App
+namespace Diagnosis.App.ViewModels
 {
     public static class EntityManagers
     {
