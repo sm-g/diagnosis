@@ -1,12 +1,12 @@
-﻿using Diagnosis.Data.Repositories;
+﻿using Diagnosis.App.Messaging;
+using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
 using EventAggregator;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using Diagnosis.App.Messaging;
 using System.Linq;
-using System;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -16,7 +16,7 @@ namespace Diagnosis.App.ViewModels
     public class DiagnosisManager : ViewModelBase
     {
         private readonly IcdChapterRepository repository;
-        DiagnosisViewModel _root;
+        private DiagnosisViewModel _root;
         private ObservableCollection<DiagnosisViewModel> _diagnoses;
         private DiagnosisFiltratingSearcher _diaFiltratingSearcher;
         private DiagnosisSearcher _diaRootSearcher;
@@ -64,6 +64,7 @@ namespace Diagnosis.App.ViewModels
                 return _diaRootSearcher;
             }
         }
+
         /// <summary>
         /// Поисковик по всем диагнозам, кроме групп. Изменяет значение IsFiltered.
         /// </summary>
@@ -157,37 +158,51 @@ namespace Diagnosis.App.ViewModels
             IEnumerable<DiagnosisViewModel> chapterVms,
             DoctorViewModel doctorVM)
         {
-            var blocks = doctorVM.doctor.Speciality.IcdBlocks;
+            // создаем диагнозы-блоки
+            var blocks = doctorVM.doctor.Speciality.IcdBlocks; // блоки для специальности доктора
             var blockDiagnoses = blocks.Select(b =>
                 new Diagnosis.Models.Diagnosis(b.Code, b.Title, chapterVms.Select(ch => ch.diagnosis).Where(ch =>
                     ch.Code == b.IcdChapter.Code).SingleOrDefault())).ToList();
             var blockVms = blockDiagnoses.Select(b => new DiagnosisViewModel(b)).ToList();
 
-            foreach (var item in chapterVms)
+            // добавляем нужные блоки в классы
+            foreach (var ch in chapterVms)
             {
-                item.Add(blockVms.Where(b => b.diagnosis.Parent == item.diagnosis));
+                ch.ClearChildren();
+                ch.Add(blockVms.Where(b => b.diagnosis.Parent == ch.diagnosis));
             }
 
-            var diseases = blocks.SelectMany(b => b.IcdDiseases).ToList();
+            Func<IcdDisease, bool> whereClause = d => true;
+            if (doctorVM.doctor.DoctorSettings.HasFlag(DoctorSettings.OnlyTopLevelIcdDisease))
+            {
+                // без уточненных болезней
+                whereClause = d => d.Code.IndexOf('.') == -1;
+            }
+
+            // создаем диагнозы-болезни
+            var diseases = blocks.SelectMany(b => b.IcdDiseases).Where(whereClause).ToList();
             var diseaseDiagnoses = diseases.Select(d =>
                 new Diagnosis.Models.Diagnosis(d.Code, d.Title, blockDiagnoses.Where(b =>
                     b.Code == d.IcdBlock.Code).SingleOrDefault(), d)).ToList();
             var diseaseVms = diseaseDiagnoses.Select(d => new DiagnosisViewModel(d)).ToList();
 
+            // добавляем нужные болезни в блоки
             foreach (var item in blockVms)
             {
                 item.Add(diseaseVms.Where(d => d.diagnosis.Parent == item.diagnosis));
             }
 
+            // убираем классы, в которых блоки без болезней (не нужны специальности доктора)
             chapterVms = chapterVms.Where(ch => ch.AllChildren.Count() > ch.Children.Count);
             foreach (var item in chapterVms)
             {
                 item.Remove(blockVms.Where(b => b.Children.Count == 0));
             }
+
             var dia = new Diagnosis.Models.Diagnosis("code", "root");
             var root = new DiagnosisViewModel(dia);
-            root.Add(chapterVms);
-            Root = root; // IEnumarable
+            Root = root.Add(chapterVms);
+            // IEnumarable
 
             Diagnoses = new ObservableCollection<DiagnosisViewModel>(Root.Children);
         }
@@ -207,6 +222,7 @@ namespace Diagnosis.App.ViewModels
         {
             Diagnoses.ForBranch((dvm) => dvm.IsChecked = false);
         }
+
         protected virtual void OnRootChanged(EventArgs e)
         {
             var h = RootChanged;

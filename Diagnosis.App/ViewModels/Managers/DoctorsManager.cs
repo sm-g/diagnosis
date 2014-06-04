@@ -44,25 +44,30 @@ namespace Diagnosis.App.ViewModels
             this.repository = repo;
 
             var doctorVMs = repository.GetAll().Select(d => new DoctorViewModel(d)).ToList();
-            foreach (var dvm in doctorVMs)
-            {
-                dvm.Editable.Committed += d_Committed;
-            }
-
+            doctorVMs.ForEach(dvm => SubscribeDoctor(dvm));
             Doctors = new ObservableCollection<DoctorViewModel>(doctorVMs);
+
             if (Doctors.Count > 0)
             {
                 CurrentDoctor = Doctors[0];
             }
         }
 
-        private void d_Committed(object sender, EditableEventArgs e)
+        private void SubscribeDoctor(DoctorViewModel dvm)
         {
-            var doctorVM = e.viewModel as DoctorViewModel;
-            if (doctorVM != null)
+            dvm.Editable.Committed += (s, e) =>
             {
-                repository.SaveOrUpdate(doctorVM.doctor);
-            }
+                var doctorVM = e.viewModel as DoctorViewModel;
+                if (doctorVM != null)
+                {
+                    repository.SaveOrUpdate(doctorVM.doctor);
+                };
+            };
+            dvm.Editable.DirtyChanged += (s, e) =>
+            {
+                var docVM = e.viewModel as DoctorViewModel;
+                this.Send((int)EventID.CurrentDoctorChanged, new CurrentDoctorChangedParams(docVM).Params);
+            };
         }
     }
 }
