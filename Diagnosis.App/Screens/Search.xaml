@@ -168,7 +168,7 @@
             </ListView.InputBindings>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <card:SearchResult>
+                    <card:SearchResult Margin="0,3,0,3">
                         <card:SearchResult.InputBindings>
                             <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding OpenHealthRecord}" />
                         </card:SearchResult.InputBindings>

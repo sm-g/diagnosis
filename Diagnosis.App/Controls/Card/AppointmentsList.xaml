@@ -42,11 +42,10 @@
 
                         <DockPanel DockPanel.Dock="Top" MinWidth="150">
                             <TextBlock Text="{Binding DateTime, StringFormat='{}{0:d}'}" />
-                            <TextBlock Text="{Binding Doctor, Converter={StaticResource ManToShortName}}"
+                            <TextBlock Text="{Binding Doctor, Converter={StaticResource ManToShortName}, StringFormat='{}доктор {0}'}"
                                        HorizontalAlignment="Right"
                                        Visibility="{Binding IsDoctorFromCourse, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
                         </DockPanel>
-                        <controls:CommaList Grid.Row="1" ItemsSource="{Binding HealthRecordsNames}" />
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>

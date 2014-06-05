@@ -10,14 +10,14 @@
     <Grid>
         <StackPanel>
             <TextBlock Text="{Binding Patient, Converter={StaticResource ManToShortName}}" />
-            <TextBlock>
-                    <Run>Курс </Run>
-                    <TextBlock Text="{Binding Course.Start, StringFormat='{}с {0:d}'}" />
-                    <TextBlock Text="{Binding Course.End, StringFormat='{}по {0:d}', TargetNullValue=''}" />
-                    <Run> — (окончательный диагноз в курсе)</Run>
-                </TextBlock>
+            <!--<TextBlock>
+                <Run>Курс </Run>
+                <TextBlock Text="{Binding Course.Start, StringFormat='{}с {0:d}'}" />
+                <TextBlock Text="{Binding Course.End, StringFormat='{}по {0:d}', TargetNullValue=''}" />
+                <Run> — (окончательный диагноз в курсе)</Run>
+            </TextBlock>-->
             <DockPanel x:Name="appDescription" Width="{Binding ActualWidth, ElementName=searchResult}">
-                <TextBlock Text="{Binding AppointmentDate, StringFormat='{}{0:d} '}" DockPanel.Dock="Left"/>
+                <TextBlock Text="{Binding AppointmentDate, StringFormat='{}{0:d} '}" DockPanel.Dock="Left" />
                 <ItemsControl ItemsSource="{Binding AppointmentHealthRecords}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -26,7 +26,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">                                
+                            <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding Symptom}" TextWrapping="Wrap">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
