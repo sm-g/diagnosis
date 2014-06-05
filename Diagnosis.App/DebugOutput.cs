@@ -91,7 +91,7 @@ namespace Diagnosis.App
 
             this.Subscribe((int)EventID.OpenHealthRecord, (e) =>
             {
-                var hr = e.GetValue<HealthRecordViewModel>(Messages.HealthRecord);
+                var hr = e.GetValue<HealthRecord>(Messages.HealthRecord);
                 Console.WriteLine("open hr {0}", hr);
             });
             this.Subscribe((int)EventID.OpenSettings, (e) =>
