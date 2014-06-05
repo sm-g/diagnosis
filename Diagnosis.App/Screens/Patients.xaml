@@ -50,8 +50,8 @@
                             <ColumnDefinition Width="30"/>
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        
-                        <TextBlock Text="{Binding Id}" />
+
+                        <TextBlock Text="{Binding Label}" />
                         <TextBlock Text="{Binding Self, Converter={StaticResource ManToShortName}}" Grid.Column="1" />
                         <TextBlock x:Name="unsaved"
                                    Grid.Column="1"

@@ -23,6 +23,10 @@
     </UserControl.Resources>
     <StackPanel>
         <DockPanel>
+            <Label Content="Метка"  />
+            <TextBox Text="{Binding Label}" />
+        </DockPanel>
+        <DockPanel>
             <Label Content="Фамилия"  />
             <TextBox Text="{Binding LastName}" />
         </DockPanel>

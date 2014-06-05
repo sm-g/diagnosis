@@ -18,8 +18,27 @@ namespace Diagnosis.Models
         string _fn;
         string _ln;
         string _mn;
+        string _label;
 
         public virtual int Id { get; protected set; }
+        public virtual string Label
+        {
+            get
+            {
+                return _label;
+            }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    _label = null;
+                }
+                else
+                {
+                    _label = value.Trim();
+                }
+            }
+        }
         public virtual string FirstName
         {
             get
@@ -28,13 +47,13 @@ namespace Diagnosis.Models
             }
             set
             {
-                if (value == "")
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     _fn = null;
                 }
                 else
                 {
-                    _fn = value;
+                    _fn = value.Trim();
                 }
             }
         }
@@ -46,13 +65,13 @@ namespace Diagnosis.Models
             }
             set
             {
-                if (value == "")
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     _mn = null;
                 }
                 else
                 {
-                    _mn = value;
+                    _mn = value.Trim();
                 }
             }
         }
@@ -64,13 +83,13 @@ namespace Diagnosis.Models
             }
             set
             {
-                if (value == "")
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     _ln = null;
                 }
                 else
                 {
-                    _ln = value;
+                    _ln = value.Trim();
                 }
             }
         }

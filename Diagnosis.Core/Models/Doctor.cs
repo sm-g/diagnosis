@@ -36,8 +36,8 @@ namespace Diagnosis.Models
             }
             set
             {
-                Contract.Requires(!String.IsNullOrEmpty(value));
-                _fn = value;
+                Contract.Requires(!String.IsNullOrWhiteSpace(value));
+                _fn = value.Trim();
             }
         }
 
@@ -49,13 +49,13 @@ namespace Diagnosis.Models
             }
             set
             {
-                if (String.IsNullOrEmpty(value))
+                if (String.IsNullOrWhiteSpace(value))
                 {
                     _mn = null;
                 }
                 else
                 {
-                    _mn = value;
+                    _mn = value.Trim();
                 }
             }
         }
@@ -68,8 +68,8 @@ namespace Diagnosis.Models
             }
             set
             {
-                Contract.Requires(!String.IsNullOrEmpty(value));
-                _ln = value;
+                Contract.Requires(!String.IsNullOrWhiteSpace(value));
+                _ln = value.Trim();
             }
         }
 

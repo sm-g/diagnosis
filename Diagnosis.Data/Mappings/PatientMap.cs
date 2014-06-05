@@ -13,6 +13,7 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.Native);
             });
 
+            Property(x => x.Label);
             Property(x => x.FirstName);
             Property(x => x.MiddleName);
             Property(x => x.LastName);

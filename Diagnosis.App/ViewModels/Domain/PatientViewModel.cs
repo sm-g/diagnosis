@@ -41,11 +41,20 @@ namespace Diagnosis.App.ViewModels
 
         #region Model related
 
-        public int Id
+        public string Label
         {
             get
             {
-                return patient.Id;
+                return patient.Label;
+            }
+            set
+            {
+                if (patient.Label != value)
+                {
+                    patient.Label = value;
+                    OnPropertyChanged(() => "Label");
+                    Editable.MarkDirty();
+                }
             }
         }
 
@@ -451,7 +460,7 @@ namespace Diagnosis.App.ViewModels
 
         public override string ToString()
         {
-            return Id + " " + FullName;
+            return patient.Id + " " + Label + " " + FullName;
         }
     }
 
