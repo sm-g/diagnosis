@@ -1,17 +1,18 @@
 ﻿using Diagnosis.Core;
+using System.Collections.Generic;
 
 namespace Diagnosis.App.ViewModels
 {
     public class DiagnosisAutoComplete : AutoCompleteBase<DiagnosisViewModel>
     {
-        protected override ISimpleSearcher<DiagnosisViewModel> MakeSearch(DiagnosisViewModel parent)
+        protected override ISimpleSearcher<DiagnosisViewModel> MakeSearch(DiagnosisViewModel parent, IEnumerable<DiagnosisViewModel> checkedDiagnoses)
         {
             DiagnosisSearcher searcher;
             if (parent == null)
             {
                 parent = EntityManagers.DiagnosisManager.Root;
             }
-            searcher = new DiagnosisSearcher(parent, settings);
+            searcher = new DiagnosisSearcher(parent, settings, checkedDiagnoses);
             return searcher;
         }
 

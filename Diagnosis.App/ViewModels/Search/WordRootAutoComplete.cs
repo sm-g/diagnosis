@@ -1,20 +1,15 @@
-﻿using System.Linq;
-using Diagnosis.Core;
+﻿using Diagnosis.Core;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class WordCompositeAutoComplete : AutoCompleteBase<WordViewModel>
+    public class WordRootAutoComplete : AutoCompleteBase<WordViewModel>
     {
         protected override ISimpleSearcher<WordViewModel> MakeSearch(WordViewModel parent, IEnumerable<WordViewModel> checkedWords)
         {
             WordSearcher searcher;
-            if (parent == null)
-            {
-                parent = EntityManagers.WordsManager.Root;
-            }
-            searcher = new WordCompositeSearcher(parent, settings, checkedWords);
-            searcher.UpperPriority = parent.Priority;
+            searcher = new WordSearcher(EntityManagers.WordsManager.Root, settings, checkedWords);
             return searcher;
         }
 
@@ -22,7 +17,8 @@ namespace Diagnosis.App.ViewModels
         {
             return item.Name;
         }
-        public WordCompositeAutoComplete(QuerySeparator separator, SimpleSearcherSettings settings)
+
+        public WordRootAutoComplete(QuerySeparator separator, SimpleSearcherSettings settings)
             : base(separator, settings)
         { }
     }

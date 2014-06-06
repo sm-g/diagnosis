@@ -353,7 +353,6 @@ namespace Diagnosis.App.ViewModels
                    new SimpleSearcherSettings() { AllChildren = true });
             AutoCompleteStatic.SuggestionAccepted += AutoComplete2_SuggestionAccepted;
             ((INotifyCollectionChanged)AutoCompleteStatic.Items).CollectionChanged += AutoCompleteItems_CollectionChanged;
-
             OnPropertyChanged(() => AutoComplete2);
             OnPropertyChanged(() => Words);
         }
@@ -363,20 +362,31 @@ namespace Diagnosis.App.ViewModels
         void AutoCompleteItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             Console.WriteLine("items changed");
+
+            HashSet<WordViewModel> words;
+
+            if (Symptom != null)
+                words = new HashSet<WordViewModel>(Symptom.Words);
+            else
+                words = new HashSet<WordViewModel>();
+
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 foreach (WordViewModel item in e.NewItems)
                 {
-                    item.IsChecked = true;
+                    words.Add(item);
                 }
             }
-            if (e.Action == NotifyCollectionChangedAction.Remove)
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 foreach (WordViewModel item in e.OldItems)
                 {
-                    item.IsChecked = false;
+                    words.Remove(item);
                 }
             }
+
+            this.Symptom = EntityManagers.SymptomsManager.Create(words);
+            healthRecord.Symptom = Symptom.symptom;
         }
 
         void AutoComplete2_SuggestionAccepted(object sender, AutoCompleteEventArgs e)
@@ -520,15 +530,6 @@ namespace Diagnosis.App.ViewModels
         {
             msgHandlers = new List<EventMessageHandler>()
             {
-                this.Subscribe((int)EventID.WordCheckedChanged, (e) =>
-                {
-                    if (this.IsSelected && !makingCurrent)
-                    {
-                        var word = e.GetValue<WordViewModel>(Messages.Word);
-
-                        OnWordCheckedChanged(word, word.IsChecked);
-                    }
-                }),
                 this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
                 {
                     if (this.IsSelected && !makingCurrent)
@@ -548,30 +549,6 @@ namespace Diagnosis.App.ViewModels
                 if (IsSelected)
                     MakeCurrent();
             }
-        }
-
-        private void OnWordCheckedChanged(WordViewModel word, bool isChecked)
-        {
-            // меняем симптом у открытой записи
-
-            HashSet<WordViewModel> words;
-
-            if (Symptom != null)
-                words = new HashSet<WordViewModel>(Symptom.Words);
-            else
-                words = new HashSet<WordViewModel>();
-
-            if (isChecked)
-            {
-                words.Add(word);
-            }
-            else
-            {
-                words.Remove(word);
-            }
-
-            this.Symptom = EntityManagers.SymptomsManager.Create(words);
-            healthRecord.Symptom = Symptom.symptom;
         }
 
         private void OnDiagnosisCheckedChanged(DiagnosisViewModel diagnosisVM, bool isChecked)

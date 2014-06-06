@@ -11,8 +11,8 @@ namespace Diagnosis.App.ViewModels
     /// </summary>
     public class WordCompositeSearcher : WordSearcher
     {
-        public WordCompositeSearcher(WordViewModel parent, SimpleSearcherSettings settings) :
-            base(parent, settings)
+        public WordCompositeSearcher(WordViewModel parent, SimpleSearcherSettings settings, IEnumerable<WordViewModel> checkedWords) :
+            base(parent, settings, checkedWords)
         {
         }
         /// <summary>

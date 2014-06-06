@@ -311,9 +311,9 @@ namespace Diagnosis.App.ViewModels
             }
 
             if (i < 0)
-                searcher = MakeSearch(null);
+                searcher = MakeSearch(null, Items);
             else
-                searcher = MakeSearch(items[i]);
+                searcher = MakeSearch(items[i], Items);
         }
         /// <summary>
         /// Принимает предложение.
@@ -356,7 +356,7 @@ namespace Diagnosis.App.ViewModels
         {
         }
 
-        protected abstract ISimpleSearcher<T> MakeSearch(T parent);
+        protected abstract ISimpleSearcher<T> MakeSearch(T parent, IEnumerable<T> checkedItems);
 
         protected abstract string GetQueryString(T item);
 

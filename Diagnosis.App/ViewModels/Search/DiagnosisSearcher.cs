@@ -7,6 +7,8 @@ namespace Diagnosis.App.ViewModels
 {
     public class DiagnosisSearcher : ISimpleSearcher<DiagnosisViewModel>
     {
+        IEnumerable<DiagnosisViewModel> checkedDiagnoses;
+
         public bool WithNonCheckable { get; set; }
 
         public bool WithChecked { get; set; }
@@ -21,7 +23,7 @@ namespace Diagnosis.App.ViewModels
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="settings"></param>
-        public DiagnosisSearcher(DiagnosisViewModel parent, SimpleSearcherSettings settings)
+        public DiagnosisSearcher(DiagnosisViewModel parent, SimpleSearcherSettings settings, IEnumerable<DiagnosisViewModel> checkedDiagnoses = null)
         {
             Contract.Requires(parent != null);
             Collection = settings.AllChildren ? parent.AllChildren : parent.Children;
@@ -30,6 +32,7 @@ namespace Diagnosis.App.ViewModels
             WithNonCheckable = settings.WithNonCheckable;
             WithChecked = settings.WithChecked;
             WithCreatingNew = false;
+            this.checkedDiagnoses = checkedDiagnoses;
         }
 
         public IEnumerable<DiagnosisViewModel> Search(string query)
@@ -51,7 +54,8 @@ namespace Diagnosis.App.ViewModels
         protected bool FilterCheckable(ICheckable obj)
         {
             return (WithChecked || !obj.IsChecked)
-                   && (WithNonCheckable || !obj.IsNonCheckable);
+                   && (WithNonCheckable || !obj.IsNonCheckable)
+                   && (WithChecked || checkedDiagnoses == null|| !checkedDiagnoses.Contains(obj));
         }
     }
 }

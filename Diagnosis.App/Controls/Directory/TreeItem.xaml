@@ -60,8 +60,8 @@
             Grid.Row="1"
             Grid.Column="1"
             Grid.ColumnSpan="2"
-            Visibility="{Binding IsSearchActive, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}"
-            controls:FocusExtension.IsFocused="{Binding IsSearchFocused}"
+            Visibility="{Binding IsSearchActive, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay, FallbackValue=Collapsed}"
+            controls:FocusExtension.IsFocused="{Binding IsSearchFocused, FallbackValue=False}"
             DataContext="{Binding Search}"
 >
             <controls:FloatSearch.InputBindings>

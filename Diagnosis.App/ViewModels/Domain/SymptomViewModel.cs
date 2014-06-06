@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Models;
 using EventAggregator;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -28,7 +29,7 @@ namespace Diagnosis.App.ViewModels
 
         #region Model
 
-        public ObservableCollection<WordViewModel> Words { get; private set; }
+        public IEnumerable<WordViewModel> Words { get; private set; }
         public IcdDisease Disease
         {
             get

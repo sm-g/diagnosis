@@ -10,6 +10,8 @@ namespace Diagnosis.App.ViewModels
     /// </summary>
     public class WordSearcher : ISimpleSearcher<WordViewModel>
     {
+        IEnumerable<WordViewModel> checkedWords;
+
         public bool WithNonCheckable { get; set; }
         public bool WithChecked { get; set; }
         public bool WithCreatingNew { get; set; }
@@ -18,7 +20,7 @@ namespace Diagnosis.App.ViewModels
 
         public IEnumerable<WordViewModel> Collection { get; private set; }
 
-        public WordSearcher(WordViewModel parent, SimpleSearcherSettings settings)
+        public WordSearcher(WordViewModel parent, SimpleSearcherSettings settings, IEnumerable<WordViewModel> checkedWords = null)
         {
             Contract.Requires(parent != null);
             Collection = settings.AllChildren ? parent.AllChildren : parent.Children;
@@ -27,6 +29,7 @@ namespace Diagnosis.App.ViewModels
             WithNonCheckable = settings.WithNonCheckable;
             WithChecked = settings.WithChecked;
             WithCreatingNew = settings.WithCreatingNew;
+            this.checkedWords = checkedWords;
         }
 
         /// <summary>
@@ -69,7 +72,8 @@ namespace Diagnosis.App.ViewModels
         protected bool FilterCheckable(ICheckable obj)
         {
             return (WithChecked || !obj.IsChecked)
-                   && (WithNonCheckable || !obj.IsNonCheckable);
+                   && (WithNonCheckable || !obj.IsNonCheckable)
+                   && (WithChecked || checkedWords == null || !checkedWords.Contains(obj));
         }
     }
 }

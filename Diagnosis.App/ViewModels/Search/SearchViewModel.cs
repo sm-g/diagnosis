@@ -3,6 +3,7 @@ using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Windows.Input;
 using Diagnosis.App.Messaging;
 using System.Linq;
@@ -29,27 +30,26 @@ namespace Diagnosis.App.ViewModels
 
         public SearchViewModel()
         {
-            WordSearch = new WordCheckingAutoComplete(QuerySeparator.Default, new SimpleSearcherSettings() { AllChildren = true });
-            Words = new ObservableCollection<WordViewModel>();
+            WordSearch = new WordRootAutoComplete(QuerySeparator.Default, new SimpleSearcherSettings() { AllChildren = true });
             Results = new ObservableCollection<HrSearchResultViewModel>();
             ControlsVisible = true;
             AnyWord = true;
 
-            this.Subscribe((int)EventID.WordCheckedChanged, (e) =>
-            {
-                var word = e.GetValue<WordViewModel>(Messages.Word);
-
-                OnWordCheckedChanged(word, word.IsChecked);
-            });
             this.Subscribe((int)EventID.CategoryCheckedChanged, (e) =>
             {
                 OnPropertyChanged("SelectedCategories");
                 OnPropertyChanged("AllEmpty");
             });
-            Words.CollectionChanged += (s, e) =>
+            ((INotifyCollectionChanged)Words).CollectionChanged += (s, e) =>
             {
                 OnPropertyChanged("AllEmpty");
             };
+            ((INotifyCollectionChanged)WordSearch.Items).CollectionChanged += SearchViewModel_CollectionChanged;
+        }
+
+        void SearchViewModel_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+       //     throw new NotImplementedException();
         }
 
         #region Options bindings
@@ -245,11 +245,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public ObservableCollection<WordViewModel> Words
-        {
-            get;
-            private set;
-        }
+        public ReadOnlyObservableCollection<WordViewModel> Words { get { return WordSearch.Items; } }
 
         public string Comment
         {
@@ -421,18 +417,6 @@ namespace Diagnosis.App.ViewModels
             options.Comment = Comment;
 
             return options;
-        }
-
-        private void OnWordCheckedChanged(WordViewModel word, bool isChecked)
-        {
-            if (isChecked)
-            {
-                Words.Add(word);
-            }
-            else
-            {
-                Words.Remove(word);
-            }
         }
 
         void PrintHrDate()

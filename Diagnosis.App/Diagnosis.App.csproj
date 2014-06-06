@@ -256,6 +256,7 @@
     <Compile Include="ViewModels\Search\SearchTester.cs" />
     <Compile Include="ViewModels\Search\HrSearchResultViewModel.cs" />
     <Compile Include="ViewModels\Search\SearchViewModel.cs" />
+    <Compile Include="ViewModels\Search\WordRootAutoComplete.cs" />
     <Compile Include="ViewModels\Search\WordCompositeAutoComplete.cs" />
     <Compile Include="ViewModels\Search\WordCompositeSearcher.cs" />
     <Compile Include="ViewModels\Search\WordSearcher.cs" />
