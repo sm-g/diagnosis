@@ -23,9 +23,9 @@
     </UserControl.Resources>
     <StackPanel>
         <controls:AutoComplete DataContext="{Binding AutoComplete2}" />
-        <DockPanel Visibility="{Binding Symptom.Words.Count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
+        <DockPanel Visibility="{Binding Words.Count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
             <TextBlock DockPanel.Dock="Top">Слова:</TextBlock>
-            <ListView ItemsSource="{Binding Symptom.Words}">
+            <ListView ItemsSource="{Binding Words}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <controls:TreeItem />

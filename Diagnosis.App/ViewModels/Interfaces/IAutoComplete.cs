@@ -8,6 +8,6 @@ namespace Diagnosis.App.ViewModels
         char DelimSpacer { get; }
         void Reset();
         ICommand EnterCommand { get; }
-        event EventHandler SuggestionAccepted;
+        event EventHandler<AutoCompleteEventArgs> SuggestionAccepted;
     }
 }

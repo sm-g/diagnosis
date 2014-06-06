@@ -3,12 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public abstract class AutoCompleteBase<T> : ViewModelBase, IAutoComplete where T : HierarchicalCheckable<T>
+    public abstract class AutoCompleteBase<T> : ViewModelBase, IAutoComplete where T : class
     {
         private int _index;
         private string _fullString = "";
@@ -18,17 +19,20 @@ namespace Diagnosis.App.ViewModels
         private QuerySeparator separator;
         private bool settingFullStringFromCode;
 
-        protected List<T> items;
+        protected ObservableCollection<T> items;
         protected ISimpleSearcher<T> searcher;
         protected SimpleSearcherSettings settings;
 
-        public event EventHandler SuggestionAccepted;
+        public event EventHandler<AutoCompleteEventArgs> SuggestionAccepted;
+        public event EventHandler InputEnded;
 
         [ContractInvariantMethod]
         void ObjectInvariant()
         {
             Contract.Invariant(FullString.Length >= ItemsChain.Length);
         }
+
+        public ReadOnlyObservableCollection<T> Items { get; private set; }
 
         public char DelimSpacer
         {
@@ -181,12 +185,11 @@ namespace Diagnosis.App.ViewModels
                 {
                     if (IsItemCompleted || Suggestions.Count == 0)
                     {
-                        CheckItems();
-                        Reset();
+                        OnInputEnded();
                     }
                     else
                     {
-                        AcceptSuggestion();
+                        AcceptSuggestion(Suggestions[SelectedIndex]);
                     }
                 }));
             }
@@ -227,7 +230,7 @@ namespace Diagnosis.App.ViewModels
             {
                 Console.WriteLine("дописываем символ к слову");
                 // дописываем символ к слову
-                UncheckLastItem();
+                RemoveLastItem();
                 IsItemCompleted = false;
             }
 
@@ -242,7 +245,7 @@ namespace Diagnosis.App.ViewModels
             {
                 Console.WriteLine("удаляем последний символ");
                 // удаляем последний символ
-                UncheckLastItem();
+                RemoveLastItem();
                 IsItemCompleted = false;
                 SetSearchContext();
             }
@@ -285,6 +288,7 @@ namespace Diagnosis.App.ViewModels
             OnPropertyChanged("Suggestions");
             SelectedIndex = 0;
         }
+
         /// <summary>
         /// Добавляет элемент в коллекцию.
         /// </summary>
@@ -315,34 +319,37 @@ namespace Diagnosis.App.ViewModels
         /// <summary>
         /// Принимает предложение.
         /// </summary>
-        private void AcceptSuggestion()
+        private void AcceptSuggestion(T acceptedItem)
         {
-            AddItem(Suggestions[SelectedIndex]);
+            AddItem(acceptedItem);
 
             settingFullStringFromCode = true;
             FullString = ItemsChain;
             settingFullStringFromCode = false;
 
+            OnSuggestionAccepted(acceptedItem);
+        }
+
+        private void OnSuggestionAccepted(T acceptedItem)
+        {
             var h = SuggestionAccepted;
+            if (h != null)
+            {
+                h(this, new AutoCompleteEventArgs(acceptedItem));
+            }
+        }
+
+        private void OnInputEnded()
+        {
+            var h = InputEnded;
             if (h != null)
             {
                 h(this, EventArgs.Empty);
             }
         }
-        /// <summary>
-        /// Отмечает элементы из коллекции.
-        /// </summary>
-        private void CheckItems()
-        {
-            foreach (var item in items)
-            {
-                item.IsChecked = true;
-            }
-        }
 
-        private void UncheckLastItem()
+        private void RemoveLastItem()
         {
-            items.Last().IsChecked = false;
             items.RemoveAt(items.Count - 1);
         }
 
@@ -360,9 +367,19 @@ namespace Diagnosis.App.ViewModels
             this.settings = settings;
             this.separator = separator;
 
-            items = new List<T>();
+            items = new ObservableCollection<T>();
+            Items = new ReadOnlyObservableCollection<T>(items);
             Suggestions = new ObservableCollection<T>();
             Reset();
+        }
+    }
+    public class AutoCompleteEventArgs : EventArgs
+    {
+        public readonly object item;
+        [DebuggerStepThrough]
+        public AutoCompleteEventArgs(object item)
+        {
+            this.item = item;
         }
     }
 }

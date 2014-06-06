@@ -12,22 +12,18 @@ namespace Diagnosis.App.Controls
     public partial class AutoComplete : UserControl
     {
         private bool focusFromPopup;
-
-        private IAutoComplete vm
-        {
-            get
-            {
-                return autocomplete.DataContext as IAutoComplete;
-            }
-        }
+        IAutoComplete vm;
 
         public AutoComplete()
         {
             InitializeComponent();
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            if (vm != null)
+                vm.SuggestionAccepted -= vm_SuggestionAccepted;
+            vm = DataContext as IAutoComplete;
             if (vm != null)
                 vm.SuggestionAccepted += vm_SuggestionAccepted;
         }
@@ -92,7 +88,7 @@ namespace Diagnosis.App.Controls
             popup.IsOpen = false;
         }
 
-        private void vm_SuggestionAccepted(object sender, System.EventArgs e)
+        private void vm_SuggestionAccepted(object sender, AutoCompleteEventArgs e)
         {
             input.CaretIndex = input.Text.Length;
             RefreshPopup();

@@ -6,7 +6,7 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             Loaded="UserControl_Loaded">
+             DataContextChanged="UserControl_DataContextChanged">
     <UserControl.Resources>
         <DataTemplate x:Key="DiagnosisTemplate">
             <DockPanel MouseUp="DockPanel_MouseUp">

@@ -5,6 +5,7 @@ using EventAggregator;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -14,7 +15,7 @@ namespace Diagnosis.App.ViewModels
     {
         internal readonly HealthRecord healthRecord;
         private AutoCompleteBoxViewModel _autoComplete;
-        private AutoCompleteBase<WordViewModel> _autoComplete2;
+        private static AutoCompleteBase<WordViewModel> _autoComplete2;
         private PopupSearch<DiagnosisViewModel> _diagnosisSearch;
         private DateOffset _dateOffset;
         private List<EventMessageHandler> msgHandlers;
@@ -315,14 +316,72 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public ReadOnlyObservableCollection<WordViewModel> Words { get { return AutoCompleteStatic.Items; } }
+
         public AutoCompleteBase<WordViewModel> AutoComplete2
         {
             get
             {
-                return _autoComplete2 ?? (_autoComplete2 = new WordCompositeAutoComplete(
-                    QuerySeparator.Default,
-                    new SimpleSearcherSettings() { AllChildren = true }));
+                return AutoCompleteStatic;
             }
+        }
+
+        public static AutoCompleteBase<WordViewModel> AutoCompleteStatic
+        {
+            get
+            {
+                return _autoComplete2;
+            }
+            set
+            {
+                if (_autoComplete2 != value)
+                {
+                    _autoComplete2 = value;
+                }
+            }
+        }
+
+        void CreateAutoCompleteBase()
+        {
+            if (AutoCompleteStatic != null)
+            {
+                AutoCompleteStatic.SuggestionAccepted -= AutoComplete2_SuggestionAccepted;
+                ((INotifyCollectionChanged)AutoCompleteStatic.Items).CollectionChanged -= AutoCompleteItems_CollectionChanged;
+            }
+            AutoCompleteStatic = new WordCompositeAutoComplete(
+                   QuerySeparator.Default,
+                   new SimpleSearcherSettings() { AllChildren = true });
+            AutoCompleteStatic.SuggestionAccepted += AutoComplete2_SuggestionAccepted;
+            ((INotifyCollectionChanged)AutoCompleteStatic.Items).CollectionChanged += AutoCompleteItems_CollectionChanged;
+
+            OnPropertyChanged(() => AutoComplete2);
+            OnPropertyChanged(() => Words);
+        }
+
+
+
+        void AutoCompleteItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            Console.WriteLine("items changed");
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (WordViewModel item in e.NewItems)
+                {
+                    item.IsChecked = true;
+                }
+            }
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (WordViewModel item in e.OldItems)
+                {
+                    item.IsChecked = false;
+                }
+            }
+        }
+
+        void AutoComplete2_SuggestionAccepted(object sender, AutoCompleteEventArgs e)
+        {
+            // ((WordViewModel)e.item).IsChecked = true;
         }
 
         public PopupSearch<DiagnosisViewModel> DiagnosisSearch
@@ -364,9 +423,9 @@ namespace Diagnosis.App.ViewModels
                 }
                 currentHr.UnsubscribeCheckedChanges();
             }
-
             if (currentHr != this)
             {
+                CreateAutoCompleteBase();
                 this.SubscribeToCheckedChanges();
             }
 
