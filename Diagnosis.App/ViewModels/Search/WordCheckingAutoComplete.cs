@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Core;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -13,8 +14,8 @@ namespace Diagnosis.App.ViewModels
             item.IsChecked = true;
         }
 
-        public WordCheckingAutoComplete(QuerySeparator separator, SimpleSearcherSettings settings)
-            : base(separator, settings)
+        public WordCheckingAutoComplete(QuerySeparator separator, SimpleSearcherSettings settings, IEnumerable<WordViewModel> initItems = null)
+            : base(separator, settings, initItems)
         { }
     }
 }

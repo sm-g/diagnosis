@@ -22,16 +22,10 @@
         <Style TargetType="Label" BasedOn="{StaticResource label90}" />
     </UserControl.Resources>
     <StackPanel>
-        <controls:AutoComplete DataContext="{Binding AutoComplete2}" />
+        <controls:AutoComplete DataContext="{Binding AutoComplete}" />
         <DockPanel Visibility="{Binding Symptom.Words.Count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
-            <TextBlock DockPanel.Dock="Top">Слова:</TextBlock>
-            <ListView ItemsSource="{Binding Symptom.Words}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <controls:TreeItem />
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <TextBlock DockPanel.Dock="Left" Text="Слова: " />
+            <controls:CommaList ItemsSource="{Binding Symptom.Words}" />
         </DockPanel>
 
         <DockPanel>

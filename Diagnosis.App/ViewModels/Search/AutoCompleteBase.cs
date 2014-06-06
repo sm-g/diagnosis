@@ -51,7 +51,7 @@ namespace Diagnosis.App.ViewModels
         }
 
         /// <summary>
-        /// Завершенность слова, true, после ввода или удаления разделителя или подтверждения выбранного предположения.
+        /// Завершенность слова, true, после ввода разделителя или добавления элемента.
         /// </summary>
         public bool IsItemCompleted
         {
@@ -269,6 +269,23 @@ namespace Diagnosis.App.ViewModels
                 // удаляем не последний символ слова
             }
         }
+
+        /// <summary>
+        /// Добавляет элемент в коллекцию.
+        /// </summary>
+        private void AddItem(T item)
+        {
+            Console.WriteLine("AutoCompleteBase. add {0}", item);
+            BeforeAddItem(item);
+
+            items.Add(item);
+            IsItemCompleted = true;
+        }
+        private void RemoveLastItem()
+        {
+            items.RemoveAt(items.Count - 1);
+        }
+
         private void MakeSuggestions()
         {
             EntityManagers.WordsManager.WipeUnsaved();
@@ -289,23 +306,12 @@ namespace Diagnosis.App.ViewModels
         }
 
         /// <summary>
-        /// Добавляет элемент в коллекцию.
-        /// </summary>
-        private void AddItem(T item)
-        {
-            Console.WriteLine("AutoCompleteBase. add {0}", item);
-            BeforeAddItem(item);
-
-            items.Add(item);
-            IsItemCompleted = true;
-        }
-        /// <summary>
         /// Меняет поисковик, для поиска по последнему элементу.
         /// </summary>
-        private void SetSearchContext()
+        private void SetSearchContext(bool withInitItems = false)
         {
             var i = items.Count - 1;
-            if (IsItemCompleted)
+            if (IsItemCompleted && !withInitItems)
             {
                 i--;
             }
@@ -322,14 +328,19 @@ namespace Diagnosis.App.ViewModels
         {
             AddItem(acceptedItem);
 
-            settingFullStringFromCode = true;
-            FullString = ItemsChain;
-            settingFullStringFromCode = false;
+            MakeFullStringFromItems();
 
             OnSuggestionAccepted(acceptedItem);
         }
 
-        private void OnSuggestionAccepted(T acceptedItem)
+        private void MakeFullStringFromItems()
+        {
+            settingFullStringFromCode = true;
+            FullString = ItemsChain;
+            settingFullStringFromCode = false;
+        }
+
+        protected virtual void OnSuggestionAccepted(T acceptedItem)
         {
             var h = SuggestionAccepted;
             if (h != null)
@@ -338,7 +349,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private void OnInputEnded()
+        protected virtual void OnInputEnded()
         {
             var h = InputEnded;
             if (h != null)
@@ -346,12 +357,6 @@ namespace Diagnosis.App.ViewModels
                 h(this, EventArgs.Empty);
             }
         }
-
-        private void RemoveLastItem()
-        {
-            items.RemoveAt(items.Count - 1);
-        }
-
         protected virtual void BeforeAddItem(T item)
         {
         }
@@ -360,16 +365,31 @@ namespace Diagnosis.App.ViewModels
 
         protected abstract string GetQueryString(T item);
 
-        public AutoCompleteBase(QuerySeparator separator, SimpleSearcherSettings settings)
+
+        public AutoCompleteBase(QuerySeparator separator, SimpleSearcherSettings settings, IEnumerable<T> initItems = null)
         {
             Contract.Requires(separator != null);
             this.settings = settings;
             this.separator = separator;
 
-            items = new ObservableCollection<T>();
+            bool withInitItems = initItems != null && initItems.Count() > 0;
+
+            if (withInitItems)
+            {
+                items = new ObservableCollection<T>(initItems);
+                IsItemCompleted = true;
+            }
+            else
+            {
+                items = new ObservableCollection<T>();
+            }
+
             Items = new ReadOnlyObservableCollection<T>(items);
             Suggestions = new ObservableCollection<T>();
-            Reset();
+
+            MakeFullStringFromItems();
+
+            SetSearchContext(withInitItems);
         }
     }
     public class AutoCompleteEventArgs : EventArgs

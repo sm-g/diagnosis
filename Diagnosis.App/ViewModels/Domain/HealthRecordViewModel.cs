@@ -307,24 +307,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public AutoCompleteBoxViewModel AutoComplete
-        {
-            get
-            {
-                return _autoComplete ?? (_autoComplete = new AutoCompleteBoxViewModel(
-                    QuerySeparator.Default));
-            }
-        }
-
-        public ReadOnlyObservableCollection<WordViewModel> Words { get { return AutoCompleteStatic.Items; } }
-
-        public AutoCompleteBase<WordViewModel> AutoComplete2
-        {
-            get
-            {
-                return AutoCompleteStatic;
-            }
-        }
+        #region AutoComplete
 
         public static AutoCompleteBase<WordViewModel> AutoCompleteStatic
         {
@@ -341,28 +324,28 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        void CreateAutoCompleteBase()
+        public AutoCompleteBase<WordViewModel> AutoComplete { get { return AutoCompleteStatic; } }
+
+        private void CreateAutoCompleteBase()
         {
             if (AutoCompleteStatic != null)
             {
-                AutoCompleteStatic.SuggestionAccepted -= AutoComplete2_SuggestionAccepted;
                 ((INotifyCollectionChanged)AutoCompleteStatic.Items).CollectionChanged -= AutoCompleteItems_CollectionChanged;
             }
+
+            IEnumerable<WordViewModel> initialWords = Symptom != null ? Symptom.Words : null;
             AutoCompleteStatic = new WordCompositeAutoComplete(
                    QuerySeparator.Default,
-                   new SimpleSearcherSettings() { AllChildren = true });
-            AutoCompleteStatic.SuggestionAccepted += AutoComplete2_SuggestionAccepted;
+                   new SimpleSearcherSettings() { AllChildren = true },
+                   initialWords);
+
             ((INotifyCollectionChanged)AutoCompleteStatic.Items).CollectionChanged += AutoCompleteItems_CollectionChanged;
-            OnPropertyChanged(() => AutoComplete2);
-            OnPropertyChanged(() => Words);
+
+            OnPropertyChanged(() => AutoComplete);
         }
 
-
-
-        void AutoCompleteItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void AutoCompleteItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            Console.WriteLine("items changed");
-
             HashSet<WordViewModel> words;
 
             if (Symptom != null)
@@ -389,10 +372,7 @@ namespace Diagnosis.App.ViewModels
             healthRecord.Symptom = Symptom.symptom;
         }
 
-        void AutoComplete2_SuggestionAccepted(object sender, AutoCompleteEventArgs e)
-        {
-            // ((WordViewModel)e.item).IsChecked = true;
-        }
+        #endregion AutoComplete
 
         public PopupSearch<DiagnosisViewModel> DiagnosisSearch
         {
@@ -447,8 +427,6 @@ namespace Diagnosis.App.ViewModels
         private void CheckInCurrent()
         {
             makingCurrent = true;
-            if (Symptom != null)
-                EntityManagers.WordsManager.CheckThese(Symptom.Words);
             EntityManagers.DiagnosisManager.Check(Diagnosis);
             makingCurrent = false;
         }
