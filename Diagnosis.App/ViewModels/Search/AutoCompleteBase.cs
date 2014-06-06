@@ -64,7 +64,7 @@ namespace Diagnosis.App.ViewModels
                 if (_isItemCompleted != value)
                 {
                     _isItemCompleted = value;
-                    Console.WriteLine("IsItemCompleted = {0}", value);
+                    Console.WriteLine("AutoCompleteBase. IsItemCompleted = {0}", value);
                     OnPropertyChanged("IsItemCompleted");
                 }
             }
@@ -102,7 +102,7 @@ namespace Diagnosis.App.ViewModels
                     }
                     catch (System.Exception e)
                     {
-                        Console.WriteLine("FullString setter error: {0}", e.Message);
+                        Console.WriteLine("AutoCompleteBase. FullString setter error: {0}", e.Message);
                     }
 
                     OnPropertyChanged("FullString");
@@ -122,7 +122,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     chain = chain.Substring(0, chain.Length - separator.DelimGroup.Length);
                 }
-                Console.WriteLine("Get ItemsChain: '{0}'", chain);
+                Console.WriteLine("AutoCompleteBase. Get ItemsChain: '{0}'", chain);
                 return chain;
             }
         }
@@ -150,7 +150,7 @@ namespace Diagnosis.App.ViewModels
                     last = FullString.Substring(ItemsChain.Length + delimOffset);
                 }
 
-                Console.WriteLine("fullstring '{1}'. Get lastpart: '{0}'", last, FullString);
+                Console.WriteLine("AutoCompleteBase. Fullstring '{1}'. Get lastpart: '{0}'", last, FullString);
                 return last;
             }
         }
@@ -174,8 +174,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
         /// <summary>
-        /// Ввод. Если элемент завершён, отмечает все элементы из коллекции, 
-        /// иначе принимает выбранное предложение.
+        /// Если элемент завершён, завершает ввод, иначе принимает выбранное предложение.
         /// </summary>
         public ICommand EnterCommand
         {
@@ -215,11 +214,11 @@ namespace Diagnosis.App.ViewModels
                 // добавляем разделитель
                 if (IsItemCompleted)
                 {
-                    Console.WriteLine("добавляем разделитель, слово было завершено");
+                    Console.WriteLine("AutoCompleteBase. добавляем разделитель, слово было завершено");
                 }
                 else
                 {
-                    Console.WriteLine("добавляем разделитель, слово не было завершено");
+                    Console.WriteLine("AutoCompleteBase. добавляем разделитель, слово не было завершено");
                     AddItem(Suggestions[SelectedIndex]);
                     trimed = ItemsChain + separator.DelimGroup;
                 }
@@ -228,7 +227,7 @@ namespace Diagnosis.App.ViewModels
             }
             else if (IsItemCompleted)
             {
-                Console.WriteLine("дописываем символ к слову");
+                Console.WriteLine("AutoCompleteBase. дописываем символ к слову");
                 // дописываем символ к слову
                 RemoveLastItem();
                 IsItemCompleted = false;
@@ -243,7 +242,7 @@ namespace Diagnosis.App.ViewModels
         {
             if (IsItemCompleted)
             {
-                Console.WriteLine("удаляем последний символ");
+                Console.WriteLine("AutoCompleteBase. удаляем последний символ");
                 // удаляем последний символ
                 RemoveLastItem();
                 IsItemCompleted = false;
@@ -253,20 +252,20 @@ namespace Diagnosis.App.ViewModels
             {
                 if (FullString.LastOrDefault() == separator.Delimiter)
                 {
-                    Console.WriteLine("удаляем разделитель");
+                    Console.WriteLine("AutoCompleteBase. удаляем разделитель");
                     // удаляем разделитель
                     IsItemCompleted = true;
                     SetSearchContext();
                 }
                 else
                 {
-                    Console.WriteLine("удаляем разделительный пробел");
+                    Console.WriteLine("AutoCompleteBase. удаляем разделительный пробел");
                     // удаляем разделительный пробел
                 }
             }
             else
             {
-                Console.WriteLine("удаляем не последний символ слова");
+                Console.WriteLine("AutoCompleteBase. удаляем не последний символ слова");
                 // удаляем не последний символ слова
             }
         }
@@ -283,7 +282,7 @@ namespace Diagnosis.App.ViewModels
             {
                 query = GetQueryString(items[items.Count - 1]);
             }
-            Console.WriteLine("query: {0}", query);
+            Console.WriteLine("AutoCompleteBase. query: {0}", query);
             Suggestions = new ObservableCollection<T>(searcher.Search(query));
             OnPropertyChanged("Suggestions");
             SelectedIndex = 0;
@@ -294,7 +293,7 @@ namespace Diagnosis.App.ViewModels
         /// </summary>
         private void AddItem(T item)
         {
-            Console.WriteLine("add {0}", item);
+            Console.WriteLine("AutoCompleteBase. add {0}", item);
             BeforeAddItem(item);
 
             items.Add(item);

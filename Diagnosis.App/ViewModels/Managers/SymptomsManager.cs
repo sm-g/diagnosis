@@ -29,7 +29,7 @@ namespace Diagnosis.App.ViewModels
                 s => words.IsSubsetOf(s.Words));
         }
         /// <summary>
-        /// Создает симптом и добавляет в коллекцию Symptoms, если требуется.
+        /// Создает симптом и добавляет в коллекцию Symptoms, если его там ещё нет.
         /// </summary>
         public SymptomViewModel Create(IEnumerable<WordViewModel> words)
         {
