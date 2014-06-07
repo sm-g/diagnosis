@@ -20,16 +20,16 @@
         <StackPanel>
             <StackPanel x:Name="description">
                 <TextBlock>
-                    <TextBlock Text="{Binding Start, StringFormat='{}с {0:d}'}" />
-                    <TextBlock Text="{Binding End, StringFormat='{}по {0:d}', TargetNullValue=''}" />
+                    <Run>
+                         <MultiBinding Converter="{StaticResource DateIntervalLabel}">
+                            <Binding Path="Start" Mode="OneWay" />
+                            <Binding Path="End" Mode="OneWay" />
+                        </MultiBinding>
+                    </Run>
                 </TextBlock>
-                <TextBlock Text="{Binding LeadDoctor, Converter={StaticResource ManToShortName}, StringFormat='{} доктор {0}'}" />
+                <TextBlock Text="{Binding LeadDoctor, Converter={StaticResource ManToShortName}, StringFormat='{}доктор {0}'}"
+                           Visibility="{Binding IsDoctorCurrent,Converter={StaticResource NegBooleanToVisibilityConverter}}" />
             </StackPanel>
-            <TextBlock Visibility="{Binding Appointments.Count, Converter={StaticResource CountToVisibility}}">
-                <TextBlock Text="{Binding Appointments.Count}" />
-                <TextBlock Text="{Binding Appointments.Count, Converter={StaticResource CountToAppLabel}}" /><TextBlock Text="{Binding LastAppointment.DateTime, StringFormat='{}, последний {0:d}'}"
-                           Visibility="{Binding Appointments.Count, Converter={StaticResource CountToVisibility}, ConverterParameter=3}" />
-            </TextBlock>
         </StackPanel>
 
         <Button Command="{Binding Editable.DeleteCommand}"

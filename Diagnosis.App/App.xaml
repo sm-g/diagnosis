@@ -19,6 +19,8 @@
         <conv:ManToShortName x:Key="ManToShortName" />
         <conv:EqualityToBoolConverter x:Key="EqualityToBool" />
         <conv:IsLastItem x:Key="IsLastItem" />
+        <conv:DateIntervalLabel x:Key="DateIntervalLabel" />
+        <conv:DateLabel x:Key="DateLabel" />
 
         <s:Boolean x:Key="True">True</s:Boolean>
         <s:Boolean x:Key="False">False</s:Boolean>

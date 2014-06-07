@@ -57,8 +57,20 @@
                     <StackPanel Orientation="Horizontal"
                                 Visibility="{Binding AppDateVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <TextBlock Text="дата приёма"></TextBlock>
-                        <TextBlock Text="{Binding AppDateGt, StringFormat='{} от {0:d}', TargetNullValue=''}" />
-                        <TextBlock Text="{Binding AppDateLt, StringFormat='{} до {0:d}', TargetNullValue=''}" />
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource DateIntervalLabel}">
+                                    <Binding Path="AppDateGt" Mode="OneWay"/>
+                                    <Binding Path="AppDateLt" Mode="OneWay"/>
+                                    <MultiBinding.ConverterParameter>
+                                        <x:ArrayExtension Type="s:String">
+                                            <s:String>от</s:String>
+                                            <s:String>до</s:String>
+                                        </x:ArrayExtension>
+                                    </MultiBinding.ConverterParameter>
+                                </MultiBinding>                                
+                            </TextBlock.Text>
+                        </TextBlock>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
                                 Visibility="{Binding HrDateVisible, Converter={StaticResource BooleanToVisibilityConverter}}">

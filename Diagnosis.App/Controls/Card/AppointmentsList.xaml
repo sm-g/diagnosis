@@ -41,7 +41,7 @@
                             Visibility="{Binding Editable.CanBeDeleted, Converter={StaticResource BooleanToVisibilityConverter}}">×</Button>
 
                         <DockPanel DockPanel.Dock="Top" MinWidth="150">
-                            <TextBlock Text="{Binding DateTime, StringFormat='{}{0:d}'}" />
+                            <TextBlock Text="{Binding DateTime, Converter={StaticResource DateLabel}}" />
                             <TextBlock Text="{Binding Doctor, Converter={StaticResource ManToShortName}, StringFormat='{}доктор {0}'}"
                                        HorizontalAlignment="Right"
                                        Visibility="{Binding IsDoctorFromCourse, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
