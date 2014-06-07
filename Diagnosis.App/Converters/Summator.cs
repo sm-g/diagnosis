@@ -16,9 +16,12 @@ namespace Diagnosis.App.Converters
                 return null;
             var a = (double)value;
 
-            double b = 0;
-            double.TryParse(parameter as string, out b);
-            if (a > b)
+            double b = parameter is double ? (double)parameter : 0;
+
+            if (parameter is string)
+                double.TryParse(parameter as string, out b);
+
+            if (a + b > 0)
                 return a + b;
             return 0; // no negative values
         }

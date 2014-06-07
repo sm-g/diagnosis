@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="Diagnosis.App.Controls.Card.AppointmentsTabs"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:Diagnosis.App.Controls"
+             xmlns:card="clr-namespace:Diagnosis.App.Controls.Card"
+             xmlns:vm="clr-namespace:Diagnosis.App.ViewModels"
+             mc:Ignorable="d"
+             d:DesignHeight="50" d:DesignWidth="300">
+    <UserControl.Resources>
+        <InputBindingCollection x:Shared="False" x:Key="AppInputBindings">
+            <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
+            <KeyBinding Key="Delete" Command="{Binding Editable.DeleteCommand}" />
+        </InputBindingCollection>
+
+        <DataTemplate DataType="{x:Type vm:AppointmentViewModel}">
+            <card:Appointment Margin="10" />
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <TabControl x:Name="appointments" 
+                    ItemsSource="{Binding Appointments}" 
+                    SelectedItem="{Binding SelectedAppointment}">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid Style="{StaticResource gridIsDirty}" >
+                        <DockPanel MinWidth="70">
+                            <TextBlock Text="{Binding DateTime, Converter={StaticResource DateLabel}}" 
+                                       DockPanel.Dock="Top" />
+                            <TextBlock Text="{Binding Doctor, Converter={StaticResource ManToShortName}, StringFormat='{}доктор {0}'}"
+                                       HorizontalAlignment="Right"
+                                       Visibility="{Binding IsDoctorFromCourse, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
+                        </DockPanel>
+                    </Grid>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            
+        </TabControl>
+
+        <Button Command="{Binding AddAppointmentCommand}"
+                Margin="3"
+                Padding="3"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Visibility="{Binding IsEnded, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+            + осмотр</Button>
+    </Grid>
+</UserControl>

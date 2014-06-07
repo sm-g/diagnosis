@@ -313,34 +313,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        /// <summary>
-        /// Для сохранения при выходе из редактора.
-        /// При обратном переходе может редактироваться запись — не сохраняем.
-        /// </summary>
-        public virtual bool EditorActive
-        {
-            get
-            {
-                return Editable.IsEditorActive;
-            }
-            set
-            {
-                if (Editable.IsEditorActive != value)
-                {
-                    if (value)
-                    {
-                        Editable.IsEditorActive = true;
-                    }
-                    else
-                    {
-                        Editable.Commit();
-                        Editable.IsEditorActive = false;
-                    }
-                    OnPropertyChanged("EditorActive");
-                }
-            }
-        }
-
         public bool NoCourses
         {
             get
@@ -378,6 +350,19 @@ namespace Diagnosis.App.ViewModels
             CoursesManager.Courses.CollectionChanged += (s, e) =>
             {
                 OnPropertyChanged("NoCourses");
+            };
+            Editable.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "IsEditorActive")
+                {
+                    // Для сохранения при выходе из редактора.
+                    // При обратном переходе может редактироваться запись — не сохраняем.
+                    if (!Editable.IsEditorActive)
+                    {
+                        Editable.Commit();
+                        Editable.IsEditorActive = false;
+                    }
+                }
             };
         }
 

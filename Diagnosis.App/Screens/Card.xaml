@@ -10,10 +10,21 @@
              x:Name="root"
              d:DesignHeight="400" d:DesignWidth="500">
     <UserControl.Resources>
-        <InputBindingCollection x:Shared="False" x:Key="CourseInputBindings">
-            <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
-            <KeyBinding Key="Delete" Command="{Binding Editable.DeleteCommand}" />
-        </InputBindingCollection>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/TabControl.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <InputBindingCollection x:Shared="False" x:Key="CourseInputBindings">
+                <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
+                <KeyBinding Key="Delete" Command="{Binding Editable.DeleteCommand}" />
+            </InputBindingCollection>
+
+            <Style x:Key="areaButton" TargetType="Button">
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -25,7 +36,12 @@
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
-        <TabControl x:Name="tabControl" Padding="0" Grid.ColumnSpan="2"  Grid.RowSpan="2">
+        <TabControl x:Name="tabControl"
+                    Padding="0"
+                    Grid.ColumnSpan="2"
+                    Grid.RowSpan="2"
+                    BorderThickness="1,0,0,0"
+                    TabStripPlacement="Left">
             <TabControl.Resources>
                 <ResourceDictionary>
                     <ResourceDictionary.MergedDictionaries>
@@ -33,76 +49,111 @@
                     </ResourceDictionary.MergedDictionaries>
                 </ResourceDictionary>
             </TabControl.Resources>
-            <TabItem x:Name="editorTab" IsSelected="{Binding EditorActive, Mode=TwoWay}">
+            <TabItem x:Name="editorTab" IsSelected="{Binding Editable.IsEditorActive, Mode=TwoWay}">
                 <TabItem.Header>
-                    <card:PatientHeader />
+                    <TextBlock Style="{StaticResource verticalTextBlock}"
+                               Width="{Binding ActualHeight, ElementName=patientHeader, Converter={StaticResource SummatorConverter}, ConverterParameter=10}">Пациент</TextBlock>
                 </TabItem.Header>
-                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="10">
-                    <StackPanel>
-                        <editors:PatientEditor />
+                <DockPanel Margin="10">
+                    <Button DockPanel.Dock="Top"
+                            HorizontalAlignment="Left"
+                            Command="{Binding Editable.EditCommand}"
+                            Margin="0,0,0,5"
+                            Style="{StaticResource areaButton}"
+                            ToolTip="Открыть записи пациента">
+                        <card:PatientHeader x:Name="patientHeader" Padding="5,0,5,0" />
+                    </Button>
 
-                        <Separator />
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <editors:PatientEditor />
 
-                        <editors:PropertiesChooser Margin="0,5" />
-                    </StackPanel>
-                </ScrollViewer>
+                            <Separator />
+
+                            <editors:PropertiesChooser Margin="0,5" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </DockPanel>
             </TabItem>
             <TabItem x:Name="recordsTab"
-                     Header="Записи"
-                     IsSelected="{Binding EditorActive, Mode=TwoWay, Converter={StaticResource NegateBoolean}}"
+                     IsSelected="{Binding Editable.IsEditorActive, Mode=TwoWay, Converter={StaticResource NegateBoolean}}"
                      Visibility="{Binding IsUnsaved, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-                <DockPanel>
-                    <card:AppointmentsList DataContext="{Binding CoursesManager.SelectedCourse}"
+                <TabItem.Header>
+                    <TextBlock Style="{StaticResource verticalTextBlock}" Width="50">Записи</TextBlock>
+                </TabItem.Header>
+                <DockPanel Margin="10">
+                    <Grid DockPanel.Dock="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Button DockPanel.Dock="Top"
+                            HorizontalAlignment="Left"
+                            Command="{Binding Editable.EditCommand}"
+                            Margin="0,0,0,5"
+                            Style="{StaticResource areaButton}"
+                            ToolTip="Редактировать данные пациента">
+                            <card:PatientHeader Padding="5,0,5,0" />
+                        </Button>
+
+                        <Grid x:Name="courses" Grid.Column="1" VerticalAlignment="Top">
+                            <Grid.Resources>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource barButton}" />
+                            </Grid.Resources>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="150" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="Курс"
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding NoCourses, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
+
+                            <TextBlock Grid.ColumnSpan="2"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Right"
+                                       Margin="0,0,10,0"
+                                       Visibility="{Binding NoCourses, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                       Text="У пациента нет курсов" />
+
+                            <ComboBox ItemsSource="{Binding CoursesManager.Courses}"
+                                      Margin="10,0,10,0"
+        			                  SelectedItem="{Binding CoursesManager.SelectedCourse}"
+                                      Visibility="{Binding NoCourses, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+        			                  Grid.Column="1">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <card:Course />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+
+                            <Button Command="{Binding CurrentDoctor.StartCourseCommand}"
+        			                CommandParameter="{Binding}"
+                                    Content="Начать курс"
+                                    Grid.Column="2" />
+                        </Grid>
+                    </Grid>
+
+                    <!--<card:AppointmentsList DataContext="{Binding CoursesManager.SelectedCourse}"
         				                   DockPanel.Dock="Top"
         				                   Margin="10,10,10,0"
+                                           Visibility="{Binding DataContext.NoCourses, ElementName=root, Converter={StaticResource NegBooleanToVisibilityConverter}}" />-->
+
+                    <card:AppointmentsTabs DataContext="{Binding CoursesManager.SelectedCourse}"
+        				                   DockPanel.Dock="Top"
                                            Visibility="{Binding DataContext.NoCourses, ElementName=root, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
-                    <card:Appointment DataContext="{Binding CoursesManager.SelectedCourse.SelectedAppointment}"
-        				              Margin="10"
-                                      Visibility="{Binding DataContext.NoCourses, ElementName=root, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
                 </DockPanel>
             </TabItem>
         </TabControl>
-        <StackPanel Grid.Column="1" Style="{StaticResource buttonsBar}">
+        <StackPanel Grid.Column="1" Style="{StaticResource buttonsBar}" Margin="0,10,0,0">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource barButton}" />
             </StackPanel.Resources>
-            <Grid Visibility="{Binding CanAddFirstHr, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="150" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
 
-                <TextBlock Text="Курс"
-                           VerticalAlignment="Center"
-                           Visibility="{Binding NoCourses, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
-
-                <TextBlock Grid.ColumnSpan="2"
-        			       VerticalAlignment="Center"
-        			       HorizontalAlignment="Right"
-                           Margin="0,0,10,0"
-        	        	   Visibility="{Binding NoCourses, Converter={StaticResource BooleanToVisibilityConverter}}"
-                           Text="У пациента нет курсов" />
-
-                <ComboBox ItemsSource="{Binding CoursesManager.Courses}"
-                          Margin="10,0,10,0"
-        			      SelectedItem="{Binding CoursesManager.SelectedCourse}"
-                          Visibility="{Binding NoCourses, Converter={StaticResource NegBooleanToVisibilityConverter}}"
-        			      Grid.Column="1">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <card:Course />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-
-                <Button Command="{Binding CurrentDoctor.StartCourseCommand}"
-        			    CommandParameter="{Binding}"
-                        Content="Начать курс"
-                        Grid.Column="2" />
-            </Grid>
             <Button Command="{Binding FirstHrCommand}" Content="Добавить запись" HorizontalAlignment="Left" Visibility="{Binding CanAddFirstHr, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
         </StackPanel>
     </Grid>
 </UserControl>
