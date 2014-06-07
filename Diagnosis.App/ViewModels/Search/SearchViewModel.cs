@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Core;
+using Diagnosis.Models;
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
@@ -6,7 +7,9 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Windows.Input;
 using Diagnosis.App.Messaging;
+using System.Linq.Expressions;
 using System.Linq;
+using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -23,6 +26,7 @@ namespace Diagnosis.App.ViewModels
         private DateOffset _hrDateOffsetLower;
         private DateOffset _hrDateOffsetUpper;
         private RelayCommand _searchCommand;
+        private RelayCommand<PatientViewModel> _openPatientCommand;
         private bool _controlsVisible;
 
         private bool searchWas;
@@ -49,7 +53,7 @@ namespace Diagnosis.App.ViewModels
 
         void SearchViewModel_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-       //     throw new NotImplementedException();
+            //     throw new NotImplementedException();
         }
 
         #region Options bindings
@@ -346,8 +350,10 @@ namespace Diagnosis.App.ViewModels
                                           {
                                               Results.Clear();
                                               var options = GetOptions();
-                                              searcher.Search(options).
-                                                  ForAll(hr => Results.Add(new HrSearchResultViewModel(hr, options)));
+                                              var hrs = searcher.Search(options);
+                                              // только одна запись из осмотра
+                                              hrs.Distinct(new KeyEqualityComparer<HealthRecord, Appointment>(hr => hr.Appointment))
+                                                  .ForAll(hr => Results.Add(new HrSearchResultViewModel(hr, options)));
 
                                               searchWas = true;
                                               ControlsVisible = false;
@@ -356,6 +362,19 @@ namespace Diagnosis.App.ViewModels
                                           }, () => !AllEmpty));
             }
         }
+        public ICommand OpenPatientCommand
+        {
+            get
+            {
+                return _openPatientCommand
+                    ?? (_openPatientCommand = new RelayCommand<PatientViewModel>(
+                                          p =>
+                                          {
+                                              EntityManagers.PatientsManager.CurrentPatient = p;
+                                          }));
+            }
+        }
+
 
         public AutoCompleteBase<WordViewModel> WordSearch
         {

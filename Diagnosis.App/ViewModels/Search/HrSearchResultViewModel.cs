@@ -25,11 +25,11 @@ namespace Diagnosis.App.ViewModels
         }
 
 
-        public Patient Patient
+        public PatientViewModel Patient
         {
             get
             {
-                return hr.Appointment.Course.Patient;
+                return EntityManagers.PatientsManager.GetByModel(hr.Appointment.Course.Patient);
             }
         }
 
@@ -64,7 +64,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public ICommand OpenHealthRecord
+        public ICommand OpenHealthRecordCommand
         {
             get
             {

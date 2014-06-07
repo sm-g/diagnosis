@@ -27,6 +27,12 @@
                 <Setter Property="DockPanel.Dock" Value="Top" />
                 <Setter Property="Margin" Value="0,0,0,2" />
             </Style>
+
+            <CollectionViewSource x:Key="resultsView" Source="{Binding Results}">
+                <CollectionViewSource.GroupDescriptions>
+                    <PropertyGroupDescription PropertyName="Patient"/> 
+                </CollectionViewSource.GroupDescriptions>
+            </CollectionViewSource>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -171,18 +177,32 @@
         </Expander>
 
         <ListView x:Name="results" Grid.Row="2" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,0,0,10"
-                      ItemsSource="{Binding Results}"
+                      ItemsSource="{Binding Source={StaticResource resultsView}}"
                       Style="{StaticResource list}"
                       HorizontalContentAlignment="Stretch"
-                      Visibility="{Binding Results.Count, Converter={StaticResource CountToVisibility}}">
+                      Visibility="{Binding Items.Count, RelativeSource={RelativeSource Self}, Converter={StaticResource CountToVisibility}}">
             <ListView.InputBindings>
-                <KeyBinding Key="Enter" Command="{Binding SelectedItem.OpenHealthRecord, ElementName=results}" />
+                <KeyBinding Key="Enter" Command="{Binding SelectedItem.OpenHealthRecordCommand, ElementName=results}" />
             </ListView.InputBindings>
+            <ListView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock FontWeight="Bold" Padding="5">
+                                <Hyperlink Command="{Binding DataContext.OpenPatientCommand, RelativeSource={RelativeSource AncestorType=ListView}}" 
+                                           CommandParameter="{Binding Name}">
+                                    <Run Text="{Binding Name, Mode=OneWay, Converter={StaticResource ManToShortName}}" />
+                                </Hyperlink>
+                            </TextBlock>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </ListView.GroupStyle>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <card:SearchResult Margin="0,3,0,3">
                         <card:SearchResult.InputBindings>
-                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding OpenHealthRecord}" />
+                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding OpenHealthRecordCommand}" />
                         </card:SearchResult.InputBindings>
                     </card:SearchResult>
                 </DataTemplate>

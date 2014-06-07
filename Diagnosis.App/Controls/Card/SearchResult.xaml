@@ -9,15 +9,8 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <StackPanel>
-            <TextBlock Text="{Binding Patient, Converter={StaticResource ManToShortName}}" />
-            <!--<TextBlock>
-                <Run>Курс </Run>
-                <TextBlock Text="{Binding Course.Start, StringFormat='{}с {0:d}'}" />
-                <TextBlock Text="{Binding Course.End, StringFormat='{}по {0:d}', TargetNullValue=''}" />
-                <Run> — (окончательный диагноз в курсе)</Run>
-            </TextBlock>-->
             <DockPanel x:Name="appDescription" Width="{Binding ActualWidth, ElementName=searchResult}">
-                <TextBlock Text="{Binding AppointmentDate, Converter={StaticResource DateLabel}}" DockPanel.Dock="Left" Margin="0,0,5,0"/>
+                <TextBlock Text="{Binding AppointmentDate, Converter={StaticResource DateLabel}}" Width="70" DockPanel.Dock="Left" Margin="0,0,5,0"/>
                 <ItemsControl ItemsSource="{Binding AppointmentHealthRecords}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
