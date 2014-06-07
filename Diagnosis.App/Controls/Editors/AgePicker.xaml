@@ -6,23 +6,43 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
              xmlns:conv="clr-namespace:Diagnosis.App.Converters"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"             
              mc:Ignorable="d"
-             d:DesignHeight="30"
-             MinWidth="300">
+             x:Name="agePicker"
+             d:DesignWidth="290"
+             MinWidth="200">
     <UserControl.Resources>
         <conv:AgeToYearsLabel x:Key="ageLabel" />
+        <sys:Double x:Key="minOneRowWidth">230</sys:Double>
     </UserControl.Resources>
-    <StackPanel Orientation="Horizontal">
-        <editors:ComboBoxDatePicker Year="{Binding BirthYear, Mode=TwoWay}"
-                                     Month="{Binding BirthMonth, Mode=TwoWay}"
-                                     Day="{Binding BirthDay, Mode=TwoWay}" />
+    <WrapPanel>
+        <editors:ComboBoxDatePicker x:Name="comboDatePicker" VerticalAlignment="Top" 
+                                    Year="{Binding BirthYear, Mode=TwoWay}"
+                                    Month="{Binding BirthMonth, Mode=TwoWay}"
+                                    Day="{Binding BirthDay, Mode=TwoWay}">
+            <editors:ComboBoxDatePicker.Style>
+                <Style TargetType="FrameworkElement">
+                    <Setter Property="Margin" Value="0,0,30,5"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ActualWidth, ElementName=agePicker, Converter={StaticResource LessThan}, ConverterParameter={StaticResource minOneRowWidth}}" Value="True" >
+                            <Setter Property="Margin" Value="0,0,0,5"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </editors:ComboBoxDatePicker.Style>
+        </editors:ComboBoxDatePicker>
 
-        <TextBox Text="{Binding Age, Mode=TwoWay, TargetNullValue=''}" Width="50" Margin="20,0,5,0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" IsTabStop="False">
-            <controls:WatermarkService.Watermark>
-                <TextBlock Style="{StaticResource watermark}" Margin="-15,0,0,0">Возраст</TextBlock>
-            </controls:WatermarkService.Watermark>
-        </TextBox>
-        <TextBlock Text="{Binding Age, Converter={StaticResource ageLabel}}" Width="40" VerticalAlignment="Center"></TextBlock>
-    </StackPanel>
+        <DockPanel VerticalAlignment="Top">
+            <TextBox Text="{Binding Age, Mode=TwoWay, TargetNullValue=''}"
+                     Width="50"                    
+                     HorizontalContentAlignment="Right"
+                     IsTabStop="False">
+                <controls:WatermarkService.Watermark>
+                    <TextBlock Style="{StaticResource watermark}" Margin="5,0,0,0">Возраст</TextBlock>
+                </controls:WatermarkService.Watermark>
+            </TextBox>
+
+            <TextBlock Text="{Binding Age, Converter={StaticResource ageLabel}}" Margin="3,0,0,0" VerticalAlignment="Center"></TextBlock>
+        </DockPanel>
+    </WrapPanel>
 </UserControl>

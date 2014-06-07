@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:card="clr-namespace:Diagnosis.App.Controls.Card"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
+             xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              x:Name="appointment">
@@ -25,6 +26,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -41,8 +43,9 @@
                 </TextBlock>
             </Button>
         </StackPanel>
+        <!--<editors:HealthRecordEditor DataContext="{Binding SelectedHealthRecord}" Grid.Row="1"></editors:HealthRecordEditor>-->
         <ListView x:Name="records"
-                  Grid.Row="1"
+                  Grid.Row="2"
                   ItemsSource="{Binding HealthRecordsView}"
                   IsSynchronizedWithCurrentItem="True"
                   SelectedItem="{Binding SelectedHealthRecord}"

@@ -224,6 +224,7 @@
     <Compile Include="Controls\TextBoxInfo.xaml.cs">
       <DependentUpon>TextBoxInfo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\LessThanConverter.cs" />
     <Compile Include="Converters\DateIntervalLabel.cs" />
     <Compile Include="Converters\IsLastItem.cs" />
     <Compile Include="Converters\EqualityToBool.cs" />
@@ -235,6 +236,7 @@
     <Compile Include="Converters\CountToAppointmentsLabel.cs" />
     <Compile Include="Converters\IntToString.cs" />
     <Compile Include="DebugOutput.cs" />
+    <Compile Include="ViewModels\Domain\HrEditorViewModel .cs" />
     <Compile Include="ViewModels\Managers\EntityManagers.cs" />
     <Compile Include="MessagingParams.cs" />
     <Compile Include="Screens\Search.xaml.cs">
