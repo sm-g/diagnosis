@@ -26,6 +26,14 @@
         <s:Boolean x:Key="True">True</s:Boolean>
         <s:Boolean x:Key="False">False</s:Boolean>
 
+        <Style TargetType="TextBox">
+            <Setter Property="Height" Value="23"/>
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Height" Value="23"/>
+        </Style>
+        
         <Style TargetType="TextBlock" x:Key="ScreenTitle">
             <Setter Property="FontSize" Value="20"/>
         </Style>
@@ -69,6 +77,14 @@
         <Style TargetType="{x:Type Button}" x:Key="barButton">
             <Setter Property="Margin" Value="0,0,10,0"/>
             <Setter Property="Padding" Value="4"/>
+        </Style>
+
+        <Style TargetType="DockPanel" x:Key="formLine">
+            <Setter Property="Margin">
+                <Setter.Value>
+                    <Thickness Bottom="10"></Thickness>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Application.Resources>
 </Application>

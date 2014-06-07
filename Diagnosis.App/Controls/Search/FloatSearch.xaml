@@ -40,12 +40,12 @@
                PlacementTarget="{Binding ElementName=input, Mode=OneWay}">
             <ListView x:Name="results"
                 MaxHeight="100"
-			    ItemsSource="{Binding Results}"
-			    SelectionChanged="results_SelectionChanged"
+                ItemsSource="{Binding Results}"
+                SelectionChanged="results_SelectionChanged"
                 MouseUp="results_MouseUp"
-			    SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
-			    IsTabStop="True"
-			    Visibility="{Binding Results.Count, Converter={StaticResource CountToVisibility}, Mode=OneWay}"
+                SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
+                IsTabStop="True"
+                Visibility="{Binding Results.Count, Converter={StaticResource CountToVisibility}, Mode=OneWay}"
                   Grid.Row="1"
 >
                 <ListView.ItemTemplate>

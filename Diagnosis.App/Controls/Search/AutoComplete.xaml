@@ -36,39 +36,37 @@
                                                    SymptomTemplate="{StaticResource CategorisedTemplate}" />
     </UserControl.Resources>
     <StackPanel x:Name="autocomplete">
-        <Grid>
-            <controls:TextBoxInfo x:Name="input"
-                                  InfoText="{Binding Delimiter, StringFormat='Признаки через «{0}»'}"
-                                  Text="{Binding FullString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                TextChanged="input_TextChanged"
-                                PreviewKeyDown="input_PreviewKeyDown"
-                                GotFocus="input_GotFocus"
-                                GotMouseCapture="input_GotMouseCapture"
-                                LostFocus="input_LostFocus"
-                                Height="23">
-                <TextBox.InputBindings>
-                    <KeyBinding Key="Enter" Command="{Binding EnterCommand}" />
-                </TextBox.InputBindings>
-            </controls:TextBoxInfo>
+        <controls:TextBoxInfo x:Name="input"
+                              InfoText="{Binding Delimiter, StringFormat='Признаки через «{0}»'}"
+                              Text="{Binding FullString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              TextChanged="input_TextChanged"
+                              PreviewKeyDown="input_PreviewKeyDown"
+                              GotFocus="input_GotFocus"
+                              GotMouseCapture="input_GotMouseCapture"
+                              LostFocus="input_LostFocus"
+                              Height="23">
+            <TextBox.InputBindings>
+                <KeyBinding Key="Enter" Command="{Binding EnterCommand}" />
+            </TextBox.InputBindings>
+        </controls:TextBoxInfo>
 
-            <Popup x:Name="popup" Height="Auto" Width="auto"
+        <Popup x:Name="popup" Height="Auto" Width="auto"
                        StaysOpen="False"
                        Placement="Bottom"
                        PlacementTarget="{Binding ElementName=input}"
                        IsOpen="False"
                        HorizontalAlignment="Left" Grid.RowSpan="2">
 
-                <ListBox x:Name="suggestions"
+            <ListBox x:Name="suggestions"
                         MaxHeight="100"
                         ItemsSource="{Binding Suggestions}"
                         SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
                         SelectionChanged="suggestions_SelectionChanged"
-                         PreviewKeyDown="suggestions_PreviewKeyDown"
-                         KeyUp="suggestions_KeyUp"
+                        PreviewKeyDown="suggestions_PreviewKeyDown"
+                        KeyUp="suggestions_KeyUp"
                         HorizontalContentAlignment="Stretch"
                         ItemTemplateSelector="{StaticResource AutocompleteTemplateSelector}">
-                </ListBox>
-            </Popup>
-        </Grid>
+            </ListBox>
+        </Popup>
     </StackPanel>
 </UserControl>

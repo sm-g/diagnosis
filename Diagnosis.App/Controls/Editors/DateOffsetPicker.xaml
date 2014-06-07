@@ -6,7 +6,8 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              x:Class="Diagnosis.App.Controls.Editors.DateOffsetPicker"
              mc:Ignorable="d"
-             d:DesignHeight="30" d:DesignWidth="300"
+             VerticalAlignment="Bottom"
+             d:DesignWidth="300"
              x:Name="root">
     <UserControl.Resources>        
         <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
@@ -16,11 +17,11 @@
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </UserControl.Resources>
-    <StackPanel Orientation="Horizontal">
+    <DockPanel LastChildFill="False">
         <TextBox x:Name="offset" Text="{Binding DateOffset.Offset, ElementName=root, Mode=TwoWay}" MinWidth="50" Margin="0,0,5,0" TextAlignment="Right" />
         <ComboBox x:Name="units"
                   ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
-        	MinWidth="50">
+        	      MinWidth="50">
             <ComboBox.SelectedItem>
                 <Binding Path="DateOffset.Unit" ElementName="root" Mode="TwoWay" />
             </ComboBox.SelectedItem>
@@ -37,5 +38,5 @@
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
-    </StackPanel>
+    </DockPanel>
 </UserControl>
