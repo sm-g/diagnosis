@@ -145,6 +145,7 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Controls\AlignableWrapPanel.cs" />
     <Compile Include="Controls\Card\AppointmentsTabs.xaml.cs">
       <DependentUpon>AppointmentsTabs.xaml</DependentUpon>
     </Compile>

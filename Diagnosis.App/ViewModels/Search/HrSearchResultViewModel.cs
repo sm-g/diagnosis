@@ -63,9 +63,7 @@ namespace Diagnosis.App.ViewModels
                 return hr;
             }
         }
-        /// <summary>
-        /// Gets the OpenHealthRecord.
-        /// </summary>
+
         public ICommand OpenHealthRecord
         {
             get

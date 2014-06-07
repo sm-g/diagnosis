@@ -84,8 +84,8 @@
                 <DockPanel Margin="10">
                     <Grid DockPanel.Dock="Top">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
                         <Button DockPanel.Dock="Top"
@@ -97,44 +97,45 @@
                             <card:PatientHeader Padding="5,0,5,0" />
                         </Button>
 
-                        <Grid x:Name="courses" Grid.Column="1" VerticalAlignment="Top">
-                            <Grid.Resources>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource barButton}" />
-                            </Grid.Resources>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="150" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <TextBlock Text="Курс"
-                                       VerticalAlignment="Center"
-                                       Visibility="{Binding NoCourses, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
+                        <controls:AlignableWrapPanel x:Name="courses" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" HorizontalContentAlignment="Right">
+                            <controls:AlignableWrapPanel.Resources>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource barButton}" />
+                            </controls:AlignableWrapPanel.Resources>
 
                             <TextBlock Grid.ColumnSpan="2"
                                        VerticalAlignment="Center"
                                        HorizontalAlignment="Right"
-                                       Margin="0,0,10,0"
+                                       Margin="0,0,10,5"
                                        Visibility="{Binding NoCourses, Converter={StaticResource BooleanToVisibilityConverter}}"
                                        Text="У пациента нет курсов" />
 
-                            <ComboBox ItemsSource="{Binding CoursesManager.Courses}"
+                            <Grid VerticalAlignment="Center" Visibility="{Binding NoCourses, Converter={StaticResource NegBooleanToVisibilityConverter}}" Margin="0,0,0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="150" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="Курс"
+                                       VerticalAlignment="Center" />
+
+                                <ComboBox ItemsSource="{Binding CoursesManager.Courses}"
                                       Margin="10,0,10,0"
         			                  SelectedItem="{Binding CoursesManager.SelectedCourse}"
-                                      Visibility="{Binding NoCourses, Converter={StaticResource NegBooleanToVisibilityConverter}}"
-        			                  Grid.Column="1">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <card:Course />
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
-
+                                      Grid.Column="1">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <card:Course />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </Grid>
                             <Button Command="{Binding CurrentDoctor.StartCourseCommand}"
+                                    Height="26"
+                                    Margin="0,0,0,5"
+                                    VerticalAlignment="Center"
         			                CommandParameter="{Binding}"
-                                    Content="Начать курс"
-                                    Grid.Column="2" />
-                        </Grid>
+                                    Content="Начать курс" />
+                        </controls:AlignableWrapPanel>
                     </Grid>
 
                     <!--<card:AppointmentsList DataContext="{Binding CoursesManager.SelectedCourse}"
