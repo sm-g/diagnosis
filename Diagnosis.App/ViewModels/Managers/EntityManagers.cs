@@ -1,8 +1,10 @@
 ﻿using Diagnosis.Data.Repositories;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("Tests")]
 namespace Diagnosis.App.ViewModels
 {
-    public static class EntityManagers
+    static class EntityManagers
     {
         private static DoctorsManager _doctorsManager;
         private static PatientsManager _patientsManager;
