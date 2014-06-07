@@ -28,19 +28,8 @@
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Grid Style="{StaticResource gridIsDirty}" MaxWidth="150">
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <Button Command="{Binding Editable.DeleteCommand}"
-                            Height="24"
-                            Width="24"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Visibility="{Binding Editable.CanBeDeleted, Converter={StaticResource BooleanToVisibilityConverter}}">×</Button>
-
-                        <DockPanel DockPanel.Dock="Top" MinWidth="150">
+                    <Grid Style="{StaticResource gridIsDirty}" >
+                        <DockPanel DockPanel.Dock="Top" MinWidth="100">
                             <TextBlock Text="{Binding DateTime, Converter={StaticResource DateLabel}}" />
                             <TextBlock Text="{Binding Doctor, Converter={StaticResource ManToShortName}, StringFormat='{}доктор {0}'}"
                                        HorizontalAlignment="Right"

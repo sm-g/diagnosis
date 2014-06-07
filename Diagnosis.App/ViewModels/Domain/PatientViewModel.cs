@@ -52,7 +52,7 @@ namespace Diagnosis.App.ViewModels
                 if (patient.Label != value)
                 {
                     patient.Label = value;
-                    OnPropertyChanged(() => "Label");
+                    OnPropertyChanged("Label");
                     Editable.MarkDirty();
                 }
             }

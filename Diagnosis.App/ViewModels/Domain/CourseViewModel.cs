@@ -139,6 +139,14 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public bool IsDoctorCurrent
+        {
+            get
+            {
+                return LeadDoctor == EntityManagers.DoctorsManager.CurrentDoctor;
+            }
+        }
+
         public CourseViewModel(Course course)
         {
             Contract.Requires(course != null);

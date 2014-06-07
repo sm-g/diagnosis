@@ -28,8 +28,8 @@ namespace Diagnosis.App.Converters
                 }
             }
 
-            DateTime? from = (DateTime?)values[0];
-            DateTime? to = (DateTime?)(values.Length > 1 ? values[1] : null);
+            DateTime? from = (DateTime?)(values[0] is DateTime? ? values[0] : null);
+            DateTime? to = (DateTime?)(values.Length > 1 && values[1] is DateTime? ? values[1] : null);
 
             if (!(from.HasValue || to.HasValue))
                 return null;

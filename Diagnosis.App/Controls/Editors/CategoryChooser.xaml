@@ -16,7 +16,7 @@
 
             <Controls:RadioListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" />
+                    <UniformGrid />
                 </ItemsPanelTemplate>
             </Controls:RadioListBox.ItemsPanel>
             <Controls:RadioListBox.ItemTemplate>

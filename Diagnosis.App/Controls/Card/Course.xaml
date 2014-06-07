@@ -16,7 +16,6 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Style="{StaticResource gridIsDirty}">
-
         <StackPanel>
             <StackPanel x:Name="description">
                 <TextBlock>
@@ -31,12 +30,5 @@
                            Visibility="{Binding IsDoctorCurrent,Converter={StaticResource NegBooleanToVisibilityConverter}}" />
             </StackPanel>
         </StackPanel>
-
-        <Button Command="{Binding Editable.DeleteCommand}"
-                Height="24"
-                Width="24"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Visibility="{Binding Editable.CanBeDeleted, Converter={StaticResource BooleanToVisibilityConverter}}">×</Button>
     </Grid>
 </UserControl>
