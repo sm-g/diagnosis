@@ -27,14 +27,11 @@ namespace Diagnosis.App.Converters
                     // Иванов
                     // Иван И.
                     // Иван
-                    // 123
                     if (ln.Length > 0)
                         return ln + (fn.Length > 0 ? " " + fn[0] + "." + (mn.Length > 0 ? " " + mn[0] + "." : "") : "");
                     else
                         if (fn.Length > 0)
                             return fn + (mn.Length > 0 ? " " + mn[0] + "." : "");
-                        else
-                            return man.Id;
                 }
                 catch
                 {

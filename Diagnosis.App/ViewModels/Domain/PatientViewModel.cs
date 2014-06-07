@@ -224,14 +224,6 @@ namespace Diagnosis.App.ViewModels
             private set;
         }
 
-        /// <summary>
-        /// For binding with converter.
-        /// </summary>
-        public PatientViewModel Self
-        {
-            get { return this; }
-        }
-
         internal string FullName
         {
             get

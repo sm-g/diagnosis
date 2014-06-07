@@ -30,7 +30,7 @@
 
             <CollectionViewSource x:Key="resultsView" Source="{Binding Results}">
                 <CollectionViewSource.GroupDescriptions>
-                    <PropertyGroupDescription PropertyName="Patient"/> 
+                    <PropertyGroupDescription PropertyName="Patient" />
                 </CollectionViewSource.GroupDescriptions>
             </CollectionViewSource>
         </ResourceDictionary>
@@ -66,15 +66,15 @@
                         <TextBlock>
                             <TextBlock.Text>
                                 <MultiBinding Converter="{StaticResource DateIntervalLabel}">
-                                    <Binding Path="AppDateGt" Mode="OneWay"/>
-                                    <Binding Path="AppDateLt" Mode="OneWay"/>
+                                    <Binding Path="AppDateGt" Mode="OneWay" />
+                                    <Binding Path="AppDateLt" Mode="OneWay" />
                                     <MultiBinding.ConverterParameter>
                                         <x:ArrayExtension Type="s:String">
                                             <s:String>от</s:String>
                                             <s:String>до</s:String>
                                         </x:ArrayExtension>
                                     </MultiBinding.ConverterParameter>
-                                </MultiBinding>                                
+                                </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
                     </StackPanel>
@@ -183,17 +183,25 @@
                       Visibility="{Binding Items.Count, RelativeSource={RelativeSource Self}, Converter={StaticResource CountToVisibility}}">
             <ListView.InputBindings>
                 <KeyBinding Key="Enter" Command="{Binding SelectedItem.OpenHealthRecordCommand, ElementName=results}" />
+                <KeyBinding Key="Space" Command="{Binding SelectedItem.OpenHealthRecordCommand, ElementName=results}" />
             </ListView.InputBindings>
             <ListView.GroupStyle>
                 <GroupStyle>
                     <GroupStyle.HeaderTemplate>
                         <DataTemplate>
-                            <TextBlock FontWeight="Bold" Padding="5">
-                                <Hyperlink Command="{Binding DataContext.OpenPatientCommand, RelativeSource={RelativeSource AncestorType=ListView}}" 
-                                           CommandParameter="{Binding Name}">
-                                    <Run Text="{Binding Name, Mode=OneWay, Converter={StaticResource ManToShortName}}" />
-                                </Hyperlink>
-                            </TextBlock>
+                            <StackPanel>
+                                <Button Command="{Binding DataContext.OpenPatientCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                        CommandParameter="{Binding Name}"
+                                        Padding="5"
+                                        BorderThickness="0"
+                                        HorizontalContentAlignment="Left"
+                                        FontWeight="Bold">
+                                    <DockPanel Focusable="False">
+                                        <TextBlock Text="{Binding Name.Label}" Width="30"/>
+                                        <TextBlock Text="{Binding Name, Mode=OneWay, Converter={StaticResource ManToShortName}}" />
+                                    </DockPanel>
+                                </Button>
+                            </StackPanel>
                         </DataTemplate>
                     </GroupStyle.HeaderTemplate>
                 </GroupStyle>
