@@ -26,4 +26,10 @@ namespace Diagnosis.App.Converters
             return value is T && EqualityComparer<T>.Default.Equals((T)value, True);
         }
     }
+
+    public sealed class NegateConverter : BooleanConverter<Boolean>
+    {
+        public NegateConverter() :
+            base(false, true) { }
+    }
 }
