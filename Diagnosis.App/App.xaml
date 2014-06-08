@@ -22,6 +22,8 @@
         <conv:DateIntervalLabel x:Key="DateIntervalLabel" />
         <conv:DateLabel x:Key="DateLabel" />
         <conv:LessThanConverter x:Key="LessThan" />
+        <conv:NullToVisibilityConverter x:Key="NullToVis" />
+        
 
         <s:Boolean x:Key="True">True</s:Boolean>
         <s:Boolean x:Key="False">False</s:Boolean>

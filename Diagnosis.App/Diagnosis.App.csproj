@@ -226,6 +226,7 @@
     <Compile Include="Controls\TextBoxInfo.xaml.cs">
       <DependentUpon>TextBoxInfo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\NullToVis.cs" />
     <Compile Include="Converters\LessThanConverter.cs" />
     <Compile Include="Converters\DateIntervalLabel.cs" />
     <Compile Include="Converters\IsLastItem.cs" />

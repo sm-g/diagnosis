@@ -44,7 +44,7 @@ namespace Diagnosis.App.Controls
                 fe.IsVisibleChanged += new DependencyPropertyChangedEventHandler(fe_IsVisibleChanged);
             }
 
-            if ((bool)e.NewValue)
+            if (e.NewValue != null && (bool)e.NewValue)
             {
                 fe.Focus();
             }

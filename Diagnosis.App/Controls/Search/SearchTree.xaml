@@ -58,7 +58,6 @@
                      Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
                      PreviewKeyDown="input_PreviewKeyDown"
                      GotMouseCapture="input_GotMouseCapture"
-                     controls:FocusExtension.IsFocused="{Binding IsSearchFocused, Mode=TwoWay}"
                      LostFocus="input_LostFocus">
                 <controls:WatermarkService.Watermark>
                     <TextBlock Style="{StaticResource watermark}">Поиск</TextBlock>
