@@ -126,21 +126,28 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return AppointmentsWithAddNew.Where(wan => wan.Content == _selectedAppointment).FirstOrDefault();
+                return AppointmentsWithAddNew.Where(wan => wan.Content == SelectedAppointment).FirstOrDefault();
             }
             set
             {
-                if (value.IsAddNew)
+                if (value != null)
                 {
-                    if (!isAddingNewApp)
+                    if (value.IsAddNew)
                     {
-                        isAddingNewApp = true;
-                        AddAppointment();
-                        isAddingNewApp = false;
+                        if (!isAddingNewApp)
+                        {
+                            isAddingNewApp = true;
+                            AddAppointment();
+                            isAddingNewApp = false;
+                        }
+                        return;
                     }
-                    return;
+                    SelectedAppointment = value.Content as AppointmentViewModel;
                 }
-                _selectedAppointment = value.Content as AppointmentViewModel;
+                else
+                {
+                    SelectedAppointment = null;
+                }
             }
         }
 
@@ -155,7 +162,9 @@ namespace Diagnosis.App.ViewModels
                 return Appointments.Last();
             }
         }
-
+        /// <summary>
+        /// Добавляет встречу, если курс не закончился.
+        /// </summary>
         public ICommand AddAppointmentCommand
         {
             get
@@ -212,7 +221,7 @@ namespace Diagnosis.App.ViewModels
 
             if (Appointments.Count > 0)
             {
-                SelectedAppointment = Appointments.Last();
+                SelectedAppointment = LastAppointment;
                 Editable.CanBeDeleted = false; // не новый курс — встречи не пустые, удалить курс нельзя
             }
             else
@@ -234,17 +243,29 @@ namespace Diagnosis.App.ViewModels
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                foreach (AppointmentViewModel item in e.NewItems)
+                foreach (AppointmentViewModel newApp in e.NewItems)
                 {
-                    var newitem = new WithAddNew(item);
+                    var newitem = new WithAddNew(newApp);
                     AppointmentsWithAddNew.Insert(AppointmentsWithAddNew.Count - 1, newitem);
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
-                foreach (AppointmentViewModel item in e.OldItems)
+                foreach (AppointmentViewModel oldApp in e.OldItems)
                 {
-                    AppointmentsWithAddNew.Remove(AppointmentsWithAddNew.FirstOrDefault(wan => wan.Content == item));
+                    var item = AppointmentsWithAddNew.FirstOrDefault(wan => wan.Content == oldApp);
+                    if (item != null)
+                        try
+                        {
+                            AppointmentsWithAddNew.Remove(item);
+                        }
+                        catch (IndexOutOfRangeException)
+                        {
+                        }
+                }
+                if (SelectedAppointment == null)
+                {
+                    SelectedAppointment = LastAppointment;
                 }
             }
         }
