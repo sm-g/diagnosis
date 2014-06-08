@@ -12,7 +12,7 @@
     <UserControl.Resources>
         <InputBindingCollection x:Shared="False" x:Key="HRInputBindings">
             <KeyBinding Key="Space" Command="{Binding ToggleCommand}" />
-            <KeyBinding Key="F2" Command="{Binding Editable.EditCommand}" />
+            <!--<KeyBinding Key="F2" Command="{Binding Editable.EditCommand}" />-->
             <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
             <KeyBinding Key="Escape" Command="{Binding Editable.RevertCommand}" />
             <KeyBinding Key="Delete" Command="{Binding Editable.DeleteCommand}" />
@@ -22,30 +22,32 @@
 
     <UserControl.InputBindings>
         <KeyBinding Modifiers="Control" Key="N" Command="{Binding AddHealthRecordCommand}" />
+        <KeyBinding Key="F2" Command="{Binding EditHrCommand}" />
     </UserControl.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
         <StackPanel Style="{StaticResource buttonsBar}">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource barButton}" />
             </StackPanel.Resources>
-            <Button Command="{Binding AddHealthRecordCommand}">Добавить запись (Ctrl + N)</Button>
+            <Button Command="{Binding AddHealthRecordCommand}">Добавить запись</Button>
+            <Button Command="{Binding EditHrCommand}">Редактировать</Button>
             <Button Command="{Binding DeleteHealthRecordsCommand}">
                 <TextBlock>
                     <Run>Удалить</Run>
-                    <TextBlock Text="{Binding CheckedHealthRecords, StringFormat='{}({0})'}" 
+                    <TextBlock Text="{Binding CheckedHealthRecords, StringFormat='{}({0})'}"
                                Visibility="{Binding CheckedHealthRecords, Converter={StaticResource CountToVisibility}, ConverterParameter=1}" />
                 </TextBlock>
             </Button>
         </StackPanel>
-        <!--<editors:HealthRecordEditor DataContext="{Binding SelectedHealthRecord}" Grid.Row="1"></editors:HealthRecordEditor>-->
+        
         <ListView x:Name="records"
-                  Grid.Row="2"
+                  Grid.Row="1"
                   ItemsSource="{Binding HealthRecordsView}"
                   IsSynchronizedWithCurrentItem="True"
                   SelectedItem="{Binding SelectedHealthRecord}"
@@ -86,5 +88,9 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
+
+        <Grid Grid.Row="2" Visibility="{Binding ShowHrEditor, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <editors:HealthRecordEditorShared DataContext="{Binding HealthRecordEditor}" ></editors:HealthRecordEditorShared>
+        </Grid>
     </Grid>
 </UserControl>

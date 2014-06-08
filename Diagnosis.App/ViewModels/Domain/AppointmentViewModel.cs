@@ -74,9 +74,14 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+
+        private static HrEditorViewModel _hrEditorStatic = new HrEditorViewModel();
+
         public ObservableCollection<HealthRecordViewModel> HealthRecords { get; private set; }
 
         #endregion Model
+
+        public HrEditorViewModel HealthRecordEditor { get { return _hrEditorStatic; } }
 
         public ICollectionView HealthRecordsView { get; private set; }
 
@@ -109,14 +114,14 @@ namespace Diagnosis.App.ViewModels
                     if (value != null)
                     {
                         value.IsSelected = true;
+                        HealthRecordEditor.HealthRecord = value;
                         this.Send((int)EventID.HealthRecordSelected, new HealthRecordParams(value).Params);
                     }
-                    else
-                    {
-                    }
+
                     _selectedHealthRecord = value;
 
                     OnPropertyChanged("SelectedHealthRecord");
+                    OnPropertyChanged(() => ShowHrEditor);
                 }
             }
         }
@@ -161,6 +166,38 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        private bool _showHrEditor;
+        public bool ShowHrEditor
+        {
+            get
+            {
+                return _showHrEditor;
+            }
+            set
+            {
+                if (_showHrEditor != value)
+                {
+                    _showHrEditor = value;
+                    OnPropertyChanged(() => ShowHrEditor);
+                }
+            }
+        }
+
+        private ICommand _editHrCommand;
+
+        public ICommand EditHrCommand
+        {
+            get
+            {
+                return _editHrCommand
+                   ?? (_editHrCommand = new RelayCommand(() =>
+                        {
+                            ShowHrEditor = !ShowHrEditor;
+                            HealthRecordEditor.HealthRecord.Editable.IsEditorActive = ShowHrEditor;
+                        }, () => HealthRecordEditor.HealthRecord != null));
+            }
+        }
+
         public AppointmentViewModel(Appointment appointment, CourseViewModel courseVM, bool firstInCourse = false)
         {
             Contract.Requires(appointment != null);
@@ -184,6 +221,8 @@ namespace Diagnosis.App.ViewModels
                 innerChangedAndCondition: () => !movingToViewGroup);
 
             SetupHealthRecordsView();
+
+         //   HealthRecordEditor.HealthRecord = SelectedHealthRecord;
         }
 
         private void SetupHealthRecords(bool withFirstHr)

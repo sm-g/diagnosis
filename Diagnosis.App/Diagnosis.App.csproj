@@ -156,6 +156,9 @@
     <Compile Include="Controls\CommaList.xaml.cs">
       <DependentUpon>CommaList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Editors\HealthRecordEditorShared.xaml.cs">
+      <DependentUpon>HealthRecordEditorShared.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Helpers\ItemCollectionExtensions.cs" />
     <Compile Include="Controls\Search\AutoComplete.xaml.cs">
       <DependentUpon>AutoComplete.xaml</DependentUpon>
@@ -358,6 +361,10 @@
     <Page Include="Controls\CommaList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Editors\HealthRecordEditorShared.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\Search\AutoComplete.xaml">
       <SubType>Designer</SubType>

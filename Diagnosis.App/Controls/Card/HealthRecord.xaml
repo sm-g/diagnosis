@@ -36,11 +36,11 @@
         </CheckBox>
 
         <StackPanel Grid.Column="1">
-            <StackPanel x:Name="editor" Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <!--<StackPanel x:Name="editor" Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <editors:HealthRecordEditor />
-            </StackPanel>
-
-            <Grid Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+            </StackPanel>-->
+            <!--Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource NegBooleanToVisibilityConverter}}"-->
+            <Grid >
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />

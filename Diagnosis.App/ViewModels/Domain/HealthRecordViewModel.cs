@@ -13,10 +13,7 @@ namespace Diagnosis.App.ViewModels
 {
     public class HealthRecordViewModel : CheckableBase, IEditableNesting
     {
-        internal readonly HealthRecord healthRecord;
-        private AutoCompleteBoxViewModel _autoComplete;
-        private static AutoCompleteBase<WordViewModel> _autoComplete2;
-        private PopupSearch<DiagnosisViewModel> _diagnosisSearch;
+        internal HealthRecord healthRecord;
         private DateOffset _dateOffset;
         private List<EventMessageHandler> msgHandlers;
 
@@ -307,89 +304,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        #region AutoComplete
-
-        public static AutoCompleteBase<WordViewModel> AutoCompleteStatic
-        {
-            get
-            {
-                return _autoComplete2;
-            }
-            set
-            {
-                if (_autoComplete2 != value)
-                {
-                    _autoComplete2 = value;
-                }
-            }
-        }
-
-        public AutoCompleteBase<WordViewModel> AutoComplete { get { return AutoCompleteStatic; } }
-
-        private void CreateAutoCompleteBase()
-        {
-            if (AutoCompleteStatic != null)
-            {
-                ((INotifyCollectionChanged)AutoCompleteStatic.Items).CollectionChanged -= AutoCompleteItems_CollectionChanged;
-            }
-
-            IEnumerable<WordViewModel> initialWords = Symptom != null ? Symptom.Words : null;
-            AutoCompleteStatic = new WordCompositeAutoComplete(
-                   QuerySeparator.Default,
-                   new SimpleSearcherSettings() { AllChildren = true },
-                   initialWords);
-
-            ((INotifyCollectionChanged)AutoCompleteStatic.Items).CollectionChanged += AutoCompleteItems_CollectionChanged;
-
-            OnPropertyChanged(() => AutoComplete);
-        }
-
-        private void AutoCompleteItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            HashSet<WordViewModel> words;
-
-            if (Symptom != null)
-                words = new HashSet<WordViewModel>(Symptom.Words);
-            else
-                words = new HashSet<WordViewModel>();
-
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach (WordViewModel item in e.NewItems)
-                {
-                    words.Add(item);
-                }
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (WordViewModel item in e.OldItems)
-                {
-                    words.Remove(item);
-                }
-            }
-
-            this.Symptom = EntityManagers.SymptomsManager.Create(words);
-            healthRecord.Symptom = Symptom.symptom;
-        }
-
-        #endregion AutoComplete
-
-        public PopupSearch<DiagnosisViewModel> DiagnosisSearch
-        {
-            get
-            {
-                return _diagnosisSearch;
-            }
-            set
-            {
-                if (_diagnosisSearch != value)
-                {
-                    _diagnosisSearch = value;
-                    OnPropertyChanged("DiagnosisSearch");
-                }
-            }
-        }
-
         private static bool makingCurrent;
         private static HealthRecordViewModel currentHr;
 
@@ -415,7 +329,6 @@ namespace Diagnosis.App.ViewModels
             }
             if (currentHr != this)
             {
-                CreateAutoCompleteBase();
                 this.SubscribeToCheckedChanges();
             }
 
@@ -446,7 +359,6 @@ namespace Diagnosis.App.ViewModels
             Editable.CanBeDirty = true;
 
             Subscribe();
-            CreateDiagnosisSearch();
         }
 
         public void UnsubscribeCheckedChanges()
@@ -457,51 +369,11 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private void CreateDiagnosisSearch()
-        {
-            if (DiagnosisSearch != null)
-            {
-                DiagnosisSearch.Cleared -= DiagnosisSearch_Cleared;
-            }
-            DiagnosisSearch = new PopupSearch<DiagnosisViewModel>(
-                   EntityManagers.DiagnosisManager.RootFiltratingSearcher,
-                   onSelected: (dia) => { dia.IsChecked = true; });
-
-            DiagnosisSearch.Cleared += DiagnosisSearch_Cleared;
-
-            UpdateDiagnosisQueryCode();
-        }
-
-        private void DiagnosisSearch_Cleared(object sender, EventArgs e)
-        {
-            Diagnosis = null;
-            // DiagnosisSearch.Query already empty
-        }
-
-        private void UpdateDiagnosisQueryCode()
-        {
-            if (DiagnosisSearch != null)
-            {
-                DiagnosisSearch.UpdateResultsOnQueryChanges = false;
-
-                if (Diagnosis != null)
-                    DiagnosisSearch.Query = Diagnosis.Code;
-                else
-                    DiagnosisSearch.Query = "";
-
-                DiagnosisSearch.UpdateResultsOnQueryChanges = true;
-            }
-        }
-
         #region Event handlers
 
         private void Subscribe()
         {
             this.PropertyChanged += HealthRecordViewModel_PropertyChanged;
-            EntityManagers.DiagnosisManager.RootChanged += (s, e) =>
-            {
-                CreateDiagnosisSearch();
-            };
         }
 
         private void SubscribeToCheckedChanges()
@@ -542,7 +414,6 @@ namespace Diagnosis.App.ViewModels
                 healthRecord.Disease = null;
             }
 
-            UpdateDiagnosisQueryCode();
             OnPropertyChanged("Name");
         }
 

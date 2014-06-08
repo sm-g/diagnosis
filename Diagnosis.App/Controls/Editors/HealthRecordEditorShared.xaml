@@ -1,0 +1,70 @@
+﻿<UserControl xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
+             xmlns:controls="clr-namespace:Diagnosis.App.Controls"
+             x:Class="Diagnosis.App.Controls.Editors.HealthRecordEditorShared"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             x:Name="editor"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="400">
+    <UserControl.Resources>
+        <Style TargetType="DockPanel" BasedOn="{StaticResource formLine}" />
+        <Style TargetType="Label" BasedOn="{StaticResource label90}" />
+    </UserControl.Resources>
+    <Grid DataContext="{Binding HealthRecord}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
+        <StackPanel>
+            <controls:AutoComplete DataContext="{Binding DataContext.AutoComplete, ElementName=editor}" />
+            <DockPanel Visibility="{Binding Symptom.Words.Count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
+                <TextBlock DockPanel.Dock="Left" Text="Слова: " />
+                <controls:CommaList ItemsSource="{Binding Symptom.Words}" />
+            </DockPanel>
+
+            <DockPanel>
+                <editors:CategoryChooser HorizontalAlignment="Left" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="дата" />
+                <editors:ComboBoxDatePicker Year="{Binding FromYear, Mode=TwoWay}"
+                                        Month="{Binding FromMonth, Mode=TwoWay}"
+                                        Day="{Binding FromDay, Mode=TwoWay}" />
+                <Label Content="давность" Margin="10,0,0,0" Width="60" />
+                <editors:DateOffsetPicker DateOffset="{Binding DateOffset}">
+                    <editors:DateOffsetPicker.Resources>
+                        <Style TargetType="DockPanel" />
+                    </editors:DateOffsetPicker.Resources>
+                </editors:DateOffsetPicker>
+            </DockPanel>
+            <DockPanel>
+                <Label Content="число" />
+                <TextBox Text="{Binding NumValue}" />
+            </DockPanel>
+            <DockPanel DataContext="{Binding DataContext, ElementName=editor}" Visibility="{Binding ShowIcdDisease, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Label Content="диагноз МКБ" />
+                <StackPanel>
+                    <controls:SearchTree DataContext="{Binding DiagnosisSearch}" />
+                </StackPanel>
+            </DockPanel>
+            <DockPanel>
+                <Label Content="комментарий" />
+                <TextBox Text="{Binding Comment}" />
+            </DockPanel>
+        </StackPanel>
+        
+        <StackPanel Grid.Column="1">
+            <Button Command="{Binding Editable.CommitCommand}">
+                Сохранить
+            </Button>
+            <Button Command="{Binding Editable.RevertCommand}">
+                Закрыть
+            </Button>
+            <Button Command="{Binding Editable.DeleteCommand}">
+                Удалить
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>
