@@ -189,7 +189,7 @@ namespace Diagnosis.App.ViewModels
 
             Editable.CanBeDirty = true;
 
-            this.SubscribeNesting(Appointments,
+            this.SubscribeEditableNesting(Appointments,
                  onDeletedBefore: () => Contract.Requires(Appointments.All(a => a.IsEmpty)),
                  innerChangedAfter: SetAppointmentsDeletable);
 

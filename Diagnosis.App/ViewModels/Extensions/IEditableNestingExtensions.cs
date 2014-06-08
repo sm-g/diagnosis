@@ -27,7 +27,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public static void SubscribeNesting<T>(this IEditableNesting entity, ObservableCollection<T> inner,
+        public static void SubscribeEditableNesting<T>(this IEditableNesting entity, ObservableCollection<T> inner,
             Action onDeletedBefore = null, Action innerChangedAfter = null, Func<bool> innerChangedAndCondition = null)
             where T : IEditableNesting
         {

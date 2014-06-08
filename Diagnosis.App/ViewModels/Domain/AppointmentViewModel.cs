@@ -180,7 +180,7 @@ namespace Diagnosis.App.ViewModels
 
             Editable.CanBeDirty = true;
 
-            this.SubscribeNesting(HealthRecords,
+            this.SubscribeEditableNesting(HealthRecords,
                 innerChangedAndCondition: () => !movingToViewGroup);
 
             SetupHealthRecordsView();

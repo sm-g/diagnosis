@@ -338,7 +338,7 @@ namespace Diagnosis.App.ViewModels
             if (!(this is UnsavedPatientViewModel))
                 AfterPatientLoaded();
 
-            this.SubscribeNesting(CoursesManager.Courses);
+            this.SubscribeEditableNesting(CoursesManager.Courses);
             CoursesManager.Courses.CollectionChanged += (s, e) =>
             {
                 OnPropertyChanged("NoCourses");
