@@ -38,6 +38,7 @@ namespace Diagnosis.App.Messaging
         HealthRecordChanged,
 
         OpenHealthRecord,
-        OpenSettings
+        OpenSettings,
+        SettingsSaved
     }
 }
