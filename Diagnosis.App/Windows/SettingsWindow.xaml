@@ -18,6 +18,7 @@
         </Grid.RowDefinitions>
 
         <ListBox>
+            <CheckBox IsChecked="{Binding ShowIcdDisease}" Content="Использовать _МКБ"/>
             <CheckBox IsChecked="{Binding OnlyTopLevelIcdDisease}" Content="_Болезни МКБ только верхнего уровня"/>
         </ListBox>
 

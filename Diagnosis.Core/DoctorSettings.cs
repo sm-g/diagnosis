@@ -9,7 +9,8 @@ namespace Diagnosis.Models
     public enum DoctorSettings
     {
         None = 0,
-        OnlyTopLevelIcdDisease = 1
+        ShowIcdDisease = 1,
+        OnlyTopLevelIcdDisease = 2
     }
 
 }

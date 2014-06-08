@@ -1,9 +1,11 @@
 ﻿using Diagnosis.Models;
-using System.Diagnostics.Contracts;
-using System.Windows.Input;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Windows.Input;
+using EventAggregator;
+using Diagnosis.App.Messaging;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -11,12 +13,12 @@ namespace Diagnosis.App.ViewModels
     {
         private readonly Doctor doctor;
         private readonly DoctorViewModel doctorVM;
+        private Dictionary<DoctorSettings, Func<bool>> map;
 
         private bool _onlyTopLevelIcdDisease;
-
+        private bool _showIcdDisease;
         private RelayCommand _save;
         private bool? _dialogResult;
-        Dictionary<DoctorSettings, Func<bool>> map;
 
         public SettingsViewModel(DoctorViewModel doctorVM)
         {
@@ -26,6 +28,7 @@ namespace Diagnosis.App.ViewModels
             this.doctorVM = doctorVM;
 
             map = new Dictionary<DoctorSettings, Func<bool>>();
+            map.Add(DoctorSettings.ShowIcdDisease, () => ShowIcdDisease);
             map.Add(DoctorSettings.OnlyTopLevelIcdDisease, () => OnlyTopLevelIcdDisease);
 
             Load();
@@ -43,6 +46,22 @@ namespace Diagnosis.App.ViewModels
                 {
                     _dialogResult = value;
                     OnPropertyChanged(() => DialogResult);
+                }
+            }
+        }
+
+        public bool ShowIcdDisease
+        {
+            get
+            {
+                return _showIcdDisease;
+            }
+            set
+            {
+                if (_showIcdDisease != value)
+                {
+                    _showIcdDisease = value;
+                    OnPropertyChanged(() => ShowIcdDisease);
                 }
             }
         }
@@ -92,6 +111,7 @@ namespace Diagnosis.App.ViewModels
 
         private void Load()
         {
+            ShowIcdDisease = doctor.DoctorSettings.HasFlag(DoctorSettings.ShowIcdDisease);
             OnlyTopLevelIcdDisease = doctor.DoctorSettings.HasFlag(DoctorSettings.OnlyTopLevelIcdDisease);
         }
 
@@ -107,10 +127,10 @@ namespace Diagnosis.App.ViewModels
             {
                 doctorVM.Editable.MarkDirty();
             }
-
             doctorVM.Editable.Commit();
 
             DialogResult = true;
+            this.Send((int)EventID.SettingsSaved, new DoctorParams(doctorVM).Params);
         }
 
         private IList<DoctorSettings> ChangedFlags()
