@@ -208,11 +208,11 @@
             </ListView.GroupStyle>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <card:SearchResult Margin="0,3,0,3">
-                        <card:SearchResult.InputBindings>
+                    <controls:SearchResult Margin="0,3,0,3">
+                        <controls:SearchResult.InputBindings>
                             <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding OpenHealthRecordCommand}" />
-                        </card:SearchResult.InputBindings>
-                    </card:SearchResult>
+                        </controls:SearchResult.InputBindings>
+                    </controls:SearchResult>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

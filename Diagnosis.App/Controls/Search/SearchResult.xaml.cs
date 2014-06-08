@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Diagnosis.App.Controls.Card
+namespace Diagnosis.App.Controls
 {
     /// <summary>
     /// Interaction logic for SearchResult.xaml

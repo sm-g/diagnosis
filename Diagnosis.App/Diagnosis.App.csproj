@@ -150,7 +150,7 @@
       <DependentUpon>AppointmentsTabs.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Card\AddNewDataTemplateSelector.cs" />
-    <Compile Include="Controls\Card\SearchResult.xaml.cs">
+    <Compile Include="Controls\Search\SearchResult.xaml.cs">
       <DependentUpon>SearchResult.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\CommaList.xaml.cs">
@@ -354,7 +354,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\Card\SearchResult.xaml">
+    <Page Include="Controls\Search\SearchResult.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
