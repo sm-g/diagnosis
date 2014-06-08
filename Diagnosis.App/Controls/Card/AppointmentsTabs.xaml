@@ -14,36 +14,56 @@
             <KeyBinding Key="Delete" Command="{Binding Editable.DeleteCommand}" />
         </InputBindingCollection>
 
-        <DataTemplate DataType="{x:Type vm:AppointmentViewModel}">
-            <card:Appointment Margin="10" />
+        <DataTemplate x:Key="AppointmentHeaderTemplate">
+            <Grid Style="{StaticResource gridIsDirty}">
+                <DockPanel MinWidth="70">
+                    <Button x:Name="deleteButton"
+                            Command="{Binding Content.Editable.DeleteCommand}"
+                            Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                            Height="12"
+                            Content="×"
+                            ToolTip="Удалить осмотр"
+                            DockPanel.Dock="Right">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Content.Editable.CanBeDeleted}" Value="True" />
+                                            <Condition Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type DockPanel}}}" Value="True" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <TextBlock Text="{Binding Content.DateTime, Converter={StaticResource DateLabel}}"
+                                       DockPanel.Dock="Top" />
+                    <TextBlock Text="{Binding Content.Doctor, Converter={StaticResource ManToShortName}, StringFormat='{}доктор {0}'}"
+                                       HorizontalAlignment="Right"
+                                       Visibility="{Binding Content.IsDoctorFromCourse, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
+                </DockPanel>
+            </Grid>
         </DataTemplate>
+        <DataTemplate x:Key="NewAppointmentTemplate">
+            <TextBlock ToolTip="Начать новый осмотр">+ осмотр</TextBlock>
+        </DataTemplate>
+        <card:AddNewDataTemplateSelector x:Key="addNewSelector"
+                                         DefaultTemplate="{StaticResource AppointmentHeaderTemplate}"
+                                         AddNewTemplate="{StaticResource NewAppointmentTemplate}" />
     </UserControl.Resources>
     <Grid>
-        <TabControl x:Name="appointments" 
-                    ItemsSource="{Binding Appointments}" 
-                    SelectedItem="{Binding SelectedAppointment}">
-            <TabControl.ItemTemplate>
+        <TabControl x:Name="appointments" Grid.Row="1"
+                    SelectedItem="{Binding SelectedAppointmentWithAddNew}"
+                    ItemsSource="{Binding AppointmentsWithAddNew}"
+                    ItemTemplateSelector="{StaticResource addNewSelector}">
+            <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <Grid Style="{StaticResource gridIsDirty}" >
-                        <DockPanel MinWidth="70">
-                            <TextBlock Text="{Binding DateTime, Converter={StaticResource DateLabel}}" 
-                                       DockPanel.Dock="Top" />
-                            <TextBlock Text="{Binding Doctor, Converter={StaticResource ManToShortName}, StringFormat='{}доктор {0}'}"
-                                       HorizontalAlignment="Right"
-                                       Visibility="{Binding IsDoctorFromCourse, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
-                        </DockPanel>
-                    </Grid>
+                    <card:Appointment Margin="10" DataContext="{Binding Content}" />
                 </DataTemplate>
-            </TabControl.ItemTemplate>
-            
+            </TabControl.ContentTemplate>
         </TabControl>
-
-        <Button Command="{Binding AddAppointmentCommand}"
-                Margin="3"
-                Padding="3"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Visibility="{Binding IsEnded, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-            + осмотр</Button>
     </Grid>
 </UserControl>

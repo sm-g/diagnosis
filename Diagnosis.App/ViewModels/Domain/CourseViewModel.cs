@@ -20,6 +20,7 @@ namespace Diagnosis.App.ViewModels
         private AppointmentViewModel _selectedAppointment;
         private DoctorViewModel _leadDoctor;
         private ICommand _addAppointment;
+        private bool isAddingNewApp;
 
         #region IEditableNesting
 
@@ -94,6 +95,11 @@ namespace Diagnosis.App.ViewModels
 
         #endregion Model
 
+        /// <summary>
+        /// Осмотры вместе в кнопкой Новый осмотр.
+        /// </summary>
+        public ObservableCollection<WithAddNew> AppointmentsWithAddNew { get; private set; }
+
         public AppointmentViewModel SelectedAppointment
         {
             get
@@ -110,8 +116,31 @@ namespace Diagnosis.App.ViewModels
                     }
 
                     _selectedAppointment = value;
+                    OnPropertyChanged("SelectedAppointmentWithAddNew");
                     OnPropertyChanged("SelectedAppointment");
                 }
+            }
+        }
+
+        public WithAddNew SelectedAppointmentWithAddNew
+        {
+            get
+            {
+                return AppointmentsWithAddNew.Where(wan => wan.Content == _selectedAppointment).FirstOrDefault();
+            }
+            set
+            {
+                if (value.IsAddNew)
+                {
+                    if (!isAddingNewApp)
+                    {
+                        isAddingNewApp = true;
+                        AddAppointment();
+                        isAddingNewApp = false;
+                    }
+                    return;
+                }
+                _selectedAppointment = value.Content as AppointmentViewModel;
             }
         }
 
@@ -176,6 +205,11 @@ namespace Diagnosis.App.ViewModels
 
             Appointments = new ObservableCollection<AppointmentViewModel>(appVMs);
 
+            AppointmentsWithAddNew = new ObservableCollection<WithAddNew>(
+                appVMs.Select(app => new WithAddNew(app)));
+            if (!IsEnded)
+                AppointmentsWithAddNew.Add(new WithAddNew());
+
             if (Appointments.Count > 0)
             {
                 SelectedAppointment = Appointments.Last();
@@ -185,22 +219,54 @@ namespace Diagnosis.App.ViewModels
             {
                 AddAppointment(true); // новый курс — добавляем встречу
             }
+
+            Appointments.CollectionChanged += Appointments_CollectionChanged;
+            this.Editable.Deleted += Editable_Deleted;
+        }
+
+        private void Editable_Deleted(object sender, EditableEventArgs e)
+        {
+            this.Editable.Deleted -= Editable_Deleted;
+            Appointments.CollectionChanged -= Appointments_CollectionChanged;
+        }
+
+        private void Appointments_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (AppointmentViewModel item in e.NewItems)
+                {
+                    var newitem = new WithAddNew(item);
+                    AppointmentsWithAddNew.Insert(AppointmentsWithAddNew.Count - 1, newitem);
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (AppointmentViewModel item in e.OldItems)
+                {
+                    AppointmentsWithAddNew.Remove(AppointmentsWithAddNew.FirstOrDefault(wan => wan.Content == item));
+                }
+            }
         }
 
         #region Appointment stuff
 
         public AppointmentViewModel AddAppointment(bool firstInCourse = false)
         {
-            var appVM = NewAppointment(firstInCourse);
-            Appointments.Add(appVM);
-            SelectedAppointment = appVM;
+            if (!IsEnded)
+            {
+                var appVM = NewAppointment(firstInCourse);
+                Appointments.Add(appVM);
+                SelectedAppointment = appVM;
 
-            OnPropertyChanged("LastAppointment");
-            OnPropertyChanged("IsEmpty");
+                OnPropertyChanged("LastAppointment");
+                OnPropertyChanged("IsEmpty");
 
-            this.Send((int)EventID.AppointmentAdded, new AppointmentParams(appVM).Params);
+                this.Send((int)EventID.AppointmentAdded, new AppointmentParams(appVM).Params);
 
-            return appVM;
+                return appVM;
+            }
+            return null;
         }
 
         private void SetAppointmentsDeletable()
