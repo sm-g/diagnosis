@@ -33,6 +33,8 @@ namespace Diagnosis.App.Windows
                 settingsDialog.DataContext = settingsVM;
                 var result = settingsDialog.ShowDialog();
             });
+
+            DataContext = new MainWindowViewModel(frame.NavigationService);
         }
     }
 }

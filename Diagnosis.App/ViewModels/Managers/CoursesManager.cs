@@ -11,32 +11,14 @@ namespace Diagnosis.App.ViewModels
     public class CoursesManager : ViewModelBase
     {
         private readonly PatientViewModel patientVM;
-        private CourseViewModel _selectedCourse;
 
+        /// <summary>
+        /// Курсы пацента, отсортированы по дате по убыванию (нулевой — самый поздний курс).
+        /// </summary>
         public ObservableCollection<CourseViewModel> Courses
         {
             get;
             private set;
-        }
-
-        public CourseViewModel SelectedCourse
-        {
-            get
-            {
-                return _selectedCourse;
-            }
-            set
-            {
-                if (_selectedCourse != value)
-                {
-                    if (_selectedCourse != null)
-                    {
-                        _selectedCourse.Editable.Commit();
-                    }
-                    _selectedCourse = value;
-                    OnPropertyChanged("SelectedCourse");
-                }
-            }
         }
 
         public CourseViewModel AddCourse(Course course)
@@ -47,29 +29,7 @@ namespace Diagnosis.App.ViewModels
             Courses.Add(courseVM);
             Courses.Move(Courses.Count - 1, 0);
 
-            SelectedCourse = courseVM;
-
             return courseVM;
-        }
-
-        public void OpenHr(HealthRecord hr)
-        {
-            var course = Courses.Where(x => x.course == hr.Appointment.Course).First();
-            SelectedCourse = course;
-            var app = course.Appointments.Where(x => x.appointment == hr.Appointment).First();
-            course.SelectedAppointment = app;
-            var hrVM = app.HealthRecords.Where(x => x.healthRecord == hr).First();
-            app.SelectedHealthRecord = hrVM;
-        }
-
-        public void UnsubscribeSelectedHr()
-        {
-            if (SelectedCourse != null &&
-                SelectedCourse.SelectedAppointment != null &&
-                SelectedCourse.SelectedAppointment.SelectedHealthRecord != null)
-            {
-                SelectedCourse.SelectedAppointment.SelectedHealthRecord.UnsubscribeCheckedChanges();
-            }
         }
 
         public CoursesManager(PatientViewModel patientVM)
@@ -90,11 +50,6 @@ namespace Diagnosis.App.ViewModels
 
             courseVMs.ForAll(x => SubscribeCourse(x));
             Courses = new ObservableCollection<CourseViewModel>(courseVMs);
-
-            if (Courses.Count > 0)
-            {
-                SelectedCourse = Courses[0];
-            }
         }
 
         #region Course stuff

@@ -1,0 +1,277 @@
+﻿using Diagnosis.App.Messaging;
+using Diagnosis.Models;
+using EventAggregator;
+using System;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Collections.Generic;
+
+namespace Diagnosis.App.ViewModels
+{
+    public class PatientViewer : ViewModelBase
+    {
+        private readonly DoctorViewModel doctor;
+        private PatientViewModel _openedPatient;
+        private AppointmentViewModel _openedApp;
+        private CourseViewModel _openedCourse;
+        private HealthRecordViewModel _openedHr;
+        private bool _fastAddingMode;
+        Dictionary<PatientViewModel, CourseViewModel> patCourseMap;
+
+        public PatientViewer(DoctorViewModel doctor)
+        {
+            this.doctor = doctor;
+            patCourseMap = new Dictionary<PatientViewModel, CourseViewModel>();
+        }
+
+        public bool FastAddingMode
+        {
+            get
+            {
+                return _fastAddingMode;
+            }
+            set
+            {
+                if (_fastAddingMode != value)
+                {
+                    _fastAddingMode = value;
+                    OnPropertyChanged(() => FastAddingMode);
+                }
+            }
+        }
+
+        public PatientViewModel OpenedPatient
+        {
+            get
+            {
+                return _openedPatient;
+            }
+            private set
+            {
+                if (_openedPatient != value)
+                {
+                    if (_openedPatient != null)
+                    {
+                        OnPatientClosed(_openedPatient);
+                        if (value != null)
+                        {
+                            if (!(value is UnsavedPatientViewModel))
+                            {
+                                // сохраняем состояние редактора при смене пациента
+                                value.Editable.IsEditorActive = _openedPatient.Editable.IsEditorActive;
+                            }
+                        }
+                        else
+                        {
+                            UnsubscribeSelectedHr();
+                            Console.WriteLine("current patient removed");
+                        }
+                    }
+                    _openedPatient = value;
+
+                    if (value != null)
+                    {
+                        OnPatientOpened(value);
+                    }
+                    OnPropertyChanged("OpenedPatient");
+                    this.Send((int)EventID.OpenedPatientChanged, new PatientParams(OpenedPatient).Params);
+                }
+            }
+        }
+
+        public CourseViewModel OpenedCourse
+        {
+            get
+            {
+                return _openedCourse;
+            }
+            set
+            {
+                if (_openedCourse != value)
+                {
+                    if (_openedCourse != null)
+                    {
+                        OnCourseClosed(_openedCourse);
+                    }
+
+                    _openedCourse = value;
+
+                    if (value != null)
+                    {
+                        OnCourseOpened(value);
+                    }
+                    OnPropertyChanged(() => OpenedCourse);
+                }
+            }
+        }
+
+        public AppointmentViewModel OpenedAppointment
+        {
+            get
+            {
+                return _openedApp;
+            }
+            private set
+            {
+                if (_openedApp != value)
+                {
+                    _openedApp = value;
+                    OpenedCourse.SelectedAppointment = value;
+                    OnPropertyChanged(() => OpenedAppointment);
+                }
+            }
+        }
+
+        public HealthRecordViewModel OpenedHealthRecord
+        {
+            get
+            {
+                return _openedHr;
+            }
+            private set
+            {
+                if (_openedHr != value)
+                {
+                    _openedHr = value;
+                    OnPropertyChanged(() => OpenedHealthRecord);
+                }
+            }
+        }
+
+        public void ClosePatient()
+        {
+            OpenedPatient = null;
+        }
+
+        public void OpenPatient(PatientViewModel patient)
+        {
+            OpenedPatient = patient;
+        }
+
+        public void OpenLastPatient()
+        {
+            if (EntityManagers.PatientsManager.Patients.Count > 0)
+            {
+                OpenedPatient = EntityManagers.PatientsManager.Patients[0];
+            }
+        }
+
+        private void OpenLastAppointment(PatientViewModel patient)
+        {
+            OpenPatient(patient);
+
+            // последний курс или новый, если курсов нет
+            var lastCourse = patient.CoursesManager.Courses.FirstOrDefault();
+            if (lastCourse == null)
+            {
+                patient.CurrentDoctor.StartCourse(patient);
+            }
+            else
+            {
+                OpenedCourse = lastCourse;
+            }
+
+            // последняя встреча в течение часа или новая
+            var lastApp = OpenedCourse.LastAppointment;
+            if (DateTime.UtcNow - lastApp.DateTime > TimeSpan.FromHours(1))
+            {
+                OpenedCourse.AddAppointment();
+            }
+            else
+            {
+                OpenedCourse.SelectedAppointment = lastApp;
+            }
+        }
+
+        public void OpenHr(HealthRecord hr)
+        {
+            var course = OpenedPatient.CoursesManager.Courses.Where(x => x.course == hr.Appointment.Course).First();
+            OpenedCourse = course;
+            var app = course.Appointments.Where(x => x.appointment == hr.Appointment).First();
+            course.SelectedAppointment = app;
+            var hrVM = app.HealthRecords.Where(x => x.healthRecord == hr).First();
+            app.SelectedHealthRecord = hrVM;
+        }
+
+        public void UnsubscribeSelectedHr()
+        {
+            if (OpenedCourse != null &&
+                OpenedCourse.SelectedAppointment != null &&
+                OpenedCourse.SelectedAppointment.SelectedHealthRecord != null)
+            {
+                OpenedCourse.SelectedAppointment.SelectedHealthRecord.UnsubscribeCheckedChanges();
+            }
+        }
+
+        private void OnPatientClosed(PatientViewModel patient)
+        {
+            patient.Unsubscribe();
+            patient.Editable.Commit();
+
+            patient.CoursesManager.Courses.CollectionChanged -= Courses_CollectionChanged;
+        }
+
+        private void OnPatientOpened(PatientViewModel patient)
+        {
+            patient.Subscribe();
+            patient.CurrentDoctor = doctor;
+            patient.PatientViewer = this;
+
+            CourseViewModel course;
+            if (!patCourseMap.TryGetValue(patient, out course))
+            {
+                // пациент открыт первый раз - открываем самый поздний курс
+                OpenedCourse = patient.CoursesManager.Courses.FirstOrDefault();
+            }
+            else
+            {
+                // пацинет открыт повторно
+                OpenedCourse = course;
+            }
+
+            if (FastAddingMode && !(patient is UnsavedPatientViewModel))
+            {
+                OpenLastAppointment(patient);
+            }
+
+            patient.CoursesManager.Courses.CollectionChanged += Courses_CollectionChanged;
+        }
+
+        private void OnCourseOpened(CourseViewModel course)
+        {
+            course.Appointments.CollectionChanged += Appointments_CollectionChanged;
+
+            // map opened course to patient
+            if (!patCourseMap.ContainsKey(OpenedPatient))
+                patCourseMap.Add(OpenedPatient, course);
+            else
+                patCourseMap[OpenedPatient] = course;
+        }
+
+        private void OnCourseClosed(CourseViewModel course)
+        {
+            course.Editable.Commit();
+
+            course.Appointments.CollectionChanged -= Appointments_CollectionChanged;
+        }
+
+        private void Appointments_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            // при добавлении осмотра открываем его
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                OpenedCourse.SelectedAppointment = (AppointmentViewModel)e.NewItems[e.NewItems.Count - 1];
+            }
+        }
+
+        private void Courses_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            // при добавлении курса открываем его и последний осмотр
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                OpenedCourse = (CourseViewModel)e.NewItems[e.NewItems.Count - 1];
+                OpenedCourse.SelectedAppointment = OpenedCourse.LastAppointment;
+            }
+        }
+    }
+}

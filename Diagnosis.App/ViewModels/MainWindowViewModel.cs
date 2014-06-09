@@ -1,7 +1,8 @@
-﻿using EventAggregator;
-using System.Windows.Input;
-using Diagnosis.App.Messaging;
+﻿using Diagnosis.App.Messaging;
 using Diagnosis.Models;
+using EventAggregator;
+using System.Windows.Input;
+using System.Windows.Navigation;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -12,18 +13,20 @@ namespace Diagnosis.App.ViewModels
         private bool _loginActive;
         private LoginViewModel _loginVM;
         private ICommand _logout;
-        private ICommand _editDiagnosisDirectory;
         private ICommand _editSymptomsDirectory;
         private RelayCommand _openSettings;
-        private bool _fastAddingMode;
         private bool _isPatientsVisible;
-        bool _patientOpened;
+        private bool _patientOpened;
         private bool _isWordsEditing;
+        private bool _fastAddingMode;
         private bool _searchTesterState;
         private SearchViewModel _search;
         private bool _searchState;
         private ViewModelBase _currentScreen;
-        private object _directoryExplorer;
+
+        private NavigationService nav;
+        private PatientViewer viewer;
+        private bool clearNavOnNavigated;
 
         #endregion Fields
 
@@ -40,10 +43,6 @@ namespace Diagnosis.App.ViewModels
                 if (_currentScreen != value)
                 {
                     _currentScreen = value;
-                    if (!(value is PatientViewModel))
-                    {
-                        EntityManagers.PatientsManager.RemoveCurrent();
-                    }
                     OnPropertyChanged(() => CurrentScreen);
                 }
             }
@@ -62,7 +61,8 @@ namespace Diagnosis.App.ViewModels
                     _loginActive = value;
                     if (value)
                     {
-                        CurrentScreen = Login;
+                        clearNavOnNavigated = true;
+                        nav.Navigate(Login);
 
                         WordsOpened = false;
                         SearchTesterOpened = false;
@@ -88,7 +88,7 @@ namespace Diagnosis.App.ViewModels
 
                     if (value)
                     {
-                        CurrentScreen = EntityManagers.WordsManager;
+                        nav.Navigate(EntityManagers.WordsManager);
 
                         LoginOpened = false;
                         SearchTesterOpened = false;
@@ -114,7 +114,7 @@ namespace Diagnosis.App.ViewModels
                     _searchTesterState = value;
                     if (value)
                     {
-                        CurrentScreen = new SearchTester();
+                        nav.Navigate(new SearchTester());
 
                         LoginOpened = false;
                         WordsOpened = false;
@@ -125,6 +125,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
         public bool PatientOpened
         {
             get
@@ -142,13 +143,17 @@ namespace Diagnosis.App.ViewModels
                         WordsOpened = false;
                         SearchTesterOpened = false;
                     }
+                    else
+                    {
+                        viewer.ClosePatient();
+                    }
 
                     OnPropertyChanged(() => PatientOpened);
                 }
             }
         }
 
-        #endregion
+        #endregion CurrentScreen
 
         #region Flags
 
@@ -168,6 +173,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
         public bool IsSearchVisible
         {
             get
@@ -197,13 +203,13 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _fastAddingMode;
+                return viewer != null ? viewer.FastAddingMode : false;
             }
             set
             {
-                if (_fastAddingMode != value)
+                if (viewer.FastAddingMode != value)
                 {
-                    _fastAddingMode = value;
+                    viewer.FastAddingMode = value;
                     OnPropertyChanged(() => FastAddingMode);
                 }
             }
@@ -212,6 +218,7 @@ namespace Diagnosis.App.ViewModels
         #endregion Flags
 
         #region ViewModels
+
         public LoginViewModel Login
         {
             get
@@ -236,21 +243,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public object DirectoryExplorer
-        {
-            get
-            {
-                return _directoryExplorer;
-            }
-            set
-            {
-                if (_directoryExplorer != value)
-                {
-                    _directoryExplorer = value;
-                    OnPropertyChanged(() => DirectoryExplorer);
-                }
-            }
-        }
         public SearchViewModel Search
         {
             get { return _search ?? (_search = new SearchViewModel()); }
@@ -269,7 +261,7 @@ namespace Diagnosis.App.ViewModels
                                           {
                                               LoginOpened = true;
                                           },
-                                          () => !LoginOpened));
+                                          () => nav.Content != Login));
             }
         }
 
@@ -286,18 +278,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public ICommand EditDiagnosisDirectoryCommand
-        {
-            get
-            {
-                return _editDiagnosisDirectory
-                    ?? (_editDiagnosisDirectory = new RelayCommand(
-                                          () =>
-                                          {
-                                              DirectoryExplorer = new HierarchicalExplorer<DiagnosisViewModel>(EntityManagers.DiagnosisManager.Diagnoses);
-                                          }));
-            }
-        }
         public RelayCommand OpenSettingsCommand
         {
             get
@@ -314,43 +294,82 @@ namespace Diagnosis.App.ViewModels
 
         #endregion Commands
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(NavigationService nav)
         {
-            this.Subscribe((int)EventID.CurrentPatientChanged, (e) =>
+            this.nav = nav;
+            this.nav.Navigated += nav_Navigated;
+
+            Login = new LoginViewModel(EntityManagers.DoctorsManager);
+            Login.LoggedIn += OnLoggedIn;
+
+            this.Subscribe((int)EventID.PatientAdded, (e) =>
             {
-                var patient = e.GetValue<PatientViewModel>(Messages.Patient);
-                ShowPatient(patient);
+                OpenPatientInViewer(e);
+            });
+            this.Subscribe((int)EventID.PatientCreated, (e) =>
+            {
+                OpenPatientInViewer(e);
+            });
+            this.Subscribe((int)EventID.OpenPatient, (e) =>
+            {
+                OpenPatientInViewer(e);
+            });
+
+            this.Subscribe((int)EventID.OpenedPatientChanged, (e) =>
+            {
+                var pat = e.GetValue<PatientViewModel>(Messages.Patient);
+                if (pat != null && nav.Content != pat) //  nav.Content == pat when navigate by history
+                {
+                    nav.Navigate(pat);
+                    PatientOpened = true;
+                }
             });
             this.Subscribe((int)EventID.OpenHealthRecord, (e) =>
             {
                 var hr = e.GetValue<HealthRecord>(Messages.HealthRecord);
                 var patVM = EntityManagers.PatientsManager.GetByModel(hr.Appointment.Course.Patient);
-                EntityManagers.PatientsManager.CurrentPatient = patVM;
-                patVM.CoursesManager.OpenHr(hr);
+                viewer.OpenPatient(patVM);
+                viewer.OpenHr(hr);
             });
 
-            Login = new LoginViewModel(EntityManagers.DoctorsManager);
-            Login.LoggedIn += OnLoggedIn;
+            //LoginOpened = true;
+            CreateViewer(EntityManagers.DoctorsManager.CurrentDoctor);
         }
 
-        private void ShowPatient(PatientViewModel patient)
+        private void nav_Navigated(object sender, NavigationEventArgs e)
         {
-            if (patient != null)
+            if (clearNavOnNavigated)
             {
-                patient.SetDoctorVM(Login.DoctorsManager.CurrentDoctor);
-                if (FastAddingMode && !(patient is UnsavedPatientViewModel))
+                while (nav.CanGoBack)
                 {
-                    EntityManagers.PatientsManager.OpenLastAppointment(patient);
+                    nav.RemoveBackEntry();
                 }
-                CurrentScreen = patient;
+                clearNavOnNavigated = false;
             }
-            PatientOpened = true;
+            if (e.Content is PatientViewModel)
+            {
+                viewer.OpenPatient(e.Content as PatientViewModel);
+            }
+        }
+
+        private void OpenPatientInViewer(EventMessage e)
+        {
+            var pat = e.GetValue<PatientViewModel>(Messages.Patient);
+            viewer.OpenPatient(pat);
         }
 
         private void OnLoggedIn(object sender, LoggedEventArgs e)
         {
             IsPatientsVisible = true;
-            EntityManagers.PatientsManager.SetCurrentToLast();
+            clearNavOnNavigated = true;
+            CreateViewer(e.Doctor);
+        }
+
+        private PatientViewer CreateViewer(DoctorViewModel doctor)
+        {
+            viewer = new PatientViewer(doctor);
+            viewer.OpenLastPatient();
+            return viewer;
         }
     }
 }

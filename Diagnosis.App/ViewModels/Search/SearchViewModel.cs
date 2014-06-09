@@ -9,7 +9,6 @@ using System.Windows.Input;
 using Diagnosis.App.Messaging;
 using System.Linq.Expressions;
 using System.Linq;
-using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -370,7 +369,7 @@ namespace Diagnosis.App.ViewModels
                     ?? (_openPatientCommand = new RelayCommand<PatientViewModel>(
                                           p =>
                                           {
-                                              EntityManagers.PatientsManager.CurrentPatient = p;
+                                              this.Send((int)EventID.OpenPatient, new PatientParams(p).Params);
                                           }));
             }
         }

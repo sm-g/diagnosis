@@ -26,19 +26,24 @@ namespace Diagnosis.App.Messaging
         WordCheckedChanged,
         DiagnosisCheckedChanged,
 
-        CurrentPatientChanged,
         CurrentDoctorChanged,
         PropertySelectedValueChanged,
         HealthRecordSelected,
 
+        PatientAdded,
+        PatientCreated,
         CourseStarted,
         AppointmentAdded,
 
         WordsEditingModeChanged,
         HealthRecordChanged,
 
+        OpenedPatientChanged,
+
         OpenHealthRecord,
         OpenSettings,
+        OpenPatient,
+
         SettingsSaved
     }
 }

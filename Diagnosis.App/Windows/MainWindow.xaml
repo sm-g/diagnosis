@@ -7,7 +7,6 @@
         xmlns:screen="clr-namespace:Diagnosis.App.Screens"
         x:Class="Diagnosis.App.Windows.MainWindow"
         mc:Ignorable="d"
-        DataContext="{DynamicResource vm}"
         x:Name="root"
         Title="MainWindow" Height="700" Width="800">
     <Window.Resources>
@@ -17,12 +16,14 @@
                 <ResourceDictionary Source="../Styles/EmptyToggle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <vm:MainWindowViewModel x:Key="vm" />
             <DataTemplate DataType="{x:Type vm:LoginViewModel}">
                 <screen:Login />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:WordsManager}">
                 <screen:Words />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:PatientViewer}">
+                <screen:Card />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:PatientViewModel}">
                 <screen:Card />
@@ -39,8 +40,8 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -64,7 +65,7 @@
                 </MenuItem>
             </Menu>
             <Menu HorizontalAlignment="Center">
-                <CheckBox IsChecked="{Binding FastAddingMode}">_Приём</CheckBox>
+                <CheckBox IsChecked="{Binding FastAddingMode}">_Осмотр пациентов</CheckBox>
             </Menu>
 
             <Menu HorizontalAlignment="Right">
@@ -117,6 +118,7 @@
             </TabControl>
         </DockPanel>
 
+        <Frame x:Name="frame" Grid.Row="1"/>
         <ContentControl Content="{Binding CurrentScreen}"
                         Grid.Row="2" />
     </Grid>

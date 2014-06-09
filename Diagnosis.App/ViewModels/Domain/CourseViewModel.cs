@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.ComponentModel;
 using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
@@ -213,6 +214,7 @@ namespace Diagnosis.App.ViewModels
             appVMs.ForAll(app => SubscribeApp(app));
 
             Appointments = new ObservableCollection<AppointmentViewModel>(appVMs);
+            Appointments.CollectionChanged += Appointments_CollectionChanged;
 
             AppointmentsWithAddNew = new ObservableCollection<WithAddNew>(
                 appVMs.Select(app => new WithAddNew(app)));
@@ -229,7 +231,6 @@ namespace Diagnosis.App.ViewModels
                 AddAppointment(true); // новый курс — добавляем встречу
             }
 
-            Appointments.CollectionChanged += Appointments_CollectionChanged;
             this.Editable.Deleted += Editable_Deleted;
         }
 
@@ -263,7 +264,7 @@ namespace Diagnosis.App.ViewModels
                         {
                         }
                 }
-                if (SelectedAppointment == null)
+                if (SelectedAppointment == null && Appointments.Count > 0)
                 {
                     SelectedAppointment = LastAppointment;
                 }
@@ -278,12 +279,9 @@ namespace Diagnosis.App.ViewModels
             {
                 var appVM = NewAppointment(firstInCourse);
                 Appointments.Add(appVM);
-                SelectedAppointment = appVM;
 
                 OnPropertyChanged("LastAppointment");
                 OnPropertyChanged("IsEmpty");
-
-                this.Send((int)EventID.AppointmentAdded, new AppointmentParams(appVM).Params);
 
                 return appVM;
             }

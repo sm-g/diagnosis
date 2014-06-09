@@ -38,7 +38,7 @@
 
         <ListView x:Name="patients"
                   ItemsSource="{Binding Patients}"
-                  SelectedItem="{Binding CurrentPatient}"
+                  SelectedItem="{Binding SelectedPatient}"
                   Style="{StaticResource list}"
                   Grid.Row="2" 
                   Margin="0,5,0,0" 

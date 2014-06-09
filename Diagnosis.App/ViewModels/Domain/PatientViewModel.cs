@@ -22,6 +22,23 @@ namespace Diagnosis.App.ViewModels
         private CoursesManager _coursesManager;
         private List<EventMessageHandler> msgHandlers = new List<EventMessageHandler>();
 
+        private PatientViewer patViewer;
+        public PatientViewer PatientViewer
+        {
+            get
+            {
+                return patViewer;
+            }
+            set
+            {
+                if (patViewer != value)
+                {
+                    patViewer = value;
+                    OnPropertyChanged(() => PatientViewer);
+                }
+            }
+        }
+
         #region IEditableNesting
 
         public Editable Editable { get; private set; }
@@ -319,13 +336,6 @@ namespace Diagnosis.App.ViewModels
             {
                 return FullName;
             }
-        }
-
-        public void SetDoctorVM(DoctorViewModel doctor)
-        {
-            Contract.Requires(doctor != null);
-
-            CurrentDoctor = doctor;
         }
 
         public PatientViewModel(Patient p)

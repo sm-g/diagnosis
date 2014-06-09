@@ -55,7 +55,7 @@ namespace Diagnosis.App
                 Console.WriteLine("course {0} started", c);
             });
 
-            this.Subscribe((int)EventID.CurrentPatientChanged, (e) =>
+            this.Subscribe((int)EventID.OpenedPatientChanged, (e) =>
             {
                 var p = e.GetValue<PatientViewModel>(Messages.Patient);
                 Console.WriteLine("cur patient is '{0}'", p);

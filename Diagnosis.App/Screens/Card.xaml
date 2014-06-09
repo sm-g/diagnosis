@@ -119,7 +119,7 @@
                                        VerticalAlignment="Center" />
 
                                 <ComboBox ItemsSource="{Binding CoursesManager.Courses}"
-        			                  SelectedItem="{Binding CoursesManager.SelectedCourse}"
+        			                  SelectedItem="{Binding PatientViewer.OpenedCourse}"
                                       Grid.Column="1">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
@@ -137,7 +137,7 @@
                         </controls:AlignableWrapPanel>
                     </Grid>
 
-                    <card:AppointmentsTabs DataContext="{Binding CoursesManager.SelectedCourse}"
+                    <card:AppointmentsTabs DataContext="{Binding PatientViewer.OpenedCourse}"
         				                   DockPanel.Dock="Top"
                                            Visibility="{Binding DataContext.NoCourses, ElementName=root, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
                 </DockPanel>

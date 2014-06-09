@@ -19,7 +19,7 @@ namespace Diagnosis.App.ViewModels
 
         public ObservableCollection<PatientViewModel> Patients { get; private set; }
 
-        public PatientViewModel CurrentPatient
+        public PatientViewModel SelectedPatient
         {
             get
             {
@@ -29,33 +29,9 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_current != value)
                 {
-                    if (_current != null)
-                    {
-                        _current.Unsubscribe();
-                        if (value != null)
-                        {
-                            if (!(value is UnsavedPatientViewModel))
-                            {
-                                // сохраняем состояние редактора при смене пациента
-                                value.Editable.IsEditorActive = _current.Editable.IsEditorActive;
-                            }
-
-                            _current.Editable.Commit();
-                        }
-                        else
-                        {
-                            CurrentPatient.CoursesManager.UnsubscribeSelectedHr();
-                            Console.WriteLine("current patient removed");
-                        }
-                    }
-                    if (value != null)
-                    {
-                        value.Subscribe();
-                    }
                     _current = value;
-
-                    OnPropertyChanged("CurrentPatient");
-                    this.Send((int)EventID.CurrentPatientChanged, new PatientParams(CurrentPatient).Params);
+                    this.Send((int)EventID.OpenPatient, new PatientParams(value).Params);
+                    OnPropertyChanged(() => SelectedPatient);
                 }
             }
         }
@@ -77,52 +53,13 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _addPatient
-                    ?? (_addPatient = new RelayCommand(AddPatient));
-            }
-        }
-
-        public void RemoveCurrent()
-        {
-            CurrentPatient = null;
-        }
-
-        public void SetCurrentToLast()
-        {
-            if (Patients.Count > 0)
-            {
-                CurrentPatient = Patients[0];
+                return _addPatient ?? (_addPatient = new RelayCommand(AddPatient));
             }
         }
 
         public PatientViewModel GetByModel(Patient patient)
         {
             return Patients.Where(p => p.patient == patient).FirstOrDefault();
-        }
-
-        public void OpenLastAppointment(PatientViewModel patient)
-        {
-            // последний курс или новый, если курсов нет
-            var lastCourse = patient.CoursesManager.Courses.FirstOrDefault();
-            if (lastCourse == null)
-            {
-                patient.CurrentDoctor.StartCourse(patient);
-            }
-            else
-            {
-                patient.CoursesManager.SelectedCourse = lastCourse;
-            }
-
-            // последняя встреча в течение часа или новая
-            var lastApp = patient.CoursesManager.SelectedCourse.LastAppointment;
-            if (DateTime.UtcNow - lastApp.DateTime > TimeSpan.FromHours(1))
-            {
-                patient.CoursesManager.SelectedCourse.AddAppointment();
-            }
-            else
-            {
-                patient.CoursesManager.SelectedCourse.SelectedAppointment = lastApp;
-            }
         }
 
         public PatientsManager(IPatientRepository patientRepo)
@@ -138,13 +75,19 @@ namespace Diagnosis.App.ViewModels
             patientVMs.Sort(PatientViewModel.CompareByFullName);
             Patients = new ObservableCollection<PatientViewModel>(patientVMs);
 
-            SetCurrentToLast();
+            this.Subscribe((int)EventID.OpenedPatientChanged, (e) =>
+            {
+                var pat = e.GetValue<PatientViewModel>(Messages.Patient);
+                SelectedPatient = pat;
+            });
         }
 
         private void AddPatient()
         {
             var newPatientVM = new UnsavedPatientViewModel();
-            CurrentPatient = newPatientVM;
+
+            this.Send((int)EventID.PatientAdded, new PatientParams(newPatientVM).Params);
+
             newPatientVM.PatientCreated += OnPatientCreated;
         }
 
@@ -159,12 +102,14 @@ namespace Diagnosis.App.ViewModels
             var saved = new PatientViewModel(modelFromRepo);
             saved.CanAddFirstHr = !e.addFirstHr;
             Patients.Add(saved);
-            CurrentPatient = saved;
+
+            this.Send((int)EventID.PatientCreated, new PatientParams(saved).Params);
+
             SubscribeEditable(saved);
             if (e.addFirstHr)
             {
                 saved.Editable.IsEditorActive = false;
-                OpenLastAppointment(saved);
+                //OpenLastAppointment(saved);
             }
         }
 
@@ -178,7 +123,7 @@ namespace Diagnosis.App.ViewModels
             var patientVM = Search.SelectedItem as PatientViewModel;
             if (patientVM != null)
             {
-                CurrentPatient = patientVM;
+                SelectedPatient = patientVM;
                 Search.Clear();
             }
         }
