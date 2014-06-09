@@ -18,7 +18,9 @@ namespace Diagnosis.App.ViewModels
     {
         internal readonly Course course;
 
-        private AppointmentViewModel _selectedAppointment;
+        internal Action<AppointmentViewModel> OpenedAppointmentSetter;
+        internal Func<AppointmentViewModel> OpenedAppointmentGetter;
+
         private DoctorViewModel _leadDoctor;
         private ICommand _addAppointment;
         private bool isAddingNewApp;
@@ -100,34 +102,11 @@ namespace Diagnosis.App.ViewModels
         /// Осмотры вместе в кнопкой Новый осмотр.
         /// </summary>
         public ObservableCollection<WithAddNew> AppointmentsWithAddNew { get; private set; }
-
-        public AppointmentViewModel SelectedAppointment
+        public WithAddNew OpenedAppointmentWithAddNew
         {
             get
             {
-                return _selectedAppointment;
-            }
-            set
-            {
-                if (_selectedAppointment != value)
-                {
-                    if (_selectedAppointment != null)
-                    {
-                        _selectedAppointment.Editable.Commit();
-                    }
-
-                    _selectedAppointment = value;
-                    OnPropertyChanged("SelectedAppointmentWithAddNew");
-                    OnPropertyChanged("SelectedAppointment");
-                }
-            }
-        }
-
-        public WithAddNew SelectedAppointmentWithAddNew
-        {
-            get
-            {
-                return AppointmentsWithAddNew.Where(wan => wan.Content == SelectedAppointment).FirstOrDefault();
+                return AppointmentsWithAddNew.Where(wan => wan.Content == OpenedAppointmentGetter()).FirstOrDefault();
             }
             set
             {
@@ -143,11 +122,11 @@ namespace Diagnosis.App.ViewModels
                         }
                         return;
                     }
-                    SelectedAppointment = value.Content as AppointmentViewModel;
+                    OpenedAppointmentSetter(value.Content as AppointmentViewModel);
                 }
                 else
                 {
-                    SelectedAppointment = null;
+                    OpenedAppointmentSetter(null);
                 }
             }
         }
@@ -184,6 +163,11 @@ namespace Diagnosis.App.ViewModels
             {
                 return LeadDoctor == EntityManagers.DoctorsManager.CurrentDoctor;
             }
+        }
+
+        public void OnOpenedAppointmentChanged()
+        {
+            OnPropertyChanged("OpenedAppointmentWithAddNew");
         }
 
         public CourseViewModel(Course course)
@@ -347,7 +331,7 @@ namespace Diagnosis.App.ViewModels
 
         public override string ToString()
         {
-            return "курс " + Start.ToShortDateString() + ' ' + LeadDoctor.ToString();
+            return string.Format("курс c {0}, осмотров {1} {2}", Start.ToShortDateString(), Appointments.Count, LeadDoctor.ToString());
         }
     }
 }

@@ -7,7 +7,7 @@
              xmlns:card="clr-namespace:Diagnosis.App.Controls.Card"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
-             x:Name="root"
+             x:Name="card"
              d:DesignHeight="400" d:DesignWidth="500">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -139,7 +139,7 @@
 
                     <card:AppointmentsTabs DataContext="{Binding PatientViewer.OpenedCourse}"
         				                   DockPanel.Dock="Top"
-                                           Visibility="{Binding DataContext.NoCourses, ElementName=root, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
+                                           Visibility="{Binding DataContext.NoCourses, ElementName=card, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
                 </DockPanel>
             </TabItem>
         </TabControl>

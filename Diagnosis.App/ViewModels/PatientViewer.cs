@@ -2,9 +2,9 @@
 using Diagnosis.Models;
 using EventAggregator;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -16,8 +16,9 @@ namespace Diagnosis.App.ViewModels
         private CourseViewModel _openedCourse;
         private HealthRecordViewModel _openedHr;
         private bool _fastAddingMode;
-        Dictionary<PatientViewModel, CourseViewModel> patCourseMap;
-        Dictionary<CourseViewModel, AppointmentViewModel> courseAppMap;
+        private Dictionary<PatientViewModel, CourseViewModel> patCourseMap;
+        private Dictionary<CourseViewModel, AppointmentViewModel> courseAppMap;
+        private bool supressCourseClosing;
 
         public PatientViewer(DoctorViewModel doctor)
         {
@@ -127,9 +128,22 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_openedApp != value)
                 {
+                    if (_openedApp != null)
+                    {
+                        OnAppointmentClosed(_openedApp);
+                        Console.WriteLine("осмотр {0} закрыт", _openedApp);
+                    }
+
                     _openedApp = value;
-                    OpenedCourse.SelectedAppointment = value;
+
+                    if (value != null)
+                    {
+                        OnAppointmentOpened(value);
+                        Console.WriteLine("осмотр {0} открыт", value);
+                    }
+
                     OnPropertyChanged(() => OpenedAppointment);
+                    OpenedCourse.OnOpenedAppointmentChanged();
                 }
             }
         }
@@ -191,7 +205,7 @@ namespace Diagnosis.App.ViewModels
             }
             else
             {
-                OpenedCourse.SelectedAppointment = lastApp;
+                OpenedAppointment = lastApp;
             }
         }
 
@@ -200,7 +214,7 @@ namespace Diagnosis.App.ViewModels
             var course = OpenedPatient.CoursesManager.Courses.Where(x => x.course == hr.Appointment.Course).First();
             OpenedCourse = course;
             var app = course.Appointments.Where(x => x.appointment == hr.Appointment).First();
-            course.SelectedAppointment = app;
+            OpenedAppointment = app;
             var hrVM = app.HealthRecords.Where(x => x.healthRecord == hr).First();
             app.SelectedHealthRecord = hrVM;
         }
@@ -208,10 +222,10 @@ namespace Diagnosis.App.ViewModels
         public void UnsubscribeSelectedHr()
         {
             if (OpenedCourse != null &&
-                OpenedCourse.SelectedAppointment != null &&
-                OpenedCourse.SelectedAppointment.SelectedHealthRecord != null)
+                OpenedAppointment != null &&
+                OpenedAppointment.SelectedHealthRecord != null)
             {
-                OpenedCourse.SelectedAppointment.SelectedHealthRecord.UnsubscribeCheckedChanges();
+                OpenedAppointment.SelectedHealthRecord.UnsubscribeCheckedChanges();
             }
         }
 
@@ -264,11 +278,15 @@ namespace Diagnosis.App.ViewModels
             if (!courseAppMap.TryGetValue(course, out app))
             {
                 // курс открыт первый раз
-                OpenedCourse.SelectedAppointment = OpenedCourse.LastAppointment;
+                OpenedAppointment = OpenedCourse.LastAppointment;
+
+                // для синхронизации c OpenedAppointmentWithAddNew
+                OpenedCourse.OpenedAppointmentGetter = new Func<AppointmentViewModel>(() => OpenedAppointment);
+                OpenedCourse.OpenedAppointmentSetter = new Action<AppointmentViewModel>((a) => { OpenedAppointment = a; });
             }
             else
             {
-                OpenedCourse.SelectedAppointment = app;
+                OpenedAppointment = app;
             }
         }
 
@@ -279,29 +297,40 @@ namespace Diagnosis.App.ViewModels
             course.Appointments.CollectionChanged -= Appointments_CollectionChanged;
         }
 
+        private void OnAppointmentOpened(AppointmentViewModel app)
+        {
+            // map opened app to course
+            if (!courseAppMap.ContainsKey(OpenedCourse))
+                courseAppMap.Add(OpenedCourse, app);
+            else
+                courseAppMap[OpenedCourse] = app;
+        }
+
+        private void OnAppointmentClosed(AppointmentViewModel app)
+        {
+        }
+
         private void Appointments_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             // при добавлении осмотра открываем его
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                OpenedCourse.SelectedAppointment = (AppointmentViewModel)e.NewItems[e.NewItems.Count - 1];
+                OpenedAppointment = (AppointmentViewModel)e.NewItems[e.NewItems.Count - 1];
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
-                if (OpenedCourse.SelectedAppointment == null && OpenedCourse.Appointments.Count > 0)
+                if (OpenedAppointment == null && OpenedCourse.Appointments.Count > 0)
                 {
-                    OpenedCourse.SelectedAppointment = OpenedCourse.LastAppointment;
+                    OpenedAppointment = OpenedCourse.LastAppointment;
                 }
             }
         }
-        bool supressCourseClosing;
         private void Courses_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 // при добавлении курса открываем его
                 OpenedCourse = (CourseViewModel)e.NewItems[e.NewItems.Count - 1];
-
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
