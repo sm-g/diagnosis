@@ -229,15 +229,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private void OnPatientClosed(PatientViewModel patient)
-        {
-            patient.Unsubscribe();
-            patient.Editable.Commit();
-
-            patient.CoursesManager.Courses.CollectionChanged -= Courses_CollectionChanged;
-            OpenedCourse = null;
-        }
-
         private void OnPatientOpened(PatientViewModel patient)
         {
             patient.Subscribe();
@@ -264,6 +255,14 @@ namespace Diagnosis.App.ViewModels
             patient.CoursesManager.Courses.CollectionChanged += Courses_CollectionChanged;
         }
 
+        private void OnPatientClosed(PatientViewModel patient)
+        {
+            patient.Unsubscribe();
+            patient.Editable.Commit();
+
+            patient.CoursesManager.Courses.CollectionChanged -= Courses_CollectionChanged;
+            OpenedCourse = null;
+        }
         private void OnCourseOpened(CourseViewModel course)
         {
             course.Appointments.CollectionChanged += Appointments_CollectionChanged;
@@ -310,21 +309,6 @@ namespace Diagnosis.App.ViewModels
         {
         }
 
-        private void Appointments_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            // при добавлении осмотра открываем его
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                OpenedAppointment = (AppointmentViewModel)e.NewItems[e.NewItems.Count - 1];
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                if (OpenedAppointment == null && OpenedCourse.Appointments.Count > 0)
-                {
-                    OpenedAppointment = OpenedCourse.LastAppointment;
-                }
-            }
-        }
         private void Courses_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
@@ -346,6 +330,22 @@ namespace Diagnosis.App.ViewModels
             else if (e.Action == NotifyCollectionChangedAction.Move)
             {
                 supressCourseClosing = true;
+            }
+        }
+
+        private void Appointments_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            // при добавлении осмотра открываем его
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                OpenedAppointment = (AppointmentViewModel)e.NewItems[e.NewItems.Count - 1];
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                if (OpenedAppointment == null && OpenedCourse.Appointments.Count > 0)
+                {
+                    OpenedAppointment = OpenedCourse.LastAppointment;
+                }
             }
         }
     }
