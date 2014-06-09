@@ -9,7 +9,6 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="400">
     <UserControl.Resources>
-        <Style TargetType="DockPanel" BasedOn="{StaticResource formLine}" />
         <Style TargetType="Label" BasedOn="{StaticResource label90}" />
     </UserControl.Resources>
     <Grid DataContext="{Binding HealthRecord}">
@@ -18,7 +17,18 @@
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
         <StackPanel>
-            <controls:AutoComplete DataContext="{Binding DataContext.AutoComplete, ElementName=editor}" />
+            <StackPanel.Resources>
+                <Style TargetType="DockPanel" BasedOn="{StaticResource formLine}" />
+            </StackPanel.Resources>
+            <DockPanel>
+                <TextBox ToolTip="Числовое значение" Text="{Binding NumValue}" Width="60" Margin="10,0,0,0" DockPanel.Dock="Right"
+                         HorizontalContentAlignment="Right" HorizontalAlignment="Right">
+                    <controls:WatermarkService.Watermark>
+                        <TextBlock Style="{StaticResource watermark}" Margin="5,0,0,0">число</TextBlock>
+                    </controls:WatermarkService.Watermark>
+                </TextBox>
+                <controls:AutoComplete DataContext="{Binding DataContext.AutoComplete, ElementName=editor}" />
+            </DockPanel>
             <DockPanel Visibility="{Binding Symptom.Words.Count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
                 <TextBlock DockPanel.Dock="Left" Text="Слова: " />
                 <controls:CommaList ItemsSource="{Binding Symptom.Words}" />
@@ -39,10 +49,6 @@
                     </editors:DateOffsetPicker.Resources>
                 </editors:DateOffsetPicker>
             </DockPanel>
-            <DockPanel>
-                <Label Content="число" />
-                <TextBox Text="{Binding NumValue}" />
-            </DockPanel>
             <DockPanel DataContext="{Binding DataContext, ElementName=editor}" Visibility="{Binding ShowIcdDisease, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Label Content="диагноз МКБ" />
                 <StackPanel>
@@ -54,13 +60,32 @@
                 <TextBox Text="{Binding Comment}" />
             </DockPanel>
         </StackPanel>
-        
+
         <StackPanel Grid.Column="1">
+            <StackPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Margin" Value="5" />
+                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                </Style>
+            </StackPanel.Resources>
+
+            <Button Command="{Binding DataContext.AddHealthRecordCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}">
+                <DockPanel>
+                    <Image Source="{StaticResource addImage}" Margin="0,0,5,0" />
+                    <TextBlock Text="Добавить" />
+                </DockPanel>
+            </Button>
             <Button Command="{Binding Editable.CommitCommand}">
-                Сохранить
+                <DockPanel>
+                    <Image Source="{StaticResource saveImage}" Margin="0,0,5,0" />
+                    <TextBlock Text="Сохранить" />
+                </DockPanel>
             </Button>
             <Button Command="{Binding Editable.RevertCommand}">
-                Закрыть
+                <DockPanel>
+                    <Image Source="{StaticResource closeImage}" Margin="0,0,5,0" />
+                    <TextBlock Text="Закрыть" />
+                </DockPanel>
             </Button>
             <Button Command="{Binding Editable.DeleteCommand}">
                 Удалить

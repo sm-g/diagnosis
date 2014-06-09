@@ -23,7 +23,11 @@
         <conv:DateLabel x:Key="DateLabel" />
         <conv:LessThanConverter x:Key="LessThan" />
         <conv:NullToVisibilityConverter x:Key="NullToVis" />
-        
+
+        <BitmapImage x:Key="closeImage" UriSource="Resources/Close_16xLG.png" />
+        <BitmapImage x:Key="addImage" UriSource="/Resources/AddControl_371.png" />
+        <BitmapImage x:Key="saveImage" UriSource="/Resources/save_16xLG.png" />
+
 
         <s:Boolean x:Key="True">True</s:Boolean>
         <s:Boolean x:Key="False">False</s:Boolean>
