@@ -17,11 +17,13 @@ namespace Diagnosis.App.ViewModels
         private HealthRecordViewModel _openedHr;
         private bool _fastAddingMode;
         Dictionary<PatientViewModel, CourseViewModel> patCourseMap;
+        Dictionary<CourseViewModel, AppointmentViewModel> courseAppMap;
 
         public PatientViewer(DoctorViewModel doctor)
         {
             this.doctor = doctor;
             patCourseMap = new Dictionary<PatientViewModel, CourseViewModel>();
+            courseAppMap = new Dictionary<CourseViewModel, AppointmentViewModel>();
         }
 
         public bool FastAddingMode
@@ -53,6 +55,8 @@ namespace Diagnosis.App.ViewModels
                     if (_openedPatient != null)
                     {
                         OnPatientClosed(_openedPatient);
+                        Console.WriteLine("пациент {0} закрыт", _openedPatient);
+
                         if (value != null)
                         {
                             if (!(value is UnsavedPatientViewModel))
@@ -72,6 +76,7 @@ namespace Diagnosis.App.ViewModels
                     if (value != null)
                     {
                         OnPatientOpened(value);
+                        Console.WriteLine("пациент {0} открыт", value);
                     }
                     OnPropertyChanged("OpenedPatient");
                     this.Send((int)EventID.OpenedPatientChanged, new PatientParams(OpenedPatient).Params);
@@ -87,11 +92,12 @@ namespace Diagnosis.App.ViewModels
             }
             set
             {
-                if (_openedCourse != value)
+                if (_openedCourse != value && !supressCourseClosing)
                 {
                     if (_openedCourse != null)
                     {
                         OnCourseClosed(_openedCourse);
+                        Console.WriteLine("курс {0} закрыт", _openedCourse);
                     }
 
                     _openedCourse = value;
@@ -99,7 +105,13 @@ namespace Diagnosis.App.ViewModels
                     if (value != null)
                     {
                         OnCourseOpened(value);
+                        Console.WriteLine("курс {0} открыт", value);
                     }
+                    OnPropertyChanged(() => OpenedCourse);
+                }
+                if (supressCourseClosing)
+                {
+                    supressCourseClosing = false;
                     OnPropertyChanged(() => OpenedCourse);
                 }
             }
@@ -209,6 +221,7 @@ namespace Diagnosis.App.ViewModels
             patient.Editable.Commit();
 
             patient.CoursesManager.Courses.CollectionChanged -= Courses_CollectionChanged;
+            OpenedCourse = null;
         }
 
         private void OnPatientOpened(PatientViewModel patient)
@@ -220,7 +233,7 @@ namespace Diagnosis.App.ViewModels
             CourseViewModel course;
             if (!patCourseMap.TryGetValue(patient, out course))
             {
-                // пациент открыт первый раз - открываем самый поздний курс
+                // пациент открыт первый раз
                 OpenedCourse = patient.CoursesManager.Courses.FirstOrDefault();
             }
             else
@@ -246,6 +259,17 @@ namespace Diagnosis.App.ViewModels
                 patCourseMap.Add(OpenedPatient, course);
             else
                 patCourseMap[OpenedPatient] = course;
+
+            AppointmentViewModel app;
+            if (!courseAppMap.TryGetValue(course, out app))
+            {
+                // курс открыт первый раз
+                OpenedCourse.SelectedAppointment = OpenedCourse.LastAppointment;
+            }
+            else
+            {
+                OpenedCourse.SelectedAppointment = app;
+            }
         }
 
         private void OnCourseClosed(CourseViewModel course)
@@ -262,15 +286,37 @@ namespace Diagnosis.App.ViewModels
             {
                 OpenedCourse.SelectedAppointment = (AppointmentViewModel)e.NewItems[e.NewItems.Count - 1];
             }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                if (OpenedCourse.SelectedAppointment == null && OpenedCourse.Appointments.Count > 0)
+                {
+                    OpenedCourse.SelectedAppointment = OpenedCourse.LastAppointment;
+                }
+            }
         }
-
+        bool supressCourseClosing;
         private void Courses_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            // при добавлении курса открываем его и последний осмотр
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
+                // при добавлении курса открываем его
                 OpenedCourse = (CourseViewModel)e.NewItems[e.NewItems.Count - 1];
-                OpenedCourse.SelectedAppointment = OpenedCourse.LastAppointment;
+
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                // при удалении курса открываем курс рядом с удаленным
+                var i = e.OldStartingIndex;
+                if (OpenedPatient.CoursesManager.Courses.Count <= i)
+                    i--;
+                if (OpenedPatient.CoursesManager.Courses.Count > 0)
+                {
+                    OpenedCourse = OpenedPatient.CoursesManager.Courses[i];
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Move)
+            {
+                supressCourseClosing = true;
             }
         }
     }

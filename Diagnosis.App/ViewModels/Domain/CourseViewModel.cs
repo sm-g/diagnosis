@@ -221,12 +221,7 @@ namespace Diagnosis.App.ViewModels
             if (!IsEnded)
                 AppointmentsWithAddNew.Add(new WithAddNew());
 
-            if (Appointments.Count > 0)
-            {
-                SelectedAppointment = LastAppointment;
-                Editable.CanBeDeleted = false; // не новый курс — встречи не пустые, удалить курс нельзя
-            }
-            else
+            if (Appointments.Count == 0)
             {
                 AddAppointment(true); // новый курс — добавляем встречу
             }
@@ -263,10 +258,6 @@ namespace Diagnosis.App.ViewModels
                         catch (IndexOutOfRangeException)
                         {
                         }
-                }
-                if (SelectedAppointment == null && Appointments.Count > 0)
-                {
-                    SelectedAppointment = LastAppointment;
                 }
             }
         }

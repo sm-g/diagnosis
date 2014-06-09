@@ -27,7 +27,8 @@ namespace Diagnosis.App.ViewModels
             SubscribeCourse(courseVM);
 
             Courses.Add(courseVM);
-            Courses.Move(Courses.Count - 1, 0);
+            if (Courses.Count > 1)
+                Courses.Move(Courses.Count - 1, 0);
 
             return courseVM;
         }
