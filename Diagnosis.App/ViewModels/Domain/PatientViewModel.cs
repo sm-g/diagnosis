@@ -201,7 +201,7 @@ namespace Diagnosis.App.ViewModels
             }
             set
             {
-                if (patient.IsMale != value && EntityManagers.PatientsManager.CurrentPatient == this) // fix binding when change CurrentScreen
+                if (patient.IsMale != value)
                 {
                     patient.IsMale = value;
                     OnPropertyChanged("IsMale");

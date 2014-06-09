@@ -16,7 +16,6 @@
         <RadioButton IsChecked="{Binding IsMale}"
                      Content="муж" />
         <RadioButton Grid.Column="1"
-                     Content="жен"
-                     IsChecked="{Binding IsMale, Converter={StaticResource NegateBoolean}}" />
+                     Content="жен" />
     </Grid>
 </UserControl>
