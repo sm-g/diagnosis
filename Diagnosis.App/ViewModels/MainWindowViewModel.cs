@@ -10,18 +10,20 @@ namespace Diagnosis.App.ViewModels
     {
         #region Fields
 
-        private bool _loginActive;
-        private LoginViewModel _loginVM;
         private ICommand _logout;
-        private ICommand _editSymptomsDirectory;
-        private RelayCommand _openSettings;
-        private bool _isPatientsVisible;
-        private bool _patientOpened;
-        private bool _isWordsEditing;
-        private bool _fastAddingMode;
-        private bool _searchTesterState;
+        private ICommand _openWords;
+        private ICommand _openPatients;
+        private ICommand _openSettings;
+        private bool _patientsAsideVisible;
+        private bool _onePatientOpened;
+        private bool _loginOpened;
+        private bool _patientsOpened;
+        private bool _wordsOpened;
+        private bool _searchTesterOpened;
+        private bool _searchAsideVisible;
         private SearchViewModel _search;
-        private bool _searchState;
+        private LoginViewModel _login;
+
         private ViewModelBase _currentScreen;
 
         private NavigationService nav;
@@ -52,21 +54,25 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _loginActive;
+                return _loginOpened;
             }
             set
             {
-                if (_loginActive != value)
+                if (_loginOpened != value)
                 {
-                    _loginActive = value;
+                    _loginOpened = value;
                     if (value)
                     {
                         clearNavOnNavigated = true;
                         nav.Navigate(Login);
 
                         WordsOpened = false;
+                        PatientsOpened = false;
                         SearchTesterOpened = false;
-                        PatientOpened = false;
+                        OnePatientOpened = false;
+
+                        SearchAsideVisible = false;
+                        PatientsAsideVisible = false;
                     }
 
                     OnPropertyChanged(() => LoginOpened);
@@ -78,13 +84,13 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _isWordsEditing;
+                return _wordsOpened;
             }
             set
             {
-                if (_isWordsEditing != value)
+                if (_wordsOpened != value)
                 {
-                    _isWordsEditing = value;
+                    _wordsOpened = value;
 
                     if (value)
                     {
@@ -92,7 +98,11 @@ namespace Diagnosis.App.ViewModels
 
                         LoginOpened = false;
                         SearchTesterOpened = false;
-                        PatientOpened = false;
+                        PatientsOpened = false;
+                        OnePatientOpened = false;
+
+                        SearchAsideVisible = false;
+                        PatientsAsideVisible = false;
                     }
 
                     this.Send((int)EventID.WordsEditingModeChanged, new DirectoryEditingModeChangedParams(value).Params);
@@ -105,20 +115,24 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _searchTesterState;
+                return _searchTesterOpened;
             }
             set
             {
-                if (_searchTesterState != value)
+                if (_searchTesterOpened != value)
                 {
-                    _searchTesterState = value;
+                    _searchTesterOpened = value;
                     if (value)
                     {
                         nav.Navigate(new SearchTester());
 
                         LoginOpened = false;
                         WordsOpened = false;
-                        PatientOpened = false;
+                        PatientsOpened = false;
+                        OnePatientOpened = false;
+
+                        SearchAsideVisible = false;
+                        PatientsAsideVisible = false;
                     }
 
                     OnPropertyChanged(() => SearchTesterOpened);
@@ -126,29 +140,58 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public bool PatientOpened
+        public bool OnePatientOpened
         {
             get
             {
-                return _patientOpened;
+                return _onePatientOpened;
             }
             set
             {
-                if (_patientOpened != value)
+                if (_onePatientOpened != value)
                 {
-                    _patientOpened = value;
+                    _onePatientOpened = value;
                     if (value)
                     {
                         LoginOpened = false;
                         WordsOpened = false;
                         SearchTesterOpened = false;
+                        PatientsOpened = false;
                     }
                     else
                     {
                         viewer.ClosePatient();
                     }
 
-                    OnPropertyChanged(() => PatientOpened);
+                    OnPropertyChanged(() => OnePatientOpened);
+                }
+            }
+        }
+
+        public bool PatientsOpened
+        {
+            get
+            {
+                return _patientsOpened;
+            }
+            set
+            {
+                if (_patientsOpened != value)
+                {
+                    if (value)
+                    {
+                        nav.Navigate(Patients);
+
+                        OnePatientOpened = false;
+                        LoginOpened = false;
+                        WordsOpened = false;
+                        SearchTesterOpened = false;
+
+                        PatientsAsideVisible = false;
+                    }
+
+                    _patientsOpened = value;
+                    OnPropertyChanged(() => PatientsOpened);
                 }
             }
         }
@@ -157,45 +200,45 @@ namespace Diagnosis.App.ViewModels
 
         #region Flags
 
-        public bool IsPatientsVisible
+        public bool PatientsAsideVisible
         {
             get
             {
-                return _isPatientsVisible;
+                return _patientsAsideVisible;
             }
             set
             {
-                if (_isPatientsVisible != value)
+                if (_patientsAsideVisible != value)
                 {
-                    _isPatientsVisible = value;
-                    OnPropertyChanged(() => IsPatientsVisible);
-                    OnPropertyChanged(() => NoTabVisible);
+                    _patientsAsideVisible = value;
+                    OnPropertyChanged(() => PatientsAsideVisible);
+                    OnPropertyChanged(() => NoAsideVisible);
                 }
             }
         }
 
-        public bool IsSearchVisible
+        public bool SearchAsideVisible
         {
             get
             {
-                return _searchState;
+                return _searchAsideVisible;
             }
             set
             {
-                if (_searchState != value)
+                if (_searchAsideVisible != value)
                 {
-                    _searchState = value;
-                    OnPropertyChanged(() => IsSearchVisible);
-                    OnPropertyChanged(() => NoTabVisible);
+                    _searchAsideVisible = value;
+                    OnPropertyChanged(() => SearchAsideVisible);
+                    OnPropertyChanged(() => NoAsideVisible);
                 }
             }
         }
 
-        public bool NoTabVisible
+        public bool NoAsideVisible
         {
             get
             {
-                return !IsSearchVisible && !IsPatientsVisible;
+                return !SearchAsideVisible && !PatientsAsideVisible;
             }
         }
 
@@ -223,13 +266,13 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _loginVM;
+                return _login;
             }
             set
             {
-                if (_loginVM != value)
+                if (_login != value)
                 {
-                    _loginVM = value;
+                    _login = value;
                     OnPropertyChanged(() => Login);
                 }
             }
@@ -260,25 +303,44 @@ namespace Diagnosis.App.ViewModels
                                           () =>
                                           {
                                               LoginOpened = true;
-                                          },
-                                          () => nav.Content != Login));
+                                          }, () => nav.Content != Login));
             }
         }
 
-        public ICommand EditSymptomsDirectoryCommand
+        public ICommand OpenWordsCommand
         {
             get
             {
-                return _editSymptomsDirectory
-                    ?? (_editSymptomsDirectory = new RelayCommand(
+                return _openWords
+                    ?? (_openWords = new RelayCommand(
                                           () =>
                                           {
                                               WordsOpened = true;
-                                          }));
+                                          }, () => !WordsOpened));
             }
         }
 
-        public RelayCommand OpenSettingsCommand
+        public ICommand OpenPatientsCommand
+        {
+            get
+            {
+                return _openPatients
+                   ?? (_openPatients = new RelayCommand(() =>
+                        {
+                            PatientsOpened = true;
+                        }, () => !PatientsOpened));
+            }
+        }
+
+        public ICommand AddPatientCommand
+        {
+            get
+            {
+                return Patients.AddPatientCommand;
+            }
+        }
+
+        public ICommand OpenSettingsCommand
         {
             get
             {
@@ -321,7 +383,7 @@ namespace Diagnosis.App.ViewModels
                 if (pat != null && nav.Content != pat) //  nav.Content == pat when navigate by history
                 {
                     nav.Navigate(pat);
-                    PatientOpened = true;
+                    OnePatientOpened = true;
                 }
             });
             this.Subscribe((int)EventID.OpenHealthRecord, (e) =>
@@ -360,7 +422,7 @@ namespace Diagnosis.App.ViewModels
 
         private void OnLoggedIn(object sender, LoggedEventArgs e)
         {
-            IsPatientsVisible = true;
+            PatientsOpened = true;
             clearNavOnNavigated = true;
             CreateViewer(e.Doctor);
         }

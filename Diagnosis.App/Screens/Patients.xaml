@@ -20,11 +20,12 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Style="{StaticResource ScreenTitle}">Пациенты</TextBlock>
-            <Button Content="Новый"
+            <Button Content="Добавить"
                     Grid.Column="1"
+                    Height="23"
                     HorizontalAlignment="Right"
                     Command="{Binding AddPatientCommand}"
-                    Margin="0,6,0,10" />
+                    Margin="0,2,0,11" />
         </Grid>
 
         <controls:FloatSearch x:Name="search"

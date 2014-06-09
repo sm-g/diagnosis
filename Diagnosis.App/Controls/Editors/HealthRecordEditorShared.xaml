@@ -29,11 +29,6 @@
                 </TextBox>
                 <controls:AutoComplete DataContext="{Binding DataContext.AutoComplete, ElementName=editor}" />
             </DockPanel>
-            <DockPanel Visibility="{Binding Symptom.Words.Count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
-                <TextBlock DockPanel.Dock="Left" Text="Слова: " />
-                <controls:CommaList ItemsSource="{Binding Symptom.Words}" />
-            </DockPanel>
-
             <DockPanel>
                 <editors:CategoryChooser HorizontalAlignment="Left" />
             </DockPanel>
@@ -88,7 +83,9 @@
                 </DockPanel>
             </Button>
             <Button Command="{Binding Editable.DeleteCommand}">
-                Удалить
+                <DockPanel>
+                    <TextBlock Text="Удалить" Margin="21,0,0,0" />
+                </DockPanel>
             </Button>
         </StackPanel>
     </Grid>

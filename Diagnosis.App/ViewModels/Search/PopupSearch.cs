@@ -234,7 +234,7 @@ namespace Diagnosis.App.ViewModels
             RaiseResultItemSelected();
         }
 
-        private void RaiseResultItemSelected()
+        public void RaiseResultItemSelected() // public for selecting by mouse
         {
             if (SwitchedOn)
             {

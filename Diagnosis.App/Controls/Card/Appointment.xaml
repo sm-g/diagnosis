@@ -16,7 +16,8 @@
             <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
             <KeyBinding Key="Escape" Command="{Binding Editable.RevertCommand}" />
             <KeyBinding Key="Delete" Command="{Binding Editable.DeleteCommand}" />
-            <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding Editable.EditCommand}" />
+
+            <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding DataContext.EditHrCommand, ElementName=appointment}" />
         </InputBindingCollection>
     </UserControl.Resources>
 
@@ -45,7 +46,7 @@
                 </TextBlock>
             </Button>
         </StackPanel>
-        
+
         <ListView x:Name="records"
                   Grid.Row="1"
                   ItemsSource="{Binding HealthRecordsView}"
@@ -54,7 +55,8 @@
                   Style="{StaticResource list}"
                   HorizontalContentAlignment="Stretch"
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
-                  SelectionMode="Single">
+                  SelectionMode="Single"
+                  SelectionChanged="records_SelectionChanged">
             <ListView.GroupStyle>
                 <GroupStyle>
                     <GroupStyle.ContainerStyle>
@@ -90,7 +92,12 @@
         </ListView>
 
         <Grid Grid.Row="2" Visibility="{Binding ShowHrEditor, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <editors:HealthRecordEditorShared DataContext="{Binding HealthRecordEditor}" ></editors:HealthRecordEditorShared>
+            <Border BorderThickness="0,1,0,0" Padding="0,10,0,0" SnapsToDevicePixels="True">
+                <Border.BorderBrush>
+                    <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}"/>
+                </Border.BorderBrush>
+                <editors:HealthRecordEditorShared DataContext="{Binding HealthRecordEditor}" ></editors:HealthRecordEditorShared>
+            </Border>
         </Grid>
     </Grid>
 </UserControl>

@@ -23,5 +23,10 @@ namespace Diagnosis.App.Controls.Card
         {
             InitializeComponent();
         }
+
+        private void records_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            records.ScrollIntoView(records.SelectedItem);
+        }
     }
 }
