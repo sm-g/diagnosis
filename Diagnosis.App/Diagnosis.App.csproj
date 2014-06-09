@@ -242,6 +242,9 @@
     <Compile Include="Converters\CountToAppointmentsLabel.cs" />
     <Compile Include="Converters\IntToString.cs" />
     <Compile Include="DebugOutput.cs" />
+    <Compile Include="Screens\Patients.xaml.cs">
+      <DependentUpon>Patients.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\Domain\HrEditorViewModel.cs" />
     <Compile Include="ViewModels\Managers\EntityManagers.cs" />
     <Compile Include="MessagingParams.cs" />
@@ -261,6 +264,8 @@
     <Compile Include="ViewModels\Extensions\IEditableNestingExtensions.cs" />
     <Compile Include="ViewModels\Interfaces\IEditableNesting.cs" />
     <Compile Include="ViewModels\PatientViewer.cs" />
+    <Compile Include="ViewModels\Screens\PatientsAsideViewModel.cs" />
+    <Compile Include="ViewModels\Screens\PatientsListViewModel.cs" />
     <Compile Include="ViewModels\Search\DiagnosisFiltratingSearcher.cs" />
     <Compile Include="ViewModels\Search\DiagnosisSearcher.cs" />
     <Compile Include="ViewModels\Search\HrSearcher.cs" />
@@ -268,7 +273,7 @@
     <Compile Include="ViewModels\Search\SimpleSearcherSettings.cs" />
     <Compile Include="ViewModels\Search\SearchTester.cs" />
     <Compile Include="ViewModels\Search\HrSearchResultViewModel.cs" />
-    <Compile Include="ViewModels\Search\SearchViewModel.cs" />
+    <Compile Include="ViewModels\Screens\SearchViewModel.cs" />
     <Compile Include="ViewModels\Search\WordRootAutoComplete.cs" />
     <Compile Include="ViewModels\Search\WordCompositeAutoComplete.cs" />
     <Compile Include="ViewModels\Search\WordCompositeSearcher.cs" />
@@ -317,8 +322,8 @@
     <Compile Include="Screens\Card.xaml.cs">
       <DependentUpon>Card.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Screens\Patients.xaml.cs">
-      <DependentUpon>Patients.xaml</DependentUpon>
+    <Compile Include="Screens\PatientsAside.xaml.cs">
+      <DependentUpon>PatientsAside.xaml</DependentUpon>
     </Compile>
     <Compile Include="Styles\TreeStyle.cs" />
     <Compile Include="ViewModels\Search\AutoCompleteBase.cs" />
@@ -329,8 +334,8 @@
     <Compile Include="ViewModels\Interfaces\IHierarchical.cs" />
     <Compile Include="ViewModels\Interfaces\IHierarchicalCheckable.cs" />
     <Compile Include="ViewModels\Interfaces\ISimpleSearcher.cs" />
-    <Compile Include="ViewModels\LoginViewModel.cs" />
-    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\Screens\LoginViewModel.cs" />
+    <Compile Include="ViewModels\Screens\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IAutoComplete.cs" />
     <Compile Include="ViewModels\Managers\PatientsManager.cs" />
     <Compile Include="ViewModels\Managers\PropertyManager.cs" />
@@ -344,7 +349,7 @@
       <DependentUpon>FullTree.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Domain\PatientViewModel.cs" />
-    <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\Screens\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\WithAddNew.cs" />
     <Compile Include="Windows\Helpers\DialogCloser.cs" />
@@ -459,6 +464,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Screens\Patients.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -491,7 +500,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Screens\Patients.xaml">
+    <Page Include="Screens\PatientsAside.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

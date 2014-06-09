@@ -22,6 +22,8 @@ namespace Diagnosis.App.ViewModels
         private bool _searchTesterOpened;
         private bool _searchAsideVisible;
         private SearchViewModel _search;
+        private PatientsAsideViewModel _patientsAside;
+        private PatientsListViewModel _patients;
         private LoginViewModel _login;
 
         private ViewModelBase _currentScreen;
@@ -278,11 +280,19 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public PatientsManager Patients
+        public PatientsAsideViewModel PatientsAside
         {
             get
             {
-                return EntityManagers.PatientsManager;
+                return _patientsAside ?? (_patientsAside = new PatientsAsideViewModel(EntityManagers.PatientsManager));
+            }
+        }
+
+        public PatientsListViewModel Patients
+        {
+            get
+            {
+                return _patients ?? (_patients = new PatientsListViewModel(EntityManagers.PatientsManager));
             }
         }
 
@@ -336,7 +346,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return Patients.AddPatientCommand;
+                return EntityManagers.PatientsManager.AddPatientCommand;
             }
         }
 

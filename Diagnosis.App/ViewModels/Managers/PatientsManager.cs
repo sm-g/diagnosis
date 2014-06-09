@@ -12,42 +12,10 @@ namespace Diagnosis.App.ViewModels
 {
     public class PatientsManager : ViewModelBase
     {
-        private PopupSearch<PatientViewModel> _search;
-        private PatientViewModel _current;
         private ICommand _addPatient;
         private IPatientRepository patientRepo;
 
         public ObservableCollection<PatientViewModel> Patients { get; private set; }
-
-        public PatientViewModel SelectedPatient
-        {
-            get
-            {
-                return _current;
-            }
-            set
-            {
-                if (_current != value)
-                {
-                    _current = value;
-                    this.Send((int)EventID.OpenPatient, new PatientParams(value).Params);
-                    OnPropertyChanged(() => SelectedPatient);
-                }
-            }
-        }
-
-        public PopupSearch<PatientViewModel> Search
-        {
-            get
-            {
-                if (_search == null)
-                {
-                    _search = new PopupSearch<PatientViewModel>(new PatientSearcher(Patients));
-                    _search.ResultItemSelected += _search_ResultItemSelected;
-                }
-                return _search;
-            }
-        }
 
         public ICommand AddPatientCommand
         {
@@ -74,12 +42,6 @@ namespace Diagnosis.App.ViewModels
             }
             patientVMs.Sort(PatientViewModel.CompareByFullName);
             Patients = new ObservableCollection<PatientViewModel>(patientVMs);
-
-            this.Subscribe((int)EventID.OpenedPatientChanged, (e) =>
-            {
-                var pat = e.GetValue<PatientViewModel>(Messages.Patient);
-                SelectedPatient = pat;
-            });
         }
 
         private void AddPatient()
@@ -116,16 +78,6 @@ namespace Diagnosis.App.ViewModels
         private void SubscribeEditable(PatientViewModel pvm)
         {
             pvm.Editable.Committed += p_Committed;
-        }
-
-        private void _search_ResultItemSelected(object sender, EventArgs e)
-        {
-            var patientVM = Search.SelectedItem as PatientViewModel;
-            if (patientVM != null)
-            {
-                SelectedPatient = patientVM;
-                Search.Clear();
-            }
         }
 
         private void p_Committed(object sender, EditableEventArgs e)

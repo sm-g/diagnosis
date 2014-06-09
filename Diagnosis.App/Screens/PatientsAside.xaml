@@ -1,12 +1,12 @@
-﻿<UserControl x:Class="Diagnosis.App.Screens.Patients"
+﻿<UserControl x:Class="Diagnosis.App.Screens.PatientsAside"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="400">
-    <Grid HorizontalAlignment="Stretch" MaxWidth="300" MinWidth="250">
+             d:DesignHeight="300" Width="200">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="36" />
             <RowDefinition Height="auto" />
@@ -15,7 +15,7 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="150" />
+                <ColumnDefinition Width="auto" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
@@ -38,23 +38,31 @@
             </controls:FloatSearch.InputBindings>
         </controls:FloatSearch>
 
-        <DataGrid Grid.Row="3"
-                  AutoGenerateColumns="False"
+        <ListView x:Name="patients"
                   ItemsSource="{Binding Patients}"
                   SelectedItem="{Binding SelectedPatient}"
-                  GridLinesVisibility="None"
-                  Margin="0,10,0,0"
-                  SelectionMode="Single">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Ключ" IsReadOnly="True" Binding="{Binding Label}" />
-                <DataGridTextColumn Header="Фамилия" IsReadOnly="True" Binding="{Binding LastName}" />
-                <DataGridTextColumn Header="Имя" IsReadOnly="True" Binding="{Binding FirstName}" />
-                <DataGridTextColumn Header="Отчество" IsReadOnly="True" Binding="{Binding MiddleName}" />
-            </DataGrid.Columns>
-            <DataGrid.InputBindings>
-                <KeyBinding Key="Enter" Command="{Binding OpenPatientCommand}" />
-                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding OpenPatientCommand}" />
-            </DataGrid.InputBindings>
-        </DataGrid>
+                  Style="{StaticResource list}"
+                  Grid.Row="2" 
+                  Margin="0,5,0,0" 
+                  HorizontalContentAlignment="Stretch">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="{Binding Label}" />
+                        <TextBlock Text="{Binding Converter={StaticResource ManToShortName}}" Grid.Column="1" />
+                        <TextBlock x:Name="unsaved"
+                                   Grid.Column="1"
+                                   HorizontalAlignment="Right"
+                                   Text="new"
+                                   Visibility="{Binding Editable.IsDirty, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </UserControl>
