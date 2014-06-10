@@ -31,8 +31,6 @@
                     BasedOn="{StaticResource TreeViewItemStyle}">
                 <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
                 <Setter Property="IsSelected" Value="{Binding IsSelected}" />
-                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                <Setter Property="VerticalContentAlignment" Value="Center" />
                 <Setter Property="controls:Attached.InputBindings" Value="{StaticResource InputBindings}" />
             </Style>
 
@@ -51,13 +49,14 @@
 
         <TreeView
             x:Name="tree"
-            HorizontalContentAlignment="Stretch"
+            Style="{StaticResource TreeViewStyle}"
             ItemContainerStyle="{StaticResource groupsTreeItemContainerStyle}"
             ItemTemplate="{StaticResource groupTreeItemTemplate}"
             ItemsSource="{Binding}">
         </TreeView>
         <TreeView DataContext="{Binding SelectedItem, ElementName=tree, Mode=OneWay}"
                   ItemsSource="{Binding TerminalChildren}"
+                  Style="{StaticResource TreeViewStyle}"
                   Grid.Column="1"
                   Margin="10,0,0,0">
             <TreeView.ItemTemplate>
