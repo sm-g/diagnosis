@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class CoursesManager : ViewModelBase
+    public class CoursesManager
     {
         private readonly PatientViewModel patientVM;
 

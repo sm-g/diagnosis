@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class PatientsManager : ViewModelBase
+    public class PatientsManager
     {
         private ICommand _addPatient;
         private IPatientRepository patientRepo;

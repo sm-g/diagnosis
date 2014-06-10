@@ -556,6 +556,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="App.config" />
+    <None Include="ViewModels\Search\SearchClassDiagram.cd" />
     <None Include="ViewModels\VMClassDiagram.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class CategoryManager : ViewModelBase
+    public class CategoryManager
     {
         private ICategoryRepository repository;
 

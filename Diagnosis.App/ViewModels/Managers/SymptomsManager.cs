@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class SymptomsManager : ViewModelBase
+    public class SymptomsManager
     {
         private ISymptomRepository repository;
 

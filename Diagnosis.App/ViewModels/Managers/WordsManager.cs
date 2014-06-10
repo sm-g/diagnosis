@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class WordsManager : ViewModelBase
+    public class WordsManager
     {
         private readonly IWordRepository repository;
         private readonly WordViewModel root;
