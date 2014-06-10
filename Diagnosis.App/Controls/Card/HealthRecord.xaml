@@ -56,14 +56,9 @@
                     <Run Text="{Binding NumValue, StringFormat={} {0:G6}}" />
                 </TextBlock>
                 <TextBlock Grid.Column="1" Text="{Binding Diagnosis.Code, FallbackValue=''}" />
-                <TextBlock Grid.Row="1">
+                <TextBlock Grid.Row="1" Visibility="{Binding DateOffset.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
                     <Run Text="{Binding DateOffset.Offset}" />
-                    <Run>
-                        <MultiBinding Converter="{StaticResource unitConverter}">
-                            <Binding Path="DateOffset.Unit" />
-                            <Binding Path="DateOffset.Offset" />
-                        </MultiBinding>
-                    </Run>
+                    <Run Text="{Binding DateOffset, Mode=OneWay, Converter={StaticResource DateOffsetToUnitLabel}}" />
                 </TextBlock>
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Comment, TargetNullValue=''}" />
             </Grid>

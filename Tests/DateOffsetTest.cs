@@ -1,16 +1,16 @@
-﻿using System;
-using Diagnosis.Core;
+﻿using Diagnosis.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace Tests
 {
     [TestClass]
     public class DateOffsetTest
     {
-        static DateOffset date;
-        static Func<DateTime> now = () => new DateTime(2014, 4, 1);
+        private static DateOffset date;
+        private static Func<DateTime> now = () => new DateTime(2014, 4, 1);
 
-        const int offset = 5;
+        private const int offset = 5;
 
         #region constructors
 
@@ -24,6 +24,21 @@ namespace Tests
 
             Assert.IsTrue(date.Offset == offset);
             Assert.IsTrue(date.Unit == DateUnits.Day);
+            Assert.IsTrue(date.Year == d.Year);
+            Assert.IsTrue(date.Month == d.Month);
+            Assert.IsTrue(date.Day == d.Day);
+        }
+
+        [TestMethod]
+        public void TestConstructorOffsetWeek()
+        {
+            date = new DateOffset(offset, DateUnits.Week);
+
+            var now = DateTime.Today;
+            var d = now.AddDays(-offset * 7);
+
+            Assert.IsTrue(date.Offset == offset);
+            Assert.IsTrue(date.Unit == DateUnits.Week);
             Assert.IsTrue(date.Year == d.Year);
             Assert.IsTrue(date.Month == d.Month);
             Assert.IsTrue(date.Day == d.Day);
@@ -72,7 +87,6 @@ namespace Tests
             Assert.IsTrue(date.Month == null);
             Assert.IsTrue(date.Day == null);
         }
-
 
         [TestMethod]
         public void TestConstructorDateFull()
@@ -182,7 +196,7 @@ namespace Tests
             Assert.IsNull(date.Day);
         }
 
-        #endregion
+        #endregion constructors
 
         #region Setters
 
@@ -234,6 +248,20 @@ namespace Tests
         }
 
         [TestMethod]
+        public void TestSetUnitWiderWeek()
+        {
+            date = new DateOffset(offset, DateUnits.Day, now);
+
+            date.Unit = DateUnits.Week;
+
+            Assert.IsTrue(date.Offset == offset);
+            Assert.IsTrue(date.Unit == DateUnits.Week);
+            Assert.IsTrue(date.Year == 2014);
+            Assert.IsTrue(date.Month == 2);
+            Assert.IsTrue(date.Day == 25);
+        }
+
+        [TestMethod]
         public void TestSetUnitNarrower()
         {
             date = new DateOffset(offset, DateUnits.Year, now);
@@ -261,7 +289,7 @@ namespace Tests
             Assert.IsTrue(date.Day == null);
         }
 
-        #endregion
+        #endregion Setters
 
         #region compare
 
@@ -338,6 +366,7 @@ namespace Tests
             Assert.IsTrue(date1 <= date2);
             Assert.IsTrue(date1 >= date2);
         }
-        #endregion
+
+        #endregion compare
     }
 }

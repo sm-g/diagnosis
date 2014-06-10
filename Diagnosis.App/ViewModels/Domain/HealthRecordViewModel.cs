@@ -187,7 +187,6 @@ namespace Diagnosis.App.ViewModels
 
                     OnPropertyChanged("FromYear");
                     OnPropertyChanged("SortingDate");
-                    OnPropertyChanged("Date");
                     Editable.MarkDirty();
                 }
             }
@@ -208,7 +207,6 @@ namespace Diagnosis.App.ViewModels
 
                     OnPropertyChanged("FromMonth");
                     OnPropertyChanged("SortingDate");
-                    OnPropertyChanged("Date");
                     Editable.MarkDirty();
                 }
             }
@@ -229,7 +227,6 @@ namespace Diagnosis.App.ViewModels
 
                     OnPropertyChanged("FromDay");
                     OnPropertyChanged("SortingDate");
-                    OnPropertyChanged("Date");
                     Editable.MarkDirty();
                 }
             }
@@ -260,6 +257,7 @@ namespace Diagnosis.App.ViewModels
                                 FromDay = _dateOffset.Day;
                                 break;
                         }
+                        OnPropertyChanged("DateOffset");
                     };
                 }
                 return _dateOffset;
@@ -274,17 +272,6 @@ namespace Diagnosis.App.ViewModels
                 int month = FromMonth ?? 1;
                 int day = FromDay ?? 1;
                 return new DateTime(year, month, day);
-            }
-        }
-
-        public string Date
-        {
-            get
-            {
-                string d = FromDay != null ? FromDay.ToString() + "." : "";
-                d += FromMonth != null ? FromMonth.ToString() + "." : "";
-                d += FromYear != null ? FromYear.ToString() : "";
-                return d;
             }
         }
 

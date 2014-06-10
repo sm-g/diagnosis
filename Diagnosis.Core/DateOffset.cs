@@ -6,25 +6,28 @@ namespace Diagnosis.Core
     public enum DateUnits
     {
         Day,
+        Week,
         Month,
         Year
     }
-}
 
-namespace Diagnosis.Core
-{
     /// <summary>
-    /// Неполная дата со смещением относительно сегодня в днях, месяцах или годах, зависит от полноты даты.
+    /// Неполная дата со смещением относительно сегодня в днях, неделях, месяцах или годах, зависит от полноты даты.
+    /// Заданная днём, месяцем и годом дата будет иметь смещение в неделях, если число дней нацело делится на 7.
     /// </summary>
     public class DateOffset : ViewModelBase
     {
+        private static string[] days = new string[3] { "день", "дня", "дней" };
+        private static string[] weeks = new string[3] { "неделя", "недели", "недель" };
+        private static string[] months = new string[3] { "месяц", "месяца", "месяцев" };
+        private static string[] years = new string[3] { "год", "года", "лет" };
         private int? _offset;
         private DateUnits _unit;
         private int? _year;
         private int? _month;
         private int? _day;
 
-        bool setting;
+        private bool setting;
 
         readonly public Func<DateTime> NowDate = () => DateTime.Today;
 
@@ -47,6 +50,7 @@ namespace Diagnosis.Core
                 }
             }
         }
+
         public int? Month
         {
             get
@@ -66,6 +70,7 @@ namespace Diagnosis.Core
                 }
             }
         }
+
         public int? Day
         {
             get
@@ -86,6 +91,9 @@ namespace Diagnosis.Core
             }
         }
 
+        /// <summary>
+        /// Смещение относительно даты, возвращаемой NowDate.
+        /// </summary>
         public int? Offset
         {
             get
@@ -101,21 +109,14 @@ namespace Diagnosis.Core
                     {
                         SetOffset(value, Unit);
                     }
-                    OnPropertyChanged("Unit");
                     OnPropertyChanged("Offset");
                     OnPropertyChanged("IsEmpty");
                 }
             }
         }
-
-        public bool IsEmpty
-        {
-            get
-            {
-                return Offset == null;
-            }
-        }
-
+        /// <summary>
+        /// Единица измерения смещения.
+        /// </summary>
         public DateUnits Unit
         {
             get
@@ -132,14 +133,24 @@ namespace Diagnosis.Core
                         SetOffset(Offset, value);
                     }
                     OnPropertyChanged("Unit");
-
                 }
             }
         }
 
-        DateTime Now { get { return NowDate(); } }
+        /// <summary>
+        /// Пустая дата, когда смещение не задано.
+        /// </summary>
+        public bool IsEmpty
+        {
+            get
+            {
+                return Offset == null;
+            }
+        }
 
-        void SetOffset(int? offset, DateUnits unit)
+        private DateTime Now { get { return NowDate(); } }
+
+        private void SetOffset(int? offset, DateUnits unit)
         {
             setting = true;
 
@@ -162,6 +173,14 @@ namespace Diagnosis.Core
                         Month = date.Month;
                         Day = date.Day;
                         break;
+
+                    case DateUnits.Week:
+                        date = Now.AddDays(-Offset.Value * 7);
+                        Year = date.Year;
+                        Month = date.Month;
+                        Day = date.Day;
+                        break;
+
                     case DateUnits.Month:
                         if (Offset < Now.Month)
                         {
@@ -176,11 +195,13 @@ namespace Diagnosis.Core
                         }
                         Day = null;
                         break;
+
                     case DateUnits.Year:
                         Year = Now.Year - Offset;
                         Month = null;
                         Day = null;
                         break;
+
                     default:
                         throw new ArgumentOutOfRangeException("Unit");
                 }
@@ -188,7 +209,7 @@ namespace Diagnosis.Core
             setting = false;
         }
 
-        void SetDate(int? year, int? month, int? day)
+        private void SetDate(int? year, int? month, int? day)
         {
             setting = true;
 
@@ -213,7 +234,15 @@ namespace Diagnosis.Core
                 if (Day.HasValue)
                 {
                     Offset = (Now - new DateTime(y, Month.Value, Day.Value)).Days;
-                    Unit = DateUnits.Day;
+                    if (Offset % 7 == 0)
+                    {
+                        Offset /= 7;
+                        Unit = DateUnits.Week;
+                    }
+                    else
+                    {
+                        Unit = DateUnits.Day;
+                    }
                 }
                 else
                 {
@@ -254,26 +283,16 @@ namespace Diagnosis.Core
         }
 
         /// <summary>
-        /// Возвращает DateTime, если возможно для указанных аргументов.
-        /// </summary>
-        public static DateTime? NullableDate(int? year, int? month, int? day)
-        {
-            try
-            {
-                return new DateTime(year.Value, month.Value, day.Value);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Возвращает DateTime представление для объекта DateOffset, если возможно.
         /// </summary>
         public DateTime? GetDateTime()
         {
             return NullableDate(Year, Month, Day);
+        }
+
+        public string GetUnitString()
+        {
+            return FormatUnit(Offset, Unit);
         }
 
         public DateOffset(int? year, int? month, int? day)
@@ -292,6 +311,7 @@ namespace Diagnosis.Core
         {
             SetOffset(offset, unit);
         }
+
         public DateOffset(int? offset, DateUnits unit, Func<DateTime> now)
         {
             Contract.Requires(now != null);
@@ -305,6 +325,21 @@ namespace Diagnosis.Core
             Contract.Requires(now != null);
             NowDate = now;
             SetOffset(dateOffset.Offset, dateOffset.Unit);
+        }
+
+        /// <summary>
+        /// Возвращает DateTime, если возможно для указанных аргументов.
+        /// </summary>
+        public static DateTime? NullableDate(int? year, int? month, int? day)
+        {
+            try
+            {
+                return new DateTime(year.Value, month.Value, day.Value);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public static bool operator <(DateOffset do1, DateOffset do2)
@@ -348,6 +383,7 @@ namespace Diagnosis.Core
             }
             return do1.Month <= do2.Month;
         }
+
         public static bool operator >=(DateOffset do1, DateOffset do2)
         {
             if (do1.Unit == do2.Unit)
@@ -361,9 +397,44 @@ namespace Diagnosis.Core
             return do1.Month >= do2.Month;
         }
 
+        public static string FormatUnit(int? offset, DateUnits unit)
+        {
+            if (offset == null)
+                offset = 0;
+            if (offset % 10 == 0 || offset % 10 >= 5 || (offset >= 11 && offset <= 14))
+            {
+                switch (unit)
+                {
+                    case DateUnits.Day: return days[2];
+                    case DateUnits.Week: return weeks[2];
+                    case DateUnits.Month: return months[2];
+                    case DateUnits.Year: return years[2];
+                }
+            }
+            if (offset % 10 == 1)
+            {
+                switch (unit)
+                {
+                    case DateUnits.Day: return days[0];
+                    case DateUnits.Week: return weeks[0];
+                    case DateUnits.Month: return months[0];
+                    case DateUnits.Year: return years[0];
+                }
+            }
+            switch (unit)
+            {
+                case DateUnits.Day: return days[1];
+                case DateUnits.Week: return weeks[1];
+                case DateUnits.Month: return months[1];
+                case DateUnits.Year: return years[1];
+            }
+
+            throw new ArgumentOutOfRangeException("unit");
+        }
+
         public override string ToString()
         {
-            return string.Format("{0}.{1}.{2}", Year ?? 0, Month ?? 0, Day ?? 0);
+            return string.Format("{0} {1} {2}.{3}.{4}", Offset, GetUnitString(), Year ?? 0, Month ?? 0, Day ?? 0);
         }
     }
 }

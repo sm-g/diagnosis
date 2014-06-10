@@ -83,21 +83,11 @@
                         <TextBlock Text="давность признака"></TextBlock>
                         <TextBlock>
                             <Run Text="{Binding HrDateGt.Offset, StringFormat='{} от {0}', TargetNullValue=''}" />
-                            <Run>
-                                <MultiBinding Converter="{StaticResource unitConverter}">
-                                    <Binding Path="HrDateGt.Unit" />
-                                    <Binding Path="HrDateGt.Offset" />
-                                </MultiBinding>
-                            </Run>
+                            <Run Text="{Binding HrDateGt, Mode=OneWay, Converter={StaticResource DateOffsetToUnitLabel}}" />
                         </TextBlock>
                         <TextBlock>
                             <Run Text="{Binding HrDateLt.Offset, StringFormat='{} до {0}', TargetNullValue=''}" />
-                            <Run>
-                                <MultiBinding Converter="{StaticResource unitConverter}">
-                                    <Binding Path="HrDateLt.Unit" />
-                                    <Binding Path="HrDateLt.Offset" />
-                                </MultiBinding>
-                            </Run>
+                            <Run Text="{Binding HrDateLt, Mode=OneWay, Converter={StaticResource DateOffsetToUnitLabel}}" />
                         </TextBlock>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
@@ -197,7 +187,7 @@
                                         HorizontalContentAlignment="Left"
                                         FontWeight="Bold">
                                     <DockPanel Focusable="False">
-                                        <TextBlock Text="{Binding Name.Label}" Width="30"/>
+                                        <TextBlock Text="{Binding Name.Label}" Width="30" />
                                         <TextBlock Text="{Binding Name, Mode=OneWay, Converter={StaticResource ManToShortName}}" />
                                     </DockPanel>
                                 </Button>

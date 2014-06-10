@@ -29,7 +29,7 @@
                 <DataTemplate>
                     <TextBlock>
                         <TextBlock.Text>
-                            <MultiBinding Converter="{StaticResource unitConverter}">
+                            <MultiBinding Converter="{StaticResource OffsetUnitToUnitLabel}">
                                 <Binding />
                                 <Binding Path="DateOffset.Offset" ElementName="root" />
                             </MultiBinding>

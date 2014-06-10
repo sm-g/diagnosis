@@ -14,7 +14,8 @@
         <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <conv:AgeToYearsLabel x:Key="AgeToLabel" />
         <conv:BoolToSexSign x:Key="SexToSign" />
-        <conv:DateUnitToLabel x:Key="unitConverter" />
+        <conv:OffsetUnitToUnitLabel x:Key="OffsetUnitToUnitLabel" />
+        <conv:DateOffsetToUnitLabel x:Key="DateOffsetToUnitLabel" />
         <conv:Summator x:Key="SummatorConverter" />
         <conv:ManToShortName x:Key="ManToShortName" />
         <conv:EqualityToBoolConverter x:Key="EqualityToBool" />
