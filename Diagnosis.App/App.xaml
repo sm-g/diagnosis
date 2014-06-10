@@ -24,6 +24,7 @@
         <conv:DateLabel x:Key="DateLabel" />
         <conv:LessThanConverter x:Key="LessThan" />
         <conv:NullToVisibilityConverter x:Key="NullToVis" />
+        <conv:AgeToYearsLabel x:Key="ageLabel" />
 
         <BitmapImage x:Key="closeImage" UriSource="Resources/Close_16xLG.png" />
         <BitmapImage x:Key="addImage" UriSource="/Resources/AddControl_371.png" />

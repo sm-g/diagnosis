@@ -12,7 +12,6 @@
              d:DesignWidth="290"
              MinWidth="200">
     <UserControl.Resources>
-        <conv:AgeToYearsLabel x:Key="ageLabel" />
         <sys:Double x:Key="minOneRowWidth">230</sys:Double>
     </UserControl.Resources>
     <WrapPanel>
