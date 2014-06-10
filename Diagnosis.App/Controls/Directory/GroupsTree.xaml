@@ -55,13 +55,14 @@
             ItemsSource="{Binding}">
         </TreeView>
         <TreeView DataContext="{Binding SelectedItem, ElementName=tree, Mode=OneWay}"
+                  ItemContainerStyle="{StaticResource groupsTreeItemContainerStyle}"
                   ItemsSource="{Binding TerminalChildren}"
                   Style="{StaticResource TreeViewStyle}"
                   Grid.Column="1"
                   Margin="10,0,0,0">
             <TreeView.ItemTemplate>
                 <DataTemplate>
-                    <controls:TreeItemLight />
+                    <controls:TreeItem />
                 </DataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

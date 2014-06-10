@@ -20,7 +20,7 @@
         </Grid.ColumnDefinitions>
 
         <CheckBox x:Name="checkbox"
-            IsChecked="{Binding IsChecked, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True}"
+            IsChecked="{Binding IsChecked}"
             Focusable="False"
             Visibility="{Binding IsNonCheckable, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
 
