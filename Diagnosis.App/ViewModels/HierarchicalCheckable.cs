@@ -8,6 +8,7 @@ namespace Diagnosis.App.ViewModels
     public abstract class HierarchicalCheckable<T> : HierarchicalBase<T>, IHierarchicalCheckable<T> where T : HierarchicalCheckable<T>
     {
         readonly private CheckableBase checkable;
+        ICommand _toggle;
         private bool _isFiltered;
 
         public event HierarhicalCheckableEventHandler<T> CheckedChanged;
@@ -93,17 +94,24 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-
         public ICommand ToggleCommand
         {
             get
             {
-                return checkable.ToggleCommand;
+                return _toggle
+                    ?? (_toggle = new RelayCommand(
+                        () =>
+                        {
+                            IsChecked = !IsChecked;
+                            IsSelected = true;
+                        }));
             }
         }
 
         public virtual void OnCheckedChanged()
         {
+            checkable.OnCheckedChanged();
+
             if (!IsNonCheckable)
             {
                 PropagateCheckedState(IsChecked);
@@ -114,6 +122,7 @@ namespace Diagnosis.App.ViewModels
 
         public virtual void OnSelectedChanged()
         {
+            checkable.OnSelectedChanged();
         }
 
         #endregion ICheckable
