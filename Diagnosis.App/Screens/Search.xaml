@@ -7,6 +7,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             x:Name="search"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="430" MinWidth="250" MaxWidth="300">
     <UserControl.Resources>
@@ -48,54 +49,56 @@
                   IsExpanded="{Binding ControlsVisible}"
                   ExpandDirection="Up">
             <Expander.Header>
+                <!--Описание запроса, к которому относятся показывается результаты-->
                 <StackPanel x:Name="searchDescription" Margin="5,0,0,0">
-                    <StackPanel Orientation="Horizontal"
-                                Visibility="{Binding Words.Count, Converter={StaticResource CountToVisibility}}">
-                        <TextBlock Text="любое из слов: " Visibility="{Binding AnyWord, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                        <TextBlock Text="все слова: " Visibility="{Binding AnyWord, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
-                        <controls:CommaList ItemsSource="{Binding Words}" />
+                    <StackPanel DataContext="{Binding Options}" Visibility="{Binding DataContext.AllEmpty, ElementName=search, Converter={StaticResource NegBooleanToVisibilityConverter}}" >
+                        <StackPanel Orientation="Horizontal"
+                                    Visibility="{Binding Words.Count, Converter={StaticResource CountToVisibility}}">
+                            <TextBlock Text="любое из слов: " Visibility="{Binding AnyWord, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <TextBlock Text="все слова: " Visibility="{Binding AnyWord, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
+                            <controls:CommaList ItemsSource="{Binding Words}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Visibility="{Binding Categories.Count, Converter={StaticResource CountToVisibility}}">
+                            <TextBlock Text="типы записи: "></TextBlock>
+                            <controls:CommaList ItemsSource="{Binding Categories}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Visibility="{Binding AppDateVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="дата приёма "></TextBlock>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource DateIntervalLabel}">
+                                        <Binding Path="AppointmentDateGt" Mode="OneWay" />
+                                        <Binding Path="AppointmentDateLt" Mode="OneWay" />
+                                        <MultiBinding.ConverterParameter>
+                                            <x:ArrayExtension Type="s:String">
+                                                <s:String>от</s:String>
+                                                <s:String>до</s:String>
+                                            </x:ArrayExtension>
+                                        </MultiBinding.ConverterParameter>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Visibility="{Binding HrDateVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="давность признака"></TextBlock>
+                            <TextBlock>
+                            <Run Text="{Binding HealthRecordOffsetGt.Offset, StringFormat='{} от {0}', TargetNullValue=''}" />
+                            <Run Text="{Binding HealthRecordOffsetGt, Mode=OneWay, Converter={StaticResource DateOffsetToUnitLabel}}" />
+                            </TextBlock>
+                            <TextBlock>
+                            <Run Text="{Binding HealthRecordOffsetLt.Offset, StringFormat='{} до {0}', TargetNullValue=''}" />
+                            <Run Text="{Binding HealthRecordOffsetLt, Mode=OneWay, Converter={StaticResource DateOffsetToUnitLabel}}" />
+                            </TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Visibility="{Binding CommentVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="комментарий: "></TextBlock>
+                            <TextBlock Text="{Binding Comment, StringFormat='«{0}»', TargetNullValue=''}" />
+                        </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal"
-                                Visibility="{Binding SelectedCategories.Count, Converter={StaticResource CountToVisibility}}">
-                        <TextBlock Text="типы записи: "></TextBlock>
-                        <controls:CommaList ItemsSource="{Binding SelectedCategories}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal"
-                                Visibility="{Binding AppDateVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock Text="дата приёма "></TextBlock>
-                        <TextBlock>
-                            <TextBlock.Text>
-                                <MultiBinding Converter="{StaticResource DateIntervalLabel}">
-                                    <Binding Path="AppDateGt" Mode="OneWay" />
-                                    <Binding Path="AppDateLt" Mode="OneWay" />
-                                    <MultiBinding.ConverterParameter>
-                                        <x:ArrayExtension Type="s:String">
-                                            <s:String>от</s:String>
-                                            <s:String>до</s:String>
-                                        </x:ArrayExtension>
-                                    </MultiBinding.ConverterParameter>
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal"
-                                Visibility="{Binding HrDateVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock Text="давность признака"></TextBlock>
-                        <TextBlock>
-                            <Run Text="{Binding HrDateGt.Offset, StringFormat='{} от {0}', TargetNullValue=''}" />
-                            <Run Text="{Binding HrDateGt, Mode=OneWay, Converter={StaticResource DateOffsetToUnitLabel}}" />
-                        </TextBlock>
-                        <TextBlock>
-                            <Run Text="{Binding HrDateLt.Offset, StringFormat='{} до {0}', TargetNullValue=''}" />
-                            <Run Text="{Binding HrDateLt, Mode=OneWay, Converter={StaticResource DateOffsetToUnitLabel}}" />
-                        </TextBlock>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal"
-                                Visibility="{Binding CommentVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock Text="комментарий: "></TextBlock>
-                        <TextBlock Text="{Binding Comment, StringFormat='«{0}»', TargetNullValue=''}" />
-                    </StackPanel>
-
                     <TextBlock Text="Не заданы условия поиска."
                                Visibility="{Binding AllEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 </StackPanel>
