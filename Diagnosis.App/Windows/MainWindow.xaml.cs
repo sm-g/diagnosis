@@ -36,5 +36,10 @@ namespace Diagnosis.App.Windows
 
             DataContext = new MainWindowViewModel(frame.NavigationService);
         }
+
+        private void root_Loaded(object sender, RoutedEventArgs e)
+        {
+            frame.Focus();
+        }
     }
 }

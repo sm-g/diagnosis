@@ -174,14 +174,6 @@ namespace Diagnosis.App.ViewModels
             OpenedPatient = patient;
         }
 
-        public void OpenLastPatient()
-        {
-            if (EntityManagers.PatientsManager.Patients.Count > 0)
-            {
-                OpenedPatient = EntityManagers.PatientsManager.Patients[0];
-            }
-        }
-
         private void OpenLastAppointment(PatientViewModel patient)
         {
             OpenPatient(patient);

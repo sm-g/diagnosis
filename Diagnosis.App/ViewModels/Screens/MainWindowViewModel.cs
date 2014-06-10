@@ -30,6 +30,9 @@ namespace Diagnosis.App.ViewModels
 
         private NavigationService nav;
         private PatientViewer viewer;
+        /// <summary>
+        /// Установить флаг перед переходом к странице, на которой должна пустая история навигации.
+        /// </summary>
         private bool clearNavOnNavigated;
 
         #endregion Fields
@@ -405,6 +408,8 @@ namespace Diagnosis.App.ViewModels
             });
 
             //LoginOpened = true;
+            PatientsOpened = true;
+            Patients.SelectLastPatient();
             CreateViewer(EntityManagers.DoctorsManager.CurrentDoctor);
         }
 
@@ -432,15 +437,15 @@ namespace Diagnosis.App.ViewModels
 
         private void OnLoggedIn(object sender, LoggedEventArgs e)
         {
-            PatientsOpened = true;
             clearNavOnNavigated = true;
+            PatientsOpened = true;
             CreateViewer(e.Doctor);
+            Patients.SelectLastPatient();
         }
 
         private PatientViewer CreateViewer(DoctorViewModel doctor)
         {
             viewer = new PatientViewer(doctor);
-            viewer.OpenLastPatient();
             return viewer;
         }
     }

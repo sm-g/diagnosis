@@ -74,6 +74,13 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public void SelectLastPatient()
+        {
+            if (Patients.Count > 0)
+            {
+                SelectedPatient = Patients[0];
+            }
+        }
         private void _search_ResultItemSelected(object sender, EventArgs e)
         {
             var patientVM = Search.SelectedItem as PatientViewModel;

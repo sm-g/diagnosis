@@ -55,7 +55,7 @@
   <Class Name="Diagnosis.App.ViewModels.HrSearchOptions" Collapsed="true">
     <Position X="1.75" Y="6.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAgBAgAEIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAgAAA=</HashCode>
+      <HashCode>AAgBAAEkMCAACAEAAACAAAAAAEAAEAAAABAQAAAgAAA=</HashCode>
       <FileName>ViewModels\Search\HrSearchOptions.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -132,7 +132,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AGpAEgEEMIAAhAIAIGSI4NAAyECAEEAAAAYCIIQgAQA=</HashCode>
+      <HashCode>AGpAEgAEMYAAhAIAICQAoNAA2ACAEEAAAAYCIIRgAAA=</HashCode>
       <FileName>ViewModels\Screens\SearchViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>

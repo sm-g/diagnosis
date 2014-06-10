@@ -11,17 +11,49 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Diagnosis.App.ViewModels;
+using Diagnosis.App.Controls;
 
 namespace Diagnosis.App.Screens
 {
     /// <summary>
     /// Interaction logic for Patients.xaml
     /// </summary>
-    public partial class Patients : UserControl
+    public partial class Patients : Page
     {
+        IInputElement LastFocused = null;
+        bool isloaded;
+
         public Patients()
         {
             InitializeComponent();
+        }
+
+        private void patientsControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            Keyboard.Focus(DataGridHelper.GetDataGridCell(dataGrid.SelectedCells[0]));
+
+            if (isloaded) return;
+
+            this.NavigationService.Navigating += NavigationService_Navigating;
+            isloaded = true;
+
+            PopupSearch<PatientViewModel> popupsearch = search.DataContext as PopupSearch<PatientViewModel>;
+            popupsearch.ResultItemSelected += search_ResultItemSelected;
+        }
+
+        void NavigationService_Navigating(object sender, NavigatingCancelEventArgs e)
+        {
+            if (e.Content == this)
+                FocusManager.SetFocusedElement(this, LastFocused);
+            else
+                LastFocused = FocusManager.GetFocusedElement(patientsControl);
+        }
+
+        void search_ResultItemSelected(object sender, EventArgs e)
+        {
+            // переходим в список после выбора пациента через поиск
+            Keyboard.Focus(dataGrid);
         }
     }
 }
