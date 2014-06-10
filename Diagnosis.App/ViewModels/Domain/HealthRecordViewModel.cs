@@ -101,6 +101,7 @@ namespace Diagnosis.App.ViewModels
                 if (_symptom != value)
                 {
                     _symptom = value;
+                    healthRecord.Symptom = value.symptom;
 
                     Editable.MarkDirty();
                     OnPropertyChanged("Symptom");
