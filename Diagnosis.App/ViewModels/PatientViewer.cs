@@ -174,7 +174,13 @@ namespace Diagnosis.App.ViewModels
             OpenedPatient = patient;
         }
 
-        private void OpenLastAppointment(PatientViewModel patient)
+        /// <summary>
+        /// Открывает последнюю за час встречу в последнем курсе. 
+        /// Создает новую, если такой нет, в последнем курсе.
+        /// Создает курс, если нет ни одного курса.
+        /// </summary>
+        /// <param name="patient"></param>
+        public void OpenLastAppointment(PatientViewModel patient)
         {
             OpenPatient(patient);
 

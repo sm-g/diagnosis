@@ -383,7 +383,8 @@ namespace Diagnosis.App.ViewModels
             });
             this.Subscribe((int)EventID.PatientCreated, (e) =>
             {
-                OpenPatientInViewer(e);
+                var patVM = e.GetValue<PatientViewModel>(Messages.Patient);
+                viewer.OpenLastAppointment(patVM);
             });
             this.Subscribe((int)EventID.OpenPatient, (e) =>
             {

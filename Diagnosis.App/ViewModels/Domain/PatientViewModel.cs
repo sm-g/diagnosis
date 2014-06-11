@@ -361,13 +361,16 @@ namespace Diagnosis.App.ViewModels
                     // При обратном переходе может редактироваться запись — не сохраняем.
                     if (!Editable.IsEditorActive)
                     {
-                        Editable.Commit();
-                        Editable.IsEditorActive = false;
+                        if (!Editable.Commit())
+                            Editable.IsEditorActive = false;
                     }
                 }
             };
         }
 
+        /// <summary>
+        /// Только для сохраненного пациента.
+        /// </summary>
         public void AfterPatientLoaded()
         {
             Properties = new ObservableCollection<PropertyViewModel>(
@@ -454,6 +457,7 @@ namespace Diagnosis.App.ViewModels
     internal class UnsavedPatientViewModel : PatientViewModel
     {
         public event PatientEventHandler PatientCreated;
+        static Random rnd = new Random();
 
         /// <summary>
         /// For patient registration. First Editable.Committed raises PatientCreated.
@@ -463,6 +467,9 @@ namespace Diagnosis.App.ViewModels
         {
             Editable.IsEditorActive = true;
             CanAddFirstHr = true;
+
+            Label = rnd.Next(1, 500).ToString();
+
             Editable.Committed += OnFirstCommit;
         }
 

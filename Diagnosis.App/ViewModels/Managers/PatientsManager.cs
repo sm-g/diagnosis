@@ -71,7 +71,6 @@ namespace Diagnosis.App.ViewModels
             if (e.addFirstHr)
             {
                 saved.Editable.IsEditorActive = false;
-                //OpenLastAppointment(saved);
             }
         }
 
