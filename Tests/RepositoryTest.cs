@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
+using Diagnosis.Core;
 
 namespace Tests
 {
@@ -45,7 +46,7 @@ namespace Tests
             var hrsFromRepo = repo.GetByWords(words);
             Assert.IsNotNull(hrsFromRepo);
             Assert.IsTrue(hrsFromRepo.Count() > 1);
-            Assert.IsTrue(hrsFromRepo.SequenceEqual(hrs));
+            Assert.IsTrue(hrsFromRepo.IsSubsetOf(hrs) && hrs.IsSubsetOf(hrsFromRepo));
         }
     }
 }
