@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows.Input;
+using System.ComponentModel;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -41,12 +42,12 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_editActive != value)
                 {
-                    if (value)
+                    if (value && vm is IEditableObject)
                     {
-                        //vm.BeginEdit();
+                        (vm as IEditableObject).BeginEdit();
                     }
-
                     _editActive = value;
+                    System.Console.WriteLine("editor {0} active = {1}", vm, value);
                     OnPropertyChanged("IsEditorActive");
                 }
             }
@@ -62,7 +63,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_editorFocused != value)
                 {
-                    Console.WriteLine("Editor focused = {0}", value);
+                    Console.WriteLine("editor {0} focused = {1}", vm, value);
                     _editorFocused = value;
                     OnPropertyChanged("IsEditorFocused");
                 }
@@ -99,14 +100,17 @@ namespace Diagnosis.App.ViewModels
                 if (_isDirty != value && CanBeDirty)
                 {
                     _isDirty = value;
+
                     if (value)
                         WasDirty = true;
-                    Console.WriteLine("{0} isdirty = {1}", vm, value);
+
                     var h = DirtyChanged;
                     if (h != null)
                     {
                         h(this, new EditableEventArgs(vm));
                     }
+
+                    Console.WriteLine("isdirty {0} = {1}", vm, value);
                     OnPropertyChanged("IsDirty");
                     OnPropertyChanged("WasDirty");
                 }
@@ -200,7 +204,7 @@ namespace Diagnosis.App.ViewModels
         }
 
         /// <summary>
-        /// Сохраняет изменения и закрывает редактор.
+        /// Сохраняет изменения и закрывает редактор. Возвращает true, если было сохранение.
         /// </summary>
         /// <param name="force">Принудительное сохранение игнорируя IsDirty.</param>
         public bool Commit(bool force = false)
@@ -253,17 +257,21 @@ namespace Diagnosis.App.ViewModels
         /// <param name="deletable">Initial state of CanBeDeleted. Default is "true".</param>
         protected Editable(bool switchedOn = false, bool dirtImmunity = false, bool deletable = true)
         {
-            vm = this as ViewModelBase;
+            vm = this;
             SwitchedOn = switchedOn;
             CanBeDirty = !dirtImmunity;
             CanBeDeleted = deletable;
         }
         private void OnCommit()
         {
-            // vm.EndEdit();
+            System.Console.WriteLine("committing {0}", vm);
+
+            if (vm is IEditableObject)
+            {
+                (vm as IEditableObject).EndEdit();
+            }
 
             var h = Committed;
-            System.Console.WriteLine("on committ {0}", vm);
             if (h != null)
             {
                 h(this, new EditableEventArgs(vm));
@@ -276,12 +284,18 @@ namespace Diagnosis.App.ViewModels
 
         private void OnRevert()
         {
-            //vm.CancelEdit();
+            System.Console.WriteLine("reverting {0}", vm);
+
+            if (vm is IEditableObject)
+            {
+                (vm as IEditableObject).CancelEdit();
+            }
 
             var h = Reverted;
             if (h != null)
             {
                 h(this, new EditableEventArgs(vm));
+                System.Console.WriteLine("reverted {0}", vm);
             }
 
             IsEditorActive = false;
@@ -290,6 +304,8 @@ namespace Diagnosis.App.ViewModels
 
         private void OnDelete()
         {
+            System.Console.WriteLine("deleting {0}", vm);
+
             var h = Deleted;
             if (h != null)
             {
