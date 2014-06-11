@@ -61,7 +61,7 @@ namespace Diagnosis.App.ViewModels
 
         public override string ToString()
         {
-            return Name;
+            return property.ToString();
         }
     }
 }

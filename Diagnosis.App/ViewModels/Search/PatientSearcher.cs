@@ -37,7 +37,7 @@ namespace Diagnosis.App.ViewModels
 
         protected bool Filter(PatientViewModel item, string query)
         {
-            return item.FullName.ToLower().Contains(query.ToLower());
+            return item.patient.FullName.ToLower().Contains(query.ToLower());
         }
 
         private bool Filter(ICheckable obj)

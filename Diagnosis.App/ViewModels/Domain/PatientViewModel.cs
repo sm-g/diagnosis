@@ -241,14 +241,6 @@ namespace Diagnosis.App.ViewModels
             private set;
         }
 
-        internal string FullName
-        {
-            get
-            {
-                return LastName + " " + FirstName + " " + MiddleName;
-            }
-        }
-
         #endregion Model related
 
         public ICommand FirstHrCommand
@@ -334,7 +326,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return FullName;
+                return patient.FullName;
             }
         }
 
@@ -424,33 +416,9 @@ namespace Diagnosis.App.ViewModels
 
         #endregion Subscriptions
 
-        #region Comparsion
-
-        private static IComparer<string> emptyLastComparer = new EmptyStringsAreLast();
-
-        public static int CompareByFullName(PatientViewModel x, PatientViewModel y)
-        {
-            if (x == null)
-            {
-                if (y == null)
-                    return 0;
-                else
-                    return -1; // y greater
-            }
-            else
-            {
-                if (y == null)
-                    return 1;
-                else
-                    return emptyLastComparer.Compare(x.FullName, y.FullName);
-            }
-        }
-
-        #endregion Comparsion
-
         public override string ToString()
         {
-            return patient.Id + " " + Label + " " + FullName;
+            return patient.ToString();
         }
     }
 

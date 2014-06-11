@@ -331,7 +331,7 @@ namespace Diagnosis.App.ViewModels
 
         public override string ToString()
         {
-            return string.Format("курс c {0}, осмотров {1} {2}", Start.ToShortDateString(), Appointments.Count, LeadDoctor.ToString());
+            return course.ToString();
         }
     }
 }

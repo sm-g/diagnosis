@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
+using Diagnosis.Core;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -35,12 +36,14 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(patientRepo != null);
             this.patientRepo = patientRepo;
 
-            var patientVMs = patientRepo.GetAll().Select(p => new PatientViewModel(p)).ToList();
+            var patientVMs = patientRepo.GetAll()
+                .OrderBy(p => p.FullName, new EmptyStringsAreLast())
+                .Select(p => new PatientViewModel(p))
+                .ToList();
             foreach (var pvm in patientVMs)
             {
                 SubscribeEditable(pvm);
             }
-            patientVMs.Sort(PatientViewModel.CompareByFullName);
             Patients = new ObservableCollection<PatientViewModel>(patientVMs);
         }
 

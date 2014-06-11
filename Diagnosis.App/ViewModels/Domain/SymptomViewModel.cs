@@ -117,7 +117,7 @@ namespace Diagnosis.App.ViewModels
 
         public override string ToString()
         {
-            return Name;
+            return symptom.ToString();
         }
     }
 }

@@ -54,12 +54,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public override void OnCheckedChanged()
-        {
-            base.OnCheckedChanged();
-            this.Send((int)EventID.DiagnosisCheckedChanged, new DiagnosisParams(this).Params);
-        }
-
         public PopupSearch<DiagnosisViewModel> Search
         {
             get
@@ -75,6 +69,11 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public override void OnCheckedChanged()
+        {
+            base.OnCheckedChanged();
+            this.Send((int)EventID.DiagnosisCheckedChanged, new DiagnosisParams(this).Params);
+        }
         public void Unsubscribe()
         {
             diagnosesRootChanged -= RootChanged;
@@ -91,14 +90,6 @@ namespace Diagnosis.App.ViewModels
             search.ResultItemSelected += _search_ResultItemSelected;
             return search;
         }
-
-        private void _search_ResultItemSelected(object sender, System.EventArgs e)
-        {
-            this.AddIfNotExists(Search.SelectedItem, Search.searcher.AllChildren);
-            Search.SelectedItem.IsChecked = true;
-            Search.Clear();
-        }
-
         public DiagnosisViewModel(Diagnosis.Models.Diagnosis d, EventHandler diagnosesRootChanged)
         {
             Contract.Requires(d != null);
@@ -116,6 +107,13 @@ namespace Diagnosis.App.ViewModels
             Search = CreateSearch();
         }
 
+        private void _search_ResultItemSelected(object sender, System.EventArgs e)
+        {
+            this.AddIfNotExists(Search.SelectedItem, Search.searcher.AllChildren);
+            Search.SelectedItem.IsChecked = true;
+            Search.Clear();
+        }
+
         private void DiagnosisViewModel_ChildrenChanged(object sender, EventArgs e)
         {
             IsNonCheckable = !IsTerminal;
@@ -123,7 +121,7 @@ namespace Diagnosis.App.ViewModels
 
         public override string ToString()
         {
-            return SearchText;
+            return diagnosis.ToString();
         }
 
     }

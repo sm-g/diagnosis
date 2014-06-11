@@ -10,5 +10,9 @@ namespace Diagnosis.Models
         public virtual string Title { get; set; }
         public virtual int Order { get; set; }
 
+        public override string ToString()
+        {
+            return Title;
+        }
     }
 }

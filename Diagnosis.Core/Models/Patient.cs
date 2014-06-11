@@ -179,6 +179,15 @@ namespace Diagnosis.Models
             }
         }
 
+        public virtual string FullName
+        {
+            get
+            {
+                return LastName + " " + FirstName + " " + MiddleName;
+            }
+        }
+
+
         public virtual void DeleteCourse(Course course)
         {
             courses.Remove(course);
@@ -231,6 +240,11 @@ namespace Diagnosis.Models
 
         protected Patient()
         {
+        }
+
+        public override string ToString()
+        {
+            return Id + " " + Label + " " + FullName;
         }
     }
 }

@@ -37,6 +37,11 @@ namespace Diagnosis.Models
         }
 
         protected Speciality() { }
+
+        public override string ToString()
+        {
+            return Title;
+        }
     }
 
 }

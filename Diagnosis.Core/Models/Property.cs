@@ -55,5 +55,10 @@ namespace Diagnosis.Models
         protected Property()
         {
         }
+
+        public override string ToString()
+        {
+            return Title;
+        }
     }
 }

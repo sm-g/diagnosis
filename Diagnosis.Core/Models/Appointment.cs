@@ -52,5 +52,10 @@ namespace Diagnosis.Models
         }
 
         protected Appointment() { }
+
+        public override string ToString()
+        {
+            return string.Format("{0:d} {1} hrs {2}", DateAndTime, HealthRecords.Count, Doctor);
+        }
     }
 }

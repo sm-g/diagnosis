@@ -97,14 +97,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private string FullName
-        {
-            get
-            {
-                return LastName + " " + FirstName + " " + MiddleName;
-            }
-        }
-
         public ICommand StartCourseCommand
         {
             get
@@ -136,7 +128,7 @@ namespace Diagnosis.App.ViewModels
 
         public override string ToString()
         {
-            return FullName;
+            return doctor.ToString();
         }
     }
 }

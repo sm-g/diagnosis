@@ -52,6 +52,11 @@ namespace Diagnosis.Models
         }
 
         protected Course() { }
+
+        public override string ToString()
+        {
+            return string.Format("{0:d}, {1} apps {2} {3}", Start, Appointments.Count, Patient, LeadDoctor);
+        }
     }
 
     public class CompareCourseByDate : IComparer<Course>

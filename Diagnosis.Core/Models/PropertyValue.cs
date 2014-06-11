@@ -38,6 +38,11 @@ namespace Diagnosis.Models
         protected PropertyValue()
         {
         }
+
+        public override string ToString()
+        {
+            return Title;
+        }
     }
 
     class PropertyValueEqualityComparer : EqualityComparer<PropertyValue>

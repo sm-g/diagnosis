@@ -417,7 +417,7 @@ namespace Diagnosis.App.ViewModels
 
         public override string ToString()
         {
-            return string.Format("{0} hrs {1:d} {2}", HealthRecords.Count, DateTime, Doctor);
+            return appointment.ToString();
         }
     }
 }

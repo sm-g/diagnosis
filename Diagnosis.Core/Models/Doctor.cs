@@ -125,5 +125,10 @@ namespace Diagnosis.Models
         protected Doctor()
         {
         }
+
+        public override string ToString()
+        {
+            return LastName + " " + FirstName + " " + MiddleName;
+        }
     }
 }

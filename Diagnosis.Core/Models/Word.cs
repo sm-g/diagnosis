@@ -58,6 +58,11 @@ namespace Diagnosis.Models
         protected Word()
         {
         }
+
+        public override string ToString()
+        {
+            return Title;
+        }
     }
 
     public class CompareWord : IComparer<Word>

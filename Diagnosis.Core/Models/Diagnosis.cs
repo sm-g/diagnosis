@@ -22,5 +22,10 @@ namespace Diagnosis.Models
             Parent = parent;
             Disease = disease;
         }
+
+        public override string ToString()
+        {
+            return Code + ' ' + Title;
+        }
     }
 }

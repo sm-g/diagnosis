@@ -20,10 +20,6 @@ namespace Diagnosis.App.ViewModels
             {
                 return category.Title;
             }
-            set
-            {
-                throw new NotImplementedException();
-            }
         }
 
 
@@ -55,7 +51,7 @@ namespace Diagnosis.App.ViewModels
 
         public override string ToString()
         {
-            return Name;
+            return category.ToString();
         }
     }
 }
