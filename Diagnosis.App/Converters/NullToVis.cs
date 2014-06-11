@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Data;
 using System.Globalization;
 
@@ -13,7 +14,7 @@ namespace Diagnosis.App.Converters
             object parameter, CultureInfo culture)
         {
 
-            return value == null ? false : true;
+            return value == null ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType,

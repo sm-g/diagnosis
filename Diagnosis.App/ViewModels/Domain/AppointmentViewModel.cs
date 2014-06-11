@@ -5,9 +5,9 @@ using Diagnosis.Models;
 using EventAggregator;
 using NHibernate;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -18,17 +18,26 @@ namespace Diagnosis.App.ViewModels
 {
     public class AppointmentViewModel : ViewModelBase, IEditableNesting
     {
+        #region Fileds
         internal readonly Appointment appointment;
+        private readonly CourseViewModel courseVM;
 
-        private CourseViewModel courseVM;
+        private static HrEditorViewModel _hrEditorStatic = new HrEditorViewModel();
+
+
         private DoctorViewModel _doctor;
+        private bool _showHrEditor;
+        private int _checkedHealthRecords;
         private HealthRecordViewModel _selectedHealthRecord;
 
         private ICommand _addHealthRecord;
+        private ICommand _editHrCommand;
         private ICommand _deleteHealthRecords;
-        private int _checkedHealthRecords;
+        private ICommand _moveHrSelection;
 
         private bool movingToViewGroup;
+        bool movingSelected;
+        #endregion
 
         #region IEditableNesting
 
@@ -73,10 +82,6 @@ namespace Diagnosis.App.ViewModels
                 return appointment.DateAndTime;
             }
         }
-
-
-        private static HrEditorViewModel _hrEditorStatic = new HrEditorViewModel();
-
         public ObservableCollection<HealthRecordViewModel> HealthRecords { get; private set; }
 
         #endregion Model
@@ -92,15 +97,6 @@ namespace Diagnosis.App.ViewModels
                 return HealthRecords.Select(hr => hr.Name).ToList();
             }
         }
-
-        public bool IsDoctorFromCourse
-        {
-            get
-            {
-                return Doctor == courseVM.LeadDoctor;
-            }
-        }
-
         public HealthRecordViewModel SelectedHealthRecord
         {
             get
@@ -150,6 +146,42 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public ICommand EditHrCommand
+        {
+            get
+            {
+                return _editHrCommand
+                   ?? (_editHrCommand = new RelayCommand(() =>
+                        {
+                            HealthRecordEditor.HealthRecord.Editable.ToggleEditor();
+                        }, () => HealthRecordEditor.HealthRecord != null));
+            }
+        }
+        public ICommand MoveHrSelectionCommand
+        {
+            get
+            {
+                return _moveHrSelection
+                   ?? (_moveHrSelection = new RelayCommand<bool>((up) =>
+                        {
+                            movingSelected = true;
+                            if (up)
+                            {
+                                HealthRecordsView.MoveCurrentToPrevious();
+                                if (HealthRecordsView.IsCurrentBeforeFirst)
+                                    HealthRecordsView.MoveCurrentToLast();
+                            }
+                            else
+                            {
+                                HealthRecordsView.MoveCurrentToNext();
+                                if (HealthRecordsView.IsCurrentAfterLast)
+                                    HealthRecordsView.MoveCurrentToFirst();
+                            }
+                            movingSelected = false;
+                        }));
+            }
+        }
+
         public int CheckedHealthRecords
         {
             get
@@ -165,36 +197,19 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-
-        private bool _showHrEditor;
         public bool ShowHrEditor
         {
             get
             {
-                return _showHrEditor;
-            }
-            set
-            {
-                if (_showHrEditor != value)
-                {
-                    _showHrEditor = value;
-                    OnPropertyChanged(() => ShowHrEditor);
-                }
+                return HealthRecordEditor.HealthRecord != null && HealthRecordEditor.HealthRecord.Editable.IsEditorActive;
             }
         }
 
-        private ICommand _editHrCommand;
-
-        public ICommand EditHrCommand
+        public bool IsDoctorFromCourse
         {
             get
             {
-                return _editHrCommand
-                   ?? (_editHrCommand = new RelayCommand(() =>
-                        {
-                            ShowHrEditor = !ShowHrEditor;
-                            HealthRecordEditor.HealthRecord.Editable.IsEditorActive = ShowHrEditor;
-                        }, () => HealthRecordEditor.HealthRecord != null));
+                return Doctor == courseVM.LeadDoctor;
             }
         }
 
@@ -218,17 +233,15 @@ namespace Diagnosis.App.ViewModels
             Editable.CanBeDirty = true;
 
             this.SubscribeEditableNesting(HealthRecords,
-                innerChangedAndCondition: () => !movingToViewGroup);
+                innerChangedMarkDirtyIf: () => !movingToViewGroup);
 
             SetupHealthRecordsView();
-
-         //   HealthRecordEditor.HealthRecord = SelectedHealthRecord;
         }
 
         private void SetupHealthRecords(bool withFirstHr)
         {
             var hrVMs = appointment.HealthRecords.Select(hr => new HealthRecordViewModel(hr)).ToList();
-            hrVMs.ForAll(hr => SubscribeHR(hr));
+            hrVMs.ForAll(hr => SubscribeHr(hr));
 
             if (HealthRecords != null)
             {
@@ -283,16 +296,36 @@ namespace Diagnosis.App.ViewModels
         {
             var hr = appointment.AddHealthRecord();
             var hrVM = new HealthRecordViewModel(hr);
-            SubscribeHR(hrVM);
+            SubscribeHr(hrVM);
             return hrVM;
         }
 
-        private void SubscribeHR(HealthRecordViewModel hrVM)
+        private void SubscribeHr(HealthRecordViewModel hrVM)
         {
             hrVM.PropertyChanged += hr_PropertyChanged;
             hrVM.Editable.Deleted += hr_Deleted;
+            hrVM.Editable.Reverted += hr_Reverted;
             hrVM.Editable.Committed += hr_Committed;
             hrVM.Editable.DirtyChanged += hr_DirtyChanged;
+            hrVM.Editable.PropertyChanged += hr_Editable_PropertyChanged;
+        }
+
+        private void UnsubscribeHr(HealthRecordViewModel hrVM)
+        {
+            hrVM.PropertyChanged -= hr_PropertyChanged;
+            hrVM.Editable.Deleted -= hr_Deleted;
+            hrVM.Editable.Reverted -= hr_Reverted;
+            hrVM.Editable.Committed -= hr_Committed;
+            hrVM.Editable.DirtyChanged -= hr_DirtyChanged;
+            hrVM.Editable.PropertyChanged -= hr_Editable_PropertyChanged;
+        }
+
+        void hr_Editable_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsEditorActive")
+            {
+                OnPropertyChanged(() => ShowHrEditor);
+            }
         }
 
         private void hr_Committed(object sender, EditableEventArgs e)
@@ -304,6 +337,17 @@ namespace Diagnosis.App.ViewModels
                 session.SaveOrUpdate(hrVM.healthRecord);
                 transaction.Commit();
             }
+        }
+
+        private void hr_Reverted(object sender, EditableEventArgs e)
+        {
+            var hrVM = e.viewModel as HealthRecordViewModel;
+            ISession session = NHibernateHelper.GetSession();
+            using (ITransaction transaction = session.BeginTransaction())
+            {
+                session.Refresh(hrVM.healthRecord);
+            }
+            hrVM.RefreshView();
         }
 
         private void hr_Deleted(object sender, EditableEventArgs e)
@@ -319,14 +363,10 @@ namespace Diagnosis.App.ViewModels
 
             HealthRecords.Remove(hrVM);
 
-            hrVM.PropertyChanged -= hr_PropertyChanged;
-            hrVM.Editable.Deleted -= hr_Deleted;
-            hrVM.Editable.Committed -= hr_Committed;
-            hrVM.Editable.DirtyChanged -= hr_DirtyChanged;
+            UnsubscribeHr(hrVM);
 
             OnPropertyChanged("IsEmpty");
         }
-
         private void hr_DirtyChanged(object sender, EditableEventArgs e)
         {
             this.Send((int)EventID.HealthRecordChanged,

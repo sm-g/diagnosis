@@ -6,6 +6,10 @@ namespace Diagnosis.App.ViewModels
 {
     public class Editable : ViewModelBase
     {
+        #region Fields
+
+        private readonly ViewModelBase vm;
+
         private ICommand _commit;
         private ICommand _delete;
         private ICommand _edit;
@@ -17,9 +21,7 @@ namespace Diagnosis.App.ViewModels
         private bool _switchedOn;
         private bool _canBeDeleted;
 
-        private ViewModelBase vm;
-
-        #region EditableBase
+        #endregion
 
         public event EditableEventHandler Committed;
 
@@ -146,6 +148,17 @@ namespace Diagnosis.App.ViewModels
         }
 
         #region Commands
+        /// <summary>
+        /// Открывает и закрывает редактор.
+        /// </summary>
+        public ICommand EditCommand
+        {
+            get
+            {
+                return _edit
+                    ?? (_edit = new RelayCommand(ToggleEditor, () => SwitchedOn));
+            }
+        }
 
         /// <summary>
         /// Сохраняет изменения и закрывает редактор.
@@ -158,6 +171,17 @@ namespace Diagnosis.App.ViewModels
                     ?? (_commit = new RelayCommand(OnCommit, () => IsDirty && SwitchedOn));
             }
         }
+        /// <summary>
+        /// Отменяет изменения и закрывает редактор.
+        /// </summary>
+        public ICommand RevertCommand
+        {
+            get
+            {
+                return _revert
+                    ?? (_revert = new RelayCommand(OnRevert, () => IsEditorActive && SwitchedOn));
+            }
+        }
 
         public ICommand DeleteCommand
         {
@@ -167,24 +191,14 @@ namespace Diagnosis.App.ViewModels
                     ?? (_delete = new RelayCommand(OnDelete, () => CanBeDeleted && SwitchedOn));
             }
         }
-
-        public ICommand EditCommand
+        /// <summary>
+        /// Открывает и закрывает редактор.
+        /// </summary>
+        public void ToggleEditor()
         {
-            get
-            {
-                return _edit
-                    ?? (_edit = new RelayCommand(ToggleEditor, () => SwitchedOn));
-            }
+            IsEditorActive = !IsEditorActive;
         }
 
-        public ICommand RevertCommand
-        {
-            get
-            {
-                return _revert
-                    ?? (_revert = new RelayCommand(OnRevert, () => IsEditorActive && SwitchedOn));
-            }
-        }
         /// <summary>
         /// Сохраняет изменения и закрывает редактор.
         /// </summary>
@@ -216,8 +230,6 @@ namespace Diagnosis.App.ViewModels
             IsDirty = true;
         }
 
-        #endregion EditableBase
-
         /// <summary>
         ///
         /// </summary>
@@ -234,7 +246,7 @@ namespace Diagnosis.App.ViewModels
         }
 
         /// <summary>
-        /// ViewModel to be edited inherits from EditableBase.
+        /// ViewModel to be edited inherits from Editable.
         /// </summary>
         /// <param name="switchedOn">Initial state of commands. Default is "off".</param>
         /// <param name="dirtImmunity">Initial state of CanBeDirty. Default is "true".</param>
@@ -246,12 +258,6 @@ namespace Diagnosis.App.ViewModels
             CanBeDirty = !dirtImmunity;
             CanBeDeleted = deletable;
         }
-
-        private void ToggleEditor()
-        {
-            IsEditorActive = !IsEditorActive;
-        }
-
         private void OnCommit()
         {
             // vm.EndEdit();

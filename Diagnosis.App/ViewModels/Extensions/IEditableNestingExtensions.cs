@@ -28,7 +28,7 @@ namespace Diagnosis.App.ViewModels
         }
 
         public static void SubscribeEditableNesting<T>(this IEditableNesting entity, ObservableCollection<T> inner,
-            Action onDeletedBefore = null, Action innerChangedAfter = null, Func<bool> innerChangedAndCondition = null)
+            Action onDeletedBefore = null, Action innerChangedAfter = null, Func<bool> innerChangedMarkDirtyIf = null)
             where T : IEditableNesting
         {
             Contract.Requires(entity != null);
@@ -37,7 +37,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (e.Action == NotifyCollectionChangedAction.Remove)
                 {
-                    if (innerChangedAndCondition == null || innerChangedAndCondition())
+                    if (innerChangedMarkDirtyIf == null || innerChangedMarkDirtyIf())
                         entity.Editable.MarkDirty();
                 }
                 if (innerChangedAfter != null)

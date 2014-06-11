@@ -357,6 +357,26 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Calls OnPropertyChanged for all properties.
+        /// </summary>
+        public void RefreshView()
+        {
+            OnPropertyChanged("Comment");
+            OnPropertyChanged("Symptom");
+            OnPropertyChanged("Name");
+            OnPropertyChanged("Diagnosis");
+            OnPropertyChanged("HasDiagnosis");
+            OnPropertyChanged("Category");
+            OnPropertyChanged("NumValue");
+            OnPropertyChanged("FromYear");
+            OnPropertyChanged("FromMonth");
+            OnPropertyChanged("FromDay");
+            OnPropertyChanged("DateOffset");
+            OnPropertyChanged("SortingDate");
+
+        }
+
         #region Event handlers
 
         private void Subscribe()

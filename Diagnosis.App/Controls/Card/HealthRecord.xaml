@@ -9,7 +9,6 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              Background="Transparent"
-             MinHeight="25"
              Focusable="True"
              IsTabStop="True">
     <Grid Style="{StaticResource gridIsDirty}">
@@ -18,7 +17,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <CheckBox IsChecked="{Binding IsChecked}" Focusable="False" HorizontalAlignment="Center" VerticalAlignment="Stretch" VerticalContentAlignment="Top">
+        <CheckBox IsChecked="{Binding IsChecked}" Focusable="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Top">
             <CheckBox.Style>
                 <Style TargetType="CheckBox">
                     <Setter Property="Visibility" Value="Visible" />
@@ -53,14 +52,14 @@
 
                 <TextBlock>
                     <Run Text="{Binding Name, Mode=OneWay}" />
-                    <Run Text="{Binding NumValue, StringFormat={} {0:G6}}" />
+                    <Run Text="{Binding NumValue, StringFormat={}{0:G6}, ConverterCulture=ru-RU}" />
                 </TextBlock>
                 <TextBlock Grid.Column="1" Text="{Binding Diagnosis.Code, FallbackValue=''}" />
                 <TextBlock Grid.Row="1" Visibility="{Binding DateOffset.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
                     <Run Text="{Binding DateOffset.Offset}" />
                     <Run Text="{Binding DateOffset, Mode=OneWay, Converter={StaticResource DateOffsetToUnitLabel}}" />
                 </TextBlock>
-                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Comment, TargetNullValue=''}" />
+                <TextBlock Grid.Row="2" Text="{Binding Comment}" Visibility="{Binding Comment, Converter={StaticResource NullToVis}}"/>
             </Grid>
         </StackPanel>
     </Grid>

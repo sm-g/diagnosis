@@ -64,7 +64,7 @@
                     ItemTemplateSelector="{StaticResource addNewSelector}">
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <card:Appointment Margin="10" DataContext="{Binding Content}" />
+                    <card:Appointment DataContext="{Binding Content}" />
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>
