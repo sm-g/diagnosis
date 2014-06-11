@@ -609,6 +609,12 @@
   <ItemGroup>
     <Resource Include="Resources\Close_16xLG.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Arrow_UndoRevertRestore_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Delete_black_32x32.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
