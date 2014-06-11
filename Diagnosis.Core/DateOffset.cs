@@ -234,7 +234,7 @@ namespace Diagnosis.Core
                 if (Day.HasValue)
                 {
                     Offset = (Now - new DateTime(y, Month.Value, Day.Value)).Days;
-                    if (Offset % 7 == 0)
+                    if (Offset % 7 == 0 && Math.Abs(Offset.Value) > 1)
                     {
                         Offset /= 7;
                         Unit = DateUnits.Week;
