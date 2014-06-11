@@ -179,7 +179,7 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _revert
-                    ?? (_revert = new RelayCommand(OnRevert, () => IsEditorActive && SwitchedOn));
+                    ?? (_revert = new RelayCommand(OnRevert, () => IsDirty && IsEditorActive && SwitchedOn));
             }
         }
 
