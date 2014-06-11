@@ -31,7 +31,7 @@ namespace Diagnosis.App.ViewModels
         private RelayCommand<PatientViewModel> _openPatientCommand;
         private bool _controlsVisible;
 
-        private bool searchWas;
+        private bool _searchWas;
         private HrSearcher searcher = new HrSearcher();
 
         #endregion Fields
@@ -254,6 +254,16 @@ namespace Diagnosis.App.ViewModels
 
         #region AllEmpty
 
+        public bool SearchWas
+        {
+            get { return _searchWas; }
+            set
+            {
+                _searchWas = value;
+                OnPropertyChanged("SearchWas");
+            }
+        }
+
         public IList<CategoryViewModel> SelectedCategories
         {
             get { return Categories.Where(cat => cat.IsChecked).ToList(); }
@@ -304,7 +314,7 @@ namespace Diagnosis.App.ViewModels
                                               hrs.Distinct(new KeyEqualityComparer<HealthRecord, Appointment>(hr => hr.Appointment))
                                                   .ForAll(hr => Results.Add(new HrSearchResultViewModel(hr, Options)));
 
-                                              searchWas = true;
+                                              SearchWas = true;
                                               ControlsVisible = false;
 
                                               OnPropertyChanged("NoResultsVisible");
@@ -341,7 +351,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return Results.Count == 0 && searchWas;
+                return Results.Count == 0 && SearchWas;
             }
         }
         public bool ControlsVisible

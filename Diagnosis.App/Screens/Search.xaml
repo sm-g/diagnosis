@@ -51,7 +51,7 @@
             <Expander.Header>
                 <!--Описание запроса, к которому относятся показывается результаты-->
                 <StackPanel x:Name="searchDescription" Margin="5,0,0,0">
-                    <StackPanel DataContext="{Binding Options}" Visibility="{Binding DataContext.AllEmpty, ElementName=search, Converter={StaticResource NegBooleanToVisibilityConverter}}" >
+                    <StackPanel DataContext="{Binding Options}" Visibility="{Binding DataContext.SearchWas, ElementName=search, Converter={StaticResource BooleanToVisibilityConverter}}" >
                         <StackPanel Orientation="Horizontal"
                                     Visibility="{Binding Words.Count, Converter={StaticResource CountToVisibility}}">
                             <TextBlock Text="любое из слов: " Visibility="{Binding AnyWord, Converter={StaticResource BooleanToVisibilityConverter}}" />
