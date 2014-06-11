@@ -31,12 +31,14 @@ namespace Diagnosis.App.Screens
 
         private void patientsControl_Loaded(object sender, RoutedEventArgs e)
         {
-            Keyboard.Focus(DataGridHelper.GetDataGridCell(dataGrid.SelectedCells[0]));
+            if (dataGrid.SelectedCells.Count > 0)
+                Keyboard.Focus(DataGridHelper.GetDataGridCell(dataGrid.SelectedCells[0]));
 
-            if (isloaded) return;
+            if (isloaded)
+                return;
+            isloaded = true;
 
             this.NavigationService.Navigating += NavigationService_Navigating;
-            isloaded = true;
 
             PopupSearch<PatientViewModel> popupsearch = search.DataContext as PopupSearch<PatientViewModel>;
             popupsearch.ResultItemSelected += search_ResultItemSelected;
