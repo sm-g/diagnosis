@@ -29,14 +29,7 @@ namespace Diagnosis.Models
             }
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    _label = null;
-                }
-                else
-                {
-                    _label = value.Trim();
-                }
+                _label = value.TrimedOrNull();
             }
         }
         public virtual string FirstName
@@ -47,14 +40,7 @@ namespace Diagnosis.Models
             }
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    _fn = null;
-                }
-                else
-                {
-                    _fn = value.Trim();
-                }
+                _fn = value.TrimedOrNull();
             }
         }
         public virtual string MiddleName
@@ -65,14 +51,7 @@ namespace Diagnosis.Models
             }
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    _mn = null;
-                }
-                else
-                {
-                    _mn = value.Trim();
-                }
+                _mn = value.TrimedOrNull();
             }
         }
         public virtual string LastName
@@ -83,14 +62,7 @@ namespace Diagnosis.Models
             }
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    _ln = null;
-                }
-                else
-                {
-                    _ln = value.Trim();
-                }
+                _ln = value.TrimedOrNull();
             }
         }
         public virtual bool IsMale { get; set; }

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Diagnosis.Core;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using Diagnosis.Core;
 
 namespace Diagnosis.Models
 {
@@ -12,12 +12,20 @@ namespace Diagnosis.Models
         private int? _year;
         private byte? _month;
         private byte? _day;
+        private string _comment;
 
         public virtual int Id { get; protected set; }
 
         public virtual Appointment Appointment { get; protected set; }
 
-        public virtual string Comment { get; set; }
+        public virtual string Comment
+        {
+            get { return _comment; }
+            set
+            {
+                _comment = value.TrimedOrNull();
+            }
+        }
 
         public virtual Category Category { get; set; }
 

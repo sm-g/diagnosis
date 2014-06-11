@@ -49,14 +49,7 @@ namespace Diagnosis.Models
             }
             set
             {
-                if (String.IsNullOrWhiteSpace(value))
-                {
-                    _mn = null;
-                }
-                else
-                {
-                    _mn = value.Trim();
-                }
+                _mn = value.TrimedOrNull();
             }
         }
 

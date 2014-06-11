@@ -6,15 +6,30 @@ namespace Diagnosis.Models
 {
     public class Word
     {
-        ISet<Symptom> symptoms = new HashSet<Symptom>();
-        ISet<SymptomWords> symptomWords = new HashSet<SymptomWords>();
+        private ISet<Symptom> symptoms = new HashSet<Symptom>();
+        private ISet<SymptomWords> symptomWords = new HashSet<SymptomWords>();
+        private string _title;
 
         public virtual int Id { get; protected set; }
-        public virtual string Title { get; set; }
+
+        public virtual string Title
+        {
+            get { return _title; }
+            set
+            {
+                Contract.Requires(!string.IsNullOrWhiteSpace(value));
+                _title = value;
+            }
+        }
+
         public virtual byte Priority { get; set; }
+
         public virtual bool IsEnum { get; set; }
+
         public virtual Category DefaultCategory { get; set; }
+
         public virtual Word Parent { get; set; }
+
         public virtual ReadOnlyCollection<Symptom> Symptoms
         {
             get
@@ -23,6 +38,7 @@ namespace Diagnosis.Models
                     new List<Symptom>(symptoms));
             }
         }
+
         public virtual ReadOnlyCollection<SymptomWords> SymptomWords
         {
             get
@@ -39,9 +55,10 @@ namespace Diagnosis.Models
             Priority = priority;
         }
 
-        protected Word() { }
+        protected Word()
+        {
+        }
     }
-
 
     public class CompareWord : IComparer<Word>
     {
@@ -56,6 +73,5 @@ namespace Diagnosis.Models
                 return x.Title.CompareTo(y.Title);
             }
         }
-
     }
 }
