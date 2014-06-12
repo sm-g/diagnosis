@@ -248,7 +248,7 @@
     <Compile Include="Screens\Patients.xaml.cs">
       <DependentUpon>Patients.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\Domain\HrEditorViewModel.cs" />
+    <Compile Include="ViewModels\HrEditorViewModel.cs" />
     <Compile Include="ViewModels\Managers\EntityManagers.cs" />
     <Compile Include="MessagingParams.cs" />
     <Compile Include="Screens\Search.xaml.cs">
