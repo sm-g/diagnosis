@@ -89,6 +89,10 @@
       <Project>{3ec8d3df-aa44-4cb8-8847-d4b4872e9dad}</Project>
       <Name>Diagnosis.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Diagnosis.Models\Diagnosis.Models.csproj">
+      <Project>{f1ef016e-80f6-461c-ac4b-e087e42a9f0c}</Project>
+      <Name>Diagnosis.Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

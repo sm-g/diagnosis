@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Diagnosis.Core
 {
-    static class Checkers
+    public static class Checkers
     {
         /// <summary>
         /// Проверяет, допустима ли указанная дата (возможно, неполная).

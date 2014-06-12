@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.Tests", "Diagnosi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.Core", "Diagnosis.Core\Diagnosis.Core.csproj", "{A91AD3B7-CB0F-426C-A539-1CFFC13DF0EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.Models", "Diagnosis.Models\Diagnosis.Models.csproj", "{F1EF016E-80F6-461C-AC4B-E087E42A9F0C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{A91AD3B7-CB0F-426C-A539-1CFFC13DF0EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A91AD3B7-CB0F-426C-A539-1CFFC13DF0EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A91AD3B7-CB0F-426C-A539-1CFFC13DF0EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1EF016E-80F6-461C-AC4B-E087E42A9F0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1EF016E-80F6-461C-AC4B-E087E42A9F0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1EF016E-80F6-461C-AC4B-E087E42A9F0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1EF016E-80F6-461C-AC4B-E087E42A9F0C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
