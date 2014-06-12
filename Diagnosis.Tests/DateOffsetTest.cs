@@ -339,7 +339,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public void TestLtNull()
+        public void TestLtGtNull()
         {
             var date1 = new DateOffset(null, DateUnits.Month);
             var date2 = new DateOffset(5, DateUnits.Year);
@@ -358,13 +358,32 @@ namespace Tests
         }
 
         [TestMethod]
-        public void TestLtOrEqual2()
+        public void TestEqual()
         {
             var date1 = new DateOffset(2013, 12, 0);
             var date2 = new DateOffset(2013, 12, 0);
 
             Assert.IsTrue(date1 <= date2);
             Assert.IsTrue(date1 >= date2);
+        }
+
+        [TestMethod]
+        public void TestEqualSameYear()
+        {
+            var date1 = new DateOffset(3, DateUnits.Day);
+            var date2 = new DateOffset(0, DateUnits.Year);
+
+            Assert.IsTrue(date1 <= date2);
+            Assert.IsTrue(date1 >= date2);
+        }
+
+        [TestMethod]
+        public void TestLtSameMonth()
+        {
+            var date1 = new DateOffset(2013, 5, 1);
+            var date2 = new DateOffset(2014, 5, 1);
+
+            Assert.IsTrue(date1 < date2);
         }
 
         #endregion compare
