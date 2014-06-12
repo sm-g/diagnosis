@@ -123,7 +123,7 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(d != null);
             doctor = d;
 
-            Editable = new Editable(this, switchedOn: true, deletable: false);
+            Editable = new Editable(doctor, switchedOn: true, deletable: false);
         }
 
         public override string ToString()

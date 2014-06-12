@@ -96,7 +96,7 @@ namespace Diagnosis.App.ViewModels
             this.diagnosis = d;
             this.diagnosesRootChanged = diagnosesRootChanged;
 
-            Editable = new Editable(this);
+            Editable = new Editable(diagnosis);
 
             ChildrenChanged += DiagnosisViewModel_ChildrenChanged;
             diagnosesRootChanged += RootChanged;

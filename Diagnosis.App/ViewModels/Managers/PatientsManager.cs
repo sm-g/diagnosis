@@ -84,11 +84,8 @@ namespace Diagnosis.App.ViewModels
 
         private void p_Committed(object sender, EditableEventArgs e)
         {
-            var patientVM = e.viewModel as PatientViewModel;
-            if (patientVM != null)
-            {
-                patientRepo.SaveOrUpdate(patientVM.patient);
-            }
+            var patient = e.entity as Patient;
+            patientRepo.SaveOrUpdate(patient);
         }
     }
 }

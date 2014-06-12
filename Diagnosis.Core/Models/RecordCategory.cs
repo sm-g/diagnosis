@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace Diagnosis.Models
 {
-    public class Category
+    public class Category : IEntity
     {
         public virtual int Id { get; protected set; }
         public virtual string Title { get; set; }

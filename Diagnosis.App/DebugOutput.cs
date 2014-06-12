@@ -62,7 +62,7 @@ namespace Diagnosis.App
             });
             this.Subscribe((int)EventID.CurrentDoctorChanged, (e) =>
             {
-                var d = e.GetValue<DoctorViewModel>(Messages.Doctor);
+                var d = e.GetValue<Doctor>(Messages.Doctor);
                 Console.WriteLine("cur doctor is '{0}'", d);
             });
 

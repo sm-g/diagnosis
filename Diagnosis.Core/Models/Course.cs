@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class Course
+    public class Course : IEntity
     {
         ISet<Appointment> appointments = new HashSet<Appointment>();
 

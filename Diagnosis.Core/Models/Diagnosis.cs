@@ -4,7 +4,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class Diagnosis
+    public class Diagnosis : IEntity
     {
         public virtual string Title { get; set; }
         public virtual string Code { get; set; }

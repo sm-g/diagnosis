@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class Symptom
+    public class Symptom : IEntity
     {
         ISet<Word> words = new HashSet<Word>();
         ISet<SymptomWords> symptomWords = new HashSet<SymptomWords>();

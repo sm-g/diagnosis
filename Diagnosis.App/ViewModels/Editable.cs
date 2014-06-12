@@ -2,14 +2,19 @@
 using System.Diagnostics;
 using System.Windows.Input;
 using System.ComponentModel;
+using System.Diagnostics.Contracts;
+using Diagnosis.Models;
 
 namespace Diagnosis.App.ViewModels
 {
+    /// <summary>
+    /// Позволяет редактировать сущность. Содержит команды для открытия редактора, сохранения и отмены изменений, удаления сущности. Хранит чистоту сущности.
+    /// </summary>
     public class Editable : ViewModelBase
     {
         #region Fields
 
-        private readonly ViewModelBase vm;
+        private readonly IEntity entity;
 
         private ICommand _commit;
         private ICommand _delete;
@@ -42,12 +47,12 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_editActive != value)
                 {
-                    if (value && vm is IEditableObject)
+                    if (value && entity is IEditableObject)
                     {
-                        (vm as IEditableObject).BeginEdit();
+                        (entity as IEditableObject).BeginEdit();
                     }
                     _editActive = value;
-                    System.Console.WriteLine("editor {0} active = {1}", vm, value);
+                    System.Console.WriteLine("editor {0} active = {1}", entity, value);
                     OnPropertyChanged("IsEditorActive");
                 }
             }
@@ -63,7 +68,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_editorFocused != value)
                 {
-                    Console.WriteLine("editor {0} focused = {1}", vm, value);
+                    Console.WriteLine("editor {0} focused = {1}", entity, value);
                     _editorFocused = value;
                     OnPropertyChanged("IsEditorFocused");
                 }
@@ -107,10 +112,10 @@ namespace Diagnosis.App.ViewModels
                     var h = DirtyChanged;
                     if (h != null)
                     {
-                        h(this, new EditableEventArgs(vm));
+                        h(this, new EditableEventArgs(entity));
                     }
 
-                    Console.WriteLine("isdirty {0} = {1}", vm, value);
+                    Console.WriteLine("isdirty {0} = {1}", entity, value);
                     OnPropertyChanged("IsDirty");
                     OnPropertyChanged("WasDirty");
                 }
@@ -237,45 +242,32 @@ namespace Diagnosis.App.ViewModels
         /// <summary>
         ///
         /// </summary>
-        /// <param name="vm">ViewModel to be edited</param>
+        /// <param name="entity">Model to be edited</param>
         /// <param name="switchedOn">Initial state of commands. Default is "off".</param>
         /// <param name="dirtImmunity">Initial state of CanBeDirty. Default is "true" (no immunity).</param>
         /// <param name="deletable">Initial state of CanBeDeleted. Default is "true".</param>
-        public Editable(ViewModelBase vm, bool switchedOn = false, bool dirtImmunity = false, bool deletable = true)
+        public Editable(IEntity entity, bool switchedOn = false, bool dirtImmunity = false, bool deletable = true)
         {
-            this.vm = vm;
+            this.entity = entity;
             SwitchedOn = switchedOn;
             CanBeDirty = !dirtImmunity;
             CanBeDeleted = deletable;
         }
 
-        /// <summary>
-        /// ViewModel to be edited inherits from Editable.
-        /// </summary>
-        /// <param name="switchedOn">Initial state of commands. Default is "off".</param>
-        /// <param name="dirtImmunity">Initial state of CanBeDirty. Default is "true".</param>
-        /// <param name="deletable">Initial state of CanBeDeleted. Default is "true".</param>
-        protected Editable(bool switchedOn = false, bool dirtImmunity = false, bool deletable = true)
-        {
-            vm = this;
-            SwitchedOn = switchedOn;
-            CanBeDirty = !dirtImmunity;
-            CanBeDeleted = deletable;
-        }
         private void OnCommit()
         {
-            System.Console.WriteLine("committing {0}", vm);
+            System.Console.WriteLine("committing {0}", entity);
 
-            if (vm is IEditableObject)
+            if (entity is IEditableObject)
             {
-                (vm as IEditableObject).EndEdit();
+                (entity as IEditableObject).EndEdit();
             }
 
             var h = Committed;
             if (h != null)
             {
-                h(this, new EditableEventArgs(vm));
-                System.Console.WriteLine("committed {0}", vm);
+                h(this, new EditableEventArgs(entity));
+                System.Console.WriteLine("committed {0}", entity);
             }
 
             IsEditorActive = false;
@@ -284,18 +276,18 @@ namespace Diagnosis.App.ViewModels
 
         private void OnRevert()
         {
-            System.Console.WriteLine("reverting {0}", vm);
+            System.Console.WriteLine("reverting {0}", entity);
 
-            if (vm is IEditableObject)
+            if (entity is IEditableObject)
             {
-                (vm as IEditableObject).CancelEdit();
+                (entity as IEditableObject).CancelEdit();
             }
 
             var h = Reverted;
             if (h != null)
             {
-                h(this, new EditableEventArgs(vm));
-                System.Console.WriteLine("reverted {0}", vm);
+                h(this, new EditableEventArgs(entity));
+                System.Console.WriteLine("reverted {0}", entity);
             }
 
             IsEditorActive = false;
@@ -304,13 +296,13 @@ namespace Diagnosis.App.ViewModels
 
         private void OnDelete()
         {
-            System.Console.WriteLine("deleting {0}", vm);
+            System.Console.WriteLine("deleting {0}", entity);
 
             var h = Deleted;
             if (h != null)
             {
-                h(this, new EditableEventArgs(vm));
-                System.Console.WriteLine("deleted {0}", vm);
+                h(this, new EditableEventArgs(entity));
+                System.Console.WriteLine("deleted {0}", entity);
             }
         }
     }
@@ -319,12 +311,12 @@ namespace Diagnosis.App.ViewModels
 
     public class EditableEventArgs : EventArgs
     {
-        public ViewModelBase viewModel;
+        public IEntity entity;
 
         [DebuggerStepThrough]
-        public EditableEventArgs(ViewModelBase vm)
+        public EditableEventArgs(IEntity entity)
         {
-            viewModel = vm;
+            this.entity = entity;
         }
     }
 }

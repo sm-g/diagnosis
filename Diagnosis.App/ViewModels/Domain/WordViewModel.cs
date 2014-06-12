@@ -125,7 +125,7 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(w != null);
             word = w;
 
-            Editable = new Editable(this, dirtImmunity: true);
+            Editable = new Editable(word, dirtImmunity: true);
 
             DefaultCategory = EntityManagers.CategoryManager.GetByModel(w.DefaultCategory);
 

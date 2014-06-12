@@ -4,7 +4,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class Word
+    public class Word : IEntity
     {
         private ISet<Symptom> symptoms = new HashSet<Symptom>();
         private ISet<SymptomWords> symptomWords = new HashSet<SymptomWords>();

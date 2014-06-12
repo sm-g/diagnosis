@@ -221,7 +221,7 @@ namespace Diagnosis.App.ViewModels
             this.appointment = appointment;
             this.courseVM = courseVM;
 
-            Editable = new Editable(this, dirtImmunity: true, switchedOn: true);
+            Editable = new Editable(appointment, dirtImmunity: true, switchedOn: true);
             if (firstInCourse)
             {
                 Editable.CanBeDeleted = false;
@@ -330,37 +330,39 @@ namespace Diagnosis.App.ViewModels
 
         private void hr_Committed(object sender, EditableEventArgs e)
         {
-            var hrVM = e.viewModel as HealthRecordViewModel;
+            var hr = e.entity as HealthRecord;
             ISession session = NHibernateHelper.GetSession();
             using (ITransaction transaction = session.BeginTransaction())
             {
-                session.SaveOrUpdate(hrVM.healthRecord);
+                session.SaveOrUpdate(hr);
                 transaction.Commit();
             }
         }
 
         private void hr_Reverted(object sender, EditableEventArgs e)
         {
-            var hrVM = e.viewModel as HealthRecordViewModel;
+            var hr = e.entity as HealthRecord;
             ISession session = NHibernateHelper.GetSession();
             using (ITransaction transaction = session.BeginTransaction())
             {
-                session.Refresh(hrVM.healthRecord);
+                session.Refresh(hr);
             }
+            var hrVM = HealthRecords.Where(vm => vm.healthRecord == hr).FirstOrDefault();
             hrVM.RefreshView();
         }
 
         private void hr_Deleted(object sender, EditableEventArgs e)
         {
-            var hrVM = e.viewModel as HealthRecordViewModel;
+            var hr = e.entity as HealthRecord;
 
-            appointment.DeleteHealthRecord(hrVM.healthRecord);
+            appointment.DeleteHealthRecord(hr);
 
-            if (SelectedHealthRecord == hrVM)
+            if (SelectedHealthRecord.healthRecord == hr)
             {
                 MoveHrViewSelection();
             }
 
+            var hrVM = HealthRecords.Where(vm => vm.healthRecord == hr).FirstOrDefault();
             HealthRecords.Remove(hrVM);
 
             UnsubscribeHr(hrVM);
@@ -369,10 +371,7 @@ namespace Diagnosis.App.ViewModels
         }
         private void hr_DirtyChanged(object sender, EditableEventArgs e)
         {
-            this.Send((int)EventID.HealthRecordChanged,
-                    new HealthRecordParams(e.viewModel as HealthRecordViewModel).Params);
-
-            Editable.IsDirty = HealthRecords.Any(hr => hr.Editable.IsDirty);
+            Editable.IsDirty = HealthRecords.Any(vm => vm.Editable.IsDirty);
         }
 
         private void hr_PropertyChanged(object sender, PropertyChangedEventArgs e)

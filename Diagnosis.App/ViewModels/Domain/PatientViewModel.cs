@@ -335,7 +335,7 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(p != null);
 
             patient = p;
-            Editable = new Editable(this, switchedOn: true);
+            Editable = new Editable(patient, switchedOn: true);
             CoursesManager = new CoursesManager(this);
             if (!(this is UnsavedPatientViewModel))
                 AfterPatientLoaded();

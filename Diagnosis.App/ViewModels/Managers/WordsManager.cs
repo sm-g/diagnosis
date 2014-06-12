@@ -164,7 +164,7 @@ namespace Diagnosis.App.ViewModels
         {
             item.Editable.Committed += (s, e) =>
             {
-                repository.SaveOrUpdate((e.viewModel as WordViewModel).word);
+                repository.SaveOrUpdate(e.entity as Word);
             };
         }
 

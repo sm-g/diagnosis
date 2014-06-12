@@ -176,7 +176,7 @@ namespace Diagnosis.App.ViewModels
 
             this.course = course;
 
-            Editable = new Editable(this, switchedOn: true, dirtImmunity: true);
+            Editable = new Editable(course, switchedOn: true, dirtImmunity: true);
 
             LeadDoctor = EntityManagers.DoctorsManager.GetByModel(course.LeadDoctor);
             SetupAppointments(course);
@@ -297,23 +297,25 @@ namespace Diagnosis.App.ViewModels
 
         private void app_Committed(object sender, EditableEventArgs e)
         {
-            var appVM = e.viewModel as AppointmentViewModel;
+            var app = e.entity as Appointment;
             ISession session = NHibernateHelper.GetSession();
             using (ITransaction transaction = session.BeginTransaction())
             {
-                session.SaveOrUpdate(appVM.appointment);
+                session.SaveOrUpdate(app);
                 transaction.Commit();
             }
         }
 
         private void app_Deleted(object sender, EditableEventArgs e)
         {
-            var appVM = e.viewModel as AppointmentViewModel;
+            var app = e.entity as Appointment;
+            course.DeleteAppointment(app);
+
+            var appVM = Appointments.Where(vm => vm.appointment == app).FirstOrDefault();
             appVM.Editable.Deleted -= app_Deleted;
             appVM.Editable.Committed -= app_Committed;
             appVM.Editable.DirtyChanged -= app_DirtyChanged;
 
-            course.DeleteAppointment(appVM.appointment);
 
             Appointments.Remove(appVM);
 

@@ -28,7 +28,7 @@ namespace Diagnosis.App.ViewModels
                     _current = value;
 
                     OnPropertyChanged("CurrentDoctor");
-                    this.Send((int)EventID.CurrentDoctorChanged, new DoctorParams(_current).Params);
+                    this.Send((int)EventID.CurrentDoctorChanged, new DoctorModelParams(_current.doctor).Params);
                 }
             }
         }
@@ -57,16 +57,13 @@ namespace Diagnosis.App.ViewModels
         {
             dvm.Editable.Committed += (s, e) =>
             {
-                var doctorVM = e.viewModel as DoctorViewModel;
-                if (doctorVM != null)
-                {
-                    repository.SaveOrUpdate(doctorVM.doctor);
-                };
+                var doctor = e.entity as Doctor;
+                repository.SaveOrUpdate(doctor);
             };
             dvm.Editable.DirtyChanged += (s, e) =>
             {
-                var docVM = e.viewModel as DoctorViewModel;
-                this.Send((int)EventID.CurrentDoctorChanged, new DoctorParams(docVM).Params);
+                var doc = e.entity as Doctor;
+                this.Send((int)EventID.CurrentDoctorChanged, new DoctorModelParams(doc).Params);
             };
         }
     }

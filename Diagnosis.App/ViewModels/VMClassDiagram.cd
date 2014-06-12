@@ -51,7 +51,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AARIAECQEACgAIAEAEAQAAAAUAIOwQAkUKACAAQCQIg=</HashCode>
+      <HashCode>AARIAECQEACgAAAEAEAQAAAAUAAOwQAkUKACAAQCQIg=</HashCode>
       <FileName>ViewModels\Domain\PatientViewModel.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -62,7 +62,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAABAAEAAAEAAAABAQADACGAAAAAAASAAAgAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAEAAAEAAAABAQADACGAAAAAAASAAAgAAA=</HashCode>
       <FileName>ViewModels\Domain\SymptomViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -75,20 +75,20 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAEAAAAAAAIAEgAAQEAAABAAAgAAAgAACAAICAEg=</HashCode>
+      <HashCode>AAAAAEAAAAAAAAAEgAAQEAAABAAAgAAAgAACAAICAEg=</HashCode>
       <FileName>ViewModels\Domain\DoctorViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Settings" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="Diagnosis.App.ViewModels.Editable" Collapsed="true">
-    <Position X="16.75" Y="3" Width="1.5" />
+  <Class Name="Diagnosis.App.ViewModels.Editable">
+    <Position X="16.75" Y="1" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAEwAAAhgQCEAIMRAFIQAQCEQAgCAAkAFBQABCAQ=</HashCode>
+      <HashCode>AAAAAFwAAAhAQCEAIMRAFIQAQCEQAgCAAkAFBQABCAQ=</HashCode>
       <FileName>ViewModels\Editable.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -112,7 +112,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>CAhIABAQIKQBIAEEggBAACIACEgEHIQAIAMCAgAAQIQ=</HashCode>
+      <HashCode>CAhIABAQIKQBAAkEghBAACYgCkgEHIQAMAMDAgAAQIQ=</HashCode>
       <FileName>ViewModels\Domain\AppointmentViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -126,7 +126,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AARloABEAARABBAMAMAACESEAgQCEAoAIBACAAQAKgA=</HashCode>
+      <HashCode>AARlgABEAARABBAMAMAACESEAgQCEAgAMBACAAQAKgA=</HashCode>
       <FileName>ViewModels\Domain\HealthRecordViewModel.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -137,7 +137,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>ABQAIAAAACASEAAAAEIAAAAQAIAAEAAAAAABAAAAAAI=</HashCode>
+      <HashCode>ABQAIAAAACQSEAAAAEIAAAAQAIAAEAAAAAABAAAAAAI=</HashCode>
       <FileName>ViewModels\HierarchicalCheckable.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -204,15 +204,15 @@
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAAAkBEApAAAAGIACQACCAAAVIBAIAAAMQAACAAQAAQ=</HashCode>
+      <HashCode>AAAAkBEApAAAAGIACQACCAAAVIBAIAAAMQAACAAQAAA=</HashCode>
       <FileName>ViewModels\PatientViewer.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Field Name="doctor" />
-      <Property Name="OpenedAppointment" />
-      <Property Name="OpenedCourse" />
-      <Property Name="OpenedHealthRecord" />
       <Property Name="OpenedPatient" />
+      <Property Name="OpenedCourse" />
+      <Property Name="OpenedAppointment" />
+      <Property Name="OpenedHealthRecord" />
     </ShowAsAssociation>
   </Class>
   <Class Name="Diagnosis.App.ViewModels.WithAddNew" Collapsed="true">

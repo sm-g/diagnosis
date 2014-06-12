@@ -64,23 +64,25 @@ namespace Diagnosis.App.ViewModels
 
         private void course_Committed(object sender, EditableEventArgs e)
         {
-            var courseVM = e.viewModel as CourseViewModel;
+            var course = e.entity as Course;
             ISession session = NHibernateHelper.GetSession();
             using (ITransaction transaction = session.BeginTransaction())
             {
-                session.SaveOrUpdate(courseVM.course);
+                session.SaveOrUpdate(course);
                 transaction.Commit();
             }
         }
 
         private void course_Deleted(object sender, EditableEventArgs e)
         {
-            var courseVM = e.viewModel as CourseViewModel;
+            var course = e.entity as Course;
+            patientVM.patient.DeleteCourse(course);
+
+            var courseVM = Courses.Where(vm => vm.course == course).FirstOrDefault();
             courseVM.Editable.Deleted -= course_Deleted;
             courseVM.Editable.Committed -= course_Committed;
             courseVM.Editable.DirtyChanged -= course_DirtyChanged;
 
-            patientVM.patient.DeleteCourse(courseVM.course);
             Courses.Remove(courseVM);
         }
 

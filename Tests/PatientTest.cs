@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using Diagnosis.Models;
 using Diagnosis.App.ViewModels;
+using Diagnosis.Core;
 
 namespace Tests
 {
@@ -29,8 +30,7 @@ namespace Tests
             var p2 = new PatientViewModel(new Patient());
             var p3 = new PatientViewModel(new Patient("Иванов", "Петр"));
 
-            var list = new List<PatientViewModel>() { p1, p2, p3 };
-            list.Sort(PatientViewModel.CompareByFullName);
+            var list = new List<PatientViewModel>(new[] { p1, p2, p3 }.OrderBy(p => p.patient.FullName, new EmptyStringsAreLast()));
             Assert.IsTrue(list[0] == p1);
             Assert.IsTrue(list[1] == p3);
             Assert.IsTrue(list[2] == p2);

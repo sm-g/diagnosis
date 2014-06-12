@@ -16,8 +16,6 @@ namespace Diagnosis.App.ViewModels
 
         public Editable Editable { get; private set; }
 
-        public string SortingOrder { get; private set; }
-
         public string Name
         {
             get
@@ -106,7 +104,7 @@ namespace Diagnosis.App.ViewModels
 
             symptom = s;
 
-            Editable = new Editable(this, dirtImmunity: true);
+            Editable = new Editable(symptom, dirtImmunity: true);
 
             Words = new ObservableCollection<WordViewModel>(EntityManagers.WordsManager.GetSymptomWords(s));
             DefaultCategory = EntityManagers.CategoryManager.GetByModel(symptom.DefaultCategory);

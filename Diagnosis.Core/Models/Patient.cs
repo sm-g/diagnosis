@@ -7,7 +7,7 @@ using Diagnosis.Core;
 
 namespace Diagnosis.Models
 {
-    public class Patient
+    public class Patient : IEntity
     {
         ISet<PatientRecordProperty> patientProperties = new HashSet<PatientRecordProperty>();
         ISet<Course> courses = new HashSet<Course>();

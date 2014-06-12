@@ -35,6 +35,15 @@ namespace Diagnosis.App.Messaging
         }
     }
 
+    class DoctorModelParams : EventParams
+    {
+        public DoctorModelParams(Doctor doctor)
+        {
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.Doctor, doctor)
+            };
+        }
+    }
     #endregion
 
     #region with ViewModels
@@ -81,16 +90,6 @@ namespace Diagnosis.App.Messaging
         {
             Params = new[] {
                 new KeyValuePair<string,object>(Messages.Patient, patientVM)
-            };
-        }
-    }
-
-    class DoctorParams : EventParams
-    {
-        public DoctorParams(DoctorViewModel doctorVM)
-        {
-            Params = new[] {
-                new KeyValuePair<string,object>(Messages.Doctor, doctorVM)
             };
         }
     }

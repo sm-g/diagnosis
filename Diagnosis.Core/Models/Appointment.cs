@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Diagnosis.Models
 {
-    public class Appointment
+    public class Appointment : IEntity
     {
         ISet<HealthRecord> healthRecords = new HashSet<HealthRecord>();
 

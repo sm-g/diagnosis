@@ -110,7 +110,7 @@ namespace Diagnosis.App.ViewModels
                 new Diagnosis.Models.Diagnosis(ch.Code, ch.Title)).ToList();
             var chapterVms = chapterDiagnoses.Select(ch => new DiagnosisViewModel(ch, RootChanged)).ToList();
 
-            SetDiagnosesForDoctor(chapterVms, EntityManagers.DoctorsManager.CurrentDoctor);
+            SetDiagnosesForDoctor(chapterVms, EntityManagers.DoctorsManager.CurrentDoctor.doctor);
 
             Subscribe(chapterVms);
         }
@@ -119,9 +119,9 @@ namespace Diagnosis.App.ViewModels
         {
             this.Subscribe((int)EventID.CurrentDoctorChanged, (e) =>
             {
-                var doctorVM = e.GetValue<DoctorViewModel>(Messages.Doctor);
+                var doctor = e.GetValue<Doctor>(Messages.Doctor);
 
-                SetDiagnosesForDoctor(chapterVms, doctorVM);
+                SetDiagnosesForDoctor(chapterVms, doctor);
             });
 
             this.Subscribe((int)EventID.WordsEditingModeChanged, (e) =>
@@ -155,10 +155,10 @@ namespace Diagnosis.App.ViewModels
         /// </summary>
         private void SetDiagnosesForDoctor(
             IEnumerable<DiagnosisViewModel> chapterVms,
-            DoctorViewModel doctorVM)
+            Doctor doctor)
         {
             // создаем диагнозы-блоки
-            var blocks = doctorVM.doctor.Speciality.IcdBlocks; // блоки для специальности доктора
+            var blocks = doctor.Speciality.IcdBlocks; // блоки для специальности доктора
             var blockDiagnoses = blocks.Select(b =>
                 new Diagnosis.Models.Diagnosis(b.Code, b.Title, chapterVms.Select(ch => ch.diagnosis).Where(ch =>
                     ch.Code == b.IcdChapter.Code).SingleOrDefault())).ToList();
@@ -172,7 +172,7 @@ namespace Diagnosis.App.ViewModels
             }
 
             Func<IcdDisease, bool> whereClause = d => true;
-            if (doctorVM.doctor.DoctorSettings.HasFlag(DoctorSettings.OnlyTopLevelIcdDisease))
+            if (doctor.DoctorSettings.HasFlag(DoctorSettings.OnlyTopLevelIcdDisease))
             {
                 // без уточненных болезней
                 whereClause = d => d.Code.IndexOf('.') == -1;

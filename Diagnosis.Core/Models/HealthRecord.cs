@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class HealthRecord
+    public class HealthRecord : IEntity
     {
         private ISet<PatientRecordProperty> recordProperties = new HashSet<PatientRecordProperty>();
         private int? _year;
@@ -130,7 +130,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("{0} {1} {2} {3} {4} {5} {6}", Id, Category, Symptom, NumValue != null ? NumValue.ToString() : "", Disease, DateOffset, Comment);
+            return string.Format("{0} {1} {2} {3} {4} {5} {6}", Id, Category, Symptom, NumValue != null ? NumValue.Value.ToString("G6") : "", Disease, DateOffset, Comment);
         }
     }
 }

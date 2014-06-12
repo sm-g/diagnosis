@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class Speciality
+    public class Speciality : IEntity
     {
         ISet<IcdBlock> icdBlocks = new HashSet<IcdBlock>();
         ISet<Doctor> doctors = new HashSet<Doctor>();

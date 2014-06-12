@@ -338,7 +338,7 @@ namespace Diagnosis.App.ViewModels
 
             this.healthRecord = hr;
 
-            Editable = new Editable(this, dirtImmunity: true, switchedOn: true);
+            Editable = new Editable(healthRecord, dirtImmunity: true, switchedOn: true);
 
             Category = EntityManagers.CategoryManager.GetByModel(hr.Category) ?? EntityManagers.CategoryManager.Default;
             Symptom = EntityManagers.SymptomsManager.Symptoms.FirstOrDefault(s => s.symptom == hr.Symptom);

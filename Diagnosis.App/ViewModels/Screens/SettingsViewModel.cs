@@ -130,7 +130,7 @@ namespace Diagnosis.App.ViewModels
             doctorVM.Editable.Commit();
 
             DialogResult = true;
-            this.Send((int)EventID.SettingsSaved, new DoctorParams(doctorVM).Params);
+            this.Send((int)EventID.SettingsSaved, new DoctorModelParams(doctor).Params);
         }
 
         private IList<DoctorSettings> ChangedFlags()
