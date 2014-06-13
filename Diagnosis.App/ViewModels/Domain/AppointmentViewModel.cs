@@ -221,6 +221,7 @@ namespace Diagnosis.App.ViewModels
             this.appointment = appointment;
             this.courseVM = courseVM;
 
+            appointment.PropertyChanged += appointment_PropertyChanged;
             Editable = new Editable(appointment, dirtImmunity: true, switchedOn: true);
             if (firstInCourse)
             {
@@ -234,8 +235,46 @@ namespace Diagnosis.App.ViewModels
 
             this.SubscribeEditableNesting(HealthRecords,
                 innerChangedMarkDirtyIf: () => !movingToViewGroup);
+        }
 
-            SetupHealthRecordsView();
+        void appointment_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // у осмотра моет меняться только набор записей
+            if (e.PropertyName == "HealthRecords")
+            {
+                // добавленные записи
+                var notInVmCollection = appointment.HealthRecords.Where(
+                    hr => !HealthRecords.Any(hrVM => hrVM.healthRecord == hr)).ToList();
+
+                foreach (var hr in notInVmCollection)
+                {
+                    var hrVM = new HealthRecordViewModel(hr);
+                    SubscribeHr(hrVM);
+                    HealthRecords.Add(hrVM);
+                }
+                if (notInVmCollection.Count > 0)
+                {
+                    // открываем последнюю добавленную запись на редактирование
+                    var lastHrVm = HealthRecords.LastOrDefault();
+                    SelectedHealthRecord = lastHrVm;
+                    lastHrVm.Editable.IsEditorActive = true;
+                }
+
+                // удалённые записи
+                var deletedVms = HealthRecords.Where(
+                    hrVM => !appointment.HealthRecords.Any(hr => hrVM.healthRecord == hr)).ToList();
+
+                foreach (var hrVM in deletedVms)
+                {
+                    if (SelectedHealthRecord.healthRecord == hrVM.healthRecord)
+                    {
+                        MoveHrViewSelection();
+                    }
+                    HealthRecords.Remove(hrVM);
+                    UnsubscribeHr(hrVM);
+                }
+                OnPropertyChanged("IsEmpty");
+            }
         }
 
         private void SetupHealthRecords(bool withFirstHr)
@@ -247,13 +286,17 @@ namespace Diagnosis.App.ViewModels
             {
                 HealthRecords.CollectionChanged -= HealthRecords_CollectionChanged;
             }
+
             HealthRecords = new ObservableCollection<HealthRecordViewModel>(hrVMs);
+            OnPropertyChanged("HealthRecords");
 
             if (withFirstHr && HealthRecords.Count == 0)
             {
                 AddHealthRecord();
             }
             HealthRecords.CollectionChanged += HealthRecords_CollectionChanged;
+
+            SetupHealthRecordsView();
         }
 
         void HealthRecords_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -270,34 +313,25 @@ namespace Diagnosis.App.ViewModels
             HealthRecordsView.GroupDescriptions.Add(groupDescription);
             HealthRecordsView.SortDescriptions.Add(sort1);
             HealthRecordsView.SortDescriptions.Add(sort2);
+            OnPropertyChanged("HealthRecordsView");
+
         }
 
         #region HealthRecord stuff
 
-        public HealthRecordViewModel AddHealthRecord()
+        public void AddHealthRecord()
         {
-            var hrVM = NewHealthRecord();
-
-            HealthRecords.Add(hrVM);
-            SelectedHealthRecord = hrVM;
-
-            hrVM.Editable.IsEditorActive = true; // открываем запись на редактирование
-
-            OnPropertyChanged("IsEmpty");
-            return hrVM;
+            var hr = appointment.AddHealthRecord();
+            if (HealthRecords.Count > 0)
+            {
+                // копируем категории из последней записи
+                hr.Category = HealthRecords.Last().healthRecord.Category;
+            }
         }
 
         public void DeleteCheckedHealthRecords()
         {
             HealthRecords.Where(hr => hr.IsChecked).ToList().ForAll(hr => hr.Editable.Delete());
-        }
-
-        private HealthRecordViewModel NewHealthRecord()
-        {
-            var hr = appointment.AddHealthRecord();
-            var hrVM = new HealthRecordViewModel(hr);
-            SubscribeHr(hrVM);
-            return hrVM;
         }
 
         private void SubscribeHr(HealthRecordViewModel hrVM)
@@ -354,20 +388,7 @@ namespace Diagnosis.App.ViewModels
         private void hr_Deleted(object sender, EditableEventArgs e)
         {
             var hr = e.entity as HealthRecord;
-
             appointment.DeleteHealthRecord(hr);
-
-            if (SelectedHealthRecord.healthRecord == hr)
-            {
-                MoveHrViewSelection();
-            }
-
-            var hrVM = HealthRecords.Where(vm => vm.healthRecord == hr).FirstOrDefault();
-            HealthRecords.Remove(hrVM);
-
-            UnsubscribeHr(hrVM);
-
-            OnPropertyChanged("IsEmpty");
         }
         private void hr_DirtyChanged(object sender, EditableEventArgs e)
         {

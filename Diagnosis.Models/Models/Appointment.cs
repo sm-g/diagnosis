@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
 namespace Diagnosis.Models
 {
-    public class Appointment : IEntity
+    public class Appointment : EntityBase
     {
         ISet<HealthRecord> healthRecords = new HashSet<HealthRecord>();
 
@@ -27,18 +28,15 @@ namespace Diagnosis.Models
         public virtual HealthRecord AddHealthRecord()
         {
             var hr = new HealthRecord(this);
-            if (HealthRecords.Count > 0)
-            {
-                // копируем категории из последней записи
-                hr.Category = HealthRecords.Last().Category;
-            }
             healthRecords.Add(hr);
+            OnPropertyChanged("HealthRecords");
             return hr;
         }
 
         public virtual void DeleteHealthRecord(HealthRecord hr)
         {
             healthRecords.Remove(hr);
+            OnPropertyChanged("HealthRecords");
         }
 
         public Appointment(Course course, Doctor doctor)
