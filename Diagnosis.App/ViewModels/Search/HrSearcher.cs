@@ -57,8 +57,8 @@ namespace Diagnosis.App.ViewModels
         {
             if (options.HealthRecordOffsetLt.IsEmpty || options.HealthRecordOffsetGt.IsEmpty)
                 return true; // условия поиска не заданы
-
-            if (hr.DateOffset.Unit == DateUnits.Week)
+            var hrDateOffset = new DateOffset(hr.FromYear, hr.FromMonth, hr.FromDay, () => hr.Appointment.DateAndTime);
+            if (hrDateOffset.Unit == DateUnits.Week)
             {
                 ;
             }
@@ -66,9 +66,9 @@ namespace Diagnosis.App.ViewModels
             var hrDateLtThat = new DateOffset(options.HealthRecordOffsetLt, () => hr.Appointment.DateAndTime);
             var grDateGtThat = new DateOffset(options.HealthRecordOffsetGt, () => hr.Appointment.DateAndTime);
 
-            return !hr.DateOffset.IsEmpty &&
-                   hr.DateOffset <= hrDateLtThat &&
-                   hr.DateOffset >= grDateGtThat;
+            return !hrDateOffset.IsEmpty &&
+                   hrDateOffset <= hrDateLtThat &&
+                   hrDateOffset >= grDateGtThat;
         }
     }
 }

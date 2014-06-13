@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class HealthRecord : IEntity
+    public class HealthRecord : EntityBase
     {
         private ISet<PatientRecordProperty> recordProperties = new HashSet<PatientRecordProperty>();
         private int? _year;
@@ -94,15 +94,6 @@ namespace Diagnosis.Models
                 CheckDate();
             }
         }
-
-        public virtual DateOffset DateOffset
-        {
-            get
-            {
-                return new DateOffset(FromYear, FromMonth, FromDay, () => Appointment.DateAndTime);
-            }
-        }
-
         public virtual ReadOnlyCollection<PatientRecordProperty> RecordProperties
         {
             get
@@ -130,7 +121,8 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("{0} {1} {2} {3} {4} {5} {6}", Id, Category, Symptom, NumValue != null ? NumValue.Value.ToString("G6") : "", Disease, DateOffset, Comment);
+            return string.Format("{0} {1} {2} {3} {4} {5} {6}", Id, Category, Symptom, NumValue != null ? NumValue.Value.ToString("G6") : "", Disease,
+                new DateOffset(FromYear, FromMonth, FromDay, () => Appointment.DateAndTime), Comment);
         }
     }
 }
