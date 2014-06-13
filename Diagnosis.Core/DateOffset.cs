@@ -211,75 +211,81 @@ namespace Diagnosis.Core
 
         private void SetDate(int? year, int? month, int? day)
         {
-            setting = true;
-
-            Year = year != 0 ? year : null;
-            Month = month != 0 ? month : null;
-            Day = day != 0 ? day : null;
-
-            Checkers.CheckDate(Year, Month, Day);
-
-            int y;
-            if (Year.HasValue)
+            if (year == null && month == null && day == null)
             {
-                y = Year.Value;
+                Offset = null;
             }
             else
             {
-                y = Now.Year;
-            }
+                setting = true;
+                Year = year != 0 ? year : null;
+                Month = month != 0 ? month : null;
+                Day = day != 0 ? day : null;
 
-            if (Month.HasValue)
-            {
-                if (Day.HasValue)
-                {
-                    Offset = (Now - new DateTime(y, Month.Value, Day.Value)).Days;
-                    if (Offset % 7 == 0 && Math.Abs(Offset.Value) > 1)
-                    {
-                        Offset /= 7;
-                        Unit = DateUnits.Week;
-                    }
-                    else
-                    {
-                        Unit = DateUnits.Day;
-                    }
-                }
-                else
-                {
-                    Offset = (Now.Year - y) * 12 + Now.Month - Month.Value;
-                    Unit = DateUnits.Month;
-                }
+                Checkers.CheckDate(Year, Month, Day);
 
-                if (!Year.HasValue)
-                {
-                    Year = Now.Year;
-                }
-            }
-            else
-            {
+                int y;
                 if (Year.HasValue)
                 {
-                    Offset = Now.Year - y;
-                    Unit = DateUnits.Year;
+                    y = Year.Value;
                 }
                 else
+                {
+                    y = Now.Year;
+                }
+
+                if (Month.HasValue)
                 {
                     if (Day.HasValue)
                     {
-                        Offset = 0;
-                        Unit = DateUnits.Day;
-
-                        Month = Now.Month;
-                        Year = Now.Year;
+                        Offset = (Now - new DateTime(y, Month.Value, Day.Value)).Days;
+                        if (Offset % 7 == 0 && Math.Abs(Offset.Value) > 1)
+                        {
+                            Offset /= 7;
+                            Unit = DateUnits.Week;
+                        }
+                        else
+                        {
+                            Unit = DateUnits.Day;
+                        }
                     }
                     else
                     {
-                        Offset = null;
+                        Offset = (Now.Year - y) * 12 + Now.Month - Month.Value;
+                        Unit = DateUnits.Month;
+                    }
+
+                    if (!Year.HasValue)
+                    {
+                        Year = Now.Year;
                     }
                 }
-            }
+                else
+                {
+                    if (Year.HasValue)
+                    {
+                        Offset = Now.Year - y;
+                        Unit = DateUnits.Year;
+                    }
+                    else
+                    {
+                        if (Day.HasValue)
+                        {
+                            Offset = 0;
+                            Unit = DateUnits.Day;
 
-            setting = false;
+                            Month = Now.Month;
+                            Year = Now.Year;
+                        }
+                        else
+                        {
+                            Offset = null;
+                        }
+                    }
+                }
+
+                setting = false;
+            }
         }
 
         /// <summary>

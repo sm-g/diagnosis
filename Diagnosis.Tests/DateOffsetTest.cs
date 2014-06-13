@@ -360,8 +360,8 @@ namespace Tests
         [TestMethod]
         public void TestEqual()
         {
-            var date1 = new DateOffset(2013, 12, 0);
-            var date2 = new DateOffset(2013, 12, 0);
+            var date1 = new DateOffset(2013, 12, 1);
+            var date2 = new DateOffset(2013, 12, 1);
 
             Assert.IsTrue(date1 <= date2);
             Assert.IsTrue(date1 >= date2);

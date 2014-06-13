@@ -325,13 +325,28 @@ namespace Diagnosis.App.ViewModels
 
             Editable = new Editable(healthRecord, dirtImmunity: true, switchedOn: true);
 
-            Category = EntityManagers.CategoryManager.GetByModel(hr.Category) ?? EntityManagers.CategoryManager.Default;
-            Symptom = EntityManagers.SymptomsManager.Symptoms.FirstOrDefault(s => s.symptom == hr.Symptom);
-            Diagnosis = EntityManagers.DiagnosisManager.GetHealthRecordDiagnosis(healthRecord);
+            SetCategory();
+            SetSymptom();
+            SetDiagnosis();
 
             Editable.CanBeDirty = true;
 
             Subscribe();
+        }
+
+        private void SetCategory()
+        {
+            Category = EntityManagers.CategoryManager.GetByModel(healthRecord.Category) ?? EntityManagers.CategoryManager.Default;
+        }
+
+        private void SetDiagnosis()
+        {
+            Diagnosis = EntityManagers.DiagnosisManager.GetHealthRecordDiagnosis(healthRecord);
+        }
+
+        private void SetSymptom()
+        {
+            Symptom = EntityManagers.SymptomsManager.Symptoms.FirstOrDefault(s => s.symptom == healthRecord.Symptom);
         }
 
         private void healthRecord_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -340,6 +355,10 @@ namespace Diagnosis.App.ViewModels
 
             switch (e.PropertyName)
             {
+                case "Category":
+                    SetCategory();
+                    break;
+
                 case "FromDay":
                     DateOffset.Day = FromDay;
                     OnPropertyChanged("SortingDate");
@@ -356,12 +375,17 @@ namespace Diagnosis.App.ViewModels
                     break;
 
                 case "Symptom":
+                    SetSymptom();
                     OnPropertyChanged("Name");
                     break;
 
-                case "Diagnosis":
+                case "Disease":
+                    SetDiagnosis();
+                    OnPropertyChanged("Diagnosis");
                     OnPropertyChanged("HasDiagnosis");
+                    OnPropertyChanged("Name");
                     break;
+
                 default:
                     break;
             }
@@ -439,7 +463,6 @@ namespace Diagnosis.App.ViewModels
                 healthRecord.Disease = null;
             }
 
-            OnPropertyChanged("Name");
         }
 
         #endregion Event handlers
