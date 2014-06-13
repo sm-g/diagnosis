@@ -13,6 +13,10 @@ namespace Diagnosis.Models
         private byte? _month;
         private byte? _day;
         private string _comment;
+        private decimal? _numVal;
+        private Symptom _symptom;
+        private Category _category;
+        private IcdDisease _disease;
 
         public virtual int Id { get; protected set; }
 
@@ -23,17 +27,60 @@ namespace Diagnosis.Models
             get { return _comment; }
             set
             {
+                if (_comment == value)
+                    return;
                 _comment = value.TrimedOrNull();
+                OnPropertyChanged("Comment");
             }
         }
 
-        public virtual Category Category { get; set; }
+        public virtual Category Category
+        {
+            get { return _category; }
+            set
+            {
+                if (_category == value)
+                    return;
+                _category = value;
+                OnPropertyChanged("Category");
+            }
+        }
 
-        public virtual IcdDisease Disease { get; set; }
+        public virtual IcdDisease Disease
+        {
+            get { return _disease; }
+            set
+            {
+                if (_disease == value)
+                    return;
+                _disease = value;
+                OnPropertyChanged("Disease");
+            }
+        }
 
-        public virtual Symptom Symptom { get; set; }
+        public virtual Symptom Symptom
+        {
+            get { return _symptom; }
+            set
+            {
+                if (_symptom == value)
+                    return;
+                _symptom = value;
+                OnPropertyChanged("Symptom");
+            }
+        }
 
-        public virtual decimal? NumValue { get; set; }
+        public virtual decimal? NumValue
+        {
+            get { return _numVal; }
+            set
+            {
+                if (_numVal == value)
+                    return;
+                _numVal = value;
+                OnPropertyChanged("NumValue");
+            }
+        }
 
         public virtual int? FromYear
         {
@@ -43,6 +90,8 @@ namespace Diagnosis.Models
             }
             set
             {
+                if (_year == value)
+                    return;
                 if (value == null)
                 {
                     _year = value;
@@ -52,6 +101,7 @@ namespace Diagnosis.Models
                     _year = value;
                 }
                 CheckDate();
+                OnPropertyChanged("FromYear");
             }
         }
 
@@ -63,6 +113,8 @@ namespace Diagnosis.Models
             }
             set
             {
+                if (_month == value)
+                    return;
                 if (value == null)
                 {
                     _month = value;
@@ -72,6 +124,7 @@ namespace Diagnosis.Models
                     _month = value > 0 ? value : null;
                 }
                 CheckDate();
+                OnPropertyChanged("FromMonth");
             }
         }
 
@@ -83,6 +136,8 @@ namespace Diagnosis.Models
             }
             set
             {
+                if (_day == value)
+                    return;
                 if (value == null)
                 {
                     _day = value;
@@ -92,8 +147,10 @@ namespace Diagnosis.Models
                     _day = value > 0 ? value : null;
                 }
                 CheckDate();
+                OnPropertyChanged("FromDay");
             }
         }
+
         public virtual ReadOnlyCollection<PatientRecordProperty> RecordProperties
         {
             get

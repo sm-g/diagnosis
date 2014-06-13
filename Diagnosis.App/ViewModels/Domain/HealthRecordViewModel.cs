@@ -5,7 +5,6 @@ using EventAggregator;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -85,7 +84,6 @@ namespace Diagnosis.App.ViewModels
                     healthRecord.Comment = value;
 
                     Editable.MarkDirty();
-                    OnPropertyChanged("Comment");
                 }
             }
         }
@@ -104,8 +102,6 @@ namespace Diagnosis.App.ViewModels
                     healthRecord.Symptom = value.symptom;
 
                     Editable.MarkDirty();
-                    OnPropertyChanged("Symptom");
-                    OnPropertyChanged("Name");
                 }
             }
         }
@@ -123,8 +119,6 @@ namespace Diagnosis.App.ViewModels
                     _diagnosis = value;
 
                     Editable.MarkDirty();
-                    OnPropertyChanged("Diagnosis");
-                    OnPropertyChanged("HasDiagnosis");
                 }
             }
         }
@@ -151,7 +145,6 @@ namespace Diagnosis.App.ViewModels
                     }
 
                     Editable.MarkDirty();
-                    OnPropertyChanged("Category");
                 }
             }
         }
@@ -167,7 +160,6 @@ namespace Diagnosis.App.ViewModels
                 if (healthRecord.NumValue != value)
                 {
                     healthRecord.NumValue = value;
-                    OnPropertyChanged("NumValue");
                     Editable.MarkDirty();
                 }
             }
@@ -185,9 +177,6 @@ namespace Diagnosis.App.ViewModels
                 {
                     healthRecord.FromYear = value;
                     DateOffset.Year = value;
-
-                    OnPropertyChanged("FromYear");
-                    OnPropertyChanged("SortingDate");
                     Editable.MarkDirty();
                 }
             }
@@ -205,9 +194,6 @@ namespace Diagnosis.App.ViewModels
                 {
                     healthRecord.FromMonth = value.ConvertTo<int, byte>();
                     DateOffset.Month = value;
-
-                    OnPropertyChanged("FromMonth");
-                    OnPropertyChanged("SortingDate");
                     Editable.MarkDirty();
                 }
             }
@@ -225,9 +211,6 @@ namespace Diagnosis.App.ViewModels
                 {
                     healthRecord.FromDay = value.ConvertTo<int, byte>();
                     DateOffset.Day = value;
-
-                    OnPropertyChanged("FromDay");
-                    OnPropertyChanged("SortingDate");
                     Editable.MarkDirty();
                 }
             }
@@ -338,6 +321,8 @@ namespace Diagnosis.App.ViewModels
 
             this.healthRecord = hr;
 
+            healthRecord.PropertyChanged += healthRecord_PropertyChanged;
+
             Editable = new Editable(healthRecord, dirtImmunity: true, switchedOn: true);
 
             Category = EntityManagers.CategoryManager.GetByModel(hr.Category) ?? EntityManagers.CategoryManager.Default;
@@ -347,6 +332,39 @@ namespace Diagnosis.App.ViewModels
             Editable.CanBeDirty = true;
 
             Subscribe();
+        }
+
+        private void healthRecord_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(e.PropertyName);
+
+            switch (e.PropertyName)
+            {
+                case "FromDay":
+                    DateOffset.Day = FromDay;
+                    OnPropertyChanged("SortingDate");
+                    break;
+
+                case "FromMonth":
+                    DateOffset.Month = FromMonth;
+                    OnPropertyChanged("SortingDate");
+                    break;
+
+                case "FromYear":
+                    DateOffset.Year = FromYear;
+                    OnPropertyChanged("SortingDate");
+                    break;
+
+                case "Symptom":
+                    OnPropertyChanged("Name");
+                    break;
+
+                case "Diagnosis":
+                    OnPropertyChanged("HasDiagnosis");
+                    break;
+                default:
+                    break;
+            }
         }
 
         public void UnsubscribeCheckedChanges()
@@ -362,19 +380,18 @@ namespace Diagnosis.App.ViewModels
         /// </summary>
         public void RefreshView()
         {
-            OnPropertyChanged("Comment");
-            OnPropertyChanged("Symptom");
-            OnPropertyChanged("Name");
-            OnPropertyChanged("Diagnosis");
-            OnPropertyChanged("HasDiagnosis");
-            OnPropertyChanged("Category");
-            OnPropertyChanged("NumValue");
-            OnPropertyChanged("FromYear");
-            OnPropertyChanged("FromMonth");
-            OnPropertyChanged("FromDay");
-            OnPropertyChanged("DateOffset");
-            OnPropertyChanged("SortingDate");
-
+            //OnPropertyChanged("Comment");
+            //OnPropertyChanged("Symptom");
+            //OnPropertyChanged("Name");
+            //OnPropertyChanged("Diagnosis");
+            //OnPropertyChanged("HasDiagnosis");
+            //OnPropertyChanged("Category");
+            //OnPropertyChanged("NumValue");
+            //OnPropertyChanged("FromYear");
+            //OnPropertyChanged("FromMonth");
+            //OnPropertyChanged("FromDay");
+            //OnPropertyChanged("DateOffset");
+            //OnPropertyChanged("SortingDate");
         }
 
         #region Event handlers
