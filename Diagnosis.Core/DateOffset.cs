@@ -15,7 +15,7 @@ namespace Diagnosis.Core
     /// Неполная дата со смещением относительно сегодня в днях, неделях, месяцах или годах, зависит от полноты даты.
     /// Заданная днём, месяцем и годом дата будет иметь смещение в неделях, если число дней нацело делится на 7.
     /// </summary>
-    public class DateOffset : ViewModelBase
+    public class DateOffset : NotifyPropertyChangedBase
     {
         private static string[] days = new string[3] { "день", "дня", "дней" };
         private static string[] weeks = new string[3] { "неделя", "недели", "недель" };

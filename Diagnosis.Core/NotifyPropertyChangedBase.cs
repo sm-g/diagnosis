@@ -1,17 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Linq.Expressions;
-using System.Collections.Generic;
-using System.Collections;
 using System.Diagnostics;
+using System.Linq.Expressions;
 
 namespace Diagnosis.Core
 {
-    public abstract class ViewModelBase : INotifyPropertyChanged
+    public abstract class NotifyPropertyChangedBase : INotifyPropertyChanged
     {
         #region  INotifyPropertyChanged Members
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public virtual event PropertyChangedEventHandler PropertyChanged;
 
         [DebuggerStepThrough]
         protected void OnPropertyChanged(string name)

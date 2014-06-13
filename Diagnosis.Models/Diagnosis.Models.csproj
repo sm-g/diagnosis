@@ -48,7 +48,7 @@
     <Compile Include="Models\IcdBlock.cs" />
     <Compile Include="Models\IcdChapter.cs" />
     <Compile Include="Models\IcdDisease.cs" />
-    <Compile Include="IEntity.cs" />
+    <Compile Include="EntityBase.cs" />
     <Compile Include="Models\Patient.cs" />
     <Compile Include="Models\PatientRecordProperty.cs" />
     <Compile Include="Models\Property.cs" />
