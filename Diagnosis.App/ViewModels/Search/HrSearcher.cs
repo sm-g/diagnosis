@@ -55,16 +55,20 @@ namespace Diagnosis.App.ViewModels
 
         bool TestHrDate(HealthRecord hr, HrSearchOptions options)
         {
-            Console.WriteLine("ht offset {0}", hr.DateOffset);
-            Console.WriteLine("HealthRecordFromDateLt {0} = {1}", options.HealthRecordFromDateLt, hr.DateOffset <= options.HealthRecordFromDateLt);
-            Console.WriteLine("HealthRecordFromDateGt {0} = {1}", options.HealthRecordFromDateGt, hr.DateOffset >= options.HealthRecordFromDateGt);
+            if (options.HealthRecordOffsetLt.IsEmpty || options.HealthRecordOffsetGt.IsEmpty)
+                return true; // условия поиска не заданы
 
-            var hrDateLt = new DateOffset(options.HealthRecordFromDateLt, () => hr.Appointment.DateAndTime);
-            var grDateGt = new DateOffset(options.HealthRecordFromDateGt, () => hr.Appointment.DateAndTime);
+            if (hr.DateOffset.Unit == DateUnits.Week)
+            {
+                ;
+            }
 
-            return hr.DateOffset.IsEmpty ||
-                (options.HealthRecordFromDateLt.IsEmpty || hr.DateOffset <= hrDateLt) &&
-                (options.HealthRecordFromDateGt.IsEmpty || hr.DateOffset >= grDateGt);
+            var hrDateLtThat = new DateOffset(options.HealthRecordOffsetLt, () => hr.Appointment.DateAndTime);
+            var grDateGtThat = new DateOffset(options.HealthRecordOffsetGt, () => hr.Appointment.DateAndTime);
+
+            return !hr.DateOffset.IsEmpty &&
+                   hr.DateOffset <= hrDateLtThat &&
+                   hr.DateOffset >= grDateGtThat;
         }
     }
 }
