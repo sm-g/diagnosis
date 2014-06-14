@@ -283,7 +283,6 @@
     <Compile Include="ViewModels\Search\WordSearcher.cs" />
     <Compile Include="ViewModels\Search\PatientSearcher.cs" />
     <Compile Include="ViewModels\Domain\CategoryViewModel.cs" />
-    <Compile Include="ViewModels\Managers\CategoryManager.cs" />
     <Compile Include="ViewModels\Managers\SymptomsManager.cs" />
     <Compile Include="ViewModels\Managers\WordsManager.cs" />
     <Compile Include="ViewModels\Extensions\HierarchicalExtensions.cs" />

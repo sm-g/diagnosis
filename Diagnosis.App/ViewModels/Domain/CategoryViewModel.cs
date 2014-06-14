@@ -18,7 +18,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return category.Title;
+                return category.Name;
             }
         }
 
@@ -28,11 +28,6 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(category != null);
 
             this.category = category;
-        }
-
-        public override void OnCheckedChanged()
-        {
-            this.Send((int)EventID.CategoryCheckedChanged, new CategoryParams(this).Params);
         }
 
         public int CompareTo(object obj)
@@ -53,5 +48,6 @@ namespace Diagnosis.App.ViewModels
         {
             return category.ToString();
         }
+
     }
 }

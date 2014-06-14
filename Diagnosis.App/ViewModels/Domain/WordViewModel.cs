@@ -9,7 +9,7 @@ namespace Diagnosis.App.ViewModels
     {
         internal readonly Word word;
 
-        private CategoryViewModel _defCat;
+        private Category _defCat;
         private PopupSearch<WordViewModel> _search;
 
         public Editable Editable { get; private set; }
@@ -64,7 +64,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-        public CategoryViewModel DefaultCategory
+        public Category DefaultCategory
         {
             get
             {
@@ -75,7 +75,7 @@ namespace Diagnosis.App.ViewModels
                 if (_defCat != value)
                 {
                     if (value != null)
-                        word.DefaultCategory = value.category;
+                        word.DefaultCategory = value;
                     _defCat = value;
 
                     OnPropertyChanged("DefaultCategory");
@@ -127,7 +127,7 @@ namespace Diagnosis.App.ViewModels
 
             Editable = new Editable(word, dirtImmunity: true);
 
-            DefaultCategory = EntityManagers.CategoryManager.GetByModel(w.DefaultCategory);
+            DefaultCategory = w.DefaultCategory;
 
             Editable.CanBeDirty = true;
         }

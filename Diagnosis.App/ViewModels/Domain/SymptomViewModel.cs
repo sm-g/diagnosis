@@ -10,7 +10,7 @@ namespace Diagnosis.App.ViewModels
     public class SymptomViewModel : CheckableBase
     {
         internal readonly Symptom symptom;
-        private CategoryViewModel _defCat;
+        private Category _defCat;
 
         private IcdDisease _disease;
 
@@ -44,7 +44,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-        public CategoryViewModel DefaultCategory
+        public Category DefaultCategory
         {
             get
             {
@@ -55,7 +55,7 @@ namespace Diagnosis.App.ViewModels
                 if (_defCat != value)
                 {
                     if (value != null)
-                        symptom.DefaultCategory = value.category;
+                        symptom.DefaultCategory = value;
                     _defCat = value;
 
                     OnPropertyChanged("DefaultCategory");
@@ -107,7 +107,7 @@ namespace Diagnosis.App.ViewModels
             Editable = new Editable(symptom, dirtImmunity: true);
 
             Words = new ObservableCollection<WordViewModel>(EntityManagers.WordsManager.GetSymptomWords(s));
-            DefaultCategory = EntityManagers.CategoryManager.GetByModel(symptom.DefaultCategory);
+            DefaultCategory = symptom.DefaultCategory;
 
             Editable.CanBeDirty = true;
         }

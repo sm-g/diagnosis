@@ -1,5 +1,6 @@
 ﻿using Diagnosis.App.Messaging;
 using Diagnosis.Core;
+using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
 using EventAggregator;
 using System;
@@ -31,10 +32,13 @@ namespace Diagnosis.App.ViewModels
         private RelayCommand<PatientViewModel> _openPatientCommand;
         private bool _controlsVisible;
 
+        private IEnumerable<CategoryViewModel> _categories;
         private bool _searchWas;
+        private ICategoryRepository catRepo;
         private HrSearcher searcher = new HrSearcher();
 
         #endregion Fields
+
 
         public SearchViewModel()
         {
@@ -43,11 +47,8 @@ namespace Diagnosis.App.ViewModels
             ControlsVisible = true;
             AnyWord = true;
 
-            this.Subscribe((int)EventID.CategoryCheckedChanged, (e) =>
-            {
-                OnPropertyChanged("SelectedCategories");
-                OnPropertyChanged("AllEmpty");
-            });
+            catRepo = new CategoryRepository();
+
             ((INotifyCollectionChanged)Words).CollectionChanged += (s, e) =>
             {
                 OnPropertyChanged("AllEmpty");
@@ -164,11 +165,24 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public ObservableCollection<CategoryViewModel> Categories
+        public IEnumerable<CategoryViewModel> Categories
         {
             get
             {
-                return EntityManagers.CategoryManager.Categories;
+                if (_categories == null)
+                {
+                    var catsVM = catRepo.GetAll().Select(cat => new CategoryViewModel(cat));
+                    catsVM.ForAll(cat => cat.PropertyChanged += (s, e) =>
+                    {
+                        if (e.PropertyName == "IsChecked")
+                        {
+                            OnPropertyChanged("SelectedCategories");
+                            OnPropertyChanged("AllEmpty");
+                        }
+                    });
+                    _categories = new List<CategoryViewModel>(catsVM);
+                }
+                return _categories;
             }
         }
 
@@ -297,7 +311,8 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        #endregion Options results
+        #endregion AllEmpty
+
         public ICommand SearchCommand
         {
             get
@@ -354,6 +369,7 @@ namespace Diagnosis.App.ViewModels
                 return Results.Count == 0 && SearchWas;
             }
         }
+
         public bool ControlsVisible
         {
             get

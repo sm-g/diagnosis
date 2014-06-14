@@ -15,7 +15,7 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.Native);
             });
 
-            Property(x => x.Title);
+            Property(x => x.Name, m => m.Column("Title"));
             Property(x => x.Order);
         }
     }

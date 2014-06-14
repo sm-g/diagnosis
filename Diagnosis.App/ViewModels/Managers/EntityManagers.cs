@@ -8,7 +8,6 @@ namespace Diagnosis.App.ViewModels
     {
         private static DoctorsManager _doctorsManager;
         private static PatientsManager _patientsManager;
-        private static CategoryManager _catManager;
         private static PropertyManager _propertyManager;
         private static WordsManager _wordsManager;
         private static DiagnosisManager _diagnosisManager;
@@ -27,14 +26,6 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _patientsManager ?? (_patientsManager = new PatientsManager(new PatientRepository()));
-            }
-        }
-
-        public static CategoryManager CategoryManager
-        {
-            get
-            {
-                return _catManager ?? (_catManager = new CategoryManager(new CategoryRepository()));
             }
         }
 

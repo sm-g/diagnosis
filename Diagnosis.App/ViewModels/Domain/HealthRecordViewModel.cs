@@ -1,10 +1,10 @@
 ﻿using Diagnosis.App.Messaging;
 using Diagnosis.Core;
+using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
 using EventAggregator;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -12,9 +12,11 @@ namespace Diagnosis.App.ViewModels
 {
     public class HealthRecordViewModel : CheckableBase, IEditableNesting
     {
-        internal HealthRecord healthRecord;
+        internal readonly HealthRecord healthRecord;
         private DateOffset _dateOffset;
+        private IEnumerable<Category> _categories;
         private List<EventMessageHandler> msgHandlers;
+        private ICategoryRepository catRepo;
 
         #region IEditableNesting
 
@@ -68,7 +70,6 @@ namespace Diagnosis.App.ViewModels
         #region Model
 
         private SymptomViewModel _symptom;
-        private CategoryViewModel _category;
         private DiagnosisViewModel _diagnosis;
 
         public string Comment
@@ -123,27 +124,17 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public CategoryViewModel Category
+        public Category Category
         {
             get
             {
-                return _category;
+                return healthRecord.Category;
             }
             set
             {
-                if (_category != value)
+                if (healthRecord.Category != value)
                 {
-                    if (value != null && value != CategoryManager.NoCategory)
-                    {
-                        healthRecord.Category = value.category;
-                        _category = value;
-                    }
-                    else
-                    {
-                        healthRecord.Category = null;
-                        _category = CategoryManager.NoCategory;
-                    }
-
+                    healthRecord.Category = value;
                     Editable.MarkDirty();
                 }
             }
@@ -259,11 +250,15 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public ObservableCollection<CategoryViewModel> Categories
+        public IEnumerable<Category> Categories
         {
             get
             {
-                return EntityManagers.CategoryManager.Categories;
+                if (_categories == null)
+                {
+                    _categories = new List<Category>(catRepo.GetAll().OrderBy(cat => cat.Order));
+                }
+                return _categories;
             }
         }
 
@@ -320,23 +315,18 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(hr != null);
 
             this.healthRecord = hr;
+            catRepo = new CategoryRepository();
 
             healthRecord.PropertyChanged += healthRecord_PropertyChanged;
 
             Editable = new Editable(healthRecord, dirtImmunity: true, switchedOn: true);
 
-            SetCategory();
             SetSymptom();
             SetDiagnosis();
 
             Editable.CanBeDirty = true;
 
             Subscribe();
-        }
-
-        private void SetCategory()
-        {
-            Category = EntityManagers.CategoryManager.GetByModel(healthRecord.Category) ?? EntityManagers.CategoryManager.Default;
         }
 
         private void SetDiagnosis()
@@ -355,10 +345,6 @@ namespace Diagnosis.App.ViewModels
 
             switch (e.PropertyName)
             {
-                case "Category":
-                    SetCategory();
-                    break;
-
                 case "FromDay":
                     DateOffset.Day = FromDay;
                     OnPropertyChanged("SortingDate");
@@ -462,7 +448,6 @@ namespace Diagnosis.App.ViewModels
                 this.Diagnosis = null;
                 healthRecord.Disease = null;
             }
-
         }
 
         #endregion Event handlers
