@@ -13,7 +13,7 @@ namespace Diagnosis.App.ViewModels
         private DoctorViewModel _current;
         private IDoctorRepository repository;
 
-        public ObservableCollection<DoctorViewModel> Doctors { get; private set; }
+        public ReadOnlyObservableCollection<DoctorViewModel> Doctors { get; private set; }
 
         public DoctorViewModel CurrentDoctor
         {
@@ -21,7 +21,7 @@ namespace Diagnosis.App.ViewModels
             {
                 return _current;
             }
-            set
+            private set
             {
                 if (_current != value)
                 {
@@ -45,7 +45,7 @@ namespace Diagnosis.App.ViewModels
 
             var doctorVMs = repository.GetAll().Select(d => new DoctorViewModel(d)).ToList();
             doctorVMs.ForEach(dvm => SubscribeDoctor(dvm));
-            Doctors = new ObservableCollection<DoctorViewModel>(doctorVMs);
+            Doctors = new ReadOnlyObservableCollection<DoctorViewModel>(new ObservableCollection<DoctorViewModel>(doctorVMs));
 
             if (Doctors.Count > 0)
             {
