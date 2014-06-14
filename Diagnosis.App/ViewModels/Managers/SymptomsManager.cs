@@ -11,12 +11,7 @@ namespace Diagnosis.App.ViewModels
     public class SymptomsManager
     {
         private ISymptomRepository repository;
-
-        public ObservableCollection<SymptomViewModel> Symptoms
-        {
-            get;
-            private set;
-        }
+        private List<SymptomViewModel> symptoms;
 
         /// <summary>
         /// Возвращает симптомы, содержащие указанные слова.
@@ -25,11 +20,13 @@ namespace Diagnosis.App.ViewModels
         {
             Contract.Requires(words != null);
 
-            return Symptoms.Where(
+            return symptoms.Where(
                 s => words.IsSubsetOf(s.Words));
         }
+
         /// <summary>
         /// Создает симптом и добавляет в коллекцию Symptoms, если его там ещё нет.
+        /// Возвращает симптом, содержащий только указанные слова.
         /// </summary>
         public SymptomViewModel Create(IEnumerable<WordViewModel> words)
         {
@@ -41,10 +38,11 @@ namespace Diagnosis.App.ViewModels
             var svm = new SymptomViewModel(sym);
             svm.Editable.MarkDirty();
 
-            Symptoms.Add(svm);
+            symptoms.Add(svm);
             System.Console.WriteLine("new symptom: {0}", svm);
             return svm;
         }
+
         /// <summary>
         /// Возвращает симптом, содержащий только указанные слова.
         /// </summary>
@@ -53,14 +51,20 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(words != null);
 
             var comparator = new CompareWord();
-            return Symptoms.FirstOrDefault(
+            return symptoms.FirstOrDefault(
                 s => s.Words.OrderBy(w => w.word, comparator).SequenceEqual(
                        words.OrderBy(w => w.word, comparator)));
         }
+
+        internal SymptomViewModel GetByModel(Symptom symptom)
+        {
+            return symptoms.Where(svm => svm.symptom == symptom).FirstOrDefault();
+        }
+
         public void WipeUnsaved()
         {
-            var toRemove = Symptoms.Where(sym => sym.Unsaved).ToList();
-            toRemove.ForAll((sym) => Symptoms.Remove(sym));
+            var toRemove = symptoms.Where(sym => sym.Unsaved).ToList();
+            toRemove.ForAll((sym) => symptoms.Remove(sym));
         }
 
         public SymptomsManager(ISymptomRepository repo)
@@ -71,9 +75,7 @@ namespace Diagnosis.App.ViewModels
 
             var all = repository.GetAll().Select(s => new SymptomViewModel(s)).ToList();
 
-
-            Symptoms = new ObservableCollection<SymptomViewModel>(all);
-
+            symptoms = new List<SymptomViewModel>(all);
         }
     }
 }

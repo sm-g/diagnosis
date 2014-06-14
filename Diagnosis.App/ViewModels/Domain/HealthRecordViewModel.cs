@@ -336,7 +336,7 @@ namespace Diagnosis.App.ViewModels
 
         private void SetSymptom()
         {
-            Symptom = EntityManagers.SymptomsManager.Symptoms.FirstOrDefault(s => s.symptom == healthRecord.Symptom);
+            Symptom = EntityManagers.SymptomsManager.GetByModel(healthRecord.Symptom);
         }
 
         private void healthRecord_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
