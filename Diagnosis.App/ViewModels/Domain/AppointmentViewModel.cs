@@ -204,22 +204,19 @@ namespace Diagnosis.App.ViewModels
                 return HealthRecordEditor.HealthRecord != null && HealthRecordEditor.HealthRecord.Editable.IsEditorActive;
             }
         }
-
         public bool IsDoctorFromCourse
         {
-            get
-            {
-                return Doctor == courseVM.LeadDoctor;
-            }
+            get;
+            private set;
         }
 
-        public AppointmentViewModel(Appointment appointment, CourseViewModel courseVM, bool firstInCourse = false)
+        public AppointmentViewModel(Appointment appointment, bool doctorFromCourse, bool firstInCourse = false)
         {
             Contract.Requires(appointment != null);
             Contract.Requires(courseVM != null);
 
             this.appointment = appointment;
-            this.courseVM = courseVM;
+            IsDoctorFromCourse = doctorFromCourse;
 
             appointment.PropertyChanged += appointment_PropertyChanged;
             Editable = new Editable(appointment, dirtImmunity: true, switchedOn: true);

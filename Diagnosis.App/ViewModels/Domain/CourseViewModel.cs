@@ -194,7 +194,7 @@ namespace Diagnosis.App.ViewModels
         {
             bool single = course.Appointments.Count == 1; // единственную встречу нельзя будет удалять
 
-            var appVMs = course.Appointments.Select(app => new AppointmentViewModel(app, this, single)).ToList();
+            var appVMs = course.Appointments.Select(app => new AppointmentViewModel(app, app.Doctor == this.LeadDoctor.doctor, single)).ToList();
             appVMs.ForAll(app => SubscribeApp(app));
 
             Appointments = new ObservableCollection<AppointmentViewModel>(appVMs);
@@ -281,8 +281,8 @@ namespace Diagnosis.App.ViewModels
 
         private AppointmentViewModel NewAppointment(bool firstInCourse)
         {
-            var app = course.AddAppointment();
-            var appVM = new AppointmentViewModel(app, this, firstInCourse);
+            var app = course.AddAppointment(EntityManagers.DoctorsManager.CurrentDoctor.doctor);
+            var appVM = new AppointmentViewModel(app, app.Doctor == this.LeadDoctor.doctor, firstInCourse);
 
             SubscribeApp(appVM);
             return appVM;

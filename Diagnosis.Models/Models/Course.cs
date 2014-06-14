@@ -26,9 +26,9 @@ namespace Diagnosis.Models
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="doctor">Доктор, ведущий прием. Если не указан, то прием ведет доктор курса.</param>
+        /// <param name="doctor">Доктор, ведущий прием.</param>
         /// <returns></returns>
-        public virtual Appointment AddAppointment(Doctor doctor = null)
+        public virtual Appointment AddAppointment(Doctor doctor)
         {
             Contract.Requires(!End.HasValue);
 
