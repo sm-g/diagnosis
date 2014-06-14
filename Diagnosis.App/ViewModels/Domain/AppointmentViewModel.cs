@@ -43,7 +43,7 @@ namespace Diagnosis.App.ViewModels
         public Editable Editable { get; private set; }
 
         /// <summary>
-        /// Встреча пустая, если пусты все записи в ней или их нет.
+        /// Осмотр пуст, если пусты все записи или их нет.
         /// </summary>
         public bool IsEmpty
         {
@@ -239,7 +239,7 @@ namespace Diagnosis.App.ViewModels
 
         private void appointment_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            // у осмотра моет меняться только набор записей
+            // у осмотра может меняться только набор записей
             if (e.PropertyName == "HealthRecords")
             {
                 // добавленные записи

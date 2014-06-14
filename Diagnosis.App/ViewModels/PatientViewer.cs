@@ -176,7 +176,7 @@ namespace Diagnosis.App.ViewModels
         }
 
         /// <summary>
-        /// Открывает последнюю за час встречу в последнем курсе. 
+        /// Открывает последний за час осмотр в последнем курсе. 
         /// Создает новую, если такой нет, в последнем курсе.
         /// Создает курс, если нет ни одного курса.
         /// </summary>
@@ -196,7 +196,7 @@ namespace Diagnosis.App.ViewModels
                 OpenedCourse = lastCourse;
             }
 
-            // последняя встреча в течение часа или новая
+            // последний осмотр в течение часа или новая
             var lastApp = OpenedCourse.LastAppointment;
             if (DateTime.UtcNow - lastApp.DateTime > TimeSpan.FromHours(1))
             {

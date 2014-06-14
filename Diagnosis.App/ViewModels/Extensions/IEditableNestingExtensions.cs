@@ -27,6 +27,17 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Сохраняет и удаляет вложенные сущности при сохранении и удалении данной сущности. 
+        /// Помечает сущность грязной при удалении в коллекции вложенных сущностей. 
+        /// При доавлении вложенная сущность пуста, поэтому данная сущность осаётся чистой.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entity"></param>
+        /// <param name="inner">Коллекция вложенных сущностей.</param>
+        /// <param name="onDeletedBefore">Действие, выполняемое перед удалением сущности.</param>
+        /// <param name="innerChangedAfter">Действие, выполняемое после изменения коллекции вложенных сущностей.</param>
+        /// <param name="innerChangedMarkDirtyIf">Условие для пометки сущности грязной при удалении в коллеции вложенных сущностей.</param>
         public static void SubscribeEditableNesting<T>(this IEditableNesting entity, ObservableCollection<T> inner,
             Action onDeletedBefore = null, Action innerChangedAfter = null, Func<bool> innerChangedMarkDirtyIf = null)
             where T : IEditableNesting

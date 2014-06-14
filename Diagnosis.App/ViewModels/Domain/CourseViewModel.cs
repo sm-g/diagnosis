@@ -30,7 +30,7 @@ namespace Diagnosis.App.ViewModels
         public Editable Editable { get; private set; }
 
         /// <summary>
-        /// Курс пустой, если пусты все встречи в нём.
+        /// Курс пустой, если пусты все осмотры в нём.
         /// </summary>
         public bool IsEmpty
         {
@@ -132,7 +132,7 @@ namespace Diagnosis.App.ViewModels
         }
 
         /// <summary>
-        /// Последняя встреча всегда есть в курсе. (Кроме состояния при удалении курса.)
+        /// Последний осмотр всегда есть в курсе. (Кроме состояния при удалении курса.)
         /// </summary>
         public AppointmentViewModel LastAppointment
         {
@@ -143,7 +143,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
         /// <summary>
-        /// Добавляет встречу, если курс не закончился.
+        /// Добавляет осмотр, если курс не закончился.
         /// </summary>
         public ICommand AddAppointmentCommand
         {
@@ -165,6 +165,9 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Вызывается при смене открытого осмотра.
+        /// </summary>
         public void OnOpenedAppointmentChanged()
         {
             OnPropertyChanged("OpenedAppointmentWithAddNew");
@@ -192,7 +195,7 @@ namespace Diagnosis.App.ViewModels
 
         private void SetupAppointments(Course course)
         {
-            bool single = course.Appointments.Count == 1; // единственную встречу нельзя будет удалять
+            bool single = course.Appointments.Count == 1; // единственный осмотр нельзя будет удалять
 
             var appVMs = course.Appointments.Select(app => new AppointmentViewModel(app, app.Doctor == this.LeadDoctor.doctor, single)).ToList();
             appVMs.ForAll(app => SubscribeApp(app));
@@ -207,7 +210,7 @@ namespace Diagnosis.App.ViewModels
 
             if (Appointments.Count == 0)
             {
-                AddAppointment(true); // новый курс — добавляем встречу
+                AddAppointment(true); // новый курс — добавляем осмотр
             }
 
             this.Editable.Deleted += Editable_Deleted;
@@ -268,7 +271,7 @@ namespace Diagnosis.App.ViewModels
             // проверяем, остался ли курс пустым
             Editable.CanBeDeleted = IsEmpty;
 
-            // нельзя удалять единственную непустую встречу
+            // нельзя удалять единственный непустой осмотр
             if (Appointments.Count > 1)
             {
                 Appointments.ForAll(app => app.Editable.CanBeDeleted = true);
