@@ -11,6 +11,9 @@ using Diagnosis.Core;
 
 namespace Diagnosis.App.ViewModels
 {
+    /// <summary>
+    /// Управляет всеми пациентами.
+    /// </summary>
     public class PatientsManager
     {
         private ICommand _addPatient;

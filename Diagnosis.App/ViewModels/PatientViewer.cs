@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Diagnostics.Contracts;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -207,8 +208,10 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public void OpenHr(HealthRecord hr)
+        internal void OpenHr(HealthRecord hr)
         {
+            Contract.Requires(OpenedPatient.patient == hr.Appointment.Course.Patient);
+
             var course = OpenedPatient.CoursesManager.Courses.Where(x => x.course == hr.Appointment.Course).First();
             OpenedCourse = course;
             var app = course.Appointments.Where(x => x.appointment == hr.Appointment).First();

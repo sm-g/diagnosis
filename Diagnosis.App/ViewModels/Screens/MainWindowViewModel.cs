@@ -1,5 +1,6 @@
 ﻿using Diagnosis.App.Messaging;
 using Diagnosis.Models;
+using Diagnosis.Data.Repositories;
 using EventAggregator;
 using System.Windows.Input;
 using System.Windows.Navigation;
@@ -28,14 +29,16 @@ namespace Diagnosis.App.ViewModels
 
         private ViewModelBase _currentScreen;
 
+        #endregion Fields
+
         private NavigationService nav;
         private PatientViewer viewer;
         /// <summary>
         /// Установить флаг перед переходом к странице, на которой должна пустая история навигации.
         /// </summary>
         private bool clearNavOnNavigated;
+        PatientsManager patManager = new PatientsManager(new PatientRepository());
 
-        #endregion Fields
 
         #region CurrentScreen
 
@@ -287,7 +290,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _patientsAside ?? (_patientsAside = new PatientsAsideViewModel(EntityManagers.PatientsManager));
+                return _patientsAside ?? (_patientsAside = new PatientsAsideViewModel(patManager));
             }
         }
 
@@ -295,13 +298,13 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _patients ?? (_patients = new PatientsListViewModel(EntityManagers.PatientsManager));
+                return _patients ?? (_patients = new PatientsListViewModel(patManager));
             }
         }
 
         public SearchViewModel Search
         {
-            get { return _search ?? (_search = new SearchViewModel()); }
+            get { return _search ?? (_search = new SearchViewModel(patManager)); }
         }
 
         #endregion ViewModels
@@ -349,7 +352,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return EntityManagers.PatientsManager.AddPatientCommand;
+                return patManager.AddPatientCommand;
             }
         }
 
@@ -403,7 +406,7 @@ namespace Diagnosis.App.ViewModels
             this.Subscribe((int)EventID.OpenHealthRecord, (e) =>
             {
                 var hr = e.GetValue<HealthRecord>(Messages.HealthRecord);
-                var patVM = EntityManagers.PatientsManager.GetByModel(hr.Appointment.Course.Patient);
+                var patVM = patManager.GetByModel(hr.Appointment.Course.Patient);
                 viewer.OpenPatient(patVM);
                 viewer.OpenHr(hr);
             });

@@ -7,7 +7,6 @@ namespace Diagnosis.App.ViewModels
     static class EntityManagers
     {
         private static DoctorsManager _doctorsManager;
-        private static PatientsManager _patientsManager;
         private static PropertyManager _propertyManager;
         private static WordsManager _wordsManager;
         private static DiagnosisManager _diagnosisManager;
@@ -18,14 +17,6 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _doctorsManager ?? (_doctorsManager = new DoctorsManager(new DoctorRepository()));
-            }
-        }
-
-        public static PatientsManager PatientsManager
-        {
-            get
-            {
-                return _patientsManager ?? (_patientsManager = new PatientsManager(new PatientRepository()));
             }
         }
 

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Diagnostics.Contracts;
 using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
@@ -29,19 +30,23 @@ namespace Diagnosis.App.ViewModels
         private DateOffset _hrDateOffsetLower;
         private DateOffset _hrDateOffsetUpper;
         private RelayCommand _searchCommand;
-        private RelayCommand<PatientViewModel> _openPatientCommand;
+        private RelayCommand<Patient> _openPatientCommand;
         private bool _controlsVisible;
 
         private IEnumerable<CategoryViewModel> _categories;
         private bool _searchWas;
         private ICategoryRepository catRepo;
+        PatientsManager patManager;
         private HrSearcher searcher = new HrSearcher();
 
         #endregion Fields
 
 
-        public SearchViewModel()
+        public SearchViewModel(PatientsManager manager)
         {
+            Contract.Requires(manager != null);
+            patManager = manager;
+
             WordSearch = new WordRootAutoComplete(QuerySeparator.Default, new SimpleSearcherSettings() { AllChildren = true });
             Results = new ObservableCollection<HrSearchResultViewModel>();
             ControlsVisible = true;
@@ -342,10 +347,10 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _openPatientCommand
-                    ?? (_openPatientCommand = new RelayCommand<PatientViewModel>(
+                    ?? (_openPatientCommand = new RelayCommand<Patient>(
                                           p =>
                                           {
-                                              this.Send((int)EventID.OpenPatient, new PatientParams(p).Params);
+                                              this.Send((int)EventID.OpenPatient, new PatientParams(patManager.GetByModel(p)).Params);
                                           }));
             }
         }

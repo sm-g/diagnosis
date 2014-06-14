@@ -25,11 +25,11 @@ namespace Diagnosis.App.ViewModels
         }
 
 
-        public PatientViewModel Patient
+        public Patient Patient
         {
             get
             {
-                return EntityManagers.PatientsManager.GetByModel(hr.Appointment.Course.Patient);
+                return hr.Appointment.Course.Patient;
             }
         }
 
