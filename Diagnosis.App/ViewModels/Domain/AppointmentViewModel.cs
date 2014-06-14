@@ -19,14 +19,12 @@ namespace Diagnosis.App.ViewModels
     public class AppointmentViewModel : ViewModelBase, IEditableNesting
     {
         #region Fileds
+
         internal readonly Appointment appointment;
-        private readonly CourseViewModel courseVM;
 
         private static HrEditorViewModel _hrEditorStatic = new HrEditorViewModel();
 
-
         private DoctorViewModel _doctor;
-        private bool _showHrEditor;
         private int _checkedHealthRecords;
         private HealthRecordViewModel _selectedHealthRecord;
 
@@ -36,8 +34,9 @@ namespace Diagnosis.App.ViewModels
         private ICommand _moveHrSelection;
 
         private bool movingToViewGroup;
-        bool movingSelected;
-        #endregion
+        private bool movingSelected;
+
+        #endregion Fileds
 
         #region IEditableNesting
 
@@ -82,6 +81,7 @@ namespace Diagnosis.App.ViewModels
                 return appointment.DateAndTime;
             }
         }
+
         public ObservableCollection<HealthRecordViewModel> HealthRecords { get; private set; }
 
         #endregion Model
@@ -97,6 +97,7 @@ namespace Diagnosis.App.ViewModels
                 return HealthRecords.Select(hr => hr.Name).ToList();
             }
         }
+
         public HealthRecordViewModel SelectedHealthRecord
         {
             get
@@ -157,6 +158,7 @@ namespace Diagnosis.App.ViewModels
                         }, () => HealthRecordEditor.HealthRecord != null));
             }
         }
+
         public ICommand MoveHrSelectionCommand
         {
             get
@@ -197,6 +199,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
         public bool ShowHrEditor
         {
             get
@@ -204,6 +207,7 @@ namespace Diagnosis.App.ViewModels
                 return HealthRecordEditor.HealthRecord != null && HealthRecordEditor.HealthRecord.Editable.IsEditorActive;
             }
         }
+
         public bool IsDoctorFromCourse
         {
             get;
@@ -213,7 +217,6 @@ namespace Diagnosis.App.ViewModels
         public AppointmentViewModel(Appointment appointment, bool doctorFromCourse, bool firstInCourse = false)
         {
             Contract.Requires(appointment != null);
-            Contract.Requires(courseVM != null);
 
             this.appointment = appointment;
             IsDoctorFromCourse = doctorFromCourse;
@@ -234,7 +237,7 @@ namespace Diagnosis.App.ViewModels
                 innerChangedMarkDirtyIf: () => !movingToViewGroup);
         }
 
-        void appointment_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void appointment_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             // у осмотра моет меняться только набор записей
             if (e.PropertyName == "HealthRecords")
@@ -296,7 +299,7 @@ namespace Diagnosis.App.ViewModels
             SetupHealthRecordsView();
         }
 
-        void HealthRecords_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void HealthRecords_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged("HealthRecordsNames");
         }
@@ -311,7 +314,6 @@ namespace Diagnosis.App.ViewModels
             HealthRecordsView.SortDescriptions.Add(sort1);
             HealthRecordsView.SortDescriptions.Add(sort2);
             OnPropertyChanged("HealthRecordsView");
-
         }
 
         #region HealthRecord stuff
@@ -351,7 +353,7 @@ namespace Diagnosis.App.ViewModels
             hrVM.Editable.PropertyChanged -= hr_Editable_PropertyChanged;
         }
 
-        void hr_Editable_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void hr_Editable_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "IsEditorActive")
             {
@@ -387,6 +389,7 @@ namespace Diagnosis.App.ViewModels
             var hr = e.entity as HealthRecord;
             appointment.DeleteHealthRecord(hr);
         }
+
         private void hr_DirtyChanged(object sender, EditableEventArgs e)
         {
             Editable.IsDirty = HealthRecords.Any(vm => vm.Editable.IsDirty);
