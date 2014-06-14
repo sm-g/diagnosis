@@ -90,14 +90,6 @@ namespace Diagnosis.App.ViewModels
 
         public ICollectionView HealthRecordsView { get; private set; }
 
-        public IList<string> HealthRecordsNames
-        {
-            get
-            {
-                return HealthRecords.Select(hr => hr.Name).ToList();
-            }
-        }
-
         public HealthRecordViewModel SelectedHealthRecord
         {
             get
@@ -282,11 +274,6 @@ namespace Diagnosis.App.ViewModels
             var hrVMs = appointment.HealthRecords.Select(hr => new HealthRecordViewModel(hr)).ToList();
             hrVMs.ForAll(hr => SubscribeHr(hr));
 
-            if (HealthRecords != null)
-            {
-                HealthRecords.CollectionChanged -= HealthRecords_CollectionChanged;
-            }
-
             HealthRecords = new ObservableCollection<HealthRecordViewModel>(hrVMs);
             OnPropertyChanged("HealthRecords");
 
@@ -294,15 +281,10 @@ namespace Diagnosis.App.ViewModels
             {
                 AddHealthRecord();
             }
-            HealthRecords.CollectionChanged += HealthRecords_CollectionChanged;
 
             SetupHealthRecordsView();
         }
 
-        private void HealthRecords_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            OnPropertyChanged("HealthRecordsNames");
-        }
 
         private void SetupHealthRecordsView()
         {
