@@ -106,9 +106,11 @@ namespace Diagnosis.App.ViewModels
             {
                 return _addHealthRecord
                     ?? (_addHealthRecord = new RelayCommand(() =>
-                        {
-                            AddHealthRecord();
-                        }));
+                    {
+                        AddHealthRecord();
+                    },
+                    // нельзя добавлять новую запись, пока редактируемая пуста
+                    () => !(HealthRecordEditor.IsActive && HealthRecordEditor.HealthRecord.IsEmpty)));
             }
         }
 
