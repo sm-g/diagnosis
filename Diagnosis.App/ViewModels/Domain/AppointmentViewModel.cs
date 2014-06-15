@@ -148,14 +148,16 @@ namespace Diagnosis.App.ViewModels
                             movingSelected = true;
                             if (up)
                             {
-                                HealthRecordsView.MoveCurrentToPrevious();
-                                if (HealthRecordsView.IsCurrentBeforeFirst)
+                                if (HealthRecordsView.CurrentPosition != 0)
+                                    HealthRecordsView.MoveCurrentToPrevious();
+                                else
                                     HealthRecordsView.MoveCurrentToLast();
                             }
                             else
                             {
-                                HealthRecordsView.MoveCurrentToNext();
-                                if (HealthRecordsView.IsCurrentAfterLast)
+                                if (HealthRecordsView.CurrentPosition != HealthRecords.Count - 1)
+                                    HealthRecordsView.MoveCurrentToNext();
+                                else
                                     HealthRecordsView.MoveCurrentToFirst();
                             }
                             movingSelected = false;
