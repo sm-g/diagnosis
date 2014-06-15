@@ -16,6 +16,7 @@ namespace Diagnosis.App.ViewModels
         private DateOffset _dateOffset;
         private IEnumerable<Category> _categories;
         private List<EventMessageHandler> msgHandlers;
+        private static bool makingCurrent;
         private ICategoryRepository catRepo;
 
         #region IEditableNesting
@@ -269,16 +270,6 @@ namespace Diagnosis.App.ViewModels
                 return Diagnosis != null;
             }
         }
-
-        private static bool makingCurrent;
-
-        internal void CheckInCurrent()
-        {
-            makingCurrent = true;
-            EntityManagers.DiagnosisManager.Check(Diagnosis);
-            makingCurrent = false;
-        }
-
         public HealthRecordViewModel(HealthRecord hr)
         {
             Contract.Requires(hr != null);
@@ -294,6 +285,32 @@ namespace Diagnosis.App.ViewModels
             SetDiagnosis();
 
             Editable.CanBeDirty = true;
+        }
+
+        public void UnsubscribeCheckedChanges()
+        {
+            foreach (var h in msgHandlers)
+            {
+                h.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Calls OnPropertyChanged for properties.
+        /// </summary>
+        public void RefreshView()
+        {
+            //OnPropertyChanged("FromYear");
+            //OnPropertyChanged("FromMonth");
+            //OnPropertyChanged("FromDay");
+            //OnPropertyChanged("DateOffset");
+        }
+
+        internal void CheckInCurrent()
+        {
+            makingCurrent = true;
+            EntityManagers.DiagnosisManager.Check(Diagnosis);
+            makingCurrent = false;
         }
 
         private void SetDiagnosis()
@@ -343,26 +360,6 @@ namespace Diagnosis.App.ViewModels
                     break;
             }
         }
-
-        public void UnsubscribeCheckedChanges()
-        {
-            foreach (var h in msgHandlers)
-            {
-                h.Dispose();
-            }
-        }
-
-        /// <summary>
-        /// Calls OnPropertyChanged for properties.
-        /// </summary>
-        public void RefreshView()
-        {
-            //OnPropertyChanged("FromYear");
-            //OnPropertyChanged("FromMonth");
-            //OnPropertyChanged("FromDay");
-            //OnPropertyChanged("DateOffset");
-        }
-
         #region Event handlers
 
         internal void SubscribeToCheckedChanges()

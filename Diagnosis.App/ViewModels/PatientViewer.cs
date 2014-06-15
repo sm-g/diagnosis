@@ -229,7 +229,7 @@ namespace Diagnosis.App.ViewModels
             var app = course.Appointments.Where(x => x.appointment == hr.Appointment).First();
             OpenedAppointment = app;
             var hrVM = app.HealthRecords.Where(x => x.healthRecord == hr).First();
-            app.SelectedHealthRecord = hrVM;
+            OpenedHealthRecord = hrVM;
         }
 
         private void OnPatientOpened(PatientViewModel patient)
@@ -351,7 +351,6 @@ namespace Diagnosis.App.ViewModels
                 if (OpenedAppointment.HealthRecords.Count == 0)
                 {
                     OpenedAppointment.AddHealthRecord();
-                    //OpenedHealthRecord
                 }
                 else
                 {

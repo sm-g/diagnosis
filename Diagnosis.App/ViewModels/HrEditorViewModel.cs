@@ -16,6 +16,9 @@ namespace Diagnosis.App.ViewModels
 
         private HealthRecordViewModel _hr;
 
+        #region HealthRecord
+
+
         public HealthRecordViewModel HealthRecord
         {
             get
@@ -28,7 +31,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     if (_hr != null)
                     {
-                        _hr.Editable.PropertyChanged -= Editable_PropertyChanged;
+                        _hr.Editable.PropertyChanged -= hr_Editable_PropertyChanged;
                     }
 
                     _hr = value;
@@ -37,7 +40,7 @@ namespace Diagnosis.App.ViewModels
                     {
                         CreateAutoComplete();
                         UpdateDiagnosisQueryCode();
-                        _hr.Editable.PropertyChanged += Editable_PropertyChanged;
+                        _hr.Editable.PropertyChanged += hr_Editable_PropertyChanged;
                     }
                     OnPropertyChanged("HealthRecord");
                     OnPropertyChanged("IsActive");
@@ -53,13 +56,14 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private void Editable_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void hr_Editable_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "IsEditorActive")
             {
                 OnPropertyChanged("IsActive");
             }
         }
+        #endregion
 
         #region AutoComplete
 
@@ -167,14 +171,6 @@ namespace Diagnosis.App.ViewModels
             CreateDiagnosisSearch();
         }
 
-        public void UnsubscribeCheckedChanges() // TODO
-        {
-            foreach (var h in msgHandlers)
-            {
-                h.Dispose();
-            }
-        }
-
         private void UpdateDiagnosisQueryCode()
         {
             if (DiagnosisSearch != null && HealthRecord != null)
@@ -190,8 +186,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        #region Event handlers
-
         private void Subscribe()
         {
             EntityManagers.DiagnosisManager.RootChanged += (s, e) =>
@@ -202,24 +196,14 @@ namespace Diagnosis.App.ViewModels
             {
                 OnPropertyChanged("ShowIcdDisease");
             });
-            SubscribeToCheckedChanges();
-        }
-
-        private void SubscribeToCheckedChanges()
-        {
-            msgHandlers = new List<EventMessageHandler>()
+            this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
             {
-                this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
+                if (HealthRecord.IsSelected)
                 {
-                    if (HealthRecord.IsSelected)
-                    {
-                        UpdateDiagnosisQueryCode();
-                    }
-                })
-            };
+                    UpdateDiagnosisQueryCode();
+                }
+            });
         }
-
-        #endregion Event handlers
 
         public override string ToString()
         {
