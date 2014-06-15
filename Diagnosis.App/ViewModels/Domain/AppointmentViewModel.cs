@@ -109,8 +109,8 @@ namespace Diagnosis.App.ViewModels
                     {
                         AddHealthRecord();
                     },
-                    // нельзя добавлять новую запись, пока редактируемая пуста
-                    () => !(HealthRecordEditor.IsActive && HealthRecordEditor.HealthRecord.IsEmpty)));
+                    // нельзя добавлять новую запись, пока выбранная пуста
+                    () => SelectedHealthRecord == null || !SelectedHealthRecord.IsEmpty));
             }
         }
 
@@ -205,10 +205,6 @@ namespace Diagnosis.App.ViewModels
 
         internal void OnOpenedHealthRecordChanged()
         {
-            if (SelectedHealthRecord != null)
-            {
-                SelectedHealthRecord.IsSelected = true;
-            }
             HealthRecordEditor.HealthRecord = SelectedHealthRecord;
             OnPropertyChanged("SelectedHealthRecord");
         }

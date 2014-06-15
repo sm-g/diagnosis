@@ -66,6 +66,15 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public override void OnCheckedChanged()
+        {
+            // убираем выделение при снятии флажка
+            //if (!IsChecked)
+            {
+                IsSelected = IsChecked;
+            }
+        }
+
         #endregion CheckableBase
 
         #region Model

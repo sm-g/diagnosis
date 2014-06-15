@@ -56,7 +56,7 @@
                   Style="{StaticResource list}"
                   HorizontalContentAlignment="Stretch"
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
-                  SelectionMode="Single"
+                  SelectionMode="Extended"
                   SelectionChanged="records_SelectionChanged">
             <ListView.GroupStyle>
                 <GroupStyle>

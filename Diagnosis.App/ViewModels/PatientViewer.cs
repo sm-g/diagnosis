@@ -156,6 +156,7 @@ namespace Diagnosis.App.ViewModels
                         Console.WriteLine("запись {0} закрыта", _openedHr);
                     }
                     _openedHr = value;
+                    OpenedAppointment.OnOpenedHealthRecordChanged();
 
                     if (value != null)
                     {
@@ -168,7 +169,6 @@ namespace Diagnosis.App.ViewModels
                     }
 
                     OnPropertyChanged(() => OpenedHealthRecord);
-                    OpenedAppointment.OnOpenedHealthRecordChanged();
                 }
                 else
                 {

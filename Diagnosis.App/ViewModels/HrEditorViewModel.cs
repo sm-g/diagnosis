@@ -198,7 +198,7 @@ namespace Diagnosis.App.ViewModels
             });
             this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
             {
-                if (HealthRecord.IsSelected)
+                if (HealthRecord != null)
                 {
                     UpdateDiagnosisQueryCode();
                 }
