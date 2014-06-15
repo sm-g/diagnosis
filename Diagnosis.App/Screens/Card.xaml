@@ -24,8 +24,17 @@
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
             </Style>
+
+            <Button x:Key="toggle" x:Shared="False"
+                    HorizontalAlignment="Left"
+                    Command="{Binding Editable.EditCommand}"
+                    Margin="0,0,0,5"
+                    Style="{StaticResource areaButton}">
+                <card:PatientHeader Padding="5,0,5,0" />
+            </Button>
         </ResourceDictionary>
     </UserControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -52,17 +61,15 @@
             <TabItem x:Name="editorTab" IsSelected="{Binding Editable.IsEditorActive, Mode=TwoWay}">
                 <TabItem.Header>
                     <TextBlock Style="{StaticResource verticalTextBlock}"
-                               Width="{Binding ActualHeight, ElementName=patientHeader, Converter={StaticResource SummatorConverter}, ConverterParameter=10}">Пациент</TextBlock>
+                               Width="{Binding ActualHeight, ElementName=editor_toggle, Converter={StaticResource SummatorConverter}, ConverterParameter=10}">Пациент</TextBlock>
                 </TabItem.Header>
                 <DockPanel Margin="10">
-                    <Button DockPanel.Dock="Top"
-                            HorizontalAlignment="Left"
-                            Command="{Binding Editable.EditCommand}"
-                            Margin="0,0,0,5"
-                            Style="{StaticResource areaButton}"
-                            ToolTip="Открыть записи пациента">
-                        <card:PatientHeader x:Name="patientHeader" Padding="5,0,5,0" />
-                    </Button>
+                    <ContentControl x:Name="editor_toggle"
+                                    Content="{StaticResource toggle}"
+                                    DockPanel.Dock="Top"
+                                    ToolTip="Открыть записи пациента"
+                                    ToolTipService.Placement="Bottom"
+                                    ToolTipService.HorizontalOffset="50"/>
 
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel>
@@ -88,14 +95,10 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <Button DockPanel.Dock="Top"
-                            HorizontalAlignment="Left"
-                            Command="{Binding Editable.EditCommand}"
-                            Margin="0,0,0,5"
-                            Style="{StaticResource areaButton}"
-                            ToolTip="Редактировать данные пациента">
-                            <card:PatientHeader Padding="5,0,5,0" />
-                        </Button>
+                        <ContentControl Content="{StaticResource toggle}"
+                                        ToolTip="Редактировать данные пациента"
+                                        ToolTipService.Placement="Bottom"
+                                        ToolTipService.HorizontalOffset="50" />
 
                         <controls:AlignableWrapPanel x:Name="courses" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" HorizontalContentAlignment="Right">
                             <controls:AlignableWrapPanel.Resources>
@@ -112,7 +115,7 @@
                             <Grid VerticalAlignment="Center" Visibility="{Binding NoCourses, Converter={StaticResource NegBooleanToVisibilityConverter}}" Margin="0,0,0,5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition MinWidth="120" MaxWidth="250"/>
+                                    <ColumnDefinition MinWidth="120" MaxWidth="250" />
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock Text="Курс" Margin="0,0,10,0"
