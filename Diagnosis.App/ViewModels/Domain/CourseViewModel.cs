@@ -114,6 +114,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     if (value.IsAddNew)
                     {
+                        // выбрана вкладка +осмотр
                         if (!isAddingNewApp)
                         {
                             isAddingNewApp = true;
@@ -164,15 +165,6 @@ namespace Diagnosis.App.ViewModels
                 return LeadDoctor == EntityManagers.DoctorsManager.CurrentDoctor;
             }
         }
-
-        /// <summary>
-        /// Вызывается при смене открытого осмотра.
-        /// </summary>
-        public void OnOpenedAppointmentChanged()
-        {
-            OnPropertyChanged("OpenedAppointmentWithAddNew");
-        }
-
         public CourseViewModel(Course course)
         {
             Contract.Requires(course != null);
@@ -191,6 +183,14 @@ namespace Diagnosis.App.ViewModels
                  innerChangedAfter: SetAppointmentsDeletable);
 
             SetAppointmentsDeletable();
+        }
+
+        /// <summary>
+        /// Вызывается при смене открытого осмотра.
+        /// </summary>
+        internal void OnOpenedAppointmentChanged()
+        {
+            OnPropertyChanged("OpenedAppointmentWithAddNew");
         }
 
         private void SetupAppointments(Course course)

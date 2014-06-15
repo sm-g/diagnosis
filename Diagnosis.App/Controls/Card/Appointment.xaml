@@ -98,7 +98,7 @@
             </ListView.ItemContainerStyle>
         </ListView>
         <Border Grid.Row="2" BorderThickness="0,1,0,0" Padding="0,10,0,0" SnapsToDevicePixels="True"
-                Visibility="{Binding ShowHrEditor, Converter={StaticResource BooleanToVisibilityConverter}}">
+                Visibility="{Binding HealthRecordEditor.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Border.BorderBrush>
                 <SolidColorBrush Color="Gray" />
             </Border.BorderBrush>

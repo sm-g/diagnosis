@@ -271,39 +271,8 @@ namespace Diagnosis.App.ViewModels
         }
 
         private static bool makingCurrent;
-        private static HealthRecordViewModel currentHr;
 
-        private void MakeCurrent()
-        {
-            if (currentHr != null && currentHr != this)
-            {
-                // новая выбранная запись в том же приеме
-                if (currentHr.healthRecord.Appointment == this.healthRecord.Appointment)
-                {
-                    // оставляем редактор открытым при смене выбранной записи
-                    this.Editable.IsEditorActive = currentHr.Editable.IsEditorActive;
-
-                    if (!currentHr.Editable.IsDirty)
-                    {
-                        currentHr.Editable.IsEditorActive = false;
-                    }
-
-                    // сохраняем запись
-                    currentHr.Editable.Commit();
-                }
-                currentHr.UnsubscribeCheckedChanges();
-            }
-            if (currentHr != this)
-            {
-                this.SubscribeToCheckedChanges();
-            }
-
-            currentHr = this;
-
-            CheckInCurrent();
-        }
-
-        private void CheckInCurrent()
+        internal void CheckInCurrent()
         {
             makingCurrent = true;
             EntityManagers.DiagnosisManager.Check(Diagnosis);
@@ -325,8 +294,6 @@ namespace Diagnosis.App.ViewModels
             SetDiagnosis();
 
             Editable.CanBeDirty = true;
-
-            Subscribe();
         }
 
         private void SetDiagnosis()
@@ -386,32 +353,19 @@ namespace Diagnosis.App.ViewModels
         }
 
         /// <summary>
-        /// Calls OnPropertyChanged for all properties.
+        /// Calls OnPropertyChanged for properties.
         /// </summary>
         public void RefreshView()
         {
-            //OnPropertyChanged("Comment");
-            //OnPropertyChanged("Symptom");
-            //OnPropertyChanged("Name");
-            //OnPropertyChanged("Diagnosis");
-            //OnPropertyChanged("HasDiagnosis");
-            //OnPropertyChanged("Category");
-            //OnPropertyChanged("NumValue");
             //OnPropertyChanged("FromYear");
             //OnPropertyChanged("FromMonth");
             //OnPropertyChanged("FromDay");
             //OnPropertyChanged("DateOffset");
-            //OnPropertyChanged("SortingDate");
         }
 
         #region Event handlers
 
-        private void Subscribe()
-        {
-            this.PropertyChanged += HealthRecordViewModel_PropertyChanged;
-        }
-
-        private void SubscribeToCheckedChanges()
+        internal void SubscribeToCheckedChanges()
         {
             msgHandlers = new List<EventMessageHandler>()
             {
@@ -425,15 +379,6 @@ namespace Diagnosis.App.ViewModels
                     }
                 })
             };
-        }
-
-        private void HealthRecordViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "IsSelected")
-            {
-                if (IsSelected)
-                    MakeCurrent();
-            }
         }
 
         private void OnDiagnosisCheckedChanged(DiagnosisViewModel diagnosisVM, bool isChecked)

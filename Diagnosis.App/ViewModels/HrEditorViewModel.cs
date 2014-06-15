@@ -4,10 +4,7 @@ using Diagnosis.Models;
 using EventAggregator;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Diagnostics.Contracts;
-using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -18,6 +15,7 @@ namespace Diagnosis.App.ViewModels
         private List<EventMessageHandler> msgHandlers;
 
         private HealthRecordViewModel _hr;
+
         public HealthRecordViewModel HealthRecord
         {
             get
@@ -28,12 +26,38 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_hr != value)
                 {
+                    if (_hr != null)
+                    {
+                        _hr.Editable.PropertyChanged -= Editable_PropertyChanged;
+                    }
+
                     _hr = value;
 
-                    CreateAutoComplete();
-                    UpdateDiagnosisQueryCode();
-                    OnPropertyChanged(() => HealthRecord);
+                    if (value != null)
+                    {
+                        CreateAutoComplete();
+                        UpdateDiagnosisQueryCode();
+                        _hr.Editable.PropertyChanged += Editable_PropertyChanged;
+                    }
+                    OnPropertyChanged("HealthRecord");
+                    OnPropertyChanged("IsActive");
                 }
+            }
+        }
+
+        public bool IsActive
+        {
+            get
+            {
+                return HealthRecord != null && HealthRecord.Editable.IsEditorActive;
+            }
+        }
+
+        private void Editable_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsEditorActive")
+            {
+                OnPropertyChanged("IsActive");
             }
         }
 
@@ -56,7 +80,7 @@ namespace Diagnosis.App.ViewModels
 
             ((INotifyCollectionChanged)_autoCompleteStatic.Items).CollectionChanged += AutoCompleteItems_CollectionChanged;
 
-            OnPropertyChanged(() => AutoComplete);
+            OnPropertyChanged("AutoComplete");
         }
 
         private void AutoCompleteItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -88,6 +112,8 @@ namespace Diagnosis.App.ViewModels
 
         #endregion AutoComplete
 
+        #region Diagnosis search
+
         public PopupSearch<DiagnosisViewModel> DiagnosisSearch
         {
             get
@@ -101,29 +127,6 @@ namespace Diagnosis.App.ViewModels
                     _diagnosisSearch = value;
                     OnPropertyChanged("DiagnosisSearch");
                 }
-            }
-        }
-
-        public bool ShowIcdDisease
-        {
-            get
-            {
-                var b = EntityManagers.DoctorsManager.CurrentDoctor.doctor.DoctorSettings.HasFlag(DoctorSettings.ShowIcdDisease);
-                return b;
-            }
-        }
-
-        public HrEditorViewModel()
-        {
-            Subscribe();
-            CreateDiagnosisSearch();
-        }
-
-        public void UnsubscribeCheckedChanges()
-        {
-            foreach (var h in msgHandlers)
-            {
-                h.Dispose();
             }
         }
 
@@ -146,6 +149,30 @@ namespace Diagnosis.App.ViewModels
         {
             HealthRecord.Diagnosis = null;
             // DiagnosisSearch.Query already empty
+        }
+
+        #endregion
+
+        public bool ShowIcdDisease
+        {
+            get
+            {
+                var b = EntityManagers.DoctorsManager.CurrentDoctor.doctor.DoctorSettings.HasFlag(DoctorSettings.ShowIcdDisease);
+                return b;
+            }
+        }
+        public HrEditorViewModel()
+        {
+            Subscribe();
+            CreateDiagnosisSearch();
+        }
+
+        public void UnsubscribeCheckedChanges() // TODO
+        {
+            foreach (var h in msgHandlers)
+            {
+                h.Dispose();
+            }
         }
 
         private void UpdateDiagnosisQueryCode()
@@ -173,8 +200,9 @@ namespace Diagnosis.App.ViewModels
             };
             this.Subscribe((int)EventID.SettingsSaved, (e) =>
             {
-                OnPropertyChanged(() => ShowIcdDisease);
+                OnPropertyChanged("ShowIcdDisease");
             });
+            SubscribeToCheckedChanges();
         }
 
         private void SubscribeToCheckedChanges()
