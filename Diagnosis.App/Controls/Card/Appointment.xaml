@@ -7,15 +7,13 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="300" d:DesignWidth="600"
              x:Name="appointment">
     <UserControl.Resources>
         <InputBindingCollection x:Shared="False" x:Key="HRInputBindings">
             <KeyBinding Key="Space" Command="{Binding ToggleCommand}" />
-            <KeyBinding Key="F2" Command="{Binding Editable.EditCommand}" />
-            <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
             <KeyBinding Key="Escape" Command="{Binding Editable.RevertCommand}" />
-            <KeyBinding Key="Delete" Command="{Binding Editable.DeleteCommand}" />
+            <KeyBinding Modifiers="Control" Key="S" Command="{Binding Editable.CommitCommand}" />
 
             <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding DataContext.EditHrCommand, ElementName=appointment}" />
         </InputBindingCollection>
@@ -23,7 +21,10 @@
 
     <UserControl.InputBindings>
         <KeyBinding Modifiers="Control" Key="N" Command="{Binding AddHealthRecordCommand}" />
-        <!--<KeyBinding Key="F2" Command="{Binding EditHrCommand}" />-->
+        <KeyBinding Key="Delete" Command="{Binding DeleteHealthRecordsCommand}" />
+        <KeyBinding Key="F2" Command="{Binding EditHrCommand}" />
+        <KeyBinding Modifiers="Control" Key="Up" Command="{Binding MoveHrSelectionCommand}" CommandParameter="{StaticResource True}" />
+        <KeyBinding Modifiers="Control" Key="Down" Command="{Binding MoveHrSelectionCommand}" CommandParameter="{StaticResource False}" />
     </UserControl.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
@@ -36,11 +37,11 @@
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource barButton}" />
             </StackPanel.Resources>
-            <Button Command="{Binding AddHealthRecordCommand}">Добавить запись</Button>
-            <Button Command="{Binding EditHrCommand}">Редактировать</Button>
+            <Button Command="{Binding AddHealthRecordCommand}" ToolTip="Редактировать новую запись (Ctrl + N)">Добавить запись</Button>
+            <Button Command="{Binding EditHrCommand}" ToolTip="Переключить редактор для выбранной записи (F2)">Редактировать</Button>
             <Button Command="{Binding DeleteHealthRecordsCommand}">
                 <TextBlock>
-                    <Run>Удалить</Run>
+                    <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" ToolTip="Удалить выбранные записи (Del)">Удалить</Run>
                     <TextBlock Text="{Binding CheckedHealthRecords, StringFormat='{}({0})'}"
                                Visibility="{Binding CheckedHealthRecords, Converter={StaticResource CountToVisibility}, ConverterParameter=1}" />
                 </TextBlock>
@@ -86,7 +87,7 @@
 
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <card:HealthRecord Margin="0,0,0,5"/>
+                    <card:HealthRecord Margin="0,0,0,5" />
                 </DataTemplate>
             </ListView.ItemTemplate>
 
@@ -97,12 +98,18 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        <Border Grid.Row="2" BorderThickness="0,1,0,0" Padding="0,10,0,0" SnapsToDevicePixels="True"
+        <Border Grid.Row="2" BorderThickness="0,1,0,0" SnapsToDevicePixels="True"
                 Visibility="{Binding HealthRecordEditor.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Border.BorderBrush>
                 <SolidColorBrush Color="Gray" />
             </Border.BorderBrush>
-            
+            <Border.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFFFEAD2" Offset="0" />
+                    <GradientStop Color="#FFFFFBFB" Offset="1" />
+                </LinearGradientBrush>
+            </Border.Background>
+
             <Grid Margin="10,0,10,10">
                 <editors:HealthRecordEditorShared DataContext="{Binding HealthRecordEditor}" />
             </Grid>

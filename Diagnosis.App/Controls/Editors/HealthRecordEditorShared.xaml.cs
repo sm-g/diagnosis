@@ -20,5 +20,10 @@ namespace Diagnosis.App.Controls.Editors
         {
             InitializeComponent();
         }
+
+        private void hr_grid_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            hr_grid.Focus();
+        }
     }
 }

@@ -297,6 +297,7 @@ namespace Diagnosis.App.ViewModels
             HealthRecords.Where(hr => hr.IsChecked).ToList().ForAll(hr =>
             {
                 hr.Editable.Delete();
+                // uncheck after delete, to SelectedHealthRecord be deletable hrVM
                 hr.IsChecked = false;
             });
         }
