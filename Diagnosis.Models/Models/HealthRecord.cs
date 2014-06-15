@@ -82,26 +82,26 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual int? FromYear
+        public virtual byte? FromDay
         {
             get
             {
-                return _year;
+                return _day;
             }
             set
             {
-                if (_year == value)
+                if (_day == value)
                     return;
                 if (value == null)
                 {
-                    _year = value;
+                    _day = value;
                 }
-                if (value <= DateTime.Today.Year)
+                if (value >= 0 && value <= 31)
                 {
-                    _year = value;
+                    _day = value > 0 ? value : null;
                 }
                 CheckDate();
-                OnPropertyChanged("FromYear");
+                OnPropertyChanged("FromDay");
             }
         }
 
@@ -128,29 +128,28 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual byte? FromDay
+        public virtual int? FromYear
         {
             get
             {
-                return _day;
+                return _year;
             }
             set
             {
-                if (_day == value)
+                if (_year == value)
                     return;
                 if (value == null)
                 {
-                    _day = value;
+                    _year = value;
                 }
-                if (value >= 0 && value <= 31)
+                if (value <= DateTime.Today.Year)
                 {
-                    _day = value > 0 ? value : null;
+                    _year = value;
                 }
                 CheckDate();
-                OnPropertyChanged("FromDay");
+                OnPropertyChanged("FromYear");
             }
         }
-
         public virtual ReadOnlyCollection<PatientRecordProperty> RecordProperties
         {
             get
