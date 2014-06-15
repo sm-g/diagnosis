@@ -47,7 +47,7 @@ namespace Diagnosis.App.ViewModels
                 if (Symptom != null)
                     return Symptom.Name;
                 else
-                    return string.Empty;
+                    return "";
             }
         }
 
@@ -58,7 +58,7 @@ namespace Diagnosis.App.ViewModels
         public override void OnSelectedChanged()
         {
             // check hr when select it and uncheck when selection goes away
-            // except hr was checked by user before
+            // except hr was checked by checkbox before
             if (!IsChecked || checkedBySelection)
             {
                 checkedBySelection = IsSelected;
@@ -69,10 +69,7 @@ namespace Diagnosis.App.ViewModels
         public override void OnCheckedChanged()
         {
             // убираем выделение при снятии флажка
-            //if (!IsChecked)
-            {
-                IsSelected = IsChecked;
-            }
+            IsSelected = IsChecked;
         }
 
         #endregion CheckableBase
@@ -303,17 +300,6 @@ namespace Diagnosis.App.ViewModels
             {
                 h.Dispose();
             }
-        }
-
-        /// <summary>
-        /// Calls OnPropertyChanged for properties.
-        /// </summary>
-        public void RefreshView()
-        {
-            //OnPropertyChanged("FromYear");
-            //OnPropertyChanged("FromMonth");
-            //OnPropertyChanged("FromDay");
-            //OnPropertyChanged("DateOffset");
         }
 
         internal void CheckInCurrent()

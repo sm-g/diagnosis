@@ -344,8 +344,6 @@ namespace Diagnosis.App.ViewModels
             {
                 session.Refresh(hr);
             }
-            var hrVM = HealthRecords.Where(vm => vm.healthRecord == hr).FirstOrDefault();
-            hrVM.RefreshView();
         }
 
         private void hr_Deleted(object sender, EditableEventArgs e)
