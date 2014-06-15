@@ -35,7 +35,8 @@ namespace Diagnosis.App.ViewModels
 
         public DoctorViewModel GetByModel(Doctor doctor)
         {
-            return Doctors.FirstOrDefault(a => a.doctor == doctor);
+            var result = Doctors.FirstOrDefault(a => a.doctor.Id == doctor.Id); // doctors are different onjects here
+            return result;
         }
 
         public DoctorsManager(IDoctorRepository repo)
