@@ -186,7 +186,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return LeadDoctor == EntityManagers.DoctorsManager.CurrentDoctor;
+                return LeadDoctor == EntityProducers.DoctorsProducer.CurrentDoctor;
             }
         }
 
@@ -198,7 +198,7 @@ namespace Diagnosis.App.ViewModels
 
             Editable = new Editable(course, switchedOn: true, dirtImmunity: true);
 
-            LeadDoctor = EntityManagers.DoctorsManager.GetByModel(course.LeadDoctor);
+            LeadDoctor = EntityProducers.DoctorsProducer.GetByModel(course.LeadDoctor);
 
             Editable.CanBeDirty = true;
             Editable.Deleted += Editable_Deleted;
@@ -315,7 +315,7 @@ namespace Diagnosis.App.ViewModels
 
         private AppointmentViewModel NewAppointment(bool firstInCourse)
         {
-            var app = course.AddAppointment(EntityManagers.DoctorsManager.CurrentDoctor.doctor);
+            var app = course.AddAppointment(EntityProducers.DoctorsProducer.CurrentDoctor.doctor);
             var appVM = new AppointmentViewModel(app, app.Doctor == this.LeadDoctor.doctor, firstInCourse);
 
             SubscribeApp(appVM);

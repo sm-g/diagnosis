@@ -10,7 +10,7 @@ namespace Diagnosis.App.ViewModels
             DiagnosisSearcher searcher;
             if (parent == null)
             {
-                parent = EntityManagers.DiagnosisManager.Root;
+                parent = EntityProducers.DiagnosisProducer.Root;
             }
             searcher = new DiagnosisSearcher(parent, settings, checkedDiagnoses);
             return searcher;

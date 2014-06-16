@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class DoctorsManager : ViewModelBase
+    public class DoctorsProducer : ViewModelBase
     {
         private DoctorViewModel _current;
         private IDoctorRepository repository;
@@ -21,7 +21,7 @@ namespace Diagnosis.App.ViewModels
             {
                 return _current;
             }
-            private set
+            set
             {
                 if (_current != value)
                 {
@@ -39,7 +39,7 @@ namespace Diagnosis.App.ViewModels
             return result;
         }
 
-        public DoctorsManager(IDoctorRepository repo)
+        public DoctorsProducer(IDoctorRepository repo)
         {
             Contract.Requires(repo != null);
             this.repository = repo;

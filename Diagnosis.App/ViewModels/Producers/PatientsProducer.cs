@@ -14,7 +14,7 @@ namespace Diagnosis.App.ViewModels
     /// <summary>
     /// Управляет всеми пациентами.
     /// </summary>
-    public class PatientsManager
+    public class PatientsProducer
     {
         private ICommand _addPatient;
         private IPatientRepository patientRepo;
@@ -34,7 +34,7 @@ namespace Diagnosis.App.ViewModels
             return Patients.Where(p => p.patient == patient).FirstOrDefault();
         }
 
-        public PatientsManager(IPatientRepository patientRepo)
+        public PatientsProducer(IPatientRepository patientRepo)
         {
             Contract.Requires(patientRepo != null);
             this.patientRepo = patientRepo;

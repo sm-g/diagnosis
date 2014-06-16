@@ -111,7 +111,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
 
-            HealthRecord.Symptom = EntityManagers.SymptomsManager.Create(words);
+            HealthRecord.Symptom = EntityProducers.SymptomsProducer.Create(words);
         }
 
         #endregion AutoComplete
@@ -141,7 +141,7 @@ namespace Diagnosis.App.ViewModels
                 DiagnosisSearch.Cleared -= DiagnosisSearch_Cleared;
             }
             DiagnosisSearch = new PopupSearch<DiagnosisViewModel>(
-                   EntityManagers.DiagnosisManager.RootFiltratingSearcher,
+                   EntityProducers.DiagnosisProducer.RootFiltratingSearcher,
                    onSelected: (dia) => { dia.IsChecked = true; });
 
             DiagnosisSearch.Cleared += DiagnosisSearch_Cleared;
@@ -161,7 +161,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                var b = EntityManagers.DoctorsManager.CurrentDoctor.doctor.DoctorSettings.HasFlag(DoctorSettings.ShowIcdDisease);
+                var b = EntityProducers.DoctorsProducer.CurrentDoctor.doctor.DoctorSettings.HasFlag(DoctorSettings.ShowIcdDisease);
                 return b;
             }
         }
@@ -188,7 +188,7 @@ namespace Diagnosis.App.ViewModels
 
         private void Subscribe()
         {
-            EntityManagers.DiagnosisManager.RootChanged += (s, e) =>
+            EntityProducers.DiagnosisProducer.RootChanged += (s, e) =>
             {
                 CreateDiagnosisSearch();
             };
@@ -201,6 +201,10 @@ namespace Diagnosis.App.ViewModels
                 if (HealthRecord != null)
                 {
                     UpdateDiagnosisQueryCode();
+                }
+                else
+                {
+                    ;
                 }
             });
         }

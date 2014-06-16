@@ -37,7 +37,7 @@ namespace Diagnosis.App.ViewModels
         /// Установить флаг перед переходом к странице, на которой должна пустая история навигации.
         /// </summary>
         private bool clearNavOnNavigated;
-        PatientsManager patManager = new PatientsManager(new PatientRepository());
+        PatientsProducer patProducer = new PatientsProducer(new PatientRepository());
 
 
         #region CurrentScreen
@@ -102,7 +102,7 @@ namespace Diagnosis.App.ViewModels
 
                     if (value)
                     {
-                        nav.Navigate(EntityManagers.WordsManager);
+                        nav.Navigate(EntityProducers.WordsProducer);
 
                         LoginOpened = false;
                         SearchTesterOpened = false;
@@ -290,7 +290,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _patientsAside ?? (_patientsAside = new PatientsAsideViewModel(patManager));
+                return _patientsAside ?? (_patientsAside = new PatientsAsideViewModel(patProducer));
             }
         }
 
@@ -298,13 +298,13 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _patients ?? (_patients = new PatientsListViewModel(patManager));
+                return _patients ?? (_patients = new PatientsListViewModel(patProducer));
             }
         }
 
         public SearchViewModel Search
         {
-            get { return _search ?? (_search = new SearchViewModel(patManager)); }
+            get { return _search ?? (_search = new SearchViewModel(patProducer)); }
         }
 
         #endregion ViewModels
@@ -352,7 +352,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return patManager.AddPatientCommand;
+                return patProducer.AddPatientCommand;
             }
         }
 
@@ -364,7 +364,7 @@ namespace Diagnosis.App.ViewModels
                     ?? (_openSettings = new RelayCommand(
                                           () =>
                                           {
-                                              var settingsVM = new SettingsViewModel(Login.DoctorsManager.CurrentDoctor);
+                                              var settingsVM = new SettingsViewModel(Login.DoctorsProducer.CurrentDoctor);
                                               this.Send((int)EventID.OpenSettings, new SettingsParams(settingsVM).Params);
                                           }));
             }
@@ -377,7 +377,7 @@ namespace Diagnosis.App.ViewModels
             this.nav = nav;
             this.nav.Navigated += nav_Navigated;
 
-            Login = new LoginViewModel(EntityManagers.DoctorsManager);
+            Login = new LoginViewModel(EntityProducers.DoctorsProducer);
             Login.LoggedIn += OnLoggedIn;
 
             this.Subscribe((int)EventID.PatientAdded, (e) =>
@@ -406,7 +406,7 @@ namespace Diagnosis.App.ViewModels
             this.Subscribe((int)EventID.OpenHealthRecord, (e) =>
             {
                 var hr = e.GetValue<HealthRecord>(Messages.HealthRecord);
-                var patVM = patManager.GetByModel(hr.Appointment.Course.Patient);
+                var patVM = patProducer.GetByModel(hr.Appointment.Course.Patient);
                 viewer.OpenPatient(patVM);
                 viewer.OpenHr(hr);
             });
@@ -414,7 +414,7 @@ namespace Diagnosis.App.ViewModels
             //LoginOpened = true;
             PatientsOpened = true;
             Patients.SelectLastPatient();
-            CreateViewer(EntityManagers.DoctorsManager.CurrentDoctor);
+            CreateViewer(EntityProducers.DoctorsProducer.CurrentDoctor);
         }
 
         private void nav_Navigated(object sender, NavigationEventArgs e)

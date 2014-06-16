@@ -206,7 +206,7 @@ namespace Diagnosis.App.ViewModels
                 Editable.CanBeDeleted = false;
             }
 
-            Doctor = EntityManagers.DoctorsManager.GetByModel(appointment.Doctor);
+            Doctor = EntityProducers.DoctorsProducer.GetByModel(appointment.Doctor);
 
             Editable.CanBeDirty = true;
         }

@@ -11,7 +11,7 @@ namespace Diagnosis.App.ViewModels
             WordSearcher searcher;
             if (parent == null)
             {
-                parent = EntityManagers.WordsManager.Root;
+                parent = EntityProducers.WordsProducer.Root;
             }
             searcher = new WordCompositeSearcher(parent, settings, checkedWords);
             searcher.UpperPriority = parent.Priority;

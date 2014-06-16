@@ -84,8 +84,8 @@ namespace Diagnosis.App.ViewModels
 
         private void MakeSuggestions(string query)
         {
-            EntityManagers.WordsManager.WipeUnsaved();
-            EntityManagers.SymptomsManager.WipeUnsaved();
+            EntityProducers.WordsProducer.WipeUnsaved();
+            EntityProducers.SymptomsProducer.WipeUnsaved();
 
             var symptoms = new List<SymptomViewModel>();
             foreach (var line in StringSequencePartition.Part(query, separator.Delimiter))
@@ -98,14 +98,14 @@ namespace Diagnosis.App.ViewModels
                 Console.WriteLine();
 
                 // группы из слов, начинающихся на слово из разбиения
-                var wordGroups = line.Select(word => EntityManagers.WordsManager.RootSearcher.Search(word).ToList()).ToList();
+                var wordGroups = line.Select(word => EntityProducers.WordsProducer.RootSearcher.Search(word).ToList()).ToList();
 
                 // все комбинации слов для создания симптомов
                 var wordsForSymptoms = Combinator<WordViewModel>.Combine(wordGroups);
 
                 foreach (var words in wordsForSymptoms)
                 {
-                    symptoms.Add(EntityManagers.SymptomsManager.Create(words));
+                    symptoms.Add(EntityProducers.SymptomsProducer.Create(words));
                 }
             }
             Results = new ObservableCollection<SearchWrap>(symptoms.Select(s => new SearchWrap(s)));

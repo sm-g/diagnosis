@@ -20,7 +20,7 @@
             <DataTemplate DataType="{x:Type vm:LoginViewModel}">
                 <screen:Login />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:WordsManager}">
+            <DataTemplate DataType="{x:Type vm:WordsProducer}">
                 <screen:Words />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:PatientViewer}">
@@ -72,7 +72,7 @@
             </Menu>
 
             <Menu HorizontalAlignment="Right">
-                <MenuItem Header="{Binding Login.DoctorsManager.CurrentDoctor, Converter={StaticResource ManToShortName}}">
+                <MenuItem Header="{Binding Login.DoctorsProducer.CurrentDoctor, Converter={StaticResource ManToShortName}}">
                     <MenuItem Header="_Выйти" Command="{Binding LogoutCommand}" />
                     <MenuItem Header="_Настройки..." Command="{Binding OpenSettingsCommand}" />
                 </MenuItem>

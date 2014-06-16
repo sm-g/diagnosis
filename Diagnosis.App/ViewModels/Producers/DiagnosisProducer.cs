@@ -10,10 +10,7 @@ using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
-    /// <summary>
-    /// Содержит ViewModels всех диагнозов.
-    /// </summary>
-    public class DiagnosisManager : ViewModelBase
+    public class DiagnosisProducer : ViewModelBase
     {
         private readonly IcdChapterRepository repository;
         private DiagnosisViewModel _root;
@@ -99,7 +96,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public DiagnosisManager(IcdChapterRepository repo)
+        public DiagnosisProducer(IcdChapterRepository repo)
         {
             Contract.Requires(repo != null);
 
@@ -110,7 +107,7 @@ namespace Diagnosis.App.ViewModels
                 new Diagnosis.Models.Diagnosis(ch.Code, ch.Title)).ToList();
             var chapterVms = chapterDiagnoses.Select(ch => new DiagnosisViewModel(ch, RootChanged)).ToList();
 
-            SetDiagnosesForDoctor(chapterVms, EntityManagers.DoctorsManager.CurrentDoctor.doctor);
+            SetDiagnosesForDoctor(chapterVms, EntityProducers.DoctorsProducer.CurrentDoctor.doctor);
 
             Subscribe(chapterVms);
         }

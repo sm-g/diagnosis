@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class SymptomsManager
+    public class SymptomsProducer
     {
         private ISymptomRepository repository;
         private List<SymptomViewModel> symptoms;
@@ -67,7 +67,7 @@ namespace Diagnosis.App.ViewModels
             toRemove.ForAll((sym) => symptoms.Remove(sym));
         }
 
-        public SymptomsManager(ISymptomRepository repo)
+        public SymptomsProducer(ISymptomRepository repo)
         {
             Contract.Requires(repo != null);
 

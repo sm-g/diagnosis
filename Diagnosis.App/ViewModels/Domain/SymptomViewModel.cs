@@ -106,7 +106,7 @@ namespace Diagnosis.App.ViewModels
 
             Editable = new Editable(symptom, dirtImmunity: true);
 
-            Words = new ObservableCollection<WordViewModel>(EntityManagers.WordsManager.GetSymptomWords(s));
+            Words = new ObservableCollection<WordViewModel>(EntityProducers.WordsProducer.GetSymptomWords(s));
             DefaultCategory = symptom.DefaultCategory;
 
             Editable.CanBeDirty = true;

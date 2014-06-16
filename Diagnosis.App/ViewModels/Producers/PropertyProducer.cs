@@ -9,7 +9,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class PropertyManager
+    public class PropertyProducer
     {
         IPropertyRepository repository;
 
@@ -40,7 +40,7 @@ namespace Diagnosis.App.ViewModels
             return properties;
         }
 
-        public PropertyManager(IPropertyRepository repo)
+        public PropertyProducer(IPropertyRepository repo)
         {
             Contract.Requires(repo != null);
             repository = repo;

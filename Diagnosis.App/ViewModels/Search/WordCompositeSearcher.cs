@@ -25,7 +25,7 @@ namespace Diagnosis.App.ViewModels
             List<WordViewModel> results = new List<WordViewModel>(base.Search(query));
             if (!String.IsNullOrWhiteSpace(query))
             {
-                results.AddRange(EntityManagers.WordsManager.RootSearcher.Search(query).Where(
+                results.AddRange(EntityProducers.WordsProducer.RootSearcher.Search(query).Where(
                     w => FilterCheckable(w)
                       && !results.Contains(w)
                       && UpperPriority <= w.Priority));

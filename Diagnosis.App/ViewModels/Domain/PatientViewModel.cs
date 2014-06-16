@@ -344,7 +344,7 @@ namespace Diagnosis.App.ViewModels
         public void AfterPatientLoaded()
         {
             Properties = new ObservableCollection<PropertyViewModel>(
-                EntityManagers.PropertyManager.GetPatientProperties(patient));
+                EntityProducers.PropertyProducer.GetPatientProperties(patient));
             OnPropertyChanged("Properties");
         }
 

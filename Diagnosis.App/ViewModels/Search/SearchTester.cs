@@ -24,7 +24,7 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _wordSearch ?? (_wordSearch = new PopupSearch<WordViewModel>(
-                    EntityManagers.WordsManager.RootSearcher));
+                    EntityProducers.WordsProducer.RootSearcher));
             }
         }
         public AutoCompleteBase<WordViewModel> WordAutoComplete
@@ -49,7 +49,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _diaSearch ?? (_diaSearch = new PopupSearch<DiagnosisViewModel>(EntityManagers.DiagnosisManager.RootSearcher));
+                return _diaSearch ?? (_diaSearch = new PopupSearch<DiagnosisViewModel>(EntityProducers.DiagnosisProducer.RootSearcher));
             }
         }
 
@@ -67,7 +67,7 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _diaFilteringSearch ?? (_diaFilteringSearch = new PopupSearch<DiagnosisViewModel>(
-                    EntityManagers.DiagnosisManager.RootFiltratingSearcher));
+                    EntityProducers.DiagnosisProducer.RootFiltratingSearcher));
             }
         }
 

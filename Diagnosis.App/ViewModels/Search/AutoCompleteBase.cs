@@ -288,7 +288,7 @@ namespace Diagnosis.App.ViewModels
 
         private void MakeSuggestions()
         {
-            EntityManagers.WordsManager.WipeUnsaved();
+            EntityProducers.WordsProducer.WipeUnsaved();
 
             string query;
             if (!IsItemCompleted)

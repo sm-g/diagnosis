@@ -12,11 +12,11 @@ namespace Diagnosis.App.ViewModels
         private string _username;
         private SecureString _password;
         private bool _wrongpassword;
-        private DoctorsManager _docManager;
+        private DoctorsProducer _docManager;
 
         public event EventHandler<LoggedEventArgs> LoggedIn;
 
-        public DoctorsManager DoctorsManager
+        public DoctorsProducer DoctorsProducer
         {
             get
             {
@@ -27,7 +27,7 @@ namespace Diagnosis.App.ViewModels
                 if (_docManager != value)
                 {
                     _docManager = value;
-                    OnPropertyChanged(() => DoctorsManager);
+                    OnPropertyChanged(() => DoctorsProducer);
                 }
             }
         }
@@ -81,10 +81,10 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public LoginViewModel(DoctorsManager manager)
+        public LoginViewModel(DoctorsProducer producer)
         {
-            Contract.Requires(manager != null);
-            DoctorsManager = manager;
+            Contract.Requires(producer != null);
+            DoctorsProducer = producer;
         }
 
         private void LogIn()
@@ -96,7 +96,7 @@ namespace Diagnosis.App.ViewModels
             var h = LoggedIn;
             if (h != null)
             {
-                h(this, new LoggedEventArgs(DoctorsManager.CurrentDoctor));
+                h(this, new LoggedEventArgs(DoctorsProducer.CurrentDoctor));
             }
         }
     }

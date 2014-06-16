@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class WordsManager
+    public class WordsProducer
     {
         private readonly IWordRepository repository;
         private readonly WordViewModel root;
@@ -130,7 +130,7 @@ namespace Diagnosis.App.ViewModels
             return Words.Where(w => w.Name == title).SingleOrDefault();
         }
 
-        public WordsManager(IWordRepository repo)
+        public WordsProducer(IWordRepository repo)
         {
             Contract.Requires(repo != null);
 

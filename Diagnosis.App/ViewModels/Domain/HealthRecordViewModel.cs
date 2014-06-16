@@ -305,18 +305,18 @@ namespace Diagnosis.App.ViewModels
         internal void CheckInCurrent()
         {
             makingCurrent = true;
-            EntityManagers.DiagnosisManager.Check(Diagnosis);
+            EntityProducers.DiagnosisProducer.Check(Diagnosis);
             makingCurrent = false;
         }
 
         private void SetDiagnosis()
         {
-            Diagnosis = EntityManagers.DiagnosisManager.GetHealthRecordDiagnosis(healthRecord);
+            Diagnosis = EntityProducers.DiagnosisProducer.GetHealthRecordDiagnosis(healthRecord);
         }
 
         private void SetSymptom()
         {
-            Symptom = EntityManagers.SymptomsManager.GetByModel(healthRecord.Symptom);
+            Symptom = EntityProducers.SymptomsProducer.GetByModel(healthRecord.Symptom);
         }
 
         private void healthRecord_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

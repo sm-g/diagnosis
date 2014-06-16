@@ -10,12 +10,12 @@ namespace Diagnosis.App.ViewModels
     public class PatientsAsideViewModel : ViewModelBase
     {
         private PatientViewModel _current;
-        PatientsManager _manager;
+        PatientsProducer _producer;
         private PopupSearch<PatientViewModel> _search;
 
-        public PatientsAsideViewModel(PatientsManager manager)
+        public PatientsAsideViewModel(PatientsProducer manager)
         {
-            _manager = manager;
+            _producer = manager;
             this.Subscribe((int)EventID.OpenedPatientChanged, (e) =>
             {
                 var pat = e.GetValue<PatientViewModel>(Messages.Patient);
@@ -23,7 +23,7 @@ namespace Diagnosis.App.ViewModels
             });
         }
 
-        public ObservableCollection<PatientViewModel> Patients { get { return _manager.Patients; } }
+        public ObservableCollection<PatientViewModel> Patients { get { return _producer.Patients; } }
 
         public PatientViewModel SelectedPatient
         {
@@ -46,7 +46,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _manager.AddPatientCommand;
+                return _producer.AddPatientCommand;
             }
         }
         public PopupSearch<PatientViewModel> Search
@@ -55,7 +55,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_search == null)
                 {
-                    _search = new PopupSearch<PatientViewModel>(new PatientSearcher(_manager.Patients));
+                    _search = new PopupSearch<PatientViewModel>(new PatientSearcher(_producer.Patients));
                     _search.ResultItemSelected += _search_ResultItemSelected;
                 }
                 return _search;

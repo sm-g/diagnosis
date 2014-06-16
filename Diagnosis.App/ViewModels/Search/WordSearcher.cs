@@ -55,7 +55,7 @@ namespace Diagnosis.App.ViewModels
 
         protected virtual WordViewModel FromQuery(string query)
         {
-            return EntityManagers.WordsManager.Create(query);
+            return EntityProducers.WordsProducer.Create(query);
         }
 
         protected bool Filter(WordViewModel item, string query)

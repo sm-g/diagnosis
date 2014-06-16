@@ -36,13 +36,13 @@ namespace Diagnosis.App.ViewModels
         private IEnumerable<CategoryViewModel> _categories;
         private bool _searchWas;
         private ICategoryRepository catRepo;
-        PatientsManager patManager;
+        PatientsProducer patManager;
         private HrSearcher searcher = new HrSearcher();
 
         #endregion Fields
 
 
-        public SearchViewModel(PatientsManager manager)
+        public SearchViewModel(PatientsProducer manager)
         {
             Contract.Requires(manager != null);
             patManager = manager;
