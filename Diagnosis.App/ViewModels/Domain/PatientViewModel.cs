@@ -340,11 +340,7 @@ namespace Diagnosis.App.ViewModels
             if (!(this is UnsavedPatientViewModel))
                 AfterPatientLoaded();
 
-            this.SubscribeEditableNesting(CoursesManager.Courses);
-            CoursesManager.Courses.CollectionChanged += (s, e) =>
-            {
-                OnPropertyChanged("NoCourses");
-            };
+            
             Editable.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "IsEditorActive")
@@ -368,6 +364,15 @@ namespace Diagnosis.App.ViewModels
             Properties = new ObservableCollection<PropertyViewModel>(
                 EntityManagers.PropertyManager.GetPatientProperties(patient));
             OnPropertyChanged("Properties");
+        }
+
+        internal void AfterCoursesLoaded()
+        {
+            this.SubscribeEditableNesting(CoursesManager.Courses);
+            CoursesManager.Courses.CollectionChanged += (s, e) =>
+            {
+                OnPropertyChanged("NoCourses");
+            };
         }
 
         #region Subscriptions

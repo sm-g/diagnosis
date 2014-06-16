@@ -1,15 +1,13 @@
-﻿using Diagnosis.App.Messaging;
-using Diagnosis.Core;
+﻿using Diagnosis.Core;
 using Diagnosis.Data;
 using Diagnosis.Models;
-using EventAggregator;
 using NHibernate;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.ComponentModel;
 using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
@@ -21,6 +19,8 @@ namespace Diagnosis.App.ViewModels
         internal Action<AppointmentViewModel> OpenedAppointmentSetter;
         internal Func<AppointmentViewModel> OpenedAppointmentGetter;
 
+        private ObservableCollection<AppointmentViewModel> _appointments;
+        private ObservableCollection<WithAddNew> _appointmentsWithAddNew;
         private DoctorViewModel _leadDoctor;
         private ICommand _addAppointment;
         private bool isAddingNewApp;
@@ -94,14 +94,37 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public ObservableCollection<AppointmentViewModel> Appointments { get; private set; }
+        public ObservableCollection<AppointmentViewModel> Appointments
+        {
+            get
+            {
+                if (_appointments == null)
+                {
+                    _appointments = MakeAppointments(course);
+
+                    AfterAppointmentsLoaded();
+                }
+                return _appointments;
+            }
+        }
 
         #endregion Model
 
         /// <summary>
         /// Осмотры вместе в кнопкой Новый осмотр.
         /// </summary>
-        public ObservableCollection<WithAddNew> AppointmentsWithAddNew { get; private set; }
+        public ObservableCollection<WithAddNew> AppointmentsWithAddNew
+        {
+            get
+            {
+                if (_appointmentsWithAddNew == null)
+                {
+                    _appointmentsWithAddNew = MakeAppointmentsWithAddNew(Appointments);
+                }
+                return _appointmentsWithAddNew;
+            }
+        }
+
         public WithAddNew OpenedAppointmentWithAddNew
         {
             get
@@ -143,6 +166,7 @@ namespace Diagnosis.App.ViewModels
                 return Appointments.Last();
             }
         }
+
         /// <summary>
         /// Добавляет осмотр, если курс не закончился.
         /// </summary>
@@ -165,6 +189,7 @@ namespace Diagnosis.App.ViewModels
                 return LeadDoctor == EntityManagers.DoctorsManager.CurrentDoctor;
             }
         }
+
         public CourseViewModel(Course course)
         {
             Contract.Requires(course != null);
@@ -174,15 +199,9 @@ namespace Diagnosis.App.ViewModels
             Editable = new Editable(course, switchedOn: true, dirtImmunity: true);
 
             LeadDoctor = EntityManagers.DoctorsManager.GetByModel(course.LeadDoctor);
-            SetupAppointments(course);
 
             Editable.CanBeDirty = true;
-
-            this.SubscribeEditableNesting(Appointments,
-                 onDeletedBefore: () => Contract.Requires(Appointments.All(a => a.IsEmpty)),
-                 innerChangedAfter: SetAppointmentsDeletable);
-
-            SetAppointmentsDeletable();
+            Editable.Deleted += Editable_Deleted;
         }
 
         /// <summary>
@@ -193,27 +212,39 @@ namespace Diagnosis.App.ViewModels
             OnPropertyChanged("OpenedAppointmentWithAddNew");
         }
 
-        private void SetupAppointments(Course course)
+        private ObservableCollection<AppointmentViewModel> MakeAppointments(Course course)
         {
             bool single = course.Appointments.Count == 1; // единственный осмотр нельзя будет удалять
 
             var appVMs = course.Appointments.Select(app => new AppointmentViewModel(app, app.Doctor == this.LeadDoctor.doctor, single)).ToList();
             appVMs.ForAll(app => SubscribeApp(app));
 
-            Appointments = new ObservableCollection<AppointmentViewModel>(appVMs);
-            Appointments.CollectionChanged += Appointments_CollectionChanged;
+            var appointments = new ObservableCollection<AppointmentViewModel>(appVMs);
+            appointments.CollectionChanged += Appointments_CollectionChanged;
 
-            AppointmentsWithAddNew = new ObservableCollection<WithAddNew>(
+            return appointments;
+        }
+
+        private ObservableCollection<WithAddNew> MakeAppointmentsWithAddNew(IEnumerable<AppointmentViewModel> appVMs)
+        {
+            var appointmentsWithAddNew = new ObservableCollection<WithAddNew>(
                 appVMs.Select(app => new WithAddNew(app)));
             if (!IsEnded)
-                AppointmentsWithAddNew.Add(new WithAddNew());
+                appointmentsWithAddNew.Add(new WithAddNew());
+            return appointmentsWithAddNew;
+        }
 
-            if (Appointments.Count == 0)
+        private void AfterAppointmentsLoaded()
+        {
+            if (_appointments.Count == 0)
             {
                 AddAppointment(true); // новый курс — добавляем осмотр
             }
 
-            this.Editable.Deleted += Editable_Deleted;
+            this.SubscribeEditableNesting(_appointments,
+              onDeletedBefore: () => Contract.Requires(_appointments.All(a => a.IsEmpty)),
+              innerChangedAfter: SetAppointmentsDeletable);
+            SetAppointmentsDeletable();
         }
 
         private void Editable_Deleted(object sender, EditableEventArgs e)
@@ -318,7 +349,6 @@ namespace Diagnosis.App.ViewModels
             appVM.Editable.Deleted -= app_Deleted;
             appVM.Editable.Committed -= app_Committed;
             appVM.Editable.DirtyChanged -= app_DirtyChanged;
-
 
             Appointments.Remove(appVM);
 

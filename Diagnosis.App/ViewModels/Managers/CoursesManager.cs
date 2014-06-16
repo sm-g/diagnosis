@@ -11,14 +11,22 @@ namespace Diagnosis.App.ViewModels
     public class CoursesManager
     {
         private readonly PatientViewModel patientVM;
+        private ObservableCollection<CourseViewModel> _courses;
 
         /// <summary>
         /// Курсы пацента, отсортированы по дате по убыванию (нулевой — самый поздний курс).
         /// </summary>
         public ObservableCollection<CourseViewModel> Courses
         {
-            get;
-            private set;
+            get
+            {
+                if (_courses == null)
+                {
+                    _courses = MakeCourses();
+                    patientVM.AfterCoursesLoaded();
+                }
+                return _courses;
+            }
         }
 
         public CourseViewModel AddCourse(Course course)
@@ -38,11 +46,9 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(patientVM != null);
 
             this.patientVM = patientVM;
-
-            SetupCourses();
         }
 
-        private void SetupCourses()
+        private ObservableCollection<CourseViewModel> MakeCourses()
         {
             var courseVMs = patientVM.patient.Courses
                 .Select(i => new CourseViewModel(i))
@@ -50,7 +56,7 @@ namespace Diagnosis.App.ViewModels
                 .ToList();
 
             courseVMs.ForAll(x => SubscribeCourse(x));
-            Courses = new ObservableCollection<CourseViewModel>(courseVMs);
+            return new ObservableCollection<CourseViewModel>(courseVMs);
         }
 
         #region Course stuff

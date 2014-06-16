@@ -17,20 +17,20 @@ namespace Diagnosis.App.ViewModels
         #region Fileds
 
         internal readonly Appointment appointment;
+        internal Func<HealthRecordViewModel> OpenedHrGetter;
+        internal Action<HealthRecordViewModel> OpenedHrSetter;
 
         private static HrEditorViewModel _hrEditorStatic = new HrEditorViewModel();
-
-        private DoctorViewModel _doctor;
-        private int _checkedHealthRecords;
 
         private ICommand _addHealthRecord;
         private ICommand _editHrCommand;
         private ICommand _deleteHealthRecords;
         private ICommand _moveHrSelection;
 
+        private ObservableCollection<HealthRecordViewModel> _healthRecords;
+        private ICollectionView _healthRecordsView;
         private bool movingSelected;
-        internal Func<HealthRecordViewModel> OpenedHrGetter;
-        internal Action<HealthRecordViewModel> OpenedHrSetter;
+
 
         #endregion Fileds
 
@@ -55,19 +55,8 @@ namespace Diagnosis.App.ViewModels
 
         public DoctorViewModel Doctor
         {
-            get
-            {
-                return _doctor;
-            }
-            set
-            {
-                if (_doctor != value)
-                {
-                    _doctor = value;
-                    OnPropertyChanged("Doctor");
-                    OnPropertyChanged("IsDoctorFromCourse");
-                }
-            }
+            get;
+            private set;
         }
 
         public DateTime DateTime
@@ -78,13 +67,35 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public ObservableCollection<HealthRecordViewModel> HealthRecords { get; private set; }
+        public ObservableCollection<HealthRecordViewModel> HealthRecords
+        {
+            get
+            {
+                if (_healthRecords == null)
+                {
+                    _healthRecords = MakeHealthRecords();
+
+                    AfterHealthRecordsLoaded();
+                }
+                return _healthRecords;
+            }
+        }
 
         #endregion Model
 
         public HrEditorViewModel HealthRecordEditor { get { return _hrEditorStatic; } }
 
-        public ICollectionView HealthRecordsView { get; private set; }
+        public ICollectionView HealthRecordsView
+        {
+            get
+            {
+                if (_healthRecordsView == null)
+                {
+                    _healthRecordsView = MakeHealthRecordsView();
+                }
+                return _healthRecordsView;
+            }
+        }
 
         public HealthRecordViewModel SelectedHealthRecord
         {
@@ -196,11 +207,8 @@ namespace Diagnosis.App.ViewModels
             }
 
             Doctor = EntityManagers.DoctorsManager.GetByModel(appointment.Doctor);
-            SetupHealthRecords();
 
             Editable.CanBeDirty = true;
-
-            this.SubscribeEditableNesting(HealthRecords);
         }
 
         internal void OnOpenedHealthRecordChanged()
@@ -212,56 +220,61 @@ namespace Diagnosis.App.ViewModels
         private void appointment_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             // у осмотра может меняться только набор записей
-            if (e.PropertyName == "HealthRecords")
+            Contract.Requires(e.PropertyName == "HealthRecords");
+
+            // добавленные записи
+            var notInVmCollection = appointment.HealthRecords.Where(
+                hr => !HealthRecords.Any(hrVM => hrVM.healthRecord == hr)).ToList();
+
+            foreach (var hr in notInVmCollection)
             {
-                // добавленные записи
-                var notInVmCollection = appointment.HealthRecords.Where(
-                    hr => !HealthRecords.Any(hrVM => hrVM.healthRecord == hr)).ToList();
-
-                foreach (var hr in notInVmCollection)
-                {
-                    var hrVM = new HealthRecordViewModel(hr);
-                    SubscribeHr(hrVM);
-                    HealthRecords.Add(hrVM);
-                }
-
-                // удалённые записи
-                var deletedVms = HealthRecords.Where(
-                    hrVM => !appointment.HealthRecords.Any(hr => hrVM.healthRecord == hr)).ToList();
-
-                foreach (var hrVM in deletedVms)
-                {
-                    if (SelectedHealthRecord == hrVM)
-                    {
-                        MoveHrViewSelection();
-                    }
-                    HealthRecords.Remove(hrVM);
-                    UnsubscribeHr(hrVM);
-                }
-                OnPropertyChanged("IsEmpty");
+                var hrVM = new HealthRecordViewModel(hr);
+                SubscribeHr(hrVM);
+                HealthRecords.Add(hrVM);
             }
+
+            // удалённые записи
+            var deletedVms = HealthRecords.Where(
+                hrVM => !appointment.HealthRecords.Any(hr => hrVM.healthRecord == hr)).ToList();
+
+            foreach (var hrVM in deletedVms)
+            {
+                if (SelectedHealthRecord == hrVM)
+                {
+                    MoveHrViewSelection();
+                }
+                HealthRecords.Remove(hrVM);
+                UnsubscribeHr(hrVM);
+            }
+
+            OnPropertyChanged("IsEmpty");
         }
-        private void SetupHealthRecords()
+
+        private ObservableCollection<HealthRecordViewModel> MakeHealthRecords()
         {
             var hrVMs = appointment.HealthRecords.Select(hr => new HealthRecordViewModel(hr)).ToList();
             hrVMs.ForAll(hr => SubscribeHr(hr));
 
-            HealthRecords = new ObservableCollection<HealthRecordViewModel>(hrVMs);
-            OnPropertyChanged("HealthRecords");
-
-            SetupHealthRecordsView();
+            var healthRecords = new ObservableCollection<HealthRecordViewModel>(hrVMs);
+            Console.WriteLine("make hrs for {0}", this);
+            return healthRecords;
         }
 
-        private void SetupHealthRecordsView()
+        private ICollectionView MakeHealthRecordsView()
         {
-            HealthRecordsView = (CollectionView)CollectionViewSource.GetDefaultView(HealthRecords);
+            var healthRecordsView = (CollectionView)CollectionViewSource.GetDefaultView(HealthRecords);
             PropertyGroupDescription groupDescription = new PropertyGroupDescription("Category");
             SortDescription sort1 = new SortDescription("Category", ListSortDirection.Ascending);
             SortDescription sort2 = new SortDescription("SortingDate", ListSortDirection.Ascending);
-            HealthRecordsView.GroupDescriptions.Add(groupDescription);
-            HealthRecordsView.SortDescriptions.Add(sort1);
-            HealthRecordsView.SortDescriptions.Add(sort2);
-            OnPropertyChanged("HealthRecordsView");
+            healthRecordsView.GroupDescriptions.Add(groupDescription);
+            healthRecordsView.SortDescriptions.Add(sort1);
+            healthRecordsView.SortDescriptions.Add(sort2);
+            return healthRecordsView;
+        }
+
+        private void AfterHealthRecordsLoaded()
+        {
+            this.SubscribeEditableNesting(HealthRecords);
         }
 
         private void MoveHrViewSelection()
@@ -371,6 +384,7 @@ namespace Diagnosis.App.ViewModels
         }
 
         #endregion HealthRecord stuff
+
         public override string ToString()
         {
             return appointment.ToString();
