@@ -1,11 +1,12 @@
 ﻿using Diagnosis.Models;
-using Diagnosis.Data.Mappings;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Cfg.MappingSchema;
 using NHibernate.Mapping.ByCode;
-using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Diagnosis.Data
 {
@@ -14,17 +15,27 @@ namespace Diagnosis.Data
         private static Configuration _configuration;
         private static HbmMapping _mapping;
         private static ISessionFactory _sessionFactory;
-        static ISession _session;
+        private static ISession _session;
+        private const string filenameTemplate = "Configuration.serialized";
+
+        public static ISession GetSession()
+        {
+            return _session ?? (_session = SessionFactory.OpenSession());
+        }
 
         public static Configuration Configuration
         {
             get
             {
-                return _configuration ?? (_configuration = CreateConfiguration());
+                if (_configuration == null)
+                {
+                    _configuration = CreateConfiguration();
+                }
+                return _configuration;
             }
         }
 
-        public static HbmMapping Mapping
+        private static HbmMapping Mapping
         {
             get
             {
@@ -40,11 +51,6 @@ namespace Diagnosis.Data
             }
         }
 
-        public static ISession GetSession()
-        {
-            return _session ?? (_session = SessionFactory.OpenSession());
-        }
-
         private static Configuration CreateConfiguration()
         {
             var cfg = new Configuration();
@@ -57,11 +63,30 @@ namespace Diagnosis.Data
             return cfg;
         }
 
+        private static Configuration LoadConfiguration()
+        {
+            Configuration cfg;
+            var serializer = new BinaryFormatter();
+            using (Stream stream = File.OpenRead(filenameTemplate))
+            {
+                cfg = serializer.Deserialize(stream) as Configuration;
+            }
+            return cfg;
+        }
+
+        private static void SaveConfiguration(Configuration cfg)
+        {
+            var serializer = new BinaryFormatter();
+            using (Stream stream = File.OpenWrite(filenameTemplate))
+            {
+                serializer.Serialize(stream, cfg);
+            }
+        }
+
         private static HbmMapping CreateMapping()
         {
-
             var mapper = new ModelMapper();
-            var types = Assembly.GetExecutingAssembly().GetExportedTypes();
+            var types = Assembly.GetExecutingAssembly().GetExportedTypes().Where(t => t.Namespace == "Diagnosis.Data.Mappings");
 
             mapper.AddMappings(types);
 
