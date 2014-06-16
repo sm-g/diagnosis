@@ -8,3 +8,7 @@ CodeAnalyst/
 packages/
 Thumbs.db
 *.laccdb
+*.psess
+*.vsp
+*.vspx
+*.lnk
