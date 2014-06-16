@@ -125,7 +125,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public WithAddNew OpenedAppointmentWithAddNew
+        public WithAddNew SelectedAppointmentWithAddNew
         {
             get
             {
@@ -209,7 +209,7 @@ namespace Diagnosis.App.ViewModels
         /// </summary>
         internal void OnOpenedAppointmentChanged()
         {
-            OnPropertyChanged("OpenedAppointmentWithAddNew");
+            OnPropertyChanged("SelectedAppointmentWithAddNew");
         }
 
         private ObservableCollection<AppointmentViewModel> MakeAppointments(Course course)

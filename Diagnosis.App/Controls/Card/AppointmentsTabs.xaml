@@ -59,7 +59,7 @@
     </UserControl.Resources>
     <Grid>
         <TabControl x:Name="appointments" Grid.Row="1"
-                    SelectedItem="{Binding OpenedAppointmentWithAddNew, Mode=TwoWay}"
+                    SelectedItem="{Binding SelectedAppointmentWithAddNew, Mode=TwoWay}"
                     ItemsSource="{Binding AppointmentsWithAddNew}"
                     ItemTemplateSelector="{StaticResource addNewSelector}">
             <TabControl.ContentTemplate>

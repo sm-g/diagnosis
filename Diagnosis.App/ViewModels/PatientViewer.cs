@@ -20,6 +20,8 @@ namespace Diagnosis.App.ViewModels
         private CourseViewModel _openedCourse;
         private HealthRecordViewModel _openedHr;
         private bool _fastAddingMode;
+
+        // последние открытые
         private Dictionary<PatientViewModel, CourseViewModel> patCourseMap;
         private Dictionary<CourseViewModel, AppointmentViewModel> courseAppMap;
         private Dictionary<AppointmentViewModel, HealthRecordViewModel> appHrMap;
@@ -234,6 +236,8 @@ namespace Diagnosis.App.ViewModels
 
         private void OnPatientOpened(PatientViewModel patient)
         {
+            patient.Courses.CollectionChanged += Courses_CollectionChanged;
+
             patient.Subscribe();
             patient.CurrentDoctor = doctor;
 
@@ -243,6 +247,7 @@ namespace Diagnosis.App.ViewModels
                 // пациент открыт первый раз
                 OpenedCourse = patient.Courses.FirstOrDefault();
 
+                // для синхронизации c SelectedCourse
                 OpenedPatient.OpenedCourseGetter = new Func<CourseViewModel>(() => OpenedCourse);
                 OpenedPatient.OpenedCourseSetter = new Action<CourseViewModel>((a) =>
                 {
@@ -259,16 +264,15 @@ namespace Diagnosis.App.ViewModels
             {
                 OpenLastAppointment(patient);
             }
-
-            patient.Courses.CollectionChanged += Courses_CollectionChanged;
         }
 
         private void OnPatientClosed(PatientViewModel closing, PatientViewModel opening)
         {
+            closing.Courses.CollectionChanged -= Courses_CollectionChanged;
+
             closing.Unsubscribe();
             closing.Editable.Commit();
 
-            closing.Courses.CollectionChanged -= Courses_CollectionChanged;
             OpenedCourse = null;
 
             if (opening != null)
@@ -285,16 +289,15 @@ namespace Diagnosis.App.ViewModels
                 {
                     OpenedHealthRecord.UnsubscribeCheckedChanges();
                 }
-                Console.WriteLine("нет открытых пациентов");
             }
         }
         private void OnCourseOpened(CourseViewModel course)
         {
             course.Appointments.CollectionChanged += Appointments_CollectionChanged;
 
-            // map opened course to patient
             if (!patCourseMap.ContainsKey(OpenedPatient))
             {
+                // пациент открыт первый раз
                 patCourseMap.Add(OpenedPatient, course);
             }
             else
@@ -305,6 +308,13 @@ namespace Diagnosis.App.ViewModels
             {
                 // курс открыт первый раз
                 OpenedAppointment = OpenedCourse.LastAppointment;
+
+                // для синхронизации c SelectedAppointmentWithAddNew
+                OpenedCourse.OpenedAppointmentGetter = new Func<AppointmentViewModel>(() => OpenedAppointment);
+                OpenedCourse.OpenedAppointmentSetter = new Action<AppointmentViewModel>((a) =>
+                {
+                    OpenedAppointment = a;
+                });
             }
             else
             {
@@ -324,20 +334,10 @@ namespace Diagnosis.App.ViewModels
         {
             app.HealthRecords.CollectionChanged += HealthRecords_CollectionChanged;
 
-            // map opened app to course
             if (!courseAppMap.ContainsKey(OpenedCourse))
             {
-                // курс открыт первый раз               
-
-                // для синхронизации c OpenedAppointmentWithAddNew
-                OpenedCourse.OpenedAppointmentGetter = new Func<AppointmentViewModel>(() => OpenedAppointment);
-                OpenedCourse.OpenedAppointmentSetter = new Action<AppointmentViewModel>((a) =>
-                {
-                    OpenedAppointment = a;
-                });
-
+                // курс открыт первый раз
                 courseAppMap.Add(OpenedCourse, app);
-
             }
             else
             {
@@ -355,11 +355,12 @@ namespace Diagnosis.App.ViewModels
 
                 if (OpenedAppointment.HealthRecords.Count == 0)
                 {
+                    // новый осмотр - добавляем запись
                     OpenedAppointment.AddHealthRecord();
                 }
                 else
                 {
-                    // никакие записи не выбраны, 
+                    // никакие записи не выбраны
                     OpenedHealthRecord = null;
                 }
             }
@@ -379,7 +380,6 @@ namespace Diagnosis.App.ViewModels
 
         private void OnHrOpened(HealthRecordViewModel hr)
         {
-            // map opened hr to app
             if (!appHrMap.ContainsKey(OpenedAppointment))
             {
                 // осмотр открыт первый раз
@@ -391,7 +391,7 @@ namespace Diagnosis.App.ViewModels
             }
 
 
-            hr.SubscribeToCheckedChanges(); // if old != new
+            hr.SubscribeToCheckedChanges();
             hr.CheckInCurrent();
         }
 
