@@ -53,11 +53,13 @@ namespace Diagnosis.App.Controls
         private static void fe_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             var fe = (FrameworkElement)sender;
-            if (fe.IsVisible && (bool)((FrameworkElement)sender).GetValue(IsFocusedProperty))
-            {
-                fe.IsVisibleChanged -= fe_IsVisibleChanged;
-                fe.Focus();
-            }
+            var value = fe.GetValue(IsFocusedProperty);
+            if (value != null)
+                if (fe.IsVisible && (bool)fe.GetValue(IsFocusedProperty))
+                {
+                    fe.IsVisibleChanged -= fe_IsVisibleChanged;
+                    fe.Focus();
+                }
         }
 
         private static void FrameworkElement_GotFocus(object sender, RoutedEventArgs e)
