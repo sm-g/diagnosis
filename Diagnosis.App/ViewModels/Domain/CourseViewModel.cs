@@ -1,7 +1,4 @@
-﻿using Diagnosis.Core;
-using Diagnosis.Data;
-using Diagnosis.Models;
-using NHibernate;
+﻿using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,6 +15,7 @@ namespace Diagnosis.App.ViewModels
 
         internal Action<AppointmentViewModel> OpenedAppointmentSetter;
         internal Func<AppointmentViewModel> OpenedAppointmentGetter;
+        private AppointmentsManager appManager;
 
         private ObservableCollection<AppointmentViewModel> _appointments;
         private ObservableCollection<WithAddNew> _appointmentsWithAddNew;
@@ -98,13 +96,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                if (_appointments == null)
-                {
-                    _appointments = MakeAppointments(course);
-
-                    AfterAppointmentsLoaded();
-                }
-                return _appointments;
+                return appManager.Appointments;
             }
         }
 
@@ -141,7 +133,7 @@ namespace Diagnosis.App.ViewModels
                         if (!isAddingNewApp)
                         {
                             isAddingNewApp = true;
-                            AddAppointment();
+                            appManager.AddAppointment();
                             isAddingNewApp = false;
                         }
                         return;
@@ -177,7 +169,7 @@ namespace Diagnosis.App.ViewModels
                 return _addAppointment
                     ?? (_addAppointment = new RelayCommand(() =>
                         {
-                            AddAppointment();
+                            appManager.AddAppointment();
                         }, () => !IsEnded));
             }
         }
@@ -193,15 +185,25 @@ namespace Diagnosis.App.ViewModels
         public CourseViewModel(Course course)
         {
             Contract.Requires(course != null);
-
             this.course = course;
 
             Editable = new Editable(course, switchedOn: true, dirtImmunity: true);
+
+            appManager = new AppointmentsManager(this);
+            appManager.AppointmentsLoaded += (s, e) =>
+            {
+                Appointments.CollectionChanged += Appointments_CollectionChanged;
+            };
 
             LeadDoctor = EntityProducers.DoctorsProducer.GetByModel(course.LeadDoctor);
 
             Editable.CanBeDirty = true;
             Editable.Deleted += Editable_Deleted;
+        }
+
+        internal void AddAppointment()
+        {
+            appManager.AddAppointment();
         }
 
         /// <summary>
@@ -212,19 +214,6 @@ namespace Diagnosis.App.ViewModels
             OnPropertyChanged("SelectedAppointmentWithAddNew");
         }
 
-        private ObservableCollection<AppointmentViewModel> MakeAppointments(Course course)
-        {
-            bool single = course.Appointments.Count == 1; // единственный осмотр нельзя будет удалять
-
-            var appVMs = course.Appointments.Select(app => new AppointmentViewModel(app, app.Doctor == this.LeadDoctor.doctor, single)).ToList();
-            appVMs.ForAll(app => SubscribeApp(app));
-
-            var appointments = new ObservableCollection<AppointmentViewModel>(appVMs);
-            appointments.CollectionChanged += Appointments_CollectionChanged;
-
-            return appointments;
-        }
-
         private ObservableCollection<WithAddNew> MakeAppointmentsWithAddNew(IEnumerable<AppointmentViewModel> appVMs)
         {
             var appointmentsWithAddNew = new ObservableCollection<WithAddNew>(
@@ -232,19 +221,6 @@ namespace Diagnosis.App.ViewModels
             if (!IsEnded)
                 appointmentsWithAddNew.Add(new WithAddNew());
             return appointmentsWithAddNew;
-        }
-
-        private void AfterAppointmentsLoaded()
-        {
-            if (_appointments.Count == 0)
-            {
-                AddAppointment(true); // новый курс — добавляем осмотр
-            }
-
-            this.SubscribeEditableNesting(_appointments,
-              onDeletedBefore: () => Contract.Requires(_appointments.All(a => a.IsEmpty)),
-              innerChangedAfter: SetAppointmentsDeletable);
-            SetAppointmentsDeletable();
         }
 
         private void Editable_Deleted(object sender, EditableEventArgs e)
@@ -278,91 +254,10 @@ namespace Diagnosis.App.ViewModels
                         }
                 }
             }
-        }
 
-        #region Appointment stuff
-
-        public AppointmentViewModel AddAppointment(bool firstInCourse = false)
-        {
-            if (!IsEnded)
-            {
-                var appVM = NewAppointment(firstInCourse);
-                Appointments.Add(appVM);
-
-                OnPropertyChanged("LastAppointment");
-                OnPropertyChanged("IsEmpty");
-
-                return appVM;
-            }
-            return null;
-        }
-
-        private void SetAppointmentsDeletable()
-        {
-            // проверяем, остался ли курс пустым
-            Editable.CanBeDeleted = IsEmpty;
-
-            // нельзя удалять единственный непустой осмотр
-            if (Appointments.Count > 1)
-            {
-                Appointments.ForAll(app => app.Editable.CanBeDeleted = true);
-            }
-            else if (Appointments.Count == 1)
-            {
-                Appointments.Single().Editable.CanBeDeleted = IsEmpty;
-            }
-        }
-
-        private AppointmentViewModel NewAppointment(bool firstInCourse)
-        {
-            var app = course.AddAppointment(EntityProducers.DoctorsProducer.CurrentDoctor.doctor);
-            var appVM = new AppointmentViewModel(app, app.Doctor == this.LeadDoctor.doctor, firstInCourse);
-
-            SubscribeApp(appVM);
-            return appVM;
-        }
-
-        private void SubscribeApp(AppointmentViewModel appVM)
-        {
-            appVM.Editable.Deleted += app_Deleted;
-            appVM.Editable.Committed += app_Committed;
-            appVM.Editable.DirtyChanged += app_DirtyChanged;
-        }
-
-        private void app_Committed(object sender, EditableEventArgs e)
-        {
-            var app = e.entity as Appointment;
-            ISession session = NHibernateHelper.GetSession();
-            using (ITransaction transaction = session.BeginTransaction())
-            {
-                session.SaveOrUpdate(app);
-                transaction.Commit();
-            }
-        }
-
-        private void app_Deleted(object sender, EditableEventArgs e)
-        {
-            var app = e.entity as Appointment;
-            course.DeleteAppointment(app);
-
-            var appVM = Appointments.Where(vm => vm.appointment == app).FirstOrDefault();
-            appVM.Editable.Deleted -= app_Deleted;
-            appVM.Editable.Committed -= app_Committed;
-            appVM.Editable.DirtyChanged -= app_DirtyChanged;
-
-            Appointments.Remove(appVM);
-
+            OnPropertyChanged("LastAppointment");
             OnPropertyChanged("IsEmpty");
         }
-
-        private void app_DirtyChanged(object sender, EditableEventArgs e)
-        {
-            Editable.IsDirty = Appointments.Any(app => app.Editable.IsDirty);
-
-            SetAppointmentsDeletable();
-        }
-
-        #endregion Appointment stuff
 
         public override string ToString()
         {

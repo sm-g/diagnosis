@@ -316,10 +316,12 @@ namespace Diagnosis.App.ViewModels
         public PatientViewModel(Patient p)
         {
             Contract.Requires(p != null);
+            this.patient = p;
 
-            patient = p;
             Editable = new Editable(patient, switchedOn: true);
+
             coursesManager = new CoursesManager(this);
+
             if (!(this is UnsavedPatientViewModel))
                 AfterPatientLoaded();
 
