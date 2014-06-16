@@ -110,6 +110,7 @@ namespace Diagnosis.App.ViewModels
                     if (value != null)
                         healthRecord.Symptom = value.symptom;
 
+                    OnPropertyChanged("Name");
                     Editable.MarkDirty();
                 }
             }
@@ -126,6 +127,10 @@ namespace Diagnosis.App.ViewModels
                 if (_diagnosis != value)
                 {
                     _diagnosis = value;
+
+                    OnPropertyChanged("Diagnosis");
+                    OnPropertyChanged("ShowDiagnosis");
+                    OnPropertyChanged("Name");
 
                     Editable.MarkDirty();
                 }
@@ -270,11 +275,11 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public bool HasDiagnosis
+        public bool ShowDiagnosis
         {
             get
             {
-                return Diagnosis != null;
+                return Diagnosis != null && EntityProducers.DoctorsProducer.CurrentDoctor.doctor.DoctorSettings.HasFlag(DoctorSettings.ShowIcdDisease);
             }
         }
         public HealthRecordViewModel(HealthRecord hr)
@@ -291,6 +296,10 @@ namespace Diagnosis.App.ViewModels
             SetDiagnosis();
 
             Editable.CanBeDirty = true;
+            this.Subscribe((int)EventID.SettingsSaved, (e) =>
+            {
+                OnPropertyChanged("ShowDiagnosis");
+            });
         }
 
         public void UnsubscribeCheckedChanges()
@@ -341,14 +350,10 @@ namespace Diagnosis.App.ViewModels
 
                 case "Symptom":
                     SetSymptom();
-                    OnPropertyChanged("Name");
                     break;
 
                 case "Disease":
                     SetDiagnosis();
-                    OnPropertyChanged("Diagnosis");
-                    OnPropertyChanged("HasDiagnosis");
-                    OnPropertyChanged("Name");
                     break;
 
                 default:

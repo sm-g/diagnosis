@@ -57,6 +57,8 @@
                                          DefaultTemplate="{StaticResource AppointmentHeaderTemplate}"
                                          AddNewTemplate="{StaticResource NewAppointmentTemplate}" />
     </UserControl.Resources>
+    
+    <!--DataContext is CourseViewModel-->
     <Grid>
         <TabControl x:Name="appointments" Grid.Row="1"
                     SelectedItem="{Binding SelectedAppointmentWithAddNew, Mode=TwoWay}"
