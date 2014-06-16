@@ -198,7 +198,7 @@ namespace Diagnosis.App.ViewModels
             OpenPatient(patient);
 
             // последний курс или новый, если курсов нет
-            var lastCourse = patient.CoursesManager.Courses.FirstOrDefault();
+            var lastCourse = patient.Courses.FirstOrDefault();
             if (lastCourse == null)
             {
                 patient.CurrentDoctor.StartCourse(patient);
@@ -224,7 +224,7 @@ namespace Diagnosis.App.ViewModels
         {
             Contract.Requires(OpenedPatient.patient == hr.Appointment.Course.Patient);
 
-            var course = OpenedPatient.CoursesManager.Courses.Where(x => x.course == hr.Appointment.Course).First();
+            var course = OpenedPatient.Courses.Where(x => x.course == hr.Appointment.Course).First();
             OpenedCourse = course;
             var app = course.Appointments.Where(x => x.appointment == hr.Appointment).First();
             OpenedAppointment = app;
@@ -236,13 +236,18 @@ namespace Diagnosis.App.ViewModels
         {
             patient.Subscribe();
             patient.CurrentDoctor = doctor;
-            patient.PatientViewer = this;
 
             CourseViewModel course;
             if (!patCourseMap.TryGetValue(patient, out course))
             {
                 // пациент открыт первый раз
-                OpenedCourse = patient.CoursesManager.Courses.FirstOrDefault();
+                OpenedCourse = patient.Courses.FirstOrDefault();
+
+                OpenedPatient.OpenedCourseGetter = new Func<CourseViewModel>(() => OpenedCourse);
+                OpenedPatient.OpenedCourseSetter = new Action<CourseViewModel>((a) =>
+                {
+                    OpenedCourse = a;
+                });
             }
             else
             {
@@ -255,7 +260,7 @@ namespace Diagnosis.App.ViewModels
                 OpenLastAppointment(patient);
             }
 
-            patient.CoursesManager.Courses.CollectionChanged += Courses_CollectionChanged;
+            patient.Courses.CollectionChanged += Courses_CollectionChanged;
         }
 
         private void OnPatientClosed(PatientViewModel closing, PatientViewModel opening)
@@ -263,7 +268,7 @@ namespace Diagnosis.App.ViewModels
             closing.Unsubscribe();
             closing.Editable.Commit();
 
-            closing.CoursesManager.Courses.CollectionChanged -= Courses_CollectionChanged;
+            closing.Courses.CollectionChanged -= Courses_CollectionChanged;
             OpenedCourse = null;
 
             if (opening != null)
@@ -322,7 +327,7 @@ namespace Diagnosis.App.ViewModels
             // map opened app to course
             if (!courseAppMap.ContainsKey(OpenedCourse))
             {
-                // курс открыт первый раз
+                // курс открыт первый раз               
 
                 // для синхронизации c OpenedAppointmentWithAddNew
                 OpenedCourse.OpenedAppointmentGetter = new Func<AppointmentViewModel>(() => OpenedAppointment);
@@ -417,11 +422,11 @@ namespace Diagnosis.App.ViewModels
             {
                 // при удалении курса открываем курс рядом с удаленным
                 var i = e.OldStartingIndex;
-                if (OpenedPatient.CoursesManager.Courses.Count <= i)
+                if (OpenedPatient.Courses.Count <= i)
                     i--;
-                if (OpenedPatient.CoursesManager.Courses.Count > 0)
+                if (OpenedPatient.Courses.Count > 0)
                 {
-                    OpenedCourse = OpenedPatient.CoursesManager.Courses[i];
+                    OpenedCourse = OpenedPatient.Courses[i];
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Move)

@@ -121,8 +121,8 @@
                                 <TextBlock Text="Курс" Margin="0,0,10,0"
                                        VerticalAlignment="Center" />
 
-                                <ComboBox ItemsSource="{Binding CoursesManager.Courses}"
-        			                  SelectedItem="{Binding PatientViewer.OpenedCourse}"
+                                <ComboBox ItemsSource="{Binding Courses}"
+        			                  SelectedItem="{Binding SelectedCourse}"
                                       Grid.Column="1">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
@@ -140,7 +140,7 @@
                         </controls:AlignableWrapPanel>
                     </Grid>
 
-                    <card:AppointmentsTabs DataContext="{Binding PatientViewer.OpenedCourse}"
+                    <card:AppointmentsTabs DataContext="{Binding SelectedCourse}"
         				                   DockPanel.Dock="Top"
                                            Visibility="{Binding DataContext.NoCourses, ElementName=card, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
                 </DockPanel>

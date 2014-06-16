@@ -1,5 +1,4 @@
 ﻿using Diagnosis.App.Messaging;
-using Diagnosis.Core;
 using Diagnosis.Models;
 using EventAggregator;
 using System;
@@ -15,29 +14,15 @@ namespace Diagnosis.App.ViewModels
     public class PatientViewModel : CheckableBase, IEditableNesting
     {
         internal readonly Patient patient;
+        internal Func<CourseViewModel> OpenedCourseGetter;
+        internal Action<CourseViewModel> OpenedCourseSetter;
+
+        private CoursesManager coursesManager;
 
         private DoctorViewModel _doctor;
         private RelayCommand _firstHr;
         private bool _canAddFirstHr;
-        private CoursesManager _coursesManager;
         private List<EventMessageHandler> msgHandlers = new List<EventMessageHandler>();
-
-        private PatientViewer patViewer;
-        public PatientViewer PatientViewer
-        {
-            get
-            {
-                return patViewer;
-            }
-            set
-            {
-                if (patViewer != value)
-                {
-                    patViewer = value;
-                    OnPropertyChanged(() => PatientViewer);
-                }
-            }
-        }
 
         #region IEditableNesting
 
@@ -50,7 +35,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return CoursesManager.Courses.All(x => x.IsEmpty);
+                return Courses.All(x => x.IsEmpty);
             }
         }
 
@@ -282,19 +267,17 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public CoursesManager CoursesManager
+        public ObservableCollection<CourseViewModel> Courses { get { return coursesManager.Courses; } }
+
+        public CourseViewModel SelectedCourse
         {
             get
             {
-                return _coursesManager;
+                return OpenedCourseGetter != null ? OpenedCourseGetter() : null;
             }
             set
             {
-                if (_coursesManager != value)
-                {
-                    _coursesManager = value;
-                    OnPropertyChanged("CoursesManager");
-                }
+                OpenedCourseSetter(value);
             }
         }
 
@@ -318,7 +301,7 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return CoursesManager.Courses.Count == 0;
+                return Courses.Count == 0;
             }
         }
 
@@ -336,11 +319,10 @@ namespace Diagnosis.App.ViewModels
 
             patient = p;
             Editable = new Editable(patient, switchedOn: true);
-            CoursesManager = new CoursesManager(this);
+            coursesManager = new CoursesManager(this);
             if (!(this is UnsavedPatientViewModel))
                 AfterPatientLoaded();
 
-            
             Editable.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "IsEditorActive")
@@ -368,8 +350,8 @@ namespace Diagnosis.App.ViewModels
 
         internal void AfterCoursesLoaded()
         {
-            this.SubscribeEditableNesting(CoursesManager.Courses);
-            CoursesManager.Courses.CollectionChanged += (s, e) =>
+            this.SubscribeEditableNesting(Courses);
+            Courses.CollectionChanged += (s, e) =>
             {
                 OnPropertyChanged("NoCourses");
             };
@@ -415,7 +397,7 @@ namespace Diagnosis.App.ViewModels
 
         private void OnCourseStarted(Course course)
         {
-            CoursesManager.AddCourse(course);
+            coursesManager.AddCourse(course);
             Editable.MarkDirty();
         }
 
@@ -430,7 +412,8 @@ namespace Diagnosis.App.ViewModels
     internal class UnsavedPatientViewModel : PatientViewModel
     {
         public event PatientEventHandler PatientCreated;
-        static Random rnd = new Random();
+
+        private static Random rnd = new Random();
 
         /// <summary>
         /// For patient registration. First Editable.Committed raises PatientCreated.
