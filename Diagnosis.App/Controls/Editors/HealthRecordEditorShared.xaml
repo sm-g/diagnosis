@@ -56,7 +56,7 @@
                     </Grid.ColumnDefinitions>
 
                     <controls:AutoComplete DataContext="{Binding DataContext.AutoComplete, ElementName=editor}" />
-                    <TextBox Text="{Binding NumValue, StringFormat={}{0:G6}}"
+                    <TextBox Text="{Binding NumValue, StringFormat={}{0:G6}, TargetNullValue=''}"
                              ToolTip="Числовое значение"
                              Width="60"
                              Margin="10,0,0,0"
