@@ -21,6 +21,7 @@
 
     <UserControl.InputBindings>
         <KeyBinding Modifiers="Control" Key="N" Command="{Binding AddHealthRecordCommand}" />
+        <KeyBinding Modifiers="Control" Key="Enter" Command="{Binding AddHealthRecordCommand}" />
         <KeyBinding Key="Delete" Command="{Binding DeleteHealthRecordsCommand}" />
         <KeyBinding Key="F2" Command="{Binding EditHrCommand}" />
         <KeyBinding Modifiers="Control" Key="Up" Command="{Binding MoveHrSelectionCommand}" CommandParameter="{StaticResource True}" />

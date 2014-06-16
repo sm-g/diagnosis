@@ -112,7 +112,7 @@
             </StackPanel.Resources>
 
             <Button Command="{Binding DataContext.AddHealthRecordCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}" 
-                    ToolTip="Добавить запись (Ctrl + N)"
+                    ToolTip="Добавить запись (Ctrl + Enter)"
                     Margin="0,0,0,20">
                 <DockPanel>
                     <Image Source="{StaticResource addImage}" />
