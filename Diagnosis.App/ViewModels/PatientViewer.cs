@@ -103,6 +103,7 @@ namespace Diagnosis.App.ViewModels
                         Console.WriteLine("курс {0} открыт", value);
                     }
                     OnPropertyChanged(() => OpenedCourse);
+                    OpenedPatient.OnOpenedCourseChanged();
                 }
                 if (supressCourseClosing)
                 {

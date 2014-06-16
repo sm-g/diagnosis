@@ -211,6 +211,9 @@ namespace Diagnosis.App.ViewModels
             Editable.CanBeDirty = true;
         }
 
+        /// <summary>
+        /// Вызывается при смене открытой записи.
+        /// </summary>
         internal void OnOpenedHealthRecordChanged()
         {
             HealthRecordEditor.HealthRecord = SelectedHealthRecord;

@@ -348,6 +348,14 @@ namespace Diagnosis.App.ViewModels
             OnPropertyChanged("Properties");
         }
 
+        /// <summary>
+        /// Вызывается при смене открытого курса.
+        /// </summary>
+        internal void OnOpenedCourseChanged()
+        {
+            OnPropertyChanged("SelectedCourse");
+        }
+
         internal void AfterCoursesLoaded()
         {
             this.SubscribeEditableNesting(Courses);
