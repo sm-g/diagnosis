@@ -225,7 +225,7 @@ namespace Diagnosis.App.ViewModels
 
         private void Editable_Deleted(object sender, EditableEventArgs e)
         {
-            this.Editable.Deleted -= Editable_Deleted;
+            Editable.Deleted -= Editable_Deleted;
             Appointments.CollectionChanged -= Appointments_CollectionChanged;
         }
 
@@ -233,10 +233,15 @@ namespace Diagnosis.App.ViewModels
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                foreach (AppointmentViewModel newApp in e.NewItems)
+                // если был добавлен первый осмотр, AppointmentWithAddNew для него 
+                // создаётся в MakeAppointmentsWithAddNew
+                if (Appointments.Count != 1)
                 {
-                    var newitem = new WithAddNew(newApp);
-                    AppointmentsWithAddNew.Insert(AppointmentsWithAddNew.Count - 1, newitem);
+                    foreach (AppointmentViewModel newApp in e.NewItems)
+                    {
+                        var newitem = new WithAddNew(newApp);
+                        AppointmentsWithAddNew.Insert(AppointmentsWithAddNew.Count - 1, newitem);
+                    }
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
