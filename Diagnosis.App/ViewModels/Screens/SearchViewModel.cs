@@ -176,7 +176,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_categories == null)
                 {
-                    var catsVM = catRepo.GetAll().Select(cat => new CategoryViewModel(cat));
+                    var catsVM = catRepo.GetAll().Select(cat => new CategoryViewModel(cat)).ToList();
                     catsVM.ForAll(cat => cat.PropertyChanged += (s, e) =>
                     {
                         if (e.PropertyName == "IsChecked")
