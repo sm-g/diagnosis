@@ -184,7 +184,7 @@ namespace Diagnosis.App.ViewModels
             private set;
         }
 
-        public AppointmentViewModel(Appointment appointment, bool doctorFromCourse, bool firstInCourse = false)
+        public AppointmentViewModel(Appointment appointment, bool doctorFromCourse)
         {
             Contract.Requires(appointment != null);
 
@@ -193,10 +193,6 @@ namespace Diagnosis.App.ViewModels
 
             appointment.PropertyChanged += appointment_PropertyChanged;
             Editable = new Editable(appointment, dirtImmunity: true, switchedOn: true);
-            if (firstInCourse)
-            {
-                //  Editable.CanBeDeleted = false;
-            }
 
             hrManager = new HealthRecordManager(this);
             hrManager.HrPropertyChanged += hrManager_HrPropertyChanged;

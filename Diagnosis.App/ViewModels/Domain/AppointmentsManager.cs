@@ -37,11 +37,12 @@ namespace Diagnosis.App.ViewModels
             this.courseVM = courseVM;
         }
 
-        public AppointmentViewModel AddAppointment(bool firstInCourse = false)
+        public AppointmentViewModel AddAppointment()
         {
             if (!courseVM.IsEnded)
             {
-                var appVM = NewAppointment(firstInCourse);
+                var app = courseVM.course.AddAppointment(EntityProducers.DoctorsProducer.CurrentDoctor.doctor);
+                var appVM = MakeAppointmentVM(app);
                 Appointments.Add(appVM);
 
                 return appVM;
@@ -60,9 +61,7 @@ namespace Diagnosis.App.ViewModels
 
         private ObservableCollection<AppointmentViewModel> MakeAppointments(Course course)
         {
-            bool single = course.Appointments.Count == 1; // единственный осмотр нельзя будет удалять
-
-            var appVMs = course.Appointments.Select(app => new AppointmentViewModel(app, app.Doctor == courseVM.LeadDoctor.doctor, single)).ToList();
+            var appVMs = course.Appointments.Select(app => new AppointmentViewModel(app, app.Doctor == courseVM.LeadDoctor.doctor)).ToList();
             appVMs.ForAll(app => SubscribeApp(app));
 
             var appointments = new ObservableCollection<AppointmentViewModel>(appVMs);
@@ -72,11 +71,6 @@ namespace Diagnosis.App.ViewModels
 
         private void AfterAppointmentsLoaded()
         {
-            if (_appointments.Count == 0)
-            {
-                AddAppointment(true); // новый курс — добавляем осмотр
-            }
-
             courseVM.SubscribeEditableNesting(_appointments,
               onDeletedBefore: () => Contract.Requires(_appointments.All(a => a.IsEmpty)),
               innerChangedAfter: SetAppointmentsDeletable);
@@ -99,10 +93,9 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private AppointmentViewModel NewAppointment(bool firstInCourse)
+        private AppointmentViewModel MakeAppointmentVM(Appointment app)
         {
-            var app = courseVM.course.AddAppointment(EntityProducers.DoctorsProducer.CurrentDoctor.doctor);
-            var appVM = new AppointmentViewModel(app, app.Doctor == courseVM.LeadDoctor.doctor, firstInCourse);
+            var appVM = new AppointmentViewModel(app, app.Doctor == courseVM.LeadDoctor.doctor);
 
             SubscribeApp(appVM);
             return appVM;

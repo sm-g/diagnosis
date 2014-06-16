@@ -308,6 +308,11 @@ namespace Diagnosis.App.ViewModels
             if (!courseAppMap.TryGetValue(course, out app))
             {
                 // курс открыт первый раз
+                if (OpenedCourse.Appointments.Count == 0)
+                {
+                    OpenedCourse.AddAppointment(); // новый курс — добавляем осмотр
+                }
+
                 OpenedAppointment = OpenedCourse.LastAppointment;
 
                 // для синхронизации c SelectedAppointmentWithAddNew
