@@ -220,16 +220,6 @@ namespace Diagnosis.App.ViewModels
             // у осмотра может меняться только набор записей
             Contract.Requires(e.PropertyName == "HealthRecords");
 
-            // добавленные записи
-            var notInVmCollection = appointment.HealthRecords.Where(
-                hr => !HealthRecords.Any(hrVM => hrVM.healthRecord == hr)).ToList();
-
-            foreach (var hr in notInVmCollection)
-            {
-                var hrVM = hrManager.MakeHealthRecordVM(hr);
-                HealthRecords.Add(hrVM);
-            }
-
             // удалённые записи
             var deletedVms = HealthRecords.Where(
                 hrVM => !appointment.HealthRecords.Any(hr => hrVM.healthRecord == hr)).ToList();
@@ -240,7 +230,6 @@ namespace Diagnosis.App.ViewModels
                 {
                     MoveHrViewSelection();
                 }
-                HealthRecords.Remove(hrVM);
             }
 
             OnPropertyChanged("IsEmpty");

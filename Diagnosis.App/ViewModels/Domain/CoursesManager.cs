@@ -68,6 +68,13 @@ namespace Diagnosis.App.ViewModels
             courseVM.Editable.DirtyChanged += course_DirtyChanged;
         }
 
+        private void UnsubscribeCourse(CourseViewModel courseVM)
+        {
+            courseVM.Editable.Deleted -= course_Deleted;
+            courseVM.Editable.Committed -= course_Committed;
+            courseVM.Editable.DirtyChanged -= course_DirtyChanged;
+        }
+
         private void course_Committed(object sender, EditableEventArgs e)
         {
             var course = e.entity as Course;
@@ -85,11 +92,9 @@ namespace Diagnosis.App.ViewModels
             patientVM.patient.DeleteCourse(course);
 
             var courseVM = Courses.Where(vm => vm.course == course).FirstOrDefault();
-            courseVM.Editable.Deleted -= course_Deleted;
-            courseVM.Editable.Committed -= course_Committed;
-            courseVM.Editable.DirtyChanged -= course_DirtyChanged;
-
             Courses.Remove(courseVM);
+
+            UnsubscribeCourse(courseVM);
         }
 
         private void course_DirtyChanged(object sender, EditableEventArgs e)

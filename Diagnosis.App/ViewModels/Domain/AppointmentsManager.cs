@@ -72,8 +72,8 @@ namespace Diagnosis.App.ViewModels
         private void AfterAppointmentsLoaded()
         {
             courseVM.SubscribeEditableNesting(_appointments,
-              onDeletedBefore: () => Contract.Requires(_appointments.All(a => a.IsEmpty)),
-              innerChangedAfter: SetAppointmentsDeletable);
+                onDeletedBefore: () => Contract.Requires(_appointments.All(a => a.IsEmpty)),
+                innerChangedAfter: SetAppointmentsDeletable);
             SetAppointmentsDeletable();
         }
 
@@ -89,7 +89,7 @@ namespace Diagnosis.App.ViewModels
             }
             else if (Appointments.Count == 1)
             {
-                Appointments.Single().Editable.CanBeDeleted = courseVM.IsEmpty;
+                Appointments[0].Editable.CanBeDeleted = Appointments[0].IsEmpty;
             }
         }
 
@@ -106,6 +106,13 @@ namespace Diagnosis.App.ViewModels
             appVM.Editable.Deleted += app_Deleted;
             appVM.Editable.Committed += app_Committed;
             appVM.Editable.DirtyChanged += app_DirtyChanged;
+        }
+
+        private void UnsubscribeApp(AppointmentViewModel appVM)
+        {
+            appVM.Editable.Deleted -= app_Deleted;
+            appVM.Editable.Committed -= app_Committed;
+            appVM.Editable.DirtyChanged -= app_DirtyChanged;
         }
 
         private void app_Committed(object sender, EditableEventArgs e)
@@ -125,11 +132,8 @@ namespace Diagnosis.App.ViewModels
             courseVM.course.DeleteAppointment(app);
 
             var appVM = Appointments.Where(vm => vm.appointment == app).FirstOrDefault();
-            appVM.Editable.Deleted -= app_Deleted;
-            appVM.Editable.Committed -= app_Committed;
-            appVM.Editable.DirtyChanged -= app_DirtyChanged;
-
             Appointments.Remove(appVM);
+            UnsubscribeApp(appVM);
         }
 
         private void app_DirtyChanged(object sender, EditableEventArgs e)

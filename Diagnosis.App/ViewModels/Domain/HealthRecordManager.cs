@@ -36,7 +36,7 @@ namespace Diagnosis.App.ViewModels
             this.appVM = appVM;
         }
 
-        public void AddHealthRecord()
+        public HealthRecordViewModel AddHealthRecord()
         {
             var last = appVM.SelectedHealthRecord ?? HealthRecords.LastOrDefault();
             var hr = appVM.appointment.AddHealthRecord();
@@ -45,6 +45,10 @@ namespace Diagnosis.App.ViewModels
                 // копируем категории из последней записи
                 hr.Category = last.healthRecord.Category;
             }
+
+            var hrVM = MakeHealthRecordVM(hr);
+            HealthRecords.Add(hrVM);
+            return hrVM;
         }
 
         internal HealthRecordViewModel MakeHealthRecordVM(HealthRecord hr)
@@ -131,6 +135,7 @@ namespace Diagnosis.App.ViewModels
             appVM.appointment.DeleteHealthRecord(hr);
 
             var hrVM = HealthRecords.Where(vm => vm.healthRecord == hr).FirstOrDefault();
+            HealthRecords.Remove(hrVM);
             UnsubscribeHr(hrVM);
         }
 
