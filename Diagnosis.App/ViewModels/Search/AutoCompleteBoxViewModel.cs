@@ -115,7 +115,6 @@ namespace Diagnosis.App.ViewModels
         public AutoCompleteBoxViewModel(QuerySeparator separator)
         {
             Contract.Requires(separator != null);
-
             this.separator = separator;
             Results = new ObservableCollection<SearchWrap>();
         }

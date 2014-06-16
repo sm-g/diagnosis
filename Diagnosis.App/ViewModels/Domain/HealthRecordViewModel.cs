@@ -280,7 +280,6 @@ namespace Diagnosis.App.ViewModels
         public HealthRecordViewModel(HealthRecord hr)
         {
             Contract.Requires(hr != null);
-
             this.healthRecord = hr;
             catRepo = new CategoryRepository();
 

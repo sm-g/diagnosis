@@ -43,8 +43,6 @@ namespace Diagnosis.App.ViewModels
 
         public CoursesManager(PatientViewModel patientVM)
         {
-            Contract.Requires(patientVM != null);
-
             this.patientVM = patientVM;
         }
 

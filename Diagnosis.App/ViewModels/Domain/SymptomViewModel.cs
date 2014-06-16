@@ -101,7 +101,6 @@ namespace Diagnosis.App.ViewModels
         public SymptomViewModel(Symptom s)
         {
             Contract.Requires(s != null);
-
             symptom = s;
 
             Editable = new Editable(symptom, dirtImmunity: true);

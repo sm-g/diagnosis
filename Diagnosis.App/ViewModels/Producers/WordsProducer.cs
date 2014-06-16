@@ -133,7 +133,6 @@ namespace Diagnosis.App.ViewModels
         public WordsProducer(IWordRepository repo)
         {
             Contract.Requires(repo != null);
-
             repository = repo;
 
             var all = repository.GetAll().Select(s => new WordViewModel(s)).ToList();

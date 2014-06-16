@@ -23,7 +23,6 @@ namespace Diagnosis.App.ViewModels
         public SettingsViewModel(DoctorViewModel doctorVM)
         {
             Contract.Requires(doctorVM != null);
-
             this.doctor = doctorVM.doctor;
             this.doctorVM = doctorVM;
 

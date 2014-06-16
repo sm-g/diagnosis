@@ -42,8 +42,6 @@ namespace Diagnosis.App.ViewModels
             Action onDeletedBefore = null, Action innerChangedAfter = null, Func<bool> innerChangedMarkDirtyIf = null)
             where T : IEditableNesting
         {
-            Contract.Requires(entity != null);
-
             NotifyCollectionChangedEventHandler innerChangedHandler = (s, e) =>
             {
                 if (e.Action == NotifyCollectionChangedAction.Remove)

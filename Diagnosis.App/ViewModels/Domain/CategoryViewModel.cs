@@ -26,7 +26,6 @@ namespace Diagnosis.App.ViewModels
         public CategoryViewModel(Category category)
         {
             Contract.Requires(category != null);
-
             this.category = category;
         }
 

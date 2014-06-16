@@ -70,7 +70,6 @@ namespace Diagnosis.App.ViewModels
         public SymptomsProducer(ISymptomRepository repo)
         {
             Contract.Requires(repo != null);
-
             repository = repo;
 
             var all = repository.GetAll().Select(s => new SymptomViewModel(s)).ToList();

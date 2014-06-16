@@ -99,7 +99,6 @@ namespace Diagnosis.App.ViewModels
         public DiagnosisProducer(IcdChapterRepository repo)
         {
             Contract.Requires(repo != null);
-
             repository = repo;
 
             var chapters = repository.GetAll().ToList();

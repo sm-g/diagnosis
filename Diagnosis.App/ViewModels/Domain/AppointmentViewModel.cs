@@ -187,7 +187,6 @@ namespace Diagnosis.App.ViewModels
         public AppointmentViewModel(Appointment appointment, bool doctorFromCourse)
         {
             Contract.Requires(appointment != null);
-
             this.appointment = appointment;
             IsDoctorFromCourse = doctorFromCourse;
 

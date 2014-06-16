@@ -32,8 +32,6 @@ namespace Diagnosis.App.ViewModels
 
         public AppointmentsManager(CourseViewModel courseVM)
         {
-            Contract.Requires(courseVM != null);
-
             this.courseVM = courseVM;
         }
 
