@@ -248,6 +248,7 @@
     <Compile Include="Screens\Patients.xaml.cs">
       <DependentUpon>Patients.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\Domain\HealthRecordManager.cs" />
     <Compile Include="ViewModels\Domain\AppointmentsManager.cs" />
     <Compile Include="ViewModels\HrEditorViewModel.cs" />
     <Compile Include="ViewModels\Producers\EntityProducers.cs" />
