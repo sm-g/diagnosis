@@ -237,7 +237,6 @@ namespace Diagnosis.App.ViewModels
                                           () =>
                                           {
                                               // go to courses tabitem - save patient first
-                                              CanAddFirstHr = false;
                                               Editable.Commit(true);
                                           }, () => CanAddFirstHr));
             }
@@ -442,7 +441,7 @@ namespace Diagnosis.App.ViewModels
         private void OnFirstCommit(object sender, EditableEventArgs e)
         {
             Editable.Committed -= OnFirstCommit;
-
+            CanAddFirstHr = false;
             var h = PatientCreated;
             if (h != null)
             {

@@ -68,7 +68,7 @@ namespace Diagnosis.App.ViewModels
             var modelFromRepo = patientRepo.GetById(unsaved.patient.Id);
 
             var saved = new PatientViewModel(modelFromRepo);
-            saved.CanAddFirstHr = !e.addFirstHr;
+            saved.CanAddFirstHr = !e.addFirstHr; // больше нельзя добавлять первую запись
             Patients.Add(saved);
 
             this.Send((int)EventID.PatientCreated, new PatientParams(saved).Params);
@@ -76,6 +76,7 @@ namespace Diagnosis.App.ViewModels
             SubscribeEditable(saved);
             if (e.addFirstHr)
             {
+                // переходим к созданной записи
                 saved.Editable.IsEditorActive = false;
             }
         }

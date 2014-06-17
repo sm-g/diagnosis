@@ -185,9 +185,13 @@ namespace Diagnosis.App.ViewModels
             OpenedPatient = null;
         }
 
-        public void OpenPatient(PatientViewModel patient)
+        public void OpenPatient(PatientViewModel patient, bool addFirstHr = false)
         {
             OpenedPatient = patient;
+            if (addFirstHr)
+            {
+                OpenLastAppointment(patient);
+            }
         }
 
         /// <summary>
