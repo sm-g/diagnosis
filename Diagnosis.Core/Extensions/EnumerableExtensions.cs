@@ -26,5 +26,13 @@ namespace Diagnosis.Core
         {
             return new[] { item };
         }
+
+        public static T[] Concat<T>(this T[] x, T[] y)
+        {
+            var z = new T[x.Length + y.Length];
+            x.CopyTo(z, 0);
+            y.CopyTo(z, x.Length);
+            return z;
+        }
     }
 }
