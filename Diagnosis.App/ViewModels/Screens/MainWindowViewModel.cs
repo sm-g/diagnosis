@@ -14,6 +14,7 @@ namespace Diagnosis.App.ViewModels
         private ICommand _logout;
         private ICommand _openWords;
         private ICommand _openPatients;
+        private ICommand _openSearchTester;
         private ICommand _openSettings;
         private bool _patientsAsideVisible;
         private bool _onePatientOpened;
@@ -27,8 +28,6 @@ namespace Diagnosis.App.ViewModels
         private PatientsListViewModel _patients;
         private LoginViewModel _login;
 
-        private ViewModelBase _currentScreen;
-
         #endregion Fields
 
         private NavigationService nav;
@@ -40,23 +39,7 @@ namespace Diagnosis.App.ViewModels
         PatientsProducer patProducer = new PatientsProducer(new PatientRepository());
 
 
-        #region CurrentScreen
-
-        public ViewModelBase CurrentScreen
-        {
-            get
-            {
-                return _currentScreen;
-            }
-            set
-            {
-                if (_currentScreen != value)
-                {
-                    _currentScreen = value;
-                    OnPropertyChanged(() => CurrentScreen);
-                }
-            }
-        }
+        #region Screen Opened flags
 
         public bool LoginOpened
         {
@@ -71,9 +54,6 @@ namespace Diagnosis.App.ViewModels
                     _loginOpened = value;
                     if (value)
                     {
-                        clearNavOnNavigated = true;
-                        nav.Navigate(Login);
-
                         WordsOpened = false;
                         PatientsOpened = false;
                         SearchTesterOpened = false;
@@ -102,8 +82,6 @@ namespace Diagnosis.App.ViewModels
 
                     if (value)
                     {
-                        nav.Navigate(EntityProducers.WordsProducer);
-
                         LoginOpened = false;
                         SearchTesterOpened = false;
                         PatientsOpened = false;
@@ -132,8 +110,6 @@ namespace Diagnosis.App.ViewModels
                     _searchTesterOpened = value;
                     if (value)
                     {
-                        nav.Navigate(new SearchTester());
-
                         LoginOpened = false;
                         WordsOpened = false;
                         PatientsOpened = false;
@@ -188,8 +164,6 @@ namespace Diagnosis.App.ViewModels
                 {
                     if (value)
                     {
-                        nav.Navigate(Patients);
-
                         OnePatientOpened = false;
                         LoginOpened = false;
                         WordsOpened = false;
@@ -268,7 +242,7 @@ namespace Diagnosis.App.ViewModels
 
         #endregion Flags
 
-        #region ViewModels
+        #region Screen ViewModels
 
         public LoginViewModel Login
         {
@@ -318,8 +292,9 @@ namespace Diagnosis.App.ViewModels
                 return _logout ?? (_logout = new RelayCommand(
                                           () =>
                                           {
-                                              LoginOpened = true;
-                                          }, () => nav.Content != Login));
+                                              clearNavOnNavigated = true;
+                                              nav.Navigate(Login);
+                                          }, () => !LoginOpened));
             }
         }
 
@@ -331,7 +306,7 @@ namespace Diagnosis.App.ViewModels
                     ?? (_openWords = new RelayCommand(
                                           () =>
                                           {
-                                              WordsOpened = true;
+                                              nav.Navigate(EntityProducers.WordsProducer);
                                           }, () => !WordsOpened));
             }
         }
@@ -343,8 +318,20 @@ namespace Diagnosis.App.ViewModels
                 return _openPatients
                    ?? (_openPatients = new RelayCommand(() =>
                         {
-                            PatientsOpened = true;
+                            nav.Navigate(Patients);
                         }, () => !PatientsOpened));
+            }
+        }
+
+        public ICommand OpenSearchTesterCommand
+        {
+            get
+            {
+                return _openSearchTester
+                   ?? (_openSearchTester = new RelayCommand(() =>
+                   {
+                       nav.Navigate(new SearchTester());
+                   }, () => !SearchTesterOpened));
             }
         }
 
@@ -400,7 +387,6 @@ namespace Diagnosis.App.ViewModels
                 if (pat != null && nav.Content != pat) //  nav.Content == pat when navigate by history
                 {
                     nav.Navigate(pat);
-                    OnePatientOpened = true;
                 }
             });
             this.Subscribe((int)EventID.OpenHealthRecord, (e) =>
@@ -411,8 +397,8 @@ namespace Diagnosis.App.ViewModels
                 viewer.OpenHr(hr);
             });
 
-            //LoginOpened = true;
-            PatientsOpened = true;
+            //nav.Navigate(Login);
+            nav.Navigate(Patients);
             Patients.SelectLastPatient();
             CreateViewer(EntityProducers.DoctorsProducer.CurrentDoctor);
         }
@@ -421,15 +407,36 @@ namespace Diagnosis.App.ViewModels
         {
             if (clearNavOnNavigated)
             {
+                // очищаем историю переходов
                 while (nav.CanGoBack)
                 {
                     nav.RemoveBackEntry();
                 }
                 clearNavOnNavigated = false;
             }
+
+            // устанавливаем флаги экранов
             if (e.Content is PatientViewModel)
             {
                 viewer.OpenPatient(e.Content as PatientViewModel);
+
+                OnePatientOpened = true;
+            }
+            else if (e.Content is PatientsListViewModel)
+            {
+                PatientsOpened = true;
+            }
+            else if (e.Content is LoginViewModel)
+            {
+                LoginOpened = true;
+            }
+            else if (e.Content is WordsProducer)
+            {
+                WordsOpened = true;
+            }
+            else if (e.Content is SearchTester)
+            {
+                SearchTesterOpened = true;
             }
         }
 
@@ -442,7 +449,8 @@ namespace Diagnosis.App.ViewModels
         private void OnLoggedIn(object sender, LoggedEventArgs e)
         {
             clearNavOnNavigated = true;
-            PatientsOpened = true;
+            nav.Navigate(Patients);
+
             CreateViewer(e.Doctor);
             Patients.SelectLastPatient();
         }
