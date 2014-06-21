@@ -60,21 +60,22 @@
                     <MenuItem Command="{Binding OpenPatientsCommand}" Header="_Все пациенты" />
                     <MenuItem Command="{Binding AddPatientCommand}" Header="_Новый..."  />
                 </MenuItem>
-                <MenuItem Header="_Вид">
-                    <MenuItem Header="_Слова" Command="{Binding OpenWordsCommand}" />
+                <MenuItem Header="_Справочники">
+                    <MenuItem Command="{Binding OpenWordsCommand}" Header="_Слова" />
+                </MenuItem>
+                <MenuItem Header="_Вид">                   
                     <!--<MenuItem IsCheckable="true" IsChecked="{Binding SearchTesterOpened}" Header="_Все поиски" />-->
                     <MenuItem IsCheckable="true" IsChecked="{Binding SearchAsideOpened}" Header="_Поиск" />
                     <MenuItem IsCheckable="true" IsChecked="{Binding PatientsAsideOpened}" Header="_Пациенты" />
                 </MenuItem>
             </Menu>
-            <Menu HorizontalAlignment="Center">
-                <CheckBox IsChecked="{Binding FastAddingMode}">_Осмотр пациентов</CheckBox>
-            </Menu>
-
+            
+            <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding FastAddingMode}">_Осмотр пациентов</CheckBox>
+            
             <Menu HorizontalAlignment="Right">
                 <MenuItem Header="{Binding Login.DoctorsProducer.CurrentDoctor, Converter={StaticResource ManToShortName}}">
-                    <MenuItem Header="_Выйти" Command="{Binding LogoutCommand}" />
                     <MenuItem Header="_Настройки..." Command="{Binding OpenSettingsCommand}" />
+                    <MenuItem Header="_Выйти" Command="{Binding LogoutCommand}" />
                 </MenuItem>
             </Menu>
         </Grid>

@@ -140,6 +140,8 @@ namespace Diagnosis.App.ViewModels
 
         #region Flags
 
+        DateTime asideOpenedChangedAt;
+
         public bool PatientsAsideVisible
         {
             get
@@ -169,15 +171,16 @@ namespace Diagnosis.App.ViewModels
             }
             set
             {
-                if (_patientsAsideOpened != value)
+                if (_patientsAsideOpened != value && NotReOpenedFix())
                 {
+                    asideOpenedChangedAt = DateTime.UtcNow;
+
                     _patientsAsideOpened = value;
                     OnPropertyChanged(() => PatientsAsideOpened);
                     OnPropertyChanged(() => NoAsideOpened);
                 }
             }
         }
-
         public bool SearchAsideOpened
         {
             get
@@ -186,8 +189,10 @@ namespace Diagnosis.App.ViewModels
             }
             set
             {
-                if (_searchAsideOpened != value)
+                if (_searchAsideOpened != value && NotReOpenedFix())
                 {
+                    asideOpenedChangedAt = DateTime.UtcNow;
+
                     _searchAsideOpened = value;
                     OnPropertyChanged(() => SearchAsideOpened);
                     OnPropertyChanged(() => NoAsideOpened);
@@ -217,6 +222,12 @@ namespace Diagnosis.App.ViewModels
                     OnPropertyChanged(() => FastAddingMode);
                 }
             }
+        }
+
+        bool NotReOpenedFix()
+        {
+            // Если открываем aside по togglebutton, а закрываем через меню, aside открывается повторно
+            return (DateTime.UtcNow - asideOpenedChangedAt).TotalMilliseconds > 100;
         }
 
         #endregion Flags
