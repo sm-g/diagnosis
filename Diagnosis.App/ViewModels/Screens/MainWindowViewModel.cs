@@ -37,12 +37,6 @@ namespace Diagnosis.App.ViewModels
         {
             Login, Patients, Words, Patient, Tester
         }
-
-        private const string login = "login";
-        private const string patient = "login";
-        private const string words = "login";
-        private const string patients = "login";
-        private const string tester = "login";
         private NavigationService nav;
         private PatientViewer viewer;
 
@@ -402,9 +396,10 @@ namespace Diagnosis.App.ViewModels
 
             if (e.Content is PatientViewModel)
             {
-                viewer.OpenPatient(e.Content as PatientViewModel);
-
                 OpenScreen(Screens.Patient);
+                // сначала открываем экран, затем пациента
+
+                viewer.OpenPatient(e.Content as PatientViewModel);
             }
             else if (e.Content is PatientsListViewModel)
             {

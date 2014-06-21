@@ -250,7 +250,6 @@ namespace Diagnosis.App.ViewModels
             if (!patCourseMap.TryGetValue(patient, out course))
             {
                 // пациент открыт первый раз
-                OpenedCourse = patient.Courses.FirstOrDefault();
 
                 // для синхронизации c SelectedCourse
                 OpenedPatient.OpenedCourseGetter = new Func<CourseViewModel>(() => OpenedCourse);
@@ -258,6 +257,8 @@ namespace Diagnosis.App.ViewModels
                 {
                     OpenedCourse = a;
                 });
+
+                OpenedCourse = patient.Courses.FirstOrDefault();
             }
             else
             {
@@ -312,12 +313,6 @@ namespace Diagnosis.App.ViewModels
             if (!courseAppMap.TryGetValue(course, out app))
             {
                 // курс открыт первый раз
-                if (OpenedCourse.Appointments.Count == 0)
-                {
-                    OpenedCourse.AddAppointment(); // новый курс — добавляем осмотр
-                }
-
-                OpenedAppointment = OpenedCourse.LastAppointment;
 
                 // для синхронизации c SelectedAppointmentWithAddNew
                 OpenedCourse.OpenedAppointmentGetter = new Func<AppointmentViewModel>(() => OpenedAppointment);
@@ -325,6 +320,14 @@ namespace Diagnosis.App.ViewModels
                 {
                     OpenedAppointment = a;
                 });
+
+
+                if (OpenedCourse.Appointments.Count == 0)
+                {
+                    OpenedCourse.AddAppointment(); // новый курс — добавляем осмотр
+                }
+
+                OpenedAppointment = OpenedCourse.LastAppointment;
             }
             else
             {
