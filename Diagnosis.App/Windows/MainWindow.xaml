@@ -63,8 +63,8 @@
                 <MenuItem Header="_Вид">
                     <MenuItem Header="_Слова" Command="{Binding OpenWordsCommand}" />
                     <!--<MenuItem IsCheckable="true" IsChecked="{Binding SearchTesterOpened}" Header="_Все поиски" />-->
-                    <MenuItem IsCheckable="true" IsChecked="{Binding SearchAsideVisible}" Header="_Поиск" />
-                    <MenuItem IsCheckable="true" IsChecked="{Binding PatientsAsideVisible}" Header="_Пациенты" />
+                    <MenuItem IsCheckable="true" IsChecked="{Binding SearchAsideOpened}" Header="_Поиск" />
+                    <MenuItem IsCheckable="true" IsChecked="{Binding PatientsAsideOpened}" Header="_Пациенты" />
                 </MenuItem>
             </Menu>
             <Menu HorizontalAlignment="Center">
@@ -91,16 +91,17 @@
                     <Style TargetType="TabControl">
                         <Setter Property="BorderThickness" Value="1,0,1,0"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding NoAsideVisible}" Value="True">
+                            <DataTrigger Binding="{Binding NoAsideOpened}" Value="True">
                                 <Setter Property="BorderThickness" Value="0,0,1,0"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </TabControl.Style>
-                <TabItem IsSelected="{Binding PatientsAsideVisible}"
+                <TabItem IsSelected="{Binding PatientsAsideOpened}"
+                         Visibility="{Binding PatientsAsideVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                          Style="{StaticResource tabHeaderWithLine}">
                     <TabItem.Header>
-                        <ToggleButton IsChecked="{Binding PatientsAsideVisible}" Style="{StaticResource emptyToggle}">
+                        <ToggleButton IsChecked="{Binding PatientsAsideOpened}" Style="{StaticResource emptyToggle}">
                             <TextBlock Style="{StaticResource verticalTextBlock}">Пациенты</TextBlock>
                         </ToggleButton>
                     </TabItem.Header>
@@ -108,10 +109,10 @@
         			                 DataContext="{Binding PatientsAside}"
         			                 Margin="5,0,5,0" />
                 </TabItem>
-                <TabItem IsSelected="{Binding SearchAsideVisible}"
+                <TabItem IsSelected="{Binding SearchAsideOpened}"
                          Style="{StaticResource tabHeaderWithLine}">
                     <TabItem.Header>
-                        <ToggleButton IsChecked="{Binding SearchAsideVisible}" Style="{StaticResource emptyToggle}">
+                        <ToggleButton IsChecked="{Binding SearchAsideOpened}" Style="{StaticResource emptyToggle}">
                             <TextBlock Style="{StaticResource verticalTextBlock}">Поиск</TextBlock>
                         </ToggleButton>
                     </TabItem.Header>

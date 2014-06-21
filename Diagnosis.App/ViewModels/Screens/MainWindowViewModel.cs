@@ -1,7 +1,8 @@
 ﻿using Diagnosis.App.Messaging;
-using Diagnosis.Models;
 using Diagnosis.Data.Repositories;
+using Diagnosis.Models;
 using EventAggregator;
+using System;
 using System.Windows.Input;
 using System.Windows.Navigation;
 
@@ -16,13 +17,14 @@ namespace Diagnosis.App.ViewModels
         private ICommand _openPatients;
         private ICommand _openSearchTester;
         private ICommand _openSettings;
+        private bool _patientsAsideOpened;
         private bool _patientsAsideVisible;
         private bool _onePatientOpened;
         private bool _loginOpened;
         private bool _patientsOpened;
         private bool _wordsOpened;
         private bool _searchTesterOpened;
-        private bool _searchAsideVisible;
+        private bool _searchAsideOpened;
         private SearchViewModel _search;
         private PatientsAsideViewModel _patientsAside;
         private PatientsListViewModel _patients;
@@ -30,14 +32,26 @@ namespace Diagnosis.App.ViewModels
 
         #endregion Fields
 
+        [Flags]
+        private enum Screens
+        {
+            Login, Patients, Words, Patient, Tester
+        }
+
+        private const string login = "login";
+        private const string patient = "login";
+        private const string words = "login";
+        private const string patients = "login";
+        private const string tester = "login";
         private NavigationService nav;
         private PatientViewer viewer;
+
         /// <summary>
         /// Установить флаг перед переходом к странице, на которой должна пустая история навигации.
         /// </summary>
         private bool clearNavOnNavigated;
-        PatientsProducer patProducer = new PatientsProducer(new PatientRepository());
 
+        private PatientsProducer patProducer = new PatientsProducer(new PatientRepository());
 
         #region Screen Opened flags
 
@@ -52,17 +66,6 @@ namespace Diagnosis.App.ViewModels
                 if (_loginOpened != value)
                 {
                     _loginOpened = value;
-                    if (value)
-                    {
-                        WordsOpened = false;
-                        PatientsOpened = false;
-                        SearchTesterOpened = false;
-                        OnePatientOpened = false;
-
-                        SearchAsideVisible = false;
-                        PatientsAsideVisible = false;
-                    }
-
                     OnPropertyChanged(() => LoginOpened);
                 }
             }
@@ -79,17 +82,6 @@ namespace Diagnosis.App.ViewModels
                 if (_wordsOpened != value)
                 {
                     _wordsOpened = value;
-
-                    if (value)
-                    {
-                        LoginOpened = false;
-                        SearchTesterOpened = false;
-                        PatientsOpened = false;
-                        OnePatientOpened = false;
-
-                        SearchAsideVisible = false;
-                        PatientsAsideVisible = false;
-                    }
 
                     this.Send((int)EventID.WordsEditingModeChanged, new DirectoryEditingModeChangedParams(value).Params);
                     OnPropertyChanged(() => WordsOpened);
@@ -108,17 +100,6 @@ namespace Diagnosis.App.ViewModels
                 if (_searchTesterOpened != value)
                 {
                     _searchTesterOpened = value;
-                    if (value)
-                    {
-                        LoginOpened = false;
-                        WordsOpened = false;
-                        PatientsOpened = false;
-                        OnePatientOpened = false;
-
-                        SearchAsideVisible = false;
-                        PatientsAsideVisible = false;
-                    }
-
                     OnPropertyChanged(() => SearchTesterOpened);
                 }
             }
@@ -135,14 +116,7 @@ namespace Diagnosis.App.ViewModels
                 if (_onePatientOpened != value)
                 {
                     _onePatientOpened = value;
-                    if (value)
-                    {
-                        LoginOpened = false;
-                        WordsOpened = false;
-                        SearchTesterOpened = false;
-                        PatientsOpened = false;
-                    }
-                    else
+                    if (!value)
                     {
                         viewer.ClosePatient();
                     }
@@ -162,23 +136,13 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_patientsOpened != value)
                 {
-                    if (value)
-                    {
-                        OnePatientOpened = false;
-                        LoginOpened = false;
-                        WordsOpened = false;
-                        SearchTesterOpened = false;
-
-                        PatientsAsideVisible = false;
-                    }
-
                     _patientsOpened = value;
                     OnPropertyChanged(() => PatientsOpened);
                 }
             }
         }
 
-        #endregion CurrentScreen
+        #endregion Screen Opened flags
 
         #region Flags
 
@@ -193,34 +157,55 @@ namespace Diagnosis.App.ViewModels
                 if (_patientsAsideVisible != value)
                 {
                     _patientsAsideVisible = value;
+                    if (!value)
+                    {
+                        PatientsAsideOpened = false;
+                    }
+
                     OnPropertyChanged(() => PatientsAsideVisible);
-                    OnPropertyChanged(() => NoAsideVisible);
                 }
             }
         }
 
-        public bool SearchAsideVisible
+        public bool PatientsAsideOpened
         {
             get
             {
-                return _searchAsideVisible;
+                return _patientsAsideOpened;
             }
             set
             {
-                if (_searchAsideVisible != value)
+                if (_patientsAsideOpened != value)
                 {
-                    _searchAsideVisible = value;
-                    OnPropertyChanged(() => SearchAsideVisible);
-                    OnPropertyChanged(() => NoAsideVisible);
+                    _patientsAsideOpened = value;
+                    OnPropertyChanged(() => PatientsAsideOpened);
+                    OnPropertyChanged(() => NoAsideOpened);
                 }
             }
         }
 
-        public bool NoAsideVisible
+        public bool SearchAsideOpened
         {
             get
             {
-                return !SearchAsideVisible && !PatientsAsideVisible;
+                return _searchAsideOpened;
+            }
+            set
+            {
+                if (_searchAsideOpened != value)
+                {
+                    _searchAsideOpened = value;
+                    OnPropertyChanged(() => SearchAsideOpened);
+                    OnPropertyChanged(() => NoAsideOpened);
+                }
+            }
+        }
+
+        public bool NoAsideOpened
+        {
+            get
+            {
+                return !SearchAsideOpened && !PatientsAsideOpened;
             }
         }
 
@@ -281,7 +266,7 @@ namespace Diagnosis.App.ViewModels
             get { return _search ?? (_search = new SearchViewModel(patProducer)); }
         }
 
-        #endregion ViewModels
+        #endregion Screen ViewModels
 
         #region Commands
 
@@ -415,28 +400,64 @@ namespace Diagnosis.App.ViewModels
                 clearNavOnNavigated = false;
             }
 
-            // устанавливаем флаги экранов
             if (e.Content is PatientViewModel)
             {
                 viewer.OpenPatient(e.Content as PatientViewModel);
 
-                OnePatientOpened = true;
+                OpenScreen(Screens.Patient);
             }
             else if (e.Content is PatientsListViewModel)
             {
-                PatientsOpened = true;
+                OpenScreen(Screens.Patients);
             }
             else if (e.Content is LoginViewModel)
             {
-                LoginOpened = true;
+                OpenScreen(Screens.Login);
             }
             else if (e.Content is WordsProducer)
             {
-                WordsOpened = true;
+                OpenScreen(Screens.Words);
             }
             else if (e.Content is SearchTester)
             {
-                SearchTesterOpened = true;
+                OpenScreen(Screens.Tester);
+            }
+        }
+
+        /// <summary>
+        /// Устанавливает флаги экранов и элементов
+        /// </summary>
+        /// <param name="screen"></param>
+        private void OpenScreen(Screens screen)
+        {
+            LoginOpened = false;
+            OnePatientOpened = false;
+            PatientsOpened = false;
+            WordsOpened = false;
+            SearchTesterOpened = false;
+
+            switch (screen)
+            {
+                case Screens.Login: LoginOpened = true; break;
+                case Screens.Patient: OnePatientOpened = true; break;
+                case Screens.Patients: PatientsOpened = true; break;
+                case Screens.Words: WordsOpened = true; break;
+                case Screens.Tester: SearchTesterOpened = true; break;
+            }
+
+            if ((screen & (Screens.Login | Screens.Tester | Screens.Words)) == screen)
+            {
+                SearchAsideOpened = false;
+                PatientsAsideOpened = false;
+            }
+
+            if (screen == Screens.Patients)
+            {
+                PatientsAsideVisible = false;
+            }
+            else
+            {
+                PatientsAsideVisible = true;
             }
         }
 
