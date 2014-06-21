@@ -4,6 +4,7 @@ using NHibernate.Transform;
 using NHibernate.Criterion;
 using System.Linq;
 using System.Collections.Generic;
+using Diagnosis.Core;
 
 namespace Diagnosis.Data.Repositories
 {
@@ -29,6 +30,14 @@ namespace Diagnosis.Data.Repositories
 
                 return w1;
             }
+        }
+
+        public IEnumerable<HealthRecord> GetWithWordsSubset(IEnumerable<Word> words)
+        {
+            var wordsIds = words.Select(w => w.Id).ToList();
+            var comparator = new CompareWord();
+            return GetAll().Where(hr => hr.Symptom != null
+                && words.IsSubsetOf(hr.Symptom.Words));
         }
 
         public IEnumerable<HealthRecord> GetWithAllWords(IEnumerable<Word> words)

@@ -25,7 +25,7 @@ namespace Diagnosis.App.ViewModels
                 }
                 else
                 {
-                    hrs = repo.GetWithAllWords(options.Words.Select(w => w.word));
+                    hrs = repo.GetWithWordsSubset(options.Words.Select(w => w.word));
                 }
             else
             {
