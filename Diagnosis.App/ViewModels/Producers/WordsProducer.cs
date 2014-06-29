@@ -106,7 +106,7 @@ namespace Diagnosis.App.ViewModels
             Words.Add(vm);
             Subscribe(vm);
 
-            Debug.WriteLine("new word: {0}", vm);
+            Debug.Print("new word: {0}", vm);
             return vm;
         }
 

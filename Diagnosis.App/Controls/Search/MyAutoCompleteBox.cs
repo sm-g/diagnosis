@@ -37,7 +37,7 @@ namespace Diagnosis.App.Controls
 
         void _textBox_SelectionChanged(object sender, System.Windows.RoutedEventArgs e)
         {
-            Debug.WriteLine("CaretIndex = {0}", CaretIndex);
+            Debug.Print("CaretIndex = {0}", CaretIndex);
         }
         public void Select(int start, int length)
         {

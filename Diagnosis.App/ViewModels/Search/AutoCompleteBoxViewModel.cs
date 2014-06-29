@@ -34,7 +34,7 @@ namespace Diagnosis.App.ViewModels
             }
             set
             {
-                Debug.WriteLine("Query: {0}", value);
+                Debug.Print("Query: {0}", value);
 
                 var trimed = separator.FormatDelimiters(value);
                 if (_query != trimed)
@@ -47,7 +47,7 @@ namespace Diagnosis.App.ViewModels
                 }
                 else
                 {
-                    Debug.WriteLine("same query");
+                    Debug.Print("same query");
                 }
             }
         }
@@ -94,7 +94,7 @@ namespace Diagnosis.App.ViewModels
                 Debug.Write("line of partition: ");
                 foreach (var word in line)
                 {
-                    Debug.Write("{0}, ", word);
+                    Debug.Write(string.Format("{0}, ", word));
                 }
 
                 // группы из слов, начинающихся на слово из разбиения

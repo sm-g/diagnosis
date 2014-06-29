@@ -40,7 +40,7 @@ namespace Diagnosis.App.ViewModels
             svm.Editable.MarkDirty();
 
             symptoms.Add(svm);
-            Debug.WriteLine("new symptom: {0}", svm);
+            Debug.Print("new symptom: {0}", svm);
             return svm;
         }
 

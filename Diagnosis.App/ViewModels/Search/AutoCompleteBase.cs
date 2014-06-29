@@ -64,7 +64,7 @@ namespace Diagnosis.App.ViewModels
                 if (_isItemCompleted != value)
                 {
                     _isItemCompleted = value;
-                    Debug.WriteLine("AutoCompleteBase. IsItemCompleted = {0}", value);
+                    Debug.Print("AutoCompleteBase. IsItemCompleted = {0}", value);
                     OnPropertyChanged("IsItemCompleted");
                 }
             }
@@ -83,7 +83,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_fullString != value)
                 {
-                    Debug.WriteLine("AutoCompleteBase. New Fullstring.");
+                    Debug.Print("AutoCompleteBase. New Fullstring.");
                     try
                     {
                         if (!settingFullStringFromCode)
@@ -102,7 +102,7 @@ namespace Diagnosis.App.ViewModels
                     }
                     catch (System.Exception e)
                     {
-                        Debug.WriteLine("AutoCompleteBase. FullString setter error: {0}", e.Message);
+                        Debug.Print("AutoCompleteBase. FullString setter error: {0}", e.Message);
                     }
 
                     OnPropertyChanged("FullString");
@@ -122,7 +122,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     chain = chain.Substring(0, chain.Length - separator.DelimGroup.Length);
                 }
-                Debug.WriteLine("AutoCompleteBase. Get ItemsChain: '{0}'", chain);
+                Debug.Print("AutoCompleteBase. Get ItemsChain: '{0}'", chain);
                 return chain;
             }
         }
@@ -150,7 +150,7 @@ namespace Diagnosis.App.ViewModels
                     last = FullString.Substring(ItemsChain.Length + delimOffset);
                 }
 
-                Debug.WriteLine("AutoCompleteBase. Fullstring '{1}'. Get lastpart: '{0}'", last, FullString);
+                Debug.Print("AutoCompleteBase. Fullstring '{1}'. Get lastpart: '{0}'", last, FullString);
                 return last;
             }
         }
@@ -214,11 +214,11 @@ namespace Diagnosis.App.ViewModels
                 // добавляем разделитель
                 if (IsItemCompleted)
                 {
-                    Debug.WriteLine("AutoCompleteBase. добавляем разделитель, слово было завершено");
+                    Debug.Print("AutoCompleteBase. добавляем разделитель, слово было завершено");
                 }
                 else
                 {
-                    Debug.WriteLine("AutoCompleteBase. добавляем разделитель, слово не было завершено");
+                    Debug.Print("AutoCompleteBase. добавляем разделитель, слово не было завершено");
                     AddItem(Suggestions[SelectedIndex]);
                     trimed = ItemsChain + separator.DelimGroup;
                 }
@@ -227,7 +227,7 @@ namespace Diagnosis.App.ViewModels
             }
             else if (IsItemCompleted)
             {
-                Debug.WriteLine("AutoCompleteBase. дописываем символ к слову");
+                Debug.Print("AutoCompleteBase. дописываем символ к слову");
                 // дописываем символ к слову
                 RemoveLastItem();
                 IsItemCompleted = false;
@@ -242,7 +242,7 @@ namespace Diagnosis.App.ViewModels
         {
             if (IsItemCompleted)
             {
-                Debug.WriteLine("AutoCompleteBase. удаляем последний символ");
+                Debug.Print("AutoCompleteBase. удаляем последний символ");
                 // удаляем последний символ
                 RemoveLastItem();
                 IsItemCompleted = false;
@@ -252,20 +252,20 @@ namespace Diagnosis.App.ViewModels
             {
                 if (FullString.LastOrDefault() == separator.Delimiter)
                 {
-                    Debug.WriteLine("AutoCompleteBase. удаляем разделитель");
+                    Debug.Print("AutoCompleteBase. удаляем разделитель");
                     // удаляем разделитель
                     IsItemCompleted = true;
                     SetSearchContext();
                 }
                 else
                 {
-                    Debug.WriteLine("AutoCompleteBase. удаляем разделительный пробел");
+                    Debug.Print("AutoCompleteBase. удаляем разделительный пробел");
                     // удаляем разделительный пробел
                 }
             }
             else
             {
-                Debug.WriteLine("AutoCompleteBase. удаляем не последний символ слова");
+                Debug.Print("AutoCompleteBase. удаляем не последний символ слова");
                 // удаляем не последний символ слова
             }
         }
@@ -275,7 +275,7 @@ namespace Diagnosis.App.ViewModels
         /// </summary>
         private void AddItem(T item)
         {
-            Debug.WriteLine("AutoCompleteBase. add {0}", item);
+            Debug.Print("AutoCompleteBase. add {0}", item);
             BeforeAddItem(item);
 
             items.Add(item);
@@ -299,7 +299,7 @@ namespace Diagnosis.App.ViewModels
             {
                 query = GetQueryString(items[items.Count - 1]);
             }
-            Debug.WriteLine("AutoCompleteBase. query: {0}", query);
+            Debug.Print("AutoCompleteBase. query: {0}", query);
             Suggestions = new ObservableCollection<T>(searcher.Search(query));
             OnPropertyChanged("Suggestions");
             SelectedIndex = 0;

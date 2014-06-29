@@ -80,7 +80,7 @@ namespace Diagnosis.App.ViewModels
         private ObservableCollection<HealthRecordViewModel> MakeHealthRecords()
         {
             var hrVMs = appVM.appointment.HealthRecords.Select(hr => new HealthRecordViewModel(hr)).ToList();
-            Debug.WriteLine("make hrs for {0}", appVM);
+            Debug.Print("make hrs for {0}", appVM);
             hrVMs.ForAll(hr => SubscribeHr(hr));
 
             var healthRecords = new ObservableCollection<HealthRecordViewModel>(hrVMs);

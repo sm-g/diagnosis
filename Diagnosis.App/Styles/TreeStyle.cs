@@ -23,13 +23,13 @@ namespace Diagnosis.App.Styles
             var bd = sender as Border;
             try
             {
-                //Debug.WriteLine("try Bd_SourceUpdated");
+                //Debug.Print("try Bd_SourceUpdated");
                 bd.GetBindingExpression(Border.BackgroundProperty).UpdateTarget();
             }
             catch
             {
                 // IsSelected trigger sets Background
-                //Debug.WriteLine("exc Bd_SourceUpdated");
+                //Debug.Print("exc Bd_SourceUpdated");
             }
         }
         private void Bd_TargetUpdated(object sender, DataTransferEventArgs e)
@@ -37,13 +37,13 @@ namespace Diagnosis.App.Styles
             var bd = sender as Border;
             try
             {
-                //Debug.WriteLine("try Bd_TargetUpdated");
+                //Debug.Print("try Bd_TargetUpdated");
                 bd.GetBindingExpression(Border.BackgroundProperty).UpdateTarget();
             }
             catch
             {
                 // IsSelected trigger sets Background
-                //Debug.WriteLine("exc Bd_TargetUpdated");
+                //Debug.Print("exc Bd_TargetUpdated");
             }
         }
     }

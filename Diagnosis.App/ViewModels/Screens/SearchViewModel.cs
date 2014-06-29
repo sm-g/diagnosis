@@ -424,8 +424,8 @@ namespace Diagnosis.App.ViewModels
 
         private void PrintHrDate()
         {
-            Debug.WriteLine("HrDateOffsetUpper = {0}", HrDateOffsetUpper);
-            Debug.WriteLine("HrDateOffsetLower = {0}", HrDateOffsetLower);
+            Debug.Print("HrDateOffsetUpper = {0}", HrDateOffsetUpper);
+            Debug.Print("HrDateOffsetLower = {0}", HrDateOffsetLower);
         }
     }
 }

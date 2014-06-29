@@ -26,7 +26,7 @@ namespace Diagnosis.App.Controls
 
         private void auto_TextChanged(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine("autocompletebox text = {0}", auto.Text);
+            Debug.Print("autocompletebox text = {0}", auto.Text);
             if (auto.Text.Length == auto.CaretIndex + 1 && auto.Text.Last() == vm.DelimSpacer)
             {
                 auto.CaretIndex = auto.Text.Length;
