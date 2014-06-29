@@ -151,6 +151,7 @@
       <DependentUpon>AppointmentsTabs.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Card\AddNewDataTemplateSelector.cs" />
+    <Compile Include="Controls\Directory\TreeCommon.cs" />
     <Compile Include="Controls\Helpers\DataGridHelper.cs" />
     <Compile Include="Controls\Helpers\FirstFocusedElementExtension.cs" />
     <Compile Include="Controls\Search\SearchResult.xaml.cs">
@@ -185,7 +186,6 @@
     <Compile Include="Controls\Directory\TreeItemLight.xaml.cs">
       <DependentUpon>TreeItemLight.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Directory\TreeTemplateSelector.cs" />
     <Compile Include="Controls\Helpers\ParentFinder.cs" />
     <Compile Include="Controls\Search\SearchTree.xaml.cs">
       <DependentUpon>SearchTree.xaml</DependentUpon>
@@ -367,6 +367,10 @@
     <Page Include="Controls\Card\AppointmentsTabs.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Directory\EditableTreeStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Search\SearchResult.xaml">
       <SubType>Designer</SubType>

@@ -8,7 +8,7 @@ namespace Diagnosis.App.Controls
     /// <summary>
     /// Interaction logic for GroupsTree.xaml
     /// </summary>
-    public partial class GroupsTree : UserControl
+    public partial class GroupsTree : TreeCommon
     {
         public GroupsTree()
         {

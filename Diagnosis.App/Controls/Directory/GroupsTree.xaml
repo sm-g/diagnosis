@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Diagnosis.App.Controls.GroupsTree"
+﻿<controls:TreeCommon  x:Class="Diagnosis.App.Controls.GroupsTree"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -7,40 +7,19 @@
              xmlns:conv="clr-namespace:Diagnosis.App.Converters"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-    <UserControl.Resources>
+    <controls:TreeCommon.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../../Styles/TreeStyle.xaml" />
+                <ResourceDictionary Source="EditableTreeStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <InputBindingCollection x:Shared="False" x:Key="InputBindings">
-                <KeyBinding Key="Space" Command="{Binding ToggleCommand}" />
-                <KeyBinding Key="Delete" Command="{Binding Editable.DeleteCommand}" />
-                <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
-                <KeyBinding Key="F2" Command="{Binding Editable.EditCommand}" />
-                <KeyBinding Key="Escape" Command="{Binding Editable.RevertCommand}" />
-                <KeyBinding Key="Insert" Command="{Binding Search.ToggleSearchActiveCommand}" />
-                <KeyBinding Key="F" Modifiers="Control" Command="{Binding Search.ToggleSearchActiveCommand}" />
-
-                <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleCommand}" />
-                <MouseBinding MouseAction="RightClick" Command="{Binding Editable.EditCommand}" />
-            </InputBindingCollection>
-
-            <Style  x:Key="groupsTreeItemContainerStyle"
-                    TargetType="TreeViewItem"
-                    BasedOn="{StaticResource TreeViewItemStyle}">
-                <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
-                <Setter Property="IsSelected" Value="{Binding IsSelected}" />
-                <Setter Property="controls:Attached.InputBindings" Value="{StaticResource InputBindings}" />
-            </Style>
 
             <HierarchicalDataTemplate
                 x:Key="groupTreeItemTemplate"
                 ItemsSource="{Binding NonTerminalChildren}">
-                <controls:TreeItem />
+                <ContentControl Content="{Binding}" Style="{StaticResource TreeItemTemplateStyle}" />
             </HierarchicalDataTemplate>
         </ResourceDictionary>
-    </UserControl.Resources>
+    </controls:TreeCommon.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -50,12 +29,12 @@
         <TreeView
             x:Name="tree"
             Style="{StaticResource TreeViewStyle}"
-            ItemContainerStyle="{StaticResource groupsTreeItemContainerStyle}"
+            ItemContainerStyle="{StaticResource TreeItemContainerStyle}"
             ItemTemplate="{StaticResource groupTreeItemTemplate}"
             ItemsSource="{Binding}">
         </TreeView>
         <TreeView DataContext="{Binding SelectedItem, ElementName=tree, Mode=OneWay}"
-                  ItemContainerStyle="{StaticResource groupsTreeItemContainerStyle}"
+                  ItemContainerStyle="{StaticResource TreeItemContainerStyle}"
                   ItemsSource="{Binding TerminalChildren}"
                   Style="{StaticResource TreeViewStyle}"
                   Grid.Column="1"
@@ -67,4 +46,4 @@
             </TreeView.ItemTemplate>
         </TreeView>
     </Grid>
-</UserControl>
+</controls:TreeCommon>
