@@ -17,7 +17,6 @@ namespace Diagnosis.App.ViewModels
         internal Func<AppointmentViewModel> OpenedAppointmentGetter;
         private AppointmentsManager appManager;
 
-        private ObservableCollection<AppointmentViewModel> _appointments;
         private ObservableCollection<WithAddNew> _appointmentsWithAddNew;
         private DoctorViewModel _leadDoctor;
         private ICommand _addAppointment;

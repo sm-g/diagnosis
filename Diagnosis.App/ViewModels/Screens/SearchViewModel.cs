@@ -10,6 +10,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Diagnostics.Contracts;
 using System.Windows.Input;
+using System.Diagnostics;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -423,8 +424,8 @@ namespace Diagnosis.App.ViewModels
 
         private void PrintHrDate()
         {
-            Console.WriteLine("HrDateOffsetUpper = {0}", HrDateOffsetUpper);
-            Console.WriteLine("HrDateOffsetLower = {0}", HrDateOffsetLower);
+            Debug.WriteLine("HrDateOffsetUpper = {0}", HrDateOffsetUpper);
+            Debug.WriteLine("HrDateOffsetLower = {0}", HrDateOffsetLower);
         }
     }
 }

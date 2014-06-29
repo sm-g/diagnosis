@@ -6,6 +6,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Diagnostics;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -79,10 +80,10 @@ namespace Diagnosis.App.ViewModels
         private ObservableCollection<HealthRecordViewModel> MakeHealthRecords()
         {
             var hrVMs = appVM.appointment.HealthRecords.Select(hr => new HealthRecordViewModel(hr)).ToList();
+            Debug.WriteLine("make hrs for {0}", appVM);
             hrVMs.ForAll(hr => SubscribeHr(hr));
 
             var healthRecords = new ObservableCollection<HealthRecordViewModel>(hrVMs);
-            Console.WriteLine("make hrs for {0}", this);
             return healthRecords;
         }
         private void AfterHealthRecordsLoaded()

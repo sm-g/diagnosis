@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using System.Diagnostics;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -23,7 +24,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     _selected = value;
                     OnPropertyChanged("IsSelected");
-                    System.Console.WriteLine("is selected = {0}", value);
+                    Debug.WriteLine("is selected = {0}", value);
                     OnSelectedChanged();
                 }
             }
@@ -60,7 +61,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     _isChecked = value;
                     OnPropertyChanged("IsChecked");
-                    System.Console.WriteLine("is checked = {0}", value);
+                    Debug.WriteLine("is checked = {0}", value);
                     OnCheckedChanged();
                 }
             }

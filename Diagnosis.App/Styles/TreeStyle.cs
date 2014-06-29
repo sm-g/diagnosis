@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Controls;
 using System.Windows.Input;
-
+using System.Diagnostics;
 
 
 namespace Diagnosis.App.Styles
@@ -23,13 +23,13 @@ namespace Diagnosis.App.Styles
             var bd = sender as Border;
             try
             {
-                //Console.WriteLine("try Bd_SourceUpdated");
+                //Debug.WriteLine("try Bd_SourceUpdated");
                 bd.GetBindingExpression(Border.BackgroundProperty).UpdateTarget();
             }
             catch
             {
                 // IsSelected trigger sets Background
-                //Console.WriteLine("exc Bd_SourceUpdated");
+                //Debug.WriteLine("exc Bd_SourceUpdated");
             }
         }
         private void Bd_TargetUpdated(object sender, DataTransferEventArgs e)
@@ -37,13 +37,13 @@ namespace Diagnosis.App.Styles
             var bd = sender as Border;
             try
             {
-                //Console.WriteLine("try Bd_TargetUpdated");
+                //Debug.WriteLine("try Bd_TargetUpdated");
                 bd.GetBindingExpression(Border.BackgroundProperty).UpdateTarget();
             }
             catch
             {
                 // IsSelected trigger sets Background
-                //Console.WriteLine("exc Bd_TargetUpdated");
+                //Debug.WriteLine("exc Bd_TargetUpdated");
             }
         }
     }

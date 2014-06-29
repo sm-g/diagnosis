@@ -132,7 +132,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AGpAEgAEMYAAhAIAICQAoNAA2ACAEEAAAAYCIIRgAAA=</HashCode>
+      <HashCode>AGpAEgAEMYAAxAIAICQAoNAA2ACCEEAgAQYCAIRgAAA=</HashCode>
       <FileName>ViewModels\Screens\SearchViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>

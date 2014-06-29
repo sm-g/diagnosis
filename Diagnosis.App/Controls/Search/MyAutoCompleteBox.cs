@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Diagnostics;
 
 namespace Diagnosis.App.Controls
 {
@@ -36,7 +37,7 @@ namespace Diagnosis.App.Controls
 
         void _textBox_SelectionChanged(object sender, System.Windows.RoutedEventArgs e)
         {
-            Console.WriteLine("CaretIndex = {0}", CaretIndex);
+            Debug.WriteLine("CaretIndex = {0}", CaretIndex);
         }
         public void Select(int start, int length)
         {

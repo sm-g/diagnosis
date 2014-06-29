@@ -26,7 +26,6 @@ namespace Diagnosis.App.ViewModels
         private ICommand _deleteHealthRecords;
         private ICommand _moveHrSelection;
 
-        private ObservableCollection<HealthRecordViewModel> _healthRecords;
         private ICollectionView _healthRecordsView;
         private bool movingSelected;
 

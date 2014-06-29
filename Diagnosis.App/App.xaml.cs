@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Markup;
+using Diagnosis.App.Windows;
 
 namespace Diagnosis.App
 {
@@ -17,9 +18,17 @@ namespace Diagnosis.App
                 XmlLanguage.GetLanguage(
                 CultureInfo.CurrentCulture.IetfLanguageTag)));
 
+            System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Error;
+
             new DebugOutput();
 
-            System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Error;
+#if DEBUG
+            new DebugWindow().Show();
+#endif
+            var main = new MainWindow();
+            Application.Current.MainWindow = main;
+            Application.Current.ShutdownMode = System.Windows.ShutdownMode.OnMainWindowClose;
+            main.Show();
         }
     }
 }

@@ -24,14 +24,11 @@ namespace Diagnosis.Core
         /// </summary>
         public string FormatDelimiters(string value)
         {
-            Console.WriteLine("before trim '{0}'", value);
-
             // оставляем по одному пробелу
             var trimed = Regex.Replace(value, @"\s+", Spacer.ToString());
             // повторные группы разделительных символов заменяем на одну группу
             trimed = Regex.Replace(trimed, repeatingRegex, DelimGroup);
 
-            Console.WriteLine("after trim '{0}'", trimed);
             return trimed;
         }
 

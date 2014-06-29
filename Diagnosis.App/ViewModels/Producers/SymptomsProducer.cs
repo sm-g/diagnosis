@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Diagnostics;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -39,7 +40,7 @@ namespace Diagnosis.App.ViewModels
             svm.Editable.MarkDirty();
 
             symptoms.Add(svm);
-            System.Console.WriteLine("new symptom: {0}", svm);
+            Debug.WriteLine("new symptom: {0}", svm);
             return svm;
         }
 

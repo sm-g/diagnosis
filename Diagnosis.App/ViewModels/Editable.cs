@@ -52,7 +52,7 @@ namespace Diagnosis.App.ViewModels
                         (entity as IEditableObject).BeginEdit();
                     }
                     _editActive = value;
-                    System.Console.WriteLine("editor {0} active = {1}", entity, value);
+                    Debug.WriteLine("editor {0} active = {1}", entity, value);
                     OnPropertyChanged("IsEditorActive");
                 }
             }
@@ -68,7 +68,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_editorFocused != value)
                 {
-                    Console.WriteLine("editor {0} focused = {1}", entity, value);
+                    Debug.WriteLine("editor {0} focused = {1}", entity, value);
                     _editorFocused = value;
                     OnPropertyChanged("IsEditorFocused");
                 }
@@ -115,7 +115,7 @@ namespace Diagnosis.App.ViewModels
                         h(this, new EditableEventArgs(entity));
                     }
 
-                    Console.WriteLine("isdirty {0} = {1}", entity, value);
+                    Debug.WriteLine("isdirty {0} = {1}", entity, value);
                     OnPropertyChanged("IsDirty");
                     OnPropertyChanged("WasDirty");
                 }
@@ -256,7 +256,7 @@ namespace Diagnosis.App.ViewModels
 
         private void OnCommit()
         {
-            System.Console.WriteLine("committing {0}", entity);
+            Debug.WriteLine("committing {0}", entity);
 
             if (entity is IEditableObject)
             {
@@ -267,7 +267,7 @@ namespace Diagnosis.App.ViewModels
             if (h != null)
             {
                 h(this, new EditableEventArgs(entity));
-                System.Console.WriteLine("committed {0}", entity);
+                Debug.WriteLine("committed {0}", entity);
             }
 
             IsEditorActive = false;
@@ -276,7 +276,7 @@ namespace Diagnosis.App.ViewModels
 
         private void OnRevert()
         {
-            System.Console.WriteLine("reverting {0}", entity);
+            Debug.WriteLine("reverting {0}", entity);
 
             if (entity is IEditableObject)
             {
@@ -287,7 +287,7 @@ namespace Diagnosis.App.ViewModels
             if (h != null)
             {
                 h(this, new EditableEventArgs(entity));
-                System.Console.WriteLine("reverted {0}", entity);
+                Debug.WriteLine("reverted {0}", entity);
             }
 
             IsEditorActive = false;
@@ -296,13 +296,13 @@ namespace Diagnosis.App.ViewModels
 
         private void OnDelete()
         {
-            System.Console.WriteLine("deleting {0}", entity);
+            Debug.WriteLine("deleting {0}", entity);
 
             var h = Deleted;
             if (h != null)
             {
                 h(this, new EditableEventArgs(entity));
-                System.Console.WriteLine("deleted {0}", entity);
+                Debug.WriteLine("deleted {0}", entity);
             }
         }
     }

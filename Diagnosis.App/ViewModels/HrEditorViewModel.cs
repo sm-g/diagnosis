@@ -12,7 +12,6 @@ namespace Diagnosis.App.ViewModels
     {
         private static AutoCompleteBase<WordViewModel> _autoCompleteStatic;
         private PopupSearch<DiagnosisViewModel> _diagnosisSearch;
-        private List<EventMessageHandler> msgHandlers;
 
         private HealthRecordViewModel _hr;
 

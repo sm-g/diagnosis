@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Diagnosis.App.Messaging;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
@@ -105,7 +106,7 @@ namespace Diagnosis.App.ViewModels
             Words.Add(vm);
             Subscribe(vm);
 
-            System.Console.WriteLine("new word: {0}", vm);
+            Debug.WriteLine("new word: {0}", vm);
             return vm;
         }
 

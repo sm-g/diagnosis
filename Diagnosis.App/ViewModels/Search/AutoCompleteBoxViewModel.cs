@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Diagnostics.Contracts;
 using System.Windows.Input;
 using Diagnosis.Core;
+using System.Diagnostics;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -33,7 +34,7 @@ namespace Diagnosis.App.ViewModels
             }
             set
             {
-                Console.WriteLine("Query: {0}", value);
+                Debug.WriteLine("Query: {0}", value);
 
                 var trimed = separator.FormatDelimiters(value);
                 if (_query != trimed)
@@ -46,7 +47,7 @@ namespace Diagnosis.App.ViewModels
                 }
                 else
                 {
-                    Console.WriteLine("same query");
+                    Debug.WriteLine("same query");
                 }
             }
         }
@@ -90,12 +91,11 @@ namespace Diagnosis.App.ViewModels
             var symptoms = new List<SymptomViewModel>();
             foreach (var line in StringSequencePartition.Part(query, separator.Delimiter))
             {
-                Console.Write("line of partition: ");
+                Debug.Write("line of partition: ");
                 foreach (var word in line)
                 {
-                    Console.Write("{0}, ", word);
+                    Debug.Write("{0}, ", word);
                 }
-                Console.WriteLine();
 
                 // группы из слов, начинающихся на слово из разбиения
                 var wordGroups = line.Select(word => EntityProducers.WordsProducer.RootSearcher.Search(word).ToList()).ToList();
