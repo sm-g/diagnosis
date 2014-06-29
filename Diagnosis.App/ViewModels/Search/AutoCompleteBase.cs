@@ -83,26 +83,23 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_fullString != value)
                 {
-                    Debug.Print("AutoCompleteBase. New Fullstring.");
-                    try
+                    Debug.Print("AutoCompleteBase. New Fullstring {0}", value);
+
+                    if (!settingFullStringFromCode)
                     {
-                        if (!settingFullStringFromCode)
+                        if (value.Length < FullString.Length)
                         {
-                            if (value.Length < FullString.Length)
-                            {
-                                AfterQueryShrink();
-                            }
-                            else
-                            {
-                                value = AfterQueryGrow(value);
-                            }
+                            AfterQueryShrink();
                         }
-                        _fullString = value;
-                        MakeSuggestions();
+                        else
+                        {
+                            value = AfterQueryGrow(value);
+                        }
                     }
-                    catch (System.Exception e)
+                    _fullString = value;
+                    if (!settingFullStringFromCode)
                     {
-                        Debug.Print("AutoCompleteBase. FullString setter error: {0}", e.Message);
+                        MakeSuggestions();
                     }
 
                     OnPropertyChanged("FullString");
@@ -122,7 +119,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     chain = chain.Substring(0, chain.Length - separator.DelimGroup.Length);
                 }
-                Debug.Print("AutoCompleteBase. Get ItemsChain: '{0}'", chain);
+                //  Debug.Print("AutoCompleteBase. Get ItemsChain: '{0}'", chain);
                 return chain;
             }
         }
@@ -387,9 +384,8 @@ namespace Diagnosis.App.ViewModels
             Items = new ReadOnlyObservableCollection<T>(items);
             Suggestions = new ObservableCollection<T>();
 
-            MakeFullStringFromItems();
-
             SetSearchContext(withInitItems);
+            MakeFullStringFromItems();
         }
     }
     public class AutoCompleteEventArgs : EventArgs
