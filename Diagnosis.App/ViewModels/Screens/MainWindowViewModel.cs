@@ -153,12 +153,12 @@ namespace Diagnosis.App.ViewModels
                 if (_patientsAsideVisible != value)
                 {
                     _patientsAsideVisible = value;
-                    if (!value)
-                    {
-                        PatientsAsideOpened = false;
-                    }
 
                     OnPropertyChanged(() => PatientsAsideVisible);
+                }
+                if (!value)
+                {
+                    PatientsAsideOpened = false;
                 }
             }
         }
