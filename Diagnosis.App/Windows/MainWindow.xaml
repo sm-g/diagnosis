@@ -29,12 +29,9 @@
             <DataTemplate DataType="{x:Type vm:PatientViewModel}">
                 <screen:Card />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:SearchTester}">
-                <screen:SearchTester />
-            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:PatientsListViewModel}">
                 <screen:Patients />
-            </DataTemplate>            
+            </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -58,20 +55,19 @@
             <Menu>
                 <MenuItem Header="_Пациенты">
                     <MenuItem Command="{Binding OpenPatientsCommand}" Header="_Все пациенты" />
-                    <MenuItem Command="{Binding AddPatientCommand}" Header="_Новый..."  />
+                    <MenuItem Command="{Binding AddPatientCommand}" Header="_Новый..." />
                 </MenuItem>
                 <MenuItem Header="_Справочники">
                     <MenuItem Command="{Binding OpenWordsCommand}" Header="_Слова" />
                 </MenuItem>
-                <MenuItem Header="_Вид">                   
-                    <!--<MenuItem IsCheckable="true" IsChecked="{Binding SearchTesterOpened}" Header="_Все поиски" />-->
+                <MenuItem Header="_Вид">
                     <MenuItem IsCheckable="true" IsChecked="{Binding SearchAsideOpened}" Header="_Поиск" />
                     <MenuItem IsCheckable="true" IsChecked="{Binding PatientsAsideOpened}" Header="_Пациенты" />
                 </MenuItem>
             </Menu>
-            
+
             <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding FastAddingMode}">_Осмотр пациентов</CheckBox>
-            
+
             <Menu HorizontalAlignment="Right">
                 <MenuItem Header="{Binding Login.DoctorsProducer.CurrentDoctor, Converter={StaticResource ManToShortName}}">
                     <MenuItem Header="_Настройки..." Command="{Binding OpenSettingsCommand}" />
@@ -82,18 +78,18 @@
 
         <DockPanel x:Name="aside"
                    Visibility="{Binding LoginOpened, Converter={StaticResource NegBooleanToVisibilityConverter}}"
-                   Grid.Row="1"                   
+                   Grid.Row="1"
                    Grid.Column="1"
                    Grid.RowSpan="2">
-            <TabControl TabStripPlacement="Right" 
+            <TabControl TabStripPlacement="Right"
                         Margin="0,0,-2,0"
                         Padding="0">
                 <TabControl.Style>
                     <Style TargetType="TabControl">
-                        <Setter Property="BorderThickness" Value="1,0,1,0"/>
+                        <Setter Property="BorderThickness" Value="1,0,1,0" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding NoAsideOpened}" Value="True">
-                                <Setter Property="BorderThickness" Value="0,0,1,0"/>
+                                <Setter Property="BorderThickness" Value="0,0,1,0" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -124,7 +120,7 @@
         </DockPanel>
 
         <Frame x:Name="frame"
-               Grid.Row="1"/>
+               Grid.Row="1" />
         <ContentControl Content="{Binding CurrentScreen}"
                         Grid.Row="2" />
     </Grid>

@@ -15,7 +15,6 @@ namespace Diagnosis.App.ViewModels
         private ICommand _logout;
         private ICommand _openWords;
         private ICommand _openPatients;
-        private ICommand _openSearchTester;
         private ICommand _openSettings;
         private bool _patientsAsideOpened;
         private bool _patientsAsideVisible;
@@ -23,7 +22,6 @@ namespace Diagnosis.App.ViewModels
         private bool _loginOpened;
         private bool _patientsOpened;
         private bool _wordsOpened;
-        private bool _searchTesterOpened;
         private bool _searchAsideOpened;
         private SearchViewModel _search;
         private PatientsAsideViewModel _patientsAside;
@@ -35,7 +33,7 @@ namespace Diagnosis.App.ViewModels
         [Flags]
         private enum Screens
         {
-            Login, Patients, Words, Patient, Tester
+            Login, Patients, Words, Patient
         }
         private NavigationService nav;
         private PatientViewer viewer;
@@ -79,22 +77,6 @@ namespace Diagnosis.App.ViewModels
 
                     this.Send((int)EventID.WordsEditingModeChanged, new DirectoryEditingModeChangedParams(value).Params);
                     OnPropertyChanged(() => WordsOpened);
-                }
-            }
-        }
-
-        public bool SearchTesterOpened
-        {
-            get
-            {
-                return _searchTesterOpened;
-            }
-            set
-            {
-                if (_searchTesterOpened != value)
-                {
-                    _searchTesterOpened = value;
-                    OnPropertyChanged(() => SearchTesterOpened);
                 }
             }
         }
@@ -313,18 +295,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public ICommand OpenSearchTesterCommand
-        {
-            get
-            {
-                return _openSearchTester
-                   ?? (_openSearchTester = new RelayCommand(() =>
-                   {
-                       nav.Navigate(new SearchTester());
-                   }, () => !SearchTesterOpened));
-            }
-        }
-
         public ICommand AddPatientCommand
         {
             get
@@ -424,10 +394,6 @@ namespace Diagnosis.App.ViewModels
             {
                 OpenScreen(Screens.Words);
             }
-            else if (e.Content is SearchTester)
-            {
-                OpenScreen(Screens.Tester);
-            }
         }
 
         /// <summary>
@@ -440,7 +406,6 @@ namespace Diagnosis.App.ViewModels
             OnePatientOpened = false;
             PatientsOpened = false;
             WordsOpened = false;
-            SearchTesterOpened = false;
 
             switch (screen)
             {
@@ -448,10 +413,9 @@ namespace Diagnosis.App.ViewModels
                 case Screens.Patient: OnePatientOpened = true; break;
                 case Screens.Patients: PatientsOpened = true; break;
                 case Screens.Words: WordsOpened = true; break;
-                case Screens.Tester: SearchTesterOpened = true; break;
             }
 
-            if ((screen & (Screens.Login | Screens.Tester | Screens.Words)) == screen)
+            if ((screen & (Screens.Login | Screens.Words)) == screen)
             {
                 SearchAsideOpened = false;
                 PatientsAsideOpened = false;

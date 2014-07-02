@@ -256,9 +256,6 @@
     <Compile Include="Screens\Search.xaml.cs">
       <DependentUpon>Search.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Screens\SearchTester.xaml.cs">
-      <DependentUpon>SearchTester.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Screens\Words.xaml.cs">
       <DependentUpon>Words.xaml</DependentUpon>
     </Compile>
@@ -279,7 +276,6 @@
     <Compile Include="ViewModels\Search\HrSearchOptions.cs" />
     <Compile Include="ViewModels\Interfaces\IFilter.cs" />
     <Compile Include="ViewModels\Search\SimpleSearcherSettings.cs" />
-    <Compile Include="ViewModels\Search\SearchTester.cs" />
     <Compile Include="ViewModels\Search\HrSearchResultViewModel.cs" />
     <Compile Include="ViewModels\Screens\SearchViewModel.cs" />
     <Compile Include="ViewModels\Search\WordTopParentSearcher.cs" />
@@ -505,10 +501,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Screens\Search.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Screens\SearchTester.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
