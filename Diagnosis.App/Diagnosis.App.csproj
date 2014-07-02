@@ -154,8 +154,8 @@
     <Compile Include="Controls\Directory\TreeCommon.cs" />
     <Compile Include="Controls\Helpers\DataGridHelper.cs" />
     <Compile Include="Controls\Helpers\FirstFocusedElementExtension.cs" />
-    <Compile Include="Controls\Search\SearchResult.xaml.cs">
-      <DependentUpon>SearchResult.xaml</DependentUpon>
+    <Compile Include="Controls\Search\HrSearchResult.xaml.cs">
+      <DependentUpon>HrSearchResult.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\CommaList.xaml.cs">
       <DependentUpon>CommaList.xaml</DependentUpon>
@@ -358,7 +358,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Search\SearchResult.xaml">
+    <Page Include="Controls\Search\HrSearchResult.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Diagnosis.App.Controls.SearchResult"
+﻿<UserControl x:Class="Diagnosis.App.Controls.HrSearchResult"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,6 +8,7 @@
              x:Name="searchResult"
              Background="Transparent"
              d:DesignHeight="300" d:DesignWidth="300">
+    <!--HrSearchResultViewModel-->
     <DockPanel x:Name="appDescription" Width="{Binding ActualWidth, ElementName=searchResult}">
         <TextBlock Text="{Binding AppointmentDate, Converter={StaticResource DateLabel}}" Width="70" DockPanel.Dock="Left" Margin="0,0,5,0" />
         <ItemsControl ItemsSource="{Binding AppointmentHealthRecords}">
