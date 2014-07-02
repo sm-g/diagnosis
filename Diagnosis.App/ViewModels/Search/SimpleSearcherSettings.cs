@@ -20,4 +20,20 @@ namespace Diagnosis.App.ViewModels
             AllChildren = allChildren;
         }
     }
+
+    public struct AllChidrenSearcherSettings : SimpleSearcherSettings
+    {
+        public bool WithNonCheckable;
+        public bool WithChecked;
+        public bool WithCreatingNew;
+        public bool AllChildren;
+
+        public AllChidrenSearcherSettings(bool withNonCheckable, bool withChecked, bool withCreatingNew, bool allChildren)
+        {
+            WithNonCheckable = withNonCheckable;
+            WithChecked = withChecked;
+            WithCreatingNew = withCreatingNew;
+            AllChildren = allChildren;
+        }
+    }
 }

@@ -279,7 +279,7 @@
     <Compile Include="ViewModels\Search\HrSearchResultViewModel.cs" />
     <Compile Include="ViewModels\Screens\SearchViewModel.cs" />
     <Compile Include="ViewModels\Search\WordTopParentSearcher.cs" />
-    <Compile Include="ViewModels\Search\WordRootAutoComplete.cs" />
+    <Compile Include="ViewModels\Search\AutoComplete\WordRootAutoComplete.cs" />
     <Compile Include="ViewModels\Search\WordCompositeAutoComplete.cs" />
     <Compile Include="ViewModels\Search\WordCompositeSearcher.cs" />
     <Compile Include="ViewModels\Search\WordSearcher.cs" />
@@ -287,7 +287,7 @@
     <Compile Include="ViewModels\Domain\CategoryViewModel.cs" />
     <Compile Include="ViewModels\Producers\SymptomsProducer.cs" />
     <Compile Include="ViewModels\Producers\WordsProducer.cs" />
-    <Compile Include="ViewModels\Search\AutoCompleteBoxViewModel.cs" />
+    <Compile Include="ViewModels\Search\AutoComplete\AutoCompleteBoxViewModel.cs" />
     <Compile Include="ViewModels\Search\SearchWrap.cs" />
     <Compile Include="ViewModels\Domain\SymptomViewModel.cs" />
     <Compile Include="ViewModels\HierarchicalCheckable.cs" />
@@ -298,7 +298,7 @@
     <Compile Include="ViewModels\Producers\DoctorsProducer.cs" />
     <Compile Include="ViewModels\Domain\CourseViewModel.cs" />
     <Compile Include="ViewModels\Domain\DoctorViewModel.cs" />
-    <Compile Include="ViewModels\Search\DiagnosisAutoComplete.cs" />
+    <Compile Include="ViewModels\Search\AutoComplete\DiagnosisAutoComplete.cs" />
     <Compile Include="Controls\Directory\TileItem.xaml.cs">
       <DependentUpon>TileItem.xaml</DependentUpon>
     </Compile>
@@ -329,7 +329,7 @@
       <DependentUpon>PatientsAside.xaml</DependentUpon>
     </Compile>
     <Compile Include="Styles\TreeStyle.cs" />
-    <Compile Include="ViewModels\Search\AutoCompleteBase.cs" />
+    <Compile Include="ViewModels\Search\AutoComplete\AutoCompleteBase.cs" />
     <Compile Include="ViewModels\CheckableBase.cs" />
     <Compile Include="ViewModels\Domain\DiagnosisViewModel.cs" />
     <Compile Include="ViewModels\HierarchicalBase.cs" />
@@ -629,6 +629,7 @@
   <ItemGroup>
     <Resource Include="Resources\126_Edit_24x24_72.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
