@@ -273,8 +273,10 @@
     <Compile Include="ViewModels\Screens\PatientsListViewModel.cs" />
     <Compile Include="ViewModels\Search\DiagnosisFiltratingSearcher.cs" />
     <Compile Include="ViewModels\Search\DiagnosisSearcher.cs" />
+    <Compile Include="ViewModels\Search\Filter.cs" />
     <Compile Include="ViewModels\Search\HrSearcher.cs" />
     <Compile Include="ViewModels\Search\HrSearchOptions.cs" />
+    <Compile Include="ViewModels\Interfaces\IFilter.cs" />
     <Compile Include="ViewModels\Search\SimpleSearcherSettings.cs" />
     <Compile Include="ViewModels\Search\SearchTester.cs" />
     <Compile Include="ViewModels\Search\HrSearchResultViewModel.cs" />

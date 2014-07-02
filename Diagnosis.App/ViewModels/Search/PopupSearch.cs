@@ -1,17 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class PopupSearch<T> : ViewModelBase where T : class
+    public class PopupSearch<T> : ViewModelBase, IFilter<T> where T : class
     {
+        #region Fields
+
         internal readonly ISimpleSearcher<T> searcher;
-        readonly Action<T> onSelected;
+        private readonly Action<T> onSelected;
 
         private string _query;
         private int _selectedIndex = -1;
-        private ICommand _clear;
+        private ICommand _clearCommand;
         private ICommand _searchCommand;
         private ICommand _resultsCommand;
         private ICommand _selectCommand;
@@ -21,10 +24,13 @@ namespace Diagnosis.App.ViewModels
         private bool _resultsOnQueryChanges;
         private bool _switchedOn;
 
-        #region ISearch
+        #endregion Fields
 
         public event EventHandler ResultItemSelected;
+
         public event EventHandler Cleared;
+
+        #region IFilter
 
         public string Query
         {
@@ -40,7 +46,7 @@ namespace Diagnosis.App.ViewModels
 
                     if (string.IsNullOrEmpty(value))
                     {
-                        RaiseCleared();
+                        OnCleared();
                     }
 
                     IsResultsVisible = true;
@@ -53,6 +59,8 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
+        public ObservableCollection<T> Results { get; protected set; }
 
         public bool UpdateResultsOnQueryChanges
         {
@@ -69,8 +77,25 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+        public bool IsQueryEmpty
+        {
+            get { return string.IsNullOrWhiteSpace(Query); }
+        }
 
-        public ObservableCollection<T> Results { get; protected set; }
+        public ICommand ClearCommand
+        {
+            get
+            {
+                return _clearCommand ?? (_clearCommand = new RelayCommand(Clear,
+                    () => !IsQueryEmpty && SwitchedOn));
+            }
+        }
+        public void Clear()
+        {
+            Query = "";
+        }
+
+        #endregion IFilter
 
         public T SelectedItem
         {
@@ -97,15 +122,6 @@ namespace Diagnosis.App.ViewModels
                     OnPropertyChanged("SelectedIndex");
                     OnPropertyChanged("SelectedItem");
                 }
-            }
-        }
-
-        public ICommand ClearCommand
-        {
-            get
-            {
-                return _clear ?? (_clear = new RelayCommand(Clear,
-                    () => !IsQueryEmpty && SwitchedOn));
             }
         }
 
@@ -219,12 +235,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public void Clear()
-        {
-            Query = "";
-        }
-
-
         public void OnSelected(T item)
         {
             if (onSelected != null && item != null && SwitchedOn)
@@ -246,21 +256,14 @@ namespace Diagnosis.App.ViewModels
             }
             IsResultsVisible = false;
         }
-        private void RaiseCleared()
+
+        private void OnCleared()
         {
             var h = Cleared;
             if (h != null)
             {
                 h(this, EventArgs.Empty);
             }
-        }
-
-
-        #endregion ISearch
-
-        private bool IsQueryEmpty
-        {
-            get { return string.IsNullOrWhiteSpace(Query); }
         }
 
         private void MakeResults()
