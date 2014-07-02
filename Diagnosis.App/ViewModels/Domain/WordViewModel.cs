@@ -14,6 +14,8 @@ namespace Diagnosis.App.ViewModels
 
         public Editable Editable { get; private set; }
 
+        #region Model
+
         public byte Priority
         {
             get
@@ -47,23 +49,7 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-        public bool IsEnum
-        {
-            get
-            {
-                return word.IsEnum;
-            }
-            set
-            {
-                if (word.IsEnum != value)
-                {
-                    word.IsEnum = value;
-                    OnPropertyChanged("IsEnum");
-                    Editable.MarkDirty();
 
-                }
-            }
-        }
         public Category DefaultCategory
         {
             get
@@ -83,6 +69,8 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
+
+        #endregion
 
         public string SearchText
         {

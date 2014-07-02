@@ -137,20 +137,20 @@ namespace Diagnosis.App.ViewModels
             repository = repo;
 
             var all = repository.GetAll().Select(s => new WordViewModel(s)).ToList();
+            root = new WordViewModel(new Word("root")) { IsNonCheckable = true };
+            root.Add(all);
 
             foreach (var item in all)
             {
-                if (item.IsEnum)
+                if (item.word.Parent != null)
                 {
-                    item.Add(all.Where(w => w.word.Parent == item.word));
+                    // если у слова есть родитель, добавляем слово к нему, и удаляем из корня
+                    var parentVM = all.Where(w => w.word == item.word.Parent).SingleOrDefault();
+                    parentVM.Add(item);
+                    root.Remove(item);
                 }
                 Subscribe(item);
             }
-
-            root = new WordViewModel(new Word("root")) { IsNonCheckable = true };
-            root.Add(all.Where(w => w.IsRoot)); // в корне только слова верхнего уровня
-
-            Words = new ObservableCollection<WordViewModel>(root.Children);
 
             this.Subscribe((int)EventID.WordsEditingModeChanged, (e) =>
             {

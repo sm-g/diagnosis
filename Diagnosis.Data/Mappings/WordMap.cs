@@ -15,7 +15,6 @@ namespace Diagnosis.Data.Mappings
 
             Property(x => x.Priority, m => m.NotNullable(true));
             Property(x => x.Title, m => m.NotNullable(true));
-            Property(x => x.IsEnum);
 
             ManyToOne(x => x.DefaultCategory, m =>
             {

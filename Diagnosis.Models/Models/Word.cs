@@ -24,8 +24,6 @@ namespace Diagnosis.Models
 
         public virtual byte Priority { get; set; }
 
-        public virtual bool IsEnum { get; set; }
-
         public virtual Category DefaultCategory { get; set; }
 
         public virtual Word Parent { get; set; }
