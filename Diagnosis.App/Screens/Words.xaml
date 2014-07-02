@@ -6,19 +6,55 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <!--WordsListViewModel-->
     <Grid Margin="10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Style="{StaticResource buttonsBar}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox x:Name="input"
+                     Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}" >
+                <controls:WatermarkService.Watermark>
+                    <TextBlock Style="{StaticResource watermark}">Фильтр</TextBlock>
+                </controls:WatermarkService.Watermark>
+            </TextBox>
+            <Button Grid.Column="1"
+                    Content="×"
+                    Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                    Command="{Binding ClearCommand}" />
+        </Grid>
+
+        <StackPanel Grid.Row="1" Style="{StaticResource buttonsBar}">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource barButton}"/>
             </StackPanel.Resources>
-            <Button Command="{Binding CommitCommand}">Сохранить</Button>
+            <Button Command="{Binding CommitCommand}">
+                <TextBlock>
+                    <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" ToolTip="Сохранить выбранные слова ()">Сохранить</Run>
+                    <TextBlock Text="{Binding CheckedWords, StringFormat='{}({0})'}"
+                                Visibility="{Binding CheckedWords, Converter={StaticResource CountToVisibility}, ConverterParameter=1}" />
+                </TextBlock>
+            </Button>
+            <Button Command="{Binding AddCommand}" ToolTip="Добавить слово ()">
+                <Image Source="{StaticResource addImage}" />
+            </Button>
+            <!--<Button Command="{Binding SendToSearchCommand}">
+                <TextBlock>
+                    <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" ToolTip="Искать выбранные слова ()">Искать</Run>
+                    <TextBlock Text="{Binding CheckedWords, StringFormat='{}({0})'}"
+                                Visibility="{Binding CheckedWords, Converter={StaticResource CountToVisibility}, ConverterParameter=1}" />
+                </TextBlock>
+            </Button>-->
         </StackPanel>
 
-        <controls:GroupsTree DataContext="{Binding Words}" Grid.Row="1" />
+        <controls:FullTree ItemType="Full" DataContext="{Binding Words}" Grid.Row="2" />
     </Grid>
 </UserControl>

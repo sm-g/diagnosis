@@ -7,7 +7,26 @@
              x:Name="treeItem"
              x:Class="Diagnosis.App.Controls.TreeItem"
              mc:Ignorable="d"
-             d:DesignHeight="20" d:DesignWidth="300" LostFocus="treeItem_LostFocus">
+             Focusable="False"
+             d:DesignHeight="25" d:DesignWidth="300" LostFocus="treeItem_LostFocus">
+    <UserControl.Resources>
+        <Style TargetType="StackPanel" x:Key="hidingStack" x:Shared="False">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" Value="True">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="Button" BasedOn="{StaticResource squareButton}">
+            <Setter Property="Height" Value="20" />
+            <Setter Property="Focusable" Value="False" />
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -17,6 +36,7 @@
             <ColumnDefinition Width="20" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
         <CheckBox x:Name="checkbox"
@@ -24,13 +44,64 @@
             Focusable="False"
             Visibility="{Binding IsNonCheckable, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
 
-        <DockPanel x:Name="title" Grid.Column="1">
-            <TextBlock Text="{Binding Code, FallbackValue=''}" Margin="0,0,3,0"/>
+        <DockPanel x:Name="title" Grid.Column="1" Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" Width="{Binding Width, ElementName=editorButtons}"
+                        Style="{StaticResource hidingStack}">
+
+                <Button Command="{Binding Editable.EditCommand}" ToolTip="Редактировать (F2)">
+                    <Image Source="{StaticResource editImage}" />
+                </Button>
+                <!--Words.xaml WordsListViewModel-->
+                <Button Command="{Binding DataContext.AddCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=3}}"
+                        CommandParameter="{Binding}" Margin="5,0,0,0" ToolTip="Добавить подчинённое слово ()">
+                    <Image Source="{StaticResource addImage}" />
+                </Button>
+            </StackPanel>
+
+            <TextBlock Text="{Binding Code, FallbackValue=''}" />
             <TextBlock Text="{Binding Name}"
-                       TextWrapping="Wrap" 
-                       MaxWidth="200" 
-                       HorizontalAlignment="Left"/>
+                       TextWrapping="Wrap"
+                       MaxWidth="200"
+                       Margin="0,0,5,0"
+                       HorizontalAlignment="Left" />
         </DockPanel>
+
+        <Grid x:Name="editor"
+            Grid.Column="1"
+            LostFocus="editor_LostFocus"
+            Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox x:Name="titleEditor" Margin="0,0,5,0"
+                Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
+                </TextBox.InputBindings>
+            </TextBox>
+
+            <StackPanel Orientation="Horizontal" x:Name="editorButtons" Grid.Column="1">
+                <Button Command="{Binding Editable.EditCommand}" ToolTip="Закрыть редактор (F2)" Visibility="{Binding Editable.IsDirty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                    <Image Source="{StaticResource editImage}" />
+                </Button>
+                <!--Кнопки: закрыть редактор или сохранить и отменить-->
+                <StackPanel Orientation="Horizontal" Visibility="{Binding Editable.IsDirty, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Button Command="{Binding Editable.CommitCommand}" ToolTip="Сохранить (Enter)">
+                        <Image Source="{StaticResource saveImage}" />
+                    </Button>
+                    <Button Command="{Binding Editable.RevertCommand}" Margin="5,0,0,0" ToolTip="Отменить (Esc)"
+                        Visibility="{Binding Unsaved, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                        <Image Source="{StaticResource undoImage}" />
+                    </Button>
+                </StackPanel>
+                <Button Command="{Binding Editable.DeleteCommand}" Margin="10,0,0,0" ToolTip="Удалить (Del)"
+                        Visibility="{Binding Editable.CanBeDeleted, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Image Source="{StaticResource deleteImage}" />
+                </Button>
+            </StackPanel>
+        </Grid>
 
         <StackPanel Orientation="Horizontal"
                     Grid.Column="2">
@@ -41,19 +112,11 @@
             </StackPanel.Resources>
 
             <TextBlock x:Name="unsaved"
-                       Text="new"
+                       Text="*"
                        Visibility="{Binding Editable.IsDirty, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
             <TextBlock x:Name="checkedChildren"
                    Text="{Binding CheckedChildren}"
                    Visibility="{Binding CheckedChildren, Converter={StaticResource CountToVisibility}, Mode=OneWay}" />
-        </StackPanel>
-
-        <StackPanel x:Name="editor"
-            Grid.Column="1"
-            LostFocus="editor_LostFocus"
-            Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <TextBox x:Name="titleEditor"
-                Text="{Binding Name, UpdateSourceTrigger=LostFocus}" />
         </StackPanel>
 
         <controls:FloatSearch x:Name="search"
@@ -62,8 +125,7 @@
             Grid.ColumnSpan="2"
             Visibility="{Binding IsSearchActive, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay, FallbackValue=Collapsed}"
             controls:FocusExtension.IsFocused="{Binding IsSearchFocused, FallbackValue=False}"
-            DataContext="{Binding Search}"
->
+            DataContext="{Binding Search}">
             <controls:FloatSearch.InputBindings>
                 <KeyBinding Key="Escape" Command="{Binding ToggleSearchActiveCommand}"></KeyBinding>
                 <KeyBinding Key="Enter" Command="{Binding SelectCommand}"></KeyBinding>
