@@ -11,6 +11,7 @@ namespace Diagnosis.Data.Repositories
         void Update(T entity);
         void SaveOrUpdate(T entity);
         void Remove(T entity);
+        void Refresh(T entity);
         IEnumerable<T> GetAll();
         T GetById(int entityId);
     }

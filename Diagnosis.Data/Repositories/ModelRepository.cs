@@ -43,6 +43,11 @@ namespace Diagnosis.Data.Repositories
                 transaction.Commit();
             }
         }
+        public void Refresh(T entity)
+        {
+            ISession session = NHibernateHelper.GetSession();
+            session.Refresh(entity);
+        }
         public IEnumerable<T> GetAll()
         {
             ISession session = NHibernateHelper.GetSession();
