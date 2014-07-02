@@ -8,7 +8,7 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-
+    <!--AutoCompleteBoxViewModel-->
     <StackPanel>
         <controls:MyAutoCompleteBox x:Name="auto"
                                     Text="{Binding Query, Mode=TwoWay}"

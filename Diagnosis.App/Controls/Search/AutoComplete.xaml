@@ -5,8 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="30" d:DesignWidth="300"
              DataContextChanged="UserControl_DataContextChanged">
+    <!--AutoCompleteBase-->
     <UserControl.Resources>
         <DataTemplate x:Key="DiagnosisTemplate">
             <DockPanel MouseUp="DockPanel_MouseUp">

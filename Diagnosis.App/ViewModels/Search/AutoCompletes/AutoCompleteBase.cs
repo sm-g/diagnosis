@@ -23,7 +23,13 @@ namespace Diagnosis.App.ViewModels
         protected ISimpleSearcher<T> searcher;
         protected HierarchicalSearchSettings settings;
 
+        /// <summary>
+        /// Возникает, когда принимается предложенние.
+        /// </summary>
         public event EventHandler<AutoCompleteEventArgs> SuggestionAccepted;
+        /// <summary>
+        /// Возникает, когда работа с автокомплитом окончена.
+        /// </summary>
         public event EventHandler InputEnded;
 
         [ContractInvariantMethod]

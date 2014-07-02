@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System;
 
 namespace Diagnosis.App.Controls
 {
@@ -22,10 +23,14 @@ namespace Diagnosis.App.Controls
         private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (vm != null)
+            {
                 vm.SuggestionAccepted -= vm_SuggestionAccepted;
+            }
             vm = DataContext as IAutoComplete;
             if (vm != null)
+            {
                 vm.SuggestionAccepted += vm_SuggestionAccepted;
+            }
         }
 
         private void input_TextChanged(object sender, TextChangedEventArgs e)
@@ -91,7 +96,7 @@ namespace Diagnosis.App.Controls
         private void vm_SuggestionAccepted(object sender, AutoCompleteEventArgs e)
         {
             input.CaretIndex = input.Text.Length;
-            RefreshPopup();
+            HidePopup();
         }
 
         private void input_GotFocus(object sender, RoutedEventArgs e)
