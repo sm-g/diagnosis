@@ -20,7 +20,7 @@ namespace Diagnosis.App.ViewModels
         /// </summary>
         public event HierarchicalEventHandler<T> ChildrenChanged;
         /// <summary>
-        /// Возникает при добавлении к родителю.
+        /// Возникает при добавлении к родителю. (Не бывает удаления из родителя — всегда есть корневой элемент).
         /// </summary>
         public event HierarchicalEventHandler<T> ParentChanged;
 
@@ -79,7 +79,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
         /// <summary>
-        /// Элемент конечный в иерархии, лист.
+        /// Элемент конечный в иерархии, лист, без детей.
         /// </summary>
         public bool IsTerminal
         {
@@ -96,6 +96,16 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return Parent == null;
+            }
+        }
+        /// <summary>
+        /// Родительский элемент, есть дети.
+        /// </summary>
+        public bool IsParent
+        {
+            get
+            {
+                return Children.Count > 0;
             }
         }
 

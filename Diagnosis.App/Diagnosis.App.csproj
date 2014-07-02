@@ -271,6 +271,7 @@
     <Compile Include="ViewModels\PatientViewer.cs" />
     <Compile Include="ViewModels\Screens\PatientsAsideViewModel.cs" />
     <Compile Include="ViewModels\Screens\PatientsListViewModel.cs" />
+    <Compile Include="ViewModels\Screens\WordsListViewModel.cs" />
     <Compile Include="ViewModels\Search\DiagnosisFiltratingSearcher.cs" />
     <Compile Include="ViewModels\Search\DiagnosisSearcher.cs" />
     <Compile Include="ViewModels\Search\Filter.cs" />

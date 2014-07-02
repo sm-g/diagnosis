@@ -9,6 +9,7 @@ using System.Linq;
 using Diagnosis.App.Messaging;
 using System.Diagnostics;
 using System.Windows.Input;
+using System;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -17,17 +18,9 @@ namespace Diagnosis.App.ViewModels
         private readonly IWordRepository repository;
         private readonly WordViewModel root;
 
-        private RelayCommand _commit;
         private WordSearcher _searcher;
 
-        public ObservableCollection<WordViewModel> Words
-        {
-            get;
-            private set;
-        }
         public WordViewModel Root { get { return root; } }
-
-
         /// <summary>
         /// Поисковик по всем словам, кроме групп, создает новые из запроса.
         /// </summary>
@@ -40,44 +33,15 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private IEnumerable<WordViewModel> DirtyWords
-        {
-            get
-            {
-                return Words.Where(s => s.Editable.IsDirty);
-            }
-        }
+        IEnumerable<WordViewModel> AllWords { get { return root.AllChildren; } }
 
-        public ICommand CommitCommand
-        {
-            get
-            {
-                return _commit
-                    ?? (_commit = new RelayCommand(
-                                          () =>
-                                          {
-                                              foreach (var item in DirtyWords)
-                                              {
-                                                  if (item.IsChecked)
-                                                      item.Editable.Commit();
-                                              }
-                                          },
-                                          () => DirtyWords.Count() > 0));
-            }
-        }
+
 
         public IEnumerable<WordViewModel> GetSymptomWords(Symptom s)
         {
             Contract.Requires(s != null);
 
-            if (Words.Count > 0)
-            {
-                var intersect = root.AllChildren.Select(w => w.word).Intersect(s.Words);
-
-                return root.AllChildren.Where(w => intersect.Contains(w.word));
-            }
-
-            return Enumerable.Empty<WordViewModel>();
+            return AllWords.Where(w => s.Words.Contains(w.word));
         }
 
         public void CheckThese(IEnumerable<WordViewModel> words)
@@ -91,35 +55,41 @@ namespace Diagnosis.App.ViewModels
         }
 
         /// <summary>
-        /// Создает слово и добавляет в коллекцию Words, если требуется.
+        /// Создает слово и добавляет в корень или к детям указанного слова.
         /// </summary>
-        public WordViewModel Create(string title)
+        public WordViewModel Create(string title, WordViewModel parent = null)
         {
             var existing = Find(title);
-
             if (existing != null)
-                return existing;
+                throw new ArgumentException("Word with title already exists.", "title");
 
             var vm = new WordViewModel(new Word(title));
             vm.Editable.MarkDirty();
-            root.Add(vm);
-            Words.Add(vm);
+            if (parent == null)
+            {
+                root.Add(vm);
+            }
+            else
+            {
+                parent.Add(vm);
+            }
             Subscribe(vm);
 
             Debug.Print("new word: {0}", vm);
             return vm;
         }
 
+
+
         /// <summary>
-        /// Уничтожает созданные слова, которые не были использованы в записи.
+        /// Уничтожает созданные слова, которые не были сохранены.
         /// </summary>
         public void WipeUnsaved()
         {
-            var toRemove = Words.Where(word => word.Unsaved).ToList();
+            var toRemove = AllWords.Where(word => word.Unsaved).ToList();
             toRemove.ForAll((word) =>
             {
-                root.Remove(word);
-                Words.Remove(word);
+                word.Remove();
             });
         }
 
@@ -128,7 +98,12 @@ namespace Diagnosis.App.ViewModels
         /// </summary>
         public WordViewModel Find(string title)
         {
-            return Words.Where(w => w.Name == title).SingleOrDefault();
+            return AllWords.Where(w => w.Name == title).SingleOrDefault();
+        }
+
+        internal WordViewModel GetByModel(Word word)
+        {
+            return AllWords.Where(w => w.word == word).SingleOrDefault();
         }
 
         public WordsProducer(IWordRepository repo)
@@ -164,24 +139,58 @@ namespace Diagnosis.App.ViewModels
         {
             item.Editable.Committed += (s, e) =>
             {
-                repository.SaveOrUpdate(e.entity as Word);
+                var w = e.entity as Word;
+                repository.SaveOrUpdate(w);
+            };
+            item.Editable.Reverted += (s, e) =>
+            {
+                var w = e.entity as Word;
+                repository.Refresh(w);
+                GetByModel(w).RefreshProperties();
+            };
+            item.Editable.Deleted += (s, e) =>
+            {
+                var w = e.entity as Word;
+                repository.Remove(w);
+                var vm = GetByModel(w);
+                vm.Remove();
+            };
+            item.ChildrenChanged += (s, e) =>
+            {
+                // слово с дельтми нальзя удалять
+                SetDeletable(item);
             };
         }
 
         private void OnWordsEditingModeChanged(bool isEditing)
         {
-            Words.ForBranch((vm) =>
+            AllWords.ForAll((vm) =>
             {
                 vm.Editable.SwitchedOn = isEditing;
-                //  vm.Search.SwitchedOn = !isEditing;
+                SetDeletable(vm);
             });
 
             UnCheckAll();
         }
 
+        private static void SetDeletable(WordViewModel w)
+        {
+            // нельзя удалить слова, которые есть в каком-нибудь симптоме
+            // или слова с детьми
+            // TODO в симптоме, связанном с записью
+            if (w.IsParent || EntityProducers.SymptomsProducer.GetSymptomsWithWords(w.ToEnumerable()).Count() > 0)
+            {
+                w.Editable.CanBeDeleted = false;
+            }
+            else
+            {
+                w.Editable.CanBeDeleted = true;
+            }
+        }
+
         private void UnCheckAll()
         {
-            Words.ForBranch((vm) => vm.IsChecked = false);
+            AllWords.ForAll((vm) => vm.IsChecked = false);
         }
     }
 }

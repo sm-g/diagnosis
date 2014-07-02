@@ -1,6 +1,6 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.App.Messaging;
+using Diagnosis.Models;
 using EventAggregator;
-using Diagnosis.App.Messaging;
 using System.Diagnostics.Contracts;
 
 namespace Diagnosis.App.ViewModels
@@ -108,6 +108,12 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        public void RefreshProperties()
+        {
+            OnPropertyChanged("Name");
+            OnPropertyChanged("Priority");
+        }
+
         public WordViewModel(Word w)
         {
             Contract.Requires(w != null);
@@ -118,6 +124,18 @@ namespace Diagnosis.App.ViewModels
             DefaultCategory = w.DefaultCategory;
 
             Editable.CanBeDirty = true;
+
+            this.ParentChanged += WordViewModel_ParentChanged;
+        }
+
+        private void WordViewModel_ParentChanged(object sender, HierarchicalEventAgrs<WordViewModel> e)
+        {
+            // this - родитель
+            // добавили слово не в корень — устанавливаем родителя слову
+            if (e.IHierarchical.word.Parent == null && !IsRoot)
+            {
+                e.IHierarchical.word.Parent = this.word;
+            }
         }
 
         private void _search_ResultItemSelected(object sender, System.EventArgs e)

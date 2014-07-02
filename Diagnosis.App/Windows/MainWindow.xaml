@@ -20,7 +20,7 @@
             <DataTemplate DataType="{x:Type vm:LoginViewModel}">
                 <screen:Login />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:WordsProducer}">
+            <DataTemplate DataType="{x:Type vm:WordsListViewModel}">
                 <screen:Words />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:PatientViewer}">
