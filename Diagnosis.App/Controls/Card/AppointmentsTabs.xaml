@@ -8,6 +8,7 @@
              xmlns:vm="clr-namespace:Diagnosis.App.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="50" d:DesignWidth="300">
+    <!--DataContext is CourseViewModel-->
     <UserControl.Resources>
         <InputBindingCollection x:Shared="False" x:Key="AppInputBindings">
             <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
@@ -55,9 +56,8 @@
         <card:AddNewDataTemplateSelector x:Key="addNewSelector"
                                          DefaultTemplate="{StaticResource AppointmentHeaderTemplate}"
                                          AddNewTemplate="{StaticResource NewAppointmentTemplate}" />
-    </UserControl.Resources>
+    </UserControl.Resources>    
     
-    <!--DataContext is CourseViewModel-->
     <Grid>
         <TabControl x:Name="appointments" Grid.Row="1"
                     SelectedItem="{Binding SelectedAppointmentWithAddNew, Mode=TwoWay}"

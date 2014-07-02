@@ -6,6 +6,7 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
              d:DesignHeight="300" Width="200">
+    <!--PatientsAsideViewModel-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="36" />

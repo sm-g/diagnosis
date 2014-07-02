@@ -9,6 +9,7 @@
              Loaded="patientsControl_Loaded"
              FocusManager.IsFocusScope="True"
              d:DesignHeight="300" d:DesignWidth="400">
+    <!--PatientsListViewModel-->
     <Page.Resources>
         <Style x:Key="SexCheckbox" TargetType="{x:Type CheckBox}">
             <Setter Property="Template">

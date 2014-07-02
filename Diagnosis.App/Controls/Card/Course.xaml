@@ -6,12 +6,9 @@
              xmlns:conv="clr-namespace:Diagnosis.App.Converters"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
+    <!--CourseViewModel-->
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../../Styles/ExpanderFixed.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-
             <conv:CountToAppointmentsLabel x:Key="CountToAppLabel" />
         </ResourceDictionary>
     </UserControl.Resources>

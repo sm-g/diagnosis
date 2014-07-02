@@ -9,6 +9,7 @@
              mc:Ignorable="d"
              Focusable="False"
              d:DesignHeight="25" d:DesignWidth="300" LostFocus="treeItem_LostFocus">
+    <!--HierarchicalCheckable (Word or Diagnosis)-->
     <UserControl.Resources>
         <Style TargetType="StackPanel" x:Key="hidingStack" x:Shared="False">
             <Setter Property="Visibility" Value="Collapsed" />

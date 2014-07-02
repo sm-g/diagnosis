@@ -8,6 +8,7 @@
              x:Class="Diagnosis.App.Controls.TreeItemLight"
              mc:Ignorable="d"
              d:DesignHeight="20" d:DesignWidth="300">
+    <!--HierarchicalCheckable (Word or Diagnosis)-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />

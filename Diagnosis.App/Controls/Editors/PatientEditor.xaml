@@ -6,6 +6,7 @@
              xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="400">
+    <!--PatientViewModel-->
     <UserControl.Resources>
         <Style TargetType="DockPanel" BasedOn="{StaticResource formLine}" />
         <Style TargetType="Label" BasedOn="{StaticResource label120}" />
