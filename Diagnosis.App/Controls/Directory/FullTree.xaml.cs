@@ -16,6 +16,12 @@ namespace Diagnosis.App.Controls
         {
             InitializeComponent();
         }
-
+        private void item_selected(object sender, RoutedEventArgs e)
+        {
+            TreeViewItem tvi = sender as TreeViewItem;
+            if (tvi != null)
+                tvi.BringIntoView();
+            e.Handled = true;
+        }
     }
 }

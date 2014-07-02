@@ -13,10 +13,16 @@
                 <ResourceDictionary Source="EditableTreeStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <Style  x:Key="containerStyle"
+                    TargetType="TreeViewItem"
+                    BasedOn="{StaticResource TreeItemContainerStyle}">
+                <EventSetter Event="Selected" Handler="item_selected" />
+            </Style>
+            
             <HierarchicalDataTemplate
                 x:Key="groupTreeItemTemplate"
                 ItemsSource="{Binding NonTerminalChildren}">
-                <ContentControl Content="{Binding}" Style="{StaticResource TreeItemTemplateStyle}" />
+                <ContentControl Content="{Binding}" Style="{StaticResource TreeItemTemplateStyle}" Focusable="False" /> <!--Focusable to navigate-->
             </HierarchicalDataTemplate>
         </ResourceDictionary>
     </controls:TreeCommon.Resources>
@@ -29,12 +35,12 @@
         <TreeView
             x:Name="tree"
             Style="{StaticResource TreeViewStyle}"
-            ItemContainerStyle="{StaticResource TreeItemContainerStyle}"
+            ItemContainerStyle="{StaticResource containerStyle}"
             ItemTemplate="{StaticResource groupTreeItemTemplate}"
             ItemsSource="{Binding}">
         </TreeView>
         <TreeView DataContext="{Binding SelectedItem, ElementName=tree, Mode=OneWay}"
-                  ItemContainerStyle="{StaticResource TreeItemContainerStyle}"
+                  ItemContainerStyle="{StaticResource containerStyle}"
                   ItemsSource="{Binding TerminalChildren}"
                   Style="{StaticResource TreeViewStyle}"
                   Grid.Column="1"

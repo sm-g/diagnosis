@@ -11,12 +11,18 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="EditableTreeStyle.xaml" />
-            </ResourceDictionary.MergedDictionaries>                 
-          
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style  x:Key="containerStyle"
+                    TargetType="TreeViewItem"
+                    BasedOn="{StaticResource TreeItemContainerStyle}">
+                <EventSetter Event="Selected" Handler="item_selected" />
+            </Style>
+
             <HierarchicalDataTemplate
                 x:Key="fullTreeItemTemplate"
                 ItemsSource="{Binding Children}">
-                <ContentControl Content="{Binding}" Style="{StaticResource TreeItemTemplateStyle}" />
+                <ContentControl Content="{Binding}" Style="{StaticResource TreeItemTemplateStyle}" Focusable="False" /> <!--Focusable to navigate-->
             </HierarchicalDataTemplate>
         </ResourceDictionary>
     </controls:TreeCommon.Resources>
@@ -24,7 +30,7 @@
         <TreeView
             x:Name="tree"
             Style="{StaticResource TreeViewStyle}"
-            ItemContainerStyle="{StaticResource TreeItemContainerStyle}"
+            ItemContainerStyle="{StaticResource containerStyle}"
             ItemTemplate="{StaticResource fullTreeItemTemplate}"
             ItemsSource="{Binding}">
         </TreeView>
