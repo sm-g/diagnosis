@@ -18,7 +18,7 @@ namespace Diagnosis.App.ViewModels
             return item.Name;
         }
 
-        public WordRootAutoComplete(QuerySeparator separator, SimpleSearcherSettings settings, IEnumerable<WordViewModel> initItems = null)
+        public WordRootAutoComplete(QuerySeparator separator, HierarchicalSearchSettings settings, IEnumerable<WordViewModel> initItems = null)
             : base(separator, settings, initItems)
         { }
     }

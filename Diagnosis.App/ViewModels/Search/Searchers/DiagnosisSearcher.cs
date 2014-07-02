@@ -23,7 +23,7 @@ namespace Diagnosis.App.ViewModels
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="settings"></param>
-        public DiagnosisSearcher(DiagnosisViewModel parent, SimpleSearcherSettings settings, IEnumerable<DiagnosisViewModel> checkedDiagnoses = null)
+        public DiagnosisSearcher(DiagnosisViewModel parent, HierarchicalSearchSettings settings, IEnumerable<DiagnosisViewModel> checkedDiagnoses = null)
         {
             Contract.Requires(parent != null);
             Collection = settings.AllChildren ? parent.AllChildren : parent.Children;

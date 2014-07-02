@@ -21,7 +21,7 @@ namespace Diagnosis.App.ViewModels
 
         protected ObservableCollection<T> items;
         protected ISimpleSearcher<T> searcher;
-        protected SimpleSearcherSettings settings;
+        protected HierarchicalSearchSettings settings;
 
         public event EventHandler<AutoCompleteEventArgs> SuggestionAccepted;
         public event EventHandler InputEnded;
@@ -379,7 +379,7 @@ namespace Diagnosis.App.ViewModels
         protected abstract string GetQueryString(T item);
 
 
-        public AutoCompleteBase(QuerySeparator separator, SimpleSearcherSettings settings, IEnumerable<T> initItems = null)
+        public AutoCompleteBase(QuerySeparator separator, HierarchicalSearchSettings settings, IEnumerable<T> initItems = null)
         {
             Contract.Requires(separator != null);
             this.settings = settings;

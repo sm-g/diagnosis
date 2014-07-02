@@ -12,7 +12,7 @@ namespace Diagnosis.App.ViewModels
     public class DiagnosisFiltratingSearcher : DiagnosisSearcher
     {
         public DiagnosisFiltratingSearcher(DiagnosisViewModel parent, bool withChecked = false)
-            : base(parent, new SimpleSearcherSettings(withNonCheckable: true, withChecked: withChecked, withCreatingNew: false, allChildren: false))
+            : base(parent, new HierarchicalSearchSettings() { WithNonCheckable = true, WithChecked = withChecked })
         {
         }
         /// <summary>

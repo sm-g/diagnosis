@@ -48,7 +48,7 @@ namespace Diagnosis.App.ViewModels
             Contract.Requires(manager != null);
             patManager = manager;
 
-            WordSearch = new WordRootAutoComplete(QuerySeparator.Default, new SimpleSearcherSettings() { AllChildren = true });
+            WordSearch = new WordRootAutoComplete(QuerySeparator.Default, new HierarchicalSearchSettings() { AllChildren = true });
             Results = new ObservableCollection<HrSearchResultViewModel>();
             ControlsVisible = true;
             AnyWord = true;

@@ -269,25 +269,25 @@
     <Compile Include="ViewModels\Screens\PatientsAsideViewModel.cs" />
     <Compile Include="ViewModels\Screens\PatientsListViewModel.cs" />
     <Compile Include="ViewModels\Screens\WordsListViewModel.cs" />
-    <Compile Include="ViewModels\Search\DiagnosisFiltratingSearcher.cs" />
-    <Compile Include="ViewModels\Search\DiagnosisSearcher.cs" />
+    <Compile Include="ViewModels\Search\Searchers\DiagnosisFiltratingSearcher.cs" />
+    <Compile Include="ViewModels\Search\Searchers\DiagnosisSearcher.cs" />
     <Compile Include="ViewModels\Search\Filter.cs" />
-    <Compile Include="ViewModels\Search\HrSearcher.cs" />
+    <Compile Include="ViewModels\Search\Searchers\HrSearcher.cs" />
     <Compile Include="ViewModels\Search\HrSearchOptions.cs" />
     <Compile Include="ViewModels\Interfaces\IFilter.cs" />
-    <Compile Include="ViewModels\Search\SimpleSearcherSettings.cs" />
+    <Compile Include="ViewModels\Search\HierarchicalSearchSettings.cs" />
     <Compile Include="ViewModels\Search\HrSearchResultViewModel.cs" />
     <Compile Include="ViewModels\Screens\SearchViewModel.cs" />
-    <Compile Include="ViewModels\Search\WordTopParentSearcher.cs" />
-    <Compile Include="ViewModels\Search\AutoComplete\WordRootAutoComplete.cs" />
-    <Compile Include="ViewModels\Search\WordCompositeAutoComplete.cs" />
-    <Compile Include="ViewModels\Search\WordCompositeSearcher.cs" />
-    <Compile Include="ViewModels\Search\WordSearcher.cs" />
-    <Compile Include="ViewModels\Search\PatientSearcher.cs" />
+    <Compile Include="ViewModels\Search\Searchers\WordTopParentSearcher.cs" />
+    <Compile Include="ViewModels\Search\AutoCompletes\WordRootAutoComplete.cs" />
+    <Compile Include="ViewModels\Search\AutoCompletes\WordCompositeAutoComplete.cs" />
+    <Compile Include="ViewModels\Search\Searchers\WordCompositeSearcher.cs" />
+    <Compile Include="ViewModels\Search\Searchers\WordSearcher.cs" />
+    <Compile Include="ViewModels\Search\Searchers\PatientSearcher.cs" />
     <Compile Include="ViewModels\Domain\CategoryViewModel.cs" />
     <Compile Include="ViewModels\Producers\SymptomsProducer.cs" />
     <Compile Include="ViewModels\Producers\WordsProducer.cs" />
-    <Compile Include="ViewModels\Search\AutoComplete\AutoCompleteBoxViewModel.cs" />
+    <Compile Include="ViewModels\Search\AutoCompletes\AutoCompleteBoxViewModel.cs" />
     <Compile Include="ViewModels\Search\SearchWrap.cs" />
     <Compile Include="ViewModels\Domain\SymptomViewModel.cs" />
     <Compile Include="ViewModels\HierarchicalCheckable.cs" />
@@ -298,7 +298,7 @@
     <Compile Include="ViewModels\Producers\DoctorsProducer.cs" />
     <Compile Include="ViewModels\Domain\CourseViewModel.cs" />
     <Compile Include="ViewModels\Domain\DoctorViewModel.cs" />
-    <Compile Include="ViewModels\Search\AutoComplete\DiagnosisAutoComplete.cs" />
+    <Compile Include="ViewModels\Search\AutoCompletes\DiagnosisAutoComplete.cs" />
     <Compile Include="Controls\Directory\TileItem.xaml.cs">
       <DependentUpon>TileItem.xaml</DependentUpon>
     </Compile>
@@ -329,7 +329,7 @@
       <DependentUpon>PatientsAside.xaml</DependentUpon>
     </Compile>
     <Compile Include="Styles\TreeStyle.cs" />
-    <Compile Include="ViewModels\Search\AutoComplete\AutoCompleteBase.cs" />
+    <Compile Include="ViewModels\Search\AutoCompletes\AutoCompleteBase.cs" />
     <Compile Include="ViewModels\CheckableBase.cs" />
     <Compile Include="ViewModels\Domain\DiagnosisViewModel.cs" />
     <Compile Include="ViewModels\HierarchicalBase.cs" />

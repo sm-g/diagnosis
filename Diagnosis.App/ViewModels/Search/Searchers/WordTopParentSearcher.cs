@@ -11,7 +11,7 @@ namespace Diagnosis.App.ViewModels
     public class WordTopParentSearcher : WordSearcher
     {
         public WordTopParentSearcher() :
-            base(EntityProducers.WordsProducer.Root, new SimpleSearcherSettings() { WithNonCheckable = true, WithChecked = true, AllChildren = true })
+            base(EntityProducers.WordsProducer.Root, new HierarchicalSearchSettings() { WithNonCheckable = true, WithChecked = true, AllChildren = true })
         {
         }
         /// <summary>

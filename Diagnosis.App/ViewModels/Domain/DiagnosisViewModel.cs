@@ -86,7 +86,7 @@ namespace Diagnosis.App.ViewModels
             {
                 _search.ResultItemSelected += _search_ResultItemSelected;
             }
-            var search = new PopupSearch<DiagnosisViewModel>(new DiagnosisSearcher(this, new SimpleSearcherSettings()));
+            var search = new PopupSearch<DiagnosisViewModel>(new DiagnosisSearcher(this, new HierarchicalSearchSettings()));
             search.ResultItemSelected += _search_ResultItemSelected;
             return search;
         }

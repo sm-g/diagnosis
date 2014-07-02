@@ -20,7 +20,7 @@ namespace Diagnosis.App.ViewModels
 
         public IEnumerable<WordViewModel> Collection { get; private set; }
 
-        public WordSearcher(WordViewModel parent, SimpleSearcherSettings settings, IEnumerable<WordViewModel> checkedWords = null)
+        public WordSearcher(WordViewModel parent, HierarchicalSearchSettings settings, IEnumerable<WordViewModel> checkedWords = null)
         {
             Contract.Requires(parent != null);
             Collection = settings.AllChildren ? parent.AllChildren : parent.Children;

@@ -21,7 +21,7 @@ namespace Diagnosis.App.ViewModels
             return item.Name;
         }
 
-        public DiagnosisAutoComplete(QuerySeparator separator, SimpleSearcherSettings settings)
+        public DiagnosisAutoComplete(QuerySeparator separator, HierarchicalSearchSettings settings)
             : base(separator, settings)
         { }
     }

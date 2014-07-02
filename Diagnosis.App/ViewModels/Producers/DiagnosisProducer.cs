@@ -33,7 +33,7 @@ namespace Diagnosis.App.ViewModels
                 {
                     _root = value;
                     _diaFiltratingSearcher = new DiagnosisFiltratingSearcher(_root);
-                    _diaRootSearcher = new DiagnosisSearcher(_root, new SimpleSearcherSettings() { WithChecked = true, AllChildren = true });
+                    _diaRootSearcher = new DiagnosisSearcher(_root, new HierarchicalSearchSettings() { WithChecked = true, AllChildren = true });
 
                     OnPropertyChanged("RootSearcher");
                     OnPropertyChanged("RootFiltratingSearcher");

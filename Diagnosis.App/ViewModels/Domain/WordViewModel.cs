@@ -93,7 +93,7 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_search == null)
                 {
-                    _search = new PopupSearch<WordViewModel>(new WordSearcher(this, new SimpleSearcherSettings() { AllChildren = true }));
+                    _search = new PopupSearch<WordViewModel>(new WordSearcher(this, new HierarchicalSearchSettings() { AllChildren = true }));
                     _search.ResultItemSelected += _search_ResultItemSelected;
                 }
                 return _search;

@@ -29,7 +29,7 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _searcher ?? (_searcher = new WordSearcher(root,
-                    new SimpleSearcherSettings() { WithChecked = true, WithCreatingNew = true, AllChildren = true }));
+                    new HierarchicalSearchSettings() { WithChecked = true, WithCreatingNew = true, AllChildren = true }));
             }
         }
 

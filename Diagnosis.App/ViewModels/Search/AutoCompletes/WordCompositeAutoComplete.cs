@@ -22,7 +22,7 @@ namespace Diagnosis.App.ViewModels
         {
             return item.Name;
         }
-        public WordCompositeAutoComplete(QuerySeparator separator, SimpleSearcherSettings settings, IEnumerable<WordViewModel> initItems = null)
+        public WordCompositeAutoComplete(QuerySeparator separator, HierarchicalSearchSettings settings, IEnumerable<WordViewModel> initItems = null)
             : base(separator, settings, initItems)
         { }
     }
