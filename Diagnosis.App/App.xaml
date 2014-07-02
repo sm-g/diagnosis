@@ -88,6 +88,10 @@
             <Setter Property="Padding" Value="4" />
         </Style>
 
+        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}" x:Key="squareButton" >
+            <Setter Property="Width" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
+        </Style>
+        
         <Style TargetType="DockPanel" x:Key="formLine">
             <Setter Property="Margin">
                 <Setter.Value>

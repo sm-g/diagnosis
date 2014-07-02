@@ -32,7 +32,7 @@
             </TextBox>
             <Button Grid.Column="1"
                     Content="×"
-                    Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                    Style="{StaticResource squareButton}"
                     Command="{Binding ClearCommand}" />
         </Grid>
         <Popup x:Name="popup"

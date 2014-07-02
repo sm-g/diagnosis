@@ -19,7 +19,6 @@
                 <DockPanel MinWidth="70">
                     <Button x:Name="deleteButton"
                             Command="{Binding Content.Editable.DeleteCommand}"
-                            Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
                             Height="12"
                             Padding="0"
                             ToolTip="Удалить осмотр"
@@ -28,7 +27,7 @@
                             <ImageBrush ImageSource="{StaticResource closeImage}" Stretch="Uniform"/>
                         </Button.Background>
                         <Button.Style>
-                            <Style TargetType="Button">
+                            <Style TargetType="Button" BasedOn="{StaticResource squareButton}">
                                 <Setter Property="Visibility" Value="Collapsed" />
                                 <Style.Triggers>
                                     <MultiDataTrigger>

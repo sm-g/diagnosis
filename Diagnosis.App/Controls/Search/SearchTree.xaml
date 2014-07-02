@@ -10,6 +10,7 @@
              GotFocus="UserControl_GotFocus"
              LostFocus="UserControl_LostFocus"
              controls:EnhancedFocusScope.IsEnhancedFocusScope="True">
+    <!--PopupSearch<DiagnosisViewModel>-->
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -30,13 +31,13 @@
                 <Setter Property="IsExpanded" Value="{Binding IsFiltered}" />
                 <Setter Property="Visibility" Value="{Binding IsFiltered, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Setter Property="controls:Attached.InputBindings" Value="{StaticResource InputBindings}" />
-                <EventSetter Event="Selected" Handler="item_selected"/>
+                <EventSetter Event="Selected" Handler="item_selected" />
             </Style>
 
             <HierarchicalDataTemplate
                 x:Key="simpleTreeItemTemplate"
                 ItemsSource="{Binding Children}">
-                <TextBlock Text="{Binding}"/>
+                <TextBlock Text="{Binding}" />
             </HierarchicalDataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -69,12 +70,12 @@
             </TextBox>
             <Button Grid.Column="1"
                     Content="×"
-                    Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                    Style="{StaticResource squareButton}"
                     Command="{Binding ClearCommand}" />
         </Grid>
 
         <Popup x:Name="popup"
-               IsOpen="{Binding IsResultsVisible, Mode=TwoWay}"               
+               IsOpen="{Binding IsResultsVisible, Mode=TwoWay}"
                PlacementTarget="{Binding ElementName=input, Mode=OneWay}">
             <TreeView x:Name="results"
                 Style="{StaticResource TreeViewStyle}"
