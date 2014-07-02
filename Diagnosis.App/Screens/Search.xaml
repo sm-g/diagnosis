@@ -49,7 +49,7 @@
                   IsExpanded="{Binding ControlsVisible}"
                   ExpandDirection="Up">
             <Expander.Header>
-                <!--Описание запроса, к которому относятся показывается результаты-->
+                <!--Описание запроса, к которому относятся результаты-->
                 <StackPanel x:Name="searchDescription" Margin="5,0,0,0">
                     <StackPanel DataContext="{Binding Options}" Visibility="{Binding DataContext.SearchWas, ElementName=search, Converter={StaticResource BooleanToVisibilityConverter}}" >
                         <StackPanel Orientation="Horizontal"
@@ -105,6 +105,10 @@
             </Expander.Header>
 
             <StackPanel Margin="5,10,5,0">
+                <StackPanel.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
+                </StackPanel.InputBindings>
+                
                 <controls:AutoComplete DataContext="{Binding WordSearch}" />
                 <DockPanel Style="{StaticResource line}">
                     <!--<StackPanel DockPanel.Dock="Top"

@@ -141,7 +141,10 @@ namespace Diagnosis.App.Controls
         private void suggestions_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
                 EnterFormPopup();
+            }
         }
 
         private void suggestions_SelectionChanged(object sender, SelectionChangedEventArgs e)

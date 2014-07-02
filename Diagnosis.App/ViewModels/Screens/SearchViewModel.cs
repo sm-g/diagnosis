@@ -55,6 +55,10 @@ namespace Diagnosis.App.ViewModels
 
             catRepo = new CategoryRepository();
 
+            WordSearch.InputEnded += (s, e) =>
+            {
+                Search();
+            };
             ((INotifyCollectionChanged)Words).CollectionChanged += (s, e) =>
             {
                 OnPropertyChanged("AllEmpty");
@@ -324,24 +328,10 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _searchCommand
-                    ?? (_searchCommand = new RelayCommand(
-                                          () =>
-                                          {
-                                              Results.Clear();
-
-                                              MakeOptions();
-                                              var hrs = searcher.Search(Options);
-                                              // только одна запись из осмотра
-                                              hrs.Distinct(new KeyEqualityComparer<HealthRecord, Appointment>(hr => hr.Appointment))
-                                                  .ForAll(hr => Results.Add(new HrSearchResultViewModel(hr, Options)));
-
-                                              SearchWas = true;
-                                              ControlsVisible = false;
-
-                                              OnPropertyChanged("NoResultsVisible");
-                                          }, () => !AllEmpty));
+                    ?? (_searchCommand = new RelayCommand(Search, () => !AllEmpty));
             }
         }
+
 
         public ICommand OpenPatientCommand
         {
@@ -420,6 +410,22 @@ namespace Diagnosis.App.ViewModels
 
             Options = options;
             return options;
+        }
+
+        private void Search()
+        {
+            Results.Clear();
+
+            MakeOptions();
+            var hrs = searcher.Search(Options);
+            // только одна запись из осмотра
+            hrs.Distinct(new KeyEqualityComparer<HealthRecord, Appointment>(hr => hr.Appointment))
+                .ForAll(hr => Results.Add(new HrSearchResultViewModel(hr, Options)));
+
+            SearchWas = true;
+            ControlsVisible = false;
+
+            OnPropertyChanged("NoResultsVisible");
         }
 
         private void PrintHrDate()
