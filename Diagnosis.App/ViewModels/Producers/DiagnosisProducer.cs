@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using Diagnosis.Core;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -139,7 +140,7 @@ namespace Diagnosis.App.ViewModels
         {
             // снимаем флаг со всех диагнозов, кроме отмеченного
             if (isChecked)
-                Diagnoses.ForBranch(d =>
+                Root.AllChildren.ForAll(d =>
                 {
                     if (d.IsChecked && d != diagnosis)
                         d.IsChecked = false;
@@ -200,13 +201,13 @@ namespace Diagnosis.App.ViewModels
             // IEnumarable
 
             if (Diagnoses != null)
-                Diagnoses.ForBranch(dvm => dvm.Unsubscribe());
+                Root.AllChildren.ForAll(dvm => dvm.Unsubscribe());
             Diagnoses = new ObservableCollection<DiagnosisViewModel>(Root.Children);
         }
 
         private void OnDirectoryEditingModeChanged(bool isEditing)
         {
-            Diagnoses.ForBranch((dvm) =>
+            Root.AllChildren.ForAll((dvm) =>
             {
                 dvm.Editable.SwitchedOn = isEditing;
                 dvm.Search.SwitchedOn = !isEditing;
@@ -217,7 +218,7 @@ namespace Diagnosis.App.ViewModels
 
         private void UnCheckAll()
         {
-            Diagnoses.ForBranch((dvm) => dvm.IsChecked = false);
+            Root.AllChildren.ForAll((dvm) => dvm.IsChecked = false);
         }
 
         protected virtual void OnRootChanged()

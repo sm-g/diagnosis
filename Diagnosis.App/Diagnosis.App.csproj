@@ -287,7 +287,6 @@
     <Compile Include="ViewModels\Domain\CategoryViewModel.cs" />
     <Compile Include="ViewModels\Producers\SymptomsProducer.cs" />
     <Compile Include="ViewModels\Producers\WordsProducer.cs" />
-    <Compile Include="ViewModels\Extensions\HierarchicalExtensions.cs" />
     <Compile Include="ViewModels\Search\AutoCompleteBoxViewModel.cs" />
     <Compile Include="ViewModels\Search\SearchWrap.cs" />
     <Compile Include="ViewModels\Domain\SymptomViewModel.cs" />
