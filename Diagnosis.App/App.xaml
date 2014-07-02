@@ -30,6 +30,7 @@
         <BitmapImage x:Key="saveImage" UriSource="/Resources/save_16xLG.png" />
         <BitmapImage x:Key="undoImage" UriSource="/Resources/Arrow_UndoRevertRestore_16xLG.png" />
         <BitmapImage x:Key="deleteImage" UriSource="/Resources/Delete_black_32x32.png" />
+        <BitmapImage x:Key="editImage" UriSource="/Resources/126_Edit_24x24_72.png" />
 
 
         <s:Boolean x:Key="True">True</s:Boolean>

@@ -38,15 +38,33 @@
         <StackPanel Style="{StaticResource buttonsBar}" Margin="10">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource barButton}" />
+                <Style TargetType="Image">
+                    <Setter Property="Margin" Value="0,0,5,0" />
+                    <Setter Property="SnapsToDevicePixels" Value="True" />
+                    <Setter Property="Height" Value="16" />
+                </Style>
             </StackPanel.Resources>
-            <Button Command="{Binding AddHealthRecordCommand}" ToolTip="Редактировать новую запись (Ctrl + N)">Добавить запись</Button>
-            <Button Command="{Binding EditHrCommand}" ToolTip="Переключить редактор для выбранной записи (F2)">Редактировать</Button>
+            <Button Command="{Binding AddHealthRecordCommand}" ToolTip="Редактировать новую запись (Ctrl + N)">
+                <DockPanel>
+                    <Image Source="{StaticResource addImage}" />
+                    <TextBlock Text="Добавить запись" />
+                </DockPanel>
+            </Button>
+            <Button Command="{Binding EditHrCommand}" ToolTip="Переключить редактор для выбранной записи (F2)">
+                <DockPanel>
+                    <Image Source="{StaticResource editImage}" Height="20" />
+                    <TextBlock Text="Редактировать" />
+                </DockPanel>
+            </Button>
             <Button Command="{Binding DeleteHealthRecordsCommand}">
-                <TextBlock>
-                    <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" ToolTip="Удалить выбранные записи (Del)">Удалить</Run>
-                    <TextBlock Text="{Binding CheckedHealthRecords, StringFormat='{}({0})'}"
-                               Visibility="{Binding CheckedHealthRecords, Converter={StaticResource CountToVisibility}, ConverterParameter=1}" />
-                </TextBlock>
+                <DockPanel>
+                    <Image Source="{StaticResource deleteImage}" />
+                    <TextBlock>
+                        <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" ToolTip="Удалить выбранные записи (Del)">Удалить</Run>
+                        <TextBlock Text="{Binding CheckedHealthRecords, StringFormat='{}({0})'}"
+                                   Visibility="{Binding CheckedHealthRecords, Converter={StaticResource CountToVisibility}, ConverterParameter=1}" />
+                    </TextBlock>
+                </DockPanel>
             </Button>
         </StackPanel>
 
