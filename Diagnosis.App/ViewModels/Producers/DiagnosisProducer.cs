@@ -163,7 +163,7 @@ namespace Diagnosis.App.ViewModels
             // добавляем нужные блоки в классы
             foreach (var ch in chapterVms)
             {
-                ch.ClearChildren();
+                ch.Remove(ch.Children);
                 ch.Add(blockVms.Where(b => b.diagnosis.Parent == ch.diagnosis));
             }
 

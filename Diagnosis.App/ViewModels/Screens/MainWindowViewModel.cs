@@ -296,7 +296,7 @@ namespace Diagnosis.App.ViewModels
                     ?? (_openWords = new RelayCommand(
                                           () =>
                                           {
-                                              nav.Navigate(EntityProducers.WordsProducer);
+                                              nav.Navigate(new WordsListViewModel(EntityProducers.WordsProducer.Root));
                                           }, () => !WordsOpened));
             }
         }
@@ -420,7 +420,7 @@ namespace Diagnosis.App.ViewModels
             {
                 OpenScreen(Screens.Login);
             }
-            else if (e.Content is WordsProducer)
+            else if (e.Content is WordsListViewModel)
             {
                 OpenScreen(Screens.Words);
             }

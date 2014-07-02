@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Diagnostics;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -17,7 +18,11 @@ namespace Diagnosis.App.ViewModels
         /// <summary>
         /// Возникает при добвляении или удалении ребенка.
         /// </summary>
-        public event EventHandler ChildrenChanged;
+        public event HierarchicalEventHandler<T> ChildrenChanged;
+        /// <summary>
+        /// Возникает при добавлении к родителю.
+        /// </summary>
+        public event HierarchicalEventHandler<T> ParentChanged;
 
         /// <summary>
         /// Родитель элемента. Элемент можеть быть ребенком только одного родителя.
@@ -107,8 +112,8 @@ namespace Diagnosis.App.ViewModels
             }
 
             item.Parent = (T)this;
+            OnParentChanged(new HierarchicalEventAgrs<T>(item));
             Children.Add(item);
-            OnChildAdded();
             return (T)this;
         }
         /// <summary>
@@ -164,11 +169,18 @@ namespace Diagnosis.App.ViewModels
         /// <returns></returns>
         public T Remove(T item)
         {
-            if (Children.Remove(item))
-            {
-                OnChildRemoved();
-            }
+            Children.Remove(item);
             return (T)this;
+        }
+        /// <summary>
+        /// Удаляет элемент из иерархии.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public virtual void Remove()
+        {
+            if (!IsRoot)
+                Parent.Remove(this as T);
         }
         /// <summary>
         /// Удаляет несколько элементов из детей. Возвращает текущий элемент.
@@ -184,48 +196,68 @@ namespace Diagnosis.App.ViewModels
             return (T)this;
         }
 
-        /// <summary>
-        /// Удаляет всех детей на следующем уровне иерархии.
-        /// </summary>
-        public void ClearChildren()
-        {
-            bool notEmpty = Children.Count > 0;
-            Children.Clear();
-
-            if (notEmpty)
-                OnChildRemoved();
-        }
-
         #endregion IHierarchical
 
-        protected virtual void OnChildrenChanged()
+        protected virtual void OnChildrenChanged(HierarchicalEventAgrs<T> e)
         {
             var h = ChildrenChanged;
             if (h != null)
             {
-                h(this, EventArgs.Empty);
+                h(this, e);
+            }
+        }
+        protected virtual void OnParentChanged(HierarchicalEventAgrs<T> e)
+        {
+            var h = ParentChanged;
+            if (h != null)
+            {
+                h(this, e);
             }
         }
 
-        private void OnChildAdded()
+        private void OnChildAdded(T added)
         {
             OnPropertyChanged("TerminalChildren");
             OnPropertyChanged("NonTerminalChildren");
             OnPropertyChanged("IsTerminal");
-            OnChildrenChanged();
+            OnChildrenChanged(new HierarchicalEventAgrs<T>(added));
         }
 
-        private void OnChildRemoved()
+        private void OnChildRemoved(T removed)
         {
             OnPropertyChanged("TerminalChildren");
             OnPropertyChanged("NonTerminalChildren");
             OnPropertyChanged("IsTerminal");
-            OnChildrenChanged();
+            OnChildrenChanged(new HierarchicalEventAgrs<T>(removed));
         }
 
         public HierarchicalBase()
         {
             Children = new ObservableCollection<T>();
+            Children.CollectionChanged += (s, e) =>
+            {
+                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+                {
+                    OnChildAdded((T)e.NewItems[0]);
+                }
+                else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+                {
+                    OnChildRemoved((T)e.OldItems[0]);
+                }
+            };
+        }
+    }
+
+    public delegate void HierarchicalEventHandler<T>(object sender, HierarchicalEventAgrs<T> e);
+
+    public class HierarchicalEventAgrs<T> : EventArgs
+    {
+        public T IHierarchical;
+
+        [DebuggerStepThrough]
+        public HierarchicalEventAgrs(T h)
+        {
+            IHierarchical = h;
         }
     }
 }

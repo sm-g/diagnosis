@@ -114,7 +114,7 @@ namespace Diagnosis.App.ViewModels
             Search.Clear();
         }
 
-        private void DiagnosisViewModel_ChildrenChanged(object sender, EventArgs e)
+        private void DiagnosisViewModel_ChildrenChanged(object sender, HierarchicalEventAgrs<DiagnosisViewModel> e)
         {
             IsNonCheckable = !IsTerminal;
         }

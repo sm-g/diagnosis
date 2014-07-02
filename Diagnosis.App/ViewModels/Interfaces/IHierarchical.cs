@@ -6,7 +6,7 @@ namespace Diagnosis.App.ViewModels
 {
     public interface IHierarchical<T> where T : class
     {
-        event EventHandler ChildrenChanged;
+        event HierarchicalEventHandler<T> ChildrenChanged;
 
         bool IsRoot { get; }
 
@@ -31,5 +31,7 @@ namespace Diagnosis.App.ViewModels
         T Remove(T item);
 
         T Remove(IEnumerable<T> items);
+
+        void Remove();
     }
 }
