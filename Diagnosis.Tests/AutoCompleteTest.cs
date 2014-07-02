@@ -20,11 +20,6 @@ namespace Tests
         private static SymptomViewModel sym1 = EntityProducers.SymptomsProducer.Create(new[] { word1 });
         private static SymptomViewModel sym12 = EntityProducers.SymptomsProducer.Create(new[] { word1, word2 });
         private static SymptomViewModel sym23 = EntityProducers.SymptomsProducer.Create(new[] { word3, word2 });
-        private static SearchWrap word1wrap = new SearchWrap(word1);
-        private static SearchWrap word3wrap = new SearchWrap(word3);
-        private static SearchWrap sym1wrap = new SearchWrap(sym1);
-        private static SearchWrap sym12wrap = new SearchWrap(sym12);
-        private static SearchWrap sym23wrap = new SearchWrap(sym23);
 
         #region Partition
 

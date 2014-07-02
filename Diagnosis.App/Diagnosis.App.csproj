@@ -346,7 +346,6 @@
     <Compile Include="ViewModels\HierarchicalExplorer.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
     <Compile Include="ViewModels\Search\PopupSearch.cs" />
-    <Compile Include="ViewModels\Search\WordCheckingAutoComplete.cs" />
     <Compile Include="ViewModels\Domain\WordViewModel.cs" />
     <Compile Include="Controls\Directory\FullTree.xaml.cs">
       <DependentUpon>FullTree.xaml</DependentUpon>

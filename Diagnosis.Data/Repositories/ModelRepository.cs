@@ -2,6 +2,7 @@
 using NHibernate;
 using NHibernate.Criterion;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Diagnosis.Data.Repositories
 {
@@ -30,6 +31,10 @@ namespace Diagnosis.Data.Repositories
             ISession session = NHibernateHelper.GetSession();
             using (ITransaction transaction = session.BeginTransaction())
             {
+                if (!session.Contains(entity))
+                {
+                    Debug.Print("{0} not in session", entity);
+                }
                 session.SaveOrUpdate(entity);
                 transaction.Commit();
             }
@@ -39,6 +44,7 @@ namespace Diagnosis.Data.Repositories
             ISession session = NHibernateHelper.GetSession();
             using (ITransaction transaction = session.BeginTransaction())
             {
+
                 session.Delete(entity);
                 transaction.Commit();
             }
