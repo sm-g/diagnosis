@@ -32,8 +32,14 @@ namespace Diagnosis.App.ViewModels
             Contract.Invariant(FullString.Length >= ItemsChain.Length);
         }
 
+        /// <summary>
+        /// Выбранные элементы.
+        /// </summary>
         public ReadOnlyObservableCollection<T> Items { get; private set; }
 
+        /// <summary>
+        /// Разделительный пробел, ставится автоматически после разделителя.
+        /// </summary>
         public char DelimSpacer
         {
             get
@@ -41,7 +47,9 @@ namespace Diagnosis.App.ViewModels
                 return separator.Spacer;
             }
         }
-
+        /// <summary>
+        /// Разделитель, вводится человеком.
+        /// </summary>
         public char Delimiter
         {
             get
@@ -152,8 +160,10 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-
-        public ObservableCollection<T> Suggestions { get; private set; }
+        /// <summary>
+        /// Список предлежний для заврешения ввода.
+        /// </summary>
+        public IList<T> Suggestions { get; private set; }
 
         public int SelectedIndex
         {
@@ -191,6 +201,9 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Сбрасывает автокомплит к начальному состоянию.
+        /// </summary>
         public void Reset()
         {
             items.Clear();
@@ -297,7 +310,7 @@ namespace Diagnosis.App.ViewModels
                 query = GetQueryString(items[items.Count - 1]);
             }
             Debug.Print("AutoCompleteBase. query: {0}", query);
-            Suggestions = new ObservableCollection<T>(searcher.Search(query));
+            Suggestions = new List<T>(searcher.Search(query));
             OnPropertyChanged("Suggestions");
             SelectedIndex = 0;
         }
@@ -330,6 +343,9 @@ namespace Diagnosis.App.ViewModels
             OnSuggestionAccepted(acceptedItem);
         }
 
+        /// <summary>
+        /// Меняет строку запроса в соответствии с выбранными элементами без осуществления запроса.
+        /// </summary>
         private void MakeFullStringFromItems()
         {
             settingFullStringFromCode = true;

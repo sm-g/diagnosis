@@ -6,8 +6,17 @@ namespace Diagnosis.Core
 {
     public class QuerySeparator
     {
+        /// <summary>
+        /// Разделитель.
+        /// </summary>
         public readonly char Delimiter;
+        /// <summary>
+        /// Пробел.
+        /// </summary>
         public readonly char Spacer;
+        /// <summary>
+        /// Разделитель и пробел вместе.
+        /// </summary>
         public readonly string DelimGroup;
 
         private static readonly Lazy<QuerySeparator> lazyInstance = new Lazy<QuerySeparator>(() => new QuerySeparator());

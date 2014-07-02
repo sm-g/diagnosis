@@ -18,6 +18,7 @@ namespace Diagnosis.App.ViewModels
         private RelayCommand _selectCommand;
         private string _query;
 
+
         public char DelimSpacer
         {
             get
@@ -73,13 +74,13 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _selectCommand ?? (_selectCommand = new RelayCommand(() =>
-                                          {
-                                              var svm = Selected.entity as SymptomViewModel;
-                                              if (svm != null)
-                                              {
-                                                  svm.Words.ForAll(w => w.IsChecked = true);
-                                              }
-                                          }));
+                    {
+                        var svm = Selected.entity as SymptomViewModel;
+                        if (svm != null)
+                        {
+                            svm.Words.ForAll(w => w.IsChecked = true);
+                        }
+                    }));
             }
         }
 
