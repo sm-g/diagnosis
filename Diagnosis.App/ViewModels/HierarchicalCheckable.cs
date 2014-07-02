@@ -10,6 +10,7 @@ namespace Diagnosis.App.ViewModels
         readonly private CheckableBase checkable;
         ICommand _toggle;
         private bool _isFiltered;
+        private bool _isExpanded;
 
         public event HierarhicalCheckableEventHandler<T> CheckedChanged;
 
@@ -40,7 +41,21 @@ namespace Diagnosis.App.ViewModels
                 }
             }
         }
-
+        public bool IsExpanded
+        {
+            get
+            {
+                return _isExpanded;
+            }
+            set
+            {
+                if (_isExpanded != value)
+                {
+                    _isExpanded = value;
+                    OnPropertyChanged("IsExpanded");
+                }
+            }
+        }
         #endregion IHierarchicalCheckable
 
         #region ICheckable
