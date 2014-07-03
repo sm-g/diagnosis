@@ -244,6 +244,7 @@
     </Compile>
     <Compile Include="ViewModels\Domain\HealthRecordManager.cs" />
     <Compile Include="ViewModels\Domain\AppointmentsManager.cs" />
+    <Compile Include="ViewModels\Extensions\HierarchicalExtensions.cs" />
     <Compile Include="ViewModels\HrEditorViewModel.cs" />
     <Compile Include="ViewModels\Producers\EntityProducers.cs" />
     <Compile Include="MessagingParams.cs" />

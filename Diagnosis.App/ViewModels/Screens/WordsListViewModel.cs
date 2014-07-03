@@ -1,19 +1,17 @@
-﻿using System;
+﻿using Diagnosis.Core;
 using System.Collections.ObjectModel;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using Diagnosis.Core;
 using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
     public class WordsListViewModel : ViewModelBase
     {
-        private readonly FilterViewModel<WordViewModel> filter;
+        private FilterViewModel<WordViewModel> filter;
 
         private ICommand _add;
         private ICommand _commit;
-        private ObservableCollection<WordViewModel> _words;
 
         public event HierarchicalEventHandler<WordViewModel> NewWordAdded;
 
@@ -26,18 +24,12 @@ namespace Diagnosis.App.ViewModels
             set
             {
                 filter.Query = value;
-                ShowFilteredWords(filter.Results);
             }
         }
 
         public ObservableCollection<WordViewModel> Words
         {
-            get { return _words; }
-            private set
-            {
-                _words = value;
-                OnPropertyChanged("Words");
-            }
+            get { return filter.Results; }
         }
 
         public ICommand ClearCommand
@@ -48,24 +40,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public ICommand CommitCommand
-        {
-            get
-            {
-                return _commit
-                    ?? (_commit = new RelayCommand(
-                        () =>
-                        {
-                            // сохраняем выбранные слова
-                            foreach (var item in Words.Where(w => w.IsChecked))
-                            {
-                                item.Editable.Commit();
-                            }
-                        },
-                        () => Words.Where(w => w.IsChecked).Any(w => w.Editable.IsDirty)));
-            }
-        }
-
         public ICommand AddCommand
         {
             get
@@ -73,16 +47,15 @@ namespace Diagnosis.App.ViewModels
                 return _add
                    ?? (_add = new RelayCommand<WordViewModel>((current) =>
                         {
+                            // убираем несохраненные слова
                             EntityProducers.WordsProducer.WipeUnsaved();
-
-                            // убираем несохраненные слова на первом уровне
-                            var unsaved = Words.Where(w => w.Unsaved).ToList();
-                            foreach (var item in unsaved)
+                            // на первом уровне
+                            foreach (var item in Words.Where(w => w.Unsaved).ToList())
                             {
                                 Words.Remove(item);
                             }
 
-                            var newVM = EntityProducers.WordsProducer.Create("", current);
+                            var newVM = EntityProducers.WordsProducer.Create(filter.Query, current);
                             // новое слово открываем для редактирования
                             newVM.Editable.SwitchedOn = true;
                             newVM.IsSelected = true;
@@ -95,19 +68,25 @@ namespace Diagnosis.App.ViewModels
                             }
                             else
                             {
-                                AddToTree(newVM);
+                                // to update searcher collection to new Root.Children
+                                filter.Searcher = new WordTopParentSearcher();
+                                filter.Filter();
                             }
+                            Subscribe(newVM);
 
                             OnNewWordAdded(new HierarchicalEventAgrs<WordViewModel>(newVM));
                         }));
             }
         }
 
+        /// <summary>
+        /// Количество отмеченных слов.
+        /// </summary>
         public int CheckedWords
         {
             get
             {
-                return Words.Where(w => w.IsChecked).Count();
+                return EntityProducers.WordsProducer.Root.CheckedChildren;
             }
         }
 
@@ -120,23 +99,17 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private void ShowFilteredWords(IEnumerable<WordViewModel> words)
+        private void UncheckBranch(WordViewModel word)
         {
-            Words.Except(words).ToList().ForAll((w) => Words.Remove(w)); // remove unwanted
-            foreach (var w in words.Except(Words).ToList())
+            word.ForBranch((w) =>
             {
-                AddToTree(w);
-            }
+                w.IsChecked = false;
+                w.IsSelected = false;
+            });
         }
 
-        private void AddToTree(WordViewModel w)
+        private void Subscribe(WordViewModel w)
         {
-            Words.Add(w);
-            w.Editable.Deleted += (s, e) =>
-            {
-                // убираем удаленные слова на первом уровне
-                Words.Remove(w);
-            };
             w.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "IsChecked")
@@ -144,16 +117,23 @@ namespace Diagnosis.App.ViewModels
                     OnPropertyChanged("CheckedWords");
                 }
             };
+            w.Editable.Deleted += (s, e) =>
+            {
+                UncheckBranch(w);
+                Words.Remove(w); // если на первом уровне
+            };
         }
 
-        public WordsListViewModel(WordViewModel root)
+        public WordsListViewModel()
         {
-            Words = new ObservableCollection<WordViewModel>();
-            var searcher = new WordTopParentSearcher();
-            filter = new FilterViewModel<WordViewModel>(searcher);
-            filter.Clear(); // показываем все слова
+            EntityProducers.WordsProducer.Root.AllChildren.ForAll((w) =>
+            {
+                Subscribe(w);
+            });
 
-            ShowFilteredWords(filter.Results);
+            var searcher = new WordTopParentSearcher(); // только верхний уровень
+            filter = new FilterViewModel<WordViewModel>(searcher, onRemove: UncheckBranch);
+            filter.Clear();// показываем все слова
         }
     }
 }

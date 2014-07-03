@@ -149,16 +149,17 @@ namespace Diagnosis.App.ViewModels
 
         private void PropagateCheckedState(bool newState)
         {
+            // check parent
             if (newState && !IsRoot)
             {
-                Parent.checkable.IsChecked = true;
+                Parent.IsChecked = true;
             }
-
+            // uncheck children
             if (!newState)
             {
                 foreach (var item in Children)
                 {
-                    item.checkable.IsChecked = false;
+                    item.IsChecked = false;
                 }
             }
         }

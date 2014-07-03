@@ -1,20 +1,32 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using System.Linq;
+using System;
 
 namespace Diagnosis.App.ViewModels
 {
     public class FilterViewModel<T> : ViewModelBase, IFilter<T>
     {
-        internal readonly ISimpleSearcher<T> searcher;
-
+        private ISimpleSearcher<T> _searcher;
         private string _query;
         private bool _resultsOnQueryChanges;
         private ICommand _clearCommand;
         private ICommand _filterCommand;
 
-        #region IFilter
+        public ISimpleSearcher<T> Searcher
+        {
+            get { return _searcher; }
+            set
+            {
+                if (_searcher != value && value != null)
+                {
+                    _searcher = value;
+                }
+            }
+        }
 
+        #region IFilter
         public string Query
         {
             get
@@ -30,7 +42,7 @@ namespace Diagnosis.App.ViewModels
                 }
                 if (UpdateResultsOnQueryChanges)
                 {
-                    MakeResults();
+                    Filter();
                 }
             }
         }
@@ -79,33 +91,51 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return _filterCommand
-                   ?? (_filterCommand = new RelayCommand(MakeResults));
+                   ?? (_filterCommand = new RelayCommand(Filter));
             }
         }
+        /// <summary>
+        /// При исключении элемента из результатов фильтра.
+        /// </summary>
+        public Action<T> OnRemove { get; set; }
+        /// <summary>
+        /// При добавлении элемента в результаты фильтра.
+        /// </summary>
+        public Action<T> OnAdd { get; set; }
 
-        private void MakeResults()
+        public void Filter()
         {
             IEnumerable<T> res;
             if (IsQueryEmpty)
             {
-                res = searcher.Search("");
+                res = Searcher.Search("");
             }
             else
             {
-                res = searcher.Search(Query);
+                res = Searcher.Search(Query);
             }
-            Results.Clear();
-            foreach (var item in res)
+
+            foreach (var item in Results.Except(res).ToList())
+            {
+                Results.Remove(item);
+                if (OnRemove != null)
+                    OnRemove(item);
+            }
+            foreach (var item in res.Except(Results).ToList())
             {
                 Results.Add(item);
+                if (OnAdd != null)
+                    OnAdd(item);
             }
         }
 
-        public FilterViewModel(ISimpleSearcher<T> searcher)
+        public FilterViewModel(ISimpleSearcher<T> searcher, Action<T> onRemove = null, Action<T> onAdd = null)
         {
-            this.searcher = searcher;
+            Searcher = searcher;
             Results = new ObservableCollection<T>();
             UpdateResultsOnQueryChanges = true;
+            OnAdd = onAdd;
+            OnRemove = onRemove;
         }
     }
 }

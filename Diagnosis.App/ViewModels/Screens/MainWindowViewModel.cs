@@ -27,6 +27,7 @@ namespace Diagnosis.App.ViewModels
         private PatientsAsideViewModel _patientsAside;
         private PatientsListViewModel _patients;
         private LoginViewModel _login;
+        WordsListViewModel _words;
 
         #endregion Fields
 
@@ -253,6 +254,11 @@ namespace Diagnosis.App.ViewModels
             get { return _search ?? (_search = new SearchViewModel(patProducer)); }
         }
 
+        public WordsListViewModel Words
+        {
+            get { return _words ?? (_words = new WordsListViewModel()); }
+        }
+
         #endregion Screen ViewModels
 
         #region Commands
@@ -278,7 +284,7 @@ namespace Diagnosis.App.ViewModels
                     ?? (_openWords = new RelayCommand(
                                           () =>
                                           {
-                                              nav.Navigate(new WordsListViewModel(EntityProducers.WordsProducer.Root));
+                                              nav.Navigate(Words);
                                           }, () => !WordsOpened));
             }
         }
