@@ -8,16 +8,19 @@
              x:Class="Diagnosis.App.Controls.TreeItem"
              mc:Ignorable="d"
              Focusable="False"
-             d:DesignHeight="25" d:DesignWidth="300" LostFocus="treeItem_LostFocus">
+             d:DesignHeight="23" d:DesignWidth="300" LostFocus="treeItem_LostFocus">
     <!--HierarchicalCheckable (Word or Diagnosis)-->
     <UserControl.Resources>
-        <Style TargetType="StackPanel" x:Key="hidingStack" x:Shared="False">
+        <Style TargetType="Grid" x:Key="hidingButtons" x:Shared="False">
             <Setter Property="Visibility" Value="Collapsed" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" Value="True">
                     <Setter Property="Visibility" Value="Visible" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Editable.IsEditorActive}" Value="True">
                     <Setter Property="Visibility" Value="Visible" />
                 </DataTrigger>
             </Style.Triggers>
@@ -37,7 +40,7 @@
             <ColumnDefinition Width="20" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
+            <ColumnDefinition MinWidth="20" Width="auto"/>
         </Grid.ColumnDefinitions>
 
         <CheckBox x:Name="checkbox"
@@ -46,19 +49,6 @@
             Visibility="{Binding IsNonCheckable, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
 
         <DockPanel x:Name="title" Grid.Column="1" Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" Width="{Binding Width, ElementName=editorButtons}"
-                        Style="{StaticResource hidingStack}">
-
-                <Button Command="{Binding Editable.EditCommand}" ToolTip="Редактировать (F2)">
-                    <Image Source="{StaticResource editImage}" />
-                </Button>
-                <!--Words.xaml WordsListViewModel-->
-                <Button Command="{Binding DataContext.AddCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=3}}"
-                        CommandParameter="{Binding}" Margin="5,0,0,0" ToolTip="Добавить подчинённое слово ()">
-                    <Image Source="{StaticResource addImage}" />
-                </Button>
-            </StackPanel>
-
             <TextBlock Text="{Binding Code, FallbackValue=''}" />
             <TextBlock Text="{Binding Name}"
                        TextWrapping="Wrap"
@@ -82,13 +72,36 @@
                     <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
                 </TextBox.InputBindings>
             </TextBox>
+        </Grid>
 
-            <StackPanel Orientation="Horizontal" x:Name="editorButtons" Grid.Column="1">
-                <Button Command="{Binding Editable.EditCommand}" ToolTip="Закрыть редактор (F2)" Visibility="{Binding Editable.IsDirty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+        <Grid Grid.Column="2" Width="80"
+                        Style="{StaticResource hidingButtons}">
+            <StackPanel x:Name="titleButtons" Orientation="Horizontal" Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                <!--открыть редактор, добавить слово, искать-->
+                <Button Command="{Binding Editable.EditCommand}" ToolTip="Редактировать (F2)">
                     <Image Source="{StaticResource editImage}" />
                 </Button>
-                <!--Кнопки: закрыть редактор или сохранить и отменить-->
-                <StackPanel Orientation="Horizontal" Visibility="{Binding Editable.IsDirty, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                <!--WordsListViewModel-->
+                <Button Command="{Binding DataContext.AddCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=3}}"
+                        CommandParameter="{Binding}" Margin="10,0,0,0" ToolTip="Добавить подчинённое слово ()">                    
+                    <Image Source="{StaticResource addImage}" />
+                </Button>
+                <Button Command="{Binding DataContext.SendToSearchCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=3}}"
+                        CommandParameter="{Binding}" Margin="10,0,0,0" ToolTip="Искать (Alt + F)">
+                    s
+                </Button>
+            </StackPanel>
+
+            <StackPanel x:Name="editorButtons" Orientation="Horizontal" Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Grid.Column="1">
+                <Button Command="{Binding Editable.EditCommand}" ToolTip="Закрыть редактор (F2)"
+                        Visibility="{Binding Editable.IsDirty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                    <Image Source="{StaticResource editImage}" />
+                </Button>
+                <!--закрыть редактор или сохранить и отменить-->
+                <StackPanel Orientation="Horizontal" 
+                            Visibility="{Binding Editable.IsDirty, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Button Command="{Binding Editable.CommitCommand}" ToolTip="Сохранить (Enter)">
                         <Image Source="{StaticResource saveImage}" />
                     </Button>
@@ -104,8 +117,9 @@
             </StackPanel>
         </Grid>
 
-        <StackPanel Orientation="Horizontal"
-                    Grid.Column="2">
+        <StackPanel x:Name="indicators"
+                    Orientation="Horizontal"
+                    Grid.Column="3">
             <StackPanel.Resources>
                 <Style TargetType="TextBlock">
                     <Setter Property="Margin" Value="5,0,0,0" />
