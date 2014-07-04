@@ -1,15 +1,14 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Collections.Generic;
-using Diagnosis.App.ViewModels;
 
 namespace Diagnosis.App.Controls
 {
     public partial class SearchTree : UserControl
     {
         private int selectedIndex = -1;
+
+        private object selectedItem;
 
         public SearchTree()
         {
@@ -65,16 +64,31 @@ namespace Diagnosis.App.Controls
             }
             else if (e.Key == Key.Enter)
             {
-                var search = DataContext as PopupSearch<DiagnosisViewModel>;
-                search.OnSelected(selectedItem);
-                //var array = new List<DiagnosisViewModel>(EntityManagers.DiagnosisManager.Root.AllChildren);
-                //search.SelectedIndex = array.IndexOf(selectedItem);
-                //search.RaiseResultItemSelected(); 
-                // нельзя использовать, потому что у PopupSearch в Results только корневые элементы 
+                RaiseSearchSelected();
             }
         }
 
-        DiagnosisViewModel selectedItem;
+        private void item_selected(object sender, RoutedEventArgs e)
+        {
+            TreeViewItem tvi = sender as TreeViewItem;
+            if (tvi != null)
+                tvi.BringIntoView();
+            e.Handled = true;
+        }
+
+        private void item_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space || e.Key == Key.Enter)
+                RaiseSearchSelected();
+        }
+
+        private void item_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            var source = e.Source as ContentPresenter;
+            selectedItem = source.Content;
+            RaiseSearchSelected();
+            e.Handled = true;
+        }
 
         private void MoveSelection(bool down)
         {
@@ -98,13 +112,9 @@ namespace Diagnosis.App.Controls
                 item.IsSelected = true;
         }
 
-        private void item_selected(object sender, RoutedEventArgs e)
+        private void RaiseSearchSelected()
         {
-            TreeViewItem tvi = sender as TreeViewItem;
-            if (tvi != null)
-                tvi.BringIntoView();
-            e.Handled = true;
+            (DataContext as dynamic).OnSelected(selectedItem);  //  DataContext is PopupSearch<>;
         }
-
     }
 }

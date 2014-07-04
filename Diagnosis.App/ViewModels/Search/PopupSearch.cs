@@ -159,7 +159,8 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
-                return _selectCommand ?? (_selectCommand = new RelayCommand(RaiseResultItemSelected,
+                return _selectCommand ?? (_selectCommand = new RelayCommand(
+                    () => RaiseResultItemSelected(SelectedItem),
                     () => SwitchedOn));
             }
         }
@@ -235,16 +236,25 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public void OnSelected(T item)
+        /// <summary>
+        /// Для выбора элемента, который не совпадает с SelectedItem (SearchTree).
+        /// </summary>
+        public void OnSelected(object item)
         {
-            if (onSelected != null && item != null && SwitchedOn)
+            T asT = item as T;
+            if (asT == null)
             {
-                onSelected(item);
+                throw new ArgumentException("Selected item type is wrong.");
             }
-            RaiseResultItemSelected();
+
+            if (onSelected != null && SwitchedOn)
+            {
+                onSelected(asT);
+            }
+            RaiseResultItemSelected(asT);
         }
 
-        public void RaiseResultItemSelected() // public for selecting by mouse
+        public void RaiseResultItemSelected(T item) // public for selecting by mouse in FloatSearch
         {
             if (SwitchedOn)
             {
