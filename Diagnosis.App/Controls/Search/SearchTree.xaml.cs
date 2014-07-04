@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Linq;
+using System.Collections;
 
 namespace Diagnosis.App.Controls
 {
@@ -8,7 +10,7 @@ namespace Diagnosis.App.Controls
     {
         private int selectedIndex = -1;
 
-        private object selectedItem;
+        private dynamic selectedItem; // IHierarchicalCheckable
 
         public SearchTree()
         {
@@ -23,11 +25,6 @@ namespace Diagnosis.App.Controls
         }
 
         private void UserControl_LostFocus(object sender, RoutedEventArgs e)
-        {
-            HidePopup();
-        }
-
-        private void input_LostFocus(object sender, RoutedEventArgs e)
         {
             if (FocusChecker.IsFocusOutsideDepObject(this) && FocusChecker.IsFocusOutsideDepObject(popup.Child))
             {
@@ -54,7 +51,7 @@ namespace Diagnosis.App.Controls
 
         private void input_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Up && selectedIndex > 0)
+            if (e.Key == Key.Up)
             {
                 MoveSelection(false);
             }
@@ -85,36 +82,73 @@ namespace Diagnosis.App.Controls
         private void item_MouseUp(object sender, MouseButtonEventArgs e)
         {
             var source = e.Source as ContentPresenter;
-            selectedItem = source.Content;
-            RaiseSearchSelected();
-            e.Handled = true;
+            if (source != null)
+            {
+                dynamic item = source.Content;
+                if (item.IsTerminal)
+                {
+                    // выбираем только дистья
+                    RaiseSearchSelected();
+                }
+                e.Handled = true;
+            }
         }
 
         private void MoveSelection(bool down)
         {
             int currentSelected = results.SelectedIndex();
-            dynamic item; // IHierarchicalCheckable
-            do
+            dynamic item;
+            if (currentSelected == -1 && !down)
             {
-                selectedIndex += down ? 1 : -1;
-                item = results.FindByIndex(selectedIndex);
-
-                // вышли за границы дерева
-                if (item == null)
+                // ничего не выбрано, нажимаем вверх — выбираем последний элемент из видимых
+                var lastInd = -1;
+                do
                 {
-                    selectedIndex = currentSelected;
-                    break;
-                }
-            } while (!(item.IsFiltered && item.IsTerminal)); // только видимые листья
+                    selectedIndex++;
+                    item = results.FindByIndex(selectedIndex);
+
+                    if (item == null) // пока не дошли до конца
+                        break;
+
+                    if (item.IsFiltered && item.IsTerminal)
+                        lastInd = selectedIndex;
+                } while (true);
+
+                selectedIndex = lastInd;
+            }
+            else
+            {
+                do
+                {
+                    selectedIndex += down ? 1 : -1;
+                    item = results.FindByIndex(selectedIndex);
+
+                    // вышли за границы дерева
+                    if (item == null)
+                    {
+                        selectedIndex = currentSelected;
+                        break;
+                    }
+                } while (!(item.IsFiltered && item.IsTerminal)); // пока не найдём видимый лист
+            }
+
+            item = results.FindByIndex(selectedIndex);
+            if (item != null && item.IsFiltered && item.IsTerminal)
+            {
+                item.IsSelected = true;
+            }
 
             selectedItem = item;
-            if (item != null)
-                item.IsSelected = true;
         }
 
         private void RaiseSearchSelected()
         {
-            (DataContext as dynamic).OnSelected(selectedItem);  //  DataContext is PopupSearch<>;
+            if (selectedItem == null)
+            {
+                MoveSelection(true); // выбираем первый элемент
+            }
+            if (selectedItem != null)
+                (DataContext as dynamic).OnSelected(selectedItem);  //  DataContext is PopupSearch<>;
         }
     }
 }

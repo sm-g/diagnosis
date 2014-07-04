@@ -32,7 +32,19 @@ namespace Diagnosis.App.Controls
         public static object FindByIndex(this ItemsControl parentContainer, int searchIndex)
         {
             int index = 0;
+            if (searchIndex < 0)
+            {
+                return null;
+            }
             return FindInItemsControl(parentContainer, ref index, searchIndex);
+        }
+
+        /// <summary>
+        /// Returns number of objects in parentContainer.
+        /// </summary>
+        public static int Count(this ItemsControl parentContainer)
+        {
+            return CountItemsControl(parentContainer);
         }
 
         private static bool GetSelectedItemIndex(ItemsControl parentContainer, ref int index)
@@ -82,6 +94,20 @@ namespace Diagnosis.App.Controls
                 }
             }
             return null;
+        }
+
+        private static int CountItemsControl(ItemsControl parentContainer)
+        {
+            int counter = parentContainer.Items.Count;
+            foreach (var item in parentContainer.Items)
+            {
+                ItemsControl currentContainer = parentContainer.ItemContainerGenerator.ContainerFromItem(item) as ItemsControl;
+                if (currentContainer != null)
+                {
+                    counter += CountItemsControl(currentContainer);
+                }
+            }
+            return counter;
         }
     }
 }

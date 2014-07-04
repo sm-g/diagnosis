@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Diagnosis.Core;
+using System.Diagnostics;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -87,16 +88,6 @@ namespace Diagnosis.App.ViewModels
 
             return null;
         }
-
-        public void Check(DiagnosisViewModel diagnosis)
-        {
-            UnCheckAll();
-            if (diagnosis != null)
-            {
-                diagnosis.IsChecked = true;
-            }
-        }
-
         public DiagnosisProducer(IcdChapterRepository repo)
         {
             Contract.Requires(repo != null);
@@ -197,6 +188,15 @@ namespace Diagnosis.App.ViewModels
             });
 
             UnCheckAll();
+        }
+
+        public void Check(DiagnosisViewModel diagnosis)
+        {
+            UnCheckAll();
+            if (diagnosis != null)
+            {
+                diagnosis.IsChecked = true;
+            }
         }
 
         private void UnCheckAll()

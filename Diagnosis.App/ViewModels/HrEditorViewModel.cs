@@ -156,7 +156,6 @@ namespace Diagnosis.App.ViewModels
             HealthRecord.Diagnosis = e.vm as DiagnosisViewModel;
             if (HealthRecord != null)
             {
-                Debug.Print("update query code");
                 UpdateDiagnosisQueryCode();
             }
         }

@@ -44,16 +44,6 @@ namespace Diagnosis.App.ViewModels
             return AllWords.Where(w => s.Words.Contains(w.word));
         }
 
-        public void CheckThese(IEnumerable<WordViewModel> words)
-        {
-            UnCheckAll();
-
-            foreach (var item in words)
-            {
-                item.IsChecked = true;
-            }
-        }
-
         /// <summary>
         /// Создает слово и добавляет в корень или к детям указанного слова.
         /// </summary>
@@ -185,6 +175,16 @@ namespace Diagnosis.App.ViewModels
             else
             {
                 w.Editable.CanBeDeleted = true;
+            }
+        }
+
+        public void CheckThese(IEnumerable<WordViewModel> words)
+        {
+            UnCheckAll();
+
+            foreach (var item in words)
+            {
+                item.IsChecked = true;
             }
         }
 
