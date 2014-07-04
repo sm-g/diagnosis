@@ -331,7 +331,6 @@
     <Compile Include="ViewModels\Producers\PatientsProducer.cs" />
     <Compile Include="ViewModels\Producers\PropertyProducer.cs" />
     <Compile Include="ViewModels\Domain\PropertyViewModel.cs" />
-    <Compile Include="ViewModels\HierarchicalExplorer.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
     <Compile Include="ViewModels\Search\PopupSearch.cs" />
     <Compile Include="ViewModels\Domain\WordViewModel.cs" />
