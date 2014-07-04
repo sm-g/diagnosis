@@ -5,7 +5,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:vm="clr-namespace:Diagnosis.App.ViewModels"             
+             xmlns:vm="clr-namespace:Diagnosis.App.ViewModels"
              x:Name="editor"
              Padding="0,10,0,0"
              mc:Ignorable="d"
@@ -16,7 +16,7 @@
     </UserControl.Resources>
 
     <!--DataContext is editing HealthRecord-->
-    <Grid x:Name="hr_grid" DataContext="{Binding HealthRecord}" MouseDown="hr_grid_MouseDown" Focusable="True" Background="Transparent"> 
+    <Grid x:Name="hr_grid" DataContext="{Binding HealthRecord}" MouseDown="hr_grid_MouseDown" Focusable="True" Background="Transparent">
         <Grid.InputBindings>
             <KeyBinding Modifiers="Control" Key="S" Command="{Binding Editable.CommitCommand}" />
             <KeyBinding Key="Escape" Command="{Binding Editable.RevertCommand}" />
@@ -83,7 +83,8 @@
                     </editors:DateOffsetPicker.Resources>
                 </editors:DateOffsetPicker>
             </DockPanel>
-            <DockPanel DataContext="{Binding ElementName=editor}" Visibility="{Binding ShowIcdDisease, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <DockPanel DataContext="{Binding DataContext,ElementName=editor}"
+                       Visibility="{Binding ShowIcdDisease, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Label Content="диагноз МКБ" />
                 <StackPanel>
                     <controls:SearchTree DataContext="{Binding DiagnosisSearch}" />
@@ -109,7 +110,7 @@
                 </Style>
             </StackPanel.Resources>
 
-            <Button Command="{Binding DataContext.AddHealthRecordCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}" 
+            <Button Command="{Binding DataContext.AddHealthRecordCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}"
                     ToolTip="Добавить запись (Ctrl + Enter)"
                     Margin="0,0,0,20">
                 <DockPanel>

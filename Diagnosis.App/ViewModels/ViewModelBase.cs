@@ -19,7 +19,7 @@ namespace Diagnosis.App.ViewModels
 
         ~ViewModelBase()
         {
-            string msg = string.Format("{0} ({1}) ({2}) Finalized", this.GetType().Name, this.ToString(), this.GetHashCode());
+            string msg = string.Format("    Finalized {0} ({1}) ({2}) ", this.GetType().Name, this.ToString(), this.GetHashCode());
             System.Diagnostics.Debug.Print(msg);
         }
 

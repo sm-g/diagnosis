@@ -219,7 +219,7 @@ namespace Diagnosis.App.ViewModels
         /// <returns></returns>
         public T Remove(IEnumerable<T> items)
         {
-            foreach (var vm in items)
+            foreach (var vm in items.ToList())
             {
                 Remove(vm);
             }
