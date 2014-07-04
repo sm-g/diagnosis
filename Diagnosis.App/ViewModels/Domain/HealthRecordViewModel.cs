@@ -114,7 +114,7 @@ namespace Diagnosis.App.ViewModels
                     if (value != null)
                         healthRecord.Symptom = value.symptom;
                     else
-                        Debug.Print("hr Symptom set to null");
+                        throw new ArgumentNullException("value", "Hr's symptom can not be set to null.");
 
                     OnPropertyChanged("Name");
                     Editable.MarkDirty();
@@ -319,7 +319,7 @@ namespace Diagnosis.App.ViewModels
 
         private void SetDiagnosis()
         {
-            Diagnosis = EntityProducers.DiagnosisProducer.GetHealthRecordDiagnosis(healthRecord);
+            Diagnosis = EntityProducers.DiagnosisProducer.GetByDisease(healthRecord.Disease);
         }
 
         private void SetSymptom()

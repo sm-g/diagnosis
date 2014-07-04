@@ -75,16 +75,13 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public DiagnosisViewModel GetHealthRecordDiagnosis(HealthRecord hr)
+        public DiagnosisViewModel GetByDisease(IcdDisease dis)
         {
-            Contract.Requires(hr != null);
-            if (hr.Disease == null)
+            if (dis == null)
                 return null;
 
             if (Diagnoses.Count > 0)
-            {
-                return Root.AllChildren.Where(d => d.diagnosis.Code == hr.Disease.Code).SingleOrDefault();
-            }
+                return Root.AllChildren.Where(d => d.diagnosis.Code == dis.Code).SingleOrDefault();
 
             return null;
         }
