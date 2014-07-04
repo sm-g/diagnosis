@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class WordViewModel : HierarchicalCheckable<WordViewModel>
+    public class WordViewModel : HierarchicalBase<WordViewModel>
     {
         internal readonly Word word;
 
@@ -80,7 +80,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public override void OnCheckedChanged()
+        protected override void OnCheckedChanged()
         {
             base.OnCheckedChanged();
 

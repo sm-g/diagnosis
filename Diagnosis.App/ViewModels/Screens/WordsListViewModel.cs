@@ -11,7 +11,6 @@ namespace Diagnosis.App.ViewModels
         private FilterViewModel<WordViewModel> filter;
 
         private ICommand _add;
-        private ICommand _commit;
 
         public event HierarchicalEventHandler<WordViewModel> NewWordAdded;
 

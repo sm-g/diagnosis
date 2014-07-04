@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Diagnosis.App.ViewModels.CheckableBase" Collapsed="true">
-    <Position X="11.75" Y="4.25" Width="1.5" />
+    <Position X="10.75" Y="1.25" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACQQEAAAAEIAAAAQAAAAAAEAAAAAAABAgAA=</HashCode>
+      <HashCode>AAEAAAAAACQQEAAAAEIAAAAQAAAAAAEAAAABAABAgAA=</HashCode>
       <FileName>ViewModels\CheckableBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -23,17 +23,6 @@
     <ShowAsAssociation>
       <Property Name="Search" />
     </ShowAsAssociation>
-  </Class>
-  <Class Name="Diagnosis.App.ViewModels.HierarchicalBase&lt;T&gt;" Collapsed="true">
-    <Position X="9" Y="0.5" Width="2.25" />
-    <Compartments>
-      <Compartment Name="Fields" Collapsed="true" />
-    </Compartments>
-    <TypeIdentifier>
-      <HashCode>AAIAACAAAAAAACAAAIAEREAYgAgBAAAAAQAAAAQAAAg=</HashCode>
-      <FileName>ViewModels\HierarchicalBase.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.App.ViewModels.HierarchicalExplorer&lt;T&gt;" Collapsed="true">
     <Position X="13.5" Y="0.5" Width="2" />
@@ -131,18 +120,15 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Diagnosis.App.ViewModels.HierarchicalCheckable&lt;T&gt;" Collapsed="true">
-    <Position X="9" Y="2.5" Width="2.25" />
+  <Class Name="Diagnosis.App.ViewModels.HierarchicalBase&lt;T&gt;" Collapsed="true">
+    <Position X="7" Y="2" Width="2.25" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>ABQAIAAAACQSEAAAAEIAAAAQAIAAEAAAAAABAAAAAAI=</HashCode>
+      <HashCode>ABYIISAAAAACACIAAIAEREAYgIABAAAAAQAAAARAgAg=</HashCode>
       <FileName>ViewModels\HierarchicalCheckable.cs</FileName>
     </TypeIdentifier>
-    <ShowAsAssociation>
-      <Field Name="checkable" />
-    </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.App.ViewModels.WordViewModel" Collapsed="true">
@@ -151,7 +137,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAABAAAAAAAEAIAABAQQBAAUAAAAgAASAAAgAAA=</HashCode>
+      <HashCode>AgAAAAABAAAAAAAEAAQABAQQBAAUAAAAgAASAAAgAAA=</HashCode>
       <FileName>ViewModels\Domain\WordViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -189,9 +175,10 @@
   <Class Name="Diagnosis.App.ViewModels.PopupSearch&lt;T&gt;" Collapsed="true">
     <Position X="6.25" Y="7" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAABAIgEAAAAAAogBQgRIBgCBQCAFiAApAEgITEAAA=</HashCode>
+      <HashCode>AAAABAIgEAAAACAogBQgRIBgCBQAAFiAApAEwITEAAA=</HashCode>
       <FileName>ViewModels\Search\PopupSearch.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.App.ViewModels.PatientViewer" Collapsed="true">
     <Position X="14.5" Y="10.75" Width="1.5" />
@@ -240,28 +227,28 @@
     <Position X="6.25" Y="9.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQQMAAACAEADAAAAA8sAAABkQCAJCAEYIAwAFAgQAA=</HashCode>
-      <FileName>ViewModels\Search\AutoCompleteBase.cs</FileName>
+      <FileName>ViewModels\Search\AutoCompletes\AutoCompleteBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Interface Name="Diagnosis.App.ViewModels.ICheckable">
     <Position X="4.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAQEAAAAEIAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAEAAAAAACAQEAAAAAIAAAAAAAAAAAAAAAABAAAAAAA=</HashCode>
       <FileName>ViewModels\Interfaces\ICheckable.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Diagnosis.App.ViewModels.IHierarchical&lt;T&gt;">
     <Position X="3" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAACAAAAAAAAAAAIAEREAIAAAAAAAAAQAAAAQAAAg=</HashCode>
+      <HashCode>AAIIASAAAAAAAAAAAIAEREAIAAAAAAAAAQAAAARAAAg=</HashCode>
       <FileName>ViewModels\Interfaces\IHierarchical.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Diagnosis.App.ViewModels.IHierarchicalCheckable&lt;T&gt;">
     <Position X="3" Y="5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ABQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAA=</HashCode>
+      <HashCode>ABQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ViewModels\Interfaces\IHierarchicalCheckable.cs</FileName>
     </TypeIdentifier>
   </Interface>

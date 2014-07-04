@@ -5,7 +5,7 @@ using System;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class DiagnosisViewModel : HierarchicalCheckable<DiagnosisViewModel>
+    public class DiagnosisViewModel : HierarchicalBase<DiagnosisViewModel>
     {
         internal readonly Diagnosis.Models.Diagnosis diagnosis;
         EventHandler diagnosesRootChanged;
@@ -69,7 +69,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public override void OnCheckedChanged()
+        protected override void OnCheckedChanged()
         {
             base.OnCheckedChanged();
             this.Send((int)EventID.DiagnosisCheckedChanged, new DiagnosisParams(this).Params);

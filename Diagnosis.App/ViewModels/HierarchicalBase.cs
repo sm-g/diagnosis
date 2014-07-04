@@ -1,18 +1,20 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Windows.Input;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Diagnostics;
 
 namespace Diagnosis.App.ViewModels
 {
     /// <summary>
     /// Элемент иерархии.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public abstract class HierarchicalBase<T> : ViewModelBase, IHierarchical<T> where T : HierarchicalBase<T>
+    public abstract class HierarchicalBase<T> : CheckableBase, IHierarchicalCheckable<T> where T : HierarchicalBase<T>
     {
         private T _parent;
+        private bool _isFiltered;
+        private bool _isExpanded;
 
         #region IHierarchical
         /// <summary>
@@ -106,6 +108,24 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return Children.Count > 0;
+            }
+        }
+        /// <summary>
+        /// Элемент развернут.
+        /// </summary>
+        public bool IsExpanded
+        {
+            get
+            {
+                return _isExpanded;
+            }
+            set
+            {
+                if (_isExpanded != value)
+                {
+                    _isExpanded = value;
+                    OnPropertyChanged("IsExpanded");
+                }
             }
         }
 
@@ -206,8 +226,6 @@ namespace Diagnosis.App.ViewModels
             return (T)this;
         }
 
-        #endregion IHierarchical
-
         protected virtual void OnChildrenChanged(HierarchicalEventAgrs<T> e)
         {
             var h = ChildrenChanged;
@@ -224,7 +242,6 @@ namespace Diagnosis.App.ViewModels
                 h(this, e);
             }
         }
-
         private void OnChildAdded(T added)
         {
             OnPropertyChanged("TerminalChildren");
@@ -241,6 +258,54 @@ namespace Diagnosis.App.ViewModels
             OnChildrenChanged(new HierarchicalEventAgrs<T>(removed));
         }
 
+
+        #endregion IHierarchical
+
+        #region IHierarchicalCheckable
+
+        public int CheckedChildren
+        {
+            get
+            {
+                if (IsTerminal)
+                    return 0;
+                return Children.Sum(s => s.CheckedChildren + (s.IsChecked ? 1 : 0));
+            }
+        }
+
+        public bool IsFiltered
+        {
+            get
+            {
+                return _isFiltered;
+            }
+            set
+            {
+                if (_isFiltered != value)
+                {
+                    _isFiltered = value;
+                    OnPropertyChanged("IsFiltered");
+                }
+            }
+        }
+
+        #endregion IHierarchicalCheckable
+
+        #region ICheckable
+
+        protected override void OnCheckedChanged()
+        {
+            base.OnCheckedChanged();
+
+            if (!IsNonCheckable)
+            {
+                PropagateCheckedState(IsChecked);
+                BubbleCheckedChildren();
+            }
+        }
+
+        #endregion ICheckable
+
         public HierarchicalBase()
         {
             Children = new ObservableCollection<T>();
@@ -256,6 +321,33 @@ namespace Diagnosis.App.ViewModels
                 }
             };
         }
+
+        private void PropagateCheckedState(bool newState)
+        {
+            // check parent
+            if (newState && !IsRoot)
+            {
+                Parent.IsChecked = true;
+            }
+            // uncheck children
+            if (!newState)
+            {
+                foreach (var item in Children)
+                {
+                    item.IsChecked = false;
+                }
+            }
+        }
+
+        private void BubbleCheckedChildren()
+        {
+            OnPropertyChanged("CheckedChildren");
+            if (!IsRoot)
+            {
+                Parent.BubbleCheckedChildren();
+            }
+        }
+
     }
 
     public delegate void HierarchicalEventHandler<T>(object sender, HierarchicalEventAgrs<T> e);

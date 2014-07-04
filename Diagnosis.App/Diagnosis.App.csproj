@@ -285,7 +285,7 @@
     <Compile Include="ViewModels\Search\AutoCompletes\AutoCompleteBoxViewModel.cs" />
     <Compile Include="ViewModels\Search\SearchWrap.cs" />
     <Compile Include="ViewModels\Domain\SymptomViewModel.cs" />
-    <Compile Include="ViewModels\HierarchicalCheckable.cs" />
+    <Compile Include="ViewModels\HierarchicalBase.cs" />
     <Compile Include="ViewModels\Producers\DiagnosisProducer.cs" />
     <Compile Include="ViewModels\Domain\CoursesManager.cs" />
     <Compile Include="ViewModels\Domain\AppointmentViewModel.cs" />
@@ -321,7 +321,6 @@
     <Compile Include="ViewModels\Search\AutoCompletes\AutoCompleteBase.cs" />
     <Compile Include="ViewModels\CheckableBase.cs" />
     <Compile Include="ViewModels\Domain\DiagnosisViewModel.cs" />
-    <Compile Include="ViewModels\HierarchicalBase.cs" />
     <Compile Include="ViewModels\Interfaces\ICheckable.cs" />
     <Compile Include="ViewModels\Interfaces\IHierarchical.cs" />
     <Compile Include="ViewModels\Interfaces\IHierarchicalCheckable.cs" />

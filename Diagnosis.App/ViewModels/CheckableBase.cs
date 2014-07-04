@@ -1,9 +1,10 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using System.Diagnostics;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class CheckableBase : ViewModelBase, ICheckable
+    public abstract class CheckableBase : ViewModelBase, ICheckable
     {
         #region ICheckable
 
@@ -11,6 +12,9 @@ namespace Diagnosis.App.ViewModels
         private bool _isChecked;
         private ICommand _toggle;
         private bool _selected;
+
+        public event CheckableEventHandler CheckedChanged;
+        public event CheckableEventHandler SelectedChanged;
 
         public bool IsSelected
         {
@@ -81,14 +85,37 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        public virtual void OnCheckedChanged()
+        protected virtual void OnCheckedChanged()
         {
+            var h = CheckedChanged;
+            if (h != null)
+            {
+                h(this, new CheckableEventArgs(this));
+            }
         }
 
-        public virtual void OnSelectedChanged()
+        protected virtual void OnSelectedChanged()
         {
+            var h = SelectedChanged;
+            if (h != null)
+            {
+                h(this, new CheckableEventArgs(this));
+            }
         }
 
         #endregion ICheckable
+    }
+
+    public delegate void CheckableEventHandler(object sender, CheckableEventArgs e);
+
+    public class CheckableEventArgs : EventArgs
+    {
+        public ICheckable vm;
+
+        [DebuggerStepThrough]
+        public CheckableEventArgs(ICheckable vm)
+        {
+            this.vm = vm;
+        }
     }
 }

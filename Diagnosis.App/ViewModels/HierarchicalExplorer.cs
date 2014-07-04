@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class HierarchicalExplorer<T> : ViewModelBase where T : HierarchicalCheckable<T>
+    public class HierarchicalExplorer<T> : ViewModelBase where T : HierarchicalBase<T>
     {
         private RelayCommand<T> _clickItem;
         private T _current;

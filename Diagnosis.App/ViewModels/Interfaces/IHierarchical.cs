@@ -7,10 +7,12 @@ namespace Diagnosis.App.ViewModels
     public interface IHierarchical<T> where T : class
     {
         event HierarchicalEventHandler<T> ChildrenChanged;
+        event HierarchicalEventHandler<T> ParentChanged;
 
         bool IsRoot { get; }
-
         bool IsTerminal { get; }
+        bool IsParent { get; }
+        bool IsExpanded { get; set; }
 
         T Parent { get; }
 
@@ -27,6 +29,7 @@ namespace Diagnosis.App.ViewModels
         T Add(IEnumerable<T> items);
 
         T AddIfNotExists(T item, bool lookupAllChildren);
+        T AddIfNotExists(T item, bool checkAllChildren, Func<T, T, bool> equalsComparator);
 
         T Remove(T item);
 
