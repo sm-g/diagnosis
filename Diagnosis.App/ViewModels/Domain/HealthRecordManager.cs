@@ -1,12 +1,10 @@
-﻿using Diagnosis.Core;
-using Diagnosis.Data;
+﻿using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
-using NHibernate;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -14,8 +12,10 @@ namespace Diagnosis.App.ViewModels
     {
         private readonly AppointmentViewModel appVM;
         private ObservableCollection<HealthRecordViewModel> _healthRecords;
+        private HealthRecordRepository repo = new HealthRecordRepository();
 
         public event EventHandler HealthRecordsLoaded;
+
         public event PropertyChangedEventHandler HrPropertyChanged;
 
         public ObservableCollection<HealthRecordViewModel> HealthRecords
@@ -77,15 +77,16 @@ namespace Diagnosis.App.ViewModels
                 h(this, e);
             }
         }
+
         private ObservableCollection<HealthRecordViewModel> MakeHealthRecords()
         {
-            var hrVMs = appVM.appointment.HealthRecords.Select(hr => new HealthRecordViewModel(hr)).ToList();
-            Debug.Print("make hrs for {0}", appVM);
-            hrVMs.ForAll(hr => SubscribeHr(hr));
+            Debug.Print("making hrs for {0}", appVM);
 
+            var hrVMs = appVM.appointment.HealthRecords.Select(hr => MakeHealthRecordVM(hr)).ToList();
             var healthRecords = new ObservableCollection<HealthRecordViewModel>(hrVMs);
             return healthRecords;
         }
+
         private void AfterHealthRecordsLoaded()
         {
             appVM.SubscribeEditableNesting(HealthRecords);
@@ -112,22 +113,13 @@ namespace Diagnosis.App.ViewModels
         private void hr_Committed(object sender, EditableEventArgs e)
         {
             var hr = e.entity as HealthRecord;
-            ISession session = NHibernateHelper.GetSession();
-            using (ITransaction transaction = session.BeginTransaction())
-            {
-                session.SaveOrUpdate(hr);
-                transaction.Commit();
-            }
+            repo.SaveOrUpdate(hr);
         }
 
         private void hr_Reverted(object sender, EditableEventArgs e)
         {
             var hr = e.entity as HealthRecord;
-            ISession session = NHibernateHelper.GetSession();
-            using (ITransaction transaction = session.BeginTransaction())
-            {
-                session.Refresh(hr);
-            }
+            repo.Refresh(hr);
         }
 
         private void hr_Deleted(object sender, EditableEventArgs e)

@@ -57,6 +57,8 @@ namespace Diagnosis.App.ViewModels
 
         protected override void OnSelectedChanged()
         {
+            base.OnSelectedChanged();
+
             // check hr when select it and uncheck when selection goes away
             // except hr was checked by checkbox before
             if (!IsChecked || checkedBySelection)
@@ -68,6 +70,8 @@ namespace Diagnosis.App.ViewModels
 
         protected override void OnCheckedChanged()
         {
+            base.OnCheckedChanged();
+
             // убираем выделение при снятии флажка
             IsSelected = IsChecked;
         }

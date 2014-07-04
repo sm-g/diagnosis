@@ -80,13 +80,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        protected override void OnCheckedChanged()
-        {
-            base.OnCheckedChanged();
-
-            this.Send((int)EventID.WordCheckedChanged, new WordParams(this).Params);
-        }
-
         public PopupSearch<WordViewModel> Search
         {
             get
