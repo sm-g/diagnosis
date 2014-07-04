@@ -69,11 +69,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        protected override void OnCheckedChanged()
-        {
-            base.OnCheckedChanged();
-            this.Send((int)EventID.DiagnosisCheckedChanged, new DiagnosisParams(this).Params);
-        }
         public void Unsubscribe()
         {
             diagnosesRootChanged -= RootChanged;
@@ -84,7 +79,7 @@ namespace Diagnosis.App.ViewModels
         {
             if (_search != null)
             {
-                _search.ResultItemSelected += _search_ResultItemSelected;
+                _search.ResultItemSelected -= _search_ResultItemSelected;
             }
             var search = new PopupSearch<DiagnosisViewModel>(new DiagnosisSearcher(this, new HierarchicalSearchSettings()));
             search.ResultItemSelected += _search_ResultItemSelected;

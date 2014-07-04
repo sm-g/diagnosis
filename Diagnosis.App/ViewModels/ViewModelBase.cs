@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -26,5 +27,18 @@ namespace Diagnosis.App.ViewModels
 #endif
 
         #endregion IDisposable Members
+    }
+
+    public delegate void VmBaseEventHandler(object sender, VmBaseEventArgs e);
+
+    public class VmBaseEventArgs : EventArgs
+    {
+        public ViewModelBase vm;
+
+        [DebuggerStepThrough]
+        public VmBaseEventArgs(ViewModelBase vm)
+        {
+            this.vm = vm;
+        }
     }
 }

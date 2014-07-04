@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Diagnostics;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -15,7 +16,6 @@ namespace Diagnosis.App.ViewModels
         internal readonly HealthRecord healthRecord;
         private DateOffset _dateOffset;
         private IEnumerable<Category> _categories;
-        private List<EventMessageHandler> msgHandlers;
         private static bool makingCurrent;
         private ICategoryRepository catRepo;
 
@@ -113,6 +113,8 @@ namespace Diagnosis.App.ViewModels
                     _symptom = value;
                     if (value != null)
                         healthRecord.Symptom = value.symptom;
+                    else
+                        Debug.Print("hr Symptom set to null");
 
                     OnPropertyChanged("Name");
                     Editable.MarkDirty();
@@ -131,6 +133,14 @@ namespace Diagnosis.App.ViewModels
                 if (_diagnosis != value)
                 {
                     _diagnosis = value;
+                    if (value != null)
+                    {
+                        healthRecord.Disease = value.diagnosis.Disease;
+                    }
+                    else
+                    {
+                        healthRecord.Disease = null;
+                    }
 
                     OnPropertyChanged("Diagnosis");
                     OnPropertyChanged("ShowDiagnosis");
@@ -306,20 +316,6 @@ namespace Diagnosis.App.ViewModels
             });
         }
 
-        public void UnsubscribeCheckedChanges()
-        {
-            foreach (var h in msgHandlers)
-            {
-                h.Dispose();
-            }
-        }
-
-        internal void CheckInCurrent()
-        {
-            makingCurrent = true;
-            EntityProducers.DiagnosisProducer.Check(Diagnosis);
-            makingCurrent = false;
-        }
 
         private void SetDiagnosis()
         {
@@ -364,39 +360,6 @@ namespace Diagnosis.App.ViewModels
                     break;
             }
         }
-        #region Event handlers
-
-        internal void SubscribeToCheckedChanges()
-        {
-            msgHandlers = new List<EventMessageHandler>()
-            {
-                this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
-                {
-                    if (this.IsSelected && !makingCurrent)
-                    {
-                        var diagnosis = e.GetValue<DiagnosisViewModel>(Messages.Diagnosis);
-
-                        OnDiagnosisCheckedChanged(diagnosis, diagnosis.IsChecked);
-                    }
-                })
-            };
-        }
-
-        private void OnDiagnosisCheckedChanged(DiagnosisViewModel diagnosisVM, bool isChecked)
-        {
-            if (isChecked)
-            {
-                this.Diagnosis = diagnosisVM;
-                healthRecord.Disease = diagnosisVM.diagnosis.Disease;
-            }
-            else if (diagnosisVM == this.Diagnosis)
-            {
-                this.Diagnosis = null;
-                healthRecord.Disease = null;
-            }
-        }
-
-        #endregion Event handlers
 
         public override string ToString()
         {

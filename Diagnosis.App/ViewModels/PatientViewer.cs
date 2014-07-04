@@ -287,13 +287,7 @@ namespace Diagnosis.App.ViewModels
                     opening.Editable.IsEditorActive = closing.Editable.IsEditorActive;
                 }
             }
-            else
-            {
-                if (OpenedHealthRecord != null)
-                {
-                    OpenedHealthRecord.UnsubscribeCheckedChanges();
-                }
-            }
+
             Debug.Print("closed patient {0}", _openedPatient);
         }
 
@@ -419,8 +413,6 @@ namespace Diagnosis.App.ViewModels
                 appHrMap[OpenedAppointment] = hr;
             }
 
-            hr.SubscribeToCheckedChanges();
-            hr.CheckInCurrent();
             Debug.Print("opened hr {0}", hr);
         }
 
@@ -439,7 +431,6 @@ namespace Diagnosis.App.ViewModels
             }
             closing.Editable.IsEditorActive = false;
             closing.Editable.Commit();
-            closing.UnsubscribeCheckedChanges();
             Debug.Print("closed hr {0}", closing);
         }
 

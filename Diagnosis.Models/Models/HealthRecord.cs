@@ -177,7 +177,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("{0} {1} {2} {3} {4} {5} {6}", Id, Category, Symptom, NumValue != null ? NumValue.Value.ToString("G6") : "", Disease,
+            return string.Format("{0} {1} {2} {3} {4} {5} {6}", Id, Category, Symptom, NumValue != null ? NumValue.Value.ToString("G6") : "", Disease != null ? Disease.Title : "",
                 new DateOffset(FromYear, FromMonth, FromDay, () => Appointment.DateAndTime), Comment);
         }
     }

@@ -128,23 +128,6 @@ namespace Diagnosis.App.ViewModels
                 OnDirectoryEditingModeChanged(isEditing);
             });
 
-            this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
-            {
-                var diagnosis = e.GetValue<DiagnosisViewModel>(Messages.Diagnosis);
-
-                OnDiagnosisCheckedChanged(diagnosis, diagnosis.IsChecked);
-            });
-        }
-
-        private void OnDiagnosisCheckedChanged(DiagnosisViewModel diagnosis, bool isChecked)
-        {
-            // снимаем флаг со всех диагнозов, кроме отмеченного
-            if (isChecked)
-                Root.AllChildren.ForAll(d =>
-                {
-                    if (d.IsChecked && d != diagnosis)
-                        d.IsChecked = false;
-                });
         }
 
         /// <summary>

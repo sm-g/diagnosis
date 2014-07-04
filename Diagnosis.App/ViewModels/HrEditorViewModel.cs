@@ -5,6 +5,7 @@ using EventAggregator;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -16,7 +17,6 @@ namespace Diagnosis.App.ViewModels
         private HealthRecordViewModel _hr;
 
         #region HealthRecord
-
 
         public HealthRecordViewModel HealthRecord
         {
@@ -62,7 +62,8 @@ namespace Diagnosis.App.ViewModels
                 OnPropertyChanged("IsActive");
             }
         }
-        #endregion
+
+        #endregion HealthRecord
 
         #region AutoComplete
 
@@ -138,14 +139,26 @@ namespace Diagnosis.App.ViewModels
             if (DiagnosisSearch != null)
             {
                 DiagnosisSearch.Cleared -= DiagnosisSearch_Cleared;
+                DiagnosisSearch.ResultItemSelected -= DiagnosisSearch_ResultItemSelected;
             }
             DiagnosisSearch = new PopupSearch<DiagnosisViewModel>(
-                   EntityProducers.DiagnosisProducer.RootFiltratingSearcher,
-                   onSelected: (dia) => { dia.IsChecked = true; });
+                   EntityProducers.DiagnosisProducer.RootFiltratingSearcher
+                   );
 
             DiagnosisSearch.Cleared += DiagnosisSearch_Cleared;
+            DiagnosisSearch.ResultItemSelected += DiagnosisSearch_ResultItemSelected;
 
             UpdateDiagnosisQueryCode();
+        }
+
+        private void DiagnosisSearch_ResultItemSelected(object sender, VmBaseEventArgs e)
+        {
+            HealthRecord.Diagnosis = e.vm as DiagnosisViewModel;
+            if (HealthRecord != null)
+            {
+                Debug.Print("update query code");
+                UpdateDiagnosisQueryCode();
+            }
         }
 
         private void DiagnosisSearch_Cleared(object sender, EventArgs e)
@@ -154,7 +167,7 @@ namespace Diagnosis.App.ViewModels
             // DiagnosisSearch.Query already empty
         }
 
-        #endregion
+        #endregion Diagnosis search
 
         public bool ShowIcdDisease
         {
@@ -164,6 +177,7 @@ namespace Diagnosis.App.ViewModels
                 return b;
             }
         }
+
         public HrEditorViewModel()
         {
             Subscribe();
@@ -194,17 +208,6 @@ namespace Diagnosis.App.ViewModels
             this.Subscribe((int)EventID.SettingsSaved, (e) =>
             {
                 OnPropertyChanged("ShowIcdDisease");
-            });
-            this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
-            {
-                if (HealthRecord != null)
-                {
-                    UpdateDiagnosisQueryCode();
-                }
-                else
-                {
-                    ;
-                }
             });
         }
 

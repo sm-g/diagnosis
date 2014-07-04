@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class PopupSearch<T> : ViewModelBase, IFilter<T> where T : class
+    public class PopupSearch<T> : ViewModelBase, IFilter<T> where T : ViewModelBase
     {
         #region Fields
 
@@ -26,7 +26,7 @@ namespace Diagnosis.App.ViewModels
 
         #endregion Fields
 
-        public event EventHandler ResultItemSelected;
+        public event VmBaseEventHandler ResultItemSelected;
 
         public event EventHandler Cleared;
 
@@ -261,7 +261,7 @@ namespace Diagnosis.App.ViewModels
                 var h = ResultItemSelected;
                 if (h != null)
                 {
-                    h(this, EventArgs.Empty);
+                    h(this, new VmBaseEventArgs(item));
                 }
             }
             IsResultsVisible = false;
