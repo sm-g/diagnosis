@@ -157,7 +157,7 @@ namespace Diagnosis.App.ViewModels
             };
             item.ChildrenChanged += (s, e) =>
             {
-                // слово с дельтми нальзя удалять
+                // слово с детьми нельзя удалять
                 SetDeletable(item);
             };
         }

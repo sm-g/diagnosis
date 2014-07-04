@@ -10,6 +10,9 @@ namespace Diagnosis.Data.Repositories
 {
     public class HealthRecordRepository : ModelRepository<HealthRecord>
     {
+        /// <summary>
+        /// Записи, содержащие любое из слов.
+        /// </summary>
         public IEnumerable<HealthRecord> GetByWords(IEnumerable<Word> words)
         {
             var wordsIds = words.Select(w => w.Id).ToList();
@@ -31,7 +34,9 @@ namespace Diagnosis.Data.Repositories
                 return w1;
             }
         }
-
+        /// <summary>
+        /// Записи, в которых есть все слова, могут быть и другие.
+        /// </summary>
         public IEnumerable<HealthRecord> GetWithWordsSubset(IEnumerable<Word> words)
         {
             var wordsIds = words.Select(w => w.Id).ToList();
@@ -39,7 +44,9 @@ namespace Diagnosis.Data.Repositories
             return GetAll().Where(hr => hr.Symptom != null
                 && words.IsSubsetOf(hr.Symptom.Words));
         }
-
+        /// <summary>
+        /// Записи, в которых есть все слова и нет других.
+        /// </summary>
         public IEnumerable<HealthRecord> GetWithAllWords(IEnumerable<Word> words)
         {
             var wordsIds = words.Select(w => w.Id).ToList();
