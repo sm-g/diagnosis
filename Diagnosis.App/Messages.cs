@@ -44,6 +44,8 @@ namespace Diagnosis.App.Messaging
         OpenSettings,
         OpenPatient,
 
-        SettingsSaved
+        SettingsSaved,
+
+        SendToSearch
     }
 }

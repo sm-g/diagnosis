@@ -362,6 +362,10 @@ namespace Diagnosis.App.ViewModels
                 viewer.OpenPatient(patVM);
                 viewer.OpenHr(hr);
             });
+            this.Subscribe((int)EventID.SendToSearch, (e) =>
+            {
+                SearchAsideOpened = true;
+            });
 
             //nav.Navigate(Login);
             nav.Navigate(Patients);

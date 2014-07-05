@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Diagnostics;
+using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -16,7 +17,7 @@ namespace Diagnosis.App.ViewModels
         internal readonly HealthRecord healthRecord;
         private DateOffset _dateOffset;
         private IEnumerable<Category> _categories;
-        private static bool makingCurrent;
+        private ICommand _sendToSearch;
         private ICategoryRepository catRepo;
 
         #region IEditableNesting
@@ -294,6 +295,17 @@ namespace Diagnosis.App.ViewModels
             get
             {
                 return Diagnosis != null && EntityProducers.DoctorsProducer.CurrentDoctor.doctor.DoctorSettings.HasFlag(DoctorSettings.ShowIcdDisease);
+            }
+        }
+        public ICommand SendToSearchCommand
+        {
+            get
+            {
+                return _sendToSearch
+                   ?? (_sendToSearch = new RelayCommand(() =>
+                        {
+                            this.Send((int)EventID.SendToSearch, new HealthRecordsParams(this.ToEnumerable()).Params);
+                        }));
             }
         }
         public HealthRecordViewModel(HealthRecord hr)

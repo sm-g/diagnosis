@@ -33,9 +33,7 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        IEnumerable<WordViewModel> AllWords { get { return root.AllChildren; } }
-
-
+        public IEnumerable<WordViewModel> AllWords { get { return root.AllChildren; } }
 
         public IEnumerable<WordViewModel> GetSymptomWords(Symptom s)
         {
@@ -131,6 +129,7 @@ namespace Diagnosis.App.ViewModels
             {
                 var w = e.entity as Word;
                 repository.SaveOrUpdate(w);
+                GetByModel(w).RefreshProperties();
             };
             item.Editable.Reverted += (s, e) =>
             {

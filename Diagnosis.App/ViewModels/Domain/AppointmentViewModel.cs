@@ -6,7 +6,9 @@ using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Data;
+using EventAggregator;
 using System.Windows.Input;
+using Diagnosis.App.Messaging;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -25,9 +27,9 @@ namespace Diagnosis.App.ViewModels
         private ICommand _editHrCommand;
         private ICommand _deleteHealthRecords;
         private ICommand _moveHrSelection;
+        private ICommand _sendToSearch;
 
         private ICollectionView _healthRecordsView;
-        private bool movingSelected;
 
         #endregion Fileds
 
@@ -124,7 +126,18 @@ namespace Diagnosis.App.ViewModels
                     ?? (_deleteHealthRecords = new RelayCommand(() =>
                     {
                         DeleteCheckedHealthRecords();
-                    }, () => CheckedHealthRecords > 0 || SelectedHealthRecord != null));
+                    }, () => CheckedHealthRecords > 0));
+            }
+        }
+        public ICommand SendHealthRecordsToSearchCommand
+        {
+            get
+            {
+                return _sendToSearch
+                   ?? (_sendToSearch = new RelayCommand(() =>
+                        {
+                            this.Send((int)EventID.SendToSearch, new HealthRecordsParams(HealthRecords.Where(hr => hr.IsChecked)).Params);
+                        }, () => CheckedHealthRecords > 0));
             }
         }
 
@@ -147,7 +160,6 @@ namespace Diagnosis.App.ViewModels
                 return _moveHrSelection
                    ?? (_moveHrSelection = new RelayCommand<bool>((up) =>
                         {
-                            movingSelected = true;
                             if (up)
                             {
                                 if (HealthRecordsView.CurrentPosition != 0)
@@ -162,7 +174,6 @@ namespace Diagnosis.App.ViewModels
                                 else
                                     HealthRecordsView.MoveCurrentToFirst();
                             }
-                            movingSelected = false;
                         }));
             }
         }

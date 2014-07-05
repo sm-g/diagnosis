@@ -6,6 +6,9 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.InputBindings>
+        <KeyBinding Modifiers="Control" Key="N" Command="{Binding AddCommand}" />
+    </UserControl.InputBindings>
     <!--WordsListViewModel-->
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -13,23 +16,30 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+
         <StackPanel Style="{StaticResource buttonsBar}">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource barButton}" />
+                <Style TargetType="{x:Type Image}" BasedOn="{StaticResource buttonIcon}" />
             </StackPanel.Resources>
-            <Button Command="{Binding AddCommand}" ToolTip="Добавить слово ()">
-                <Image Source="{StaticResource addImage}" />
+            <Button Command="{Binding AddCommand}" ToolTip="Редактировать новое слово (Ctrl + N)">
+                <DockPanel>
+                    <Image Source="{StaticResource addImage}" />
+                    <TextBlock Text="Добавить слово" />
+                </DockPanel>
             </Button>
             <Button Command="{Binding SendToSearchCommand}">
-                <TextBlock>
-                    <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" ToolTip="Искать выбранные слова ()">Искать</Run>
-                    <TextBlock Text="{Binding CheckedWords, StringFormat='{}({0})'}"
-                                Visibility="{Binding CheckedWords, Converter={StaticResource CountToVisibility}, ConverterParameter=1}" />
-                </TextBlock>
+                <DockPanel>
+                    <Image Source="{StaticResource findImage}" />
+                    <TextBlock>
+                        <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" ToolTip="Искать выбранные слова ()">Искать</Run>
+                        <TextBlock Text="{Binding CheckedWords, StringFormat='{}({0})'}"
+                                    Visibility="{Binding CheckedWords, Converter={StaticResource CountToVisibility}, ConverterParameter=1}" />
+                    </TextBlock>
+                </DockPanel>
             </Button>
         </StackPanel>
-        
+
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />

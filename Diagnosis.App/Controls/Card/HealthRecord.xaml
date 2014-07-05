@@ -11,12 +11,23 @@
              Background="Transparent"
              Focusable="True"
              IsTabStop="True">
+    <UserControl.Resources>
+        <Style TargetType="StackPanel" x:Key="hidingButtons">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     
     <!--DataContext is HealthRecordViewModel-->
     <Grid Style="{StaticResource gridIsDirty}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
         <CheckBox IsChecked="{Binding IsChecked}" Focusable="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Top">
@@ -59,6 +70,15 @@
                 </TextBlock>
                 <TextBlock Grid.Row="2" Text="{Binding Comment}" Visibility="{Binding Comment, Converter={StaticResource NullToVis}}"/>
             </Grid>
+        </StackPanel>
+
+        <StackPanel x:Name="buttons" Grid.Column="2" Style="{StaticResource hidingButtons}">
+            <StackPanel.Resources>
+                <Style TargetType="Image" BasedOn="{StaticResource buttonIcon}" />
+            </StackPanel.Resources>
+            <Button Command="{Binding SendToSearchCommand}" Margin="10,0,0,0" ToolTip="Искать (Alt + F)">
+                <Image Source="{StaticResource findImage}" />
+            </Button>
         </StackPanel>
     </Grid>
 </UserControl>

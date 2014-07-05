@@ -40,7 +40,7 @@
             <ColumnDefinition Width="20" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
-            <ColumnDefinition MinWidth="20" Width="auto"/>
+            <ColumnDefinition MinWidth="20" Width="auto" />
         </Grid.ColumnDefinitions>
 
         <CheckBox x:Name="checkbox"
@@ -76,6 +76,11 @@
 
         <Grid Grid.Column="2" Width="80"
                         Style="{StaticResource hidingButtons}">
+            <Grid.Resources>
+                <Style TargetType="Image" BasedOn="{StaticResource buttonIcon}">
+                    <Setter Property="Margin" Value="0" />
+                </Style>
+            </Grid.Resources>
             <StackPanel x:Name="titleButtons" Orientation="Horizontal" Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
                 <!--открыть редактор, добавить слово, искать-->
                 <Button Command="{Binding Editable.EditCommand}" ToolTip="Редактировать (F2)">
@@ -84,12 +89,11 @@
 
                 <!--WordsListViewModel-->
                 <Button Command="{Binding DataContext.AddCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=3}}"
-                        CommandParameter="{Binding}" Margin="10,0,0,0" ToolTip="Добавить подчинённое слово ()">                    
+                        CommandParameter="{Binding}" Margin="10,0,0,0" ToolTip="Добавить подчинённое слово (Ctrl + N)">
                     <Image Source="{StaticResource addImage}" />
                 </Button>
-                <Button Command="{Binding DataContext.SendToSearchCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=3}}"
-                        CommandParameter="{Binding}" Margin="10,0,0,0" ToolTip="Искать (Alt + F)">
-                    s
+                <Button Command="{Binding SendToSearchCommand}" Margin="10,0,0,0" ToolTip="Искать (Alt + F)">
+                    <Image Source="{StaticResource findImage}" />
                 </Button>
             </StackPanel>
 
@@ -100,7 +104,7 @@
                     <Image Source="{StaticResource editImage}" />
                 </Button>
                 <!--закрыть редактор или сохранить и отменить-->
-                <StackPanel Orientation="Horizontal" 
+                <StackPanel Orientation="Horizontal"
                             Visibility="{Binding Editable.IsDirty, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Button Command="{Binding Editable.CommitCommand}" ToolTip="Сохранить (Enter)">
                         <Image Source="{StaticResource saveImage}" />

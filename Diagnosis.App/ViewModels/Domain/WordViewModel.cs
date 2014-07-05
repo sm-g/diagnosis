@@ -2,6 +2,8 @@
 using Diagnosis.Models;
 using EventAggregator;
 using System.Diagnostics.Contracts;
+using System.Windows.Input;
+using Diagnosis.Core;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -10,6 +12,7 @@ namespace Diagnosis.App.ViewModels
         internal readonly Word word;
 
         private Category _defCat;
+        private ICommand _sendToSearch;
         private PopupSearch<WordViewModel> _search;
 
         public Editable Editable { get; private set; }
@@ -72,6 +75,18 @@ namespace Diagnosis.App.ViewModels
 
         #endregion
 
+        public ICommand SendToSearchCommand
+        {
+            get
+            {
+                return _sendToSearch
+                   ?? (_sendToSearch = new RelayCommand(() =>
+                   {
+                       this.Send((int)EventID.SendToSearch, new WordsParams(this.ToEnumerable()).Params);
+                   }));
+            }
+        }
+
         public string SearchText
         {
             get
@@ -105,6 +120,7 @@ namespace Diagnosis.App.ViewModels
         {
             OnPropertyChanged("Name");
             OnPropertyChanged("Priority");
+            OnPropertyChanged("Unsaved");
         }
 
         public WordViewModel(Word w)

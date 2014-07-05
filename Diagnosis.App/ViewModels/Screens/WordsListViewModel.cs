@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
+using EventAggregator;
+using Diagnosis.App.Messaging;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -10,6 +12,7 @@ namespace Diagnosis.App.ViewModels
     {
         private FilterViewModel<WordViewModel> filter;
 
+        private ICommand _sendToSearch;
         private ICommand _add;
 
         public event HierarchicalEventHandler<WordViewModel> NewWordAdded;
@@ -77,6 +80,17 @@ namespace Diagnosis.App.ViewModels
                         }));
             }
         }
+        public ICommand SendToSearchCommand
+        {
+            get
+            {
+                return _sendToSearch
+                   ?? (_sendToSearch = new RelayCommand(() =>
+                        {
+                            this.Send((int)EventID.SendToSearch, new WordsParams(EntityProducers.WordsProducer.AllWords.Where(w => w.IsChecked)).Params);
+                        }, () => CheckedWords > 0));
+            }
+        }
 
         /// <summary>
         /// Количество отмеченных слов.
@@ -125,7 +139,7 @@ namespace Diagnosis.App.ViewModels
 
         public WordsListViewModel()
         {
-            EntityProducers.WordsProducer.Root.AllChildren.ForAll((w) =>
+            EntityProducers.WordsProducer.AllWords.ForAll((w) =>
             {
                 Subscribe(w);
             });

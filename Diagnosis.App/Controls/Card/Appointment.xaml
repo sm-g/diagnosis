@@ -14,6 +14,7 @@
             <KeyBinding Key="Space" Command="{Binding ToggleCommand}" />
             <KeyBinding Key="Escape" Command="{Binding Editable.RevertCommand}" />
             <KeyBinding Modifiers="Control" Key="S" Command="{Binding Editable.CommitCommand}" />
+            <KeyBinding Modifiers="Alt" Key="F" Command="{Binding SendToSearchCommand}" />
 
             <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding DataContext.EditHrCommand, ElementName=appointment}" />
         </InputBindingCollection>
@@ -38,11 +39,7 @@
         <StackPanel Style="{StaticResource buttonsBar}" Margin="10">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource barButton}" />
-                <Style TargetType="Image">
-                    <Setter Property="Margin" Value="0,0,5,0" />
-                    <Setter Property="SnapsToDevicePixels" Value="True" />
-                    <Setter Property="Height" Value="16" />
-                </Style>
+                <Style TargetType="Image" BasedOn="{StaticResource buttonIcon}" />
             </StackPanel.Resources>
             <Button Command="{Binding AddHealthRecordCommand}" ToolTip="Редактировать новую запись (Ctrl + N)">
                 <DockPanel>
@@ -61,6 +58,16 @@
                     <Image Source="{StaticResource deleteImage}" />
                     <TextBlock>
                         <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" ToolTip="Удалить выбранные записи (Del)">Удалить</Run>
+                        <TextBlock Text="{Binding CheckedHealthRecords, StringFormat='{}({0})'}"
+                                   Visibility="{Binding CheckedHealthRecords, Converter={StaticResource CountToVisibility}, ConverterParameter=1}" />
+                    </TextBlock>
+                </DockPanel>
+            </Button>
+            <Button Command="{Binding SendHealthRecordsToSearchCommand}">
+                <DockPanel>
+                    <Image Source="{StaticResource findImage}" />
+                    <TextBlock>
+                        <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" ToolTip="Искать выбранные записи ()">Искать</Run>
                         <TextBlock Text="{Binding CheckedHealthRecords, StringFormat='{}({0})'}"
                                    Visibility="{Binding CheckedHealthRecords, Converter={StaticResource CountToVisibility}, ConverterParameter=1}" />
                     </TextBlock>

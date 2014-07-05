@@ -20,7 +20,10 @@ namespace Diagnosis.App.Controls
         {
             TreeViewItem tvi = sender as TreeViewItem;
             if (tvi != null)
+            {
                 tvi.BringIntoView();
+                tvi.Focus();
+            }
             e.Handled = true;
         }
     }

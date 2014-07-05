@@ -14,7 +14,7 @@ using System.Diagnostics;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class SearchViewModel : ViewModelBase
+    public class SearchViewModel : ViewModelBase, IDisposable
     {
         #region Fields
 
@@ -41,8 +41,6 @@ namespace Diagnosis.App.ViewModels
         private HrSearcher searcher = new HrSearcher();
 
         #endregion Fields
-
-
         public SearchViewModel(PatientsProducer manager)
         {
             Contract.Requires(manager != null);
@@ -63,6 +61,30 @@ namespace Diagnosis.App.ViewModels
             {
                 OnPropertyChanged("AllEmpty");
             };
+            this.Subscribe((int)EventID.SendToSearch, (e) =>
+            {
+                try
+                {
+                    var hrs = e.GetValue<IEnumerable<HealthRecordViewModel>>(Messages.HealthRecord);
+                    if (hrs != null && hrs.Count() > 0)
+                    {
+                        RecieveHealthRecords(hrs);
+                    }
+                }
+                catch { }
+
+                try
+                {
+                    var words = e.GetValue<IEnumerable<WordViewModel>>(Messages.Word);
+                    if (words != null && words.Count() > 0)
+                    {
+                        RecieveWords(words);
+                    }
+                }
+                catch { }
+
+
+            });
         }
 
         #region Options bindings
@@ -214,6 +236,11 @@ namespace Diagnosis.App.ViewModels
                     };
                 }
                 return _hrDateOffsetLower;
+            }
+            private set
+            {
+                _hrDateOffsetLower.Offset = value.Offset;
+                _hrDateOffsetLower.Unit = value.Unit;
             }
         }
 
@@ -427,11 +454,41 @@ namespace Diagnosis.App.ViewModels
 
             OnPropertyChanged("NoResultsVisible");
         }
+        private void RecieveHealthRecords(IEnumerable<HealthRecordViewModel> hrs)
+        {
+            // все слова из записей
+            var allWords = hrs.Aggregate(new HashSet<WordViewModel>(), (words, hr) => { hr.Symptom.Words.ForAll((w) => words.Add(w)); return words; });
+            WordSearch.Reset(allWords);
+
+            // если несколько записей — любое из слов
+            AnyWord = hrs.Count() != 1;
+
+            // все категории из записей
+            Categories.ForAll((cat) => cat.IsChecked = false);
+            var allCats = hrs.Aggregate(new HashSet<Category>(), (cats, hr) => { cats.Add(hr.Category); return cats; });
+            Categories.Where(cat => allCats.Contains(cat.category)).ForAll(cat => cat.IsChecked = true);
+
+            // комментарий и давность из последней записи
+            var lastHr = hrs.Last();
+            HrDateOffsetLower = lastHr.DateOffset;
+            Comment = lastHr.Comment;
+        }
+
+        private void RecieveWords(IEnumerable<WordViewModel> words)
+        {
+            // ищем переданные слова
+            WordSearch.Reset(words);
+        }
 
         private void PrintHrDate()
         {
             Debug.Print("HrDateOffsetUpper = {0}", HrDateOffsetUpper);
             Debug.Print("HrDateOffsetLower = {0}", HrDateOffsetLower);
+        }
+
+        ~SearchViewModel()
+        {
+
         }
     }
 }

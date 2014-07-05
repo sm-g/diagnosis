@@ -71,6 +71,17 @@ namespace Diagnosis.App.Messaging
             };
         }
     }
+    class WordsParams : EventParams
+    {
+        public WordsParams(IEnumerable<WordViewModel> wordVMs)
+        {
+            Contract.Requires(wordVMs != null);
+
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.Word, wordVMs)
+            };
+        }
+    }
 
     class DiagnosisParams : EventParams
     {
@@ -127,6 +138,17 @@ namespace Diagnosis.App.Messaging
 
             Params = new[] {
                 new KeyValuePair<string,object>(Messages.HealthRecord, hrVM)
+            };
+        }
+    }
+    class HealthRecordsParams : EventParams
+    {
+        public HealthRecordsParams(IEnumerable<HealthRecordViewModel> hrVMs)
+        {
+            Contract.Requires(hrVMs != null);
+
+            Params = new[] {
+                new KeyValuePair<string,object>(Messages.HealthRecord, hrVMs)
             };
         }
     }

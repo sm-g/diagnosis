@@ -210,12 +210,9 @@ namespace Diagnosis.App.ViewModels
         /// <summary>
         /// Сбрасывает автокомплит к начальному состоянию.
         /// </summary>
-        public void Reset()
+        public void Reset(IEnumerable<T> initItems = null)
         {
-            items.Clear();
-            IsItemCompleted = false;
-            SetSearchContext();
-            FullString = "";
+            SetupInitItems(initItems);
         }
 
         /// <summary>
@@ -391,23 +388,26 @@ namespace Diagnosis.App.ViewModels
             this.settings = settings;
             this.separator = separator;
 
-            bool withInitItems = initItems != null && initItems.Count() > 0;
-
-            if (withInitItems)
-            {
-                items = new ObservableCollection<T>(initItems);
-                IsItemCompleted = true;
-            }
-            else
-            {
-                items = new ObservableCollection<T>();
-            }
-
+            items = new ObservableCollection<T>();
             Items = new ReadOnlyObservableCollection<T>(items);
             Suggestions = new ObservableCollection<T>();
 
+            var withInitItems = SetupInitItems(initItems);
             SetSearchContext(withInitItems);
+        }
+
+        private bool SetupInitItems(IEnumerable<T> initItems)
+        {
+            bool withInitItems = initItems != null && initItems.Count() > 0;
+            items.Clear();
+            if (withInitItems)
+            {
+                initItems.ForAll((i) => items.Add(i));
+            }
+            IsItemCompleted = withInitItems;
             MakeFullStringFromItems();
+
+            return withInitItems;
         }
     }
     public class AutoCompleteEventArgs : EventArgs

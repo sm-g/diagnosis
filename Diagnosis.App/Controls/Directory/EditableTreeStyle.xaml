@@ -12,7 +12,11 @@
         <KeyBinding Key="F2" Command="{Binding Editable.EditCommand}" />
         <KeyBinding Key="Escape" Command="{Binding Editable.RevertCommand}" />
         <KeyBinding Key="Insert" Command="{Binding Search.ToggleSearchActiveCommand}" />
-        <KeyBinding Key="F" Modifiers="Control" Command="{Binding Search.ToggleSearchActiveCommand}" />
+        <KeyBinding Modifiers="Alt" Key="F" Command="{Binding SendToSearchCommand}" />
+        <KeyBinding Modifiers="Control" Key="F" Command="{Binding Search.ToggleSearchActiveCommand}" />
+        <KeyBinding Modifiers="Control" Key="N" 
+                    Command="{Binding DataContext.AddCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}" 
+                    CommandParameter="{Binding}"/>
 
         <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleCommand}" />
     </InputBindingCollection>
