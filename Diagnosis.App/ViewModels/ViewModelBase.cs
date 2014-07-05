@@ -5,26 +5,39 @@ namespace Diagnosis.App.ViewModels
 {
     public abstract class ViewModelBase : Diagnosis.Core.NotifyPropertyChangedBase, IDisposable
     {
-        #region IDisposable Members
+
+        #region IDisposable
+
+        private bool disposed = false;
 
         public void Dispose()
         {
-            this.OnDispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        protected virtual void OnDispose()
+        protected virtual void Dispose(bool disposing)
         {
-        }
-
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    // Free other state (managed objects).
+                }
+                // Free your own state (unmanaged objects).
+                // Set large fields to null.
+                disposed = true;
 #if DEBUG
+                string msg = string.Format("    Finalized {0} ({1}) ({2}) ", this.GetType().Name, this.ToString(), this.GetHashCode());
+                System.Diagnostics.Debug.Print(msg);
+#endif
+            }
+        }
 
         ~ViewModelBase()
         {
-            string msg = string.Format("    Finalized {0} ({1}) ({2}) ", this.GetType().Name, this.ToString(), this.GetHashCode());
-            System.Diagnostics.Debug.Print(msg);
+            Dispose(false);
         }
-
-#endif
 
         #endregion IDisposable Members
     }

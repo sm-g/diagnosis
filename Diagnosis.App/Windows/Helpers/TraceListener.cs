@@ -32,7 +32,7 @@ namespace Diagnosis.App.Windows
             }
             else
             {
-                output.Dispatcher.Invoke(append);
+                output.Dispatcher.BeginInvoke(append);
             }
         }
 

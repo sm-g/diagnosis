@@ -14,7 +14,7 @@ using System.Diagnostics;
 
 namespace Diagnosis.App.ViewModels
 {
-    public class SearchViewModel : ViewModelBase, IDisposable
+    public class SearchViewModel : ViewModelBase
     {
         #region Fields
 
@@ -40,6 +40,8 @@ namespace Diagnosis.App.ViewModels
         PatientsProducer patManager;
         private HrSearcher searcher = new HrSearcher();
 
+        List<EventMessageHandler> msgHandlers;
+
         #endregion Fields
         public SearchViewModel(PatientsProducer manager)
         {
@@ -61,30 +63,29 @@ namespace Diagnosis.App.ViewModels
             {
                 OnPropertyChanged("AllEmpty");
             };
-            this.Subscribe((int)EventID.SendToSearch, (e) =>
-            {
-                try
+            msgHandlers = new List<EventMessageHandler>() {
+                this.Subscribe((int)EventID.SendToSearch, (e) =>
                 {
-                    var hrs = e.GetValue<IEnumerable<HealthRecordViewModel>>(Messages.HealthRecord);
-                    if (hrs != null && hrs.Count() > 0)
+                    try
                     {
-                        RecieveHealthRecords(hrs);
+                        var hrs = e.GetValue<IEnumerable<HealthRecordViewModel>>(Messages.HealthRecord);
+                        if (hrs != null && hrs.Count() > 0)
+                        {
+                            RecieveHealthRecords(hrs);
+                        }
                     }
-                }
-                catch { }
-
-                try
-                {
-                    var words = e.GetValue<IEnumerable<WordViewModel>>(Messages.Word);
-                    if (words != null && words.Count() > 0)
+                    catch { }
+                    try
                     {
-                        RecieveWords(words);
+                        var words = e.GetValue<IEnumerable<WordViewModel>>(Messages.Word);
+                        if (words != null && words.Count() > 0)
+                        {
+                            RecieveWords(words);
+                        }
                     }
-                }
-                catch { }
-
-
-            });
+                    catch { }
+                })
+            };
         }
 
         #region Options bindings
@@ -486,9 +487,26 @@ namespace Diagnosis.App.ViewModels
             Debug.Print("HrDateOffsetLower = {0}", HrDateOffsetLower);
         }
 
-        ~SearchViewModel()
-        {
+        #region IDisposable
 
+        private bool disposed = false;
+
+        protected override void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    foreach (var item in msgHandlers)
+                    {
+                        item.Dispose();
+                    }
+                }
+                disposed = true;
+            }
+            base.Dispose(disposing);
         }
+        #endregion
+
     }
 }
