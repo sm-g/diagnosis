@@ -18,11 +18,11 @@ namespace Diagnosis.App.ViewModels
         internal Action<CourseViewModel> OpenedCourseSetter;
 
         private CoursesManager coursesManager;
+        private MessageHandlersManager msgManager = new MessageHandlersManager();
 
         private DoctorViewModel _doctor;
         private RelayCommand _firstHr;
         private bool _canAddFirstHr;
-        private List<EventMessageHandler> msgHandlers = new List<EventMessageHandler>();
 
         #region IEditableNesting
 
@@ -370,8 +370,7 @@ namespace Diagnosis.App.ViewModels
 
         public void Subscribe()
         {
-            msgHandlers = new List<EventMessageHandler>()
-            {
+            msgManager.Add(new[] {
                 this.Subscribe((int)EventID.PropertySelectedValueChanged, (e) =>
                 {
                     var property = e.GetValue<PropertyViewModel>(Messages.Property);
@@ -384,15 +383,12 @@ namespace Diagnosis.App.ViewModels
 
                     OnCourseStarted(course);
                 })
-            };
+            });
         }
 
         public void Unsubscribe()
         {
-            foreach (var h in msgHandlers)
-            {
-                h.Dispose();
-            }
+            msgManager.Dispose();
         }
 
         private void OnPropertyValueChanged(PropertyViewModel propertyVM)

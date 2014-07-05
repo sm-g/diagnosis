@@ -7,10 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Diagnostics.Contracts;
-using System.Windows.Input;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Windows.Input;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -37,12 +37,13 @@ namespace Diagnosis.App.ViewModels
         private IEnumerable<CategoryViewModel> _categories;
         private bool _searchWas;
         private ICategoryRepository catRepo;
-        PatientsProducer patManager;
+        private PatientsProducer patManager;
         private HrSearcher searcher = new HrSearcher();
 
-        List<EventMessageHandler> msgHandlers;
+        private MessageHandlersManager msgManager;
 
         #endregion Fields
+
         public SearchViewModel(PatientsProducer manager)
         {
             Contract.Requires(manager != null);
@@ -63,7 +64,7 @@ namespace Diagnosis.App.ViewModels
             {
                 OnPropertyChanged("AllEmpty");
             };
-            msgHandlers = new List<EventMessageHandler>() {
+            msgManager = new MessageHandlersManager(
                 this.Subscribe((int)EventID.SendToSearch, (e) =>
                 {
                     try
@@ -85,7 +86,7 @@ namespace Diagnosis.App.ViewModels
                     }
                     catch { }
                 })
-            };
+            );
         }
 
         #region Options bindings
@@ -360,7 +361,6 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-
         public ICommand OpenPatientCommand
         {
             get
@@ -455,6 +455,7 @@ namespace Diagnosis.App.ViewModels
 
             OnPropertyChanged("NoResultsVisible");
         }
+
         private void RecieveHealthRecords(IEnumerable<HealthRecordViewModel> hrs)
         {
             // все слова из записей
@@ -497,16 +498,13 @@ namespace Diagnosis.App.ViewModels
             {
                 if (disposing)
                 {
-                    foreach (var item in msgHandlers)
-                    {
-                        item.Dispose();
-                    }
+                    msgManager.Dispose();
                 }
                 disposed = true;
             }
             base.Dispose(disposing);
         }
-        #endregion
 
+        #endregion IDisposable
     }
 }

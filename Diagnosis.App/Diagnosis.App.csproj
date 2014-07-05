@@ -239,6 +239,7 @@
     <Compile Include="Converters\CountToAppointmentsLabel.cs" />
     <Compile Include="Converters\IntToString.cs" />
     <Compile Include="DebugOutput.cs" />
+    <Compile Include="MessageHandlersManager.cs" />
     <Compile Include="Screens\Patients.xaml.cs">
       <DependentUpon>Patients.xaml</DependentUpon>
     </Compile>
