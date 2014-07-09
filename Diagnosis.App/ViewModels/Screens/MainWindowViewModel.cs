@@ -5,6 +5,7 @@ using EventAggregator;
 using System;
 using System.Windows.Input;
 using System.Windows.Navigation;
+using System.Diagnostics;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -123,7 +124,7 @@ namespace Diagnosis.App.ViewModels
 
         #region Flags
 
-        DateTime asideOpenedChangedAt;
+        DateTime[] asideOpenedChangedAt = new DateTime[2];
 
         public bool PatientsAsideVisible
         {
@@ -154,9 +155,9 @@ namespace Diagnosis.App.ViewModels
             }
             set
             {
-                if (_patientsAsideOpened != value && NotReOpenedFix())
+                if (_patientsAsideOpened != value && NotReOpenedFix(0))
                 {
-                    asideOpenedChangedAt = DateTime.UtcNow;
+                    asideOpenedChangedAt[0] = DateTime.UtcNow;
 
                     _patientsAsideOpened = value;
                     OnPropertyChanged(() => PatientsAsideOpened);
@@ -172,9 +173,9 @@ namespace Diagnosis.App.ViewModels
             }
             set
             {
-                if (_searchAsideOpened != value && NotReOpenedFix())
+                if (_searchAsideOpened != value && NotReOpenedFix(1))
                 {
-                    asideOpenedChangedAt = DateTime.UtcNow;
+                    asideOpenedChangedAt[1] = DateTime.UtcNow;
 
                     _searchAsideOpened = value;
                     OnPropertyChanged(() => SearchAsideOpened);
@@ -207,10 +208,10 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        bool NotReOpenedFix()
+        bool NotReOpenedFix(int asideIndex)
         {
             // Если открываем aside по togglebutton, а закрываем через меню, aside открывается повторно
-            return (DateTime.UtcNow - asideOpenedChangedAt).TotalMilliseconds > 100;
+            return (DateTime.UtcNow - asideOpenedChangedAt[asideIndex]).TotalMilliseconds > 100;
         }
 
         #endregion Flags
