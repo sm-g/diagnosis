@@ -29,7 +29,7 @@ namespace Diagnosis.App.ViewModels
         private ICommand _moveHrSelection;
         private ICommand _sendToSearch;
 
-        private ICollectionView _healthRecordsView;
+        private ICollectionView healthRecordsView;
 
         #endregion Fileds
 
@@ -70,6 +70,16 @@ namespace Diagnosis.App.ViewModels
         {
             get
             {
+                if (healthRecordsView == null)
+                {
+                    healthRecordsView = (CollectionView)CollectionViewSource.GetDefaultView(hrManager.HealthRecords);
+                    PropertyGroupDescription groupDescription = new PropertyGroupDescription("Category");
+                    SortDescription sort1 = new SortDescription("Category", ListSortDirection.Ascending);
+                    SortDescription sort2 = new SortDescription("SortingDate", ListSortDirection.Ascending);
+                    healthRecordsView.GroupDescriptions.Add(groupDescription);
+                    healthRecordsView.SortDescriptions.Add(sort1);
+                    healthRecordsView.SortDescriptions.Add(sort2);
+                }
                 return hrManager.HealthRecords;
             }
         }
@@ -77,18 +87,6 @@ namespace Diagnosis.App.ViewModels
         #endregion Model
 
         public HrEditorViewModel HealthRecordEditor { get { return _hrEditorStatic; } }
-
-        public ICollectionView HealthRecordsView
-        {
-            get
-            {
-                if (_healthRecordsView == null)
-                {
-                    _healthRecordsView = MakeHealthRecordsView();
-                }
-                return _healthRecordsView;
-            }
-        }
 
         public HealthRecordViewModel SelectedHealthRecord
         {
@@ -114,7 +112,8 @@ namespace Diagnosis.App.ViewModels
                         hrManager.AddHealthRecord();
                     },
                     // нельзя добавлять новую запись, пока выбранная пуста
-                    () => SelectedHealthRecord == null || !SelectedHealthRecord.IsEmpty));
+                    () => SelectedHealthRecord == null || !SelectedHealthRecord.IsEmpty
+                    ));
             }
         }
 
@@ -162,17 +161,17 @@ namespace Diagnosis.App.ViewModels
                         {
                             if (up)
                             {
-                                if (HealthRecordsView.CurrentPosition != 0)
-                                    HealthRecordsView.MoveCurrentToPrevious();
+                                if (healthRecordsView.CurrentPosition != 0)
+                                    healthRecordsView.MoveCurrentToPrevious();
                                 else
-                                    HealthRecordsView.MoveCurrentToLast();
+                                    healthRecordsView.MoveCurrentToLast();
                             }
                             else
                             {
-                                if (HealthRecordsView.CurrentPosition != HealthRecords.Count - 1)
-                                    HealthRecordsView.MoveCurrentToNext();
+                                if (healthRecordsView.CurrentPosition != HealthRecords.Count - 1)
+                                    healthRecordsView.MoveCurrentToNext();
                                 else
-                                    HealthRecordsView.MoveCurrentToFirst();
+                                    healthRecordsView.MoveCurrentToFirst();
                             }
                         }));
             }
@@ -221,6 +220,7 @@ namespace Diagnosis.App.ViewModels
         internal void OnOpenedHealthRecordChanged()
         {
             HealthRecordEditor.HealthRecord = SelectedHealthRecord;
+            //if (!DebugOutput.test)
             OnPropertyChanged("SelectedHealthRecord");
         }
 
@@ -248,7 +248,7 @@ namespace Diagnosis.App.ViewModels
         {
             if (e.PropertyName == "Category")
             {
-                HealthRecordsView.Refresh();
+                healthRecordsView.Refresh();
             }
             else if (e.PropertyName == "IsChecked")
             {
@@ -256,30 +256,18 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private ICollectionView MakeHealthRecordsView()
-        {
-            var healthRecordsView = (CollectionView)CollectionViewSource.GetDefaultView(HealthRecords);
-            PropertyGroupDescription groupDescription = new PropertyGroupDescription("Category");
-            SortDescription sort1 = new SortDescription("Category", ListSortDirection.Ascending);
-            SortDescription sort2 = new SortDescription("SortingDate", ListSortDirection.Ascending);
-            healthRecordsView.GroupDescriptions.Add(groupDescription);
-            healthRecordsView.SortDescriptions.Add(sort1);
-            healthRecordsView.SortDescriptions.Add(sort2);
-            return healthRecordsView;
-        }
-
         private void MoveHrViewSelection()
         {
             // удалена выделенная запись - меняем выделение
-            var i = HealthRecordsView.CurrentPosition;
+            var i = healthRecordsView.CurrentPosition;
             if (i == HealthRecords.Count - 1)
             {
                 // удалили последную запись в списке
-                HealthRecordsView.MoveCurrentToPrevious();
+                healthRecordsView.MoveCurrentToPrevious();
             }
             else
             {
-                HealthRecordsView.MoveCurrentToNext();
+                healthRecordsView.MoveCurrentToNext();
             }
         }
 

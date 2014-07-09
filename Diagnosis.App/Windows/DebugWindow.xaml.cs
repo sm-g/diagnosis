@@ -33,7 +33,7 @@ namespace Diagnosis.App.Windows
 
         private void Log_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            // Log.ScrollToEnd();
+            Log.ScrollToEnd();
         }
     }
 }

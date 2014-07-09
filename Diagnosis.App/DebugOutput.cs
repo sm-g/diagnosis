@@ -13,6 +13,7 @@ namespace Diagnosis.App
     class DebugOutput
     {
         bool showPropertySelectedValueChanged = false;
+
         public static int GetSubscriberCount(EditableEventHandler eventHandler)
         {
             var count = 0;

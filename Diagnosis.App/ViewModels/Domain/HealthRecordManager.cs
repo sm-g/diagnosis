@@ -26,7 +26,8 @@ namespace Diagnosis.App.ViewModels
                 {
                     _healthRecords = MakeHealthRecords();
                     OnHealthRecordsLoaded();
-                    AfterHealthRecordsLoaded();
+
+                    appVM.SubscribeEditableNesting(HealthRecords);
                 }
                 return _healthRecords;
             }
@@ -85,11 +86,6 @@ namespace Diagnosis.App.ViewModels
             var hrVMs = appVM.appointment.HealthRecords.Select(hr => MakeHealthRecordVM(hr)).ToList();
             var healthRecords = new ObservableCollection<HealthRecordViewModel>(hrVMs);
             return healthRecords;
-        }
-
-        private void AfterHealthRecordsLoaded()
-        {
-            appVM.SubscribeEditableNesting(HealthRecords);
         }
 
         private void SubscribeHr(HealthRecordViewModel hrVM)
