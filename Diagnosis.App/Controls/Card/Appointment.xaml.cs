@@ -26,6 +26,7 @@ namespace Diagnosis.App.Controls.Card
 
         private void records_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            records.UpdateLayout();
             records.ScrollIntoView(records.SelectedItem);
         }
     }

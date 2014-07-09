@@ -52,7 +52,7 @@ namespace Diagnosis.App.ViewModels
             return hrVM;
         }
 
-        internal HealthRecordViewModel MakeHealthRecordVM(HealthRecord hr)
+        private HealthRecordViewModel MakeHealthRecordVM(HealthRecord hr)
         {
             var hrVM = new HealthRecordViewModel(hr);
 
