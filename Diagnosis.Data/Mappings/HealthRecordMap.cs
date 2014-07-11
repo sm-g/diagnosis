@@ -31,6 +31,7 @@ namespace Diagnosis.Data.Mappings
             ManyToOne(x => x.Symptom, m =>
             {
                 m.Column("SymptomID");
+                m.Cascade(Cascade.Persist);
             });
             ManyToOne(x => x.Category, m =>
             {
