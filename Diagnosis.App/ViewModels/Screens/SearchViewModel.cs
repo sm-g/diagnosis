@@ -385,7 +385,9 @@ namespace Diagnosis.App.ViewModels
             get;
             private set;
         }
-
+        /// <summary>
+        /// Показывать сообщение «ничего не найдено»
+        /// </summary>
         public bool NoResultsVisible
         {
             get
@@ -393,7 +395,9 @@ namespace Diagnosis.App.ViewModels
                 return Results.Count == 0 && SearchWas;
             }
         }
-
+        /// <summary>
+        /// Показывать поисковую форму 
+        /// </summary>
         public bool ControlsVisible
         {
             get
@@ -474,12 +478,27 @@ namespace Diagnosis.App.ViewModels
             var lastHr = hrs.Last();
             HrDateOffsetLower = lastHr.DateOffset;
             Comment = lastHr.Comment;
+
+
+            RemoveLastResults();
         }
 
         private void RecieveWords(IEnumerable<WordViewModel> words)
         {
             // ищем переданные слова
             WordSearch.Reset(words);
+
+            RemoveLastResults();
+        }
+
+        /// <summary>
+        /// Убирает результаты предыдущего поиска
+        /// </summary>
+        private void RemoveLastResults()
+        {
+            Results.Clear();
+            SearchWas = false;
+            ControlsVisible = true;
         }
 
         private void PrintHrDate()

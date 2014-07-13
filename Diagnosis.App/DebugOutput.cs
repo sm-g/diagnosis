@@ -7,6 +7,7 @@ using Diagnosis.App.ViewModels;
 using Diagnosis.Models;
 using Diagnosis.App.Messaging;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Diagnosis.App
 {
@@ -25,8 +26,20 @@ namespace Diagnosis.App
             return count;
         }
 
+        public void PrintMemoryUsage()
+        {
+            while (true)
+            {
+                Debug.Print("total memory {0}", GC.GetTotalMemory(true));
+                Thread.Sleep(5000);
+            }
+        }
+
         public DebugOutput()
         {
+            var debugThread = new Thread(PrintMemoryUsage) { IsBackground = true };
+            debugThread.Start();
+
             this.Subscribe((int)EventID.WordCheckedChanged, (e) =>
             {
                 var word = e.GetValue<WordViewModel>(Messages.Word);
