@@ -2,8 +2,10 @@
 using Diagnosis.Data;
 using Diagnosis.Models;
 using NHibernate;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Diagnosis.App.ViewModels
@@ -12,6 +14,8 @@ namespace Diagnosis.App.ViewModels
     {
         private readonly PatientViewModel patientVM;
         private ObservableCollection<CourseViewModel> _courses;
+
+        public event EventHandler CoursesLoaded;
 
         /// <summary>
         /// Курсы пацента, отсортированы по дате по убыванию (нулевой — самый поздний курс).
@@ -23,7 +27,8 @@ namespace Diagnosis.App.ViewModels
                 if (_courses == null)
                 {
                     _courses = MakeCourses();
-                    patientVM.AfterCoursesLoaded();
+                    patientVM.SubscribeEditableNesting(Courses);
+                    OnCoursesLoaded();
                 }
                 return _courses;
             }
@@ -46,12 +51,25 @@ namespace Diagnosis.App.ViewModels
             this.patientVM = patientVM;
         }
 
+        protected virtual void OnCoursesLoaded()
+        {
+            var h = CoursesLoaded;
+            if (h != null)
+            {
+                h(this, EventArgs.Empty);
+            }
+        }
+
         private ObservableCollection<CourseViewModel> MakeCourses()
         {
-            var courseVMs = patientVM.patient.Courses
-                .Select(i => new CourseViewModel(i))
-                .OrderByDescending(cvm => cvm.course, new CompareCourseByDate())
-                .ToList();
+            IList<CourseViewModel> courseVMs;
+            using (var tester = new PerformanceTester((ts) => Debug.Print("making courses for {0}: {1}", patientVM, ts)))
+            {
+                courseVMs = patientVM.patient.Courses
+                   .OrderByDescending(c => c, new CompareCourseByDate())
+                   .Select(i => new CourseViewModel(i))
+                   .ToList();
+            }
 
             courseVMs.ForAll(x => SubscribeCourse(x));
             return new ObservableCollection<CourseViewModel>(courseVMs);

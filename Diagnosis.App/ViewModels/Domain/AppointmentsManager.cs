@@ -4,8 +4,10 @@ using Diagnosis.Models;
 using NHibernate;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Diagnostics;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -22,9 +24,13 @@ namespace Diagnosis.App.ViewModels
             {
                 if (_appointments == null)
                 {
-                    _appointments = MakeAppointments(courseVM.course);
+                    _appointments = MakeAppointments();
+
+                    courseVM.SubscribeEditableNesting(_appointments,
+                        onDeletedBefore: () => Contract.Requires(_appointments.All(a => a.IsEmpty)),
+                        innerChangedAfter: SetAppointmentsDeletable);
+                    SetAppointmentsDeletable();
                     OnAppointmentsLoaded();
-                    AfterAppointmentsLoaded();
                 }
                 return _appointments;
             }
@@ -57,22 +63,18 @@ namespace Diagnosis.App.ViewModels
             }
         }
 
-        private ObservableCollection<AppointmentViewModel> MakeAppointments(Course course)
+        private ObservableCollection<AppointmentViewModel> MakeAppointments()
         {
-            var appVMs = course.Appointments.Select(app => new AppointmentViewModel(app, app.Doctor == courseVM.LeadDoctor.doctor)).ToList();
+            IList<AppointmentViewModel> appVMs;
+            using (var tester = new PerformanceTester((ts) => Debug.Print("making apps for {0}: {1}", courseVM, ts)))
+            {
+                appVMs = courseVM.course.Appointments.Select(app => new AppointmentViewModel(app, app.Doctor == courseVM.LeadDoctor.doctor)).ToList();
+            }
             appVMs.ForAll(app => SubscribeApp(app));
 
             var appointments = new ObservableCollection<AppointmentViewModel>(appVMs);
 
             return appointments;
-        }
-
-        private void AfterAppointmentsLoaded()
-        {
-            courseVM.SubscribeEditableNesting(_appointments,
-                onDeletedBefore: () => Contract.Requires(_appointments.All(a => a.IsEmpty)),
-                innerChangedAfter: SetAppointmentsDeletable);
-            SetAppointmentsDeletable();
         }
 
         private void SetAppointmentsDeletable()

@@ -18,7 +18,7 @@ namespace Diagnosis.App.ViewModels
         private DateOffset _dateOffset;
         private IEnumerable<Category> _categories;
         private ICommand _sendToSearch;
-        private ICategoryRepository catRepo;
+        private  static ICategoryRepository catRepo = new CategoryRepository();
 
         #region IEditableNesting
 
@@ -312,7 +312,6 @@ namespace Diagnosis.App.ViewModels
         {
             Contract.Requires(hr != null);
             this.healthRecord = hr;
-            catRepo = new CategoryRepository();
 
             healthRecord.PropertyChanged += healthRecord_PropertyChanged;
 

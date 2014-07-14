@@ -2,9 +2,11 @@
 using Diagnosis.Models;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using Diagnosis.Core;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -25,9 +27,9 @@ namespace Diagnosis.App.ViewModels
                 if (_healthRecords == null)
                 {
                     _healthRecords = MakeHealthRecords();
-                    OnHealthRecordsLoaded();
 
                     appVM.SubscribeEditableNesting(HealthRecords);
+                    OnHealthRecordsLoaded();
                 }
                 return _healthRecords;
             }
@@ -81,9 +83,11 @@ namespace Diagnosis.App.ViewModels
 
         private ObservableCollection<HealthRecordViewModel> MakeHealthRecords()
         {
-            Debug.Print("making hrs for {0}", appVM);
-
-            var hrVMs = appVM.appointment.HealthRecords.Select(hr => MakeHealthRecordVM(hr)).ToList();
+            IList<HealthRecordViewModel> hrVMs;
+            using (var tester = new PerformanceTester((ts) => Debug.Print("making healthrecords for {0}: {1}", appVM, ts)))
+            {
+                hrVMs = appVM.appointment.HealthRecords.Select(hr => MakeHealthRecordVM(hr)).ToList();
+            }
             var healthRecords = new ObservableCollection<HealthRecordViewModel>(hrVMs);
             return healthRecords;
         }

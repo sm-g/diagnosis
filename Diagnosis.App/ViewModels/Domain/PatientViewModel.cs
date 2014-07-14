@@ -320,6 +320,13 @@ namespace Diagnosis.App.ViewModels
             Editable = new Editable(patient, switchedOn: true);
 
             coursesManager = new CoursesManager(this);
+            coursesManager.CoursesLoaded += (s, e) =>
+            {
+                Courses.CollectionChanged += (s1, e1) =>
+                   {
+                       OnPropertyChanged("NoCourses");
+                   };
+            };
 
             if (!(this is UnsavedPatientViewModel))
                 AfterPatientLoaded();
@@ -355,15 +362,6 @@ namespace Diagnosis.App.ViewModels
         internal void OnOpenedCourseChanged()
         {
             OnPropertyChanged("SelectedCourse");
-        }
-
-        internal void AfterCoursesLoaded()
-        {
-            this.SubscribeEditableNesting(Courses);
-            Courses.CollectionChanged += (s, e) =>
-            {
-                OnPropertyChanged("NoCourses");
-            };
         }
 
         #region Subscriptions

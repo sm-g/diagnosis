@@ -53,6 +53,7 @@
     <Compile Include="QuerySeparator.cs" />
     <Compile Include="SequencePartition.cs" />
     <Compile Include="NotifyPropertyChangedBase.cs" />
+    <Compile Include="Util\PerformanceTester.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

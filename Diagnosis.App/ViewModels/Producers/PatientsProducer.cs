@@ -4,10 +4,12 @@ using Diagnosis.Models;
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
 using Diagnosis.Core;
+using System.Diagnostics;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -18,9 +20,21 @@ namespace Diagnosis.App.ViewModels
     {
         private ICommand _addPatient;
         private IPatientRepository patientRepo;
+        private ObservableCollection<PatientViewModel> _patients;
 
-        public ObservableCollection<PatientViewModel> Patients { get; private set; }
-
+        public event EventHandler PatientsLoaded;
+        public ObservableCollection<PatientViewModel> Patients
+        {
+            get
+            {
+                if (_patients == null)
+                {
+                    _patients = MakePatients();
+                    OnPatientsLoaded();
+                }
+                return _patients;
+            }
+        }
         public ICommand AddPatientCommand
         {
             get
@@ -38,16 +52,32 @@ namespace Diagnosis.App.ViewModels
         {
             Contract.Requires(patientRepo != null);
             this.patientRepo = patientRepo;
+        }
 
-            var patientVMs = patientRepo.GetAll()
-                .OrderBy(p => p.FullName, new EmptyStringsAreLast())
-                .Select(p => new PatientViewModel(p))
-                .ToList();
+        protected virtual void OnPatientsLoaded()
+        {
+            var h = PatientsLoaded;
+            if (h != null)
+            {
+                h(this, EventArgs.Empty);
+            }
+        }
+
+        private ObservableCollection<PatientViewModel> MakePatients()
+        {
+            IList<PatientViewModel> patientVMs;
+            using (var tester = new PerformanceTester((ts) => Debug.Print("making patients: {0}", ts)))
+            {
+                patientVMs = patientRepo.GetAll()
+                    .OrderBy(p => p.FullName, new EmptyStringsAreLast())
+                    .Select(p => new PatientViewModel(p))
+                    .ToList();
+            }
             foreach (var pvm in patientVMs)
             {
                 SubscribeEditable(pvm);
             }
-            Patients = new ObservableCollection<PatientViewModel>(patientVMs);
+            return new ObservableCollection<PatientViewModel>(patientVMs);
         }
 
         private void AddPatient()

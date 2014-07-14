@@ -38,7 +38,7 @@ namespace Diagnosis.App
         public DebugOutput()
         {
             var debugThread = new Thread(PrintMemoryUsage) { IsBackground = true };
-            debugThread.Start();
+            //  debugThread.Start();
 
             this.Subscribe((int)EventID.WordCheckedChanged, (e) =>
             {
