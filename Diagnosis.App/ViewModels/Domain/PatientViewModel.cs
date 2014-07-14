@@ -323,9 +323,9 @@ namespace Diagnosis.App.ViewModels
             coursesManager.CoursesLoaded += (s, e) =>
             {
                 Courses.CollectionChanged += (s1, e1) =>
-                   {
-                       OnPropertyChanged("NoCourses");
-                   };
+                {
+                    OnPropertyChanged("NoCourses");
+                };
             };
 
             if (!(this is UnsavedPatientViewModel))

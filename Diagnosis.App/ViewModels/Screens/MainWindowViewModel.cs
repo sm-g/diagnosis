@@ -6,6 +6,7 @@ using System;
 using System.Windows.Input;
 using System.Windows.Navigation;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace Diagnosis.App.ViewModels
 {
@@ -48,7 +49,7 @@ namespace Diagnosis.App.ViewModels
         private PatientsProducer patProducer = new PatientsProducer(new PatientRepository());
 
         #region Screen Opened flags
-
+        
         public bool LoginOpened
         {
             get
@@ -94,11 +95,6 @@ namespace Diagnosis.App.ViewModels
                 if (_onePatientOpened != value)
                 {
                     _onePatientOpened = value;
-                    if (!value)
-                    {
-                        viewer.ClosePatient();
-                    }
-
                     OnPropertyChanged(() => OnePatientOpened);
                 }
             }
@@ -424,6 +420,11 @@ namespace Diagnosis.App.ViewModels
                 case Screens.Patient: OnePatientOpened = true; break;
                 case Screens.Patients: PatientsOpened = true; break;
                 case Screens.Words: WordsOpened = true; break;
+            }
+
+            if (screen != Screens.Patient)
+            {
+                viewer.ClosePatient();
             }
 
             if ((screen & (Screens.Login | Screens.Words)) == screen)
