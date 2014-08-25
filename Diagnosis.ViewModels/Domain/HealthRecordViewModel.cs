@@ -18,7 +18,7 @@ namespace Diagnosis.ViewModels
         private DateOffset _dateOffset;
         private IEnumerable<Category> _categories;
         private ICommand _sendToSearch;
-        private  static ICategoryRepository catRepo = new CategoryRepository();
+        private static ICategoryRepository catRepo = new CategoryRepository();
 
         #region IEditableNesting
 
@@ -315,12 +315,11 @@ namespace Diagnosis.ViewModels
 
             healthRecord.PropertyChanged += healthRecord_PropertyChanged;
 
-            Editable = new Editable(healthRecord, dirtImmunity: true, switchedOn: true);
 
             SetSymptom();
             SetDiagnosis();
 
-            Editable.CanBeDirty = true;
+            Editable = new Editable(healthRecord, switchedOn: true);
             this.Subscribe((int)EventID.SettingsSaved, (e) =>
             {
                 OnPropertyChanged("ShowDiagnosis");

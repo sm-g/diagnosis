@@ -103,12 +103,11 @@ namespace Diagnosis.ViewModels
             Contract.Requires(s != null);
             symptom = s;
 
-            Editable = new Editable(symptom, dirtImmunity: true);
 
             Words = new ObservableCollection<WordViewModel>(EntityProducers.WordsProducer.GetSymptomWords(s));
             DefaultCategory = symptom.DefaultCategory;
 
-            Editable.CanBeDirty = true;
+            Editable = new Editable(symptom);
         }
 
 

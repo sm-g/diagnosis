@@ -128,11 +128,10 @@ namespace Diagnosis.ViewModels
             Contract.Requires(w != null);
             word = w;
 
-            Editable = new Editable(word, dirtImmunity: true);
 
             DefaultCategory = w.DefaultCategory;
 
-            Editable.CanBeDirty = true;
+            Editable = new Editable(word);
 
             this.ParentChanged += WordViewModel_ParentChanged;
         }

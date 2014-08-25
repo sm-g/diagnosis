@@ -20,7 +20,7 @@ namespace Diagnosis.ViewModels
         private ICommand _delete;
         private ICommand _edit;
         private ICommand _revert;
-        private bool _editActive;
+        private bool _editorActive;
         private bool _editorFocused;
         private bool _canBeDirty;
         private bool _isDirty;
@@ -41,17 +41,17 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _editActive;
+                return _editorActive;
             }
             set
             {
-                if (_editActive != value)
+                if (_editorActive != value)
                 {
                     if (value && entity is IEditableObject)
                     {
                         (entity as IEditableObject).BeginEdit();
                     }
-                    _editActive = value;
+                    _editorActive = value;
                     Debug.Print("editor {0} active = {1}", entity, value);
                     OnPropertyChanged("IsEditorActive");
                 }
@@ -102,7 +102,7 @@ namespace Diagnosis.ViewModels
             get { return _isDirty; }
             internal set
             {
-                if (_isDirty != value && CanBeDirty)
+                if (_isDirty != value)
                 {
                     _isDirty = value;
 
@@ -123,22 +123,6 @@ namespace Diagnosis.ViewModels
         }
 
         public bool WasDirty { get; private set; }
-
-        public bool CanBeDirty
-        {
-            get
-            {
-                return _canBeDirty;
-            }
-            set
-            {
-                if (_canBeDirty != value)
-                {
-                    _canBeDirty = value;
-                    OnPropertyChanged("CanBeDirty");
-                }
-            }
-        }
 
         public bool CanBeDeleted
         {
@@ -244,13 +228,11 @@ namespace Diagnosis.ViewModels
         /// </summary>
         /// <param name="entity">Model to be edited</param>
         /// <param name="switchedOn">Initial state of commands. Default is "off".</param>
-        /// <param name="dirtImmunity">Initial state of CanBeDirty. Default is "true" (no immunity).</param>
         /// <param name="deletable">Initial state of CanBeDeleted. Default is "true".</param>
-        public Editable(IEntity entity, bool switchedOn = false, bool dirtImmunity = false, bool deletable = true)
+        public Editable(IEntity entity, bool switchedOn = false, bool deletable = true)
         {
             this.entity = entity;
             SwitchedOn = switchedOn;
-            CanBeDirty = !dirtImmunity;
             CanBeDeleted = deletable;
         }
 

@@ -186,8 +186,6 @@ namespace Diagnosis.ViewModels
             Contract.Requires(course != null);
             this.course = course;
 
-            Editable = new Editable(course, switchedOn: true, dirtImmunity: true);
-
             appManager = new AppointmentsManager(this);
             appManager.AppointmentsLoaded += (s, e) =>
             {
@@ -196,7 +194,7 @@ namespace Diagnosis.ViewModels
 
             LeadDoctor = EntityProducers.DoctorsProducer.GetByModel(course.LeadDoctor);
 
-            Editable.CanBeDirty = true;
+            Editable = new Editable(course, switchedOn: true);
             Editable.Deleted += Editable_Deleted;
         }
 

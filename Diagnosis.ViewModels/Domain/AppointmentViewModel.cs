@@ -200,13 +200,12 @@ namespace Diagnosis.ViewModels
             IsDoctorFromCourse = doctorFromCourse;
 
             appointment.PropertyChanged += appointment_PropertyChanged;
-            Editable = new Editable(appointment, dirtImmunity: true, switchedOn: true);
 
             hrManager = new HealthRecordManager(this);
             hrManager.HrPropertyChanged += hrManager_HrPropertyChanged;
             Doctor = EntityProducers.DoctorsProducer.GetByModel(appointment.Doctor);
 
-            Editable.CanBeDirty = true;
+            Editable = new Editable(appointment, switchedOn: true);
             Editable.Deleted += Editable_Deleted;
         }
         public void AddHealthRecord()
