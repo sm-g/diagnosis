@@ -1,5 +1,5 @@
 ﻿
-using Diagnosis.App.ViewModels;
+using Diagnosis.ViewModels;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;

@@ -1,4 +1,4 @@
-﻿using Diagnosis.App.ViewModels;
+﻿using Diagnosis.Core;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;

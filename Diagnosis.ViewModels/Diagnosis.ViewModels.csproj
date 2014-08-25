@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2206A771-0A27-41F2-81E2-D131D95C6862}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Diagnosis.ViewModels</RootNamespace>
+    <AssemblyName>Diagnosis.ViewModels</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EventAggregator">
+      <HintPath>..\libs\EventAggregator.dll</HintPath>
+    </Reference>
+    <Reference Include="Iesi.Collections">
+      <HintPath>..\packages\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate">
+      <HintPath>..\packages\NHibernate.3.3.3.4001\lib\Net35\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CheckableBase.cs" />
+    <Compile Include="DebugOutput.cs" />
+    <Compile Include="Domain\AppointmentsManager.cs" />
+    <Compile Include="Domain\AppointmentViewModel.cs" />
+    <Compile Include="Domain\CategoryViewModel.cs" />
+    <Compile Include="Domain\CoursesManager.cs" />
+    <Compile Include="Domain\CourseViewModel.cs" />
+    <Compile Include="Domain\DiagnosisViewModel.cs" />
+    <Compile Include="Domain\DoctorViewModel.cs" />
+    <Compile Include="Domain\HealthRecordManager.cs" />
+    <Compile Include="Domain\HealthRecordViewModel.cs" />
+    <Compile Include="Domain\PatientViewModel.cs" />
+    <Compile Include="Domain\PropertyViewModel.cs" />
+    <Compile Include="Domain\SymptomViewModel.cs" />
+    <Compile Include="Domain\WordViewModel.cs" />
+    <Compile Include="Editable.cs" />
+    <Compile Include="Extensions\HierarchicalExtensions.cs" />
+    <Compile Include="Extensions\IEditableNestingExtensions.cs" />
+    <Compile Include="HierarchicalBase.cs" />
+    <Compile Include="HrEditorViewModel.cs" />
+    <Compile Include="Interfaces\ICheckable.cs" />
+    <Compile Include="Interfaces\IEditableNesting.cs" />
+    <Compile Include="Interfaces\IFilter.cs" />
+    <Compile Include="Interfaces\IHierarchical.cs" />
+    <Compile Include="Interfaces\IHierarchicalCheckable.cs" />
+    <Compile Include="Interfaces\ISimpleSearcher.cs" />
+    <Compile Include="MessageHandlersManager.cs" />
+    <Compile Include="MessagingParams.cs" />
+    <Compile Include="PatientViewer.cs" />
+    <Compile Include="Producers\DiagnosisProducer.cs" />
+    <Compile Include="Producers\DoctorsProducer.cs" />
+    <Compile Include="Producers\EntityProducers.cs" />
+    <Compile Include="Producers\PatientsProducer.cs" />
+    <Compile Include="Producers\PropertyProducer.cs" />
+    <Compile Include="Producers\SymptomsProducer.cs" />
+    <Compile Include="Producers\WordsProducer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RelayCommand.cs" />
+    <Compile Include="Screens\LoginViewModel.cs" />
+    <Compile Include="Screens\MainWindowViewModel.cs" />
+    <Compile Include="Screens\PatientsAsideViewModel.cs" />
+    <Compile Include="Screens\PatientsListViewModel.cs" />
+    <Compile Include="Screens\SearchViewModel.cs" />
+    <Compile Include="Screens\SettingsViewModel.cs" />
+    <Compile Include="Screens\WordsListViewModel.cs" />
+    <Compile Include="Search\AutoCompletes\AutoCompleteBase.cs" />
+    <Compile Include="Search\AutoCompletes\AutoCompleteBoxViewModel.cs" />
+    <Compile Include="Search\AutoCompletes\DiagnosisAutoComplete.cs" />
+    <Compile Include="Search\AutoCompletes\WordCompositeAutoComplete.cs" />
+    <Compile Include="Search\AutoCompletes\WordRootAutoComplete.cs" />
+    <Compile Include="Search\Filter.cs" />
+    <Compile Include="Search\HierarchicalSearchSettings.cs" />
+    <Compile Include="Search\HrSearchOptions.cs" />
+    <Compile Include="Search\HrSearchResultViewModel.cs" />
+    <Compile Include="Search\PopupSearch.cs" />
+    <Compile Include="Search\Searchers\DiagnosisFiltratingSearcher.cs" />
+    <Compile Include="Search\Searchers\DiagnosisSearcher.cs" />
+    <Compile Include="Search\Searchers\HrSearcher.cs" />
+    <Compile Include="Search\Searchers\PatientSearcher.cs" />
+    <Compile Include="Search\Searchers\WordCompositeSearcher.cs" />
+    <Compile Include="Search\Searchers\WordSearcher.cs" />
+    <Compile Include="Search\Searchers\WordTopParentSearcher.cs" />
+    <Compile Include="Search\SearchWrap.cs" />
+    <Compile Include="ViewModelBase.cs" />
+    <Compile Include="WithAddNew.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Diagnosis.Core\Diagnosis.Core.csproj">
+      <Project>{a91ad3b7-cb0f-426c-a539-1cffc13df0ee}</Project>
+      <Name>Diagnosis.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Diagnosis.Data\Diagnosis.Data.csproj">
+      <Project>{3ec8d3df-aa44-4cb8-8847-d4b4872e9dad}</Project>
+      <Name>Diagnosis.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Diagnosis.Models\Diagnosis.Models.csproj">
+      <Project>{f1ef016e-80f6-461c-ac4b-e087e42a9f0c}</Project>
+      <Name>Diagnosis.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Domain\DomClassDiagram.cd" />
+    <None Include="packages.config" />
+    <None Include="Search\SearchClassDiagram.cd" />
+    <None Include="VMClassDiagram.cd" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -238,17 +238,9 @@
     <Compile Include="Converters\BoolToSexSign.cs" />
     <Compile Include="Converters\CountToAppointmentsLabel.cs" />
     <Compile Include="Converters\IntToString.cs" />
-    <Compile Include="DebugOutput.cs" />
-    <Compile Include="MessageHandlersManager.cs" />
     <Compile Include="Screens\Patients.xaml.cs">
       <DependentUpon>Patients.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\Domain\HealthRecordManager.cs" />
-    <Compile Include="ViewModels\Domain\AppointmentsManager.cs" />
-    <Compile Include="ViewModels\Extensions\HierarchicalExtensions.cs" />
-    <Compile Include="ViewModels\HrEditorViewModel.cs" />
-    <Compile Include="ViewModels\Producers\EntityProducers.cs" />
-    <Compile Include="MessagingParams.cs" />
     <Compile Include="Screens\Search.xaml.cs">
       <DependentUpon>Search.xaml</DependentUpon>
     </Compile>
@@ -258,43 +250,6 @@
     <Compile Include="Screens\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\Editable.cs" />
-    <Compile Include="ViewModels\Extensions\IEditableNestingExtensions.cs" />
-    <Compile Include="ViewModels\Interfaces\IEditableNesting.cs" />
-    <Compile Include="ViewModels\PatientViewer.cs" />
-    <Compile Include="ViewModels\Screens\PatientsAsideViewModel.cs" />
-    <Compile Include="ViewModels\Screens\PatientsListViewModel.cs" />
-    <Compile Include="ViewModels\Screens\WordsListViewModel.cs" />
-    <Compile Include="ViewModels\Search\Searchers\DiagnosisFiltratingSearcher.cs" />
-    <Compile Include="ViewModels\Search\Searchers\DiagnosisSearcher.cs" />
-    <Compile Include="ViewModels\Search\Filter.cs" />
-    <Compile Include="ViewModels\Search\Searchers\HrSearcher.cs" />
-    <Compile Include="ViewModels\Search\HrSearchOptions.cs" />
-    <Compile Include="ViewModels\Interfaces\IFilter.cs" />
-    <Compile Include="ViewModels\Search\HierarchicalSearchSettings.cs" />
-    <Compile Include="ViewModels\Search\HrSearchResultViewModel.cs" />
-    <Compile Include="ViewModels\Screens\SearchViewModel.cs" />
-    <Compile Include="ViewModels\Search\Searchers\WordTopParentSearcher.cs" />
-    <Compile Include="ViewModels\Search\AutoCompletes\WordRootAutoComplete.cs" />
-    <Compile Include="ViewModels\Search\AutoCompletes\WordCompositeAutoComplete.cs" />
-    <Compile Include="ViewModels\Search\Searchers\WordCompositeSearcher.cs" />
-    <Compile Include="ViewModels\Search\Searchers\WordSearcher.cs" />
-    <Compile Include="ViewModels\Search\Searchers\PatientSearcher.cs" />
-    <Compile Include="ViewModels\Domain\CategoryViewModel.cs" />
-    <Compile Include="ViewModels\Producers\SymptomsProducer.cs" />
-    <Compile Include="ViewModels\Producers\WordsProducer.cs" />
-    <Compile Include="ViewModels\Search\AutoCompletes\AutoCompleteBoxViewModel.cs" />
-    <Compile Include="ViewModels\Search\SearchWrap.cs" />
-    <Compile Include="ViewModels\Domain\SymptomViewModel.cs" />
-    <Compile Include="ViewModels\HierarchicalBase.cs" />
-    <Compile Include="ViewModels\Producers\DiagnosisProducer.cs" />
-    <Compile Include="ViewModels\Domain\CoursesManager.cs" />
-    <Compile Include="ViewModels\Domain\AppointmentViewModel.cs" />
-    <Compile Include="ViewModels\Domain\HealthRecordViewModel.cs" />
-    <Compile Include="ViewModels\Producers\DoctorsProducer.cs" />
-    <Compile Include="ViewModels\Domain\CourseViewModel.cs" />
-    <Compile Include="ViewModels\Domain\DoctorViewModel.cs" />
-    <Compile Include="ViewModels\Search\AutoCompletes\DiagnosisAutoComplete.cs" />
     <Compile Include="Controls\Helpers\WatermarkAdorner.cs" />
     <Compile Include="Controls\Helpers\WatermarkService.cs" />
     <Compile Include="Converters\AgeToYearsLabel.cs" />
@@ -308,7 +263,6 @@
     <Compile Include="Controls\Helpers\EnhancedFocusScope.cs" />
     <Compile Include="Controls\Helpers\FocusChecker.cs" />
     <Compile Include="Controls\Helpers\TreeViewItemExtenstions.cs" />
-    <Compile Include="Messages.cs" />
     <Compile Include="Controls\Directory\TreeItem.xaml.cs">
       <DependentUpon>TreeItem.xaml</DependentUpon>
     </Compile>
@@ -319,29 +273,9 @@
       <DependentUpon>PatientsAside.xaml</DependentUpon>
     </Compile>
     <Compile Include="Styles\TreeStyle.cs" />
-    <Compile Include="ViewModels\Search\AutoCompletes\AutoCompleteBase.cs" />
-    <Compile Include="ViewModels\CheckableBase.cs" />
-    <Compile Include="ViewModels\Domain\DiagnosisViewModel.cs" />
-    <Compile Include="ViewModels\Interfaces\ICheckable.cs" />
-    <Compile Include="ViewModels\Interfaces\IHierarchical.cs" />
-    <Compile Include="ViewModels\Interfaces\IHierarchicalCheckable.cs" />
-    <Compile Include="ViewModels\Interfaces\ISimpleSearcher.cs" />
-    <Compile Include="ViewModels\Screens\LoginViewModel.cs" />
-    <Compile Include="ViewModels\Screens\MainWindowViewModel.cs" />
-    <Compile Include="ViewModels\Interfaces\IAutoComplete.cs" />
-    <Compile Include="ViewModels\Producers\PatientsProducer.cs" />
-    <Compile Include="ViewModels\Producers\PropertyProducer.cs" />
-    <Compile Include="ViewModels\Domain\PropertyViewModel.cs" />
-    <Compile Include="ViewModels\RelayCommand.cs" />
-    <Compile Include="ViewModels\Search\PopupSearch.cs" />
-    <Compile Include="ViewModels\Domain\WordViewModel.cs" />
     <Compile Include="Controls\Directory\FullTree.xaml.cs">
       <DependentUpon>FullTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\Domain\PatientViewModel.cs" />
-    <Compile Include="ViewModels\Screens\SettingsViewModel.cs" />
-    <Compile Include="ViewModels\ViewModelBase.cs" />
-    <Compile Include="ViewModels\WithAddNew.cs" />
     <Compile Include="Windows\DebugWindow.xaml.cs">
       <DependentUpon>DebugWindow.xaml</DependentUpon>
     </Compile>
@@ -538,8 +472,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="App.config" />
-    <None Include="ViewModels\Search\SearchClassDiagram.cd" />
-    <None Include="ViewModels\VMClassDiagram.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -574,13 +506,13 @@
       <Project>{a91ad3b7-cb0f-426c-a539-1cffc13df0ee}</Project>
       <Name>Diagnosis.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Diagnosis.Data\Diagnosis.Data.csproj">
-      <Project>{3ec8d3df-aa44-4cb8-8847-d4b4872e9dad}</Project>
-      <Name>Diagnosis.Data</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Diagnosis.Models\Diagnosis.Models.csproj">
       <Project>{f1ef016e-80f6-461c-ac4b-e087e42a9f0c}</Project>
       <Name>Diagnosis.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Diagnosis.ViewModels\Diagnosis.ViewModels.csproj">
+      <Project>{2206a771-0a27-41f2-81e2-d131d95c6862}</Project>
+      <Name>Diagnosis.ViewModels</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

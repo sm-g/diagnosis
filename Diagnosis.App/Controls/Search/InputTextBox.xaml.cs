@@ -1,4 +1,4 @@
-﻿using Diagnosis.App.ViewModels;
+﻿using Diagnosis.ViewModels;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;

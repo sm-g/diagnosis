@@ -12,8 +12,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using EventAggregator;
-using Diagnosis.App.ViewModels;
+using Diagnosis.ViewModels;
 using Diagnosis.App.Messaging;
+using Diagnosis.Core;
 
 namespace Diagnosis.App.Windows
 {

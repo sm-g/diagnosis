@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using Diagnosis.Models;
-using Diagnosis.App.ViewModels;
+using Diagnosis.ViewModels;
 using Diagnosis.Core;
 
 namespace Tests

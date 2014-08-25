@@ -1,6 +1,6 @@
 ﻿using Diagnosis.App;
 using Diagnosis.Core;
-using Diagnosis.App.ViewModels;
+using Diagnosis.ViewModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;

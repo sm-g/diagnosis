@@ -94,6 +94,10 @@
       <Project>{f1ef016e-80f6-461c-ac4b-e087e42a9f0c}</Project>
       <Name>Diagnosis.Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Diagnosis.ViewModels\Diagnosis.ViewModels.csproj">
+      <Project>{2206a771-0a27-41f2-81e2-d131d95c6862}</Project>
+      <Name>Diagnosis.ViewModels</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -11,7 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Diagnosis.App.ViewModels;
+using Diagnosis.ViewModels;
 using Diagnosis.App.Controls;
 
 namespace Diagnosis.App.Screens

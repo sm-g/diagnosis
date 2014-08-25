@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using Diagnosis.App.ViewModels;
+using Diagnosis.ViewModels;
 
 namespace Diagnosis.App.Controls.Card
 {

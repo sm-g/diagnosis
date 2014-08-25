@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Diagnosis.ViewModels.AutoCompleteBase&lt;T&gt;" Collapsed="true">
+    <Position X="5" Y="1.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAQQMAAACAEADAAAAA8sAAABkQCAJCAEYIAwAFAgQAA=</HashCode>
+      <FileName>ViewModels\Search\AutoCompletes\AutoCompleteBase.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="separator" />
+      <Field Name="searcher" />
+      <Field Name="settings" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.AutoCompleteBoxViewModel" Collapsed="true">
+    <Position X="8" Y="4.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAEARAAAGAAAAAkAAAAAAAAgAAI=</HashCode>
+      <FileName>ViewModels\Search\AutoCompletes\AutoCompleteBoxViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="separator" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.DiagnosisAutoComplete" Collapsed="true">
+    <Position X="3.25" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Search\AutoCompletes\DiagnosisAutoComplete.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.DiagnosisFiltratingSearcher" Collapsed="true">
+    <Position X="14.25" Y="5.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Search\Searchers\DiagnosisFiltratingSearcher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.DiagnosisSearcher" Collapsed="true">
+    <Position X="14.5" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAQAgAAAgCAAAAABAAAAAAAAAAAAAkAAg=</HashCode>
+      <FileName>ViewModels\Search\Searchers\DiagnosisSearcher.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.HrSearcher" Collapsed="true">
+    <Position X="3.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>ViewModels\Search\Searchers\HrSearcher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.HrSearchOptions" Collapsed="true">
+    <Position X="1.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgBAAEkMCAACAEAAACAAAAAAEAAEAAAABAQAAAgAAA=</HashCode>
+      <FileName>ViewModels\Search\HrSearchOptions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.HrSearchResultViewModel" Collapsed="true">
+    <Position X="5.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAIAAAAAAAAAAAIAEAAAAAAgBACAAAgAAAAAACAA=</HashCode>
+      <FileName>ViewModels\Search\HrSearchResultViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.PatientSearcher" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="14.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAQAAAAAgCAAAAABAAAAAAAAAAAAAgAAg=</HashCode>
+      <FileName>ViewModels\Search\Searchers\PatientSearcher.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.PopupSearch&lt;T&gt;" Collapsed="true">
+    <Position X="14.25" Y="1.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAABAIgEAAAACAogBQgRIBgCBQAAFiAApAEwITEAAA=</HashCode>
+      <FileName>ViewModels\Search\PopupSearch.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="searcher" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.WordCompositeAutoComplete" Collapsed="true">
+    <Position X="5.5" Y="3.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Search\AutoCompletes\WordCompositeAutoComplete.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.WordCompositeSearcher" Collapsed="true">
+    <Position X="9.75" Y="5.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>ViewModels\Search\Searchers\WordCompositeSearcher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.WordRootAutoComplete" Collapsed="true">
+    <Position X="0.75" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Search\AutoCompletes\WordRootAutoComplete.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.WordSearcher" Collapsed="true">
+    <Position X="11.75" Y="4.75" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAEAAQAgAgAgCEAAAABAAAAAAAAACAAAgAAg=</HashCode>
+      <FileName>ViewModels\Search\Searchers\WordSearcher.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.SearchViewModel" Collapsed="true">
+    <Position X="6" Y="5.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AGpAEgAEMYAAxAIAICQAoNAA2ACCEEAgAQYCAIRgAAA=</HashCode>
+      <FileName>ViewModels\Screens\SearchViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="searcher" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Results" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Diagnosis.Core.QuerySeparator" Collapsed="true">
+    <Position X="8.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.WordTopParentSearcher" Collapsed="true">
+    <Position X="12.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>ViewModels\Search\Searchers\WordTopParentSearcher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Diagnosis.ViewModels.SimpleSearcherSettings" Collapsed="true">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAgCAAAAAAAAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>ViewModels\Search\SimpleSearcherSettings.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Interface Name="Diagnosis.ViewModels.ISimpleSearcher&lt;T&gt;">
+    <Position X="11.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAQAAAAAgCAAAAAAAAAAAAAAAAAAAgAAg=</HashCode>
+      <FileName>ViewModels\Interfaces\ISimpleSearcher.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Diagnosis.ViewModels.IAutoComplete">
+    <Position X="2.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAIAAAAAAAAIAAAAAAAAAAgAAA=</HashCode>
+      <FileName>ViewModels\Interfaces\IAutoComplete.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

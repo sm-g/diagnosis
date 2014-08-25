@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Diagnosis.ViewModels.AppointmentsManager">
+    <Position X="7.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAACAAQASAAAAEACAABAQAAUAAAAAAgAAgAAAEA=</HashCode>
+      <FileName>ViewModels\Domain\AppointmentsManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Appointments" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.AppointmentViewModel">
+    <Position X="7.5" Y="5" Width="2" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>CohoABEAIKABAABEAABAAAYCCkAEEAYAIAECAAAAAIg=</HashCode>
+      <FileName>ViewModels\Domain\AppointmentViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="hrManager" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.CoursesManager">
+    <Position X="3" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ICAAACAAAAAgAAAAAEAABABAAAAAAABAAAAAABAAAEA=</HashCode>
+      <FileName>ViewModels\Domain\CoursesManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Courses" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.CourseViewModel">
+    <Position X="5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAJAAwAAQCAAgAAEAAAYCAQQQAABACAAGAgCAgAgAIE=</HashCode>
+      <FileName>ViewModels\Domain\CourseViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="appManager" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.HealthRecordManager">
+    <Position X="9.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAIAAQAAAAABAAiAAhEAAEIgAAgEAAAAEARAAgAAAgQ=</HashCode>
+      <FileName>ViewModels\Domain\HealthRecordManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="HealthRecords" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.HealthRecordViewModel">
+    <Position X="12.25" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AABhgCBEAABAQBgMAEAACAQUEgAAkAoAoRACAAAACAA=</HashCode>
+      <FileName>ViewModels\Domain\HealthRecordViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.PatientViewModel">
+    <Position X="0.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>CERIAECQEECgAAAEAEAQAAQAUAAO0AAkQCACBBACQAg=</HashCode>
+      <FileName>ViewModels\Domain\PatientViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="coursesManager" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
