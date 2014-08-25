@@ -22,9 +22,7 @@ namespace Diagnosis.ViewModels
         private ICommand _revert;
         private bool _editorActive;
         private bool _editorFocused;
-        private bool _canBeDirty;
         private bool _isDirty;
-        private bool _switchedOn;
         private bool _canBeDeleted;
 
         #endregion
@@ -71,25 +69,6 @@ namespace Diagnosis.ViewModels
                     Debug.Print("editor {0} focused = {1}", entity, value);
                     _editorFocused = value;
                     OnPropertyChanged("IsEditorFocused");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Allows to perform commands.
-        /// </summary>
-        public bool SwitchedOn
-        {
-            get
-            {
-                return _switchedOn;
-            }
-            set
-            {
-                if (_switchedOn != value)
-                {
-                    _switchedOn = value;
-                    OnPropertyChanged("SwitchedOn");
                 }
             }
         }
@@ -149,7 +128,7 @@ namespace Diagnosis.ViewModels
             get
             {
                 return _edit
-                    ?? (_edit = new RelayCommand(ToggleEditor, () => SwitchedOn));
+                    ?? (_edit = new RelayCommand(ToggleEditor));
             }
         }
 
@@ -161,7 +140,7 @@ namespace Diagnosis.ViewModels
             get
             {
                 return _commit
-                    ?? (_commit = new RelayCommand(OnCommit, () => IsDirty && SwitchedOn));
+                    ?? (_commit = new RelayCommand(OnCommit, () => IsDirty));
             }
         }
         /// <summary>
@@ -172,7 +151,7 @@ namespace Diagnosis.ViewModels
             get
             {
                 return _revert
-                    ?? (_revert = new RelayCommand(OnRevert, () => IsDirty && IsEditorActive && SwitchedOn));
+                    ?? (_revert = new RelayCommand(OnRevert, () => IsDirty && IsEditorActive));
             }
         }
 
@@ -181,7 +160,7 @@ namespace Diagnosis.ViewModels
             get
             {
                 return _delete
-                    ?? (_delete = new RelayCommand(OnDelete, () => CanBeDeleted && SwitchedOn));
+                    ?? (_delete = new RelayCommand(OnDelete, () => CanBeDeleted));
             }
         }
         /// <summary>
@@ -198,7 +177,7 @@ namespace Diagnosis.ViewModels
         /// <param name="force">Принудительное сохранение игнорируя IsDirty.</param>
         public bool Commit(bool force = false)
         {
-            if ((IsDirty || force) && SwitchedOn)
+            if (IsDirty || force)
             {
                 OnCommit();
                 return true;
@@ -208,7 +187,7 @@ namespace Diagnosis.ViewModels
 
         public bool Delete()
         {
-            if (CanBeDeleted && SwitchedOn)
+            if (CanBeDeleted)
             {
                 OnDelete();
                 return true;
@@ -227,12 +206,10 @@ namespace Diagnosis.ViewModels
         ///
         /// </summary>
         /// <param name="entity">Model to be edited</param>
-        /// <param name="switchedOn">Initial state of commands. Default is "off".</param>
         /// <param name="deletable">Initial state of CanBeDeleted. Default is "true".</param>
-        public Editable(IEntity entity, bool switchedOn = false, bool deletable = true)
+        public Editable(IEntity entity, bool deletable = true)
         {
             this.entity = entity;
-            SwitchedOn = switchedOn;
             CanBeDeleted = deletable;
         }
 

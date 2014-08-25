@@ -318,7 +318,7 @@ namespace Diagnosis.ViewModels
             Contract.Requires(p != null);
             this.patient = p;
 
-            Editable = new Editable(patient, switchedOn: true);
+            Editable = new Editable(patient);
 
             coursesManager = new CoursesManager(this);
             coursesManager.CoursesLoaded += (s, e) =>

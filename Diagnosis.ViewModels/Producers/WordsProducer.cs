@@ -155,7 +155,6 @@ namespace Diagnosis.ViewModels
         {
             AllWords.ForAll((vm) =>
             {
-                vm.Editable.SwitchedOn = isEditing;
                 SetDeletable(vm);
             });
 

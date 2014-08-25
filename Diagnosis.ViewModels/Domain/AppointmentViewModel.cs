@@ -205,7 +205,7 @@ namespace Diagnosis.ViewModels
             hrManager.HrPropertyChanged += hrManager_HrPropertyChanged;
             Doctor = EntityProducers.DoctorsProducer.GetByModel(appointment.Doctor);
 
-            Editable = new Editable(appointment, switchedOn: true);
+            Editable = new Editable(appointment);
             Editable.Deleted += Editable_Deleted;
         }
         public void AddHealthRecord()

@@ -319,7 +319,7 @@ namespace Diagnosis.ViewModels
             SetSymptom();
             SetDiagnosis();
 
-            Editable = new Editable(healthRecord, switchedOn: true);
+            Editable = new Editable(healthRecord);
             this.Subscribe((int)EventID.SettingsSaved, (e) =>
             {
                 OnPropertyChanged("ShowDiagnosis");

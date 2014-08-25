@@ -194,7 +194,7 @@ namespace Diagnosis.ViewModels
 
             LeadDoctor = EntityProducers.DoctorsProducer.GetByModel(course.LeadDoctor);
 
-            Editable = new Editable(course, switchedOn: true);
+            Editable = new Editable(course);
             Editable.Deleted += Editable_Deleted;
         }
 

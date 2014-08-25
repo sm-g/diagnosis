@@ -180,7 +180,6 @@ namespace Diagnosis.ViewModels
         {
             Root.AllChildren.ForAll((dvm) =>
             {
-                dvm.Editable.SwitchedOn = isEditing;
                 dvm.Search.SwitchedOn = !isEditing;
             });
 

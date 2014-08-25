@@ -59,7 +59,6 @@ namespace Diagnosis.ViewModels
 
                             var newVM = EntityProducers.WordsProducer.Create(filter.Query, current);
                             // новое слово открываем для редактирования
-                            newVM.Editable.SwitchedOn = true;
                             newVM.IsSelected = true;
                             newVM.Editable.IsEditorActive = true;
 
