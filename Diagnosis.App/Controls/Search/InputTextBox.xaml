@@ -1,29 +1,29 @@
-﻿<UserControl x:Class="Diagnosis.App.Controls.InputTextBox"
+﻿<UserControl x:Class="Diagnosis.App.Controls.Search.InputTextBox"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:cit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
-             xmlns:controls="clr-namespace:Diagnosis.App.Controls"
+             xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <!--AutoCompleteBoxViewModel-->
     <StackPanel>
-        <controls:MyAutoCompleteBox x:Name="auto"
+        <search:MyAutoCompleteBox x:Name="auto"
                                     Text="{Binding Query, Mode=TwoWay}"
                              ItemsSource="{Binding Results }" 
                              SelectedItem="{Binding Selected, Mode=TwoWay}"
                              FilterMode="None" TextChanged="auto_TextChanged">
-            <controls:MyAutoCompleteBox.InputBindings>
+            <search:MyAutoCompleteBox.InputBindings>
                 <KeyBinding Key="Enter" Command="{Binding SelectCommand}"/>
-            </controls:MyAutoCompleteBox.InputBindings>
-            <controls:MyAutoCompleteBox.ItemContainerStyle>
+            </search:MyAutoCompleteBox.InputBindings>
+            <search:MyAutoCompleteBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 </Style>
-            </controls:MyAutoCompleteBox.ItemContainerStyle>
-            <controls:MyAutoCompleteBox.ItemTemplate>
+            </search:MyAutoCompleteBox.ItemContainerStyle>
+            <search:MyAutoCompleteBox.ItemTemplate>
                 <DataTemplate>
                     <DockPanel>
                         <Grid>
@@ -38,7 +38,7 @@
                         </Grid>
                     </DockPanel>
                 </DataTemplate>
-            </controls:MyAutoCompleteBox.ItemTemplate>
-        </controls:MyAutoCompleteBox>
+            </search:MyAutoCompleteBox.ItemTemplate>
+        </search:MyAutoCompleteBox>
     </StackPanel>
 </UserControl>

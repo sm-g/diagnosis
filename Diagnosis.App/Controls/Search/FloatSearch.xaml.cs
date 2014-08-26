@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.App.Controls.Search
 {
     /// <summary>
     /// Interaction logic for FloatSearch.xaml

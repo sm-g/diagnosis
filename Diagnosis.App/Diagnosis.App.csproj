@@ -146,7 +146,7 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Compile Include="Behaviors\FocusBehavior.cs" />
-    <Compile Include="Controls\AlignableWrapPanel.cs" />
+    <Compile Include="Controls\Common\AlignableWrapPanel.cs" />
     <Compile Include="Controls\CardParts\AppointmentsTabs.xaml.cs">
       <DependentUpon>AppointmentsTabs.xaml</DependentUpon>
     </Compile>
@@ -156,7 +156,7 @@
     <Compile Include="Controls\Search\HrSearchResult.xaml.cs">
       <DependentUpon>HrSearchResult.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\CommaList.xaml.cs">
+    <Compile Include="Controls\Common\CommaList.xaml.cs">
       <DependentUpon>CommaList.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Editors\HealthRecordEditorShared.xaml.cs">
@@ -213,10 +213,10 @@
       <DependentUpon>InputTextBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Search\MyAutoCompleteBox.cs" />
-    <Compile Include="Controls\RadioListBox.xaml.cs">
+    <Compile Include="Controls\Common\RadioListBox.xaml.cs">
       <DependentUpon>RadioListBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\TextBoxInfo.xaml.cs">
+    <Compile Include="Controls\Common\TextBoxInfo.xaml.cs">
       <DependentUpon>TextBoxInfo.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\NullToVis.cs" />
@@ -289,7 +289,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\CommaList.xaml">
+    <Page Include="Controls\Common\CommaList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -357,11 +357,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\RadioListBox.xaml">
+    <Page Include="Controls\Common\RadioListBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\TextBoxInfo.xaml">
+    <Page Include="Controls\Common\TextBoxInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

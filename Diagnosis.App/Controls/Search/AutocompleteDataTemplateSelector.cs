@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Diagnosis.ViewModels;
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.App.Controls.Search
 {
     public class AutocompleteDataTemplateSelector : DataTemplateSelector
     {

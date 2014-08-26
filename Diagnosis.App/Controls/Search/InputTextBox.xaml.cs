@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.App.Controls.Search
 {
     /// <summary>
     /// Interaction logic for InputTextBox.xaml

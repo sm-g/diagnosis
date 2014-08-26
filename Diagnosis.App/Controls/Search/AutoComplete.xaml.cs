@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System;
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.App.Controls.Search
 {
     /// <summary>
     /// Interaction logic for AutoComplete.xaml

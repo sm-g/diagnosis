@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="clr-namespace:Diagnosis.App.Controls"
+             xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
              mc:Ignorable="d"
              x:Name="patientsControl"
              Loaded="patientsControl_Loaded"
@@ -49,14 +49,14 @@
                     Margin="0,2,0,11" />
         </Grid>
 
-        <controls:FloatSearch x:Name="search"
+        <search:FloatSearch x:Name="search"
                               DataContext="{Binding Search}"
                               Grid.Row="1">
-            <controls:FloatSearch.InputBindings>
+            <search:FloatSearch.InputBindings>
                 <KeyBinding Key="Escape" Command="{Binding DataContext.ToggleResultsVisibleCommand, ElementName=search}"></KeyBinding>
                 <KeyBinding Key="Enter" Command="{Binding DataContext.SelectCommand, ElementName=search}"></KeyBinding>
-            </controls:FloatSearch.InputBindings>
-        </controls:FloatSearch>
+            </search:FloatSearch.InputBindings>
+        </search:FloatSearch>
 
         <DataGrid x:Name="dataGrid"
                   Grid.Row="3"

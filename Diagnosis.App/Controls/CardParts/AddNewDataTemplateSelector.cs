@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Diagnosis.ViewModels;
 
-namespace Diagnosis.App.Controls.Card
+namespace Diagnosis.App.Controls.CardParts
 {
     public class AddNewDataTemplateSelector : DataTemplateSelector
     {
