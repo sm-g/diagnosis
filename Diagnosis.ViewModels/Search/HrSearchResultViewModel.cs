@@ -49,7 +49,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public ReadOnlyCollection<HealthRecord> AppointmentHealthRecords
+        public ObservableCollection<HealthRecord> AppointmentHealthRecords
         {
             get
             {

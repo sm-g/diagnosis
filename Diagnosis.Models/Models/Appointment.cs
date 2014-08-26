@@ -11,32 +11,18 @@ namespace Diagnosis.Models
     public class Appointment : EntityBase
     {
         ISet<HealthRecord> healthRecords = new HashSet<HealthRecord>();
+        ObservableCollection<HealthRecord> _healthRecords;
 
         public virtual int Id { get; protected set; }
         public virtual Course Course { get; protected set; }
         public virtual Doctor Doctor { get; set; }
         public virtual DateTime DateAndTime { get; set; }
-        public virtual ReadOnlyCollection<HealthRecord> HealthRecords
+        public virtual ObservableCollection<HealthRecord> HealthRecords
         {
             get
             {
-                return new ReadOnlyCollection<HealthRecord>(
-                    new List<HealthRecord>(healthRecords));
+                return _healthRecords ?? (_healthRecords = new ObservableCollection<HealthRecord>(healthRecords));
             }
-        }
-
-        public virtual HealthRecord AddHealthRecord()
-        {
-            var hr = new HealthRecord(this);
-            healthRecords.Add(hr);
-            OnPropertyChanged("HealthRecords");
-            return hr;
-        }
-
-        public virtual void DeleteHealthRecord(HealthRecord hr)
-        {
-            healthRecords.Remove(hr);
-            OnPropertyChanged("HealthRecords");
         }
 
         public Appointment(Course course, Doctor doctor)

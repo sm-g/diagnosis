@@ -199,7 +199,7 @@ namespace Diagnosis.ViewModels
             this.appointment = appointment;
             IsDoctorFromCourse = doctorFromCourse;
 
-            appointment.PropertyChanged += appointment_PropertyChanged;
+            appointment.HealthRecords.CollectionChanged += HealthRecords_CollectionChanged;
 
             hrManager = new HealthRecordManager(this);
             hrManager.HrPropertyChanged += hrManager_HrPropertyChanged;
@@ -208,6 +208,8 @@ namespace Diagnosis.ViewModels
             Editable = new Editable(appointment);
             Editable.Deleted += Editable_Deleted;
         }
+
+
         public void AddHealthRecord()
         {
             hrManager.AddHealthRecord();
@@ -223,23 +225,13 @@ namespace Diagnosis.ViewModels
             OnPropertyChanged("SelectedHealthRecord");
         }
 
-        private void appointment_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void HealthRecords_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            // у осмотра может меняться только набор записей
-            Contract.Requires(e.PropertyName == "HealthRecords");
-
-            // удалённые записи
-            var deletedVms = HealthRecords.Where(
-                hrVM => !appointment.HealthRecords.Any(hr => hrVM.healthRecord == hr)).ToList();
-
-            foreach (var hrVM in deletedVms)
+            foreach (var item in e.OldItems)
             {
-                if (SelectedHealthRecord == hrVM)
-                {
+                if (SelectedHealthRecord.healthRecord == item)
                     MoveHrViewSelection();
-                }
             }
-
             OnPropertyChanged("IsEmpty");
         }
 
@@ -283,7 +275,7 @@ namespace Diagnosis.ViewModels
         private void Editable_Deleted(object sender, EditableEventArgs e)
         {
             Editable.Deleted -= Editable_Deleted;
-            appointment.PropertyChanged -= appointment_PropertyChanged;
+            appointment.HealthRecords.CollectionChanged -= HealthRecords_CollectionChanged;
         }
         public override string ToString()
         {
