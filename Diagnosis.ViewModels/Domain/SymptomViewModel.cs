@@ -40,7 +40,6 @@ namespace Diagnosis.ViewModels
                 {
                     _disease = value;
                     OnPropertyChanged("Disease");
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -59,7 +58,6 @@ namespace Diagnosis.ViewModels
                     _defCat = value;
 
                     OnPropertyChanged("DefaultCategory");
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -76,7 +74,6 @@ namespace Diagnosis.ViewModels
                 {
                     symptom.IsDiagnosis = value;
                     OnPropertyChanged("IsDiagnosis");
-                    Editable.MarkDirty();
                 }
             }
         }

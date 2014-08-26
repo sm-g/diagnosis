@@ -52,7 +52,7 @@ namespace Diagnosis.ViewModels
                 throw new ArgumentException("Word with title already exists.", "title");
 
             var vm = new WordViewModel(new Word(title));
-            vm.Editable.MarkDirty();
+
             if (parent == null)
             {
                 root.Add(vm);

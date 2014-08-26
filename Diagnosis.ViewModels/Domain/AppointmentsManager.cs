@@ -105,14 +105,12 @@ namespace Diagnosis.ViewModels
         {
             appVM.Editable.Deleted += app_Deleted;
             appVM.Editable.Committed += app_Committed;
-            appVM.Editable.DirtyChanged += app_DirtyChanged;
         }
 
         private void UnsubscribeApp(AppointmentViewModel appVM)
         {
             appVM.Editable.Deleted -= app_Deleted;
             appVM.Editable.Committed -= app_Committed;
-            appVM.Editable.DirtyChanged -= app_DirtyChanged;
         }
 
         private void app_Committed(object sender, EditableEventArgs e)
@@ -134,13 +132,6 @@ namespace Diagnosis.ViewModels
             var appVM = Appointments.Where(vm => vm.appointment == app).FirstOrDefault();
             Appointments.Remove(appVM);
             UnsubscribeApp(appVM);
-        }
-
-        private void app_DirtyChanged(object sender, EditableEventArgs e)
-        {
-            courseVM.Editable.IsDirty = Appointments.Any(app => app.Editable.IsDirty);
-
-            SetAppointmentsDeletable();
         }
     }
 }

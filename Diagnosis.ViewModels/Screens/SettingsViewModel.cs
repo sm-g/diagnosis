@@ -125,9 +125,8 @@ namespace Diagnosis.ViewModels
 
             if (changed.Count > 0)
             {
-                doctorVM.Editable.MarkDirty();
+                doctorVM.Editable.Commit();
             }
-            doctorVM.Editable.Commit();
 
             DialogResult = true;
             this.Send((int)EventID.SettingsSaved, new DoctorModelParams(doctor).Params);

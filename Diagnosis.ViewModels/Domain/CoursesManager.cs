@@ -91,14 +91,12 @@ namespace Diagnosis.ViewModels
         {
             courseVM.Editable.Deleted += course_Deleted;
             courseVM.Editable.Committed += course_Committed;
-            courseVM.Editable.DirtyChanged += course_DirtyChanged;
         }
 
         private void UnsubscribeCourse(CourseViewModel courseVM)
         {
             courseVM.Editable.Deleted -= course_Deleted;
             courseVM.Editable.Committed -= course_Committed;
-            courseVM.Editable.DirtyChanged -= course_DirtyChanged;
         }
 
         private void course_Committed(object sender, EditableEventArgs e)
@@ -122,12 +120,7 @@ namespace Diagnosis.ViewModels
 
             UnsubscribeCourse(courseVM);
         }
-
-        private void course_DirtyChanged(object sender, EditableEventArgs e)
-        {
-            patientVM.Editable.IsDirty = Courses.Any(x => x.Editable.IsDirty);
-        }
-
+            
         #endregion Course stuff
     }
 }

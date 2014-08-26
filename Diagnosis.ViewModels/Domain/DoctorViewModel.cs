@@ -113,7 +113,6 @@ namespace Diagnosis.ViewModels
         public void StartCourse(PatientViewModel patientVM)
         {
             var course = doctor.StartCourse(patientVM.patient);
-            Editable.MarkDirty();
         }
 
         public DoctorViewModel(Doctor d)
@@ -121,7 +120,7 @@ namespace Diagnosis.ViewModels
             Contract.Requires(d != null);
             doctor = d;
 
-            Editable = new Editable(doctor, deletable: false);
+            Editable = new Editable(doctor);
         }
 
         public override string ToString()

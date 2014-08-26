@@ -21,8 +21,6 @@ namespace Diagnosis.ViewModels
         private ICommand _edit;
         private ICommand _revert;
         private bool _editorActive;
-        private bool _editorFocused;
-        private bool _isDirty;
         private bool _canBeDeleted;
 
         #endregion
@@ -32,8 +30,6 @@ namespace Diagnosis.ViewModels
         public event EditableEventHandler Reverted;
 
         public event EditableEventHandler Deleted;
-
-        public event EditableEventHandler DirtyChanged;
 
         public bool IsEditorActive
         {
@@ -56,53 +52,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public bool IsEditorFocused
-        {
-            get
-            {
-                return _editorFocused;
-            }
-            set
-            {
-                if (_editorFocused != value)
-                {
-                    Debug.Print("editor {0} focused = {1}", entity, value);
-                    _editorFocused = value;
-                    OnPropertyChanged("IsEditorFocused");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Показывает, что есть несохраненные изенения, разрешает выполнять сохранение.
-        /// </summary>
-        public bool IsDirty
-        {
-            get { return _isDirty; }
-            internal set
-            {
-                if (_isDirty != value)
-                {
-                    _isDirty = value;
-
-                    if (value)
-                        WasDirty = true;
-
-                    var h = DirtyChanged;
-                    if (h != null)
-                    {
-                        h(this, new EditableEventArgs(entity));
-                    }
-
-                    Debug.Print("isdirty {0} = {1}", entity, value);
-                    OnPropertyChanged("IsDirty");
-                    OnPropertyChanged("WasDirty");
-                }
-            }
-        }
-
-        public bool WasDirty { get; private set; }
-
+       
         public bool CanBeDeleted
         {
             get
@@ -140,7 +90,7 @@ namespace Diagnosis.ViewModels
             get
             {
                 return _commit
-                    ?? (_commit = new RelayCommand(OnCommit, () => IsDirty));
+                    ?? (_commit = new RelayCommand(OnCommit));
             }
         }
         /// <summary>
@@ -151,7 +101,7 @@ namespace Diagnosis.ViewModels
             get
             {
                 return _revert
-                    ?? (_revert = new RelayCommand(OnRevert, () => IsDirty && IsEditorActive));
+                    ?? (_revert = new RelayCommand(OnRevert));
             }
         }
 
@@ -174,15 +124,10 @@ namespace Diagnosis.ViewModels
         /// <summary>
         /// Сохраняет изменения и закрывает редактор. Возвращает true, если было сохранение.
         /// </summary>
-        /// <param name="force">Принудительное сохранение игнорируя IsDirty.</param>
-        public bool Commit(bool force = false)
+        public bool Commit()
         {
-            if (IsDirty || force)
-            {
-                OnCommit();
-                return true;
-            }
-            return false;
+            OnCommit();
+            return true;
         }
 
         public bool Delete()
@@ -197,20 +142,14 @@ namespace Diagnosis.ViewModels
 
         #endregion Commands
 
-        internal void MarkDirty()
-        {
-            IsDirty = true;
-        }
-
         /// <summary>
         ///
         /// </summary>
         /// <param name="entity">Model to be edited</param>
-        /// <param name="deletable">Initial state of CanBeDeleted. Default is "true".</param>
-        public Editable(IEntity entity, bool deletable = true)
+        /// 
+        public Editable(IEntity entity)
         {
             this.entity = entity;
-            CanBeDeleted = deletable;
         }
 
         private void OnCommit()
@@ -230,7 +169,6 @@ namespace Diagnosis.ViewModels
             }
 
             IsEditorActive = false;
-            IsDirty = false;
         }
 
         private void OnRevert()
@@ -250,7 +188,6 @@ namespace Diagnosis.ViewModels
             }
 
             IsEditorActive = false;
-            IsDirty = false;
         }
 
         private void OnDelete()

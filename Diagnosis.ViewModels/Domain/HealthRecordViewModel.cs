@@ -95,8 +95,6 @@ namespace Diagnosis.ViewModels
                 if (healthRecord.Comment != value)
                 {
                     healthRecord.Comment = value;
-
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -118,7 +116,6 @@ namespace Diagnosis.ViewModels
                         throw new ArgumentNullException("value", "Hr's symptom can not be set to null.");
 
                     OnPropertyChanged("Name");
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -146,8 +143,6 @@ namespace Diagnosis.ViewModels
                     OnPropertyChanged("Diagnosis");
                     OnPropertyChanged("ShowDiagnosis");
                     OnPropertyChanged("Name");
-
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -163,7 +158,6 @@ namespace Diagnosis.ViewModels
                 if (healthRecord.Category != value)
                 {
                     healthRecord.Category = value;
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -179,7 +173,6 @@ namespace Diagnosis.ViewModels
                 if (healthRecord.NumValue != value)
                 {
                     healthRecord.NumValue = value;
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -196,7 +189,6 @@ namespace Diagnosis.ViewModels
                 {
                     healthRecord.FromYear = value;
                     DateOffset.Year = value;
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -213,7 +205,6 @@ namespace Diagnosis.ViewModels
                 {
                     healthRecord.FromMonth = value.ConvertTo<int, byte>();
                     DateOffset.Month = value;
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -230,7 +221,6 @@ namespace Diagnosis.ViewModels
                 {
                     healthRecord.FromDay = value.ConvertTo<int, byte>();
                     DateOffset.Day = value;
-                    Editable.MarkDirty();
                 }
             }
         }

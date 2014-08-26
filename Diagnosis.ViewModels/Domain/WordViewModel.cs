@@ -31,7 +31,6 @@ namespace Diagnosis.ViewModels
                 {
                     word.Priority = value;
                     OnPropertyChanged("Priority");
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -48,7 +47,6 @@ namespace Diagnosis.ViewModels
                 {
                     word.Title = value;
                     OnPropertyChanged("Name");
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -68,7 +66,6 @@ namespace Diagnosis.ViewModels
                     _defCat = value;
 
                     OnPropertyChanged("DefaultCategory");
-                    Editable.MarkDirty();
                 }
             }
         }

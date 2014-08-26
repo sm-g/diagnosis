@@ -206,7 +206,6 @@ namespace Diagnosis.ViewModels
             Doctor = EntityProducers.DoctorsProducer.GetByModel(appointment.Doctor);
 
             Editable = new Editable(appointment);
-            Editable.Deleted += Editable_Deleted;
         }
 
 
@@ -272,11 +271,6 @@ namespace Diagnosis.ViewModels
             });
         }
 
-        private void Editable_Deleted(object sender, EditableEventArgs e)
-        {
-            Editable.Deleted -= Editable_Deleted;
-            appointment.HealthRecords.CollectionChanged -= HealthRecords_CollectionChanged;
-        }
         public override string ToString()
         {
             return appointment.ToString();

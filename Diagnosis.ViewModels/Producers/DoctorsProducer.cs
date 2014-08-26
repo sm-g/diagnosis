@@ -62,11 +62,6 @@ namespace Diagnosis.ViewModels
                 var doctor = e.entity as Doctor;
                 repository.SaveOrUpdate(doctor);
             };
-            dvm.Editable.DirtyChanged += (s, e) =>
-            {
-                var doc = e.entity as Doctor;
-                this.Send((int)EventID.CurrentDoctorChanged, new DoctorModelParams(doc).Params);
-            };
         }
     }
 }

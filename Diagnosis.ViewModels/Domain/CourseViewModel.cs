@@ -86,7 +86,6 @@ namespace Diagnosis.ViewModels
                     course.End = value.Value.Date;
                     OnPropertyChanged("End");
                     OnPropertyChanged("IsEnded");
-                    Editable.MarkDirty();
                 }
             }
         }

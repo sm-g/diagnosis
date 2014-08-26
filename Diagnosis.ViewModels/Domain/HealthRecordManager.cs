@@ -99,7 +99,6 @@ namespace Diagnosis.ViewModels
             hrVM.Editable.Deleted += hr_Deleted;
             hrVM.Editable.Reverted += hr_Reverted;
             hrVM.Editable.Committed += hr_Committed;
-            hrVM.Editable.DirtyChanged += hr_DirtyChanged;
         }
 
         private void UnsubscribeHr(HealthRecordViewModel hrVM)
@@ -108,7 +107,6 @@ namespace Diagnosis.ViewModels
             hrVM.Editable.Deleted -= hr_Deleted;
             hrVM.Editable.Reverted -= hr_Reverted;
             hrVM.Editable.Committed -= hr_Committed;
-            hrVM.Editable.DirtyChanged -= hr_DirtyChanged;
         }
 
         private void hr_Committed(object sender, EditableEventArgs e)
@@ -131,11 +129,6 @@ namespace Diagnosis.ViewModels
             var hrVM = HealthRecords.Where(vm => vm.healthRecord == hr).FirstOrDefault();
             HealthRecords.Remove(hrVM);
             UnsubscribeHr(hrVM);
-        }
-
-        private void hr_DirtyChanged(object sender, EditableEventArgs e)
-        {
-            appVM.Editable.IsDirty = HealthRecords.Any(vm => vm.Editable.IsDirty);
         }
 
         private void hr_PropertyChanged(object sender, PropertyChangedEventArgs e)

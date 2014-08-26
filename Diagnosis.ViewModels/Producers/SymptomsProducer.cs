@@ -37,7 +37,6 @@ namespace Diagnosis.ViewModels
 
             var sym = new Symptom(words.Select(w => w.word));
             var svm = new SymptomViewModel(sym);
-            svm.Editable.MarkDirty();
 
             symptoms.Add(svm);
             Debug.Print("new symptom: {0}", svm);

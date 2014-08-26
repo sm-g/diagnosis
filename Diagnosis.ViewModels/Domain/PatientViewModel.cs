@@ -55,7 +55,6 @@ namespace Diagnosis.ViewModels
                 {
                     patient.Label = value;
                     OnPropertyChanged("Label");
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -76,7 +75,6 @@ namespace Diagnosis.ViewModels
                     OnPropertyChanged("SearchText");
                     OnPropertyChanged("NoName");
                     OnPropertyChanged("Self");
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -97,7 +95,6 @@ namespace Diagnosis.ViewModels
                     OnPropertyChanged("SearchText");
                     OnPropertyChanged("NoName");
                     OnPropertyChanged("Self");
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -118,7 +115,6 @@ namespace Diagnosis.ViewModels
                     OnPropertyChanged("SearchText");
                     OnPropertyChanged("NoName");
                     OnPropertyChanged("Self");
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -136,7 +132,6 @@ namespace Diagnosis.ViewModels
                     patient.Age = value;
                     OnPropertyChanged("Age");
                     OnPropertyChanged("BirthYear");
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -154,7 +149,6 @@ namespace Diagnosis.ViewModels
                     patient.BirthYear = value;
                     OnPropertyChanged("Age");
                     OnPropertyChanged("BirthYear");
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -172,7 +166,6 @@ namespace Diagnosis.ViewModels
                     patient.BirthMonth = value;
                     OnPropertyChanged("Age");
                     OnPropertyChanged("BirthMonth");
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -190,7 +183,6 @@ namespace Diagnosis.ViewModels
                     patient.BirthDay = value;
                     OnPropertyChanged("Age");
                     OnPropertyChanged("BirthDay");
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -207,7 +199,6 @@ namespace Diagnosis.ViewModels
                 {
                     patient.IsMale = value;
                     OnPropertyChanged("IsMale");
-                    Editable.MarkDirty();
                 }
             }
         }
@@ -237,7 +228,7 @@ namespace Diagnosis.ViewModels
                                           () =>
                                           {
                                               // go to courses tabitem - save patient first
-                                              Editable.Commit(true);
+                                              Editable.Commit();
                                           }, () => CanAddFirstHr));
             }
         }
@@ -381,7 +372,6 @@ namespace Diagnosis.ViewModels
             if (!(propertyVM.SelectedValue is EmptyPropertyValue))
             {
                 patient.SetPropertyValue(propertyVM.property, propertyVM.SelectedValue);
-                Editable.MarkDirty();
             }
         }
 
