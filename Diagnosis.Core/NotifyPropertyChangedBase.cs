@@ -12,12 +12,15 @@ namespace Diagnosis.Core
         public virtual event PropertyChangedEventHandler PropertyChanged;
 
         [DebuggerStepThrough]
-        protected void OnPropertyChanged(string name)
+        protected void OnPropertyChanged(params string[] propertyNames)
         {
-            PropertyChangedEventHandler handler = this.PropertyChanged;
-            if (handler != null)
+            foreach (string name in propertyNames)
             {
-                handler(this, new PropertyChangedEventArgs(name));
+                PropertyChangedEventHandler handler = this.PropertyChanged;
+                if (handler != null)
+                {
+                    handler(this, new PropertyChangedEventArgs(name));
+                }
             }
         }
 
