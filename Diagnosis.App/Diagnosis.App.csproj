@@ -147,10 +147,10 @@
     </ApplicationDefinition>
     <Compile Include="Behaviors\FocusBehavior.cs" />
     <Compile Include="Controls\AlignableWrapPanel.cs" />
-    <Compile Include="Controls\Card\AppointmentsTabs.xaml.cs">
+    <Compile Include="Controls\CardParts\AppointmentsTabs.xaml.cs">
       <DependentUpon>AppointmentsTabs.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Card\AddNewDataTemplateSelector.cs" />
+    <Compile Include="Controls\CardParts\AddNewDataTemplateSelector.cs" />
     <Compile Include="Controls\Directory\TreeCommon.cs" />
     <Compile Include="Controls\Helpers\DataGridHelper.cs" />
     <Compile Include="Controls\Helpers\FirstFocusedElementExtension.cs" />
@@ -168,16 +168,16 @@
       <DependentUpon>AutoComplete.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Search\AutocompleteDataTemplateSelector.cs" />
-    <Compile Include="Controls\Card\Appointment.xaml.cs">
+    <Compile Include="Controls\CardParts\Appointment.xaml.cs">
       <DependentUpon>Appointment.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Card\HealthRecord.xaml.cs">
+    <Compile Include="Controls\CardParts\HealthRecord.xaml.cs">
       <DependentUpon>HealthRecord.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Card\Course.xaml.cs">
+    <Compile Include="Controls\CardParts\Course.xaml.cs">
       <DependentUpon>Course.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Card\PatientHeader.xaml.cs">
+    <Compile Include="Controls\CardParts\PatientHeader.xaml.cs">
       <DependentUpon>PatientHeader.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Directory\TreeItemLight.xaml.cs">
@@ -284,7 +284,7 @@
     <Compile Include="Windows\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="Controls\Card\AppointmentsTabs.xaml">
+    <Page Include="Controls\CardParts\AppointmentsTabs.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -308,19 +308,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Card\Appointment.xaml">
+    <Page Include="Controls\CardParts\Appointment.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Card\HealthRecord.xaml">
+    <Page Include="Controls\CardParts\HealthRecord.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\Card\Course.xaml">
+    <Page Include="Controls\CardParts\Course.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Card\PatientHeader.xaml">
+    <Page Include="Controls\CardParts\PatientHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
