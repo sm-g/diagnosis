@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using EventAggregator;
-using Diagnosis.App.Messaging;
 
 namespace Diagnosis.ViewModels
 {
@@ -86,7 +85,7 @@ namespace Diagnosis.ViewModels
                 return _sendToSearch
                    ?? (_sendToSearch = new RelayCommand(() =>
                         {
-                            this.Send((int)EventID.SendToSearch, new WordsParams(EntityProducers.WordsProducer.AllWords.Where(w => w.IsChecked)).Params);
+                            this.Send(Events.SendToSearch, EntityProducers.WordsProducer.AllWords.Where(w => w.IsChecked).AsParams(MessageKeys.Words));
                         }, () => CheckedWords > 0));
             }
         }

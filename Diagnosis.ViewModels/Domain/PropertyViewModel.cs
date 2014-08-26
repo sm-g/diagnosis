@@ -1,7 +1,6 @@
 ﻿using Diagnosis.Models;
 using EventAggregator;
 using System.Collections.ObjectModel;
-using Diagnosis.App.Messaging;
 using System.Diagnostics.Contracts;
 using Diagnosis.Core;
 
@@ -41,7 +40,7 @@ namespace Diagnosis.ViewModels
                     _selectedValue = value;
                     OnPropertyChanged(() => SelectedValue);
 
-                    this.Send((int)EventID.PropertySelectedValueChanged, new PropertyParams(this).Params);
+                    this.Send(Events.PropertySelectedValueChanged, this.AsParams(MessageKeys.Property));
                 }
             }
         }

@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EventAggregator">
+      <HintPath>..\libs\EventAggregator.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,7 +51,7 @@
     <Compile Include="Extensions\ConvertExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Interfaces\IAutoComplete.cs" />
-    <Compile Include="Messages.cs" />
+    <Compile Include="Mediator\Events.cs" />
     <Compile Include="Util\Comparers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Util\Checkers.cs" />
@@ -56,6 +59,7 @@
     <Compile Include="QuerySeparator.cs" />
     <Compile Include="SequencePartition.cs" />
     <Compile Include="NotifyPropertyChangedBase.cs" />
+    <Compile Include="Mediator\EventMessageHandlersManager.cs" />
     <Compile Include="Util\PerformanceTester.cs" />
   </ItemGroup>
   <ItemGroup />

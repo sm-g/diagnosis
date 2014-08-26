@@ -1,5 +1,4 @@
-﻿using Diagnosis.App.Messaging;
-using Diagnosis.Core;
+﻿using Diagnosis.Core;
 using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
 using EventAggregator;
@@ -29,7 +28,7 @@ namespace Diagnosis.ViewModels
                     _current = value;
 
                     OnPropertyChanged("CurrentDoctor");
-                    this.Send((int)EventID.CurrentDoctorChanged, new DoctorModelParams(_current.doctor).Params);
+                    this.Send(Events.CurrentDoctorChanged, _current.doctor.AsParams(MessageKeys.Doctor));
                 }
             }
         }

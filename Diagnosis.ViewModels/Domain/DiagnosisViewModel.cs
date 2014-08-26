@@ -1,6 +1,5 @@
 ﻿using EventAggregator;
 using System.Diagnostics.Contracts;
-using Diagnosis.App.Messaging;
 using System;
 
 namespace Diagnosis.ViewModels

@@ -1,5 +1,4 @@
-﻿using Diagnosis.App.Messaging;
-using Diagnosis.Core;
+﻿using Diagnosis.Core;
 using Diagnosis.Models;
 using EventAggregator;
 using System;
@@ -19,7 +18,7 @@ namespace Diagnosis.ViewModels
         internal Action<CourseViewModel> OpenedCourseSetter;
 
         private CoursesManager coursesManager;
-        private MessageHandlersManager msgManager = new MessageHandlersManager();
+        private EventMessageHandlersManager msgManager = new EventMessageHandlersManager();
 
         private RelayCommand _firstHr;
         private bool _canAddFirstHr;
@@ -353,9 +352,9 @@ namespace Diagnosis.ViewModels
         public void Subscribe()
         {
             msgManager.Add(new[] {
-                this.Subscribe((int)EventID.PropertySelectedValueChanged, (e) =>
+                this.Subscribe(Events.PropertySelectedValueChanged, (e) =>
                 {
-                    var property = e.GetValue<PropertyViewModel>(Messages.Property);
+                    var property = e.GetValue<PropertyViewModel>(MessageKeys.Property);
 
                     OnPropertyValueChanged(property);
                 })

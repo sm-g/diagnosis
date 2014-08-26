@@ -1,5 +1,4 @@
-﻿using Diagnosis.App.Messaging;
-using Diagnosis.Core;
+﻿using Diagnosis.Core;
 using Diagnosis.Models;
 using EventAggregator;
 using System;
@@ -75,7 +74,7 @@ namespace Diagnosis.ViewModels
                         OnPatientOpened(value);
                     }
                     OnPropertyChanged("OpenedPatient");
-                    this.Send((int)EventID.OpenedPatientChanged, new PatientParams(OpenedPatient).Params);
+                    this.Send(Events.OpenedPatientChanged, OpenedPatient.AsParams(MessageKeys.Patient));
                 }
             }
         }

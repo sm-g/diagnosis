@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using Diagnosis.App.Messaging;
 using System.Diagnostics;
 using System.Windows.Input;
 using System;
@@ -115,9 +114,9 @@ namespace Diagnosis.ViewModels
                 Subscribe(item);
             }
 
-            this.Subscribe((int)EventID.WordsEditingModeChanged, (e) =>
+            this.Subscribe(Events.WordsEditingModeChanged, (e) =>
             {
-                var isEditing = e.GetValue<bool>(Messages.Boolean);
+                var isEditing = e.GetValue<bool>(MessageKeys.Boolean);
 
                 OnWordsEditingModeChanged(isEditing);
             });

@@ -1,5 +1,4 @@
-﻿using Diagnosis.App.Messaging;
-using Diagnosis.Core;
+﻿using Diagnosis.Core;
 using Diagnosis.Models;
 using EventAggregator;
 using System;
@@ -204,7 +203,7 @@ namespace Diagnosis.ViewModels
             {
                 CreateDiagnosisSearch();
             };
-            this.Subscribe((int)EventID.SettingsSaved, (e) =>
+            this.Subscribe(Events.SettingsSaved, (e) =>
             {
                 OnPropertyChanged("ShowIcdDisease");
             });

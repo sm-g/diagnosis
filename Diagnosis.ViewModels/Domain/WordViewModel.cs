@@ -1,5 +1,4 @@
-﻿using Diagnosis.App.Messaging;
-using Diagnosis.Models;
+﻿using Diagnosis.Models;
 using EventAggregator;
 using System.Diagnostics.Contracts;
 using System.Windows.Input;
@@ -79,7 +78,7 @@ namespace Diagnosis.ViewModels
                 return _sendToSearch
                    ?? (_sendToSearch = new RelayCommand(() =>
                    {
-                       this.Send((int)EventID.SendToSearch, new WordsParams(this.ToEnumerable()).Params);
+                       this.Send(Events.SendToSearch, this.ToEnumerable().AsParams(MessageKeys.Words));
                    }));
             }
         }

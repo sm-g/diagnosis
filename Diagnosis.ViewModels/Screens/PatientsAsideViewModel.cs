@@ -1,5 +1,4 @@
-﻿using Diagnosis.App.Messaging;
-using Diagnosis.Core;
+﻿using Diagnosis.Core;
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
@@ -17,9 +16,9 @@ namespace Diagnosis.ViewModels
         public PatientsAsideViewModel(PatientsProducer manager)
         {
             _producer = manager;
-            this.Subscribe((int)EventID.OpenedPatientChanged, (e) =>
+            this.Subscribe(Events.OpenedPatientChanged, (e) =>
             {
-                var pat = e.GetValue<PatientViewModel>(Messages.Patient);
+                var pat = e.GetValue<PatientViewModel>(MessageKeys.Patient);
                 SelectedPatient = pat;
             });
         }
@@ -37,7 +36,7 @@ namespace Diagnosis.ViewModels
                 if (_current != value)
                 {
                     _current = value;
-                    this.Send((int)EventID.OpenPatient, new PatientParams(value).Params);
+                    this.Send(Events.OpenPatient, value.AsParams(MessageKeys.Patient));
                     OnPropertyChanged(() => SelectedPatient);
                 }
             }

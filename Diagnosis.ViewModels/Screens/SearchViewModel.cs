@@ -1,5 +1,4 @@
-﻿using Diagnosis.App.Messaging;
-using Diagnosis.Core;
+﻿using Diagnosis.Core;
 using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
 using EventAggregator;
@@ -40,7 +39,7 @@ namespace Diagnosis.ViewModels
         private PatientsProducer patManager;
         private HrSearcher searcher = new HrSearcher();
 
-        private MessageHandlersManager msgManager;
+        private EventMessageHandlersManager msgManager;
 
         #endregion Fields
 
@@ -64,12 +63,12 @@ namespace Diagnosis.ViewModels
             {
                 OnPropertyChanged("AllEmpty");
             };
-            msgManager = new MessageHandlersManager(
-                this.Subscribe((int)EventID.SendToSearch, (e) =>
+            msgManager = new EventMessageHandlersManager(
+                this.Subscribe(Events.SendToSearch, (e) =>
                 {
                     try
                     {
-                        var hrs = e.GetValue<IEnumerable<HealthRecordViewModel>>(Messages.HealthRecord);
+                        var hrs = e.GetValue<IEnumerable<HealthRecordViewModel>>(MessageKeys.HealthRecord);
                         if (hrs != null && hrs.Count() > 0)
                         {
                             RecieveHealthRecords(hrs);
@@ -78,7 +77,7 @@ namespace Diagnosis.ViewModels
                     catch { }
                     try
                     {
-                        var words = e.GetValue<IEnumerable<WordViewModel>>(Messages.Word);
+                        var words = e.GetValue<IEnumerable<WordViewModel>>(MessageKeys.Word);
                         if (words != null && words.Count() > 0)
                         {
                             RecieveWords(words);
@@ -369,7 +368,7 @@ namespace Diagnosis.ViewModels
                     ?? (_openPatientCommand = new RelayCommand<Patient>(
                                           p =>
                                           {
-                                              this.Send((int)EventID.OpenPatient, new PatientParams(patManager.GetByModel(p)).Params);
+                                              this.Send(Events.OpenPatient, patManager.GetByModel(p).AsParams(MessageKeys.Patient));
                                           }));
             }
         }

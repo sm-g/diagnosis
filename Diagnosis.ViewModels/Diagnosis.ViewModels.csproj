@@ -80,8 +80,6 @@
     <Compile Include="Interfaces\IHierarchical.cs" />
     <Compile Include="Interfaces\IHierarchicalCheckable.cs" />
     <Compile Include="Interfaces\ISimpleSearcher.cs" />
-    <Compile Include="MessageHandlersManager.cs" />
-    <Compile Include="MessagingParams.cs" />
     <Compile Include="PatientViewer.cs" />
     <Compile Include="Producers\DiagnosisProducer.cs" />
     <Compile Include="Producers\DoctorsProducer.cs" />

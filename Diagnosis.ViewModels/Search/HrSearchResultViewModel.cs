@@ -3,7 +3,6 @@ using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using Diagnosis.App.Messaging;
 using System.Windows.Input;
 using Diagnosis.Core;
 
@@ -72,7 +71,7 @@ namespace Diagnosis.ViewModels
                 return _openHr ?? (_openHr = new RelayCommand(
                     () =>
                     {
-                        this.Send((int)EventID.OpenHealthRecord, new HealthRecordModelParams(FoundHealthRecord).Params);
+                        this.Send(Events.OpenHealthRecord, FoundHealthRecord.AsParams(MessageKeys.HealthRecord));
                     }));
             }
         }

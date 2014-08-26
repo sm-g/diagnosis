@@ -1,5 +1,4 @@
-﻿using Diagnosis.App.Messaging;
-using Diagnosis.Data.Repositories;
+﻿using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
 using EventAggregator;
 using System;
@@ -84,7 +83,7 @@ namespace Diagnosis.ViewModels
         {
             var newPatientVM = new UnsavedPatientViewModel();
 
-            this.Send((int)EventID.PatientAdded, new PatientParams(newPatientVM).Params);
+            this.Send(Events.PatientAdded, newPatientVM.AsParams(MessageKeys.Patient));
 
             newPatientVM.PatientCreated += OnPatientCreated;
         }
@@ -101,7 +100,7 @@ namespace Diagnosis.ViewModels
             saved.CanAddFirstHr = !e.addFirstHr; // больше нельзя добавлять первую запись
             Patients.Add(saved);
 
-            this.Send((int)EventID.PatientCreated, new PatientParams(saved).Params);
+            this.Send(Events.PatientCreated, saved.AsParams(MessageKeys.Patient));
 
             SubscribeEditable(saved);
             if (e.addFirstHr)

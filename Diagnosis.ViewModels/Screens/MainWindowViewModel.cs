@@ -7,7 +7,6 @@ using System.Windows.Input;
 using System.Windows.Navigation;
 using System.Diagnostics;
 using System.Collections.Generic;
-using Diagnosis.App.Messaging;
 
 namespace Diagnosis.ViewModels
 {
@@ -79,7 +78,7 @@ namespace Diagnosis.ViewModels
                 {
                     _wordsOpened = value;
 
-                    this.Send((int)EventID.WordsEditingModeChanged, new DirectoryEditingModeChangedParams(value).Params);
+                    this.Send(Events.WordsEditingModeChanged,value.AsParams(MessageKeys.Boolean));
                     OnPropertyChanged(() => WordsOpened);
                 }
             }
@@ -316,7 +315,7 @@ namespace Diagnosis.ViewModels
                                           () =>
                                           {
                                               var settingsVM = new SettingsViewModel(Login.DoctorsProducer.CurrentDoctor);
-                                              this.Send((int)EventID.OpenSettings, new SettingsParams(settingsVM).Params);
+                                              this.Send(Events.OpenSettings, settingsVM.AsParams(MessageKeys.Settings));
                                           }));
             }
         }
@@ -331,36 +330,36 @@ namespace Diagnosis.ViewModels
             Login = new LoginViewModel(EntityProducers.DoctorsProducer);
             Login.LoggedIn += OnLoggedIn;
 
-            this.Subscribe((int)EventID.PatientAdded, (e) =>
+            this.Subscribe(Events.PatientAdded, (e) =>
             {
                 OpenPatientInViewer(e);
             });
-            this.Subscribe((int)EventID.PatientCreated, (e) =>
+            this.Subscribe(Events.PatientCreated, (e) =>
             {
-                var pat = e.GetValue<PatientViewModel>(Messages.Patient);
+                var pat = e.GetValue<PatientViewModel>(MessageKeys.Patient);
                 viewer.OpenPatient(pat, !pat.CanAddFirstHr);
             });
-            this.Subscribe((int)EventID.OpenPatient, (e) =>
+            this.Subscribe(Events.OpenPatient, (e) =>
             {
                 OpenPatientInViewer(e);
             });
 
-            this.Subscribe((int)EventID.OpenedPatientChanged, (e) =>
+            this.Subscribe(Events.OpenedPatientChanged, (e) =>
             {
-                var pat = e.GetValue<PatientViewModel>(Messages.Patient);
+                var pat = e.GetValue<PatientViewModel>(MessageKeys.Patient);
                 if (pat != null && nav.Content != pat) //  nav.Content == pat when navigate by history
                 {
                     nav.Navigate(pat);
                 }
             });
-            this.Subscribe((int)EventID.OpenHealthRecord, (e) =>
+            this.Subscribe(Events.OpenHealthRecord, (e) =>
             {
-                var hr = e.GetValue<HealthRecord>(Messages.HealthRecord);
+                var hr = e.GetValue<HealthRecord>(MessageKeys.HealthRecord);
                 var patVM = patProducer.GetByModel(hr.Appointment.Course.Patient);
                 viewer.OpenPatient(patVM);
                 viewer.OpenHr(hr);
             });
-            this.Subscribe((int)EventID.SendToSearch, (e) =>
+            this.Subscribe(Events.SendToSearch, (e) =>
             {
                 SearchAsideOpened = true;
             });
@@ -446,7 +445,7 @@ namespace Diagnosis.ViewModels
 
         private void OpenPatientInViewer(EventMessage e)
         {
-            var pat = e.GetValue<PatientViewModel>(Messages.Patient);
+            var pat = e.GetValue<PatientViewModel>(MessageKeys.Patient);
             viewer.OpenPatient(pat);
         }
 

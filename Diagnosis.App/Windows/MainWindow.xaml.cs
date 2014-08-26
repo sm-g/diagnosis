@@ -13,7 +13,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using EventAggregator;
 using Diagnosis.ViewModels;
-using Diagnosis.App.Messaging;
 using Diagnosis.Core;
 
 namespace Diagnosis.App.Windows
@@ -26,9 +25,9 @@ namespace Diagnosis.App.Windows
         public MainWindow()
         {
             InitializeComponent();
-            this.Subscribe((int)EventID.OpenSettings, (e) =>
+            this.Subscribe(Events.OpenSettings, (e) =>
             {
-                var settingsVM = e.GetValue<SettingsViewModel>(Messages.Settings);
+                var settingsVM = e.GetValue<SettingsViewModel>(MessageKeys.Settings);
                 var settingsDialog = new SettingsWindow();
                 settingsDialog.Owner = this;
                 settingsDialog.DataContext = settingsVM;

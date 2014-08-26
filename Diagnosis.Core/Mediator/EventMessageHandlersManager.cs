@@ -1,24 +1,26 @@
-﻿using EventAggregator;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Diagnosis.App.Messaging
+namespace EventAggregator
 {
-    internal class MessageHandlersManager
+    /// <summary>
+    /// Tracks list of EventAggragator EventMessageHandler's. Call Dispose to unsubscribe from all events.
+    /// </summary>
+    public class EventMessageHandlersManager
     {
         private List<EventMessageHandler> list = new List<EventMessageHandler>();
 
-        public MessageHandlersManager()
+        public EventMessageHandlersManager()
         {
         }
 
-        public MessageHandlersManager(IEnumerable<EventMessageHandler> handlers)
+        public EventMessageHandlersManager(IEnumerable<EventMessageHandler> handlers)
         {
-            list.AddRange(handlers);
+            Add(handlers);
         }
 
-        public MessageHandlersManager(EventMessageHandler handler)
+        public EventMessageHandlersManager(EventMessageHandler handler)
         {
-            list.Add(handler);
+            Add(handler);
         }
 
         public void Add(EventMessageHandler handler)

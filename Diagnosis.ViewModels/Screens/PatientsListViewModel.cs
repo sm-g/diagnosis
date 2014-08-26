@@ -1,5 +1,4 @@
-﻿using Diagnosis.App.Messaging;
-using Diagnosis.Core;
+﻿using Diagnosis.Core;
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
@@ -17,9 +16,9 @@ namespace Diagnosis.ViewModels
         public PatientsListViewModel(PatientsProducer manager)
         {
             _producer = manager;
-            this.Subscribe((int)EventID.OpenedPatientChanged, (e) =>
+            this.Subscribe(Events.OpenedPatientChanged, (e) =>
             {
-                var pat = e.GetValue<PatientViewModel>(Messages.Patient);
+                var pat = e.GetValue<PatientViewModel>(MessageKeys.Patient);
                 SelectedPatient = pat;
             });
         }
@@ -57,7 +56,7 @@ namespace Diagnosis.ViewModels
                 return _open
                    ?? (_open = new RelayCommand(() =>
                         {
-                            this.Send((int)EventID.OpenPatient, new PatientParams(SelectedPatient).Params);
+                            this.Send(Events.OpenPatient, SelectedPatient.AsParams(MessageKeys.Patient));
                         }, () => SelectedPatient != null));
             }
         }

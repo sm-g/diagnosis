@@ -1,5 +1,4 @@
-﻿using Diagnosis.App.Messaging;
-using Diagnosis.Data.Repositories;
+﻿using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
 using EventAggregator;
 using System;
@@ -102,16 +101,16 @@ namespace Diagnosis.ViewModels
 
         private void Subscribe(List<DiagnosisViewModel> chapterVms)
         {
-            this.Subscribe((int)EventID.CurrentDoctorChanged, (e) =>
+            this.Subscribe(Events.CurrentDoctorChanged, (e) =>
             {
-                var doctor = e.GetValue<Doctor>(Messages.Doctor);
+                var doctor = e.GetValue<Doctor>(MessageKeys.Doctor);
 
                 SetDiagnosesForDoctor(chapterVms, doctor);
             });
 
-            this.Subscribe((int)EventID.WordsEditingModeChanged, (e) =>
+            this.Subscribe(Events.WordsEditingModeChanged, (e) =>
             {
-                var isEditing = e.GetValue<bool>(Messages.Boolean);
+                var isEditing = e.GetValue<bool>(MessageKeys.Boolean);
 
                 OnDirectoryEditingModeChanged(isEditing);
             });

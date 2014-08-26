@@ -5,7 +5,6 @@ using System.Text;
 using EventAggregator;
 using Diagnosis.ViewModels;
 using Diagnosis.Models;
-using Diagnosis.App.Messaging;
 using System.Diagnostics;
 using System.Threading;
 using Diagnosis.Core;
@@ -41,73 +40,32 @@ namespace Diagnosis.App
             var debugThread = new Thread(PrintMemoryUsage) { IsBackground = true };
             //  debugThread.Start();
 
-            this.Subscribe((int)EventID.WordCheckedChanged, (e) =>
+            this.Subscribe(Events.OpenedPatientChanged, (e) =>
             {
-                var word = e.GetValue<WordViewModel>(Messages.Word);
-                var isChecked = word.IsChecked;
-                Debug.Print("word '{0}' {1}", word, isChecked ? "checked" : "unchecked");
-            });
-            this.Subscribe((int)EventID.DiagnosisCheckedChanged, (e) =>
-            {
-                var dia = e.GetValue<DiagnosisViewModel>(Messages.Diagnosis);
-                var isChecked = dia.IsChecked;
-                Debug.Print("dia '{0}' {1}", dia, isChecked ? "checked" : "unchecked");
-            });
-            this.Subscribe((int)EventID.CategoryCheckedChanged, (e) =>
-            {
-                var cat = e.GetValue<CategoryViewModel>(Messages.Category);
-                var isChecked = cat.IsChecked;
-                Debug.Print("cat '{0}' {1}", cat, isChecked ? "checked" : "unchecked");
-            });
-
-            this.Subscribe((int)EventID.AppointmentAdded, (e) =>
-            {
-                var app = e.GetValue<AppointmentViewModel>(Messages.Appointment);
-                Debug.Print("app {0} added", app);
-            });
-            this.Subscribe((int)EventID.CourseStarted, (e) =>
-            {
-                var c = e.GetValue<Course>(Messages.Course);
-                Debug.Print("course {0} started", c);
-            });
-
-            this.Subscribe((int)EventID.OpenedPatientChanged, (e) =>
-            {
-                var p = e.GetValue<PatientViewModel>(Messages.Patient);
+                var p = e.GetValue<PatientViewModel>(MessageKeys.Patient);
                 Debug.Print("current patient is '{0}'", p);
             });
-            this.Subscribe((int)EventID.CurrentDoctorChanged, (e) =>
+            this.Subscribe(Events.CurrentDoctorChanged, (e) =>
             {
-                var d = e.GetValue<Doctor>(Messages.Doctor);
+                var d = e.GetValue<Doctor>(MessageKeys.Doctor);
                 Debug.Print("current doctor is '{0}'", d);
             });
 
-            this.Subscribe((int)EventID.HealthRecordChanged, (e) =>
+            this.Subscribe(Events.WordsEditingModeChanged, (e) =>
             {
-                var hr = e.GetValue<HealthRecordViewModel>(Messages.HealthRecord);
-                Debug.Print("hr {0} changed", hr);
-            });
-            this.Subscribe((int)EventID.HealthRecordSelected, (e) =>
-            {
-                var hr = e.GetValue<HealthRecordViewModel>(Messages.HealthRecord);
-                Debug.Print("hr {0} selected", hr);
-            });
-
-            this.Subscribe((int)EventID.WordsEditingModeChanged, (e) =>
-            {
-                var isEditing = e.GetValue<bool>(Messages.Boolean);
+                var isEditing = e.GetValue<bool>(MessageKeys.Boolean);
                 Debug.Print("words editing is {0}", isEditing);
             });
-            this.Subscribe((int)EventID.PropertySelectedValueChanged, (e) =>
+            this.Subscribe(Events.PropertySelectedValueChanged, (e) =>
             {
-                var property = e.GetValue<PropertyViewModel>(Messages.Property);
+                var property = e.GetValue<PropertyViewModel>(MessageKeys.Property);
                 if (showPropertySelectedValueChanged)
                     Debug.Print("property {0} changed", property);
             });
 
-            this.Subscribe((int)EventID.OpenHealthRecord, (e) =>
+            this.Subscribe(Events.OpenHealthRecord, (e) =>
             {
-                var hr = e.GetValue<HealthRecord>(Messages.HealthRecord);
+                var hr = e.GetValue<HealthRecord>(MessageKeys.HealthRecord);
                 Debug.Print("open hr {0}", hr);
             });
         }

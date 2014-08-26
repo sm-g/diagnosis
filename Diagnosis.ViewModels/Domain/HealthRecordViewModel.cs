@@ -1,5 +1,4 @@
-﻿using Diagnosis.App.Messaging;
-using Diagnosis.Core;
+﻿using Diagnosis.Core;
 using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
 using EventAggregator;
@@ -294,7 +293,7 @@ namespace Diagnosis.ViewModels
                 return _sendToSearch
                    ?? (_sendToSearch = new RelayCommand(() =>
                         {
-                            this.Send((int)EventID.SendToSearch, new HealthRecordsParams(this.ToEnumerable()).Params);
+                            this.Send(Events.SendToSearch, this.ToEnumerable().AsParams(MessageKeys.HealthRecords));
                         }));
             }
         }
@@ -310,7 +309,7 @@ namespace Diagnosis.ViewModels
             SetDiagnosis();
 
             Editable = new Editable(healthRecord);
-            this.Subscribe((int)EventID.SettingsSaved, (e) =>
+            this.Subscribe(Events.SettingsSaved, (e) =>
             {
                 OnPropertyChanged("ShowDiagnosis");
             });

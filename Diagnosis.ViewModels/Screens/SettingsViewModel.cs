@@ -5,7 +5,6 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
 using EventAggregator;
-using Diagnosis.App.Messaging;
 using Diagnosis.Core;
 
 namespace Diagnosis.ViewModels
@@ -129,7 +128,7 @@ namespace Diagnosis.ViewModels
             }
 
             DialogResult = true;
-            this.Send((int)EventID.SettingsSaved, new DoctorModelParams(doctor).Params);
+            this.Send(Events.SettingsSaved,doctor.AsParams(MessageKeys.Doctor));
         }
 
         private IList<DoctorSettings> ChangedFlags()

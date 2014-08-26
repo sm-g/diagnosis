@@ -8,7 +8,6 @@ using System.Linq;
 using System.Windows.Data;
 using EventAggregator;
 using System.Windows.Input;
-using Diagnosis.App.Messaging;
 
 namespace Diagnosis.ViewModels
 {
@@ -135,7 +134,7 @@ namespace Diagnosis.ViewModels
                 return _sendToSearch
                    ?? (_sendToSearch = new RelayCommand(() =>
                         {
-                            this.Send((int)EventID.SendToSearch, new HealthRecordsParams(HealthRecords.Where(hr => hr.IsChecked)).Params);
+                            this.Send(Events.SendToSearch, HealthRecords.Where(hr => hr.IsChecked).AsParams(MessageKeys.HealthRecords));
                         }, () => CheckedHealthRecords > 0));
             }
         }
