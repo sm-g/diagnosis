@@ -151,7 +151,6 @@
       <DependentUpon>AppointmentsTabs.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\CardParts\AddNewDataTemplateSelector.cs" />
-    <Compile Include="Controls\Directory\TreeCommon.cs" />
     <Compile Include="Controls\Helpers\DataGridHelper.cs" />
     <Compile Include="Controls\Helpers\FirstFocusedElementExtension.cs" />
     <Compile Include="Controls\Search\HrSearchResult.xaml.cs">
@@ -180,9 +179,6 @@
     <Compile Include="Controls\CardParts\PatientHeader.xaml.cs">
       <DependentUpon>PatientHeader.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Directory\TreeItemLight.xaml.cs">
-      <DependentUpon>TreeItemLight.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Helpers\ParentFinder.cs" />
     <Compile Include="Controls\Search\SearchTree.xaml.cs">
       <DependentUpon>SearchTree.xaml</DependentUpon>
@@ -204,9 +200,6 @@
     </Compile>
     <Compile Include="Controls\Search\FloatSearch.xaml.cs">
       <DependentUpon>FloatSearch.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Directory\GroupsTree.xaml.cs">
-      <DependentUpon>GroupsTree.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Editors\PatientEditor.xaml.cs">
       <DependentUpon>PatientEditor.xaml</DependentUpon>
@@ -263,8 +256,8 @@
     <Compile Include="Controls\Helpers\EnhancedFocusScope.cs" />
     <Compile Include="Controls\Helpers\FocusChecker.cs" />
     <Compile Include="Controls\Helpers\TreeViewItemExtenstions.cs" />
-    <Compile Include="Controls\Directory\TreeItem.xaml.cs">
-      <DependentUpon>TreeItem.xaml</DependentUpon>
+    <Compile Include="Controls\Directory\WordTreeItem.xaml.cs">
+      <DependentUpon>WordTreeItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Screens\Card.xaml.cs">
       <DependentUpon>Card.xaml</DependentUpon>
@@ -324,10 +317,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Directory\TreeItemLight.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Controls\Search\SearchTree.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -353,10 +342,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\Search\FloatSearch.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\Directory\GroupsTree.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -440,7 +425,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Directory\TreeItem.xaml">
+    <Page Include="Controls\Directory\WordTreeItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

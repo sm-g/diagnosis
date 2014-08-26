@@ -5,11 +5,11 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:Converters="clr-namespace:Diagnosis.App.Converters"
              x:Name="treeItem"
-             x:Class="Diagnosis.App.Controls.TreeItem"
+             x:Class="Diagnosis.App.Controls.WordTreeItem"
              mc:Ignorable="d"
              Focusable="False"
-             d:DesignHeight="23" d:DesignWidth="300" LostFocus="treeItem_LostFocus">
-    <!--HierarchicalCheckable (Word or Diagnosis)-->
+             d:DesignHeight="23" d:DesignWidth="300">
+    <!-- WordViewModel -->
     <UserControl.Resources>
         <Style TargetType="Grid" x:Key="hidingButtons" x:Shared="False">
             <Setter Property="Visibility" Value="Collapsed" />
@@ -59,7 +59,6 @@
 
         <Grid x:Name="editor"
             Grid.Column="1"
-            LostFocus="editor_LostFocus"
             Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -136,19 +135,6 @@
             <TextBlock x:Name="checkedChildren"
                    Text="{Binding CheckedChildren}"
                    Visibility="{Binding CheckedChildren, Converter={StaticResource CountToVisibility}, Mode=OneWay}" />
-        </StackPanel>
-
-        <controls:FloatSearch x:Name="search"
-            Grid.Row="1"
-            Grid.Column="1"
-            Grid.ColumnSpan="2"
-            Visibility="{Binding IsSearchActive, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay, FallbackValue=Collapsed}"
-            controls:FocusExtension.IsFocused="{Binding IsSearchFocused, FallbackValue=False}"
-            DataContext="{Binding Search}">
-            <controls:FloatSearch.InputBindings>
-                <KeyBinding Key="Escape" Command="{Binding ToggleSearchActiveCommand}"></KeyBinding>
-                <KeyBinding Key="Enter" Command="{Binding SelectCommand}"></KeyBinding>
-            </controls:FloatSearch.InputBindings>
-        </controls:FloatSearch>
+        </StackPanel>       
     </Grid>
 </UserControl>

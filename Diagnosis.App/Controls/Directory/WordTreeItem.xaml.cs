@@ -7,11 +7,15 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.Controls
 {
-    public partial class TreeItemLight : UserControl
+    /// <summary>
+    /// Interaction logic for TreeItem.xaml
+    /// </summary>
+    public partial class WordTreeItem : UserControl
     {
-        public TreeItemLight()
+        public WordTreeItem()
         {
             InitializeComponent();
         }
+
     }
 }

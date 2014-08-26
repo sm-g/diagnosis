@@ -28,21 +28,5 @@
         <Setter Property="IsSelected" Value="{Binding IsSelected}" />
         <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
         <Setter Property="controls:Attached.InputBindings" Value="{StaticResource InputBindings}" />
-    </Style>
-    
-    <DataTemplate x:Key="treeItemLight">
-        <controls:TreeItemLight />
-    </DataTemplate>
-    <DataTemplate x:Key="treeItemFull">
-        <controls:TreeItem />
-    </DataTemplate>
-    
-    <Style TargetType="{x:Type ContentControl}" x:Key="TreeItemTemplateStyle">
-        <Setter Property="ContentTemplate" Value="{StaticResource treeItemLight}" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding ItemType, RelativeSource={RelativeSource AncestorType=controls:TreeCommon}}" Value="Full">
-                <Setter Property="ContentTemplate" Value="{StaticResource treeItemFull}" />
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
+    </Style>  
 </ResourceDictionary>

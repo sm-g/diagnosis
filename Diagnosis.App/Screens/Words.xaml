@@ -58,6 +58,12 @@
                     Command="{Binding ClearCommand}" />
         </Grid>
 
-        <controls:FullTree ItemType="Full" DataContext="{Binding Words}" Grid.Row="2" />
+        <controls:FullTree DataContext="{Binding Words}" Grid.Row="2" >
+            <controls:FullTree.ItemTemplate>
+                <DataTemplate>
+                    <controls:WordTreeItem />
+                </DataTemplate>
+            </controls:FullTree.ItemTemplate>
+        </controls:FullTree>
     </Grid>
 </UserControl>
