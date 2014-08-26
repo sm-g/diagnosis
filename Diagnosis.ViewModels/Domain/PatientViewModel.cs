@@ -21,7 +21,6 @@ namespace Diagnosis.ViewModels
         private CoursesManager coursesManager;
         private MessageHandlersManager msgManager = new MessageHandlersManager();
 
-        private DoctorViewModel _doctor;
         private RelayCommand _firstHr;
         private bool _canAddFirstHr;
 
@@ -281,21 +280,14 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public DoctorViewModel CurrentDoctor
+        public ICommand StartCourseCommand
         {
             get
             {
-                return _doctor;
-            }
-            set
-            {
-                if (_doctor != value)
-                {
-                    _doctor = value;
-                    OnPropertyChanged("CurrentDoctor");
-                }
+                return EntityProducers.DoctorsProducer.CurrentDoctor.StartCourseCommand;
             }
         }
+
 
         public bool NoCourses
         {
@@ -375,12 +367,6 @@ namespace Diagnosis.ViewModels
                     var property = e.GetValue<PropertyViewModel>(Messages.Property);
 
                     OnPropertyValueChanged(property);
-                }),
-                this.Subscribe((int)EventID.CourseStarted, (e) =>
-                {
-                    var course = e.GetValue<Course>(Messages.Course);
-
-                    OnCourseStarted(course);
                 })
             });
         }
@@ -397,12 +383,6 @@ namespace Diagnosis.ViewModels
                 patient.SetPropertyValue(propertyVM.property, propertyVM.SelectedValue);
                 Editable.MarkDirty();
             }
-        }
-
-        private void OnCourseStarted(Course course)
-        {
-            coursesManager.AddCourse(course);
-            Editable.MarkDirty();
         }
 
         #endregion Subscriptions

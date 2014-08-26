@@ -203,7 +203,7 @@ namespace Diagnosis.ViewModels
             var lastCourse = patient.Courses.FirstOrDefault();
             if (lastCourse == null)
             {
-                patient.CurrentDoctor.StartCourse(patient);
+                EntityProducers.DoctorsProducer.CurrentDoctor.StartCourse(patient);
             }
             else
             {
@@ -241,7 +241,6 @@ namespace Diagnosis.ViewModels
             patient.Courses.CollectionChanged += Courses_CollectionChanged;
 
             patient.Subscribe();
-            patient.CurrentDoctor = doctor;
 
             CourseViewModel course;
             if (!patCourseMap.TryGetValue(patient, out course))

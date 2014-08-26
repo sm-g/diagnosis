@@ -132,7 +132,7 @@
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
                             </Grid>
-                            <Button Command="{Binding CurrentDoctor.StartCourseCommand}"
+                            <Button Command="{Binding StartCourseCommand}"
                                     Height="26"
                                     Margin="10,0,0,5"
                                     VerticalAlignment="Center"

@@ -114,8 +114,6 @@ namespace Diagnosis.ViewModels
         {
             var course = doctor.StartCourse(patientVM.patient);
             Editable.MarkDirty();
-
-            this.Send((int)EventID.CourseStarted, new CourseModelParams(course).Params);
         }
 
         public DoctorViewModel(Doctor d)

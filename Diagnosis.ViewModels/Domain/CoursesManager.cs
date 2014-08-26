@@ -34,7 +34,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public CourseViewModel AddCourse(Course course)
+        private CourseViewModel AddCourse(Course course)
         {
             var courseVM = new CourseViewModel(course);
             SubscribeCourse(courseVM);
@@ -49,6 +49,16 @@ namespace Diagnosis.ViewModels
         public CoursesManager(PatientViewModel patientVM)
         {
             this.patientVM = patientVM;
+            patientVM.patient.Courses.CollectionChanged += (s, e) =>
+            {
+                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+                {
+                    foreach (Course item in e.NewItems)
+                    {
+                        AddCourse(item);
+                    }
+                }
+            };
         }
 
         protected virtual void OnCoursesLoaded()
@@ -105,7 +115,7 @@ namespace Diagnosis.ViewModels
         private void course_Deleted(object sender, EditableEventArgs e)
         {
             var course = e.entity as Course;
-            patientVM.patient.DeleteCourse(course);
+            patientVM.patient.Courses.Remove(course);
 
             var courseVM = Courses.Where(vm => vm.course == course).FirstOrDefault();
             Courses.Remove(courseVM);

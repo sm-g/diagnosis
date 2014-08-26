@@ -19,6 +19,7 @@ namespace Diagnosis.Models
         string _ln;
         string _mn;
         string _label;
+        private ObservableCollection<Course> _courses;
 
         public virtual int Id { get; protected set; }
         public virtual string Label
@@ -132,12 +133,12 @@ namespace Diagnosis.Models
                     new List<PatientRecordProperty>(patientProperties));
             }
         }
-        public virtual ReadOnlyCollection<Course> Courses
+        public virtual ObservableCollection<Course> Courses
         {
             get
             {
-                return new ReadOnlyCollection<Course>(
-                    new List<Course>(courses));
+
+                return _courses ?? (_courses = new ObservableCollection<Course>(courses));
             }
         }
 
@@ -185,12 +186,6 @@ namespace Diagnosis.Models
             {
                 return LastName + " " + FirstName + " " + MiddleName;
             }
-        }
-
-
-        public virtual void DeleteCourse(Course course)
-        {
-            courses.Remove(course);
         }
 
         /// <summary>
