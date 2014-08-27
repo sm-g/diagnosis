@@ -14,6 +14,5 @@ namespace Diagnosis.ViewModels
         bool WithNonCheckable { get; }
         bool WithChecked { get; }
         bool WithCreatingNew { get; }
-        bool AllChildren { get; }
     }
 }

@@ -10,14 +10,12 @@ namespace Diagnosis.ViewModels
         public bool WithNonCheckable;
         public bool WithChecked;
         public bool WithCreatingNew;
-        public bool AllChildren;
 
-        public HierarchicalSearchSettings(bool withNonCheckable, bool withChecked, bool withCreatingNew, bool allChildren)
+        public HierarchicalSearchSettings(bool withNonCheckable, bool withChecked, bool withCreatingNew)
         {
             WithNonCheckable = withNonCheckable;
             WithChecked = withChecked;
             WithCreatingNew = withCreatingNew;
-            AllChildren = allChildren;
         }
     }
 }

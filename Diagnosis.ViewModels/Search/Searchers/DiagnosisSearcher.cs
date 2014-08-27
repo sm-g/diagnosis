@@ -14,7 +14,6 @@ namespace Diagnosis.ViewModels
         public bool WithChecked { get; set; }
 
         public bool WithCreatingNew { get; set; }
-        public bool AllChildren { get; set; }
 
         public IEnumerable<DiagnosisViewModel> Collection { get; private set; }
 
@@ -26,9 +25,8 @@ namespace Diagnosis.ViewModels
         public DiagnosisSearcher(DiagnosisViewModel parent, HierarchicalSearchSettings settings, IEnumerable<DiagnosisViewModel> checkedDiagnoses = null)
         {
             Contract.Requires(parent != null);
-            Collection = settings.AllChildren ? parent.AllChildren : parent.Children;
+            Collection = parent.AllChildren;
 
-            AllChildren = settings.AllChildren;
             WithNonCheckable = settings.WithNonCheckable;
             WithChecked = settings.WithChecked;
             WithCreatingNew = false;

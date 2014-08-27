@@ -97,7 +97,7 @@ namespace Diagnosis.ViewModels
             {
                 if (_search == null)
                 {
-                    _search = new PopupSearch<WordViewModel>(new WordSearcher(this, new HierarchicalSearchSettings() { AllChildren = true }));
+                    _search = new PopupSearch<WordViewModel>(new WordSearcher(this, new HierarchicalSearchSettings()));
                     _search.ResultItemSelected += _search_ResultItemSelected;
                 }
                 return _search;
@@ -144,7 +144,7 @@ namespace Diagnosis.ViewModels
 
         private void _search_ResultItemSelected(object sender, System.EventArgs e)
         {
-            this.AddIfNotExists(Search.SelectedItem, Search.searcher.AllChildren);
+            this.AddIfNotExists(Search.SelectedItem);
             Search.SelectedItem.IsChecked = true;
             Search.Clear();
         }

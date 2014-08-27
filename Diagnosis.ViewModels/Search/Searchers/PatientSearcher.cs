@@ -11,7 +11,6 @@ namespace Diagnosis.ViewModels
         public bool WithChecked { get; private set; }
 
         public bool WithCreatingNew { get; private set; }
-        public bool AllChildren { get; private set; }
 
         public IEnumerable<PatientViewModel> Collection { get; private set; }
 
@@ -23,7 +22,6 @@ namespace Diagnosis.ViewModels
             WithNonCheckable = withNonCheckable;
             WithChecked = withChecked;
             WithCreatingNew = false;
-            AllChildren = false;
         }
 
         public IEnumerable<PatientViewModel> Search(string query)

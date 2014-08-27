@@ -164,13 +164,10 @@ namespace Diagnosis.ViewModels
         /// Добавляет элемент к детям, если его нет среди прямых детей или всех детей. Возвращает текущий элемент.
         /// </summary>
         /// <param name="item"></param>
-        /// <param name="checkAllChildren">Проверять ли наличие элемента на всех уровнях иерархии.</param>
         /// <returns></returns>
-        public T AddIfNotExists(T item, bool checkAllChildren)
+        public T AddIfNotExists(T item)
         {
-            var query = checkAllChildren ? AllChildren : Children;
-
-            if (query.SingleOrDefault(child => child == item) == null)
+            if (AllChildren.SingleOrDefault(child => child == item) == null)
                 Add(item);
 
             return (T)this;
@@ -180,14 +177,11 @@ namespace Diagnosis.ViewModels
         /// Добавляет элемент к детям, если его нет среди прямых детей или всех детей. Возвращает текущий элемент.
         /// </summary>
         /// <param name="item"></param>
-        /// <param name="checkAllChildren">Проверять ли наличие элемента на всех уровнях иерархии.</param>
         /// <param name="equalsComparator">Делегат, отпределяющий совпадение элемента с детьми.</param>
         /// <returns></returns>
-        public T AddIfNotExists(T item, bool checkAllChildren, Func<T, T, bool> equalsComparator)
+        public T AddIfNotExists(T item, Func<T, T, bool> equalsComparator)
         {
-            var query = checkAllChildren ? AllChildren : Children;
-
-            if (query.SingleOrDefault(child => equalsComparator(child, item)) == null)
+            if (AllChildren.SingleOrDefault(child => equalsComparator(child, item)) == null)
                 Add(item);
 
             return (T)this;

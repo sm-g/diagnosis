@@ -103,7 +103,7 @@ namespace Diagnosis.ViewModels
 
         private void _search_ResultItemSelected(object sender, System.EventArgs e)
         {
-            this.AddIfNotExists(Search.SelectedItem, Search.searcher.AllChildren);
+            this.AddIfNotExists(Search.SelectedItem);
             Search.SelectedItem.IsChecked = true;
             Search.Clear();
         }

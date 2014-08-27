@@ -78,7 +78,7 @@ namespace Diagnosis.ViewModels
             IEnumerable<WordViewModel> initialWords = HealthRecord.Symptom != null ? HealthRecord.Symptom.Words : null;
             _autoCompleteStatic = new WordCompositeAutoComplete(
                    QuerySeparator.Default,
-                   new HierarchicalSearchSettings() { AllChildren = true },
+                   new HierarchicalSearchSettings(),
                    initialWords);
 
             ((INotifyCollectionChanged)_autoCompleteStatic.Items).CollectionChanged += AutoCompleteItems_CollectionChanged;

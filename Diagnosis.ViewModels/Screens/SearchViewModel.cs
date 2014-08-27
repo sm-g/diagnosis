@@ -48,7 +48,7 @@ namespace Diagnosis.ViewModels
             Contract.Requires(manager != null);
             patManager = manager;
 
-            WordSearch = new WordRootAutoComplete(QuerySeparator.Default, new HierarchicalSearchSettings() { AllChildren = true });
+            WordSearch = new WordRootAutoComplete(QuerySeparator.Default, new HierarchicalSearchSettings());
             Results = new ObservableCollection<HrSearchResultViewModel>();
             ControlsVisible = true;
             AnyWord = true;
@@ -303,9 +303,7 @@ namespace Diagnosis.ViewModels
         }
 
         #endregion Options bindings
-
-        #region AllEmpty
-
+        
         public bool SearchWas
         {
             get { return _searchWas; }
@@ -348,8 +346,6 @@ namespace Diagnosis.ViewModels
                     && string.IsNullOrEmpty(Comment);
             }
         }
-
-        #endregion AllEmpty
 
         public ICommand SearchCommand
         {

@@ -28,8 +28,8 @@ namespace Diagnosis.ViewModels
 
         T Add(IEnumerable<T> items);
 
-        T AddIfNotExists(T item, bool lookupAllChildren);
-        T AddIfNotExists(T item, bool checkAllChildren, Func<T, T, bool> equalsComparator);
+        T AddIfNotExists(T item);
+        T AddIfNotExists(T item, Func<T, T, bool> equalsComparator);
 
         T Remove(T item);
 

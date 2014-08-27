@@ -28,7 +28,7 @@ namespace Diagnosis.ViewModels
             get
             {
                 return _searcher ?? (_searcher = new WordSearcher(root,
-                    new HierarchicalSearchSettings() { WithChecked = true, WithCreatingNew = true, AllChildren = true }));
+                    new HierarchicalSearchSettings() { WithChecked = true, WithCreatingNew = true }));
             }
         }
 
