@@ -15,7 +15,6 @@ namespace Diagnosis.ViewModels
     public interface IHierarchicalSearcher<T> : ISimpleSearcher<T>
     {
         bool WithNonCheckable { get; }
-        bool WithChecked { get; }
         bool WithCreatingNew { get; }
     }
 }

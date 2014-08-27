@@ -11,8 +11,8 @@ namespace Diagnosis.ViewModels
         private List<DiagnosisViewModel> ignoreList;
         private string lastQuery = "";
 
-        public DiagnosisFiltratingSearcher(DiagnosisViewModel parent, bool withChecked = false)
-            : base(parent, new HierarchicalSearchSettings() { WithNonCheckable = true, WithChecked = withChecked })
+        public DiagnosisFiltratingSearcher(DiagnosisViewModel parent)
+            : base(parent, new HierarchicalSearchSettings() { WithNonCheckable = true })
         {
             ignoreList = new List<DiagnosisViewModel>();
         }
@@ -52,6 +52,11 @@ namespace Diagnosis.ViewModels
 
             item.IsFiltered = result;
             return result;
+        }
+
+        protected override bool FilterCheckable(ICheckable obj)
+        {
+            return base.FilterCheckable(obj) && !obj.IsChecked;
         }
     }
 }

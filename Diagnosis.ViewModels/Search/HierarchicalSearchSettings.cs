@@ -8,13 +8,11 @@ namespace Diagnosis.ViewModels
     public struct HierarchicalSearchSettings
     {
         public bool WithNonCheckable;
-        public bool WithChecked;
         public bool WithCreatingNew;
 
-        public HierarchicalSearchSettings(bool withNonCheckable, bool withChecked, bool withCreatingNew)
+        public HierarchicalSearchSettings(bool withNonCheckable, bool withCreatingNew)
         {
             WithNonCheckable = withNonCheckable;
-            WithChecked = withChecked;
             WithCreatingNew = withCreatingNew;
         }
     }

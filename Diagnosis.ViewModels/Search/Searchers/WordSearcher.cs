@@ -13,7 +13,6 @@ namespace Diagnosis.ViewModels
         IEnumerable<WordViewModel> checkedWords;
 
         public bool WithNonCheckable { get; set; }
-        public bool WithChecked { get; set; }
         public bool WithCreatingNew { get; set; }
         public byte UpperPriority { get; set; }
 
@@ -25,7 +24,6 @@ namespace Diagnosis.ViewModels
             Collection = parent.AllChildren;
 
             WithNonCheckable = settings.WithNonCheckable;
-            WithChecked = settings.WithChecked;
             WithCreatingNew = settings.WithCreatingNew;
             this.checkedWords = checkedWords;
         }
@@ -69,9 +67,8 @@ namespace Diagnosis.ViewModels
 
         protected bool FilterCheckable(ICheckable obj)
         {
-            return (WithChecked || !obj.IsChecked)
-                   && (WithNonCheckable || !obj.IsNonCheckable)
-                   && (WithChecked || checkedWords == null || !checkedWords.Contains(obj));
+            return (WithNonCheckable || !obj.IsNonCheckable)
+                   && (checkedWords == null || !checkedWords.Contains(obj));
         }
     }
 }

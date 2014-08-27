@@ -11,8 +11,6 @@ namespace Diagnosis.ViewModels
 
         public bool WithNonCheckable { get; set; }
 
-        public bool WithChecked { get; set; }
-
         public bool WithCreatingNew { get; set; }
 
         public IEnumerable<DiagnosisViewModel> Collection { get; private set; }
@@ -28,7 +26,6 @@ namespace Diagnosis.ViewModels
             Collection = parent.Children;
 
             WithNonCheckable = settings.WithNonCheckable;
-            WithChecked = settings.WithChecked;
             WithCreatingNew = false;
             this.checkedDiagnoses = checkedDiagnoses;
         }
@@ -49,11 +46,10 @@ namespace Diagnosis.ViewModels
                item.Code.StartsWith(query, StringComparison.InvariantCultureIgnoreCase);
         }
 
-        protected bool FilterCheckable(ICheckable obj)
+        protected virtual bool FilterCheckable(ICheckable obj)
         {
-            return (WithChecked || !obj.IsChecked)
-                   && (WithNonCheckable || !obj.IsNonCheckable)
-                   && (WithChecked || checkedDiagnoses == null || !checkedDiagnoses.Contains(obj));
+            return (WithNonCheckable || !obj.IsNonCheckable)
+                   && (checkedDiagnoses == null || !checkedDiagnoses.Contains(obj));
         }
     }
 }
