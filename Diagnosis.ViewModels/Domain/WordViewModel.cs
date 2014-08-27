@@ -12,7 +12,6 @@ namespace Diagnosis.ViewModels
 
         private Category _defCat;
         private ICommand _sendToSearch;
-        private PopupSearch<WordViewModel> _search;
 
         public Editable Editable { get; private set; }
 
@@ -91,19 +90,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public PopupSearch<WordViewModel> Search
-        {
-            get
-            {
-                if (_search == null)
-                {
-                    _search = new PopupSearch<WordViewModel>(new WordSearcher(this, new HierarchicalSearchSettings()));
-                    _search.ResultItemSelected += _search_ResultItemSelected;
-                }
-                return _search;
-            }
-        }
-
         public bool Unsaved
         {
             get
@@ -140,13 +126,6 @@ namespace Diagnosis.ViewModels
             {
                 e.IHierarchical.word.Parent = this.word;
             }
-        }
-
-        private void _search_ResultItemSelected(object sender, System.EventArgs e)
-        {
-            this.AddIfNotExists(Search.SelectedItem);
-            Search.SelectedItem.IsChecked = true;
-            Search.Clear();
         }
 
         public override string ToString()

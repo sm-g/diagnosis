@@ -92,7 +92,7 @@ namespace Diagnosis.ViewModels
             var chapters = repository.GetAll().ToList();
             var chapterDiagnoses = chapters.Select(ch =>
                 new Diagnosis.Models.Diagnosis(ch.Code, ch.Title)).ToList();
-            var chapterVms = chapterDiagnoses.Select(ch => new DiagnosisViewModel(ch, RootChanged)).ToList();
+            var chapterVms = chapterDiagnoses.Select(ch => new DiagnosisViewModel(ch)).ToList();
 
             SetDiagnosesForDoctor(chapterVms, EntityProducers.DoctorsProducer.CurrentDoctor.doctor);
 
@@ -129,7 +129,7 @@ namespace Diagnosis.ViewModels
             var blockDiagnoses = blocks.Select(b =>
                 new Diagnosis.Models.Diagnosis(b.Code, b.Title, chapterVms.Select(ch => ch.diagnosis).Where(ch =>
                     ch.Code == b.IcdChapter.Code).SingleOrDefault())).ToList();
-            var blockVms = blockDiagnoses.Select(b => new DiagnosisViewModel(b, RootChanged)).ToList();
+            var blockVms = blockDiagnoses.Select(b => new DiagnosisViewModel(b)).ToList();
 
             // добавляем нужные блоки в классы
             foreach (var ch in chapterVms)
@@ -150,7 +150,7 @@ namespace Diagnosis.ViewModels
             var diseaseDiagnoses = diseases.Select(d =>
                 new Diagnosis.Models.Diagnosis(d.Code, d.Title, blockDiagnoses.Where(b =>
                     b.Code == d.IcdBlock.Code).SingleOrDefault(), d)).ToList();
-            var diseaseVms = diseaseDiagnoses.Select(d => new DiagnosisViewModel(d, RootChanged)).ToList();
+            var diseaseVms = diseaseDiagnoses.Select(d => new DiagnosisViewModel(d)).ToList();
 
             // добавляем нужные болезни в блоки
             foreach (var item in blockVms)
@@ -166,7 +166,7 @@ namespace Diagnosis.ViewModels
             }
 
             var dia = new Diagnosis.Models.Diagnosis("code", "root");
-            var root = new DiagnosisViewModel(dia, RootChanged);
+            var root = new DiagnosisViewModel(dia);
             Root = root.Add(chapterVms);
             // IEnumarable
 
@@ -177,11 +177,6 @@ namespace Diagnosis.ViewModels
 
         private void OnDirectoryEditingModeChanged(bool isEditing)
         {
-            Root.AllChildren.ForAll((dvm) =>
-            {
-                dvm.Search.SwitchedOn = !isEditing;
-            });
-
             UnCheckAll();
         }
 

@@ -7,10 +7,7 @@ namespace Diagnosis.ViewModels
     public class DiagnosisViewModel : HierarchicalBase<DiagnosisViewModel>
     {
         internal readonly Diagnosis.Models.Diagnosis diagnosis;
-        EventHandler diagnosesRootChanged;
-
-        private PopupSearch<DiagnosisViewModel> _search;
-
+        
         public Editable Editable { get; private set; }
 
         public string Name
@@ -53,59 +50,19 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public PopupSearch<DiagnosisViewModel> Search
-        {
-            get
-            {
-                return _search ?? (_search = CreateSearch());
-            }
-            set
-            {
-                if (_search != value)
-                {
-                    OnPropertyChanged("Search");
-                }
-            }
-        }
-
         public void Unsubscribe()
         {
-            diagnosesRootChanged -= RootChanged;
             ChildrenChanged -= DiagnosisViewModel_ChildrenChanged;
         }
-
-        public PopupSearch<DiagnosisViewModel> CreateSearch()
-        {
-            if (_search != null)
-            {
-                _search.ResultItemSelected -= _search_ResultItemSelected;
-            }
-            var search = new PopupSearch<DiagnosisViewModel>(new DiagnosisSearcher(this, new HierarchicalSearchSettings()));
-            search.ResultItemSelected += _search_ResultItemSelected;
-            return search;
-        }
-        public DiagnosisViewModel(Diagnosis.Models.Diagnosis d, EventHandler diagnosesRootChanged)
+        
+        public DiagnosisViewModel(Diagnosis.Models.Diagnosis d)
         {
             Contract.Requires(d != null);
             this.diagnosis = d;
-            this.diagnosesRootChanged = diagnosesRootChanged;
 
             Editable = new Editable(diagnosis);
 
             ChildrenChanged += DiagnosisViewModel_ChildrenChanged;
-            diagnosesRootChanged += RootChanged;
-        }
-
-        void RootChanged(object s, EventArgs e)
-        {
-            Search = CreateSearch();
-        }
-
-        private void _search_ResultItemSelected(object sender, System.EventArgs e)
-        {
-            this.AddIfNotExists(Search.SelectedItem);
-            Search.SelectedItem.IsChecked = true;
-            Search.Clear();
         }
 
         private void DiagnosisViewModel_ChildrenChanged(object sender, HierarchicalEventAgrs<DiagnosisViewModel> e)
