@@ -1,7 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System;
-using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
@@ -11,27 +8,47 @@ namespace Diagnosis.ViewModels
     /// </summary>
     public class DiagnosisFiltratingSearcher : DiagnosisSearcher
     {
+        private List<DiagnosisViewModel> ignoreList;
+        private string lastQuery = "";
+
         public DiagnosisFiltratingSearcher(DiagnosisViewModel parent, bool withChecked = false)
             : base(parent, new HierarchicalSearchSettings() { WithNonCheckable = true, WithChecked = withChecked })
         {
+            ignoreList = new List<DiagnosisViewModel>();
         }
+
         /// <summary>
         /// Фильтрует элемент и рекурсивно всех детей, устанавливая значение <code>IsFiltered = true</code>,
         /// если запросу удовлетворяет сам элемент или хотя бы один потомок.
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="query"></param>
-        /// <returns></returns>
         protected override bool Filter(DiagnosisViewModel item, string query)
         {
-            var filterRoot = base.Filter(item, query);
+            // элементы, которые не подошли, можно не проверять при более длинном запросе
+            if (ignoreList.Contains(item))
+                return false;
+
+            if (!query.StartsWith(lastQuery))
+            {
+                ignoreList.Clear();
+            }
+            lastQuery = query;
+
+            var filterItem = base.Filter(item, query);
             bool anyChild = false;
 
-            foreach (var diaVm in item.Children.Where(child => FilterCheckable(child) && Filter(child, query)))
+            foreach (var x in item.Children)
             {
-                anyChild = true;
+                if (Filter(x, query))
+                {
+                    anyChild = true;
+                }
             }
-            var result = filterRoot || anyChild;
+
+            var result = filterItem || anyChild;
+            if (!result)
+            {
+                ignoreList.Add(item);
+            }
 
             item.IsFiltered = result;
             return result;
