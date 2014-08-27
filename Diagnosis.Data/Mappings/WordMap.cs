@@ -25,6 +25,20 @@ namespace Diagnosis.Data.Mappings
                 m.Column("ParentID");
             });
 
+            Set(x => x.Children, s =>
+            {
+                s.Key(k =>
+                {
+                    k.Column("ParentID");
+                });
+                s.Inverse(true);
+                s.Cascade(Cascade.All | Cascade.DeleteOrphans);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.OneToMany();
+            });
+
             Set(x => x.SymptomWords, s =>
             {
                 s.Key(k =>

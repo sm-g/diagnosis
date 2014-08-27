@@ -6,8 +6,9 @@ namespace Diagnosis.Models
 {
     public class Word : IEntity
     {
-        private ISet<Symptom> symptoms = new HashSet<Symptom>();
-        private ISet<SymptomWords> symptomWords = new HashSet<SymptomWords>();
+        private ISet<Symptom> symptoms;
+        private ISet<SymptomWords> symptomWords;
+        private ISet<Word> children;
         private string _title;
 
         public virtual int Id { get; protected set; }
@@ -27,6 +28,13 @@ namespace Diagnosis.Models
         public virtual Category DefaultCategory { get; set; }
 
         public virtual Word Parent { get; set; }
+        public virtual ObservableCollection<Word> Children
+        {
+            get
+            {
+                return new ObservableCollection<Word>(children);
+            }
+        }
 
         public virtual ReadOnlyCollection<Symptom> Symptoms
         {
