@@ -8,18 +8,12 @@ using System.Linq;
 namespace Tests
 {
     [TestClass]
-    public class AutoCompleteTest
+    public class SequencePartitionTest
     {
         private const string delim = " ";
         private const string w1 = "анемия";
         private const string w2 = "лежа";
         private const string w3 = "порок сердца";
-        private static WordViewModel word1 = EntityProducers.WordsProducer.Find(w1);
-        private static WordViewModel word2 = EntityProducers.WordsProducer.Find(w2);
-        private static WordViewModel word3 = EntityProducers.WordsProducer.Find(w3);
-        private static SymptomViewModel sym1 = EntityProducers.SymptomsProducer.Create(new[] { word1 });
-        private static SymptomViewModel sym12 = EntityProducers.SymptomsProducer.Create(new[] { word1, word2 });
-        private static SymptomViewModel sym23 = EntityProducers.SymptomsProducer.Create(new[] { word3, word2 });
 
         #region Partition
 

@@ -68,7 +68,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="AutoCompleteTest.cs" />
+    <Compile Include="SequencePartitionTest.cs" />
     <Compile Include="DateFormatterTest.cs" />
     <Compile Include="DateOffsetTest.cs" />
     <Compile Include="PatientTest.cs" />
