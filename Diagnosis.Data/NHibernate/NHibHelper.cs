@@ -57,7 +57,6 @@ namespace Diagnosis.Data
 
             cfg.Configure("NHibernate\\hibernate.cfg.xml");
             cfg.Properties[Environment.CollectionTypeFactoryClass] = typeof(Net4CollectionTypeFactory).AssemblyQualifiedName;
-            cfg.AddAssembly(typeof(Patient).Assembly);
             cfg.AddMapping(Mapping);
 
             return cfg;

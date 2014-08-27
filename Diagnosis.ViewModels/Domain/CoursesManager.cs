@@ -27,7 +27,7 @@ namespace Diagnosis.ViewModels
                 if (_courses == null)
                 {
                     _courses = MakeCourses();
-                    patientVM.SubscribeEditableNesting(Courses);
+                    patientVM.SubscribeEditableNesting(_courses);
                     OnCoursesLoaded();
                 }
                 return _courses;
@@ -120,7 +120,7 @@ namespace Diagnosis.ViewModels
 
             UnsubscribeCourse(courseVM);
         }
-            
+
         #endregion Course stuff
     }
 }
