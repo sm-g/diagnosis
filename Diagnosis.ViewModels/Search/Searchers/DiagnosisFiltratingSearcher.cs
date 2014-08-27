@@ -23,15 +23,15 @@ namespace Diagnosis.ViewModels
         /// </summary>
         protected override bool Filter(DiagnosisViewModel item, string query)
         {
-            // элементы, которые не подошли, можно не проверять при более длинном запросе
-            if (ignoreList.Contains(item))
-                return false;
-
             if (!query.StartsWith(lastQuery))
             {
                 ignoreList.Clear();
             }
             lastQuery = query;
+
+            // элементы, которые не подошли, можно не проверять при более длинном запросе
+           if (ignoreList.Contains(item))
+                return false;                    
 
             var filterItem = base.Filter(item, query);
             bool anyChild = false;
