@@ -98,7 +98,6 @@
     <Compile Include="Screens\SettingsViewModel.cs" />
     <Compile Include="Screens\WordsListViewModel.cs" />
     <Compile Include="Search\AutoCompletes\AutoCompleteBase.cs" />
-    <Compile Include="Search\AutoCompletes\AutoCompleteBoxViewModel.cs" />
     <Compile Include="Search\AutoCompletes\DiagnosisAutoComplete.cs" />
     <Compile Include="Search\AutoCompletes\WordCompositeAutoComplete.cs" />
     <Compile Include="Search\AutoCompletes\WordRootAutoComplete.cs" />
@@ -114,7 +113,6 @@
     <Compile Include="Search\Searchers\WordCompositeSearcher.cs" />
     <Compile Include="Search\Searchers\WordSearcher.cs" />
     <Compile Include="Search\Searchers\WordTopParentSearcher.cs" />
-    <Compile Include="Search\SearchWrap.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Compile Include="WithAddNew.cs" />
   </ItemGroup>

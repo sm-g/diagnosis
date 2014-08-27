@@ -209,10 +209,6 @@
     </Compile>
     <Compile Include="Controls\Helpers\Attached.cs" />
     <Compile Include="Controls\Helpers\FocusExtension.cs" />
-    <Compile Include="Controls\Search\InputTextBox.xaml.cs">
-      <DependentUpon>InputTextBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Search\MyAutoCompleteBox.cs" />
     <Compile Include="Controls\Common\RadioListBox.xaml.cs">
       <DependentUpon>RadioListBox.xaml</DependentUpon>
     </Compile>
@@ -350,10 +346,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Editors\SexChooser.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\Search\InputTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
