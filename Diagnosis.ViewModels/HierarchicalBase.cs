@@ -60,26 +60,7 @@ namespace Diagnosis.ViewModels
                 return result;
             }
         }
-        /// <summary>
-        /// Дети, у которых есть дети.
-        /// </summary>
-        public ObservableCollection<T> NonTerminalChildren
-        {
-            get
-            {
-                return new ObservableCollection<T>(Children.Where(i => !i.IsTerminal));
-            }
-        }
-        /// <summary>
-        /// Дети без детей, листья.
-        /// </summary>
-        public ObservableCollection<T> TerminalChildren
-        {
-            get
-            {
-                return new ObservableCollection<T>(Children.Where(i => i.IsTerminal));
-            }
-        }
+
         /// <summary>
         /// Элемент конечный в иерархии, лист, без детей.
         /// </summary>
@@ -100,16 +81,7 @@ namespace Diagnosis.ViewModels
                 return Parent == null;
             }
         }
-        /// <summary>
-        /// Родительский элемент, есть дети.
-        /// </summary>
-        public bool IsParent
-        {
-            get
-            {
-                return Children.Count > 0;
-            }
-        }
+
         /// <summary>
         /// Элемент развернут.
         /// </summary>
@@ -160,32 +132,6 @@ namespace Diagnosis.ViewModels
             return (T)this;
         }
 
-        /// <summary>
-        /// Добавляет элемент к детям, если его нет среди прямых детей или всех детей. Возвращает текущий элемент.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        public T AddIfNotExists(T item)
-        {
-            if (AllChildren.SingleOrDefault(child => child == item) == null)
-                Add(item);
-
-            return (T)this;
-        }
-
-        /// <summary>
-        /// Добавляет элемент к детям, если его нет среди прямых детей или всех детей. Возвращает текущий элемент.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="equalsComparator">Делегат, отпределяющий совпадение элемента с детьми.</param>
-        /// <returns></returns>
-        public T AddIfNotExists(T item, Func<T, T, bool> equalsComparator)
-        {
-            if (AllChildren.SingleOrDefault(child => equalsComparator(child, item)) == null)
-                Add(item);
-
-            return (T)this;
-        }
         /// <summary>
         /// Удаляет элемент из детей, если он там был. Возвращает текущий элемент.
         /// </summary>

@@ -11,25 +11,17 @@ namespace Diagnosis.ViewModels
 
         bool IsRoot { get; }
         bool IsTerminal { get; }
-        bool IsParent { get; }
         bool IsExpanded { get; set; }
 
         T Parent { get; }
 
         ObservableCollection<T> Children { get; }
 
-        ObservableCollection<T> TerminalChildren { get; }
-
-        ObservableCollection<T> NonTerminalChildren { get; }
-
         IEnumerable<T> AllChildren { get; }
 
         T Add(T item);
 
         T Add(IEnumerable<T> items);
-
-        T AddIfNotExists(T item);
-        T AddIfNotExists(T item, Func<T, T, bool> equalsComparator);
 
         T Remove(T item);
 
