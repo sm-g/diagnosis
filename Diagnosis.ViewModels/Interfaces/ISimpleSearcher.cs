@@ -10,7 +10,10 @@ namespace Diagnosis.ViewModels
     {
         IEnumerable<T> Collection { get; }
         IEnumerable<T> Search(string query);
+    }
 
+    public interface IHierarchicalSearcher<T> : ISimpleSearcher<T>
+    {
         bool WithNonCheckable { get; }
         bool WithChecked { get; }
         bool WithCreatingNew { get; }

@@ -8,7 +8,7 @@ namespace Diagnosis.ViewModels
     /// <summary>
     /// Ищет по детям переданного родителя. 
     /// </summary>
-    public class WordSearcher : ISimpleSearcher<WordViewModel>
+    public class WordSearcher : IHierarchicalSearcher<WordViewModel>
     {
         IEnumerable<WordViewModel> checkedWords;
 

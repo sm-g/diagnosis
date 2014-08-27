@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
-    public class DiagnosisSearcher : ISimpleSearcher<DiagnosisViewModel>
+    public class DiagnosisSearcher : IHierarchicalSearcher<DiagnosisViewModel>
     {
         IEnumerable<DiagnosisViewModel> checkedDiagnoses;
 
@@ -25,7 +25,7 @@ namespace Diagnosis.ViewModels
         public DiagnosisSearcher(DiagnosisViewModel parent, HierarchicalSearchSettings settings, IEnumerable<DiagnosisViewModel> checkedDiagnoses = null)
         {
             Contract.Requires(parent != null);
-            Collection = parent.AllChildren;
+            Collection = parent.Children;
 
             WithNonCheckable = settings.WithNonCheckable;
             WithChecked = settings.WithChecked;
@@ -53,7 +53,7 @@ namespace Diagnosis.ViewModels
         {
             return (WithChecked || !obj.IsChecked)
                    && (WithNonCheckable || !obj.IsNonCheckable)
-                   && (WithChecked || checkedDiagnoses == null|| !checkedDiagnoses.Contains(obj));
+                   && (WithChecked || checkedDiagnoses == null || !checkedDiagnoses.Contains(obj));
         }
     }
 }
