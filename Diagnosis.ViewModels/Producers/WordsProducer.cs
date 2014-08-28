@@ -148,7 +148,7 @@ namespace Diagnosis.ViewModels
             // нельзя удалить слова, которые есть в каком-нибудь симптоме
             // или слова с детьми
             // TODO в симптоме, связанном с записью
-            if (w.IsParent || EntityProducers.SymptomsProducer.GetSymptomsWithWords(w.ToEnumerable()).Count() > 0)
+            if (!w.IsTerminal || EntityProducers.SymptomsProducer.GetSymptomsWithWords(w.ToEnumerable()).Count() > 0)
             {
                 w.Editable.CanBeDeleted = false;
             }
