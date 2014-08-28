@@ -321,7 +321,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return DateOffset.NullableDate(AppYearLower, AppMonthLower, AppDayLower);
+                return DateHelper.NullableDate(AppYearLower, AppMonthLower, AppDayLower);
             }
         }
 
@@ -329,7 +329,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return DateOffset.NullableDate(AppYearUpper, AppMonthUpper, AppDayUpper);
+                return DateHelper.NullableDate(AppYearUpper, AppMonthUpper, AppDayUpper);
             }
         }
 
@@ -424,8 +424,8 @@ namespace Diagnosis.ViewModels
 
             options.HealthRecordOffsetGt = HrDateOffsetLower;
             options.HealthRecordOffsetLt = HrDateOffsetUpper;
-            options.AppointmentDateGt = DateOffset.NullableDate(AppYearLower, AppMonthLower, AppDayLower);
-            options.AppointmentDateLt = DateOffset.NullableDate(AppYearUpper, AppMonthUpper, AppDayUpper);
+            options.AppointmentDateGt = DateHelper.NullableDate(AppYearLower, AppMonthLower, AppDayLower);
+            options.AppointmentDateLt = DateHelper.NullableDate(AppYearUpper, AppMonthUpper, AppDayUpper);
             options.AnyWord = AnyWord;
             options.Words = Words;
             options.Categories = SelectedCategories.ToList();

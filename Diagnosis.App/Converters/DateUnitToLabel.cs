@@ -12,7 +12,7 @@ namespace Diagnosis.App.Converters
             if (!(value is DateOffset))
                 return null;
 
-            return (value as DateOffset).GetUnitString();
+            return (value as DateOffset).UnitString;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Diagnosis.Core
 {
-    public static class Checkers
+    public static class DateHelper
     {
         /// <summary>
         /// Проверяет, допустима ли указанная дата (возможно, неполная).
@@ -35,5 +35,19 @@ namespace Diagnosis.Core
             }
         }
 
+        /// <summary>
+        /// Возвращает DateTime, если возможно для указанных аргументов.
+        /// </summary>
+        public static DateTime? NullableDate(int? year, int? month, int? day)
+        {
+            try
+            {
+                return new DateTime(year.Value, month.Value, day.Value);
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }

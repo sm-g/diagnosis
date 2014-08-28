@@ -173,7 +173,7 @@ namespace Diagnosis.Models
                         new DateTime(year, BirthMonth.Value, BirthDay.Value) > DateTime.Today.AddYears(-value.Value))
                         year--;
 
-                    Checkers.CheckDate(year, BirthMonth, BirthDay);
+                    DateHelper.CheckDate(year, BirthMonth, BirthDay);
 
                     BirthYear = year;
                 }
@@ -213,7 +213,7 @@ namespace Diagnosis.Models
 
         void CheckDate()
         {
-            Checkers.CheckDate(BirthYear, BirthMonth, BirthDay);
+            DateHelper.CheckDate(BirthYear, BirthMonth, BirthDay);
         }
 
         public Patient(string lastName = null,

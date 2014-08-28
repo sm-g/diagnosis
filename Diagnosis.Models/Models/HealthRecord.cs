@@ -168,7 +168,7 @@ namespace Diagnosis.Models
 
         private void CheckDate()
         {
-            Checkers.CheckDate(FromYear, FromMonth, FromDay);
+            DateHelper.CheckDate(FromYear, FromMonth, FromDay);
         }
 
         protected HealthRecord()

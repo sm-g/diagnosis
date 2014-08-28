@@ -148,6 +148,25 @@ namespace Diagnosis.Core
             }
         }
 
+        /// <summary>
+        /// Возвращает DateTime представление для объекта DateOffset, если возможно.
+        /// </summary>
+        public DateTime? DateTimeNullable
+        {
+            get
+            {
+                return DateHelper.NullableDate(Year, Month, Day);
+            }
+        }
+
+        public string UnitString
+        {
+            get
+            {
+                return FormatUnit(Offset, Unit);
+            }
+        }
+
         private DateTime Now { get { return NowDate(); } }
 
         private void SetOffset(int? offset, DateUnits unit)
@@ -217,7 +236,7 @@ namespace Diagnosis.Core
             Month = month != 0 ? month : null;
             Day = day != 0 ? day : null;
 
-            Checkers.CheckDate(Year, Month, Day);
+            DateHelper.CheckDate(Year, Month, Day);
 
             int y;
             if (Year.HasValue)
@@ -283,18 +302,6 @@ namespace Diagnosis.Core
             setting = false;
         }
 
-        /// <summary>
-        /// Возвращает DateTime представление для объекта DateOffset, если возможно.
-        /// </summary>
-        public DateTime? GetDateTime()
-        {
-            return NullableDate(Year, Month, Day);
-        }
-
-        public string GetUnitString()
-        {
-            return FormatUnit(Offset, Unit);
-        }
 
         public DateOffset(int? year, int? month, int? day)
         {
@@ -327,22 +334,6 @@ namespace Diagnosis.Core
             NowDate = now;
             SetOffset(dateOffset.Offset, dateOffset.Unit);
         }
-
-        /// <summary>
-        /// Возвращает DateTime, если возможно для указанных аргументов.
-        /// </summary>
-        public static DateTime? NullableDate(int? year, int? month, int? day)
-        {
-            try
-            {
-                return new DateTime(year.Value, month.Value, day.Value);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
         public static bool operator <(DateOffset do1, DateOffset do2)
         {
             if (do1.Unit == do2.Unit)
@@ -404,38 +395,31 @@ namespace Diagnosis.Core
                 offset = 0;
             if (offset % 10 == 0 || offset % 10 >= 5 || (offset >= 11 && offset <= 14))
             {
-                switch (unit)
-                {
-                    case DateUnits.Day: return days[2];
-                    case DateUnits.Week: return weeks[2];
-                    case DateUnits.Month: return months[2];
-                    case DateUnits.Year: return years[2];
-                }
+                return SelectUnitLabel(unit, 2);
             }
             if (offset % 10 == 1)
             {
-                switch (unit)
-                {
-                    case DateUnits.Day: return days[0];
-                    case DateUnits.Week: return weeks[0];
-                    case DateUnits.Month: return months[0];
-                    case DateUnits.Year: return years[0];
-                }
+                return SelectUnitLabel(unit, 0);
             }
+            return SelectUnitLabel(unit, 1);
+        }
+
+        private static string SelectUnitLabel(DateUnits unit, int ending)
+        {
+            Contract.Requires(ending >= 0 && ending <= 2);
             switch (unit)
             {
-                case DateUnits.Day: return days[1];
-                case DateUnits.Week: return weeks[1];
-                case DateUnits.Month: return months[1];
-                case DateUnits.Year: return years[1];
+                case DateUnits.Day: return days[ending];
+                case DateUnits.Week: return weeks[ending];
+                case DateUnits.Month: return months[ending];
+                case DateUnits.Year: return years[ending];
             }
-
             throw new ArgumentOutOfRangeException("unit");
         }
 
         public override string ToString()
         {
-            return string.Format("{0} {1} {2}.{3}.{4}", Offset, GetUnitString(), Year ?? 0, Month ?? 0, Day ?? 0);
+            return string.Format("{0} {1} {2}.{3}.{4}", Offset, UnitString, Year ?? 0, Month ?? 0, Day ?? 0);
         }
     }
 }
