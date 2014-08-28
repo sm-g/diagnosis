@@ -118,9 +118,9 @@
     <Compile Include="Repositories\PatientRepository.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="NHibernate\hibernate.cfg.xml">
+    <None Include="NHibernate\hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
