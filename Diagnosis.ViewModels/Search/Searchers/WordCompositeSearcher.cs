@@ -25,7 +25,10 @@ namespace Diagnosis.ViewModels
             List<WordViewModel> results = new List<WordViewModel>(base.Search(query));
             if (!String.IsNullOrWhiteSpace(query))
             {
-                results.AddRange(EntityProducers.WordsProducer.RootSearcher.Search(query).Where(
+                // по всем словам, кроме групп, создает новые из запроса
+                var searcher = new WordSearcher(EntityProducers.WordsProducer.Root, new HierarchicalSearchSettings() { WithCreatingNew = true });
+
+                results.AddRange(searcher.Search(query).Where(
                     w => FilterCheckable(w)
                       && !results.Contains(w)
                       && UpperPriority <= w.Priority));

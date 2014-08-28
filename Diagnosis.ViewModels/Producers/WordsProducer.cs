@@ -20,17 +20,6 @@ namespace Diagnosis.ViewModels
         private WordSearcher _searcher;
 
         public WordViewModel Root { get { return root; } }
-        /// <summary>
-        /// Поисковик по всем словам, кроме групп, создает новые из запроса.
-        /// </summary>
-        public WordSearcher RootSearcher
-        {
-            get
-            {
-                return _searcher ?? (_searcher = new WordSearcher(root,
-                    new HierarchicalSearchSettings() { WithCreatingNew = true }));
-            }
-        }
 
         public IEnumerable<WordViewModel> AllWords { get { return root.AllChildren; } }
 
