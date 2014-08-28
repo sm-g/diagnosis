@@ -78,7 +78,6 @@ namespace Diagnosis.ViewModels
                 {
                     _wordsOpened = value;
 
-                    this.Send(Events.WordsEditingModeChanged,value.AsParams(MessageKeys.Boolean));
                     OnPropertyChanged(() => WordsOpened);
                 }
             }

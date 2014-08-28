@@ -113,13 +113,6 @@ namespace Diagnosis.ViewModels
                 }
                 Subscribe(item);
             }
-
-            this.Subscribe(Events.WordsEditingModeChanged, (e) =>
-            {
-                var isEditing = e.GetValue<bool>(MessageKeys.Boolean);
-
-                OnWordsEditingModeChanged(isEditing);
-            });
         }
 
         private void Subscribe(WordViewModel item)
@@ -150,16 +143,6 @@ namespace Diagnosis.ViewModels
             };
         }
 
-        private void OnWordsEditingModeChanged(bool isEditing)
-        {
-            AllWords.ForAll((vm) =>
-            {
-                SetDeletable(vm);
-            });
-
-            UnCheckAll();
-        }
-
         private static void SetDeletable(WordViewModel w)
         {
             // нельзя удалить слова, которые есть в каком-нибудь симптоме
@@ -173,21 +156,6 @@ namespace Diagnosis.ViewModels
             {
                 w.Editable.CanBeDeleted = true;
             }
-        }
-
-        public void CheckThese(IEnumerable<WordViewModel> words)
-        {
-            UnCheckAll();
-
-            foreach (var item in words)
-            {
-                item.IsChecked = true;
-            }
-        }
-
-        private void UnCheckAll()
-        {
-            AllWords.ForAll((vm) => vm.IsChecked = false);
         }
     }
 }

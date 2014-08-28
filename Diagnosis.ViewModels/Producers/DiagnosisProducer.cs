@@ -107,14 +107,6 @@ namespace Diagnosis.ViewModels
 
                 SetDiagnosesForDoctor(chapterVms, doctor);
             });
-
-            this.Subscribe(Events.WordsEditingModeChanged, (e) =>
-            {
-                var isEditing = e.GetValue<bool>(MessageKeys.Boolean);
-
-                OnDirectoryEditingModeChanged(isEditing);
-            });
-
         }
 
         /// <summary>
@@ -173,25 +165,6 @@ namespace Diagnosis.ViewModels
             if (Diagnoses != null)
                 Root.AllChildren.ForAll(dvm => dvm.Unsubscribe());
             Diagnoses = new ObservableCollection<DiagnosisViewModel>(Root.Children);
-        }
-
-        private void OnDirectoryEditingModeChanged(bool isEditing)
-        {
-            UnCheckAll();
-        }
-
-        public void Check(DiagnosisViewModel diagnosis)
-        {
-            UnCheckAll();
-            if (diagnosis != null)
-            {
-                diagnosis.IsChecked = true;
-            }
-        }
-
-        private void UnCheckAll()
-        {
-            Root.AllChildren.ForAll((dvm) => dvm.IsChecked = false);
         }
 
         protected virtual void OnRootChanged()

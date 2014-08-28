@@ -50,12 +50,6 @@ namespace Diagnosis.App
                 var d = e.GetValue<Doctor>(MessageKeys.Doctor);
                 Debug.Print("current doctor is '{0}'", d);
             });
-
-            this.Subscribe(Events.WordsEditingModeChanged, (e) =>
-            {
-                var isEditing = e.GetValue<bool>(MessageKeys.Boolean);
-                Debug.Print("words editing is {0}", isEditing);
-            });
             this.Subscribe(Events.PropertySelectedValueChanged, (e) =>
             {
                 var property = e.GetValue<PropertyViewModel>(MessageKeys.Property);
