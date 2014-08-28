@@ -38,7 +38,7 @@ namespace Diagnosis.ViewModels
 
         #region ICommand Members
 
-        // [DebuggerStepThrough]
+        [DebuggerStepThrough]
         public bool CanExecute(object parameter)
         {
             return _canExecute == null ? true : _canExecute((T)parameter);
@@ -58,6 +58,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        [DebuggerStepThrough]
         public void Execute(object parameter)
         {
             _execute((T)parameter);
