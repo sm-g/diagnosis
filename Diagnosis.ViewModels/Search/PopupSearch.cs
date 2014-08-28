@@ -14,10 +14,6 @@ namespace Diagnosis.ViewModels
 
         private string _query;
         private int _selectedIndex = -1;
-        private ICommand _clearCommand;
-        private ICommand _searchCommand;
-        private ICommand _resultsCommand;
-        private ICommand _selectCommand;
         private bool _searchActive;
         private bool _searchFocused;
         private bool _isResultsVisible;
@@ -86,8 +82,8 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _clearCommand ?? (_clearCommand = new RelayCommand(Clear,
-                    () => !IsQueryEmpty && SwitchedOn));
+                return new RelayCommand(Clear,
+                    () => !IsQueryEmpty && SwitchedOn);
             }
         }
         public void Clear()
@@ -129,14 +125,12 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _searchCommand
-                    ?? (_searchCommand = new RelayCommand(
-                                          () =>
-                                          {
-                                              IsSearchActive = !IsSearchActive;
-                                          },
-                                          () => SwitchedOn
-                       ));
+                return new RelayCommand(() =>
+                        {
+                            IsSearchActive = !IsSearchActive;
+                        },
+                        () => SwitchedOn
+                       );
             }
         }
 
@@ -144,14 +138,12 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _resultsCommand
-                    ?? (_resultsCommand = new RelayCommand(
-                                          () =>
-                                          {
-                                              IsResultsVisible = !IsResultsVisible;
-                                          },
-                                          () => SwitchedOn
-                       ));
+                return new RelayCommand(() =>
+                        {
+                            IsResultsVisible = !IsResultsVisible;
+                        },
+                        () => SwitchedOn
+                       );
             }
         }
 
@@ -159,9 +151,9 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _selectCommand ?? (_selectCommand = new RelayCommand(
+                return new RelayCommand(
                     () => RaiseResultItemSelected(SelectedItem),
-                    () => SwitchedOn));
+                    () => SwitchedOn);
             }
         }
 

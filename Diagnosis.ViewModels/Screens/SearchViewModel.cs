@@ -29,8 +29,6 @@ namespace Diagnosis.ViewModels
         private string _comment;
         private DateOffset _hrDateOffsetLower;
         private DateOffset _hrDateOffsetUpper;
-        private RelayCommand _searchCommand;
-        private RelayCommand<Patient> _openPatientCommand;
         private bool _controlsVisible;
 
         private IEnumerable<CategoryViewModel> _categories;
@@ -303,7 +301,7 @@ namespace Diagnosis.ViewModels
         }
 
         #endregion Options bindings
-        
+
         public bool SearchWas
         {
             get { return _searchWas; }
@@ -351,21 +349,19 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _searchCommand
-                    ?? (_searchCommand = new RelayCommand(Search, () => !AllEmpty));
+                return new RelayCommand(Search, () => !AllEmpty);
             }
         }
 
-        public ICommand OpenPatientCommand
+        public RelayCommand<Patient> OpenPatientCommand
         {
             get
             {
-                return _openPatientCommand
-                    ?? (_openPatientCommand = new RelayCommand<Patient>(
+                return new RelayCommand<Patient>(
                                           p =>
                                           {
                                               this.Send(Events.OpenPatient, patManager.GetByModel(p).AsParams(MessageKeys.Patient));
-                                          }));
+                                          });
             }
         }
 

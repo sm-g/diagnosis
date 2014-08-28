@@ -22,12 +22,6 @@ namespace Diagnosis.ViewModels
 
         private static HrEditorViewModel _hrEditorStatic = new HrEditorViewModel();
 
-        private ICommand _addHealthRecord;
-        private ICommand _editHrCommand;
-        private ICommand _deleteHealthRecords;
-        private ICommand _moveHrSelection;
-        private ICommand _sendToSearch;
-
         private ICollectionView healthRecordsView;
 
         #endregion Fileds
@@ -105,14 +99,13 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _addHealthRecord
-                    ?? (_addHealthRecord = new RelayCommand(() =>
+                return new RelayCommand(() =>
                     {
                         hrManager.AddHealthRecord();
                     },
                     // нельзя добавлять новую запись, пока выбранная пуста
                     () => SelectedHealthRecord == null || !SelectedHealthRecord.IsEmpty
-                    ));
+                    );
             }
         }
 
@@ -120,22 +113,20 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _deleteHealthRecords
-                    ?? (_deleteHealthRecords = new RelayCommand(() =>
+                return new RelayCommand(() =>
                     {
                         DeleteCheckedHealthRecords();
-                    }, () => CheckedHealthRecords > 0));
+                    }, () => CheckedHealthRecords > 0);
             }
         }
         public ICommand SendHealthRecordsToSearchCommand
         {
             get
             {
-                return _sendToSearch
-                   ?? (_sendToSearch = new RelayCommand(() =>
+                return new RelayCommand(() =>
                         {
                             this.Send(Events.SendToSearch, HealthRecords.Where(hr => hr.IsChecked).AsParams(MessageKeys.HealthRecords));
-                        }, () => CheckedHealthRecords > 0));
+                        }, () => CheckedHealthRecords > 0);
             }
         }
 
@@ -143,20 +134,18 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _editHrCommand
-                   ?? (_editHrCommand = new RelayCommand(() =>
+                return new RelayCommand(() =>
                         {
                             HealthRecordEditor.HealthRecord.Editable.ToggleEditor();
-                        }, () => HealthRecordEditor.HealthRecord != null));
+                        }, () => HealthRecordEditor.HealthRecord != null);
             }
         }
 
-        public ICommand MoveHrSelectionCommand
+        public RelayCommand<bool> MoveHrSelectionCommand
         {
             get
             {
-                return _moveHrSelection
-                   ?? (_moveHrSelection = new RelayCommand<bool>((up) =>
+                return new RelayCommand<bool>((up) =>
                         {
                             if (up)
                             {
@@ -172,7 +161,7 @@ namespace Diagnosis.ViewModels
                                 else
                                     healthRecordsView.MoveCurrentToFirst();
                             }
-                        }));
+                        });
             }
         }
 

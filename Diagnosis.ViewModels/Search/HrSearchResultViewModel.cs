@@ -13,8 +13,6 @@ namespace Diagnosis.ViewModels
         readonly HealthRecord hr;
         readonly HrSearchOptions options;
 
-        private RelayCommand _openHr;
-
         public HrSearchResultViewModel(HealthRecord hr, HrSearchOptions options)
         {
             Contract.Requires(hr != null);
@@ -68,11 +66,11 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _openHr ?? (_openHr = new RelayCommand(
+                return new RelayCommand(
                     () =>
                     {
                         this.Send(Events.OpenHealthRecord, FoundHealthRecord.AsParams(MessageKeys.HealthRecord));
-                    }));
+                    });
             }
         }
     }

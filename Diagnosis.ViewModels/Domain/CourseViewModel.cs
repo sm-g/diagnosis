@@ -19,7 +19,6 @@ namespace Diagnosis.ViewModels
 
         private ObservableCollection<WithAddNew> _appointmentsWithAddNew;
         private DoctorViewModel _leadDoctor;
-        private ICommand _addAppointment;
         private bool isAddingNewApp;
 
         #region IEditableNesting
@@ -164,11 +163,10 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _addAppointment
-                    ?? (_addAppointment = new RelayCommand(() =>
+                return new RelayCommand(() =>
                         {
                             appManager.AddAppointment();
-                        }, () => !IsEnded));
+                        }, () => !IsEnded);
             }
         }
 

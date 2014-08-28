@@ -14,7 +14,6 @@ namespace Diagnosis.ViewModels
         private int _index;
         private string _fullString = "";
         private bool _isItemCompleted;
-        private ICommand _enterCommand;
 
         private QuerySeparator separator;
         private bool settingFullStringFromCode;
@@ -193,7 +192,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _enterCommand ?? (_enterCommand = new RelayCommand(() =>
+                return new RelayCommand(() =>
                 {
                     if (IsItemCompleted || Suggestions.Count == 0)
                     {
@@ -203,7 +202,7 @@ namespace Diagnosis.ViewModels
                     {
                         AcceptSuggestion(Suggestions[SelectedIndex]);
                     }
-                }));
+                });
             }
         }
 

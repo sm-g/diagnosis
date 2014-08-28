@@ -20,7 +20,6 @@ namespace Diagnosis.ViewModels
         private CoursesManager coursesManager;
         private EventMessageHandlersManager msgManager = new EventMessageHandlersManager();
 
-        private RelayCommand _firstHr;
         private bool _canAddFirstHr;
 
         #region IEditableNesting
@@ -222,13 +221,12 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _firstHr
-                    ?? (_firstHr = new RelayCommand(
+                return new RelayCommand(
                                           () =>
                                           {
                                               // go to courses tabitem - save patient first
                                               Editable.Commit();
-                                          }, () => CanAddFirstHr));
+                                          }, () => CanAddFirstHr);
             }
         }
 

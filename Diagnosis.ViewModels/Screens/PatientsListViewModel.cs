@@ -10,7 +10,6 @@ namespace Diagnosis.ViewModels
     {
         private PatientViewModel _current;
         private PatientsProducer _producer;
-        private ICommand _open;
         private PopupSearch<PatientViewModel> _search;
 
         public PatientsListViewModel(PatientsProducer manager)
@@ -53,11 +52,10 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _open
-                   ?? (_open = new RelayCommand(() =>
+                return new RelayCommand(() =>
                         {
                             this.Send(Events.OpenPatient, SelectedPatient.AsParams(MessageKeys.Patient));
-                        }, () => SelectedPatient != null));
+                        }, () => SelectedPatient != null);
             }
         }
 

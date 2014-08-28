@@ -17,7 +17,6 @@ namespace Diagnosis.ViewModels
 
         private bool _onlyTopLevelIcdDisease;
         private bool _showIcdDisease;
-        private RelayCommand _save;
         private bool? _dialogResult;
 
         public SettingsViewModel(DoctorViewModel doctorVM)
@@ -85,8 +84,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _save
-                    ?? (_save = new RelayCommand(Save));
+                return new RelayCommand(Save);
             }
         }
 
@@ -128,7 +126,7 @@ namespace Diagnosis.ViewModels
             }
 
             DialogResult = true;
-            this.Send(Events.SettingsSaved,doctor.AsParams(MessageKeys.Doctor));
+            this.Send(Events.SettingsSaved, doctor.AsParams(MessageKeys.Doctor));
         }
 
         private IList<DoctorSettings> ChangedFlags()

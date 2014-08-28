@@ -11,8 +11,6 @@ namespace Diagnosis.ViewModels
         private ISimpleSearcher<T> _searcher;
         private string _query;
         private bool _resultsOnQueryChanges;
-        private ICommand _clearCommand;
-        private ICommand _filterCommand;
 
         public ISimpleSearcher<T> Searcher
         {
@@ -69,8 +67,8 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _clearCommand ?? (_clearCommand = new RelayCommand(Clear,
-                    () => !IsQueryEmpty));
+                return new RelayCommand(Clear,
+                    () => !IsQueryEmpty);
             }
         }
 
@@ -90,8 +88,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _filterCommand
-                   ?? (_filterCommand = new RelayCommand(Filter));
+                return new RelayCommand(Filter);
             }
         }
         /// <summary>

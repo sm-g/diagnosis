@@ -12,8 +12,6 @@ namespace Diagnosis.ViewModels
         internal readonly Doctor doctor;
         SettingsViewModel _settings;
 
-        private ICommand _startCourse;
-
         public Editable Editable { get; private set; }
 
         public string FirstName
@@ -96,16 +94,15 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public ICommand StartCourseCommand
+        public RelayCommand<PatientViewModel> StartCourseCommand
         {
             get
             {
-                return _startCourse
-                    ?? (_startCourse = new RelayCommand<PatientViewModel>(
+                return new RelayCommand<PatientViewModel>(
                                           (patientVM) =>
                                           {
                                               StartCourse(patientVM);
-                                          }));
+                                          });
             }
         }
 

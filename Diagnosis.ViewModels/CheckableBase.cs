@@ -10,7 +10,6 @@ namespace Diagnosis.ViewModels
 
         private bool _isNonCheckable;
         private bool _isChecked;
-        private ICommand _toggle;
         private bool _selected;
 
         public event CheckableEventHandler CheckedChanged;
@@ -75,13 +74,12 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _toggle
-                    ?? (_toggle = new RelayCommand(
+                return new RelayCommand(
                         () =>
                         {
                             IsChecked = !IsChecked;
                             IsSelected = true;
-                        }));
+                        });
             }
         }
 

@@ -8,7 +8,6 @@ namespace Diagnosis.ViewModels
 {
     public class LoginViewModel : ViewModelBase
     {
-        private ICommand _loginCommand;
         private string _username;
         private SecureString _password;
         private bool _wrongpassword;
@@ -76,8 +75,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _loginCommand ?? (_loginCommand = new RelayCommand(
-                    () => LogIn(), () => IsLoginEnabled));
+                return new RelayCommand(LogIn, () => IsLoginEnabled);
             }
         }
 

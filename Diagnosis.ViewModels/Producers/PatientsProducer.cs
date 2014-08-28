@@ -17,7 +17,6 @@ namespace Diagnosis.ViewModels
     /// </summary>
     public class PatientsProducer
     {
-        private ICommand _addPatient;
         private IPatientRepository patientRepo;
         private ObservableCollection<PatientViewModel> _patients;
 
@@ -38,7 +37,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _addPatient ?? (_addPatient = new RelayCommand(AddPatient));
+                return new RelayCommand(AddPatient);
             }
         }
 

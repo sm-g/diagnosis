@@ -15,11 +15,6 @@ namespace Diagnosis.ViewModels
         #region Fields
 
         private readonly IEntity entity;
-
-        private ICommand _commit;
-        private ICommand _delete;
-        private ICommand _edit;
-        private ICommand _revert;
         private bool _editorActive;
         private bool _canBeDeleted;
 
@@ -52,7 +47,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-       
+
         public bool CanBeDeleted
         {
             get
@@ -77,8 +72,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _edit
-                    ?? (_edit = new RelayCommand(ToggleEditor));
+                return new RelayCommand(ToggleEditor);
             }
         }
 
@@ -89,8 +83,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _commit
-                    ?? (_commit = new RelayCommand(OnCommit));
+                return new RelayCommand(OnCommit);
             }
         }
         /// <summary>
@@ -100,8 +93,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _revert
-                    ?? (_revert = new RelayCommand(OnRevert));
+                return new RelayCommand(OnRevert);
             }
         }
 
@@ -109,8 +101,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _delete
-                    ?? (_delete = new RelayCommand(OnDelete, () => CanBeDeleted));
+                return new RelayCommand(OnDelete, () => CanBeDeleted);
             }
         }
         /// <summary>

@@ -11,7 +11,6 @@ namespace Diagnosis.ViewModels
         internal readonly Word word;
 
         private Category _defCat;
-        private ICommand _sendToSearch;
 
         public Editable Editable { get; private set; }
 
@@ -74,11 +73,10 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _sendToSearch
-                   ?? (_sendToSearch = new RelayCommand(() =>
+                return new RelayCommand(() =>
                    {
                        this.Send(Events.SendToSearch, this.ToEnumerable().AsParams(MessageKeys.Words));
-                   }));
+                   });
             }
         }
 

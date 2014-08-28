@@ -13,11 +13,6 @@ namespace Diagnosis.ViewModels
     public class MainWindowViewModel : ViewModelBase
     {
         #region Fields
-
-        private ICommand _logout;
-        private ICommand _openWords;
-        private ICommand _openPatients;
-        private ICommand _openSettings;
         private bool _patientsAsideOpened;
         private bool _patientsAsideVisible;
         private bool _onePatientOpened;
@@ -263,12 +258,12 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _logout ?? (_logout = new RelayCommand(
+                return new RelayCommand(
                                           () =>
                                           {
                                               clearNavOnNavigated = true;
                                               nav.Navigate(Login);
-                                          }, () => !LoginOpened));
+                                          }, () => !LoginOpened);
             }
         }
 
@@ -276,12 +271,11 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _openWords
-                    ?? (_openWords = new RelayCommand(
+                return new RelayCommand(
                                           () =>
                                           {
                                               nav.Navigate(Words);
-                                          }, () => !WordsOpened));
+                                          }, () => !WordsOpened);
             }
         }
 
@@ -289,11 +283,10 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _openPatients
-                   ?? (_openPatients = new RelayCommand(() =>
+                return new RelayCommand(() =>
                         {
                             nav.Navigate(Patients);
-                        }, () => !PatientsOpened));
+                        }, () => !PatientsOpened);
             }
         }
 
@@ -309,13 +302,11 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _openSettings
-                    ?? (_openSettings = new RelayCommand(
-                                          () =>
+                return new RelayCommand(() =>
                                           {
                                               var settingsVM = new SettingsViewModel(Login.DoctorsProducer.CurrentDoctor);
                                               this.Send(Events.OpenSettings, settingsVM.AsParams(MessageKeys.Settings));
-                                          }));
+                                          });
             }
         }
 

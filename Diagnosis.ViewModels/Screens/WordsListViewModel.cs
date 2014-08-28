@@ -11,9 +11,6 @@ namespace Diagnosis.ViewModels
     {
         private FilterViewModel<WordViewModel> filter;
 
-        private ICommand _sendToSearch;
-        private ICommand _add;
-
         public event HierarchicalEventHandler<WordViewModel> NewWordAdded;
 
         public string Query
@@ -41,12 +38,11 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public ICommand AddCommand
+        public RelayCommand<WordViewModel> AddCommand
         {
             get
             {
-                return _add
-                   ?? (_add = new RelayCommand<WordViewModel>((current) =>
+                return new RelayCommand<WordViewModel>((current) =>
                         {
                             // убираем несохраненные слова
                             EntityProducers.WordsProducer.WipeUnsaved();
@@ -75,18 +71,17 @@ namespace Diagnosis.ViewModels
                             Subscribe(newVM);
 
                             OnNewWordAdded(new HierarchicalEventAgrs<WordViewModel>(newVM));
-                        }));
+                        });
             }
         }
         public ICommand SendToSearchCommand
         {
             get
             {
-                return _sendToSearch
-                   ?? (_sendToSearch = new RelayCommand(() =>
+                return new RelayCommand(() =>
                         {
                             this.Send(Events.SendToSearch, EntityProducers.WordsProducer.AllWords.Where(w => w.IsChecked).AsParams(MessageKeys.Words));
-                        }, () => CheckedWords > 0));
+                        }, () => CheckedWords > 0);
             }
         }
 

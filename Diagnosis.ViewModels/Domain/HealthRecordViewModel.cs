@@ -16,7 +16,6 @@ namespace Diagnosis.ViewModels
         internal readonly HealthRecord healthRecord;
         private DateOffset _dateOffset;
         private IEnumerable<Category> _categories;
-        private ICommand _sendToSearch;
         private static ICategoryRepository catRepo = new CategoryRepository();
 
         #region IEditableNesting
@@ -290,11 +289,10 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _sendToSearch
-                   ?? (_sendToSearch = new RelayCommand(() =>
+                return new RelayCommand(() =>
                         {
                             this.Send(Events.SendToSearch, this.ToEnumerable().AsParams(MessageKeys.HealthRecords));
-                        }));
+                        });
             }
         }
         public HealthRecordViewModel(HealthRecord hr)
