@@ -23,5 +23,10 @@ namespace Diagnosis.Core
                 return str.Trim();
             }
         }
+
+        public static bool IsNullOrEmpty(this string str)
+        {
+            return string.IsNullOrEmpty(str);
+        }
     }
 }
