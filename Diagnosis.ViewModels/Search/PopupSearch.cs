@@ -18,7 +18,6 @@ namespace Diagnosis.ViewModels
         private bool _searchFocused;
         private bool _isResultsVisible;
         private bool _resultsOnQueryChanges;
-        private bool _switchedOn;
 
         #endregion Fields
 
@@ -83,7 +82,7 @@ namespace Diagnosis.ViewModels
             get
             {
                 return new RelayCommand(Clear,
-                    () => !IsQueryEmpty && SwitchedOn);
+                    () => !IsQueryEmpty);
             }
         }
         public void Clear()
@@ -128,8 +127,7 @@ namespace Diagnosis.ViewModels
                 return new RelayCommand(() =>
                         {
                             IsSearchActive = !IsSearchActive;
-                        },
-                        () => SwitchedOn
+                        }
                        );
             }
         }
@@ -141,8 +139,7 @@ namespace Diagnosis.ViewModels
                 return new RelayCommand(() =>
                         {
                             IsResultsVisible = !IsResultsVisible;
-                        },
-                        () => SwitchedOn
+                        }
                        );
             }
         }
@@ -152,8 +149,7 @@ namespace Diagnosis.ViewModels
             get
             {
                 return new RelayCommand(
-                    () => RaiseResultItemSelected(SelectedItem),
-                    () => SwitchedOn);
+                    () => RaiseResultItemSelected(SelectedItem));
             }
         }
 
@@ -210,23 +206,7 @@ namespace Diagnosis.ViewModels
                     OnPropertyChanged("IsResultsVisible");
                 }
             }
-        }
-
-        public bool SwitchedOn
-        {
-            get
-            {
-                return _switchedOn;
-            }
-            set
-            {
-                if (_switchedOn != value)
-                {
-                    _switchedOn = value;
-                    OnPropertyChanged("SwitchedOn");
-                }
-            }
-        }
+        }    
 
         /// <summary>
         /// Для выбора элемента, который не совпадает с SelectedItem (SearchTree).
@@ -239,7 +219,7 @@ namespace Diagnosis.ViewModels
                 throw new ArgumentException("Selected item type is wrong.");
             }
 
-            if (onSelected != null && SwitchedOn)
+            if (onSelected != null)
             {
                 onSelected(asT);
             }
@@ -248,14 +228,12 @@ namespace Diagnosis.ViewModels
 
         public void RaiseResultItemSelected(T item) // public for selecting by mouse in FloatSearch
         {
-            if (SwitchedOn)
-            {
                 var h = ResultItemSelected;
                 if (h != null)
                 {
                     h(this, new VmBaseEventArgs(item));
                 }
-            }
+            
             IsResultsVisible = false;
         }
 
@@ -285,12 +263,11 @@ namespace Diagnosis.ViewModels
                 SelectedIndex = 0;
         }
 
-        public PopupSearch(ISimpleSearcher<T> searcher, bool switchedOn = true, Action<T> onSelected = null)
+        public PopupSearch(ISimpleSearcher<T> searcher, Action<T> onSelected = null)
         {
             this.searcher = searcher;
             this.onSelected = onSelected;
 
-            SwitchedOn = switchedOn;
             Clear(); // no results made here
 
             UpdateResultsOnQueryChanges = true;
