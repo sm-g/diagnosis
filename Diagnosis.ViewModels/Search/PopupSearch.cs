@@ -14,7 +14,6 @@ namespace Diagnosis.ViewModels
 
         private string _query;
         private int _selectedIndex = -1;
-        private bool _searchActive;
         private bool _searchFocused;
         private bool _isResultsVisible;
         private bool _resultsOnQueryChanges;
@@ -120,18 +119,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public ICommand ToggleSearchActiveCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                        {
-                            IsSearchActive = !IsSearchActive;
-                        }
-                       );
-            }
-        }
-
         public ICommand ToggleResultsVisibleCommand
         {
             get
@@ -151,24 +138,7 @@ namespace Diagnosis.ViewModels
                 return new RelayCommand(
                     () => RaiseResultItemSelected(SelectedItem));
             }
-        }
-
-        public bool IsSearchActive
-        {
-            get
-            {
-                return _searchActive;
-            }
-            set
-            {
-                if (_searchActive != value)
-                {
-                    _searchActive = value;
-                    OnPropertyChanged("IsSearchActive");
-                    IsSearchFocused = value;
-                }
-            }
-        }
+        }      
 
         public bool IsSearchFocused
         {
