@@ -50,7 +50,7 @@
 
             <TextBox x:Name="input"
                      Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
-                     controls:FocusExtension.IsFocused="{Binding IsSearchFocused, Mode=TwoWay}"
+                     controls:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
                      PreviewKeyDown="input_PreviewKeyDown"
                      GotMouseCapture="input_GotMouseCapture">
                 <controls:WatermarkService.Watermark>

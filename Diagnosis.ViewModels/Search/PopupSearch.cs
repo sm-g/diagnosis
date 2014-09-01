@@ -140,7 +140,7 @@ namespace Diagnosis.ViewModels
             }
         }      
 
-        public bool IsSearchFocused
+        public bool IsFocused
         {
             get
             {
@@ -155,7 +155,7 @@ namespace Diagnosis.ViewModels
                     {
                         IsResultsVisible = true;
                     }
-                    OnPropertyChanged("IsSearchFocused");
+                    OnPropertyChanged("IsFocused");
                 }
             }
         }
@@ -168,8 +168,8 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                // set to true only if IsSearchFocused
-                if (_isResultsVisible != value && (value == IsSearchFocused || IsSearchFocused))
+                // set to true only if IsFocused
+                if (_isResultsVisible != value && (value == IsFocused || IsFocused))
                 {
                     _isResultsVisible = value;
 
@@ -196,7 +196,7 @@ namespace Diagnosis.ViewModels
             RaiseResultItemSelected(asT);
         }
 
-        public void RaiseResultItemSelected(T item) // public for selecting by mouse in FloatSearch
+        public void RaiseResultItemSelected(T item) // public for selecting by mouse in FloatSearch (dynamic)
         {
                 var h = ResultItemSelected;
                 if (h != null)
