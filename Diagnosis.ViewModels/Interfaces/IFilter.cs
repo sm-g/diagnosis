@@ -1,17 +1,24 @@
-﻿namespace Diagnosis.ViewModels
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
+namespace Diagnosis.ViewModels
 {
     internal interface IFilter<T>
     {
+        event EventHandler Cleared;
+        event EventHandler Filtered;
+
         string Query { get; set; }
 
-        System.Collections.ObjectModel.ObservableCollection<T> Results { get; }
+        ObservableCollection<T> Results { get; }
 
         bool UpdateResultsOnQueryChanges { get; set; }
 
         bool IsQueryEmpty { get; }
 
-        System.Windows.Input.ICommand ClearCommand { get; }
+        ICommand ClearCommand { get; }
 
         void Clear();
+        void Filter();
     }
 }

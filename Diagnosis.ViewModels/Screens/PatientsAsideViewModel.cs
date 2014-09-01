@@ -67,7 +67,7 @@ namespace Diagnosis.ViewModels
             if (patientVM != null)
             {
                 SelectedPatient = patientVM;
-                Search.Clear();
+                Search.Filter.Clear();
             }
         }
     }

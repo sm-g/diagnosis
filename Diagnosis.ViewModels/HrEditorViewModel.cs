@@ -137,14 +137,14 @@ namespace Diagnosis.ViewModels
         {
             if (DiagnosisSearch != null)
             {
-                DiagnosisSearch.Cleared -= DiagnosisSearch_Cleared;
+                DiagnosisSearch.Filter.Cleared -= DiagnosisSearch_Cleared;
                 DiagnosisSearch.ResultItemSelected -= DiagnosisSearch_ResultItemSelected;
             }
             DiagnosisSearch = new PopupSearch<DiagnosisViewModel>(
                    EntityProducers.DiagnosisProducer.RootFiltratingSearcher
                    );
 
-            DiagnosisSearch.Cleared += DiagnosisSearch_Cleared;
+            DiagnosisSearch.Filter.Cleared += DiagnosisSearch_Cleared;
             DiagnosisSearch.ResultItemSelected += DiagnosisSearch_ResultItemSelected;
 
             UpdateDiagnosisQueryCode();
@@ -186,14 +186,14 @@ namespace Diagnosis.ViewModels
         {
             if (DiagnosisSearch != null && HealthRecord != null)
             {
-                DiagnosisSearch.UpdateResultsOnQueryChanges = false;
+                DiagnosisSearch.Filter.UpdateResultsOnQueryChanges = false;
 
                 if (HealthRecord.Diagnosis != null)
-                    DiagnosisSearch.Query = HealthRecord.Diagnosis.Code;
+                    DiagnosisSearch.Filter.Query = HealthRecord.Diagnosis.Code;
                 else
-                    DiagnosisSearch.Query = "";
+                    DiagnosisSearch.Filter.Query = "";
 
-                DiagnosisSearch.UpdateResultsOnQueryChanges = true;
+                DiagnosisSearch.Filter.UpdateResultsOnQueryChanges = true;
             }
         }
 

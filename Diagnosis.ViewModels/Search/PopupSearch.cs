@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
-    public class PopupSearch<T> : ViewModelBase, IFilter<T> where T : ViewModelBase
+    public class PopupSearch<T> : ViewModelBase where T : ViewModelBase
     {
         #region Fields
 
@@ -20,81 +20,19 @@ namespace Diagnosis.ViewModels
         #endregion Fields
 
         public event VmBaseEventHandler ResultItemSelected;
-
-        public event EventHandler Cleared;
-
-        #region IFilter
-
-        public string Query
+        
+        public FilterViewModel<T> Filter
         {
-            get
-            {
-                return _query;
-            }
-            set
-            {
-                if (_query != value)
-                {
-                    _query = value;
-
-                    if (IsQueryEmpty)
-                    {
-                        OnCleared();
-                    }
-
-                    OnPropertyChanged("Query");
-                }
-                if (UpdateResultsOnQueryChanges)
-                {
-                    IsResultsVisible = true;
-                    MakeResults();
-                }
-            }
+            get;
+            private set;
         }
-
-        public ObservableCollection<T> Results { get; protected set; }
-
-        public bool UpdateResultsOnQueryChanges
-        {
-            get
-            {
-                return _resultsOnQueryChanges;
-            }
-            set
-            {
-                if (_resultsOnQueryChanges != value)
-                {
-                    _resultsOnQueryChanges = value;
-                    OnPropertyChanged("UpdateResultsOnQueryChanges");
-                }
-            }
-        }
-        public bool IsQueryEmpty
-        {
-            get { return string.IsNullOrWhiteSpace(Query); }
-        }
-
-        public ICommand ClearCommand
-        {
-            get
-            {
-                return new RelayCommand(Clear,
-                    () => !IsQueryEmpty);
-            }
-        }
-        public void Clear()
-        {
-            Query = "";
-        }
-
-        #endregion IFilter
 
         public T SelectedItem
         {
             get
             {
-                if (SelectedIndex > -1 && SelectedIndex < Results.Count)
-                    return Results[SelectedIndex];
+                if (SelectedIndex > -1 && SelectedIndex < Filter.Results.Count)
+                    return Filter.Results[SelectedIndex];
                 else
                     return null;
             }
@@ -201,39 +139,18 @@ namespace Diagnosis.ViewModels
             IsResultsVisible = false;
         }
 
-        private void OnCleared()
-        {
-            var h = Cleared;
-            if (h != null)
-            {
-                h(this, EventArgs.Empty);
-            }
-        }
-
-        private void MakeResults()
-        {
-            if (IsQueryEmpty)
-            {
-                Results = new ObservableCollection<T>(searcher.Collection);
-            }
-            else
-            {
-                Results = new ObservableCollection<T>(searcher.Search(Query));
-            }
-
-            OnPropertyChanged("Results");
-
-            if (Results.Count > 0)
-                SelectedIndex = 0;
-        }
-
         public PopupSearch(ISimpleSearcher<T> searcher)
         {
             this.searcher = searcher;
+            Filter = new FilterViewModel<T>(searcher);
+            Filter.Filtered += (s, e) =>
+            {
+                if (Filter.Results.Count > 0)
+                    SelectedIndex = 0;
+                IsResultsVisible = true;
+            };
 
-            Clear(); // no results made here
-
-            UpdateResultsOnQueryChanges = true;
+            Filter.Clear(); // no results made here
         }
     }
 }

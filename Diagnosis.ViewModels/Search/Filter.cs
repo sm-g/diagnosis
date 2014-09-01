@@ -11,7 +11,6 @@ namespace Diagnosis.ViewModels
         private ISimpleSearcher<T> _searcher;
         private string _query;
         private bool _resultsOnQueryChanges;
-
         public ISimpleSearcher<T> Searcher
         {
             get { return _searcher; }
@@ -25,6 +24,9 @@ namespace Diagnosis.ViewModels
         }
 
         #region IFilter
+        public event EventHandler Cleared;
+        public event EventHandler Filtered;       
+
         public string Query
         {
             get
@@ -36,7 +38,12 @@ namespace Diagnosis.ViewModels
                 if (_query != value)
                 {
                     _query = value;
+                    if (IsQueryEmpty)
+                    {
+                        OnCleared();
+                    }
                     OnPropertyChanged("Query");
+                    OnPropertyChanged("IsQueryEmpty");
                 }
                 if (UpdateResultsOnQueryChanges)
                 {
@@ -63,6 +70,14 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        public ICommand FilterCommand
+        {
+            get
+            {
+                return new RelayCommand(Filter);
+            }
+        }
+
         public ICommand ClearCommand
         {
             get
@@ -76,29 +91,6 @@ namespace Diagnosis.ViewModels
         {
             get { return string.IsNullOrWhiteSpace(Query); }
         }
-
-        public void Clear()
-        {
-            Query = "";
-        }
-
-        #endregion IFilter
-
-        public ICommand FilterCommand
-        {
-            get
-            {
-                return new RelayCommand(Filter);
-            }
-        }
-        /// <summary>
-        /// При исключении элемента из результатов фильтра.
-        /// </summary>
-        public Action<T> OnRemove { get; set; }
-        /// <summary>
-        /// При добавлении элемента в результаты фильтра.
-        /// </summary>
-        public Action<T> OnAdd { get; set; }
 
         public void Filter()
         {
@@ -126,6 +118,19 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        public void Clear()
+        {
+            Query = "";
+        }
+        #endregion IFilter
+        /// <summary>
+        /// При исключении элемента из результатов фильтра.
+        /// </summary>
+        public Action<T> OnRemove { get; set; }
+        /// <summary>
+        /// При добавлении элемента в результаты фильтра.
+        /// </summary>
+        public Action<T> OnAdd { get; set; }
         public FilterViewModel(ISimpleSearcher<T> searcher, Action<T> onRemove = null, Action<T> onAdd = null)
         {
             Searcher = searcher;
@@ -133,6 +138,24 @@ namespace Diagnosis.ViewModels
             UpdateResultsOnQueryChanges = true;
             OnAdd = onAdd;
             OnRemove = onRemove;
+        }
+
+        private void OnCleared()
+        {
+            var h = Cleared;
+            if (h != null)
+            {
+                h(this, EventArgs.Empty);
+            }
+        }
+
+        protected virtual void OnFiltered(EventArgs e)
+        {
+            var h = Filtered;
+            if (h != null)
+            {
+                h(this, e);
+            }
         }
     }
 }

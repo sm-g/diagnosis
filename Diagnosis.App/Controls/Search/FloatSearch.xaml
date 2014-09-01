@@ -21,10 +21,10 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <TextBox x:Name="input"
-                     Text="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Text="{Binding Filter.Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      PreviewKeyDown="input_PreviewKeyDown"
                      GotMouseCapture="input_GotMouseCapture"
-                     controls:FocusExtension.IsFocused="{Binding IsSearchFocused, Mode=TwoWay}"
+                     controls:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
                      LostFocus="input_LostFocus">
                 <controls:WatermarkService.Watermark>
                     <TextBlock Style="{StaticResource watermark}">Поиск</TextBlock>
@@ -33,19 +33,19 @@
             <Button Grid.Column="1"
                     Content="×"
                     Style="{StaticResource squareButton}"
-                    Command="{Binding ClearCommand}" />
+                    Command="{Binding Filter.ClearCommand}" />
         </Grid>
         <Popup x:Name="popup"
                IsOpen="{Binding IsResultsVisible, Mode=TwoWay}"
                PlacementTarget="{Binding ElementName=input, Mode=OneWay}">
             <ListView x:Name="results"
                 MaxHeight="100"
-                ItemsSource="{Binding Results}"
+                ItemsSource="{Binding Filter.Results}"
                 SelectionChanged="results_SelectionChanged"
                 MouseUp="results_MouseUp"
                 SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
                 IsTabStop="True"
-                Visibility="{Binding Results.Count, Converter={StaticResource CountToVisibility}, Mode=OneWay}"
+                Visibility="{Binding Filter.Results.Count, Converter={StaticResource CountToVisibility}, Mode=OneWay}"
                   Grid.Row="1"
 >
                 <ListView.ItemTemplate>

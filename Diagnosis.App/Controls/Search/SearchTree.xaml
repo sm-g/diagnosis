@@ -49,7 +49,7 @@
             </Grid.ColumnDefinitions>
 
             <TextBox x:Name="input"
-                     Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
+                     Text="{Binding Filter.Query, UpdateSourceTrigger=PropertyChanged}"
                      controls:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
                      PreviewKeyDown="input_PreviewKeyDown"
                      GotMouseCapture="input_GotMouseCapture">
@@ -64,7 +64,7 @@
             <Button Grid.Column="1"
                     Content="×"
                     Style="{StaticResource squareButton}"
-                    Command="{Binding ClearCommand}" />
+                    Command="{Binding Filter.ClearCommand}" />
         </Grid>
 
         <Popup x:Name="popup"
@@ -74,7 +74,7 @@
                 Style="{StaticResource TreeViewStyle}"
                 ItemContainerStyle="{StaticResource simpleTreeItemContainerStyle}"
                 ItemTemplate="{StaticResource simpleTreeItemTemplate}"
-                ItemsSource="{Binding Results}">
+                ItemsSource="{Binding Filter.Results}">
             </TreeView>
         </Popup>
     </Grid>
