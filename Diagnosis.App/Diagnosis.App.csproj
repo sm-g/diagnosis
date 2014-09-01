@@ -198,8 +198,8 @@
     <Compile Include="Controls\Editors\PropertiesChooser.xaml.cs">
       <DependentUpon>PropertiesChooser.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Search\FloatSearch.xaml.cs">
-      <DependentUpon>FloatSearch.xaml</DependentUpon>
+    <Compile Include="Controls\Search\PopupSearch.xaml.cs">
+      <DependentUpon>PopupSearch.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Editors\PatientEditor.xaml.cs">
       <DependentUpon>PatientEditor.xaml</DependentUpon>
@@ -337,7 +337,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\Search\FloatSearch.xaml">
+    <Page Include="Controls\Search\PopupSearch.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -6,14 +6,14 @@ using System.Windows.Input;
 namespace Diagnosis.App.Controls.Search
 {
     /// <summary>
-    /// Interaction logic for FloatSearch.xaml
+    /// Interaction logic for PopupSearch.xaml
     /// </summary>
-    public partial class FloatSearch : UserControl
+    public partial class PopupSearch : UserControl
     {
         private int selectedIndex = -1;
         private bool selectionChanged;
 
-        public FloatSearch()
+        public PopupSearch()
         {
             InitializeComponent();
         }
