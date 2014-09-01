@@ -148,7 +148,7 @@ namespace Diagnosis.App.Controls.Search
                 MoveSelection(true); // выбираем первый элемент
             }
             if (selectedItem != null)
-                (DataContext as dynamic).OnSelected(selectedItem);  //  DataContext is PopupSearch<>;
+                (DataContext as dynamic).SelectReal(selectedItem);  //  DataContext is PopupSearch<>;
         }
     }
 }

@@ -10,7 +10,6 @@ namespace Diagnosis.ViewModels
         #region Fields
 
         internal readonly ISimpleSearcher<T> searcher;
-        private readonly Action<T> onSelected;
 
         private string _query;
         private int _selectedIndex = -1;
@@ -38,17 +37,16 @@ namespace Diagnosis.ViewModels
                 {
                     _query = value;
 
-                    if (string.IsNullOrEmpty(value))
+                    if (IsQueryEmpty)
                     {
                         OnCleared();
                     }
-
-                    IsResultsVisible = true;
 
                     OnPropertyChanged("Query");
                 }
                 if (UpdateResultsOnQueryChanges)
                 {
+                    IsResultsVisible = true;
                     MakeResults();
                 }
             }
@@ -138,7 +136,7 @@ namespace Diagnosis.ViewModels
                 return new RelayCommand(
                     () => RaiseResultItemSelected(SelectedItem));
             }
-        }      
+        }
 
         public bool IsFocused
         {
@@ -176,12 +174,12 @@ namespace Diagnosis.ViewModels
                     OnPropertyChanged("IsResultsVisible");
                 }
             }
-        }    
+        }
 
         /// <summary>
         /// Для выбора элемента, который не совпадает с SelectedItem (SearchTree).
         /// </summary>
-        public void OnSelected(object item)
+        public void SelectReal(object item)
         {
             T asT = item as T;
             if (asT == null)
@@ -189,21 +187,17 @@ namespace Diagnosis.ViewModels
                 throw new ArgumentException("Selected item type is wrong.");
             }
 
-            if (onSelected != null)
-            {
-                onSelected(asT);
-            }
             RaiseResultItemSelected(asT);
         }
 
         public void RaiseResultItemSelected(T item) // public for selecting by mouse in FloatSearch (dynamic)
         {
-                var h = ResultItemSelected;
-                if (h != null)
-                {
-                    h(this, new VmBaseEventArgs(item));
-                }
-            
+            var h = ResultItemSelected;
+            if (h != null)
+            {
+                h(this, new VmBaseEventArgs(item));
+            }
+
             IsResultsVisible = false;
         }
 
@@ -233,10 +227,9 @@ namespace Diagnosis.ViewModels
                 SelectedIndex = 0;
         }
 
-        public PopupSearch(ISimpleSearcher<T> searcher, Action<T> onSelected = null)
+        public PopupSearch(ISimpleSearcher<T> searcher)
         {
             this.searcher = searcher;
-            this.onSelected = onSelected;
 
             Clear(); // no results made here
 
