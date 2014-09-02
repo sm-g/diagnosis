@@ -5,12 +5,11 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class Speciality : IEntity
+    public class Speciality : EntityBase
     {
         ISet<IcdBlock> icdBlocks = new HashSet<IcdBlock>();
         ISet<Doctor> doctors = new HashSet<Doctor>();
 
-        public virtual int Id { get; protected set; }
         public virtual string Title { get; protected set; }
         public virtual ReadOnlyCollection<IcdBlock> IcdBlocks
         {

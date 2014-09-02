@@ -43,24 +43,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DoctorSettings.cs" />
-    <Compile Include="Models\Appointment.cs" />
-    <Compile Include="Models\Course.cs" />
-    <Compile Include="Models\Diagnosis.cs" />
-    <Compile Include="Models\Doctor.cs" />
-    <Compile Include="Models\HealthRecord.cs" />
-    <Compile Include="Models\IcdBlock.cs" />
-    <Compile Include="Models\IcdChapter.cs" />
-    <Compile Include="Models\IcdDisease.cs" />
+    <Compile Include="Entities\Appointment.cs" />
+    <Compile Include="Entities\Course.cs" />
+    <Compile Include="Diagnosis.cs" />
+    <Compile Include="Entities\Doctor.cs" />
+    <Compile Include="Entities\HealthRecord.cs" />
+    <Compile Include="Entities\IcdBlock.cs" />
+    <Compile Include="Entities\IcdChapter.cs" />
+    <Compile Include="Entities\IcdDisease.cs" />
     <Compile Include="EntityBase.cs" />
-    <Compile Include="Models\Patient.cs" />
-    <Compile Include="Models\PatientRecordProperty.cs" />
-    <Compile Include="Models\Property.cs" />
-    <Compile Include="Models\PropertyValue.cs" />
-    <Compile Include="Models\RecordCategory.cs" />
-    <Compile Include="Models\Speciality.cs" />
-    <Compile Include="Models\Symptom.cs" />
-    <Compile Include="Models\SymptomWords.cs" />
-    <Compile Include="Models\Word.cs" />
+    <Compile Include="Entities\Patient.cs" />
+    <Compile Include="Entities\PatientRecordProperty.cs" />
+    <Compile Include="Entities\Property.cs" />
+    <Compile Include="Entities\PropertyValue.cs" />
+    <Compile Include="Entities\RecordCategory.cs" />
+    <Compile Include="Entities\Speciality.cs" />
+    <Compile Include="Entities\Symptom.cs" />
+    <Compile Include="Entities\SymptomWords.cs" />
+    <Compile Include="Entities\Word.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

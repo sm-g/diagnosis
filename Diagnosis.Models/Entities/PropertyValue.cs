@@ -5,12 +5,11 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class PropertyValue : IEntity
+    public class PropertyValue : EntityBase
     {
         ISet<PatientRecordProperty> patientProperties = new HashSet<PatientRecordProperty>();
         internal static IEqualityComparer<PropertyValue> equalityComparer = new PropertyValueEqualityComparer();
 
-        public virtual int Id { get; protected set; }
         public virtual string Title { get; set; }
         public virtual Property Property { get; protected set; }
         public virtual ReadOnlyCollection<PatientRecordProperty> PatientProperties

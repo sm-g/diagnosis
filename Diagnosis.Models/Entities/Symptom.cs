@@ -5,12 +5,11 @@ using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class Symptom : IEntity
+    public class Symptom : EntityBase
     {
         ISet<Word> words = new HashSet<Word>();
         ISet<SymptomWords> symptomWords = new HashSet<SymptomWords>();
 
-        public virtual int Id { get; protected set; }
         public virtual IcdDisease Disease { get; set; }
         public virtual Category DefaultCategory { get; set; }
         public virtual bool IsDiagnosis { get; set; }

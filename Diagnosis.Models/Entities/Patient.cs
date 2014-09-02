@@ -7,7 +7,7 @@ using Diagnosis.Core;
 
 namespace Diagnosis.Models
 {
-    public class Patient : IEntity
+    public class Patient : EntityBase
     {
         ISet<PatientRecordProperty> patientProperties = new HashSet<PatientRecordProperty>();
         ISet<Course> courses = new HashSet<Course>();
@@ -21,7 +21,6 @@ namespace Diagnosis.Models
         string _label;
         private ObservableCollection<Course> _courses;
 
-        public virtual int Id { get; protected set; }
         public virtual string Label
         {
             get

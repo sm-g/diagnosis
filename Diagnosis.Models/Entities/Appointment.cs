@@ -13,7 +13,6 @@ namespace Diagnosis.Models
         ISet<HealthRecord> healthRecords = new HashSet<HealthRecord>();
         ObservableCollection<HealthRecord> _healthRecords;
 
-        public virtual int Id { get; protected set; }
         public virtual Course Course { get; protected set; }
         public virtual Doctor Doctor { get; set; }
         public virtual DateTime DateAndTime { get; set; }

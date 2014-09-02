@@ -17,9 +17,7 @@ namespace Diagnosis.Models
         private Symptom _symptom;
         private Category _category;
         private IcdDisease _disease;
-
-        public virtual int Id { get; protected set; }
-
+        
         public virtual Appointment Appointment { get; protected set; }
 
         public virtual string Comment

@@ -7,11 +7,10 @@ using System.Text;
 
 namespace Diagnosis.Models
 {
-    public class IcdChapter
+    public class IcdChapter : EntityBase
     {
         ISet<IcdBlock> iclBlocks = new HashSet<IcdBlock>();
 
-        public virtual int Id { get; protected set; }
         public virtual string Title { get; protected set; }
         public virtual string Code { get; protected set; }
 

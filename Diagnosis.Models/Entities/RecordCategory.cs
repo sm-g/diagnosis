@@ -5,9 +5,8 @@ using System;
 
 namespace Diagnosis.Models
 {
-    public class Category : IEntity, IComparable
+    public class Category : EntityBase, IComparable
     {
-        public virtual int Id { get; protected set; }
         public virtual string Name { get; set; }
         public virtual int Order { get; set; }
 

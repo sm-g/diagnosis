@@ -6,12 +6,11 @@ using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class Property : IEntity
+    public class Property : EntityBase
     {
         ISet<PropertyValue> values = new HashSet<PropertyValue>();
         ISet<PatientRecordProperty> patientProperties = new HashSet<PatientRecordProperty>();
 
-        public virtual int Id { get; protected set; }
         public virtual string Title { get; set; }
         public virtual ReadOnlyCollection<PropertyValue> Values
         {

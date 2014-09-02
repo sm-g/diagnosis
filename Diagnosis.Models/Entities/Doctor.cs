@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class Doctor : IEntity
+    public class Doctor : EntityBase
     {
         private ISet<Course> courses = new HashSet<Course>();
         private ISet<Appointment> appointments = new HashSet<Appointment>();
@@ -26,8 +26,6 @@ namespace Diagnosis.Models
                 _settings = (int)_docSettings;
             }
         }
-
-        public virtual int Id { get; protected set; }
 
         public virtual string FirstName
         {

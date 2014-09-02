@@ -3,11 +3,10 @@ using System.Collections.ObjectModel;
 
 namespace Diagnosis.Models
 {
-    public class IcdBlock
+    public class IcdBlock : EntityBase
     {
         ISet<IcdDisease> icdDiseases = new HashSet<IcdDisease>();
 
-        public virtual int Id { get; protected set; }
         public virtual IcdChapter IcdChapter { get; protected set; }
         public virtual string Title { get; protected set; }
         public virtual string Code { get; protected set; }

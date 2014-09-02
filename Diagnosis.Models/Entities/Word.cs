@@ -4,15 +4,13 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class Word : IEntity
+    public class Word : EntityBase
     {
         private ISet<Symptom> symptoms;
         private ISet<SymptomWords> symptomWords;
         private ISet<Word> children;
         private string _title;
-
-        public virtual int Id { get; protected set; }
-
+        
         public virtual string Title
         {
             get { return _title; }

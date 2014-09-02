@@ -5,11 +5,10 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class Course : IEntity
+    public class Course : EntityBase
     {
         ISet<Appointment> appointments = new HashSet<Appointment>();
 
-        public virtual int Id { get; protected set; }
         public virtual Patient Patient { get; protected set; }
         public virtual Doctor LeadDoctor { get; protected set; }
         public virtual DateTime Start { get; protected set; }

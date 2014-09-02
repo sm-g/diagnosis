@@ -12,6 +12,7 @@ namespace Diagnosis.Models
 
     public class EntityBase : NotifyPropertyChangedBase, IEntity
     {
+        public virtual int Id { get; protected set; }
 
     }
 }
