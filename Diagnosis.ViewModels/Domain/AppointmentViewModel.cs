@@ -214,10 +214,13 @@ namespace Diagnosis.ViewModels
 
         void HealthRecords_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            foreach (var item in e.OldItems)
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {
-                if (SelectedHealthRecord.healthRecord == item)
-                    MoveHrViewSelection();
+                foreach (var item in e.OldItems)
+                {
+                    if (SelectedHealthRecord.healthRecord == item)
+                        MoveHrViewSelection();
+                }
             }
             OnPropertyChanged("IsEmpty");
         }

@@ -17,7 +17,6 @@ namespace Diagnosis.ViewModels
         private readonly IWordRepository repository;
         private readonly WordViewModel root;
 
-        private WordSearcher _searcher;
 
         public WordViewModel Root { get { return root; } }
 
