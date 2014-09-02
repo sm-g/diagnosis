@@ -85,7 +85,6 @@
     <Compile Include="Producers\DoctorsProducer.cs" />
     <Compile Include="Producers\EntityProducers.cs" />
     <Compile Include="Producers\PatientsProducer.cs" />
-    <Compile Include="Producers\PropertyProducer.cs" />
     <Compile Include="Producers\SymptomsProducer.cs" />
     <Compile Include="Producers\WordsProducer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

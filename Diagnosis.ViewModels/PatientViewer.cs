@@ -239,8 +239,6 @@ namespace Diagnosis.ViewModels
 
             patient.Courses.CollectionChanged += Courses_CollectionChanged;
 
-            patient.Subscribe();
-
             CourseViewModel course;
             if (!patCourseMap.TryGetValue(patient, out course))
             {
@@ -273,7 +271,6 @@ namespace Diagnosis.ViewModels
             Debug.Print("closing patient {0}", _openedPatient);
             closing.Courses.CollectionChanged -= Courses_CollectionChanged;
 
-            closing.Unsubscribe();
             closing.Editable.Commit();
 
             OpenedCourse = null;

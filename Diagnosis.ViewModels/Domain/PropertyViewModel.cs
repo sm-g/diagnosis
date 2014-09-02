@@ -39,8 +39,6 @@ namespace Diagnosis.ViewModels
                 {
                     _selectedValue = value;
                     OnPropertyChanged(() => SelectedValue);
-
-                    this.Send(Events.PropertySelectedValueChanged, this.AsParams(MessageKeys.Property));
                 }
             }
         }

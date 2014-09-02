@@ -18,9 +18,6 @@ namespace Diagnosis.ViewModels
         internal Action<CourseViewModel> OpenedCourseSetter;
 
         private CoursesManager coursesManager;
-        private EventMessageHandlersManager msgManager = new EventMessageHandlersManager();
-
-        private bool _canAddFirstHr;
 
         #region IEditableNesting
 
@@ -301,8 +298,8 @@ namespace Diagnosis.ViewModels
                 };
             };
 
-            if (!(this is UnsavedPatientViewModel))
-                AfterPatientLoaded();
+            if (!IsUnsaved)
+                LoadProperties();
 
             Editable.PropertyChanged += (s, e) =>
             {
@@ -322,11 +319,47 @@ namespace Diagnosis.ViewModels
         /// <summary>
         /// Только для сохраненного пациента.
         /// </summary>
-        public void AfterPatientLoaded()
+        void LoadProperties()
         {
-            Properties = new ObservableCollection<PropertyViewModel>(
-                EntityProducers.PropertyProducer.GetPatientProperties(patient));
+            var allProperties = new Diagnosis.Data.Repositories.PropertyRepository().GetAll();
+
+            var existingPatProps = patient.PatientProperties;
+
+            var properties = new List<PropertyViewModel>(allProperties.Select(p => MakePropertyVM(p)));
+
+            // указываем значение свойства из БД
+            // если у пацента не указано какое-то свойство — добавляем это свойство с пустым значением
+            foreach (var propVM in properties)
+            {
+                var pp = existingPatProps.FirstOrDefault(patProp => patProp.Property == propVM.property);
+                if (pp != null)
+                {
+                    propVM.SelectedValue = pp.Value;
+                }
+                else
+                {
+                    propVM.SelectedValue = new EmptyPropertyValue(propVM.property);
+                }
+            }
+
+            Properties = new ObservableCollection<PropertyViewModel>(properties);
             OnPropertyChanged("Properties");
+        }
+
+        PropertyViewModel MakePropertyVM(Property p)
+        {
+            var vm = new PropertyViewModel(p);
+            vm.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "SelectedValue")
+                {
+                    if (!(vm.SelectedValue is EmptyPropertyValue))
+                    {
+                        patient.SetPropertyValue(vm.property, vm.SelectedValue);
+                    }
+                }
+            };
+            return vm;
         }
 
         /// <summary>
@@ -336,35 +369,6 @@ namespace Diagnosis.ViewModels
         {
             OnPropertyChanged("SelectedCourse");
         }
-
-        #region Subscriptions
-
-        public void Subscribe()
-        {
-            msgManager.Add(new[] {
-                this.Subscribe(Events.PropertySelectedValueChanged, (e) =>
-                {
-                    var property = e.GetValue<PropertyViewModel>(MessageKeys.Property);
-
-                    OnPropertyValueChanged(property);
-                })
-            });
-        }
-
-        public void Unsubscribe()
-        {
-            msgManager.Dispose();
-        }
-
-        private void OnPropertyValueChanged(PropertyViewModel propertyVM)
-        {
-            if (!(propertyVM.SelectedValue is EmptyPropertyValue))
-            {
-                patient.SetPropertyValue(propertyVM.property, propertyVM.SelectedValue);
-            }
-        }
-
-        #endregion Subscriptions
 
         public override string ToString()
         {
@@ -414,4 +418,6 @@ namespace Diagnosis.ViewModels
             patientVM = p;
         }
     }
+
+
 }
