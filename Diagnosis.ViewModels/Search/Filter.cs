@@ -25,7 +25,7 @@ namespace Diagnosis.ViewModels
 
         #region IFilter
         public event EventHandler Cleared;
-        public event EventHandler Filtered;       
+        public event EventHandler Filtered;
 
         public string Query
         {
@@ -107,15 +107,13 @@ namespace Diagnosis.ViewModels
             foreach (var item in Results.Except(res).ToList())
             {
                 Results.Remove(item);
-                if (OnRemove != null)
-                    OnRemove(item);
             }
             foreach (var item in res.Except(Results).ToList())
             {
                 Results.Add(item);
-                if (OnAdd != null)
-                    OnAdd(item);
             }
+
+            OnFiltered();
         }
 
         public void Clear()
@@ -123,21 +121,12 @@ namespace Diagnosis.ViewModels
             Query = "";
         }
         #endregion IFilter
-        /// <summary>
-        /// При исключении элемента из результатов фильтра.
-        /// </summary>
-        public Action<T> OnRemove { get; set; }
-        /// <summary>
-        /// При добавлении элемента в результаты фильтра.
-        /// </summary>
-        public Action<T> OnAdd { get; set; }
-        public FilterViewModel(ISimpleSearcher<T> searcher, Action<T> onRemove = null, Action<T> onAdd = null)
+
+        public FilterViewModel(ISimpleSearcher<T> searcher)
         {
             Searcher = searcher;
             Results = new ObservableCollection<T>();
             UpdateResultsOnQueryChanges = true;
-            OnAdd = onAdd;
-            OnRemove = onRemove;
         }
 
         private void OnCleared()
@@ -149,12 +138,12 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        protected virtual void OnFiltered(EventArgs e)
+        protected virtual void OnFiltered()
         {
             var h = Filtered;
             if (h != null)
             {
-                h(this, e);
+                h(this, EventArgs.Empty);
             }
         }
     }
