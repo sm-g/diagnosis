@@ -8,17 +8,17 @@ namespace Diagnosis.ViewModels
 {
     public class FilterViewModel<T> : ViewModelBase, IFilter<T>
     {
-        private ISimpleSearcher<T> _searcher;
+        private ISimpleSearcher<T> searcher;
         private string _query;
         private bool _resultsOnQueryChanges;
         public ISimpleSearcher<T> Searcher
         {
-            get { return _searcher; }
+            get { return searcher; }
             set
             {
-                if (_searcher != value && value != null)
+                if (searcher != value && value != null)
                 {
-                    _searcher = value;
+                    searcher = value;
                 }
             }
         }

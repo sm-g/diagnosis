@@ -48,15 +48,10 @@
                     Command="{Binding AddPatientCommand}"
                     Margin="0,2,0,11" />
         </Grid>
-
-        <search:PopupSearch x:Name="search"
-                              DataContext="{Binding Search}"
-                              Grid.Row="1">
-            <search:PopupSearch.InputBindings>
-                <KeyBinding Key="Escape" Command="{Binding DataContext.ToggleResultsVisibleCommand, ElementName=search}"></KeyBinding>
-                <KeyBinding Key="Enter" Command="{Binding DataContext.SelectCommand, ElementName=search}"></KeyBinding>
-            </search:PopupSearch.InputBindings>
-        </search:PopupSearch>
+        
+        <search:Filter  x:Name="filter"
+                        DataContext="{Binding Filter}"
+                        Grid.Row="1" />
 
         <DataGrid x:Name="dataGrid"
                   Grid.Row="3"

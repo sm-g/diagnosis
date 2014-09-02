@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
+             xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.InputBindings>
@@ -40,23 +41,7 @@
             </Button>
         </StackPanel>
 
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-
-            <TextBox x:Name="input"
-                     Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}">
-                <controls:WatermarkService.Watermark>
-                    <TextBlock Style="{StaticResource watermark}">Фильтр</TextBlock>
-                </controls:WatermarkService.Watermark>
-            </TextBox>
-            <Button Grid.Column="1"
-                    Content="×"
-                    Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"
-                    Command="{Binding ClearCommand}" />
-        </Grid>
+        <search:Filter DataContext="{Binding Filter}" Grid.Row="1"/>
 
         <controls:FullTree DataContext="{Binding Words}" Grid.Row="2" >
             <controls:FullTree.ItemTemplate>

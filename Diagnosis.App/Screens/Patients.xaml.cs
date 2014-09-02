@@ -39,9 +39,6 @@ namespace Diagnosis.App.Screens
             isloaded = true;
 
             this.NavigationService.Navigating += NavigationService_Navigating;
-
-            PopupSearch<PatientViewModel> popupsearch = search.DataContext as PopupSearch<PatientViewModel>;
-            popupsearch.ResultItemSelected += search_ResultItemSelected;
         }
 
         void NavigationService_Navigating(object sender, NavigatingCancelEventArgs e)
@@ -50,12 +47,6 @@ namespace Diagnosis.App.Screens
                 FocusManager.SetFocusedElement(this, LastFocused);
             else
                 LastFocused = FocusManager.GetFocusedElement(patientsControl);
-        }
-
-        void search_ResultItemSelected(object sender, EventArgs e)
-        {
-            // переходим в список после выбора пациента через поиск
-            Keyboard.Focus(dataGrid);
         }
     }
 }
