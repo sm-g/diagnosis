@@ -106,6 +106,7 @@
     <Compile Include="NHibernate\Net4Collections.cs" />
     <Compile Include="NHibernate\NHibHelper.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
+    <Compile Include="Repositories\NHibernateRepository.cs" />
     <Compile Include="Repositories\SymptomRepository.cs" />
     <Compile Include="Repositories\IcdChapterRepository.cs" />
     <Compile Include="Repositories\IcdDiseaseRepository.cs" />
