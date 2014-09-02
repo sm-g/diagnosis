@@ -234,15 +234,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _canAddFirstHr;
-            }
-            set
-            {
-                if (_canAddFirstHr != value)
-                {
-                    _canAddFirstHr = value;
-                    OnPropertyChanged(() => CanAddFirstHr);
-                }
+                return IsUnsaved;
             }
         }
 
@@ -250,7 +242,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return this is UnsavedPatientViewModel;
+                return patient.Id == 0;
             }
         }
 
@@ -393,7 +385,6 @@ namespace Diagnosis.ViewModels
             : base(new Patient())
         {
             Editable.IsEditorActive = true;
-            CanAddFirstHr = true;
 
             Label = rnd.Next(1, 500).ToString();
 
@@ -403,11 +394,10 @@ namespace Diagnosis.ViewModels
         private void OnFirstCommit(object sender, EditableEventArgs e)
         {
             Editable.Committed -= OnFirstCommit;
-            CanAddFirstHr = false;
             var h = PatientCreated;
             if (h != null)
             {
-                h(this, new PatientEventArgs(this, !CanAddFirstHr));
+                h(this, new PatientEventArgs(this));
             }
         }
     }
@@ -417,13 +407,11 @@ namespace Diagnosis.ViewModels
     public class PatientEventArgs : EventArgs
     {
         public PatientViewModel patientVM;
-        public bool addFirstHr;
 
         [DebuggerStepThrough]
-        public PatientEventArgs(PatientViewModel p, bool addFirstHr)
+        public PatientEventArgs(PatientViewModel p)
         {
             patientVM = p;
-            this.addFirstHr = addFirstHr;
         }
     }
 }

@@ -20,7 +20,6 @@ namespace Diagnosis.ViewModels
         private IPatientRepository patientRepo;
         private ObservableCollection<PatientViewModel> _patients;
 
-        public event EventHandler PatientsLoaded;
         public ObservableCollection<PatientViewModel> Patients
         {
             get
@@ -28,7 +27,6 @@ namespace Diagnosis.ViewModels
                 if (_patients == null)
                 {
                     _patients = MakePatients();
-                    OnPatientsLoaded();
                 }
                 return _patients;
             }
@@ -50,15 +48,6 @@ namespace Diagnosis.ViewModels
         {
             Contract.Requires(patientRepo != null);
             this.patientRepo = patientRepo;
-        }
-
-        protected virtual void OnPatientsLoaded()
-        {
-            var h = PatientsLoaded;
-            if (h != null)
-            {
-                h(this, EventArgs.Empty);
-            }
         }
 
         private ObservableCollection<PatientViewModel> MakePatients()
@@ -96,17 +85,13 @@ namespace Diagnosis.ViewModels
             var modelFromRepo = patientRepo.GetById(unsaved.patient.Id);
 
             var saved = new PatientViewModel(modelFromRepo);
-            saved.CanAddFirstHr = !e.addFirstHr; // больше нельзя добавлять первую запись
             Patients.Add(saved);
 
             this.Send(Events.PatientCreated, saved.AsParams(MessageKeys.Patient));
 
             SubscribeEditable(saved);
-            if (e.addFirstHr)
-            {
-                // переходим к созданной записи
-                saved.Editable.IsEditorActive = false;
-            }
+            // переходим к созданной записи
+            saved.Editable.IsEditorActive = false;
         }
 
         private void SubscribeEditable(PatientViewModel pvm)
