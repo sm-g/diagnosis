@@ -42,7 +42,7 @@ namespace Diagnosis.ViewModels
             if (options.Categories.Count() > 0)
             {
                 hrs = hrs.Where(hr =>
-                    options.Categories.Any(cat => cat.category == hr.Category));
+                    options.Categories.Any(cat => cat == hr.Category));
             }
 
             if (options.Comment != null)

@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Core;
+using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -37,7 +38,7 @@ namespace Diagnosis.ViewModels
         /// <summary>
         /// Категория. Если несколько, то любая их них.
         /// </summary>
-        public IEnumerable<CategoryViewModel> Categories { get; set; }
+        public IEnumerable<Category> Categories { get; set; }
 
         /// <summary>
         /// Нижняя грань даты приема

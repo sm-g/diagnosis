@@ -5,6 +5,7 @@ using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Security;
 using System.Windows.Input;
@@ -91,6 +92,94 @@ namespace Diagnosis.ViewModels
             if (Doctors.Count > 0)
             {
                 CurrentDoctor = Doctors[0];
+            }
+        }
+
+        public class DoctorViewModel : ViewModelBase
+        {
+            internal readonly Doctor doctor;
+
+            public string FirstName
+            {
+                get
+                {
+                    return doctor.FirstName;
+                }
+                set
+                {
+                    if (doctor.FirstName != value)
+                    {
+                        doctor.FirstName = value;
+                        OnPropertyChanged(() => FirstName);
+                    }
+                }
+            }
+
+            public string MiddleName
+            {
+                get
+                {
+                    return doctor.MiddleName ?? "";
+                }
+                set
+                {
+                    if (doctor.MiddleName != value)
+                    {
+                        doctor.MiddleName = value;
+                        OnPropertyChanged(() => MiddleName);
+                    }
+                }
+            }
+
+            public string LastName
+            {
+                get
+                {
+                    return doctor.LastName;
+                }
+                set
+                {
+                    if (doctor.LastName != value)
+                    {
+                        doctor.LastName = value;
+                        OnPropertyChanged(() => LastName);
+                    }
+                }
+            }
+
+            public bool IsMale
+            {
+                get
+                {
+                    return doctor.IsMale;
+                }
+                set
+                {
+                    if (doctor.IsMale != value)
+                    {
+                        doctor.IsMale = value;
+                        OnPropertyChanged(() => IsMale);
+                    }
+                }
+            }
+
+            public string Speciality
+            {
+                get
+                {
+                    return doctor.Speciality.Title;
+                }
+            }
+
+            public DoctorViewModel(Doctor d)
+            {
+                Contract.Requires(d != null);
+                doctor = d;
+            }
+
+            public override string ToString()
+            {
+                return doctor.ToString();
             }
         }
     }

@@ -428,7 +428,7 @@ namespace Diagnosis.ViewModels
             options.AppointmentDateLt = DateHelper.NullableDate(AppYearUpper, AppMonthUpper, AppDayUpper);
             options.AnyWord = AnyWord;
             options.Words = Words;
-            options.Categories = SelectedCategories.ToList();
+            options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
             options.Comment = Comment;
 
             Options = options;
@@ -516,5 +516,46 @@ namespace Diagnosis.ViewModels
         }
 
         #endregion IDisposable
+
+        public class CategoryViewModel : CheckableBase, IComparable
+        {
+            internal readonly Category category;
+
+
+            public string Name
+            {
+                get
+                {
+                    return category.Name;
+                }
+            }
+
+
+            public CategoryViewModel(Category category)
+            {
+                Contract.Requires(category != null);
+                this.category = category;
+            }
+
+            public int CompareTo(object obj)
+            {
+                if (obj == null)
+                    return -1;
+
+                CategoryViewModel other = obj as CategoryViewModel;
+                if (other != null)
+                {
+                    return this.category.Order.CompareTo(other.category.Order);
+                }
+                else
+                    throw new ArgumentException("Object is not a CategoryViewModel");
+            }
+
+            public override string ToString()
+            {
+                return category.ToString();
+            }
+
+        }
     }
 }

@@ -99,19 +99,17 @@
     <Compile Include="AuthorityController.cs" />
     <Compile Include="CheckableBase.cs" />
     <Compile Include="DebugOutput.cs" />
-    <Compile Include="Domain\AppointmentsManager.cs" />
-    <Compile Include="Domain\AppointmentViewModel.cs" />
-    <Compile Include="Domain\CategoryViewModel.cs" />
-    <Compile Include="Domain\CoursesManager.cs" />
-    <Compile Include="Domain\CourseViewModel.cs" />
-    <Compile Include="Domain\DiagnosisViewModel.cs" />
-    <Compile Include="Domain\DoctorViewModel.cs" />
-    <Compile Include="Domain\HealthRecordManager.cs" />
-    <Compile Include="Domain\HealthRecordViewModel.cs" />
-    <Compile Include="Domain\PatientViewModel.cs" />
-    <Compile Include="Domain\PropertyViewModel.cs" />
-    <Compile Include="Domain\SymptomViewModel.cs" />
-    <Compile Include="Domain\WordViewModel.cs" />
+    <Compile Include="Card\AppointmentsManager.cs" />
+    <Compile Include="Card\AppointmentViewModel.cs" />
+    <Compile Include="Card\CoursesManager.cs" />
+    <Compile Include="Card\CourseViewModel.cs" />
+    <Compile Include="Card\DiagnosisViewModel.cs" />
+    <Compile Include="Card\HealthRecordManager.cs" />
+    <Compile Include="Card\HealthRecordViewModel.cs" />
+    <Compile Include="Card\PatientViewModel.cs" />
+    <Compile Include="Card\PropertyViewModel.cs" />
+    <Compile Include="Card\SymptomViewModel.cs" />
+    <Compile Include="Card\WordViewModel.cs" />
     <Compile Include="Editable.cs" />
     <Compile Include="Extensions\HierarchicalExtensions.cs" />
     <Compile Include="Extensions\IEditableNestingExtensions.cs" />
@@ -172,7 +170,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Domain\DomClassDiagram.cd" />
+    <None Include="Card\DomClassDiagram.cd" />
     <None Include="packages.config" />
     <None Include="Search\SearchClassDiagram.cd" />
     <None Include="VMClassDiagram.cd" />
