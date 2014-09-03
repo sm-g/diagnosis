@@ -108,7 +108,6 @@
     <Compile Include="Card\HealthRecordViewModel.cs" />
     <Compile Include="Card\PatientViewModel.cs" />
     <Compile Include="Card\PropertyViewModel.cs" />
-    <Compile Include="Card\SymptomViewModel.cs" />
     <Compile Include="Card\WordViewModel.cs" />
     <Compile Include="Editable.cs" />
     <Compile Include="Extensions\HierarchicalExtensions.cs" />
@@ -125,7 +124,6 @@
     <Compile Include="Producers\DiagnosisProducer.cs" />
     <Compile Include="Producers\EntityProducers.cs" />
     <Compile Include="Producers\PatientsProducer.cs" />
-    <Compile Include="Producers\SymptomsProducer.cs" />
     <Compile Include="Producers\WordsProducer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Framework\RelayCommand.cs" />

@@ -34,8 +34,7 @@
 
         <search:AutocompleteDataTemplateSelector x:Key="AutocompleteTemplateSelector"
                                                    DiagnosisTemplate="{StaticResource DiagnosisTemplate}"
-                                                   WordTemplate="{StaticResource CategorisedTemplate}"
-                                                   SymptomTemplate="{StaticResource CategorisedTemplate}" />
+                                                   WordTemplate="{StaticResource CategorisedTemplate}" />
     </UserControl.Resources>
     <StackPanel x:Name="autocomplete">
         <controls:TextBoxInfo x:Name="input"

@@ -17,7 +17,7 @@ namespace Diagnosis.Models
         private Symptom _symptom;
         private Category _category;
         private IcdDisease _disease;
-        
+
         public virtual Appointment Appointment { get; protected set; }
 
         public virtual string Comment
@@ -63,6 +63,10 @@ namespace Diagnosis.Models
             {
                 if (_symptom == value)
                     return;
+
+                if (value == null)
+                    throw new ArgumentNullException("value", "Hr's symptom can not be set to null.");
+
                 _symptom = value;
                 OnPropertyChanged("Symptom");
             }

@@ -75,7 +75,13 @@ namespace Diagnosis.ViewModels
                 ((INotifyCollectionChanged)_autoCompleteStatic.Items).CollectionChanged -= AutoCompleteItems_CollectionChanged;
             }
 
-            IEnumerable<WordViewModel> initialWords = HealthRecord.Symptom != null ? HealthRecord.Symptom.Words : null;
+            List<WordViewModel> initialWords = new List<WordViewModel>();
+            if (HealthRecord.Symptom != null)
+                foreach (var item in HealthRecord.Symptom.Words)
+                {
+                    initialWords.Add(EntityProducers.WordsProducer.GetByModel(item));
+                }
+
             _autoCompleteStatic = new WordCompositeAutoComplete(
                    QuerySeparator.Default,
                    new HierarchicalSearchSettings(),
@@ -88,29 +94,29 @@ namespace Diagnosis.ViewModels
 
         private void AutoCompleteItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            HashSet<WordViewModel> words;
+            HashSet<Word> words;
 
             if (HealthRecord.Symptom != null)
-                words = new HashSet<WordViewModel>(HealthRecord.Symptom.Words);
+                words = new HashSet<Word>(HealthRecord.Symptom.Words);
             else
-                words = new HashSet<WordViewModel>();
+                words = new HashSet<Word>();
 
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 foreach (WordViewModel item in e.NewItems)
                 {
-                    words.Add(item);
+                    words.Add(item.word);
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 foreach (WordViewModel item in e.OldItems)
                 {
-                    words.Remove(item);
+                    words.Remove(item.word);
                 }
             }
-
-            HealthRecord.Symptom = EntityProducers.SymptomsProducer.Create(words);
+            if (words.Count > 0) // == 0 если исправляем единтсвенное слово
+                HealthRecord.healthRecord.Symptom = new Symptom(words);
         }
 
         #endregion AutoComplete

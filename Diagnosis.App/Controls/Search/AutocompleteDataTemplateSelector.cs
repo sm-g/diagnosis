@@ -11,7 +11,6 @@ namespace Diagnosis.App.Controls.Search
     public class AutocompleteDataTemplateSelector : DataTemplateSelector
     {
         public DataTemplate DiagnosisTemplate { get; set; }
-        public DataTemplate SymptomTemplate { get; set; }
         public DataTemplate WordTemplate { get; set; }
 
         public override DataTemplate
@@ -22,10 +21,6 @@ namespace Diagnosis.App.Controls.Search
                 if (item is DiagnosisViewModel)
                 {
                     return DiagnosisTemplate;
-                }
-                else if (item is SymptomViewModel)
-                {
-                    return SymptomTemplate;
                 }
                 else if (item is WordViewModel)
                 {

@@ -44,7 +44,8 @@ namespace Diagnosis.ViewModels
             get
             {
                 if (Symptom != null)
-                    return Symptom.Name;
+                    return (Symptom.Disease != null ? Symptom.Disease.Code + ". " : "") +
+                    string.Join(" ", Symptom.Words.OrderBy(w => w.Priority).Select(w => w.Title));
                 else
                     return "";
             }
@@ -79,7 +80,6 @@ namespace Diagnosis.ViewModels
 
         #region Model
 
-        private SymptomViewModel _symptom;
         private DiagnosisViewModel _diagnosis;
 
         public string Comment
@@ -97,24 +97,11 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public SymptomViewModel Symptom
+        public Symptom Symptom
         {
             get
             {
-                return _symptom;
-            }
-            set
-            {
-                if (_symptom != value)
-                {
-                    _symptom = value;
-                    if (value != null)
-                        healthRecord.Symptom = value.symptom;
-                    else
-                        throw new ArgumentNullException("value", "Hr's symptom can not be set to null.");
-
-                    OnPropertyChanged("Name");
-                }
+                return healthRecord.Symptom;
             }
         }
 
@@ -302,8 +289,6 @@ namespace Diagnosis.ViewModels
 
             healthRecord.PropertyChanged += healthRecord_PropertyChanged;
 
-
-            SetSymptom();
             SetDiagnosis();
 
             Editable = new Editable(healthRecord);
@@ -317,11 +302,6 @@ namespace Diagnosis.ViewModels
         private void SetDiagnosis()
         {
             Diagnosis = EntityProducers.DiagnosisProducer.GetByDisease(healthRecord.Disease);
-        }
-
-        private void SetSymptom()
-        {
-            Symptom = EntityProducers.SymptomsProducer.GetByModel(healthRecord.Symptom);
         }
 
         private void healthRecord_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -346,7 +326,7 @@ namespace Diagnosis.ViewModels
                     break;
 
                 case "Symptom":
-                    SetSymptom();
+                    OnPropertyChanged("Name");
                     break;
 
                 case "Disease":

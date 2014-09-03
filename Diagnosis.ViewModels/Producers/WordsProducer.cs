@@ -133,10 +133,10 @@ namespace Diagnosis.ViewModels
 
         private static void SetDeletable(WordViewModel w)
         {
-            // нельзя удалить слова, которые есть в каком-нибудь симптоме
-            // или слова с детьми
-            // TODO в симптоме, связанном с записью
-            if (!w.IsTerminal || EntityProducers.SymptomsProducer.GetSymptomsWithWords(w.ToEnumerable()).Count() > 0)
+            // нельзя удалить 
+            //  TODO слова, которые есть в каком-нибудь симптоме, связанном с записью. 
+            // слова с детьми
+            if (!w.IsTerminal)
             {
                 w.Editable.CanBeDeleted = false;
             }

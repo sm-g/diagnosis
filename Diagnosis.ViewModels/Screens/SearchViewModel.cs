@@ -454,7 +454,13 @@ namespace Diagnosis.ViewModels
         private void RecieveHealthRecords(IEnumerable<HealthRecordViewModel> hrs)
         {
             // все слова из записей
-            var allWords = hrs.Aggregate(new HashSet<WordViewModel>(), (words, hr) => { hr.Symptom.Words.ForAll((w) => words.Add(w)); return words; });
+            var allWords = hrs.Aggregate(
+                new HashSet<WordViewModel>(),
+                (words, hr) =>
+                {
+                    hr.Symptom.Words.ForAll((w) => words.Add(EntityProducers.WordsProducer.GetByModel(w)));
+                    return words;
+                });
             WordSearch.Reset(allWords);
 
             // если несколько записей — любое из слов
@@ -462,7 +468,13 @@ namespace Diagnosis.ViewModels
 
             // все категории из записей
             Categories.ForAll((cat) => cat.IsChecked = false);
-            var allCats = hrs.Aggregate(new HashSet<Category>(), (cats, hr) => { cats.Add(hr.Category); return cats; });
+            var allCats = hrs.Aggregate(
+                new HashSet<Category>(),
+                (cats, hr) =>
+                {
+                    cats.Add(hr.Category);
+                    return cats;
+                });
             Categories.Where(cat => allCats.Contains(cat.category)).ForAll(cat => cat.IsChecked = true);
 
             // комментарий и давность из последней записи

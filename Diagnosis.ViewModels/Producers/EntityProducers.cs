@@ -8,7 +8,6 @@ namespace Diagnosis.ViewModels
     {
         private static WordsProducer _wordsManager;
         private static DiagnosisProducer _diagnosisManager;
-        private static SymptomsProducer _symptomsManager;
 
         public static WordsProducer WordsProducer
         {
@@ -22,13 +21,6 @@ namespace Diagnosis.ViewModels
             get
             {
                 return _diagnosisManager ?? (_diagnosisManager = new DiagnosisProducer(new IcdChapterRepository()));
-            }
-        }
-        public static SymptomsProducer SymptomsProducer
-        {
-            get
-            {
-                return _symptomsManager ?? (_symptomsManager = new SymptomsProducer(new SymptomRepository()));
             }
         }
     }
