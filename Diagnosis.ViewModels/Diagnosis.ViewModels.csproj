@@ -98,7 +98,6 @@
   <ItemGroup>
     <Compile Include="AuthorityController.cs" />
     <Compile Include="CheckableBase.cs" />
-    <Compile Include="DebugOutput.cs" />
     <Compile Include="Card\AppointmentsManager.cs" />
     <Compile Include="Card\AppointmentViewModel.cs" />
     <Compile Include="Card\CoursesManager.cs" />
