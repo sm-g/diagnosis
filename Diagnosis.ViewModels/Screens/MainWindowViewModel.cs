@@ -304,7 +304,7 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                                           {
-                                              var settingsVM = new SettingsViewModel(Login.CurrentDoctor);
+                                              var settingsVM = new SettingsViewModel(AuthorityController.CurrentDoctor);
                                               this.Send(Events.OpenSettings, settingsVM.AsParams(MessageKeys.Settings));
                                           });
             }

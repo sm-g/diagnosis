@@ -86,24 +86,12 @@ namespace Diagnosis.ViewModels
         {
             repository = new DoctorRepository();
             var doctorVMs = repository.GetAll().Select(d => new DoctorViewModel(d)).ToList();
-            doctorVMs.ForEach(dvm => SubscribeDoctor(dvm));
             Doctors = new ReadOnlyObservableCollection<DoctorViewModel>(new ObservableCollection<DoctorViewModel>(doctorVMs));
 
             if (Doctors.Count > 0)
             {
                 CurrentDoctor = Doctors[0];
             }
-        }
-
-
-
-        private void SubscribeDoctor(DoctorViewModel dvm)
-        {
-            dvm.Editable.Committed += (s, e) =>
-            {
-                var doctor = e.entity as Doctor;
-                repository.SaveOrUpdate(doctor);
-            };
         }
     }
 

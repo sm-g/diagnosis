@@ -10,9 +10,6 @@ namespace Diagnosis.ViewModels
     public class DoctorViewModel : ViewModelBase
     {
         internal readonly Doctor doctor;
-        SettingsViewModel _settings;
-
-        public Editable Editable { get; private set; }
 
         public string FirstName
         {
@@ -78,14 +75,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public SettingsViewModel Settings
-        {
-            get
-            {
-                return _settings ?? (_settings = new SettingsViewModel(this));
-            }
-        }
-
         public string Speciality
         {
             get
@@ -98,8 +87,6 @@ namespace Diagnosis.ViewModels
         {
             Contract.Requires(d != null);
             doctor = d;
-
-            Editable = new Editable(doctor);
         }
 
         public override string ToString()

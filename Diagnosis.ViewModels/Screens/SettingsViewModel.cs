@@ -6,24 +6,23 @@ using System.Linq;
 using System.Windows.Input;
 using EventAggregator;
 using Diagnosis.Core;
+using Diagnosis.Data.Repositories;
 
 namespace Diagnosis.ViewModels
 {
     public class SettingsViewModel : ViewModelBase
     {
         private readonly Doctor doctor;
-        private readonly DoctorViewModel doctorVM;
         private Dictionary<DoctorSettings, Func<bool>> map;
 
         private bool _onlyTopLevelIcdDisease;
         private bool _showIcdDisease;
         private bool? _dialogResult;
 
-        public SettingsViewModel(DoctorViewModel doctorVM)
+        public SettingsViewModel(Doctor doctor)
         {
-            Contract.Requires(doctorVM != null);
-            this.doctor = doctorVM.doctor;
-            this.doctorVM = doctorVM;
+            Contract.Requires(doctor != null);
+            this.doctor = doctor;
 
             map = new Dictionary<DoctorSettings, Func<bool>>();
             map.Add(DoctorSettings.ShowIcdDisease, () => ShowIcdDisease);
@@ -122,7 +121,7 @@ namespace Diagnosis.ViewModels
 
             if (changed.Count > 0)
             {
-                doctorVM.Editable.Commit();
+                new DoctorRepository().SaveOrUpdate(doctor);
             }
 
             DialogResult = true;
