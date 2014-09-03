@@ -94,23 +94,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public RelayCommand<PatientViewModel> StartCourseCommand
-        {
-            get
-            {
-                return new RelayCommand<PatientViewModel>(
-                                          (patientVM) =>
-                                          {
-                                              StartCourse(patientVM);
-                                          });
-            }
-        }
-
-        public void StartCourse(PatientViewModel patientVM)
-        {
-            var course = doctor.StartCourse(patientVM.patient);
-        }
-
         public DoctorViewModel(Doctor d)
         {
             Contract.Requires(d != null);

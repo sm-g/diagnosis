@@ -304,7 +304,7 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                                           {
-                                              var settingsVM = new SettingsViewModel(Login.DoctorsProducer.CurrentDoctor);
+                                              var settingsVM = new SettingsViewModel(Login.CurrentDoctor);
                                               this.Send(Events.OpenSettings, settingsVM.AsParams(MessageKeys.Settings));
                                           });
             }
@@ -317,8 +317,9 @@ namespace Diagnosis.ViewModels
             this.nav = nav;
             this.nav.Navigated += nav_Navigated;
 
-            Login = new LoginViewModel(EntityProducers.DoctorsProducer);
-            Login.LoggedIn += OnLoggedIn;
+            Login = new LoginViewModel();
+
+            AuthorityController.LoggedIn += OnLoggedIn;
 
             this.Subscribe(Events.PatientAdded, (e) =>
             {
@@ -327,7 +328,7 @@ namespace Diagnosis.ViewModels
             this.Subscribe(Events.PatientCreated, (e) =>
             {
                 var pat = e.GetValue<PatientViewModel>(MessageKeys.Patient);
-                viewer.OpenPatient(pat, !pat.CanAddFirstHr);
+                viewer.OpenPatient(pat);
             });
             this.Subscribe(Events.OpenPatient, (e) =>
             {
@@ -357,7 +358,7 @@ namespace Diagnosis.ViewModels
             //nav.Navigate(Login);
             nav.Navigate(Patients);
             Patients.SelectLastPatient();
-            CreateViewer(EntityProducers.DoctorsProducer.CurrentDoctor);
+            CreateViewer();
         }
 
         private void nav_Navigated(object sender, NavigationEventArgs e)
@@ -439,18 +440,18 @@ namespace Diagnosis.ViewModels
             viewer.OpenPatient(pat);
         }
 
-        private void OnLoggedIn(object sender, LoggedEventArgs e)
+        private void OnLoggedIn(object sender, EventArgs e)
         {
             clearNavOnNavigated = true;
             nav.Navigate(Patients);
 
-            CreateViewer(e.Doctor);
+            CreateViewer();
             Patients.SelectLastPatient();
         }
 
-        private PatientViewer CreateViewer(DoctorViewModel doctor)
+        private PatientViewer CreateViewer()
         {
-            viewer = new PatientViewer(doctor);
+            viewer = new PatientViewer();
             return viewer;
         }
     }

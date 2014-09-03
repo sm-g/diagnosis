@@ -45,7 +45,7 @@ namespace Diagnosis.ViewModels
         {
             if (!courseVM.IsEnded)
             {
-                var app = courseVM.course.AddAppointment(EntityProducers.DoctorsProducer.CurrentDoctor.doctor);
+                var app = courseVM.course.AddAppointment(AuthorityController.CurrentDoctor);
                 var appVM = MakeAppointmentVM(app);
                 Appointments.Add(appVM);
 
@@ -68,7 +68,7 @@ namespace Diagnosis.ViewModels
             IList<AppointmentViewModel> appVMs;
             using (var tester = new PerformanceTester((ts) => Debug.Print("making apps for {0}: {1}", courseVM, ts)))
             {
-                appVMs = courseVM.course.Appointments.Select(app => new AppointmentViewModel(app, app.Doctor == courseVM.LeadDoctor.doctor)).ToList();
+                appVMs = courseVM.course.Appointments.Select(app => new AppointmentViewModel(app, app.Doctor == courseVM.LeadDoctor)).ToList();
             }
             appVMs.ForAll(app => SubscribeApp(app));
 
@@ -95,7 +95,7 @@ namespace Diagnosis.ViewModels
 
         private AppointmentViewModel MakeAppointmentVM(Appointment app)
         {
-            var appVM = new AppointmentViewModel(app, app.Doctor == courseVM.LeadDoctor.doctor);
+            var appVM = new AppointmentViewModel(app, app.Doctor == courseVM.LeadDoctor);
 
             SubscribeApp(appVM);
             return appVM;

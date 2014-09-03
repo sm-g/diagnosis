@@ -18,7 +18,6 @@ namespace Diagnosis.ViewModels
         private AppointmentsManager appManager;
 
         private ObservableCollection<WithAddNew> _appointmentsWithAddNew;
-        private DoctorViewModel _leadDoctor;
         private bool isAddingNewApp;
 
         #region IEditableNesting
@@ -40,19 +39,11 @@ namespace Diagnosis.ViewModels
 
         #region Model
 
-        public DoctorViewModel LeadDoctor
+        public Doctor LeadDoctor
         {
             get
             {
-                return _leadDoctor;
-            }
-            set
-            {
-                if (_leadDoctor != value)
-                {
-                    _leadDoctor = value;
-                    OnPropertyChanged("LeadDoctor");
-                }
+                return course.LeadDoctor;
             }
         }
 
@@ -174,7 +165,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return LeadDoctor == EntityProducers.DoctorsProducer.CurrentDoctor;
+                return LeadDoctor == AuthorityController.CurrentDoctor;
             }
         }
 
@@ -188,8 +179,6 @@ namespace Diagnosis.ViewModels
             {
                 Appointments.CollectionChanged += Appointments_CollectionChanged;
             };
-
-            LeadDoctor = EntityProducers.DoctorsProducer.GetByModel(course.LeadDoctor);
 
             Editable = new Editable(course);
             Editable.Deleted += Editable_Deleted;

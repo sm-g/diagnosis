@@ -171,7 +171,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                var b = EntityProducers.DoctorsProducer.CurrentDoctor.doctor.DoctorSettings.HasFlag(DoctorSettings.ShowIcdDisease);
+                var b = AuthorityController.CurrentDoctor.DoctorSettings.HasFlag(DoctorSettings.ShowIcdDisease);
                 return b;
             }
         }

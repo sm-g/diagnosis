@@ -45,11 +45,6 @@ namespace Diagnosis.App
                 var p = e.GetValue<PatientViewModel>(MessageKeys.Patient);
                 Debug.Print("current patient is '{0}'", p);
             });
-            this.Subscribe(Events.CurrentDoctorChanged, (e) =>
-            {
-                var d = e.GetValue<Doctor>(MessageKeys.Doctor);
-                Debug.Print("current doctor is '{0}'", d);
-            });
             this.Subscribe(Events.PropertySelectedValueChanged, (e) =>
             {
                 var property = e.GetValue<PropertyViewModel>(MessageKeys.Property);

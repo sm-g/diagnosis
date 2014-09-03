@@ -25,7 +25,6 @@ namespace Diagnosis.Core
 
     public class Events
     {
-        public const int CurrentDoctorChanged = 4;
         public const int PropertySelectedValueChanged = 5;
 
         public const int PatientAdded = 7;

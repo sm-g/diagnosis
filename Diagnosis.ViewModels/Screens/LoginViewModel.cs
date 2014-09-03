@@ -1,6 +1,11 @@
-﻿using System;
+﻿using Diagnosis.Core;
+using Diagnosis.Data.Repositories;
+using Diagnosis.Models;
+using EventAggregator;
+using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Security;
 using System.Windows.Input;
 
@@ -8,38 +13,31 @@ namespace Diagnosis.ViewModels
 {
     public class LoginViewModel : ViewModelBase
     {
-        private string _username;
         private SecureString _password;
         private bool _wrongpassword;
-        private DoctorsProducer _docManager;
+        private DoctorViewModel _current;
 
-        public event EventHandler<LoggedEventArgs> LoggedIn;
+        private IDoctorRepository repository;
 
-        public DoctorsProducer DoctorsProducer
+
+        public DoctorViewModel CurrentDoctor
         {
             get
             {
-                return _docManager;
+                return _current;
             }
             set
             {
-                if (_docManager != value)
+                if (_current != value)
                 {
-                    _docManager = value;
-                    OnPropertyChanged(() => DoctorsProducer);
+                    _current = value;
+
+                    OnPropertyChanged("CurrentDoctor");
                 }
             }
         }
 
-        public string Username
-        {
-            get { return _username; }
-            set
-            {
-                _username = value;
-                OnPropertyChanged(() => Username);
-            }
-        }
+        public ReadOnlyObservableCollection<DoctorViewModel> Doctors { get; private set; }
 
         public SecureString Password
         {
@@ -75,38 +73,39 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return new RelayCommand(LogIn, () => IsLoginEnabled);
+                return new RelayCommand(() =>
+                {
+                    // Password.MakeReadOnly();
+
+                    AuthorityController.LogIn(CurrentDoctor.doctor);
+                }, () => IsLoginEnabled);
             }
         }
 
-        public LoginViewModel(DoctorsProducer producer)
+        public LoginViewModel()
         {
-            Contract.Requires(producer != null);
-            DoctorsProducer = producer;
-        }
+            repository = new DoctorRepository();
+            var doctorVMs = repository.GetAll().Select(d => new DoctorViewModel(d)).ToList();
+            doctorVMs.ForEach(dvm => SubscribeDoctor(dvm));
+            Doctors = new ReadOnlyObservableCollection<DoctorViewModel>(new ObservableCollection<DoctorViewModel>(doctorVMs));
 
-        private void LogIn()
-        {
-            // Password.MakeReadOnly();
-
-            // always successful
-
-            var h = LoggedIn;
-            if (h != null)
+            if (Doctors.Count > 0)
             {
-                h(this, new LoggedEventArgs(DoctorsProducer.CurrentDoctor));
+                CurrentDoctor = Doctors[0];
             }
         }
-    }
 
-    public class LoggedEventArgs : EventArgs
-    {
-        public DoctorViewModel Doctor;
 
-        [DebuggerStepThrough]
-        public LoggedEventArgs(DoctorViewModel doctor)
+
+        private void SubscribeDoctor(DoctorViewModel dvm)
         {
-            Doctor = doctor;
+            dvm.Editable.Committed += (s, e) =>
+            {
+                var doctor = e.entity as Doctor;
+                repository.SaveOrUpdate(doctor);
+            };
         }
     }
+
+
 }

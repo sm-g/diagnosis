@@ -45,10 +45,9 @@ namespace Diagnosis.ViewModels
 
         #region Model
 
-        public DoctorViewModel Doctor
+        public Doctor Doctor
         {
-            get;
-            private set;
+            get { return appointment.Doctor; }
         }
 
         public DateTime DateTime
@@ -191,7 +190,6 @@ namespace Diagnosis.ViewModels
 
             hrManager = new HealthRecordManager(this);
             hrManager.HrPropertyChanged += hrManager_HrPropertyChanged;
-            Doctor = EntityProducers.DoctorsProducer.GetByModel(appointment.Doctor);
 
             Editable = new Editable(appointment);
         }

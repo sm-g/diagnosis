@@ -58,6 +58,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthorityController.cs" />
     <Compile Include="CheckableBase.cs" />
     <Compile Include="DebugOutput.cs" />
     <Compile Include="Domain\AppointmentsManager.cs" />
@@ -86,7 +87,6 @@
     <Compile Include="Interfaces\ISimpleSearcher.cs" />
     <Compile Include="PatientViewer.cs" />
     <Compile Include="Producers\DiagnosisProducer.cs" />
-    <Compile Include="Producers\DoctorsProducer.cs" />
     <Compile Include="Producers\EntityProducers.cs" />
     <Compile Include="Producers\PatientsProducer.cs" />
     <Compile Include="Producers\SymptomsProducer.cs" />

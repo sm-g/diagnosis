@@ -282,7 +282,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return Diagnosis != null && EntityProducers.DoctorsProducer.CurrentDoctor.doctor.DoctorSettings.HasFlag(DoctorSettings.ShowIcdDisease);
+                return Diagnosis != null && AuthorityController.CurrentDoctor.DoctorSettings.HasFlag(DoctorSettings.ShowIcdDisease);
             }
         }
         public ICommand SendToSearchCommand

@@ -6,18 +6,9 @@ namespace Diagnosis.ViewModels
 {
     static class EntityProducers
     {
-        private static DoctorsProducer _doctorsManager;
         private static WordsProducer _wordsManager;
         private static DiagnosisProducer _diagnosisManager;
         private static SymptomsProducer _symptomsManager;
-
-        public static DoctorsProducer DoctorsProducer
-        {
-            get
-            {
-                return _doctorsManager ?? (_doctorsManager = new DoctorsProducer(new DoctorRepository()));
-            }
-        }
 
         public static WordsProducer WordsProducer
         {

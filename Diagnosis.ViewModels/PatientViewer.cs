@@ -15,7 +15,6 @@ namespace Diagnosis.ViewModels
     /// </summary>
     public class PatientViewer : ViewModelBase
     {
-        private readonly DoctorViewModel doctor;
         private PatientViewModel _openedPatient;
         private AppointmentViewModel _openedApp;
         private CourseViewModel _openedCourse;
@@ -29,9 +28,8 @@ namespace Diagnosis.ViewModels
         private Dictionary<AppointmentViewModel, HealthRecordViewModel> appHrMap;
         private bool supressCourseClosing;
 
-        public PatientViewer(DoctorViewModel doctor)
+        public PatientViewer()
         {
-            this.doctor = doctor;
             patCourseMap = new Dictionary<PatientViewModel, CourseViewModel>();
             courseAppMap = new Dictionary<CourseViewModel, AppointmentViewModel>();
             appHrMap = new Dictionary<AppointmentViewModel, HealthRecordViewModel>();
@@ -202,7 +200,7 @@ namespace Diagnosis.ViewModels
             var lastCourse = patient.Courses.FirstOrDefault();
             if (lastCourse == null)
             {
-                EntityProducers.DoctorsProducer.CurrentDoctor.StartCourse(patient);
+                AuthorityController.CurrentDoctor.StartCourse(patient.patient);
             }
             else
             {

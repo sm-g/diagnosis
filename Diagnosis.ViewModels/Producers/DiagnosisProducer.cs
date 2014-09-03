@@ -94,19 +94,17 @@ namespace Diagnosis.ViewModels
                 new Diagnosis.Models.Diagnosis(ch.Code, ch.Title)).ToList();
             var chapterVms = chapterDiagnoses.Select(ch => new DiagnosisViewModel(ch)).ToList();
 
-            SetDiagnosesForDoctor(chapterVms, EntityProducers.DoctorsProducer.CurrentDoctor.doctor);
+            SetDiagnosesForDoctor(chapterVms, AuthorityController.CurrentDoctor);
 
             Subscribe(chapterVms);
         }
 
         private void Subscribe(List<DiagnosisViewModel> chapterVms)
         {
-            this.Subscribe(Events.CurrentDoctorChanged, (e) =>
+            AuthorityController.LoggedIn += (s, e) =>
             {
-                var doctor = e.GetValue<Doctor>(MessageKeys.Doctor);
-
-                SetDiagnosesForDoctor(chapterVms, doctor);
-            });
+                SetDiagnosesForDoctor(chapterVms, AuthorityController.CurrentDoctor);
+            };
         }
 
         /// <summary>
