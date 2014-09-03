@@ -356,9 +356,7 @@ namespace Diagnosis.ViewModels
             });
 
             //nav.Navigate(Login);
-            nav.Navigate(Patients);
-            Patients.SelectLastPatient();
-            CreateViewer();
+            Login.LoginCommand.Execute(null);
         }
 
         private void nav_Navigated(object sender, NavigationEventArgs e)
