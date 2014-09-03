@@ -69,7 +69,6 @@ namespace Diagnosis.ViewModels
                     OnPropertyChanged("FirstName");
                     OnPropertyChanged("SearchText");
                     OnPropertyChanged("NoName");
-                    OnPropertyChanged("Self");
                 }
             }
         }
@@ -89,7 +88,6 @@ namespace Diagnosis.ViewModels
                     OnPropertyChanged("MiddleName");
                     OnPropertyChanged("SearchText");
                     OnPropertyChanged("NoName");
-                    OnPropertyChanged("Self");
                 }
             }
         }
@@ -109,7 +107,6 @@ namespace Diagnosis.ViewModels
                     OnPropertyChanged("LastName");
                     OnPropertyChanged("SearchText");
                     OnPropertyChanged("NoName");
-                    OnPropertyChanged("Self");
                 }
             }
         }
@@ -261,7 +258,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return EntityProducers.DoctorsProducer.CurrentDoctor.StartCourseCommand;
+                return new RelayCommand(() => AuthorityController.CurrentDoctor.StartCourse(patient));
             }
         }
 
