@@ -130,6 +130,7 @@
     <Compile Include="Screens\MainWindowViewModel.cs" />
     <Compile Include="Screens\PatientsAsideViewModel.cs" />
     <Compile Include="Screens\PatientsListViewModel.cs" />
+    <Compile Include="Screens\ShortPatientViewModel.cs" />
     <Compile Include="Screens\SearchViewModel.cs" />
     <Compile Include="Screens\SettingsViewModel.cs" />
     <Compile Include="Screens\WordsListViewModel.cs" />
