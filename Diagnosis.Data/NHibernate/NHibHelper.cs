@@ -1,4 +1,4 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.Data.Mappings;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Cfg.MappingSchema;
@@ -12,16 +12,11 @@ namespace Diagnosis.Data
 {
     public class NHibernateHelper
     {
+        private const string filenameTemplate = "Configuration.serialized";
         private static Configuration _configuration;
         private static HbmMapping _mapping;
-        private static ISessionFactory _sessionFactory;
         private static ISession _session;
-        private const string filenameTemplate = "Configuration.serialized";
-
-        public static ISession GetSession()
-        {
-            return _session ?? (_session = SessionFactory.OpenSession());
-        }
+        private static ISessionFactory _sessionFactory;
 
         public static Configuration Configuration
         {
@@ -49,6 +44,20 @@ namespace Diagnosis.Data
             {
                 return _sessionFactory ?? (_sessionFactory = Configuration.BuildSessionFactory());
             }
+        }
+
+        public static HbmMapping CreateMapping()
+        {
+            var mapper = new ModelMapper();
+            var assemblyContainingMapping = Assembly.GetAssembly(typeof(WordMap));
+            var types = assemblyContainingMapping.GetExportedTypes().Where(t => t.Namespace == "Diagnosis.Data.Mappings");
+            mapper.AddMappings(types);
+            return mapper.CompileMappingForAllExplicitlyAddedEntities();
+        }
+
+        public static ISession GetSession()
+        {
+            return _session ?? (_session = SessionFactory.OpenSession());
         }
 
         private static Configuration CreateConfiguration()
@@ -80,16 +89,6 @@ namespace Diagnosis.Data
             {
                 serializer.Serialize(stream, cfg);
             }
-        }
-
-        private static HbmMapping CreateMapping()
-        {
-            var mapper = new ModelMapper();
-            var types = Assembly.GetExecutingAssembly().GetExportedTypes().Where(t => t.Namespace == "Diagnosis.Data.Mappings");
-
-            mapper.AddMappings(types);
-
-            return mapper.CompileMappingForAllExplicitlyAddedEntities();
         }
     }
 }
