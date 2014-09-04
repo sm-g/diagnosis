@@ -8,7 +8,7 @@ namespace Diagnosis.Models
     public class Category : EntityBase, IComparable
     {
         public virtual string Name { get; set; }
-        public virtual int Order { get; set; }
+        public virtual int Ord { get; set; }
 
         public override string ToString()
         {
@@ -22,7 +22,7 @@ namespace Diagnosis.Models
             Category other = obj as Category;
             if (other != null)
             {
-                return this.Order.CompareTo(other.Order);
+                return this.Ord.CompareTo(other.Ord);
             }
             else
                 throw new ArgumentException("Object is not a CategoryViewModel");

@@ -16,7 +16,7 @@ namespace Diagnosis.Data.Mappings
             });
 
             Property(x => x.Name, m => m.Column("Title"));
-            Property(x => x.Order);
+            Property(x => x.Ord);
         }
     }
 }
