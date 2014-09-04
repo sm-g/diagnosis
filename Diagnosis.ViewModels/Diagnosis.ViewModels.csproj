@@ -111,6 +111,7 @@
     <Compile Include="Editable.cs" />
     <Compile Include="Extensions\HierarchicalExtensions.cs" />
     <Compile Include="Extensions\IEditableNestingExtensions.cs" />
+    <Compile Include="Framework\SessionVMBase.cs" />
     <Compile Include="HierarchicalBase.cs" />
     <Compile Include="HrEditorViewModel.cs" />
     <Compile Include="Interfaces\ICheckable.cs" />

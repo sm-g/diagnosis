@@ -59,7 +59,10 @@ namespace Diagnosis.Data
         {
             return _session ?? (_session = SessionFactory.OpenSession());
         }
-
+        public static ISession OpenSession()
+        {
+            return SessionFactory.OpenSession();
+        }
         private static Configuration CreateConfiguration()
         {
             var cfg = new Configuration();
