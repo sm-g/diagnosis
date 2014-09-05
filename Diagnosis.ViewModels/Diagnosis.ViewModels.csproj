@@ -151,9 +151,6 @@
     <Compile Include="Search\Searchers\DiagnosisSearcher.cs" />
     <Compile Include="Search\Searchers\HrSearcher.cs" />
     <Compile Include="Search\Searchers\PatientSearcher.cs" />
-    <Compile Include="Search\Searchers\WordCompositeSearcher.cs" />
-    <Compile Include="Search\Searchers\WordSearcher.cs" />
-    <Compile Include="Search\Searchers\WordTopParentSearcher.cs" />
     <Compile Include="Framework\ViewModelBase.cs" />
     <Compile Include="WithAddNew.cs" />
   </ItemGroup>
