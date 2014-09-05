@@ -111,6 +111,9 @@
     <Compile Include="NHibernate\Net4Collections.cs" />
     <Compile Include="NHibernate\NHibHelper.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
+    <Compile Include="Queries\DiagnosisQuery.cs" />
+    <Compile Include="Queries\PatientQuery.cs" />
+    <Compile Include="Queries\WordQuery.cs" />
     <Compile Include="Repositories\NHibernateRepository.cs" />
     <Compile Include="Repositories\SymptomRepository.cs" />
     <Compile Include="Repositories\IcdChapterRepository.cs" />
