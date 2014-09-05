@@ -92,9 +92,9 @@ namespace Diagnosis.ViewModels
             });
         }
 
-        private void Subscribe(WordViewModel w)
+        private void Subscribe(WordViewModel vm)
         {
-            w.PropertyChanged += (s, e) =>
+            vm.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "IsChecked")
                 {
@@ -106,6 +106,26 @@ namespace Diagnosis.ViewModels
             //    UncheckBranch(w);
             //    Words.Remove(w); // если на первом уровне
             //};
+            vm.Editable.Committed += (s, e) =>
+            {
+                var w = e.entity as Word;
+                session.SaveOrUpdate(w);
+            };
+            vm.Editable.Reverted += (s, e) =>
+            {
+                var w = e.entity as Word;
+                session.Refresh(w);
+            };
+            vm.Editable.Deleted += (s, e) =>
+            {
+                var w = e.entity as Word;
+                session.Delete(w);
+            };
+            vm.ChildrenChanged += (s, e) =>
+            {
+                // слово с детьми нельзя удалять
+                SetDeletable(vm);
+            };
         }
 
         public WordsListViewModel()
@@ -134,6 +154,19 @@ namespace Diagnosis.ViewModels
             _filter.Clear();// показываем все слова
         }
 
-
+        private static void SetDeletable(WordViewModel w)
+        {
+            // нельзя удалить 
+            //  TODO слова, которые есть в каком-нибудь симптоме, связанном с записью. 
+            // слова с детьми
+            if (!w.IsTerminal)
+            {
+                w.Editable.CanBeDeleted = false;
+            }
+            else
+            {
+                w.Editable.CanBeDeleted = true;
+            }
+        }
     }
 }

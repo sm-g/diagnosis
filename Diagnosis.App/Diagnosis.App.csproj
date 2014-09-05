@@ -186,6 +186,9 @@
       <DependentUpon>PatientHeader.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Helpers\ParentFinder.cs" />
+    <Compile Include="Controls\Search\NewAutocomplete.xaml.cs">
+      <DependentUpon>NewAutocomplete.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Search\SearchTree.xaml.cs">
       <DependentUpon>SearchTree.xaml</DependentUpon>
     </Compile>
@@ -321,6 +324,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\CardParts\PatientHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Search\NewAutocomplete.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
