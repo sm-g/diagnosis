@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
-    public class SearchViewModel : ViewModelBase
+    public class SearchViewModel : SessionVMBase
     {
         #region Fields
 
@@ -33,26 +33,19 @@ namespace Diagnosis.ViewModels
 
         private IEnumerable<CategoryViewModel> _categories;
         private bool _searchWas;
-        private ICategoryRepository catRepo;
-        private PatientsProducer patManager;
         private HrSearcher searcher = new HrSearcher();
 
         private EventMessageHandlersManager msgManager;
 
         #endregion Fields
 
-        public SearchViewModel(PatientsProducer manager)
+        public SearchViewModel()
         {
-            Contract.Requires(manager != null);
-            patManager = manager;
-
             WordSearch = new WordRootAutoComplete(QuerySeparator.Default, new HierarchicalSearchSettings());
             Results = new ObservableCollection<HrSearchResultViewModel>();
             ControlsVisible = true;
             AnyWord = true;
-
-            catRepo = new CategoryRepository();
-
+            
             WordSearch.InputEnded += (s, e) =>
             {
                 Search();
@@ -202,7 +195,7 @@ namespace Diagnosis.ViewModels
             {
                 if (_categories == null)
                 {
-                    var catsVM = catRepo.GetAll().Select(cat => new CategoryViewModel(cat)).ToList();
+                    var catsVM = session.QueryOver<Category>().List().Select(cat => new CategoryViewModel(cat)).ToList();
                     catsVM.ForAll(cat => cat.PropertyChanged += (s, e) =>
                     {
                         if (e.PropertyName == "IsChecked")
@@ -360,7 +353,7 @@ namespace Diagnosis.ViewModels
                 return new RelayCommand<Patient>(
                                           p =>
                                           {
-                                              this.Send(Events.OpenPatient, patManager.GetByModel(p).AsParams(MessageKeys.Patient));
+                                              this.Send(Events.OpenPatient, new PatientViewModel(p).AsParams(MessageKeys.Patient));
                                           });
             }
         }
@@ -557,7 +550,7 @@ namespace Diagnosis.ViewModels
                 CategoryViewModel other = obj as CategoryViewModel;
                 if (other != null)
                 {
-                    return this.category.Order.CompareTo(other.category.Order);
+                    return this.category.Ord.CompareTo(other.category.Ord);
                 }
                 else
                     throw new ArgumentException("Object is not a CategoryViewModel");
