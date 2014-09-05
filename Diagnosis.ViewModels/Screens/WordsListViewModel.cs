@@ -4,38 +4,28 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using EventAggregator;
+using Diagnosis.Models;
+using Diagnosis.ViewModels.Search;
+using Diagnosis.Data.Repositories;
+using Diagnosis.Data;
+using NHibernate;
+using Diagnosis.Data.Queries;
 
 namespace Diagnosis.ViewModels
 {
-    public class WordsListViewModel : ViewModelBase
+    public class WordsListViewModel : SessionVMBase
     {
-        private FilterViewModel<WordViewModel> filter;
+        private NewFilterViewModel<Word> _filter;
 
-        public event HierarchicalEventHandler<WordViewModel> NewWordAdded;
-
-        public string Query
+        public NewFilterViewModel<Word> Filter
         {
-            get
-            {
-                return filter.Query;
-            }
-            set
-            {
-                filter.Query = value;
-            }
+            get { return _filter; }
         }
 
         public ObservableCollection<WordViewModel> Words
         {
-            get { return filter.Results; }
-        }
-
-        public ICommand ClearCommand
-        {
-            get
-            {
-                return filter.ClearCommand;
-            }
+            get;
+            private set;
         }
 
         public RelayCommand<WordViewModel> AddCommand
@@ -45,17 +35,16 @@ namespace Diagnosis.ViewModels
                 return new RelayCommand<WordViewModel>((current) =>
                         {
                             // убираем несохраненные слова
-                            EntityProducers.WordsProducer.WipeUnsaved();
-                            // на первом уровне
-                            foreach (var item in Words.Where(w => w.Unsaved).ToList())
-                            {
-                                Words.Remove(item);
-                            }
 
-                            var newVM = EntityProducers.WordsProducer.Create(filter.Query, current);
+
+
+                            var newW = new Word(_filter.Query);
+                            newW.Parent = current != null ? current.word : null;
+                            var newVM = new WordViewModel(newW);
+
                             // новое слово открываем для редактирования
                             newVM.IsSelected = true;
-                            newVM.Editable.IsEditorActive = true;
+                            // newVM.Editable.IsEditorActive = true;
 
                             if (current != null)
                             {
@@ -65,12 +54,10 @@ namespace Diagnosis.ViewModels
                             else
                             {
                                 // to update searcher collection to new Root.Children
-                                filter.Searcher = new WordTopParentSearcher();
-                                filter.Filter();
+                                //filter.Searcher = new WordTopParentSearcher();
+                                // filter.Filter();
                             }
                             Subscribe(newVM);
-
-                            OnNewWordAdded(new HierarchicalEventAgrs<WordViewModel>(newVM));
                         });
             }
         }
@@ -80,28 +67,19 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                         {
-                            this.Send(Events.SendToSearch, EntityProducers.WordsProducer.AllWords.Where(w => w.IsChecked).AsParams(MessageKeys.Words));
-                        }, () => CheckedWords > 0);
+                            this.Send(Events.SendToSearch, Words.Where(w => w.IsChecked).AsParams(MessageKeys.Words));
+                        }, () => CheckedWordsNumber > 0);
             }
         }
 
         /// <summary>
         /// Количество отмеченных слов.
         /// </summary>
-        public int CheckedWords
+        public int CheckedWordsNumber
         {
             get
             {
-                return EntityProducers.WordsProducer.Root.CheckedChildren;
-            }
-        }
-
-        protected virtual void OnNewWordAdded(HierarchicalEventAgrs<WordViewModel> e)
-        {
-            var h = NewWordAdded;
-            if (h != null)
-            {
-                h(this, e);
+                return Words.Count(w => w.IsChecked);
             }
         }
 
@@ -123,23 +101,39 @@ namespace Diagnosis.ViewModels
                     OnPropertyChanged("CheckedWords");
                 }
             };
-            w.Editable.Deleted += (s, e) =>
-            {
-                UncheckBranch(w);
-                Words.Remove(w); // если на первом уровне
-            };
+            //w.Editable.Deleted += (s, e) =>
+            //{
+            //    UncheckBranch(w);
+            //    Words.Remove(w); // если на первом уровне
+            //};
         }
 
         public WordsListViewModel()
         {
-            EntityProducers.WordsProducer.AllWords.ForAll((w) =>
-            {
-                Subscribe(w);
-            });
+            Words = new ObservableCollection<WordViewModel>();
 
-            var searcher = new WordTopParentSearcher(); // только верхний уровень
-            filter = new FilterViewModel<WordViewModel>(searcher, onRemove: UncheckBranch);
-            filter.Clear();// показываем все слова
+            _filter = new NewFilterViewModel<Word>(WordQuery.StartingWith(session));
+
+
+            _filter.Results.CollectionChanged += (s, e) =>
+            {
+                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+                    foreach (Word item in e.OldItems)
+                    {
+                        var deleted = Words.Where(w => w.word == item).ToList();
+                        deleted.ForEach((w) => Words.Remove(w));
+                    }
+                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+                    foreach (Word item in e.NewItems)
+                    {
+                        var newVM = new WordViewModel(item);
+                        Words.Add(newVM);
+                    }
+            };
+
+            _filter.Clear();// показываем все слова
         }
+
+
     }
 }
