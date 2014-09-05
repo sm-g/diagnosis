@@ -61,7 +61,7 @@ namespace Diagnosis.ViewModels
                 {
                     try
                     {
-                        var hrs = e.GetValue<IEnumerable<HealthRecordViewModel>>(MessageKeys.HealthRecord);
+                        var hrs = e.GetValue<IEnumerable<HealthRecord>>(MessageKeys.HealthRecords);
                         if (hrs != null && hrs.Count() > 0)
                         {
                             RecieveHealthRecords(hrs);
@@ -70,7 +70,7 @@ namespace Diagnosis.ViewModels
                     catch { }
                     try
                     {
-                        var words = e.GetValue<IEnumerable<WordViewModel>>(MessageKeys.Word);
+                        var words = e.GetValue<IEnumerable<Word>>(MessageKeys.Words);
                         if (words != null && words.Count() > 0)
                         {
                             RecieveWords(words);
@@ -440,14 +440,14 @@ namespace Diagnosis.ViewModels
             OnPropertyChanged("NoResultsVisible");
         }
 
-        private void RecieveHealthRecords(IEnumerable<HealthRecordViewModel> hrs)
+        private void RecieveHealthRecords(IEnumerable<HealthRecord> hrs)
         {
             // все слова из записей
             var allWords = hrs.Aggregate(
-                new HashSet<WordViewModel>(),
+                new HashSet<Word>(),
                 (words, hr) =>
                 {
-                    hr.Symptom.Words.ForAll((w) => words.Add(EntityProducers.WordsProducer.GetByModel(w)));
+                    hr.Symptom.Words.ForAll((w) => words.Add(w));
                     return words;
                 });
             Autocomplete.Tags.Clear();
@@ -472,14 +472,14 @@ namespace Diagnosis.ViewModels
 
             // комментарий и давность из последней записи
             var lastHr = hrs.Last();
-            HrDateOffsetLower = lastHr.DateOffset;
+            HrDateOffsetLower = new DateOffset(lastHr.FromYear, lastHr.FromMonth, lastHr.FromDay);
             Comment = lastHr.Comment;
 
 
             RemoveLastResults();
         }
 
-        private void RecieveWords(IEnumerable<WordViewModel> words)
+        private void RecieveWords(IEnumerable<Word> words)
         {
             // ищем переданные слова
             Autocomplete.Tags.Clear();

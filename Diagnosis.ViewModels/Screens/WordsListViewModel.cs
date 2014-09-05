@@ -67,7 +67,9 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                         {
-                            this.Send(Events.SendToSearch, Words.Where(w => w.IsChecked).AsParams(MessageKeys.Words));
+                            this.Send(Events.SendToSearch, Words.Where(w => w.IsChecked)
+                                .Select(w => w.word)
+                                .AsParams(MessageKeys.Words));
                         }, () => CheckedWordsNumber > 0);
             }
         }

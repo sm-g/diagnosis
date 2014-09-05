@@ -75,7 +75,7 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                    {
-                       this.Send(Events.SendToSearch, this.ToEnumerable().AsParams(MessageKeys.Words));
+                       this.Send(Events.SendToSearch, word.ToEnumerable().AsParams(MessageKeys.Words));
                    });
             }
         }

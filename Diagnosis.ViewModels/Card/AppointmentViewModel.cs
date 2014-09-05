@@ -124,7 +124,9 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                         {
-                            this.Send(Events.SendToSearch, HealthRecords.Where(hr => hr.IsChecked).AsParams(MessageKeys.HealthRecords));
+                            this.Send(Events.SendToSearch, HealthRecords.Where(hr => hr.IsChecked)
+                                .Select(vm => vm.healthRecord)
+                                .AsParams(MessageKeys.HealthRecords));
                         }, () => CheckedHealthRecords > 0);
             }
         }
