@@ -18,8 +18,8 @@ namespace Diagnosis.ViewModels
         private QuerySeparator separator;
         private bool settingFullStringFromCode;
 
-        protected ObservableCollection<T> items;
-        protected ISimpleSearcher<T> searcher;
+        private ObservableCollection<T> items;
+        private ISimpleSearcher<T> searcher;
         protected HierarchicalSearchSettings settings;
 
         /// <summary>

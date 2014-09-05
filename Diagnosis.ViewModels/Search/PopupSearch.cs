@@ -11,16 +11,14 @@ namespace Diagnosis.ViewModels
 
         internal readonly ISimpleSearcher<T> searcher;
 
-        private string _query;
         private int _selectedIndex = -1;
         private bool _searchFocused;
         private bool _isResultsVisible;
-        private bool _resultsOnQueryChanges;
 
         #endregion Fields
 
         public event VmBaseEventHandler ResultItemSelected;
-        
+
         public FilterViewModel<T> Filter
         {
             get;

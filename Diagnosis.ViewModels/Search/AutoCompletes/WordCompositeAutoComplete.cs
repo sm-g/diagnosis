@@ -8,12 +8,11 @@ namespace Diagnosis.ViewModels
     {
         protected override ISimpleSearcher<WordViewModel> MakeSearch(WordViewModel parent, IEnumerable<WordViewModel> checkedWords)
         {
-            WordSearcher searcher;
             if (parent == null)
             {
                 parent = EntityProducers.WordsProducer.Root;
             }
-            searcher = new WordCompositeSearcher(parent, settings, checkedWords);
+            var searcher = new WordCompositeSearcher(parent, settings, checkedWords);
             searcher.UpperPriority = parent.Priority;
             return searcher;
         }

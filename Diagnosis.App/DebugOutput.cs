@@ -11,8 +11,6 @@ namespace Diagnosis.App
 {
     public class DebugOutput
     {
-        bool showPropertySelectedValueChanged = false;
-
         public DebugOutput()
         {
             var debugThread = new Thread(PrintMemoryUsage) { IsBackground = true };
