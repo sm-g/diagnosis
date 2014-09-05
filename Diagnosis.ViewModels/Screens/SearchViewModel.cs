@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Core;
 using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Search.Autocomplete;
 using EventAggregator;
 using System;
 using System.Collections.Generic;
@@ -41,16 +42,17 @@ namespace Diagnosis.ViewModels
 
         public SearchViewModel()
         {
-            WordSearch = new WordRootAutoComplete(QuerySeparator.Default, new HierarchicalSearchSettings());
+            Autocomplete = new Autocomplete(new Recognizer(session), false, null);
+
             Results = new ObservableCollection<HrSearchResultViewModel>();
             ControlsVisible = true;
             AnyWord = true;
-            
-            WordSearch.InputEnded += (s, e) =>
+
+            Autocomplete.InputEnded += (s, e) =>
             {
                 Search();
             };
-            ((INotifyCollectionChanged)Words).CollectionChanged += (s, e) =>
+            Autocomplete.Tags.CollectionChanged += (s, e) =>
             {
                 OnPropertyChanged("AllEmpty");
             };
@@ -273,8 +275,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public ReadOnlyObservableCollection<WordViewModel> Words { get { return WordSearch.Items; } }
-
         public string Comment
         {
             get
@@ -333,7 +333,7 @@ namespace Diagnosis.ViewModels
                 return AppDateGt == null && AppDateLt == null
                     && (HrDateOffsetLower.IsEmpty || HrDateOffsetUpper.IsEmpty)
                     && SelectedCategories.Count() == 0
-                    && Words.Count == 0
+                    && Autocomplete.Tags.Count == 0
                     && string.IsNullOrEmpty(Comment);
             }
         }
@@ -358,11 +358,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public AutoCompleteBase<WordViewModel> WordSearch
-        {
-            get;
-            private set;
-        }
+        public Autocomplete Autocomplete { get; private set; }
 
         public ObservableCollection<HrSearchResultViewModel> Results
         {
@@ -420,7 +416,7 @@ namespace Diagnosis.ViewModels
             options.AppointmentDateGt = DateHelper.NullableDate(AppYearLower, AppMonthLower, AppDayLower);
             options.AppointmentDateLt = DateHelper.NullableDate(AppYearUpper, AppMonthUpper, AppDayUpper);
             options.AnyWord = AnyWord;
-            options.Words = Words;
+            options.Words = Autocomplete.GetItems().Cast<WordViewModel>();
             options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
             options.Comment = Comment;
 
@@ -454,7 +450,11 @@ namespace Diagnosis.ViewModels
                     hr.Symptom.Words.ForAll((w) => words.Add(EntityProducers.WordsProducer.GetByModel(w)));
                     return words;
                 });
-            WordSearch.Reset(allWords);
+            Autocomplete.Tags.Clear();
+            foreach (var item in allWords)
+            {
+                Autocomplete.AddTag(item);
+            }
 
             // если несколько записей — любое из слов
             AnyWord = hrs.Count() != 1;
@@ -482,7 +482,11 @@ namespace Diagnosis.ViewModels
         private void RecieveWords(IEnumerable<WordViewModel> words)
         {
             // ищем переданные слова
-            WordSearch.Reset(words);
+            Autocomplete.Tags.Clear();
+            foreach (var item in words)
+            {
+                Autocomplete.AddTag(item);
+            }
 
             RemoveLastResults();
         }

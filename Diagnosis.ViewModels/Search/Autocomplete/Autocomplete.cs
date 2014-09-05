@@ -1,4 +1,4 @@
-﻿using Remotion.Linq.Collections;
+﻿using System.Collections.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -33,7 +33,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             Suggestions = new ObservableCollection<object>();
         }
         /// <summary>
-        /// Возникает, когда работа с автокомплитом окончена.
+        /// Возникает, когда работа с автокомплитом окончена. (Enter второй раз.)
         /// </summary>
         public event EventHandler InputEnded;
         public RelayCommand EnterCommand

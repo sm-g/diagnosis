@@ -110,7 +110,7 @@
                     <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
                 </StackPanel.InputBindings>
                 
-                <search:AutoComplete DataContext="{Binding WordSearch}" />
+                <search:NewAutocomplete DataContext="{Binding Autocomplete}" />
                 <DockPanel Style="{StaticResource line}">
                     <CheckBox IsChecked="{Binding AnyWord}" Margin="0,10,0,0">Хотя бы одно слово</CheckBox>
                 </DockPanel>
