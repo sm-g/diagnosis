@@ -150,7 +150,6 @@
     <Compile Include="Search\Searchers\DiagnosisFiltratingSearcher.cs" />
     <Compile Include="Search\Searchers\DiagnosisSearcher.cs" />
     <Compile Include="Search\Searchers\HrSearcher.cs" />
-    <Compile Include="Search\Searchers\PatientSearcher.cs" />
     <Compile Include="Framework\ViewModelBase.cs" />
     <Compile Include="WithAddNew.cs" />
   </ItemGroup>
