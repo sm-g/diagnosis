@@ -74,11 +74,11 @@ namespace Diagnosis.ViewModels
 
         private void CreateAutoComplete()
         {
-            List<WordViewModel> initialWords = new List<WordViewModel>();
+            List<Word> initialWords = new List<Word>();
             if (HealthRecord.Symptom != null)
-                foreach (var item in HealthRecord.Symptom.Words)
+                foreach (var item in HealthRecord.healthRecord.Symptom.Words)
                 {
-                    initialWords.Add(EntityProducers.WordsProducer.GetByModel(item));
+                    initialWords.Add(item);
                 }
 
             _autocomplete = new Autocomplete(new Recognizer(session, true) { AllowNewFromQuery = true }, true, initialWords.ToArray());
