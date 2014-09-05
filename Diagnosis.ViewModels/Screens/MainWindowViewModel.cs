@@ -21,7 +21,6 @@ namespace Diagnosis.ViewModels
         private bool _wordsOpened;
         private bool _searchAsideOpened;
         private SearchViewModel _search;
-        private PatientsAsideViewModel _patientsAside;
         private PatientsListViewModel _patients;
         private LoginViewModel _login;
         WordsListViewModel _words;
@@ -40,9 +39,7 @@ namespace Diagnosis.ViewModels
         /// Установить флаг перед переходом к странице, на которой должна пустая история навигации.
         /// </summary>
         private bool clearNavOnNavigated;
-
-        private PatientsProducer patProducer = new PatientsProducer(new PatientRepository());
-
+        
         #region Screen Opened flags
 
         public bool LoginOpened
@@ -224,25 +221,17 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public PatientsAsideViewModel PatientsAside
-        {
-            get
-            {
-                return _patientsAside ?? (_patientsAside = new PatientsAsideViewModel(patProducer));
-            }
-        }
-
         public PatientsListViewModel Patients
         {
             get
             {
-                return _patients ?? (_patients = new PatientsListViewModel(patProducer));
+                return _patients ?? (_patients = new PatientsListViewModel());
             }
         }
 
         public SearchViewModel Search
         {
-            get { return _search ?? (_search = new SearchViewModel(patProducer)); }
+            get { return _search ?? (_search = new SearchViewModel()); }
         }
 
         public WordsListViewModel Words
@@ -294,7 +283,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return patProducer.AddPatientCommand;
+                return null;// patProducer.AddPatientCommand;
             }
         }
 
@@ -346,7 +335,7 @@ namespace Diagnosis.ViewModels
             this.Subscribe(Events.OpenHealthRecord, (e) =>
             {
                 var hr = e.GetValue<HealthRecord>(MessageKeys.HealthRecord);
-                var patVM = patProducer.GetByModel(hr.Appointment.Course.Patient);
+                PatientViewModel patVM = null;// patProducer.GetByModel(hr.Appointment.Course.Patient);
                 viewer.OpenPatient(patVM);
                 viewer.OpenHr(hr);
             });

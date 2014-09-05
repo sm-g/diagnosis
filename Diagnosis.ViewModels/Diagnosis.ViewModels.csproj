@@ -129,7 +129,6 @@
     <Compile Include="Framework\RelayCommand.cs" />
     <Compile Include="Screens\LoginViewModel.cs" />
     <Compile Include="Screens\MainWindowViewModel.cs" />
-    <Compile Include="Screens\PatientsAsideViewModel.cs" />
     <Compile Include="Screens\PatientsListViewModel.cs" />
     <Compile Include="Screens\ShortPatientViewModel.cs" />
     <Compile Include="Screens\SearchViewModel.cs" />
