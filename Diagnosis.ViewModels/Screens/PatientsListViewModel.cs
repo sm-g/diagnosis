@@ -1,30 +1,60 @@
-﻿using Diagnosis.Core;
+﻿using System.Linq;
+using Diagnosis.Core;
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Diagnosis.Data.Repositories;
+using Diagnosis.Models;
+using Diagnosis.Data;
+using Diagnosis.ViewModels.Search;
+using NHibernate;
+using Diagnosis.Data.Queries;
 
 namespace Diagnosis.ViewModels
 {
-    public class PatientsListViewModel : ViewModelBase
+    public class PatientsListViewModel : SessionVMBase
     {
-        private PatientViewModel _current;
-        private PatientsProducer _producer;
-        private PopupSearch<PatientViewModel> _search;
+        private ShortPatientViewModel _current;
+        private NewFilterViewModel<Patient> _filter;
+        private ObservableCollection<ShortPatientViewModel> _patients;
 
-        public PatientsListViewModel(PatientsProducer manager)
+        public PatientsListViewModel()
         {
-            _producer = manager;
+            _patients = new ObservableCollection<ShortPatientViewModel>();
+
+            _filter = new NewFilterViewModel<Patient>(PatientQuery.StartingWith(session));
+
+            _filter.Results.CollectionChanged += (s, e) =>
+            {
+                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+                    foreach (Patient item in e.OldItems)
+                    {
+                        var deleted = Patients.Where(w => w.patient == item).ToList();
+                        deleted.ForEach((w) => Patients.Remove(w));
+                    }
+                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+                    foreach (Patient item in e.NewItems)
+                    {
+                        var newVM = new ShortPatientViewModel(item);
+                        Patients.Add(newVM);
+                    }
+            };
+            _filter.Clear(); // показываем всех
+
             this.Subscribe(Events.OpenedPatientChanged, (e) =>
             {
-                var pat = e.GetValue<PatientViewModel>(MessageKeys.Patient);
+                var pat = e.GetValue<ShortPatientViewModel>(MessageKeys.Patient);
                 SelectedPatient = pat;
             });
+
         }
 
-        public ObservableCollection<PatientViewModel> Patients { get { return _producer.Patients; } }
+        public ObservableCollection<ShortPatientViewModel> Patients { get { return _patients; } }
 
-        public PatientViewModel SelectedPatient
+        public NewFilterViewModel<Patient> Filter { get { return _filter; } }
+
+        public ShortPatientViewModel SelectedPatient
         {
             get
             {
@@ -44,7 +74,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _producer.AddPatientCommand;
+                return null;// TODO _producer.AddPatientCommand;
             }
         }
 
@@ -58,20 +88,6 @@ namespace Diagnosis.ViewModels
                         }, () => SelectedPatient != null);
             }
         }
-
-        public PopupSearch<PatientViewModel> Search
-        {
-            get
-            {
-                if (_search == null)
-                {
-                    _search = new PopupSearch<PatientViewModel>(new PatientSearcher(_producer.Patients));
-                    _search.ResultItemSelected += _search_ResultItemSelected;
-                }
-                return _search;
-            }
-        }
-
         public void SelectLastPatient()
         {
             if (Patients.Count > 0)
@@ -79,14 +95,6 @@ namespace Diagnosis.ViewModels
                 SelectedPatient = Patients[0];
             }
         }
-        private void _search_ResultItemSelected(object sender, EventArgs e)
-        {
-            var patientVM = Search.SelectedItem as PatientViewModel;
-            if (patientVM != null)
-            {
-                SelectedPatient = patientVM;
-                Search.Filter.Clear();
-            }
-        }
+
     }
 }
