@@ -12,6 +12,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
     public class Recognizer
     {
         private readonly ISession session;
+        private bool childrenFirstStrategy;
 
         /// <summary>
         /// Разрешает создание новых слов из текста запроса.
@@ -24,9 +25,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 || AllowNewFromQuery; // new word
         }
 
-        public Recognizer(ISession session)
+        public Recognizer(ISession session, bool childrenFirstStrategy)
         {
             this.session = session;
+            this.childrenFirstStrategy = childrenFirstStrategy;
         }
 
         public IEnumerable<object> MakeEntities(object obj)
@@ -93,7 +95,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             //   char.IsDigit(query[0]))
             //    return new UnitSearcher();
             Contract.Assume(prev == null || prev is Word);
-            return WordQuery.StartingWithChildrenFirst(session).Invoke(prev as Word, query);
+            if (childrenFirstStrategy)
+                return WordQuery.StartingWithChildrenFirst(session).Invoke(prev as Word, query);
+            else
+                return WordQuery.StartingWith(session).Invoke(query);
         }
     }
 }

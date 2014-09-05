@@ -1,5 +1,7 @@
-﻿using Diagnosis.Core;
+﻿using NHibernate;
+using Diagnosis.Core;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Search.Autocomplete;
 using EventAggregator;
 using System;
 using System.Collections.Generic;
@@ -10,10 +12,12 @@ namespace Diagnosis.ViewModels
 {
     public class HrEditorViewModel : ViewModelBase
     {
-        private static AutoCompleteBase<WordViewModel> _autoCompleteStatic;
+        Autocomplete _autocomplete;
         private PopupSearch<DiagnosisViewModel> _diagnosisSearch;
 
+
         private HealthRecordViewModel _hr;
+        private ISession session;
 
         #region HealthRecord
 
@@ -66,15 +70,10 @@ namespace Diagnosis.ViewModels
 
         #region AutoComplete
 
-        public AutoCompleteBase<WordViewModel> AutoComplete { get { return _autoCompleteStatic; } }
+        public Autocomplete Autocomplete { get { return _autocomplete; } }
 
         private void CreateAutoComplete()
         {
-            if (_autoCompleteStatic != null)
-            {
-                ((INotifyCollectionChanged)_autoCompleteStatic.Items).CollectionChanged -= AutoCompleteItems_CollectionChanged;
-            }
-
             List<WordViewModel> initialWords = new List<WordViewModel>();
             if (HealthRecord.Symptom != null)
                 foreach (var item in HealthRecord.Symptom.Words)
@@ -82,18 +81,17 @@ namespace Diagnosis.ViewModels
                     initialWords.Add(EntityProducers.WordsProducer.GetByModel(item));
                 }
 
-            _autoCompleteStatic = new WordCompositeAutoComplete(
-                   QuerySeparator.Default,
-                   new HierarchicalSearchSettings(),
-                   initialWords);
-
-            ((INotifyCollectionChanged)_autoCompleteStatic.Items).CollectionChanged += AutoCompleteItems_CollectionChanged;
+            _autocomplete = new Autocomplete(new Recognizer(session, true) { AllowNewFromQuery = true }, true, initialWords.ToArray());
+            _autocomplete.Tags.CollectionChanged += AutoCompleteItems_CollectionChanged;
 
             OnPropertyChanged("AutoComplete");
         }
 
         private void AutoCompleteItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            // меняет симптом записи
+
+            // TODO менять только при сохранении?
             HashSet<Word> words;
 
             if (HealthRecord.Symptom != null)
@@ -182,8 +180,9 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public HrEditorViewModel()
+        public HrEditorViewModel(ISession session)
         {
+            this.session = session;
             Subscribe();
             CreateDiagnosisSearch();
         }

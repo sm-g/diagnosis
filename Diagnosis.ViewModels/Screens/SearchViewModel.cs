@@ -42,7 +42,7 @@ namespace Diagnosis.ViewModels
 
         public SearchViewModel()
         {
-            Autocomplete = new Autocomplete(new Recognizer(session), false, null);
+            Autocomplete = new Autocomplete(new Recognizer(session, false), false, null);
 
             Results = new ObservableCollection<HrSearchResultViewModel>();
             ControlsVisible = true;
