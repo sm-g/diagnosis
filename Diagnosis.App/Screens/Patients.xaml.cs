@@ -19,11 +19,8 @@ namespace Diagnosis.App.Screens
     /// <summary>
     /// Interaction logic for Patients.xaml
     /// </summary>
-    public partial class Patients : Page
+    public partial class Patients : UserControl
     {
-        IInputElement LastFocused = null;
-        bool isloaded;
-
         public Patients()
         {
             InitializeComponent();
@@ -37,16 +34,7 @@ namespace Diagnosis.App.Screens
             if (isloaded)
                 return;
             isloaded = true;
-
-            this.NavigationService.Navigating += NavigationService_Navigating;
         }
 
-        void NavigationService_Navigating(object sender, NavigatingCancelEventArgs e)
-        {
-            if (e.Content == this)
-                FocusManager.SetFocusedElement(this, LastFocused);
-            else
-                LastFocused = FocusManager.GetFocusedElement(patientsControl);
-        }
     }
 }

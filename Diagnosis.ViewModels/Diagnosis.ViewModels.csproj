@@ -129,6 +129,10 @@
     <Compile Include="Screens\LoginViewModel.cs" />
     <Compile Include="Screens\MainWindowViewModel.cs" />
     <Compile Include="Screens\PatientsListViewModel.cs" />
+    <Compile Include="Screens\Shell\AsideViewModel.cs" />
+    <Compile Include="Screens\Shell\MenuBarViewModel.cs" />
+    <Compile Include="Screens\Shell\PanelViewModel.cs" />
+    <Compile Include="Screens\Shell\ScreenSwitcher.cs" />
     <Compile Include="Screens\ShortPatientViewModel.cs" />
     <Compile Include="Screens\SearchViewModel.cs" />
     <Compile Include="Screens\SettingsViewModel.cs" />

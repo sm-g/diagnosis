@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="Diagnosis.App.Windows.Shell.MenuBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:Diagnosis.ViewModels;assembly=Diagnosis.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="30" d:DesignWidth="600">
+    <!-- MenuBarVM -->
+    <Grid>
+        <Grid.Background>
+            <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}" />
+        </Grid.Background>
+        <Menu>
+            <MenuItem Header="_Пациенты">
+                <MenuItem Command="{Binding OpenPatientsCommand}" Header="_Все пациенты" />
+                <MenuItem Command="{Binding AddPatientCommand}" Header="_Новый..." />
+            </MenuItem>
+            <MenuItem Header="_Справочники">
+                <MenuItem Command="{Binding OpenWordsCommand}" Header="_Слова" />
+            </MenuItem>
+            <MenuItem Header="_Вид">
+                <MenuItem IsCheckable="true" IsChecked="{Binding SearchAside.Opened}" Header="_Поиск" />
+            </MenuItem>
+        </Menu>
+
+        <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding FastAddingMode}">_Осмотр пациентов</CheckBox>
+
+        <Menu HorizontalAlignment="Right">
+            <MenuItem Header="{Binding CurrentDoctor, Converter={StaticResource ManToShortName}}">
+                <MenuItem Header="_Настройки..." Command="{Binding OpenSettingsCommand}" />
+                <MenuItem Header="_Выйти" Command="{Binding LogoutCommand}" />
+            </MenuItem>
+        </Menu>
+    </Grid>
+</UserControl>

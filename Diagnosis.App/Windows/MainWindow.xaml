@@ -5,10 +5,10 @@
         xmlns:controls="clr-namespace:Diagnosis.App.Controls"
         xmlns:vm="clr-namespace:Diagnosis.ViewModels;assembly=Diagnosis.ViewModels"
         xmlns:screen="clr-namespace:Diagnosis.App.Screens"
+        xmlns:shell="clr-namespace:Diagnosis.App.Windows.Shell"
         x:Class="Diagnosis.App.Windows.MainWindow"
         mc:Ignorable="d"
         x:Name="root"
-        Loaded="root_Loaded"
         Title="MainWindow" Height="700" Width="800">
     <Window.Resources>
         <ResourceDictionary>
@@ -26,9 +26,6 @@
             <DataTemplate DataType="{x:Type vm:PatientViewer}">
                 <screen:Card />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:PatientViewModel}">
-                <screen:Card />
-            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:PatientsListViewModel}">
                 <screen:Patients />
             </DataTemplate>
@@ -38,90 +35,28 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
+        
+        <shell:MenuBar Grid.ColumnSpan="2"
+                       DataContext="{Binding MenuBar}"
+                       Visibility="{Binding MenuVisible, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
 
-        <Grid x:Name="header"
-              Grid.ColumnSpan="2"
-              Visibility="{Binding LoginOpened, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-            <Grid.Background>
-                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}" />
-            </Grid.Background>
-            <Menu>
-                <MenuItem Header="_Пациенты">
-                    <MenuItem Command="{Binding OpenPatientsCommand}" Header="_Все пациенты" />
-                    <MenuItem Command="{Binding AddPatientCommand}" Header="_Новый..." />
-                </MenuItem>
-                <MenuItem Header="_Справочники">
-                    <MenuItem Command="{Binding OpenWordsCommand}" Header="_Слова" />
-                </MenuItem>
-                <MenuItem Header="_Вид">
-                    <MenuItem IsCheckable="true" IsChecked="{Binding SearchAsideOpened}" Header="_Поиск" />
-                    <MenuItem IsCheckable="true" IsChecked="{Binding PatientsAsideOpened}" Header="_Пациенты" />
-                </MenuItem>
-            </Menu>
-
-            <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding FastAddingMode}">_Осмотр пациентов</CheckBox>
-
-            <Menu HorizontalAlignment="Right">
-                <MenuItem Header="{Binding Login.CurrentDoctor, Converter={StaticResource ManToShortName}}">
-                    <MenuItem Header="_Настройки..." Command="{Binding OpenSettingsCommand}" />
-                    <MenuItem Header="_Выйти" Command="{Binding LogoutCommand}" />
-                </MenuItem>
-            </Menu>
-        </Grid>
-
-        <DockPanel x:Name="aside"
-                   Visibility="{Binding LoginOpened, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+        <shell:AsidePanels 
+                        Margin="0,0,-2,0"
+                        Padding="0"
+                   DataContext="{Binding RightAside}"
+                   Visibility="{Binding MenuVisible, Converter={StaticResource NegBooleanToVisibilityConverter}}"
                    Grid.Row="1"
                    Grid.Column="1"
-                   Grid.RowSpan="2">
-            <TabControl TabStripPlacement="Right"
-                        Margin="0,0,-2,0"
-                        Padding="0">
-                <TabControl.Style>
-                    <Style TargetType="TabControl">
-                        <Setter Property="BorderThickness" Value="1,0,1,0" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding NoAsideOpened}" Value="True">
-                                <Setter Property="BorderThickness" Value="0,0,1,0" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TabControl.Style>
-                <TabItem IsSelected="{Binding PatientsAsideOpened}"
-                         Visibility="{Binding PatientsAsideVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                         Style="{StaticResource tabHeaderWithLine}">
-                    <TabItem.Header>
-                        <ToggleButton IsChecked="{Binding PatientsAsideOpened}" Style="{StaticResource emptyToggle}">
-                            <TextBlock Style="{StaticResource verticalTextBlock}">Пациенты</TextBlock>
-                        </ToggleButton>
-                    </TabItem.Header>
-                    <screen:PatientsAside x:Name="patientsAside"
-        			                 DataContext="{Binding PatientsAside}"
-        			                 Margin="5,0,5,0" />
-                </TabItem>
-                <TabItem IsSelected="{Binding SearchAsideOpened}"
-                         Style="{StaticResource tabHeaderWithLine}">
-                    <TabItem.Header>
-                        <ToggleButton IsChecked="{Binding SearchAsideOpened}" Style="{StaticResource emptyToggle}">
-                            <TextBlock Style="{StaticResource verticalTextBlock}">Поиск</TextBlock>
-                        </ToggleButton>
-                    </TabItem.Header>
-                    <screen:Search x:Name="search"
-                                   DataContext="{Binding Search}" />
-                </TabItem>
-            </TabControl>
-        </DockPanel>
+                   Grid.RowSpan="2" />       
 
-        <Frame x:Name="frame"
-               Grid.Row="1" />
-        <ContentControl Content="{Binding CurrentScreen}"
+        <ContentControl Content="{Binding CurrentView}"
                         Grid.Row="2" />
     </Grid>
 </Window>

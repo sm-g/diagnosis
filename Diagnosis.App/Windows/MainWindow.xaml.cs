@@ -34,12 +34,7 @@ namespace Diagnosis.App.Windows
                 var result = settingsDialog.ShowDialog();
             });
 
-            DataContext = new MainWindowViewModel(frame.NavigationService);
-        }
-
-        private void root_Loaded(object sender, RoutedEventArgs e)
-        {
-            frame.Focus();
+            DataContext = new MainWindowViewModel();
         }
     }
 }

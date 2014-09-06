@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="Diagnosis.App.Windows.Shell.AsidePanels"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:screen="clr-namespace:Diagnosis.App.Screens"             
+             xmlns:vm="clr-namespace:Diagnosis.ViewModels;assembly=Diagnosis.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/TabControl.xaml" />
+                <ResourceDictionary Source="../../Styles/EmptyToggle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            
+            <DataTemplate DataType="{x:Type vm:SearchViewModel}">
+                <screen:Search />
+            </DataTemplate>
+            
+            <Style TargetType="TabControl">
+                <Setter Property="BorderThickness" Value="1,0,1,0" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding AllClosed}" Value="True">
+                        <Setter Property="BorderThickness" Value="0,0,1,0" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style TargetType="TabItem" BasedOn="{StaticResource tabHeaderWithLine}">
+                <Setter Property="Content" Value="{Binding Content}" />
+                <Setter Property="IsSelected" Value="{Binding Opened, Mode=TwoWay}" />
+                <Setter Property="BorderThickness" Value="1,0,1,0" />
+            </Style>
+        </ResourceDictionary>      
+    </UserControl.Resources>
+    
+    <TabControl TabStripPlacement="Right"
+                ItemsSource="{Binding Panels}">        
+        <TabControl.ItemTemplate>
+            <DataTemplate>
+                <ToggleButton IsChecked="{Binding Opened, Mode=TwoWay}" Style="{StaticResource emptyToggle}">
+                    <TextBlock Style="{StaticResource verticalTextBlock}" Text="{Binding Title}"/>
+                </ToggleButton>
+            </DataTemplate>
+        </TabControl.ItemTemplate>
+    </TabControl>
+</UserControl>
