@@ -64,8 +64,6 @@ namespace Diagnosis.ViewModels
         private void OnLoggedIn(object sender, EventArgs e)
         {
             switcher.OpenScreen(Screens.Patients);
-
-            //  Patients.SelectLastPatient();
         }
     }
 }

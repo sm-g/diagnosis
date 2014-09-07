@@ -108,6 +108,7 @@
     <Compile Include="Mappings\PatientPropertyMap.cs" />
     <Compile Include="Mappings\PatientMap.cs" />
     <Compile Include="Mappings\SymptomWordsMap.cs" />
+    <Compile Include="NHibernate\Logging.cs" />
     <Compile Include="NHibernate\Net4Collections.cs" />
     <Compile Include="NHibernate\NHibHelper.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />

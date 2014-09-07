@@ -44,9 +44,11 @@ namespace Diagnosis.ViewModels
 
             this.Subscribe(Events.OpenedPatientChanged, (e) =>
             {
-                var pat = e.GetValue<ShortPatientViewModel>(MessageKeys.Patient);
-                SelectedPatient = pat;
+                var pat = e.GetValue<Patient>(MessageKeys.Patient);
+                SelectedPatient = Patients.First(x => x.patient == pat);
             });
+
+            SelectLastPatient();
 
         }
 
@@ -74,7 +76,10 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return null;// TODO _producer.AddPatientCommand;
+                return new RelayCommand(() =>
+                {
+                    this.Send(Events.PatientAdded);
+                });
             }
         }
 
@@ -84,7 +89,7 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                         {
-                            this.Send(Events.OpenPatient, SelectedPatient.AsParams(MessageKeys.Patient));
+                            this.Send(Events.OpenPatient, SelectedPatient.patient.AsParams(MessageKeys.Patient));
                         }, () => SelectedPatient != null);
             }
         }

@@ -150,7 +150,10 @@ namespace Diagnosis.ViewModels
 
             DiagnosisSearch.Filter.Cleared += DiagnosisSearch_Cleared;
             DiagnosisSearch.ResultItemSelected += DiagnosisSearch_ResultItemSelected;
-
+            DiagnosisSearch.Filter.Results.CollectionChanged += (s, e) =>
+            {
+                // VM.IsFiltered
+            };
             UpdateDiagnosisQueryCode();
         }
 

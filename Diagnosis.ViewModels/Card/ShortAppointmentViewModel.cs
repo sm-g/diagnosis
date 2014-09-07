@@ -41,11 +41,6 @@ namespace Diagnosis.ViewModels
             IsDoctorFromCourse = doctorFromCourse;
 
         }
-        public ShortAppointmentViewModel()
-        {
-            // +app
-
-        }
         public override string ToString()
         {
             return appointment.ToString();

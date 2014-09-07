@@ -149,7 +149,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 if (Query != value)
                 {
-                    Contract.Requires(!IsDeleteOnly);
+                    Contract.Assume(!IsDeleteOnly);
 
                     State = TagStates.Typing;
 

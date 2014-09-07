@@ -300,7 +300,7 @@ namespace Diagnosis.ViewModels
 
         private void MakeSuggestions()
         {
-            EntityProducers.WordsProducer.WipeUnsaved();
+            //EntityProducers.WordsProducer.WipeUnsaved();
 
             string query;
             if (!IsItemCompleted)
