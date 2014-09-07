@@ -97,6 +97,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthorityController.cs" />
+    <Compile Include="Card\ShortAppointmentViewModel.cs" />
+    <Compile Include="Card\ShortCourseViewModel.cs" />
+    <Compile Include="Card\PatientViewModel.cs" />
     <Compile Include="CheckableBase.cs" />
     <Compile Include="Card\AppointmentsManager.cs" />
     <Compile Include="Card\AppointmentViewModel.cs" />
@@ -105,7 +108,6 @@
     <Compile Include="Card\DiagnosisViewModel.cs" />
     <Compile Include="Card\HealthRecordManager.cs" />
     <Compile Include="Card\HealthRecordViewModel.cs" />
-    <Compile Include="Card\PatientViewModel.cs" />
     <Compile Include="Card\PropertyViewModel.cs" />
     <Compile Include="Card\WordViewModel.cs" />
     <Compile Include="Editable.cs" />

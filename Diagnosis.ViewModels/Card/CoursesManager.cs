@@ -13,28 +13,28 @@ namespace Diagnosis.ViewModels
     public class CoursesManager
     {
         private readonly Patient patient;
-        private ObservableCollection<CourseViewModel> _courses;
+        private ObservableCollection<ShortCourseViewModel> _courses;
 
         public event EventHandler CoursesLoaded;
 
         /// <summary>
         /// Курсы пацента, отсортированы по дате по убыванию (нулевой — самый поздний курс).
         /// </summary>
-        public ObservableCollection<CourseViewModel> Courses
+        public ObservableCollection<ShortCourseViewModel> Courses
         {
             get
             {
                 if (_courses == null)
                 {
-                    IList<CourseViewModel> courseVMs;
+                    IList<ShortCourseViewModel> courseVMs;
                     using (var tester = new PerformanceTester((ts) => Debug.Print("making courses for {0}: {1}", patient, ts)))
                     {
                         courseVMs = patient.Courses
                            .OrderByDescending(c => c, new CompareCourseByDate())
-                           .Select(i => new CourseViewModel(i))
+                           .Select(i => new ShortCourseViewModel(i))
                            .ToList();
                     }
-                    _courses = new ObservableCollection<CourseViewModel>(courseVMs);
+                    _courses = new ObservableCollection<ShortCourseViewModel>(courseVMs);
                     OnCoursesLoaded();
                 }
                 return _courses;
@@ -50,7 +50,7 @@ namespace Diagnosis.ViewModels
                 {
                     foreach (Course item in e.NewItems)
                     {
-                        var courseVM = new CourseViewModel(item);
+                        var courseVM = new ShortCourseViewModel(item);
                         Courses.Insert(0, courseVM);
                     }
                 }

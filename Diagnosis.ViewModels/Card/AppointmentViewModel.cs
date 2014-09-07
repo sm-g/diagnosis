@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
-    public class AppointmentViewModel : ViewModelBase, IEditableNesting
+    public class AppointmentViewModel : ViewModelBase
     {
         #region Fileds
 
@@ -20,28 +20,11 @@ namespace Diagnosis.ViewModels
         internal Action<HealthRecordViewModel> OpenedHrSetter;
         private HealthRecordManager hrManager;
 
-        private static HrEditorViewModel _hrEditorStatic = new HrEditorViewModel();
+        private static HrEditorViewModel _hrEditorStatic;//= new HrEditorViewModel();
 
         private ICollectionView healthRecordsView;
 
         #endregion Fileds
-
-        #region IEditableNesting
-
-        public Editable Editable { get; private set; }
-
-        /// <summary>
-        /// Осмотр пуст, если пусты все записи или их нет.
-        /// </summary>
-        public bool IsEmpty
-        {
-            get
-            {
-                return HealthRecords.All(hr => hr.IsEmpty);
-            }
-        }
-
-        #endregion IEditableNesting
 
         #region Model
 
@@ -100,7 +83,7 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                     {
-                        hrManager.AddHealthRecord();
+                        AddHealthRecord();
                     },
                     // нельзя добавлять новую запись, пока выбранная пуста
                     () => SelectedHealthRecord == null || !SelectedHealthRecord.IsEmpty
@@ -176,24 +159,15 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public bool IsDoctorFromCourse
-        {
-            get;
-            private set;
-        }
-
-        public AppointmentViewModel(Appointment appointment, bool doctorFromCourse)
+        public AppointmentViewModel(Appointment appointment)
         {
             Contract.Requires(appointment != null);
             this.appointment = appointment;
-            IsDoctorFromCourse = doctorFromCourse;
 
             appointment.HealthRecords.CollectionChanged += HealthRecords_CollectionChanged;
 
             hrManager = new HealthRecordManager(this);
             hrManager.HrPropertyChanged += hrManager_HrPropertyChanged;
-
-            Editable = new Editable(appointment);
         }
 
 

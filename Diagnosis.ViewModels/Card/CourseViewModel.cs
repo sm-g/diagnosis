@@ -9,33 +9,10 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
-    public class CourseViewModel : ViewModelBase, IEditableNesting
+    public class CourseViewModel : ViewModelBase
     {
         internal readonly Course course;
-
-        internal Action<AppointmentViewModel> OpenedAppointmentSetter;
-        internal Func<AppointmentViewModel> OpenedAppointmentGetter;
         private AppointmentsManager appManager;
-
-        private ObservableCollection<WithAddNew> _appointmentsWithAddNew;
-        private bool isAddingNewApp;
-
-        #region IEditableNesting
-
-        public Editable Editable { get; private set; }
-
-        /// <summary>
-        /// Курс пустой, если пусты все осмотры в нём.
-        /// </summary>
-        public bool IsEmpty
-        {
-            get
-            {
-                return Appointments.All(app => app.IsEmpty);
-            }
-        }
-
-        #endregion IEditableNesting
 
         #region Model
 
@@ -80,7 +57,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public ObservableCollection<AppointmentViewModel> Appointments
+        public ObservableCollection<ShortAppointmentViewModel> Appointments
         {
             get
             {
@@ -89,63 +66,32 @@ namespace Diagnosis.ViewModels
         }
 
         #endregion Model
-
-        /// <summary>
-        /// Осмотры вместе в кнопкой Новый осмотр.
-        /// </summary>
-        public ObservableCollection<WithAddNew> AppointmentsWithAddNew
+        private ShortAppointmentViewModel _selApp;
+        public ShortAppointmentViewModel SelectedAppointment
         {
             get
             {
-                if (_appointmentsWithAddNew == null)
-                {
-                    _appointmentsWithAddNew = MakeAppointmentsWithAddNew(Appointments);
-                }
-                return _appointmentsWithAddNew;
-            }
-        }
-
-        public WithAddNew SelectedAppointmentWithAddNew
-        {
-            get
-            {
-                return AppointmentsWithAddNew.Where(wan => wan.Content == OpenedAppointmentGetter()).FirstOrDefault();
+                return _selApp;
             }
             set
             {
-                if (value != null)
+                if (_selApp != value)
                 {
-                    if (value.IsAddNew)
+                    if (value == null)
                     {
                         // выбрана вкладка +осмотр
-                        if (!isAddingNewApp)
-                        {
-                            isAddingNewApp = true;
-                            appManager.AddAppointment();
-                            isAddingNewApp = false;
-                        }
-                        return;
+                        var app = course.AddAppointment(AuthorityController.CurrentDoctor);
                     }
-                    OpenedAppointmentSetter(value.Content as AppointmentViewModel);
-                }
-                else
-                {
-                    OpenedAppointmentSetter(null);
+                    else
+                    {
+                        _selApp = value;
+
+                        OnPropertyChanged(() => SelectedAppointment);
+                    }
                 }
             }
         }
 
-        /// <summary>
-        /// Последний осмотр всегда есть в курсе. (Кроме состояния при удалении курса.)
-        /// </summary>
-        public AppointmentViewModel LastAppointment
-        {
-            get
-            {
-                Contract.Requires(Appointments.Count > 0);
-                return Appointments.Last();
-            }
-        }
 
         /// <summary>
         /// Добавляет осмотр, если курс не закончился.
@@ -156,7 +102,7 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                         {
-                            appManager.AddAppointment();
+                            var app = course.AddAppointment(AuthorityController.CurrentDoctor);
                         }, () => !IsEnded);
             }
         }
@@ -174,19 +120,7 @@ namespace Diagnosis.ViewModels
             Contract.Requires(course != null);
             this.course = course;
 
-            appManager = new AppointmentsManager(this);
-            appManager.AppointmentsLoaded += (s, e) =>
-            {
-                Appointments.CollectionChanged += Appointments_CollectionChanged;
-            };
-
-            Editable = new Editable(course);
-            Editable.Deleted += Editable_Deleted;
-        }
-
-        internal void AddAppointment()
-        {
-            appManager.AddAppointment();
+            appManager = new AppointmentsManager(course);
         }
 
         /// <summary>
@@ -197,59 +131,15 @@ namespace Diagnosis.ViewModels
             OnPropertyChanged("SelectedAppointmentWithAddNew");
         }
 
-        private ObservableCollection<WithAddNew> MakeAppointmentsWithAddNew(IEnumerable<AppointmentViewModel> appVMs)
-        {
-            var appointmentsWithAddNew = new ObservableCollection<WithAddNew>(
-                appVMs.Select(app => new WithAddNew(app)));
-            if (!IsEnded)
-                appointmentsWithAddNew.Add(new WithAddNew());
-            return appointmentsWithAddNew;
-        }
-
-        private void Editable_Deleted(object sender, EditableEventArgs e)
-        {
-            Editable.Deleted -= Editable_Deleted;
-            Appointments.CollectionChanged -= Appointments_CollectionChanged;
-        }
-
-        private void Appointments_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                // если был добавлен первый осмотр, AppointmentWithAddNew для него 
-                // создаётся в MakeAppointmentsWithAddNew
-                if (Appointments.Count != 1)
-                {
-                    foreach (AppointmentViewModel newApp in e.NewItems)
-                    {
-                        var newitem = new WithAddNew(newApp);
-                        AppointmentsWithAddNew.Insert(AppointmentsWithAddNew.Count - 1, newitem);
-                    }
-                }
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (AppointmentViewModel oldApp in e.OldItems)
-                {
-                    var item = AppointmentsWithAddNew.FirstOrDefault(wan => wan.Content == oldApp);
-                    if (item != null)
-                        try
-                        {
-                            AppointmentsWithAddNew.Remove(item);
-                        }
-                        catch (IndexOutOfRangeException)
-                        {
-                        }
-                }
-            }
-
-            OnPropertyChanged("LastAppointment");
-            OnPropertyChanged("IsEmpty");
-        }
 
         public override string ToString()
         {
             return course.ToString();
+        }
+
+        internal void SelectAppointment(Appointment appointment)
+        {
+            SelectedAppointment = Appointments.First(x => x.appointment == appointment);
         }
     }
 }
