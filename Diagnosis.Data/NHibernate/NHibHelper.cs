@@ -71,9 +71,9 @@ namespace Diagnosis.Data
             cfg.Configure("NHibernate\\hibernate.cfg.xml");
             cfg.Properties[Environment.CollectionTypeFactoryClass] = typeof(Net4CollectionTypeFactory).AssemblyQualifiedName;
             var listener = new EventListener();
-            cfg.AppendListeners(ListenerType.PreUpdate, new object[] { listener });
-            cfg.AppendListeners(ListenerType.PreInsert, new object[] { listener });
-            cfg.AppendListeners(ListenerType.PreDelete, new object[] { listener });
+            cfg.AppendListeners(ListenerType.PreUpdate, new IPreUpdateEventListener[] { listener });
+            cfg.AppendListeners(ListenerType.PreInsert, new IPreInsertEventListener[] { listener });
+            cfg.AppendListeners(ListenerType.PreDelete, new IPreDeleteEventListener[] { listener });
 
             cfg.AddMapping(Mapping);
 
