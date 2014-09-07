@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
@@ -9,6 +10,7 @@ namespace Diagnosis.Models
     {
         ISet<Appointment> appointments = new HashSet<Appointment>();
 
+        public virtual event NotifyCollectionChangedEventHandler AppointmentsChanged;
         public virtual Patient Patient { get; protected set; }
         public virtual Doctor LeadDoctor { get; protected set; }
         public virtual DateTime Start { get; protected set; }
@@ -17,8 +19,7 @@ namespace Diagnosis.Models
         {
             get
             {
-                return new ReadOnlyCollection<Appointment>(
-                    new List<Appointment>(appointments));
+                return new ReadOnlyCollection<Appointment>(new List<Appointment>(appointments));
             }
         }
 
@@ -30,14 +31,17 @@ namespace Diagnosis.Models
         public virtual Appointment AddAppointment(Doctor doctor)
         {
             Contract.Requires(!End.HasValue);
-
             var a = new Appointment(this, doctor ?? LeadDoctor);
             appointments.Add(a);
+
+            OnAppointmentsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, a));
             return a;
         }
         public virtual void DeleteAppointment(Appointment app)
         {
-            appointments.Remove(app);
+            if (appointments.Remove(app))
+                OnAppointmentsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, app));
+
         }
 
         public Course(Patient patient, Doctor doctor)
@@ -55,6 +59,15 @@ namespace Diagnosis.Models
         public override string ToString()
         {
             return string.Format("{0:d}, {1} apps {2} {3}", Start, Appointments.Count, Patient, LeadDoctor);
+        }
+
+        protected virtual void OnAppointmentsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            var h = AppointmentsChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
         }
     }
 

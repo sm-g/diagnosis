@@ -82,11 +82,12 @@ namespace Diagnosis.Models
 
         public virtual Speciality Speciality { get; set; }
 
-        public virtual ObservableCollection<Course> Courses
+        public virtual ReadOnlyCollection<Course> Courses
         {
             get
             {
-                return _courses ?? (_courses = new ObservableCollection<Course>(courses));
+                return new ReadOnlyCollection<Course>(
+                    new List<Course>(courses));
             }
         }
 
@@ -104,8 +105,8 @@ namespace Diagnosis.Models
             Contract.Requires(patient != null);
 
             var course = new Course(patient, this);
-            Courses.Add(course);
-            patient.Courses.Add(course);
+            courses.Add(course);
+            patient.AddCourse(course);
             return course;
         }
 

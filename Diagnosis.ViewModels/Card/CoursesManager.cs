@@ -44,7 +44,7 @@ namespace Diagnosis.ViewModels
         public CoursesManager(Patient patient)
         {
             this.patient = patient;
-            patient.Courses.CollectionChanged += (s, e) =>
+            patient.CoursesChanged += (s, e) =>
             {
                 if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
                 {

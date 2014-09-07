@@ -234,7 +234,7 @@ namespace Diagnosis.ViewModels
         {
             Debug.Print("opening patient {0}", patient);
 
-            patient.Courses.CollectionChanged += Courses_CollectionChanged;
+            patient.CoursesChanged += Courses_CollectionChanged;
 
             Course course;
             if (!patCourseMap.TryGetValue(patient, out course))
@@ -258,7 +258,7 @@ namespace Diagnosis.ViewModels
         private void OnPatientClosed(Patient closing, Patient opening)
         {
             Debug.Print("closing patient {0}", _openedPatient);
-            closing.Courses.CollectionChanged -= Courses_CollectionChanged;
+            closing.CoursesChanged -= Courses_CollectionChanged;
 
            // Session.SaveOrUpdate(closing);
 
@@ -281,7 +281,7 @@ namespace Diagnosis.ViewModels
         {
             Debug.Print("opening course {0}", course);
 
-            course.Appointments.CollectionChanged2 += Appointments_CollectionChanged;
+            course.AppointmentsChanged += Appointments_CollectionChanged;
 
             if (!patCourseMap.ContainsKey(OpenedPatient))
             {
@@ -317,7 +317,7 @@ namespace Diagnosis.ViewModels
 
             //Session.SaveOrUpdate(course);
 
-            course.Appointments.CollectionChanged2 -= Appointments_CollectionChanged;
+            course.AppointmentsChanged -= Appointments_CollectionChanged;
             OpenedAppointment = null;
 
             Debug.Print("closed course {0}", course);
@@ -328,7 +328,7 @@ namespace Diagnosis.ViewModels
             Contract.Requires(OpenedCourse == app.Course);
             Debug.Print("opening app  {0}", app);
 
-            app.HealthRecords.CollectionChanged += HealthRecords_CollectionChanged;
+            app.HealthRecordsChanged += HealthRecords_CollectionChanged;
 
             if (!courseAppMap.ContainsKey(OpenedCourse))
             {
@@ -369,7 +369,7 @@ namespace Diagnosis.ViewModels
         {
             Debug.Print("closing app {0}", app);
 
-            app.HealthRecords.CollectionChanged -= HealthRecords_CollectionChanged;
+            app.HealthRecordsChanged -= HealthRecords_CollectionChanged;
 
             OpenedHealthRecord = null;
             Debug.Print("closed app {0}", app);

@@ -28,7 +28,7 @@ namespace Diagnosis.ViewModels
                 {
                     _healthRecords = MakeHealthRecords();
 
-                    appVM.SubscribeEditableNesting(HealthRecords);
+                    //  appVM.SubscribeEditableNesting(HealthRecords);
                     OnHealthRecordsLoaded();
                 }
                 return _healthRecords;
@@ -43,8 +43,7 @@ namespace Diagnosis.ViewModels
         public HealthRecordViewModel AddHealthRecord()
         {
             var lastHrVM = appVM.SelectedHealthRecord ?? HealthRecords.LastOrDefault();
-            var newHr = new HealthRecord(appVM.appointment);
-            appVM.appointment.HealthRecords.Add(newHr);
+            var newHr = appVM.appointment.AddHealthRecord();
             if (lastHrVM != null)
             {
                 // копируем категории из последней записи
@@ -124,7 +123,7 @@ namespace Diagnosis.ViewModels
         private void hr_Deleted(object sender, EditableEventArgs e)
         {
             var hr = e.entity as HealthRecord;
-            appVM.appointment.HealthRecords.Remove(hr);
+            appVM.appointment.RemoveHealthRecord(hr);
 
             var hrVM = HealthRecords.Where(vm => vm.healthRecord == hr).FirstOrDefault();
             HealthRecords.Remove(hrVM);

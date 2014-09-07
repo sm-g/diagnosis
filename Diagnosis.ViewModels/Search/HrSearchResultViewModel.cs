@@ -20,6 +20,22 @@ namespace Diagnosis.ViewModels
 
             this.hr = hr;
             this.options = options;
+
+            AppointmentHealthRecords = new ObservableCollection<HealthRecord>(hr.Appointment.HealthRecords);
+            hr.Appointment.HealthRecordsChanged += Appointment_HealthRecordsChanged;
+        }
+
+        void Appointment_HealthRecordsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            {
+                AppointmentHealthRecords.Add(e.NewItems as HealthRecord);
+            }
+            else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+            {
+                AppointmentHealthRecords.Remove(e.NewItems as HealthRecord);
+
+            }
         }
 
 
@@ -48,10 +64,8 @@ namespace Diagnosis.ViewModels
 
         public ObservableCollection<HealthRecord> AppointmentHealthRecords
         {
-            get
-            {
-                return hr.Appointment.HealthRecords;
-            }
+            get;
+            private set;
         }
 
         public HealthRecord FoundHealthRecord
@@ -72,6 +86,12 @@ namespace Diagnosis.ViewModels
                         this.Send(Events.OpenHealthRecord, FoundHealthRecord.AsParams(MessageKeys.HealthRecord));
                     });
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            hr.Appointment.HealthRecordsChanged -= Appointment_HealthRecordsChanged;
+            base.Dispose(disposing);
         }
     }
 }

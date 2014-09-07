@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Diagnosis.Core;
+using System.Collections.Specialized;
 
 namespace Diagnosis.Models
 {
@@ -19,7 +20,8 @@ namespace Diagnosis.Models
         string _ln;
         string _mn;
         string _label;
-        private ObservableCollection<Course> _courses;
+
+        public virtual event NotifyCollectionChangedEventHandler CoursesChanged;
 
         public virtual string Label
         {
@@ -132,12 +134,11 @@ namespace Diagnosis.Models
                     new List<PatientRecordProperty>(patientProperties));
             }
         }
-        public virtual ObservableCollection<Course> Courses
+        public virtual ReadOnlyCollection<Course> Courses
         {
             get
             {
-
-                return _courses ?? (_courses = new ObservableCollection<Course>(courses));
+                return new ReadOnlyCollection<Course>(new List<Course>(courses));
             }
         }
 
@@ -239,6 +240,22 @@ namespace Diagnosis.Models
         public override string ToString()
         {
             return Id + " " + Label + " " + FullName;
+        }
+
+        protected virtual void OnCoursesChanged(NotifyCollectionChangedEventArgs e)
+        {
+            var h = CoursesChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
+
+      protected  internal virtual void AddCourse(Course course)
+        {
+            if (!courses.Contains(course))
+                courses.Add(course);
+            OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, course));
         }
     }
 }

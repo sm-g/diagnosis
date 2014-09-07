@@ -44,7 +44,7 @@ namespace Diagnosis.ViewModels
             if (sci.Content is T)
                 return sci.Content as T;
 
-            throw new ArgumentException("Wrong type aargument. SpecialCaseItem.Content is " + sci.Content.GetType().ToString());
+            throw new ArgumentException("Wrong type argument. SpecialCaseItem.Content is " + sci.Content.GetType().ToString());
         }
     }
 }
