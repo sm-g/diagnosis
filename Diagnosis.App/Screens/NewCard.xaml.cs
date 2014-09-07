@@ -11,26 +11,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Diagnosis.ViewModels;
-using Diagnosis.App.Controls;
 
 namespace Diagnosis.App.Screens
 {
     /// <summary>
-    /// Interaction logic for Patients.xaml
+    /// Interaction logic for NewCard.xaml
     /// </summary>
-    public partial class Patients : UserControl
+    public partial class NewCard : UserControl
     {
-        public Patients()
+        public NewCard()
         {
             InitializeComponent();
         }
-
-        private void patientsControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (dataGrid.SelectedCells.Count > 0)
-                Keyboard.Focus(DataGridHelper.GetDataGridCell(dataGrid.SelectedCells[0]));
-        }
-
     }
 }

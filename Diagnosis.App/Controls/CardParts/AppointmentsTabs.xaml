@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:card="clr-namespace:Diagnosis.App.Controls.CardParts"
+             xmlns:screen="clr-namespace:Diagnosis.App.Screens"
              xmlns:vm="clr-namespace:Diagnosis.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="50" d:DesignWidth="300">
@@ -16,7 +17,8 @@
         </InputBindingCollection>
 
         <DataTemplate x:Key="AppointmentHeaderTemplate">
-            <Grid Style="{StaticResource gridIsDirty}">
+            <Grid Style="{StaticResource gridIsDirty}" DataContext="{Binding Content}">
+                <!-- ShortAppointmentVM -->
                 <DockPanel MinWidth="70">
                     <Button x:Name="deleteButton"
                             Command="{Binding Content.Editable.DeleteCommand}"
@@ -42,30 +44,30 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <TextBlock Text="{Binding Content.DateTime, Converter={StaticResource DateLabel}}"
+                    <TextBlock Text="{Binding DateTime, Converter={StaticResource DateLabel}}"
                                        DockPanel.Dock="Top" />
-                    <TextBlock Text="{Binding Content.Doctor, Converter={StaticResource ManToShortName}, StringFormat='{}доктор {0}'}"
+                    <TextBlock Text="{Binding Doctor, Converter={StaticResource ManToShortName}, StringFormat='{}доктор {0}'}"
                                        HorizontalAlignment="Right"
-                                       Visibility="{Binding Content.IsDoctorFromCourse, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
+                                       Visibility="{Binding IsDoctorFromCourse, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
                 </DockPanel>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="NewAppointmentTemplate">
             <TextBlock ToolTip="Начать новый осмотр">+ осмотр</TextBlock>
         </DataTemplate>
-        <card:AddNewDataTemplateSelector x:Key="addNewSelector"
+        <card:SpecialCaseDataTemplateSelector x:Key="addNewSelector"
                                          DefaultTemplate="{StaticResource AppointmentHeaderTemplate}"
                                          AddNewTemplate="{StaticResource NewAppointmentTemplate}" />
     </UserControl.Resources>    
     
     <Grid>
         <TabControl x:Name="appointments" Grid.Row="1"
-                    SelectedItem="{Binding SelectedAppointmentWithAddNew, Mode=TwoWay}"
-                    ItemsSource="{Binding AppointmentsWithAddNew}"
+                    SelectedItem="{Binding SelectedAppointment, Mode=TwoWay}"
+                    ItemsSource="{Binding Appointments}"
                     ItemTemplateSelector="{StaticResource addNewSelector}">
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <card:Appointment DataContext="{Binding Content}" />
+                    <card:Appointment DataContext="{Binding DataContext.Appointment, RelativeSource={RelativeSource AncestorType=screen:NewCard}}" />
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>

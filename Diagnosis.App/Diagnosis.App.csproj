@@ -153,7 +153,7 @@
     <Compile Include="Controls\CardParts\AppointmentsTabs.xaml.cs">
       <DependentUpon>AppointmentsTabs.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\CardParts\AddNewDataTemplateSelector.cs" />
+    <Compile Include="Controls\CardParts\SpecialCaseDataTemplateSelector.cs" />
     <Compile Include="Controls\Helpers\DataGridHelper.cs" />
     <Compile Include="Controls\Helpers\FirstFocusedElementExtension.cs" />
     <Compile Include="Controls\Search\Filter.xaml.cs">
@@ -237,6 +237,9 @@
     <Compile Include="Converters\CountToAppointmentsLabel.cs" />
     <Compile Include="Converters\IntToString.cs" />
     <Compile Include="DebugOutput.cs" />
+    <Compile Include="Screens\NewCard.xaml.cs">
+      <DependentUpon>NewCard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Screens\Patients.xaml.cs">
       <DependentUpon>Patients.xaml</DependentUpon>
     </Compile>
@@ -378,6 +381,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Common\TextBoxInfo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Screens\NewCard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

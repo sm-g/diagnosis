@@ -23,8 +23,8 @@
             <DataTemplate DataType="{x:Type vm:WordsListViewModel}">
                 <screen:Words />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:PatientViewer}">
-                <screen:Card />
+            <DataTemplate DataType="{x:Type vm:CardViewModel}">
+                <screen:NewCard />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:PatientsListViewModel}">
                 <screen:Patients />

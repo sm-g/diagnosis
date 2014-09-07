@@ -8,17 +8,16 @@ using Diagnosis.ViewModels;
 
 namespace Diagnosis.App.Controls.CardParts
 {
-    public class AddNewDataTemplateSelector : DataTemplateSelector
+    public class SpecialCaseDataTemplateSelector : DataTemplateSelector
     {
         public DataTemplate DefaultTemplate { get; set; }
         public DataTemplate AddNewTemplate { get; set; }
 
-        public override DataTemplate
-              SelectTemplate(object item, DependencyObject container)
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            if (item != null && item is WithAddNew)
+            if (item != null && item is SpecialCaseItem)
             {
-                if ((item as WithAddNew).IsAddNew)
+                if ((item as SpecialCaseItem).IsAddNew)
                 {
                     return AddNewTemplate;
                 }
@@ -28,4 +27,5 @@ namespace Diagnosis.App.Controls.CardParts
             return null;
         }
     }
+
 }
