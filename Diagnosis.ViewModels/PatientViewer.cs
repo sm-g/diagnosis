@@ -7,33 +7,35 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using NHibernate;
 
 namespace Diagnosis.ViewModels
 {
     /// <summary>
     /// Обрабатывает действия при открытии и закрытии пациента, курса, осмотра, записи.
     /// </summary>
-    public class PatientViewer : ViewModelBase
+    public class PatientViewer : NotifyPropertyChangedBase
     {
-        private PatientViewModel _openedPatient;
-        private AppointmentViewModel _openedApp;
-        private CourseViewModel _openedCourse;
-        private HealthRecordViewModel _openedHr;
+        private Patient _openedPatient;
+        private Appointment _openedApp;
+        private Course _openedCourse;
+        private HealthRecord _openedHr;
         private bool _fastAddingMode;
 
         // последние открытые
-        private Dictionary<PatientViewModel, CourseViewModel> patCourseMap;
-
-        private Dictionary<CourseViewModel, AppointmentViewModel> courseAppMap;
-        private Dictionary<AppointmentViewModel, HealthRecordViewModel> appHrMap;
+        private Dictionary<Patient, Course> patCourseMap;
+        private Dictionary<Course, Appointment> courseAppMap;
+        private Dictionary<Appointment, HealthRecord> appHrMap;
         private bool supressCourseClosing;
 
         public PatientViewer()
         {
-            patCourseMap = new Dictionary<PatientViewModel, CourseViewModel>();
-            courseAppMap = new Dictionary<CourseViewModel, AppointmentViewModel>();
-            appHrMap = new Dictionary<AppointmentViewModel, HealthRecordViewModel>();
+            patCourseMap = new Dictionary<Patient, Course>();
+            courseAppMap = new Dictionary<Course, Appointment>();
+            appHrMap = new Dictionary<Appointment, HealthRecord>();
         }
+
+        public ISession Session { get; set; }
 
         public bool FastAddingMode
         {
@@ -51,7 +53,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public PatientViewModel OpenedPatient
+        public Patient OpenedPatient
         {
             get
             {
@@ -77,7 +79,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public CourseViewModel OpenedCourse
+        public Course OpenedCourse
         {
             get
             {
@@ -99,7 +101,6 @@ namespace Diagnosis.ViewModels
                         OnCourseOpened(value);
                     }
                     OnPropertyChanged(() => OpenedCourse);
-                    OpenedPatient.OnOpenedCourseChanged();
                 }
                 if (supressCourseClosing)
                 {
@@ -109,13 +110,13 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public AppointmentViewModel OpenedAppointment
+        public Appointment OpenedAppointment
         {
             get
             {
                 return _openedApp;
             }
-            private set
+            set
             {
                 if (_openedApp != value)
                 {
@@ -132,12 +133,11 @@ namespace Diagnosis.ViewModels
                     }
 
                     OnPropertyChanged(() => OpenedAppointment);
-                    OpenedCourse.OnOpenedAppointmentChanged();
                 }
             }
         }
 
-        public HealthRecordViewModel OpenedHealthRecord
+        public HealthRecord OpenedHealthRecord
         {
             get
             {
@@ -152,7 +152,6 @@ namespace Diagnosis.ViewModels
                         OnHrClosed(_openedHr, value);
                     }
                     _openedHr = value;
-                    OpenedAppointment.OnOpenedHealthRecordChanged();
 
                     if (value != null)
                     {
@@ -177,7 +176,7 @@ namespace Diagnosis.ViewModels
             OpenedPatient = null;
         }
 
-        public void OpenPatient(PatientViewModel patient, bool addFirstHr = false)
+        public void OpenPatient(Patient patient, bool addFirstHr = false)
         {
             OpenedPatient = patient;
             if (addFirstHr)
@@ -192,7 +191,7 @@ namespace Diagnosis.ViewModels
         /// Создает курс, если нет ни одного курса.
         /// </summary>
         /// <param name="patient"></param>
-        public void OpenLastAppointment(PatientViewModel patient)
+        public void OpenLastAppointment(Patient patient)
         {
             OpenPatient(patient);
 
@@ -200,18 +199,18 @@ namespace Diagnosis.ViewModels
             var lastCourse = patient.Courses.FirstOrDefault();
             if (lastCourse == null)
             {
-                AuthorityController.CurrentDoctor.StartCourse(patient.patient);
+                AuthorityController.CurrentDoctor.StartCourse(patient);
             }
             else
             {
                 OpenedCourse = lastCourse;
             }
 
-            // последний осмотр в течение часа или новая
-            var lastApp = OpenedCourse.LastAppointment;
-            if (DateTime.UtcNow - lastApp.DateTime > TimeSpan.FromHours(1))
+            // последний осмотр в течение часа или новый
+            var lastApp = OpenedCourse.Appointments.LastOrDefault();
+            if (lastApp != null && DateTime.UtcNow - lastApp.DateAndTime > TimeSpan.FromHours(1))
             {
-                OpenedCourse.AddAppointment();
+                OpenedCourse.AddAppointment(null);
             }
             else
             {
@@ -221,34 +220,26 @@ namespace Diagnosis.ViewModels
 
         internal void OpenHr(HealthRecord hr)
         {
-            Contract.Requires(OpenedPatient.patient == hr.Appointment.Course.Patient);
-
-            var course = OpenedPatient.Courses.Where(x => x.course == hr.Appointment.Course).First();
+            Contract.Requires(OpenedPatient == hr.Appointment.Course.Patient);
+            //OpenedPatient = hr.Appointment.Course.Patient;
+            var course = OpenedPatient.Courses.Where(x => x == hr.Appointment.Course).First();
             OpenedCourse = course;
-            var app = course.Appointments.Where(x => x.appointment == hr.Appointment).First();
+            var app = course.Appointments.Where(x => x == hr.Appointment).First();
             OpenedAppointment = app;
-            var hrVM = app.HealthRecords.Where(x => x.healthRecord == hr).First();
+            var hrVM = app.HealthRecords.Where(x => x == hr).First();
             OpenedHealthRecord = hrVM;
         }
 
-        private void OnPatientOpened(PatientViewModel patient)
+        private void OnPatientOpened(Patient patient)
         {
             Debug.Print("opening patient {0}", patient);
 
             patient.Courses.CollectionChanged += Courses_CollectionChanged;
 
-            CourseViewModel course;
+            Course course;
             if (!patCourseMap.TryGetValue(patient, out course))
             {
                 // пациент открыт первый раз
-
-                // для синхронизации c SelectedCourse
-                OpenedPatient.OpenedCourseGetter = new Func<CourseViewModel>(() => OpenedCourse);
-                OpenedPatient.OpenedCourseSetter = new Action<CourseViewModel>((a) =>
-                {
-                    OpenedCourse = a;
-                });
-
                 OpenedCourse = patient.Courses.FirstOrDefault();
             }
             else
@@ -257,39 +248,40 @@ namespace Diagnosis.ViewModels
                 OpenedCourse = course;
             }
 
-            if (FastAddingMode && !(patient is UnsavedPatientViewModel))
+            if (FastAddingMode && patient.Id != 0)
             {
                 OpenLastAppointment(patient);
             }
             Debug.Print("opened patient {0}", patient);
         }
 
-        private void OnPatientClosed(PatientViewModel closing, PatientViewModel opening)
+        private void OnPatientClosed(Patient closing, Patient opening)
         {
             Debug.Print("closing patient {0}", _openedPatient);
             closing.Courses.CollectionChanged -= Courses_CollectionChanged;
 
-            closing.Editable.Commit();
+            Session.SaveOrUpdate(closing);
+
 
             OpenedCourse = null;
 
             if (opening != null)
             {
-                if (!(opening is UnsavedPatientViewModel))
+                if (opening.Id != 0)
                 {
                     // сохраняем состояние редактора при смене пациента
-                    opening.Editable.IsEditorActive = closing.Editable.IsEditorActive;
+                    // opening.Editable.IsEditorActive = closing.Editable.IsEditorActive;
                 }
             }
 
             Debug.Print("closed patient {0}", _openedPatient);
         }
 
-        private void OnCourseOpened(CourseViewModel course)
+        private void OnCourseOpened(Course course)
         {
             Debug.Print("opening course {0}", course);
 
-            course.Appointments.CollectionChanged += Appointments_CollectionChanged;
+            course.Appointments.CollectionChanged2 += Appointments_CollectionChanged;
 
             if (!patCourseMap.ContainsKey(OpenedPatient))
             {
@@ -299,24 +291,17 @@ namespace Diagnosis.ViewModels
             else
                 patCourseMap[OpenedPatient] = course;
 
-            AppointmentViewModel app;
+            Appointment app;
             if (!courseAppMap.TryGetValue(course, out app))
             {
                 // курс открыт первый раз
 
-                // для синхронизации c SelectedAppointmentWithAddNew
-                OpenedCourse.OpenedAppointmentGetter = new Func<AppointmentViewModel>(() => OpenedAppointment);
-                OpenedCourse.OpenedAppointmentSetter = new Action<AppointmentViewModel>((a) =>
-                {
-                    OpenedAppointment = a;
-                });
-
                 if (OpenedCourse.Appointments.Count == 0)
                 {
-                    OpenedCourse.AddAppointment(); // новый курс — добавляем осмотр
+                    OpenedCourse.AddAppointment(AuthorityController.CurrentDoctor); // новый курс — добавляем осмотр
                 }
 
-                OpenedAppointment = OpenedCourse.LastAppointment;
+                OpenedAppointment = OpenedCourse.Appointments.LastOrDefault();
             }
             else
             {
@@ -326,20 +311,21 @@ namespace Diagnosis.ViewModels
 
         }
 
-        private void OnCourseClosed(CourseViewModel course)
+        private void OnCourseClosed(Course course)
         {
             Debug.Print("closing course {0}", course);
 
-            course.Editable.Commit();
+            Session.SaveOrUpdate(course);
 
-            course.Appointments.CollectionChanged -= Appointments_CollectionChanged;
+            course.Appointments.CollectionChanged2 -= Appointments_CollectionChanged;
             OpenedAppointment = null;
 
             Debug.Print("closed course {0}", course);
         }
 
-        private void OnAppointmentOpened(AppointmentViewModel app)
+        private void OnAppointmentOpened(Appointment app)
         {
+            Contract.Requires(OpenedCourse == app.Course);
             Debug.Print("opening app  {0}", app);
 
             app.HealthRecords.CollectionChanged += HealthRecords_CollectionChanged;
@@ -354,14 +340,10 @@ namespace Diagnosis.ViewModels
                 courseAppMap[OpenedCourse] = app;
             }
 
-            HealthRecordViewModel hrVm;
+            HealthRecord hrVm;
             if (!appHrMap.TryGetValue(app, out hrVm))
             {
                 // осмотр открыт первый раз
-
-                // для синхронизации c SelectedHealthRecord
-                OpenedAppointment.OpenedHrGetter = new Func<HealthRecordViewModel>(() => OpenedHealthRecord);
-                OpenedAppointment.OpenedHrSetter = new Action<HealthRecordViewModel>((a) => { OpenedHealthRecord = a; });
 
                 if (OpenedAppointment.HealthRecords.Count == 0)
                 {
@@ -378,12 +360,12 @@ namespace Diagnosis.ViewModels
             {
                 // повторно — выбрана последняя запись, редактор закрыт
                 OpenedHealthRecord = hrVm;
-                OpenedHealthRecord.Editable.IsEditorActive = false;
+                //OpenedHealthRecord.Editable.IsEditorActive = false;
             }
             Debug.Print("opened app  {0}", app);
         }
 
-        private void OnAppointmentClosed(AppointmentViewModel app)
+        private void OnAppointmentClosed(Appointment app)
         {
             Debug.Print("closing app {0}", app);
 
@@ -393,7 +375,7 @@ namespace Diagnosis.ViewModels
             Debug.Print("closed app {0}", app);
         }
 
-        private void OnHrOpened(HealthRecordViewModel hr)
+        private void OnHrOpened(HealthRecord hr)
         {
             Debug.Print("opening hr {0}", hr);
 
@@ -410,21 +392,22 @@ namespace Diagnosis.ViewModels
             Debug.Print("opened hr {0}", hr);
         }
 
-        private void OnHrClosed(HealthRecordViewModel closing, HealthRecordViewModel opening)
+        private void OnHrClosed(HealthRecord closing, HealthRecord opening)
         {
             Debug.Print("closing hr {0}", closing);
 
-            // новая выбранная запись в том же приеме
-            if (opening != null && closing.healthRecord.Appointment == opening.healthRecord.Appointment)
-            {
-                // оставляем редактор открытым при смене выбранной записи
-                if (closing.Editable.IsEditorActive)
-                {
-                    opening.Editable.IsEditorActive = closing.Editable.IsEditorActive;
-                }
-            }
-            closing.Editable.IsEditorActive = false;
-            closing.Editable.Commit();
+            //// новая выбранная запись в том же приеме
+            //if (opening != null && closing.Appointment == opening.Appointment)
+            //{
+            //    // оставляем редактор открытым при смене выбранной записи
+            //    if (closing.Editable.IsEditorActive)
+            //    {
+            //        opening.Editable.IsEditorActive = closing.Editable.IsEditorActive;
+            //    }
+            //}
+            //closing.Editable.IsEditorActive = false;
+            Session.SaveOrUpdate(closing);
+
             Debug.Print("closed hr {0}", closing);
         }
 
@@ -433,7 +416,7 @@ namespace Diagnosis.ViewModels
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 // при добавлении курса открываем его
-                OpenedCourse = (CourseViewModel)e.NewItems[e.NewItems.Count - 1];
+                OpenedCourse = (Course)e.NewItems[e.NewItems.Count - 1];
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
@@ -457,14 +440,14 @@ namespace Diagnosis.ViewModels
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 // при добавлении осмотра открываем его
-                OpenedAppointment = (AppointmentViewModel)e.NewItems[e.NewItems.Count - 1];
+                OpenedAppointment = (Appointment)e.NewItems[e.NewItems.Count - 1];
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 // при удалении осмотра открываем последний осмотр
                 if (OpenedAppointment == null && OpenedCourse.Appointments.Count > 0)
                 {
-                    OpenedAppointment = OpenedCourse.LastAppointment;
+                    OpenedAppointment = OpenedCourse.Appointments.LastOrDefault();
                 }
             }
         }
@@ -474,8 +457,8 @@ namespace Diagnosis.ViewModels
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 // открываем добавленную запись на редактирование
-                OpenedHealthRecord = (HealthRecordViewModel)e.NewItems[e.NewItems.Count - 1];
-                OpenedHealthRecord.Editable.IsEditorActive = true;
+                OpenedHealthRecord = (HealthRecord)e.NewItems[e.NewItems.Count - 1];
+                //OpenedHealthRecord.Editable.IsEditorActive = true;
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
