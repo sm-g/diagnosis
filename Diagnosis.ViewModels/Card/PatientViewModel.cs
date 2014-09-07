@@ -11,30 +11,10 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
-    public class PatientViewModel : CheckableBase, IEditableNesting
+    public class PatientViewModel : ViewModelBase
     {
         internal readonly Patient patient;
-        internal Func<CourseViewModel> OpenedCourseGetter;
-        internal Action<CourseViewModel> OpenedCourseSetter;
-
         private CoursesManager coursesManager;
-
-        #region IEditableNesting
-
-        public Editable Editable { get; private set; }
-
-        /// <summary>
-        /// Пациент пустой, если пусты все его курсы.
-        /// </summary>
-        public bool IsEmpty
-        {
-            get
-            {
-                return Courses.All(x => x.IsEmpty);
-            }
-        }
-
-        #endregion IEditableNesting
 
         #region Model related
 
@@ -67,7 +47,6 @@ namespace Diagnosis.ViewModels
                     patient.FirstName = value;
 
                     OnPropertyChanged("FirstName");
-                    OnPropertyChanged("SearchText");
                     OnPropertyChanged("NoName");
                 }
             }
@@ -86,7 +65,6 @@ namespace Diagnosis.ViewModels
                     patient.MiddleName = value;
 
                     OnPropertyChanged("MiddleName");
-                    OnPropertyChanged("SearchText");
                     OnPropertyChanged("NoName");
                 }
             }
@@ -105,7 +83,6 @@ namespace Diagnosis.ViewModels
                     patient.LastName = value;
 
                     OnPropertyChanged("LastName");
-                    OnPropertyChanged("SearchText");
                     OnPropertyChanged("NoName");
                 }
             }
@@ -211,27 +188,6 @@ namespace Diagnosis.ViewModels
 
         #endregion Model related
 
-        public ICommand FirstHrCommand
-        {
-            get
-            {
-                return new RelayCommand(
-                                          () =>
-                                          {
-                                              // go to courses tabitem - save patient first
-                                              Editable.Commit();
-                                          }, () => CanAddFirstHr);
-            }
-        }
-
-        public bool CanAddFirstHr
-        {
-            get
-            {
-                return IsUnsaved;
-            }
-        }
-
         public bool IsUnsaved
         {
             get
@@ -240,17 +196,22 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public ObservableCollection<CourseViewModel> Courses { get { return coursesManager.Courses; } }
+        public ObservableCollection<ShortCourseViewModel> Courses { get { return coursesManager.Courses; } }
 
-        public CourseViewModel SelectedCourse
+        private ShortCourseViewModel _selectedCourse;
+        public ShortCourseViewModel SelectedCourse
         {
             get
             {
-                return OpenedCourseGetter != null ? OpenedCourseGetter() : null;
+                return _selectedCourse;
             }
             set
             {
-                OpenedCourseSetter(value);
+                if (_selectedCourse != value)
+                {
+                    _selectedCourse = value;
+                    OnPropertyChanged(() => SelectedCourse);
+                }
             }
         }
 
@@ -271,20 +232,10 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public string SearchText
-        {
-            get
-            {
-                return patient.FullName;
-            }
-        }
-
         public PatientViewModel(Patient p)
         {
             Contract.Requires(p != null);
             this.patient = p;
-
-            Editable = new Editable(patient);
 
             coursesManager = new CoursesManager(patient);
             coursesManager.CoursesLoaded += (s, e) =>
@@ -298,19 +249,11 @@ namespace Diagnosis.ViewModels
             if (!IsUnsaved)
                 LoadProperties();
 
-            Editable.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == "IsEditorActive")
-                {
-                    // Для сохранения при выходе из редактора.
-                    // При обратном переходе может редактироваться запись — не сохраняем.
-                    if (!Editable.IsEditorActive)
-                    {
-                        if (!Editable.Commit())
-                            Editable.IsEditorActive = false;
-                    }
-                }
-            };
+        }
+
+        public void SelectCourse(Course course)
+        {
+            SelectedCourse = Courses.First(x => x.course == course);
         }
 
         /// <summary>
@@ -359,62 +302,10 @@ namespace Diagnosis.ViewModels
             return vm;
         }
 
-        /// <summary>
-        /// Вызывается при смене открытого курса.
-        /// </summary>
-        internal void OnOpenedCourseChanged()
-        {
-            OnPropertyChanged("SelectedCourse");
-        }
-
         public override string ToString()
         {
             return patient.ToString();
         }
     }
-
-    internal class UnsavedPatientViewModel : PatientViewModel
-    {
-        public event PatientEventHandler PatientCreated;
-
-        private static Random rnd = new Random();
-
-        /// <summary>
-        /// For patient registration. First Editable.Committed raises PatientCreated.
-        /// </summary>
-        public UnsavedPatientViewModel()
-            : base(new Patient())
-        {
-            Editable.IsEditorActive = true;
-
-            Label = rnd.Next(1, 500).ToString();
-
-            Editable.Committed += OnFirstCommit;
-        }
-
-        private void OnFirstCommit(object sender, EditableEventArgs e)
-        {
-            Editable.Committed -= OnFirstCommit;
-            var h = PatientCreated;
-            if (h != null)
-            {
-                h(this, new PatientEventArgs(this));
-            }
-        }
-    }
-
-    public delegate void PatientEventHandler(object sender, PatientEventArgs e);
-
-    public class PatientEventArgs : EventArgs
-    {
-        public PatientViewModel patientVM;
-
-        [DebuggerStepThrough]
-        public PatientEventArgs(PatientViewModel p)
-        {
-            patientVM = p;
-        }
-    }
-
 
 }
