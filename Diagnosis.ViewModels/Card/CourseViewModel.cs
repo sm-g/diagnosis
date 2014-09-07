@@ -67,6 +67,8 @@ namespace Diagnosis.ViewModels
 
         #endregion Model
         private SpecialCaseItem _selApp;
+        private bool addingApp;
+
         public SpecialCaseItem SelectedAppointment
         {
             get
@@ -79,7 +81,12 @@ namespace Diagnosis.ViewModels
                 {
                     if (value.IsAddNew)
                     {
-                        var app = course.AddAppointment(AuthorityController.CurrentDoctor);
+                        if (!addingApp)
+                        {
+                            addingApp = true;
+                            var app = course.AddAppointment(AuthorityController.CurrentDoctor);
+                            addingApp = false;
+                        }
                     }
                     else
                     {
