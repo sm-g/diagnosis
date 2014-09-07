@@ -286,7 +286,7 @@ namespace Diagnosis.ViewModels
 
             Editable = new Editable(patient);
 
-            coursesManager = new CoursesManager(this);
+            coursesManager = new CoursesManager(patient);
             coursesManager.CoursesLoaded += (s, e) =>
             {
                 Courses.CollectionChanged += (s1, e1) =>

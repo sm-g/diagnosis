@@ -12,7 +12,7 @@ namespace Diagnosis.ViewModels
 {
     public class CoursesManager
     {
-        private readonly PatientViewModel patientVM;
+        private readonly Patient patient;
         private ObservableCollection<CourseViewModel> _courses;
 
         public event EventHandler CoursesLoaded;
@@ -26,36 +26,40 @@ namespace Diagnosis.ViewModels
             {
                 if (_courses == null)
                 {
-                    _courses = MakeCourses();
-                    patientVM.SubscribeEditableNesting(_courses);
+                    IList<CourseViewModel> courseVMs;
+                    using (var tester = new PerformanceTester((ts) => Debug.Print("making courses for {0}: {1}", patient, ts)))
+                    {
+                        courseVMs = patient.Courses
+                           .OrderByDescending(c => c, new CompareCourseByDate())
+                           .Select(i => new CourseViewModel(i))
+                           .ToList();
+                    }
+                    _courses = new ObservableCollection<CourseViewModel>(courseVMs);
                     OnCoursesLoaded();
                 }
                 return _courses;
             }
         }
 
-        private CourseViewModel AddCourse(Course course)
+        public CoursesManager(Patient patient)
         {
-            var courseVM = new CourseViewModel(course);
-            SubscribeCourse(courseVM);
-
-            Courses.Add(courseVM);
-            if (Courses.Count > 1)
-                Courses.Move(Courses.Count - 1, 0);
-
-            return courseVM;
-        }
-
-        public CoursesManager(PatientViewModel patientVM)
-        {
-            this.patientVM = patientVM;
-            patientVM.patient.Courses.CollectionChanged += (s, e) =>
+            this.patient = patient;
+            patient.Courses.CollectionChanged += (s, e) =>
             {
                 if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
                 {
                     foreach (Course item in e.NewItems)
                     {
-                        AddCourse(item);
+                        var courseVM = new CourseViewModel(item);
+                        Courses.Insert(0, courseVM);
+                    }
+                }
+                else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+                {
+                    foreach (Course item in e.OldItems)
+                    {
+                        var courseVM = Courses.Where(vm => vm.course == item).FirstOrDefault();
+                        Courses.Remove(courseVM);
                     }
                 }
             };
@@ -70,57 +74,5 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        private ObservableCollection<CourseViewModel> MakeCourses()
-        {
-            IList<CourseViewModel> courseVMs;
-            using (var tester = new PerformanceTester((ts) => Debug.Print("making courses for {0}: {1}", patientVM, ts)))
-            {
-                courseVMs = patientVM.patient.Courses
-                   .OrderByDescending(c => c, new CompareCourseByDate())
-                   .Select(i => new CourseViewModel(i))
-                   .ToList();
-            }
-
-            courseVMs.ForAll(x => SubscribeCourse(x));
-            return new ObservableCollection<CourseViewModel>(courseVMs);
-        }
-
-        #region Course stuff
-
-        private void SubscribeCourse(CourseViewModel courseVM)
-        {
-            courseVM.Editable.Deleted += course_Deleted;
-            courseVM.Editable.Committed += course_Committed;
-        }
-
-        private void UnsubscribeCourse(CourseViewModel courseVM)
-        {
-            courseVM.Editable.Deleted -= course_Deleted;
-            courseVM.Editable.Committed -= course_Committed;
-        }
-
-        private void course_Committed(object sender, EditableEventArgs e)
-        {
-            var course = e.entity as Course;
-            ISession session = NHibernateHelper.GetSession();
-            using (ITransaction transaction = session.BeginTransaction())
-            {
-                session.SaveOrUpdate(course);
-                transaction.Commit();
-            }
-        }
-
-        private void course_Deleted(object sender, EditableEventArgs e)
-        {
-            var course = e.entity as Course;
-            patientVM.patient.Courses.Remove(course);
-
-            var courseVM = Courses.Where(vm => vm.course == course).FirstOrDefault();
-            Courses.Remove(courseVM);
-
-            UnsubscribeCourse(courseVM);
-        }
-
-        #endregion Course stuff
     }
 }
