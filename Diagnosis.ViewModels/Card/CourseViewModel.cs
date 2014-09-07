@@ -1,8 +1,6 @@
 ﻿using Diagnosis.Models;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
@@ -12,6 +10,8 @@ namespace Diagnosis.ViewModels
     public class CourseViewModel : ViewModelBase
     {
         internal readonly Course course;
+        private bool addingApp;
+        private SpecialCaseItem _selApp;
         private AppointmentsManager appManager;
 
         #region Model
@@ -57,6 +57,8 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        #endregion Model
+
         public ObservableCollection<SpecialCaseItem> Appointments
         {
             get
@@ -64,10 +66,6 @@ namespace Diagnosis.ViewModels
                 return appManager.Appointments;
             }
         }
-
-        #endregion Model
-        private SpecialCaseItem _selApp;
-        private bool addingApp;
 
         public SpecialCaseItem SelectedAppointment
         {
@@ -81,12 +79,7 @@ namespace Diagnosis.ViewModels
                 {
                     if (value.IsAddNew)
                     {
-                        if (!addingApp)
-                        {
-                            addingApp = true;
-                            var app = course.AddAppointment(AuthorityController.CurrentDoctor);
-                            addingApp = false;
-                        }
+                        AddAppointmentCommand.Execute(null);
                     }
                     else
                     {
@@ -106,7 +99,12 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                         {
-                            var app = course.AddAppointment(AuthorityController.CurrentDoctor);
+                            if (!addingApp)
+                            {
+                                addingApp = true;
+                                var app = course.AddAppointment(AuthorityController.CurrentDoctor);
+                                addingApp = false;
+                            }
                         }, () => !IsEnded);
             }
         }
@@ -134,7 +132,6 @@ namespace Diagnosis.ViewModels
         {
             OnPropertyChanged("SelectedAppointmentWithAddNew");
         }
-
 
         public override string ToString()
         {
