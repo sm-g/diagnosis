@@ -155,7 +155,7 @@
     <Compile Include="Search\Searchers\DiagnosisSearcher.cs" />
     <Compile Include="Search\Searchers\HrSearcher.cs" />
     <Compile Include="Framework\ViewModelBase.cs" />
-    <Compile Include="WithAddNew.cs" />
+    <Compile Include="SpecialCaseItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Diagnosis.Core\Diagnosis.Core.csproj">

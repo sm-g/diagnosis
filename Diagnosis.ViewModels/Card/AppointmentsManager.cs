@@ -15,26 +15,29 @@ namespace Diagnosis.ViewModels
     public class AppointmentsManager
     {
         private readonly Course course;
-        private ObservableCollection<ShortAppointmentViewModel> _appointments;
+        private ObservableCollection<SpecialCaseItem> _appointments;
 
         public event EventHandler AppointmentsLoaded;
 
-        public ObservableCollection<ShortAppointmentViewModel> Appointments
+        public ObservableCollection<SpecialCaseItem> Appointments
         {
             get
             {
                 if (_appointments == null)
                 {
-                    IList<ShortAppointmentViewModel> appVMs;
+                    IList<SpecialCaseItem> wrappers;
                     using (var tester = new PerformanceTester((ts) => Debug.Print("making apps for {0}: {1}", course, ts)))
                     {
-                        appVMs = course.Appointments.Select(app => new ShortAppointmentViewModel(app, app.Doctor == course.LeadDoctor)).ToList();
+                        wrappers = course.Appointments
+                            .Select(app => new ShortAppointmentViewModel(app, app.Doctor == course.LeadDoctor))
+                            .Select(vm => new SpecialCaseItem(vm))
+                            .ToList();
                     }
 
-                    _appointments = new ObservableCollection<ShortAppointmentViewModel>(appVMs);
+                    _appointments = new ObservableCollection<SpecialCaseItem>(wrappers);
                     if (!course.End.HasValue)
                     {
-                        _appointments.Add(new ShortAppointmentViewModel()); // +app
+                        _appointments.Add(new SpecialCaseItem(SpecialCaseItem.Cases.AddNew));
                     }
 
                     SetAppointmentsDeletable();
@@ -54,14 +57,15 @@ namespace Diagnosis.ViewModels
                     foreach (Appointment item in e.NewItems)
                     {
                         var appVM = new ShortAppointmentViewModel(item, item.Doctor == course.LeadDoctor);
-                        Appointments.Insert(Appointments.Count - 1, appVM);
+                        var wrapper = new SpecialCaseItem(appVM);
+                        Appointments.Insert(Appointments.Count - 1, wrapper);
                     }
                 }
                 else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
                 {
                     foreach (Appointment item in e.OldItems)
                     {
-                        var appVM = Appointments.Where(vm => vm.appointment == item).FirstOrDefault();
+                        var appVM = Appointments.Where(w => w.To<ShortAppointmentViewModel>().appointment == item).FirstOrDefault();
                         Appointments.Remove(appVM);
                     }
                 }
@@ -93,6 +97,6 @@ namespace Diagnosis.ViewModels
             //}
         }
 
-      
+
     }
 }

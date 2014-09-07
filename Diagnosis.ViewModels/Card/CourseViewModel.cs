@@ -57,7 +57,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public ObservableCollection<ShortAppointmentViewModel> Appointments
+        public ObservableCollection<SpecialCaseItem> Appointments
         {
             get
             {
@@ -66,8 +66,8 @@ namespace Diagnosis.ViewModels
         }
 
         #endregion Model
-        private ShortAppointmentViewModel _selApp;
-        public ShortAppointmentViewModel SelectedAppointment
+        private SpecialCaseItem _selApp;
+        public SpecialCaseItem SelectedAppointment
         {
             get
             {
@@ -77,21 +77,18 @@ namespace Diagnosis.ViewModels
             {
                 if (_selApp != value)
                 {
-                    if (value == null)
+                    if (value.IsAddNew)
                     {
-                        // выбрана вкладка +осмотр
                         var app = course.AddAppointment(AuthorityController.CurrentDoctor);
                     }
                     else
                     {
                         _selApp = value;
-
                         OnPropertyChanged(() => SelectedAppointment);
                     }
                 }
             }
         }
-
 
         /// <summary>
         /// Добавляет осмотр, если курс не закончился.
@@ -139,7 +136,7 @@ namespace Diagnosis.ViewModels
 
         internal void SelectAppointment(Appointment appointment)
         {
-            SelectedAppointment = Appointments.First(x => x.appointment == appointment);
+            SelectedAppointment = Appointments.First(x => x.To<ShortAppointmentViewModel>().appointment == appointment);
         }
     }
 }

@@ -69,11 +69,11 @@ namespace Diagnosis.ViewModels
                     }
                     _openedPatient = value;
 
+                    OnPropertyChanged("OpenedPatient");
                     if (value != null)
                     {
                         OnPatientOpened(value);
                     }
-                    OnPropertyChanged("OpenedPatient");
                     this.Send(Events.OpenedPatientChanged, OpenedPatient.AsParams(MessageKeys.Patient));
                 }
             }
@@ -96,11 +96,11 @@ namespace Diagnosis.ViewModels
 
                     _openedCourse = value;
 
+                    OnPropertyChanged(() => OpenedCourse);
                     if (value != null)
                     {
                         OnCourseOpened(value);
                     }
-                    OnPropertyChanged(() => OpenedCourse);
                 }
                 if (supressCourseClosing)
                 {
@@ -127,12 +127,12 @@ namespace Diagnosis.ViewModels
 
                     _openedApp = value;
 
+                    OnPropertyChanged(() => OpenedAppointment);
                     if (value != null)
                     {
                         OnAppointmentOpened(value);
                     }
 
-                    OnPropertyChanged(() => OpenedAppointment);
                 }
             }
         }
@@ -260,7 +260,7 @@ namespace Diagnosis.ViewModels
             Debug.Print("closing patient {0}", _openedPatient);
             closing.Courses.CollectionChanged -= Courses_CollectionChanged;
 
-            Session.SaveOrUpdate(closing);
+           // Session.SaveOrUpdate(closing);
 
 
             OpenedCourse = null;
@@ -315,7 +315,7 @@ namespace Diagnosis.ViewModels
         {
             Debug.Print("closing course {0}", course);
 
-            Session.SaveOrUpdate(course);
+            //Session.SaveOrUpdate(course);
 
             course.Appointments.CollectionChanged2 -= Appointments_CollectionChanged;
             OpenedAppointment = null;
@@ -406,7 +406,7 @@ namespace Diagnosis.ViewModels
             //    }
             //}
             //closing.Editable.IsEditorActive = false;
-            Session.SaveOrUpdate(closing);
+           // Session.SaveOrUpdate(closing);
 
             Debug.Print("closed hr {0}", closing);
         }
