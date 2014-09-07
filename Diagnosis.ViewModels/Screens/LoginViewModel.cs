@@ -12,14 +12,11 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
-    public class LoginViewModel : ViewModelBase
+    public class LoginViewModel : SessionVMBase
     {
         private SecureString _password;
         private bool _wrongpassword;
         private DoctorViewModel _current;
-
-        private IDoctorRepository repository;
-
 
         public DoctorViewModel CurrentDoctor
         {
@@ -85,8 +82,7 @@ namespace Diagnosis.ViewModels
 
         public LoginViewModel()
         {
-            repository = new DoctorRepository();
-            var doctorVMs = repository.GetAll().Select(d => new DoctorViewModel(d)).ToList();
+            var doctorVMs = session.QueryOver<Doctor>().List().Select(d => new DoctorViewModel(d)).ToList();
             Doctors = new ReadOnlyObservableCollection<DoctorViewModel>(new ObservableCollection<DoctorViewModel>(doctorVMs));
 
             if (Doctors.Count > 0)
