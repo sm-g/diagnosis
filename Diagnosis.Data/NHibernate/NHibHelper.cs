@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
+using NHibernate.Event;
 
 namespace Diagnosis.Data
 {
@@ -69,6 +70,11 @@ namespace Diagnosis.Data
 
             cfg.Configure("NHibernate\\hibernate.cfg.xml");
             cfg.Properties[Environment.CollectionTypeFactoryClass] = typeof(Net4CollectionTypeFactory).AssemblyQualifiedName;
+            var listener = new EventListener();
+            cfg.AppendListeners(ListenerType.PreUpdate, new object[] { listener });
+            cfg.AppendListeners(ListenerType.PreInsert, new object[] { listener });
+            cfg.AppendListeners(ListenerType.PreDelete, new object[] { listener });
+
             cfg.AddMapping(Mapping);
 
             return cfg;
