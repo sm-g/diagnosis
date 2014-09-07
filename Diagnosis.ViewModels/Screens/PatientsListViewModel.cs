@@ -78,7 +78,7 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Events.PatientAdded);
+                    this.Send(Events.AddPatient);
                 });
             }
         }

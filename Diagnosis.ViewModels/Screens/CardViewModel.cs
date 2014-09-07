@@ -18,30 +18,10 @@ namespace Diagnosis.ViewModels
 
         public CardViewModel()
         {
-            HrEditor = new HrEditorViewModel(session);
+            HealthRecordEditor = new HrEditorViewModel(session);
 
-            this.Subscribe(Events.PatientCreated, (e) =>
-            {
-                var pat = e.GetValue<PatientViewModel>(MessageKeys.Patient);
-                viewer.OpenPatient(pat);
-            });
-            this.Subscribe(Events.OpenHealthRecord, (e) =>
-            {
-                var hr = e.GetValue<HealthRecord>(MessageKeys.HealthRecord);
-
-                viewer.OpenHr(hr);
-            });
-            this.Subscribe(Events.PatientAdded, (e) =>
-            {
-                var pat = e.GetValue<PatientViewModel>(MessageKeys.Patient);
-                viewer.OpenPatient(pat);
-            });
-
-            this.Subscribe(Events.OpenPatient, (e) =>
-            {
-                var pat = e.GetValue<PatientViewModel>(MessageKeys.Patient);
-                viewer.OpenPatient(pat);
-            });
+            viewer.Session = session;
+            viewer.PropertyChanged += viewer_PropertyChanged;
         }
 
         public AppointmentViewModel Appointment
@@ -76,7 +56,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public HrEditorViewModel HrEditor
+        public HrEditorViewModel HealthRecordEditor
         {
             get
             {
@@ -87,7 +67,7 @@ namespace Diagnosis.ViewModels
                 if (_hrEditor != value)
                 {
                     _hrEditor = value;
-                    OnPropertyChanged(() => HrEditor);
+                    OnPropertyChanged(() => HealthRecordEditor);
                 }
             }
         }
@@ -105,6 +85,77 @@ namespace Diagnosis.ViewModels
                     _patient = value;
                     OnPropertyChanged(() => Patient);
                 }
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            viewer.PropertyChanged -= viewer_PropertyChanged;
+            base.Dispose(disposing);
+        }
+
+        void viewer_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "OpenedPatient":
+                    if (viewer.OpenedPatient != null)
+                    {
+                        Patient = new PatientViewModel(viewer.OpenedPatient);
+                        Patient.PropertyChanged += (s1, e1) =>
+                        {
+                            if (e1.PropertyName == "SelectedCourse")
+                            {
+                                viewer.OpenedCourse = Patient.SelectedCourse.course;
+                            }
+                        };
+                    }
+                    else
+                    {
+                        Patient = null;
+                    }
+                    break;
+                case "OpenedCourse":
+                    if (viewer.OpenedCourse != null)
+                    {
+                        Course = new CourseViewModel(viewer.OpenedCourse);
+                        Course.PropertyChanged += (s1, e1) =>
+                        {
+                            if (e1.PropertyName == "SelectedAppointment")
+                            {
+                                viewer.OpenedAppointment = Course.SelectedAppointment.To<ShortAppointmentViewModel>().appointment;
+                            }
+                        };
+                        Patient.SelectCourse(viewer.OpenedCourse);
+                    }
+                    else
+                    {
+                        Course = null;
+                    }
+                    break;
+                case "OpenedAppointment":
+                    if (viewer.OpenedAppointment != null)
+                    {
+                        Appointment = new AppointmentViewModel(viewer.OpenedAppointment);
+                        Course.SelectAppointment(viewer.OpenedAppointment);
+                    }
+                    else
+                    {
+                        Appointment = null;
+                    }
+                    break;
+                case "OpenedHealthRecord":
+                    if (viewer.OpenedHealthRecord != null)
+                    {
+
+                    }
+                    else
+                    {
+
+                    }
+                    break;
+                default:
+                    break;
             }
         }
     }

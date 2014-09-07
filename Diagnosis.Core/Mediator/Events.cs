@@ -25,9 +25,10 @@ namespace Diagnosis.Core
 
     public class Events
     {
-        public const int PatientAdded = 7;
+        public const int AddPatient = 7;
         public const int PatientCreated = 8;
-
+        public const int FirstHr = 9;
+        public const int PatientSaved = 10;
         public const int OpenedPatientChanged = 13;
 
         public const int OpenHealthRecord = 14;
