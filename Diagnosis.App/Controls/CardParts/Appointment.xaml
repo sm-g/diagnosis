@@ -16,7 +16,7 @@
             <KeyBinding Modifiers="Control" Key="S" Command="{Binding Editable.CommitCommand}" />
             <KeyBinding Modifiers="Alt" Key="F" Command="{Binding SendToSearchCommand}" />
 
-            <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding DataContext.EditHrCommand, ElementName=appointment}" />
+            <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding EditCommand}" />
         </InputBindingCollection>
     </UserControl.Resources>
 
@@ -24,7 +24,7 @@
         <KeyBinding Modifiers="Control" Key="N" Command="{Binding AddHealthRecordCommand}" />
         <KeyBinding Modifiers="Control" Key="Enter" Command="{Binding AddHealthRecordCommand}" />
         <KeyBinding Key="Delete" Command="{Binding DeleteHealthRecordsCommand}" />
-        <KeyBinding Key="F2" Command="{Binding EditHrCommand}" />
+        <KeyBinding Key="F2" Command="{Binding SelectedHealthRecord.EditCommand}" />
         <KeyBinding Modifiers="Control" Key="Up" Command="{Binding MoveHrSelectionCommand}" CommandParameter="{StaticResource True}" />
         <KeyBinding Modifiers="Control" Key="Down" Command="{Binding MoveHrSelectionCommand}" CommandParameter="{StaticResource False}" />
     </UserControl.InputBindings>
@@ -125,21 +125,5 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        <Border Grid.Row="2" BorderThickness="0,1,0,0" SnapsToDevicePixels="True"
-                Visibility="{Binding HealthRecordEditor.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Border.BorderBrush>
-                <SolidColorBrush Color="Gray" />
-            </Border.BorderBrush>
-            <Border.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FFFFEAD2" Offset="0" />
-                    <GradientStop Color="#FFFFFBFB" Offset="1" />
-                </LinearGradientBrush>
-            </Border.Background>
-
-            <Grid Margin="10,0,10,10">
-                <editors:HealthRecordEditorShared DataContext="{Binding HealthRecordEditor}" />
-            </Grid>
-        </Border>
     </Grid>
 </UserControl>

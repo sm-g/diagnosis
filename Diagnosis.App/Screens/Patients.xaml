@@ -65,12 +65,12 @@
                   SelectionMode="Single"
                   AutoGenerateColumns="False">            
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Ключ" IsReadOnly="True" Binding="{Binding Label}" />
-                <DataGridTextColumn Header="Фамилия" IsReadOnly="True" Binding="{Binding LastName}" />
-                <DataGridTextColumn Header="Имя" IsReadOnly="True" Binding="{Binding FirstName}" />
-                <DataGridTextColumn Header="Отчество" IsReadOnly="True" Binding="{Binding MiddleName}" />
-                <DataGridCheckBoxColumn Header="Пол" IsReadOnly="True" Binding="{Binding IsMale}" ElementStyle="{StaticResource SexCheckbox}" />
-                <DataGridTextColumn Header="Возраст" IsReadOnly="True" Binding="{Binding Age}" />
+                <DataGridTextColumn Header="Ключ" IsReadOnly="True" Binding="{Binding Label, Mode=OneWay}" />
+                <DataGridTextColumn Header="Фамилия" IsReadOnly="True" Binding="{Binding LastName, Mode=OneWay}" />
+                <DataGridTextColumn Header="Имя" IsReadOnly="True" Binding="{Binding FirstName, Mode=OneWay}" />
+                <DataGridTextColumn Header="Отчество" IsReadOnly="True" Binding="{Binding MiddleName, Mode=OneWay}" />
+                <DataGridCheckBoxColumn Header="Пол" IsReadOnly="True" Binding="{Binding IsMale, Mode=OneWay}" ElementStyle="{StaticResource SexCheckbox}" />
+                <DataGridTextColumn Header="Возраст" IsReadOnly="True" Binding="{Binding Age, Mode=OneWay}" />
             </DataGrid.Columns>
             <DataGrid.InputBindings>
                 <KeyBinding Key="Enter" Command="{Binding OpenPatientCommand}" />

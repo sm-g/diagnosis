@@ -7,7 +7,7 @@
              xmlns:card="clr-namespace:Diagnosis.App.Controls.CardParts"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="600">
     <!-- CardViewModel -->
     <UserControl.Resources>
         <ResourceDictionary>
@@ -84,11 +84,28 @@
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
-                <RowDefinition Height="73*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <card:AppointmentsTabs DataContext="{Binding Course}"
                                Visibility="{Binding Patient.NoCourses, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
             <!--<card:Appointment DataContext="{Binding Appointment}" Grid.Row="1" />-->
+            <Border Grid.Row="2" BorderThickness="0,1,0,0" SnapsToDevicePixels="True"
+                Visibility="{Binding HealthRecordEditor.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Border.BorderBrush>
+                    <SolidColorBrush Color="Gray" />
+                </Border.BorderBrush>
+                <Border.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFFFEAD2" Offset="0" />
+                        <GradientStop Color="#FFFFFBFB" Offset="1" />
+                    </LinearGradientBrush>
+                </Border.Background>
+
+                <Grid Margin="10,0,10,10">
+                    <editors:HealthRecordEditorShared DataContext="{Binding HealthRecordEditor}" />
+                </Grid>
+            </Border>
         </Grid>
     </Grid>
 </UserControl>
