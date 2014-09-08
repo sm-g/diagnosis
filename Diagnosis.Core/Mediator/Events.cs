@@ -25,18 +25,22 @@ namespace Diagnosis.Core
 
     public class Events
     {
+        // for ScreenSwitcher
         public const int AddPatient = 7;
-        public const int PatientCreated = 8;
+        public const int OpenPatient = 16;
         public const int FirstHr = 9;
-        public const int PatientSaved = 10;
+        public const int EditPatient = 19;
+        public const int LeavePatientEditor = 10;
+        public const int OpenHealthRecord = 14;
+        public const int EditHealthRecord = 20;
+
         public const int OpenedPatientChanged = 13;
 
-        public const int OpenHealthRecord = 14;
         public const int OpenSettings = 15;
-        public const int OpenPatient = 16;
 
         public const int SettingsSaved = 17;
 
+        // for Search
         public const int SendToSearch = 18;
 
     }
