@@ -1,41 +1,41 @@
 ﻿using Diagnosis.Core;
 using Diagnosis.Models;
 using EventAggregator;
+using NHibernate;
 
 namespace Diagnosis.ViewModels
 {
     public class CardViewModel : SessionVMBase
     {
         public static PatientViewer viewer = new PatientViewer();
-
-        private AppointmentViewModel _appointment;
-
-        private CourseViewModel _course;
-
-        private HrEditorViewModel _hrEditor;
+        public static ISession Session;
 
         private PatientViewModel _patient;
+        private CourseViewModel _course;
+        private AppointmentViewModel _appointment;
+        private HrEditorViewModel _hrEditor;
 
         public CardViewModel()
         {
             HealthRecordEditor = new HrEditorViewModel(session);
+            Session = session;
 
             viewer.Session = session;
             viewer.PropertyChanged += viewer_PropertyChanged;
         }
 
-        public AppointmentViewModel Appointment
+        public PatientViewModel Patient
         {
             get
             {
-                return _appointment;
+                return _patient;
             }
-            set
+            private set
             {
-                if (_appointment != value)
+                if (_patient != value)
                 {
-                    _appointment = value;
-                    OnPropertyChanged(() => Appointment);
+                    _patient = value;
+                    OnPropertyChanged(() => Patient);
                 }
             }
         }
@@ -46,12 +46,44 @@ namespace Diagnosis.ViewModels
             {
                 return _course;
             }
-            set
+            private set
             {
                 if (_course != value)
                 {
                     _course = value;
                     OnPropertyChanged(() => Course);
+                }
+            }
+        }
+        public AppointmentViewModel Appointment
+        {
+            get
+            {
+                return _appointment;
+            }
+            private set
+            {
+                if (_appointment != value)
+                {
+                    _appointment = value;
+                    OnPropertyChanged(() => Appointment);
+                }
+            }
+        }
+
+        private HealthRecordViewModel _hr;
+        public HealthRecordViewModel HealthRecord
+        {
+            get
+            {
+                return _hr;
+            }
+            set
+            {
+                if (_hr != value)
+                {
+                    _hr = value;
+                    OnPropertyChanged(() => HealthRecord);
                 }
             }
         }
@@ -62,7 +94,7 @@ namespace Diagnosis.ViewModels
             {
                 return _hrEditor;
             }
-            set
+            private set
             {
                 if (_hrEditor != value)
                 {
@@ -72,20 +104,9 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public PatientViewModel Patient
+        public void EditHr()
         {
-            get
-            {
-                return _patient;
-            }
-            set
-            {
-                if (_patient != value)
-                {
-                    _patient = value;
-                    OnPropertyChanged(() => Patient);
-                }
-            }
+            HealthRecordEditor.HealthRecord = HealthRecord;
         }
 
         protected override void Dispose(bool disposing)
@@ -137,6 +158,13 @@ namespace Diagnosis.ViewModels
                     if (viewer.OpenedAppointment != null)
                     {
                         Appointment = new AppointmentViewModel(viewer.OpenedAppointment);
+                        Appointment.PropertyChanged += (s1, e1) =>
+                        {
+                            if (e1.PropertyName == "SelectedHealthRecord")
+                            {
+                                viewer.OpenedHealthRecord = Appointment.SelectedHealthRecord.healthRecord;
+                            }
+                        };
                         Course.SelectAppointment(viewer.OpenedAppointment);
                     }
                     else
@@ -147,11 +175,13 @@ namespace Diagnosis.ViewModels
                 case "OpenedHealthRecord":
                     if (viewer.OpenedHealthRecord != null)
                     {
+                        HealthRecord = new HealthRecordViewModel(viewer.OpenedHealthRecord);
 
+                        Appointment.SelectHealthRecord(viewer.OpenedHealthRecord);
                     }
                     else
                     {
-
+                        HealthRecord = null;
                     }
                     break;
                 default:

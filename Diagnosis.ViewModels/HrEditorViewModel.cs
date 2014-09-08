@@ -1,20 +1,18 @@
-﻿using NHibernate;
-using Diagnosis.Core;
+﻿using Diagnosis.Core;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Search.Autocomplete;
 using EventAggregator;
+using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Diagnostics;
 
 namespace Diagnosis.ViewModels
 {
     public class HrEditorViewModel : ViewModelBase
     {
-        Autocomplete _autocomplete;
+        private Autocomplete _autocomplete;
         private PopupSearch<DiagnosisViewModel> _diagnosisSearch;
-
 
         private HealthRecordViewModel _hr;
         private ISession session;
@@ -31,18 +29,20 @@ namespace Diagnosis.ViewModels
             {
                 if (_hr != value)
                 {
-                    if (_hr != null)
-                    {
-                        _hr.Editable.PropertyChanged -= hr_Editable_PropertyChanged;
-                    }
-
                     _hr = value;
 
                     if (value != null)
                     {
+                        // смена записи — сохранение редактируемой
+                        if (session.Transaction.IsActive)
+                        {
+                            session.Transaction.Commit();
+                        }
+
+                        session.BeginTransaction();
+
                         CreateAutoComplete();
                         UpdateDiagnosisQueryCode();
-                        _hr.Editable.PropertyChanged += hr_Editable_PropertyChanged;
                     }
                     OnPropertyChanged("HealthRecord");
                     OnPropertyChanged("IsActive");
@@ -54,19 +54,55 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return HealthRecord != null && HealthRecord.Editable.IsEditorActive;
-            }
-        }
-
-        private void hr_Editable_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "IsEditorActive")
-            {
-                OnPropertyChanged("IsActive");
+                return HealthRecord != null;
             }
         }
 
         #endregion HealthRecord
+
+        public RelayCommand RevertCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                       {
+                           session.Refresh(HealthRecord.healthRecord);
+                       });
+            }
+        }
+        public RelayCommand SaveCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                        {
+                            session.SaveOrUpdate(HealthRecord.healthRecord);
+                            session.Transaction.Commit();
+                        });
+            }
+        }
+
+        public RelayCommand DeleteCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                       {
+                           HealthRecord.healthRecord.IsDeleted = true;
+                       });
+            }
+        }
+
+        public RelayCommand CancelCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                       {
+                           session.Transaction.Rollback();
+                       });
+            }
+        }
 
         #region AutoComplete
 

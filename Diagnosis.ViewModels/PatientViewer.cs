@@ -143,7 +143,7 @@ namespace Diagnosis.ViewModels
             {
                 return _openedHr;
             }
-            private set
+            set
             {
                 if (_openedHr != value)
                 {

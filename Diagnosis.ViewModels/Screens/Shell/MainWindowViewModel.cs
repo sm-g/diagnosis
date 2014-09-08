@@ -30,7 +30,7 @@ namespace Diagnosis.ViewModels
 
             AuthorityController.LoggedIn += OnLoggedIn;
 
-            switcher.OpenScreen(Screens.Login);
+            switcher.OpenScreen(Screens.Login, true);
             (CurrentView as LoginViewModel).LoginCommand.Execute(null);
         }
 
