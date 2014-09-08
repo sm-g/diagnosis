@@ -160,9 +160,9 @@
     <Compile Include="SpecialCaseItem.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Diagnosis.Core\Diagnosis.Core.csproj">
+    <ProjectReference Include="..\Diagnosis.Common\Diagnosis.Common.csproj">
       <Project>{a91ad3b7-cb0f-426c-a539-1cffc13df0ee}</Project>
-      <Name>Diagnosis.Core</Name>
+      <Name>Diagnosis.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Diagnosis.Data\Diagnosis.Data.csproj">
       <Project>{3ec8d3df-aa44-4cb8-8847-d4b4872e9dad}</Project>
@@ -179,6 +179,7 @@
     <None Include="Search\SearchClassDiagram.cd" />
     <None Include="VMClassDiagram.cd" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
