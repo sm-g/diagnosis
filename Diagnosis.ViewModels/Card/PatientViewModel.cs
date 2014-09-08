@@ -192,7 +192,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return patient.Id == 0;
+                return patient.IsTransient;
             }
         }
 

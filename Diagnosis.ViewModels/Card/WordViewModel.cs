@@ -92,7 +92,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return word.Id == 0;
+                return word.IsDirty;
             }
         }
 
