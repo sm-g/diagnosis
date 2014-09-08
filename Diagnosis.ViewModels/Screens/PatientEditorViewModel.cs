@@ -12,15 +12,41 @@ namespace Diagnosis.ViewModels
     public class PatientEditorViewModel : SessionVMBase
     {
         private readonly Patient patient;
+        private PatientViewModel _vm;
+        private bool shouldCommit;
+        public PatientViewModel Patient
+        {
+            get
+            {
+                return _vm;
+            }
+            private set
+            {
+                if (_vm != value)
+                {
+                    _vm = value;
+                    OnPropertyChanged(() => Patient);
+                    OnPropertyChanged(() => IsUnsaved);
+                }
+            }
+        }
         public RelayCommand SaveCommand
         {
             get
             {
                 return new RelayCommand(() =>
-                                          {
-                                              this.Send(Events.PatientSaved, patient.AsParams(MessageKeys.Patient));
-                                          });
+                {
+                    Session.SaveOrUpdate(patient);
+                    shouldCommit = true;
+
+                    this.Send(Events.LeavePatientEditor, patient.AsParams(MessageKeys.Patient));
+                }, () => CanSave());
             }
+        }
+
+        private bool CanSave()
+        {
+            return patient.IsTransient || patient.IsDirty;
         }
 
         public RelayCommand SaveAndCreateCommand
@@ -29,8 +55,11 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                        {
+                           Session.SaveOrUpdate(patient);
+                           shouldCommit = true;
 
-                       });
+                           this.Send(Events.AddPatient);
+                       }, () => CanSave());
             }
         }
 
@@ -40,7 +69,8 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                        {
-
+                           shouldCommit = false;
+                           this.Send(Events.LeavePatientEditor, patient.AsParams(MessageKeys.Patient));
                        });
             }
         }
@@ -51,8 +81,11 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                        {
+                           Session.SaveOrUpdate(patient);
+                           shouldCommit = true;
+
                            this.Send(Events.FirstHr, patient.AsParams(MessageKeys.Patient));
-                       });
+                       }, () => patient.Courses.Count == 0);
             }
         }
 
@@ -70,6 +103,9 @@ namespace Diagnosis.ViewModels
         public PatientEditorViewModel(Patient patient)
         {
             this.patient = patient;
+            Patient = new PatientViewModel(patient);
+
+            Session.BeginTransaction();
         }
         /// <summary>
         /// Создает нового пациента.
@@ -77,6 +113,21 @@ namespace Diagnosis.ViewModels
         public PatientEditorViewModel()
             : this(new Patient())
         {
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (shouldCommit)
+            {
+                Session.Transaction.Commit();
+            }
+            else
+            {
+                if (Session.Transaction.IsActive)
+                Session.Transaction.Rollback(); // если flush.never - не нужно?
+            }
+
+            base.Dispose(disposing);
         }
     }
 }

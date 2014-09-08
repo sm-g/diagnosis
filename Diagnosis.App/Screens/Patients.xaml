@@ -74,6 +74,7 @@
             </DataGrid.Columns>
             <DataGrid.InputBindings>
                 <KeyBinding Key="Enter" Command="{Binding OpenPatientCommand}" />
+                <KeyBinding Key="F2" Command="{Binding EditPatientCommand}" />
                 <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding OpenPatientCommand}" />
             </DataGrid.InputBindings>
             <DataGrid.CellStyle>

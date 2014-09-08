@@ -93,6 +93,16 @@ namespace Diagnosis.ViewModels
                         }, () => SelectedPatient != null);
             }
         }
+        public ICommand EditPatientCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    this.Send(Events.EditPatient, SelectedPatient.patient.AsParams(MessageKeys.Patient));
+                }, () => SelectedPatient != null);
+            }
+        }
         public void SelectLastPatient()
         {
             if (Patients.Count > 0)

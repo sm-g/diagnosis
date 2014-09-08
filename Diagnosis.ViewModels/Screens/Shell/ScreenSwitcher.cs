@@ -20,9 +20,6 @@ namespace Diagnosis.ViewModels
         List<Screens> history = new List<Screens>();
         private Screens _curScreen;
         private SessionVMBase _curView;
-        private LoginViewModel _login;
-        private PatientsListViewModel _patients;
-        private WordsListViewModel _words;
 
         public ScreenSwitcher()
         {
@@ -56,7 +53,7 @@ namespace Diagnosis.ViewModels
             {
                 var pat = e.GetValue<Patient>(MessageKeys.Patient);
 
-                OpenScreen(Screens.PatientEditor);
+                OpenScreen(Screens.PatientEditor, false, pat);
             });
 
             this.Subscribe(Events.LeavePatientEditor, (e) =>
@@ -136,7 +133,7 @@ namespace Diagnosis.ViewModels
         /// </summary>
         /// <param name="screen"></param>
         /// <param name="replace">Открывать ли экран заново, если совпадает с текущим экраном.</param>
-        public void OpenScreen(Screens screen, bool replace = false)
+        public void OpenScreen(Screens screen, bool replace = false, object parameter = null)
         {
             var updateCurView = replace || Screen != screen; // не обновляем, если экран тот же и не надо заменять
 
@@ -162,7 +159,12 @@ namespace Diagnosis.ViewModels
                         break;
 
                     case Screens.PatientEditor:
-                        CurrentView = new PatientEditorViewModel();
+                        if (parameter != null)
+                            CurrentView = new PatientEditorViewModel(parameter as Patient);
+                        else
+                            // новый пациент в редакторе
+                            CurrentView = new PatientEditorViewModel();
+
                         break;
 
                     default:

@@ -1,13 +1,11 @@
-﻿using Diagnosis.Core;
+﻿using EventAggregator;
 using Diagnosis.Models;
-using EventAggregator;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
+using Diagnosis.Core;
 
 namespace Diagnosis.ViewModels
 {
@@ -199,6 +197,7 @@ namespace Diagnosis.ViewModels
         public ObservableCollection<ShortCourseViewModel> Courses { get { return coursesManager.Courses; } }
 
         private ShortCourseViewModel _selectedCourse;
+
         public ShortCourseViewModel SelectedCourse
         {
             get
@@ -223,6 +222,16 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        public RelayCommand EditCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                       {
+                           this.Send(Events.EditPatient, patient.AsParams(MessageKeys.Patient));
+                       });
+            }
+        }
 
         public bool NoCourses
         {
@@ -248,7 +257,6 @@ namespace Diagnosis.ViewModels
 
             if (!IsUnsaved)
                 LoadProperties();
-
         }
 
         public void SelectCourse(Course course)
@@ -259,7 +267,7 @@ namespace Diagnosis.ViewModels
         /// <summary>
         /// Только для сохраненного пациента.
         /// </summary>
-        void LoadProperties()
+        private void LoadProperties()
         {
             var allProperties = new Diagnosis.Data.Repositories.PropertyRepository().GetAll();
 
@@ -286,7 +294,7 @@ namespace Diagnosis.ViewModels
             OnPropertyChanged("Properties");
         }
 
-        PropertyViewModel MakePropertyVM(Property p)
+        private PropertyViewModel MakePropertyVM(Property p)
         {
             var vm = new PropertyViewModel(p);
             vm.PropertyChanged += (s, e) =>
@@ -307,5 +315,4 @@ namespace Diagnosis.ViewModels
             return patient.ToString();
         }
     }
-
 }

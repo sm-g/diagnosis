@@ -240,6 +240,9 @@
     <Compile Include="Screens\NewCard.xaml.cs">
       <DependentUpon>NewCard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Screens\NewPatientEditor.xaml.cs">
+      <DependentUpon>NewPatientEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Screens\Patients.xaml.cs">
       <DependentUpon>Patients.xaml</DependentUpon>
     </Compile>
@@ -385,6 +388,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Screens\NewCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Screens\NewPatientEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="Diagnosis.App.Screens.NewPatientEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
+
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <!--PatientEditorViewModel-->
+    <UserControl.Resources>
+        <Style TargetType="DockPanel" BasedOn="{StaticResource formLine}" />
+        <Style TargetType="Label" BasedOn="{StaticResource label120}" />
+        <Style TargetType="Button">
+            <Setter Property="Width" Value="70" />
+            <Setter Property="Height" Value="23" />
+            <Setter Property="Margin" Value="5" />
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <Button Name="firstHrButton" Command="{Binding FirstHrCommand}">_Начать запись</Button>
+
+        <StackPanel Grid.Column="1" DataContext="{Binding Patient}">
+        <!-- PatientViewModel -->
+            <DockPanel>
+                <Label Content="Метка" />
+                <TextBox Text="{Binding Label}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Фамилия" />
+                <TextBox Text="{Binding LastName}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Имя" />
+                <TextBox Text="{Binding FirstName}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Отчество" />
+                <TextBox Text="{Binding MiddleName}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Дата рождения" />
+                <editors:AgePicker Margin="0,1,0,-15" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Пол" />
+                <editors:SexChooser Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" />
+            </DockPanel>
+
+            <editors:PropertiesChooser Margin="0,5" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Grid.Column="1">
+            <Button Name="saveButton" IsDefault="True" Command="{Binding SaveCommand}">Сохранить</Button>
+            <Button Name="saveAddButton"  Command="{Binding SaveAndCreateCommand}">Добавить ещё пациента</Button>
+            <Button Name="cancelButton" IsCancel="True" Command="{Binding CancelCommand}">Отмена</Button>
+        </StackPanel>
+    </Grid>
+</UserControl>
