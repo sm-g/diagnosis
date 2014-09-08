@@ -140,7 +140,7 @@ namespace Diagnosis.ViewModels
 
         internal void SelectAppointment(Appointment appointment)
         {
-            SelectedAppointment = Appointments.First(x => x.To<ShortAppointmentViewModel>().appointment == appointment);
+            SelectedAppointment = Appointments.FirstOrDefault(x => x.Content != null && x.To<ShortAppointmentViewModel>().appointment == appointment);
         }
     }
 }

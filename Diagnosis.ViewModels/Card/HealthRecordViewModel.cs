@@ -11,33 +11,12 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
-    public class HealthRecordViewModel : CheckableBase, IEditableNesting
+    public class HealthRecordViewModel : CheckableBase
     {
         internal readonly HealthRecord healthRecord;
         private DateOffset _dateOffset;
         private IEnumerable<Category> _categories;
-        private static ICategoryRepository catRepo = new CategoryRepository();
-
-        #region IEditableNesting
-
-        public Editable Editable { get; private set; }
-
-        /// <summary>
-        /// Запись пустая, если не задано ни одно свойство (кроме категории, которая всегда есть).
-        /// </summary>
-        public bool IsEmpty
-        {
-            get
-            {
-                return String.IsNullOrWhiteSpace(Comment)
-                    && NumValue == null
-                    && DateOffset.IsEmpty
-                    && Diagnosis == null
-                    && Symptom == null;
-            }
-        }
-
-        #endregion IEditableNesting
+        //     private static ICategoryRepository catRepo = new CategoryRepository();
 
         public string Name
         {
@@ -259,7 +238,7 @@ namespace Diagnosis.ViewModels
             {
                 if (_categories == null)
                 {
-                    _categories = new List<Category>(catRepo.GetAll().OrderBy(cat => cat.Order));
+                    // _categories = new List<Category>(catRepo.GetAll().OrderBy(cat => cat.Ord));
                 }
                 return _categories;
             }
@@ -278,10 +257,21 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                         {
-                            this.Send(Events.SendToSearch, this.ToEnumerable().AsParams(MessageKeys.HealthRecords));
+                            this.Send(Events.SendToSearch, healthRecord.ToEnumerable().AsParams(MessageKeys.HealthRecords));
                         });
             }
         }
+        public RelayCommand EditCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                       {
+                           this.Send(Events.EditHealthRecord, healthRecord.AsParams(MessageKeys.HealthRecord));
+                       });
+            }
+        }
+
         public HealthRecordViewModel(HealthRecord hr)
         {
             Contract.Requires(hr != null);
@@ -291,7 +281,6 @@ namespace Diagnosis.ViewModels
 
             SetDiagnosis();
 
-            Editable = new Editable(healthRecord);
             this.Subscribe(Events.SettingsSaved, (e) =>
             {
                 OnPropertyChanged("ShowDiagnosis");

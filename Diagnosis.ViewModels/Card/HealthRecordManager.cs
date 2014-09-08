@@ -12,13 +12,12 @@ namespace Diagnosis.ViewModels
 {
     public class HealthRecordManager
     {
-        private readonly AppointmentViewModel appVM;
+        private readonly Appointment app;
         private ObservableCollection<HealthRecordViewModel> _healthRecords;
-        private HealthRecordRepository repo = new HealthRecordRepository();
 
         public event EventHandler HealthRecordsLoaded;
 
-        public event PropertyChangedEventHandler HrPropertyChanged;
+        public event PropertyChangedEventHandler HrVmPropertyChanged;
 
         public ObservableCollection<HealthRecordViewModel> HealthRecords
         {
@@ -26,42 +25,63 @@ namespace Diagnosis.ViewModels
             {
                 if (_healthRecords == null)
                 {
-                    _healthRecords = MakeHealthRecords();
+                    IList<HealthRecordViewModel> hrVMs;
+                    using (var tester = new PerformanceTester((ts) => Debug.Print("making healthrecords for {0}: {1}", app, ts)))
+                    {
+                        hrVMs = app.HealthRecords.Select(hr => CreateViewModel(hr)).ToList();
+                    }
+                    _healthRecords = new ObservableCollection<HealthRecordViewModel>(hrVMs);
 
-                    //  appVM.SubscribeEditableNesting(HealthRecords);
                     OnHealthRecordsLoaded();
                 }
                 return _healthRecords;
             }
         }
 
-        public HealthRecordManager(AppointmentViewModel appVM)
+        private HealthRecordViewModel CreateViewModel(HealthRecord hr)
         {
-            this.appVM = appVM;
+            hr.PropertyChanged += hr_PropertyChanged;
+            var vm = new HealthRecordViewModel(hr);
+            vm.PropertyChanged += (s, e) => { OnHrVmPropertyChanged(e); };
+            return vm;
         }
 
-        public HealthRecordViewModel AddHealthRecord()
+        public ObservableCollection<HealthRecordViewModel> DeletedHealthRecords { get; private set; }
+
+        public HealthRecordManager(Appointment app)
         {
-            var lastHrVM = appVM.SelectedHealthRecord ?? HealthRecords.LastOrDefault();
-            var newHr = appVM.appointment.AddHealthRecord();
-            if (lastHrVM != null)
+            this.app = app;
+            app.HealthRecordsChanged += (s, e) =>
             {
-                // копируем категории из последней записи
-                newHr.Category = lastHrVM.healthRecord.Category;
-            }
+                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+                {
+                    foreach (HealthRecord item in e.NewItems)
+                    {
+                        var hrVM = CreateViewModel(item);
+                        HealthRecords.Add(hrVM);
+                    }
+                }
+                else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+                {
+                    foreach (HealthRecord item in e.OldItems)
+                    {
+                        var hrVM = HealthRecords.Where(vm => vm.healthRecord == item).FirstOrDefault();
+                        HealthRecords.Remove(hrVM);
+                    }
+                }
+            };
 
-            var hrVM = MakeHealthRecordVM(newHr);
-            HealthRecords.Add(hrVM);
-            return hrVM;
+            DeletedHealthRecords = new ObservableCollection<HealthRecordViewModel>();
         }
 
-        private HealthRecordViewModel MakeHealthRecordVM(HealthRecord hr)
+        public void DeleteCheckedHealthRecords()
         {
-            var hrVM = new HealthRecordViewModel(hr);
-
-            SubscribeHr(hrVM);
-            return hrVM;
+            HealthRecords.Where(hr => hr.IsChecked).ToList().ForAll(hr =>
+            {
+                hr.healthRecord.IsDeleted = true;
+            });
         }
+
 
         protected virtual void OnHealthRecordsLoaded()
         {
@@ -72,67 +92,42 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        protected virtual void OnHrPropertyChanged(PropertyChangedEventArgs e)
+        protected virtual void OnHrVmPropertyChanged(PropertyChangedEventArgs e)
         {
-            var h = HrPropertyChanged;
+            var h = HrVmPropertyChanged;
             if (h != null)
             {
                 h(this, e);
             }
         }
 
-        private ObservableCollection<HealthRecordViewModel> MakeHealthRecords()
-        {
-            IList<HealthRecordViewModel> hrVMs;
-            using (var tester = new PerformanceTester((ts) => Debug.Print("making healthrecords for {0}: {1}", appVM, ts)))
-            {
-                hrVMs = appVM.appointment.HealthRecords.Select(hr => MakeHealthRecordVM(hr)).ToList();
-            }
-            var healthRecords = new ObservableCollection<HealthRecordViewModel>(hrVMs);
-            return healthRecords;
-        }
-
-        private void SubscribeHr(HealthRecordViewModel hrVM)
-        {
-            hrVM.PropertyChanged += hr_PropertyChanged;
-            hrVM.Editable.Deleted += hr_Deleted;
-            hrVM.Editable.Reverted += hr_Reverted;
-            hrVM.Editable.Committed += hr_Committed;
-        }
-
-        private void UnsubscribeHr(HealthRecordViewModel hrVM)
-        {
-            hrVM.PropertyChanged -= hr_PropertyChanged;
-            hrVM.Editable.Deleted -= hr_Deleted;
-            hrVM.Editable.Reverted -= hr_Reverted;
-            hrVM.Editable.Committed -= hr_Committed;
-        }
-
-        private void hr_Committed(object sender, EditableEventArgs e)
-        {
-            var hr = e.entity as HealthRecord;
-            repo.SaveOrUpdate(hr);
-        }
-
-        private void hr_Reverted(object sender, EditableEventArgs e)
-        {
-            var hr = e.entity as HealthRecord;
-            repo.Refresh(hr);
-        }
-
         private void hr_Deleted(object sender, EditableEventArgs e)
         {
             var hr = e.entity as HealthRecord;
-            appVM.appointment.RemoveHealthRecord(hr);
+            app.RemoveHealthRecord(hr);
 
             var hrVM = HealthRecords.Where(vm => vm.healthRecord == hr).FirstOrDefault();
             HealthRecords.Remove(hrVM);
-            UnsubscribeHr(hrVM);
         }
 
         private void hr_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            OnHrPropertyChanged(e);
+            var hr = sender as HealthRecord;
+            if (e.PropertyName == "IsDeleted")
+            {
+                if (hr.IsDeleted)
+                {
+                    var vm = HealthRecords.Where(x => x.healthRecord == hr).First();
+                    DeletedHealthRecords.Add(vm);
+                    HealthRecords.Remove(vm);
+                }
+                else
+                {
+                    var vm = DeletedHealthRecords.Where(x => x.healthRecord == hr).First();
+                    DeletedHealthRecords.Remove(vm);
+                    HealthRecords.Add(vm);
+                }
+            }
         }
     }
 }

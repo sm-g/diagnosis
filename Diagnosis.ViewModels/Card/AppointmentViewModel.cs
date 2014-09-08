@@ -16,11 +16,7 @@ namespace Diagnosis.ViewModels
         #region Fileds
 
         internal readonly Appointment appointment;
-        internal Func<HealthRecordViewModel> OpenedHrGetter;
-        internal Action<HealthRecordViewModel> OpenedHrSetter;
         private HealthRecordManager hrManager;
-
-        private static HrEditorViewModel _hrEditorStatic;//= new HrEditorViewModel();
 
         private ICollectionView healthRecordsView;
 
@@ -35,10 +31,7 @@ namespace Diagnosis.ViewModels
 
         public DateTime DateTime
         {
-            get
-            {
-                return appointment.DateAndTime;
-            }
+            get { return appointment.DateAndTime; }
         }
 
         public ObservableCollection<HealthRecordViewModel> HealthRecords
@@ -61,17 +54,18 @@ namespace Diagnosis.ViewModels
 
         #endregion Model
 
-        public HrEditorViewModel HealthRecordEditor { get { return _hrEditorStatic; } }
-
+        public HealthRecordViewModel _selectedHealthRecord;
         public HealthRecordViewModel SelectedHealthRecord
         {
             get
             {
-                return OpenedHrGetter != null ? OpenedHrGetter() : null;
+                return _selectedHealthRecord;
             }
             set
             {
-                OpenedHrSetter(value);
+                System.Diagnostics.Debug.Print("Selected {0}", value);
+                _selectedHealthRecord = value;
+                OnPropertyChanged(() => SelectedHealthRecord);
             }
         }
 
@@ -83,10 +77,17 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                     {
-                        AddHealthRecord();
+                        var lastHrVM = SelectedHealthRecord ?? HealthRecords.LastOrDefault();
+                        var newHr = appointment.AddHealthRecord();
+                        if (lastHrVM != null)
+                        {
+                            // копируем категории из последней записи
+                            newHr.Category = lastHrVM.healthRecord.Category;
+                        }
+
                     },
                     // нельзя добавлять новую запись, пока выбранная пуста
-                    () => SelectedHealthRecord == null || !SelectedHealthRecord.IsEmpty
+                    () => SelectedHealthRecord == null //|| !SelectedHealthRecord.IsEmpty
                     );
             }
         }
@@ -97,7 +98,7 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                     {
-                        DeleteCheckedHealthRecords();
+                        hrManager.DeleteCheckedHealthRecords();
                     }, () => CheckedHealthRecords > 0);
             }
         }
@@ -111,17 +112,6 @@ namespace Diagnosis.ViewModels
                                 .Select(vm => vm.healthRecord)
                                 .AsParams(MessageKeys.HealthRecords));
                         }, () => CheckedHealthRecords > 0);
-            }
-        }
-
-        public ICommand EditHrCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                        {
-                            HealthRecordEditor.HealthRecord.Editable.ToggleEditor();
-                        }, () => HealthRecordEditor.HealthRecord != null);
             }
         }
 
@@ -164,30 +154,22 @@ namespace Diagnosis.ViewModels
             Contract.Requires(appointment != null);
             this.appointment = appointment;
 
-            appointment.HealthRecords.CollectionChanged += HealthRecords_CollectionChanged;
+            appointment.HealthRecordsChanged += HealthRecords_CollectionChanged;
 
-            hrManager = new HealthRecordManager(this);
-            hrManager.HrPropertyChanged += hrManager_HrPropertyChanged;
-        }
-
-
-        public void AddHealthRecord()
-        {
-            hrManager.AddHealthRecord();
-        }
-
-        /// <summary>
-        /// Вызывается при смене открытой записи.
-        /// </summary>
-        internal void OnOpenedHealthRecordChanged()
-        {
-            HealthRecordEditor.HealthRecord = SelectedHealthRecord;
-            //if (!DebugOutput.test)
-            OnPropertyChanged("SelectedHealthRecord");
+            hrManager = new HealthRecordManager(appointment);
+            hrManager.HrVmPropertyChanged += hrManager_HrVmPropertyChanged;
         }
 
         void HealthRecords_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            {
+                foreach (var item in e.NewItems)
+                {
+                    //if (SelectedHealthRecord.healthRecord == item)
+                    //    MoveHrViewSelection();
+                }
+            }
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {
                 foreach (var item in e.OldItems)
@@ -196,10 +178,10 @@ namespace Diagnosis.ViewModels
                         MoveHrViewSelection();
                 }
             }
-            OnPropertyChanged("IsEmpty");
+
         }
 
-        private void hrManager_HrPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void hrManager_HrVmPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "Category")
             {
@@ -226,19 +208,15 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        private void DeleteCheckedHealthRecords()
-        {
-            HealthRecords.Where(hr => hr.IsChecked).ToList().ForAll(hr =>
-            {
-                hr.Editable.Delete();
-                // uncheck after delete, to SelectedHealthRecord be deletable
-                hr.IsChecked = false;
-            });
-        }
-
         public override string ToString()
         {
             return appointment.ToString();
+        }
+
+        internal void SelectHealthRecord(HealthRecord healthRecord)
+        {
+            SelectedHealthRecord = HealthRecords.FirstOrDefault(x => x.healthRecord == healthRecord);
+
         }
     }
 }
