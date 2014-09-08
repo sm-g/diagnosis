@@ -10,7 +10,7 @@ using Diagnosis.Data.Repositories;
 
 namespace Diagnosis.ViewModels
 {
-    public class SettingsViewModel : ViewModelBase
+    public class SettingsViewModel : SessionVMBase
     {
         private readonly Doctor doctor;
         private Dictionary<DoctorSettings, Func<bool>> map;
@@ -121,7 +121,7 @@ namespace Diagnosis.ViewModels
 
             if (changed.Count > 0)
             {
-                new DoctorRepository().SaveOrUpdate(doctor);
+                session.SaveOrUpdate(doctor);
             }
 
             DialogResult = true;

@@ -79,6 +79,9 @@
     <Reference Include="LinqSpecs">
       <HintPath>..\packages\LinqSpecs.1.0\lib\LinqSpecs.dll</HintPath>
     </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate, Version=3.3.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NHibernate.3.3.3.4001\lib\Net35\NHibernate.dll</HintPath>
@@ -111,32 +114,26 @@
     <Compile Include="NHibernate\Logging.cs" />
     <Compile Include="NHibernate\Net4Collections.cs" />
     <Compile Include="NHibernate\NHibHelper.cs" />
-    <Compile Include="Repositories\CategoryRepository.cs" />
     <Compile Include="Queries\DiagnosisQuery.cs" />
     <Compile Include="Queries\PatientQuery.cs" />
     <Compile Include="Queries\WordQuery.cs" />
-    <Compile Include="Repositories\NHibernateRepository.cs" />
-    <Compile Include="Repositories\SymptomRepository.cs" />
     <Compile Include="Repositories\IcdChapterRepository.cs" />
-    <Compile Include="Repositories\IcdDiseaseRepository.cs" />
-    <Compile Include="Repositories\DiagnosisRepository.cs" />
+    <Compile Include="Repositories\NHibernateRepository.cs" />
     <Compile Include="Repositories\HealthRecordRepository.cs" />
     <Compile Include="Repositories\WordRepository.cs" />
     <Compile Include="Repositories\ModelRepository.cs" />
-    <Compile Include="Repositories\DoctorRepository.cs" />
     <Compile Include="Repositories\PropertyRepository.cs" />
     <Compile Include="Repositories\IModelRepositories.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\PatientRepository.cs" />
     <Compile Include="Specs\DiagnosisSpecifications.cs" />
     <Compile Include="Specs\PatientSpecifications.cs" />
     <Compile Include="Specs\WordSpecifications.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="NHibernate\hibernate.cfg.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <None Include="NHibernate\hibernate.cfg.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

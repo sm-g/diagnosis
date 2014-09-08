@@ -164,10 +164,6 @@ namespace Diagnosis.ViewModels
 
                     OnPropertyChanged(() => OpenedHealthRecord);
                 }
-                else if (value != null)
-                {
-                    Debug.Print("attempt to open same hr {0}", value);
-                }
             }
         }
 

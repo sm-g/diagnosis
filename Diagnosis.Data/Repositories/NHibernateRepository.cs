@@ -4,6 +4,7 @@ using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace Diagnosis.Data.Repositories
@@ -19,7 +20,7 @@ namespace Diagnosis.Data.Repositories
 
     public class NHibernateRepository<T> : INHibernateRepository<T>
     {
-        ISession session;
+        protected ISession session;
         public NHibernateRepository(ISession session)
         {
             this.session = session;
@@ -48,6 +49,15 @@ namespace Diagnosis.Data.Repositories
         {
             var query = GetQuery(specification);
             return query.ToList(); // sql executed here, keep all sql exceptions here
+        }
+        public IEnumerable<T> FindAll(Expression<Func<T, bool>> linq)
+        {
+            return session.Query<T>()
+              .Where(linq).ToList();
+        }
+        public IEnumerable<T> FindAll()
+        {
+            return session.Query<T>().ToList();
         }
 
         private IQueryable<T> GetQuery(Specification<T> specification)

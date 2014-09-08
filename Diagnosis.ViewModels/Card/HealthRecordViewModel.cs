@@ -15,8 +15,6 @@ namespace Diagnosis.ViewModels
     {
         internal readonly HealthRecord healthRecord;
         private DateOffset _dateOffset;
-        private IEnumerable<Category> _categories;
-        //     private static ICategoryRepository catRepo = new CategoryRepository();
 
         public string Name
         {
@@ -229,18 +227,6 @@ namespace Diagnosis.ViewModels
                 int month = FromMonth ?? 1;
                 int day = FromDay ?? 1;
                 return new DateTime(year, month, day);
-            }
-        }
-
-        public IEnumerable<Category> Categories
-        {
-            get
-            {
-                if (_categories == null)
-                {
-                    // _categories = new List<Category>(catRepo.GetAll().OrderBy(cat => cat.Ord));
-                }
-                return _categories;
             }
         }
 

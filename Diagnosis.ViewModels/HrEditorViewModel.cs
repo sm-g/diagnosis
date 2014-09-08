@@ -6,6 +6,8 @@ using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
+using NHibernate.Linq;
 
 namespace Diagnosis.ViewModels
 {
@@ -16,6 +18,7 @@ namespace Diagnosis.ViewModels
 
         private HealthRecordViewModel _hr;
         private ISession session;
+        private IEnumerable<Category> _categories;
 
         #region HealthRecord
 
@@ -45,8 +48,34 @@ namespace Diagnosis.ViewModels
                         UpdateDiagnosisQueryCode();
                     }
                     OnPropertyChanged("HealthRecord");
+                    OnPropertyChanged("Category");
                     OnPropertyChanged("IsActive");
                 }
+            }
+        }
+
+        public IEnumerable<Category> Categories
+        {
+            get
+            {
+                if (_categories == null)
+                {
+                    _categories = new List<Category>(session.Query<Category>()
+                        .OrderBy(cat => cat.Ord).ToList());
+                }
+                return _categories;
+            }
+        }
+
+        public Category Category
+        {
+            get
+            {
+                return HealthRecord != null ? HealthRecord.Category : null;
+            }
+            set
+            {
+                HealthRecord.Category = value;
             }
         }
 
