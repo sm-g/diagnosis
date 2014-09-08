@@ -162,7 +162,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             if (empty)
                 Tags.Add(tag);
             else
-                Tags.Insert(Tags.Count - 2, tag);
+                Tags.Insert(Tags.Count - 1, tag);
         }
 
         /// <summary>
