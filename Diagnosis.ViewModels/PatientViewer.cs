@@ -220,14 +220,10 @@ namespace Diagnosis.ViewModels
 
         internal void OpenHr(HealthRecord hr)
         {
-            Contract.Requires(OpenedPatient == hr.Appointment.Course.Patient);
-            //OpenedPatient = hr.Appointment.Course.Patient;
-            var course = OpenedPatient.Courses.Where(x => x == hr.Appointment.Course).First();
-            OpenedCourse = course;
-            var app = course.Appointments.Where(x => x == hr.Appointment).First();
-            OpenedAppointment = app;
-            var hrVM = app.HealthRecords.Where(x => x == hr).First();
-            OpenedHealthRecord = hrVM;
+            OpenedPatient = hr.Appointment.Course.Patient;
+            OpenedCourse = hr.Appointment.Course;
+            OpenedAppointment = hr.Appointment;
+            OpenedHealthRecord = hr;
         }
 
         private void OnPatientOpened(Patient patient)
