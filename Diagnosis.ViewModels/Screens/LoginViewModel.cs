@@ -74,15 +74,22 @@ namespace Diagnosis.ViewModels
                 return new RelayCommand(() =>
                 {
                     // Password.MakeReadOnly();
+                    if (CurrentDoctor == null)
+                    {
+                        AuthorityController.LogIn(null);
 
-                    AuthorityController.LogIn(CurrentDoctor.doctor);
+                    }
+                    else
+                    {
+                        AuthorityController.LogIn(CurrentDoctor.doctor);
+                    }
                 }, () => IsLoginEnabled);
             }
         }
 
         public LoginViewModel()
         {
-            var doctorVMs = session.QueryOver<Doctor>().List().Select(d => new DoctorViewModel(d)).ToList();
+            var doctorVMs = Session.QueryOver<Doctor>().List().Select(d => new DoctorViewModel(d)).ToList();
             Doctors = new ReadOnlyObservableCollection<DoctorViewModel>(new ObservableCollection<DoctorViewModel>(doctorVMs));
 
             if (Doctors.Count > 0)

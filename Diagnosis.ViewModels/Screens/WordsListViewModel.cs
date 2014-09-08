@@ -111,17 +111,17 @@ namespace Diagnosis.ViewModels
             vm.Editable.Committed += (s, e) =>
             {
                 var w = e.entity as Word;
-                session.SaveOrUpdate(w);
+                Session.SaveOrUpdate(w);
             };
             vm.Editable.Reverted += (s, e) =>
             {
                 var w = e.entity as Word;
-                session.Refresh(w);
+                Session.Refresh(w);
             };
             vm.Editable.Deleted += (s, e) =>
             {
                 var w = e.entity as Word;
-                session.Delete(w);
+                Session.Delete(w);
             };
             vm.ChildrenChanged += (s, e) =>
             {
@@ -134,7 +134,7 @@ namespace Diagnosis.ViewModels
         {
             Words = new ObservableCollection<WordViewModel>();
 
-            _filter = new NewFilterViewModel<Word>(WordQuery.StartingWith(session));
+            _filter = new NewFilterViewModel<Word>(WordQuery.StartingWith(Session));
 
 
             _filter.Results.CollectionChanged += (s, e) =>

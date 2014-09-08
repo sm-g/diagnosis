@@ -9,12 +9,29 @@ namespace Diagnosis.ViewModels
 {
     public class SessionVMBase : ViewModelBase
     {
-        protected ISession session;
+        ISession session;
         private bool _disposed;
-
+        private IStatelessSession statelessSession;
+        protected IStatelessSession StatelessSession
+        {
+            get
+            {
+                if (statelessSession == null)
+                    statelessSession = NHibernateHelper.OpenStatelessSession();
+                return statelessSession;
+            }
+        }
+        protected ISession Session
+        {
+            get
+            {
+                if (session == null)
+                    session = NHibernateHelper.OpenSession();
+                return session;
+            }
+        }
         public SessionVMBase()
         {
-            session = NHibernateHelper.OpenSession();
         }
 
         protected override void Dispose(bool disposing)
@@ -23,7 +40,10 @@ namespace Diagnosis.ViewModels
             {
                 if (disposing)
                 {
-                    session.Dispose();
+                    if (Session != null)
+                        Session.Dispose();
+                    if (statelessSession != null)
+                        statelessSession.Dispose();
                 }
                 _disposed = true;
             }

@@ -121,7 +121,7 @@ namespace Diagnosis.ViewModels
 
             if (changed.Count > 0)
             {
-                session.SaveOrUpdate(doctor);
+                Session.SaveOrUpdate(doctor);
             }
 
             DialogResult = true;

@@ -17,10 +17,9 @@ namespace Diagnosis.ViewModels
 
         public CardViewModel()
         {
-            HealthRecordEditor = new HrEditorViewModel(session);
-            Session = session;
-
-            viewer.Session = session;
+            Session = base.Session;
+            HealthRecordEditor = new HrEditorViewModel(Session);
+            viewer.Session = Session;
             viewer.PropertyChanged += viewer_PropertyChanged;
         }
 

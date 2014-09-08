@@ -42,7 +42,7 @@ namespace Diagnosis.ViewModels
 
         public SearchViewModel()
         {
-            Autocomplete = new Autocomplete(new Recognizer(session, false), false, null);
+            Autocomplete = new Autocomplete(new Recognizer(Session, false), false, null);
 
             Results = new ObservableCollection<HrSearchResultViewModel>();
             ControlsVisible = true;
@@ -197,7 +197,7 @@ namespace Diagnosis.ViewModels
             {
                 if (_categories == null)
                 {
-                    var catsVM = session.QueryOver<Category>().List().Select(cat => new CategoryViewModel(cat)).ToList();
+                    var catsVM = StatelessSession.QueryOver<Category>().List().Select(cat => new CategoryViewModel(cat)).ToList();
                     catsVM.ForAll(cat => cat.PropertyChanged += (s, e) =>
                     {
                         if (e.PropertyName == "IsChecked")

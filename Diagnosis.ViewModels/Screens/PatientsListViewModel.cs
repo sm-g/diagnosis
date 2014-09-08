@@ -23,7 +23,7 @@ namespace Diagnosis.ViewModels
         {
             _patients = new ObservableCollection<ShortPatientViewModel>();
 
-            _filter = new NewFilterViewModel<Patient>(PatientQuery.StartingWith(session));
+            _filter = new NewFilterViewModel<Patient>(PatientQuery.StartingWith(Session));
 
             _filter.Results.CollectionChanged += (s, e) =>
             {
