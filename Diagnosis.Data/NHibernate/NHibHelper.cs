@@ -58,17 +58,27 @@ namespace Diagnosis.Data
 
         public static ISession GetSession()
         {
-            return _session ?? (_session = SessionFactory.OpenSession());
+            if (_session == null)
+            {
+                _session = SessionFactory.OpenSession();
+            }
+            return _session;
         }
         public static ISession OpenSession()
         {
-            return SessionFactory.OpenSession();
+            var s = SessionFactory.OpenSession();
+            s.FlushMode = FlushMode.Auto;
+            return s;
+        }
+        public static IStatelessSession OpenStatelessSession()
+        {
+            var s = SessionFactory.OpenStatelessSession();
+            return s;
         }
         private static Configuration CreateConfiguration()
         {
             var cfg = new Configuration();
-
-            cfg.Configure("NHibernate\\hibernate.cfg.xml");
+            cfg.Configure("NHibernate\\nhibernate.cfg.xml");
             cfg.Properties[Environment.CollectionTypeFactoryClass] = typeof(Net4CollectionTypeFactory).AssemblyQualifiedName;
             var listener = new EventListener();
             cfg.AppendListeners(ListenerType.PreUpdate, new IPreUpdateEventListener[] { listener });
