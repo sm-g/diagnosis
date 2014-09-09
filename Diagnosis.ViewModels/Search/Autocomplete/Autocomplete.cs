@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
@@ -12,8 +13,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private readonly bool _isEditable;
         Tag _editingItem;
         bool _popupOpened;
-        object _selectedPopupItem;
+        object _selectedSuggestion;
         Recognizer recognizer;
+        object prevSelectedSuggestion;
 
         public Autocomplete(Recognizer recognizer, bool allowTagEditing, object[] initItems)
         {
@@ -53,14 +55,13 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             get
             {
-                return _selectedPopupItem;
+                return _selectedSuggestion;
             }
             set
             {
-                if (_selectedPopupItem != value)
+                if (_selectedSuggestion != value)
                 {
-                    _selectedPopupItem = value;
-                    // Console.WriteLine("selected = {0}", value);
+                    _selectedSuggestion = value;
                     OnPropertyChanged(() => SelectedSuggestion);
                 }
             }
@@ -86,7 +87,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     if (value != null)
                         _editingItem.IsFocused = true;
 
-                    Console.WriteLine("editing = {0}", value);
+                    Debug.Print("editing = {0}", value);
                     OnPropertyChanged(() => EditingTag);
                 }
             }
@@ -148,12 +149,17 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 }
                 else if (e.PropertyName == "IsFocused")
                 {
-                    if (tag.IsFocused && (tag.Query != null || tag.EntityBlank is string)) // попап для недописанных слов
+                    // предположения для недописанных слов
+                    if (tag.IsFocused && (tag.EntityBlank is string || tag.EntityBlank == null))
+                    {
+                        prevSelectedSuggestion = SelectedSuggestion; // сначала фокус получает выбранный тег
                         MakeSuggestions();
+                    }
 
                     // потерялся фокус → завершение введенного текста
                     if (!tag.IsFocused && tag.State == TagStates.Typing)
                         CompleteOnLostFocus(tag);
+                    }
 
                     RefreshPopup();
                 }
@@ -175,13 +181,12 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             foreach (var tag in Tags)
             {
                 if (tag.EntityBlank != null)
-                    foreach (var item in recognizer.MakeEntities(tag))
+                    foreach (var item in recognizer.MakeEntities(tag.EntityBlank))
                     {
                         yield return item;
                     }
-
-                if (tag.State != TagStates.Init)
-                    Console.WriteLine("tag without entity blank, skip");
+                else if (tag.State != TagStates.Init)
+                    Debug.Print("tag without entity blank, skip");
             }
         }
 
@@ -198,13 +203,13 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         /// <param name="tag"></param>
         /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранной сущности.</param>
-        private void CompleteCommon(Tag tag, bool exactMatchRequired)
+        private void CompleteCommon(Tag tag, object suggestion, bool exactMatchRequired)
         {
-            if (SelectedSuggestion != null &&
-               (!exactMatchRequired || SelectedSuggestion.ToString() == tag.Query))
+            if (suggestion != null &&
+               (!exactMatchRequired || suggestion.ToString() == tag.Query))
             {
                 // записывам выбранное из попапа в тег
-                tag.EntityBlank = SelectedSuggestion;
+                tag.EntityBlank = suggestion;
             }
             else if (recognizer.CanMakeEntityFrom(tag.Query))
             {
@@ -213,7 +218,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
             else
             {
-                // убираем бывшую заготовку
+                // тег ещё не готов - убираем заготовку, если она была создана
                 tag.EntityBlank = null;
             }
             Suggestions.Clear();
@@ -221,21 +226,26 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             // удаляем тег без текста
             if (tag.Query == "")
                 tag.DeleteCommand.Execute(null);
-        }
-
-        private void CompleteOnEnter(Tag tag)
-        {
-            if (tag.State == TagStates.Init)
-            {
-                // Enter второй раз (в пустом поле)
-                OnInputEnded();
-                return;
-            }
-            CompleteCommon(tag, false);
 
             // добавляем пустое поле
             if (!IsLastTagEmpty)
                 AddTag();
+        }
+
+        private void CompleteOnEnter(Tag tag)
+        {
+            switch (tag.State)
+            {
+                case TagStates.Init:
+                    // Enter второй раз (в пустом поле)
+                    OnInputEnded();
+                    return;
+                case TagStates.Typing:
+                    CompleteCommon(tag, SelectedSuggestion, false);
+                    break;
+                case TagStates.Completed:
+                    break;
+            }
 
             // переходим к вводу нового слова
             Tags.Last().IsFocused = true;
@@ -245,7 +255,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             Contract.Requires(tag.State == TagStates.Typing);
 
-            CompleteCommon(tag, true);
+            CompleteCommon(tag, prevSelectedSuggestion, true);
         }
 
         private void MakeSuggestions()

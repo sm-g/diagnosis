@@ -21,11 +21,11 @@ namespace Diagnosis.ViewModels
             if (options.Words.Count() > 0)
                 if (options.AnyWord)
                 {
-                    hrs = repo.GetByWords(options.Words.Select(w => w.word));
+                    hrs = repo.GetByWords(options.Words);
                 }
                 else
                 {
-                    hrs = repo.GetWithWordsSubset(options.Words.Select(w => w.word));
+                    hrs = repo.GetWithWordsSubset(options.Words);
                 }
             else
             {

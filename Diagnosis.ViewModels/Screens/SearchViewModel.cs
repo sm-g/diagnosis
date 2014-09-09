@@ -416,7 +416,7 @@ namespace Diagnosis.ViewModels
             options.AppointmentDateGt = DateHelper.NullableDate(AppYearLower, AppMonthLower, AppDayLower);
             options.AppointmentDateLt = DateHelper.NullableDate(AppYearUpper, AppMonthUpper, AppDayUpper);
             options.AnyWord = AnyWord;
-            options.Words = Autocomplete.GetItems().Cast<WordViewModel>();
+            options.Words = Autocomplete.GetItems().Cast<Word>();
             options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
             options.Comment = Comment;
 

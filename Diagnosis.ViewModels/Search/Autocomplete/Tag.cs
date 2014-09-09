@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
@@ -81,7 +82,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     _entity = value;
                     OnPropertyChanged(() => EntityBlank);
 
-                    Console.WriteLine("{0} entity = {1}", this, value);
+                    Debug.Print("{0} entity = {1}", this, value);
                 }
                 if (value != null)
                 {
@@ -102,7 +103,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_focused != value)
                 {
                     _focused = value;
-                    Console.WriteLine("{0} focused = {1}", this, value);
+                    Debug.Print("{0} focused = {1}", this, value);
                     OnPropertyChanged(() => IsFocused);
                 }
             }
@@ -167,7 +168,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_state != value)
                 {
                     _state = value;
-                    Console.WriteLine("{0} {1}", this, value);
+                    Debug.Print("{0} {1}", this, value);
                     if (value == TagStates.Completed && freezeOnComplete)
                     {
                         IsDeleteOnly = true;

@@ -147,37 +147,20 @@ namespace Diagnosis.ViewModels
                 }
 
             _autocomplete = new Autocomplete(new Recognizer(session, true) { AllowNewFromQuery = true }, true, initialWords.ToArray());
-            _autocomplete.Tags.CollectionChanged += AutoCompleteItems_CollectionChanged;
+            _autocomplete.InputEnded += _autocomplete_InputEnded;
 
             OnPropertyChanged("AutoComplete");
         }
 
-        private void AutoCompleteItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        void _autocomplete_InputEnded(object sender, EventArgs e)
         {
             // меняет симптом записи
 
             // TODO менять только при сохранении?
-            HashSet<Word> words;
+            // тогда не нужно вызывать InputEnded при потере фокуса автокомплитом
+            // как тогда показать, что это поле поменялось?
 
-            if (HealthRecord.Symptom != null)
-                words = new HashSet<Word>(HealthRecord.Symptom.Words);
-            else
-                words = new HashSet<Word>();
-
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach (WordViewModel item in e.NewItems)
-                {
-                    words.Add(item.word);
-                }
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (WordViewModel item in e.OldItems)
-                {
-                    words.Remove(item.word);
-                }
-            }
+            var words = _autocomplete.GetItems().Cast<Word>().ToList();
             if (words.Count > 0) // == 0 если исправляем единтсвенное слово
                 HealthRecord.healthRecord.Symptom = new Symptom(words);
         }

@@ -28,7 +28,7 @@ namespace Diagnosis.ViewModels
         /// <summary>
         /// Слова, которые есть в симптоме
         /// </summary>
-        public IEnumerable<WordViewModel> Words { get; set; }
+        public IEnumerable<Word> Words { get; set; }
 
         /// <summary>
         /// Достаточно ли любого слова в симптоме

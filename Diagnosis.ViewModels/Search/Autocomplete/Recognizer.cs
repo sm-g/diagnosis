@@ -31,6 +31,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             this.childrenFirstStrategy = childrenFirstStrategy;
         }
 
+        /// <summary>
+        /// Создает сущности из заготовок.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public IEnumerable<object> MakeEntities(object obj)
         {
             Contract.Ensures(Contract.Result<object>() != null);
@@ -70,7 +75,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <returns></returns>
         public List<object> Search(string query, object prevEntity, IEnumerable<object> exclude = null)
         {
-            var found = Search(query, prevEntity);
+            var found = MakeQuery(query, prevEntity);
             if (exclude != null)
             {
                 found = found.Where(i => !exclude.Contains(i));
@@ -89,11 +94,14 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             return result;
         }
 
-        private IEnumerable<IEntity> Search(string query, object prev)
+        private IEnumerable<IEntity> MakeQuery(string query, object prev)
         {
             //if (!string.IsNullOrEmpty(query) &&
             //   char.IsDigit(query[0]))
             //    return new UnitSearcher();
+            if (prev is string) // число или новое/недописанное слово
+                prev = null;
+
             Contract.Assume(prev == null || prev is Word);
             if (childrenFirstStrategy)
                 return WordQuery.StartingWithChildrenFirst(session).Invoke(prev as Word, query);
