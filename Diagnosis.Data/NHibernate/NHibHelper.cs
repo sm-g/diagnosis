@@ -74,6 +74,7 @@ namespace Diagnosis.Data
             cfg.AppendListeners(ListenerType.PreUpdate, new IPreUpdateEventListener[] { listener });
             cfg.AppendListeners(ListenerType.PreInsert, new IPreInsertEventListener[] { listener });
             cfg.AppendListeners(ListenerType.PreDelete, new IPreDeleteEventListener[] { listener });
+            cfg.AppendListeners(ListenerType.PreLoad, new IPreLoadEventListener[] { listener });
 
             cfg.AddMapping(Mapping);
 

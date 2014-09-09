@@ -15,6 +15,8 @@ namespace Diagnosis.Data
         void Insert(EntityBase entity);
 
         void Update(EntityBase entity);
+
+        void Load(EntityBase entityBase);
     }
 
     internal class AuditLogger : IAuditLogger
@@ -33,9 +35,14 @@ namespace Diagnosis.Data
         {
             Debug.Print("{0} #{1} deleted.", entity.GetType(), entity.Id);
         }
+
+        public void Load(EntityBase entity)
+        {
+            Debug.Print("{0} #{1} loaded.", entity.GetType(), entity.Id);
+        }
     }
 
-    internal class EventListener : IPreInsertEventListener, IPreUpdateEventListener, IPreDeleteEventListener
+    internal class EventListener : IPreInsertEventListener, IPreUpdateEventListener, IPreDeleteEventListener, IPreLoadEventListener
     {
         private readonly IAuditLogger _logger;
 
@@ -64,6 +71,11 @@ namespace Diagnosis.Data
         {
             _logger.Delete(e.Entity as EntityBase);
             return false;
+        }
+
+        public void OnPreLoad(PreLoadEvent e)
+        {
+            _logger.Load(e.Entity as EntityBase);
         }
     }
 }
