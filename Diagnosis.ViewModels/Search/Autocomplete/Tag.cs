@@ -193,4 +193,16 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
     }
+
+    [Serializable]
+    public class TagEventArgs : EventArgs
+    {
+        public readonly Tag tag;
+
+        [DebuggerStepThrough]
+        public TagEventArgs(Tag tag)
+        {
+            this.tag = tag;
+        }
+    }
 }

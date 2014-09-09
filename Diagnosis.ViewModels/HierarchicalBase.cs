@@ -20,11 +20,11 @@ namespace Diagnosis.ViewModels
         /// <summary>
         /// Возникает при добвляении или удалении ребенка.
         /// </summary>
-        public event HierarchicalEventHandler<T> ChildrenChanged;
+        public event EventHandler<HierarchicalEventAgrs<T>> ChildrenChanged;
         /// <summary>
         /// Возникает при добавлении к родителю. (Не бывает удаления из родителя — всегда есть корневой элемент).
         /// </summary>
-        public event HierarchicalEventHandler<T> ParentChanged;
+        public event EventHandler<HierarchicalEventAgrs<T>> ParentChanged;
 
         /// <summary>
         /// Родитель элемента. Элемент можеть быть ребенком только одного родителя.
@@ -289,12 +289,10 @@ namespace Diagnosis.ViewModels
         }
 
     }
-
-    public delegate void HierarchicalEventHandler<T>(object sender, HierarchicalEventAgrs<T> e);
-
+    
     public class HierarchicalEventAgrs<T> : EventArgs
     {
-        public T IHierarchical;
+        public readonly T IHierarchical;
 
         [DebuggerStepThrough]
         public HierarchicalEventAgrs(T h)

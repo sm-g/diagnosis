@@ -41,12 +41,10 @@ namespace Diagnosis.ViewModels
 
         #endregion IDisposable Members
     }
-
-    public delegate void VmBaseEventHandler(object sender, VmBaseEventArgs e);
-
+    
     public class VmBaseEventArgs : EventArgs
     {
-        public ViewModelBase vm;
+        public readonly ViewModelBase vm;
 
         [DebuggerStepThrough]
         public VmBaseEventArgs(ViewModelBase vm)

@@ -6,8 +6,8 @@ namespace Diagnosis.ViewModels
 {
     public interface IHierarchical<T> where T : class
     {
-        event HierarchicalEventHandler<T> ChildrenChanged;
-        event HierarchicalEventHandler<T> ParentChanged;
+        event EventHandler<HierarchicalEventAgrs<T>> ChildrenChanged;
+        event EventHandler<HierarchicalEventAgrs<T>> ParentChanged;
 
         bool IsRoot { get; }
         bool IsTerminal { get; }

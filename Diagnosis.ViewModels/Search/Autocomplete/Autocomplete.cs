@@ -38,6 +38,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// Возникает, когда работа с автокомплитом окончена. (Enter второй раз.)
         /// </summary>
         public event EventHandler InputEnded;
+        /// <summary>
+        /// Возникает, когда завершается редактирование тега. (Можно получать сущности из тегов).
+        /// </summary>
+        public event EventHandler<TagEventArgs> TagCompleted;
+
         public RelayCommand EnterCommand
         {
             get
@@ -163,6 +168,13 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
                     RefreshPopup();
                 }
+                else if (e.PropertyName == "State")
+                {
+                    if (tag.State == TagStates.Completed)
+                    {
+                        OnTagCompleted(tag);
+                    }
+                }
             };
 
             if (empty)
@@ -196,6 +208,15 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             if (h != null)
             {
                 h(this, EventArgs.Empty);
+            }
+        }
+
+        protected virtual void OnTagCompleted(Tag tag)
+        {
+            var h = TagCompleted;
+            if (h != null)
+            {
+                h(this, new TagEventArgs(tag));
             }
         }
         /// <summary>
@@ -237,13 +258,14 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             switch (tag.State)
             {
                 case TagStates.Init:
-                    // Enter второй раз (в пустом поле)
+                    // Enter в пустом поле
                     OnInputEnded();
                     return;
                 case TagStates.Typing:
                     CompleteCommon(tag, SelectedSuggestion, false);
                     break;
                 case TagStates.Completed:
+                    // тег не изменен
                     break;
             }
 

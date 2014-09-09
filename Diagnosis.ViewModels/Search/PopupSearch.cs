@@ -17,7 +17,7 @@ namespace Diagnosis.ViewModels
 
         #endregion Fields
 
-        public event VmBaseEventHandler ResultItemSelected;
+        public event EventHandler<VmBaseEventArgs> ResultItemSelected;
 
         public FilterViewModel<T> Filter
         {

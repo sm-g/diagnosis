@@ -1,11 +1,12 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
     public interface ICheckable
     {
-        event CheckableEventHandler CheckedChanged;
-        event CheckableEventHandler SelectedChanged;
+        event EventHandler<CheckableEventArgs> CheckedChanged;
+        event EventHandler<CheckableEventArgs> SelectedChanged;
 
         bool IsChecked { get; set; }
 

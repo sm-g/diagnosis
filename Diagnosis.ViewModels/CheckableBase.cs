@@ -12,8 +12,8 @@ namespace Diagnosis.ViewModels
         private bool _isChecked;
         private bool _selected;
 
-        public event CheckableEventHandler CheckedChanged;
-        public event CheckableEventHandler SelectedChanged;
+        public event EventHandler<CheckableEventArgs> CheckedChanged;
+        public event EventHandler<CheckableEventArgs> SelectedChanged;
 
         public bool IsSelected
         {
@@ -104,11 +104,10 @@ namespace Diagnosis.ViewModels
         #endregion ICheckable
     }
 
-    public delegate void CheckableEventHandler(object sender, CheckableEventArgs e);
-
+    [Serializable]
     public class CheckableEventArgs : EventArgs
     {
-        public ICheckable vm;
+        public readonly ICheckable vm;
 
         [DebuggerStepThrough]
         public CheckableEventArgs(ICheckable vm)
