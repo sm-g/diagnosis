@@ -15,6 +15,19 @@ namespace Diagnosis.Data.Mappings
 
             Property(x => x.Title);
             Property(x => x.Code);
+            Set(x => x.SpecialityIcdBlocks, s =>
+            {
+                s.Key(k =>
+                {
+                    k.Column("IcdBlockID");
+                });
+                s.Inverse(true);
+                s.Cascade(Cascade.All);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.OneToMany();
+            });
             Set(x => x.IcdDiseases, s =>
             {
                 s.Key(k =>

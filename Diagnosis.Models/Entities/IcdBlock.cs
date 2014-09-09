@@ -5,7 +5,8 @@ namespace Diagnosis.Models
 {
     public class IcdBlock : EntityBase
     {
-        ISet<IcdDisease> icdDiseases = new HashSet<IcdDisease>();
+        ISet<IcdDisease> icdDiseases;
+        ISet<SpecialityIcdBlock> specialityIcdBlocks;
 
         public virtual IcdChapter IcdChapter { get; protected set; }
         public virtual string Title { get; protected set; }
@@ -17,6 +18,10 @@ namespace Diagnosis.Models
                 return new ReadOnlyCollection<IcdDisease>(
                     new List<IcdDisease>(icdDiseases));
             }
+        }
+        public virtual IEnumerable<SpecialityIcdBlock> SpecialityIcdBlocks
+        {
+            get { return new List<SpecialityIcdBlock>(specialityIcdBlocks); }
         }
 
         protected IcdBlock() { }

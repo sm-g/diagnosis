@@ -7,8 +7,10 @@ namespace Diagnosis.Models
 {
     public class Speciality : EntityBase
     {
-        ISet<IcdBlock> icdBlocks = new HashSet<IcdBlock>();
-        ISet<Doctor> doctors = new HashSet<Doctor>();
+        ISet<IcdBlock> icdBlocks;
+        ISet<Doctor> doctors;
+        ISet<SpecialityIcdBlock> specialityIcdBlocks;
+
 
         public virtual string Title { get; protected set; }
         public virtual ReadOnlyCollection<IcdBlock> IcdBlocks
@@ -26,6 +28,11 @@ namespace Diagnosis.Models
                 return new ReadOnlyCollection<Doctor>(
                     new List<Doctor>(doctors));
             }
+        }
+
+        public virtual IEnumerable<SpecialityIcdBlock> SpecialityIcdBlocks
+        {
+            get { return new List<SpecialityIcdBlock>(specialityIcdBlocks); }
         }
 
         public Speciality(string title)

@@ -91,13 +91,14 @@
     <Compile Include="Entities\IcdDisease.cs" />
     <Compile Include="EntityBase.cs" />
     <Compile Include="Entities\Patient.cs" />
-    <Compile Include="Entities\PatientRecordProperty.cs" />
+    <Compile Include="ServiceTables\PatientRecordProperty.cs" />
     <Compile Include="Entities\Property.cs" />
     <Compile Include="Entities\PropertyValue.cs" />
     <Compile Include="Entities\RecordCategory.cs" />
     <Compile Include="Entities\Speciality.cs" />
     <Compile Include="Entities\Symptom.cs" />
-    <Compile Include="Entities\SymptomWords.cs" />
+    <Compile Include="ServiceTables\SpecialityIcdBlock.cs" />
+    <Compile Include="ServiceTables\SymptomWords.cs" />
     <Compile Include="Entities\Word.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
