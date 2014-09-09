@@ -42,14 +42,7 @@ namespace Diagnosis.ViewModels
             };
             _filter.Clear(); // показываем всех
 
-            this.Subscribe(Events.OpenedPatientChanged, (e) =>
-            {
-                var pat = e.GetValue<Patient>(MessageKeys.Patient);
-                SelectedPatient = Patients.First(x => x.patient == pat);
-            });
-
             SelectLastPatient();
-
         }
 
         public ObservableCollection<ShortPatientViewModel> Patients { get { return _patients; } }

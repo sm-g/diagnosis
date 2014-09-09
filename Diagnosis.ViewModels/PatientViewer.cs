@@ -74,7 +74,6 @@ namespace Diagnosis.ViewModels
                     {
                         OnPatientOpened(value);
                     }
-                    this.Send(Events.OpenedPatientChanged, OpenedPatient.AsParams(MessageKeys.Patient));
                 }
             }
         }

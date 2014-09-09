@@ -34,8 +34,6 @@ namespace Diagnosis.Core
         public const int OpenHealthRecord = 14;
         public const int EditHealthRecord = 20;
 
-        public const int OpenedPatientChanged = 13;
-
         public const int OpenSettings = 15;
 
         public const int SettingsSaved = 17;
