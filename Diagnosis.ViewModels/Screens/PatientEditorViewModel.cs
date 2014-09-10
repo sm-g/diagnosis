@@ -1,11 +1,7 @@
-﻿using Diagnosis.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Diagnosis.Core;
+using Diagnosis.Models;
 using EventAggregator;
-using Diagnosis.Core;
-
+using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
@@ -14,6 +10,8 @@ namespace Diagnosis.ViewModels
         private readonly Patient patient;
         private PatientViewModel _vm;
         private bool shouldCommit;
+        private bool canFirstHr;
+
         public PatientViewModel Patient
         {
             get
@@ -30,6 +28,7 @@ namespace Diagnosis.ViewModels
                 }
             }
         }
+
         public RelayCommand SaveCommand
         {
             get
@@ -42,11 +41,6 @@ namespace Diagnosis.ViewModels
                     this.Send(Events.LeavePatientEditor, patient.AsParams(MessageKeys.Patient));
                 }, () => CanSave());
             }
-        }
-
-        private bool CanSave()
-        {
-            return patient.IsTransient || patient.IsDirty;
         }
 
         public RelayCommand SaveAndCreateCommand
@@ -85,7 +79,7 @@ namespace Diagnosis.ViewModels
                            shouldCommit = true;
 
                            this.Send(Events.FirstHr, patient.AsParams(MessageKeys.Patient));
-                       }, () => patient.Courses.Count == 0);
+                       }, () => canFirstHr);
             }
         }
 
@@ -96,6 +90,7 @@ namespace Diagnosis.ViewModels
                 return patient.IsTransient;
             }
         }
+
         /// <summary>
         /// Начинает редактировать пациента.
         /// </summary>
@@ -103,6 +98,10 @@ namespace Diagnosis.ViewModels
         public PatientEditorViewModel(Patient patient)
         {
             this.patient = patient;
+            patient.CoursesChanged += patient_CoursesChanged;
+
+            canFirstHr = patient.Courses.Count() == 0;
+
             Patient = new PatientViewModel(patient);
 
             Session.BeginTransaction();
@@ -113,6 +112,16 @@ namespace Diagnosis.ViewModels
         public PatientEditorViewModel()
             : this(new Patient())
         {
+        }
+
+        private void patient_CoursesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            canFirstHr = patient.Courses.Count() == 0;
+        }
+
+        private bool CanSave()
+        {
+            return patient.IsTransient || patient.IsDirty;
         }
 
         protected override void Dispose(bool disposing)
@@ -126,6 +135,7 @@ namespace Diagnosis.ViewModels
                 if (Session.Transaction.IsActive)
                 Session.Transaction.Rollback(); // если flush.never - не нужно?
             }
+            patient.CoursesChanged -= patient_CoursesChanged;
 
             base.Dispose(disposing);
         }

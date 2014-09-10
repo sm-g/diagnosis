@@ -13,20 +13,18 @@ namespace Diagnosis.Models
 
 
         public virtual string Title { get; protected set; }
-        public virtual ReadOnlyCollection<IcdBlock> IcdBlocks
+        public virtual IEnumerable<IcdBlock> IcdBlocks
         {
             get
             {
-                return new ReadOnlyCollection<IcdBlock>(
-                    new List<IcdBlock>(icdBlocks));
+                return icdBlocks;
             }
         }
-        public virtual ReadOnlyCollection<Doctor> Doctors
+        public virtual IEnumerable<Doctor> Doctors
         {
             get
             {
-                return new ReadOnlyCollection<Doctor>(
-                    new List<Doctor>(doctors));
+                return doctors;
             }
         }
 

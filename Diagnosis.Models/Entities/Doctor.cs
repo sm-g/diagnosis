@@ -82,21 +82,19 @@ namespace Diagnosis.Models
 
         public virtual Speciality Speciality { get; set; }
 
-        public virtual ReadOnlyCollection<Course> Courses
+        public virtual IEnumerable<Course> Courses
         {
             get
             {
-                return new ReadOnlyCollection<Course>(
-                    new List<Course>(courses));
+                return courses;
             }
         }
 
-        public virtual ReadOnlyCollection<Appointment> Appointments
+        public virtual IEnumerable<Appointment> Appointments
         {
             get
             {
-                return new ReadOnlyCollection<Appointment>(
-                    new List<Appointment>(appointments));
+                return appointments;
             }
         }
 

@@ -12,16 +12,17 @@ namespace Diagnosis.Models
     public class Appointment : EntityBase
     {
         ISet<HealthRecord> healthRecords = new HashSet<HealthRecord>();
+
         public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
 
         public virtual Course Course { get; protected set; }
         public virtual Doctor Doctor { get; set; }
         public virtual DateTime DateAndTime { get; set; }
-        public virtual ReadOnlyCollection<HealthRecord> HealthRecords
+        public virtual IEnumerable<HealthRecord> HealthRecords
         {
             get
             {
-                return new ReadOnlyCollection<HealthRecord>(new List<HealthRecord>(healthRecords));
+                return healthRecords;
             }
         }
 
@@ -54,7 +55,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("{0:d} {1} hrs {2}", DateAndTime, HealthRecords.Count, Doctor);
+            return string.Format("{0:d} {1}", DateAndTime, Doctor);
         }
 
         protected virtual void OnHealthRecordsChanged(NotifyCollectionChangedEventArgs e)

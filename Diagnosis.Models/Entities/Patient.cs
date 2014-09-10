@@ -126,19 +126,18 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual ReadOnlyCollection<PatientRecordProperty> PatientProperties
+        public virtual IEnumerable<PatientRecordProperty> PatientProperties
         {
             get
             {
-                return new ReadOnlyCollection<PatientRecordProperty>(
-                    new List<PatientRecordProperty>(patientProperties));
+                return patientProperties;
             }
         }
-        public virtual ReadOnlyCollection<Course> Courses
+        public virtual IEnumerable<Course> Courses
         {
             get
             {
-                return new ReadOnlyCollection<Course>(new List<Course>(courses));
+                return courses;
             }
         }
 
@@ -251,11 +250,12 @@ namespace Diagnosis.Models
             }
         }
 
-      protected  internal virtual void AddCourse(Course course)
+        protected internal virtual void AddCourse(Course course)
         {
             if (!courses.Contains(course))
                 courses.Add(course);
             OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, course));
+
         }
     }
 }

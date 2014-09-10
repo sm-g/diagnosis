@@ -152,12 +152,11 @@ namespace Diagnosis.Models
                 OnPropertyChanged("FromYear");
             }
         }
-        public virtual ReadOnlyCollection<PatientRecordProperty> RecordProperties
+        public virtual IEnumerable<PatientRecordProperty> RecordProperties
         {
             get
             {
-                return new ReadOnlyCollection<PatientRecordProperty>(
-                    new List<PatientRecordProperty>(recordProperties));
+                return recordProperties;
             }
         }
 

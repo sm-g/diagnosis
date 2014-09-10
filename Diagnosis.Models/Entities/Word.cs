@@ -10,7 +10,7 @@ namespace Diagnosis.Models
         private ISet<SymptomWords> symptomWords;
         private ISet<Word> children;
         private string _title;
-        
+
         public virtual string Title
         {
             get { return _title; }
@@ -34,21 +34,19 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual ReadOnlyCollection<Symptom> Symptoms
+        public virtual IEnumerable<Symptom> Symptoms
         {
             get
             {
-                return new ReadOnlyCollection<Symptom>(
-                    new List<Symptom>(symptoms));
+                return symptoms;
             }
         }
 
-        public virtual ReadOnlyCollection<SymptomWords> SymptomWords
+        public virtual IEnumerable<SymptomWords> SymptomWords
         {
             get
             {
-                return new ReadOnlyCollection<SymptomWords>(
-                    new List<SymptomWords>(symptomWords));
+                return symptomWords;
             }
         }
 

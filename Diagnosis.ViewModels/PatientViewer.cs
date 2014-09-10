@@ -287,7 +287,7 @@ namespace Diagnosis.ViewModels
             {
                 // курс открыт первый раз
 
-                if (OpenedCourse.Appointments.Count == 0)
+                if (OpenedCourse.Appointments.Count() == 0)
                 {
                     OpenedCourse.AddAppointment(AuthorityController.CurrentDoctor); // новый курс — добавляем осмотр
                 }
@@ -336,7 +336,7 @@ namespace Diagnosis.ViewModels
             {
                 // осмотр открыт первый раз
 
-                if (OpenedAppointment.HealthRecords.Count == 0)
+                if (OpenedAppointment.HealthRecords.Count() == 0)
                 {
                     // новый осмотр - добавляем запись
                     OpenedAppointment.AddHealthRecord();
@@ -413,11 +413,11 @@ namespace Diagnosis.ViewModels
             {
                 // при удалении курса открываем курс рядом с удаленным
                 var i = e.OldStartingIndex;
-                if (OpenedPatient.Courses.Count <= i)
+                if (OpenedPatient.Courses.Count() <= i)
                     i--;
-                if (OpenedPatient.Courses.Count > 0)
+                if (OpenedPatient.Courses.Count() > 0)
                 {
-                    OpenedCourse = OpenedPatient.Courses[i];
+                    OpenedCourse = OpenedPatient.Courses.ElementAt(i);
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Move)
@@ -436,7 +436,7 @@ namespace Diagnosis.ViewModels
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 // при удалении осмотра открываем последний осмотр
-                if (OpenedAppointment == null && OpenedCourse.Appointments.Count > 0)
+                if (OpenedAppointment == null && OpenedCourse.Appointments.Count() > 0)
                 {
                     OpenedAppointment = OpenedCourse.Appointments.LastOrDefault();
                 }

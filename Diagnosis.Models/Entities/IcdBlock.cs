@@ -11,17 +11,16 @@ namespace Diagnosis.Models
         public virtual IcdChapter IcdChapter { get; protected set; }
         public virtual string Title { get; protected set; }
         public virtual string Code { get; protected set; }
-        public virtual ReadOnlyCollection<IcdDisease> IcdDiseases
+        public virtual IEnumerable<IcdDisease> IcdDiseases
         {
             get
             {
-                return new ReadOnlyCollection<IcdDisease>(
-                    new List<IcdDisease>(icdDiseases));
+                return icdDiseases;
             }
         }
         public virtual IEnumerable<SpecialityIcdBlock> SpecialityIcdBlocks
         {
-            get { return new List<SpecialityIcdBlock>(specialityIcdBlocks); }
+            get { return specialityIcdBlocks; }
         }
 
         protected IcdBlock() { }

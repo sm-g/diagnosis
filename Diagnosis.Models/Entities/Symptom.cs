@@ -13,21 +13,19 @@ namespace Diagnosis.Models
         public virtual IcdDisease Disease { get; set; }
         public virtual Category DefaultCategory { get; set; }
         public virtual bool IsDiagnosis { get; set; }
-        public virtual ReadOnlyCollection<Word> Words
+        public virtual IEnumerable<Word> Words
         {
             get
             {
-                return new ReadOnlyCollection<Word>(
-                    new List<Word>(words));
+                return words;
             }
         }
 
-        public virtual ReadOnlyCollection<SymptomWords> SymptomWords
+        public virtual IEnumerable<SymptomWords> SymptomWords
         {
             get
             {
-                return new ReadOnlyCollection<SymptomWords>(
-                    new List<SymptomWords>(symptomWords));
+                return symptomWords;
             }
         }
 
@@ -44,6 +42,7 @@ namespace Diagnosis.Models
         public override string ToString()
         {
             return string.Join(". ", Words.OrderBy(w => w.Priority).Select(w => w.Title));
+
         }
     }
 }

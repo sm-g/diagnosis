@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.Models
 {
@@ -11,18 +12,19 @@ namespace Diagnosis.Models
         ISet<Appointment> appointments = new HashSet<Appointment>();
 
         public virtual event NotifyCollectionChangedEventHandler AppointmentsChanged;
+
         public virtual Patient Patient { get; protected set; }
         public virtual Doctor LeadDoctor { get; protected set; }
         public virtual DateTime Start { get; protected set; }
         public virtual DateTime? End { get; set; }
-        public virtual ReadOnlyCollection<Appointment> Appointments
+
+        public virtual IEnumerable<Appointment> Appointments
         {
             get
             {
-                return new ReadOnlyCollection<Appointment>(new List<Appointment>(appointments));
+                return appointments;
             }
         }
-
         /// <summary>
         /// 
         /// </summary>
@@ -58,7 +60,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("{0:d}, {1} apps {2} {3}", Start, Appointments.Count, Patient, LeadDoctor);
+            return string.Format("{0:d}, {1} {2}", Start, Patient, LeadDoctor);
         }
 
         protected virtual void OnAppointmentsChanged(NotifyCollectionChangedEventArgs e)

@@ -12,12 +12,11 @@ namespace Diagnosis.Models
 
         public virtual string Title { get; set; }
         public virtual Property Property { get; protected set; }
-        public virtual ReadOnlyCollection<PatientRecordProperty> PatientProperties
+        public virtual IEnumerable<PatientRecordProperty> PatientProperties
         {
             get
             {
-                return new ReadOnlyCollection<PatientRecordProperty>(
-                    new List<PatientRecordProperty>(patientProperties));
+                return patientProperties;
             }
         }
 

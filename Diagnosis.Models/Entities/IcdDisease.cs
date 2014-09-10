@@ -11,20 +11,18 @@ namespace Diagnosis.Models
         public virtual IcdBlock IcdBlock { get; protected set; }
         public virtual string Title { get; set; }
         public virtual string Code { get; set; }
-        public virtual ReadOnlyCollection<HealthRecord> HealthRecords
+        public virtual IEnumerable<HealthRecord> HealthRecords
         {
             get
             {
-                return new ReadOnlyCollection<HealthRecord>(
-                    new List<HealthRecord>(healthRecords));
+                return healthRecords;
             }
         }
-        public virtual ReadOnlyCollection<Symptom> Symptoms
+        public virtual IEnumerable<Symptom> Symptoms
         {
             get
             {
-                return new ReadOnlyCollection<Symptom>(
-                    new List<Symptom>(symptoms));
+                return symptoms;
             }
         }
 
