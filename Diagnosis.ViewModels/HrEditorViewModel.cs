@@ -187,17 +187,22 @@ namespace Diagnosis.ViewModels
 
         private void CreateDiagnosisSearch()
         {
-            if (DiagnosisSearch != null)
-            {
-                DiagnosisSearch.Filter.Cleared -= DiagnosisSearch_Cleared;
-                DiagnosisSearch.ResultItemSelected -= DiagnosisSearch_ResultItemSelected;
-            }
             DiagnosisSearch = new PopupSearch<DiagnosisViewModel>(
                    EntityProducers.DiagnosisProducer.RootFiltratingSearcher
                    );
 
-            DiagnosisSearch.Filter.Cleared += DiagnosisSearch_Cleared;
-            DiagnosisSearch.ResultItemSelected += DiagnosisSearch_ResultItemSelected;
+            DiagnosisSearch.Filter.Cleared += (s, e) =>
+            {
+                HealthRecord.Diagnosis = null;
+            };
+            DiagnosisSearch.ResultItemSelected += (s, e) =>
+            {
+                if (HealthRecord != null)
+                {
+                    HealthRecord.Diagnosis = e.vm as DiagnosisViewModel;
+                    UpdateDiagnosisQueryCode();
+                }
+            };
             DiagnosisSearch.Filter.Results.CollectionChanged += (s, e) =>
             {
                 // VM.IsFiltered
@@ -205,29 +210,13 @@ namespace Diagnosis.ViewModels
             UpdateDiagnosisQueryCode();
         }
 
-        private void DiagnosisSearch_ResultItemSelected(object sender, VmBaseEventArgs e)
-        {
-            HealthRecord.Diagnosis = e.vm as DiagnosisViewModel;
-            if (HealthRecord != null)
-            {
-                UpdateDiagnosisQueryCode();
-            }
-        }
-
-        private void DiagnosisSearch_Cleared(object sender, EventArgs e)
-        {
-            HealthRecord.Diagnosis = null;
-            // DiagnosisSearch.Query already empty
-        }
-
         #endregion Diagnosis search
 
-        public bool ShowIcdDisease
+        public bool ShowIcdDiseaseSearch
         {
             get
             {
-                var b = AuthorityController.CurrentDoctor.DoctorSettings.HasFlag(DoctorSettings.ShowIcdDisease);
-                return b;
+                return AuthorityController.CurrentDoctor.DoctorSettings.HasFlag(DoctorSettings.ShowIcdDisease);
             }
         }
 
@@ -235,7 +224,10 @@ namespace Diagnosis.ViewModels
         {
             this.session = session;
             Subscribe();
-            CreateDiagnosisSearch();
+
+            // после смены доктора редактор записей будет создан заново
+            if (ShowIcdDiseaseSearch)
+                CreateDiagnosisSearch();
         }
 
         private void UpdateDiagnosisQueryCode()
@@ -255,10 +247,6 @@ namespace Diagnosis.ViewModels
 
         private void Subscribe()
         {
-            EntityProducers.DiagnosisProducer.RootChanged += (s, e) =>
-            {
-                CreateDiagnosisSearch();
-            };
             this.Subscribe(Events.SettingsSaved, (e) =>
             {
                 OnPropertyChanged("ShowIcdDisease");

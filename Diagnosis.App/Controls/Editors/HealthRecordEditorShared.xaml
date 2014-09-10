@@ -85,7 +85,7 @@
                 </editors:DateOffsetPicker>
             </DockPanel>
             <DockPanel DataContext="{Binding DataContext,ElementName=editor}"
-                       Visibility="{Binding ShowIcdDisease, Converter={StaticResource BooleanToVisibilityConverter}}">
+                       Visibility="{Binding ShowIcdDiseaseSearch, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Label Content="диагноз МКБ" />
                 <StackPanel>
                     <search:SearchTree DataContext="{Binding DiagnosisSearch}" />
