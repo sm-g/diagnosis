@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace Diagnosis.Models
 {
-    public class IcdDisease : EntityBase
+    public class IcdDisease : EntityBase, IDomainEntity
     {
         ISet<HealthRecord> healthRecords = new HashSet<HealthRecord>();
         ISet<Symptom> symptoms = new HashSet<Symptom>();

@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class PropertyValue : EntityBase
+    public class PropertyValue : EntityBase, IDomainEntity
     {
         ISet<PatientRecordProperty> patientProperties = new HashSet<PatientRecordProperty>();
         internal static IEqualityComparer<PropertyValue> equalityComparer = new PropertyValueEqualityComparer();

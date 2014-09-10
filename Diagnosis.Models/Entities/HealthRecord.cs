@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class HealthRecord : EntityBase
+    public class HealthRecord : EntityBase, IDomainEntity
     {
         private ISet<PatientRecordProperty> recordProperties = new HashSet<PatientRecordProperty>();
         private int? _year;

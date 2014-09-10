@@ -6,10 +6,8 @@ using System.Text;
 
 namespace Diagnosis.Models
 {
-    public class PatientRecordProperty
+    public class PatientRecordProperty : EntityBase
     {
-        public virtual int Id { get; protected set; }
-
         public virtual Patient Patient { get; protected set; }
         public virtual PropertyValue Value { get; set; }
         public virtual Property Property { get; protected set; }

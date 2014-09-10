@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Diagnosis.Models
 {
-    public class IcdChapter : EntityBase
+    public class IcdChapter : EntityBase, IDomainEntity
     {
         ISet<IcdBlock> iclBlocks = new HashSet<IcdBlock>();
 

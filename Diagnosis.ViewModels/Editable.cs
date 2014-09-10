@@ -14,7 +14,7 @@ namespace Diagnosis.ViewModels
     {
         #region Fields
 
-        private readonly IEntity entity;
+        private readonly IDomainEntity entity;
         private bool _editorActive;
         private bool _canBeDeleted;
 
@@ -138,7 +138,7 @@ namespace Diagnosis.ViewModels
         /// </summary>
         /// <param name="entity">Model to be edited</param>
         /// 
-        public Editable(IEntity entity)
+        public Editable(IDomainEntity entity)
         {
             this.entity = entity;
         }
@@ -198,10 +198,10 @@ namespace Diagnosis.ViewModels
 
     public class EditableEventArgs : EventArgs
     {
-        public IEntity entity;
+        public IDomainEntity entity;
 
         [DebuggerStepThrough]
-        public EditableEventArgs(IEntity entity)
+        public EditableEventArgs(IDomainEntity entity)
         {
             this.entity = entity;
         }

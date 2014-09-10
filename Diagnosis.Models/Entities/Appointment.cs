@@ -9,7 +9,7 @@ using System.Collections.Specialized;
 
 namespace Diagnosis.Models
 {
-    public class Appointment : EntityBase
+    public class Appointment : EntityBase, IDomainEntity
     {
         ISet<HealthRecord> healthRecords = new HashSet<HealthRecord>();
 

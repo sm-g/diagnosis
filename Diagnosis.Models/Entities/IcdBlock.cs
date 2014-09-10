@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace Diagnosis.Models
 {
-    public class IcdBlock : EntityBase
+    public class IcdBlock : EntityBase, IDomainEntity
     {
         ISet<IcdDisease> icdDiseases;
         ISet<SpecialityIcdBlock> specialityIcdBlocks;

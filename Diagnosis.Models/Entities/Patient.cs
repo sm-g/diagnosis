@@ -8,7 +8,7 @@ using System.Collections.Specialized;
 
 namespace Diagnosis.Models
 {
-    public class Patient : EntityBase
+    public class Patient : EntityBase, IDomainEntity
     {
         ISet<PatientRecordProperty> patientProperties = new HashSet<PatientRecordProperty>();
         ISet<Course> courses = new HashSet<Course>();

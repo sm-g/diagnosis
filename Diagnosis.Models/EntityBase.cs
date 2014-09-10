@@ -4,13 +4,16 @@ using System;
 namespace Diagnosis.Models
 {
     /// <summary>
-    /// Сущность, не обязательно хранимая в БД.
+    /// Доменный объект, не обязательно хранится в БД.
     /// </summary>
-    public interface IEntity
+    public interface IDomainEntity
     {
     }
 
-    public class EntityBase : NotifyPropertyChangedBase, IEntity
+    /// <summary>
+    /// Сущность БД.
+    /// </summary>
+    public class EntityBase : NotifyPropertyChangedBase
     {
         private int? cachedHashCode;
 

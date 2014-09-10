@@ -94,7 +94,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             return result;
         }
 
-        private IEnumerable<IEntity> MakeQuery(string query, object prev)
+        private IEnumerable<IDomainEntity> MakeQuery(string query, object prev)
         {
             //if (!string.IsNullOrEmpty(query) &&
             //   char.IsDigit(query[0]))

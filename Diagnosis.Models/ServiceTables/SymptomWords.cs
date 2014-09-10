@@ -5,10 +5,8 @@ using System.Text;
 
 namespace Diagnosis.Models
 {
-    public class SymptomWords
+    public class SymptomWords : EntityBase
     {
-        public virtual int Id { get; protected set; }
-
         public virtual Symptom Symptom { get; protected set; }
         public virtual Word Word { get; protected set; }
 

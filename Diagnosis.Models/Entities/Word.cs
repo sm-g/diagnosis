@@ -4,7 +4,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class Word : EntityBase
+    public class Word : EntityBase, IDomainEntity
     {
         private ISet<Symptom> symptoms;
         private ISet<SymptomWords> symptomWords;

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class Course : EntityBase
+    public class Course : EntityBase, IDomainEntity
     {
         ISet<Appointment> appointments = new HashSet<Appointment>();
 

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class Property : EntityBase
+    public class Property : EntityBase, IDomainEntity
     {
         ISet<PropertyValue> values = new HashSet<PropertyValue>();
         ISet<PatientRecordProperty> patientProperties = new HashSet<PatientRecordProperty>();

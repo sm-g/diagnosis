@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class Speciality : EntityBase
+    public class Speciality : EntityBase, IDomainEntity
     {
         ISet<IcdBlock> icdBlocks;
         ISet<Doctor> doctors;
