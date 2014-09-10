@@ -3,6 +3,9 @@ using System;
 
 namespace Diagnosis.Models
 {
+    /// <summary>
+    /// Сущность, не обязательно хранимая в БД.
+    /// </summary>
     public interface IEntity
     {
     }
