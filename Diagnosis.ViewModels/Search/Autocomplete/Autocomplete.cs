@@ -163,6 +163,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
                     // потерялся фокус → завершение введенного текста
                     if (!tag.IsFocused && tag.State == TagStates.Typing)
+                    {
                         CompleteOnLostFocus(tag);
                     }
 

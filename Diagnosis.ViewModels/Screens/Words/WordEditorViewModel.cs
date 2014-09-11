@@ -34,7 +34,6 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                Contract.Requires(_word != null);
                 return _word.Title;
             }
             set
