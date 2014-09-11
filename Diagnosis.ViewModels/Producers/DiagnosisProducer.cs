@@ -158,10 +158,7 @@ namespace Diagnosis.ViewModels
             var dia = new Diagnosis.Models.Diagnosis("code", "root");
             var root = new DiagnosisViewModel(dia);
             Root = root.Add(chapterVms);
-            // IEnumarable
 
-            if (Diagnoses != null)
-                Root.AllChildren.ForAll(dvm => dvm.Unsubscribe());
             Diagnoses = new ObservableCollection<DiagnosisViewModel>(Root.Children);
         }
 
