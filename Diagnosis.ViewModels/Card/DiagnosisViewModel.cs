@@ -7,8 +7,6 @@ namespace Diagnosis.ViewModels
     public class DiagnosisViewModel : HierarchicalBase<DiagnosisViewModel>
     {
         internal readonly Diagnosis.Models.Diagnosis diagnosis;
-        
-        public Editable Editable { get; private set; }
 
         public string Name
         {
@@ -50,24 +48,16 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public void Unsubscribe()
-        {
-            ChildrenChanged -= DiagnosisViewModel_ChildrenChanged;
-        }
-        
         public DiagnosisViewModel(Diagnosis.Models.Diagnosis d)
         {
             Contract.Requires(d != null);
             this.diagnosis = d;
 
-            Editable = new Editable(diagnosis);
+            ChildrenChanged += (s, e) =>
+            {
+                IsNonCheckable = !IsTerminal;
 
-            ChildrenChanged += DiagnosisViewModel_ChildrenChanged;
-        }
-
-        private void DiagnosisViewModel_ChildrenChanged(object sender, HierarchicalEventAgrs<DiagnosisViewModel> e)
-        {
-            IsNonCheckable = !IsTerminal;
+            };
         }
 
         public override string ToString()
