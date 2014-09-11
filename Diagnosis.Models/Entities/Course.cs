@@ -4,12 +4,13 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
     public class Course : EntityBase, IDomainEntity
     {
-        ISet<Appointment> appointments = new HashSet<Appointment>();
+        Iesi.Collections.Generic.ISet<Appointment> appointments;
 
         public virtual event NotifyCollectionChangedEventHandler AppointmentsChanged;
 

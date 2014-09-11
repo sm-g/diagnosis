@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
     public class PropertyValue : EntityBase, IDomainEntity
     {
-        ISet<PatientRecordProperty> patientProperties = new HashSet<PatientRecordProperty>();
+        Iesi.Collections.Generic.ISet<PatientRecordProperty> patientProperties;
         internal static IEqualityComparer<PropertyValue> equalityComparer = new PropertyValueEqualityComparer();
 
         public virtual string Title { get; set; }

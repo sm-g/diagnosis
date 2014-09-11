@@ -105,7 +105,6 @@ namespace Diagnosis.Data
 #else
             InMemoryHelper.Configure(cfg);
 #endif
-            cfg.Properties[Environment.CollectionTypeFactoryClass] = typeof(Net4CollectionTypeFactory).AssemblyQualifiedName;
             var listener = new EventListener();
             cfg.AppendListeners(ListenerType.PreUpdate, new IPreUpdateEventListener[] { listener });
             cfg.AppendListeners(ListenerType.PreInsert, new IPreInsertEventListener[] { listener });

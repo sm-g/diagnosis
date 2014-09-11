@@ -3,13 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
     public class Doctor : EntityBase, IDomainEntity
     {
-        private ISet<Course> courses = new HashSet<Course>();
-        private ISet<Appointment> appointments = new HashSet<Appointment>();
+        private Iesi.Collections.Generic.ISet<Course> courses;
+        private Iesi.Collections.Generic.ISet<Appointment> appointments;
         private string _fn;
         private string _ln;
         private string _mn;

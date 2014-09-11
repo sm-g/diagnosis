@@ -3,13 +3,14 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Collections.Generic;
 using System.Linq;
+using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
     public class Property : EntityBase, IDomainEntity
     {
-        ISet<PropertyValue> values = new HashSet<PropertyValue>();
-        ISet<PatientRecordProperty> patientProperties = new HashSet<PatientRecordProperty>();
+        Iesi.Collections.Generic.ISet<PropertyValue> values;
+        Iesi.Collections.Generic.ISet<PatientRecordProperty> patientProperties;
 
         public virtual string Title { get; set; }
         public virtual IEnumerable<PropertyValue> Values

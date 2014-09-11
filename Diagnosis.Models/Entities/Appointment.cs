@@ -6,12 +6,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Collections.Specialized;
+using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
     public class Appointment : EntityBase, IDomainEntity
     {
-        ISet<HealthRecord> healthRecords = new HashSet<HealthRecord>();
+        Iesi.Collections.Generic.ISet<HealthRecord> healthRecords;
 
         public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
 

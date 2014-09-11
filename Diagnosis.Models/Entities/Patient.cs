@@ -1,17 +1,17 @@
-﻿using System;
+﻿using Diagnosis.Core;
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using Diagnosis.Core;
-using System.Collections.Specialized;
+using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
     public class Patient : EntityBase, IDomainEntity
     {
-        ISet<PatientRecordProperty> patientProperties = new HashSet<PatientRecordProperty>();
-        ISet<Course> courses = new HashSet<Course>();
+        private Iesi.Collections.Generic.ISet<PatientRecordProperty> patientProperties;
+        private Iesi.Collections.Generic.ISet<Course> courses;
 
         int? _year;
         byte? _month;

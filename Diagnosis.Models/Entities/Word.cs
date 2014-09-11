@@ -2,13 +2,15 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 
+using Iesi.Collections.Generic;
+
 namespace Diagnosis.Models
 {
     public class Word : EntityBase, IDomainEntity
     {
-        private ISet<Symptom> symptoms;
-        private ISet<SymptomWords> symptomWords;
-        private ISet<Word> children;
+        private Iesi.Collections.Generic.ISet<Symptom> symptoms;
+        private Iesi.Collections.Generic.ISet<SymptomWords> symptomWords;
+        private Iesi.Collections.Generic.ISet<Word> children;
         private string _title;
 
         public virtual string Title

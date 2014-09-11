@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
     public class Speciality : EntityBase, IDomainEntity
     {
-        ISet<IcdBlock> icdBlocks;
-        ISet<Doctor> doctors;
-        ISet<SpecialityIcdBlock> specialityIcdBlocks;
+        Iesi.Collections.Generic.ISet<IcdBlock> icdBlocks;
+        Iesi.Collections.Generic.ISet<Doctor> doctors;
+        Iesi.Collections.Generic.ISet<SpecialityIcdBlock> specialityIcdBlocks;
 
 
         public virtual string Title { get; protected set; }

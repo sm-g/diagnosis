@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
     public class IcdDisease : EntityBase, IDomainEntity
     {
-        ISet<HealthRecord> healthRecords = new HashSet<HealthRecord>();
-        ISet<Symptom> symptoms = new HashSet<Symptom>();
+        Iesi.Collections.Generic.ISet<HealthRecord> healthRecords;
+        Iesi.Collections.Generic.ISet<Symptom> symptoms;
 
         public virtual IcdBlock IcdBlock { get; protected set; }
         public virtual string Title { get; set; }

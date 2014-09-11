@@ -3,12 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
     public class HealthRecord : EntityBase, IDomainEntity
     {
-        private ISet<PatientRecordProperty> recordProperties = new HashSet<PatientRecordProperty>();
+        private Iesi.Collections.Generic.ISet<PatientRecordProperty> recordProperties;
         private int? _year;
         private byte? _month;
         private byte? _day;
