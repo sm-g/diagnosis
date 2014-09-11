@@ -26,7 +26,7 @@ namespace Diagnosis.ViewModels
             get
             {
                 if (session == null)
-                    session = NHibernateHelper.OpenSession();
+                    session = NHibernateHelper.GetSession();
                 return session;
             }
         }
@@ -40,10 +40,10 @@ namespace Diagnosis.ViewModels
             {
                 if (disposing)
                 {
-                    if (Session != null)
-                        Session.Dispose();
-                    if (statelessSession != null)
-                        statelessSession.Dispose();
+                    //if (Session != null)
+                    //    Session.Dispose();
+                    //if (statelessSession != null)
+                    //    statelessSession.Dispose();
                 }
                 _disposed = true;
             }
