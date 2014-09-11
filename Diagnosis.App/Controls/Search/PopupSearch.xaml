@@ -51,7 +51,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <DockPanel>
-                            <TextBlock Text="{Binding SearchText}" />
+                            <TextBlock Text="{Binding }" />
                         </DockPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>

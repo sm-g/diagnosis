@@ -80,14 +80,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public string SearchText
-        {
-            get
-            {
-                return Name;
-            }
-        }
-
         public bool Unsaved
         {
             get

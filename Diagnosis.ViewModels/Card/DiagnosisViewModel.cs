@@ -24,14 +24,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public string SearchText
-        {
-            get
-            {
-                return Code + ' ' + Name;
-            }
-        }
-
         public string Code
         {
             get
