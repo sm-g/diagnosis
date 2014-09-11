@@ -10,10 +10,6 @@ namespace Diagnosis.ViewModels
     {
         internal readonly Word word;
 
-        private Category _defCat;
-
-        public Editable Editable { get; private set; }
-
         #region Model
 
         public byte Priority
@@ -52,15 +48,13 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return _defCat;
+                return word.DefaultCategory;
             }
             set
             {
-                if (_defCat != value)
+                if (word.DefaultCategory != value)
                 {
-                    if (value != null)
-                        word.DefaultCategory = value;
-                    _defCat = value;
+                    word.DefaultCategory = value;
 
                     OnPropertyChanged("DefaultCategory");
                 }
@@ -88,13 +82,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public void RefreshProperties()
-        {
-            OnPropertyChanged("Name");
-            OnPropertyChanged("Priority");
-            OnPropertyChanged("Unsaved");
-        }
-
         public WordViewModel(Word w)
         {
             Contract.Requires(w != null);
@@ -102,20 +89,6 @@ namespace Diagnosis.ViewModels
 
 
             DefaultCategory = w.DefaultCategory;
-
-            Editable = new Editable(word);
-
-            this.ParentChanged += WordViewModel_ParentChanged;
-        }
-
-        private void WordViewModel_ParentChanged(object sender, HierarchicalEventAgrs<WordViewModel> e)
-        {
-            // this - родитель
-            // добавили слово не в корень — устанавливаем родителя слову
-            if (e.IHierarchical.word.Parent == null && !IsRoot)
-            {
-                e.IHierarchical.word.Parent = this.word;
-            }
         }
 
         public override string ToString()

@@ -102,32 +102,7 @@ namespace Diagnosis.ViewModels
                 {
                     OnPropertyChanged("CheckedWords");
                 }
-            };
-            //w.Editable.Deleted += (s, e) =>
-            //{
-            //    UncheckBranch(w);
-            //    Words.Remove(w); // если на первом уровне
-            //};
-            vm.Editable.Committed += (s, e) =>
-            {
-                var w = e.entity as Word;
-                Session.SaveOrUpdate(w);
-            };
-            vm.Editable.Reverted += (s, e) =>
-            {
-                var w = e.entity as Word;
-                Session.Refresh(w);
-            };
-            vm.Editable.Deleted += (s, e) =>
-            {
-                var w = e.entity as Word;
-                Session.Delete(w);
-            };
-            vm.ChildrenChanged += (s, e) =>
-            {
-                // слово с детьми нельзя удалять
-                SetDeletable(vm);
-            };
+            }; 
         }
 
         public WordsListViewModel()
@@ -156,19 +131,5 @@ namespace Diagnosis.ViewModels
             _filter.Clear();// показываем все слова
         }
 
-        private static void SetDeletable(WordViewModel w)
-        {
-            // нельзя удалить 
-            //  TODO слова, которые есть в каком-нибудь симптоме, связанном с записью. 
-            // слова с детьми
-            if (!w.IsTerminal)
-            {
-                w.Editable.CanBeDeleted = false;
-            }
-            else
-            {
-                w.Editable.CanBeDeleted = true;
-            }
-        }
     }
 }
