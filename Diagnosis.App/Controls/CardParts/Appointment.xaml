@@ -58,8 +58,8 @@
                     <Image Source="{StaticResource deleteImage}" />
                     <TextBlock>
                         <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" ToolTip="Удалить выбранные записи (Del)">Удалить</Run>
-                        <TextBlock Text="{Binding CheckedHealthRecords, StringFormat='{}({0})'}"
-                                   Visibility="{Binding CheckedHealthRecords, Converter={StaticResource CountToVisibility}, ConverterParameter=1}" />
+                        <TextBlock Text="{Binding CheckedHrCount, StringFormat='{}({0})'}"
+                                   Visibility="{Binding CheckedHrCount, Converter={StaticResource CountToVisibility}, ConverterParameter=1}" />
                     </TextBlock>
                 </DockPanel>
             </Button>
@@ -68,8 +68,8 @@
                     <Image Source="{StaticResource findImage}" />
                     <TextBlock>
                         <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" ToolTip="Искать выбранные записи ()">Искать</Run>
-                        <TextBlock Text="{Binding CheckedHealthRecords, StringFormat='{}({0})'}"
-                                   Visibility="{Binding CheckedHealthRecords, Converter={StaticResource CountToVisibility}, ConverterParameter=1}" />
+                        <TextBlock Text="{Binding CheckedHrCount, StringFormat='{}({0})'}"
+                                   Visibility="{Binding CheckedHrCount, Converter={StaticResource CountToVisibility}, ConverterParameter=1}" />
                     </TextBlock>
                 </DockPanel>
             </Button>

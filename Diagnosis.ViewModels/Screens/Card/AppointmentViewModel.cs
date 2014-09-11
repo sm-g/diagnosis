@@ -99,7 +99,7 @@ namespace Diagnosis.ViewModels
                 return new RelayCommand(() =>
                     {
                         hrManager.DeleteCheckedHealthRecords();
-                    }, () => CheckedHealthRecords > 0);
+                    }, () => CheckedHrCount > 0);
             }
         }
         public ICommand SendHealthRecordsToSearchCommand
@@ -111,7 +111,7 @@ namespace Diagnosis.ViewModels
                             this.Send(Events.SendToSearch, HealthRecords.Where(hr => hr.IsChecked)
                                 .Select(vm => vm.healthRecord)
                                 .AsParams(MessageKeys.HealthRecords));
-                        }, () => CheckedHealthRecords > 0);
+                        }, () => CheckedHrCount > 0);
             }
         }
 
@@ -141,7 +141,7 @@ namespace Diagnosis.ViewModels
 
         #endregion Commands
 
-        public int CheckedHealthRecords
+        public int CheckedHrCount
         {
             get
             {
