@@ -101,6 +101,7 @@
     <Compile Include="Screens\Card\ShortAppointmentViewModel.cs" />
     <Compile Include="Screens\Card\ShortCourseViewModel.cs" />
     <Compile Include="Screens\Card\PatientViewModel.cs" />
+    <Compile Include="Screens\Words\WordEditorViewModel.cs" />
     <Compile Include="Types\CheckableBase.cs" />
     <Compile Include="Screens\Card\Managers\AppointmentsManager.cs" />
     <Compile Include="Screens\Card\AppointmentViewModel.cs" />

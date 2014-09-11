@@ -28,6 +28,8 @@ namespace Diagnosis.ViewModels
             private set;
         }
 
+        public WordEditorViewModel Editor { get; private set; }
+
         public RelayCommand<WordViewModel> AddCommand
         {
             get
@@ -102,12 +104,13 @@ namespace Diagnosis.ViewModels
                 {
                     OnPropertyChanged("CheckedWords");
                 }
-            }; 
+            };
         }
 
         public WordsListViewModel()
         {
             Words = new ObservableCollection<WordViewModel>();
+            Editor = new WordEditorViewModel(Session);
 
             _filter = new NewFilterViewModel<Word>(WordQuery.StartingWith(Session));
 

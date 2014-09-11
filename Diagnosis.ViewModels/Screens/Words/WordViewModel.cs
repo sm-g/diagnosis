@@ -12,22 +12,6 @@ namespace Diagnosis.ViewModels
 
         #region Model
 
-        public byte Priority
-        {
-            get
-            {
-                return word.Priority;
-            }
-            set
-            {
-                if (word.Priority != value)
-                {
-                    word.Priority = value;
-                    OnPropertyChanged("Priority");
-                }
-            }
-        }
-
         public string Name
         {
             get
