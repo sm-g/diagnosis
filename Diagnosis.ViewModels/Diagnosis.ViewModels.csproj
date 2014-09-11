@@ -98,49 +98,49 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthorityController.cs" />
-    <Compile Include="Card\ShortAppointmentViewModel.cs" />
-    <Compile Include="Card\ShortCourseViewModel.cs" />
-    <Compile Include="Card\PatientViewModel.cs" />
-    <Compile Include="CheckableBase.cs" />
-    <Compile Include="Card\AppointmentsManager.cs" />
-    <Compile Include="Card\AppointmentViewModel.cs" />
-    <Compile Include="Card\CoursesManager.cs" />
-    <Compile Include="Card\CourseViewModel.cs" />
-    <Compile Include="Card\DiagnosisViewModel.cs" />
-    <Compile Include="Card\HealthRecordManager.cs" />
-    <Compile Include="Card\HealthRecordViewModel.cs" />
-    <Compile Include="Card\PropertyViewModel.cs" />
-    <Compile Include="Card\WordViewModel.cs" />
+    <Compile Include="Screens\Card\ShortAppointmentViewModel.cs" />
+    <Compile Include="Screens\Card\ShortCourseViewModel.cs" />
+    <Compile Include="Screens\Card\PatientViewModel.cs" />
+    <Compile Include="Types\CheckableBase.cs" />
+    <Compile Include="Screens\Card\Managers\AppointmentsManager.cs" />
+    <Compile Include="Screens\Card\AppointmentViewModel.cs" />
+    <Compile Include="Screens\Card\Managers\CoursesManager.cs" />
+    <Compile Include="Screens\Card\CourseViewModel.cs" />
+    <Compile Include="Screens\Card\DiagnosisViewModel.cs" />
+    <Compile Include="Screens\Card\Managers\HealthRecordManager.cs" />
+    <Compile Include="Screens\Card\HealthRecordViewModel.cs" />
+    <Compile Include="Screens\Card\PropertyViewModel.cs" />
+    <Compile Include="Screens\Words\WordViewModel.cs" />
     <Compile Include="Editable.cs" />
     <Compile Include="Extensions\HierarchicalExtensions.cs" />
     <Compile Include="Extensions\IEditableNestingExtensions.cs" />
     <Compile Include="Framework\SessionVMBase.cs" />
-    <Compile Include="HierarchicalBase.cs" />
-    <Compile Include="HrEditorViewModel.cs" />
+    <Compile Include="Types\HierarchicalBase.cs" />
+    <Compile Include="Screens\Card\HrEditorViewModel.cs" />
     <Compile Include="Interfaces\ICheckable.cs" />
     <Compile Include="Interfaces\IEditableNesting.cs" />
     <Compile Include="Interfaces\IFilter.cs" />
     <Compile Include="Interfaces\IHierarchical.cs" />
     <Compile Include="Interfaces\IHierarchicalCheckable.cs" />
     <Compile Include="Interfaces\ISimpleSearcher.cs" />
-    <Compile Include="PatientViewer.cs" />
+    <Compile Include="Screens\PatientViewer.cs" />
     <Compile Include="Producers\DiagnosisProducer.cs" />
     <Compile Include="Producers\EntityProducers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Framework\RelayCommand.cs" />
-    <Compile Include="Screens\CardViewModel.cs" />
+    <Compile Include="Screens\Card\CardViewModel.cs" />
     <Compile Include="Screens\LoginViewModel.cs" />
-    <Compile Include="Screens\PatientEditorViewModel.cs" />
+    <Compile Include="Screens\Patients\PatientEditorViewModel.cs" />
     <Compile Include="Screens\Shell\MainWindowViewModel.cs" />
-    <Compile Include="Screens\PatientsListViewModel.cs" />
+    <Compile Include="Screens\Patients\PatientsListViewModel.cs" />
     <Compile Include="Screens\Shell\AsideViewModel.cs" />
     <Compile Include="Screens\Shell\MenuBarViewModel.cs" />
     <Compile Include="Screens\Shell\PanelViewModel.cs" />
     <Compile Include="Screens\Shell\ScreenSwitcher.cs" />
-    <Compile Include="Screens\ShortPatientViewModel.cs" />
+    <Compile Include="Screens\Patients\ShortPatientViewModel.cs" />
     <Compile Include="Screens\SearchViewModel.cs" />
     <Compile Include="Screens\SettingsViewModel.cs" />
-    <Compile Include="Screens\WordsListViewModel.cs" />
+    <Compile Include="Screens\Words\WordsListViewModel.cs" />
     <Compile Include="Search\Autocomplete\AutoCompleteBase.cs" />
     <Compile Include="Search\Autocomplete\Autocomplete.cs" />
     <Compile Include="Search\Autocomplete\Recognizer.cs" />
@@ -158,7 +158,7 @@
     <Compile Include="Search\Searchers\DiagnosisSearcher.cs" />
     <Compile Include="Search\Searchers\HrSearcher.cs" />
     <Compile Include="Framework\ViewModelBase.cs" />
-    <Compile Include="SpecialCaseItem.cs" />
+    <Compile Include="Types\SpecialCaseItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Diagnosis.Common\Diagnosis.Common.csproj">
@@ -175,8 +175,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Card\DomClassDiagram.cd" />
+    <None Include="Screens\Card\CardPartsRealtion.cd" />
     <None Include="packages.config" />
+    <None Include="Screens\Card\Card.cd" />
     <None Include="Search\SearchClassDiagram.cd" />
     <None Include="VMClassDiagram.cd" />
   </ItemGroup>
