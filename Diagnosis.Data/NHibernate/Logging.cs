@@ -18,7 +18,7 @@ namespace Diagnosis.Data
 
         void Load(EntityBase entityBase);
     }
-
+    [Serializable]
     internal class AuditLogger : IAuditLogger
     {
         public void Insert(EntityBase entity)
@@ -42,6 +42,7 @@ namespace Diagnosis.Data
         }
     }
 
+    [Serializable]
     internal class EventListener : IPreInsertEventListener, IPreUpdateEventListener, IPreDeleteEventListener, IPreLoadEventListener
     {
         private readonly IAuditLogger _logger;

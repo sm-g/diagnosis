@@ -6,23 +6,20 @@ using Diagnosis.Data.Mappings;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Cfg.MappingSchema;
+using NHibernate.Event;
 using NHibernate.Mapping.ByCode;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
-using NHibernate.Event;
-using NHibernate.Dialect;
-using NHibernate.Driver;
-using NHibernate.Tool.hbm2ddl;
-
 
 namespace Diagnosis.Data
 {
     public class NHibernateHelper
     {
-        private const string filenameTemplate = "Configuration.serialized";
-        private static Configuration _configuration;
+        private const string SerializedConfig = "NHibernate\\Configuration.serialized";
+        private const string ConfigFile = "NHibernate\\nhibernate.cfg.xml";
+        private static Configuration _cfg;
         private static HbmMapping _mapping;
         private static ISession _session;
         private static ISessionFactory _sessionFactory;
@@ -31,11 +28,16 @@ namespace Diagnosis.Data
         {
             get
             {
-                if (_configuration == null)
+                if (_cfg == null)
                 {
-                    _configuration = CreateConfiguration();
+                    _cfg = LoadConfiguration();
+                    if (_cfg == null)
+                    {
+                        _cfg = CreateConfiguration();
+                        SaveConfiguration(_cfg);
+                    }
                 }
-                return _configuration;
+                return _cfg;
             }
         }
 
@@ -85,6 +87,7 @@ namespace Diagnosis.Data
 #endif
             return s;
         }
+
         public static IStatelessSession OpenStatelessSession()
         {
             var s = SessionFactory.OpenStatelessSession();
@@ -93,11 +96,12 @@ namespace Diagnosis.Data
 #endif
             return s;
         }
+
         private static Configuration CreateConfiguration()
         {
             var cfg = new Configuration();
 #if !MEMORY
-            cfg.Configure("NHibernate\\nhibernate.cfg.xml");
+            cfg.Configure(ConfigFile);
 #else
             InMemoryHelper.Configure(cfg);
 #endif
@@ -114,21 +118,49 @@ namespace Diagnosis.Data
 
         private static Configuration LoadConfiguration()
         {
-            Configuration cfg;
-            var serializer = new BinaryFormatter();
-            using (Stream stream = File.OpenRead(filenameTemplate))
+#if MEMORY
+            return null;
+#endif
+            if (IsConfigurationFileValid == false)
+                return null;
+            try
             {
-                cfg = serializer.Deserialize(stream) as Configuration;
+                using (Stream stream = File.OpenRead(SerializedConfig))
+                {
+                    var serializer = new BinaryFormatter();
+                    return serializer.Deserialize(stream) as Configuration;
+                }
             }
-            return cfg;
+            catch (System.Exception)
+            {
+                return null;
+            }
         }
 
         private static void SaveConfiguration(Configuration cfg)
         {
-            var serializer = new BinaryFormatter();
-            using (Stream stream = File.OpenWrite(filenameTemplate))
+            using (Stream stream = File.OpenWrite(SerializedConfig))
             {
+                var serializer = new BinaryFormatter();
                 serializer.Serialize(stream, cfg);
+            }
+        }
+
+        private static bool IsConfigurationFileValid
+        {
+            get
+            {
+                var ass = Assembly.GetCallingAssembly();
+                if (ass.Location == null)
+                    return false;
+                var configInfo = new FileInfo(SerializedConfig);
+                var assInfo = new FileInfo(ass.Location);
+                var configFileInfo = new FileInfo(ConfigFile);
+                if (configInfo.LastWriteTime < assInfo.LastWriteTime)
+                    return false;
+                if (configInfo.LastWriteTime < configFileInfo.LastWriteTime)
+                    return false;
+                return true;
             }
         }
     }
