@@ -120,6 +120,9 @@
     <Reference Include="ReachFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\libs\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Printing" />
@@ -571,7 +574,8 @@
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate.cfg.xml" "$(TargetDir)NHibernate\" /i /d /y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate.cfg.xml" "$(TargetDir)NHibernate\" /i /d /y
+xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)" /i /d /y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

@@ -1,14 +1,9 @@
 ﻿using Diagnosis.Data;
-using Diagnosis.Data.Mappings;
 using NHibernate;
 using NHibernate.Cfg;
-using NHibernate.Cfg.MappingSchema;
 using NHibernate.Dialect;
 using NHibernate.Driver;
-using NHibernate.Mapping.ByCode;
 using NHibernate.Tool.hbm2ddl;
-using System.Linq;
-using System.Reflection;
 
 namespace Tests
 {
@@ -26,7 +21,6 @@ namespace Tests
                     .SetProperty(Environment.ReleaseConnections, "on_close")
                     .SetProperty(Environment.Dialect, typeof(SQLiteDialect).AssemblyQualifiedName)
                     .SetProperty(Environment.ConnectionDriver, typeof(SQLite20Driver).AssemblyQualifiedName)
-                    //.SetProperty(Environment.ProxyFactoryFactoryClass, typeof(ProxyFactoryFactory).AssemblyQualifiedName)
                     .SetProperty(Environment.ConnectionString, "data source=:memory:")
                     .SetProperty(Environment.CollectionTypeFactoryClass, typeof(Net4CollectionTypeFactory).AssemblyQualifiedName);
 

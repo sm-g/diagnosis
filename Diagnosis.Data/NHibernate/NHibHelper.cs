@@ -1,4 +1,8 @@
-﻿using Diagnosis.Data.Mappings;
+﻿#if DEBUG
+//#define MEMORY
+#endif
+
+using Diagnosis.Data.Mappings;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Cfg.MappingSchema;
@@ -8,6 +12,10 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using NHibernate.Event;
+using NHibernate.Dialect;
+using NHibernate.Driver;
+using NHibernate.Tool.hbm2ddl;
+
 
 namespace Diagnosis.Data
 {
@@ -61,24 +69,38 @@ namespace Diagnosis.Data
             if (_session == null)
             {
                 _session = SessionFactory.OpenSession();
+#if MEMORY
+                InMemoryHelper.FillData(Configuration, _session);
+#endif
             }
             return _session;
         }
+
         public static ISession OpenSession()
         {
             var s = SessionFactory.OpenSession();
             s.FlushMode = FlushMode.Auto;
+#if MEMORY
+            InMemoryHelper.FillData(Configuration, s);
+#endif
             return s;
         }
         public static IStatelessSession OpenStatelessSession()
         {
             var s = SessionFactory.OpenStatelessSession();
+#if MEMORY
+            InMemoryHelper.FillData(Configuration, s);
+#endif
             return s;
         }
         private static Configuration CreateConfiguration()
         {
             var cfg = new Configuration();
+#if !MEMORY
             cfg.Configure("NHibernate\\nhibernate.cfg.xml");
+#else
+            InMemoryHelper.Configure(cfg);
+#endif
             cfg.Properties[Environment.CollectionTypeFactoryClass] = typeof(Net4CollectionTypeFactory).AssemblyQualifiedName;
             var listener = new EventListener();
             cfg.AppendListeners(ListenerType.PreUpdate, new IPreUpdateEventListener[] { listener });
@@ -87,7 +109,6 @@ namespace Diagnosis.Data
             cfg.AppendListeners(ListenerType.PreLoad, new IPreLoadEventListener[] { listener });
 
             cfg.AddMapping(Mapping);
-
             return cfg;
         }
 
