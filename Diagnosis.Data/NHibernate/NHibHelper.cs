@@ -105,11 +105,16 @@ namespace Diagnosis.Data
 #else
             InMemoryHelper.Configure(cfg);
 #endif
-            var listener = new EventListener();
-            cfg.AppendListeners(ListenerType.PreUpdate, new IPreUpdateEventListener[] { listener });
-            cfg.AppendListeners(ListenerType.PreInsert, new IPreInsertEventListener[] { listener });
-            cfg.AppendListeners(ListenerType.PreDelete, new IPreDeleteEventListener[] { listener });
-            cfg.AppendListeners(ListenerType.PreLoad, new IPreLoadEventListener[] { listener });
+            var preListener = new PreEventListener();
+            var postListener = new PostEventListener();
+            cfg.AppendListeners(ListenerType.PreUpdate, new IPreUpdateEventListener[] { preListener });
+            cfg.AppendListeners(ListenerType.PreInsert, new IPreInsertEventListener[] { preListener });
+            cfg.AppendListeners(ListenerType.PreDelete, new IPreDeleteEventListener[] { preListener });
+            cfg.AppendListeners(ListenerType.PreLoad, new IPreLoadEventListener[] { preListener });
+            cfg.AppendListeners(ListenerType.PostUpdate, new IPostUpdateEventListener[] { postListener });
+            cfg.AppendListeners(ListenerType.PostInsert, new IPostInsertEventListener[] { postListener });
+            cfg.AppendListeners(ListenerType.PostDelete, new IPostDeleteEventListener[] { postListener });
+            cfg.AppendListeners(ListenerType.PostLoad, new IPostLoadEventListener[] { postListener });
 
             cfg.AddMapping(Mapping);
             return cfg;

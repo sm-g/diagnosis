@@ -18,6 +18,7 @@ namespace Diagnosis.Data
 
         void Load(EntityBase entityBase);
     }
+
     [Serializable]
     internal class AuditLogger : IAuditLogger
     {
@@ -43,15 +44,15 @@ namespace Diagnosis.Data
     }
 
     [Serializable]
-    internal class EventListener : IPreInsertEventListener, IPreUpdateEventListener, IPreDeleteEventListener, IPreLoadEventListener
+    internal class PreEventListener : IPreInsertEventListener, IPreUpdateEventListener, IPreDeleteEventListener, IPreLoadEventListener
     {
         private readonly IAuditLogger _logger;
 
-        public EventListener()
+        public PreEventListener()
             : this(new AuditLogger())
         { }
 
-        public EventListener(IAuditLogger logger)
+        public PreEventListener(IAuditLogger logger)
         {
             _logger = logger;
         }
@@ -79,4 +80,6 @@ namespace Diagnosis.Data
             _logger.Load(e.Entity as EntityBase);
         }
     }
+
+
 }

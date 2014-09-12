@@ -115,6 +115,8 @@
     <Compile Include="Mappings\PatientPropertyMap.cs" />
     <Compile Include="Mappings\PatientMap.cs" />
     <Compile Include="Mappings\SymptomWordsMap.cs" />
+    <Compile Include="NHibernate\EntityChecker.cs" />
+    <Compile Include="NHibernate\Extensions.cs" />
     <Compile Include="NHibernate\InMemoryHelper.cs" />
     <Compile Include="NHibernate\Logging.cs" />
     <Compile Include="NHibernate\Net4Collections.cs" />
