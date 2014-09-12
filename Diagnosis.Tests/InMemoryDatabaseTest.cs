@@ -21,8 +21,7 @@ namespace Tests
                     .SetProperty(Environment.ReleaseConnections, "on_close")
                     .SetProperty(Environment.Dialect, typeof(SQLiteDialect).AssemblyQualifiedName)
                     .SetProperty(Environment.ConnectionDriver, typeof(SQLite20Driver).AssemblyQualifiedName)
-                    .SetProperty(Environment.ConnectionString, "data source=:memory:")
-                    .SetProperty(Environment.CollectionTypeFactoryClass, typeof(Net4CollectionTypeFactory).AssemblyQualifiedName);
+                    .SetProperty(Environment.ConnectionString, "data source=:memory:");
 
                 Configuration
                     .AddMapping(NHibernateHelper.CreateMapping());

@@ -119,7 +119,6 @@
     <Compile Include="NHibernate\Extensions.cs" />
     <Compile Include="NHibernate\InMemoryHelper.cs" />
     <Compile Include="NHibernate\Logging.cs" />
-    <Compile Include="NHibernate\Net4Collections.cs" />
     <Compile Include="NHibernate\NHibHelper.cs" />
     <Compile Include="Queries\DiagnosisQuery.cs" />
     <Compile Include="Queries\PatientQuery.cs" />
