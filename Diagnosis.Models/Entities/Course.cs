@@ -10,7 +10,7 @@ namespace Diagnosis.Models
 {
     public class Course : EntityBase, IDomainEntity
     {
-        Iesi.Collections.Generic.ISet<Appointment> appointments;
+        Iesi.Collections.Generic.ISet<Appointment> appointments = new HashedSet<Appointment>();
 
         public virtual event NotifyCollectionChangedEventHandler AppointmentsChanged;
 
@@ -55,6 +55,8 @@ namespace Diagnosis.Models
             Patient = patient;
             LeadDoctor = doctor;
             Start = DateTime.Today;
+
+            AddAppointment(doctor);
         }
 
         protected Course() { }

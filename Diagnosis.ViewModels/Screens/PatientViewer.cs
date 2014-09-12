@@ -1,13 +1,12 @@
 ﻿using Diagnosis.Core;
 using Diagnosis.Models;
-using EventAggregator;
+using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using NHibernate;
 
 namespace Diagnosis.ViewModels
 {
@@ -115,7 +114,6 @@ namespace Diagnosis.ViewModels
                     {
                         OnAppointmentOpened(value);
                     }
-
                 }
             }
         }
@@ -236,7 +234,6 @@ namespace Diagnosis.ViewModels
 
             // Session.SaveOrUpdate(closing);
 
-
             OpenedCourse = null;
 
             if (opening != null)
@@ -269,12 +266,6 @@ namespace Diagnosis.ViewModels
             if (!courseAppMap.TryGetValue(course, out app))
             {
                 // курс открыт первый раз
-
-                if (OpenedCourse.Appointments.Count() == 0)
-                {
-                    OpenedCourse.AddAppointment(AuthorityController.CurrentDoctor); // новый курс — добавляем осмотр
-                }
-
                 OpenedAppointment = OpenedCourse.Appointments.LastOrDefault();
             }
             else
@@ -282,7 +273,6 @@ namespace Diagnosis.ViewModels
                 OpenedAppointment = app;
             }
             Debug.Print("opened course {0}", course);
-
         }
 
         private void OnCourseClosed(Course course)
@@ -319,12 +309,7 @@ namespace Diagnosis.ViewModels
             {
                 // осмотр открыт первый раз
 
-                if (OpenedAppointment.HealthRecords.Count() == 0)
-                {
-                    // новый осмотр - добавляем запись
-                    OpenedAppointment.AddHealthRecord();
-                }
-                else
+                if (OpenedAppointment.HealthRecords.Count() != 0)
                 {
                     // никакие записи не выбраны
                     OpenedHealthRecord = null;

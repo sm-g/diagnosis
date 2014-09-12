@@ -8,7 +8,6 @@ namespace Diagnosis.ViewModels
     public class CardViewModel : SessionVMBase
     {
         static PatientViewer viewer = new PatientViewer(); // static to hold history
-        public static ISession Session;
 
         private PatientViewModel _patient;
         private CourseViewModel _course;
@@ -28,7 +27,6 @@ namespace Diagnosis.ViewModels
         }
         CardViewModel()
         {
-            Session = base.Session;
             HealthRecordEditor = new HrEditorViewModel(Session);
             viewer.Session = Session;
             viewer.PropertyChanged += viewer_PropertyChanged;

@@ -9,14 +9,13 @@ namespace Diagnosis.Models
 {
     public class Doctor : EntityBase, IDomainEntity
     {
-        private Iesi.Collections.Generic.ISet<Course> courses;
+        private Iesi.Collections.Generic.ISet<Course> courses = new HashedSet<Course>();
         private Iesi.Collections.Generic.ISet<Appointment> appointments;
         private string _fn;
         private string _ln;
         private string _mn;
         private int _settings;
         private DoctorSettings _docSettings;
-        private ObservableCollection<Course> _courses;
 
         public virtual DoctorSettings DoctorSettings
         {

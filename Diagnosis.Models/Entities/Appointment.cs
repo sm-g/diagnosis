@@ -12,7 +12,7 @@ namespace Diagnosis.Models
 {
     public class Appointment : EntityBase, IDomainEntity
     {
-        Iesi.Collections.Generic.ISet<HealthRecord> healthRecords;
+        Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
 
         public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
 
@@ -35,6 +35,8 @@ namespace Diagnosis.Models
             Course = course;
             Doctor = doctor;
             DateAndTime = DateTime.UtcNow;
+
+            AddHealthRecord();
         }
 
         public virtual HealthRecord AddHealthRecord()
