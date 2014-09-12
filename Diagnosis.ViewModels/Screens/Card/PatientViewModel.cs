@@ -1,20 +1,21 @@
-﻿using EventAggregator;
+﻿using Diagnosis.Core;
 using Diagnosis.Models;
+using EventAggregator;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
-using Diagnosis.Core;
 
 namespace Diagnosis.ViewModels
 {
     public class PatientViewModel : ViewModelBase
     {
         internal readonly Patient patient;
+        private ShortCourseViewModel _selectedCourse;
         private CoursesManager coursesManager;
 
-        #region Model related
+        #region Model
 
         public string Label
         {
@@ -24,11 +25,7 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                if (patient.Label != value)
-                {
-                    patient.Label = value;
-                    OnPropertyChanged("Label");
-                }
+                patient.Label = value;
             }
         }
 
@@ -40,13 +37,7 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                if (patient.FirstName != value)
-                {
-                    patient.FirstName = value;
-
-                    OnPropertyChanged("FirstName");
-                    OnPropertyChanged("NoName");
-                }
+                patient.FirstName = value;
             }
         }
 
@@ -58,13 +49,7 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                if (patient.MiddleName != value)
-                {
-                    patient.MiddleName = value;
-
-                    OnPropertyChanged("MiddleName");
-                    OnPropertyChanged("NoName");
-                }
+                patient.MiddleName = value;
             }
         }
 
@@ -76,13 +61,7 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                if (patient.LastName != value)
-                {
-                    patient.LastName = value;
-
-                    OnPropertyChanged("LastName");
-                    OnPropertyChanged("NoName");
-                }
+                patient.LastName = value;
             }
         }
 
@@ -94,12 +73,7 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                if (patient.Age != value)
-                {
-                    patient.Age = value;
-                    OnPropertyChanged("Age");
-                    OnPropertyChanged("BirthYear");
-                }
+                patient.Age = value;
             }
         }
 
@@ -111,12 +85,7 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                if (patient.BirthYear != value)
-                {
-                    patient.BirthYear = value;
-                    OnPropertyChanged("Age");
-                    OnPropertyChanged("BirthYear");
-                }
+                patient.BirthYear = value;
             }
         }
 
@@ -128,12 +97,7 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                if (patient.BirthMonth != value)
-                {
-                    patient.BirthMonth = value;
-                    OnPropertyChanged("Age");
-                    OnPropertyChanged("BirthMonth");
-                }
+                patient.BirthMonth = value;
             }
         }
 
@@ -145,12 +109,7 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                if (patient.BirthDay != value)
-                {
-                    patient.BirthDay = value;
-                    OnPropertyChanged("Age");
-                    OnPropertyChanged("BirthDay");
-                }
+                patient.BirthDay = value;
             }
         }
 
@@ -162,41 +121,12 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                if (patient.IsMale != value)
-                {
-                    patient.IsMale = value;
-                    OnPropertyChanged("IsMale");
-                }
+                patient.IsMale = value;
             }
         }
-
-        public bool NoName
-        {
-            get
-            {
-                return patient.LastName == null && patient.MiddleName == null && patient.FirstName == null;
-            }
-        }
-
-        public ObservableCollection<PropertyViewModel> Properties
-        {
-            get;
-            private set;
-        }
-
         #endregion Model related
 
-        public bool IsUnsaved
-        {
-            get
-            {
-                return patient.IsTransient;
-            }
-        }
-
         public ObservableCollection<ShortCourseViewModel> Courses { get { return coursesManager.Courses; } }
-
-        private ShortCourseViewModel _selectedCourse;
 
         public ShortCourseViewModel SelectedCourse
         {
@@ -222,6 +152,12 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        public ObservableCollection<PropertyViewModel> Properties
+        {
+            get;
+            private set;
+        }
+
         public RelayCommand EditCommand
         {
             get
@@ -241,6 +177,14 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        public bool NoName
+        {
+            get
+            {
+                return patient.LastName == null && patient.MiddleName == null && patient.FirstName == null;
+            }
+        }
+
         public PatientViewModel(Patient p)
         {
             Contract.Requires(p != null);
@@ -255,8 +199,10 @@ namespace Diagnosis.ViewModels
                 };
             };
 
-            if (!IsUnsaved)
-                LoadProperties();
+            patient.PropertyChanged += patient_PropertyChanged;
+            /// TODO patientproperties changes
+
+            LoadProperties();
         }
 
         public void SelectCourse(Course course)
@@ -264,9 +210,22 @@ namespace Diagnosis.ViewModels
             SelectedCourse = Courses.First(x => x.course == course);
         }
 
-        /// <summary>
-        /// Только для сохраненного пациента.
-        /// </summary>
+        private void patient_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(e.PropertyName);
+            switch (e.PropertyName)
+            {
+                case "FirstName":
+                case "LastName":
+                case "MiddleName":
+                    OnPropertyChanged("NoName");
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
         private void LoadProperties()
         {
             var allProperties = new Diagnosis.Data.Repositories.PropertyRepository().GetAll();
@@ -291,7 +250,6 @@ namespace Diagnosis.ViewModels
             }
 
             Properties = new ObservableCollection<PropertyViewModel>(properties);
-            OnPropertyChanged("Properties");
         }
 
         private PropertyViewModel MakePropertyVM(Property p)
@@ -313,6 +271,13 @@ namespace Diagnosis.ViewModels
         public override string ToString()
         {
             return patient.ToString();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            patient.PropertyChanged -= patient_PropertyChanged;
+
+            base.Dispose(disposing);
         }
     }
 }

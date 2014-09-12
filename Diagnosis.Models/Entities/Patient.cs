@@ -10,16 +10,17 @@ namespace Diagnosis.Models
 {
     public class Patient : EntityBase, IDomainEntity
     {
-        private Iesi.Collections.Generic.ISet<PatientRecordProperty> patientProperties;
-        private Iesi.Collections.Generic.ISet<Course> courses;
+        private Iesi.Collections.Generic.ISet<PatientRecordProperty> patientProperties = new HashedSet<PatientRecordProperty>();
+        private Iesi.Collections.Generic.ISet<Course> courses = new HashedSet<Course>();
 
-        int? _year;
-        byte? _month;
-        byte? _day;
-        string _fn;
-        string _ln;
-        string _mn;
-        string _label;
+        private int? _year;
+        private byte? _month;
+        private byte? _day;
+        private string _fn;
+        private string _ln;
+        private string _mn;
+        private string _label;
+        private bool _isMale;
 
         public virtual event NotifyCollectionChangedEventHandler CoursesChanged;
 
@@ -31,9 +32,13 @@ namespace Diagnosis.Models
             }
             set
             {
+                if (_label == value)
+                    return;
                 _label = value.TrimedOrNull();
+                OnPropertyChanged("Label");
             }
         }
+
         public virtual string FirstName
         {
             get
@@ -42,9 +47,13 @@ namespace Diagnosis.Models
             }
             set
             {
+                if (_fn == value)
+                    return;
                 _fn = value.TrimedOrNull();
+                OnPropertyChanged("FirstName");
             }
         }
+
         public virtual string MiddleName
         {
             get
@@ -53,9 +62,13 @@ namespace Diagnosis.Models
             }
             set
             {
+                if (_mn == value)
+                    return;
                 _mn = value.TrimedOrNull();
+                OnPropertyChanged("MiddleName");
             }
         }
+
         public virtual string LastName
         {
             get
@@ -64,10 +77,25 @@ namespace Diagnosis.Models
             }
             set
             {
+                if (_ln == value)
+                    return;
                 _ln = value.TrimedOrNull();
+                OnPropertyChanged("LastName");
             }
         }
-        public virtual bool IsMale { get; set; }
+
+        public virtual bool IsMale
+        {
+            get { return _isMale; }
+            set
+            {
+                if (_isMale == value)
+                    return;
+                _isMale = value;
+                OnPropertyChanged("IsMale");
+            }
+        }
+
         public virtual int? BirthYear
         {
             get
@@ -76,17 +104,19 @@ namespace Diagnosis.Models
             }
             set
             {
-                if (value == null)
-                {
-                    _year = value;
-                }
-                if (value <= DateTime.Today.Year)
+                if (_year == value)
+                    return;
+
+                if (value == null || value <= DateTime.Today.Year)
                 {
                     _year = value;
                 }
                 CheckDate();
+                OnPropertyChanged("BirthYear");
+                OnPropertyChanged("Age");
             }
         }
+
         public virtual byte? BirthMonth
         {
             get
@@ -95,6 +125,9 @@ namespace Diagnosis.Models
             }
             set
             {
+                if (_month == value)
+                    return;
+
                 if (value == null)
                 {
                     _month = value;
@@ -104,8 +137,11 @@ namespace Diagnosis.Models
                     _month = value > 0 ? value : null;
                 }
                 CheckDate();
+                OnPropertyChanged("BirthMonth");
+                OnPropertyChanged("Age");
             }
         }
+
         public virtual byte? BirthDay
         {
             get
@@ -114,6 +150,9 @@ namespace Diagnosis.Models
             }
             set
             {
+                if (_day == value)
+                    return;
+
                 if (value == null)
                 {
                     _day = value;
@@ -123,6 +162,8 @@ namespace Diagnosis.Models
                     _day = value > 0 ? value : null;
                 }
                 CheckDate();
+                OnPropertyChanged("BirthDay");
+                OnPropertyChanged("Age");
             }
         }
 
@@ -133,6 +174,7 @@ namespace Diagnosis.Models
                 return patientProperties;
             }
         }
+
         public virtual IEnumerable<Course> Courses
         {
             get
@@ -176,6 +218,10 @@ namespace Diagnosis.Models
 
                     BirthYear = year;
                 }
+                else
+                {
+                    BirthYear = null;
+                }
             }
         }
 
@@ -208,9 +254,10 @@ namespace Diagnosis.Models
             {
                 existingPatientProperty.Value = value;
             }
+            OnPropertyChanged("PatientProperties");
         }
 
-        void CheckDate()
+        private void CheckDate()
         {
             DateHelper.CheckDate(BirthYear, BirthMonth, BirthDay);
         }
@@ -250,12 +297,13 @@ namespace Diagnosis.Models
             }
         }
 
-        protected internal virtual void AddCourse(Course course)
+        protected virtual internal void AddCourse(Course course)
         {
             if (!courses.Contains(course))
+            {
                 courses.Add(course);
-            OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, course));
-
+                OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, course));
+            }
         }
     }
 }

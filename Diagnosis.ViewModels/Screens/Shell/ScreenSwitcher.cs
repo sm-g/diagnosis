@@ -26,7 +26,7 @@ namespace Diagnosis.ViewModels
             this.Subscribe(Events.AddPatient, (e) =>
             {
                 // открываем экран редактора пациента, в нём новый пациент
-                OpenScreen(Screens.PatientEditor);
+                OpenScreen(Screens.PatientEditor, true);
             });
 
             this.Subscribe(Events.OpenPatient, (e) =>
@@ -140,6 +140,10 @@ namespace Diagnosis.ViewModels
             Screen = screen;
 
             if (updateCurView)
+            {
+                if (_curView != null)
+                    _curView.Dispose();
+
                 switch (screen)
                 {
                     case Screens.Login:
@@ -170,7 +174,7 @@ namespace Diagnosis.ViewModels
                     default:
                         break;
                 }
-
+            }
             if (screen != Screens.Card)
             {
                 CardViewModel.viewer.ClosePatient();

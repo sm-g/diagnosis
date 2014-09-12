@@ -1,7 +1,9 @@
 ﻿using Diagnosis.Core;
 using Diagnosis.Models;
 using EventAggregator;
+using System.ComponentModel;
 using System.Linq;
+using Diagnosis.Data;
 
 namespace Diagnosis.ViewModels
 {
@@ -48,12 +50,12 @@ namespace Diagnosis.ViewModels
             get
             {
                 return new RelayCommand(() =>
-                       {
-                           Session.SaveOrUpdate(patient);
-                           shouldCommit = true;
+                {
+                    Session.SaveOrUpdate(patient);
+                    shouldCommit = true;
 
-                           this.Send(Events.AddPatient);
-                       }, () => CanSave());
+                    this.Send(Events.AddPatient);
+                }, () => CanSave());
             }
         }
 
@@ -62,10 +64,11 @@ namespace Diagnosis.ViewModels
             get
             {
                 return new RelayCommand(() =>
-                       {
-                           shouldCommit = false;
-                           this.Send(Events.LeavePatientEditor, patient.AsParams(MessageKeys.Patient));
-                       });
+                {
+                    shouldCommit = false;
+
+                    this.Send(Events.LeavePatientEditor, patient.AsParams(MessageKeys.Patient));
+                });
             }
         }
 
@@ -74,12 +77,12 @@ namespace Diagnosis.ViewModels
             get
             {
                 return new RelayCommand(() =>
-                       {
-                           Session.SaveOrUpdate(patient);
-                           shouldCommit = true;
+                {
+                    Session.SaveOrUpdate(patient);
+                    shouldCommit = true;
 
-                           this.Send(Events.FirstHr, patient.AsParams(MessageKeys.Patient));
-                       }, () => canFirstHr);
+                    this.Send(Events.FirstHr, patient.AsParams(MessageKeys.Patient));
+                }, () => canFirstHr);
             }
         }
 
@@ -105,9 +108,10 @@ namespace Diagnosis.ViewModels
             Patient = new PatientViewModel(patient);
 
             Session.BeginTransaction();
+            (patient as IEditableObject).BeginEdit();
         }
         /// <summary>
-        /// Создает нового пациента.
+        /// Начинает редактировать нового пациента.
         /// </summary>
         public PatientEditorViewModel()
             : this(new Patient())
@@ -128,13 +132,15 @@ namespace Diagnosis.ViewModels
         {
             if (shouldCommit)
             {
+                (patient as IEditableObject).EndEdit();
                 Session.Transaction.Commit();
             }
             else
             {
-                if (Session.Transaction.IsActive)
-                Session.Transaction.Rollback(); // если flush.never - не нужно?
+                (patient as IEditableObject).CancelEdit();
             }
+            Session.Transaction.Dispose();
+            Patient.Dispose();
             patient.CoursesChanged -= patient_CoursesChanged;
 
             base.Dispose(disposing);
