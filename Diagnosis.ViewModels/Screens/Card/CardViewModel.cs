@@ -7,15 +7,26 @@ namespace Diagnosis.ViewModels
 {
     public class CardViewModel : SessionVMBase
     {
-        public static PatientViewer viewer = new PatientViewer();
+        static PatientViewer viewer = new PatientViewer(); // static to hold history
         public static ISession Session;
 
         private PatientViewModel _patient;
         private CourseViewModel _course;
         private AppointmentViewModel _appointment;
+        private HealthRecordViewModel _hr;
         private HrEditorViewModel _hrEditor;
 
-        public CardViewModel()
+        public CardViewModel(Patient patient)
+            : this()
+        {
+            viewer.OpenPatient(patient);
+        }
+        public CardViewModel(HealthRecord hr)
+            : this()
+        {
+            viewer.OpenHr(hr);
+        }
+        CardViewModel()
         {
             Session = base.Session;
             HealthRecordEditor = new HrEditorViewModel(Session);
@@ -69,8 +80,6 @@ namespace Diagnosis.ViewModels
                 }
             }
         }
-
-        private HealthRecordViewModel _hr;
         public HealthRecordViewModel HealthRecord
         {
             get
@@ -103,6 +112,14 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        public void OpenHr(HealthRecord hr)
+        {
+            viewer.OpenHr(hr);
+        }
+        public void OpenPatient(Patient pat)
+        {
+            viewer.OpenPatient(pat);
+        }
         public void EditHr()
         {
             HealthRecordEditor.HealthRecord = HealthRecord;
@@ -111,6 +128,7 @@ namespace Diagnosis.ViewModels
         protected override void Dispose(bool disposing)
         {
             viewer.PropertyChanged -= viewer_PropertyChanged;
+            viewer.ClosePatient();
             base.Dispose(disposing);
         }
 

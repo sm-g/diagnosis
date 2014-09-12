@@ -26,50 +26,43 @@ namespace Diagnosis.ViewModels
             this.Subscribe(Events.AddPatient, (e) =>
             {
                 // открываем экран редактора пациента, в нём новый пациент
-                OpenScreen(Screens.PatientEditor, true);
+                OpenScreen(Screens.PatientEditor, replace: true);
             });
 
             this.Subscribe(Events.OpenPatient, (e) =>
             {
                 // открываем экран карточки и пациента
 
-                var patient = e.GetValue<Patient>(MessageKeys.Patient);
+                var pat = e.GetValue<Patient>(MessageKeys.Patient);
 
-                OpenScreen(Screens.Card);
-                CardViewModel.viewer.OpenPatient(patient);
+                OpenScreen(Screens.Card, pat);
             });
 
             this.Subscribe(Events.FirstHr, (e) =>
             {
                 // открываем экран карточки и пациента
                 var pat = e.GetValue<Patient>(MessageKeys.Patient);
-                OpenScreen(Screens.Card);
-
-                CardViewModel.viewer.OpenPatient(pat, true);
-
+                OpenScreen(Screens.Card, pat);
+                //
             });
 
             this.Subscribe(Events.EditPatient, (e) =>
             {
                 var pat = e.GetValue<Patient>(MessageKeys.Patient);
 
-                OpenScreen(Screens.PatientEditor, false, pat);
+                OpenScreen(Screens.PatientEditor, pat);
             });
 
             this.Subscribe(Events.LeavePatientEditor, (e) =>
             {
-                // возвращаемся к спсику пациентом или к карточке пациента
+                // возвращаемся к предыдущему экрану
                 var pat = e.GetValue<Patient>(MessageKeys.Patient);
+
                 for (int i = history.Count - 1; i >= 0; i--)
                 {
-                    if (history[i] == Screens.Card)
+                    if (history[i] != Screens.PatientEditor)
                     {
-                        OpenScreen(Screens.Card);
-                        return;
-                    }
-                    if (history[i] == Screens.Patients)
-                    {
-                        OpenScreen(Screens.Patients);
+                        OpenScreen(history[i], pat);
                         return;
                     }
                 }
@@ -79,8 +72,7 @@ namespace Diagnosis.ViewModels
             this.Subscribe(Events.OpenHealthRecord, (e) =>
             {
                 var hr = e.GetValue<HealthRecord>(MessageKeys.HealthRecord);
-                OpenScreen(Screens.Card);
-                CardViewModel.viewer.OpenHr(hr);
+                OpenScreen(Screens.Card, hr);
             });
 
             this.Subscribe(Events.EditHealthRecord, (e) =>
@@ -88,8 +80,7 @@ namespace Diagnosis.ViewModels
                 // открываем экран карточки, открываем запись, загружаем в редактор запись и показываем редактор
                 var hr = e.GetValue<HealthRecord>(MessageKeys.HealthRecord);
 
-                OpenScreen(Screens.Card);
-                CardViewModel.viewer.OpenHr(hr);
+                OpenScreen(Screens.Card, hr);
                 (CurrentView as CardViewModel).EditHr();
             });
 
@@ -133,7 +124,7 @@ namespace Diagnosis.ViewModels
         /// </summary>
         /// <param name="screen"></param>
         /// <param name="replace">Открывать ли экран заново, если совпадает с текущим экраном.</param>
-        public void OpenScreen(Screens screen, bool replace = false, object parameter = null)
+        public void OpenScreen(Screens screen, object parameter = null, bool replace = false)
         {
             var updateCurView = replace || Screen != screen; // не обновляем, если экран тот же и не надо заменять
 
@@ -159,7 +150,11 @@ namespace Diagnosis.ViewModels
                         break;
 
                     case Screens.Card:
-                        CurrentView = new CardViewModel();
+                        if (parameter is Patient)
+                            CurrentView = new CardViewModel(parameter as Patient);
+                        else if (parameter is HealthRecord)
+                            CurrentView = new CardViewModel(parameter as HealthRecord);
+
                         break;
 
                     case Screens.PatientEditor:
@@ -175,9 +170,13 @@ namespace Diagnosis.ViewModels
                         break;
                 }
             }
-            if (screen != Screens.Card)
+            else
             {
-                CardViewModel.viewer.ClosePatient();
+                if (screen == Screens.Card)
+                    if (parameter is Patient)
+                        (CurrentView as CardViewModel).OpenPatient(parameter as Patient);
+                    else if (parameter is HealthRecord)
+                        (CurrentView as CardViewModel).OpenHr(parameter as HealthRecord);
             }
         }
 

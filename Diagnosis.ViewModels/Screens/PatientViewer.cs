@@ -168,6 +168,9 @@ namespace Diagnosis.ViewModels
 
         public void ClosePatient()
         {
+            OpenedHealthRecord = null;
+            OpenedAppointment = null;
+            OpenedCourse = null;
             OpenedPatient = null;
         }
 
@@ -251,7 +254,7 @@ namespace Diagnosis.ViewModels
             Debug.Print("closing patient {0}", _openedPatient);
             closing.CoursesChanged -= Courses_CollectionChanged;
 
-           // Session.SaveOrUpdate(closing);
+            // Session.SaveOrUpdate(closing);
 
 
             OpenedCourse = null;
@@ -397,7 +400,7 @@ namespace Diagnosis.ViewModels
             //    }
             //}
             //closing.Editable.IsEditorActive = false;
-           // Session.SaveOrUpdate(closing);
+            // Session.SaveOrUpdate(closing);
 
             Debug.Print("closed hr {0}", closing);
         }
