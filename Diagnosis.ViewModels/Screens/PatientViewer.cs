@@ -37,22 +37,6 @@ namespace Diagnosis.ViewModels
 
         public ISession Session { get; set; }
 
-        public bool FastAddingMode
-        {
-            get
-            {
-                return _fastAddingMode;
-            }
-            set
-            {
-                if (_fastAddingMode != value)
-                {
-                    _fastAddingMode = value;
-                    OnPropertyChanged(() => FastAddingMode);
-                }
-            }
-        }
-
         public Patient OpenedPatient
         {
             get
@@ -242,10 +226,6 @@ namespace Diagnosis.ViewModels
                 OpenedCourse = course;
             }
 
-            if (FastAddingMode && patient.Id != 0)
-            {
-                OpenLastAppointment(patient);
-            }
             Debug.Print("opened patient {0}", patient);
         }
 

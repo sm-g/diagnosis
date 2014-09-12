@@ -23,21 +23,7 @@ namespace Diagnosis.ViewModels
                 OnPropertyChanged(() => CurrentDoctor);
             };
         }
-        public bool FastAddingMode
-        {
-            get
-            {
-                return CardViewModel.viewer.FastAddingMode;
-            }
-            set
-            {
-                if (CardViewModel.viewer.FastAddingMode != value)
-                {
-                    CardViewModel.viewer.FastAddingMode = value;
-                    OnPropertyChanged(() => FastAddingMode);
-                }
-            }
-        }
+
         public RelayCommand LogoutCommand
         {
             get
