@@ -2,6 +2,9 @@
 using Diagnosis.Models;
 using EventAggregator;
 using NHibernate;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 namespace Diagnosis.ViewModels
 {
@@ -15,16 +18,12 @@ namespace Diagnosis.ViewModels
         private HealthRecordViewModel _hr;
         private HrEditorViewModel _hrEditor;
 
-        public CardViewModel(Patient patient)
+        public CardViewModel(object entity)
             : this()
         {
-            viewer.OpenPatient(patient);
+            Open(entity);
         }
-        public CardViewModel(HealthRecord hr)
-            : this()
-        {
-            viewer.OpenHr(hr);
-        }
+
         CardViewModel()
         {
             HealthRecordEditor = new HrEditorViewModel(Session);
@@ -110,17 +109,21 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public void OpenHr(HealthRecord hr)
-        {
-            viewer.OpenHr(hr);
-        }
-        public void OpenPatient(Patient pat)
-        {
-            viewer.OpenPatient(pat);
-        }
         public void EditHr()
         {
             HealthRecordEditor.HealthRecord = HealthRecord;
+        }
+
+        internal void Open(object parameter)
+        {
+            Contract.Requires(parameter != null);
+            var @switch = new Dictionary<Type, Action> {
+                { typeof(Patient), () => viewer.OpenPatient(parameter as Patient) },
+                { typeof(Course), () => viewer.OpenCourse(parameter as Course) },
+                { typeof(HealthRecord),() => viewer.OpenHr(parameter as HealthRecord) },
+            };
+
+            @switch[parameter.GetType()]();
         }
 
         protected override void Dispose(bool disposing)

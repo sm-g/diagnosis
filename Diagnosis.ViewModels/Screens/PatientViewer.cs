@@ -197,7 +197,11 @@ namespace Diagnosis.ViewModels
                 OpenedAppointment = lastApp;
             }
         }
-
+        internal void OpenCourse(Course course)
+        {
+            OpenedPatient = course.Patient;
+            OpenedCourse = course;
+        }
         internal void OpenHr(HealthRecord hr)
         {
             OpenedPatient = hr.Appointment.Course.Patient;

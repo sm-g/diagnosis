@@ -32,18 +32,16 @@ namespace Diagnosis.ViewModels
             this.Subscribe(Events.OpenPatient, (e) =>
             {
                 // открываем экран карточки и пациента
-
                 var pat = e.GetValue<Patient>(MessageKeys.Patient);
 
                 OpenScreen(Screens.Card, pat);
             });
 
-            this.Subscribe(Events.FirstHr, (e) =>
+            this.Subscribe(Events.OpenCourse, (e) =>
             {
-                // открываем экран карточки и пациента
-                var pat = e.GetValue<Patient>(MessageKeys.Patient);
-                OpenScreen(Screens.Card, pat);
-                //
+                // открываем экран карточки и курс
+                var course = e.GetValue<Course>(MessageKeys.Course);
+                OpenScreen(Screens.Card, course);
             });
 
             this.Subscribe(Events.EditPatient, (e) =>
@@ -77,7 +75,7 @@ namespace Diagnosis.ViewModels
 
             this.Subscribe(Events.EditHealthRecord, (e) =>
             {
-                // открываем экран карточки, открываем запись, загружаем в редактор запись и показываем редактор
+                // открываем экран карточки, открываем запись и показываем редактор
                 var hr = e.GetValue<HealthRecord>(MessageKeys.HealthRecord);
 
                 OpenScreen(Screens.Card, hr);
@@ -150,11 +148,10 @@ namespace Diagnosis.ViewModels
                         break;
 
                     case Screens.Card:
-                        if (parameter is Patient)
-                            CurrentView = new CardViewModel(parameter as Patient);
-                        else if (parameter is HealthRecord)
-                            CurrentView = new CardViewModel(parameter as HealthRecord);
-
+                        if (parameter != null)
+                            CurrentView = new CardViewModel(parameter);
+                        else
+                            throw new ArgumentNullException("parameter"); // что открывать в карте?
                         break;
 
                     case Screens.PatientEditor:
@@ -173,10 +170,7 @@ namespace Diagnosis.ViewModels
             else
             {
                 if (screen == Screens.Card)
-                    if (parameter is Patient)
-                        (CurrentView as CardViewModel).OpenPatient(parameter as Patient);
-                    else if (parameter is HealthRecord)
-                        (CurrentView as CardViewModel).OpenHr(parameter as HealthRecord);
+                    (CurrentView as CardViewModel).Open(parameter);
             }
         }
 

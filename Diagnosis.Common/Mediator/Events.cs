@@ -28,7 +28,7 @@ namespace Diagnosis.Core
         // for ScreenSwitcher
         public const int AddPatient = 7;
         public const int OpenPatient = 16;
-        public const int FirstHr = 9;
+        public const int OpenCourse = 9;
         public const int EditPatient = 19;
         public const int LeavePatientEditor = 10;
         public const int OpenHealthRecord = 14;

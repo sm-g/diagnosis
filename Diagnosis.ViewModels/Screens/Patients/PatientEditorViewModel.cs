@@ -81,7 +81,8 @@ namespace Diagnosis.ViewModels
                     Session.SaveOrUpdate(patient);
                     shouldCommit = true;
 
-                    this.Send(Events.FirstHr, patient.AsParams(MessageKeys.Patient));
+                    var course = AuthorityController.CurrentDoctor.StartCourse(patient);
+                    this.Send(Events.OpenCourse, course.AsParams(MessageKeys.Course));
                 }, () => canFirstHr);
             }
         }
