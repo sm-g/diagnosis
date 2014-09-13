@@ -28,8 +28,8 @@ namespace Diagnosis.ViewModels
                 // Set large fields to null.
                 disposed = true;
 #if DEBUG
-                string msg = string.Format("    Finalized {0} ({1}) ({2}) ", this.GetType().Name, this.ToString(), this.GetHashCode());
-                System.Diagnostics.Debug.Print(msg);
+                string msg = string.Format("    Disposed {0} ({1}) ({2}) ", this.GetType().Name, this.ToString(), this.GetHashCode());
+                Debug.Print(msg);
 #endif
             }
         }
@@ -37,6 +37,10 @@ namespace Diagnosis.ViewModels
         ~ViewModelBase()
         {
             Dispose(false);
+#if DEBUG
+            string msg = string.Format("!!! Finalized {0} ({1}) ({2}) ", this.GetType().Name, this.ToString(), this.GetHashCode());
+            Debug.Print(msg);
+#endif
         }
 
         #endregion IDisposable Members

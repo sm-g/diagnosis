@@ -83,7 +83,7 @@
     <CodeContractsBeingOptimisticOnExternal>True</CodeContractsBeingOptimisticOnExternal>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -586,7 +586,10 @@
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate.cfg.xml" "$(TargetDir)NHibernate\" /i /d /y
+    <PostBuildEvent>REM copy nhibernate config and sqlite.dll for inmemory db
+
+if $(ConfigurationName)==Debug (echo f | xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate-debug.cfg.xml" "$(TargetDir)NHibernate\nhibernate.cfg.xml" /d /y) else (echo f | xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate-release.cfg.xml" "$(TargetDir)NHibernate\nhibernate.cfg.xml" /d /y)
+
 xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)" /i /d /y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
