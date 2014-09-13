@@ -51,6 +51,9 @@ namespace Diagnosis.ViewModels
         public HealthRecordManager(Appointment app)
         {
             this.app = app;
+
+            HealthRecords.Count();
+
             app.HealthRecordsChanged += (s, e) =>
             {
                 if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)

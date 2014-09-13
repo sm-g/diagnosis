@@ -55,8 +55,6 @@ namespace Diagnosis.Models
             Patient = patient;
             LeadDoctor = doctor;
             Start = DateTime.Today;
-
-            AddAppointment(doctor);
         }
 
         protected Course() { }

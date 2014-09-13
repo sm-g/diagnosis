@@ -1,7 +1,4 @@
-﻿using Diagnosis.Core;
-using Diagnosis.Models;
-using EventAggregator;
-using NHibernate;
+﻿using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -10,7 +7,7 @@ namespace Diagnosis.ViewModels
 {
     public class CardViewModel : SessionVMBase
     {
-        static PatientViewer viewer = new PatientViewer(); // static to hold history
+        protected static PatientViewer viewer = new PatientViewer(); // static to hold history
 
         private PatientViewModel _patient;
         private CourseViewModel _course;
@@ -24,10 +21,9 @@ namespace Diagnosis.ViewModels
             Open(entity);
         }
 
-        CardViewModel()
+        private CardViewModel()
         {
             HealthRecordEditor = new HrEditorViewModel(Session);
-            viewer.Session = Session;
             viewer.PropertyChanged += viewer_PropertyChanged;
         }
 
@@ -62,6 +58,7 @@ namespace Diagnosis.ViewModels
                 }
             }
         }
+
         public AppointmentViewModel Appointment
         {
             get
@@ -77,6 +74,7 @@ namespace Diagnosis.ViewModels
                 }
             }
         }
+
         public HealthRecordViewModel HealthRecord
         {
             get
@@ -128,15 +126,24 @@ namespace Diagnosis.ViewModels
 
         protected override void Dispose(bool disposing)
         {
+            Contract.Requires(viewer.OpenedPatient != null);
+
             viewer.PropertyChanged -= viewer_PropertyChanged;
+            Session.SaveOrUpdate(viewer.OpenedPatient);  // отписались — сохраняем пациента здесь
+
             viewer.ClosePatient();
+
             base.Dispose(disposing);
         }
 
-        void viewer_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void viewer_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
+                // при открытии модели меняем соответстующую viewmodel и подписываемся 
+                // на изменение выбранной вложенной сущности, чтобы открыть её модель
+
+                // при закрытии курса, осмотра или записи сохраняем пациента (если закрывается пациент, сохранение при разрушении CardViewModel)
                 case "OpenedPatient":
                     if (viewer.OpenedPatient != null)
                     {
@@ -154,6 +161,7 @@ namespace Diagnosis.ViewModels
                         Patient = null;
                     }
                     break;
+
                 case "OpenedCourse":
                     if (viewer.OpenedCourse != null)
                     {
@@ -170,8 +178,10 @@ namespace Diagnosis.ViewModels
                     else
                     {
                         Course = null;
+                        Session.SaveOrUpdate(viewer.OpenedPatient);
                     }
                     break;
+
                 case "OpenedAppointment":
                     if (viewer.OpenedAppointment != null)
                     {
@@ -188,20 +198,34 @@ namespace Diagnosis.ViewModels
                     else
                     {
                         Appointment = null;
+                        // закрываем редактор записей при смене осмотра
+                        HealthRecordEditor.HealthRecord = null;
+
+                        Session.SaveOrUpdate(viewer.OpenedPatient);
                     }
                     break;
+
                 case "OpenedHealthRecord":
                     if (viewer.OpenedHealthRecord != null)
                     {
                         HealthRecord = new HealthRecordViewModel(viewer.OpenedHealthRecord);
 
                         Appointment.SelectHealthRecord(viewer.OpenedHealthRecord);
+
+                        if (viewer.OpenedHealthRecord.Appointment == viewer.OpenedAppointment)
+                        {
+                            HealthRecordEditor.HealthRecord = HealthRecord;
+                        }
                     }
                     else
                     {
                         HealthRecord = null;
+                        HealthRecordEditor.HealthRecord = null;
+
+                        Session.SaveOrUpdate(viewer.OpenedPatient);
                     }
                     break;
+
                 default:
                     break;
             }

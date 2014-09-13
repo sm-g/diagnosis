@@ -50,6 +50,9 @@ namespace Diagnosis.ViewModels
         public AppointmentsManager(Course course)
         {
             this.course = course;
+
+            Appointments.Count();
+
             course.AppointmentsChanged += (s, e) => // отписаться
             {
                 if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
@@ -60,7 +63,7 @@ namespace Diagnosis.ViewModels
                         var appVM = new ShortAppointmentViewModel(item, item.Doctor == course.LeadDoctor);
                         var wrapper = new SpecialCaseItem(appVM);
 
-                        // if (Appointments.Count == 1) TODO start course bug
+                        // TODO start course from card bug
                         Appointments.Insert(Appointments.Count - 1, wrapper);
                     }
 

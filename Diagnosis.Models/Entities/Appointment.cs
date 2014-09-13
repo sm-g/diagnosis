@@ -35,8 +35,6 @@ namespace Diagnosis.Models
             Course = course;
             Doctor = doctor;
             DateAndTime = DateTime.UtcNow;
-
-            AddHealthRecord();
         }
 
         public virtual HealthRecord AddHealthRecord()
