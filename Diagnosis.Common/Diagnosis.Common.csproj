@@ -89,6 +89,7 @@
     <Compile Include="DateOffset.cs" />
     <Compile Include="Extensions\ConvertExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Types\DisposableBase.cs" />
     <Compile Include="Types\INCCReadOnlyObservableCollection.cs" />
     <Compile Include="Interfaces\IAutoComplete.cs" />
     <Compile Include="Mediator\Events.cs" />

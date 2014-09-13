@@ -1,17 +1,13 @@
 ﻿using Diagnosis.Data;
 using NHibernate;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Diagnosis.ViewModels
 {
     public class SessionVMBase : ViewModelBase
     {
-        ISession session;
-        private bool _disposed;
+        private ISession session;
         private IStatelessSession statelessSession;
+
         protected IStatelessSession StatelessSession
         {
             get
@@ -21,6 +17,7 @@ namespace Diagnosis.ViewModels
                 return statelessSession;
             }
         }
+
         protected ISession Session
         {
             get
@@ -30,23 +27,21 @@ namespace Diagnosis.ViewModels
                 return session;
             }
         }
+
         public SessionVMBase()
         {
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (!_disposed)
+            if (disposing)
             {
-                if (disposing)
-                {
-                    //if (Session != null)
-                    //    Session.Dispose();
-                    //if (statelessSession != null)
-                    //    statelessSession.Dispose();
-                }
-                _disposed = true;
+                //if (Session != null)
+                //    Session.Dispose();
+                //if (statelessSession != null)
+                //    statelessSession.Dispose();
             }
+
             base.Dispose(disposing);
         }
     }

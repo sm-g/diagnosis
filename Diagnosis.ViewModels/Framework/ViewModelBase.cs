@@ -1,51 +1,44 @@
-﻿using System;
+﻿using Diagnosis.Core;
+using System;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq.Expressions;
 
 namespace Diagnosis.ViewModels
 {
-    public abstract class ViewModelBase : Diagnosis.Core.NotifyPropertyChangedBase, IDisposable
+    public abstract class ViewModelBase : DisposableBase, INotifyPropertyChanged
     {
+        #region  INotifyPropertyChanged Members
 
-        #region IDisposable
+        public virtual event PropertyChangedEventHandler PropertyChanged;
 
-        private bool disposed = false;
-
-        public void Dispose()
+        [DebuggerStepThrough]
+        protected void OnPropertyChanged(params string[] propertyNames)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposed)
+            foreach (string name in propertyNames)
             {
-                if (disposing)
+                PropertyChangedEventHandler handler = this.PropertyChanged;
+                if (handler != null)
                 {
-                    // Free other state (managed objects).
+                    handler(this, new PropertyChangedEventArgs(name));
                 }
-                // Free your own state (unmanaged objects).
-                // Set large fields to null.
-                disposed = true;
-#if DEBUG
-                string msg = string.Format("    Disposed {0} ({1}) ({2}) ", this.GetType().Name, this.ToString(), this.GetHashCode());
-                Debug.Print(msg);
-#endif
             }
         }
 
-        ~ViewModelBase()
+        [DebuggerStepThrough]
+        protected void OnPropertyChanged<T>(Expression<Func<T>> propertyExpression)
         {
-            Dispose(false);
-#if DEBUG
-            string msg = string.Format("!!! Finalized {0} ({1}) ({2}) ", this.GetType().Name, this.ToString(), this.GetHashCode());
-            Debug.Print(msg);
-#endif
+            var memberExpr = propertyExpression.Body as MemberExpression;
+            if (memberExpr == null)
+            {
+                throw new ArgumentException("The expression is not a member access expression.", "propertyExpression");
+            }
+            string memberName = memberExpr.Member.Name;
+            OnPropertyChanged(memberName);
         }
-
-        #endregion IDisposable Members
+        #endregion
     }
-    
+
     public class VmBaseEventArgs : EventArgs
     {
         public readonly ViewModelBase vm;
