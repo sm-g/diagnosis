@@ -20,7 +20,7 @@ namespace Diagnosis.App
 
             System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Error;
 
-            new DebugOutput();
+            new DebugOutput(0);
 
 #if DEBUG
             new DebugWindow().Show();

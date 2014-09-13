@@ -27,7 +27,7 @@ namespace Diagnosis.ViewModels
                 {
                     _selected = value;
                     OnPropertyChanged("IsSelected");
-                    Debug.Print("is selected = {0}", value);
+                    // Debug.Print("selected = {0}, {1}", value, this);
                     OnSelectedChanged();
                 }
             }
@@ -64,7 +64,7 @@ namespace Diagnosis.ViewModels
                 {
                     _isChecked = value;
                     OnPropertyChanged("IsChecked");
-                    Debug.Print("is checked = {0}", value);
+                    //  Debug.Print("checked = {0}, {1}", value, this);
                     OnCheckedChanged();
                 }
             }

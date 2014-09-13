@@ -338,7 +338,7 @@ GO
 -- Dumping data for table 'Doctor'
 --
 
-INSERT INTO [Doctor] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [SpecialityID], [Settings]) VALUES (2, 'Смирнов', NULL, 'Василий', -1, 1, 3);
+INSERT INTO [Doctor] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [SpecialityID], [Settings]) VALUES (2, 'Смирнов', NULL, 'Василий', -1, 1, 1);
 INSERT INTO [Doctor] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [SpecialityID], [Settings]) VALUES (3, 'Вахрушев', 'Константинович', 'Александр', -1, 1, 1);
 -- 2 records
 

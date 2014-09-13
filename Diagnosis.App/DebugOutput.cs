@@ -11,13 +11,16 @@ namespace Diagnosis.App
 {
     public class DebugOutput
     {
-        public DebugOutput()
+        public DebugOutput(int printMemoryUsageIn)
         {
-            var debugThread = new Thread(PrintMemoryUsage) { IsBackground = true };
-            //  debugThread.Start();           
+            if (printMemoryUsageIn > 0)
+            {
+                var debugThread = new Thread(PrintMemoryUsage) { IsBackground = true };
+                debugThread.Start(printMemoryUsageIn);
+            }
         }
 
-        public static int GetSubscriberCount(EditableEventHandler eventHandler)
+        public static int GetSubscriberCount(EventHandler eventHandler)
         {
             var count = 0;
             if (eventHandler != null)
@@ -28,12 +31,12 @@ namespace Diagnosis.App
             return count;
         }
 
-        public void PrintMemoryUsage()
+        public void PrintMemoryUsage(object pause)
         {
             while (true)
             {
-                Debug.Print("total memory {0}", GC.GetTotalMemory(true));
-                Thread.Sleep(5000);
+                Debug.Print("total memory = {0}", GC.GetTotalMemory(true));
+                Thread.Sleep((int)pause);
             }
         }
     }

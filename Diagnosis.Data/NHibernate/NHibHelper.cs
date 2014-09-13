@@ -1,5 +1,6 @@
 ﻿#if DEBUG
-//#define MEMORY
+#define MEMORY
+//#define LOG
 #endif
 
 using Diagnosis.Data.Mappings;
@@ -105,12 +106,14 @@ namespace Diagnosis.Data
 #else
             InMemoryHelper.Configure(cfg);
 #endif
+#if LOG
             var preListener = new PreEventListener();
-            var postListener = new PostEventListener();
             cfg.AppendListeners(ListenerType.PreUpdate, new IPreUpdateEventListener[] { preListener });
             cfg.AppendListeners(ListenerType.PreInsert, new IPreInsertEventListener[] { preListener });
             cfg.AppendListeners(ListenerType.PreDelete, new IPreDeleteEventListener[] { preListener });
             cfg.AppendListeners(ListenerType.PreLoad, new IPreLoadEventListener[] { preListener });
+#endif
+            var postListener = new PostEventListener();
             cfg.AppendListeners(ListenerType.PostUpdate, new IPostUpdateEventListener[] { postListener });
             cfg.AppendListeners(ListenerType.PostInsert, new IPostInsertEventListener[] { postListener });
             cfg.AppendListeners(ListenerType.PostDelete, new IPostDeleteEventListener[] { postListener });

@@ -10,13 +10,13 @@
              x:Name="editor"
              Padding="0,10,0,0"
              mc:Ignorable="d"
-             d:DesignHeight="150" d:DesignWidth="600">
+             d:DesignHeight="200" d:DesignWidth="600">
     <!--DataContext is HrEditorViewModel-->
     <UserControl.Resources>
         <Style TargetType="Label" BasedOn="{StaticResource label90}" />
     </UserControl.Resources>
 
-    <!--DataContext is editing HealthRecord-->
+    <!--DataContext is editing HealthRecordViewModel -->
     <Grid x:Name="hr_grid" DataContext="{Binding HealthRecord}" MouseDown="hr_grid_MouseDown" Focusable="True" Background="Transparent">
         <Grid.InputBindings>
             <KeyBinding Modifiers="Control" Key="S" Command="{Binding Editable.CommitCommand}" />
