@@ -98,6 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthorityController.cs" />
+    <Compile Include="Screens\Card\ShortHealthRecordViewModel.cs" />
     <Compile Include="Screens\Card\ShortAppointmentViewModel.cs" />
     <Compile Include="Screens\Card\ShortCourseViewModel.cs" />
     <Compile Include="Screens\Card\PatientViewModel.cs" />
@@ -180,7 +181,6 @@
     <None Include="packages.config" />
     <None Include="Screens\Card\Card.cd" />
     <None Include="Search\SearchClassDiagram.cd" />
-    <None Include="VMClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

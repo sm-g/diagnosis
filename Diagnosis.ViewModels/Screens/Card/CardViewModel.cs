@@ -215,8 +215,6 @@ namespace Diagnosis.ViewModels
             }
             else if (e.entity is HealthRecord)
             {
-                var hr = (e.entity as HealthRecord);
-
                 switch (e.action)
                 {
                     case PatientViewer.OpeningAction.Open:

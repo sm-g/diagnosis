@@ -1,16 +1,15 @@
 ﻿using Diagnosis.Core;
 using Diagnosis.Models;
+using System;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
-using EventAggregator;
 
 namespace Diagnosis.ViewModels
 {
-    public class HealthRecordViewModel : ViewModelBase
+    public class ShortHealthRecordViewModel : CheckableBase
     {
         internal readonly HealthRecord healthRecord;
-        EventMessageHandler handler;
 
         public string Name
         {
@@ -24,6 +23,33 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        #region CheckableBase
+
+        private bool checkedBySelection;
+
+        protected override void OnSelectedChanged()
+        {
+            base.OnSelectedChanged();
+
+            // check hr when select it and uncheck when selection goes away
+            // except hr was checked by checkbox before
+            if (!IsChecked || checkedBySelection)
+            {
+                checkedBySelection = IsSelected;
+                IsChecked = IsSelected;
+            }
+        }
+
+        protected override void OnCheckedChanged()
+        {
+            base.OnCheckedChanged();
+
+            // убираем выделение при снятии флажка
+            IsSelected = IsChecked;
+        }
+
+        #endregion CheckableBase
+
         #region Model
 
         private DiagnosisViewModel _diagnosis;
@@ -33,13 +59,6 @@ namespace Diagnosis.ViewModels
             get
             {
                 return healthRecord.Comment;
-            }
-            set
-            {
-                if (healthRecord.Comment != value)
-                {
-                    healthRecord.Comment = value;
-                }
             }
         }
 
@@ -84,13 +103,6 @@ namespace Diagnosis.ViewModels
             {
                 return healthRecord.Category;
             }
-            set
-            {
-                if (healthRecord.Category != value)
-                {
-                    healthRecord.Category = value;
-                }
-            }
         }
 
         public decimal? NumValue
@@ -98,13 +110,6 @@ namespace Diagnosis.ViewModels
             get
             {
                 return healthRecord.NumValue;
-            }
-            set
-            {
-                if (healthRecord.NumValue != value)
-                {
-                    healthRecord.NumValue = value;
-                }
             }
         }
 
@@ -114,14 +119,6 @@ namespace Diagnosis.ViewModels
             {
                 return healthRecord.FromYear;
             }
-            set
-            {
-                if (healthRecord.FromYear != value)
-                {
-                    healthRecord.FromYear = value;
-                    DateOffset.Year = value;
-                }
-            }
         }
 
         public int? FromMonth
@@ -130,14 +127,6 @@ namespace Diagnosis.ViewModels
             {
                 return healthRecord.FromMonth;
             }
-            set
-            {
-                if (healthRecord.FromMonth != value)
-                {
-                    healthRecord.FromMonth = value.ConvertTo<int, byte>();
-                    DateOffset.Month = value;
-                }
-            }
         }
 
         public int? FromDay
@@ -145,14 +134,6 @@ namespace Diagnosis.ViewModels
             get
             {
                 return healthRecord.FromDay;
-            }
-            set
-            {
-                if (healthRecord.FromDay != value)
-                {
-                    healthRecord.FromDay = value.ConvertTo<int, byte>();
-                    DateOffset.Day = value;
-                }
             }
         }
 
@@ -165,6 +146,17 @@ namespace Diagnosis.ViewModels
         }
 
         #endregion Model
+
+        public DateTime SortingDate
+        {
+            get
+            {
+                int year = FromYear ?? 1;
+                int month = FromMonth ?? 1;
+                int day = FromDay ?? 1;
+                return new DateTime(year, month, day);
+            }
+        }
 
         public bool ShowDiagnosis
         {
@@ -196,7 +188,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public HealthRecordViewModel(HealthRecord hr)
+        public ShortHealthRecordViewModel(HealthRecord hr)
         {
             Contract.Requires(hr != null);
             this.healthRecord = hr;
@@ -205,7 +197,7 @@ namespace Diagnosis.ViewModels
 
             SetDiagnosis();
 
-            handler = this.Subscribe(Events.SettingsSaved, (e) =>
+            this.Subscribe(Events.SettingsSaved, (e) =>
             {
                 OnPropertyChanged("ShowDiagnosis");
             });
@@ -222,12 +214,21 @@ namespace Diagnosis.ViewModels
 
             switch (e.PropertyName)
             {
+                case "FromDay":
+                case "FromMonth":
+                case "FromYear":
+                    OnPropertyChanged("SortingDate");
+                    break;
+
                 case "Symptom":
                     OnPropertyChanged("Name");
                     break;
 
                 case "Disease":
                     SetDiagnosis();
+                    break;
+
+                default:
                     break;
             }
         }
@@ -242,7 +243,6 @@ namespace Diagnosis.ViewModels
             if (disposing)
             {
                 healthRecord.PropertyChanged -= healthRecord_PropertyChanged;
-                handler.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -18,6 +18,7 @@ namespace Diagnosis.Models
         private Symptom _symptom;
         private Category _category;
         private IcdDisease _disease;
+        private DateOffset _dateOffset;
 
         public virtual Appointment Appointment { get; protected set; }
 
@@ -95,13 +96,10 @@ namespace Diagnosis.Models
             {
                 if (_day == value)
                     return;
-                if (value == null)
-                {
-                    _day = value;
-                }
-                if (value >= 0 && value <= 31)
+                if (value == null || (value >= 0 && value <= 31))
                 {
                     _day = value > 0 ? value : null;
+                    DateOffset.Day = value;
                 }
                 CheckDate();
                 OnPropertyChanged("FromDay");
@@ -118,13 +116,10 @@ namespace Diagnosis.Models
             {
                 if (_month == value)
                     return;
-                if (value == null)
-                {
-                    _month = value;
-                }
-                if (value >= 0 && value <= 12)
+                if (value == null || (value >= 0 && value <= 12))
                 {
                     _month = value > 0 ? value : null;
+                    DateOffset.Month = value;
                 }
                 CheckDate();
                 OnPropertyChanged("FromMonth");
@@ -141,18 +136,47 @@ namespace Diagnosis.Models
             {
                 if (_year == value)
                     return;
-                if (value == null)
+                if (value == null || (value <= DateTime.Today.Year))
                 {
                     _year = value;
+                    DateOffset.Year = value;
                 }
-                if (value <= DateTime.Today.Year)
-                {
-                    _year = value;
-                }
+
                 CheckDate();
                 OnPropertyChanged("FromYear");
             }
         }
+
+        public virtual DateOffset DateOffset
+        {
+            get
+            {
+                if (_dateOffset == null)
+                {
+                    _dateOffset = new DateOffset(FromYear, FromMonth, FromDay, () => Appointment.DateAndTime);
+                    _dateOffset.PropertyChanged += (s, e) =>
+                    {
+                        switch (e.PropertyName)
+                        {
+                            case "Year":
+                                FromYear = _dateOffset.Year;
+                                break;
+
+                            case "Month":
+                                FromMonth = (byte)_dateOffset.Month;
+                                break;
+
+                            case "Day":
+                                FromDay = (byte)_dateOffset.Day;
+                                break;
+                        }
+                        OnPropertyChanged("DateOffset");
+                    };
+                }
+                return _dateOffset;
+            }
+        }
+
         public virtual IEnumerable<PatientRecordProperty> RecordProperties
         {
             get

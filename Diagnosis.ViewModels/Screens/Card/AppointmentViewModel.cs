@@ -34,7 +34,7 @@ namespace Diagnosis.ViewModels
             get { return appointment.DateAndTime; }
         }
 
-        public ObservableCollection<HealthRecordViewModel> HealthRecords
+        public ObservableCollection<ShortHealthRecordViewModel> HealthRecords
         {
             get
             {
@@ -54,8 +54,8 @@ namespace Diagnosis.ViewModels
 
         #endregion Model
 
-        public HealthRecordViewModel _selectedHealthRecord;
-        public HealthRecordViewModel SelectedHealthRecord
+        public ShortHealthRecordViewModel _selectedHealthRecord;
+        public ShortHealthRecordViewModel SelectedHealthRecord
         {
             get
             {
@@ -63,7 +63,6 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                System.Diagnostics.Debug.Print("Selected {0}", value);
                 _selectedHealthRecord = value;
                 OnPropertyChanged(() => SelectedHealthRecord);
             }

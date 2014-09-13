@@ -13,24 +13,24 @@ namespace Diagnosis.ViewModels
     public class HealthRecordManager
     {
         private readonly Appointment app;
-        private ObservableCollection<HealthRecordViewModel> _healthRecords;
+        private ObservableCollection<ShortHealthRecordViewModel> _healthRecords;
 
         public event EventHandler HealthRecordsLoaded;
 
         public event PropertyChangedEventHandler HrVmPropertyChanged;
 
-        public ObservableCollection<HealthRecordViewModel> HealthRecords
+        public ObservableCollection<ShortHealthRecordViewModel> HealthRecords
         {
             get
             {
                 if (_healthRecords == null)
                 {
-                    IList<HealthRecordViewModel> hrVMs;
+                    IList<ShortHealthRecordViewModel> hrVMs;
                     using (var tester = new PerformanceTester((ts) => Debug.Print("making healthrecords for {0}: {1}", app, ts)))
                     {
                         hrVMs = app.HealthRecords.Select(hr => CreateViewModel(hr)).ToList();
                     }
-                    _healthRecords = new ObservableCollection<HealthRecordViewModel>(hrVMs);
+                    _healthRecords = new ObservableCollection<ShortHealthRecordViewModel>(hrVMs);
 
                     OnHealthRecordsLoaded();
                 }
@@ -38,15 +38,15 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        private HealthRecordViewModel CreateViewModel(HealthRecord hr)
+        private ShortHealthRecordViewModel CreateViewModel(HealthRecord hr)
         {
-            hr.PropertyChanged += hr_PropertyChanged;
-            var vm = new HealthRecordViewModel(hr);
+            //   hr.PropertyChanged += hr_PropertyChanged;
+            var vm = new ShortHealthRecordViewModel(hr);
             vm.PropertyChanged += (s, e) => { OnHrVmPropertyChanged(e); };
             return vm;
         }
 
-        public ObservableCollection<HealthRecordViewModel> DeletedHealthRecords { get; private set; }
+        public ObservableCollection<ShortHealthRecordViewModel> DeletedHealthRecords { get; private set; }
 
         public HealthRecordManager(Appointment app)
         {
@@ -74,7 +74,7 @@ namespace Diagnosis.ViewModels
                 }
             };
 
-            DeletedHealthRecords = new ObservableCollection<HealthRecordViewModel>();
+            DeletedHealthRecords = new ObservableCollection<ShortHealthRecordViewModel>();
         }
 
         public void DeleteCheckedHealthRecords()
