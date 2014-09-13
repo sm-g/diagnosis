@@ -1,6 +1,5 @@
 ﻿using Diagnosis.Core;
 using Diagnosis.Models;
-using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -12,8 +11,15 @@ namespace Diagnosis.ViewModels
 {
     /// <summary>
     /// Обрабатывает действия при открытии и закрытии пациента, курса, осмотра, записи.
+    ///
     /// Если пациент, курс, осмотр открыты повторно, открывает последний открытый курс, осмотр, запись соответственно.
+    ///
     /// Если в открываемых первый раз курсе нет осмотров или в осмотре нет записей, добавляет их.
+    ///
+    /// При присвоении OpenedEntity сначала закрывается текущая открытая,
+    /// затем меняется свойство OpenedEntity, потом открывается новая сущность.
+    ///
+    /// Перед открытием и после закрытия вызывается OpenedChanged.
     /// </summary>
     public class PatientViewer : NotifyPropertyChangedBase
     {
@@ -35,6 +41,8 @@ namespace Diagnosis.ViewModels
             appHrMap = new Dictionary<Appointment, HealthRecord>();
         }
 
+        public event EventHandler<OpeningEventArgs> OpenedChanged;
+
         public Patient OpenedPatient
         {
             get
@@ -47,7 +55,7 @@ namespace Diagnosis.ViewModels
                 {
                     if (_openedPatient != null)
                     {
-                        OnPatientClosed(_openedPatient, value);
+                        OnPatientClosed(_openedPatient);
                     }
                     _openedPatient = value;
 
@@ -66,7 +74,7 @@ namespace Diagnosis.ViewModels
             {
                 return _openedCourse;
             }
-            set
+            internal set
             {
                 if (_openedCourse != value)
                 {
@@ -92,7 +100,7 @@ namespace Diagnosis.ViewModels
             {
                 return _openedApp;
             }
-            set
+            internal set
             {
                 if (_openedApp != value)
                 {
@@ -118,7 +126,7 @@ namespace Diagnosis.ViewModels
             {
                 return _openedHr;
             }
-            set
+            internal set
             {
                 if (_openedHr != value)
                 {
@@ -207,7 +215,8 @@ namespace Diagnosis.ViewModels
 
         private void OnPatientOpened(Patient patient)
         {
-            Debug.Print("opening patient {0}", patient);
+            var e = new OpeningEventArgs(patient, OpeningAction.Open);
+            OnOpenedChanged(e);
 
             patient.CoursesChanged += Courses_CollectionChanged;
 
@@ -222,23 +231,22 @@ namespace Diagnosis.ViewModels
                 // пацинет открыт повторно
                 OpenedCourse = course;
             }
-
-            Debug.Print("opened patient {0}", patient);
         }
 
-        private void OnPatientClosed(Patient closing, Patient opening)
+        private void OnPatientClosed(Patient patient)
         {
-            Debug.Print("closing patient {0}", closing);
-
-            closing.CoursesChanged -= Courses_CollectionChanged;
+            patient.CoursesChanged -= Courses_CollectionChanged;
             OpenedCourse = null;
 
-            Debug.Print("closed patient {0}", closing);
+            var e = new OpeningEventArgs(patient, OpeningAction.Close);
+            OnOpenedChanged(e);
         }
 
         private void OnCourseOpened(Course course)
         {
-            Debug.Print("opening course {0}", course);
+            Contract.Requires(OpenedPatient == course.Patient);
+            var e = new OpeningEventArgs(course, OpeningAction.Open);
+            OnOpenedChanged(e);
 
             course.AppointmentsChanged += Appointments_CollectionChanged;
 
@@ -265,23 +273,22 @@ namespace Diagnosis.ViewModels
             {
                 OpenedAppointment = app;
             }
-            Debug.Print("opened course {0}", course);
         }
 
         private void OnCourseClosed(Course course)
         {
-            Debug.Print("closing course {0}", course);
-
             course.AppointmentsChanged -= Appointments_CollectionChanged;
             OpenedAppointment = null;
 
-            Debug.Print("closed course {0}", course);
+            var e = new OpeningEventArgs(course, OpeningAction.Close);
+            OnOpenedChanged(e);
         }
 
         private void OnAppointmentOpened(Appointment app)
         {
             Contract.Requires(OpenedCourse == app.Course);
-            Debug.Print("opening app  {0}", app);
+            var e = new OpeningEventArgs(app, OpeningAction.Open);
+            OnOpenedChanged(e);
 
             app.HealthRecordsChanged += HealthRecords_CollectionChanged;
 
@@ -315,22 +322,22 @@ namespace Diagnosis.ViewModels
                 // повторно — выбрана последняя открытая запись
                 OpenedHealthRecord = hrVm;
             }
-            Debug.Print("opened app  {0}", app);
         }
 
         private void OnAppointmentClosed(Appointment app)
         {
-            Debug.Print("closing app {0}", app);
-
             app.HealthRecordsChanged -= HealthRecords_CollectionChanged;
-
             OpenedHealthRecord = null;
-            Debug.Print("closed app {0}", app);
+
+            var e = new OpeningEventArgs(app, OpeningAction.Close);
+            OnOpenedChanged(e);
         }
 
         private void OnHrOpened(HealthRecord hr)
         {
-            Debug.Print("opening hr {0}", hr);
+            Contract.Requires(OpenedAppointment == hr.Appointment);
+            var e = new OpeningEventArgs(hr, OpeningAction.Open);
+            OnOpenedChanged(e);
 
             if (!appHrMap.ContainsKey(OpenedAppointment))
             {
@@ -341,15 +348,12 @@ namespace Diagnosis.ViewModels
             {
                 appHrMap[OpenedAppointment] = hr;
             }
-
-            Debug.Print("opened hr {0}", hr);
         }
 
         private void OnHrClosed(HealthRecord closing, HealthRecord opening)
         {
-            Debug.Print("closing hr {0}", closing);
-
-            Debug.Print("closed hr {0}", closing);
+            var e = new OpeningEventArgs(closing, OpeningAction.Close);
+            OnOpenedChanged(e);
         }
 
         private void Courses_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -399,6 +403,34 @@ namespace Diagnosis.ViewModels
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
             }
+        }
+
+        protected virtual void OnOpenedChanged(OpeningEventArgs e)
+        {
+            var h = OpenedChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
+
+        [Serializable]
+        public class OpeningEventArgs : EventArgs
+        {
+            public readonly OpeningAction action;
+            public readonly object entity;
+
+            [DebuggerStepThrough]
+            public OpeningEventArgs(object entity, OpeningAction action)
+            {
+                this.action = action;
+                this.entity = entity;
+            }
+        }
+
+        public enum OpeningAction
+        {
+            Open, Close
         }
     }
 }

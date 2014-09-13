@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
 namespace Diagnosis.ViewModels
@@ -14,6 +15,7 @@ namespace Diagnosis.ViewModels
         private AppointmentViewModel _appointment;
         private HealthRecordViewModel _hr;
         private HrEditorViewModel _hrEditor;
+        private bool editorWasOpened;
 
         public CardViewModel(object entity)
             : this()
@@ -24,7 +26,7 @@ namespace Diagnosis.ViewModels
         private CardViewModel()
         {
             HealthRecordEditor = new HrEditorViewModel(Session);
-            viewer.PropertyChanged += viewer_PropertyChanged;
+            viewer.OpenedChanged += viewer_OpenedChanged;
         }
 
         public PatientViewModel Patient
@@ -128,7 +130,7 @@ namespace Diagnosis.ViewModels
         {
             Contract.Requires(viewer.OpenedPatient != null);
 
-            viewer.PropertyChanged -= viewer_PropertyChanged;
+            viewer.OpenedChanged -= viewer_OpenedChanged;
             Session.SaveOrUpdate(viewer.OpenedPatient);  // отписались — сохраняем пациента здесь
 
             viewer.ClosePatient();
@@ -136,17 +138,22 @@ namespace Diagnosis.ViewModels
             base.Dispose(disposing);
         }
 
-        private void viewer_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        /// <summary>
+        /// при открытии модели меняем соответстующую viewmodel и подписываемся
+        /// на изменение выбранной вложенной сущности, чтобы открыть её модель
+        /// 
+        /// при закрытии разрушаем viewmodel
+        /// при закрытии курса, осмотра или записи сохраняем пациента (если закрывается пациент, сохранение при разрушении CardViewModel)
+        /// </summary>
+        private void viewer_OpenedChanged(object sender, PatientViewer.OpeningEventArgs e)
         {
-            switch (e.PropertyName)
-            {
-                // при открытии модели меняем соответстующую viewmodel и подписываемся 
-                // на изменение выбранной вложенной сущности, чтобы открыть её модель
+            Debug.Print("{0} {1} {2}", e.action, e.entity.GetType().Name, e.entity);
 
-                // при закрытии курса, осмотра или записи сохраняем пациента (если закрывается пациент, сохранение при разрушении CardViewModel)
-                case "OpenedPatient":
-                    if (viewer.OpenedPatient != null)
-                    {
+            if (e.entity is Patient)
+            {
+                switch (e.action)
+                {
+                    case PatientViewer.OpeningAction.Open:
                         Patient = new PatientViewModel(viewer.OpenedPatient);
                         Patient.PropertyChanged += (s1, e1) =>
                         {
@@ -155,16 +162,18 @@ namespace Diagnosis.ViewModels
                                 viewer.OpenedCourse = Patient.SelectedCourse.course;
                             }
                         };
-                    }
-                    else
-                    {
-                        Patient = null;
-                    }
-                    break;
+                        break;
 
-                case "OpenedCourse":
-                    if (viewer.OpenedCourse != null)
-                    {
+                    case PatientViewer.OpeningAction.Close:
+                        Patient.Dispose();
+                        break;
+                }
+            }
+            else if (e.entity is Course)
+            {
+                switch (e.action)
+                {
+                    case PatientViewer.OpeningAction.Open:
                         Course = new CourseViewModel(viewer.OpenedCourse);
                         Course.PropertyChanged += (s1, e1) =>
                         {
@@ -174,17 +183,18 @@ namespace Diagnosis.ViewModels
                             }
                         };
                         Patient.SelectCourse(viewer.OpenedCourse);
-                    }
-                    else
-                    {
-                        Course = null;
-                        Session.SaveOrUpdate(viewer.OpenedPatient);
-                    }
-                    break;
+                        break;
 
-                case "OpenedAppointment":
-                    if (viewer.OpenedAppointment != null)
-                    {
+                    case PatientViewer.OpeningAction.Close:
+                        Course.Dispose();
+                        break;
+                }
+            }
+            else if (e.entity is Appointment)
+            {
+                switch (e.action)
+                {
+                    case PatientViewer.OpeningAction.Open:
                         Appointment = new AppointmentViewModel(viewer.OpenedAppointment);
                         Appointment.PropertyChanged += (s1, e1) =>
                         {
@@ -194,40 +204,43 @@ namespace Diagnosis.ViewModels
                             }
                         };
                         Course.SelectAppointment(viewer.OpenedAppointment);
-                    }
-                    else
-                    {
-                        Appointment = null;
-                        // закрываем редактор записей при смене осмотра
-                        HealthRecordEditor.HealthRecord = null;
+                        break;
 
-                        Session.SaveOrUpdate(viewer.OpenedPatient);
-                    }
-                    break;
+                    case PatientViewer.OpeningAction.Close:
+                        Appointment.Dispose();
+                        // редактор записей после смены осмотра всегда закрыт
+                        editorWasOpened = false;
+                        break;
+                }
+            }
+            else if (e.entity is HealthRecord)
+            {
+                var hr = (e.entity as HealthRecord);
 
-                case "OpenedHealthRecord":
-                    if (viewer.OpenedHealthRecord != null)
-                    {
+                switch (e.action)
+                {
+                    case PatientViewer.OpeningAction.Open:
+
                         HealthRecord = new HealthRecordViewModel(viewer.OpenedHealthRecord);
-
                         Appointment.SelectHealthRecord(viewer.OpenedHealthRecord);
 
-                        if (viewer.OpenedHealthRecord.Appointment == viewer.OpenedAppointment)
+                        if (editorWasOpened)
                         {
                             HealthRecordEditor.HealthRecord = HealthRecord;
                         }
-                    }
-                    else
-                    {
-                        HealthRecord = null;
+                        break;
+
+                    case PatientViewer.OpeningAction.Close:
+                        editorWasOpened = HealthRecordEditor.IsActive;
                         HealthRecordEditor.HealthRecord = null;
+                        HealthRecord.Dispose();
+                        break;
+                }
+            }
 
-                        Session.SaveOrUpdate(viewer.OpenedPatient);
-                    }
-                    break;
-
-                default:
-                    break;
+            if (e.action == PatientViewer.OpeningAction.Close && !(e.entity is Patient))
+            {
+                Session.SaveOrUpdate(viewer.OpenedPatient);
             }
         }
     }
