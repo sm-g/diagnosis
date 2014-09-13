@@ -12,7 +12,6 @@ namespace Diagnosis.ViewModels
         private readonly Patient patient;
         private PatientViewModel _vm;
         private bool shouldCommit;
-        private bool canFirstHr;
 
         public PatientViewModel Patient
         {
@@ -72,7 +71,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public RelayCommand FirstHrCommand
+        public RelayCommand StartCourseCommand
         {
             get
             {
@@ -83,7 +82,7 @@ namespace Diagnosis.ViewModels
 
                     var course = AuthorityController.CurrentDoctor.StartCourse(patient);
                     this.Send(Events.OpenCourse, course.AsParams(MessageKeys.Course));
-                }, () => canFirstHr);
+                });
             }
         }
 
@@ -102,9 +101,6 @@ namespace Diagnosis.ViewModels
         public PatientEditorViewModel(Patient patient)
         {
             this.patient = patient;
-            patient.CoursesChanged += patient_CoursesChanged;
-
-            canFirstHr = patient.Courses.Count() == 0;
 
             Patient = new PatientViewModel(patient);
 
@@ -117,11 +113,6 @@ namespace Diagnosis.ViewModels
         public PatientEditorViewModel()
             : this(new Patient())
         {
-        }
-
-        private void patient_CoursesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            canFirstHr = patient.Courses.Count() == 0;
         }
 
         private bool CanSave()
@@ -142,7 +133,6 @@ namespace Diagnosis.ViewModels
             }
             Session.Transaction.Dispose();
             Patient.Dispose();
-            patient.CoursesChanged -= patient_CoursesChanged;
 
             base.Dispose(disposing);
         }

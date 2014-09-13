@@ -1,4 +1,6 @@
-﻿using Diagnosis.Models;
+﻿using EventAggregator;
+using Diagnosis.Core;
+using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -58,6 +60,17 @@ namespace Diagnosis.ViewModels
             get
             {
                 return LeadDoctor == AuthorityController.CurrentDoctor;
+            }
+        }
+
+        public RelayCommand OpenCourseCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    this.Send(Events.OpenCourse, course.AsParams(MessageKeys.Course));
+                });
             }
         }
 

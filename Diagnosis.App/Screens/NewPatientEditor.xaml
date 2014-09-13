@@ -4,22 +4,27 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
-
+             xmlns:controls="clr-namespace:Diagnosis.App.Controls"
+             xmlns:card="clr-namespace:Diagnosis.App.Controls.CardParts"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="500">
     <!--PatientEditorViewModel-->
     <UserControl.Resources>
-        <Style TargetType="DockPanel" BasedOn="{StaticResource formLine}" />
-        <Style TargetType="Label" BasedOn="{StaticResource label120}" />
+        <InputBindingCollection x:Shared="False" x:Key="CourseInputBindings">
+            <KeyBinding Key="Space" Command="{Binding OpenCourseCommand}" />
+            <KeyBinding Key="Enter" Command="{Binding OpenCourseCommand}" />
+            <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding OpenCourseCommand}" />
+        </InputBindingCollection>
+        
         <Style TargetType="Button">
-            <Setter Property="Width" Value="70" />
+            <Setter Property="MaxWidth" Value="100" />
             <Setter Property="Height" Value="23" />
             <Setter Property="Margin" Value="5" />
         </Style>
     </UserControl.Resources>
-    <Grid>
+    <Grid Margin="10">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="180" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -27,10 +32,40 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <Button Name="firstHrButton" Command="{Binding FirstHrCommand}">_Начать запись</Button>
+        <Grid Margin="0,0,10,0">
+            <StackPanel VerticalAlignment="Center" Visibility="{Binding Patient.NoCourses, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,0,10">
+                <TextBlock Text="У пациента нет курсов"
+                            HorizontalAlignment="Center"
+                            Visibility="{Binding Patient.NoCourses, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <Button VerticalAlignment="Center" Command="{Binding StartCourseCommand}">_Начать запись</Button>
+            </StackPanel>
+
+            <StackPanel VerticalAlignment="Top" Visibility="{Binding Patient.NoCourses, Converter={StaticResource NegBooleanToVisibilityConverter}}" Margin="0,0,0,10">
+                <TextBlock Text="Курсы" Margin="0,0,10,5" />
+                <ListView ItemsSource="{Binding Patient.Courses}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <card:Course />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="controls:Attached.InputBindings" Value="{StaticResource CourseInputBindings}" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+                <Button Command="{Binding StartCourseCommand}"
+                        VerticalAlignment="Center"
+                        Content="Начать курс" />
+            </StackPanel>
+        </Grid>
 
         <StackPanel Grid.Column="1" DataContext="{Binding Patient}">
-        <!-- PatientViewModel -->
+            <StackPanel.Resources>
+                <Style TargetType="DockPanel" BasedOn="{StaticResource formLine}" />
+                <Style TargetType="Label" BasedOn="{StaticResource label120}" />
+            </StackPanel.Resources>
+            <!-- PatientViewModel -->
             <DockPanel>
                 <Label Content="Метка" />
                 <TextBox Text="{Binding Label}" />
