@@ -189,18 +189,12 @@ namespace Diagnosis.ViewModels
         {
             Contract.Requires(p != null);
             this.patient = p;
-
-            coursesManager = new CoursesManager(patient);
-            coursesManager.CoursesLoaded += (s, e) =>
-            {
-                Courses.CollectionChanged += (s1, e1) =>
-                {
-                    OnPropertyChanged("NoCourses");
-                };
-            };
-
             patient.PropertyChanged += patient_PropertyChanged;
-            /// TODO patientproperties changes
+
+            coursesManager = new CoursesManager(patient, onCoursesChanged: (s, e) =>
+            {
+                OnPropertyChanged("NoCourses");
+            });
 
             LoadProperties();
         }
@@ -232,11 +226,16 @@ namespace Diagnosis.ViewModels
 
             var existingPatProps = patient.PatientProperties;
 
-            var properties = new List<PropertyViewModel>(allProperties.Select(p => MakePropertyVM(p)));
+            var propVms = new List<PropertyViewModel>(allProperties.Select(p =>
+            {
+                var vm = new PropertyViewModel(p);
+                vm.PropertyChanged += propVm_PropertyChanged;
+                return vm;
+            }));
 
             // указываем значение свойства из БД
             // если у пацента не указано какое-то свойство — добавляем это свойство с пустым значением
-            foreach (var propVM in properties)
+            foreach (var propVM in propVms)
             {
                 var pp = existingPatProps.FirstOrDefault(patProp => patProp.Property == propVM.property);
                 if (pp != null)
@@ -249,23 +248,19 @@ namespace Diagnosis.ViewModels
                 }
             }
 
-            Properties = new ObservableCollection<PropertyViewModel>(properties);
+            Properties = new ObservableCollection<PropertyViewModel>(propVms);
         }
 
-        private PropertyViewModel MakePropertyVM(Property p)
+        void propVm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            var vm = new PropertyViewModel(p);
-            vm.PropertyChanged += (s, e) =>
+            if (e.PropertyName == "SelectedValue")
             {
-                if (e.PropertyName == "SelectedValue")
+                var propVM = sender as PropertyViewModel;
+                if (!(propVM.SelectedValue is EmptyPropertyValue))
                 {
-                    if (!(vm.SelectedValue is EmptyPropertyValue))
-                    {
-                        patient.SetPropertyValue(vm.property, vm.SelectedValue);
-                    }
+                    patient.SetPropertyValue(propVM.property, propVM.SelectedValue);
                 }
-            };
-            return vm;
+            }
         }
 
         public override string ToString()
@@ -275,8 +270,14 @@ namespace Diagnosis.ViewModels
 
         protected override void Dispose(bool disposing)
         {
-            patient.PropertyChanged -= patient_PropertyChanged;
-
+            if (disposing)
+            {
+                patient.PropertyChanged -= patient_PropertyChanged;
+                foreach (var item in Properties)
+                {
+                    item.PropertyChanged -= propVm_PropertyChanged;
+                }
+            }
             base.Dispose(disposing);
         }
     }

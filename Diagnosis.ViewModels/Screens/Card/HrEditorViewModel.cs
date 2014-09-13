@@ -19,6 +19,7 @@ namespace Diagnosis.ViewModels
         private HealthRecordViewModel _hr;
         private ISession session;
         private IEnumerable<Category> _categories;
+        private EventMessageHandler handler;
 
         #region HealthRecord
 
@@ -223,9 +224,14 @@ namespace Diagnosis.ViewModels
         public HrEditorViewModel(ISession session)
         {
             this.session = session;
-            Subscribe();
 
-            // после смены доктора редактор записей будет создан заново
+            handler = this.Subscribe(Events.SettingsSaved, (e) =>
+             {
+                 OnPropertyChanged(() => ShowIcdDiseaseSearch);
+                 // после смены настроек доктора может понадобиться поиск по диагнозам
+                 CreateDiagnosisSearch();
+             });
+
             if (ShowIcdDiseaseSearch)
                 CreateDiagnosisSearch();
         }
@@ -245,17 +251,25 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        private void Subscribe()
-        {
-            this.Subscribe(Events.SettingsSaved, (e) =>
-            {
-                OnPropertyChanged("ShowIcdDisease");
-            });
-        }
-
         public override string ToString()
         {
             return string.Format("editor {0}", HealthRecord);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing)
+                {
+                    handler.Dispose();
+                }
+
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
         }
     }
 }

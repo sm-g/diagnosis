@@ -1,18 +1,14 @@
 ﻿using Diagnosis.Core;
-using Diagnosis.Data;
 using Diagnosis.Models;
-using NHibernate;
 using System;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Diagnostics;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
-    public class AppointmentsManager
+    public class AppointmentsManager : DisposableBase
     {
         private readonly Course course;
         private ObservableCollection<SpecialCaseItem> _appointments;
@@ -26,13 +22,11 @@ namespace Diagnosis.ViewModels
                 if (_appointments == null)
                 {
                     IList<SpecialCaseItem> wrappers;
-                    using (var tester = new PerformanceTester((ts) => Debug.Print("making apps for {0}: {1}", course, ts)))
-                    {
-                        wrappers = course.Appointments
-                            .Select(app => new ShortAppointmentViewModel(app, app.Doctor == course.LeadDoctor))
-                            .Select(vm => new SpecialCaseItem(vm))
-                            .ToList();
-                    }
+
+                    wrappers = course.Appointments
+                        .Select(app => new ShortAppointmentViewModel(app, app.Doctor == course.LeadDoctor))
+                        .Select(vm => new SpecialCaseItem(vm))
+                        .ToList();
 
                     _appointments = new ObservableCollection<SpecialCaseItem>(wrappers);
                     if (!course.End.HasValue)
@@ -53,30 +47,30 @@ namespace Diagnosis.ViewModels
 
             Appointments.Count();
 
-            course.AppointmentsChanged += (s, e) => // отписаться
+            course.AppointmentsChanged += course_AppointmentsChanged;
+        }
+
+        private void course_AppointmentsChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
-                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+                foreach (Appointment item in e.NewItems)
                 {
+                    var appVM = new ShortAppointmentViewModel(item, item.Doctor == course.LeadDoctor);
+                    var wrapper = new SpecialCaseItem(appVM);
 
-                    foreach (Appointment item in e.NewItems)
-                    {
-                        var appVM = new ShortAppointmentViewModel(item, item.Doctor == course.LeadDoctor);
-                        var wrapper = new SpecialCaseItem(appVM);
-
-                        // TODO start course from card bug
-                        Appointments.Insert(Appointments.Count - 1, wrapper);
-                    }
-
+                    // TODO start course from card bug
+                    Appointments.Insert(Appointments.Count - 1, wrapper);
                 }
-                else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+            }
+            else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+            {
+                foreach (Appointment item in e.OldItems)
                 {
-                    foreach (Appointment item in e.OldItems)
-                    {
-                        var appVM = Appointments.Where(w => w.To<ShortAppointmentViewModel>().appointment == item).FirstOrDefault();
-                        Appointments.Remove(appVM);
-                    }
+                    var appVM = Appointments.Where(w => w.To<ShortAppointmentViewModel>().appointment == item).FirstOrDefault();
+                    Appointments.Remove(appVM);
                 }
-            };
+            }
         }
 
         protected virtual void OnAppointmentsLoaded()
@@ -104,6 +98,19 @@ namespace Diagnosis.ViewModels
             //}
         }
 
-
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing)
+                {
+                    course.AppointmentsChanged -= course_AppointmentsChanged;
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
+        }
     }
 }

@@ -53,6 +53,7 @@ namespace Diagnosis.ViewModels
         #region Model
 
         private DiagnosisViewModel _diagnosis;
+        private EventAggregator.EventMessageHandler handler;
 
         public string Comment
         {
@@ -197,7 +198,7 @@ namespace Diagnosis.ViewModels
 
             SetDiagnosis();
 
-            this.Subscribe(Events.SettingsSaved, (e) =>
+            handler = this.Subscribe(Events.SettingsSaved, (e) =>
             {
                 OnPropertyChanged("ShowDiagnosis");
             });
@@ -243,6 +244,7 @@ namespace Diagnosis.ViewModels
             if (disposing)
             {
                 healthRecord.PropertyChanged -= healthRecord_PropertyChanged;
+                handler.Dispose();
             }
             base.Dispose(disposing);
         }

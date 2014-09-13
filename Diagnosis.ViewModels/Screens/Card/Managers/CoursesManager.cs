@@ -1,21 +1,20 @@
 ﻿using Diagnosis.Core;
-using Diagnosis.Data;
 using Diagnosis.Models;
-using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using System.Collections.Specialized;
 using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
-    public class CoursesManager
+    public class CoursesManager : DisposableBase
     {
         private readonly Patient patient;
         private ObservableCollection<ShortCourseViewModel> _courses;
 
         public event EventHandler CoursesLoaded;
+        private NotifyCollectionChangedEventHandler onCoursesChanged;
 
         /// <summary>
         /// Курсы пацента, отсортированы по дате по убыванию (нулевой — самый поздний курс).
@@ -27,13 +26,11 @@ namespace Diagnosis.ViewModels
                 if (_courses == null)
                 {
                     IList<ShortCourseViewModel> courseVMs;
-                    using (var tester = new PerformanceTester((ts) => Debug.Print("making courses for {0}: {1}", patient, ts)))
-                    {
-                        courseVMs = patient.Courses
-                           .OrderByDescending(c => c, new CompareCourseByDate())
-                           .Select(i => new ShortCourseViewModel(i))
-                           .ToList();
-                    }
+                    courseVMs = patient.Courses
+                       .OrderByDescending(c => c, new CompareCourseByDate())
+                       .Select(i => new ShortCourseViewModel(i))
+                       .ToList();
+
                     _courses = new ObservableCollection<ShortCourseViewModel>(courseVMs);
                     OnCoursesLoaded();
                 }
@@ -41,31 +38,35 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public CoursesManager(Patient patient)
+        public CoursesManager(Patient patient, NotifyCollectionChangedEventHandler onCoursesChanged)
         {
             this.patient = patient;
+            this.onCoursesChanged = onCoursesChanged;
 
             Courses.Count();
 
-            patient.CoursesChanged += (s, e) =>
+            patient.CoursesChanged += patient_CoursesChanged;
+            patient.CoursesChanged += onCoursesChanged;
+        }
+
+        private void patient_CoursesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
-                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+                foreach (Course item in e.NewItems)
                 {
-                    foreach (Course item in e.NewItems)
-                    {
-                        var courseVM = new ShortCourseViewModel(item);
-                        Courses.Insert(0, courseVM);
-                    }
+                    var courseVM = new ShortCourseViewModel(item);
+                    Courses.Insert(0, courseVM);
                 }
-                else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+            }
+            else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+            {
+                foreach (Course item in e.OldItems)
                 {
-                    foreach (Course item in e.OldItems)
-                    {
-                        var courseVM = Courses.Where(vm => vm.course == item).FirstOrDefault();
-                        Courses.Remove(courseVM);
-                    }
+                    var courseVM = Courses.Where(vm => vm.course == item).FirstOrDefault();
+                    Courses.Remove(courseVM);
                 }
-            };
+            }
         }
 
         protected virtual void OnCoursesLoaded()
@@ -77,5 +78,20 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing)
+                {
+                    patient.CoursesChanged -= patient_CoursesChanged;
+                    patient.CoursesChanged -= onCoursesChanged;
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
+        }
     }
 }

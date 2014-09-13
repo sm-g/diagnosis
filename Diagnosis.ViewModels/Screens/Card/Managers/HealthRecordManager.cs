@@ -1,80 +1,50 @@
-﻿using Diagnosis.Data.Repositories;
+﻿using Diagnosis.Core;
 using Diagnosis.Models;
 using System;
 using System.Collections.ObjectModel;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using Diagnosis.Core;
 
 namespace Diagnosis.ViewModels
 {
-    public class HealthRecordManager
+    public class HealthRecordManager : DisposableBase
     {
         private readonly Appointment app;
-        private ObservableCollection<ShortHealthRecordViewModel> _healthRecords;
+        private readonly PropertyChangedEventHandler onHrVmPropChanged;
 
-        public event EventHandler HealthRecordsLoaded;
-
-        public event PropertyChangedEventHandler HrVmPropertyChanged;
-
-        public ObservableCollection<ShortHealthRecordViewModel> HealthRecords
+        public HealthRecordManager(Appointment app, PropertyChangedEventHandler onHrVmPropChanged)
         {
-            get
-            {
-                if (_healthRecords == null)
-                {
-                    IList<ShortHealthRecordViewModel> hrVMs;
-                    using (var tester = new PerformanceTester((ts) => Debug.Print("making healthrecords for {0}: {1}", app, ts)))
-                    {
-                        hrVMs = app.HealthRecords.Select(hr => CreateViewModel(hr)).ToList();
-                    }
-                    _healthRecords = new ObservableCollection<ShortHealthRecordViewModel>(hrVMs);
+            this.app = app;
+            this.onHrVmPropChanged = onHrVmPropChanged;
+            app.HealthRecordsChanged += app_HealthRecordsChanged;
 
-                    OnHealthRecordsLoaded();
-                }
-                return _healthRecords;
-            }
+            var hrVMs = app.HealthRecords.Select(hr => CreateViewModel(hr));
+            HealthRecords = new ObservableCollection<ShortHealthRecordViewModel>(hrVMs);
+            DeletedHealthRecords = new ObservableCollection<ShortHealthRecordViewModel>();
         }
 
-        private ShortHealthRecordViewModel CreateViewModel(HealthRecord hr)
-        {
-            //   hr.PropertyChanged += hr_PropertyChanged;
-            var vm = new ShortHealthRecordViewModel(hr);
-            vm.PropertyChanged += (s, e) => { OnHrVmPropertyChanged(e); };
-            return vm;
-        }
+        public ObservableCollection<ShortHealthRecordViewModel> HealthRecords { get; private set; }
 
         public ObservableCollection<ShortHealthRecordViewModel> DeletedHealthRecords { get; private set; }
 
-        public HealthRecordManager(Appointment app)
+        private void app_HealthRecordsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.app = app;
-
-            HealthRecords.Count();
-
-            app.HealthRecordsChanged += (s, e) =>
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
-                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+                foreach (HealthRecord item in e.NewItems)
                 {
-                    foreach (HealthRecord item in e.NewItems)
-                    {
-                        var hrVM = CreateViewModel(item);
-                        HealthRecords.Add(hrVM);
-                    }
+                    var hrVM = CreateViewModel(item);
+                    HealthRecords.Add(hrVM);
                 }
-                else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+            }
+            else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+            {
+                foreach (HealthRecord item in e.OldItems)
                 {
-                    foreach (HealthRecord item in e.OldItems)
-                    {
-                        var hrVM = HealthRecords.Where(vm => vm.healthRecord == item).FirstOrDefault();
-                        HealthRecords.Remove(hrVM);
-                    }
+                    var hrVM = HealthRecords.Where(vm => vm.healthRecord == item).FirstOrDefault();
+                    HealthRecords.Remove(hrVM);
                 }
-            };
-
-            DeletedHealthRecords = new ObservableCollection<ShortHealthRecordViewModel>();
+            }
         }
 
         public void DeleteCheckedHealthRecords()
@@ -85,23 +55,12 @@ namespace Diagnosis.ViewModels
             });
         }
 
-
-        protected virtual void OnHealthRecordsLoaded()
+        private ShortHealthRecordViewModel CreateViewModel(HealthRecord hr)
         {
-            var h = HealthRecordsLoaded;
-            if (h != null)
-            {
-                h(this, EventArgs.Empty);
-            }
-        }
-
-        protected virtual void OnHrVmPropertyChanged(PropertyChangedEventArgs e)
-        {
-            var h = HrVmPropertyChanged;
-            if (h != null)
-            {
-                h(this, e);
-            }
+            //   hr.PropertyChanged += hr_PropertyChanged;
+            var vm = new ShortHealthRecordViewModel(hr);
+            vm.PropertyChanged += onHrVmPropChanged;
+            return vm;
         }
 
         private void hr_Deleted(object sender, EditableEventArgs e)
@@ -130,6 +89,31 @@ namespace Diagnosis.ViewModels
                     DeletedHealthRecords.Remove(vm);
                     HealthRecords.Add(vm);
                 }
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing)
+                {
+                    app.HealthRecordsChanged -= app_HealthRecordsChanged;
+                    foreach (var shortHrVm in HealthRecords)
+                    {
+                        shortHrVm.PropertyChanged -= onHrVmPropChanged;
+                        shortHrVm.Dispose();
+                    }
+                    foreach (var shortHrVm in DeletedHealthRecords)
+                    {
+                        shortHrVm.PropertyChanged -= onHrVmPropChanged;
+                        shortHrVm.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
             }
         }
     }

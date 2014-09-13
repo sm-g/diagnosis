@@ -128,14 +128,21 @@ namespace Diagnosis.ViewModels
 
         protected override void Dispose(bool disposing)
         {
-            Contract.Requires(viewer.OpenedPatient != null);
+            Contract.Assume(viewer.OpenedPatient != null);
+            try
+            {
+                if (disposing)
+                {
+                    viewer.ClosePatient(); // сохраняем пациента при закрытии
+                    viewer.OpenedChanged -= viewer_OpenedChanged;
 
-            viewer.OpenedChanged -= viewer_OpenedChanged;
-            Session.SaveOrUpdate(viewer.OpenedPatient);  // отписались — сохраняем пациента здесь
-
-            viewer.ClosePatient();
-
-            base.Dispose(disposing);
+                    HealthRecordEditor.Dispose();
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
         }
 
         /// <summary>
@@ -200,7 +207,7 @@ namespace Diagnosis.ViewModels
                         {
                             if (e1.PropertyName == "SelectedHealthRecord")
                             {
-                                viewer.OpenedHealthRecord = Appointment.SelectedHealthRecord.healthRecord;
+                                viewer.OpenedHealthRecord = Appointment.SelectedHealthRecord != null ? Appointment.SelectedHealthRecord.healthRecord : null;
                             }
                         };
                         Course.SelectAppointment(viewer.OpenedAppointment);
@@ -236,7 +243,7 @@ namespace Diagnosis.ViewModels
                 }
             }
 
-            if (e.action == PatientViewer.OpeningAction.Close && !(e.entity is Patient))
+            if (e.action == PatientViewer.OpeningAction.Close)
             {
                 Session.SaveOrUpdate(viewer.OpenedPatient);
             }

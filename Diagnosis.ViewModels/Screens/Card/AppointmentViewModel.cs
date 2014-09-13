@@ -155,8 +155,17 @@ namespace Diagnosis.ViewModels
 
             appointment.HealthRecordsChanged += HealthRecords_CollectionChanged;
 
-            hrManager = new HealthRecordManager(appointment);
-            hrManager.HrVmPropertyChanged += hrManager_HrVmPropertyChanged;
+            hrManager = new HealthRecordManager(appointment, onHrVmPropChanged: (s, e) =>
+            {
+                if (e.PropertyName == "Category")
+                {
+                    healthRecordsView.Refresh();
+                }
+                else if (e.PropertyName == "IsChecked")
+                {
+                    OnPropertyChanged("CheckedHealthRecords");
+                }
+            });
         }
 
         void HealthRecords_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -216,6 +225,24 @@ namespace Diagnosis.ViewModels
         {
             SelectedHealthRecord = HealthRecords.FirstOrDefault(x => x.healthRecord == healthRecord);
 
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing)
+                {
+                    appointment.HealthRecordsChanged -= HealthRecords_CollectionChanged;
+                    hrManager.Dispose();
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
+
+            }           
+         
         }
     }
 }
