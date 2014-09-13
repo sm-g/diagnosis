@@ -184,6 +184,20 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 Tags.Insert(Tags.Count - 1, tag);
         }
 
+        public void ReplaceTagsWith(IEnumerable<object> items)
+        {
+            // оставляем последний тег
+            while (Tags.Count != 1)
+            {
+                Tags.RemoveAt(Tags.Count - 2);
+            }
+
+            foreach (var item in items)
+            {
+                AddTag(item);
+            }
+        }
+
         /// <summary>
         /// Возвращает сущности из тегов.
         /// </summary>
@@ -302,7 +316,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            Contract.Invariant(Tags.Count > 0);
+            Contract.Invariant(Tags.Count > 0); // хотя бы один тег - поле ввода
         }
 
         private void RefreshPopup()

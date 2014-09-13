@@ -333,7 +333,7 @@ namespace Diagnosis.ViewModels
                 return AppDateGt == null && AppDateLt == null
                     && (HrDateOffsetLower.IsEmpty || HrDateOffsetUpper.IsEmpty)
                     && SelectedCategories.Count() == 0
-                    && Autocomplete.Tags.Count == 0
+                    && Autocomplete.Tags.Count == 1
                     && string.IsNullOrEmpty(Comment);
             }
         }
@@ -353,7 +353,7 @@ namespace Diagnosis.ViewModels
                 return new RelayCommand<Patient>(
                                           p =>
                                           {
-                                              this.Send(Events.OpenPatient, new PatientViewModel(p).AsParams(MessageKeys.Patient));
+                                              this.Send(Events.OpenPatient, p.AsParams(MessageKeys.Patient));
                                           });
             }
         }
@@ -450,11 +450,7 @@ namespace Diagnosis.ViewModels
                     hr.Symptom.Words.ForAll((w) => words.Add(w));
                     return words;
                 });
-            Autocomplete.Tags.Clear();
-            foreach (var item in allWords)
-            {
-                Autocomplete.AddTag(item);
-            }
+            Autocomplete.ReplaceTagsWith(allWords);
 
             // если несколько записей — любое из слов
             AnyWord = hrs.Count() != 1;
@@ -482,11 +478,7 @@ namespace Diagnosis.ViewModels
         private void RecieveWords(IEnumerable<Word> words)
         {
             // ищем переданные слова
-            Autocomplete.Tags.Clear();
-            foreach (var item in words)
-            {
-                Autocomplete.AddTag(item);
-            }
+            Autocomplete.ReplaceTagsWith(words);
 
             RemoveLastResults();
         }
