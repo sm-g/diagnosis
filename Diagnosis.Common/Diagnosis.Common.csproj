@@ -88,7 +88,7 @@
     <Compile Include="DateOffset.cs" />
     <Compile Include="Extensions\ConvertExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
-    <Compile Include="INCCReadOnlyObservableCollection.cs" />
+    <Compile Include="Types\INCCReadOnlyObservableCollection.cs" />
     <Compile Include="Interfaces\IAutoComplete.cs" />
     <Compile Include="Mediator\Events.cs" />
     <Compile Include="Util\Comparers.cs" />
@@ -97,7 +97,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuerySeparator.cs" />
     <Compile Include="SequencePartition.cs" />
-    <Compile Include="NotifyPropertyChangedBase.cs" />
+    <Compile Include="Types\NotifyPropertyChangedBase.cs" />
     <Compile Include="Mediator\EventMessageHandlersManager.cs" />
     <Compile Include="Util\PerformanceTester.cs" />
     <Compile Include="Util\ReflectionHelper.cs" />
