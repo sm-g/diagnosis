@@ -5,6 +5,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using Diagnosis.Data.Queries;
+using Diagnosis.Core;
 using NHibernate;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
@@ -21,6 +22,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         public bool AllowNonCheckable { get; set; }
         public bool CanMakeEntityFrom(string str)
         {
+            if (str.IsNullOrEmpty())
+                return false;
             return char.IsDigit(str[0])  // number
                 || AllowNewFromQuery; // new word
         }
