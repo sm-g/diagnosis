@@ -37,6 +37,21 @@ namespace Diagnosis.ViewModels
                 OpenScreen(Screens.Card, pat);
             });
 
+            this.Subscribe(Events.ShowPatient, (e) =>
+            {
+                // открываем карточку или редактор пациента
+                var pat = e.GetValue<Patient>(MessageKeys.Patient);
+
+                if (Screen == Screens.PatientEditor)
+                {
+                    OpenScreen(Screens.PatientEditor, pat, true);
+                }
+                else
+                {
+                    OpenScreen(Screens.Card, pat, true);
+                }
+            });
+
             this.Subscribe(Events.OpenCourse, (e) =>
             {
                 // открываем экран карточки и курс
