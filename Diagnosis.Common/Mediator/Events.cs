@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using EventAggregator;
+using System;
+using System.Collections.Generic;
 
 namespace Diagnosis.Core
 {
@@ -20,31 +22,40 @@ namespace Diagnosis.Core
         public const string Category = "category";
         public const string Boolean = "bool";
         public const string Settings = "settings";
-
     }
 
-    public class Events
+    public enum Events
     {
         // for ScreenSwitcher
-        public const int AddPatient = 7;
-        public const int OpenPatient = 16;
-        public const int OpenCourse = 9;
-        public const int EditPatient = 19;
-        public const int LeavePatientEditor = 10;
-        public const int OpenHealthRecord = 14;
-        public const int EditHealthRecord = 20;
+        AddPatient,
+        OpenPatient,
+        OpenCourse,
+        EditPatient,
+        ShowPatient,
+        LeavePatientEditor,
+        OpenHealthRecord,
+        EditHealthRecord,
 
-        public const int OpenSettings = 15;
-
-        public const int SettingsSaved = 17;
+        OpenSettings,
+        SettingsSaved,
 
         // for Search
-        public const int SendToSearch = 18;
 
+        SendToSearch,
     }
 
     public static class EventAggragatorExtensions
     {
+        public static EventMessageHandler Subscribe(this object obj, Events @event, Action<EventMessage> handler)
+        {
+            return obj.Subscribe((int)@event, handler);
+        }
+
+        public static EventMessage Send(this object obj, Events @event, params KeyValuePair<string, object>[] parameters)
+        {
+            return obj.Send((int)@event, parameters);
+        }
+
         public static KeyValuePair<string, object>[] AsParams(this object obj, string key)
         {
             return new[] { new KeyValuePair<string, object>(key, obj) };
