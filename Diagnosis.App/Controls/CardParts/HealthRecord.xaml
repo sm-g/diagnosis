@@ -23,7 +23,7 @@
     </UserControl.Resources>
     
     <!--DataContext is HealthRecordViewModel-->
-    <Grid Style="{StaticResource gridIsDirty}">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20" />
             <ColumnDefinition Width="*" />

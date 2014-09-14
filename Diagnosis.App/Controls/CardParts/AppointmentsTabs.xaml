@@ -17,7 +17,7 @@
         </InputBindingCollection>
 
         <DataTemplate x:Key="AppointmentHeaderTemplate">
-            <Grid Style="{StaticResource gridIsDirty}" DataContext="{Binding Content}">
+            <Grid DataContext="{Binding Content}">
                 <!-- ShortAppointmentVM -->
                 <DockPanel MinWidth="70">
                     <Button x:Name="deleteButton"
