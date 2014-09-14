@@ -146,10 +146,12 @@ namespace Diagnosis.ViewModels
         }
 
         /// <summary>
+        /// синхронизация:
         /// при открытии модели меняем соответстующую viewmodel и подписываемся
         /// на изменение выбранной вложенной сущности, чтобы открыть её модель
         /// 
         /// при закрытии разрушаем viewmodel
+        /// 
         /// при закрытии курса, осмотра или записи сохраняем пациента (если закрывается пациент, сохранение при разрушении CardViewModel)
         /// </summary>
         private void viewer_OpenedChanged(object sender, PatientViewer.OpeningEventArgs e)
@@ -166,7 +168,10 @@ namespace Diagnosis.ViewModels
                         {
                             if (e1.PropertyName == "SelectedCourse")
                             {
-                                viewer.OpenedCourse = Patient.SelectedCourse.course;
+                                if (Patient.SelectedCourse != null)
+                                    viewer.OpenedCourse = Patient.SelectedCourse.course;
+                                else
+                                    viewer.OpenedCourse = null;
                             }
                         };
                         break;
@@ -186,7 +191,10 @@ namespace Diagnosis.ViewModels
                         {
                             if (e1.PropertyName == "SelectedAppointment")
                             {
-                                viewer.OpenedAppointment = Course.SelectedAppointment.To<ShortAppointmentViewModel>().appointment;
+                                if (Course.SelectedAppointment != null)
+                                    viewer.OpenedAppointment = Course.SelectedAppointment.To<ShortAppointmentViewModel>().appointment;
+                                else
+                                    viewer.OpenedAppointment = null;
                             }
                         };
                         Patient.SelectCourse(viewer.OpenedCourse);
@@ -207,7 +215,10 @@ namespace Diagnosis.ViewModels
                         {
                             if (e1.PropertyName == "SelectedHealthRecord")
                             {
-                                viewer.OpenedHealthRecord = Appointment.SelectedHealthRecord != null ? Appointment.SelectedHealthRecord.healthRecord : null;
+                                if (Appointment.SelectedHealthRecord != null)
+                                    viewer.OpenedHealthRecord = Appointment.SelectedHealthRecord.healthRecord;
+                                else
+                                    viewer.OpenedHealthRecord = null;
                             }
                         };
                         Course.SelectAppointment(viewer.OpenedAppointment);
