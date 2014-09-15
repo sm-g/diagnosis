@@ -99,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthorityController.cs" />
+    <Compile Include="Extensions\EmptyChecker.cs" />
     <Compile Include="Screens\Card\ShortHealthRecordViewModel.cs" />
     <Compile Include="Screens\Card\ShortAppointmentViewModel.cs" />
     <Compile Include="Screens\Card\ShortCourseViewModel.cs" />

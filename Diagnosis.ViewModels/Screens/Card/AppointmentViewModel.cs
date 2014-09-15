@@ -13,14 +13,10 @@ namespace Diagnosis.ViewModels
 {
     public class AppointmentViewModel : ViewModelBase
     {
-        #region Fileds
-
         internal readonly Appointment appointment;
         private HealthRecordManager hrManager;
-
         private ICollectionView healthRecordsView;
-
-        #endregion Fileds
+        private ShortHealthRecordViewModel _selectedHealthRecord;
 
         #region Model
 
@@ -54,7 +50,6 @@ namespace Diagnosis.ViewModels
 
         #endregion Model
 
-        public ShortHealthRecordViewModel _selectedHealthRecord;
         public ShortHealthRecordViewModel SelectedHealthRecord
         {
             get
@@ -86,7 +81,7 @@ namespace Diagnosis.ViewModels
 
                     },
                     // нельзя добавлять новую запись, пока выбранная пуста
-                    () => SelectedHealthRecord == null //|| !SelectedHealthRecord.IsEmpty
+                    () => SelectedHealthRecord == null || !SelectedHealthRecord.healthRecord.IsEmpty()
                     );
             }
         }
@@ -189,18 +184,6 @@ namespace Diagnosis.ViewModels
 
         }
 
-        private void hrManager_HrVmPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "Category")
-            {
-                healthRecordsView.Refresh();
-            }
-            else if (e.PropertyName == "IsChecked")
-            {
-                OnPropertyChanged("CheckedHealthRecords");
-            }
-        }
-
         private void MoveHrViewSelection()
         {
             // удалена выделенная запись - меняем выделение
@@ -241,8 +224,8 @@ namespace Diagnosis.ViewModels
             {
                 base.Dispose(disposing);
 
-            }           
-         
+            }
+
         }
     }
 }
