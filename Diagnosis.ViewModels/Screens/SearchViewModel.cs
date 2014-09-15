@@ -501,17 +501,11 @@ namespace Diagnosis.ViewModels
 
         #region IDisposable
 
-        private bool disposed = false;
-
         protected override void Dispose(bool disposing)
         {
-            if (!disposed)
+            if (disposing)
             {
-                if (disposing)
-                {
-                    msgManager.Dispose();
-                }
-                disposed = true;
+                msgManager.Dispose();
             }
             base.Dispose(disposing);
         }
