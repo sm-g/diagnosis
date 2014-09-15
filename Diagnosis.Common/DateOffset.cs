@@ -393,20 +393,9 @@ namespace Diagnosis.Core
         {
             if (offset == null)
                 offset = 0;
-            if (offset % 10 == 0 || offset % 10 >= 5 || (offset >= 11 && offset <= 14))
-            {
-                return SelectUnitLabel(unit, 2);
-            }
-            if (offset % 10 == 1)
-            {
-                return SelectUnitLabel(unit, 0);
-            }
-            return SelectUnitLabel(unit, 1);
-        }
 
-        private static string SelectUnitLabel(DateUnits unit, int ending)
-        {
-            Contract.Requires(ending >= 0 && ending <= 2);
+            int ending = Plurals.GetPluralEnding(offset.Value);
+
             switch (unit)
             {
                 case DateUnits.Day: return days[ending];

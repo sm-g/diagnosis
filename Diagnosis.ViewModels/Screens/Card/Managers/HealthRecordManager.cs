@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Core;
 using Diagnosis.Models;
+using NHibernate;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -57,19 +58,10 @@ namespace Diagnosis.ViewModels
 
         private ShortHealthRecordViewModel CreateViewModel(HealthRecord hr)
         {
-            //   hr.PropertyChanged += hr_PropertyChanged;
+            hr.PropertyChanged += hr_PropertyChanged;
             var vm = new ShortHealthRecordViewModel(hr);
             vm.PropertyChanged += onHrVmPropChanged;
             return vm;
-        }
-
-        private void hr_Deleted(object sender, EditableEventArgs e)
-        {
-            var hr = e.entity as HealthRecord;
-            app.RemoveHealthRecord(hr);
-
-            var hrVM = HealthRecords.Where(vm => vm.healthRecord == hr).FirstOrDefault();
-            HealthRecords.Remove(hrVM);
         }
 
         private void hr_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -82,6 +74,11 @@ namespace Diagnosis.ViewModels
                     var vm = HealthRecords.Where(x => x.healthRecord == hr).First();
                     DeletedHealthRecords.Add(vm);
                     HealthRecords.Remove(vm);
+                    var undoActions = new Action[] {
+                        () => hr.IsDeleted = false,
+                        () => app.RemoveHealthRecord(hr)                        
+                    };
+                    this.Send(Events.ShowUndoOverlay, new object[] { undoActions, typeof(HealthRecord) }.AsParams(MessageKeys.UndoOverlay, MessageKeys.Type));
                 }
                 else
                 {
@@ -102,11 +99,13 @@ namespace Diagnosis.ViewModels
                     foreach (var shortHrVm in HealthRecords)
                     {
                         shortHrVm.PropertyChanged -= onHrVmPropChanged;
+                        shortHrVm.healthRecord.PropertyChanged -= hr_PropertyChanged;
                         shortHrVm.Dispose();
                     }
                     foreach (var shortHrVm in DeletedHealthRecords)
                     {
                         shortHrVm.PropertyChanged -= onHrVmPropChanged;
+                        shortHrVm.healthRecord.PropertyChanged -= hr_PropertyChanged;
                         shortHrVm.Dispose();
                     }
                 }

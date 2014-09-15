@@ -85,10 +85,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Combination.cs" />
-    <Compile Include="DateFormatter.cs" />
+    <Compile Include="Formatters\DateFormatter.cs" />
     <Compile Include="DateOffset.cs" />
     <Compile Include="Extensions\ConvertExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Formatters\Plurals.cs" />
     <Compile Include="Types\DisposableBase.cs" />
     <Compile Include="Types\INCCReadOnlyObservableCollection.cs" />
     <Compile Include="Interfaces\IAutoComplete.cs" />

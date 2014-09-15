@@ -32,6 +32,9 @@
             <DataTemplate DataType="{x:Type vm:PatientEditorViewModel}">
                 <screen:NewPatientEditor />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:UndoOverlayViewModel}">
+                <controls:UndoOverlay />
+            </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -61,5 +64,9 @@
 
         <ContentControl Content="{Binding CurrentView}"
                         Grid.Row="2" />
+
+        <ItemsControl DataContext="{Binding OverlayService}" ItemsSource="{Binding Overlays}" HorizontalAlignment="Right"
+                      Grid.Row="2">            
+        </ItemsControl>
     </Grid>
 </Window>

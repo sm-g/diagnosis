@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using EventAggregator;
+using Diagnosis.Core;
 
 namespace Diagnosis.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        private ViewModelBase _curScreen;
         private bool _menuVisible;
         private ScreenSwitcher switcher;
 
@@ -13,6 +15,7 @@ namespace Diagnosis.ViewModels
             switcher = new ScreenSwitcher();
             RightAside = new AsideViewModel();
             MenuBar = new MenuBarViewModel(switcher, RightAside.SearchPanel);
+            OverlayService = new OverlayServiceViewModel();
 
             switcher.PropertyChanged += (s, e) =>
             {
@@ -45,6 +48,8 @@ namespace Diagnosis.ViewModels
         public MenuBarViewModel MenuBar { get; private set; }
 
         public AsideViewModel RightAside { get; private set; }
+
+        public OverlayServiceViewModel OverlayService { get; private set; }
 
         public bool MenuVisible
         {

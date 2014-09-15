@@ -1,8 +1,8 @@
 ﻿using Diagnosis.Core;
+using PixelMEDIA.PixelCore.Helpers;
 using System;
 using System.Collections;
 using System.ComponentModel;
-using PixelMEDIA.PixelCore.Helpers;
 
 namespace Diagnosis.Models
 {
@@ -19,9 +19,10 @@ namespace Diagnosis.Models
     public class EntityBase : NotifyPropertyChangedBase, IEditableObject
     {
         private int? cachedHashCode;
+        private bool _isDeleted;
         private EditableObjectHelper _editHelper;
-        object _syncRoot = new object();
-        bool? wasChangedBeforeEdit;
+        private object _syncRoot = new object();
+        private bool? wasChangedBeforeEdit;
 
         public EntityBase()
         {
@@ -43,8 +44,18 @@ namespace Diagnosis.Models
         /// </summary>
         public virtual bool IsDeleted
         {
-            get;
-            set;
+            get
+            {
+                return _isDeleted;
+            }
+            set
+            {
+                if (_isDeleted != value)
+                {
+                    _isDeleted = value;
+                    OnPropertyChanged(() => IsDeleted);
+                }
+            }
         }
 
         /// <summary>
@@ -87,7 +98,6 @@ namespace Diagnosis.Models
             }
         }
 
-
         void IEditableObject.BeginEdit()
         {
             lock (_syncRoot)
@@ -102,7 +112,6 @@ namespace Diagnosis.Models
         {
             lock (_syncRoot)
             {
-
                 EditHelper.CancelEdit();
 
                 IsDirty = wasChangedBeforeEdit.Value;
@@ -122,7 +131,6 @@ namespace Diagnosis.Models
                 wasChangedBeforeEdit = null;
             }
         }
-
 
         public override bool Equals(object obj)
         {
@@ -154,17 +162,18 @@ namespace Diagnosis.Models
                 return Id == other.Id;
             }
         }
+
         // Maintain equality operator semantics for entities.
         public static bool operator ==(EntityBase x, EntityBase y)
         {
-            // By default, == and Equals compares references. In order to 
-            // maintain these semantics with entities, we need to compare by 
-            // identity value. The Equals(x, y) override is used to guard 
+            // By default, == and Equals compares references. In order to
+            // maintain these semantics with entities, we need to compare by
+            // identity value. The Equals(x, y) override is used to guard
             // against null values; it then calls EntityEquals().
             return Object.Equals(x, y);
         }
 
-        // Maintain inequality operator semantics for entities. 
+        // Maintain inequality operator semantics for entities.
         public static bool operator !=(EntityBase x, EntityBase y)
         {
             return !(x == y);
@@ -201,7 +210,6 @@ namespace Diagnosis.Models
                 return _originalValues;
             }
         }
-
 
         public EditableObjectHelper(IEditableObject master)
         {
@@ -250,7 +258,6 @@ namespace Diagnosis.Models
                 if (!_inEdit)
                     return;
 
-
                 try
                 {
                     _inOriginalValuesReset = true;
@@ -268,7 +275,6 @@ namespace Diagnosis.Models
 
                 _inEdit = false;
 
-
                 OriginalValues.Clear();
             }
         }
@@ -280,9 +286,7 @@ namespace Diagnosis.Models
                 if (!_inEdit)
                     return;
 
-
                 _inEdit = false;
-
 
                 OriginalValues.Clear();
             }

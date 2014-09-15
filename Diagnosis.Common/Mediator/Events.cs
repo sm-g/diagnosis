@@ -1,6 +1,7 @@
 ﻿using EventAggregator;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Diagnosis.Core
 {
@@ -22,6 +23,8 @@ namespace Diagnosis.Core
         public const string Category = "category";
         public const string Boolean = "bool";
         public const string Settings = "settings";
+        public const string UndoOverlay = "undooverlay";
+        public const string Type = "type";
     }
 
     public enum Events
@@ -42,6 +45,9 @@ namespace Diagnosis.Core
         // for Search
 
         SendToSearch,
+
+        ShowUndoOverlay,
+        HideOverlay
     }
 
     public static class EventAggragatorExtensions
@@ -61,9 +67,27 @@ namespace Diagnosis.Core
             return new[] { new KeyValuePair<string, object>(key, obj) };
         }
 
+        /// <summary>
+        /// Массив как параметр.
+        /// </summary>
+        /// <param name="objs"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static KeyValuePair<string, object>[] AsParams(this object[] objs, string key)
         {
             return new[] { new KeyValuePair<string, object>(key, objs) };
+        }
+
+        /// <summary>
+        /// Несколько объектов как параметры.
+        /// </summary>
+        /// <param name="objs"></param>
+        /// <param name="keys"></param>
+        /// <returns></returns>
+        public static KeyValuePair<string, object>[] AsParams(this object[] objs, params string[] keys)
+        {
+            var result = objs.Zip(keys, (obj, key) => new KeyValuePair<string, object>(key, obj));
+            return result.ToArray();
         }
     }
 }

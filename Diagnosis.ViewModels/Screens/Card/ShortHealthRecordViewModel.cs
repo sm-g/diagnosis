@@ -188,6 +188,16 @@ namespace Diagnosis.ViewModels
                        });
             }
         }
+        public RelayCommand DeleteCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    healthRecord.IsDeleted = true;
+                });
+            }
+        }
 
         public ShortHealthRecordViewModel(HealthRecord hr)
         {
