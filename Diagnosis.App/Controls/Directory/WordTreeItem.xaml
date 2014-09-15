@@ -20,9 +20,6 @@
                 <DataTrigger Binding="{Binding IsSelected}" Value="True">
                     <Setter Property="Visibility" Value="Visible" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Editable.IsEditorActive}" Value="True">
-                    <Setter Property="Visibility" Value="Visible" />
-                </DataTrigger>
             </Style.Triggers>
         </Style>
 
@@ -48,7 +45,7 @@
             Focusable="False"
             Visibility="{Binding IsNonCheckable, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
 
-        <DockPanel x:Name="title" Grid.Column="1" Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+        <DockPanel x:Name="title" Grid.Column="1">
             <TextBlock Text="{Binding Code, FallbackValue=''}" />
             <TextBlock Text="{Binding Name}"
                        TextWrapping="Wrap"
@@ -57,22 +54,6 @@
                        HorizontalAlignment="Left" />
         </DockPanel>
 
-        <Grid x:Name="editor"
-            Grid.Column="1"
-            Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-
-            <TextBox x:Name="titleEditor" Margin="0,0,5,0"
-                Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}">
-                <TextBox.InputBindings>
-                    <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
-                </TextBox.InputBindings>
-            </TextBox>
-        </Grid>
-
         <Grid Grid.Column="2" Width="80"
                         Style="{StaticResource hidingButtons}">
             <Grid.Resources>
@@ -80,9 +61,9 @@
                     <Setter Property="Margin" Value="0" />
                 </Style>
             </Grid.Resources>
-            <StackPanel x:Name="titleButtons" Orientation="Horizontal" Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+            <StackPanel x:Name="titleButtons" Orientation="Horizontal">
                 <!--открыть редактор, добавить слово, искать-->
-                <Button Command="{Binding Editable.EditCommand}" ToolTip="Редактировать (F2)">
+                <Button Command="{Binding EditCommand}" ToolTip="Редактировать (F2)">
                     <Image Source="{StaticResource editImage}" />
                 </Button>
 
@@ -95,29 +76,6 @@
                     <Image Source="{StaticResource findImage}" />
                 </Button>
             </StackPanel>
-
-            <StackPanel x:Name="editorButtons" Orientation="Horizontal" Visibility="{Binding Editable.IsEditorActive, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Grid.Column="1">
-                <Button Command="{Binding Editable.EditCommand}" ToolTip="Закрыть редактор (F2)"
-                        Visibility="{Binding Editable.IsDirty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-                    <Image Source="{StaticResource editImage}" />
-                </Button>
-                <!--закрыть редактор или сохранить и отменить-->
-                <StackPanel Orientation="Horizontal"
-                            Visibility="{Binding Editable.IsDirty, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Button Command="{Binding Editable.CommitCommand}" ToolTip="Сохранить (Enter)">
-                        <Image Source="{StaticResource saveImage}" />
-                    </Button>
-                    <Button Command="{Binding Editable.RevertCommand}" Margin="5,0,0,0" ToolTip="Отменить (Esc)"
-                        Visibility="{Binding Unsaved, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-                        <Image Source="{StaticResource undoImage}" />
-                    </Button>
-                </StackPanel>
-                <Button Command="{Binding Editable.DeleteCommand}" Margin="10,0,0,0" ToolTip="Удалить (Del)"
-                        Visibility="{Binding Editable.CanBeDeleted, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Image Source="{StaticResource deleteImage}" />
-                </Button>
-            </StackPanel>
         </Grid>
 
         <StackPanel x:Name="indicators"
@@ -128,10 +86,7 @@
                     <Setter Property="Margin" Value="5,0,0,0" />
                 </Style>
             </StackPanel.Resources>
-
-            <TextBlock x:Name="unsaved"
-                       Text="*"
-                       Visibility="{Binding Editable.IsDirty, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
+           
             <TextBlock x:Name="checkedChildren"
                    Text="{Binding CheckedChildren}"
                    Visibility="{Binding CheckedChildren, Converter={StaticResource CountToVisibility}, Mode=OneWay}" />

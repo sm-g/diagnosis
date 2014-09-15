@@ -16,15 +16,15 @@
                 <MenuItem Command="{Binding OpenPatientsCommand}" Header="_Все пациенты" />
                 <MenuItem Command="{Binding AddPatientCommand}" Header="_Новый..." />
             </MenuItem>
-            <MenuItem Header="_Справочники">
+            <!--<MenuItem Header="_Справочники">
                 <MenuItem Command="{Binding OpenWordsCommand}" Header="_Слова" />
             </MenuItem>
             <MenuItem Header="_Вид">
                 <MenuItem IsCheckable="true" IsChecked="{Binding SearchAside.Opened}" Header="_Поиск" />
-            </MenuItem>
+            </MenuItem>-->
         </Menu>
 
-        <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding FastAddingMode}">_Осмотр пациентов</CheckBox>
+        <!--<CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding FastAddingMode}">_Осмотр пациентов</CheckBox>-->
 
         <Menu HorizontalAlignment="Right">
             <MenuItem Header="{Binding CurrentDoctor, Converter={StaticResource ManToShortName}}">
