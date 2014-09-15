@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using NHibernate.Linq;
+using System.Diagnostics.Contracts;
+using System.ComponentModel;
 
 namespace Diagnosis.ViewModels
 {
@@ -21,6 +23,21 @@ namespace Diagnosis.ViewModels
         private IEnumerable<Category> _categories;
         private EventMessageHandler handler;
 
+        public HrEditorViewModel(ISession session)
+        {
+            this.session = session;
+
+            handler = this.Subscribe(Events.SettingsSaved, (e) =>
+             {
+                 OnPropertyChanged(() => ShowIcdDiseaseSearch);
+                 // после смены настроек доктора может понадобиться поиск по диагнозам
+                 CreateDiagnosisSearch();
+             });
+
+            if (ShowIcdDiseaseSearch)
+                CreateDiagnosisSearch();
+        }
+
         #region HealthRecord
 
         public HealthRecordViewModel HealthRecord
@@ -29,25 +46,11 @@ namespace Diagnosis.ViewModels
             {
                 return _hr;
             }
-            set
+            private set
             {
                 if (_hr != value)
                 {
                     _hr = value;
-
-                    if (value != null)
-                    {
-                        // смена записи — сохранение редактируемой
-                        if (session.Transaction.IsActive)
-                        {
-                            session.Transaction.Commit();
-                        }
-
-                        session.BeginTransaction();
-
-                        CreateAutoComplete();
-                        UpdateDiagnosisQueryCode();
-                    }
                     OnPropertyChanged("HealthRecord");
                     OnPropertyChanged("Category");
                     OnPropertyChanged("IsActive");
@@ -96,19 +99,8 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                        {
-                           session.Refresh(HealthRecord.healthRecord);
-                       });
-            }
-        }
-        public RelayCommand SaveCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                        {
-                            session.SaveOrUpdate(HealthRecord.healthRecord);
-                            session.Transaction.Commit();
-                        });
+                           (HealthRecord.healthRecord as IEditableObject).CancelEdit();
+                       }, () => IsActive && HealthRecord.healthRecord.IsDirty);
             }
         }
 
@@ -123,14 +115,11 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public RelayCommand CancelCommand
+        public RelayCommand CloseCommand
         {
             get
             {
-                return new RelayCommand(() =>
-                       {
-                           session.Transaction.Rollback();
-                       });
+                return new RelayCommand(Unload);
             }
         }
 
@@ -221,19 +210,47 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public HrEditorViewModel(ISession session)
+        /// <summary>
+        /// Загружает запись в редактор.
+        /// </summary>
+        /// <param name="hr"></param>
+        public void Load(HealthRecord hr)
         {
-            this.session = session;
+            Contract.Requires(hr != null);
 
-            handler = this.Subscribe(Events.SettingsSaved, (e) =>
-             {
-                 OnPropertyChanged(() => ShowIcdDiseaseSearch);
-                 // после смены настроек доктора может понадобиться поиск по диагнозам
-                 CreateDiagnosisSearch();
-             });
+            // смена записи — сохранение редактируемой
+            SaveCurrentHr();
 
-            if (ShowIcdDiseaseSearch)
-                CreateDiagnosisSearch();
+            session.BeginTransaction();
+
+            HealthRecord = new HealthRecordViewModel(hr);
+            (hr as IEditableObject).BeginEdit();
+
+            CreateAutoComplete();
+            UpdateDiagnosisQueryCode();
+
+        }
+
+
+        /// <summary>
+        /// Выгружает редактируемую запись.
+        /// </summary>
+        public void Unload()
+        {
+            SaveCurrentHr();
+            HealthRecord = null;
+        }
+
+        private void SaveCurrentHr()
+        {
+            if (HealthRecord != null)
+            {
+                (HealthRecord.healthRecord as IEditableObject).EndEdit();
+                if (session.Transaction.IsActive)
+                {
+                    session.Transaction.Commit();
+                }
+            }
         }
 
         private void UpdateDiagnosisQueryCode()

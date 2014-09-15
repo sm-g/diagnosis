@@ -111,7 +111,7 @@ namespace Diagnosis.ViewModels
 
         public void EditHr()
         {
-            HealthRecordEditor.HealthRecord = HealthRecord;
+            HealthRecordEditor.Load(HealthRecord.healthRecord);
         }
 
         internal void Open(object parameter)
@@ -228,6 +228,7 @@ namespace Diagnosis.ViewModels
                         Appointment.Dispose();
                         // редактор записей после смены осмотра всегда закрыт
                         editorWasOpened = false;
+
                         break;
                 }
             }
@@ -242,18 +243,18 @@ namespace Diagnosis.ViewModels
 
                         if (editorWasOpened)
                         {
-                            HealthRecordEditor.HealthRecord = HealthRecord;
+                            HealthRecordEditor.Load(viewer.OpenedHealthRecord);
                         }
                         break;
 
                     case PatientViewer.OpeningAction.Close:
                         editorWasOpened = HealthRecordEditor.IsActive;
-                        HealthRecordEditor.HealthRecord = null;
+                        HealthRecordEditor.Unload();
                         HealthRecord.Dispose();
                         break;
                 }
             }
-
+            // сохраняем все изменения при закрытии пациента, курса, осмотра, записи
             if (e.action == PatientViewer.OpeningAction.Close)
             {
                 Session.SaveOrUpdate(viewer.OpenedPatient);
