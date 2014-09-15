@@ -26,25 +26,18 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <Button Style="{StaticResource squareButton}"
-                    Height="30"
-                    Command="{Binding EditCommand}"
-                    ToolTip="Редактировать данные пациента" HorizontalAlignment="Right" VerticalAlignment="Top">
-                <DockPanel>
-                    <Image Source="{StaticResource editImage}" Height="20" />
-                </DockPanel>
-            </Button>
-
             <card:PatientHeader Padding="5,0,5,0" />
 
             <StackPanel x:Name="courses" Grid.Row="1">
-                <StackPanel.Resources>
-                    <!--<Style TargetType="{x:Type Button}" BasedOn="{StaticResource barButton}" />-->
-                </StackPanel.Resources>
-
-                <TextBlock Text="У пациента нет курсов"
-                            HorizontalAlignment="Center"
-                            Visibility="{Binding NoCourses, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <StackPanel Visibility="{Binding NoCourses, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Text="У пациента нет курсов"
+                            HorizontalAlignment="Center" />
+                    <Button Command="{Binding StartCourseCommand}"
+                                    Height="26"
+                                    VerticalAlignment="Center"
+        			                CommandParameter="{Binding}"
+                                    Content="Начать курс" />
+                </StackPanel>
 
                 <StackPanel VerticalAlignment="Center" Visibility="{Binding NoCourses, Converter={StaticResource NegBooleanToVisibilityConverter}}" Margin="0,0,0,10">
                     <TextBlock Text="Курс" Margin="0,0,10,5" />
@@ -58,11 +51,6 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
                 </StackPanel>
-                <Button Command="{Binding StartCourseCommand}"
-                                    Height="26"
-                                    VerticalAlignment="Center"
-        			                CommandParameter="{Binding}"
-                                    Content="Начать курс" />
             </StackPanel>
         </Grid>
 
