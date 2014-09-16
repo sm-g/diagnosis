@@ -12,8 +12,6 @@
     <UserControl.Resources>
         <InputBindingCollection x:Shared="False" x:Key="HRInputBindings">
             <KeyBinding Key="Space" Command="{Binding ToggleCommand}" />
-            <KeyBinding Key="Escape" Command="{Binding Editable.RevertCommand}" />
-            <KeyBinding Modifiers="Control" Key="S" Command="{Binding Editable.CommitCommand}" />
             <KeyBinding Modifiers="Alt" Key="F" Command="{Binding SendToSearchCommand}" />
 
             <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding EditCommand}" />
@@ -29,14 +27,14 @@
         <KeyBinding Modifiers="Control" Key="Down" Command="{Binding MoveHrSelectionCommand}" CommandParameter="{StaticResource False}" />
     </UserControl.InputBindings>
     <!--DataContext is AppointmentViewModel-->
-    <Grid>
+    <Grid Margin="10,5,10,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel Style="{StaticResource buttonsBar}" Margin="10">
+        <StackPanel Style="{StaticResource buttonsBar}">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource barButton}" />
                 <Style TargetType="Image" BasedOn="{StaticResource buttonIcon}" />
@@ -45,12 +43,6 @@
                 <DockPanel>
                     <Image Source="{StaticResource addImage}" />
                     <TextBlock Text="Добавить запись" />
-                </DockPanel>
-            </Button>
-            <Button Command="{Binding EditHrCommand}" ToolTip="Переключить редактор для выбранной записи (F2)">
-                <DockPanel>
-                    <Image Source="{StaticResource editImage}" Height="20" />
-                    <TextBlock Text="Редактировать" />
                 </DockPanel>
             </Button>
             <Button Command="{Binding DeleteHealthRecordsCommand}">
@@ -76,8 +68,7 @@
         </StackPanel>
 
         <ListView x:Name="records"
-                  Grid.Row="1"
-                  Margin="10,0,10,0"
+                  Grid.Row="1"                  
                   ItemsSource="{Binding HealthRecords}"
                   IsSynchronizedWithCurrentItem="True"
                   SelectedItem="{Binding SelectedHealthRecord}"
