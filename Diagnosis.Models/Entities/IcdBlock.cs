@@ -7,7 +7,7 @@ namespace Diagnosis.Models
     public class IcdBlock : EntityBase, IDomainEntity
     {
         Iesi.Collections.Generic.ISet<IcdDisease> icdDiseases;
-        Iesi.Collections.Generic.ISet<SpecialityIcdBlock> specialityIcdBlocks;
+        Iesi.Collections.Generic.ISet<SpecialityIcdBlocks> specialityIcdBlocks;
 
         public virtual IcdChapter IcdChapter { get; protected set; }
         public virtual string Title { get; protected set; }
@@ -19,7 +19,7 @@ namespace Diagnosis.Models
                 return icdDiseases;
             }
         }
-        public virtual IEnumerable<SpecialityIcdBlock> SpecialityIcdBlocks
+        public virtual IEnumerable<SpecialityIcdBlocks> SpecialityIcdBlocks
         {
             get { return specialityIcdBlocks; }
         }

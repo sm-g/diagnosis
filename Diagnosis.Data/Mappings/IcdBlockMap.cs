@@ -32,7 +32,7 @@ namespace Diagnosis.Data.Mappings
             {
                 s.Key(k =>
                 {
-                    k.Column("BlockID");
+                    k.Column("IcdBlockID");
                 });
                 s.Inverse(true);
                 s.Cascade(Cascade.All);

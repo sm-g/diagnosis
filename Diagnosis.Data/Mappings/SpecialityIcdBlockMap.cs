@@ -4,7 +4,7 @@ using Diagnosis.Models;
 
 namespace Diagnosis.Data.Mappings
 {
-    public class SpecialityIcdBlockMap : ClassMapping<SpecialityIcdBlock>
+    public class SpecialityIcdBlockMap : ClassMapping<SpecialityIcdBlocks>
     {
         public SpecialityIcdBlockMap()
         {

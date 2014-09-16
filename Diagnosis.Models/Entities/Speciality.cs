@@ -10,7 +10,7 @@ namespace Diagnosis.Models
     {
         Iesi.Collections.Generic.ISet<IcdBlock> icdBlocks;
         Iesi.Collections.Generic.ISet<Doctor> doctors;
-        Iesi.Collections.Generic.ISet<SpecialityIcdBlock> specialityIcdBlocks;
+        Iesi.Collections.Generic.ISet<SpecialityIcdBlocks> specialityIcdBlocks;
 
 
         public virtual string Title { get; protected set; }
@@ -29,9 +29,9 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual IEnumerable<SpecialityIcdBlock> SpecialityIcdBlocks
+        public virtual IEnumerable<SpecialityIcdBlocks> SpecialityIcdBlocks
         {
-            get { return new List<SpecialityIcdBlock>(specialityIcdBlocks); }
+            get { return new List<SpecialityIcdBlocks>(specialityIcdBlocks); }
         }
 
         public Speciality(string title)

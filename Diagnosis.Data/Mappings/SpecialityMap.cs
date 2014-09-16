@@ -56,7 +56,7 @@ namespace Diagnosis.Data.Mappings
             {
                 r.ManyToMany(x =>
                 {
-                    x.Column("BlockID");
+                    x.Column("IcdBlockID");
                     x.Class(typeof(IcdBlock));
                 });
             });

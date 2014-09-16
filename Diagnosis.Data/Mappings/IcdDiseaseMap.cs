@@ -44,7 +44,7 @@ namespace Diagnosis.Data.Mappings
                 r.OneToMany();
             });
 
-            ManyToOne(x => x.IcdBlock, m => m.Column("BlockID"));
+            ManyToOne(x => x.IcdBlock, m => m.Column("IcdBlockID"));
         }
     }
 }
