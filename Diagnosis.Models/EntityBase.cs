@@ -3,6 +3,7 @@ using PixelMEDIA.PixelCore.Helpers;
 using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Linq.Expressions;
 
 namespace Diagnosis.Models
 {
@@ -78,6 +79,11 @@ namespace Diagnosis.Models
             get { return (_editHelper != null ? _editHelper.InEdit : false); }
         }
 
+        /// <summary>
+        /// Returns entity itself (not its proxy).
+        /// </summary>
+        public virtual object Actual { get { return this; } }
+
         protected EditableObjectHelper EditHelper
         {
             get
@@ -129,6 +135,7 @@ namespace Diagnosis.Models
                 wasChangedBeforeEdit = null;
             }
         }
+
 
         public override bool Equals(object obj)
         {
@@ -237,11 +244,34 @@ namespace Diagnosis.Models
 
                 if (_inEdit)
                 {
-                    // сохраняем значение свойства до вызова BeginEdit()
-                    IDictionary originalValues = OriginalValues;
-                    if (!originalValues.Contains(propertyName))
+                    // сохраняем значение свойства до вызова BeginEdit, один раз
+                    if (!OriginalValues.Contains(propertyName))
                     {
-                        originalValues.Add(
+                        OriginalValues.Add(
+                            propertyName,
+                            value);
+                    }
+                }
+            }
+        }
+
+        public void Edit<T>(Expression<Func<T>> propertyExpression) where T : EntityBase
+        {
+            lock (_syncRoot)
+            {
+                if (_inOriginalValuesReset)
+                    return;
+
+                if (_inEdit)
+                {
+                    var propValuePair = ExpressionHelper.GetPropertyNameAndValue(propertyExpression);
+                    var propertyName = propValuePair.Item1;
+                    var value = propValuePair.Item2.As<T>();  // unproxy
+
+                    // сохраняем значение свойства до вызова BeginEdit, один раз
+                    if (!OriginalValues.Contains(propertyName))
+                    {
+                        OriginalValues.Add(
                             propertyName,
                             value);
                     }

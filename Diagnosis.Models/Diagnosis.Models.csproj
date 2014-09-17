@@ -96,6 +96,7 @@
     <Compile Include="Entities\IcdDisease.cs" />
     <Compile Include="EntityBase.cs" />
     <Compile Include="Entities\Patient.cs" />
+    <Compile Include="EntityHelpers.cs" />
     <Compile Include="ServiceTables\PatientRecordProperty.cs" />
     <Compile Include="Entities\Property.cs" />
     <Compile Include="Entities\PropertyValue.cs" />
@@ -117,6 +118,7 @@
       <Name>Diagnosis.Common</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

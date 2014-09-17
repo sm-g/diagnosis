@@ -42,7 +42,8 @@ namespace Diagnosis.Models
             {
                 if (_category == value)
                     return;
-                EditHelper.Edit("Category", _category);
+
+                EditHelper.Edit(() => Category);
                 _category = value;
                 OnPropertyChanged("Category");
             }
