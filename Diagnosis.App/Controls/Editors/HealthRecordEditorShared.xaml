@@ -64,7 +64,9 @@
                         <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
 
+                    <!--DataContext is HrEditorViewModel-->
                     <search:NewAutocomplete DataContext="{Binding DataContext.Autocomplete, ElementName=editor}" />
+                    
                     <TextBox Text="{Binding NumValue, StringFormat={}{0:G6}, TargetNullValue=''}"
                              ToolTip="Числовое значение"
                              Width="60"
@@ -78,7 +80,8 @@
                 </Grid>
             </DockPanel>
             <DockPanel>
-                <editors:CategoryChooser HorizontalAlignment="Left"  DataContext="{Binding DataContext, ElementName=editor}" />
+                <!--DataContext is HrEditorViewModel-->
+                <editors:CategoryChooser HorizontalAlignment="Left" DataContext="{Binding DataContext, ElementName=editor}" />
             </DockPanel>
             <DockPanel>
                 <Label Content="дата" />
@@ -92,6 +95,8 @@
                     </editors:DateOffsetPicker.Resources>
                 </editors:DateOffsetPicker>
             </DockPanel>
+            
+            <!--DataContext is HrEditorViewModel-->
             <DockPanel DataContext="{Binding DataContext,ElementName=editor}"
                        Visibility="{Binding ShowIcdDiseaseSearch, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Label Content="диагноз МКБ" />

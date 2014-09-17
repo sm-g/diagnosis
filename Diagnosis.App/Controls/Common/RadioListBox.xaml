@@ -46,7 +46,7 @@
                             <ControlTemplate TargetType="ListBoxItem">
                                 <CheckBox x:Name="radio" Focusable="False" 
                                           Style="{StaticResource checkbox}"
-                                    IsChecked="{Binding IsChecked, Mode=TwoWay}">
+                                    IsChecked="{Binding IsChecked, Mode=TwoWay}"> <!-- for multiselection, use ViewModel with IsChecked prop -->
                                     <CheckBox.Content>
                                         <ContentPresenter
                                             Content="{TemplateBinding ContentControl.Content}"

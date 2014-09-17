@@ -25,7 +25,6 @@ namespace Diagnosis.Data.Queries
 
                     Symptom symptom = null;
                     Word word = null;
-                    SymptomWords sw = null;
                     return session.QueryOver<Symptom>(() => symptom)
                        .JoinAlias(() => symptom.Words, () => word)
                        .WhereRestrictionOn(() => word.Id).IsIn(wordsIds)
