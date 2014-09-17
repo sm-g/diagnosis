@@ -25,6 +25,15 @@ namespace Diagnosis.Data
         private static ISession _session;
         private static ISessionFactory _sessionFactory;
 
+        public static bool InMemory { get; set; }
+
+#if MEMORY
+        static NHibernateHelper()
+        {
+            InMemory = true;
+        }
+#endif
+
         public static Configuration Configuration
         {
             get
@@ -72,9 +81,10 @@ namespace Diagnosis.Data
             if (_session == null)
             {
                 _session = SessionFactory.OpenSession();
-#if MEMORY
-                InMemoryHelper.FillData(Configuration, _session);
-#endif
+                _session.FlushMode = FlushMode.Commit;
+                if (InMemory)
+                    InMemoryHelper.FillData(Configuration, _session);
+
             }
             return _session;
         }
@@ -83,29 +93,29 @@ namespace Diagnosis.Data
         {
             var s = SessionFactory.OpenSession();
             s.FlushMode = FlushMode.Auto;
-#if MEMORY
-            InMemoryHelper.FillData(Configuration, s);
-#endif
+
+            if (InMemory)
+                InMemoryHelper.FillData(Configuration, s);
             return s;
         }
 
         public static IStatelessSession OpenStatelessSession()
         {
             var s = SessionFactory.OpenStatelessSession();
-#if MEMORY
-            InMemoryHelper.FillData(Configuration, s);
-#endif
+            if (InMemory)
+                InMemoryHelper.FillData(Configuration, s);
             return s;
         }
 
         private static Configuration CreateConfiguration()
         {
             var cfg = new Configuration();
-#if !MEMORY
-            cfg.Configure(ConfigFile);
-#else
-            InMemoryHelper.Configure(cfg);
-#endif
+
+            if (InMemory)
+                InMemoryHelper.Configure(cfg);
+            else
+                cfg.Configure(ConfigFile);
+
 #if LOG
             var preListener = new PreEventListener();
             cfg.AppendListeners(ListenerType.PreUpdate, new IPreUpdateEventListener[] { preListener });
@@ -125,9 +135,9 @@ namespace Diagnosis.Data
 
         private static Configuration LoadConfiguration()
         {
-#if MEMORY
-            return null;
-#endif
+            if (InMemory)
+                return null;
+
             if (IsConfigurationFileValid == false)
                 return null;
             try
