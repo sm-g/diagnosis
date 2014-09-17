@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using NHibernate;
 
 namespace Diagnosis.ViewModels
 {
@@ -16,6 +17,7 @@ namespace Diagnosis.ViewModels
         private HealthRecordViewModel _hr;
         private HrEditorViewModel _hrEditor;
         private bool editorWasOpened;
+        private ITransaction transaction;
 
         public CardViewModel(object entity)
             : this()
@@ -222,13 +224,19 @@ namespace Diagnosis.ViewModels
                             }
                         };
                         Course.SelectAppointment(viewer.OpenedAppointment);
+
+                        transaction = Session.BeginTransaction();
+
                         break;
 
                     case PatientViewer.OpeningAction.Close:
                         Appointment.Dispose();
                         // редактор записей после смены осмотра всегда закрыт
                         editorWasOpened = false;
-
+                        if (transaction.IsActive)
+                        {
+                            transaction.Commit();
+                        }
                         break;
                 }
             }

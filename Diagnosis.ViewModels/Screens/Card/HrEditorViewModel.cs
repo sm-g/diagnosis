@@ -1,15 +1,14 @@
 ﻿using Diagnosis.Core;
+using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Search.Autocomplete;
 using EventAggregator;
 using NHibernate;
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
 using NHibernate.Linq;
-using System.Diagnostics.Contracts;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
@@ -100,6 +99,7 @@ namespace Diagnosis.ViewModels
                 return new RelayCommand(() =>
                        {
                            (HealthRecord.healthRecord as IEditableObject).CancelEdit();
+                           (HealthRecord.healthRecord as IEditableObject).BeginEdit();
                        }, () => IsActive && HealthRecord.healthRecord.IsDirty);
             }
         }
@@ -137,22 +137,8 @@ namespace Diagnosis.ViewModels
                 }
 
             _autocomplete = new Autocomplete(new Recognizer(session, true) { AllowNewFromQuery = true }, true, initialWords.ToArray());
-            _autocomplete.InputEnded += _autocomplete_InputEnded;
 
             OnPropertyChanged("AutoComplete");
-        }
-
-        void _autocomplete_InputEnded(object sender, EventArgs e)
-        {
-            // меняет симптом записи
-
-            // TODO менять только при сохранении?
-            // тогда не нужно вызывать InputEnded при потере фокуса автокомплитом
-            // как тогда показать, что это поле поменялось?
-
-            var words = _autocomplete.GetItems().Cast<Word>().ToList();
-            if (words.Count > 0) // == 0 если исправляем единтсвенное слово
-                HealthRecord.healthRecord.Symptom = new Symptom(words);
         }
 
         #endregion AutoComplete
@@ -218,38 +204,48 @@ namespace Diagnosis.ViewModels
         {
             Contract.Requires(hr != null);
 
-            // смена записи — сохранение редактируемой
-            SaveCurrentHr();
-
-            session.BeginTransaction();
+            CloseCurrentHr();
 
             HealthRecord = new HealthRecordViewModel(hr);
+            hr.PropertyChanged += hr_PropertyChanged;
+
             (hr as IEditableObject).BeginEdit();
 
             CreateAutoComplete();
             UpdateDiagnosisQueryCode();
-
         }
-
 
         /// <summary>
         /// Выгружает редактируемую запись.
         /// </summary>
         public void Unload()
         {
-            SaveCurrentHr();
+            CloseCurrentHr();
             HealthRecord = null;
+        }
+
+        private void CloseCurrentHr()
+        {
+            if (HealthRecord != null)
+            {
+                HealthRecord.healthRecord.PropertyChanged -= hr_PropertyChanged;
+                SaveCurrentHr();
+                (HealthRecord.healthRecord as IEditableObject).EndEdit();
+            }
         }
 
         private void SaveCurrentHr()
         {
-            if (HealthRecord != null)
+            var words = _autocomplete.GetItems().Cast<Word>().ToList();
+            if (words.Count > 0) // == 0 если исправляем единственное слово
             {
-                (HealthRecord.healthRecord as IEditableObject).EndEdit();
-                if (session.Transaction.IsActive)
-                {
-                    session.Transaction.Commit();
-                }
+                // симптом со всеми словами
+                var existing = SymptomQuery.ByWords(session)(words);
+
+                if (existing == null)
+                    HealthRecord.healthRecord.Symptom = new Symptom(words);
+                else
+                    HealthRecord.healthRecord.Symptom = existing;
             }
         }
 
@@ -268,6 +264,14 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        private void hr_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Category")
+            {
+                OnPropertyChanged(e.PropertyName);
+            }
+        }
+
         public override string ToString()
         {
             return string.Format("editor {0}", HealthRecord);
@@ -280,8 +284,8 @@ namespace Diagnosis.ViewModels
                 if (disposing)
                 {
                     handler.Dispose();
+                    Unload();
                 }
-
             }
             finally
             {
