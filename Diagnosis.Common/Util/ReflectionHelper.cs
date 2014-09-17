@@ -189,9 +189,9 @@ namespace PixelMEDIA.PixelCore.Helpers
                 try
                 {
                     var prop = obj.GetType().GetProperty(propertyName);
-                    var propertyType = prop.GetType();
-                    var propertyTypeValue = Convert.ChangeType(propertyValue, prop.PropertyType);
-                    prop.SetValue(obj, propertyTypeValue, null);
+                    Type type = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType; // fixing nullable case
+                    var value = (propertyValue == null) ? null : Convert.ChangeType(propertyValue, type);
+                    prop.SetValue(obj, value, null);
                 }
                 catch (Exception)
                 {
