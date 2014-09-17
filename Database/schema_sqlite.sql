@@ -58,10 +58,10 @@
 
     create table Disease (
         Id  integer primary key autoincrement,
-       BlockID INT,
+       IcdBlockID INT,
        Title TEXT,
        Code TEXT,
-       constraint FK52F139E34AE2417 foreign key (BlockID) references IcdBlock
+       constraint FK52F139E34AE2417 foreign key (IcdBlockID) references IcdBlock
     );
 
     create table IcdBlock (

@@ -29,9 +29,6 @@
 --   memotype=
 --
 
-IF NOT EXISTS (SELECT * FROM master.dbo.sysdatabases WHERE name = 'movedb') CREATE DATABASE [movedb]
-USE [movedb]
-
 --
 -- Dumping data for table 'RecordCategory'
 --
@@ -44,8 +41,7 @@ INSERT INTO [RecordCategory] ([ID], [Title], [Ord]) VALUES (4, 'Диагноз',
 INSERT INTO [RecordCategory] ([ID], [Title], [Ord]) VALUES (5, 'Лечение', 6);
 -- 6 records
 
-SET IDENTITY_INSERT [IcdChapter] ON
-GO
+
 
 --
 -- Dumping data for table 'IcdChapter'
@@ -74,15 +70,11 @@ INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (20, 'XX', 'Внешни
 INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (21, 'XXI', 'Факторы, влияющие на состояние здоровья населения и обращения в учреждения здравоохранения');
 -- 21 records
 
-SET IDENTITY_INSERT [IcdChapter] OFF
-GO
+
 
 CREATE UNIQUE INDEX [Code] ON [IcdChapter] ([Code]);
-GO
 
 
-SET IDENTITY_INSERT [IcdBlock] ON
-GO
 
 --
 -- Dumping data for table 'IcdBlock'
@@ -101,55 +93,50 @@ INSERT INTO [IcdBlock] ([ID], [Code], [Title], [ChapterID]) VALUES (100, '(I95-I
 
 -- 259 records
 
-SET IDENTITY_INSERT [IcdBlock] OFF
-GO
+
 
 CREATE UNIQUE INDEX [BlockCode] ON [IcdBlock] ([Code]);
-GO
 
 
-SET IDENTITY_INSERT [Disease] ON
-GO
+
+
 
 --
 -- Dumping data for table 'Disease'
 --
 
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3659, 'I00', 'Ревматическая лихорадка без упоминания о  вовлечении сердца', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3660, 'I01', 'Ревматическая лихорадка с вовлечением сердца', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3661, 'I01.0', 'Острый ревматический перикардит', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3662, 'I01.1', 'Острый ревматический эндокардит', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3663, 'I01.2', 'Острый ревматический миокардит', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3664, 'I01.8', 'Другие острые ревматические болезни сердца', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3665, 'I01.9', 'Острая ревматическая болезнь сердца неуточненная', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3666, 'I02', 'Ревматическая хорея', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3667, 'I02.0', 'Ревматическая хорея с вовлечением сердца', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3668, 'I02.9', 'Ревматическая хорея без вовлечения сердца', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3669, 'I05', 'Ревматические болезни митрального клапана', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3670, 'I05.0', 'Митральный стеноз', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3671, 'I05.1', 'Ревматическая недостаточность митрального клапана', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3672, 'I05.2', 'Митральный стеноз с недостаточностью', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3673, 'I05.8', 'Другие болезни митрального клапана', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3674, 'I05.9', 'Болезнь митрального клапана неуточненная', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3675, 'I06', 'Ревматические болезни аортального клапана', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3676, 'I06.0', 'Ревматический аортальный стеноз', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3677, 'I06.1', 'Ревматическая недостаточность аортального клапана', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3678, 'I06.2', 'Ревматический аортальный стеноз с недостаточностью', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3679, 'I06.8', 'Другие ревматические болезни аортального клапана', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [BlockID]) VALUES (3680, 'I06.9', 'Ревматическая болезнь аортального клапана неуточненная (ый)', 92);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3659, 'I00', 'Ревматическая лихорадка без упоминания о  вовлечении сердца', 91);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3660, 'I01', 'Ревматическая лихорадка с вовлечением сердца', 91);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3661, 'I01.0', 'Острый ревматический перикардит', 91);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3662, 'I01.1', 'Острый ревматический эндокардит', 91);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3663, 'I01.2', 'Острый ревматический миокардит', 91);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3664, 'I01.8', 'Другие острые ревматические болезни сердца', 91);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3665, 'I01.9', 'Острая ревматическая болезнь сердца неуточненная', 91);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3666, 'I02', 'Ревматическая хорея', 91);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3667, 'I02.0', 'Ревматическая хорея с вовлечением сердца', 91);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3668, 'I02.9', 'Ревматическая хорея без вовлечения сердца', 91);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3669, 'I05', 'Ревматические болезни митрального клапана', 92);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3670, 'I05.0', 'Митральный стеноз', 92);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3671, 'I05.1', 'Ревматическая недостаточность митрального клапана', 92);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3672, 'I05.2', 'Митральный стеноз с недостаточностью', 92);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3673, 'I05.8', 'Другие болезни митрального клапана', 92);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3674, 'I05.9', 'Болезнь митрального клапана неуточненная', 92);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3675, 'I06', 'Ревматические болезни аортального клапана', 92);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3676, 'I06.0', 'Ревматический аортальный стеноз', 92);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3677, 'I06.1', 'Ревматическая недостаточность аортального клапана', 92);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3678, 'I06.2', 'Ревматический аортальный стеноз с недостаточностью', 92);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3679, 'I06.8', 'Другие ревматические болезни аортального клапана', 92);
+INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3680, 'I06.9', 'Ревматическая болезнь аортального клапана неуточненная (ый)', 92);
 -- 11675 records
 
-SET IDENTITY_INSERT [Disease] OFF
-GO
+
 
 CREATE UNIQUE INDEX [DiseaseCode] ON [Disease] ([Code]);
-GO
-SET IDENTITY_INSERT [Speciality] ON
-GO
 
 
-SET IDENTITY_INSERT [Symptom] ON
-GO
+
+
+
 
 --
 -- Dumping data for table 'Symptom'
@@ -166,11 +153,9 @@ INSERT INTO [Symptom] ([ID], [DiseaseID], [DefaultCategoryID], [IsDiagnosis]) VA
 INSERT INTO [Symptom] ([ID], [DiseaseID], [DefaultCategoryID], [IsDiagnosis]) VALUES (31, NULL, NULL, 0);
 -- 9 records
 
-SET IDENTITY_INSERT [Symptom] OFF
-GO
 
-SET IDENTITY_INSERT [Word] ON
-GO
+
+
 
 --
 -- Dumping data for table 'Word'
@@ -268,11 +253,9 @@ INSERT INTO [Word] ([ID], [Title], [Priority], [DefaultCategoryID], [ParentID]) 
 INSERT INTO [Word] ([ID], [Title], [Priority], [DefaultCategoryID], [ParentID]) VALUES (93, 'перикардит', 0, NULL, NULL);
 -- 90 records
 
-SET IDENTITY_INSERT [Word] OFF
-GO
 
-SET IDENTITY_INSERT [SymptomWords] ON
-GO
+
+
 
 --
 -- Dumping data for table 'SymptomWords'
@@ -297,8 +280,7 @@ GO
 --INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (58, 8, 31);
 -- 17 records
 
-SET IDENTITY_INSERT [SymptomWords] OFF
-GO
+
 --
 -- Dumping data for table 'Speciality'
 --
@@ -306,11 +288,9 @@ GO
 INSERT INTO [Speciality] ([ID], [Title]) VALUES (1, 'Кардиолог');
 -- 1 records
 
-SET IDENTITY_INSERT [Speciality] OFF
-GO
 
-SET IDENTITY_INSERT [SpecialityIcdBlocks] ON
-GO
+
+
 
 --
 -- Dumping data for table 'SpecialityIcdBlocks'
@@ -327,12 +307,10 @@ GO
 --INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [BlockID]) VALUES (9, 1, 100);
 -- 9 records
 
-SET IDENTITY_INSERT [SpecialityIcdBlocks] OFF
-GO
 
 
-SET IDENTITY_INSERT [Doctor] ON
-GO
+
+
 
 --
 -- Dumping data for table 'Doctor'
@@ -342,11 +320,9 @@ INSERT INTO [Doctor] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [Sp
 INSERT INTO [Doctor] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [SpecialityID], [Settings]) VALUES (3, 'Вахрушев', 'Константинович', 'Александр', -1, 1, 1);
 -- 2 records
 
-SET IDENTITY_INSERT [Doctor] OFF
-GO
 
-SET IDENTITY_INSERT [Patient] ON
-GO
+
+
 
 --
 -- Dumping data for table 'Patient'
@@ -359,12 +335,10 @@ INSERT INTO [Patient] ([ID], [Label], [LastName], [MiddleName], [FirstName], [Is
 INSERT INTO [Patient] ([ID], [Label], [LastName], [MiddleName], [FirstName], [IsMale], [BirthYear], [BirthMonth], [BirthDay]) VALUES (10, '10', NULL, NULL, NULL, 0, NULL, NULL, NULL);
 -- 5 records
 
-SET IDENTITY_INSERT [Patient] OFF
-GO
 
 
-SET IDENTITY_INSERT [Course] ON
-GO
+
+
 
 --
 -- Dumping data for table 'Course'
@@ -375,11 +349,9 @@ INSERT INTO [Course] ([ID], [PatientID], [StartDate], [EndDate], [DoctorID]) VAL
 INSERT INTO [Course] ([ID], [PatientID], [StartDate], [EndDate], [DoctorID]) VALUES (8, 5, '2013-05-29 00:00:00', NULL, 2);
 -- 3 records
 
-SET IDENTITY_INSERT [Course] OFF
-GO
 
-SET IDENTITY_INSERT [Appointment] ON
-GO
+
+
 
 --
 -- Dumping data for table 'Appointment'
@@ -391,13 +363,11 @@ INSERT INTO [Appointment] ([ID], [DateAndTime], [CourseID], [DoctorID]) VALUES (
 INSERT INTO [Appointment] ([ID], [DateAndTime], [CourseID], [DoctorID]) VALUES (20, '2014-06-03 05:39:52', 8, 2);
 -- 4 records
 
-SET IDENTITY_INSERT [Appointment] OFF
-GO
 
 
 
-SET IDENTITY_INSERT [HealthRecord] ON
-GO
+
+
 
 --
 -- Dumping data for table 'HealthRecord'
@@ -416,12 +386,10 @@ INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [Dise
 INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (27, 8, NULL, 20, NULL, 0, NULL, NULL, NULL, NULL);
 -- 11 records
 
-SET IDENTITY_INSERT [HealthRecord] OFF
-GO
 
 
-SET IDENTITY_INSERT [Property] ON
-GO
+
+
 
 --
 -- Dumping data for table 'Property'
@@ -433,11 +401,9 @@ INSERT INTO [Property] ([ID], [Title]) VALUES (3, 'Место жительств
 INSERT INTO [Property] ([ID], [Title]) VALUES (4, 'Группа крови');
 -- 4 records
 
-SET IDENTITY_INSERT [Property] OFF
-GO
 
-SET IDENTITY_INSERT [PropertyValue] ON
-GO
+
+
 
 --
 -- Dumping data for table 'PropertyValue'
@@ -452,16 +418,14 @@ INSERT INTO [PropertyValue] ([ID], [PropertyID], [Title]) VALUES (7, 3, 'Гор�
 INSERT INTO [PropertyValue] ([ID], [PropertyID], [Title]) VALUES (8, 3, 'Деревня');
 -- 7 records
 
-SET IDENTITY_INSERT [PropertyValue] OFF
-GO
+
 
 CREATE INDEX [PropertyValueVal] ON [PropertyValue] ([Title]);
-GO
 
 
 
-SET IDENTITY_INSERT [PatientRecordProperties] ON
-GO
+
+
 
 --
 -- Dumping data for table 'PatientRecordProperties'
@@ -473,8 +437,6 @@ INSERT INTO [PatientRecordProperties] ([ID], [PropertyID], [ValueID], [PatientID
 INSERT INTO [PatientRecordProperties] ([ID], [PropertyID], [ValueID], [PatientID], [RecordID]) VALUES (7, 1, 3, 5, NULL);
 -- 4 records
 
-SET IDENTITY_INSERT [PatientRecordProperties] OFF
-GO
+
 
 CREATE UNIQUE INDEX [PatientProperty] ON [PatientRecordProperties] ([PropertyID], [PatientID]);
-GO
