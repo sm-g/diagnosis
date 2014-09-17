@@ -8,7 +8,7 @@ namespace Diagnosis.Models
 {
     public class Symptom : EntityBase, IDomainEntity
     {
-        Iesi.Collections.Generic.ISet<Word> words;
+        IList<Word> words;
         Iesi.Collections.Generic.ISet<SymptomWords> symptomWords;
 
         public virtual IcdDisease Disease { get; set; }
@@ -35,7 +35,7 @@ namespace Diagnosis.Models
             Contract.Requires(words != null);
             Contract.Requires(words.Count() > 0);
 
-            this.words = new HashedSet<Word>(words);
+            this.words = new List<Word>(words);
         }
 
         protected Symptom() { }

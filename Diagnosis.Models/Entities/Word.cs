@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-
 using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
     public class Word : EntityBase, IDomainEntity
     {
-        private Iesi.Collections.Generic.ISet<Symptom> symptoms;
+        private IList<Symptom> symptoms;
         private Iesi.Collections.Generic.ISet<SymptomWords> symptomWords;
         private Iesi.Collections.Generic.ISet<Word> children;
         private string _title;

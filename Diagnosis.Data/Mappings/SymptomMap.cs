@@ -38,21 +38,20 @@ namespace Diagnosis.Data.Mappings
                 r.OneToMany();
             });
 
-            Set(x => x.Words, s =>
+            Bag(x => x.Words, s =>
             {
                 s.Table("SymptomWords");
                 s.Key(k =>
                 {
                     k.Column("SymptomID");
                 });
-                s.Cascade(Cascade.All);
+                // s.Cascade(Cascade.All);
                 s.Access(Accessor.Field);
             }, r =>
             {
                 r.ManyToMany(x =>
                 {
                     x.Column("WordID");
-                    x.Class(typeof(Word));
                 });
             });
         }

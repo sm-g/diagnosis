@@ -261,23 +261,23 @@ INSERT INTO [Word] ([ID], [Title], [Priority], [DefaultCategoryID], [ParentID]) 
 -- Dumping data for table 'SymptomWords'
 --
 
---INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (8, 1, 2);
---INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (11, 2, 4);
---INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (16, 3, 10);
---INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (17, 1, 10);
---INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (22, 1, 14);
---INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (23, 4, 14);
---INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (24, 47, 14);
---INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (25, 93, 15);
---INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (30, 5, 18);
---INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (31, 24, 18);
---INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (35, 78, 20);
---INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (36, 1, 20);
---INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (37, 93, 21);
---INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (38, 1, 21);
---INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (39, 5, 21);
---INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (40, 7, 21);
---INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (58, 8, 31);
+INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (8, 1, 2);
+INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (11, 2, 4);
+INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (16, 3, 10);
+INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (17, 1, 10);
+INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (22, 1, 14);
+INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (23, 4, 14);
+INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (24, 47, 14);
+INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (25, 93, 15);
+INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (30, 5, 18);
+INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (31, 24, 18);
+INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (35, 78, 20);
+INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (36, 1, 20);
+INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (37, 93, 21);
+INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (38, 1, 21);
+INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (39, 5, 21);
+INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (40, 7, 21);
+INSERT INTO [SymptomWords] ([ID], [WordID], [SymptomID]) VALUES (58, 8, 31);
 -- 17 records
 
 
@@ -296,15 +296,15 @@ INSERT INTO [Speciality] ([ID], [Title]) VALUES (1, 'Кардиолог');
 -- Dumping data for table 'SpecialityIcdBlocks'
 --
 
---INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [BlockID]) VALUES (1, 1, 92);
---INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [BlockID]) VALUES (2, 1, 93);
---INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [BlockID]) VALUES (3, 1, 94);
---INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [BlockID]) VALUES (4, 1, 95);
---INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [BlockID]) VALUES (5, 1, 96);
---INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [BlockID]) VALUES (6, 1, 97);
---INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [BlockID]) VALUES (7, 1, 98);
---INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [BlockID]) VALUES (8, 1, 99);
---INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [BlockID]) VALUES (9, 1, 100);
+INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (1, 1, 92);
+INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (2, 1, 93);
+INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (3, 1, 94);
+INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (4, 1, 95);
+INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (5, 1, 96);
+INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (6, 1, 97);
+INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (7, 1, 98);
+INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (8, 1, 99);
+INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (9, 1, 100);
 -- 9 records
 
 

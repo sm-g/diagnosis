@@ -53,21 +53,21 @@ namespace Diagnosis.Data.Mappings
                 r.OneToMany();
             });
 
-            Set(x => x.Symptoms, s =>
+            Bag(x => x.Symptoms, s =>
             {
                 s.Table("SymptomWords");
                 s.Key(k =>
                 {
                     k.Column("WordID");
                 });
-                s.Cascade(Cascade.All);
+                // s.Cascade(Cascade.All);
+                s.Inverse(true);
                 s.Access(Accessor.Field);
             }, r =>
             {
                 r.ManyToMany(x =>
                 {
                     x.Column("SymptomID");
-                    x.Class(typeof(Symptom));
                 });
             });
         }

@@ -43,7 +43,7 @@ namespace Diagnosis.Data.Mappings
                 r.OneToMany();
             });
 
-            Set(x => x.IcdBlocks, s =>
+            Bag(x => x.IcdBlocks, s =>
             {
                 s.Table("SpecialityIcdBlocks");
                 s.Key(k =>

@@ -8,7 +8,7 @@ namespace Diagnosis.Models
 {
     public class Speciality : EntityBase, IDomainEntity
     {
-        Iesi.Collections.Generic.ISet<IcdBlock> icdBlocks;
+        IList<IcdBlock> icdBlocks;
         Iesi.Collections.Generic.ISet<Doctor> doctors;
         Iesi.Collections.Generic.ISet<SpecialityIcdBlocks> specialityIcdBlocks;
 
@@ -31,7 +31,7 @@ namespace Diagnosis.Models
 
         public virtual IEnumerable<SpecialityIcdBlocks> SpecialityIcdBlocks
         {
-            get { return new List<SpecialityIcdBlocks>(specialityIcdBlocks); }
+            get { return specialityIcdBlocks; }
         }
 
         public Speciality(string title)
