@@ -21,7 +21,8 @@ namespace Tests
                     .SetProperty(Environment.ReleaseConnections, "on_close")
                     .SetProperty(Environment.Dialect, typeof(SQLiteDialect).AssemblyQualifiedName)
                     .SetProperty(Environment.ConnectionDriver, typeof(SQLite20Driver).AssemblyQualifiedName)
-                    .SetProperty(Environment.ConnectionString, "data source=:memory:");
+                    .SetProperty(Environment.ConnectionString, "data source=:memory:")
+                    .SetProperty(Environment.ShowSql, "true");
 
                 Configuration
                     .AddMapping(NHibernateHelper.CreateMapping());
@@ -31,7 +32,7 @@ namespace Tests
 
             session = SessionFactory.OpenSession();
 
-            new SchemaExport(Configuration).Execute(true, true, false, session.Connection, System.Console.Out);
+            new SchemaExport(Configuration).Execute(false, true, false, session.Connection, null);
         }
 
         public void Dispose()

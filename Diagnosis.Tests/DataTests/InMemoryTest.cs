@@ -13,7 +13,7 @@ using NHibernate.Tool.hbm2ddl;
 namespace Tests
 {
     [TestClass]
-    public class HRTest : InMemoryDatabaseTest
+    public class InMemoryTest : InMemoryDatabaseTest
     {
         [TestMethod]
         public void MyTestMethod()
