@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
@@ -101,6 +102,7 @@ namespace Diagnosis.Models
         public virtual Course StartCourse(Patient patient)
         {
             Contract.Requires(patient != null);
+            Contract.Ensures(patient.Courses.Contains(Contract.Result<Course>()));
 
             var course = new Course(patient, this);
             courses.Add(course);

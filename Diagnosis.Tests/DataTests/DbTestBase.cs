@@ -2,6 +2,7 @@
 using Diagnosis.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHibernate;
+using Diagnosis.ViewModels;
 
 namespace Tests
 {
@@ -30,8 +31,8 @@ namespace Tests
             s1 = new Symptom(new Word[] { w1, w2 });
             s2 = new Symptom(new Word[] { w1 });
 
-            course1 = new Course(p1, d1);
-            course2 = new Course(p1, d1);
+            course1 = d1.StartCourse(p1);
+            course2 = d1.StartCourse(p1);
             app1 = new Appointment(course1, d1);
             app2 = new Appointment(course1, d1);
             hr1 = new HealthRecord(app1) { Comment = "test" };
@@ -56,6 +57,8 @@ namespace Tests
                 session.Save(hr2);
                 tx.Commit();
             }
+
+            AuthorityController.LogIn(d1);
         }
 
         [TestCleanup]

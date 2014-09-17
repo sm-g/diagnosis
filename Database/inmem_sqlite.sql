@@ -316,8 +316,8 @@ INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (9
 -- Dumping data for table 'Doctor'
 --
 
-INSERT INTO [Doctor] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [SpecialityID], [Settings]) VALUES (2, 'Смирнов', NULL, 'Василий', -1, 1, 1);
-INSERT INTO [Doctor] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [SpecialityID], [Settings]) VALUES (3, 'Вахрушев', 'Константинович', 'Александр', -1, 1, 1);
+INSERT INTO [Doctor] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [SpecialityID], [Settings]) VALUES (1, 'Смирнов', NULL, 'Василий', -1, 1, 1);
+INSERT INTO [Doctor] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [SpecialityID], [Settings]) VALUES (2, 'Вахрушев', 'Константинович', 'Александр', -1, 1, 1);
 -- 2 records
 
 
@@ -328,8 +328,8 @@ INSERT INTO [Doctor] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [Sp
 -- Dumping data for table 'Patient'
 --
 
-INSERT INTO [Patient] ([ID], [Label], [LastName], [MiddleName], [FirstName], [IsMale], [BirthYear], [BirthMonth], [BirthDay]) VALUES (1, NULL, 'Петров', 'Иванович', 'Иван', -1, 1980, 2, 15);
-INSERT INTO [Patient] ([ID], [Label], [LastName], [MiddleName], [FirstName], [IsMale], [BirthYear], [BirthMonth], [BirthDay]) VALUES (5, 'абв', 'Андреев', NULL, 'Иван', -1, 1982, 11, NULL);
+INSERT INTO [Patient] ([ID], [Label], [LastName], [MiddleName], [FirstName], [IsMale], [BirthYear], [BirthMonth], [BirthDay]) VALUES (1, 'абв', 'Андреев', NULL, 'Иван', -1, 1982, 11, NULL);
+INSERT INTO [Patient] ([ID], [Label], [LastName], [MiddleName], [FirstName], [IsMale], [BirthYear], [BirthMonth], [BirthDay]) VALUES (5, NULL, 'Петров', 'Иванович', 'Иван', -1, 1980, 2, 15);
 INSERT INTO [Patient] ([ID], [Label], [LastName], [MiddleName], [FirstName], [IsMale], [BirthYear], [BirthMonth], [BirthDay]) VALUES (6, NULL, 'Иванов', 'Иванович', 'Иван', -1, 1995, NULL, 10);
 INSERT INTO [Patient] ([ID], [Label], [LastName], [MiddleName], [FirstName], [IsMale], [BirthYear], [BirthMonth], [BirthDay]) VALUES (8, NULL, 'Михайлов', NULL, 'Валентин', -1, 1973, NULL, NULL);
 INSERT INTO [Patient] ([ID], [Label], [LastName], [MiddleName], [FirstName], [IsMale], [BirthYear], [BirthMonth], [BirthDay]) VALUES (10, '10', NULL, NULL, NULL, 0, NULL, NULL, NULL);
@@ -344,9 +344,9 @@ INSERT INTO [Patient] ([ID], [Label], [LastName], [MiddleName], [FirstName], [Is
 -- Dumping data for table 'Course'
 --
 
-INSERT INTO [Course] ([ID], [PatientID], [StartDate], [EndDate], [DoctorID]) VALUES (1, 5, '2014-03-07 00:00:00', '2014-03-14 00:00:00', 2);
-INSERT INTO [Course] ([ID], [PatientID], [StartDate], [EndDate], [DoctorID]) VALUES (7, 10, '2014-05-04 00:00:00', NULL, 2);
-INSERT INTO [Course] ([ID], [PatientID], [StartDate], [EndDate], [DoctorID]) VALUES (8, 5, '2013-05-29 00:00:00', NULL, 2);
+INSERT INTO [Course] ([ID], [PatientID], [StartDate], [EndDate], [DoctorID]) VALUES (1, 1, '2014-03-07 00:00:00', '2014-03-14 00:00:00', 1);
+INSERT INTO [Course] ([ID], [PatientID], [StartDate], [EndDate], [DoctorID]) VALUES (2, 1, '2013-05-29 00:00:00', NULL, 1);
+INSERT INTO [Course] ([ID], [PatientID], [StartDate], [EndDate], [DoctorID]) VALUES (3, 5, '2014-05-04 00:00:00', NULL, 1);
 -- 3 records
 
 
@@ -357,10 +357,10 @@ INSERT INTO [Course] ([ID], [PatientID], [StartDate], [EndDate], [DoctorID]) VAL
 -- Dumping data for table 'Appointment'
 --
 
-INSERT INTO [Appointment] ([ID], [DateAndTime], [CourseID], [DoctorID]) VALUES (1, '2014-03-10 07:39:48', 1, 2);
-INSERT INTO [Appointment] ([ID], [DateAndTime], [CourseID], [DoctorID]) VALUES (4, '2014-05-04 09:03:56', 7, 2);
-INSERT INTO [Appointment] ([ID], [DateAndTime], [CourseID], [DoctorID]) VALUES (8, '2014-05-29 02:45:51', 8, 2);
-INSERT INTO [Appointment] ([ID], [DateAndTime], [CourseID], [DoctorID]) VALUES (20, '2014-06-03 05:39:52', 8, 2);
+INSERT INTO [Appointment] ([ID], [DateAndTime], [CourseID], [DoctorID]) VALUES (1, '2014-03-10 07:39:48', 1, 1);
+INSERT INTO [Appointment] ([ID], [DateAndTime], [CourseID], [DoctorID]) VALUES (2, '2014-05-04 09:03:56', 1, 1);
+INSERT INTO [Appointment] ([ID], [DateAndTime], [CourseID], [DoctorID]) VALUES (3, '2014-05-29 02:45:51', 2, 1);
+INSERT INTO [Appointment] ([ID], [DateAndTime], [CourseID], [DoctorID]) VALUES (4, '2014-06-03 05:39:52', 2, 1);
 -- 4 records
 
 
@@ -377,13 +377,13 @@ INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [Dise
 INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (6, 1, NULL, 4, 3664, 5, 5, 2013, 11, NULL);
 INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (7, 1, NULL, 2, NULL, 3, .0001, 2013, 12, NULL);
 INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (8, 1, NULL, 10, 3667, 2, 1.012, NULL, NULL, NULL);
-INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (11, 4, 'qwe', 31, NULL, 0, NULL, 2014, NULL, NULL);
+INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (11, 3, 'qwe', 31, NULL, 0, NULL, 2014, NULL, NULL);
 INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (12, 1, NULL, 15, 3666, 3, NULL, NULL, NULL, NULL);
 INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (13, 1, NULL, 14, 3664, 1, NULL, NULL, NULL, NULL);
 INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (14, 1, 'комментарий', 18, NULL, 1, NULL, NULL, NULL, NULL);
-INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (19, 4, NULL, 2, NULL, 0, NULL, 2013, 12, NULL);
-INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (24, 8, '111', 21, NULL, 1, NULL, NULL, NULL, NULL);
-INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (27, 8, NULL, 20, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (19, 3, NULL, 2, NULL, 0, NULL, 2013, 12, NULL);
+INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (24, 2, '111', 21, NULL, 1, NULL, NULL, NULL, NULL);
+INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (27, 2, NULL, 20, NULL, 0, NULL, NULL, NULL, NULL);
 -- 11 records
 
 
