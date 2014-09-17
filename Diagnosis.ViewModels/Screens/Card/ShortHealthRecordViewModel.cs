@@ -205,6 +205,7 @@ namespace Diagnosis.ViewModels
             this.healthRecord = hr;
 
             healthRecord.PropertyChanged += healthRecord_PropertyChanged;
+            healthRecord.DateOffset.PropertyChanged += DateOffset_PropertyChanged;
 
             SetDiagnosis();
 
@@ -212,6 +213,14 @@ namespace Diagnosis.ViewModels
             {
                 OnPropertyChanged("ShowDiagnosis");
             });
+        }
+
+        void DateOffset_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Unit")
+            {
+                OnPropertyChanged("DateOffset"); // for converters binding
+            }
         }
 
         private void SetDiagnosis()
@@ -254,6 +263,7 @@ namespace Diagnosis.ViewModels
             if (disposing)
             {
                 healthRecord.PropertyChanged -= healthRecord_PropertyChanged;
+                healthRecord.DateOffset.PropertyChanged -= DateOffset_PropertyChanged;
                 handler.Dispose();
             }
             base.Dispose(disposing);

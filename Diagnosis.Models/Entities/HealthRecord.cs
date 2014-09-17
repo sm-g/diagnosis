@@ -29,6 +29,7 @@ namespace Diagnosis.Models
             {
                 if (_comment == value)
                     return;
+                EditHelper.Edit("Comment", _comment);
                 _comment = value.TrimedOrNull();
                 OnPropertyChanged("Comment");
             }
@@ -41,6 +42,7 @@ namespace Diagnosis.Models
             {
                 if (_category == value)
                     return;
+                EditHelper.Edit("Category", _category);
                 _category = value;
                 OnPropertyChanged("Category");
             }
@@ -53,6 +55,7 @@ namespace Diagnosis.Models
             {
                 if (_disease == value)
                     return;
+                EditHelper.Edit("Disease", _disease);
                 _disease = value;
                 OnPropertyChanged("Disease");
             }
@@ -68,7 +71,7 @@ namespace Diagnosis.Models
 
                 if (value == null)
                     throw new ArgumentNullException("value", "Hr's symptom can not be set to null.");
-
+                EditHelper.Edit("Symptom", _symptom);
                 _symptom = value;
                 OnPropertyChanged("Symptom");
             }
@@ -81,6 +84,7 @@ namespace Diagnosis.Models
             {
                 if (_numVal == value)
                     return;
+                EditHelper.Edit("NumValue", _numVal);
                 _numVal = value;
                 OnPropertyChanged("NumValue");
             }
@@ -98,6 +102,7 @@ namespace Diagnosis.Models
                     return;
                 if (value == null || (value >= 0 && value <= 31))
                 {
+                    EditHelper.Edit("FromDay", _day);
                     _day = value > 0 ? value : null;
                     DateOffset.Day = value;
                 }
@@ -118,6 +123,7 @@ namespace Diagnosis.Models
                     return;
                 if (value == null || (value >= 0 && value <= 12))
                 {
+                    EditHelper.Edit("FromMonth", _month);
                     _month = value > 0 ? value : null;
                     DateOffset.Month = value;
                 }
@@ -138,6 +144,7 @@ namespace Diagnosis.Models
                     return;
                 if (value == null || (value <= DateTime.Today.Year))
                 {
+                    EditHelper.Edit("FromYear", _year);
                     _year = value;
                     DateOffset.Year = value;
                 }
@@ -163,14 +170,13 @@ namespace Diagnosis.Models
                                 break;
 
                             case "Month":
-                                FromMonth = (byte)_dateOffset.Month;
+                                FromMonth = (byte?)_dateOffset.Month;
                                 break;
 
                             case "Day":
-                                FromDay = (byte)_dateOffset.Day;
+                                FromDay = (byte?)_dateOffset.Day;
                                 break;
                         }
-                        OnPropertyChanged("DateOffset");
                     };
                 }
                 return _dateOffset;

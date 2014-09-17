@@ -30,8 +30,6 @@ namespace Diagnosis.Models
             {
                 if (InEdit)
                 {
-                    EditHelper.Edit(
-                        e.PropertyName, ReflectionHelper.GetProperty(e.PropertyName, s));
                     IsDirty = true;
                 }
             };

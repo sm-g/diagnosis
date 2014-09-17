@@ -82,9 +82,12 @@ namespace Diagnosis.ViewModels
                 }
                 else
                 {
-                    var vm = DeletedHealthRecords.Where(x => x.healthRecord == hr).First();
-                    DeletedHealthRecords.Remove(vm);
-                    HealthRecords.Add(vm);
+                    var vm = DeletedHealthRecords.Where(x => x.healthRecord == hr).FirstOrDefault();
+                    if (vm != null)
+                    {
+                        DeletedHealthRecords.Remove(vm);
+                        HealthRecords.Add(vm);
+                    }
                 }
             }
         }

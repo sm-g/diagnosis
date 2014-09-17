@@ -10,7 +10,7 @@ namespace Diagnosis.Models
 {
     public class Patient : EntityBase, IDomainEntity
     {
-        private Iesi.Collections.Generic.ISet<PatientRecordProperty> patientProperties = new HashedSet<PatientRecordProperty>();
+        private Iesi.Collections.Generic.ISet<PatientRecordProperty> _patientProperties = new HashedSet<PatientRecordProperty>();
         private Iesi.Collections.Generic.ISet<Course> courses = new HashedSet<Course>();
 
         private int? _year;
@@ -34,6 +34,7 @@ namespace Diagnosis.Models
             {
                 if (_label == value)
                     return;
+                EditHelper.Edit("Label", _label);
                 _label = value.TrimedOrNull();
                 OnPropertyChanged("Label");
             }
@@ -49,6 +50,7 @@ namespace Diagnosis.Models
             {
                 if (_fn == value)
                     return;
+                EditHelper.Edit("FirstName", _ln);
                 _fn = value.TrimedOrNull();
                 OnPropertyChanged("FirstName");
             }
@@ -64,6 +66,7 @@ namespace Diagnosis.Models
             {
                 if (_mn == value)
                     return;
+                EditHelper.Edit("MiddleName", _mn);
                 _mn = value.TrimedOrNull();
                 OnPropertyChanged("MiddleName");
             }
@@ -79,6 +82,7 @@ namespace Diagnosis.Models
             {
                 if (_ln == value)
                     return;
+                EditHelper.Edit("LastName", _ln);
                 _ln = value.TrimedOrNull();
                 OnPropertyChanged("LastName");
             }
@@ -91,6 +95,7 @@ namespace Diagnosis.Models
             {
                 if (_isMale == value)
                     return;
+                EditHelper.Edit("IsMale", _isMale);
                 _isMale = value;
                 OnPropertyChanged("IsMale");
             }
@@ -109,6 +114,7 @@ namespace Diagnosis.Models
 
                 if (value == null || value <= DateTime.Today.Year)
                 {
+                    EditHelper.Edit("BirthYear", _year);
                     _year = value;
                 }
                 CheckDate();
@@ -127,6 +133,8 @@ namespace Diagnosis.Models
             {
                 if (_month == value)
                     return;
+
+                EditHelper.Edit("BirthMonth", _month);
 
                 if (value == null)
                 {
@@ -153,6 +161,8 @@ namespace Diagnosis.Models
                 if (_day == value)
                     return;
 
+                EditHelper.Edit("BirthDay", _day);
+
                 if (value == null)
                 {
                     _day = value;
@@ -171,7 +181,7 @@ namespace Diagnosis.Models
         {
             get
             {
-                return patientProperties;
+                return _patientProperties;
             }
         }
 
@@ -243,12 +253,14 @@ namespace Diagnosis.Models
             Contract.Requires(property != null);
             Contract.Requires(value != null);
 
-            var existingPatientProperty = patientProperties.FirstOrDefault(
+            var existingPatientProperty = _patientProperties.FirstOrDefault(
                 pp => pp.Patient == this && pp.Property == property);
+
+            EditHelper.Edit("PatientProperties", _patientProperties);
 
             if (existingPatientProperty == null)
             {
-                patientProperties.Add(new PatientRecordProperty(property, value, this));
+                _patientProperties.Add(new PatientRecordProperty(property, value, this));
             }
             else
             {

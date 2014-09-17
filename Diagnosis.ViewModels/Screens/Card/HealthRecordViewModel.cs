@@ -36,10 +36,7 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                if (healthRecord.Comment != value)
-                {
-                    healthRecord.Comment = value;
-                }
+                healthRecord.Comment = value;
             }
         }
 
@@ -86,10 +83,7 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                if (healthRecord.Category != value)
-                {
-                    healthRecord.Category = value;
-                }
+                healthRecord.Category = value;
             }
         }
 
@@ -101,10 +95,7 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                if (healthRecord.NumValue != value)
-                {
-                    healthRecord.NumValue = value;
-                }
+                healthRecord.NumValue = value;
             }
         }
 
@@ -116,11 +107,7 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                if (healthRecord.FromYear != value)
-                {
-                    healthRecord.FromYear = value;
-                    DateOffset.Year = value;
-                }
+                healthRecord.FromYear = value;
             }
         }
 
@@ -132,11 +119,7 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                if (healthRecord.FromMonth != value)
-                {
-                    healthRecord.FromMonth = value.ConvertTo<int, byte>();
-                    DateOffset.Month = value;
-                }
+                healthRecord.FromMonth = value.ConvertTo<int, byte>();
             }
         }
 
@@ -148,11 +131,7 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                if (healthRecord.FromDay != value)
-                {
-                    healthRecord.FromDay = value.ConvertTo<int, byte>();
-                    DateOffset.Day = value;
-                }
+                healthRecord.FromDay = value.ConvertTo<int, byte>();
             }
         }
 
