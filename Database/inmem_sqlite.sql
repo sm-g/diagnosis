@@ -33,12 +33,12 @@
 -- Dumping data for table 'RecordCategory'
 --
 
-INSERT INTO [RecordCategory] ([ID], [Title], [Ord]) VALUES (0, 'Жалоба', 1);
-INSERT INTO [RecordCategory] ([ID], [Title], [Ord]) VALUES (1, 'История', 2);
-INSERT INTO [RecordCategory] ([ID], [Title], [Ord]) VALUES (2, 'Осмотр', 3);
-INSERT INTO [RecordCategory] ([ID], [Title], [Ord]) VALUES (3, 'Обследование', 4);
-INSERT INTO [RecordCategory] ([ID], [Title], [Ord]) VALUES (4, 'Диагноз', 5);
-INSERT INTO [RecordCategory] ([ID], [Title], [Ord]) VALUES (5, 'Лечение', 6);
+INSERT INTO [RecordCategory] ([ID], [Title], [Ord]) VALUES (1, 'Жалоба', 1);
+INSERT INTO [RecordCategory] ([ID], [Title], [Ord]) VALUES (2, 'История', 2);
+INSERT INTO [RecordCategory] ([ID], [Title], [Ord]) VALUES (3, 'Осмотр', 3);
+INSERT INTO [RecordCategory] ([ID], [Title], [Ord]) VALUES (4, 'Обследование', 4);
+INSERT INTO [RecordCategory] ([ID], [Title], [Ord]) VALUES (5, 'Диагноз', 5);
+INSERT INTO [RecordCategory] ([ID], [Title], [Ord]) VALUES (6, 'Лечение', 6);
 -- 6 records
 
 
@@ -184,10 +184,10 @@ INSERT INTO [Word] ([ID], [Title], [Priority], [DefaultCategoryID], [ParentID]) 
 INSERT INTO [Word] ([ID], [Title], [Priority], [DefaultCategoryID], [ParentID]) VALUES (22, 'роды', 0, NULL, NULL);
 INSERT INTO [Word] ([ID], [Title], [Priority], [DefaultCategoryID], [ParentID]) VALUES (23, 'запоры', 0, NULL, NULL);
 INSERT INTO [Word] ([ID], [Title], [Priority], [DefaultCategoryID], [ParentID]) VALUES (24, 'лейкоцитоз', 0, NULL, NULL);
-INSERT INTO [Word] ([ID], [Title], [Priority], [DefaultCategoryID], [ParentID]) VALUES (25, 'кровотечение', 0, 0, NULL);
+INSERT INTO [Word] ([ID], [Title], [Priority], [DefaultCategoryID], [ParentID]) VALUES (25, 'кровотечение', 0, 5, NULL);
 INSERT INTO [Word] ([ID], [Title], [Priority], [DefaultCategoryID], [ParentID]) VALUES (26, 'черный стул', 0, NULL, NULL);
 INSERT INTO [Word] ([ID], [Title], [Priority], [DefaultCategoryID], [ParentID]) VALUES (27, 'гематурия', 0, NULL, NULL);
-INSERT INTO [Word] ([ID], [Title], [Priority], [DefaultCategoryID], [ParentID]) VALUES (28, 'аритмия', 0, 0, NULL);
+INSERT INTO [Word] ([ID], [Title], [Priority], [DefaultCategoryID], [ParentID]) VALUES (28, 'аритмия', 0, 1, NULL);
 INSERT INTO [Word] ([ID], [Title], [Priority], [DefaultCategoryID], [ParentID]) VALUES (29, 'цианоз', 0, NULL, NULL);
 INSERT INTO [Word] ([ID], [Title], [Priority], [DefaultCategoryID], [ParentID]) VALUES (30, 'тромбоэмболия', 0, NULL, NULL);
 INSERT INTO [Word] ([ID], [Title], [Priority], [DefaultCategoryID], [ParentID]) VALUES (31, 'желудочковые экстрасистолы', 0, NULL, NULL);
@@ -377,13 +377,13 @@ INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [Dise
 INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (6, 1, NULL, 4, 3664, 5, 5, 2013, 11, NULL);
 INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (7, 1, NULL, 2, NULL, 3, .0001, 2013, 12, NULL);
 INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (8, 1, NULL, 10, 3667, 2, 1.012, NULL, NULL, NULL);
-INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (11, 3, 'qwe', 31, NULL, 0, NULL, 2014, NULL, NULL);
+INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (11, 3, 'qwe', 31, NULL, 5, NULL, 2014, NULL, NULL);
 INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (12, 1, NULL, 15, 3666, 3, NULL, NULL, NULL, NULL);
 INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (13, 1, NULL, 14, 3664, 1, NULL, NULL, NULL, NULL);
 INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (14, 1, 'комментарий', 18, NULL, 1, NULL, NULL, NULL, NULL);
-INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (19, 3, NULL, 2, NULL, 0, NULL, 2013, 12, NULL);
+INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (19, 3, NULL, 2, NULL, 5, NULL, 2013, 12, NULL);
 INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (24, 2, '111', 21, NULL, 1, NULL, NULL, NULL, NULL);
-INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (27, 2, NULL, 20, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [NumValue], [FromYear], [FromMonth], [FromDay]) VALUES (27, 2, NULL, 20, NULL, 2, NULL, NULL, NULL, NULL);
 -- 11 records
 
 

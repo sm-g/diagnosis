@@ -25,7 +25,7 @@ namespace Diagnosis.Models
                 return this.Ord.CompareTo(other.Ord);
             }
             else
-                throw new ArgumentException("Object is not a CategoryViewModel");
+                throw new ArgumentException("Object is not a Category");
         }
     }
 }
