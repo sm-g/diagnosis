@@ -6,7 +6,6 @@ using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Data;
-using EventAggregator;
 using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
@@ -78,7 +77,6 @@ namespace Diagnosis.ViewModels
                             // копируем категории из последней записи
                             newHr.Category = lastHrVM.healthRecord.Category;
                         }
-
                     },
                     // нельзя добавлять новую запись, пока выбранная пуста
                     () => SelectedHealthRecord == null || !SelectedHealthRecord.healthRecord.IsEmpty()
@@ -96,6 +94,7 @@ namespace Diagnosis.ViewModels
                     }, () => CheckedHrCount > 0);
             }
         }
+
         public ICommand SendHealthRecordsToSearchCommand
         {
             get
@@ -163,7 +162,7 @@ namespace Diagnosis.ViewModels
             });
         }
 
-        void HealthRecords_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void HealthRecords_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
@@ -181,7 +180,6 @@ namespace Diagnosis.ViewModels
                         MoveHrViewSelection();
                 }
             }
-
         }
 
         private void MoveHrViewSelection()
@@ -207,7 +205,6 @@ namespace Diagnosis.ViewModels
         internal void SelectHealthRecord(HealthRecord healthRecord)
         {
             SelectedHealthRecord = HealthRecords.FirstOrDefault(x => x.healthRecord == healthRecord);
-
         }
 
         protected override void Dispose(bool disposing)
@@ -223,9 +220,21 @@ namespace Diagnosis.ViewModels
             finally
             {
                 base.Dispose(disposing);
-
             }
+        }
 
+        /// <summary>
+        /// Реальное удаление записей.
+        /// </summary>
+        internal void MakeDeletions()
+        {
+            this.Send(Events.HideOverlay, typeof(HealthRecord).AsParams(MessageKeys.Type));
+
+            foreach (var hrVm in hrManager.DeletedHealthRecords)
+            {
+                appointment.RemoveHealthRecord(hrVm.healthRecord);
+            }
+            hrManager.DeletedHealthRecords.Clear();
         }
     }
 }

@@ -17,7 +17,6 @@ namespace Diagnosis.ViewModels
         private HealthRecordViewModel _hr;
         private HrEditorViewModel _hrEditor;
         private bool editorWasOpened;
-        private ITransaction transaction;
 
         public CardViewModel(object entity)
             : this()
@@ -160,6 +159,12 @@ namespace Diagnosis.ViewModels
         {
             Debug.Print("{0} {1} {2}", e.action, e.entity.GetType().Name, e.entity);
 
+            // сохраняем все изменения при закрытии пациента, курса, осмотра, записи
+            if (e.action == PatientViewer.OpeningAction.Close)
+            {
+                Session.SaveOrUpdate(viewer.OpenedPatient);
+            }
+
             if (e.entity is Patient)
             {
                 switch (e.action)
@@ -224,19 +229,20 @@ namespace Diagnosis.ViewModels
                             }
                         };
                         Course.SelectAppointment(viewer.OpenedAppointment);
-
-                        transaction = Session.BeginTransaction();
-
                         break;
 
                     case PatientViewer.OpeningAction.Close:
+                        Appointment.MakeDeletions();
                         Appointment.Dispose();
                         // редактор записей после смены осмотра всегда закрыт
                         editorWasOpened = false;
-                        if (transaction.IsActive)
+
+                        // соханяем все изменения
+                        using (var t = Session.BeginTransaction())
                         {
-                            transaction.Commit();
+                            t.Commit();
                         }
+
                         break;
                 }
             }
@@ -261,11 +267,6 @@ namespace Diagnosis.ViewModels
                         HealthRecord.Dispose();
                         break;
                 }
-            }
-            // сохраняем все изменения при закрытии пациента, курса, осмотра, записи
-            if (e.action == PatientViewer.OpeningAction.Close)
-            {
-                Session.SaveOrUpdate(viewer.OpenedPatient);
             }
         }
     }
