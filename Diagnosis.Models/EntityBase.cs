@@ -255,7 +255,7 @@ namespace Diagnosis.Models
             }
         }
 
-        public void Edit<T>(Expression<Func<T>> propertyExpression) where T : EntityBase
+        public void Edit<T>(Expression<Func<T>> propertyExpression)
         {
             lock (_syncRoot)
             {
@@ -266,7 +266,16 @@ namespace Diagnosis.Models
                 {
                     var propValuePair = ExpressionHelper.GetPropertyNameAndValue(propertyExpression);
                     var propertyName = propValuePair.Item1;
-                    var value = propValuePair.Item2.As<T>();  // unproxy
+                    T value;
+
+                    if (propValuePair.Item2 is EntityBase)
+                    {
+                        value = (propValuePair.Item2 as EntityBase).As<T>();  // unproxy
+                    }
+                    else
+                    {
+                        value = propValuePair.Item2;
+                    }
 
                     // сохраняем значение свойства до вызова BeginEdit, один раз
                     if (!OriginalValues.Contains(propertyName))

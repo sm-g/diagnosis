@@ -29,7 +29,7 @@ namespace Diagnosis.Models
             {
                 if (_comment == value)
                     return;
-                EditHelper.Edit("Comment", _comment);
+                EditHelper.Edit(() => Comment);
                 _comment = value.TrimedOrNull();
                 OnPropertyChanged("Comment");
             }
@@ -56,7 +56,7 @@ namespace Diagnosis.Models
             {
                 if (_disease == value)
                     return;
-                EditHelper.Edit("Disease", _disease);
+                EditHelper.Edit(() => Disease);
                 _disease = value;
                 OnPropertyChanged("Disease");
             }
@@ -70,9 +70,7 @@ namespace Diagnosis.Models
                 if (_symptom == value)
                     return;
 
-                if (value == null)
-                    throw new ArgumentNullException("value", "Hr's symptom can not be set to null.");
-                EditHelper.Edit("Symptom", _symptom);
+                EditHelper.Edit(() => Symptom);
                 _symptom = value;
                 OnPropertyChanged("Symptom");
             }

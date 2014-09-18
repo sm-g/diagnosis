@@ -16,10 +16,10 @@ namespace Diagnosis.Models
         /// <typeparam name="T"></typeparam>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static T As<T>(this EntityBase entity) where T : EntityBase
+        public static T As<T>(this EntityBase entity)
         {
             if (entity == null)
-                return null;
+                return default(T);
             return (T)entity.Actual;
         }
     }
