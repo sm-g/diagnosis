@@ -147,8 +147,6 @@ namespace Diagnosis.ViewModels
             Contract.Requires(appointment != null);
             this.appointment = appointment;
 
-            appointment.HealthRecordsChanged += HealthRecords_CollectionChanged;
-
             hrManager = new HealthRecordManager(appointment, onHrVmPropChanged: (s, e) =>
             {
                 if (e.PropertyName == "Category")
@@ -160,41 +158,6 @@ namespace Diagnosis.ViewModels
                     OnPropertyChanged("CheckedHealthRecords");
                 }
             });
-        }
-
-        private void HealthRecords_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
-            {
-                foreach (var item in e.NewItems)
-                {
-                    //if (SelectedHealthRecord.healthRecord == item)
-                    //    MoveHrViewSelection();
-                }
-            }
-            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
-            {
-                foreach (var item in e.OldItems)
-                {
-                    if (SelectedHealthRecord.healthRecord == item)
-                        MoveHrViewSelection();
-                }
-            }
-        }
-
-        private void MoveHrViewSelection()
-        {
-            // удалена выделенная запись - меняем выделение
-            var i = healthRecordsView.CurrentPosition;
-            if (i == HealthRecords.Count - 1)
-            {
-                // удалили последную запись в списке
-                healthRecordsView.MoveCurrentToPrevious();
-            }
-            else
-            {
-                healthRecordsView.MoveCurrentToNext();
-            }
         }
 
         public override string ToString()
@@ -213,7 +176,6 @@ namespace Diagnosis.ViewModels
             {
                 if (disposing)
                 {
-                    appointment.HealthRecordsChanged -= HealthRecords_CollectionChanged;
                     hrManager.Dispose();
                 }
             }

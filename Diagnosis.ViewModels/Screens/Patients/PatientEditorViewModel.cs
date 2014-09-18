@@ -122,18 +122,20 @@ namespace Diagnosis.ViewModels
 
         protected override void Dispose(bool disposing)
         {
-            if (shouldCommit)
+            if (disposing)
             {
-                (patient as IEditableObject).EndEdit();
-                Session.Transaction.Commit();
+                if (shouldCommit)
+                {
+                    (patient as IEditableObject).EndEdit();
+                    Session.Transaction.Commit();
+                }
+                else
+                {
+                    (patient as IEditableObject).CancelEdit();
+                }
+                Session.Transaction.Dispose();
+                Patient.Dispose();
             }
-            else
-            {
-                (patient as IEditableObject).CancelEdit();
-            }
-            Session.Transaction.Dispose();
-            Patient.Dispose();
-
             base.Dispose(disposing);
         }
     }
