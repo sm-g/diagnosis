@@ -593,10 +593,14 @@
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>REM copy nhibernate config and sqlite.dll for inmemory db
+    <PostBuildEvent>REM copy nhibernate config
 
 if $(ConfigurationName)==Debug (echo f | xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate-debug.cfg.xml" "$(TargetDir)NHibernate\nhibernate.cfg.xml" /d /y) else (echo f | xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate-release.cfg.xml" "$(TargetDir)NHibernate\nhibernate.cfg.xml" /d /y)
 
+REM copy db for release
+if $(ConfigurationName)==Release (echo f | xcopy "$(SolutionDir)Database\diagnosis.accdb" "$(TargetDir)" /d /y) 
+
+REM copy sqlite.dll for inmemory db
 xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)" /i /d /y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
