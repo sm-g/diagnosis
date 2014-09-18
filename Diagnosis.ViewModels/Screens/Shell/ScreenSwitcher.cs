@@ -90,11 +90,11 @@ namespace Diagnosis.ViewModels
 
             this.Subscribe(Events.EditHealthRecord, (e) =>
             {
-                // открываем экран карточки, открываем запись и показываем редактор
+                // открываем экран карточки, открываем запись и переключаем редактор
                 var hr = e.GetValue<HealthRecord>(MessageKeys.HealthRecord);
 
                 OpenScreen(Screens.Card, hr);
-                (CurrentView as CardViewModel).EditHr();
+                (CurrentView as CardViewModel).ToogleHrEditor();
             });
 
         }

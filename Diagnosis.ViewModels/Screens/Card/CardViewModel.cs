@@ -111,9 +111,19 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public void EditHr()
+        /// <summary>
+        /// Переключает редактор для открытой записи.
+        /// </summary>
+        public void ToogleHrEditor()
         {
-            HealthRecordEditor.Load(HealthRecord.healthRecord);
+            if (HealthRecordEditor.IsActive && HealthRecordEditor.HealthRecord.healthRecord == HealthRecord.healthRecord)
+            {
+                HealthRecordEditor.Unload();
+            }
+            else
+            {
+                HealthRecordEditor.Load(HealthRecord.healthRecord);
+            }
         }
 
         internal void Open(object parameter)
@@ -272,7 +282,7 @@ namespace Diagnosis.ViewModels
 
                         if (editorWasOpened)
                         {
-                            EditHr();
+                            HealthRecordEditor.Load(hr);
                         }
                         break;
 
@@ -289,10 +299,10 @@ namespace Diagnosis.ViewModels
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                // открываем добавленную запись
+                // редактируем добавленную запись
                 var hr = (HealthRecord)e.NewItems[e.NewItems.Count - 1];
                 viewer.OpenHr(hr);
-                EditHr();
+                HealthRecordEditor.Load(hr);
             }
         }
     }

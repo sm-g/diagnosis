@@ -157,7 +157,7 @@ namespace Diagnosis.ViewModels
                     inSetSymptomOnTagCompleted = false;
                 }
             };
-           
+
             OnPropertyChanged("Autocomplete");
         }
 
@@ -223,6 +223,9 @@ namespace Diagnosis.ViewModels
         public void Load(HealthRecord hr)
         {
             Contract.Requires(hr != null);
+
+            if (HealthRecord != null && HealthRecord.healthRecord == hr)
+                return;
 
             CloseCurrentHr();
 
