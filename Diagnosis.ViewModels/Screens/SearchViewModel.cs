@@ -197,7 +197,7 @@ namespace Diagnosis.ViewModels
             {
                 if (_categories == null)
                 {
-                    var catsVM = StatelessSession.QueryOver<Category>().List().Select(cat => new CategoryViewModel(cat)).ToList();
+                    var catsVM = Session.QueryOver<Category>().List().Select(cat => new CategoryViewModel(cat)).ToList();
                     catsVM.ForAll(cat => cat.PropertyChanged += (s, e) =>
                     {
                         if (e.PropertyName == "IsChecked")
