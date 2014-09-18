@@ -27,7 +27,6 @@ namespace Diagnosis.ViewModels
         private Appointment _openedApp;
         private Course _openedCourse;
         private HealthRecord _openedHr;
-        private bool _fastAddingMode;
 
         // последние открытые
         private Dictionary<Patient, Course> patCourseMap;
@@ -262,11 +261,6 @@ namespace Diagnosis.ViewModels
             if (!courseAppMap.TryGetValue(course, out app))
             {
                 // курс открыт первый раз
-
-                if (course.Appointments.Count() == 0)
-                {
-                    course.AddAppointment(course.LeadDoctor); // добавляем первый осмотр
-                }
                 OpenedAppointment = course.Appointments.LastOrDefault();
             }
             else
@@ -302,25 +296,17 @@ namespace Diagnosis.ViewModels
                 courseAppMap[OpenedCourse] = app;
             }
 
-            HealthRecord hrVm;
-            if (!appHrMap.TryGetValue(app, out hrVm))
+            HealthRecord hr;
+            if (!appHrMap.TryGetValue(app, out hr))
             {
                 // осмотр открыт первый раз
-
-                if (app.HealthRecords.Count() == 0)
-                {
-                    app.AddHealthRecord(); // добавляем первую запись
-                }
-                else
-                {
-                    // никакие записи не выбраны
-                    OpenedHealthRecord = null;
-                }
+                // никакие записи не выбраны
+                // если записей нет, добавляется новая и открывается на редактирование в CardVM
             }
             else
             {
                 // повторно — выбрана последняя открытая запись
-                OpenedHealthRecord = hrVm;
+                OpenedHealthRecord = hr;
             }
         }
 
@@ -397,8 +383,6 @@ namespace Diagnosis.ViewModels
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                // открываем добавленную запись
-                OpenedHealthRecord = (HealthRecord)e.NewItems[e.NewItems.Count - 1];
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {

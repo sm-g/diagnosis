@@ -1,9 +1,10 @@
 ﻿using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using NHibernate;
+using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
@@ -150,9 +151,9 @@ namespace Diagnosis.ViewModels
         /// синхронизация:
         /// при открытии модели меняем соответстующую viewmodel и подписываемся
         /// на изменение выбранной вложенной сущности, чтобы открыть её модель
-        /// 
+        ///
         /// при закрытии разрушаем viewmodel
-        /// 
+        ///
         /// при закрытии курса, осмотра или записи сохраняем пациента (если закрывается пациент, сохранение при разрушении CardViewModel)
         /// </summary>
         private void viewer_OpenedChanged(object sender, PatientViewer.OpeningEventArgs e)
@@ -190,10 +191,11 @@ namespace Diagnosis.ViewModels
             }
             else if (e.entity is Course)
             {
+                var course = e.entity as Course;
                 switch (e.action)
                 {
                     case PatientViewer.OpeningAction.Open:
-                        Course = new CourseViewModel(viewer.OpenedCourse);
+                        Course = new CourseViewModel(course);
                         Course.PropertyChanged += (s1, e1) =>
                         {
                             if (e1.PropertyName == "SelectedAppointment")
@@ -204,7 +206,11 @@ namespace Diagnosis.ViewModels
                                     viewer.OpenedAppointment = null;
                             }
                         };
-                        Patient.SelectCourse(viewer.OpenedCourse);
+                        Patient.SelectCourse(course);
+                        if (course.Appointments.Count() == 0)
+                        {
+                            course.AddAppointment(course.LeadDoctor); // добавляем первый осмотр
+                        }
                         break;
 
                     case PatientViewer.OpeningAction.Close:
@@ -214,10 +220,12 @@ namespace Diagnosis.ViewModels
             }
             else if (e.entity is Appointment)
             {
+                var app = e.entity as Appointment;
                 switch (e.action)
                 {
                     case PatientViewer.OpeningAction.Open:
-                        Appointment = new AppointmentViewModel(viewer.OpenedAppointment);
+                        Appointment = new AppointmentViewModel(app);
+                        app.HealthRecordsChanged += app_HealthRecordsChanged;
                         Appointment.PropertyChanged += (s1, e1) =>
                         {
                             if (e1.PropertyName == "SelectedHealthRecord")
@@ -228,10 +236,17 @@ namespace Diagnosis.ViewModels
                                     viewer.OpenedHealthRecord = null;
                             }
                         };
-                        Course.SelectAppointment(viewer.OpenedAppointment);
+                        Course.SelectAppointment(app);
+
+                        if (app.HealthRecords.Count() == 0)
+                        {
+                            app.AddHealthRecord(); // добавляем первую запись
+                        }
                         break;
 
                     case PatientViewer.OpeningAction.Close:
+                        app.HealthRecordsChanged -= app_HealthRecordsChanged;
+
                         Appointment.MakeDeletions();
                         Appointment.Dispose();
                         // редактор записей после смены осмотра всегда закрыт
@@ -248,16 +263,16 @@ namespace Diagnosis.ViewModels
             }
             else if (e.entity is HealthRecord)
             {
+                var hr = e.entity as HealthRecord;
                 switch (e.action)
                 {
                     case PatientViewer.OpeningAction.Open:
-
-                        HealthRecord = new HealthRecordViewModel(viewer.OpenedHealthRecord);
-                        Appointment.SelectHealthRecord(viewer.OpenedHealthRecord);
+                        HealthRecord = new HealthRecordViewModel(hr);
+                        Appointment.SelectHealthRecord(hr);
 
                         if (editorWasOpened)
                         {
-                            HealthRecordEditor.Load(viewer.OpenedHealthRecord);
+                            EditHr();
                         }
                         break;
 
@@ -267,6 +282,17 @@ namespace Diagnosis.ViewModels
                         HealthRecord.Dispose();
                         break;
                 }
+            }
+        }
+
+        private void app_HealthRecordsChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                // открываем добавленную запись
+                var hr = (HealthRecord)e.NewItems[e.NewItems.Count - 1];
+                viewer.OpenHr(hr);
+                EditHr();
             }
         }
     }
