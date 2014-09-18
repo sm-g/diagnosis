@@ -42,7 +42,7 @@
 
             <StackPanel VerticalAlignment="Top" Visibility="{Binding Patient.NoCourses, Converter={StaticResource NegBooleanToVisibilityConverter}}" Margin="0,0,0,10">
                 <TextBlock Text="Курсы" Margin="0,0,10,5" />
-                <ListView ItemsSource="{Binding Patient.Courses}">
+                <ListView ItemsSource="{Binding Patient.Courses}" SelectedIndex="-1">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <card:Course />
