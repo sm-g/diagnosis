@@ -186,7 +186,7 @@ namespace Diagnosis.ViewModels
         }
 
         /// <summary>
-        /// Реальное удаление записей.
+        /// Реальное удаление удаленных и пустых записей.
         /// </summary>
         internal void MakeDeletions()
         {
@@ -197,6 +197,9 @@ namespace Diagnosis.ViewModels
                 appointment.RemoveHealthRecord(hrVm.healthRecord);
             }
             hrManager.DeletedHealthRecords.Clear();
+
+            var emptyHrs = appointment.HealthRecords.Where(hr => hr.IsEmpty()).ToList();
+            emptyHrs.ForEach(hr => appointment.RemoveHealthRecord(hr));
         }
     }
 }
