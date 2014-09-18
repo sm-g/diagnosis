@@ -35,13 +35,13 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
-        /// Создает сущности из заготовок.
+        /// Создает сущности из заготовки. Из одной заготовки может получиться несколько сущностей-чисел.
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
         public IEnumerable<object> MakeEntities(object obj)
         {
-            Contract.Ensures(Contract.Result<object>() != null);
+            Contract.Ensures(Contract.Result<IEnumerable<object>>().All(e => e is EntityBase));
 
             if (obj is string)
             {
@@ -62,12 +62,18 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                         yield return new Word(str + unit); // number
                     }
                 }
-                if (AllowNewFromQuery)
-                    yield return new Word(str); // new word
-                Console.WriteLine("новое слово в теге, когда новые слова запрещены");
+                else
+                {
+                    if (AllowNewFromQuery)
+                        yield return new Word(str); // new word
+                    else
+                        System.Diagnostics.Debug.Print("новое слово в теге, когда новые слова запрещены");
+                }
             }
-
-            yield return obj; // word
+            else
+            {
+                yield return obj; // word
+            }
         }
         /// <summary>
         /// По запросу определяет, какой поиск использовать. Возвращает сущности разных типов.

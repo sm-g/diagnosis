@@ -144,7 +144,7 @@ namespace Diagnosis.ViewModels
             _autocomplete.EntitiesChanged += (s, e) =>
             {
                 // меняем симптом записи при завершении или удалении тега
-                var words = _autocomplete.GetItems().Cast<Word>().ToList();
+                var words = _autocomplete.GetEntities().Cast<Word>().ToList();
                 if (words.Count > 0) // == 0 если исправляем единственное слово
                 {
                     // симптом со всеми словами

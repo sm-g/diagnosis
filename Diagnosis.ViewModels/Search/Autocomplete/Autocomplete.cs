@@ -208,7 +208,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <summary>
         /// Возвращает сущности из тегов.
         /// </summary>
-        public IEnumerable<object> GetItems()
+        public IEnumerable<object> GetEntities()
         {
             Contract.Requires(Tags.All(t => t.State != TagStates.Typing));
 
