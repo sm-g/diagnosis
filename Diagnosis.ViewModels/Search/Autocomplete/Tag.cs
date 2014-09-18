@@ -80,7 +80,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_entity != value)
                 {
                     _entity = value;
-                    OnPropertyChanged(() => EntityBlank);
+                    OnPropertyChanged("EntityBlank");
 
                     Debug.Print("{0} entity = {1}", this, value);
                 }
@@ -104,7 +104,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 {
                     _focused = value;
                     Debug.Print("{0} focused = {1}", this, value);
-                    OnPropertyChanged(() => IsFocused);
+                    OnPropertyChanged("IsFocused");
                 }
             }
         }
@@ -135,7 +135,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_isDeleteOnly != value)
                 {
                     _isDeleteOnly = value;
-                    OnPropertyChanged(() => IsDeleteOnly);
+                    OnPropertyChanged("IsDeleteOnly");
                 }
             }
         }
@@ -155,7 +155,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     State = TagStates.Typing;
 
                     _query = value;
-                    OnPropertyChanged(() => Query);
+                    OnPropertyChanged("Query");
                 }
             }
         }
@@ -174,7 +174,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                         IsDeleteOnly = true;
                     }
 
-                    OnPropertyChanged(() => IsNewWord);
+                    OnPropertyChanged("State");
                 }
             }
         }
