@@ -39,9 +39,14 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         public event EventHandler InputEnded;
         /// <summary>
-        /// Возникает, когда завершается редактирование тега. (Можно получать сущности из тегов).
+        /// Возникает, когда завершается редактирование тега.
         /// </summary>
         public event EventHandler<TagEventArgs> TagCompleted;
+        /// <summary>
+        /// Возникает, когда меняется набор сущностей в тегах. (Завершение редактрования теги или удаление тега.)
+        /// </summary>
+        public event EventHandler EntitiesChanged;
+
 
         public RelayCommand EnterCommand
         {
@@ -144,6 +149,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             tag.Deleted += (s, e) =>
             {
                 Tags.Remove(tag);
+                OnEntitiesChanged();
             };
             tag.PropertyChanged += (s, e) =>
             {
@@ -174,6 +180,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     if (tag.State == TagStates.Completed)
                     {
                         OnTagCompleted(tag);
+                        OnEntitiesChanged();
                     }
                 }
             };
@@ -234,6 +241,16 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 h(this, new TagEventArgs(tag));
             }
         }
+
+        protected virtual void OnEntitiesChanged()
+        {
+            var h = EntitiesChanged;
+            if (h != null)
+            {
+                h(this, EventArgs.Empty);
+            }
+        }
+
         /// <summary>
         ///
         /// </summary>
@@ -312,6 +329,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             SelectedSuggestion = Suggestions.FirstOrDefault();
         }
 
+        private void RefreshPopup()
+        {
+            IsPopupOpened = Suggestions.Count > 0;
+        }
+
         [ContractInvariantMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
@@ -319,9 +341,13 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             Contract.Invariant(Tags.Count > 0); // хотя бы один тег - поле ввода
         }
 
-        private void RefreshPopup()
+        protected override void Dispose(bool disposing)
         {
-            IsPopupOpened = Suggestions.Count > 0;
+            if (disposing)
+            {
+                Tags.Clear();
+            }
+            base.Dispose(disposing);
         }
     }
 }

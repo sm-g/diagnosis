@@ -21,6 +21,7 @@ namespace Diagnosis.ViewModels
         private ISession session;
         private IEnumerable<Category> _categories;
         private EventMessageHandler handler;
+        private bool inSetSymptomOnTagCompleted;
 
         public HrEditorViewModel(ISession session)
         {
@@ -127,6 +128,9 @@ namespace Diagnosis.ViewModels
 
         public Autocomplete Autocomplete { get { return _autocomplete; } }
 
+        /// <summary>
+        /// Создает автокомплит с начальными словами из симптома редактируемой запсии.
+        /// </summary>
         private void CreateAutoComplete()
         {
             List<Word> initialWords = new List<Word>();
@@ -137,8 +141,24 @@ namespace Diagnosis.ViewModels
                 }
 
             _autocomplete = new Autocomplete(new Recognizer(session, true) { AllowNewFromQuery = true }, true, initialWords.ToArray());
-
-            OnPropertyChanged("AutoComplete");
+            _autocomplete.EntitiesChanged += (s, e) =>
+            {
+                // меняем симптом записи при завершении или удалении тега
+                var words = _autocomplete.GetItems().Cast<Word>().ToList();
+                if (words.Count > 0) // == 0 если исправляем единственное слово
+                {
+                    // симптом со всеми словами
+                    var existing = SymptomQuery.ByWords(session)(words);
+                    inSetSymptomOnTagCompleted = true;
+                    if (existing == null)
+                        HealthRecord.healthRecord.Symptom = new Symptom(words);
+                    else
+                        HealthRecord.healthRecord.Symptom = existing;
+                    inSetSymptomOnTagCompleted = false;
+                }
+            };
+           
+            OnPropertyChanged("Autocomplete");
         }
 
         #endregion AutoComplete
@@ -229,23 +249,7 @@ namespace Diagnosis.ViewModels
             if (HealthRecord != null)
             {
                 HealthRecord.healthRecord.PropertyChanged -= hr_PropertyChanged;
-                SaveCurrentHr();
                 (HealthRecord.healthRecord as IEditableObject).EndEdit();
-            }
-        }
-
-        private void SaveCurrentHr()
-        {
-            var words = _autocomplete.GetItems().Cast<Word>().ToList();
-            if (words.Count > 0) // == 0 если исправляем единственное слово
-            {
-                // симптом со всеми словами
-                var existing = SymptomQuery.ByWords(session)(words);
-
-                if (existing == null)
-                    HealthRecord.healthRecord.Symptom = new Symptom(words);
-                else
-                    HealthRecord.healthRecord.Symptom = existing;
             }
         }
 
@@ -269,6 +273,10 @@ namespace Diagnosis.ViewModels
             if (e.PropertyName == "Category")
             {
                 OnPropertyChanged(e.PropertyName);
+            }
+            else if (e.PropertyName == "Symptom" && !inSetSymptomOnTagCompleted)
+            {
+                _autocomplete.ReplaceTagsWith((sender as HealthRecord).Symptom.Words);
             }
         }
 
