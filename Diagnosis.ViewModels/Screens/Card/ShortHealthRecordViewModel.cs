@@ -106,14 +106,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public decimal? NumValue
-        {
-            get
-            {
-                return healthRecord.NumValue;
-            }
-        }
-
         public int? FromYear
         {
             get

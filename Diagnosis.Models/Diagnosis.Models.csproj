@@ -86,6 +86,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DoctorSettings.cs" />
+    <Compile Include="Entities\Measure.cs" />
+    <Compile Include="Entities\Uom.cs" />
     <Compile Include="Entities\Appointment.cs" />
     <Compile Include="Entities\Course.cs" />
     <Compile Include="Diagnosis.cs" />

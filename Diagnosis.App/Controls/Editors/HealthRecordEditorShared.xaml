@@ -67,7 +67,7 @@
                     <!--DataContext is HrEditorViewModel-->
                     <search:NewAutocomplete DataContext="{Binding DataContext.Autocomplete, ElementName=editor}" />
                     
-                    <TextBox Text="{Binding NumValue, StringFormat={}{0:G6}, TargetNullValue=''}"
+                    <!--<TextBox Text="{Binding NumValue, StringFormat={}{0:G6}, TargetNullValue=''}"
                              ToolTip="Числовое значение"
                              Width="60"
                              Margin="10,0,0,0"
@@ -76,7 +76,7 @@
                         <controls:WatermarkService.Watermark>
                             <TextBlock Style="{StaticResource watermark}" Margin="5,0,0,0">число</TextBlock>
                         </controls:WatermarkService.Watermark>
-                    </TextBox>
+                    </TextBox>-->
                 </Grid>
             </DockPanel>
             <DockPanel>

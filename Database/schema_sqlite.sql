@@ -1,5 +1,7 @@
 
     PRAGMA foreign_keys = OFF;
+    drop table if exists Measure;
+    drop table if exists Uom;
     drop table if exists Appointment;
     drop table if exists RecordCategory;
     drop table if exists Symptom;
@@ -19,6 +21,23 @@
     drop table if exists Patient;
     PRAGMA foreign_keys = ON;
 
+    create table Measure (
+        Id  integer primary key autoincrement,
+       HealthRecordID INT not null,
+       UomID INT not null,
+       Val DOUBLE not null,
+       constraint FKB2D76321D873B95 foreign key (HealthRecordID) references HealthRecord,
+       constraint FKB2D763248B02845 foreign key (UomID) references Uom
+    );
+
+    create table Uom (
+        Id  integer primary key autoincrement,
+       Abbr TEXT not null,
+       Description TEXT,
+       Factor INT not null,
+       UomType INT not null
+    );
+    
     create table Appointment (
         Id  integer primary key autoincrement,
        CourseID INT,
@@ -103,7 +122,6 @@
        CategoryID INT,
        DiseaseID INT,
        SymptomID INT,
-       NumValue NUMERIC,
        FromDay TINYINT,
        FromMonth TINYINT,
        FromYear INT,

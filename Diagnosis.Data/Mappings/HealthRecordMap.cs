@@ -17,8 +17,19 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.FromYear);
             Property(x => x.FromMonth);
             Property(x => x.FromDay);
-            Property(x => x.NumValue);
-
+            Set(x => x.Measures, s =>
+            {
+                s.Key(k =>
+                {
+                    k.Column("HealthRecordID");
+                });
+                s.Inverse(true);
+                s.Cascade(Cascade.All | Cascade.DeleteOrphans);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.OneToMany();
+            });
             ManyToOne(x => x.Appointment, m =>
             {
                 m.Column("AppointmentID");

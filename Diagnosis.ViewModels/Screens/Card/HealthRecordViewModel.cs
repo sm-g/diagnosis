@@ -86,20 +86,7 @@ namespace Diagnosis.ViewModels
                 healthRecord.Category = value;
             }
         }
-
-        public decimal? NumValue
-        {
-            get
-            {
-                return healthRecord.NumValue;
-            }
-            set
-            {
-                healthRecord.NumValue = value;
-            }
-        }
-
-        public int? FromYear
+                public int? FromYear
         {
             get
             {

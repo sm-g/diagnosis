@@ -9,6 +9,7 @@ using NHibernate.Cfg;
 using NHibernate.Cfg.MappingSchema;
 using NHibernate.Event;
 using NHibernate.Mapping.ByCode;
+using NHibernate.Tool.hbm2ddl;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -82,6 +83,7 @@ namespace Diagnosis.Data
             {
                 _session = SessionFactory.OpenSession();
                 _session.FlushMode = FlushMode.Commit;
+
                 if (InMemory)
                     InMemoryHelper.FillData(Configuration, _session);
 

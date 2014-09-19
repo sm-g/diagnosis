@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using Iesi.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace Diagnosis.Models
 {
     public class HealthRecord : EntityBase, IDomainEntity
     {
         private Iesi.Collections.Generic.ISet<PatientRecordProperty> recordProperties;
+        private Iesi.Collections.Generic.ISet<Measure> measures;
         private int? _year;
         private byte? _month;
         private byte? _day;
@@ -19,6 +21,8 @@ namespace Diagnosis.Models
         private Category _category;
         private IcdDisease _disease;
         private DateOffset _dateOffset;
+
+        public virtual event NotifyCollectionChangedEventHandler MeasuresChanged;
 
         public virtual Appointment Appointment { get; protected set; }
 
@@ -73,19 +77,6 @@ namespace Diagnosis.Models
                 EditHelper.Edit(() => Symptom);
                 _symptom = value;
                 OnPropertyChanged("Symptom");
-            }
-        }
-
-        public virtual decimal? NumValue
-        {
-            get { return _numVal; }
-            set
-            {
-                if (_numVal == value)
-                    return;
-                EditHelper.Edit("NumValue", _numVal);
-                _numVal = value;
-                OnPropertyChanged("NumValue");
             }
         }
 
@@ -184,10 +175,11 @@ namespace Diagnosis.Models
 
         public virtual IEnumerable<PatientRecordProperty> RecordProperties
         {
-            get
-            {
-                return recordProperties;
-            }
+            get { return recordProperties; }
+        }
+        public virtual IEnumerable<Measure> Measures
+        {
+            get { return measures; }
         }
 
         public HealthRecord(Appointment appointment)
@@ -197,6 +189,20 @@ namespace Diagnosis.Models
             Appointment = appointment;
         }
 
+        public virtual void AddMeasure(Measure m)
+        {
+            Contract.Requires(m != null);
+
+            if (measures.Add(m))
+                OnMeasuresChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, m));
+        }
+        public virtual void RemoveMeasure(Measure m)
+        {
+            Contract.Requires(m != null);
+
+            if (measures.Remove(m))
+                OnMeasuresChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, m));
+        }
         private void CheckDate()
         {
             DateHelper.CheckDate(FromYear, FromMonth, FromDay);
@@ -208,8 +214,17 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("{0} {1} {2} {3} {4} {5} {6}", Id, Category, Symptom, NumValue != null ? NumValue.Value.ToString("G6") : "", Disease != null ? Disease.Title : "",
+            return string.Format("{0} {1} {2} {3} {4} {5}", Id, Category, Symptom, Disease != null ? Disease.Title : "",
                 new DateOffset(FromYear, FromMonth, FromDay, () => Appointment.DateAndTime), Comment);
+        }
+
+        protected virtual void OnMeasuresChanged(NotifyCollectionChangedEventArgs e)
+        {
+            var h = MeasuresChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
         }
     }
 }

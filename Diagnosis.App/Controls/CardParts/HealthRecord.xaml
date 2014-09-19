@@ -68,7 +68,7 @@
 
                 <TextBlock>
                     <Run Text="{Binding Name, Mode=OneWay}" />
-                    <Run Text="{Binding NumValue, Mode=OneWay, StringFormat={}{0:G6}, ConverterCulture=ru-RU}" />
+                    <!--<Run Text="{Binding NumValue, Mode=OneWay, StringFormat={}{0:G6}, ConverterCulture=ru-RU}" />-->
                 </TextBlock>
                 <TextBlock Grid.Column="1" Text="{Binding Diagnosis.Code, FallbackValue=''}" Visibility="{Binding ShowDiagnosis, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 <TextBlock Grid.Row="1" Visibility="{Binding DateOffset.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
