@@ -4,8 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
+             xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <InputBindingCollection x:Shared="False" x:Key="TagInputBindings">
+            <KeyBinding Key="Delete" Command="{Binding DeleteCommand}" />
+        </InputBindingCollection>
+    </UserControl.Resources>
     <!-- Autocomplete -->
     <StackPanel>
         <ListBox x:Name="input"
@@ -30,13 +36,19 @@
                             <Setter Property="IsSelected" Value="True" />
                         </Trigger>
                     </Style.Triggers>
+                    <Setter Property="controls:Attached.InputBindings" Value="{StaticResource TagInputBindings}" />
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu>
+                                <MenuItem Header="Удалить" Command="{Binding DeleteCommand}"/>
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
                 </Style>
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBox Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding IsDeleteOnly}"
-                             controls:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
-                             />
+                    <search:Tag />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

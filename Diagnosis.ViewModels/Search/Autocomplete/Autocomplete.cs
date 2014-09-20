@@ -18,7 +18,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         Recognizer recognizer;
         object prevSelectedSuggestion;
 
-        public Autocomplete(Recognizer recognizer, bool allowTagEditing, object[] initItems)
+        public Autocomplete(Recognizer recognizer, bool allowTagEditing, IDomainEntity[] initItems)
         {
             this.recognizer = recognizer;
             this._isEditable = allowTagEditing;
@@ -135,11 +135,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <summary>
         /// Добавляет тег в конец списка.
         /// </summary>
-        /// <param name="item">Сущность или null.</param>
-        public void AddTag(object item = null)
+        public void AddTag(IDomainEntity item = null)
         {
-            Contract.Requires(item == null || !(item is string));
-
             Tag tag;
             bool empty = item == null;
             if (empty)
@@ -161,11 +158,12 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 }
                 else if (e.PropertyName == "IsFocused")
                 {
-                    // предположения для недописанных
-                    if (tag.IsFocused && tag.State != Tag.States.Init)
+                    if (tag.IsFocused)
                     {
                         prevSelectedSuggestion = SelectedSuggestion; // сначала фокус получает выбранный тег
-                        MakeSuggestions();
+                        // предположения для недописанных
+                        if (tag.State != Tag.States.Init)
+                            MakeSuggestions();
                     }
 
                     // потерялся фокус → завершение введенного текста
@@ -192,7 +190,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 Tags.Insert(Tags.Count - 1, tag);
         }
 
-        public void ReplaceTagsWith(IEnumerable<object> items)
+        public void ReplaceTagsWith(IEnumerable<IDomainEntity> items)
         {
             // оставляем последний тег
             while (Tags.Count != 1)
@@ -215,8 +213,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
             foreach (var tag in Tags)
             {
-                if (tag.EntityBlankType != Tag.BlankTypes.None)
-                    foreach (var item in recognizer.MakeEntities(tag.EntityBlank))
+                if (tag.BlankType != Tag.BlankTypes.None)
+                    foreach (var item in recognizer.MakeEntities(tag))
                     {
                         yield return item;
                     }
@@ -256,30 +254,36 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// Завершает тег.
         /// </summary>
         /// <param name="tag"></param>
-        /// <param name="suggestion">Слово, единица или запрос.</param>
+        /// <param name="suggestion">Слово, число с единицей или запрос.</param>
         /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
         private void CompleteCommon(Tag tag, object suggestion, bool exactMatchRequired)
         {
             if (suggestion != null &&
                (!exactMatchRequired || Recognizer.Matches(suggestion, tag.Query)))
             {
-                tag.EntityBlank = suggestion;
+                tag.Blank = suggestion;
+
             }
-            // предположения нет или не точное совпадение с запросом
+            // предположения нет или не точное совпадение с запросом - сохраняем запрос
             else if (recognizer.CanMakeEntityFrom(tag.Query))
             {
-                tag.EntityBlank = tag.Query;
+                // измерение без правльной единицы или недописанное слово
+                tag.Blank = tag.Query;
             }
             else
             {
-                // тег ещё не готов - убираем заготовку, если она была создана
-                tag.EntityBlank = null;
+                // нельзя создать сущность из тега
+                Debug.Assert(tag.Query == "" || !recognizer.AllowNewFromQuery);
+                tag.Blank = null;
             }
+
             Suggestions.Clear();
 
             // удаляем тег без текста
             if (tag.Query == "")
                 tag.DeleteCommand.Execute(null);
+
+            recognizer.Validate(tag);
 
             // добавляем пустое поле
             if (!IsLastTagEmpty)
@@ -318,8 +322,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             var tagIndex = Tags.IndexOf(EditingTag);
             var results = recognizer.SearchForSuggesstions(
                 query: EditingTag.Query,
-                prevEntityBlank: tagIndex > 0 ? Tags[tagIndex - 1].EntityBlank : null,
-                exclude: Tags.Select((t, i) => i != tagIndex ? t.EntityBlank : null)); // все сущности кроме сущности редактируемого тега
+                prevEntityBlank: tagIndex > 0 ? Tags[tagIndex - 1].Blank : null,
+                exclude: Tags.Select((t, i) => i != tagIndex ? t.Blank : null)); // все сущности кроме сущности редактируемого тега
 
             Suggestions.Clear();
             foreach (var item in results)

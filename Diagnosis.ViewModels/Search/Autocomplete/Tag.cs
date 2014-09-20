@@ -3,20 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
-
     public class Tag : ViewModelBase
     {
-        private object _entity;
+        private readonly bool freezeOnComplete;
+        private object _blank;
         private bool _focused;
         private string _query;
         private States _state;
         private bool _isDeleteOnly;
-        readonly bool freezeOnComplete;
+        private bool _partialMeasure;
+        private bool _isNewWord;
+        private bool _isValid;
         /// <summary>
         /// Создает тег с текстом в начальном состоянии.
         /// </summary>
@@ -33,22 +33,48 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// Создает пустой тег.
         /// </summary>
         public Tag(bool freezeOnComplete)
-            : this(null, freezeOnComplete)
+            : this(null as string, freezeOnComplete)
         {
         }
 
         /// <summary>
         /// Создает тег с сущностью в завершенном состоянии.
         /// </summary>
-        public Tag(object entity, bool deleteOnly)
+        public Tag(IDomainEntity entity, bool deleteOnly)
         {
             Contract.Requires(entity != null);
             freezeOnComplete = deleteOnly;
 
-            EntityBlank = entity;
+            Blank = entity;
+            Entities = new List<IDomainEntity>() { entity };
         }
 
         public event EventHandler Deleted;
+
+        /// <summary>
+        /// Типы сущностей в теге.
+        /// </summary>
+        public enum BlankTypes
+        {
+            None,
+            /// <summary>
+            /// Строка-запрос, может быть словом или измерением
+            /// </summary>
+            Query,
+            Word,
+            Measure,
+        }
+
+        /// <summary>
+        /// Состояния тега.
+        /// </summary>
+        public enum States
+        {
+            Init,
+            Typing,
+            Completed,
+            // Leaved
+        }
 
         public RelayCommand DeleteCommand
         {
@@ -59,26 +85,31 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
+        /// Сущности, созданные из тега. При изменении запроса сбрасывается.
+        /// </summary>
+        public IEnumerable<IDomainEntity> Entities { get; internal set; }
+
+        /// <summary>
         /// Заготовка, из которой получаются сущности.
         /// То, что оказалось введенным после энтера - найденное слово, текст запроса,
         /// число c единицей или ничего, если новые слова недопустимы.
         /// </summary>
-        public object EntityBlank
+        public object Blank
         {
             get
             {
-                return _entity;
+                return _blank;
             }
             set
             {
                 Contract.Requires(State != States.Completed);
-                if (_entity != value)
+                if (_blank != value)
                 {
-                    _entity = value;
-                    OnPropertyChanged("EntityBlank");
-                    OnPropertyChanged("EntityBlankType");
+                    _blank = value;
+                    OnPropertyChanged("Blank");
+                    OnPropertyChanged("BlankType");
 
-                    Debug.Print("{0} entity = {1}", this, value);
+                    Debug.Print("{0} blank = {1}", this, value);
                 }
                 if (value != null)
                 {
@@ -87,16 +118,18 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 State = States.Completed;
             }
         }
+
         /// <summary>
         /// Тип заготовки.
         /// </summary>
-        public BlankTypes EntityBlankType
+        public BlankTypes BlankType
         {
             get
             {
-                return GetBlankType(EntityBlank);
+                return GetBlankType(Blank);
             }
         }
+
         public bool IsFocused
         {
             get
@@ -121,10 +154,56 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             get
             {
-                return EntityBlankType == BlankTypes.Query &&
-                       !Recognizer.IsMeasure(Query);
+                return _isNewWord;
+            }
+            set
+            {
+                if (_isNewWord != value)
+                {
+                    _isNewWord = value;
+                    OnPropertyChanged(() => IsNewWord);
+                }
             }
         }
+
+        /// <summary>
+        /// Частичное измерение с неправильной единицей.
+        /// </summary>
+        public bool IsPartialMeasure
+        {
+            get
+            {
+                return _partialMeasure;
+            }
+            set
+            {
+                if (_partialMeasure != value)
+                {
+                    _partialMeasure = value;
+                    OnPropertyChanged(() => IsPartialMeasure);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Некорректный тег (новое слово).
+        /// </summary>
+        public bool IsInvalid
+        {
+            get
+            {
+                return _isValid;
+            }
+            set
+            {
+                if (_isValid != value)
+                {
+                    _isValid = value;
+                    OnPropertyChanged(() => IsInvalid);
+                }
+            }
+        }
+
         /// <summary>
         /// Тег не редактируется, можно только удалить.
         /// </summary>
@@ -159,6 +238,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     State = States.Typing;
 
                     _query = value;
+                    Entities = null;
                     OnPropertyChanged("Query");
                 }
             }
@@ -183,11 +263,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        public override string ToString()
-        {
-            return string.Format("{0} {1}", Query, EntityBlank);
-        }
-
         public static BlankTypes GetBlankType(object blank)
         {
             if (blank is Word)
@@ -196,12 +271,16 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 return BlankTypes.Query;
             if (blank == null)
                 return BlankTypes.None;
-            if (blank is Recognizer.NumbersWithUom)
+            if (blank is Recognizer.NumbersWithUom || blank is Measure)
                 return BlankTypes.Measure;
 
             throw new ArgumentOutOfRangeException("blank");
         }
 
+        public override string ToString()
+        {
+            return string.Format("tag q:{0}({3}) b:{1}({2})", Query, Blank, BlankType, State);
+        }
         protected virtual void OnDeleted()
         {
             var h = Deleted;
@@ -209,32 +288,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 h(this, EventArgs.Empty);
             }
-        }
-        /// <summary>
-        /// Типы сущностей в теге.
-        /// </summary>
-        public enum BlankTypes
-        {
-            None,
-            /// <summary>
-            /// Строка-запрос, может быть словом или измерением
-            /// </summary>
-            Query,
-            Word,
-            /// <summary>
-            /// 
-            /// </summary>
-            Measure,
-        }
-        /// <summary>
-        /// Состояния тега.
-        /// </summary>
-        public enum States
-        {
-            Init,
-            Typing,
-            Completed,
-            // Leaved
         }
     }
 

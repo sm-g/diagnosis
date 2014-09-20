@@ -5,6 +5,7 @@ using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Globalization;
 using System.Linq;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
@@ -21,8 +22,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         public bool AllowNewFromQuery { get; set; }
 
-        public bool AllowNonCheckable { get; set; }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="childrenFirstStrategy">При поиске предположений первыми - дети предыдущего слова.</param>
         public Recognizer(ISession session, bool childrenFirstStrategy)
         {
             this.session = session;
@@ -50,50 +54,96 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
-        /// Создает сущности из заготовки. Из одной заготовки может получиться несколько измерений.
+        /// Создает сущности из тега. Может получиться одно слово или несколько измерений.
+        /// Кеширует созданные сущности в теге.
         /// </summary>
         /// <param name="blank"></param>
         /// <returns></returns>
-        public IEnumerable<IDomainEntity> MakeEntities(object blank)
+        public IEnumerable<IDomainEntity> MakeEntities(Tag tag)
         {
-            var blankType = Tag.GetBlankType(blank);
-            switch (blankType)
+            Contract.Requires(tag.BlankType != Tag.BlankTypes.None);
+
+            // неизмененые теги - сущности уже созданы
+            if (tag.Entities != null)
             {
-                case Tag.BlankTypes.None:
-                    break;
+                foreach (var e in tag.Entities)
+                {
+                    yield return e;
+                }
+                yield break;
+            }
 
+            switch (tag.BlankType)
+            {
                 case Tag.BlankTypes.Query:
-                    if (IsMeasure(blank as string))
+                    if (IsMeasure(tag.Blank as string))
                     {
-                        var splittedQuery = SplitMeasureQuery(blank as string);
-                        if (splittedQuery.Item2 != "")
-                            System.Diagnostics.Debug.Print("! недописанный uom, создаем измерение без него");
-
-                        foreach (var val in GetFloats(splittedQuery.Item1))
+                        var splittedQuery = SplitMeasureQuery(tag.Blank as string);
+                        foreach (var m in MakeMeasures(tag, splittedQuery.Item1, null)) // if splittedQuery.Item2 != "" uom is wrong, ignore such uom
                         {
-                            yield return new Measure(val);
+                            yield return m;
                         }
                     }
-                    else
+                    else if (AllowNewFromQuery)
                     {
-                        if (AllowNewFromQuery)
-                            yield return new Word(blank as string);
-                        else
-                            System.Diagnostics.Debug.Print("новое слово в теге, когда новые слова запрещены");
+                        var w = new Word(tag.Blank as string);
+                        tag.Entities = new List<IDomainEntity>() { w };
+                        yield return w;
                     }
                     break;
 
                 case Tag.BlankTypes.Word:
-                    yield return blank as Word;
+                    tag.Entities = new List<IDomainEntity>() { tag.Blank as Word };
+                    yield return tag.Blank as Word;
                     break;
 
                 case Tag.BlankTypes.Measure:
-                    var numbersWithUom = (blank as NumbersWithUom);
-                    foreach (var val in GetFloats(numbersWithUom.Item1))
+                    var numbersWithUom = tag.Blank as NumbersWithUom;
+                    foreach (var m in MakeMeasures(tag, numbersWithUom.Item1, numbersWithUom.Item2))
                     {
-                        yield return new Measure(val, numbersWithUom.Item2);
+                        yield return m;
                     }
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Создает измерения, кешируя их в теге.
+        /// </summary>
+        private IEnumerable<Measure> MakeMeasures(Tag tag, string numbers, Uom uom)
+        {
+            var measures = new List<Measure>();
+
+            foreach (var val in GetFloats(numbers))
+            {
+                measures.Add(new Measure(val, uom));
+            }
+            tag.Entities = new List<IDomainEntity>(measures);
+            foreach (var m in measures)
+            {
+                yield return m;
+            }
+        }
+
+        public void Validate(Tag tag)
+        {
+            if (tag.BlankType == Tag.BlankTypes.Query)
+            {
+                var str = tag.Blank as string;
+                if (IsMeasure(str))
+                {
+                    tag.IsPartialMeasure = SplitMeasureQuery(str).Item2 != "";
+                }
+                else
+                {
+                    tag.IsNewWord = true;
+                }
+            }
+            else
+            {
+                tag.IsPartialMeasure = false;
+                tag.IsNewWord = false;
+                tag.IsInvalid = tag.BlankType == Tag.BlankTypes.None && tag.State != Tag.States.Init;
             }
         }
 
@@ -133,10 +183,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 {
                     found = found.Where(i => !exclude.Contains(i));
                 }
-                if (!AllowNonCheckable)
-                {
-                    // found = found.Where(i => !(i as ICheckable).IsNonCheckable);
-                }
+
                 results = new List<object>(found);
 
                 if (AllowNewFromQuery)
@@ -158,6 +205,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             return results;
         }
 
+        /// <summary>
+        /// Определяет сходство предположения и запроса.
+        /// </summary>
         public static bool Matches(object suggestion, string query)
         {
             if (suggestion is Word)
@@ -198,7 +248,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             foreach (var item in numbers)
             {
                 float val;
-                if (float.TryParse(item, out val))
+                if (float.TryParse(item.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out val)) // both dot and comma
                     yield return val;
             }
         }

@@ -42,7 +42,7 @@ namespace Diagnosis.ViewModels
 
         public SearchViewModel()
         {
-            Autocomplete = new Autocomplete(new Recognizer(Session, false), false, null);
+            Autocomplete = new Autocomplete(new Recognizer(Session, false), true, null);
 
             Results = new ObservableCollection<HrSearchResultViewModel>();
             ControlsVisible = true;
@@ -416,7 +416,10 @@ namespace Diagnosis.ViewModels
             options.AppointmentDateGt = DateHelper.NullableDate(AppYearLower, AppMonthLower, AppDayLower);
             options.AppointmentDateLt = DateHelper.NullableDate(AppYearUpper, AppMonthUpper, AppDayUpper);
             options.AnyWord = AnyWord;
-            options.Words = Autocomplete.GetEntities().Cast<Word>();
+
+            var entities = Autocomplete.GetEntities().ToList();
+            options.Words = entities.Where(x => x is Word).Cast<Word>().ToList();
+            options.Measures = entities.Where(x => x is Measure).Cast<Measure>().ToList();
             options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
             options.Comment = Comment;
 

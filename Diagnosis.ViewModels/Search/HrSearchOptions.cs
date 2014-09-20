@@ -29,6 +29,10 @@ namespace Diagnosis.ViewModels
         /// Слова, которые есть в симптоме
         /// </summary>
         public IEnumerable<Word> Words { get; set; }
+        /// <summary>
+        /// Измерения
+        /// </summary>
+        public IEnumerable<Measure> Measures { get; set; }
 
         /// <summary>
         /// Достаточно ли любого слова в симптоме
@@ -160,5 +164,6 @@ namespace Diagnosis.ViewModels
                 return !string.IsNullOrEmpty(Comment);
             }
         }
+
     }
 }

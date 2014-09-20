@@ -233,6 +233,9 @@
     <Compile Include="Controls\Common\TextBoxInfo.xaml.cs">
       <DependentUpon>TextBoxInfo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Search\Tag.xaml.cs">
+      <DependentUpon>Tag.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\NullToVis.cs" />
     <Compile Include="Converters\LessThanConverter.cs" />
     <Compile Include="Converters\DateIntervalLabel.cs" />
@@ -397,6 +400,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Common\TextBoxInfo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Search\Tag.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

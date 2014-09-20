@@ -1,0 +1,33 @@
+﻿<TextBox x:Class="Diagnosis.App.Controls.Search.Tag"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"              
+             xmlns:controls="clr-namespace:Diagnosis.App.Controls"
+             mc:Ignorable="d"
+         x:Name="text" 
+         Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}" 
+         IsReadOnly="{Binding IsDeleteOnly}"
+             controls:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
+             d:DesignHeight="20" d:DesignWidth="300">
+    <TextBox.Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="White"  />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsNewWord}" Value="True">
+                    <Setter Property="Background" Value="#FFEFFFD8"  />
+                    <Setter Property="ToolTip" Value="Новое слово"  />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsInvalid}" Value="True">
+                    <Setter Property="Background" Value="#FFFFD8D8"  />
+                    <Setter Property="ToolTip" Value="Некорректный текст, игнорируется"  />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsPartialMeasure}" Value="True">
+                    <Setter Property="Background" Value="#FFFFFDD8"  />
+                    <Setter Property="ToolTip" Value="Неизвестная единица измерения, сохраняется без единицы"  />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </TextBox.Style>
+    
+</TextBox>

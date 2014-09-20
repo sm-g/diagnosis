@@ -133,14 +133,12 @@ namespace Diagnosis.ViewModels
         /// </summary>
         private void CreateAutoComplete()
         {
-            List<Word> initialWords = new List<Word>();
-            if (HealthRecord.Symptom != null)
-                foreach (var item in HealthRecord.healthRecord.Symptom.Words)
-                {
-                    initialWords.Add(item);
-                }
+            var initials = new List<IDomainEntity>();
+            if (HealthRecord.healthRecord.Symptom != null)
+                initials.AddRange(HealthRecord.healthRecord.Symptom.Words);
+            initials.AddRange(HealthRecord.healthRecord.Measures);
 
-            _autocomplete = new Autocomplete(new Recognizer(session, true) { AllowNewFromQuery = true }, true, initialWords.ToArray());
+            _autocomplete = new Autocomplete(new Recognizer(session, true) { AllowNewFromQuery = true }, true, initials.ToArray());
             _autocomplete.EntitiesChanged += (s, e) =>
             {
                 // меняем симптом и измерения записи при завершении или удалении тега

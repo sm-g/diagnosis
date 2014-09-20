@@ -47,17 +47,9 @@ namespace Diagnosis.Models
                 DbValue = value * (Uom != null ? (float)Math.Pow(10, Uom.Factor) : 1);
             }
         }
-        public Measure(float value, Uom uom)
+        public Measure(float value, Uom uom = null)
         {
-            Contract.Requires(uom != null);
             Uom = uom;
-            Value = value;
-        }
-        /// <summary>
-        /// Создает измерение без единицы.
-        /// </summary>
-        public Measure(float value)
-        {
             Value = value;
         }
         protected Measure() { }
