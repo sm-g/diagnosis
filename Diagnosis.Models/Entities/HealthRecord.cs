@@ -11,7 +11,7 @@ namespace Diagnosis.Models
     public class HealthRecord : EntityBase, IDomainEntity
     {
         private Iesi.Collections.Generic.ISet<PatientRecordProperty> recordProperties;
-        private Iesi.Collections.Generic.ISet<Measure> measures;
+        private Iesi.Collections.Generic.ISet<Measure> measures = new HashedSet<Measure>();
         private int? _year;
         private byte? _month;
         private byte? _day;

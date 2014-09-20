@@ -5,6 +5,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
+using Diagnosis.Models;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
@@ -107,7 +108,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             get
             {
-                return Tags.Last().State == TagStates.Init;
+                return Tags.Last().State == Tag.States.Init;
             }
         }
 
@@ -160,15 +161,15 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 }
                 else if (e.PropertyName == "IsFocused")
                 {
-                    // предположения для недописанных слов
-                    if (tag.IsFocused && (tag.EntityBlank is string || tag.EntityBlank == null))
+                    // предположения для недописанных
+                    if (tag.IsFocused && tag.State != Tag.States.Init)
                     {
                         prevSelectedSuggestion = SelectedSuggestion; // сначала фокус получает выбранный тег
                         MakeSuggestions();
                     }
 
                     // потерялся фокус → завершение введенного текста
-                    if (!tag.IsFocused && tag.State == TagStates.Typing)
+                    if (!tag.IsFocused && tag.State == Tag.States.Typing)
                     {
                         CompleteOnLostFocus(tag);
                     }
@@ -177,7 +178,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 }
                 else if (e.PropertyName == "State")
                 {
-                    if (tag.State == TagStates.Completed)
+                    if (tag.State == Tag.States.Completed)
                     {
                         OnTagCompleted(tag);
                         OnEntitiesChanged();
@@ -208,19 +209,19 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <summary>
         /// Возвращает сущности из тегов.
         /// </summary>
-        public IEnumerable<object> GetEntities()
+        public IEnumerable<IDomainEntity> GetEntities()
         {
-            Contract.Requires(Tags.All(t => t.State != TagStates.Typing));
+            Contract.Requires(Tags.All(t => t.State != Tag.States.Typing));
 
             foreach (var tag in Tags)
             {
-                if (tag.EntityBlank != null)
+                if (tag.EntityBlankType != Tag.BlankTypes.None)
                     foreach (var item in recognizer.MakeEntities(tag.EntityBlank))
                     {
                         yield return item;
                     }
-                else if (tag.State != TagStates.Init)
-                    Debug.Print("tag without entity blank, skip");
+                else if (tag.State != Tag.States.Init)
+                    Debug.Print("! tag without entity blank, skip");
             }
         }
 
@@ -252,21 +253,21 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
-        ///
+        /// Завершает тег.
         /// </summary>
         /// <param name="tag"></param>
-        /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранной сущности.</param>
+        /// <param name="suggestion">Слово, единица или запрос.</param>
+        /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
         private void CompleteCommon(Tag tag, object suggestion, bool exactMatchRequired)
         {
             if (suggestion != null &&
-               (!exactMatchRequired || suggestion.ToString() == tag.Query))
+               (!exactMatchRequired || Recognizer.Matches(suggestion, tag.Query)))
             {
-                // записывам выбранное из попапа в тег
                 tag.EntityBlank = suggestion;
             }
+            // предположения нет или не точное совпадение с запросом
             else if (recognizer.CanMakeEntityFrom(tag.Query))
             {
-                // записываем введенный текст
                 tag.EntityBlank = tag.Query;
             }
             else
@@ -289,14 +290,14 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             switch (tag.State)
             {
-                case TagStates.Init:
+                case Tag.States.Init:
                     // Enter в пустом поле
                     OnInputEnded();
                     return;
-                case TagStates.Typing:
+                case Tag.States.Typing:
                     CompleteCommon(tag, SelectedSuggestion, false);
                     break;
-                case TagStates.Completed:
+                case Tag.States.Completed:
                     // тег не изменен
                     break;
             }
@@ -307,7 +308,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         private void CompleteOnLostFocus(Tag tag)
         {
-            Contract.Requires(tag.State == TagStates.Typing);
+            Contract.Requires(tag.State == Tag.States.Typing);
 
             CompleteCommon(tag, prevSelectedSuggestion, true);
         }
@@ -315,10 +316,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private void MakeSuggestions()
         {
             var tagIndex = Tags.IndexOf(EditingTag);
-            var results = recognizer.Search(
-                EditingTag.Query,
-                tagIndex > 0 ? Tags[tagIndex - 1].EntityBlank : null,
-                Tags.Select((t, i) => i != tagIndex ? t.EntityBlank : null));
+            var results = recognizer.SearchForSuggesstions(
+                query: EditingTag.Query,
+                prevEntityBlank: tagIndex > 0 ? Tags[tagIndex - 1].EntityBlank : null,
+                exclude: Tags.Select((t, i) => i != tagIndex ? t.EntityBlank : null)); // все сущности кроме сущности редактируемого тега
 
             Suggestions.Clear();
             foreach (var item in results)

@@ -143,19 +143,37 @@ namespace Diagnosis.ViewModels
             _autocomplete = new Autocomplete(new Recognizer(session, true) { AllowNewFromQuery = true }, true, initialWords.ToArray());
             _autocomplete.EntitiesChanged += (s, e) =>
             {
-                // меняем симптом записи при завершении или удалении тега
-                var words = _autocomplete.GetEntities().Cast<Word>().ToList();
-                if (words.Count > 0) // == 0 если исправляем единственное слово
+                // меняем симптом и измерения записи при завершении или удалении тега
+                var entities = _autocomplete.GetEntities().ToList();
+
+                var words = entities.Where(x => x is Word).Cast<Word>().ToList();
+                inSetSymptomOnTagCompleted = true;
+                if (words.Count > 0)
                 {
                     // симптом со всеми словами
                     var existing = SymptomQuery.ByWords(session)(words);
-                    inSetSymptomOnTagCompleted = true;
+
                     if (existing == null)
                         HealthRecord.healthRecord.Symptom = new Symptom(words);
                     else
                         HealthRecord.healthRecord.Symptom = existing;
-                    inSetSymptomOnTagCompleted = false;
                 }
+                else
+                {
+                    HealthRecord.healthRecord.Symptom = null;
+                }
+                inSetSymptomOnTagCompleted = false;
+
+                var measures = entities.Where(x => x is Measure).Cast<Measure>().ToList();
+                var toAdd = measures.Except(HealthRecord.healthRecord.Measures).ToList();
+                var toRemove = HealthRecord.healthRecord.Measures.Except(measures).ToList();
+                toAdd.ForEach(m =>
+                {
+                    m.HealthRecord = HealthRecord.healthRecord;
+                    HealthRecord.healthRecord.AddMeasure(m);
+                });
+                toRemove.ForEach(m => HealthRecord.healthRecord.RemoveMeasure(m));
+
             };
 
             OnPropertyChanged("Autocomplete");
@@ -280,6 +298,7 @@ namespace Diagnosis.ViewModels
             else if (e.PropertyName == "Symptom" && !inSetSymptomOnTagCompleted)
             {
                 _autocomplete.ReplaceTagsWith((sender as HealthRecord).Symptom.Words);
+                // TODO измерения 
             }
         }
 

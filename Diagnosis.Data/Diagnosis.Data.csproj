@@ -130,6 +130,7 @@
     <Compile Include="Queries\PatientQuery.cs" />
     <Compile Include="Queries\HealthRecordQuery.cs" />
     <Compile Include="Queries\SymptomQuery.cs" />
+    <Compile Include="Queries\UomQuery.cs" />
     <Compile Include="Queries\WordQuery.cs" />
     <Compile Include="Repositories\IcdChapterRepository.cs" />
     <Compile Include="Repositories\NHibernateRepository.cs" />

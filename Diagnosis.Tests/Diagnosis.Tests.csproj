@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="DataTests\DbTestBase.cs" />
     <Compile Include="DataTests\SymptomsQueryTest.cs" />
+    <Compile Include="RecognizerTest.cs" />
     <Compile Include="SequencePartitionTest.cs" />
     <Compile Include="DateFormatterTest.cs" />
     <Compile Include="DateOffsetTest.cs" />
