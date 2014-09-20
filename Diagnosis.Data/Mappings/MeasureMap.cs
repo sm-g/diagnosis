@@ -21,7 +21,6 @@ namespace Diagnosis.Data.Mappings
             ManyToOne(x => x.Uom, m =>
             {
                 m.Column("UomID");
-                m.NotNullable(true);
             });
             ManyToOne(x => x.HealthRecord, m =>
             {

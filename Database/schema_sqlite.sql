@@ -24,7 +24,7 @@
     create table Measure (
         Id  integer primary key autoincrement,
        HealthRecordID INT not null,
-       UomID INT not null,
+       UomID INT,
        Val DOUBLE not null,
        constraint FKB2D76321D873B95 foreign key (HealthRecordID) references HealthRecord,
        constraint FKB2D763248B02845 foreign key (UomID) references Uom

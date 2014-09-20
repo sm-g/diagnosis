@@ -12,35 +12,54 @@ namespace Diagnosis.Models
 {
     public class Measure : EntityBase, IDomainEntity
     {
-        public virtual HealthRecord HealthRecord { get; protected set; }
+        HealthRecord _hr;
+        public virtual HealthRecord HealthRecord
+        {
+            get
+            {
+                return _hr;
+            }
+            set
+            {
+                if (_hr != null)
+                {
+                    throw new InvalidOperationException("Can not change HealthRecord associated wiht measure.");
+                }
+                _hr = value;
+            }
+        }
         public virtual Uom Uom { get; protected set; }
         /// <summary>
         /// Значение измерения, приведенное к базовой единице измерения.
         /// </summary>
         public virtual float DbValue { get; protected set; }
         /// <summary>
-        /// Значение измерения.
+        /// Значение измерения. Если не указана единица, Value == DbValue.
         /// </summary>
         public virtual float Value
         {
             get
             {
-                return DbValue * (float)Math.Pow(10, -Uom.Factor);
+                return DbValue * (Uom != null ? (float)Math.Pow(10, -Uom.Factor) : 1);
             }
             protected set
             {
-                DbValue = value * (float)Math.Pow(10, Uom.Factor);
+                DbValue = value * (Uom != null ? (float)Math.Pow(10, Uom.Factor) : 1);
             }
         }
-        public Measure(float value, Uom uom, HealthRecord hr)
+        public Measure(float value, Uom uom)
         {
             Contract.Requires(uom != null);
-            Contract.Requires(hr != null);
             Uom = uom;
-            HealthRecord = hr;
             Value = value;
         }
-
+        /// <summary>
+        /// Создает измерение без единицы.
+        /// </summary>
+        public Measure(float value)
+        {
+            Value = value;
+        }
         protected Measure() { }
 
         public override string ToString()
