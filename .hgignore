@@ -11,5 +11,4 @@ Thumbs.db
 *.psess
 *.vsp
 *.vspx
-*.lnk
 *.coverage
