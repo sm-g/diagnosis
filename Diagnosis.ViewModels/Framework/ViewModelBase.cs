@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace Diagnosis.ViewModels
 {
-    public abstract class ViewModelBase : DisposableBase, INotifyPropertyChanged
+    public abstract class ViewModelBase : DisposableBase, INotifyPropertyChanged, IDataErrorInfo
     {
         #region  INotifyPropertyChanged Members
 
@@ -35,6 +35,18 @@ namespace Diagnosis.ViewModels
             }
             string memberName = memberExpr.Member.Name;
             OnPropertyChanged(memberName);
+        }
+        #endregion
+
+        #region IDataErrorInfo
+        public virtual string Error
+        {
+            get { return null; }
+        }
+
+        public virtual string this[string columnName]
+        {
+            get { return null; }
         }
         #endregion
     }

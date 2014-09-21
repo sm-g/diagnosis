@@ -1,14 +1,16 @@
 ﻿using Diagnosis.Core;
+using Diagnosis.Models.Validators;
+using FluentValidation.Results;
+using Iesi.Collections.Generic;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
-    public class Patient : EntityBase, IDomainEntity
+    public class Patient : ValidatableEntity, IDomainEntity
     {
         private Iesi.Collections.Generic.ISet<PatientRecordProperty> _patientProperties = new HashedSet<PatientRecordProperty>();
         private Iesi.Collections.Generic.ISet<Course> courses = new HashedSet<Course>();
@@ -23,6 +25,7 @@ namespace Diagnosis.Models
         private bool _isMale;
 
         public virtual event NotifyCollectionChangedEventHandler CoursesChanged;
+
 
         public virtual string Label
         {
@@ -136,14 +139,8 @@ namespace Diagnosis.Models
 
                 EditHelper.Edit("BirthMonth", _month);
 
-                if (value == null)
-                {
-                    _month = value;
-                }
-                if (value >= 0 && value <= 12)
-                {
-                    _month = value > 0 ? value : null;
-                }
+                _month = value >= 0 && value <= 12 ? value : null;
+
                 CheckDate();
                 OnPropertyChanged("BirthMonth");
                 OnPropertyChanged("Age");
@@ -163,14 +160,8 @@ namespace Diagnosis.Models
 
                 EditHelper.Edit("BirthDay", _day);
 
-                if (value == null)
-                {
-                    _day = value;
-                }
-                if (value >= 0 && value <= 31)
-                {
-                    _day = value > 0 ? value : null;
-                }
+                _day = value >= 0 && value <= 31 ? value : null;
+
                 CheckDate();
                 OnPropertyChanged("BirthDay");
                 OnPropertyChanged("Age");
@@ -289,10 +280,12 @@ namespace Diagnosis.Models
             BirthMonth = month;
             BirthDay = day;
             IsMale = isMale;
+            Label = new Random().Next(10000, 99999).ToString();
         }
 
         protected Patient()
         {
+
         }
 
         public override string ToString()
@@ -309,13 +302,18 @@ namespace Diagnosis.Models
             }
         }
 
-        protected virtual internal void AddCourse(Course course)
+        protected internal virtual void AddCourse(Course course)
         {
             if (!courses.Contains(course))
             {
                 courses.Add(course);
                 OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, course));
             }
+        }
+
+        public override ValidationResult SelfValidate()
+        {
+            return new PatientValidator().Validate(this);
         }
     }
 }

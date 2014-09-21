@@ -112,19 +112,18 @@ namespace Diagnosis.ViewModels
         /// </summary>
         public PatientEditorViewModel()
             : this(new Patient())
-        {
-        }
+        { }
 
         private bool CanSave()
         {
-            return patient.IsTransient || patient.IsDirty;
+            return (patient.IsTransient || patient.IsDirty) && patient.IsValid();
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                if (shouldCommit)
+                if (shouldCommit && patient.IsValid())
                 {
                     (patient as IEditableObject).EndEdit();
                     Session.Transaction.Commit();

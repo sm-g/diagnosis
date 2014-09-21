@@ -6,6 +6,8 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
+using FluentValidation.Results;
+using System;
 
 namespace Diagnosis.ViewModels
 {
@@ -144,14 +146,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public ICommand StartCourseCommand
-        {
-            get
-            {
-                return new RelayCommand(() => AuthorityController.CurrentDoctor.StartCourse(patient));
-            }
-        }
-
         public ObservableCollection<PropertyViewModel> Properties
         {
             get;
@@ -176,12 +170,26 @@ namespace Diagnosis.ViewModels
                 return Courses.Count == 0;
             }
         }
-
         public bool NoName
         {
             get
             {
                 return patient.LastName == null && patient.MiddleName == null && patient.FirstName == null;
+            }
+        }
+
+        public override string this[string columnName]
+        {
+            get
+            {
+                var results = patient.SelfValidate();
+                if (results == null)
+                    return string.Empty;
+                var message = results.Errors
+                    .Where(x => x.PropertyName == columnName)
+                    .Select(x => x.ErrorMessage)
+                    .FirstOrDefault();
+                return message != null ? message : string.Empty;
             }
         }
 

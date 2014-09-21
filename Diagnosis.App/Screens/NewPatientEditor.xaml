@@ -64,23 +64,30 @@
             <StackPanel.Resources>
                 <Style TargetType="DockPanel" BasedOn="{StaticResource formLine}" />
                 <Style TargetType="Label" BasedOn="{StaticResource label120}" />
+                <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}" >
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="true">
+                            <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
             </StackPanel.Resources>
             <!-- PatientViewModel -->
             <DockPanel>
                 <Label Content="Метка" />
-                <TextBox Text="{Binding Label}" />
+                <TextBox Text="{Binding Label, ValidatesOnDataErrors=True}" />
             </DockPanel>
             <DockPanel>
                 <Label Content="Фамилия" />
-                <TextBox Text="{Binding LastName}" />
+                <TextBox Text="{Binding LastName, ValidatesOnDataErrors=True}" />
             </DockPanel>
             <DockPanel>
                 <Label Content="Имя" />
-                <TextBox Text="{Binding FirstName}" />
+                <TextBox Text="{Binding FirstName, ValidatesOnDataErrors=True}" />
             </DockPanel>
             <DockPanel>
                 <Label Content="Отчество" />
-                <TextBox Text="{Binding MiddleName}" />
+                <TextBox Text="{Binding MiddleName, ValidatesOnDataErrors=True}" />
             </DockPanel>
             <DockPanel>
                 <Label Content="Дата рождения" />
