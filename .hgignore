@@ -2,8 +2,8 @@ syntax: glob
 *.suo
 *.user
 *.ncb
-Debug/
-Release/
+bin/
+obj/
 CodeAnalyst/
 packages/
 Thumbs.db

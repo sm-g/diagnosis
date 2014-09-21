@@ -95,6 +95,15 @@
   <PropertyGroup>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'InMemory|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\InMemory\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
     <Reference Include="EventAggregator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -561,6 +570,10 @@
       <Project>{a91ad3b7-cb0f-426c-a539-1cffc13df0ee}</Project>
       <Name>Diagnosis.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Diagnosis.Data\Diagnosis.Data.csproj">
+      <Project>{3ec8d3df-aa44-4cb8-8847-d4b4872e9dad}</Project>
+      <Name>Diagnosis.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Diagnosis.Models\Diagnosis.Models.csproj">
       <Project>{f1ef016e-80f6-461c-ac4b-e087e42a9f0c}</Project>
       <Name>Diagnosis.Models</Name>
@@ -602,7 +615,7 @@
   <PropertyGroup>
     <PostBuildEvent>REM copy nhibernate config
 
-if $(ConfigurationName)==Debug (echo f | xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate-debug.cfg.xml" "$(TargetDir)NHibernate\nhibernate.cfg.xml" /d /y) else (echo f | xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate-release.cfg.xml" "$(TargetDir)NHibernate\nhibernate.cfg.xml" /d /y)
+if $(ConfigurationName)==Release (echo f | xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate-release.cfg.xml" "$(TargetDir)NHibernate\nhibernate.cfg.xml" /d /y) else (echo f | xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate-debug.cfg.xml" "$(TargetDir)NHibernate\nhibernate.cfg.xml" /d /y)
 
 REM copy db for release
 if $(ConfigurationName)==Release (echo f | xcopy "$(SolutionDir)Database\diagnosis.accdb" "$(TargetDir)" /d /y) 

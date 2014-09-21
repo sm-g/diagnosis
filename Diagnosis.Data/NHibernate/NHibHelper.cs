@@ -1,5 +1,4 @@
 ﻿#if DEBUG
-#define MEMORY
 //#define LOG
 #endif
 
@@ -27,13 +26,6 @@ namespace Diagnosis.Data
         private static ISessionFactory _sessionFactory;
 
         public static bool InMemory { get; set; }
-
-#if MEMORY
-        static NHibernateHelper()
-        {
-            InMemory = true;
-        }
-#endif
 
         public static Configuration Configuration
         {

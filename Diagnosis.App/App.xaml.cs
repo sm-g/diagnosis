@@ -12,6 +12,14 @@ namespace Diagnosis.App
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            for (int i = 0; i != e.Args.Length; ++i)
+            {
+                if (e.Args[i] == "-inmemory")
+                {
+                    Diagnosis.Data.NHibernateHelper.InMemory = true;
+                }
+            }
+
             FrameworkElement.LanguageProperty.OverrideMetadata(
                 typeof(FrameworkElement),
                 new FrameworkPropertyMetadata(
@@ -20,9 +28,9 @@ namespace Diagnosis.App
 
             System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Error;
 
-            new DebugOutput(0);
 
 #if DEBUG
+            new DebugOutput(0);
             new DebugWindow().Show();
 #endif
             var main = new MainWindow();
