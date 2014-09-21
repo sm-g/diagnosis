@@ -32,7 +32,7 @@
         </editors:ComboBoxDatePicker>
 
         <DockPanel VerticalAlignment="Top">
-            <TextBox Text="{Binding Age, Mode=TwoWay, TargetNullValue=''}"
+            <TextBox Text="{Binding Age, Mode=TwoWay, ValidatesOnDataErrors=True, TargetNullValue=''}"
                      Width="50"                    
                      HorizontalContentAlignment="Right"
                      IsTabStop="False">

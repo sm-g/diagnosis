@@ -124,7 +124,7 @@ namespace Diagnosis.App.Controls.Editors
             }
             days = new string[daysInMonth + 1];
             days[0] = "";
-            for (int i = 1; i < days.Length - 1; i++)
+            for (int i = 1; i < days.Length; i++)
             {
                 days[i] = i.ToString();
             }

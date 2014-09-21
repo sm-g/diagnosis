@@ -115,12 +115,9 @@ namespace Diagnosis.Models
                 if (_year == value)
                     return;
 
-                if (value == null || value <= DateTime.Today.Year)
-                {
-                    EditHelper.Edit("BirthYear", _year);
-                    _year = value;
-                }
-                CheckDate();
+
+                EditHelper.Edit("BirthYear", _year);
+                _year = value;
                 OnPropertyChanged("BirthYear");
                 OnPropertyChanged("Age");
             }
@@ -138,10 +135,7 @@ namespace Diagnosis.Models
                     return;
 
                 EditHelper.Edit("BirthMonth", _month);
-
-                _month = value >= 0 && value <= 12 ? value : null;
-
-                CheckDate();
+                _month = value;
                 OnPropertyChanged("BirthMonth");
                 OnPropertyChanged("Age");
             }
@@ -159,10 +153,7 @@ namespace Diagnosis.Models
                     return;
 
                 EditHelper.Edit("BirthDay", _day);
-
-                _day = value >= 0 && value <= 31 ? value : null;
-
-                CheckDate();
+                _day = value;
                 OnPropertyChanged("BirthDay");
                 OnPropertyChanged("Age");
             }
@@ -202,6 +193,7 @@ namespace Diagnosis.Models
                 }
                 catch
                 {
+                    // корректируем возраст только если указана полная дата рождения
                 }
                 return age;
             }
@@ -209,11 +201,13 @@ namespace Diagnosis.Models
             {
                 if (value.HasValue)
                 {
+                    // установка возраста меняет только год рождения
                     int year = DateTime.Today.Year - value.Value;
 
                     if (BirthMonth.HasValue && BirthDay.HasValue &&
                         new DateTime(year, BirthMonth.Value, BirthDay.Value) > DateTime.Today.AddYears(-value.Value))
                         year--;
+
 
                     DateHelper.CheckDate(year, BirthMonth, BirthDay);
 
