@@ -203,14 +203,22 @@ namespace Diagnosis.Models
                 {
                     // установка возраста меняет только год рождения
                     int year = DateTime.Today.Year - value.Value;
-
-                    if (BirthMonth.HasValue && BirthDay.HasValue &&
-                        new DateTime(year, BirthMonth.Value, BirthDay.Value) > DateTime.Today.AddYears(-value.Value))
-                        year--;
-
-
-                    DateHelper.CheckDate(year, BirthMonth, BirthDay);
-
+                    if (BirthMonth.HasValue && BirthDay.HasValue)
+                    {
+                        if (BirthMonth == 2 && BirthDay == 29)
+                        {
+                            try
+                            {
+                                DateHelper.CheckDate(year, 2, 29);
+                            }
+                            catch
+                            {
+                                _day = 28;
+                            }
+                        }
+                        if (new DateTime(year, BirthMonth.Value, BirthDay.Value) > DateTime.Today.AddYears(-value.Value))
+                            year--;
+                    }
                     BirthYear = year;
                 }
                 else
@@ -252,11 +260,6 @@ namespace Diagnosis.Models
                 existingPatientProperty.Value = value;
             }
             OnPropertyChanged("PatientProperties");
-        }
-
-        private void CheckDate()
-        {
-            DateHelper.CheckDate(BirthYear, BirthMonth, BirthDay);
         }
 
         public Patient(string lastName = null,
