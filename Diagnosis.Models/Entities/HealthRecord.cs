@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using Iesi.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 
 namespace Diagnosis.Models
 {
@@ -16,7 +17,6 @@ namespace Diagnosis.Models
         private byte? _month;
         private byte? _day;
         private string _comment;
-        private decimal? _numVal;
         private Symptom _symptom;
         private Category _category;
         private IcdDisease _disease;
@@ -90,13 +90,9 @@ namespace Diagnosis.Models
             {
                 if (_day == value)
                     return;
-                if (value == null || (value >= 0 && value <= 31))
-                {
-                    EditHelper.Edit("FromDay", _day);
-                    _day = value > 0 ? value : null;
-                    DateOffset.Day = value;
-                }
-                CheckDate();
+
+                EditHelper.Edit("FromDay", _day);
+                _day = value;
                 OnPropertyChanged("FromDay");
             }
         }
@@ -111,13 +107,9 @@ namespace Diagnosis.Models
             {
                 if (_month == value)
                     return;
-                if (value == null || (value >= 0 && value <= 12))
-                {
-                    EditHelper.Edit("FromMonth", _month);
-                    _month = value > 0 ? value : null;
-                    DateOffset.Month = value;
-                }
-                CheckDate();
+
+                EditHelper.Edit("FromMonth", _month);
+                _month = value;
                 OnPropertyChanged("FromMonth");
             }
         }
@@ -132,14 +124,10 @@ namespace Diagnosis.Models
             {
                 if (_year == value)
                     return;
-                if (value == null || (value <= DateTime.Today.Year))
-                {
-                    EditHelper.Edit("FromYear", _year);
-                    _year = value;
-                    DateOffset.Year = value;
-                }
 
-                CheckDate();
+                EditHelper.Edit("FromYear", _year);
+                _year = value;
+
                 OnPropertyChanged("FromYear");
             }
         }
@@ -167,6 +155,30 @@ namespace Diagnosis.Models
                                 FromDay = (byte?)_dateOffset.Day;
                                 break;
                         }
+                    };
+                    this.PropertyChanged += (s, e) =>
+                    {
+                        if (e.PropertyName.StartsWith("From"))
+                            try
+                            {
+                                switch (e.PropertyName)
+                                {
+                                    case "FromDay":
+                                        _dateOffset.Day = FromDay;
+                                        break;
+                                    case "FromMonth":
+                                        _dateOffset.Month = FromMonth;
+                                        break;
+                                    case "FromYear":
+                                        _dateOffset.Year = FromYear;
+                                        break;
+                                }
+                            }
+                            catch
+                            {
+                                // не меняем DateOffset, компоненты даты поменяются потом
+                            }
+
                     };
                 }
                 return _dateOffset;
@@ -202,10 +214,6 @@ namespace Diagnosis.Models
 
             if (measures.Remove(m))
                 OnMeasuresChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, m));
-        }
-        private void CheckDate()
-        {
-            DateHelper.CheckDate(FromYear, FromMonth, FromDay);
         }
 
         protected HealthRecord()
