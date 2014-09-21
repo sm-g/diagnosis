@@ -148,17 +148,6 @@ namespace Diagnosis.Core
             }
         }
 
-        /// <summary>
-        /// Возвращает DateTime представление для объекта DateOffset, если возможно.
-        /// </summary>
-        public DateTime? DateTimeNullable
-        {
-            get
-            {
-                return DateHelper.NullableDate(Year, Month, Day);
-            }
-        }
-
         public string UnitString
         {
             get
@@ -230,13 +219,16 @@ namespace Diagnosis.Core
 
         private void SetDate(int? year, int? month, int? day)
         {
+            // нулевые значения допустимы
+            var y_ = year != 0 ? year : null;
+            var m = month != 0 ? month : null;
+            var d = day != 0 ? day : null;
+            DateHelper.CheckDate(y_, m, d);
 
             setting = true;
-            Year = year != 0 ? year : null;
-            Month = month != 0 ? month : null;
-            Day = day != 0 ? day : null;
-
-            DateHelper.CheckDate(Year, Month, Day);
+            Year = y_;
+            Month = m;
+            Day = d;
 
             int y;
             if (Year.HasValue)
@@ -404,6 +396,14 @@ namespace Diagnosis.Core
                 case DateUnits.Year: return years[ending];
             }
             throw new ArgumentOutOfRangeException("unit");
+        }
+
+        /// <summary>
+        /// Возвращает DateTime представление для объекта DateOffset, если возможно.
+        /// </summary>
+        public DateTime? GetNullableDateTime()
+        {
+            return DateHelper.NullableDate(Year, Month, Day);
         }
 
         public override string ToString()

@@ -14,6 +14,7 @@ namespace Diagnosis.Models.Validators
         {
             RuleFor(p => p.Label).NotEmpty().WithMessage("Метка должна быть."); // только если нет ФИО?
             RuleFor(p => p.Age).InclusiveBetween(0, 120);
+
             Custom(p =>
             {
                 // не нужно, пока дата вводится через DatePicker

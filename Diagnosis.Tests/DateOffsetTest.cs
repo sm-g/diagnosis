@@ -196,6 +196,13 @@ namespace Tests
             Assert.IsNull(date.Day);
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void TestConstructorWorngDate()
+        {
+            date = new DateOffset(2000, 2, 30);
+        }
+
         #endregion constructors
 
         #region Setters

@@ -14,10 +14,6 @@ namespace Diagnosis.Models
             };
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <returns></returns>
         public virtual bool IsValid()
         {
             if (isValidCache == null)
