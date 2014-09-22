@@ -53,7 +53,7 @@
         </ListBox>
 
         <Popup x:Name="popup" Height="Auto" Width="auto"
-                StaysOpen="False"
+                StaysOpen="True"
                 Placement="Bottom"
                 IsOpen="{Binding IsPopupOpen}"
                 HorizontalAlignment="Left" Grid.RowSpan="2">

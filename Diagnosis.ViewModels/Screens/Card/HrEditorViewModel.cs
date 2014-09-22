@@ -138,7 +138,7 @@ namespace Diagnosis.ViewModels
             var initials = GetOrderedWordsMeasures(HealthRecord.healthRecord);
 
             _autocomplete = new Autocomplete(
-                new Recognizer(session, true) { AllowNewFromQuery = true, ShowAllUomsOnEmptyQuery = true },
+                new Recognizer(session, true) { AllowNewFromQuery = true },
                 true,
                 initials);
             _autocomplete.EntitiesChanged += (s, e) =>

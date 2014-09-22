@@ -73,6 +73,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_selectedSuggestion != value)
                 {
                     _selectedSuggestion = value;
+                    Debug.Print("selected sugg = {0}", value);
                     OnPropertyChanged(() => SelectedSuggestion);
                 }
             }
@@ -98,7 +99,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     if (value != null)
                         _editingItem.IsFocused = true;
 
-                    Debug.Print("editing = {0}", value);
                     OnPropertyChanged(() => EditingTag);
                 }
             }
@@ -162,7 +162,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     {
                         prevSelectedSuggestion = SelectedSuggestion; // сначала фокус получает выбранный тег
                         // предположения для недописанных
-                        if (tag.State != Tag.States.Init)
+                        if (tag.IsNewWord || tag.IsInvalid || tag.IsPartialMeasure) // TODO with errors?
                             MakeSuggestions();
                     }
 
@@ -254,36 +254,30 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// Завершает тег.
         /// </summary>
         /// <param name="tag"></param>
-        /// <param name="suggestion">Слово, число с единицей или запрос.</param>
+        /// <param name="suggestion">Слово, число с единицей или запрос</param>
         /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
         private void CompleteCommon(Tag tag, object suggestion, bool exactMatchRequired)
         {
-            // удаляем тег без текста
-            if (tag.Query == "")
-                tag.DeleteCommand.Execute(null);
+            if (suggestion == null)
+            {
+                if (tag.Query == "")
+                    tag.DeleteCommand.Execute(null);
+                else if (recognizer.CanMakeEntityFrom(tag.Query))
+                    tag.Blank = tag.Query; // измерение без правльной единицы
+                else
+                    tag.Blank = null;
+            }
             else
             {
-                if (suggestion != null &&
-                   (!exactMatchRequired || Recognizer.Matches(suggestion, tag.Query)))
-                {
+                if (!exactMatchRequired || Recognizer.Matches(suggestion, tag.Query))
                     tag.Blank = suggestion;
-
-                }
-                // предположения нет или не точное совпадение с запросом - сохраняем запрос
                 else if (recognizer.CanMakeEntityFrom(tag.Query))
-                {
-                    // измерение без правльной единицы или недописанное слово
-                    tag.Blank = tag.Query;
-                }
+                    tag.Blank = tag.Query; // недописанное слово
                 else
-                {
-                    // нельзя создать сущность из тега
-                    Debug.Assert(tag.Query == "" || !recognizer.AllowNewFromQuery);
                     tag.Blank = null;
-                }
-
-                recognizer.Validate(tag);
             }
+
+            recognizer.Validate(tag);
             Suggestions.Clear();
 
             // добавляем пустое поле

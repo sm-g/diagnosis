@@ -26,7 +26,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         public bool ShowAllWordsOnEmptyQuery { get; set; }
         /// <summary>
-        /// Показывать все предположения-единицы измреения при пустом запросе. Если false, требуется первый символ.
+        /// Показывать все предположения-единицы измерения при пустом запросе. Если false, требуется первый символ.
+        /// Нельзя завершить измерение без единицы энтером.
         /// </summary>
         public bool ShowAllUomsOnEmptyQuery { get; set; }
 
@@ -197,7 +198,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     }
 
                     // не добавляем запрос, совпадающий со словом в результатах или словом/запросом в исключенных предположениях
-                    if (!existsSame)
+                    if (!existsSame && !query.IsNullOrEmpty())
                     {
                         results.Add(query);
                     }

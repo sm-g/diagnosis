@@ -40,6 +40,9 @@ namespace Diagnosis.App.Controls.Search
             }
             else if (e.Key == Key.Escape)
             {
+                // нельзя выбирать предположения, когда попап скрыт (когда при пустом запросе показываем все предположения)
+                suggestions.SelectedItem = null;
+
                 HidePopup();
             }
         }
@@ -48,6 +51,23 @@ namespace Diagnosis.App.Controls.Search
         {
             popup.IsOpen = false;
         }
+
+        private void suggestions_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            suggestions.ScrollIntoView(suggestions.SelectedItem);
+        }
+
+        private void input_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count > 0)
+            {
+                var element = input.ItemContainerGenerator.ContainerFromItem(e.AddedItems[e.AddedItems.Count - 1]) as UIElement;
+                popup.PlacementTarget = element; // TODO
+            }
+        }
+
+        // do not work
+
         private void EnterFormPopup()
         {
             Vm.EnterCommand.Execute(null);
@@ -63,12 +83,6 @@ namespace Diagnosis.App.Controls.Search
                 EnterFormPopup();
             }
         }
-
-        private void suggestions_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            suggestions.ScrollIntoView(suggestions.SelectedItem);
-        }
-
         private void suggestions_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
@@ -77,15 +91,6 @@ namespace Diagnosis.App.Controls.Search
                 HidePopup();
                 focusFromPopup = true;
                 input.Focus();
-            }
-        }
-
-        private void input_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.AddedItems.Count > 0)
-            {
-                var element = input.ItemContainerGenerator.ContainerFromItem(e.AddedItems[0]) as UIElement;
-                popup.PlacementTarget = element;
             }
         }
     }
