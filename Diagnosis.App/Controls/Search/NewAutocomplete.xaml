@@ -1,11 +1,11 @@
 ﻿<UserControl x:Class="Diagnosis.App.Controls.Search.NewAutocomplete"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <InputBindingCollection x:Shared="False" x:Key="TagInputBindings">
@@ -15,12 +15,11 @@
     <!-- Autocomplete -->
     <StackPanel>
         <ListBox x:Name="input"
-                 ItemsSource="{Binding Tags}" 
+                 ItemsSource="{Binding Tags}"
                  SelectedItem="{Binding EditingTag}"
                  HorizontalContentAlignment="Stretch"
                  PreviewKeyDown="input_PreviewKeyDown"
-                 LostFocus="input_LostFocus"
-                 >
+                 SelectionChanged="input_SelectionChanged">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <DockPanel LastChildFill="True" />
@@ -40,7 +39,7 @@
                     <Setter Property="ContextMenu">
                         <Setter.Value>
                             <ContextMenu>
-                                <MenuItem Header="Удалить" Command="{Binding DeleteCommand}"/>
+                                <MenuItem Header="Удалить" Command="{Binding DeleteCommand}" />
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>
@@ -52,12 +51,12 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+
         <Popup x:Name="popup" Height="Auto" Width="auto"
-                       StaysOpen="False"
-                       Placement="Bottom"
-                       PlacementTarget="{Binding ElementName=input}"
-                       IsOpen="{Binding IsPopupOpened, Mode=TwoWay}"
-                       HorizontalAlignment="Left" Grid.RowSpan="2">
+                StaysOpen="False"
+                Placement="Bottom"
+                IsOpen="{Binding IsPopupOpen}"
+                HorizontalAlignment="Left" Grid.RowSpan="2">
 
             <ListBox x:Name="suggestions"
                         MaxHeight="100"

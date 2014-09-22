@@ -112,7 +112,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        public bool IsPopupOpened
+        public bool IsPopupOpen
         {
             get
             {
@@ -123,7 +123,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_popupOpened != value)
                 {
                     _popupOpened = value;
-                    OnPropertyChanged(() => IsPopupOpened);
+                    OnPropertyChanged(() => IsPopupOpen);
                 }
             }
         }
@@ -337,7 +337,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         private void RefreshPopup()
         {
-            IsPopupOpened = Suggestions.Count > 0;
+            IsPopupOpen = Suggestions.Count > 0; // not on suggestion.collectionchanged - мигание при очистке, лишние запросы к IsPopupOpen
         }
 
         [ContractInvariantMethod]

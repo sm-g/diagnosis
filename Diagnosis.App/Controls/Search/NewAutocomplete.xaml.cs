@@ -40,11 +40,6 @@ namespace Diagnosis.App.Controls.Search
             }
             else if (e.Key == Key.Escape)
             {
-                if (popup.IsOpen)
-                {
-                    //e.Handled = true;
-                    // повторное нажатие закроет запись
-                }
                 HidePopup();
             }
         }
@@ -85,9 +80,13 @@ namespace Diagnosis.App.Controls.Search
             }
         }
 
-        private void input_LostFocus(object sender, RoutedEventArgs e)
+        private void input_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            if (e.AddedItems.Count > 0)
+            {
+                var element = input.ItemContainerGenerator.ContainerFromItem(e.AddedItems[0]) as UIElement;
+                popup.PlacementTarget = element;
+            }
         }
     }
 }
