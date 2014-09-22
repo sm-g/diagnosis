@@ -21,12 +21,20 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// Разрешает создание новых слов из текста запроса.
         /// </summary>
         public bool AllowNewFromQuery { get; set; }
+        /// <summary>
+        /// Показывать все предположения-слова при пустом запросе. Если false, требуется первый символ.
+        /// </summary>
+        public bool ShowAllWordsOnEmptyQuery { get; set; }
+        /// <summary>
+        /// Показывать все предположения-единицы измреения при пустом запросе. Если false, требуется первый символ.
+        /// </summary>
+        public bool ShowAllUomsOnEmptyQuery { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="session"></param>
-        /// <param name="childrenFirstStrategy">При поиске предположений первыми - дети предыдущего слова.</param>
+        /// <param name="childrenFirstStrategy">При поиске предположений-слов первыми - дети предыдущего слова.</param>
         public Recognizer(ISession session, bool childrenFirstStrategy)
         {
             this.session = session;
@@ -163,18 +171,12 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             if (IsMeasure(query))
             {
                 var splitted = SplitMeasureQuery(query);
-                if (splitted.Item2.IsNullOrEmpty())
-                {
-                    results = new List<object>(); // не показываем все возможные единицы
-                }
-                else
-                {
-                    found = UomQuery.StartingWith(session)(splitted.Item2);
-                    // добавляем числовую часть к каждой единице
-                    var numbers = splitted.Item1;
-                    results = new List<object>(found.Select(uom => new NumbersWithUom(numbers, uom as Uom)));
-                    // измерения могут повторяться
-                }
+
+                found = QueryUoms(splitted.Item2);
+                // добавляем числовую часть к каждой единице
+                var numbers = splitted.Item1;
+                results = new List<object>(found.Select(uom => new NumbersWithUom(numbers, uom as Uom)));
+                // измерения могут повторяться                
             }
             else
             {
@@ -204,6 +206,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
             return results;
         }
+
 
         /// <summary>
         /// Определяет сходство предположения и запроса.
@@ -255,6 +258,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         private IEnumerable<Word> QueryWords(string query, object prev)
         {
+            if (query.IsNullOrEmpty() && !ShowAllWordsOnEmptyQuery)
+                return Enumerable.Empty<Word>();
+
             Word parent = prev as Word;
 
             if (childrenFirstStrategy)
@@ -262,6 +268,15 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             else
                 return WordQuery.StartingWith(session)(query);
         }
+
+        private IEnumerable<Uom> QueryUoms(string query)
+        {
+            if (query.IsNullOrEmpty() && !ShowAllUomsOnEmptyQuery)
+                return Enumerable.Empty<Uom>();
+
+            return UomQuery.StartingWith(session)(query);
+        }
+
 
         /// <summary>
         /// Числа с сущностью-единицей измерения. В предположениях.
