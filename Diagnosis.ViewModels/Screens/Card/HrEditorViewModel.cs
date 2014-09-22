@@ -5,8 +5,10 @@ using Diagnosis.ViewModels.Search.Autocomplete;
 using EventAggregator;
 using NHibernate;
 using NHibernate.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -129,52 +131,144 @@ namespace Diagnosis.ViewModels
         public Autocomplete Autocomplete { get { return _autocomplete; } }
 
         /// <summary>
-        /// Создает автокомплит с начальными словами из симптома редактируемой запсии.
+        /// Создает автокомплит с начальными словами и измерениями из редактируемой записи.
         /// </summary>
         private void CreateAutoComplete()
         {
-            var initials = new List<IDomainEntity>();
-            if (HealthRecord.healthRecord.Symptom != null)
-                initials.AddRange(HealthRecord.healthRecord.Symptom.Words);
-            initials.AddRange(HealthRecord.healthRecord.Measures);
+            var initials = GetOrderedWordsMeasures(HealthRecord.healthRecord);
 
-            _autocomplete = new Autocomplete(new Recognizer(session, true) { AllowNewFromQuery = true }, true, initials.ToArray());
+            _autocomplete = new Autocomplete(new Recognizer(session, true) { AllowNewFromQuery = true }, true, initials);
             _autocomplete.EntitiesChanged += (s, e) =>
             {
-                // меняем симптом и измерения записи при завершении или удалении тега
                 var entities = _autocomplete.GetEntities().ToList();
-
-                var words = entities.Where(x => x is Word).Cast<Word>().ToList();
-                inSetSymptomOnTagCompleted = true;
-                if (words.Count > 0)
-                {
-                    // симптом со всеми словами
-                    var existing = SymptomQuery.ByWords(session)(words);
-
-                    if (existing == null)
-                        HealthRecord.healthRecord.Symptom = new Symptom(words);
-                    else
-                        HealthRecord.healthRecord.Symptom = existing;
-                }
-                else
-                {
-                    HealthRecord.healthRecord.Symptom = null;
-                }
-                inSetSymptomOnTagCompleted = false;
-
-                var measures = entities.Where(x => x is Measure).Cast<Measure>().ToList();
-                var toAdd = measures.Except(HealthRecord.healthRecord.Measures).ToList();
-                var toRemove = HealthRecord.healthRecord.Measures.Except(measures).ToList();
-                toAdd.ForEach(m =>
-                {
-                    m.HealthRecord = HealthRecord.healthRecord;
-                    HealthRecord.healthRecord.AddMeasure(m);
-                });
-                toRemove.ForEach(m => HealthRecord.healthRecord.RemoveMeasure(m));
-
+                // сохраняем последовательность слова/измерения
+                HealthRecord.healthRecord.WordsMeasuresSequence = GetAutocompleteEnititiesSequence(entities);
+                // меняем симптом и измерения записи при завершении или удалении тега
+                SetSymptomAndWordsOrder(HealthRecord.healthRecord, entities);
+                SetMeasures(HealthRecord.healthRecord, entities);
             };
 
             OnPropertyChanged("Autocomplete");
+        }
+
+        private void SetMeasures(HealthRecord hr, IEnumerable<IDomainEntity> entities)
+        {
+            var measures = entities.Where(x => x is Measure).Cast<Measure>().ToList();
+            // сохраняем в измерениях их порядок в автокомплите
+            measures.ForEach(m => m.Order = (byte)measures.IndexOf(m));
+
+            var toAdd = measures.Except(hr.Measures).ToList();
+            var toRemove = hr.Measures.Except(measures).ToList();
+            toAdd.ForEach(m =>
+            {
+                m.HealthRecord = hr;
+                hr.AddMeasure(m);
+            });
+            toRemove.ForEach(m => hr.RemoveMeasure(m));
+        }
+
+        private void SetSymptomAndWordsOrder(HealthRecord hr, IEnumerable<IDomainEntity> entities)
+        {
+            inSetSymptomOnTagCompleted = true;
+            var words = entities.Where(x => x is Word).Cast<Word>().ToList();
+            if (words.Count > 0)
+            {
+                // симптом со всеми словами
+                Symptom existing = SymptomQuery.ByWords(session)(words);
+
+                if (existing == null)
+                {
+                    hr.WordsOrder = string.Join("", Enumerable.Range(0, words.Count));
+                    hr.Symptom = new Symptom(words);
+                }
+                else
+                {
+                    var wordsInExisting = existing.Words.ToList();
+                    hr.WordsOrder = string.Join("", words.Select(w => wordsInExisting.IndexOf(w)));
+                    hr.Symptom = existing;
+                }
+            }
+            else
+            {
+                hr.WordsOrder = "";
+                hr.Symptom = null;
+            }
+            inSetSymptomOnTagCompleted = false;
+        }
+
+
+        /// <summary>
+        /// w w m m w => 221
+        /// m w => 011
+        /// </summary>
+        /// <param name="entities"></param>
+        private static string GetAutocompleteEnititiesSequence(IEnumerable<IDomainEntity> entities)
+        {
+            string seq = "";
+            var ent = entities.ToList();
+            if (ent.Count == 0)
+            {
+                return "";
+            }
+            if (ent.First() is Measure)
+                seq = "0";
+
+            var counter = 1;
+            for (int i = 1; i < ent.Count; i++)
+            {
+                if (counter > 9)
+                {
+                    throw new Exception("Больше 9 слов/измерений подряд");
+                }
+                if (ent[i].GetType() == ent[i - 1].GetType())
+                {
+                    counter++;
+                }
+                else
+                {
+                    seq += counter.ToString();
+                    counter = 1;
+                }
+            }
+            seq += counter.ToString();
+            return seq;
+        }
+
+        /// <summary>
+        /// Слова и измерения в порядке их сохранения.
+        /// </summary>
+        /// <param name="hr"></param>
+        /// <returns></returns>
+        public static List<IDomainEntity> GetOrderedWordsMeasures(HealthRecord hr)
+        {
+            var initials = new List<IDomainEntity>();
+
+            var words = hr.Symptom != null ? hr.Symptom.Words.ToList() : new List<Word>();
+
+            var wordsOrder = hr.WordsOrder != null ?
+                hr.WordsOrder.ToDigits().ToList() :
+                Enumerable.Range(0, words.Count).ToList();
+            var wmSequence = hr.WordsMeasuresSequence != null ?
+                hr.WordsMeasuresSequence.ToDigits() :
+                new[] { words.Count, hr.Measures.Count() };
+            bool takingWords = true;
+            int wordsTaken = 0, measuresTaken = 0;
+            foreach (var n in wmSequence)
+            {
+                if (takingWords)
+                {
+                    initials.AddRange(wordsOrder.Skip(wordsTaken).Take(n).Select(i => words[i]));
+                    wordsTaken += n;
+                }
+                else
+                {
+                    initials.AddRange(hr.Measures.OrderBy(m => m.Order).Skip(measuresTaken).Take(n));
+                    measuresTaken += n;
+                }
+
+                takingWords = !takingWords;
+            }
+            return initials;
         }
 
         #endregion AutoComplete
@@ -293,10 +387,9 @@ namespace Diagnosis.ViewModels
             {
                 OnPropertyChanged(e.PropertyName);
             }
-            else if (e.PropertyName == "Symptom" && !inSetSymptomOnTagCompleted)
+            else if (e.PropertyName == "Symptom")
             {
-                _autocomplete.ReplaceTagsWith((sender as HealthRecord).Symptom.Words);
-                // TODO измерения 
+                Debug.Assert(inSetSymptomOnTagCompleted);
             }
         }
 

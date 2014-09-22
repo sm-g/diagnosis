@@ -17,6 +17,8 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.FromYear);
             Property(x => x.FromMonth);
             Property(x => x.FromDay);
+            Property(x => x.WordsMeasuresSequence);
+            Property(x => x.WordsOrder);
             Set(x => x.Measures, s =>
             {
                 s.Key(k =>

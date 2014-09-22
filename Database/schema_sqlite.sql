@@ -26,6 +26,7 @@
        HealthRecordID INT not null,
        UomID INT,
        Val DOUBLE not null,
+	   Ord TINYINT not null,
        constraint FKB2D76321D873B95 foreign key (HealthRecordID) references HealthRecord,
        constraint FKB2D763248B02845 foreign key (UomID) references Uom
     );
@@ -119,6 +120,8 @@
         Id  integer primary key autoincrement,
        AppointmentID INT,
        Comment TEXT,
+	   WordsOrder TEXT,
+	   WordsMeasuresSequence TEXT,
        CategoryID INT,
        DiseaseID INT,
        SymptomID INT,

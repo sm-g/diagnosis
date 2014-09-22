@@ -28,6 +28,7 @@ namespace Diagnosis.Models
                 _hr = value;
             }
         }
+        public virtual byte Order { get; set; }
         public virtual Uom Uom { get; protected set; }
         /// <summary>
         /// Значение измерения, приведенное к базовой единице измерения.

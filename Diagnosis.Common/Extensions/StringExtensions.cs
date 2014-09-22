@@ -28,5 +28,15 @@ namespace Diagnosis.Core
         {
             return string.IsNullOrEmpty(str);
         }
+
+        /// <summary>
+        /// "310" -> {0,1,3}
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static IEnumerable<int> ToDigits(this string str)
+        {
+            return str.ToCharArray().Select(ch => int.Parse(ch.ToString()));
+        }
     }
 }

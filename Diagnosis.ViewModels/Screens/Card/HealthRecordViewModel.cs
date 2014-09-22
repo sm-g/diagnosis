@@ -12,18 +12,6 @@ namespace Diagnosis.ViewModels
         internal readonly HealthRecord healthRecord;
         EventMessageHandler handler;
 
-        public string Name
-        {
-            get
-            {
-                if (Symptom != null)
-                    return (Symptom.Disease != null ? Symptom.Disease.Code + ". " : "") +
-                    string.Join(" ", Symptom.Words.OrderBy(w => w.Priority).Select(w => w.Title));
-                else
-                    return "";
-            }
-        }
-
         #region Model
 
         private DiagnosisViewModel _diagnosis;
@@ -86,7 +74,7 @@ namespace Diagnosis.ViewModels
                 healthRecord.Category = value;
             }
         }
-                public int? FromYear
+        public int? FromYear
         {
             get
             {

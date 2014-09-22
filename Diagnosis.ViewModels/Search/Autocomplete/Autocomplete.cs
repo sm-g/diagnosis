@@ -18,7 +18,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         Recognizer recognizer;
         object prevSelectedSuggestion;
 
-        public Autocomplete(Recognizer recognizer, bool allowTagEditing, IDomainEntity[] initItems)
+        public Autocomplete(Recognizer recognizer, bool allowTagEditing, IEnumerable<IDomainEntity> initItems)
         {
             this.recognizer = recognizer;
             this._isEditable = allowTagEditing;
@@ -258,32 +258,33 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
         private void CompleteCommon(Tag tag, object suggestion, bool exactMatchRequired)
         {
-            if (suggestion != null &&
-               (!exactMatchRequired || Recognizer.Matches(suggestion, tag.Query)))
-            {
-                tag.Blank = suggestion;
-
-            }
-            // предположения нет или не точное совпадение с запросом - сохраняем запрос
-            else if (recognizer.CanMakeEntityFrom(tag.Query))
-            {
-                // измерение без правльной единицы или недописанное слово
-                tag.Blank = tag.Query;
-            }
-            else
-            {
-                // нельзя создать сущность из тега
-                Debug.Assert(tag.Query == "" || !recognizer.AllowNewFromQuery);
-                tag.Blank = null;
-            }
-
-            Suggestions.Clear();
-
             // удаляем тег без текста
             if (tag.Query == "")
                 tag.DeleteCommand.Execute(null);
+            else
+            {
+                if (suggestion != null &&
+                   (!exactMatchRequired || Recognizer.Matches(suggestion, tag.Query)))
+                {
+                    tag.Blank = suggestion;
 
-            recognizer.Validate(tag);
+                }
+                // предположения нет или не точное совпадение с запросом - сохраняем запрос
+                else if (recognizer.CanMakeEntityFrom(tag.Query))
+                {
+                    // измерение без правльной единицы или недописанное слово
+                    tag.Blank = tag.Query;
+                }
+                else
+                {
+                    // нельзя создать сущность из тега
+                    Debug.Assert(tag.Query == "" || !recognizer.AllowNewFromQuery);
+                    tag.Blank = null;
+                }
+
+                recognizer.Validate(tag);
+            }
+            Suggestions.Clear();
 
             // добавляем пустое поле
             if (!IsLastTagEmpty)

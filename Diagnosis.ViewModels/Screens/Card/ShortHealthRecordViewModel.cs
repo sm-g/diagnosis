@@ -15,11 +15,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                if (Symptom != null)
-                    return (Symptom.Disease != null ? Symptom.Disease.Code + ". " : "") +
-                    string.Join(" ", Symptom.Words.OrderBy(w => w.Priority).Select(w => w.Title));
-                else
-                    return "";
+                return string.Join(" ", HrEditorViewModel.GetOrderedWordsMeasures(healthRecord));
             }
         }
 
@@ -60,14 +56,6 @@ namespace Diagnosis.ViewModels
             get
             {
                 return healthRecord.Comment;
-            }
-        }
-
-        public Symptom Symptom
-        {
-            get
-            {
-                return healthRecord.Symptom;
             }
         }
 
@@ -180,6 +168,7 @@ namespace Diagnosis.ViewModels
                        });
             }
         }
+
         public RelayCommand DeleteCommand
         {
             get
@@ -197,6 +186,7 @@ namespace Diagnosis.ViewModels
             this.healthRecord = hr;
 
             healthRecord.PropertyChanged += healthRecord_PropertyChanged;
+            healthRecord.MeasuresChanged += healthRecord_MeasuresChanged;
             healthRecord.DateOffset.PropertyChanged += DateOffset_PropertyChanged;
 
             SetDiagnosis();
@@ -207,7 +197,7 @@ namespace Diagnosis.ViewModels
             });
         }
 
-        void DateOffset_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void DateOffset_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "Unit")
             {
@@ -245,6 +235,11 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        private void healthRecord_MeasuresChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged("Name");
+        }
+
         public override string ToString()
         {
             return healthRecord.ToString();
@@ -254,6 +249,7 @@ namespace Diagnosis.ViewModels
         {
             if (disposing)
             {
+                healthRecord.MeasuresChanged -= healthRecord_MeasuresChanged;
                 healthRecord.PropertyChanged -= healthRecord_PropertyChanged;
                 healthRecord.DateOffset.PropertyChanged -= DateOffset_PropertyChanged;
                 handler.Dispose();

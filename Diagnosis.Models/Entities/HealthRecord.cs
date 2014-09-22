@@ -194,11 +194,24 @@ namespace Diagnosis.Models
             get { return measures; }
         }
 
+        /// <summary>
+        /// Порядок слов симптома при редактировании записи, начиная с 0. В симптоме max 9 слов.
+        /// </summary>
+        public virtual string WordsOrder { get; set; }
+        /// <summary>
+        /// Последовательность количества подряд идущих слов и измерений при редактировании записи, начиная с количства слов.
+        /// 11 - слово и измерение,
+        /// 012 - измерение и два слова
+        /// </summary>
+        public virtual string WordsMeasuresSequence { get; set; }
+
         public HealthRecord(Appointment appointment)
         {
             Contract.Requires(appointment != null);
 
             Appointment = appointment;
+            WordsOrder = "";
+            WordsMeasuresSequence = "";
         }
 
         public virtual void AddMeasure(Measure m)
@@ -206,14 +219,20 @@ namespace Diagnosis.Models
             Contract.Requires(m != null);
 
             if (measures.Add(m))
+            {
                 OnMeasuresChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, m));
+                // measure.order устанавливается перед добавлением в редакторе записи
+            }
         }
         public virtual void RemoveMeasure(Measure m)
         {
             Contract.Requires(m != null);
 
             if (measures.Remove(m))
+            {
                 OnMeasuresChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, m));
+                // удаление не влияет на порядок других измерений
+            }
         }
 
         protected HealthRecord()
