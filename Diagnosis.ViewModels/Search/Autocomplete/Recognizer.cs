@@ -21,10 +21,12 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// Разрешает создание новых слов из текста запроса.
         /// </summary>
         public bool AllowNewFromQuery { get; set; }
+
         /// <summary>
         /// Показывать все предположения-слова при пустом запросе. Если false, требуется первый символ.
         /// </summary>
         public bool ShowAllWordsOnEmptyQuery { get; set; }
+
         /// <summary>
         /// Показывать все предположения-единицы измерения при пустом запросе. Если false, требуется первый символ.
         /// Нельзя завершить измерение без единицы энтером.
@@ -32,7 +34,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         public bool ShowAllUomsOnEmptyQuery { get; set; }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="session"></param>
         /// <param name="childrenFirstStrategy">При поиске предположений-слов первыми - дети предыдущего слова.</param>
@@ -134,28 +136,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        public void Validate(Tag tag)
-        {
-            if (tag.BlankType == Tag.BlankTypes.Query)
-            {
-                var str = tag.Blank as string;
-                if (IsMeasure(str))
-                {
-                    tag.IsPartialMeasure = SplitMeasureQuery(str).Item2 != "";
-                }
-                else
-                {
-                    tag.IsNewWord = true;
-                }
-            }
-            else
-            {
-                tag.IsPartialMeasure = false;
-                tag.IsNewWord = false;
-                tag.IsInvalid = tag.BlankType == Tag.BlankTypes.None && tag.State != Tag.States.Init;
-            }
-        }
-
         /// <summary>
         /// Возвращает список предполжений для запроса. По запросу определяет, какой поиск использовать.
         /// </summary>
@@ -177,7 +157,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 // добавляем числовую часть к каждой единице
                 var numbers = splitted.Item1;
                 results = new List<object>(found.Select(uom => new NumbersWithUom(numbers, uom as Uom)));
-                // измерения могут повторяться                
+                // измерения могут повторяться
             }
             else
             {
@@ -207,7 +187,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
             return results;
         }
-
 
         /// <summary>
         /// Определяет сходство предположения и запроса.
@@ -277,7 +256,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
             return UomQuery.StartingWith(session)(query);
         }
-
 
         /// <summary>
         /// Числа с сущностью-единицей измерения. В предположениях.

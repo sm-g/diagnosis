@@ -1,22 +1,21 @@
-﻿using System.Collections.ObjectModel;
+﻿using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
-using System.Diagnostics;
-using Diagnosis.Models;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
     public class Autocomplete : ViewModelBase
     {
         private readonly bool _isEditable;
-        Tag _editingItem;
-        bool _popupOpened;
-        object _selectedSuggestion;
-        Recognizer recognizer;
-        object prevSelectedSuggestion;
+        private Tag _editingItem;
+        private bool _popupOpened;
+        private object _selectedSuggestion;
+        private Recognizer recognizer;
+        private object prevSelectedSuggestion;
 
         public Autocomplete(Recognizer recognizer, bool allowTagEditing, IEnumerable<IDomainEntity> initItems)
         {
@@ -35,19 +34,21 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
             Suggestions = new ObservableCollection<object>();
         }
+
         /// <summary>
         /// Возникает, когда работа с автокомплитом окончена. (Enter второй раз.)
         /// </summary>
         public event EventHandler InputEnded;
+
         /// <summary>
         /// Возникает, когда завершается редактирование тега.
         /// </summary>
         public event EventHandler<TagEventArgs> TagCompleted;
+
         /// <summary>
         /// Возникает, когда меняется набор сущностей в тегах. (Завершение редактрования теги или удаление тега.)
         /// </summary>
         public event EventHandler EntitiesChanged;
-
 
         public RelayCommand EnterCommand
         {
@@ -56,6 +57,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 return new RelayCommand(() => CompleteOnEnter(EditingTag), () => EditingTag != null);
             }
         }
+
         public ObservableCollection<object> Suggestions
         {
             get;
@@ -127,6 +129,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 }
             }
         }
+
         /// <summary>
         /// Показывает, что можно редактировать теги после завершения.
         /// </summary>
@@ -161,8 +164,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     if (tag.IsFocused)
                     {
                         prevSelectedSuggestion = SelectedSuggestion; // сначала фокус получает выбранный тег
-                        // предположения для недописанных
-                        if (tag.IsNewWord || tag.IsInvalid || tag.IsPartialMeasure) // TODO with errors?
+
+                        if (tag.Signalization != Signalizations.None) // предположения для недописанных
                             MakeSuggestions();
                     }
 
@@ -277,7 +280,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     tag.Blank = null;
             }
 
-            recognizer.Validate(tag);
             Suggestions.Clear();
 
             // добавляем пустое поле
@@ -293,9 +295,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     // Enter в пустом поле
                     OnInputEnded();
                     return;
+
                 case Tag.States.Typing:
                     CompleteCommon(tag, SelectedSuggestion, false);
                     break;
+
                 case Tag.States.Completed:
                     // тег не изменен
                     break;

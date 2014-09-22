@@ -4,31 +4,32 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
-             mc:Ignorable="d" 
+             xmlns:auto="clr-namespace:Diagnosis.ViewModels.Search.Autocomplete;assembly=Diagnosis.Viewmodels"
+             mc:Ignorable="d"
              d:DesignHeight="20" d:DesignWidth="300">
     <StackPanel>
         <TextBox x:Name="text" controls:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
              Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
              IsReadOnly="{Binding IsDeleteOnly}">
             <TextBox.Style>
-                <Style TargetType="TextBox">
+                <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                     <Setter Property="Background" Value="White" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsNewWord}" Value="True">
+                        <DataTrigger Binding="{Binding Signalization}" Value="{x:Static auto:Signalizations.NewWord}">
                             <Setter Property="Background" Value="#FFEFFFD8" />
                             <Setter Property="ToolTip" Value="Новое слово" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding IsInvalid}" Value="True">
+                        <DataTrigger Binding="{Binding Signalization}" Value="{x:Static auto:Signalizations.Forbidden}">
                             <Setter Property="Background" Value="#FFFFD8D8" />
                             <Setter Property="ToolTip" Value="Некорректный текст, игнорируется" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding IsPartialMeasure}" Value="True">
+                        <DataTrigger Binding="{Binding Signalization}" Value="{x:Static auto:Signalizations.PartialMeasure}">
                             <Setter Property="Background" Value="#FFFFFDD8" />
                             <Setter Property="ToolTip" Value="Неизвестная единица измерения, сохраняется без единицы" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </TextBox.Style>
-        </TextBox>        
+        </TextBox>
     </StackPanel>
 </UserControl>

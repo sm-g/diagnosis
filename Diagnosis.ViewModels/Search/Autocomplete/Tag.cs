@@ -6,6 +6,23 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
+    public enum Signalizations
+    {
+        None,
+        /// <summary>
+        /// Тег содержит новое слово
+        /// </summary>
+        NewWord,
+        /// <summary>
+        /// Частичное измерение с неправильной единицей.
+        /// </summary>
+        PartialMeasure,
+        /// <summary>
+        /// Некорректный тег (новое слово).
+        /// </summary>
+        Forbidden
+    }
+
     public class Tag : ViewModelBase
     {
         private readonly bool freezeOnComplete;
@@ -14,9 +31,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private string _query;
         private States _state;
         private bool _isDeleteOnly;
-        private bool _partialMeasure;
-        private bool _isNewWord;
-        private bool _isValid;
+        private Signalizations _signal;
+
         /// <summary>
         /// Создает тег с текстом в начальном состоянии.
         /// </summary>
@@ -72,8 +88,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             Init,
             Typing,
-            Completed,
-            // Leaved
+            Completed
         }
 
         public RelayCommand DeleteCommand
@@ -143,63 +158,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     _focused = value;
                     Debug.Print("{0} focused = {1}", this, value);
                     OnPropertyChanged("IsFocused");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Тег содержит новое слово.
-        /// </summary>
-        public bool IsNewWord
-        {
-            get
-            {
-                return _isNewWord;
-            }
-            set
-            {
-                if (_isNewWord != value)
-                {
-                    _isNewWord = value;
-                    OnPropertyChanged(() => IsNewWord);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Частичное измерение с неправильной единицей.
-        /// </summary>
-        public bool IsPartialMeasure
-        {
-            get
-            {
-                return _partialMeasure;
-            }
-            set
-            {
-                if (_partialMeasure != value)
-                {
-                    _partialMeasure = value;
-                    OnPropertyChanged(() => IsPartialMeasure);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Некорректный тег (новое слово).
-        /// </summary>
-        public bool IsInvalid
-        {
-            get
-            {
-                return _isValid;
-            }
-            set
-            {
-                if (_isValid != value)
-                {
-                    _isValid = value;
-                    OnPropertyChanged(() => IsInvalid);
+                    if (!value)
+                        Validate();
                 }
             }
         }
@@ -263,6 +223,43 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
+        public Signalizations Signalization
+        {
+            get
+            {
+                return _signal;
+            }
+            set
+            {
+                if (_signal != value)
+                {
+                    _signal = value;
+                    OnPropertyChanged(() => Signalization);
+                }
+            }
+        }
+
+        public void Validate()
+        {
+            Signalization = Signalizations.None;
+            if (BlankType == Tag.BlankTypes.None && State != Tag.States.Init)
+            {
+                Signalization = Signalizations.Forbidden;
+            }
+            else if (BlankType == Tag.BlankTypes.Query)
+            {
+                var str = Blank as string;
+                if (!Recognizer.IsMeasure(str))
+                {
+                    Signalization = Signalizations.NewWord;
+                }
+                else if (Recognizer.SplitMeasureQuery(str).Item2 != "")
+                {
+                    Signalization = Signalizations.PartialMeasure;
+                }
+            }
+        }
+
         public static BlankTypes GetBlankType(object blank)
         {
             if (blank is Word)
@@ -281,6 +278,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             return string.Format("tag q:{0}({3}) b:{1}({2})", Query, Blank, BlankType, State);
         }
+
         protected virtual void OnDeleted()
         {
             var h = Deleted;
