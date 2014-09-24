@@ -23,7 +23,7 @@ namespace Diagnosis.App.Windows
         {
             InitializeComponent();
 
-            TraceListener debugListener = new MyTraceListener(Log);
+            TraceListener debugListener = new TextBoxTraceListener(Log);
             Debug.Listeners.Add(debugListener);
 
             this.Left = SystemParameters.PrimaryScreenWidth - this.Width;

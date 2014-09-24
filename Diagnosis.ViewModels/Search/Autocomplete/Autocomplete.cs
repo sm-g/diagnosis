@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Models;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,6 +11,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 {
     public class Autocomplete : ViewModelBase
     {
+        public static readonly ILog logger = LogManager.GetLogger(typeof(Autocomplete));
         private readonly bool _isEditable;
         private Tag _editingItem;
         private bool _popupOpened;
@@ -75,7 +77,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_selectedSuggestion != value)
                 {
                     _selectedSuggestion = value;
-                    Debug.Print("selected sugg = {0}", value);
+                    logger.DebugFormat("selected sugg = {0}", value);
                     OnPropertyChanged(() => SelectedSuggestion);
                 }
             }
@@ -222,7 +224,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                         yield return item;
                     }
                 else if (tag.State != Tag.States.Init)
-                    Debug.Print("! tag without entity blank, skip");
+                    logger.WarnFormat("{0} without entity blank, skip", tag);
             }
         }
 

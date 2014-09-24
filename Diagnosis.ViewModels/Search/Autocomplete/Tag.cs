@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Models;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,6 +26,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
     public class Tag : ViewModelBase
     {
+        public static readonly ILog logger = LogManager.GetLogger(typeof(Tag));
         private readonly bool freezeOnComplete;
         private object _blank;
         private bool _focused;
@@ -124,7 +126,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     OnPropertyChanged("Blank");
                     OnPropertyChanged("BlankType");
 
-                    Debug.Print("{0} blank = {1}", this, value);
+                    logger.DebugFormat("{0} blank changed", this);
                 }
                 if (value != null)
                 {
@@ -212,7 +214,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_state != value)
                 {
                     _state = value;
-                    Debug.Print("{0} {1}", this, value);
                     if (value == States.Completed && freezeOnComplete)
                     {
                         IsDeleteOnly = true;
@@ -234,6 +235,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_signal != value)
                 {
                     _signal = value;
+                    logger.InfoFormat("{0} signals", this);
                     OnPropertyChanged(() => Signalization);
                 }
             }

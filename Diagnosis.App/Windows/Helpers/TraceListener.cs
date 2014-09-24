@@ -4,16 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using System.Windows.Controls.Primitives;
+using log4net;
 
 namespace Diagnosis.App.Windows
 {
-    public class MyTraceListener : TraceListener
+    public class TextBoxTraceListener : TraceListener
     {
         private TextBoxBase output;
 
-        public MyTraceListener(TextBoxBase output)
+        public TextBoxTraceListener(TextBoxBase output)
         {
-            this.Name = "Trace";
+            this.Name = "DebugWindowListener";
             this.output = output;
         }
 

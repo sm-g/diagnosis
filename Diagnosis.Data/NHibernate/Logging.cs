@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using log4net;
 
 namespace Diagnosis.Data
 {
@@ -22,24 +23,26 @@ namespace Diagnosis.Data
     [Serializable]
     internal class AuditLogger : IAuditLogger
     {
+        public static readonly ILog logger = LogManager.GetLogger(typeof(AuditLogger));
+
         public void Insert(EntityBase entity)
         {
-            Debug.Print("{0} #{1} inserted.", entity.GetType(), entity.Id);
+            logger.InfoFormat("{0} #{1} inserted.", entity.GetType(), entity.Id);
         }
 
         public void Update(EntityBase entity)
         {
-            Debug.Print("{0} #{1} updated.", entity.GetType(), entity.Id);
+            logger.InfoFormat("{0} #{1} updated.", entity.GetType(), entity.Id);
         }
 
         public void Delete(EntityBase entity)
         {
-            Debug.Print("{0} #{1} deleted.", entity.GetType(), entity.Id);
+            logger.InfoFormat("{0} #{1} deleted.", entity.GetType(), entity.Id);
         }
 
         public void Load(EntityBase entity)
         {
-            Debug.Print("{0} #{1} loaded.", entity.GetType(), entity.Id);
+            logger.InfoFormat("{0} #{1} loaded.", entity.GetType(), entity.Id);
         }
     }
 
