@@ -220,10 +220,10 @@ namespace Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TestConstructorWorngDate()
         {
-            date = new DateOffset(2000, 2, 30);
+            date = new DateOffset(2009, 2, 30);
+            Assert.IsTrue(date.Day == 28); // autocorrection default == true
         }
 
         #endregion constructors

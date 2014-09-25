@@ -446,6 +446,7 @@ namespace Diagnosis.Core
         private DateOffset()
         {
             AutoCorrection = true;
+            DateCut = true;
         }
 
         public static bool operator <(DateOffset do1, DateOffset do2)
@@ -455,6 +456,20 @@ namespace Diagnosis.Core
                 // давность больше - дата меньше
                 return do1.Offset > do2.Offset;
             }
+
+            if (do1.Unit == DateUnits.Week)
+            {
+                var d1 = (DateOffset)do1.MemberwiseClone();
+                d1.SetOffset(do1.Offset * 7, DateUnits.Day);
+                return d1 < do2;
+            }
+            else if (do2.Unit == DateUnits.Week)
+            {
+                var d2 = (DateOffset)do2.MemberwiseClone();
+                d2.SetOffset(do2.Offset * 7, DateUnits.Day);
+                return do1 < d2;
+            }
+
             if (!do1.Month.HasValue || !do2.Month.HasValue)
             {
                 // сравниваем месяц и год или день и год

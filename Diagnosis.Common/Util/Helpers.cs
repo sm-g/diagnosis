@@ -67,7 +67,7 @@ namespace Diagnosis.Core
                     y = year.Value;
                 }
                 var daysInMonth = DateTime.DaysInMonth(y, month.Value);
-                if (day.Value > daysInMonth || day.Value < daysInMonth)
+                if (day.Value > daysInMonth)
                 {
                     day = daysInMonth;
                     corrected = true;
