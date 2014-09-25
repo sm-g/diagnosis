@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using log4net;
+using System;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Globalization;
 
 namespace Diagnosis.App.Controls.Editors
 {
@@ -20,9 +13,13 @@ namespace Diagnosis.App.Controls.Editors
     /// </summary>
     public partial class ComboBoxDatePicker : UserControl
     {
-        string[] days;
-        string[] monthNames;
-        List<string> years = new List<string>();
+        private static readonly ILog logger = LogManager.GetLogger(typeof(ComboBoxDatePicker));
+
+        public ObservableCollection<string> Days
+        {
+            get;
+            set;
+        }
 
         public int? Year
         {
@@ -51,7 +48,6 @@ namespace Diagnosis.App.Controls.Editors
         public static readonly DependencyProperty DayProperty =
             DependencyProperty.Register("Day", typeof(int?), typeof(ComboBoxDatePicker));
 
-
         public int YearsDepth
         {
             get { return (int)GetValue(YearsDepthProperty); }
@@ -64,88 +60,100 @@ namespace Diagnosis.App.Controls.Editors
         public ComboBoxDatePicker()
         {
             InitializeComponent();
-
-            monthNames = DateTimeFormatInfo.CurrentInfo.MonthNames.ToArray();
-            years = Enumerable.Range(DateTime.Now.Year - YearsDepth, YearsDepth + 1).Select(y => y.ToString()).ToList();
-            years.Add("");
-            years.Reverse();
+            Days = new ObservableCollection<string>();
 
             LoadYearsCombo();
-
             LoadMonthsCombo();
+            LoadDaysCombo();
         }
 
         private void LoadYearsCombo()
         {
+            var years = Enumerable.Range(DateTime.Now.Year - YearsDepth, YearsDepth + 1).Select(y => y.ToString()).ToList();
+            years.Add("");
+            years.Reverse();
             comboYears.ItemsSource = years;
-            if (Year.HasValue)
-            {
-                var ys = Year.ToString();
-                if (years.Contains(ys))
-                    comboYears.SelectedValue = ys;
-            }
-            else
-            {
-                comboYears.SelectedValue = "";
-            }
         }
 
         private void LoadMonthsCombo()
         {
+            var monthNames = DateTimeFormatInfo.CurrentInfo.MonthNames.ToArray();
             comboMonths.ItemsSource = monthNames;
-            comboMonths.SelectedValue = DateTimeFormatInfo.CurrentInfo.GetMonthName(Month.Value);
+            comboMonths.SelectedValue = DateTimeFormatInfo.CurrentInfo.GetMonthName(Month ?? 13);
         }
 
         private void LoadDaysCombo()
         {
-            comboDays.ItemsSource = days;
-            if (Day.HasValue)
-            {
-                var ds = Day.ToString();
-                if (days.Contains(ds))
-                    comboDays.SelectedValue = ds;
-            }
-            else
-            {
-                comboDays.SelectedValue = "";
-            }
+            comboDays.ItemsSource = Days;
         }
 
-        private void InitDays()
+        private void FillDaysCombo()
         {
-            int daysInMonth = 31;
-            try
+            var days = GetDaysComboItems();
+            var daysInMonth = days.Count() - 1;
+
+            var daysToAdd = days.Except(Days).ToList();
+            var daysToRemove = Days.Except(days).ToList();
+
+            // в новом месяце меньше дней - выбриаем последний
+            if (Day > daysInMonth)
             {
-                daysInMonth = DateTime.DaysInMonth(Year.Value, Month.Value);
-                // exception when month or year not set
+                Day = daysInMonth;
             }
-            catch
-            {
-            }
-            days = new string[daysInMonth + 1];
+
+            daysToRemove.ForEach(d => Days.Remove(d));
+            daysToAdd.ForEach(d => Days.Add(d));
+        }
+
+        /// <summary>
+        /// '', '1', ..., '30' 
+        /// </summary>
+        /// <returns></returns>
+        private string[] GetDaysComboItems()
+        {
+            var year = Year ?? DateTime.Today.Year;
+            var month = Month != 13 && Month != null ? Month.Value : DateTime.Today.Month;
+            var daysInMonth = DateTime.DaysInMonth(year, month);
+            string[] days = new string[daysInMonth + 1];
             days[0] = "";
             for (int i = 1; i < days.Length; i++)
             {
                 days[i] = i.ToString();
             }
-            if (Day > daysInMonth)
-            {
-                Day = daysInMonth;
-            }
+            return days;
         }
 
         private void comboYears_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            logger.DebugFormat("year = {0}", Year);
             e.Handled = true;
-            InitDays();
-            LoadDaysCombo();
+            // смена года — было 29 февраля, меняем на 28
+            FillDaysCombo();
         }
 
         private void comboMonths_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            logger.DebugFormat("month = {0}", Month);
             e.Handled = true;
-            InitDays();
-            LoadDaysCombo();
+            // смена месяца — другой набор дней, если был день 31, меням на 30
+            FillDaysCombo();
         }
+
+        private void comboDays_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            logger.DebugFormat("day = {0}", Day);
+        }
+
+        private void comboYears_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (Year == null)
+                comboYears.SelectedIndex = 0;
+        }
+        private void comboDays_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (Day == null)
+                comboDays.SelectedIndex = 0;
+        }
+
     }
 }
