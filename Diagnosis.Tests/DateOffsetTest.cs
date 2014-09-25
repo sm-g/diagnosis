@@ -189,15 +189,15 @@ namespace Tests
         [TestMethod]
         public void TestConstructorDateDay()
         {
-            var now = DateTime.Today;
+            var now = DateOffsetTest.now();
 
-            date = new DateOffset(null, null, now.Day);
+            date = new DateOffset(null, null, now.Day + 1, DateOffsetTest.now);
 
-            Assert.IsTrue(date.Offset == 0);
+            Assert.IsTrue(date.Offset == -1);
             Assert.IsTrue(date.Unit == DateUnits.Day);
             Assert.IsTrue(date.Year == now.Year);
             Assert.IsTrue(date.Month == now.Month);
-            Assert.IsTrue(date.Day == now.Day);
+            Assert.IsTrue(date.Day == now.Day + 1);
         }
 
         [TestMethod]
@@ -208,6 +208,15 @@ namespace Tests
             Assert.IsNull(date.Year);
             Assert.IsNull(date.Month);
             Assert.IsNull(date.Day);
+        }
+
+        [TestMethod]
+        public void TestConstructorDepthDays()
+        {
+            var now = DateOffsetTest.now();
+
+            date = new DateOffset(now.Year, 3, 20, DateOffsetTest.now); // 10 дней назад
+            Assert.IsTrue(date.Unit == DateUnits.Day);
         }
 
         [TestMethod]
@@ -258,7 +267,7 @@ namespace Tests
         public void TestSetUnitWider()
         {
             date = new DateOffset(offset, DateUnits.Day, now);
-
+            date.DateCut = true;
             date.Unit = DateUnits.Month;
 
             Assert.IsTrue(date.Offset == offset);
@@ -384,8 +393,7 @@ namespace Tests
             var date1 = new DateOffset(2013, 12, 1);
             var date2 = new DateOffset(2013, 12, 1);
 
-            Assert.IsTrue(date1 <= date2);
-            Assert.IsTrue(date1 >= date2);
+            Assert.IsTrue(date1 == date2);
         }
 
         [TestMethod]
@@ -401,10 +409,19 @@ namespace Tests
         [TestMethod]
         public void TestLtSameMonth()
         {
-            var date1 = new DateOffset(2013, 5, 1);
+            var date1 = new DateOffset(2013, 5, 5);
             var date2 = new DateOffset(2014, 5, 1);
 
             Assert.IsTrue(date1 < date2);
+        }
+
+        [TestMethod]
+        public void TestCompareWithWeek()
+        {
+            var date1 = new DateOffset(now(), now);
+            var date2 = new DateOffset(2, DateUnits.Week, now);
+
+            Assert.IsTrue(date1 > date2);
         }
 
         #endregion compare

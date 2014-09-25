@@ -9,6 +9,7 @@ namespace Diagnosis.Core
     {
         /// <summary>
         /// Проверяет, допустима ли указанная дата (возможно, неполная).
+        /// Если год не указан, считаем 29 февраля для сегодняшего года.
         /// <exception cref="ArgumentOutOfRange"/>
         /// </summary>
         public static void CheckDate(int? year, int? month, int? day)

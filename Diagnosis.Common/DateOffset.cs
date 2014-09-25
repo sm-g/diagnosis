@@ -26,6 +26,8 @@ namespace Diagnosis.Core
         private int? _year;
         private int? _month;
         private int? _day;
+        private bool _autoCorrection;
+        private bool _dateCut;
 
         private bool setting;
 
@@ -114,8 +116,9 @@ namespace Diagnosis.Core
                 }
             }
         }
+
         /// <summary>
-        /// Единица измерения смещения.
+        /// Единица измерения смещения. Меняется день, меясяц, год.
         /// </summary>
         public DateUnits Unit
         {
@@ -133,6 +136,47 @@ namespace Diagnosis.Core
                         SetOffset(Offset, value);
                     }
                     OnPropertyChanged("Unit");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Обрезать лишние части даты при изменении единицы смещения. (unit = Month -> day = null)
+        /// </summary>
+        public bool DateCut
+        {
+            get
+            {
+                return _dateCut;
+            }
+            set
+            {
+                if (_dateCut != value)
+                {
+                    _dateCut = value;
+                    OnPropertyChanged(() => DateCut);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Исправлять число при изменении месяца, чтобы дата оставалась корректной.
+        /// По умолчанию true.
+        /// 31 dec. month = nov -> day == 30.
+        /// 29 feb 2012. year = 2013 -> day == 28.
+        /// </summary>
+        public bool AutoCorrection
+        {
+            get
+            {
+                return _autoCorrection;
+            }
+            set
+            {
+                if (_autoCorrection != value)
+                {
+                    _autoCorrection = value;
+                    OnPropertyChanged(() => AutoCorrection);
                 }
             }
         }
@@ -198,6 +242,13 @@ namespace Diagnosis.Core
 
         private DateTime Now { get { return NowDate(); } }
 
+        /// <summary>
+        /// При задании смещения изменяются значения Day, Month, Year.
+        /// Если DateCut, то несущественные части даты отбрасываются.
+        /// Смещение в неделях задает дату с точностью в день.
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="unit"></param>
         private void SetOffset(int? offset, DateUnits unit)
         {
             setting = true;
@@ -241,13 +292,19 @@ namespace Diagnosis.Core
                             Year = Now.Year - a / 12 - 1;
                             Month = 12 - a % 12;
                         }
-                        Day = null;
+                        if (DateCut)
+                        {
+                            Day = null;
+                        }
                         break;
 
                     case DateUnits.Year:
                         Year = Now.Year - Offset;
-                        Month = null;
-                        Day = null;
+                        if (DateCut)
+                        {
+                            Month = null;
+                            Day = null;
+                        }
                         break;
 
                     default:
@@ -257,34 +314,46 @@ namespace Diagnosis.Core
             setting = false;
         }
 
+
         private void SetDate(int? year, int? month, int? day)
         {
             // нулевые значения допустимы
-            var y_ = year != 0 ? year : null;
+            var y = year != 0 ? year : null;
             var m = month != 0 ? month : null;
             var d = day != 0 ? day : null;
-            DateHelper.CheckDate(y_, m, d);
 
-            setting = true;
-            Year = y_;
-            Month = m;
-            Day = d;
-
-            int y;
-            if (Year.HasValue)
+            if (AutoCorrection)
             {
-                y = Year.Value;
+                DateHelper.CheckAndCorrectDate(y, ref m, ref d);
             }
             else
             {
-                y = Now.Year;
+                DateHelper.CheckDate(y, m, d);
+            }
+
+            setting = true;
+            Year = y;
+            Month = m;
+            Day = d;
+
+            if (Year == null && Month == null && Day == null)
+            {
+                Offset = null;
+                setting = false;
+                return;
+            }
+            bool yearWas = Year.HasValue;
+            if (!Year.HasValue)
+            {
+                Year = Now.Year;
             }
 
             if (Month.HasValue)
             {
                 if (Day.HasValue)
                 {
-                    Offset = (Now - new DateTime(y, Month.Value, Day.Value)).Days;
+                    // ? m d
+                    Offset = (Now - new DateTime(Year.Value, Month.Value, Day.Value)).Days;
                     if (Offset % 7 == 0 && Math.Abs(Offset.Value) > 1)
                     {
                         Offset /= 7;
@@ -297,50 +366,40 @@ namespace Diagnosis.Core
                 }
                 else
                 {
-                    Offset = (Now.Year - y) * 12 + Now.Month - Month.Value;
+                    // ? m _
+                    Offset = (Now.Year - Year.Value) * 12 + Now.Month - Month.Value;
                     Unit = DateUnits.Month;
-                }
-
-                if (!Year.HasValue)
-                {
-                    Year = Now.Year;
                 }
             }
             else
             {
-                if (Year.HasValue)
+                if (yearWas)
                 {
-                    Offset = Now.Year - y;
+                    // y _ ? - день игнорируем
+                    Offset = Now.Year - Year.Value;
                     Unit = DateUnits.Year;
                 }
                 else
                 {
-                    if (Day.HasValue)
-                    {
-                        Offset = 0;
-                        Unit = DateUnits.Day;
+                    // _ _ d
+                    Offset = Now.Day - Day.Value;
+                    Unit = DateUnits.Day;
 
-                        Month = Now.Month;
-                        Year = Now.Year;
-                    }
-                    else
-                    {
-                        // year == null && month == null && day == null
-                        Offset = null;
-                    }
+                    Month = Now.Month;
                 }
             }
 
             setting = false;
         }
 
-
         public DateOffset(int? year, int? month, int? day)
+            : this()
         {
             SetDate(year, month, day);
         }
 
         public DateOffset(int? year, int? month, int? day, Func<DateTime> now)
+            : this()
         {
             Contract.Requires(now != null);
             NowDate = now;
@@ -348,11 +407,13 @@ namespace Diagnosis.Core
         }
 
         public DateOffset(DateTime dt)
+            : this()
         {
             SetDate(dt.Year, dt.Month, dt.Day);
         }
 
         public DateOffset(DateTime dt, Func<DateTime> now)
+            : this()
         {
             Contract.Requires(now != null);
             NowDate = now;
@@ -360,11 +421,13 @@ namespace Diagnosis.Core
         }
 
         public DateOffset(int? offset, DateUnits unit)
+            : this()
         {
             SetOffset(offset, unit);
         }
 
         public DateOffset(int? offset, DateUnits unit, Func<DateTime> now)
+            : this()
         {
             Contract.Requires(now != null);
             NowDate = now;
@@ -372,12 +435,19 @@ namespace Diagnosis.Core
         }
 
         public DateOffset(DateOffset dateOffset, Func<DateTime> now)
+            : this()
         {
             Contract.Requires(dateOffset != null);
             Contract.Requires(now != null);
             NowDate = now;
             SetOffset(dateOffset.Offset, dateOffset.Unit);
         }
+
+        private DateOffset()
+        {
+            AutoCorrection = true;
+        }
+
         public static bool operator <(DateOffset do1, DateOffset do2)
         {
             if (do1.Unit == do2.Unit)
@@ -387,10 +457,10 @@ namespace Diagnosis.Core
             }
             if (!do1.Month.HasValue || !do2.Month.HasValue)
             {
-                // месяц и год или день и год
+                // сравниваем месяц и год или день и год
                 return do1.Year < do2.Year;
             }
-            // день и месяц
+            // сравниваем день и месяц
             return do1.Month < do2.Month;
         }
 
@@ -409,28 +479,26 @@ namespace Diagnosis.Core
 
         public static bool operator <=(DateOffset do1, DateOffset do2)
         {
-            if (do1.Unit == do2.Unit)
-            {
-                return do1.Offset >= do2.Offset;
-            }
-            if (!do1.Month.HasValue || !do2.Month.HasValue)
-            {
-                return do1.Year <= do2.Year;
-            }
-            return do1.Month <= do2.Month;
+            return !(do1 > do2);
         }
 
         public static bool operator >=(DateOffset do1, DateOffset do2)
         {
-            if (do1.Unit == do2.Unit)
+            return !(do1 < do2);
+        }
+
+        public static bool operator ==(DateOffset do1, DateOffset do2)
+        {
+            if (object.ReferenceEquals(do1, null) || object.ReferenceEquals(do2, null))
             {
-                return do1.Offset <= do2.Offset;
+                return object.ReferenceEquals(do1, do2);
             }
-            if (!do1.Month.HasValue || !do2.Month.HasValue)
-            {
-                return do1.Year >= do2.Year;
-            }
-            return do1.Month >= do2.Month;
+            return do1.Offset == do2.Offset && do1.Unit == do2.Unit;
+        }
+
+        public static bool operator !=(DateOffset do1, DateOffset do2)
+        {
+            return !(do1 == do2);
         }
 
         public static string FormatUnit(int? offset, DateUnits unit)
