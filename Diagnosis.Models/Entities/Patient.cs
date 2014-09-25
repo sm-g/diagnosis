@@ -205,17 +205,7 @@ namespace Diagnosis.Models
                     int year = DateTime.Today.Year - value.Value;
                     if (BirthMonth.HasValue && BirthDay.HasValue)
                     {
-                        if (BirthMonth == 2 && BirthDay == 29)
-                        {
-                            try
-                            {
-                                DateHelper.CheckDate(year, 2, 29);
-                            }
-                            catch
-                            {
-                                _day = 28;
-                            }
-                        }
+                        DateHelper.CheckAndCorrectDate((int?)year, ref _month, ref _day);
                         if (new DateTime(year, BirthMonth.Value, BirthDay.Value) > DateTime.Today.AddYears(-value.Value))
                             year--;
                     }
