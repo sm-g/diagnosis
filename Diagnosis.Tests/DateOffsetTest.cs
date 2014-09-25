@@ -89,6 +89,20 @@ namespace Tests
         }
 
         [TestMethod]
+        public void TestConstructorDateTime()
+        {
+            var now = DateTime.Today;
+
+            date = new DateOffset(now);
+
+            Assert.IsTrue(date.Offset == 0);
+            Assert.IsTrue(date.Unit == DateUnits.Day);
+            Assert.IsTrue(date.Year == now.Year);
+            Assert.IsTrue(date.Month == now.Month);
+            Assert.IsTrue(date.Day == now.Day);
+        }
+
+        [TestMethod]
         public void TestConstructorDateFull()
         {
             var now = DateTime.Today;
@@ -394,5 +408,70 @@ namespace Tests
         }
 
         #endregion compare
+
+        #region Add
+
+        [TestMethod]
+        public void AddYear()
+        {
+            var date = new DateOffset(2010, 2, null);
+            date.Add(-2, DateUnits.Year);
+
+            Assert.IsTrue(date.Year == 2008);
+            Assert.IsTrue(date.Month == 2);
+            Assert.IsTrue(date.Day == null);
+        }
+        [TestMethod]
+        public void AddYear29Feb()
+        {
+            var date = new DateOffset(2012, 2, 29);
+            date.Add(1, DateUnits.Year);
+
+            Assert.IsTrue(date.Year == 2013);
+            Assert.IsTrue(date.Month == 2);
+            Assert.IsTrue(date.Day == 28);
+        }
+
+        [TestMethod]
+        public void AddMonth()
+        {
+            var date = new DateOffset(2012, 2, 29);
+            date.Add(1, DateUnits.Month);
+
+            Assert.IsTrue(date.Year == 2012);
+            Assert.IsTrue(date.Month == 3);
+            Assert.IsTrue(date.Day == 29);
+        }
+
+        [TestMethod]
+        public void AddWeek()
+        {
+            var date = new DateOffset(2012, 1, 1);
+            date.Add(5, DateUnits.Week);
+
+            Assert.IsTrue(date.Year == 2012);
+            Assert.IsTrue(date.Month == 2);
+            Assert.IsTrue(date.Day == 5);
+        }
+
+        [TestMethod]
+        public void AddDay()
+        {
+            var date = new DateOffset(2012, 2, 29);
+            date.Add(-68, DateUnits.Day);
+
+            Assert.IsTrue(date.Year == 2011);
+            Assert.IsTrue(date.Month == 12);
+            Assert.IsTrue(date.Day == 23);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void AddWrong()
+        {
+            var date = new DateOffset(2012, null, null);
+            date.Add(-68, DateUnits.Day);
+        }
+        #endregion
     }
 }

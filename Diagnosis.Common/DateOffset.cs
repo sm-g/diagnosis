@@ -156,6 +156,46 @@ namespace Diagnosis.Core
             }
         }
 
+        /// <summary>
+        /// Добавляет указанное количество дней, недель (как 7 дней), месяцев или лет.
+        /// Нельзя прибавить дни, если Unit - месяц или год и т.п.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="unit"></param>
+        public void Add(int value, DateUnits unit)
+        {
+            if (unit.CompareTo(Unit) < 0 && !(unit == DateUnits.Day && Unit == DateUnits.Week))
+                throw new ArgumentException("Can not add such part of date to current dateoffset.");
+
+            DateTime dt;
+            switch (unit)
+            {
+                case DateUnits.Day:
+                    dt = new DateTime(Year.Value, Month.Value, Day.Value).AddDays(value);
+                    SetDate(dt.Year, dt.Month, dt.Day);
+                    break;
+
+                case DateUnits.Week:
+                    dt = new DateTime(Year.Value, Month.Value, Day.Value).AddDays(value * 7);
+                    SetDate(dt.Year, dt.Month, dt.Day);
+                    break;
+
+                case DateUnits.Month:
+                    dt = new DateTime(Year.Value, Month.Value, 1).AddMonths(value);
+                    Month = dt.Month;
+                    Year = dt.Year;
+                    break;
+
+                case DateUnits.Year:
+                    dt = new DateTime(Year.Value, 1, 1).AddYears(value);
+                    Year = dt.Year;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
         private DateTime Now { get { return NowDate(); } }
 
         private void SetOffset(int? offset, DateUnits unit)
@@ -305,6 +345,18 @@ namespace Diagnosis.Core
             Contract.Requires(now != null);
             NowDate = now;
             SetDate(year, month, day);
+        }
+
+        public DateOffset(DateTime dt)
+        {
+            SetDate(dt.Year, dt.Month, dt.Day);
+        }
+
+        public DateOffset(DateTime dt, Func<DateTime> now)
+        {
+            Contract.Requires(now != null);
+            NowDate = now;
+            SetDate(dt.Year, dt.Month, dt.Day);
         }
 
         public DateOffset(int? offset, DateUnits unit)
