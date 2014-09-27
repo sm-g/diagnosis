@@ -185,7 +185,6 @@ namespace Diagnosis.Models
                 }
 
                 int age = DateTime.Today.Year - BirthYear.Value;
-
                 try
                 {
                     if (new DateTime(BirthYear.Value, BirthMonth.Value, BirthDay.Value) > DateTime.Today.AddYears(-age))
@@ -217,7 +216,6 @@ namespace Diagnosis.Models
                 }
             }
         }
-
         public virtual string FullName
         {
             get
@@ -229,8 +227,6 @@ namespace Diagnosis.Models
         /// <summary>
         /// Добавляет свойство со значением или изменяет значение, если такое свойство уже есть.
         /// </summary>
-        /// <param name="property"></param>
-        /// <param name="value"></param>
         public virtual void SetPropertyValue(Property property, PropertyValue value)
         {
             Contract.Requires(property != null);
