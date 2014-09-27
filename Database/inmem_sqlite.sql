@@ -376,17 +376,17 @@ INSERT INTO [Appointment] ([ID], [DateAndTime], [CourseID], [DoctorID]) VALUES (
 -- Dumping data for table 'HealthRecord'
 --
 
-INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [WordsOrder],[WordsMeasuresSequence]) VALUES (5, 1, NULL, 2, NULL, 1, NULL, NULL, NULL,'0','1');
-INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [WordsOrder],[WordsMeasuresSequence]) VALUES (6, 1, NULL, 4, 3664, 5, 2013, 11, NULL,'0','11');
-INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [WordsOrder],[WordsMeasuresSequence]) VALUES (7, 1, NULL, 2, NULL, 3, 2013, 12, NULL, NULL, '0111');
-INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [WordsOrder],[WordsMeasuresSequence]) VALUES (8, 1, NULL, 10, 3667, 2, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [WordsOrder],[WordsMeasuresSequence]) VALUES (11, 3, 'qwe', 31, NULL, 5, 2014, NULL, NULL, NULL, NULL);
-INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [WordsOrder],[WordsMeasuresSequence]) VALUES (12, 1, NULL, 15, 3666, 3, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [WordsOrder],[WordsMeasuresSequence]) VALUES (13, 1, NULL, 14, 3664, 1, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [WordsOrder],[WordsMeasuresSequence]) VALUES (14, 1, 'комментарий', 18, NULL, 1, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [WordsOrder],[WordsMeasuresSequence]) VALUES (19, 3, NULL, 2, NULL, 5, 2013, 12, NULL, NULL, NULL);
-INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [WordsOrder],[WordsMeasuresSequence]) VALUES (24, 2, '111', 21, NULL, 1, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [WordsOrder],[WordsMeasuresSequence]) VALUES (27, 2, NULL, 20, NULL, 2, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [Unit], [WordsOrder],[WordsMeasuresSequence]) VALUES (5, 1, NULL, 2, NULL, 1, NULL, NULL, NULL, NULL,'0','1');
+INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [Unit], [WordsOrder],[WordsMeasuresSequence]) VALUES (6, 1, '1', 4, 3664, 5, 2013, 11, NULL, 'Month','0','11');
+INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [Unit], [WordsOrder],[WordsMeasuresSequence]) VALUES (7, 1, '2', 2, NULL, 3, 2013, 12, NULL, NULL, NULL, '0111');
+INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [Unit], [WordsOrder],[WordsMeasuresSequence]) VALUES (8, 1, NULL, 10, 3667, 2, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [Unit], [WordsOrder],[WordsMeasuresSequence]) VALUES (11, 3, 'qwe', 31, NULL, 5, 2014, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [Unit], [WordsOrder],[WordsMeasuresSequence]) VALUES (12, 1, NULL, 15, 3666, 3, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [Unit], [WordsOrder],[WordsMeasuresSequence]) VALUES (13, 1, NULL, 14, 3664, 1, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [Unit], [WordsOrder],[WordsMeasuresSequence]) VALUES (14, 1, 'комментарий', 18, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [Unit], [WordsOrder],[WordsMeasuresSequence]) VALUES (19, 3, NULL, 2, NULL, 5, 2013, 12, NULL, NULL, NULL, NULL);
+INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [Unit], [WordsOrder],[WordsMeasuresSequence]) VALUES (24, 2, '111', 21, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO [HealthRecord] ([ID], [AppointmentID], [Comment], [SymptomId], [DiseaseID], [CategoryID], [FromYear], [FromMonth], [FromDay], [Unit], [WordsOrder],[WordsMeasuresSequence]) VALUES (27, 2, NULL, 20, NULL, 2, NULL, NULL, NULL, NULL, NULL, NULL);
 -- 11 records
 
 

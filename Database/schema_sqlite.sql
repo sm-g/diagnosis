@@ -128,6 +128,7 @@
        FromDay TINYINT,
        FromMonth TINYINT,
        FromYear INT,
+	   Unit TEXT,
        constraint FK80ADA1CA2166F67F foreign key (AppointmentID) references Appointment,
        constraint FK80ADA1CA773D5754 foreign key (CategoryID) references RecordCategory,
        constraint FK80ADA1CA3A363251 foreign key (DiseaseID) references Disease,

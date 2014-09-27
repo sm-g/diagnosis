@@ -1,11 +1,8 @@
 ﻿using Diagnosis.Core;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
 using Iesi.Collections.Generic;
+using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Diagnostics;
+using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
@@ -21,6 +18,7 @@ namespace Diagnosis.Models
         private Category _category;
         private IcdDisease _disease;
         private DateOffset _dateOffset;
+        private HealthRecordUnits _unit;
 
         public virtual event NotifyCollectionChangedEventHandler MeasuresChanged;
 
@@ -132,6 +130,24 @@ namespace Diagnosis.Models
             }
         }
 
+        public virtual HealthRecordUnits Unit
+        {
+            get
+            {
+                return _unit;
+            }
+            set
+            {
+                if (_unit == value)
+                    return;
+
+                EditHelper.Edit("Unit", _unit);
+                _unit = value;
+
+                OnPropertyChanged("Unit");
+            }
+        }
+
         public virtual DateOffset DateOffset
         {
             get
@@ -166,9 +182,11 @@ namespace Diagnosis.Models
                                     case "FromDay":
                                         _dateOffset.Day = FromDay;
                                         break;
+
                                     case "FromMonth":
                                         _dateOffset.Month = FromMonth;
                                         break;
+
                                     case "FromYear":
                                         _dateOffset.Year = FromYear;
                                         break;
@@ -178,7 +196,6 @@ namespace Diagnosis.Models
                             {
                                 // не меняем DateOffset, компоненты даты поменяются потом
                             }
-
                     };
                 }
                 return _dateOffset;
@@ -189,6 +206,7 @@ namespace Diagnosis.Models
         {
             get { return recordProperties; }
         }
+
         public virtual IEnumerable<Measure> Measures
         {
             get { return measures; }
@@ -198,6 +216,7 @@ namespace Diagnosis.Models
         /// Порядок слов симптома при редактировании записи, начиная с 0. В симптоме max 9 слов.
         /// </summary>
         public virtual string WordsOrder { get; set; }
+
         /// <summary>
         /// Последовательность количества подряд идущих слов и измерений при редактировании записи, начиная с количства слов.
         /// 11 - слово и измерение,
@@ -224,6 +243,7 @@ namespace Diagnosis.Models
                 // measure.order устанавливается перед добавлением в редакторе записи
             }
         }
+
         public virtual void RemoveMeasure(Measure m)
         {
             Contract.Requires(m != null);
