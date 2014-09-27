@@ -9,10 +9,11 @@ namespace Diagnosis.App.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is DateOffset))
+            var d = value as DateOffset;
+            if (d == null)
                 return null;
 
-            return (value as DateOffset).UnitString;
+            return DateOffset.FormatUnit(d.Offset, d.Unit);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
