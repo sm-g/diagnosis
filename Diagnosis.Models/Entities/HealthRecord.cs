@@ -155,6 +155,13 @@ namespace Diagnosis.Models
                 if (_dateOffset == null)
                 {
                     _dateOffset = new DateOffset(FromYear, FromMonth, FromDay, () => Appointment.DateAndTime);
+                    _dateOffset.Settings = new DateOffset.DateOffsetSettings(DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.SavesUnit);
+                    if (Unit != HealthRecordUnits.NotSet) // фиксируем единицу
+                    {
+                        _dateOffset.Unit = Unit.ToDateOffsetUnit().Value;
+                        _dateOffset.UnitFixed = true;
+                    }
+
                     _dateOffset.PropertyChanged += (s, e) =>
                     {
                         switch (e.PropertyName)
@@ -169,6 +176,11 @@ namespace Diagnosis.Models
 
                             case "Day":
                                 FromDay = (byte?)_dateOffset.Day;
+                                break;
+
+                            case "Unit":
+                                if (_dateOffset.UnitFixed)
+                                    Unit = _dateOffset.Unit.ToHealthRecordUnit();
                                 break;
                         }
                     };

@@ -89,7 +89,7 @@
                                         Month="{Binding FromMonth, Mode=TwoWay}"
                                         Day="{Binding FromDay, Mode=TwoWay}" />
                 <Label Content="давность" Margin="10,0,0,0" Width="60" />
-                <editors:DateOffsetPicker DateOffset="{Binding DateOffset}">
+                <editors:DateOffsetPicker DateOffset="{Binding DateOffset}" ReadOnlyOffset="{Binding DateOffset.UnitFixed, Mode=OneWay}">
                     <editors:DateOffsetPicker.Resources>
                         <Style TargetType="DockPanel" />
                     </editors:DateOffsetPicker.Resources>

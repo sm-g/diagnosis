@@ -17,6 +17,19 @@ namespace Diagnosis.App.Controls.Editors
         public static readonly DependencyProperty DateOffsetProperty =
             DependencyProperty.Register("DateOffset", typeof(DateOffset), typeof(DateOffsetPicker));
 
+
+
+        public bool ReadOnlyOffset
+        {
+            get { return (bool)GetValue(ReadOnlyOffsetProperty); }
+            set { SetValue(ReadOnlyOffsetProperty, value); }
+        }
+
+        public static readonly DependencyProperty ReadOnlyOffsetProperty =
+            DependencyProperty.Register("ReadOnlyOffset", typeof(bool), typeof(DateOffsetPicker), new PropertyMetadata(false));
+
+
+
         public DateOffsetPicker()
         {
             InitializeComponent();

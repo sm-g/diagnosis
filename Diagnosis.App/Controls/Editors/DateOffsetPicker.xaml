@@ -18,7 +18,10 @@
         </ObjectDataProvider>
     </UserControl.Resources>
     <DockPanel LastChildFill="False">
-        <TextBox x:Name="offset" Text="{Binding DateOffset.Offset, ElementName=root, Mode=TwoWay, TargetNullValue=''}" MinWidth="50" Margin="0,0,5,0" TextAlignment="Right" />
+        <TextBox x:Name="offset" 
+                 Text="{Binding DateOffset.Offset, ElementName=root, Mode=TwoWay, TargetNullValue=''}" 
+                 IsReadOnly="{Binding ReadOnlyOffset, ElementName=root}"
+                 MinWidth="50" Margin="0,0,5,0" TextAlignment="Right" />
         <ComboBox x:Name="units"
                   ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
         	      MinWidth="50">
