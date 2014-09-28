@@ -13,11 +13,13 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
     {
         public static readonly ILog logger = LogManager.GetLogger(typeof(Autocomplete));
         private readonly bool _isEditable;
-        private Tag _editingItem;
+        private Tag _selItem;
         private bool _popupOpened;
+        private object prevSelectedSuggestion;
+        private Tag _editingTag;
+        private bool _supressCompletion;
         private object _selectedSuggestion;
         private Recognizer recognizer;
-        private object prevSelectedSuggestion;
 
         public Autocomplete(Recognizer recognizer, bool allowTagEditing, IEnumerable<IDomainEntity> initItems)
         {
@@ -52,11 +54,13 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         public event EventHandler EntitiesChanged;
 
-        public RelayCommand EnterCommand
+        public RelayCommand<Tag> EnterCommand
         {
             get
             {
-                return new RelayCommand(() => CompleteOnEnter(EditingTag), () => EditingTag != null);
+                return new RelayCommand<Tag>(
+                    (tag) => CompleteOnEnter(tag),
+                    (tag) => tag != null);
             }
         }
 
@@ -77,7 +81,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_selectedSuggestion != value)
                 {
                     _selectedSuggestion = value;
-                    logger.DebugFormat("selected sugg = {0}", value);
+                    //  logger.DebugFormat("selected sugg = {0}", value);
                     OnPropertyChanged(() => SelectedSuggestion);
                 }
             }
@@ -89,20 +93,42 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             set;
         }
 
+        public Tag SelectedTag
+        {
+            get
+            {
+                return _selItem;
+            }
+            set
+            {
+                if (_selItem != value)
+                {
+                    _selItem = value;
+                    if (value != null)
+                    {
+                        _selItem.IsFocused = true;
+                        EditingTag = value;
+                    }
+
+                    OnPropertyChanged(() => SelectedTag);
+                }
+            }
+        }
+
+        /// <summary>
+        /// При потере фокуса списком тегов SelectedTag будет null.
+        /// </summary>
         public Tag EditingTag
         {
             get
             {
-                return _editingItem;
+                return _editingTag;
             }
             set
             {
-                if (_editingItem != value)
+                if (_editingTag != value)
                 {
-                    _editingItem = value;
-                    if (value != null)
-                        _editingItem.IsFocused = true;
-
+                    _editingTag = value;
                     OnPropertyChanged(() => EditingTag);
                 }
             }
@@ -127,8 +153,23 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_popupOpened != value)
                 {
                     _popupOpened = value;
+                    logger.DebugFormat("opened {0}", value);
+
                     OnPropertyChanged(() => IsPopupOpen);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Не завершать тег при переходе фокуса на попап.
+        /// </summary>
+        public bool CanCompleteOnLostFocus
+        {
+            get { return _supressCompletion; }
+            set
+            {
+                _supressCompletion = value;
+                logger.DebugFormat("supress {0}", value);
             }
         }
 
@@ -158,7 +199,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 if (e.PropertyName == "Query")
                 {
-                    MakeSuggestions();
+                    MakeSuggestions(EditingTag);
                     RefreshPopup();
                 }
                 else if (e.PropertyName == "IsFocused")
@@ -168,11 +209,19 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                         prevSelectedSuggestion = SelectedSuggestion; // сначала фокус получает выбранный тег
 
                         if (tag.Signalization != Signalizations.None) // предположения для недописанных
-                            MakeSuggestions();
+                        {
+                            MakeSuggestions(SelectedTag);
+                        }
+                        else
+                        {
+                            Suggestions.Clear();
+                        }
+
+                        CanCompleteOnLostFocus = true;
                     }
 
-                    // потерялся фокус → завершение введенного текста
-                    if (!tag.IsFocused && tag.State == Tag.States.Typing)
+                    // потерялся фокус после перехода на другой тег → завершение введенного текста
+                    if (!tag.IsFocused && CanCompleteOnLostFocus)
                     {
                         CompleteOnLostFocus(tag);
                     }
@@ -283,13 +332,15 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
 
             Suggestions.Clear();
+            RefreshPopup();
+            tag.Validate();
 
             // добавляем пустое поле
             if (!IsLastTagEmpty)
                 AddTag();
         }
 
-        private void CompleteOnEnter(Tag tag)
+        public void CompleteOnEnter(Tag tag)
         {
             switch (tag.State)
             {
@@ -311,18 +362,20 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             Tags.Last().IsFocused = true;
         }
 
-        private void CompleteOnLostFocus(Tag tag)
+        public void CompleteOnLostFocus(Tag tag)
         {
-            Contract.Requires(tag.State == Tag.States.Typing);
-
-            CompleteCommon(tag, prevSelectedSuggestion, true);
+            if (tag.State == Tag.States.Typing)
+            {
+                logger.Debug("Complete from VM");
+                CompleteCommon(tag, prevSelectedSuggestion, true);
+            }
         }
 
-        private void MakeSuggestions()
+        private void MakeSuggestions(Tag tag)
         {
-            var tagIndex = Tags.IndexOf(EditingTag);
+            var tagIndex = Tags.IndexOf(tag);
             var results = recognizer.SearchForSuggesstions(
-                query: EditingTag.Query,
+                query: tag.Query,
                 prevEntityBlank: tagIndex > 0 ? Tags[tagIndex - 1].Blank : null,
                 exclude: Tags.Select((t, i) => i != tagIndex ? t.Blank : null)); // все сущности кроме сущности редактируемого тега
 

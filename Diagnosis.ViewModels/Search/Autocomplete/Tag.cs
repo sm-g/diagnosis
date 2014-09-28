@@ -126,7 +126,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     OnPropertyChanged("Blank");
                     OnPropertyChanged("BlankType");
 
-                    logger.DebugFormat("{0} blank changed", this);
+                    // logger.DebugFormat("{0} blank changed", this);
                 }
                 if (value != null)
                 {
@@ -158,10 +158,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_focused != value)
                 {
                     _focused = value;
-                    Debug.Print("{0} focused = {1}", this, value);
+                    //  Debug.Print("{0} focused = {1}", this, value);
                     OnPropertyChanged("IsFocused");
-                    if (!value)
-                        Validate();
                 }
             }
         }
@@ -235,7 +233,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_signal != value)
                 {
                     _signal = value;
-                    logger.InfoFormat("{0} signals", this);
+                    //  logger.InfoFormat("{0} signals", this);
                     OnPropertyChanged(() => Signalization);
                 }
             }

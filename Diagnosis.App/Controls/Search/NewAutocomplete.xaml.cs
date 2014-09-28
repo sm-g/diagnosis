@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Diagnosis.ViewModels.Search.Autocomplete;
+using log4net;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Diagnosis.ViewModels.Search.Autocomplete;
 
 namespace Diagnosis.App.Controls.Search
 {
@@ -20,8 +11,9 @@ namespace Diagnosis.App.Controls.Search
     /// </summary>
     public partial class NewAutocomplete : UserControl
     {
-        private bool focusFromPopup;
-        Autocomplete Vm { get { return DataContext as Autocomplete; } }
+        public static readonly ILog logger = LogManager.GetLogger(typeof(Autocomplete));
+
+        private Autocomplete Vm { get { return DataContext as Autocomplete; } }
 
         public NewAutocomplete()
         {
@@ -43,13 +35,8 @@ namespace Diagnosis.App.Controls.Search
                 // нельзя выбирать предположения, когда попап скрыт (когда при пустом запросе показываем все предположения)
                 suggestions.SelectedItem = null;
 
-                HidePopup();
+                popup.IsOpen = false;
             }
-        }
-
-        private void HidePopup()
-        {
-            popup.IsOpen = false;
         }
 
         private void suggestions_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -62,36 +49,96 @@ namespace Diagnosis.App.Controls.Search
             if (e.AddedItems.Count > 0)
             {
                 var element = input.ItemContainerGenerator.ContainerFromItem(e.AddedItems[e.AddedItems.Count - 1]) as UIElement;
-                popup.PlacementTarget = element; // TODO
+                popup.PlacementTarget = element;
             }
         }
 
-        // do not work
+        #region focus stuff
 
-        private void EnterFormPopup()
+        private void UserControl_GotFocus(object sender, RoutedEventArgs e)
         {
-            Vm.EnterCommand.Execute(null);
-            focusFromPopup = true;
-            input.Focus();
+            // logger.Debug("autocomplete got focus");
         }
 
-        private void suggestions_KeyUp(object sender, KeyEventArgs e)
+        /// <summary>
+        /// Фокус ушел из автокомплита (из тега или попапа) - завершаем тег.
+        /// </summary>
+        private void UserControl_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            var outs = IsFocusOutside();
+            // logger.DebugFormat("autocomplete lost focus to {0}, out? {1}", GetFocusedInScope(), outs);
+
+            if (outs)
             {
-                e.Handled = true;
-                EnterFormPopup();
+                logger.Debug("complete from xaml");
+                Vm.CompleteOnLostFocus(Vm.EditingTag);
             }
         }
-        private void suggestions_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void input_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (e.Key == Key.Escape)
+            // logger.Debug("input got focus");
+        }
+
+        private void input_LostFocus(object sender, RoutedEventArgs e)
+        {
+            // logger.DebugFormat("input lost focus, {0} {1}", e.OriginalSource, e.Source);
+        }
+
+        private void popup_GotFocus(object sender, RoutedEventArgs e)
+        {
+            // logger.Debug("popup got focus");
+        }
+
+        private void popup_LostFocus(object sender, RoutedEventArgs e)
+        {
+            // logger.DebugFormat("popup lost focus to {0}", GetFocusedInScope());
+        }
+
+        private void Tag_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            //var fromSugggsetions = InSuggsetions(e.OldFocus as DependencyObject);
+            //logger.DebugFormat("tag got focus, fromPopup={0}", fromSugggsetions);
+        }
+
+        /// <summary>
+        /// Фокус ввода ушел с тега в попап — тег не завершаем, иначе — убираем попап.
+        /// </summary>
+        private void Tag_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            var toSugggsetions = InSuggsetions(e.NewFocus as DependencyObject);
+            logger.DebugFormat("tag lost focus, toPopup={0}", toSugggsetions);
+            if (toSugggsetions)
             {
-                e.Handled = true;
-                HidePopup();
-                focusFromPopup = true;
-                input.Focus();
+                Vm.CanCompleteOnLostFocus = false;
+            }
+            else
+            {
+                popup.IsOpen = false;
             }
         }
+
+        private void Tag_LostFocus(object sender, RoutedEventArgs e)
+        {
+            //logger.DebugFormat("tag lost locigfocus");
+        }
+
+        // helpers
+
+        private bool InSuggsetions(DependencyObject dep)
+        {
+            return ParentFinder.FindAncestorOrSelf<ListBox>(dep) == suggestions;
+        }
+
+        private bool IsFocusOutside()
+        {
+            return FocusChecker.IsFocusOutsideDepObject(this) && FocusChecker.IsFocusOutsideDepObject(popup.Child);
+        }
+
+        IInputElement GetFocusedInScope()
+        {
+            return FocusManager.GetFocusedElement(FocusManager.GetFocusScope(this));
+        }
+        #endregion
+
     }
 }

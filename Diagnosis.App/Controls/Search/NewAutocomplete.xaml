@@ -5,19 +5,31 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
+             GotFocus="UserControl_GotFocus"
+             LostFocus="UserControl_LostFocus"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <InputBindingCollection x:Shared="False" x:Key="TagInputBindings">
             <KeyBinding Key="Delete" Command="{Binding DeleteCommand}" />
         </InputBindingCollection>
+        <InputBindingCollection x:Shared="False" x:Key="SuggestionInputBindings">
+            <KeyBinding Key="Enter" 
+                        Command="{Binding DataContext.EnterCommand,ElementName=suggestions}" 
+                        CommandParameter="{Binding DataContext.EditingTag,ElementName=suggestions}" />
+            <MouseBinding MouseAction="LeftDoubleClick" 
+                          Command="{Binding DataContext.EnterCommand,ElementName=suggestions}" 
+                          CommandParameter="{Binding DataContext.EditingTag,ElementName=suggestions}" />
+        </InputBindingCollection>
     </UserControl.Resources>
     <!-- Autocomplete -->
     <StackPanel>
         <ListBox x:Name="input"
                  ItemsSource="{Binding Tags}"
-                 SelectedItem="{Binding EditingTag}"
+                 SelectedItem="{Binding SelectedTag}"
                  HorizontalContentAlignment="Stretch"
+                 GotFocus="input_GotFocus"
+                 LostFocus="input_LostFocus"
                  PreviewKeyDown="input_PreviewKeyDown"
                  SelectionChanged="input_SelectionChanged">
             <ListBox.ItemsPanel>
@@ -47,25 +59,34 @@
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <search:Tag />
+                    <search:Tag LostKeyboardFocus="Tag_LostKeyboardFocus" GotKeyboardFocus="Tag_GotKeyboardFocus" LostFocus="Tag_LostFocus" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-
+   
         <Popup x:Name="popup" Height="Auto" Width="auto"
                 StaysOpen="True"
                 Placement="Bottom"
+                GotFocus="popup_GotFocus"
+                LostFocus="popup_LostFocus"
                 IsOpen="{Binding IsPopupOpen}"
                 HorizontalAlignment="Left" Grid.RowSpan="2">
 
             <ListBox x:Name="suggestions"
                         MaxHeight="100"
+                        FocusManager.IsFocusScope="True"
                         ItemsSource="{Binding Suggestions}"
                         SelectedItem="{Binding SelectedSuggestion, Mode=TwoWay}"
                         SelectionChanged="suggestions_SelectionChanged"
-                        PreviewKeyDown="suggestions_PreviewKeyDown"
-                        KeyUp="suggestions_KeyUp"
                         HorizontalContentAlignment="Stretch">
+                <ListBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding EnterCommand}" CommandParameter="{Binding EditingTag}" />
+                </ListBox.InputBindings>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="controls:Attached.InputBindings" Value="{StaticResource SuggestionInputBindings}" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
             </ListBox>
         </Popup>
     </StackPanel>
