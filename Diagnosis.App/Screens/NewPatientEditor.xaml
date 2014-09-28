@@ -75,7 +75,7 @@
             <!-- PatientViewModel -->
             <DockPanel>
                 <Label Content="Метка" />
-                <TextBox Text="{Binding Label, ValidatesOnDataErrors=True}" />
+                <TextBlock Text="{Binding Label, ValidatesOnDataErrors=True}" />
             </DockPanel>
             <DockPanel>
                 <Label Content="Фамилия" />

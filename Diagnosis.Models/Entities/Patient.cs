@@ -31,7 +31,7 @@ namespace Diagnosis.Models
         {
             get
             {
-                return _label;
+                return _label ?? Id.ToString();
             }
             set
             {
@@ -263,7 +263,6 @@ namespace Diagnosis.Models
             BirthMonth = month;
             BirthDay = day;
             IsMale = isMale;
-            Label = new Random().Next(10000, 99999).ToString();
         }
 
         protected Patient()
