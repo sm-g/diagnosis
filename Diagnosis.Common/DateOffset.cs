@@ -322,20 +322,20 @@ namespace Diagnosis.Core
         /// <summary>
         /// Задает смещение и единицу.
         /// </summary>
-        private void SetOffset(int? offset, DateUnits unit, bool onlyOffset = false)
+        /// <param name="forceSetDateByOffsetUnit">Установка даты при задании только смещения или создании объекта.</param>
+        private void SetOffset(int? offset, DateUnits unit, bool forceSetDateByOffsetUnit = false)
         {
             inSetting = true;
 
             Offset = offset;
+            Unit = unit;
 
-            if (onlyOffset)
+            if (forceSetDateByOffsetUnit)
             {
                 SetDateByOffsetUnit();
                 inSetting = false;
                 return;
             }
-
-            Unit = unit;
 
             switch (UnitSettingStrategy)
             {
@@ -409,7 +409,7 @@ namespace Diagnosis.Core
                     if (!UnitFixed)
                         SetOffsetUnitByDateRound();
                     else
-                        RoundOffset();
+                        RoundOffset(); // after ctor
                     break;
             }
 
@@ -508,7 +508,7 @@ namespace Diagnosis.Core
                     }
                     else
                     {
-                        Offset = null; // как считать дни из месяцев и лет
+                        Offset = null; // как считать дни из месяцев и лет, укрупнение
                     }
 
                     break;
@@ -711,7 +711,7 @@ namespace Diagnosis.Core
                 NowDate = now;
             if (settings != null)
                 Settings = settings;
-            SetOffset(offset, unit);
+            SetOffset(offset, unit, true);
         }
 
         /// <summary>

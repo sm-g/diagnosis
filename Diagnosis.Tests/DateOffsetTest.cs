@@ -533,8 +533,8 @@ namespace Tests
         {
             var date = new DateOffset(2014, 3, 31, now);
             Assert.IsTrue(date.Offset == 1);
-            date.UnitSettingStrategy = DateOffset.UnitSetting.RoundsOffset;
-            date.CutsDate = false;
+            date.Settings = new DateOffset.DateOffsetSettings(
+                DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.RoundsUnit, cutsDate:false); // или DateSetting.SavesUnit
 
             date.Unit = DateUnits.Year;
             Assert.IsTrue(date.Offset == 0);
@@ -591,7 +591,21 @@ namespace Tests
             // юнит не меняется
             date.Year = 2014;
             Assert.IsTrue(date.Unit == DateUnits.Month);
-            Assert.IsTrue(date.Offset == 13);
+            Assert.IsTrue(date.Offset == 1);
+        }
+        [TestMethod]
+        public void DateSettingSavesUnit2()
+        {
+            var date = new DateOffset(5, DateUnits.Day, now, new DateOffset.DateOffsetSettings(
+                DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.SavesUnit)); // только так UnitSetting.RoundsOffset
+
+            date.UnitFixed = true;
+            date.Day = null;
+            // юнит укрупняется
+            Assert.IsTrue(date.Unit == DateUnits.Month);
+            Assert.IsTrue(date.Year == 2014);
+            Assert.IsTrue(date.Month == 3);
+            Assert.IsTrue(date.Offset == 1);            
         }
         #endregion
 
