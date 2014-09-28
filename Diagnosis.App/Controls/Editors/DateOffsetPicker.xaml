@@ -16,6 +16,14 @@
                 <x:Type TypeName="core:DateUnits" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="White" />
+            <Style.Triggers>
+                <Trigger Property="IsReadOnly" Value="True">
+                    <Setter Property="Background" Value="LightGray" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <DockPanel LastChildFill="False">
         <TextBox x:Name="offset" 

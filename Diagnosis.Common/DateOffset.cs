@@ -166,7 +166,7 @@ namespace Diagnosis.Core
             }
             set
             {
-                if (_unitFixed != value && value && DateSettingStrategy == DateSetting.SavesUnit)
+                if (_unitFixed != value && (value && DateSettingStrategy == DateSetting.SavesUnit))
                 {
                     logger.DebugFormat("{0}, unit fixed", this);
                     _unitFixed = value;
@@ -247,6 +247,15 @@ namespace Diagnosis.Core
                 if (_unitSetting != value)
                 {
                     _unitSetting = value;
+                    logger.DebugFormat("{0}", value);
+                    //if (value == UnitSetting.RoundsOffset && DateSettingStrategy == DateSetting.SetsUnitSilly)
+                    //{
+                    //    DateSettingStrategy = DateSetting.RoundsUnit;
+                    //}
+                    //if (value == UnitSetting.SetsDate && DateSettingStrategy == DateSetting.SavesUnit)
+                    //{
+                    //    DateSettingStrategy = DateSetting.RoundsUnit;
+                    //}
                     OnPropertyChanged(() => UnitSettingStrategy);
                 }
             }
@@ -263,6 +272,19 @@ namespace Diagnosis.Core
                 if (_dateSetting != value)
                 {
                     _dateSetting = value;
+                    logger.DebugFormat("{0}", value);
+                    if (value != DateSetting.SavesUnit)
+                    {
+                        UnitFixed = false;
+                    }
+                    //if (value == DateSetting.SetsUnitSilly && UnitSettingStrategy == UnitSetting.RoundsOffset)
+                    //{
+                    //    UnitSettingStrategy = UnitSetting.SetsDate;
+                    //}
+                    //if (value == DateSetting.SavesUnit && UnitSettingStrategy == UnitSetting.SetsDate)
+                    //{
+                    //    UnitSettingStrategy = UnitSetting.RoundsOffset;
+                    //}
                     OnPropertyChanged(() => DateSettingStrategy);
                 }
             }
@@ -506,9 +528,13 @@ namespace Diagnosis.Core
                     {
                         Offset = (Now - GetNullableDateTime().Value).Days;
                     }
+                    else if (Month.HasValue)
+                    {
+                        Offset = 999;
+                    }
                     else
                     {
-                        Offset = null; // как считать дни из месяцев и лет, укрупнение
+                        Offset = 999; // как считать дни из месяцев и лет, укрупнение
                     }
 
                     break;
@@ -518,9 +544,13 @@ namespace Diagnosis.Core
                     {
                         Offset = (Now - GetNullableDateTime().Value).Days / 7;
                     }
+                    else if (Month.HasValue)
+                    {
+                        Offset = 999;
+                    }
                     else
                     {
-                        Offset = null; // как считать недели из месяцев и лет
+                        Offset = 999;
                     }
                     break;
 
@@ -531,7 +561,7 @@ namespace Diagnosis.Core
                     }
                     else
                     {
-                        Offset = null; // как считать месяцы из лет
+                        Offset = 999;
                     }
                     break;
 
@@ -886,8 +916,8 @@ namespace Diagnosis.Core
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            Contract.Invariant(!(DateSettingStrategy == DateSetting.SavesUnit && UnitSettingStrategy == UnitSetting.SetsDate));
-            Contract.Invariant(!(DateSettingStrategy == DateSetting.SetsUnitSilly && UnitSettingStrategy == UnitSetting.RoundsOffset));
+            //Contract.Invariant(!(DateSettingStrategy == DateSetting.SavesUnit && UnitSettingStrategy == UnitSetting.SetsDate));
+            //Contract.Invariant(!(DateSettingStrategy == DateSetting.SetsUnitSilly && UnitSettingStrategy == UnitSetting.RoundsOffset));
         }
 
         public override string ToString()

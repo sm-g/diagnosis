@@ -8,6 +8,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:Diagnosis.ViewModels"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:core="clr-namespace:Diagnosis.Core;assembly=Diagnosis.Core"
              x:Name="editor"
              mc:Ignorable="d"
              d:DesignHeight="200" d:DesignWidth="600">
@@ -18,7 +20,6 @@
 
     <Grid x:Name="hr_grid" MouseDown="hr_grid_MouseDown" Focusable="True" Background="Transparent">
         <Grid.InputBindings>
-           
         </Grid.InputBindings>
 
         <Grid.ColumnDefinitions>
@@ -27,15 +28,15 @@
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
-        <Button Command="{Binding CloseCommand}" Width="16" Height="16" 
+        <Button Command="{Binding CloseCommand}" Width="16" Height="16"
                 VerticalAlignment="Top" HorizontalAlignment="Right"
-                ToolTip="Закрыть редактор, сохранив все изменения" 
+                ToolTip="Закрыть редактор, сохранив все изменения"
                 Grid.Column="2">
             <DockPanel>
                 <Image Source="{StaticResource closeImage}"  Width="16" />
             </DockPanel>
         </Button>
-        
+
         <!--DataContext is CardViewModel-->
         <StackPanel VerticalAlignment="Center" DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=screens:NewCard}}">
             <StackPanel.Resources>
@@ -66,7 +67,7 @@
 
                     <!--DataContext is HrEditorViewModel-->
                     <search:NewAutocomplete DataContext="{Binding DataContext.Autocomplete, ElementName=editor}" />
-                    
+
                     <!--<TextBox Text="{Binding NumValue, StringFormat={}{0:G6}, TargetNullValue=''}"
                              ToolTip="Числовое значение"
                              Width="60"
@@ -95,7 +96,32 @@
                     </editors:DateOffsetPicker.Resources>
                 </editors:DateOffsetPicker>
             </DockPanel>
-            
+            <DockPanel>
+                <DockPanel.Resources>
+                    <ObjectDataProvider x:Key="dateSetting" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                        <ObjectDataProvider.MethodParameters>
+                            <x:Type TypeName="core:DateOffset+DateSetting" />
+                        </ObjectDataProvider.MethodParameters>
+                    </ObjectDataProvider>
+                    <ObjectDataProvider x:Key="unitSetting" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                        <ObjectDataProvider.MethodParameters>
+                            <x:Type TypeName="core:DateOffset+UnitSetting" />
+                        </ObjectDataProvider.MethodParameters>
+                    </ObjectDataProvider>
+                </DockPanel.Resources>
+                <Label Content="DateSetting" />
+                <ComboBox ItemsSource="{Binding Source={StaticResource dateSetting}}" Width="150">
+                    <ComboBox.SelectedItem>
+                        <Binding Path="DateOffset.DateSettingStrategy" Mode="TwoWay" />
+                    </ComboBox.SelectedItem>
+                </ComboBox>
+                <Label Content="UnitSetting" Margin="10,0,0,0" />
+                <ComboBox ItemsSource="{Binding Source={StaticResource unitSetting}}">
+                    <ComboBox.SelectedItem>
+                        <Binding Path="DateOffset.UnitSettingStrategy" Mode="TwoWay" />
+                    </ComboBox.SelectedItem>
+                </ComboBox>
+            </DockPanel>
             <!--DataContext is HrEditorViewModel-->
             <DockPanel DataContext="{Binding DataContext,ElementName=editor}"
                        Visibility="{Binding ShowIcdDiseaseSearch, Converter={StaticResource BooleanToVisibilityConverter}}">
