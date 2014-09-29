@@ -29,9 +29,9 @@
         
         <DockPanel>
             <ToolBar DockPanel.Dock="Left">
-                <Button Command="{Binding Appointment.MoveHrSelectionCommand}" FontSize="16"
+                <Button Command="{Binding DataContext.Appointment.MoveHrSelectionCommand,  RelativeSource={RelativeSource AncestorType=screens:NewCard}}" FontSize="16"
                     CommandParameter="{StaticResource True}" ToolTip="Открыть предыдущую запись (Crtl + Стрелка вверх)">↑</Button>
-                <Button Command="{Binding Appointment.MoveHrSelectionCommand}" FontSize="16"
+                <Button Command="{Binding DataContext.Appointment.MoveHrSelectionCommand,  RelativeSource={RelativeSource AncestorType=screens:NewCard}}" FontSize="16"
                     CommandParameter="{StaticResource False}" ToolTip="Открыть следующую запись (Crtl + Стрелка вниз)" >↓</Button>
                 <Separator />
                 <Button Command="{Binding DataContext.Appointment.AddHealthRecordCommand,  RelativeSource={RelativeSource AncestorType=screens:NewCard}}"
