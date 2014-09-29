@@ -101,10 +101,16 @@
             <editors:PropertiesChooser Margin="0,5" />
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Grid.Column="1">
-            <Button Name="saveButton" IsDefault="True" Command="{Binding SaveCommand}">Сохранить</Button>
-            <Button Name="saveAddButton"  Command="{Binding SaveAndCreateCommand}">Добавить ещё пациента</Button>
-            <Button Name="cancelButton" IsCancel="True" Command="{Binding CancelCommand}">Отмена</Button>
+        <StackPanel Grid.Row="1" Grid.Column="1" Style="{StaticResource DialogButtonsPanel}">
+            <Button Name="saveButton" IsDefault="True" Command="{Binding SaveCommand}">
+                <AccessText Text="_Сохранить"/>
+            </Button>
+            <Button Name="saveAddButton" Command="{Binding SaveAndCreateCommand}" >
+                <AccessText Text="_Добавить"/>
+            </Button>
+            <Button Name="cancelButton" IsCancel="True" Command="{Binding CancelCommand}">
+                <AccessText Text="Отмена"/>
+            </Button>
         </StackPanel>
     </Grid>
 </UserControl>
