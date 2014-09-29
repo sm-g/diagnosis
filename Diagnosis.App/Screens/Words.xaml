@@ -18,11 +18,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Style="{StaticResource buttonsBar}">
-            <StackPanel.Resources>
-                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource barButton}" />
-                <Style TargetType="{x:Type Image}" BasedOn="{StaticResource buttonIcon}" />
-            </StackPanel.Resources>
+        <ToolBar>
             <Button Command="{Binding AddCommand}" ToolTip="Редактировать новое слово (Ctrl + N)">
                 <DockPanel>
                     <Image Source="{StaticResource addImage}" />
@@ -39,7 +35,7 @@
                     </TextBlock>
                 </DockPanel>
             </Button>
-        </StackPanel>
+        </ToolBar>
 
         <search:Filter DataContext="{Binding Filter}" Grid.Row="1"/>
 
