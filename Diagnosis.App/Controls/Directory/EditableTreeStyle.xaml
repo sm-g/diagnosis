@@ -7,10 +7,6 @@
 
     <InputBindingCollection x:Shared="False" x:Key="InputBindings">
         <KeyBinding Key="Space" Command="{Binding ToggleCommand}" />
-        <KeyBinding Key="Delete" Command="{Binding Editable.DeleteCommand}" />
-        <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
-        <KeyBinding Key="F2" Command="{Binding Editable.EditCommand}" />
-        <KeyBinding Key="Escape" Command="{Binding Editable.RevertCommand}" />
         <KeyBinding Modifiers="Alt" Key="F" Command="{Binding SendToSearchCommand}" />
         <KeyBinding Modifiers="Control" Key="N" 
                     Command="{Binding DataContext.AddCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}" 

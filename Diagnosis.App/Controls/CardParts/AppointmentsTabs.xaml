@@ -11,39 +11,10 @@
              d:DesignHeight="50" d:DesignWidth="300">
     <!--DataContext is CourseViewModel-->
     <UserControl.Resources>
-        <InputBindingCollection x:Shared="False" x:Key="AppInputBindings">
-            <KeyBinding Key="Enter" Command="{Binding Editable.CommitCommand}" />
-            <KeyBinding Key="Delete" Command="{Binding Editable.DeleteCommand}" />
-        </InputBindingCollection>
-
         <DataTemplate x:Key="AppointmentHeaderTemplate">
             <Grid DataContext="{Binding Content}">
                 <!-- ShortAppointmentVM -->
                 <DockPanel MinWidth="70">
-                    <Button x:Name="deleteButton"
-                            Command="{Binding Content.Editable.DeleteCommand}"
-                            Height="12"
-                            Padding="0"
-                            ToolTip="Удалить осмотр"
-                            DockPanel.Dock="Right">
-                        <Button.Background>
-                            <ImageBrush ImageSource="{StaticResource closeImage}" Stretch="Uniform"/>
-                        </Button.Background>
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource squareButton}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding Content.Editable.CanBeDeleted}" Value="True" />
-                                            <Condition Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type DockPanel}}}" Value="True" />
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
                     <TextBlock Text="{Binding DateTime, Converter={StaticResource DateLabel}}"
                                        DockPanel.Dock="Top" />
                     <TextBlock Text="{Binding Doctor, Converter={StaticResource ManToShortName}, StringFormat='{}доктор {0}'}"
