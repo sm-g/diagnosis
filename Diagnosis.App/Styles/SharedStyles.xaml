@@ -44,6 +44,15 @@
             </Style>
         </Style.Resources>
     </Style>
+    
+    <Style TargetType="ToolBar">
+        <Setter Property="ToolBarTray.IsLocked" Value="True" />
+        <Style.Resources>
+            <Style TargetType="Button">
+                <Setter Property="MinWidth" Value="16"/>
+            </Style>
+        </Style.Resources>
+    </Style>
     <!-- forms -->
 
     
