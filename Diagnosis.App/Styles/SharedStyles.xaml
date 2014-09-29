@@ -7,12 +7,24 @@
     </Style>
     <Style TargetType="ComboBox">
         <Setter Property="Height" Value="23" />
-    </Style>
+    </Style>    
 
     <!-- buttons -->
     <Style TargetType="StackPanel" x:Key="buttonsBar">
         <Setter Property="Orientation" Value="Horizontal" />
         <Setter Property="Margin" Value="0,0,0,10" />
+    </Style>
+
+    <Style x:Key="DialogButtonsPanel" TargetType="{x:Type StackPanel}">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Style.Resources>
+            <Style TargetType="Button">
+                <Setter Property="MinWidth" Value="75"/>
+                <Setter Property="MinHeight" Value="23"/>
+                <Setter Property="Margin" Value="10,10,0,0"/>
+            </Style>
+        </Style.Resources>
     </Style>
 
     <Style TargetType="{x:Type Button}" x:Key="barButton">
@@ -32,6 +44,9 @@
     </Style>
 
     <!-- forms -->
+
+    
+    
     <Style TargetType="DockPanel" x:Key="formLine">
         <Setter Property="Margin">
             <Setter.Value>
@@ -66,5 +81,5 @@
 
     <Style TargetType="ListView" x:Key="list">
         <Setter Property="BorderThickness" Value="0" />
-    </Style>
+    </Style>   
 </ResourceDictionary>
