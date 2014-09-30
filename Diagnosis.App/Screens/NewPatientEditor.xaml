@@ -101,12 +101,13 @@
             </StackPanel>
         </ScrollViewer>
 
-        <StackPanel Grid.Row="1" Grid.Column="1" Style="{StaticResource DialogButtonsPanel}">
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Style="{StaticResource DialogButtonsPanel}">
+            <Button Name="saveAddButton" Command="{Binding SaveAndCreateCommand}" ToolTip="Сохранить и добавить нового пациента" >
+                <AccessText Text="_Добавить нового"/>
+            </Button>
+            <Separator Width="60" Height="0"/>
             <Button Name="saveButton" IsDefault="True" Command="{Binding SaveCommand}">
                 <AccessText Text="_Сохранить"/>
-            </Button>
-            <Button Name="saveAddButton" Command="{Binding SaveAndCreateCommand}" >
-                <AccessText Text="_Добавить"/>
             </Button>
             <Button Name="cancelButton" IsCancel="True" Command="{Binding CancelCommand}">
                 <AccessText Text="Отмена"/>
