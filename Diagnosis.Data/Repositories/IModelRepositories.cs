@@ -3,11 +3,6 @@ using System.Collections.Generic;
 
 namespace Diagnosis.Data.Repositories
 {
-    public interface IPropertyRepository : IRepository<Property>
-    {
-        Property GetByTitle(string title);
-    }
-
     public interface IWordRepository : IRepository<Word>
     {
         Word GetByTitle(string title);

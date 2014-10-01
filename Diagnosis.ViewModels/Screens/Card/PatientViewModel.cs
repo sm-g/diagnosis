@@ -145,13 +145,7 @@ namespace Diagnosis.ViewModels
                 }
             }
         }
-
-        public ObservableCollection<PropertyViewModel> Properties
-        {
-            get;
-            private set;
-        }
-
+        
         public RelayCommand EditCommand
         {
             get
@@ -203,8 +197,6 @@ namespace Diagnosis.ViewModels
             {
                 OnPropertyChanged("NoCourses");
             });
-
-            LoadProperties();
         }
 
         public void SelectCourse(Course course)
@@ -228,49 +220,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        private void LoadProperties()
-        {
-            var allProperties = new Diagnosis.Data.Repositories.PropertyRepository().GetAll();
-
-            var existingPatProps = patient.PatientProperties;
-
-            var propVms = new List<PropertyViewModel>(allProperties.Select(p =>
-            {
-                var vm = new PropertyViewModel(p);
-                vm.PropertyChanged += propVm_PropertyChanged;
-                return vm;
-            }));
-
-            // указываем значение свойства из БД
-            // если у пацента не указано какое-то свойство — добавляем это свойство с пустым значением
-            foreach (var propVM in propVms)
-            {
-                var pp = existingPatProps.FirstOrDefault(patProp => patProp.Property == propVM.property);
-                if (pp != null)
-                {
-                    propVM.SelectedValue = pp.Value;
-                }
-                else
-                {
-                    propVM.SelectedValue = new EmptyPropertyValue(propVM.property);
-                }
-            }
-
-            Properties = new ObservableCollection<PropertyViewModel>(propVms);
-        }
-
-        void propVm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "SelectedValue")
-            {
-                var propVM = sender as PropertyViewModel;
-                if (!(propVM.SelectedValue is EmptyPropertyValue))
-                {
-                    patient.SetPropertyValue(propVM.property, propVM.SelectedValue);
-                }
-            }
-        }
-
         public override string ToString()
         {
             return patient.ToString();
@@ -281,10 +230,6 @@ namespace Diagnosis.ViewModels
             if (disposing)
             {
                 patient.PropertyChanged -= patient_PropertyChanged;
-                foreach (var item in Properties)
-                {
-                    item.PropertyChanged -= propVm_PropertyChanged;
-                }
             }
             base.Dispose(disposing);
         }

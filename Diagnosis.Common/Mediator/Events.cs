@@ -15,7 +15,6 @@ namespace Diagnosis.Core
         public const string Patient = "patient";
         public const string Doctor = "doctor";
         public const string Diagnosis = "diagnosis";
-        public const string Property = "property";
         public const string Course = "course";
         public const string Appointment = "appointment";
         public const string HealthRecord = "healthRecord";

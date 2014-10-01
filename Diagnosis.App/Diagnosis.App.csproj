@@ -260,9 +260,6 @@
     <Compile Include="Controls\Editors\ComboBoxDatePicker.xaml.cs">
       <DependentUpon>ComboBoxDatePicker.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Editors\PropertiesChooser.xaml.cs">
-      <DependentUpon>PropertiesChooser.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Search\PopupSearch.xaml.cs">
       <DependentUpon>PopupSearch.xaml</DependentUpon>
     </Compile>
@@ -419,10 +416,6 @@
     <Page Include="Controls\Editors\ComboBoxDatePicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\Editors\PropertiesChooser.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\Search\PopupSearch.xaml">
       <SubType>Designer</SubType>

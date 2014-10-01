@@ -168,7 +168,6 @@
     <Compile Include="Screens\Card\DiagnosisViewModel.cs" />
     <Compile Include="Screens\Card\Managers\HealthRecordManager.cs" />
     <Compile Include="Screens\Card\HealthRecordViewModel.cs" />
-    <Compile Include="Screens\Card\PropertyViewModel.cs" />
     <Compile Include="Screens\Words\WordViewModel.cs" />
     <Compile Include="Editable.cs" />
     <Compile Include="Extensions\HierarchicalExtensions.cs" />

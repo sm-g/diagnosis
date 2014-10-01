@@ -12,7 +12,6 @@ namespace Diagnosis.Models
 {
     public class Patient : ValidatableEntity, IDomainEntity
     {
-        private Iesi.Collections.Generic.ISet<PatientRecordProperty> _patientProperties = new HashedSet<PatientRecordProperty>();
         private Iesi.Collections.Generic.ISet<Course> courses = new HashedSet<Course>();
 
         private int? _year;
@@ -158,15 +157,6 @@ namespace Diagnosis.Models
                 OnPropertyChanged("Age");
             }
         }
-
-        public virtual IEnumerable<PatientRecordProperty> PatientProperties
-        {
-            get
-            {
-                return _patientProperties;
-            }
-        }
-
         public virtual IEnumerable<Course> Courses
         {
             get
@@ -222,30 +212,6 @@ namespace Diagnosis.Models
             {
                 return LastName + " " + FirstName + " " + MiddleName;
             }
-        }
-
-        /// <summary>
-        /// Добавляет свойство со значением или изменяет значение, если такое свойство уже есть.
-        /// </summary>
-        public virtual void SetPropertyValue(Property property, PropertyValue value)
-        {
-            Contract.Requires(property != null);
-            Contract.Requires(value != null);
-
-            var existingPatientProperty = _patientProperties.FirstOrDefault(
-                pp => pp.Patient == this && pp.Property == property);
-
-            EditHelper.Edit("PatientProperties", _patientProperties);
-
-            if (existingPatientProperty == null)
-            {
-                _patientProperties.Add(new PatientRecordProperty(property, value, this));
-            }
-            else
-            {
-                existingPatientProperty.Value = value;
-            }
-            OnPropertyChanged("PatientProperties");
         }
 
         public Patient(string lastName = null,

@@ -35,19 +35,6 @@ namespace Diagnosis.Data.Mappings
             {
                 r.OneToMany();
             });
-            Set(x => x.PatientProperties, s =>
-            {
-                s.Key(k =>
-                {
-                    k.Column("PatientID");
-                });
-                s.Access(Accessor.Field);
-                s.Cascade(Cascade.All);
-                s.Inverse(true);
-            }, r =>
-            {
-                r.OneToMany();
-            });
         }
     }
 }

@@ -163,9 +163,6 @@
     <Compile Include="Mappings\HealthRecordMap.cs" />
     <Compile Include="Mappings\DoctorMap.cs" />
     <Compile Include="Mappings\CourseMap.cs" />
-    <Compile Include="Mappings\PropertyValueMap.cs" />
-    <Compile Include="Mappings\PropertyMap.cs" />
-    <Compile Include="Mappings\PatientPropertyMap.cs" />
     <Compile Include="Mappings\PatientMap.cs" />
     <Compile Include="Mappings\SymptomWordsMap.cs" />
     <Compile Include="NHibernate\EntityChecker.cs" />
@@ -184,7 +181,6 @@
     <Compile Include="Repositories\HealthRecordRepository.cs" />
     <Compile Include="Repositories\WordRepository.cs" />
     <Compile Include="Repositories\ModelRepository.cs" />
-    <Compile Include="Repositories\PropertyRepository.cs" />
     <Compile Include="Repositories\IModelRepositories.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
