@@ -155,7 +155,7 @@
     <Compile Include="ServiceTables\PatientRecordProperty.cs" />
     <Compile Include="Entities\Property.cs" />
     <Compile Include="Entities\PropertyValue.cs" />
-    <Compile Include="Entities\RecordCategory.cs" />
+    <Compile Include="Entities\HrCategory.cs" />
     <Compile Include="Entities\Speciality.cs" />
     <Compile Include="Entities\Symptom.cs" />
     <Compile Include="ServiceTables\SpecialityIcdBlock.cs" />

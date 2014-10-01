@@ -24,7 +24,7 @@ namespace Diagnosis.Models
 
         public virtual byte Priority { get; set; }
 
-        public virtual Category DefaultCategory { get; set; }
+        public virtual HrCategory DefaultCategory { get; set; }
 
         public virtual Word Parent { get; set; }
         public virtual ObservableCollection<Word> Children

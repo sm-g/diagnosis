@@ -5,7 +5,7 @@ using System;
 
 namespace Diagnosis.Models
 {
-    public class Category : EntityBase, IDomainEntity, IComparable
+    public class HrCategory : EntityBase, IDomainEntity, IComparable
     {
         public virtual string Name { get; set; }
         public virtual int Ord { get; set; }
@@ -19,7 +19,7 @@ namespace Diagnosis.Models
             if (obj == null)
                 return -1;
 
-            Category other = obj as Category;
+            HrCategory other = obj as HrCategory;
             if (other != null)
             {
                 return this.Ord.CompareTo(other.Ord);

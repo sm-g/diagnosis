@@ -12,7 +12,7 @@ namespace Diagnosis.Models
         Iesi.Collections.Generic.ISet<SymptomWords> symptomWords;
 
         public virtual IcdDisease Disease { get; set; }
-        public virtual Category DefaultCategory { get; set; }
+        public virtual HrCategory DefaultCategory { get; set; }
         public virtual bool IsDiagnosis { get; set; }
         public virtual IEnumerable<Word> Words
         {

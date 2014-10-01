@@ -32,7 +32,7 @@ namespace Diagnosis.ViewModels
         private DateOffset _hrDateOffsetUpper;
         private bool _controlsVisible;
 
-        private IEnumerable<CategoryViewModel> _categories;
+        private IEnumerable<HrCategoryViewModel> _categories;
         private bool _searchWas;
         private HrSearcher searcher = new HrSearcher();
 
@@ -191,13 +191,13 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public IEnumerable<CategoryViewModel> Categories
+        public IEnumerable<HrCategoryViewModel> Categories
         {
             get
             {
                 if (_categories == null)
                 {
-                    var catsVM = Session.QueryOver<Category>().List().Select(cat => new CategoryViewModel(cat)).ToList();
+                    var catsVM = Session.QueryOver<HrCategory>().List().Select(cat => new HrCategoryViewModel(cat)).ToList();
                     catsVM.ForAll(cat => cat.PropertyChanged += (s, e) =>
                     {
                         if (e.PropertyName == "IsChecked")
@@ -206,7 +206,7 @@ namespace Diagnosis.ViewModels
                             OnPropertyChanged("AllEmpty");
                         }
                     });
-                    _categories = new List<CategoryViewModel>(catsVM);
+                    _categories = new List<HrCategoryViewModel>(catsVM);
                 }
                 return _categories;
             }
@@ -305,7 +305,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public IList<CategoryViewModel> SelectedCategories
+        public IList<HrCategoryViewModel> SelectedCategories
         {
             get { return Categories.Where(cat => cat.IsChecked).ToList(); }
         }
@@ -461,7 +461,7 @@ namespace Diagnosis.ViewModels
             // все категории из записей
             Categories.ForAll((cat) => cat.IsChecked = false);
             var allCats = hrs.Aggregate(
-                new HashSet<Category>(),
+                new HashSet<HrCategory>(),
                 (cats, hr) =>
                 {
                     cats.Add(hr.Category);
@@ -515,9 +515,9 @@ namespace Diagnosis.ViewModels
 
         #endregion IDisposable
 
-        public class CategoryViewModel : CheckableBase, IComparable
+        public class HrCategoryViewModel : CheckableBase, IComparable
         {
-            internal readonly Category category;
+            internal readonly HrCategory category;
 
 
             public string Name
@@ -529,7 +529,7 @@ namespace Diagnosis.ViewModels
             }
 
 
-            public CategoryViewModel(Category category)
+            public HrCategoryViewModel(HrCategory category)
             {
                 Contract.Requires(category != null);
                 this.category = category;
@@ -540,7 +540,7 @@ namespace Diagnosis.ViewModels
                 if (obj == null)
                     return -1;
 
-                CategoryViewModel other = obj as CategoryViewModel;
+                HrCategoryViewModel other = obj as HrCategoryViewModel;
                 if (other != null)
                 {
                     return this.category.Ord.CompareTo(other.category.Ord);

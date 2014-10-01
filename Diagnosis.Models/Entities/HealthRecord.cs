@@ -15,7 +15,7 @@ namespace Diagnosis.Models
         private byte? _day;
         private string _comment;
         private Symptom _symptom;
-        private Category _category;
+        private HrCategory _category;
         private IcdDisease _disease;
         private DateOffset _dateOffset;
         private HealthRecordUnits _unit;
@@ -37,7 +37,7 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual Category Category
+        public virtual HrCategory Category
         {
             get { return _category; }
             set

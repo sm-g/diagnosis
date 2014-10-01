@@ -28,7 +28,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public Category DefaultCategory
+        public HrCategory DefaultCategory
         {
             get
             {

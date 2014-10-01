@@ -63,7 +63,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public Category Category
+        public HrCategory Category
         {
             get
             {

@@ -42,7 +42,7 @@ namespace Diagnosis.ViewModels
         /// <summary>
         /// Категория. Если несколько, то любая их них.
         /// </summary>
-        public IEnumerable<Category> Categories { get; set; }
+        public IEnumerable<HrCategory> Categories { get; set; }
 
         /// <summary>
         /// Нижняя грань даты приема

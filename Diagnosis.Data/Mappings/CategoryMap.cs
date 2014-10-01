@@ -4,7 +4,7 @@ using NHibernate.Mapping.ByCode.Conformist;
 
 namespace Diagnosis.Data.Mappings
 {
-    public class CategoryMap : ClassMapping<Category>
+    public class CategoryMap : ClassMapping<HrCategory>
     {
         public CategoryMap()
         {

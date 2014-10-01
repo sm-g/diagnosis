@@ -21,7 +21,7 @@ namespace Diagnosis.ViewModels
 
         private HealthRecordViewModel _hr;
         private ISession session;
-        private IEnumerable<Category> _categories;
+        private IEnumerable<HrCategory> _categories;
         private EventMessageHandler handler;
         private bool inSetSymptomOnTagCompleted;
 
@@ -60,20 +60,20 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public IEnumerable<Category> Categories
+        public IEnumerable<HrCategory> Categories
         {
             get
             {
                 if (_categories == null)
                 {
-                    _categories = new List<Category>(session.Query<Category>()
+                    _categories = new List<HrCategory>(session.Query<HrCategory>()
                         .OrderBy(cat => cat.Ord).ToList());
                 }
                 return _categories;
             }
         }
 
-        public Category Category
+        public HrCategory Category
         {
             get
             {
