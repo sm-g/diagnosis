@@ -258,6 +258,24 @@ namespace Diagnosis.Models
                 OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, hr));
         }
 
+        protected internal virtual void AddCourse(Course course)
+        {
+            if (!courses.Contains(course))
+            {
+                courses.Add(course);
+                OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, course));
+            }
+        }
+        public virtual void RemoveCourse(Course course)
+        {
+            Contract.Requires(course.IsEmpty());
+
+            if (courses.Remove(course))
+            {
+                OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, course));
+            }
+        }
+
         public override string ToString()
         {
             return Id + " " + Label + " " + FullName;
@@ -277,15 +295,6 @@ namespace Diagnosis.Models
             if (h != null)
             {
                 h(this, e);
-            }
-        }
-
-        protected internal virtual void AddCourse(Course course)
-        {
-            if (!courses.Contains(course))
-            {
-                courses.Add(course);
-                OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, course));
             }
         }
 

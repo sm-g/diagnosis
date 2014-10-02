@@ -33,6 +33,17 @@ namespace Diagnosis.Models
         {
             get { return healthRecords; }
         }
+        public Course(Patient patient, Doctor doctor)
+        {
+            Contract.Requires(patient != null);
+            Contract.Requires(doctor != null);
+
+            Patient = patient;
+            LeadDoctor = doctor;
+            Start = DateTime.Today;
+        }
+
+        protected Course() { }
 
         /// <summary>
         /// 
@@ -50,23 +61,11 @@ namespace Diagnosis.Models
         }
         public virtual void RemoveAppointment(Appointment app)
         {
-
+            Contract.Requires(app.IsEmpty());
             if (appointments.Remove(app))
                 OnAppointmentsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, app));
 
         }
-
-        public Course(Patient patient, Doctor doctor)
-        {
-            Contract.Requires(patient != null);
-            Contract.Requires(doctor != null);
-
-            Patient = patient;
-            LeadDoctor = doctor;
-            Start = DateTime.Today;
-        }
-
-        protected Course() { }
 
         public virtual HealthRecord AddHealthRecord()
         {
