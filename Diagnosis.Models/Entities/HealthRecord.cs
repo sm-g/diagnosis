@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Core;
+using System.Linq;
 using Iesi.Collections.Generic;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -8,7 +9,7 @@ namespace Diagnosis.Models
 {
     public class HealthRecord : EntityBase, IDomainEntity
     {
-        private Iesi.Collections.Generic.ISet<Measure> measures = new HashedSet<Measure>();
+        private Iesi.Collections.Generic.ISet<HrItem> hrItems = new HashedSet<HrItem>();
         private int? _year;
         private byte? _month;
         private byte? _day;
@@ -19,7 +20,7 @@ namespace Diagnosis.Models
         private DateOffset _dateOffset;
         private HealthRecordUnits _unit;
 
-        public virtual event NotifyCollectionChangedEventHandler MeasuresChanged;
+        public virtual event NotifyCollectionChangedEventHandler ItemsChanged;
 
         public virtual Appointment Appointment { get; protected set; }
 
@@ -49,7 +50,6 @@ namespace Diagnosis.Models
                 OnPropertyChanged("Category");
             }
         }
-
         public virtual IcdDisease Disease
         {
             get { return _disease; }
@@ -62,21 +62,6 @@ namespace Diagnosis.Models
                 OnPropertyChanged("Disease");
             }
         }
-
-        public virtual Symptom Symptom
-        {
-            get { return _symptom; }
-            set
-            {
-                if (_symptom == value)
-                    return;
-
-                EditHelper.Edit(() => Symptom);
-                _symptom = value;
-                OnPropertyChanged("Symptom");
-            }
-        }
-
         public virtual byte? FromDay
         {
             get
@@ -213,11 +198,19 @@ namespace Diagnosis.Models
             }
         }
 
+      
+        public virtual IEnumerable<HrItem> HrItems
+        {
+            get { return hrItems; }
+        }
         public virtual IEnumerable<Measure> Measures
         {
-            get { return measures; }
+            get { return hrItems.Where(x => x.Entity is Measure).Cast<Measure>(); }
         }
-
+        public virtual IEnumerable<Word> Words
+        {
+            get { return hrItems.Where(x => x.Entity is Word).Cast<Word>(); }
+        }
         /// <summary>
         /// Порядок слов симптома при редактировании записи, начиная с 0. В симптоме max 9 слов.
         /// </summary>
@@ -239,25 +232,25 @@ namespace Diagnosis.Models
             WordsMeasuresSequence = "";
         }
 
-        public virtual void AddMeasure(Measure m)
+        public virtual void AddItem(HrItem item)
         {
-            Contract.Requires(m != null);
-
-            if (measures.Add(m))
+            Contract.Requires(item != null);
+            EditHelper.Edit(() => HrItems);
+            if (hrItems.Add(item))
             {
-                OnMeasuresChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, m));
-                // measure.order устанавливается перед добавлением в редакторе записи
+                OnItemsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
+                // order устанавливается перед добавлением в редакторе записи
             }
         }
 
-        public virtual void RemoveMeasure(Measure m)
+        public virtual void RemoveItem(HrItem item)
         {
-            Contract.Requires(m != null);
+            Contract.Requires(item != null);
 
-            if (measures.Remove(m))
+            if (hrItems.Remove(item))
             {
-                OnMeasuresChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, m));
-                // удаление не влияет на порядок других измерений
+                OnItemsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
+                // удаление не влияет на порядок других элементов
             }
         }
 
@@ -267,13 +260,13 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("{0} {1} {2} {3} {4} {5}", Id, Category, Symptom, Disease != null ? Disease.Title : "",
+            return string.Format("{0} {1} {2} {3}", Id, Category,
                 new DateOffset(FromYear, FromMonth, FromDay, () => Appointment.DateAndTime), Comment);
         }
 
-        protected virtual void OnMeasuresChanged(NotifyCollectionChangedEventArgs e)
+        protected virtual void OnItemsChanged(NotifyCollectionChangedEventArgs e)
         {
-            var h = MeasuresChanged;
+            var h = ItemsChanged;
             if (h != null)
             {
                 h(this, e);

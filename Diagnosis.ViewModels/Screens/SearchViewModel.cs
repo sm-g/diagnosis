@@ -450,7 +450,7 @@ namespace Diagnosis.ViewModels
                 new HashSet<Word>(),
                 (words, hr) =>
                 {
-                    hr.Symptom.Words.ForAll((w) => words.Add(w));
+                    hr.Words.ForAll((w) => words.Add(w));
                     return words;
                 });
             Autocomplete.ReplaceTagsWith(allWords);

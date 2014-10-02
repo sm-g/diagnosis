@@ -16,6 +16,9 @@ namespace Tests
         protected Word w3 = new Word("z");
         protected Symptom s1;
         protected Symptom s2;
+        protected HrItem i1;
+        protected HrItem i2;
+        protected HrItem i3;
         protected Patient p1 = new Patient("Test");
         protected Doctor d1 = new Doctor("Test", "Name");
         protected Course course1;
@@ -30,7 +33,6 @@ namespace Tests
         {
             s1 = new Symptom(new Word[] { w1, w2 });
             s2 = new Symptom(new Word[] { w1 });
-
             course1 = d1.StartCourse(p1);
             course2 = d1.StartCourse(p1);
             app1 = new Appointment(course1, d1);

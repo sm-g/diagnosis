@@ -19,11 +19,20 @@ namespace Diagnosis.Data.Mappings
             {
                 m.Column("WordID");
             });
-            // Property(x => x.Measure);
+
+            Component(x => x.Measure, m =>
+            {
+                m.Property(x => x.DbValue, x => x.Column("Val"));
+                m.ManyToOne(x => x.Uom, x =>
+                {
+                    x.Column("UomID");
+                });
+            });
             ManyToOne(x => x.Disease, m =>
             {
                 m.Column("DiseaseID");
             });
+
             ManyToOne(x => x.HealthRecord, m =>
             {
                 m.Column("HealthRecordID");

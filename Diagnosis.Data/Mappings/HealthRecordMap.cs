@@ -18,9 +18,8 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.FromMonth);
             Property(x => x.FromDay);
             Property(x => x.Unit, m => m.Type<NHibernate.Type.EnumStringType<HealthRecordUnits>>());
-            Property(x => x.WordsMeasuresSequence);
-            Property(x => x.WordsOrder);
-            Set(x => x.Measures, s =>
+
+            Set(x => x.HrItems, s =>
             {
                 s.Key(k =>
                 {
@@ -41,11 +40,6 @@ namespace Diagnosis.Data.Mappings
             ManyToOne(x => x.Disease, m =>
             {
                 m.Column("DiseaseID");
-            });
-            ManyToOne(x => x.Symptom, m =>
-            {
-                m.Column("SymptomID");
-                m.Cascade(Cascade.Persist);
             });
             ManyToOne(x => x.Category, m =>
             {

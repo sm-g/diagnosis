@@ -17,16 +17,15 @@ namespace Diagnosis.Data.Repositories
         {
             var wordsIds = words.Select(w => w.Id).ToList();
             Word word = null;
-            Symptom symptom = null;
             HealthRecord hr = null;
-            SymptomWords sw = null;
+            HrItem item = null;
 
             ISession session = NHibernateHelper.GetSession();
             {
                 var w1 = session.QueryOver<HealthRecord>(() => hr)
-                    .JoinAlias(() => hr.Symptom, () => symptom)
-                    .JoinAlias(() => symptom.SymptomWords, () => sw)
-                    .JoinAlias(() => sw.Word, () => word)
+                    .JoinAlias(() => hr.HrItems, () => item)
+                    .WhereRestrictionOn(() => item.Word).IsNotNull
+                    .JoinAlias(() => item.Word, () => word)
                     .WhereRestrictionOn(() => word.Id).IsIn(wordsIds)
                     .TransformUsing(Transformers.DistinctRootEntity)
                     .List();
@@ -41,19 +40,19 @@ namespace Diagnosis.Data.Repositories
         {
             var wordsIds = words.Select(w => w.Id).ToList();
             var comparator = new CompareWord();
-            return GetAll().Where(hr => hr.Symptom != null
-                && words.IsSubsetOf(hr.Symptom.Words));
+            return GetAll().Where(hr => words.IsSubsetOf(hr.Words));
         }
         /// <summary>
         /// Записи, в которых есть все слова и нет других.
         /// </summary>
         public IEnumerable<HealthRecord> GetWithAllWords(IEnumerable<Word> words)
         {
-            var wordsIds = words.Select(w => w.Id).ToList();
-            var comparator = new CompareWord();
-            return GetAll().Where(hr => hr.Symptom != null
-                && hr.Symptom.Words.OrderBy(w => w, comparator).SequenceEqual(
-                              words.OrderBy(w => w, comparator)));
+            //var wordsIds = words.Select(w => w.Id).ToList();
+            //var comparator = new CompareWord();
+            //return GetAll().Where(hr => hr.Symptom != null
+            //    && hr.Symptom.Words.OrderBy(w => w, comparator).SequenceEqual(
+            //                  words.OrderBy(w => w, comparator)));
+            return null;
         }
     }
 }

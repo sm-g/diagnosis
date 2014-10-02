@@ -28,14 +28,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public Symptom Symptom
-        {
-            get
-            {
-                return healthRecord.Symptom;
-            }
-        }
-
         public DiagnosisViewModel Diagnosis
         {
             get
@@ -176,10 +168,6 @@ namespace Diagnosis.ViewModels
 
             switch (e.PropertyName)
             {
-                case "Symptom":
-                    OnPropertyChanged("Name");
-                    break;
-
                 case "Disease":
                     SetDiagnosis();
                     break;

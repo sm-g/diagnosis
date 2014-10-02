@@ -25,15 +25,15 @@ namespace Diagnosis.Data.Queries
                 {
                     var wordsIds = words.Select(w => w.Id).ToList();
                     Word word = null;
-                    Symptom symptom = null;
+                    HealthRecord hr = null;
+                    HrItem item = null;
 
-                    var subq = QueryOver.Of<Symptom>(() => symptom)
-                       .Inner.JoinAlias(() => symptom.Words, () => word)
-                       .WhereRestrictionOn(() => word.Id).IsIn(wordsIds)
-                       .Select(s => symptom.Id);
-
-                    return session.QueryOver<HealthRecord>()
-                        .WithSubquery.WhereProperty(hr => hr.Symptom.Id).In(subq)
+                    return session.QueryOver<HealthRecord>(() => hr)
+                        .JoinAlias(() => hr.HrItems, () => item)
+                        .WhereRestrictionOn(() => item.Word).IsNotNull
+                        .JoinAlias(() => item.Word, () => word)
+                        .WhereRestrictionOn(() => word.Id).IsIn(wordsIds)
+                        .TransformUsing(Transformers.DistinctRootEntity)
                         .List();
                 }
             };
@@ -47,7 +47,7 @@ namespace Diagnosis.Data.Queries
             {
                 var withAny = WithAnyWord(session)(words);
 
-                return withAny.Where(hr => words.IsSubsetOf(hr.Symptom.Words));
+                return withAny.Where(hr => words.IsSubsetOf(hr.Words));
             };
         }
 

@@ -135,19 +135,22 @@ namespace Diagnosis.ViewModels
         /// </summary>
         private void CreateAutoComplete()
         {
-            var initials = GetOrderedWordsMeasures(HealthRecord.healthRecord);
+            var initials = from item in HealthRecord.healthRecord.HrItems
+                           orderby item.Order
+                           select item.Entity;
 
             _autocomplete = new Autocomplete(
                 new Recognizer(session, true) { AllowNewFromQuery = true },
                 true,
                 initials);
+
             _autocomplete.EntitiesChanged += (s, e) =>
             {
                 var entities = _autocomplete.GetEntities().ToList();
-                // сохраняем последовательность слова/измерения
-                HealthRecord.healthRecord.WordsMeasuresSequence = GetAutocompleteEnititiesSequence(entities);
-                // меняем симптом и измерения записи при завершении или удалении тега
-                SetSymptomAndWordsOrder(HealthRecord.healthRecord, entities);
+
+                // меняем элементы записи при завершении или удалении тега
+                // TODO save order
+                SetWords(HealthRecord.healthRecord, entities);
                 SetMeasures(HealthRecord.healthRecord, entities);
             };
 
@@ -164,40 +167,52 @@ namespace Diagnosis.ViewModels
             var toRemove = hr.Measures.Except(measures).ToList();
             toAdd.ForEach(m =>
             {
-                m.HealthRecord = hr;
-                hr.AddMeasure(m);
+                new HrItem(hr, m);
             });
-            toRemove.ForEach(m => hr.RemoveMeasure(m));
+            toRemove.ForEach(m => hr.RemoveItem(hr.HrItems.First(i => i.Measure == m)));
         }
-
-        private void SetSymptomAndWordsOrder(HealthRecord hr, IEnumerable<IDomainEntity> entities)
+        private void SetWords(HealthRecord hr, IEnumerable<IDomainEntity> entities)
         {
-            inSetSymptomOnTagCompleted = true;
             var words = entities.Where(x => x is Word).Cast<Word>().ToList();
-            if (words.Count > 0)
-            {
-                // симптом со всеми словами
-                Symptom existing = SymptomQuery.ByWords(session)(words);
 
-                if (existing == null)
-                {
-                    hr.WordsOrder = string.Join("", Enumerable.Range(0, words.Count));
-                    hr.Symptom = new Symptom(words);
-                }
-                else
-                {
-                    var wordsInExisting = existing.Words.ToList();
-                    hr.WordsOrder = string.Join("", words.Select(w => wordsInExisting.IndexOf(w)));
-                    hr.Symptom = existing;
-                }
-            }
-            else
+            var toAdd = words.Except(hr.Words).ToList();
+            var toRemove = hr.Words.Except(words).ToList();
+            toAdd.ForEach(m =>
             {
-                hr.WordsOrder = "";
-                hr.Symptom = null;
-            }
-            inSetSymptomOnTagCompleted = false;
+                var item = new HrItem(hr, m);
+
+            });
+            toRemove.ForEach(m => hr.RemoveItem(hr.HrItems.First(i => i.Word == m)));
         }
+
+        //private void SetSymptomAndWordsOrder(HealthRecord hr, IEnumerable<IDomainEntity> entities)
+        //{
+        //    inSetSymptomOnTagCompleted = true;
+        //    var words = entities.Where(x => x is Word).Cast<Word>().ToList();
+        //    if (words.Count > 0)
+        //    {
+        //        // симптом со всеми словами
+        //        Symptom existing = SymptomQuery.ByWords(session)(words);
+
+        //        if (existing == null)
+        //        {
+        //            hr.WordsOrder = string.Join("", Enumerable.Range(0, words.Count));
+        //            hr.Symptom = new Symptom(words);
+        //        }
+        //        else
+        //        {
+        //            var wordsInExisting = existing.Words.ToList();
+        //            hr.WordsOrder = string.Join("", words.Select(w => wordsInExisting.IndexOf(w)));
+        //            // hr.Symptom = existing;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        hr.WordsOrder = "";
+        //        hr.Symptom = null;
+        //    }
+        //    inSetSymptomOnTagCompleted = false;
+        //}
 
 
         /// <summary>
@@ -205,74 +220,74 @@ namespace Diagnosis.ViewModels
         /// m w => 011
         /// </summary>
         /// <param name="entities"></param>
-        private static string GetAutocompleteEnititiesSequence(IEnumerable<IDomainEntity> entities)
-        {
-            string seq = "";
-            var ent = entities.ToList();
-            if (ent.Count == 0)
-            {
-                return "";
-            }
-            if (ent.First() is Measure)
-                seq = "0";
+        //private static string GetAutocompleteEnititiesSequence(IEnumerable<IDomainEntity> entities)
+        //{
+        //    string seq = "";
+        //    var ent = entities.ToList();
+        //    if (ent.Count == 0)
+        //    {
+        //        return "";
+        //    }
+        //    if (ent.First() is Measure)
+        //        seq = "0";
 
-            var counter = 1;
-            for (int i = 1; i < ent.Count; i++)
-            {
-                if (counter > 9)
-                {
-                    throw new Exception("Больше 9 слов/измерений подряд");
-                }
-                if (ent[i].GetType() == ent[i - 1].GetType())
-                {
-                    counter++;
-                }
-                else
-                {
-                    seq += counter.ToString();
-                    counter = 1;
-                }
-            }
-            seq += counter.ToString();
-            return seq;
-        }
+        //    var counter = 1;
+        //    for (int i = 1; i < ent.Count; i++)
+        //    {
+        //        if (counter > 9)
+        //        {
+        //            throw new Exception("Больше 9 слов/измерений подряд");
+        //        }
+        //        if (ent[i].GetType() == ent[i - 1].GetType())
+        //        {
+        //            counter++;
+        //        }
+        //        else
+        //        {
+        //            seq += counter.ToString();
+        //            counter = 1;
+        //        }
+        //    }
+        //    seq += counter.ToString();
+        //    return seq;
+        //}
 
         /// <summary>
         /// Слова и измерения в порядке их сохранения.
         /// </summary>
         /// <param name="hr"></param>
         /// <returns></returns>
-        public static List<IDomainEntity> GetOrderedWordsMeasures(HealthRecord hr)
-        {
-            var initials = new List<IDomainEntity>();
+        //public static List<IDomainEntity> GetOrderedWordsMeasures(HealthRecord hr)
+        //{
+        //    var initials = new List<IDomainEntity>();
 
-            var words = hr.Symptom != null ? hr.Symptom.Words.ToList() : new List<Word>();
+        //    var words = hr.Words.ToList();
 
-            var wordsOrder = hr.WordsOrder != null ?
-                hr.WordsOrder.ToDigits().ToList() :
-                Enumerable.Range(0, words.Count).ToList();
-            var wmSequence = hr.WordsMeasuresSequence != null ?
-                hr.WordsMeasuresSequence.ToDigits() :
-                new[] { words.Count, hr.Measures.Count() };
-            bool takingWords = true;
-            int wordsTaken = 0, measuresTaken = 0;
-            foreach (var n in wmSequence)
-            {
-                if (takingWords)
-                {
-                    initials.AddRange(wordsOrder.Skip(wordsTaken).Take(n).Select(i => words[i]));
-                    wordsTaken += n;
-                }
-                else
-                {
-                    initials.AddRange(hr.Measures.OrderBy(m => m.Order).Skip(measuresTaken).Take(n));
-                    measuresTaken += n;
-                }
+        //    var wordsOrder = hr.WordsOrder != null ?
+        //        hr.WordsOrder.ToDigits().ToList() :
+        //        Enumerable.Range(0, words.Count).ToList();
+        //    var wmSequence = hr.WordsMeasuresSequence != null ?
+        //        hr.WordsMeasuresSequence.ToDigits() :
+        //        new[] { words.Count, hr.Measures.Count() };
+        //    bool takingWords = true;
+        //    int wordsTaken = 0, measuresTaken = 0;
+        //    foreach (var n in wmSequence)
+        //    {
+        //        if (takingWords)
+        //        {
+        //            initials.AddRange(wordsOrder.Skip(wordsTaken).Take(n).Select(i => words[i]));
+        //            wordsTaken += n;
+        //        }
+        //        else
+        //        {
+        //            initials.AddRange(hr.Measures.OrderBy(m => m.Order).Skip(measuresTaken).Take(n));
+        //            measuresTaken += n;
+        //        }
 
-                takingWords = !takingWords;
-            }
-            return initials;
-        }
+        //        takingWords = !takingWords;
+        //    }
+        //    return initials;
+        //}
 
         #endregion AutoComplete
 

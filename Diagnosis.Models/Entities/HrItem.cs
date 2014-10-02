@@ -19,6 +19,7 @@ namespace Diagnosis.Models
 
             HealthRecord = hr;
             Word = word;
+            hr.AddItem(this);
         }
 
         public HrItem(HealthRecord hr, Measure measure)
@@ -27,6 +28,7 @@ namespace Diagnosis.Models
 
             HealthRecord = hr;
             Measure = measure;
+            hr.AddItem(this);
         }
 
         protected HrItem()

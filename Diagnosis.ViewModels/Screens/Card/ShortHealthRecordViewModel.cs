@@ -15,7 +15,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return string.Join(" ", HrEditorViewModel.GetOrderedWordsMeasures(healthRecord));
+                return string.Join(" ", healthRecord.HrItems.Select(i => i.Entity));
             }
         }
 
@@ -186,7 +186,7 @@ namespace Diagnosis.ViewModels
             this.healthRecord = hr;
 
             healthRecord.PropertyChanged += healthRecord_PropertyChanged;
-            healthRecord.MeasuresChanged += healthRecord_MeasuresChanged;
+            healthRecord.ItemsChanged += healthRecord_ItemsChanged;
             healthRecord.DateOffset.PropertyChanged += DateOffset_PropertyChanged;
 
             SetDiagnosis();
@@ -195,6 +195,11 @@ namespace Diagnosis.ViewModels
             {
                 OnPropertyChanged("ShowDiagnosis");
             });
+        }
+
+        private void healthRecord_ItemsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged("Name");
         }
 
         private void DateOffset_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -222,10 +227,6 @@ namespace Diagnosis.ViewModels
                     OnPropertyChanged("SortingDate");
                     break;
 
-                case "Symptom":
-                    OnPropertyChanged("Name");
-                    break;
-
                 case "Disease":
                     SetDiagnosis();
                     break;
@@ -233,11 +234,6 @@ namespace Diagnosis.ViewModels
                 default:
                     break;
             }
-        }
-
-        private void healthRecord_MeasuresChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            OnPropertyChanged("Name");
         }
 
         public override string ToString()
@@ -249,8 +245,8 @@ namespace Diagnosis.ViewModels
         {
             if (disposing)
             {
-                healthRecord.MeasuresChanged -= healthRecord_MeasuresChanged;
                 healthRecord.PropertyChanged -= healthRecord_PropertyChanged;
+                healthRecord.ItemsChanged -= healthRecord_ItemsChanged;
                 healthRecord.DateOffset.PropertyChanged -= DateOffset_PropertyChanged;
                 handler.Dispose();
             }

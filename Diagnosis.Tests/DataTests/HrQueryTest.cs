@@ -16,8 +16,9 @@ namespace Tests
 
             using (var tx = session.BeginTransaction())
             {
-                hr1.Symptom = s1;
-                hr2.Symptom = s2;
+                i1 = new HrItem(hr1, w1);
+                i2 = new HrItem(hr1, w2);
+                i3 = new HrItem(hr2, w1);
                 session.Update(hr1);
                 session.Update(hr2);
                 tx.Commit();
