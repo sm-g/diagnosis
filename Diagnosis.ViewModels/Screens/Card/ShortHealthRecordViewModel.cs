@@ -70,14 +70,14 @@ namespace Diagnosis.ViewModels
                 if (_diagnosis != value)
                 {
                     _diagnosis = value;
-                    if (value != null)
-                    {
-                        healthRecord.Disease = value.diagnosis.Disease;
-                    }
-                    else
-                    {
-                        healthRecord.Disease = null;
-                    }
+                    //if (value != null)
+                    //{
+                    //    healthRecord.Disease = value.diagnosis.Disease;
+                    //}
+                    //else
+                    //{
+                    //    healthRecord.Disease = null;
+                    //}
 
                     OnPropertyChanged("Diagnosis");
                     OnPropertyChanged("ShowDiagnosis");
@@ -139,14 +139,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public bool ShowDiagnosis
-        {
-            get
-            {
-                return Diagnosis != null && AuthorityController.CurrentDoctor.DoctorSettings.HasFlag(DoctorSettings.ShowIcdDisease);
-            }
-        }
-
         public ICommand SendToSearchCommand
         {
             get
@@ -189,8 +181,6 @@ namespace Diagnosis.ViewModels
             healthRecord.ItemsChanged += healthRecord_ItemsChanged;
             healthRecord.DateOffset.PropertyChanged += DateOffset_PropertyChanged;
 
-            SetDiagnosis();
-
             handler = this.Subscribe(Events.SettingsSaved, (e) =>
             {
                 OnPropertyChanged("ShowDiagnosis");
@@ -210,11 +200,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        private void SetDiagnosis()
-        {
-            Diagnosis = EntityProducers.DiagnosisProducer.GetByDisease(healthRecord.Disease);
-        }
-
         private void healthRecord_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             OnPropertyChanged(e.PropertyName);
@@ -225,10 +210,6 @@ namespace Diagnosis.ViewModels
                 case "FromMonth":
                 case "FromYear":
                     OnPropertyChanged("SortingDate");
-                    break;
-
-                case "Disease":
-                    SetDiagnosis();
                     break;
 
                 default:

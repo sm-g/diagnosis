@@ -40,7 +40,6 @@ namespace Diagnosis.ViewModels
                         var hr = entity as HealthRecord;
                         return hr.Comment.IsNullOrEmpty()
                             && hr.DateOffset.IsEmpty
-                            && hr.Disease== null
                             && hr.HrItems.Count() == 0;
                     }
                 },

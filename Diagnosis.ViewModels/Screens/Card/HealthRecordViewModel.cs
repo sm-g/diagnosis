@@ -39,14 +39,14 @@ namespace Diagnosis.ViewModels
                 if (_diagnosis != value)
                 {
                     _diagnosis = value;
-                    if (value != null)
-                    {
-                        healthRecord.Disease = value.diagnosis.Disease;
-                    }
-                    else
-                    {
-                        healthRecord.Disease = null;
-                    }
+                    //if (value != null)
+                    //{
+                    //    healthRecord.Disease = value.diagnosis.Disease;
+                    //}
+                    //else
+                    //{
+                    //    healthRecord.Disease = null;
+                    //}
 
                     OnPropertyChanged("Diagnosis");
                     OnPropertyChanged("ShowDiagnosis");
@@ -149,17 +149,10 @@ namespace Diagnosis.ViewModels
 
             healthRecord.PropertyChanged += healthRecord_PropertyChanged;
 
-            SetDiagnosis();
-
             handler = this.Subscribe(Events.SettingsSaved, (e) =>
             {
                 OnPropertyChanged("ShowDiagnosis");
             });
-        }
-
-        private void SetDiagnosis()
-        {
-            Diagnosis = EntityProducers.DiagnosisProducer.GetByDisease(healthRecord.Disease);
         }
 
         private void healthRecord_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -168,9 +161,7 @@ namespace Diagnosis.ViewModels
 
             switch (e.PropertyName)
             {
-                case "Disease":
-                    SetDiagnosis();
-                    break;
+
             }
         }
 

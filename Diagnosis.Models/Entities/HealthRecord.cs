@@ -50,18 +50,7 @@ namespace Diagnosis.Models
                 OnPropertyChanged("Category");
             }
         }
-        public virtual IcdDisease Disease
-        {
-            get { return _disease; }
-            set
-            {
-                if (_disease == value)
-                    return;
-                EditHelper.Edit(() => Disease);
-                _disease = value;
-                OnPropertyChanged("Disease");
-            }
-        }
+
         public virtual byte? FromDay
         {
             get
