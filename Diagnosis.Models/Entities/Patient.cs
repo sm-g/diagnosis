@@ -13,6 +13,9 @@ namespace Diagnosis.Models
     public class Patient : ValidatableEntity, IDomainEntity
     {
         private Iesi.Collections.Generic.ISet<Course> courses = new HashedSet<Course>();
+        Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
+
+        public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
 
         private int? _year;
         private byte? _month;
@@ -165,6 +168,11 @@ namespace Diagnosis.Models
             }
         }
 
+        public virtual IEnumerable<HealthRecord> HealthRecords
+        {
+            get { return healthRecords; }
+        }
+
         public virtual int? Age
         {
             get
@@ -235,6 +243,20 @@ namespace Diagnosis.Models
         {
 
         }
+        public virtual HealthRecord AddHealthRecord()
+        {
+            var hr = new HealthRecord(this);
+            healthRecords.Add(hr);
+            OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, hr));
+
+            return hr;
+        }
+
+        public virtual void RemoveHealthRecord(HealthRecord hr)
+        {
+            if (healthRecords.Remove(hr))
+                OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, hr));
+        }
 
         public override string ToString()
         {
@@ -244,6 +266,14 @@ namespace Diagnosis.Models
         protected virtual void OnCoursesChanged(NotifyCollectionChangedEventArgs e)
         {
             var h = CoursesChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
+        protected virtual void OnHealthRecordsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            var h = HealthRecordsChanged;
             if (h != null)
             {
                 h(this, e);

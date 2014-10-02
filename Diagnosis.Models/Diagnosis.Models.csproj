@@ -137,6 +137,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EmptyChecker.cs" />
     <Compile Include="Entities\HrItem.cs" />
     <Compile Include="HealthRecordUnits.cs" />
     <Compile Include="DoctorSettings.cs" />

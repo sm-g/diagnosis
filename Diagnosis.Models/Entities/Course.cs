@@ -11,6 +11,9 @@ namespace Diagnosis.Models
     public class Course : EntityBase, IDomainEntity
     {
         Iesi.Collections.Generic.ISet<Appointment> appointments = new HashedSet<Appointment>();
+        Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
+
+        public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
 
         public virtual event NotifyCollectionChangedEventHandler AppointmentsChanged;
 
@@ -26,6 +29,11 @@ namespace Diagnosis.Models
                 return appointments;
             }
         }
+        public virtual IEnumerable<HealthRecord> HealthRecords
+        {
+            get { return healthRecords; }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -40,8 +48,9 @@ namespace Diagnosis.Models
             OnAppointmentsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, a));
             return a;
         }
-        public virtual void DeleteAppointment(Appointment app)
+        public virtual void RemoveAppointment(Appointment app)
         {
+
             if (appointments.Remove(app))
                 OnAppointmentsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, app));
 
@@ -59,6 +68,21 @@ namespace Diagnosis.Models
 
         protected Course() { }
 
+        public virtual HealthRecord AddHealthRecord()
+        {
+            var hr = new HealthRecord(this);
+            healthRecords.Add(hr);
+            OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, hr));
+
+            return hr;
+        }
+
+        public virtual void RemoveHealthRecord(HealthRecord hr)
+        {
+            if (healthRecords.Remove(hr))
+                OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, hr));
+        }
+
         public override string ToString()
         {
             return string.Format("{0:d}, {1} {2}", Start, Patient, LeadDoctor);
@@ -67,6 +91,14 @@ namespace Diagnosis.Models
         protected virtual void OnAppointmentsChanged(NotifyCollectionChangedEventArgs e)
         {
             var h = AppointmentsChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
+        protected virtual void OnHealthRecordsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            var h = HealthRecordsChanged;
             if (h != null)
             {
                 h(this, e);

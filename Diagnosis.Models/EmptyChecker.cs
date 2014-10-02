@@ -1,16 +1,19 @@
-﻿using Diagnosis.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Diagnosis.Core;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.Models
 {
     public static class EmptyChecker
     {
         /// <summary>
-        /// Определяет, пуста ли сущность. 
+        /// Определяет, пуста ли сущность.
+        /// пациент  — без записей и курсов
+        /// курс — без записей и осмотров
+        /// осмотр — без записей
+        /// запись — без элементов (слов, дат, комментариев). категория не считается.
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
@@ -20,19 +23,19 @@ namespace Diagnosis.ViewModels
                 { typeof(Patient), () => 
                     {
                         var pat = entity as Patient;
-                        return pat.Courses.All(x => x.IsEmpty());
+                        return pat.Courses.All(x => x.IsEmpty() && pat.HealthRecords.All(h => h.IsEmpty()));
                     } 
                 },
                 { typeof(Course), () => 
                     {
                         var course = entity as Course;
-                        return course.Appointments.All(x => x.IsEmpty());
+                        return course.Appointments.All(x => x.IsEmpty() && course.HealthRecords.All(h => h.IsEmpty()));
                     } 
                 },
                 { typeof(Appointment), () => 
                     {
                         var app = entity as Appointment;
-                        return app.HealthRecords.All(x => x.IsEmpty());
+                        return app.HealthRecords.All(x => x.IsEmpty() && app.HealthRecords.All(h => h.IsEmpty()));
                     } 
                 },
                 { typeof(HealthRecord),() =>

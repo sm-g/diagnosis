@@ -21,10 +21,7 @@ namespace Diagnosis.Models
         public virtual DateTime DateAndTime { get; set; }
         public virtual IEnumerable<HealthRecord> HealthRecords
         {
-            get
-            {
-                return healthRecords;
-            }
+            get { return healthRecords; }
         }
 
         public Appointment(Course course, Doctor doctor)
@@ -36,6 +33,8 @@ namespace Diagnosis.Models
             Doctor = doctor;
             DateAndTime = DateTime.UtcNow;
         }
+
+        protected Appointment() { }
 
         public virtual HealthRecord AddHealthRecord()
         {
@@ -51,8 +50,6 @@ namespace Diagnosis.Models
             if (healthRecords.Remove(hr))
                 OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, hr));
         }
-
-        protected Appointment() { }
 
         public override string ToString()
         {
