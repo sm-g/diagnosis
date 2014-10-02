@@ -39,7 +39,6 @@ namespace Diagnosis.Data.Repositories
         public IEnumerable<HealthRecord> GetWithWordsSubset(IEnumerable<Word> words)
         {
             var wordsIds = words.Select(w => w.Id).ToList();
-            var comparator = new CompareWord();
             return GetAll().Where(hr => words.IsSubsetOf(hr.Words));
         }
         /// <summary>

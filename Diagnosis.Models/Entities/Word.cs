@@ -20,8 +20,6 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual byte Priority { get; set; }
-
         public virtual HrCategory DefaultCategory { get; set; }
 
         public virtual Word Parent { get; set; }
@@ -33,11 +31,10 @@ namespace Diagnosis.Models
             }
         }
 
-        public Word(string title, byte priority = 0)
+        public Word(string title)
         {
             Contract.Requires(!string.IsNullOrEmpty(title));
             Title = title;
-            Priority = priority;
         }
 
         protected Word()
@@ -47,21 +44,6 @@ namespace Diagnosis.Models
         public override string ToString()
         {
             return Title;
-        }
-    }
-
-    public class CompareWord : IComparer<Word>
-    {
-        public int Compare(Word x, Word y)
-        {
-            if (x.Priority != y.Priority)
-            {
-                return x.Priority.CompareTo(y.Priority);
-            }
-            else
-            {
-                return x.Title.CompareTo(y.Title);
-            }
         }
     }
 }
