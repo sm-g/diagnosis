@@ -132,7 +132,7 @@ namespace Diagnosis.ViewModels
             var @switch = new Dictionary<Type, Action> {
                 { typeof(Patient), () => viewer.OpenPatient(parameter as Patient) },
                 { typeof(Course), () => viewer.OpenCourse(parameter as Course) },
-                { typeof(HealthRecord),() => viewer.OpenHr(parameter as HealthRecord) },
+                { typeof(HealthRecord),() => viewer.OpenAppHr(parameter as HealthRecord) },
             };
 
             @switch[parameter.GetType()]();
@@ -301,7 +301,7 @@ namespace Diagnosis.ViewModels
             {
                 // редактируем добавленную запись
                 var hr = (HealthRecord)e.NewItems[e.NewItems.Count - 1];
-                viewer.OpenHr(hr);
+                viewer.OpenAppHr(hr);
                 HealthRecordEditor.Load(hr);
             }
         }

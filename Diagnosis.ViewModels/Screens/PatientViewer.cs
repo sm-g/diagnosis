@@ -171,7 +171,7 @@ namespace Diagnosis.ViewModels
             OpenedAppointment = app;
         }
 
-        internal void OpenHr(HealthRecord hr)
+        internal void OpenAppHr(HealthRecord hr)
         {
             OpenedPatient = hr.Appointment.Course.Patient;
             OpenedCourse = hr.Appointment.Course;

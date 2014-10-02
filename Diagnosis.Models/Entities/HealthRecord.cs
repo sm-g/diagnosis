@@ -20,6 +20,8 @@ namespace Diagnosis.Models
 
         public virtual event NotifyCollectionChangedEventHandler ItemsChanged;
 
+        public virtual Patient Patient { get; protected set; }
+        public virtual Course Course { get; protected set; }
         public virtual Appointment Appointment { get; protected set; }
 
         public virtual string Comment
@@ -205,6 +207,22 @@ namespace Diagnosis.Models
 
             Appointment = appointment;
         }
+        public HealthRecord(Course course)
+        {
+            Contract.Requires(course != null);
+
+            Course = course;
+        }
+        public HealthRecord(Patient patient)
+        {
+            Contract.Requires(patient != null);
+
+            Patient = patient;
+        }
+
+        protected HealthRecord()
+        {
+        }
 
         public virtual void AddItem(HrItem item)
         {
@@ -227,11 +245,6 @@ namespace Diagnosis.Models
                 // удаление не влияет на порядок других элементов
             }
         }
-
-        protected HealthRecord()
-        {
-        }
-
         public override string ToString()
         {
             return string.Format("{0} {1} {2} {3}", Id, Category,

@@ -37,6 +37,14 @@ namespace Diagnosis.Data.Mappings
                 m.Column("AppointmentID");
                 m.Cascade(Cascade.Persist);
             });
+            ManyToOne(x => x.Course, m =>
+            {
+                m.Column("CourseID");
+            });
+            ManyToOne(x => x.Patient, m =>
+            {
+                m.Column("PatientID");
+            });
             ManyToOne(x => x.Category, m =>
             {
                 m.Column("CategoryID");
