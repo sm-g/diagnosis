@@ -20,7 +20,7 @@ namespace Diagnosis.Data
         {
             new SchemaExport(cfg).Execute(false, true, false, session.Connection, null);
 
-            using (var s = System.IO.File.OpenText(@"..\..\..\Database\inmem_sqlite.sql"))
+            using (var s = System.IO.File.OpenText(@"..\..\..\Database\inmem_v2_sqlite.sql"))
             {
                 var sql = s.ReadToEnd();
 
