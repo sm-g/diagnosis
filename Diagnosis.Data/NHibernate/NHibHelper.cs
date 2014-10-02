@@ -73,12 +73,12 @@ namespace Diagnosis.Data
         {
             if (_session == null)
             {
+                // ExportSchemaToFile();
                 _session = SessionFactory.OpenSession();
                 _session.FlushMode = FlushMode.Commit;
 
                 if (InMemory)
                     InMemoryHelper.FillData(Configuration, _session);
-
             }
             return _session;
         }
@@ -161,6 +161,7 @@ namespace Diagnosis.Data
         {
             get
             {
+                // cfg.xml changing not updates assInfo.LastWriteTime
                 var ass = Assembly.GetCallingAssembly();
                 if (ass.Location == null)
                     return false;
@@ -173,6 +174,14 @@ namespace Diagnosis.Data
                     return false;
                 return true;
             }
+        }
+
+        private static void ExportSchemaToFile()
+        {
+            new SchemaExport(Configuration)
+                .SetDelimiter(";")
+                .SetOutputFile(string.Format("P:\\schema {0}.sql", System.DateTime.Now.Ticks))
+                .Execute(true, false, false);
         }
     }
 }
