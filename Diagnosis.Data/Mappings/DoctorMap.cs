@@ -13,11 +13,11 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.Native);
             });
 
-            Property(x => x.FirstName);
+            Property(x => x.FirstName, m => m.NotNullable(true));
             Property(x => x.MiddleName);
             Property(x => x.LastName);
             Property(x => x.IsMale);
-            Property(x => x.Settings);
+            Property(x => x.Settings, m => m.NotNullable(true));
 
             Set(x => x.Courses, s =>
             {

@@ -1,26 +1,25 @@
-﻿using NHibernate.Mapping.ByCode;
+﻿using Diagnosis.Models;
+using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
-using Diagnosis.Models;
 
 namespace Diagnosis.Data.Mappings
 {
-    public class SpecialityIcdBlockMap : ClassMapping<SpecialityIcdBlocks>
+    public class HrCategoryMap : ClassMapping<HrCategory>
     {
-        public SpecialityIcdBlockMap()
+        public HrCategoryMap()
         {
             Id(x => x.Id, m =>
             {
                 m.Generator(Generators.Native);
             });
 
-            ManyToOne(x => x.Speciality, m =>
+            Property(x => x.Name, m =>
             {
-                m.Column("SpecialityID");
+                m.Column("Title");
                 m.NotNullable(true);
             });
-            ManyToOne(x => x.IcdBlock, m =>
+            Property(x => x.Ord, m =>
             {
-                m.Column("IcdBlockID");
                 m.NotNullable(true);
             });
         }

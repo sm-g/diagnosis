@@ -13,7 +13,10 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.Native);
             });
 
-            Property(x => x.DateAndTime);
+            Property(x => x.DateAndTime, m =>
+            {
+                m.NotNullable(true);
+            });
             Set(x => x.HealthRecords, s =>
             {
                 s.Key(k =>
@@ -31,10 +34,12 @@ namespace Diagnosis.Data.Mappings
             {
                 m.Column("CourseID");
                 m.Cascade(Cascade.Persist);
+                m.NotNullable(true);
             });
             ManyToOne(x => x.Doctor, m =>
             {
                 m.Column("DoctorID");
+                m.NotNullable(true);
             });
         }
     }

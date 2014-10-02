@@ -13,8 +13,14 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.Native);
             });
 
-            Property(x => x.Title);
-            Property(x => x.Code);
+            Property(x => x.Title, m =>
+            {
+                m.NotNullable(true);
+            });
+            Property(x => x.Code, m =>
+            {
+                m.NotNullable(true);
+            });
             Set(x => x.SpecialityIcdBlocks, s =>
             {
                 s.Key(k =>
@@ -41,7 +47,11 @@ namespace Diagnosis.Data.Mappings
             {
                 r.OneToMany();
             });
-            ManyToOne(x => x.IcdChapter, m => m.Column("ChapterID"));
+            ManyToOne(x => x.IcdChapter, m =>
+            {
+                m.Column("ChapterID");
+                m.NotNullable(true);
+            });
         }
     }
 }

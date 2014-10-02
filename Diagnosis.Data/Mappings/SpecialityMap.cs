@@ -13,7 +13,10 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.Native);
             });
 
-            Property(x => x.Title);
+            Property(x => x.Title, m =>
+            {
+                m.NotNullable(true);
+            });
 
             Set(x => x.Doctors, s =>
             {

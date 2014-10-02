@@ -13,7 +13,11 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.Native);
             });
 
-            Property(x => x.Order, m => m.Column("Ord"));
+            Property(x => x.Order, m =>
+            {
+                m.Column("Ord");
+                m.NotNullable(true);
+            });
 
             ManyToOne(x => x.Word, m =>
             {

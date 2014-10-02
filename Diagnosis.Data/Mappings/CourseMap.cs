@@ -13,7 +13,11 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.Native);
             });
 
-            Property(x => x.Start, m => m.Column("StartDate"));
+            Property(x => x.Start, m =>
+            {
+                m.Column("StartDate");
+                m.NotNullable(true);
+            });
             Property(x => x.End, m => m.Column("EndDate"));
             Set(x => x.Appointments, s =>
             {
@@ -31,10 +35,12 @@ namespace Diagnosis.Data.Mappings
             ManyToOne(x => x.Patient, m =>
             {
                 m.Column("PatientID");
+                m.NotNullable(true);
             });
             ManyToOne(x => x.LeadDoctor, m =>
             {
                 m.Column("DoctorID");
+                m.NotNullable(true);
             });
         }
     }
