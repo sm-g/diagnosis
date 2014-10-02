@@ -34,6 +34,17 @@ namespace Diagnosis.ViewModels
             private set;
         }
 
+        public RelayCommand OpenCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    this.Send(Events.OpenAppointment, appointment.AsParams(MessageKeys.Appointment));
+                });
+            }
+        }
+
         public ShortAppointmentViewModel(Appointment appointment, bool doctorFromCourse)
         {
             Contract.Requires(appointment != null);

@@ -63,7 +63,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public RelayCommand OpenCourseCommand
+        public RelayCommand OpenCommand
         {
             get
             {

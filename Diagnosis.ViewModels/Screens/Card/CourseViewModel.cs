@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
-    public class CourseViewModel : ViewModelBase
+    public class OldCourseViewModel : ViewModelBase
     {
         internal readonly Course course;
         private bool addingApp;
@@ -117,7 +117,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public CourseViewModel(Course course)
+        public OldCourseViewModel(Course course)
         {
             Contract.Requires(course != null);
             this.course = course;

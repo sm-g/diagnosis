@@ -32,6 +32,7 @@ namespace Diagnosis.Core
         AddPatient,
         OpenPatient,
         OpenCourse,
+        OpenAppointment,
         EditPatient,
         ShowPatient,
         LeavePatientEditor,
@@ -46,7 +47,7 @@ namespace Diagnosis.Core
         SendToSearch,
 
         ShowUndoOverlay,
-        HideOverlay
+        HideOverlay,
     }
 
     public static class EventAggragatorExtensions

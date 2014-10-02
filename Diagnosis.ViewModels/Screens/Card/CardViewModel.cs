@@ -13,7 +13,7 @@ namespace Diagnosis.ViewModels
         protected static PatientViewer viewer = new PatientViewer(); // static to hold history
 
         private PatientViewModel _patient;
-        private CourseViewModel _course;
+        private OldCourseViewModel _course;
         private AppointmentViewModel _appointment;
         private HealthRecordViewModel _hr;
         private HrEditorViewModel _hrEditor;
@@ -47,7 +47,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public CourseViewModel Course
+        public OldCourseViewModel Course
         {
             get
             {
@@ -149,6 +149,7 @@ namespace Diagnosis.ViewModels
             var @switch = new Dictionary<Type, Action> {
                 { typeof(Patient), () => viewer.OpenPatient(parameter as Patient) },
                 { typeof(Course), () => viewer.OpenCourse(parameter as Course) },
+                { typeof(Appointment), () => viewer.OpenAppointment(parameter as Appointment) },
                 { typeof(HealthRecord),() => viewer.OpenAppHr(parameter as HealthRecord) },
             };
 
@@ -227,7 +228,7 @@ namespace Diagnosis.ViewModels
                 switch (e.action)
                 {
                     case PatientViewer.OpeningAction.Open:
-                        Course = new CourseViewModel(course);
+                        Course = new OldCourseViewModel(course);
                         Course.PropertyChanged += (s1, e1) =>
                         {
                             if (e1.PropertyName == "SelectedAppointment")
@@ -281,7 +282,6 @@ namespace Diagnosis.ViewModels
                     case PatientViewer.OpeningAction.Close:
                         app.HealthRecordsChanged -= app_HealthRecordsChanged;
 
-                        Appointment.MakeDeletions();
                         Appointment.Dispose();
                         // редактор записей после смены осмотра всегда закрыт
                         editorWasOpened = false;

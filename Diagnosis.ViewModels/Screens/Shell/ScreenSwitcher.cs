@@ -54,9 +54,14 @@ namespace Diagnosis.ViewModels
 
             this.Subscribe(Events.OpenCourse, (e) =>
             {
-                // открываем экран карточки и курс
                 var course = e.GetValue<Course>(MessageKeys.Course);
                 OpenScreen(Screens.Card, course);
+            });
+
+            this.Subscribe(Events.OpenAppointment, (e) =>
+            {
+                var app = e.GetValue<Appointment>(MessageKeys.Appointment);
+                OpenScreen(Screens.Card, app);
             });
 
             this.Subscribe(Events.EditPatient, (e) =>
