@@ -14,12 +14,9 @@ using System.Windows.Shapes;
 
 namespace Diagnosis.App.Controls.CardParts
 {
-    /// <summary>
-    /// Interaction logic for Appointment.xaml
-    /// </summary>
-    public partial class Appointment : UserControl
+    public partial class HealthRecordsList : UserControl
     {
-        public Appointment()
+        public HealthRecordsList()
         {
             InitializeComponent();
         }

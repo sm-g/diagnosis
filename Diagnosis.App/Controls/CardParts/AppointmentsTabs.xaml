@@ -38,7 +38,7 @@
                     ItemTemplateSelector="{StaticResource addNewSelector}">
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <card:Appointment DataContext="{Binding DataContext.Appointment, RelativeSource={RelativeSource AncestorType=screen:NewCard}}" />
+                    <card:HealthRecordsList DataContext="{Binding DataContext.Appointment, RelativeSource={RelativeSource AncestorType=screen:NewCard}}" />
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>

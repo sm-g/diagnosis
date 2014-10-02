@@ -229,8 +229,8 @@
       <DependentUpon>AutoComplete.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Search\AutocompleteDataTemplateSelector.cs" />
-    <Compile Include="Controls\CardParts\Appointment.xaml.cs">
-      <DependentUpon>Appointment.xaml</DependentUpon>
+    <Compile Include="Controls\CardParts\HealthRecordsList.xaml.cs">
+      <DependentUpon>HealthRecordsList.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\CardParts\HealthRecord.xaml.cs">
       <DependentUpon>HealthRecord.xaml</DependentUpon>
@@ -377,7 +377,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\CardParts\Appointment.xaml">
+    <Page Include="Controls\CardParts\HealthRecordsList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
