@@ -14,8 +14,6 @@ namespace Tests
         protected Word w1 = new Word("x");
         protected Word w2 = new Word("y");
         protected Word w3 = new Word("z");
-        protected Symptom s1;
-        protected Symptom s2;
         protected HrItem i1;
         protected HrItem i2;
         protected HrItem i3;
@@ -31,8 +29,6 @@ namespace Tests
         [TestInitialize]
         public void Prepare()
         {
-            s1 = new Symptom(new Word[] { w1, w2 });
-            s2 = new Symptom(new Word[] { w1 });
             course1 = d1.StartCourse(p1);
             course2 = d1.StartCourse(p1);
             app1 = new Appointment(course1, d1);
@@ -45,10 +41,7 @@ namespace Tests
                 session.Save(w1);
                 session.Save(w2);
                 session.Save(w3);
-
-                session.Save(s1);
-                session.Save(s2);
-
+                
                 session.Save(p1);
                 session.Save(d1);
                 session.Save(course1);
@@ -71,9 +64,6 @@ namespace Tests
                 session.Delete(w1);
                 session.Delete(w2);
                 session.Delete(w3);
-
-                session.Delete(s1);
-                session.Delete(s2);
 
                 session.Delete(p1);
                 session.Delete(d1);

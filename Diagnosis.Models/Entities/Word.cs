@@ -7,8 +7,6 @@ namespace Diagnosis.Models
 {
     public class Word : EntityBase, IDomainEntity
     {
-        private IList<Symptom> symptoms;
-        private Iesi.Collections.Generic.ISet<SymptomWords> symptomWords;
         private Iesi.Collections.Generic.ISet<Word> children;
         private string _title;
 
@@ -32,22 +30,6 @@ namespace Diagnosis.Models
             get
             {
                 return new ObservableCollection<Word>(children);
-            }
-        }
-
-        public virtual IEnumerable<Symptom> Symptoms
-        {
-            get
-            {
-                return symptoms;
-            }
-        }
-
-        public virtual IEnumerable<SymptomWords> SymptomWords
-        {
-            get
-            {
-                return symptomWords;
             }
         }
 

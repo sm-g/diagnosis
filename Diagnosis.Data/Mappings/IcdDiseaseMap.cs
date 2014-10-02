@@ -17,19 +17,7 @@ namespace Diagnosis.Data.Mappings
 
             Property(x => x.Title);
             Property(x => x.Code);
-            Set(x => x.Symptoms, s =>
-            {
-                s.Key(k =>
-                {
-                    k.Column("DiseaseID");
-                });
-                s.Inverse(true);
-                s.Cascade(Cascade.All);
-                s.Access(Accessor.Field);
-            }, r =>
-            {
-                r.OneToMany();
-            });
+       
             Set(x => x.HealthRecords, s =>
             {
                 s.Key(k =>

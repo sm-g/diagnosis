@@ -154,7 +154,6 @@
     <Compile Include="Mappings\UomMap.cs" />
     <Compile Include="Mappings\AppointmentMap.cs" />
     <Compile Include="Mappings\CategoryMap.cs" />
-    <Compile Include="Mappings\SymptomMap.cs" />
     <Compile Include="Mappings\SpecialityMap.cs" />
     <Compile Include="Mappings\IcdDiseaseMap.cs" />
     <Compile Include="Mappings\IcdBlockMap.cs" />
@@ -165,7 +164,6 @@
     <Compile Include="Mappings\DoctorMap.cs" />
     <Compile Include="Mappings\CourseMap.cs" />
     <Compile Include="Mappings\PatientMap.cs" />
-    <Compile Include="Mappings\SymptomWordsMap.cs" />
     <Compile Include="NHibernate\EntityChecker.cs" />
     <Compile Include="NHibernate\Extensions.cs" />
     <Compile Include="NHibernate\InMemoryHelper.cs" />
@@ -174,7 +172,6 @@
     <Compile Include="Queries\DiagnosisQuery.cs" />
     <Compile Include="Queries\PatientQuery.cs" />
     <Compile Include="Queries\HealthRecordQuery.cs" />
-    <Compile Include="Queries\SymptomQuery.cs" />
     <Compile Include="Queries\UomQuery.cs" />
     <Compile Include="Queries\WordQuery.cs" />
     <Compile Include="Repositories\IcdChapterRepository.cs" />

@@ -38,38 +38,6 @@ namespace Diagnosis.Data.Mappings
             {
                 r.OneToMany();
             });
-
-            Set(x => x.SymptomWords, s =>
-            {
-                s.Key(k =>
-                {
-                    k.Column("WordID");
-                });
-                s.Inverse(true);
-                s.Cascade(Cascade.All);
-                s.Access(Accessor.Field);
-            }, r =>
-            {
-                r.OneToMany();
-            });
-
-            Bag(x => x.Symptoms, s =>
-            {
-                s.Table("SymptomWords");
-                s.Key(k =>
-                {
-                    k.Column("WordID");
-                });
-                // s.Cascade(Cascade.All);
-                s.Inverse(true);
-                s.Access(Accessor.Field);
-            }, r =>
-            {
-                r.ManyToMany(x =>
-                {
-                    x.Column("SymptomID");
-                });
-            });
         }
     }
 }

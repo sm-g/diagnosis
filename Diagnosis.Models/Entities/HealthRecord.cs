@@ -14,9 +14,7 @@ namespace Diagnosis.Models
         private byte? _month;
         private byte? _day;
         private string _comment;
-        private Symptom _symptom;
         private HrCategory _category;
-        private IcdDisease _disease;
         private DateOffset _dateOffset;
         private HealthRecordUnits _unit;
 
@@ -187,7 +185,7 @@ namespace Diagnosis.Models
             }
         }
 
-      
+
         public virtual IEnumerable<HrItem> HrItems
         {
             get { return hrItems; }
@@ -200,25 +198,12 @@ namespace Diagnosis.Models
         {
             get { return hrItems.Where(x => x.Entity is Word).Cast<Word>(); }
         }
-        /// <summary>
-        /// Порядок слов симптома при редактировании записи, начиная с 0. В симптоме max 9 слов.
-        /// </summary>
-        public virtual string WordsOrder { get; set; }
-
-        /// <summary>
-        /// Последовательность количества подряд идущих слов и измерений при редактировании записи, начиная с количства слов.
-        /// 11 - слово и измерение,
-        /// 012 - измерение и два слова
-        /// </summary>
-        public virtual string WordsMeasuresSequence { get; set; }
 
         public HealthRecord(Appointment appointment)
         {
             Contract.Requires(appointment != null);
 
             Appointment = appointment;
-            WordsOrder = "";
-            WordsMeasuresSequence = "";
         }
 
         public virtual void AddItem(HrItem item)
