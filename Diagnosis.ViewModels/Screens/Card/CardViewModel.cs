@@ -219,10 +219,10 @@ namespace Diagnosis.ViewModels
                             }
                         };
                         Patient.SelectCourse(course);
-                        if (course.Appointments.Count() == 0)
-                        {
-                            course.AddAppointment(course.LeadDoctor); // добавляем первый осмотр
-                        }
+                        //if (course.Appointments.Count() == 0)
+                        //{
+                        //    course.AddAppointment(course.LeadDoctor); // добавляем первый осмотр
+                        //}
                         break;
 
                     case PatientViewer.OpeningAction.Close:
@@ -250,10 +250,10 @@ namespace Diagnosis.ViewModels
                         };
                         Course.SelectAppointment(app);
 
-                        if (app.HealthRecords.Count() == 0)
-                        {
-                            app.AddHealthRecord(); // добавляем первую запись
-                        }
+                        //if (app.HealthRecords.Count() == 0)
+                        //{
+                        //    app.AddHealthRecord(); // добавляем первую запись
+                        //}
                         break;
 
                     case PatientViewer.OpeningAction.Close:
