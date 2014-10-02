@@ -79,6 +79,23 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        private HrListViewModel _hrList;
+        public HrListViewModel HrList
+        {
+            get
+            {
+                return _hrList;
+            }
+            set
+            {
+                if (_hrList != value)
+                {
+                    _hrList = value;
+                    OnPropertyChanged(() => HrList);
+                }
+            }
+        }
+
         public HealthRecordViewModel HealthRecord
         {
             get
@@ -149,6 +166,7 @@ namespace Diagnosis.ViewModels
                     viewer.OpenedChanged -= viewer_OpenedChanged;
 
                     HealthRecordEditor.Dispose();
+                    HrList.Dispose();
                 }
             }
             finally
@@ -180,10 +198,11 @@ namespace Diagnosis.ViewModels
 
             if (e.entity is Patient)
             {
+                var patient = e.entity as Patient;
                 switch (e.action)
                 {
                     case PatientViewer.OpeningAction.Open:
-                        Patient = new PatientViewModel(viewer.OpenedPatient);
+                        Patient = new PatientViewModel(patient);
                         Patient.PropertyChanged += (s1, e1) =>
                         {
                             if (e1.PropertyName == "SelectedCourse")
@@ -194,6 +213,7 @@ namespace Diagnosis.ViewModels
                                     viewer.OpenedCourse = null;
                             }
                         };
+                        HrList = new HrListViewModel(patient);
                         break;
 
                     case PatientViewer.OpeningAction.Close:
@@ -223,6 +243,7 @@ namespace Diagnosis.ViewModels
                         //{
                         //    course.AddAppointment(course.LeadDoctor); // добавляем первый осмотр
                         //}
+                        HrList = new HrListViewModel(course);
                         break;
 
                     case PatientViewer.OpeningAction.Close:
@@ -254,6 +275,7 @@ namespace Diagnosis.ViewModels
                         //{
                         //    app.AddHealthRecord(); // добавляем первую запись
                         //}
+                        HrList = new HrListViewModel(app);
                         break;
 
                     case PatientViewer.OpeningAction.Close:

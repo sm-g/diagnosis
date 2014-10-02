@@ -10,16 +10,16 @@ namespace Diagnosis.ViewModels
 {
     public class HealthRecordManager : DisposableBase
     {
-        private readonly Appointment app;
+        private readonly IHrsHolder holder;
         private readonly PropertyChangedEventHandler onHrVmPropChanged;
 
-        public HealthRecordManager(Appointment app, PropertyChangedEventHandler onHrVmPropChanged)
+        public HealthRecordManager(IHrsHolder holder, PropertyChangedEventHandler onHrVmPropChanged)
         {
-            this.app = app;
+            this.holder = holder;
             this.onHrVmPropChanged = onHrVmPropChanged;
-            app.HealthRecordsChanged += app_HealthRecordsChanged;
+            holder.HealthRecordsChanged += holder_HealthRecordsChanged;
 
-            var hrVMs = app.HealthRecords.Select(hr => CreateViewModel(hr));
+            var hrVMs = holder.HealthRecords.Select(hr => CreateViewModel(hr));
             HealthRecords = new ObservableCollection<ShortHealthRecordViewModel>(hrVMs);
             DeletedHealthRecords = new ObservableCollection<ShortHealthRecordViewModel>();
         }
@@ -28,7 +28,7 @@ namespace Diagnosis.ViewModels
 
         public ObservableCollection<ShortHealthRecordViewModel> DeletedHealthRecords { get; private set; }
 
-        private void app_HealthRecordsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void holder_HealthRecordsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
@@ -76,7 +76,7 @@ namespace Diagnosis.ViewModels
                     HealthRecords.Remove(vm);
                     var undoActions = new Action[] {
                         () => hr.IsDeleted = false,
-                        () => app.RemoveHealthRecord(hr)                        
+                        () => holder.RemoveHealthRecord(hr)                        
                     };
                     this.Send(Events.ShowUndoOverlay, new object[] { undoActions, typeof(HealthRecord) }.AsParams(MessageKeys.UndoOverlay, MessageKeys.Type));
                 }
@@ -98,7 +98,7 @@ namespace Diagnosis.ViewModels
             {
                 if (disposing)
                 {
-                    app.HealthRecordsChanged -= app_HealthRecordsChanged;
+                    holder.HealthRecordsChanged -= holder_HealthRecordsChanged;
                     foreach (var shortHrVm in HealthRecords)
                     {
                         shortHrVm.PropertyChanged -= onHrVmPropChanged;
