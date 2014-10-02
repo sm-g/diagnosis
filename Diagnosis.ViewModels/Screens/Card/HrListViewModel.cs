@@ -164,6 +164,7 @@ namespace Diagnosis.ViewModels
                 if (disposing)
                 {
                     hrManager.Dispose();
+                    MakeDeletions();
                 }
             }
             finally
@@ -175,7 +176,7 @@ namespace Diagnosis.ViewModels
         /// <summary>
         /// Реальное удаление удаленных и пустых записей.
         /// </summary>
-        internal void MakeDeletions()
+        private void MakeDeletions()
         {
             this.Send(Events.HideOverlay, typeof(HealthRecord).AsParams(MessageKeys.Type));
 

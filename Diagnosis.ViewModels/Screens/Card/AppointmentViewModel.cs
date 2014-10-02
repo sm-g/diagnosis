@@ -62,86 +62,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        #region Commands
-
-        public ICommand AddHealthRecordCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                    {
-                        var lastHrVM = SelectedHealthRecord ?? HealthRecords.LastOrDefault();
-                        var newHr = appointment.AddHealthRecord();
-                        if (lastHrVM != null)
-                        {
-                            // копируем категории из последней записи
-                            newHr.Category = lastHrVM.healthRecord.Category;
-                        }
-                    },
-                    // нельзя добавлять новую запись, пока выбранная пуста
-                    () => SelectedHealthRecord == null || !SelectedHealthRecord.healthRecord.IsEmpty()
-                    );
-            }
-        }
-
-        public ICommand DeleteHealthRecordsCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                    {
-                        hrManager.DeleteCheckedHealthRecords();
-                    }, () => CheckedHrCount > 0);
-            }
-        }
-
-        public ICommand SendHealthRecordsToSearchCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                        {
-                            this.Send(Events.SendToSearch, HealthRecords.Where(hr => hr.IsChecked)
-                                .Select(vm => vm.healthRecord)
-                                .AsParams(MessageKeys.HealthRecords));
-                        }, () => CheckedHrCount > 0);
-            }
-        }
-
-        public RelayCommand<bool> MoveHrSelectionCommand
-        {
-            get
-            {
-                return new RelayCommand<bool>((up) =>
-                        {
-                            if (up)
-                            {
-                                if (healthRecordsView.CurrentPosition != 0)
-                                    healthRecordsView.MoveCurrentToPrevious();
-                                else
-                                    healthRecordsView.MoveCurrentToLast();
-                            }
-                            else
-                            {
-                                if (healthRecordsView.CurrentPosition != HealthRecords.Count - 1)
-                                    healthRecordsView.MoveCurrentToNext();
-                                else
-                                    healthRecordsView.MoveCurrentToFirst();
-                            }
-                        });
-            }
-        }
-
-        #endregion Commands
-
-        public int CheckedHrCount
-        {
-            get
-            {
-                return HealthRecords.Where(hr => hr.IsChecked).Count();
-            }
-        }
-
         public AppointmentViewModel(Appointment appointment)
         {
             Contract.Requires(appointment != null);
@@ -183,23 +103,6 @@ namespace Diagnosis.ViewModels
             {
                 base.Dispose(disposing);
             }
-        }
-
-        /// <summary>
-        /// Реальное удаление удаленных и пустых записей.
-        /// </summary>
-        internal void MakeDeletions()
-        {
-            this.Send(Events.HideOverlay, typeof(HealthRecord).AsParams(MessageKeys.Type));
-
-            foreach (var hrVm in hrManager.DeletedHealthRecords)
-            {
-                appointment.RemoveHealthRecord(hrVm.healthRecord);
-            }
-            hrManager.DeletedHealthRecords.Clear();
-
-            var emptyHrs = appointment.HealthRecords.Where(hr => hr.IsEmpty()).ToList();
-            emptyHrs.ForEach(hr => appointment.RemoveHealthRecord(hr));
         }
     }
 }
