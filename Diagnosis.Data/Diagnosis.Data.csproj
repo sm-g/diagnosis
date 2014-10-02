@@ -149,6 +149,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mappings\HrItemMap.cs" />
     <Compile Include="Mappings\MeasureMap.cs" />
     <Compile Include="Mappings\UomMap.cs" />
     <Compile Include="Mappings\AppointmentMap.cs" />
