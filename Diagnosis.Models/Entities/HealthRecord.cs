@@ -194,11 +194,11 @@ namespace Diagnosis.Models
         }
         public virtual IEnumerable<Measure> Measures
         {
-            get { return hrItems.Where(x => x.Entity is Measure).Cast<Measure>(); }
+            get { return hrItems.Where(x => x.Measure != null).Select(x => x.Measure); }
         }
         public virtual IEnumerable<Word> Words
         {
-            get { return hrItems.Where(x => x.Entity is Word).Cast<Word>(); }
+            get { return hrItems.Where(x => x.Word != null).Select(x => x.Word); }
         }
 
         public HealthRecord(Appointment appointment)
