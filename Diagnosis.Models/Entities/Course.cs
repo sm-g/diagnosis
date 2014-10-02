@@ -29,7 +29,7 @@ namespace Diagnosis.Models
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="doctor">Доктор, ведущий прием.</param>
+        /// <param name="doctor">Доктор, ведущий осмотр.</param>
         /// <returns></returns>
         public virtual Appointment AddAppointment(Doctor doctor)
         {

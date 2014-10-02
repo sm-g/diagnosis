@@ -45,7 +45,7 @@ namespace Diagnosis.ViewModels
         public IEnumerable<HrCategory> Categories { get; set; }
 
         /// <summary>
-        /// Нижняя грань даты приема
+        /// Нижняя грань даты осмотра
         /// </summary>
         public DateTime? AppointmentDateGt
         {
@@ -66,7 +66,7 @@ namespace Diagnosis.ViewModels
         }
 
         /// <summary>
-        /// Верхняя грань даты приема
+        /// Верхняя грань даты осмотра
         /// </summary>
         public DateTime? AppointmentDateLt
         {

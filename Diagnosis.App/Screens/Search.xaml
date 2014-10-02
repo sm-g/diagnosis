@@ -66,7 +66,7 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal"
                                     Visibility="{Binding AppDateVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Text="дата приёма "></TextBlock>
+                            <TextBlock Text="дата осмотра "></TextBlock>
                             <TextBlock>
                                 <TextBlock.Text>
                                     <MultiBinding Converter="{StaticResource DateIntervalLabel}">
@@ -118,7 +118,7 @@
                     <editors:CategoryChooser CategoryMultiSelection="{StaticResource True}" />
                 </DockPanel>
                 <DockPanel>
-                    <TextBlock Style="{StaticResource lineHeader}">Дата приема</TextBlock>
+                    <TextBlock Style="{StaticResource lineHeader}">Дата осмотра</TextBlock>
                     <WrapPanel>
                         <DockPanel>
                             <DockPanel.Style>

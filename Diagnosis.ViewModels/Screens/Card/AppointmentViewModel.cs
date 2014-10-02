@@ -155,7 +155,7 @@ namespace Diagnosis.ViewModels
                 }
                 else if (e.PropertyName == "IsChecked")
                 {
-                    OnPropertyChanged("CheckedHealthRecords");
+                    OnPropertyChanged("CheckedHrCount");
                 }
             });
         }
