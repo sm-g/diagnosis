@@ -19,6 +19,7 @@ namespace Diagnosis.Data.Mappings
                 m.NotNullable(true);
             });
             Property(x => x.End, m => m.Column("EndDate"));
+
             Set(x => x.Appointments, s =>
             {
                 s.Key(k =>
@@ -32,6 +33,20 @@ namespace Diagnosis.Data.Mappings
             {
                 r.OneToMany();
             });
+            Set(x => x.HealthRecords, s =>
+            {
+                s.Key(k =>
+                {
+                    k.Column("CourseID");
+                });
+                s.Inverse(true);
+                s.Cascade(Cascade.All | Cascade.DeleteOrphans);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.OneToMany();
+            });
+
             ManyToOne(x => x.Patient, m =>
             {
                 m.Column("PatientID");
