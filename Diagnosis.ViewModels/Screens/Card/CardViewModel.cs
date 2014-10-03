@@ -13,7 +13,7 @@ namespace Diagnosis.ViewModels
         protected static PatientViewer viewer = new PatientViewer(); // static to hold history
 
         private PatientViewModel _patient;
-        private OldCourseViewModel _course;
+        private CourseViewModel1 _course;
         private AppointmentViewModel _appointment;
         private HealthRecordViewModel _hr;
         private HrEditorViewModel _hrEditor;
@@ -47,7 +47,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public OldCourseViewModel Course
+        public CourseViewModel1 Course
         {
             get
             {
@@ -150,7 +150,7 @@ namespace Diagnosis.ViewModels
                 { typeof(Patient), () => viewer.OpenPatient(parameter as Patient) },
                 { typeof(Course), () => viewer.OpenCourse(parameter as Course) },
                 { typeof(Appointment), () => viewer.OpenAppointment(parameter as Appointment) },
-                { typeof(HealthRecord),() => viewer.OpenAppHr(parameter as HealthRecord) },
+                { typeof(HealthRecord),() => viewer.OpenHr(parameter as HealthRecord) },
             };
 
             @switch[parameter.GetType()]();
@@ -214,10 +214,14 @@ namespace Diagnosis.ViewModels
                                     viewer.OpenedCourse = null;
                             }
                         };
+                        patient.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
+
                         HrList = new HrListViewModel(patient);
+                        HrList.PropertyChanged += HrList_PropertyChanged;
                         break;
 
                     case PatientViewer.OpeningAction.Close:
+                        patient.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
                         Patient.Dispose();
                         break;
                 }
@@ -228,26 +232,30 @@ namespace Diagnosis.ViewModels
                 switch (e.action)
                 {
                     case PatientViewer.OpeningAction.Open:
-                        Course = new OldCourseViewModel(course);
+                        Course = new CourseViewModel1(course);
                         Course.PropertyChanged += (s1, e1) =>
                         {
                             if (e1.PropertyName == "SelectedAppointment")
                             {
                                 if (Course.SelectedAppointment != null)
-                                    viewer.OpenedAppointment = Course.SelectedAppointment.To<ShortAppointmentViewModel>().appointment;
+                                    viewer.OpenedAppointment = Course.SelectedAppointment.appointment;
                                 else
                                     viewer.OpenedAppointment = null;
                             }
                         };
+                        course.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
+
                         Patient.SelectCourse(course);
                         //if (course.Appointments.Count() == 0)
                         //{
                         //    course.AddAppointment(course.LeadDoctor); // добавляем первый осмотр
                         //}
                         HrList = new HrListViewModel(course);
+                        HrList.PropertyChanged += HrList_PropertyChanged;
                         break;
 
                     case PatientViewer.OpeningAction.Close:
+                        course.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
                         Course.Dispose();
                         break;
                 }
@@ -259,17 +267,7 @@ namespace Diagnosis.ViewModels
                 {
                     case PatientViewer.OpeningAction.Open:
                         Appointment = new AppointmentViewModel(app);
-                        app.HealthRecordsChanged += app_HealthRecordsChanged;
-                        Appointment.PropertyChanged += (s1, e1) =>
-                        {
-                            if (e1.PropertyName == "SelectedHealthRecord")
-                            {
-                                if (Appointment.SelectedHealthRecord != null)
-                                    viewer.OpenedHealthRecord = Appointment.SelectedHealthRecord.healthRecord;
-                                else
-                                    viewer.OpenedHealthRecord = null;
-                            }
-                        };
+                        app.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
                         Course.SelectAppointment(app);
 
                         //if (app.HealthRecords.Count() == 0)
@@ -277,10 +275,11 @@ namespace Diagnosis.ViewModels
                         //    app.AddHealthRecord(); // добавляем первую запись
                         //}
                         HrList = new HrListViewModel(app);
+                        HrList.PropertyChanged += HrList_PropertyChanged;
                         break;
 
                     case PatientViewer.OpeningAction.Close:
-                        app.HealthRecordsChanged -= app_HealthRecordsChanged;
+                        app.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
 
                         Appointment.Dispose();
                         // редактор записей после смены осмотра всегда закрыт
@@ -302,7 +301,7 @@ namespace Diagnosis.ViewModels
                 {
                     case PatientViewer.OpeningAction.Open:
                         HealthRecord = new HealthRecordViewModel(hr);
-                        Appointment.SelectHealthRecord(hr);
+                        HrList.SelectHealthRecord(hr);
 
                         if (editorWasOpened)
                         {
@@ -319,13 +318,24 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        private void app_HealthRecordsChanged(object sender, NotifyCollectionChangedEventArgs e)
+        void HrList_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "SelectedHealthRecord")
+            {
+                if (HrList.SelectedHealthRecord != null)
+                    viewer.OpenedHealthRecord = HrList.SelectedHealthRecord.healthRecord;
+                else
+                    viewer.OpenedHealthRecord = null;
+            }
+        }
+
+        private void HrsHolder_HealthRecordsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 // редактируем добавленную запись
                 var hr = (HealthRecord)e.NewItems[e.NewItems.Count - 1];
-                viewer.OpenAppHr(hr);
+                viewer.OpenHr(hr);
                 HealthRecordEditor.Load(hr);
             }
         }
