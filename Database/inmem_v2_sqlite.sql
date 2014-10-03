@@ -208,6 +208,10 @@ INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment
 INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[CategoryID],[FromYear],[FromMonth],[FromDay],[Unit]) VALUES (67,NULL,NULL,3,NULL,2,NULL,NULL,NULL,'NotSet');
 INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[CategoryID],[FromYear],[FromMonth],[FromDay],[Unit]) VALUES (68,NULL,NULL,3,NULL,1,NULL,NULL,NULL,'NotSet');
 INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[CategoryID],[FromYear],[FromMonth],[FromDay],[Unit]) VALUES (69,NULL,NULL,4,NULL,2,2005,2,10,'Year');
+INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[CategoryID],[FromYear],[FromMonth],[FromDay],[Unit]) VALUES (70,NULL,1,NULL,'запись курса',1,NULL,NULL,NULL,'NotSet');
+INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[CategoryID],[FromYear],[FromMonth],[FromDay],[Unit]) VALUES (71,NULL,2,NULL,'запись курса 2',1,NULL,NULL,NULL,'NotSet');
+INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[CategoryID],[FromYear],[FromMonth],[FromDay],[Unit]) VALUES (72,1,NULL,NULL,'запись пациента',NULL,NULL,NULL,NULL,'NotSet');
+
 
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (2,38,1,NULL,NULL,NULL,0);
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (3,65,1,NULL,NULL,NULL,0);
