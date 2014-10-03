@@ -235,7 +235,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Screens\Card\CardPartsRealtion.cd" />
     <None Include="packages.config" />
     <None Include="Screens\Card\Card.cd" />
     <None Include="Search\SearchClassDiagram.cd" />

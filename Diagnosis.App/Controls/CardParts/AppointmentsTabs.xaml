@@ -12,16 +12,8 @@
     <!--DataContext is CourseViewModel-->
     <UserControl.Resources>
         <DataTemplate x:Key="AppointmentHeaderTemplate">
-            <Grid DataContext="{Binding Content}">
-                <!-- ShortAppointmentVM -->
-                <DockPanel MinWidth="70">
-                    <TextBlock Text="{Binding DateTime, Converter={StaticResource DateLabel}}"
-                                       DockPanel.Dock="Top" />
-                    <TextBlock Text="{Binding Doctor, Converter={StaticResource ManToShortName}, StringFormat='{}доктор {0}'}"
-                                       HorizontalAlignment="Right"
-                                       Visibility="{Binding IsDoctorFromCourse, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
-                </DockPanel>
-            </Grid>
+            <!-- ShortAppointmentVM -->
+            <card:Appointment DataContext="{Binding Content}" />
         </DataTemplate>
         <DataTemplate x:Key="NewAppointmentTemplate">
             <TextBlock ToolTip="Начать новый осмотр">+ осмотр</TextBlock>
@@ -29,8 +21,8 @@
         <card:SpecialCaseDataTemplateSelector x:Key="addNewSelector"
                                          DefaultTemplate="{StaticResource AppointmentHeaderTemplate}"
                                          AddNewTemplate="{StaticResource NewAppointmentTemplate}" />
-    </UserControl.Resources>    
-    
+    </UserControl.Resources>
+
     <Grid>
         <TabControl x:Name="appointments" Grid.Row="1"
                     SelectedItem="{Binding SelectedAppointment, Mode=TwoWay}"

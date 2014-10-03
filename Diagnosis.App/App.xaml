@@ -11,8 +11,19 @@
                 <ResourceDictionary Source="Styles/SharedStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-                <s:Boolean x:Key="True">True</s:Boolean>
-                <s:Boolean x:Key="False">False</s:Boolean>                
+            <s:Boolean x:Key="True">True</s:Boolean>
+            <s:Boolean x:Key="False">False</s:Boolean>
+
+            <InputBindingCollection x:Shared="False" x:Key="CourseInputBindings">
+                <KeyBinding Key="Space" Command="{Binding OpenCommand}" />
+                <KeyBinding Key="Enter" Command="{Binding OpenCommand}" />
+                <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding OpenCommand}" />
+            </InputBindingCollection>
+            <InputBindingCollection x:Shared="False" x:Key="AppointmentInputBindings">
+                <KeyBinding Key="Space" Command="{Binding OpenCommand}" />
+                <KeyBinding Key="Enter" Command="{Binding OpenCommand}" />
+                <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding OpenCommand}" />
+            </InputBindingCollection>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

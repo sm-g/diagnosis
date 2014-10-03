@@ -16,6 +16,7 @@ namespace Diagnosis.ViewModels
         private CourseViewModel1 _course;
         private AppointmentViewModel _appointment;
         private HealthRecordViewModel _hr;
+        private HrListViewModel _hrList;
         private HrEditorViewModel _hrEditor;
         private bool editorWasOpened;
 
@@ -78,8 +79,6 @@ namespace Diagnosis.ViewModels
                 }
             }
         }
-
-        private HrListViewModel _hrList;
         public HrListViewModel HrList
         {
             get

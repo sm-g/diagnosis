@@ -7,20 +7,16 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <!-- ShortCourseViewModel-->
-    <Grid>
-        <StackPanel>
-            <StackPanel x:Name="description">
-                <TextBlock>
+    <StackPanel x:Name="description">
+        <TextBlock>
                     <Run>
                          <MultiBinding Converter="{StaticResource DateIntervalLabel}">
                             <Binding Path="Start" Mode="OneWay" />
                             <Binding Path="End" Mode="OneWay" />
                         </MultiBinding>
                     </Run>
-                </TextBlock>
-                <TextBlock Text="{Binding LeadDoctor, Converter={StaticResource ManToShortName}, StringFormat='{}доктор {0}'}"
+        </TextBlock>
+        <TextBlock Text="{Binding LeadDoctor, Converter={StaticResource ManToShortName}, StringFormat='{}доктор {0}'}"
                            Visibility="{Binding IsDoctorCurrent,Converter={StaticResource NegBooleanToVisibilityConverter}}" />
-            </StackPanel>
-        </StackPanel>
-    </Grid>
+    </StackPanel>
 </UserControl>

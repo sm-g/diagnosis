@@ -48,7 +48,7 @@ namespace Diagnosis.Models
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="doctor">Доктор, ведущий осмотр.</param>
+        /// <param name="doctor">Доктор, ведущий осмотр. Если null, осмотр ведет доктор курса.</param>
         /// <returns></returns>
         public virtual Appointment AddAppointment(Doctor doctor)
         {

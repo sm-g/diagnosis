@@ -10,12 +10,6 @@
              d:DesignHeight="300" d:DesignWidth="500">
     <!--PatientEditorViewModel-->
     <UserControl.Resources>
-        <InputBindingCollection x:Shared="False" x:Key="CourseInputBindings">
-            <KeyBinding Key="Space" Command="{Binding OpenCourseCommand}" />
-            <KeyBinding Key="Enter" Command="{Binding OpenCourseCommand}" />
-            <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding OpenCourseCommand}" />
-        </InputBindingCollection>
-        
         <Style TargetType="Button">
             <Setter Property="MaxWidth" Value="100" />
             <Setter Property="Height" Value="23" />
