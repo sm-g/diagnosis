@@ -219,7 +219,7 @@ namespace Diagnosis.ViewModels
 
         public override string ToString()
         {
-            return healthRecord.ToString();
+            return string.Format("{0} {1}", GetType().Name, healthRecord);
         }
 
         protected override void Dispose(bool disposing)

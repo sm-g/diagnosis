@@ -434,6 +434,7 @@ namespace Diagnosis.ViewModels
             MakeOptions();
             var hrs = searcher.Search(Options);
             // только одна запись из осмотра
+            // TODO записи везде
             hrs.Distinct(new KeyEqualityComparer<HealthRecord, Appointment>(hr => hr.Appointment))
                 .ForAll(hr => Results.Add(new HrSearchResultViewModel(hr, Options)));
 

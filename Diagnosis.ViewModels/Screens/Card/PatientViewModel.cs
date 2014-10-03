@@ -145,7 +145,7 @@ namespace Diagnosis.ViewModels
                 }
             }
         }
-        
+
         public RelayCommand EditCommand
         {
             get
@@ -222,7 +222,7 @@ namespace Diagnosis.ViewModels
 
         public override string ToString()
         {
-            return patient.ToString();
+            return string.Format("{0} {1}", GetType().Name, patient);
         }
 
         protected override void Dispose(bool disposing)

@@ -8,6 +8,7 @@ using Diagnosis.Core;
 
 namespace Diagnosis.ViewModels
 {
+    // TODO записи везде
     public class HrSearchResultViewModel : ViewModelBase
     {
         readonly HealthRecord hr;
