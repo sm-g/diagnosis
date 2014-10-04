@@ -22,13 +22,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{73FC5EC4-B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{B431DCFC-50AB-43F2-BAC5-0C37128F5364}"
 	ProjectSection(SolutionItems) = preProject
+		Database\create_sqlite.sql = Database\create_sqlite.sql
+		Database\create_v2_sqlite.sql = Database\create_v2_sqlite.sql
 		Database\diagnosis.accdb = Database\diagnosis.accdb
 		Database\diagnosis_new.accdb = Database\diagnosis_new.accdb
 		Database\diagnosis_test.accdb = Database\diagnosis_test.accdb
 		Database\inmem_sqlite.sql = Database\inmem_sqlite.sql
 		Database\inmem_v2_sqlite.sql = Database\inmem_v2_sqlite.sql
-		Database\schema_sqlite.sql = Database\schema_sqlite.sql
-		Database\schema_v2_sqlite.sql = Database\schema_v2_sqlite.sql
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.Tests", "Diagnosis.Tests\Diagnosis.Tests.csproj", "{EC5E581D-F591-4A34-B390-0607BA8EE6FA}"
