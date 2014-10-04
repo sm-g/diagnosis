@@ -19,7 +19,7 @@ namespace Diagnosis.Models
         /// базовой единицы этого типа (единицы объема: -3 для мкл, 0 для мл).
         /// При сохранении в БД Measure.Value = Value * 10^Factor.
         /// </summary>
-        public virtual int Factor { get; set; }
+        public virtual float Factor { get; set; }
         public virtual int Type { get; set; }
 
         public Uom(string abbr, int factor, int type)

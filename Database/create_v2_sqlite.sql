@@ -16,23 +16,22 @@
     drop table if exists Patient;
     PRAGMA foreign_keys = ON;
 
-    create table Uom (
+    create table Appointment (
         Id integer primary key autoincrement,
-        Abbr TEXT not null,
-        Description TEXT,
-        Factor INT not null,
-        UomType INT not null
+        CourseID INT not null,
+        DoctorID INT not null,
+        DateAndTime DATETIME not null,
+        constraint FK_Appoinmtment_Course foreign key (CourseID) references Course,
+        constraint FK_Appoinmtment_Doctor foreign key (DoctorID) references Doctor
     );
- 
-    create table HrCategory (
+    create table Course (
         Id integer primary key autoincrement,
-        Title TEXT not null,
-        Ord INT not null
-    );
-
-    create table Speciality (
-        Id integer primary key autoincrement,
-        Title TEXT not null
+        PatientID INT not null,
+        DoctorID INT not null,
+        StartDate DATETIME not null,
+        EndDate DATETIME,
+        constraint FK_Course_Patient foreign key (PatientID) references Patient,
+        constraint FK_Course_Doctor foreign key (DoctorID) references Doctor
     );
 
     create table Disease (
@@ -43,35 +42,15 @@
         constraint FK_Disease_IcdBlock foreign key (IcdBlockID) references IcdBlock
     );
 
-    create table IcdBlock (
+    create table Doctor (
         Id integer primary key autoincrement,
-        ChapterID INT not null,
-        Title TEXT not null,
-        Code TEXT not null,
-        constraint FK_IcdBlock_IcdChapter foreign key (ChapterID) references IcdChapter
-    );
-
-    create table IcdChapter (
-        Id integer primary key autoincrement,
-        Title TEXT not null,
-        Code TEXT not null
-    );
-
-    create table SpecialityIcdBlocks (
-        Id integer primary key autoincrement,
-        SpecialityID INT not null,
-        IcdBlockID INT not null,
-        constraint FK_SpecialityIcdBlocks_Speciality foreign key (SpecialityID) references Speciality,
-        constraint FK_SpecialityIcdBlocks_IcdBlock foreign key (IcdBlockID) references IcdBlock
-    );
-
-    create table Word (
-        Id integer primary key autoincrement,
-        Title TEXT not null,
-        DefHrCategoryID INT,
-        ParentID INT,
-        constraint FK_Word_HrCategory foreign key (DefHrCategoryID) references HrCategory,
-        constraint FK_Word_Word foreign key (ParentID) references Word
+        FirstName TEXT,
+        MiddleName TEXT,
+        LastName TEXT not null,
+        IsMale BOOL,
+        Settings INT not null,
+        SpecialityID INT,
+        constraint FK_Doctor_Speciality foreign key (SpecialityID) references Speciality
     );
 
     create table HealthRecord (
@@ -85,7 +64,7 @@
         FromMonth TINYINT,
         FromYear INT,
         Unit TEXT,
-        IsDeleted BOOL,
+        IsDeleted BOOL not null,
         constraint FK_Hr_HrCategory foreign key (HrCategoryID) references HrCategory,
         constraint FK_Hr_Patient foreign key (PatientID) references Patient,
         constraint FK_Hr_Course foreign key (CourseID) references Course
@@ -97,7 +76,13 @@
             = 1
         )
     );
-    
+
+    create table HrCategory (
+        Id integer primary key autoincrement,
+        Title TEXT not null,
+        Ord INT not null
+    );
+
     create table HrItem (
         Id integer primary key autoincrement,
         Ord INT not null,
@@ -112,34 +97,18 @@
         constraint FK_HrItem_Hr foreign key (HealthRecordID) references HealthRecord
     );
     
-    create table Doctor (
+    create table IcdBlock (
         Id integer primary key autoincrement,
-        FirstName TEXT,
-        MiddleName TEXT,
-        LastName TEXT not null,
-        IsMale BOOL,
-        Settings INT not null,
-        SpecialityID INT,
-        constraint FK_Doctor_Speciality foreign key (SpecialityID) references Speciality
+        ChapterID INT not null,
+        Title TEXT not null,
+        Code TEXT not null,
+        constraint FK_IcdBlock_IcdChapter foreign key (ChapterID) references IcdChapter
     );
-       
-    create table Appointment (
+
+    create table IcdChapter (
         Id integer primary key autoincrement,
-        CourseID INT not null,
-        DoctorID INT not null,
-        DateAndTime DATETIME not null,
-        constraint FK_Appoinmtment_Course foreign key (CourseID) references Course,
-        constraint FK_Appoinmtment_Doctor foreign key (DoctorID) references Doctor
-    );
-    
-    create table Course (
-        Id integer primary key autoincrement,
-        PatientID INT not null,
-        DoctorID INT not null,
-        StartDate DATETIME not null,
-        EndDate DATETIME,
-        constraint FK_Course_Patient foreign key (PatientID) references Patient,
-        constraint FK_Course_Doctor foreign key (DoctorID) references Doctor
+        Title TEXT not null,
+        Code TEXT not null
     );
 
     create table Patient (
@@ -152,6 +121,36 @@
         BirthYear INT,
         BirthMonth TINYINT,
         BirthDay TINYINT
+    );
+
+    create table Speciality (
+        Id integer primary key autoincrement,
+        Title TEXT not null
+    );
+
+    create table SpecialityIcdBlocks (
+        Id integer primary key autoincrement,
+        SpecialityID INT not null,
+        IcdBlockID INT not null,
+        constraint FK_SpecialityIcdBlocks_Speciality foreign key (SpecialityID) references Speciality,
+        constraint FK_SpecialityIcdBlocks_IcdBlock foreign key (IcdBlockID) references IcdBlock
+    );
+
+    create table Uom (
+        Id integer primary key autoincrement,
+        Abbr TEXT not null,
+        Description TEXT,
+        Factor FLOAT not null,
+        UomType INT not null
+    );
+
+    create table Word (
+        Id integer primary key autoincrement,
+        Title TEXT not null,
+        DefHrCategoryID INT,
+        ParentID INT,
+        constraint FK_Word_HrCategory foreign key (DefHrCategoryID) references HrCategory,
+        constraint FK_Word_Word foreign key (ParentID) references Word
     );
 
     CREATE UNIQUE INDEX IF NOT EXISTS BlockCode ON IcdBlock(Code);
