@@ -47,7 +47,7 @@ namespace Diagnosis.Data.Mappings
             });
             ManyToOne(x => x.Category, m =>
             {
-                m.Column("CategoryID");
+                m.Column("HrCategoryID");
             });
         }
     }
