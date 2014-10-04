@@ -22,6 +22,7 @@ namespace Diagnosis.Data.Mappings
             ManyToOne(x => x.Word, m =>
             {
                 m.Column("WordID");
+                m.Cascade(Cascade.Persist);
             });
 
             Component(x => x.Measure, m =>
