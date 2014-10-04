@@ -9,7 +9,7 @@
     drop table if exists IcdBlock;
     drop table if exists IcdChapter;
     drop table if exists Word;
-    drop table if exists Hr;
+    drop table if exists HealthRecord;
     drop table if exists HrItem;
     drop table if exists Doctor;
     drop table if exists Course;
@@ -105,11 +105,11 @@
         WordID INT,
         UomID INT,
         MeasureValue FLOAT,
-        HrID INT not null, 
+        HealthRecordID INT not null, 
         constraint FK_HrItem_Disease foreign key (DiseaseID) references Disease,
         constraint FK_HrItem_Word foreign key (WordID) references Word,
         constraint FK_HrItem_Uom foreign key (UomID) references Uom,
-        constraint FK_HrItem_Hr foreign key (HrID) references Hr
+        constraint FK_HrItem_Hr foreign key (HealthRecordID) references HealthRecord
     );
     
     create table Doctor (
