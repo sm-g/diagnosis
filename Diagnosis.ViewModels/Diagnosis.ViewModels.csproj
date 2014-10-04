@@ -159,6 +159,7 @@
     <Compile Include="Screens\Card\ShortAppointmentViewModel.cs" />
     <Compile Include="Screens\Card\ShortCourseViewModel.cs" />
     <Compile Include="Screens\Card\PatientViewModel.cs" />
+    <Compile Include="Screens\HrViewer.cs" />
     <Compile Include="Screens\Shell\OverlayServiceViewModel.cs" />
     <Compile Include="Screens\Shell\UndoOverlayViewModel.cs" />
     <Compile Include="Screens\Words\WordEditorViewModel.cs" />

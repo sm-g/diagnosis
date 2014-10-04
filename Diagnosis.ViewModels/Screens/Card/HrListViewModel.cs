@@ -1,6 +1,5 @@
 ﻿using Diagnosis.Core;
 using Diagnosis.Models;
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
@@ -12,11 +11,11 @@ namespace Diagnosis.ViewModels
 {
     public class HrListViewModel : ViewModelBase
     {
+        private static HrViewer viewer = new HrViewer();
         internal readonly IHrsHolder holder;
         private HealthRecordManager hrManager;
         private ICollectionView healthRecordsView;
         private ShortHealthRecordViewModel _selectedHealthRecord;
-
 
         public ObservableCollection<ShortHealthRecordViewModel> HealthRecords
         {
@@ -44,6 +43,12 @@ namespace Diagnosis.ViewModels
             }
             set
             {
+                if (_selectedHealthRecord == value)
+                    return;
+
+                if (value != null)
+                    viewer.Select(value.healthRecord, holder);
+
                 _selectedHealthRecord = value;
                 OnPropertyChanged(() => SelectedHealthRecord);
             }
@@ -145,6 +150,8 @@ namespace Diagnosis.ViewModels
                     OnPropertyChanged("CheckedHrCount");
                 }
             });
+
+            SelectHealthRecord(viewer.GetLastSelectedFor(holder));
         }
 
         public override string ToString()
