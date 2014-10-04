@@ -9,10 +9,11 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
+
     /// <summary>
-    /// Обрабатывает действия при открытии и закрытии пациента, курса, осмотра, записи.
+    /// Обрабатывает действия при открытии и закрытии пациента, курса, осмотра.
     ///
-    /// Если пациент, курс, осмотр открыты повторно, открывает последний открытый курс, осмотр, запись соответственно.
+    /// Если пациент, курс открыты повторно, открывает последний открытый курс, осмотр соответственно.
     ///
     /// При присвоении OpenedEntity сначала закрывается текущая открытая,
     /// затем меняется свойство OpenedEntity, потом открывается новая сущность.
@@ -29,13 +30,11 @@ namespace Diagnosis.ViewModels
         // последние открытые
         private Dictionary<Patient, Course> patCourseMap;
         private Dictionary<Course, Appointment> courseAppMap;
-        private Dictionary<Appointment, HealthRecord> appHrMap;
 
         public PatientViewer()
         {
             patCourseMap = new Dictionary<Patient, Course>();
             courseAppMap = new Dictionary<Course, Appointment>();
-            appHrMap = new Dictionary<Appointment, HealthRecord>();
         }
 
         public event EventHandler<OpeningEventArgs> OpenedChanged;
@@ -117,41 +116,33 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public HealthRecord OpenedHealthRecord
+        /// <summary>
+        /// Открывать последний курс/осмотр при открытии пациента\курса.
+        /// </summary>
+        public bool AutoOpen { get; set; }
+
+        public Appointment GetLastOpenedFor(Course course)
         {
-            get
-            {
-                return _openedHr;
-            }
-            internal set
-            {
-                if (_openedHr != value)
-                {
-                    if (_openedHr != null)
-                    {
-                        OnHrClosed(_openedHr, value);
-                    }
-                    _openedHr = value;
-
-                    if (value != null)
-                    {
-                        OnHrOpened(value);
-                    }
-
-                    OnPropertyChanged("OpenedHealthRecord");
-                }
-            }
+            Appointment app;
+            if (courseAppMap.TryGetValue(course, out app))
+                return app;
+            return null;
         }
-
+        public Course GetLastOpenedFor(Patient patient)
+        {
+            Course course;
+            if (patCourseMap.TryGetValue(patient, out course))
+                return course;
+            return null;
+        }
         public void ClosePatient()
         {
-            OpenedHealthRecord = null;
             OpenedAppointment = null;
             OpenedCourse = null;
             OpenedPatient = null;
         }
 
-        public void OpenPatient(Patient patient)
+        internal void OpenPatient(Patient patient)
         {
             OpenedPatient = patient;
         }
@@ -167,27 +158,6 @@ namespace Diagnosis.ViewModels
             OpenedPatient = app.Course.Patient;
             OpenedCourse = app.Course;
             OpenedAppointment = app;
-        }
-
-        internal void OpenHr(HealthRecord hr)
-        {
-            if (hr.Appointment != null)
-            {
-                OpenedPatient = hr.Appointment.Course.Patient;
-                OpenedCourse = hr.Appointment.Course;
-                OpenedAppointment = hr.Appointment;
-            }
-            else if (hr.Course != null)
-            {
-                OpenedPatient = hr.Course.Patient;
-                OpenedCourse = hr.Course;
-            }
-            else if (hr.Patient != null)
-            {
-                OpenedPatient = hr.Patient;
-            }
-
-            OpenedHealthRecord = hr;
         }
 
         /// <summary>
@@ -230,16 +200,17 @@ namespace Diagnosis.ViewModels
 
             patient.CoursesChanged += Courses_CollectionChanged;
 
-            Course course;
-            if (!patCourseMap.TryGetValue(patient, out course))
+            if (AutoOpen)
             {
-                // пациент открыт первый раз
-                OpenedCourse = patient.Courses.FirstOrDefault();
-            }
-            else
-            {
-                // пацинет открыт повторно
-                OpenedCourse = course;
+                Course course = GetLastOpenedFor(patient);
+                if (course == null)
+                {
+                    OpenedCourse = patient.Courses.FirstOrDefault();
+                }
+                else
+                {
+                    OpenedCourse = course;
+                }
             }
         }
 
@@ -268,15 +239,17 @@ namespace Diagnosis.ViewModels
             else
                 patCourseMap[OpenedPatient] = course;
 
-            Appointment app;
-            if (!courseAppMap.TryGetValue(course, out app))
+            if (AutoOpen)
             {
-                // курс открыт первый раз
-                OpenedAppointment = course.Appointments.LastOrDefault();
-            }
-            else
-            {
-                OpenedAppointment = app;
+                Appointment app = GetLastOpenedFor(course);
+                if (app == null)
+                {
+                    OpenedAppointment = course.Appointments.LastOrDefault();
+                }
+                else
+                {
+                    OpenedAppointment = app;
+                }
             }
         }
 
@@ -295,8 +268,6 @@ namespace Diagnosis.ViewModels
             var e = new OpeningEventArgs(app, OpeningAction.Open);
             OnOpenedChanged(e);
 
-            app.HealthRecordsChanged += HealthRecords_CollectionChanged;
-
             if (!courseAppMap.ContainsKey(OpenedCourse))
             {
                 // курс открыт первый раз
@@ -306,52 +277,15 @@ namespace Diagnosis.ViewModels
             {
                 courseAppMap[OpenedCourse] = app;
             }
-
-            HealthRecord hr;
-            if (!appHrMap.TryGetValue(app, out hr))
-            {
-                // осмотр открыт первый раз
-                // никакие записи не выбраны
-                // если записей нет, добавляется новая и открывается на редактирование в CardVM
-            }
-            else
-            {
-                // повторно — выбрана последняя открытая запись
-                OpenedHealthRecord = hr;
-            }
         }
 
         private void OnAppointmentClosed(Appointment app)
         {
-            app.HealthRecordsChanged -= HealthRecords_CollectionChanged;
-            OpenedHealthRecord = null;
 
             var e = new OpeningEventArgs(app, OpeningAction.Close);
             OnOpenedChanged(e);
         }
 
-        private void OnHrOpened(HealthRecord hr)
-        {
-            Contract.Requires(OpenedAppointment == hr.Appointment);
-            var e = new OpeningEventArgs(hr, OpeningAction.Open);
-            OnOpenedChanged(e);
-
-            if (!appHrMap.ContainsKey(OpenedAppointment))
-            {
-                // осмотр открыт первый раз
-                appHrMap.Add(OpenedAppointment, hr);
-            }
-            else
-            {
-                appHrMap[OpenedAppointment] = hr;
-            }
-        }
-
-        private void OnHrClosed(HealthRecord closing, HealthRecord opening)
-        {
-            var e = new OpeningEventArgs(closing, OpeningAction.Close);
-            OnOpenedChanged(e);
-        }
 
         private void Courses_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -390,16 +324,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        private void HealthRecords_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-            }
-        }
-
         protected virtual void OnOpenedChanged(OpeningEventArgs e)
         {
             var h = OpenedChanged;
@@ -427,5 +351,6 @@ namespace Diagnosis.ViewModels
         {
             Open, Close
         }
+
     }
 }
