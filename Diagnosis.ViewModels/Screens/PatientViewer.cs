@@ -9,10 +9,10 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
-
     /// <summary>
-    /// Обрабатывает действия при открытии и закрытии пациента, курса, осмотра.
-    ///
+    /// Хранит последние загруженные курс, осмотр для пациента, курса.
+    /// 
+    /// AutoOpen:
     /// Если пациент, курс открыты повторно, открывает последний открытый курс, осмотр соответственно.
     ///
     /// При присвоении OpenedEntity сначала закрывается текущая открытая,
@@ -23,11 +23,9 @@ namespace Diagnosis.ViewModels
     public class PatientViewer : NotifyPropertyChangedBase
     {
         private Patient _openedPatient;
-        private Appointment _openedApp;
         private Course _openedCourse;
-        private HealthRecord _openedHr;
+        private Appointment _openedApp;
 
-        // последние открытые
         private Dictionary<Patient, Course> patCourseMap;
         private Dictionary<Course, Appointment> courseAppMap;
 
@@ -45,7 +43,7 @@ namespace Diagnosis.ViewModels
             {
                 return _openedPatient;
             }
-            private set
+            internal set
             {
                 if (_openedPatient != value)
                 {
@@ -128,6 +126,7 @@ namespace Diagnosis.ViewModels
                 return app;
             return null;
         }
+
         public Course GetLastOpenedFor(Patient patient)
         {
             Course course;
@@ -135,10 +134,9 @@ namespace Diagnosis.ViewModels
                 return course;
             return null;
         }
+
         public void ClosePatient()
         {
-            OpenedAppointment = null;
-            OpenedCourse = null;
             OpenedPatient = null;
         }
 
@@ -281,11 +279,9 @@ namespace Diagnosis.ViewModels
 
         private void OnAppointmentClosed(Appointment app)
         {
-
             var e = new OpeningEventArgs(app, OpeningAction.Close);
             OnOpenedChanged(e);
         }
-
 
         private void Courses_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -351,6 +347,5 @@ namespace Diagnosis.ViewModels
         {
             Open, Close
         }
-
     }
 }

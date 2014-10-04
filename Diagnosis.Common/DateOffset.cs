@@ -1,7 +1,7 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using log4net;
 
 namespace Diagnosis.Core
 {
@@ -20,7 +20,8 @@ namespace Diagnosis.Core
     /// </summary>
     public class DateOffset : NotifyPropertyChangedBase
     {
-        readonly static ILog logger = LogManager.GetLogger(typeof(DateOffset));
+        private static readonly ILog logger = LogManager.GetLogger(typeof(DateOffset));
+
         private static string[] days = new string[3] { "день", "дня", "дней" };
         private static string[] weeks = new string[3] { "неделя", "недели", "недель" };
         private static string[] months = new string[3] { "месяц", "месяца", "месяцев" };
@@ -51,7 +52,7 @@ namespace Diagnosis.Core
                 if (_year != value)
                 {
                     _year = value;
-                    logger.DebugFormat("{0}, set year = {1}", this, value);
+                    //   logger.DebugFormat("{0}, set year = {1}", this, value);
                     if (!inSetting)
                     {
                         SetDate(value, Month, Day);
@@ -73,7 +74,7 @@ namespace Diagnosis.Core
                 if (_month != value)
                 {
                     _month = value;
-                    logger.DebugFormat("{0}, set month = {1}", this, value);
+                    //  logger.DebugFormat("{0}, set month = {1}", this, value);
                     if (!inSetting)
                     {
                         SetDate(Year, value, Day);
@@ -95,7 +96,7 @@ namespace Diagnosis.Core
                 if (_day != value)
                 {
                     _day = value;
-                    logger.DebugFormat("{0}, set day = {1}", this, value);
+                    //   logger.DebugFormat("{0}, set day = {1}", this, value);
                     if (!inSetting)
                     {
                         SetDate(Year, Month, value);
@@ -120,7 +121,7 @@ namespace Diagnosis.Core
                 if (_offset != value)
                 {
                     _offset = value;
-                    logger.DebugFormat("{0}, set offset = {1}", this, value);
+                    //   logger.DebugFormat("{0}, set offset = {1}", this, value);
                     if (!inSetting)
                     {
                         SetOffset(value, Unit, true);
@@ -144,7 +145,7 @@ namespace Diagnosis.Core
                 if (_unit != value)
                 {
                     _unit = value;
-                    logger.DebugFormat("{0}, set unit = {1}", this, value);
+                    //    logger.DebugFormat("{0}, set unit = {1}", this, value);
                     if (!inSetting)
                     {
                         UnitFixed = true;
@@ -168,7 +169,7 @@ namespace Diagnosis.Core
             {
                 if (_unitFixed != value && (value && DateSettingStrategy == DateSetting.SavesUnit))
                 {
-                    logger.DebugFormat("{0}, unit fixed", this);
+                    //   logger.DebugFormat("{0}, unit fixed", this);
                     _unitFixed = value;
                     OnPropertyChanged(() => UnitFixed);
                 }
@@ -247,7 +248,7 @@ namespace Diagnosis.Core
                 if (_unitSetting != value)
                 {
                     _unitSetting = value;
-                    logger.DebugFormat("{0}", value);
+                    //   logger.DebugFormat("{0}", value);
                     //if (value == UnitSetting.RoundsOffset && DateSettingStrategy == DateSetting.SetsUnitSilly)
                     //{
                     //    DateSettingStrategy = DateSetting.RoundsUnit;
@@ -272,7 +273,7 @@ namespace Diagnosis.Core
                 if (_dateSetting != value)
                 {
                     _dateSetting = value;
-                    logger.DebugFormat("{0}", value);
+                    //   logger.DebugFormat("{0}", value);
                     if (value != DateSetting.SavesUnit)
                     {
                         UnitFixed = false;
@@ -506,8 +507,9 @@ namespace Diagnosis.Core
                 Debug.Assert(!CutsDate);
             }
         }
+
         /// <summary>
-        /// TODO Округляет смещение. 
+        /// TODO Округляет смещение.
         /// </summary>
         private void RoundOffset()
         {
@@ -685,7 +687,7 @@ namespace Diagnosis.Core
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public int GetTotalMonths()
@@ -716,6 +718,7 @@ namespace Diagnosis.Core
             }
             return false;
         }
+
         #region ctors
 
         public DateOffset(int? year, int? month, int? day, Func<DateTime> now = null, DateOffsetSettings settings = null)
@@ -726,7 +729,6 @@ namespace Diagnosis.Core
             if (settings != null)
                 Settings = settings;
             SetDate(year, month, day);
-
         }
 
         public DateOffset(DateTime dt, Func<DateTime> now = null, DateOffsetSettings settings = null)
@@ -745,7 +747,7 @@ namespace Diagnosis.Core
         }
 
         /// <summary>
-        /// TODO Для смены nowdate при поиске. 
+        /// TODO Для смены nowdate при поиске.
         /// </summary>
         /// <param name="dateOffset"></param>
         /// <param name="now"></param>
@@ -764,7 +766,7 @@ namespace Diagnosis.Core
             CutsDate = true;
         }
 
-        #endregion
+        #endregion ctors
 
         #region operators
 
@@ -834,7 +836,8 @@ namespace Diagnosis.Core
         {
             return !(do1 == do2);
         }
-        #endregion
+
+        #endregion operators
 
         public static string FormatUnit(int? offset, DateUnits unit)
         {
@@ -860,6 +863,7 @@ namespace Diagnosis.Core
         {
             return DateHelper.NullableDate(Year, Month, Day);
         }
+
         public enum UnitSetting
         {
             /// <summary>
@@ -901,6 +905,7 @@ namespace Diagnosis.Core
             public DateSetting Date { get; private set; }
 
             public bool AutoCorrection { get; private set; }
+
             public bool CutsDate { get; private set; }
 
             public DateOffsetSettings(UnitSetting unit = UnitSetting.SetsDate, DateSetting date = DateSetting.SetsUnitSilly, bool autoCorrection = true, bool cutsDate = true)

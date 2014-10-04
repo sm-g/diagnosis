@@ -125,7 +125,7 @@ namespace Diagnosis.App.Controls.Editors
 
         private void comboYears_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            logger.DebugFormat("year = {0}", Year);
+            //logger.DebugFormat("year = {0}", Year);
             e.Handled = true;
             // смена года — было 29 февраля, меняем на 28
             FillDaysCombo();
@@ -133,7 +133,7 @@ namespace Diagnosis.App.Controls.Editors
 
         private void comboMonths_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            logger.DebugFormat("month = {0}", Month);
+            //logger.DebugFormat("month = {0}", Month);
             e.Handled = true;
             // смена месяца — другой набор дней, если был день 31, меням на 30
             FillDaysCombo();
@@ -141,7 +141,7 @@ namespace Diagnosis.App.Controls.Editors
 
         private void comboDays_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            logger.DebugFormat("day = {0}", Day);
+            //logger.DebugFormat("day = {0}", Day);
         }
 
         private void comboYears_LostFocus(object sender, RoutedEventArgs e)

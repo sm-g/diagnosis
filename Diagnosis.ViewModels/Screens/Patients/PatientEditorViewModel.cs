@@ -77,7 +77,7 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    Session.SaveOrUpdate(patient);
+                    Session.SaveOrUpdate(patient); // no
                     shouldCommit = true;
 
                     var course = AuthorityController.CurrentDoctor.StartCourse(patient);
