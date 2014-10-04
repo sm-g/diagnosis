@@ -14,6 +14,7 @@ namespace Diagnosis.Models
         private byte? _month;
         private byte? _day;
         private string _comment;
+        private bool _isDeleted;
         private HrCategory _category;
         private DateOffset _dateOffset;
         private HealthRecordUnits _unit;
@@ -23,6 +24,19 @@ namespace Diagnosis.Models
         public virtual Patient Patient { get; protected set; }
         public virtual Course Course { get; protected set; }
         public virtual Appointment Appointment { get; protected set; }
+
+        public virtual bool IsDeleted
+        {
+            get { return _isDeleted; }
+            set
+            {
+                if (_isDeleted == value)
+                    return;
+                EditHelper.Edit(() => IsDeleted);
+                _isDeleted = value;
+                OnPropertyChanged("IsDeleted");
+            }
+        }
 
         public virtual string Comment
         {
