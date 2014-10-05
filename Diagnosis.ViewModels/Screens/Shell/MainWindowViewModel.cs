@@ -21,7 +21,7 @@ namespace Diagnosis.ViewModels
             {
                 if (e.PropertyName == "CurrentView")
                 {
-                    MenuVisible = switcher.Screen == Screens.Login;
+                    MenuVisible = switcher.Screen != Screens.Login;
 
                     if ((switcher.Screen & (Screens.Login | Screens.Words)) == switcher.Screen)
                     {
