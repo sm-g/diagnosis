@@ -157,5 +157,7 @@
         <ContentControl x:Name="list" Margin="0,130,0,0" Width="200" HorizontalAlignment="Left" VerticalAlignment="Top"
                             Content="{Binding CurrentHolder}"
                             ContentTemplateSelector="{StaticResource holderNestingSelector}" />
+        <CheckBox IsChecked="{Binding CloseNestedHolderOnLevelUp}" Width="200" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5">
+            <TextBlock TextWrapping="Wrap">Закрывать вложенное при переходе вверх</TextBlock></CheckBox>
     </Grid>
 </UserControl>

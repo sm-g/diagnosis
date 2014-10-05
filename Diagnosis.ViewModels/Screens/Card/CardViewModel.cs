@@ -22,6 +22,7 @@ namespace Diagnosis.ViewModels
         private HrEditorViewModel _hrEditor;
         private ViewModelBase _curHolder;
         private bool editorWasOpened;
+        private bool _closeNestedOnLevelUp;
 
         public CardViewModel(object entity)
             : this()
@@ -34,6 +35,21 @@ namespace Diagnosis.ViewModels
             HealthRecordEditor = new HrEditorViewModel(Session);
             viewer.OpenedChanged += viewer_OpenedChanged;
             HrsHolders = new ObservableCollection<ViewModelBase>();
+        }
+        public bool CloseNestedHolderOnLevelUp
+        {
+            get
+            {
+                return _closeNestedOnLevelUp;
+            }
+            set
+            {
+                if (_closeNestedOnLevelUp != value)
+                {
+                    _closeNestedOnLevelUp = value;
+                    OnPropertyChanged(() => CloseNestedHolderOnLevelUp);
+                }
+            }
         }
 
         public PatientViewModel Patient
@@ -174,6 +190,8 @@ namespace Diagnosis.ViewModels
             }
         }
 
+
+
         private void Show(IHrsHolder holder)
         {
             Contract.Requires(holder != null);
@@ -196,13 +214,12 @@ namespace Diagnosis.ViewModels
             if (holder is Patient)
             {
                 CurrentHolder = Patient;
-                viewer.OpenedCourse = null;
-                viewer.OpenedAppointment = null;
+                Patient.SelectCourse(viewer.GetLastOpenedFor(holder as Patient));
             }
             else if (holder is Course)
             {
                 CurrentHolder = Course;
-                viewer.OpenedAppointment = null;
+                Course.SelectAppointment(viewer.GetLastOpenedFor(holder as Course));
             }
             else if (holder is Appointment)
             {
@@ -226,6 +243,23 @@ namespace Diagnosis.ViewModels
         {
             // add to history
             HealthRecordEditor.Unload(); // закрываем редактор при смене активной сущности
+
+            if (CloseNestedHolderOnLevelUp)
+            {
+                var holder = GetHolderOfVm(CurrentHolder);
+                if (holder is Patient)
+                {
+                    viewer.OpenedCourse = null;
+                    viewer.OpenedAppointment = null;
+                }
+                else if (holder is Course)
+                {
+                    viewer.OpenedAppointment = null;
+                }
+                else if (holder is Appointment)
+                {
+                }
+            }
         }
 
         private IHrsHolder GetHolderOfVm(ViewModelBase holderVm)
@@ -276,7 +310,6 @@ namespace Diagnosis.ViewModels
                 {
                     case PatientViewer.OpeningAction.Open:
                         Patient = new PatientViewModel(patient);
-                        Patient.SelectCourse(viewer.GetLastOpenedFor(patient));
 
                         patient.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
                         patient.CoursesChanged += patient_CoursesChanged;
@@ -301,7 +334,6 @@ namespace Diagnosis.ViewModels
                 {
                     case PatientViewer.OpeningAction.Open:
                         Course = new CourseViewModel1(course);
-                        Course.SelectAppointment(viewer.GetLastOpenedFor(course));
 
                         HrsHolders.Add(Course);
 
