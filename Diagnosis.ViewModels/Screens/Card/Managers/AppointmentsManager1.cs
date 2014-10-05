@@ -47,9 +47,7 @@ namespace Diagnosis.ViewModels
                 foreach (Appointment item in e.NewItems)
                 {
                     var appVM = new ShortAppointmentViewModel(item, item.Doctor == course.LeadDoctor);
-
-                    // TODO start course from card bug
-                    Appointments.Insert(Appointments.Count - 1, appVM);
+                    Appointments.Add(appVM);
                 }
             }
             else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)

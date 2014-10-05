@@ -93,6 +93,13 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        public bool NoApps
+        {
+            get
+            {
+                return Appointments.Count == 0;
+            }
+        }
         public bool IsDoctorCurrent
         {
             get

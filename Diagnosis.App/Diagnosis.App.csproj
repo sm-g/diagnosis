@@ -205,6 +205,7 @@
     <Compile Include="Controls\CardParts\Appointment.xaml.cs">
       <DependentUpon>Appointment.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Screens\CurrentHrsHolderDataTemplateSelector.cs" />
     <Compile Include="Controls\Common\AlignableWrapPanel.cs" />
     <Compile Include="Controls\CardParts\AppointmentsTabs.xaml.cs">
       <DependentUpon>AppointmentsTabs.xaml</DependentUpon>
@@ -296,6 +297,9 @@
     <Compile Include="Converters\CountToAppointmentsLabel.cs" />
     <Compile Include="Converters\IntToString.cs" />
     <Compile Include="DebugOutput.cs" />
+    <Compile Include="Screens\Card3.xaml.cs">
+      <DependentUpon>Card3.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Screens\NewCard.xaml.cs">
       <DependentUpon>NewCard.xaml</DependentUpon>
     </Compile>
@@ -455,6 +459,10 @@
     <Page Include="Resources\ImageResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Screens\Card3.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Screens\NewCard.xaml">
       <SubType>Designer</SubType>

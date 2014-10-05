@@ -24,7 +24,7 @@
                 <screen:Words />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:CardViewModel}">
-                <screen:NewCard />
+                <screen:Card3 />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:PatientsListViewModel}">
                 <screen:Patients />

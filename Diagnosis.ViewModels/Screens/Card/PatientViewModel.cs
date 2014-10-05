@@ -157,6 +157,17 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        public RelayCommand StartCourseCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    var course = AuthorityController.CurrentDoctor.StartCourse(patient);
+                });
+            }
+        }
+
         public bool NoCourses
         {
             get
@@ -201,7 +212,7 @@ namespace Diagnosis.ViewModels
 
         public void SelectCourse(Course course)
         {
-            SelectedCourse = Courses.First(x => x.course == course);
+            SelectedCourse = Courses.FirstOrDefault(x => x.course == course);
         }
 
         private void patient_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
