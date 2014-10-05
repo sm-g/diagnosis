@@ -214,12 +214,10 @@ namespace Diagnosis.ViewModels
             if (holder is Patient)
             {
                 CurrentHolder = Patient;
-                Patient.SelectCourse(viewer.GetLastOpenedFor(holder as Patient));
             }
             else if (holder is Course)
             {
                 CurrentHolder = Course;
-                Course.SelectAppointment(viewer.GetLastOpenedFor(holder as Course));
             }
             else if (holder is Appointment)
             {
@@ -244,20 +242,24 @@ namespace Diagnosis.ViewModels
             // add to history
             HealthRecordEditor.Unload(); // закрываем редактор при смене активной сущности
 
-            if (CloseNestedHolderOnLevelUp)
+            var holder = GetHolderOfVm(CurrentHolder);
+            if (holder is Patient)
             {
-                var holder = GetHolderOfVm(CurrentHolder);
-                if (holder is Patient)
+                Patient.SelectCourse(viewer.GetLastOpenedFor(holder as Patient));
+
+                if (CloseNestedHolderOnLevelUp)
                 {
                     viewer.OpenedCourse = null;
                     viewer.OpenedAppointment = null;
                 }
-                else if (holder is Course)
+            }
+            else if (holder is Course)
+            {
+                Course.SelectAppointment(viewer.GetLastOpenedFor(holder as Course));
+
+                if (CloseNestedHolderOnLevelUp)
                 {
                     viewer.OpenedAppointment = null;
-                }
-                else if (holder is Appointment)
-                {
                 }
             }
         }
