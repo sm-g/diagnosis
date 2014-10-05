@@ -25,6 +25,14 @@ namespace Diagnosis.Models
         public virtual Course Course { get; protected set; }
         public virtual Appointment Appointment { get; protected set; }
 
+        public virtual IHrsHolder Holder
+        {
+            get
+            {
+                return (IHrsHolder)Patient ?? (IHrsHolder)Course ?? Appointment;
+            }
+        }
+
         public virtual bool IsDeleted
         {
             get { return _isDeleted; }
