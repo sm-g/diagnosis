@@ -98,7 +98,7 @@ namespace Diagnosis.ViewModels
 
                     OnCurrentHolderChanged();
 
-                    logger.DebugFormat("holder {0}", value);
+                    logger.DebugFormat("holder is {0}", value);
                     OnPropertyChanged(() => CurrentHolder);
                 }
             }
@@ -165,17 +165,18 @@ namespace Diagnosis.ViewModels
             logger.DebugFormat("open {0}", parameter);
 
             if (parameter is IHrsHolder)
-                OpenInViewer(parameter as IHrsHolder);
+                Show(parameter as IHrsHolder);
             else
             {
                 var hr = parameter as HealthRecord;
-                OpenInViewer(hr.Holder);
+                Show(hr.Holder);
                 HrList.SelectHealthRecord(hr);
             }
         }
 
         private void Show(IHrsHolder holder)
         {
+            Contract.Requires(holder != null);
             logger.DebugFormat("show {0}", holder);
 
             OpenInViewer(holder);
@@ -194,6 +195,7 @@ namespace Diagnosis.ViewModels
 
         private static void OpenInViewer(IHrsHolder holder)
         {
+            Contract.Requires(holder != null);
             var @switch = new Dictionary<Type, Action> {
                 { typeof(Patient), () => viewer.OpenPatient(holder as Patient) },
                 { typeof(Course), () => viewer.OpenCourse(holder as Course) },
@@ -240,7 +242,7 @@ namespace Diagnosis.ViewModels
         /// показываем holder
         ///
         /// при закрытии разрушаем viewmodel и убираем из списка hrsholders,
-        /// сохраняем пациента 
+        /// сохраняем пациента
         ///
         /// опционально Если в открываемых первый раз курсе нет осмотров или в осмотре нет записей, добавляет их.
         /// </summary>
@@ -268,14 +270,16 @@ namespace Diagnosis.ViewModels
                         Patient.SelectCourse(viewer.GetLastOpenedFor(patient));
 
                         patient.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
+                        patient.CoursesChanged += patient_CoursesChanged;
 
                         HrsHolders.Add(Patient);
-                        Show(patient);
 
                         break;
 
                     case PatientViewer.OpeningAction.Close:
                         patient.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
+                        patient.CoursesChanged -= patient_CoursesChanged;
+
                         HrsHolders.Remove(Patient);
                         Patient.Dispose();
                         break;
@@ -291,9 +295,9 @@ namespace Diagnosis.ViewModels
                         Course.SelectAppointment(viewer.GetLastOpenedFor(course));
 
                         HrsHolders.Add(Course);
-                        Show(course);
 
                         course.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
+                        course.AppointmentsChanged += course_AppointmentsChanged;
 
                         //if (course.Appointments.Count() == 0)
                         //{
@@ -303,6 +307,8 @@ namespace Diagnosis.ViewModels
 
                     case PatientViewer.OpeningAction.Close:
                         course.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
+                        course.AppointmentsChanged -= course_AppointmentsChanged;
+
                         HrsHolders.Remove(Course);
 
                         Course.Dispose();
@@ -317,7 +323,6 @@ namespace Diagnosis.ViewModels
                     case PatientViewer.OpeningAction.Open:
                         Appointment = new AppointmentViewModel(app);
                         HrsHolders.Add(Appointment);
-                        Show(app);
 
                         app.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
 
@@ -325,7 +330,6 @@ namespace Diagnosis.ViewModels
                         //{
                         //    app.AddHealthRecord(); // добавляем первую запись
                         //}
-                        // Show(app);
                         break;
 
                     case PatientViewer.OpeningAction.Close:
@@ -362,6 +366,43 @@ namespace Diagnosis.ViewModels
                 var hr = (HealthRecord)e.NewItems[e.NewItems.Count - 1];
                 HrList.SelectHealthRecord(hr);
                 HealthRecordEditor.Load(hr);
+            }
+        }
+
+        private void patient_CoursesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                // при добавлении курса открываем его
+                Show((Course)e.NewItems[e.NewItems.Count - 1]);
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                // при удалении курса открываем курс рядом с удаленным
+                //var i = e.OldStartingIndex;
+                //if (OpenedPatient.Courses.Count() <= i)
+                //    i--;
+                //if (OpenedPatient.Courses.Count() > 0)
+                //{
+                //    OpenedCourse = OpenedPatient.Courses.ElementAt(i);
+                //}
+            }
+        }
+
+        private void course_AppointmentsChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                // при добавлении осмотра открываем его
+                Show((Appointment)e.NewItems[e.NewItems.Count - 1]);
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                // при удалении осмотра открываем последний осмотр
+                //if (OpenedAppointment == null && OpenedCourse.Appointments.Count() > 0)
+                //{
+                //    OpenedAppointment = OpenedCourse.Appointments.LastOrDefault();
+                //}
             }
         }
 

@@ -2,7 +2,6 @@
 using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -11,7 +10,7 @@ namespace Diagnosis.ViewModels
 {
     /// <summary>
     /// Хранит последние загруженные курс, осмотр для пациента, курса.
-    /// 
+    ///
     /// AutoOpen:
     /// Если пациент, курс открыты повторно, открывает последний открытый курс, осмотр соответственно.
     ///
@@ -196,8 +195,6 @@ namespace Diagnosis.ViewModels
             var e = new OpeningEventArgs(patient, OpeningAction.Open);
             OnOpenedChanged(e);
 
-            patient.CoursesChanged += Courses_CollectionChanged;
-
             if (AutoOpen)
             {
                 Course course = GetLastOpenedFor(patient);
@@ -214,7 +211,6 @@ namespace Diagnosis.ViewModels
 
         private void OnPatientClosed(Patient patient)
         {
-            patient.CoursesChanged -= Courses_CollectionChanged;
             OpenedCourse = null;
 
             var e = new OpeningEventArgs(patient, OpeningAction.Close);
@@ -226,8 +222,6 @@ namespace Diagnosis.ViewModels
             Contract.Requires(OpenedPatient == course.Patient);
             var e = new OpeningEventArgs(course, OpeningAction.Open);
             OnOpenedChanged(e);
-
-            course.AppointmentsChanged += Appointments_CollectionChanged;
 
             if (!patCourseMap.ContainsKey(OpenedPatient))
             {
@@ -253,7 +247,6 @@ namespace Diagnosis.ViewModels
 
         private void OnCourseClosed(Course course)
         {
-            course.AppointmentsChanged -= Appointments_CollectionChanged;
             OpenedAppointment = null;
 
             var e = new OpeningEventArgs(course, OpeningAction.Close);
@@ -281,43 +274,6 @@ namespace Diagnosis.ViewModels
         {
             var e = new OpeningEventArgs(app, OpeningAction.Close);
             OnOpenedChanged(e);
-        }
-
-        private void Courses_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                // при добавлении курса открываем его
-                OpenedCourse = (Course)e.NewItems[e.NewItems.Count - 1];
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                // при удалении курса открываем курс рядом с удаленным
-                var i = e.OldStartingIndex;
-                if (OpenedPatient.Courses.Count() <= i)
-                    i--;
-                if (OpenedPatient.Courses.Count() > 0)
-                {
-                    OpenedCourse = OpenedPatient.Courses.ElementAt(i);
-                }
-            }
-        }
-
-        private void Appointments_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                // при добавлении осмотра открываем его
-                OpenedAppointment = (Appointment)e.NewItems[e.NewItems.Count - 1];
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                // при удалении осмотра открываем последний осмотр
-                if (OpenedAppointment == null && OpenedCourse.Appointments.Count() > 0)
-                {
-                    OpenedAppointment = OpenedCourse.Appointments.LastOrDefault();
-                }
-            }
         }
 
         protected virtual void OnOpenedChanged(OpeningEventArgs e)
