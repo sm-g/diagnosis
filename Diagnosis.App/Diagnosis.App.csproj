@@ -650,10 +650,10 @@
 
 if $(ConfigurationName)==Release (echo f | xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate-release.cfg.xml" "$(TargetDir)NHibernate\nhibernate.cfg.xml" /d /y) else (echo f | xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate-debug.cfg.xml" "$(TargetDir)NHibernate\nhibernate.cfg.xml" /d /y)
 
-REM copy db for release
-if $(ConfigurationName)==Release (echo f | xcopy "$(SolutionDir)Database\diagnosis.accdb" "$(TargetDir)" /d /y) 
+REM copy db for release, if not exist
+if $(ConfigurationName)==Release  (echo n | xcopy "$(SolutionDir)Database\diagnosis.sqlite" "$(TargetDir)"  /-y) 
 
-REM copy sqlite.dll for inmemory db
+REM copy sqlite.dll
 xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)" /i /d /y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>

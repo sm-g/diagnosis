@@ -3,10 +3,15 @@
   <session-factory>
     <property name="connection.provider">NHibernate.Connection.DriverConnectionProvider</property>
 
-    <property name="dialect">NHibernate.JetDriver.JetDialect, NHibernate.JetDriver</property>
+    <!--<property name="dialect">NHibernate.JetDriver.JetDialect, NHibernate.JetDriver</property>
     <property name="connection.driver_class">NHibernate.JetDriver.JetDriver, NHibernate.JetDriver</property>
-    <property name="connection.connection_string">Provider=Microsoft.ACE.OLEDB.12.0;Data Source="diagnosis.accdb"</property>
-    
+    <property name="connection.connection_string">Provider=Microsoft.ACE.OLEDB.12.0;Data Source="diagnosis.accdb"</property>-->
+
+    <property name="connection.driver_class">NHibernate.Driver.SQLite20Driver</property>
+    <property name="connection.connection_string">Data Source="diagnosis.sqlite";Version=3</property>
+    <property name="dialect">NHibernate.Dialect.SQLiteDialect</property>
+    <property name="query.substitutions">true=1;false=0</property>
+
     <property name="show_sql">false</property>
   </session-factory>
 </hibernate-configuration>
