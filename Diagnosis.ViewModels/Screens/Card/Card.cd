@@ -11,7 +11,7 @@
       <Property Name="Patient" />
       <Property Name="Appointment" />
       <Property Name="HealthRecord" />
-      <Property Name="HealthRecordEditor" />
+      <Property Name="HrEditor" />
       <Property Name="Course" />
       <Property Name="HrList" />
     </ShowAsAssociation>

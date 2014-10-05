@@ -32,7 +32,7 @@ namespace Diagnosis.ViewModels
 
         public CardViewModel()
         {
-            HealthRecordEditor = new HrEditorViewModel(Session);
+            HrEditor = new HrEditorViewModel(Session);
             viewer.OpenedChanged += viewer_OpenedChanged;
             HrsHolders = new ObservableCollection<ViewModelBase>();
         }
@@ -142,7 +142,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public HrEditorViewModel HealthRecordEditor
+        public HrEditorViewModel HrEditor
         {
             get
             {
@@ -153,7 +153,7 @@ namespace Diagnosis.ViewModels
                 if (_hrEditor != value)
                 {
                     _hrEditor = value;
-                    OnPropertyChanged(() => HealthRecordEditor);
+                    OnPropertyChanged(() => HrEditor);
                 }
             }
         }
@@ -163,15 +163,15 @@ namespace Diagnosis.ViewModels
         /// </summary>
         public void ToogleHrEditor()
         {
-            if (HealthRecordEditor.IsActive && HealthRecordEditor.HealthRecord.healthRecord == HrList.SelectedHealthRecord.healthRecord)
+            if (HrEditor.IsActive && HrEditor.HealthRecord.healthRecord == HrList.SelectedHealthRecord.healthRecord)
             {
-                HealthRecordEditor.Unload();
+                HrEditor.Unload();
                 // редактор записей после смены осмотра всегда закрыт
                 editorWasOpened = false;
             }
             else
             {
-                HealthRecordEditor.Load(HrList.SelectedHealthRecord.healthRecord);
+                HrEditor.Load(HrList.SelectedHealthRecord.healthRecord);
             }
         }
 
@@ -231,7 +231,7 @@ namespace Diagnosis.ViewModels
         private void OnCurrentHolderChanged()
         {
             // add to history
-            HealthRecordEditor.Unload(); // закрываем редактор при смене активной сущности
+            HrEditor.Unload(); // закрываем редактор при смене активной сущности
 
             var holder = GetHolderOfVm(CurrentHolder);
             if (holder is Patient)
@@ -383,10 +383,10 @@ namespace Diagnosis.ViewModels
             {
                 if (HrList.SelectedHealthRecord != null)
                 {
-                    editorWasOpened = HealthRecordEditor.IsActive;
+                    editorWasOpened = HrEditor.IsActive;
                     if (editorWasOpened)
                     {
-                        HealthRecordEditor.Load(HrList.SelectedHealthRecord.healthRecord);
+                        HrEditor.Load(HrList.SelectedHealthRecord.healthRecord);
                     }
                 }
             }
@@ -400,7 +400,7 @@ namespace Diagnosis.ViewModels
                 var hr = (HealthRecord)e.NewItems[e.NewItems.Count - 1];
                 // HrList.AddHealthRecordCommand
                 HrList.SelectHealthRecord(hr);
-                HealthRecordEditor.Load(hr);
+                HrEditor.Load(hr);
             }
         }
 
@@ -454,7 +454,7 @@ namespace Diagnosis.ViewModels
                     viewer.ClosePatient(); // сохраняем пациента при закрытии
                     viewer.OpenedChanged -= viewer_OpenedChanged;
 
-                    HealthRecordEditor.Dispose();
+                    HrEditor.Dispose();
                     HrList.Dispose();
                 }
             }

@@ -65,7 +65,7 @@
                                Visibility="{Binding Patient.NoCourses, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
             <!--<card:Appointment DataContext="{Binding Appointment}" Grid.Row="1" />-->
             <Border Grid.Row="2" BorderThickness="0,1,0,0" SnapsToDevicePixels="True"
-                Visibility="{Binding HealthRecordEditor.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                Visibility="{Binding HrEditor.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Border.BorderBrush>
                     <SolidColorBrush Color="Gray" />
                 </Border.BorderBrush>
@@ -77,7 +77,7 @@
                 </Border.Background>
 
                 <Grid Margin="10,0,10,10">
-                    <editors:HealthRecordEditorShared DataContext="{Binding HealthRecordEditor}" />
+                    <editors:HealthRecordEditorShared DataContext="{Binding HrEditor}" />
                 </Grid>
             </Border>
         </Grid>
