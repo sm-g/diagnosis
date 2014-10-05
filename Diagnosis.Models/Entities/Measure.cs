@@ -10,7 +10,7 @@ using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
-    public class Measure : EntityBase, IDomainEntity
+    public class Measure : IDomainEntity, IHrItemObject
     {
         HealthRecord _hr;
         public virtual HealthRecord HealthRecord
@@ -28,7 +28,7 @@ namespace Diagnosis.Models
                 _hr = value;
             }
         }
-        public virtual byte Order { get; set; }
+
         public virtual Uom Uom { get; protected set; }
         /// <summary>
         /// Значение измерения, приведенное к базовой единице измерения.

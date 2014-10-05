@@ -15,6 +15,13 @@ namespace Diagnosis.Models
     }
 
     /// <summary>
+    /// Сущность в элементе записи.
+    /// </summary>
+    public interface IHrItemObject
+    {
+    }
+
+    /// <summary>
     /// Сущность БД.
     /// </summary>
     public abstract class EntityBase : NotifyPropertyChangedBase, IEditableObject

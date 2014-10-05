@@ -21,7 +21,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private object _selectedSuggestion;
         private Recognizer recognizer;
 
-        public Autocomplete(Recognizer recognizer, bool allowTagEditing, IEnumerable<IDomainEntity> initItems)
+        public Autocomplete(Recognizer recognizer, bool allowTagEditing, IEnumerable<IHrItemObject> initItems)
         {
             this.recognizer = recognizer;
             this._isEditable = allowTagEditing;
@@ -181,7 +181,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <summary>
         /// Добавляет тег в конец списка.
         /// </summary>
-        public void AddTag(IDomainEntity item = null)
+        public void AddTag(IHrItemObject item = null)
         {
             Tag tag;
             bool empty = item == null;
@@ -244,7 +244,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 Tags.Insert(Tags.Count - 1, tag);
         }
 
-        public void ReplaceTagsWith(IEnumerable<IDomainEntity> items)
+        public void ReplaceTagsWith(IEnumerable<IHrItemObject> items)
         {
             // оставляем последний тег
             while (Tags.Count != 1)
@@ -261,7 +261,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <summary>
         /// Возвращает сущности из тегов.
         /// </summary>
-        public IEnumerable<IDomainEntity> GetEntities()
+        public IEnumerable<IHrItemObject> GetEntities()
         {
             Contract.Requires(Tags.All(t => t.State != Tag.States.Typing));
 

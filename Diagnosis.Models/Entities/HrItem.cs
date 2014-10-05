@@ -31,6 +31,20 @@ namespace Diagnosis.Models
             hr.AddItem(this);
         }
 
+        public HrItem(HealthRecord hr, IHrItemObject obj)
+        {
+            Contract.Requires(hr != null);
+
+            HealthRecord = hr;
+
+            if (obj is Word)
+                Word = obj as Word;
+            else if (obj is Measure)
+                Measure = obj as Measure;
+
+            hr.AddItem(this);
+        }
+
         protected HrItem()
         {
         }
@@ -79,7 +93,7 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual IDomainEntity Entity
+        public virtual IHrItemObject Entity
         {
             get
             {
@@ -91,11 +105,11 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual int Order { get; set; }
+        public virtual int Ord { get; set; }
 
         public override string ToString()
         {
-            return string.Format("{0} ", Id);
+            return string.Format("{0} {1} {2}", Id, Ord, Entity);
         }
 
     }

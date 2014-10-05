@@ -70,7 +70,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         /// <param name="blank"></param>
         /// <returns></returns>
-        public IEnumerable<IDomainEntity> MakeEntities(Tag tag)
+        public IEnumerable<IHrItemObject> MakeEntities(Tag tag)
         {
             Contract.Requires(tag.BlankType != Tag.BlankTypes.None);
 
@@ -98,13 +98,13 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     else if (AllowNewFromQuery)
                     {
                         var w = new Word(tag.Blank as string);
-                        tag.Entities = new List<IDomainEntity>() { w };
+                        tag.Entities = new List<IHrItemObject>() { w };
                         yield return w;
                     }
                     break;
 
                 case Tag.BlankTypes.Word:
-                    tag.Entities = new List<IDomainEntity>() { tag.Blank as Word };
+                    tag.Entities = new List<IHrItemObject>() { tag.Blank as Word };
                     yield return tag.Blank as Word;
                     break;
 
@@ -129,7 +129,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 measures.Add(new Measure(val, uom));
             }
-            tag.Entities = new List<IDomainEntity>(measures);
+            tag.Entities = new List<IHrItemObject>(measures);
             foreach (var m in measures)
             {
                 yield return m;

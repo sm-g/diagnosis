@@ -5,7 +5,7 @@ using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
-    public class Word : EntityBase, IDomainEntity
+    public class Word : EntityBase, IDomainEntity, IHrItemObject
     {
         private Iesi.Collections.Generic.ISet<Word> children;
         private string _title;

@@ -58,13 +58,13 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <summary>
         /// Создает тег с сущностью в завершенном состоянии.
         /// </summary>
-        public Tag(IDomainEntity entity, bool deleteOnly)
+        public Tag(IHrItemObject entity, bool deleteOnly)
         {
             Contract.Requires(entity != null);
             freezeOnComplete = deleteOnly;
 
             Blank = entity;
-            Entities = new List<IDomainEntity>() { entity };
+            Entities = new List<IHrItemObject>() { entity };
         }
 
         public event EventHandler Deleted;
@@ -104,7 +104,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <summary>
         /// Сущности, созданные из тега. При изменении запроса сбрасывается.
         /// </summary>
-        public IEnumerable<IDomainEntity> Entities { get; internal set; }
+        public IEnumerable<IHrItemObject> Entities { get; internal set; }
 
         /// <summary>
         /// Заготовка, из которой получаются сущности.
