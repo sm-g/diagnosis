@@ -33,6 +33,9 @@ namespace Diagnosis.Models
             }
         }
 
+        /// <summary>
+        /// Указывает, что запись помечена на удаление.
+        /// </summary>
         public virtual bool IsDeleted
         {
             get { return _isDeleted; }

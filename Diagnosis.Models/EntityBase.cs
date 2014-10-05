@@ -39,25 +39,6 @@ namespace Diagnosis.Models
         public virtual int Id { get; protected set; }
 
         /// <summary>
-        /// Указывает, что сущность помечена на удаление.
-        /// </summary>
-        public virtual bool IsDeleted
-        {
-            get
-            {
-                return _isDeleted;
-            }
-            set
-            {
-                if (_isDeleted != value)
-                {
-                    _isDeleted = value;
-                    OnPropertyChanged(() => IsDeleted);
-                }
-            }
-        }
-
-        /// <summary>
         /// Указывает, что есть несохраненные изменения.
         /// </summary>
         public virtual bool IsDirty
@@ -183,6 +164,6 @@ namespace Diagnosis.Models
         {
             return !(x == y);
         }
-       
+
     }
 }
