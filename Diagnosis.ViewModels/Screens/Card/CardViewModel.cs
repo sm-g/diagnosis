@@ -1,23 +1,26 @@
 ﻿using Diagnosis.Models;
+using log4net;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Diagnostics;
+using System.ComponentModel;
 using System.Diagnostics.Contracts;
-using System.Linq;
+using System.Windows;
 
 namespace Diagnosis.ViewModels
 {
-    public class CardViewModel : SessionVMBase
+    public partial class CardViewModel : SessionVMBase
     {
-        protected static PatientViewer viewer = new PatientViewer(); // static to hold history
+        private static PatientViewer viewer = new PatientViewer(); // static to hold history
+        public static readonly ILog logger = LogManager.GetLogger(typeof(CardViewModel));
 
         private PatientViewModel _patient;
         private CourseViewModel1 _course;
         private AppointmentViewModel _appointment;
-        private HealthRecordViewModel _hr;
         private HrListViewModel _hrList;
         private HrEditorViewModel _hrEditor;
+        private ViewModelBase _curHolder;
         private bool editorWasOpened;
 
         public CardViewModel(object entity)
@@ -26,10 +29,11 @@ namespace Diagnosis.ViewModels
             Open(entity);
         }
 
-        private CardViewModel()
+        public CardViewModel()
         {
             HealthRecordEditor = new HrEditorViewModel(Session);
             viewer.OpenedChanged += viewer_OpenedChanged;
+            HrsHolders = new ObservableCollection<ViewModelBase>();
         }
 
         public PatientViewModel Patient
@@ -79,6 +83,33 @@ namespace Diagnosis.ViewModels
                 }
             }
         }
+
+        public ViewModelBase CurrentHolder
+        {
+            get
+            {
+                return _curHolder;
+            }
+            set
+            {
+                if (_curHolder != value)
+                {
+                    _curHolder = value;
+
+                    OnCurrentHolderChanged();
+
+                    logger.DebugFormat("holder {0}", value);
+                    OnPropertyChanged(() => CurrentHolder);
+                }
+            }
+        }
+
+        public ObservableCollection<ViewModelBase> HrsHolders
+        {
+            get;
+            private set;
+        }
+
         public HrListViewModel HrList
         {
             get
@@ -91,22 +122,6 @@ namespace Diagnosis.ViewModels
                 {
                     _hrList = value;
                     OnPropertyChanged(() => HrList);
-                }
-            }
-        }
-
-        public HealthRecordViewModel HealthRecord
-        {
-            get
-            {
-                return _hr;
-            }
-            set
-            {
-                if (_hr != value)
-                {
-                    _hr = value;
-                    OnPropertyChanged(() => HealthRecord);
                 }
             }
         }
@@ -132,32 +147,230 @@ namespace Diagnosis.ViewModels
         /// </summary>
         public void ToogleHrEditor()
         {
-            if (HealthRecordEditor.IsActive && HealthRecordEditor.HealthRecord.healthRecord == HealthRecord.healthRecord)
+            if (HealthRecordEditor.IsActive && HealthRecordEditor.HealthRecord.healthRecord == HrList.SelectedHealthRecord.healthRecord)
             {
                 HealthRecordEditor.Unload();
+                // редактор записей после смены осмотра всегда закрыт
+                editorWasOpened = false;
             }
             else
             {
-                HealthRecordEditor.Load(HealthRecord.healthRecord);
+                HealthRecordEditor.Load(HrList.SelectedHealthRecord.healthRecord);
             }
         }
 
         internal void Open(object parameter)
         {
             Contract.Requires(parameter != null);
+            logger.DebugFormat("open {0}", parameter);
+
+            if (parameter is IHrsHolder)
+                OpenInViewer(parameter as IHrsHolder);
+            else
+            {
+                var hr = parameter as HealthRecord;
+                OpenInViewer(hr.Holder);
+                HrList.SelectHealthRecord(hr);
+            }
+        }
+
+        private void Show(IHrsHolder holder)
+        {
+            logger.DebugFormat("show {0}", holder);
+
+            OpenInViewer(holder);
+
+            if (holder is Patient)
+            {
+                CurrentHolder = Patient;
+            }
+            else if (holder is Course)
+            {
+                CurrentHolder = Course;
+            }
+            else if (holder is Appointment)
+                CurrentHolder = Appointment;
+        }
+
+        private static void OpenInViewer(IHrsHolder holder)
+        {
             var @switch = new Dictionary<Type, Action> {
-                { typeof(Patient), () => viewer.OpenPatient(parameter as Patient) },
-                { typeof(Course), () => viewer.OpenCourse(parameter as Course) },
-                { typeof(Appointment), () => viewer.OpenAppointment(parameter as Appointment) },
-                { typeof(HealthRecord),() => viewer.OpenHr(parameter as HealthRecord) },
+                { typeof(Patient), () => viewer.OpenPatient(holder as Patient) },
+                { typeof(Course), () => viewer.OpenCourse(holder as Course) },
+                { typeof(Appointment), () => viewer.OpenAppointment(holder as Appointment) }
             };
 
-            @switch[parameter.GetType()]();
+            @switch[holder.GetType()]();
+        }
+
+        private void OnCurrentHolderChanged()
+        {
+            // add to history
+            HealthRecordEditor.Unload(); // закрываем редактор при смене активной сущности
+
+            if (CurrentHolder != null)
+            {
+                IHrsHolder holder;
+
+                if (CurrentHolder is AppointmentViewModel)
+                {
+                    holder = Appointment.appointment;
+                }
+                else if (CurrentHolder is CourseViewModel1)
+                {
+                    viewer.OpenedAppointment = null;
+
+                    holder = Course.course;
+                }
+                else
+                {
+                    viewer.OpenedCourse = null;
+                    viewer.OpenedAppointment = null;
+
+                    holder = Patient.patient;
+                }
+
+                HrList = new HrListViewModel(holder); // показваем записи активной сущности
+                HrList.PropertyChanged += HrList_PropertyChanged;
+            }
+        }
+
+        /// <summary>
+        /// при открытии модели меняем соответствующую viewmodel и добавляем её в список hrsholders
+        /// показываем holder
+        ///
+        /// при закрытии разрушаем viewmodel и убираем из списка hrsholders,
+        /// сохраняем пациента 
+        ///
+        /// опционально Если в открываемых первый раз курсе нет осмотров или в осмотре нет записей, добавляет их.
+        /// </summary>
+        private void viewer_OpenedChanged(object sender, PatientViewer.OpeningEventArgs e)
+        {
+            Contract.Requires(e.entity is IHrsHolder);
+            logger.DebugFormat("{0} {1} {2}", e.action, e.entity.GetType().Name, e.entity);
+
+            if (e.action == PatientViewer.OpeningAction.Close)
+            {
+                Session.SaveOrUpdate(viewer.OpenedPatient);
+                using (var t = Session.BeginTransaction())
+                {
+                    t.Commit();
+                }
+            }
+
+            if (e.entity is Patient)
+            {
+                var patient = e.entity as Patient;
+                switch (e.action)
+                {
+                    case PatientViewer.OpeningAction.Open:
+                        Patient = new PatientViewModel(patient);
+                        Patient.SelectCourse(viewer.GetLastOpenedFor(patient));
+
+                        patient.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
+
+                        HrsHolders.Add(Patient);
+                        Show(patient);
+
+                        break;
+
+                    case PatientViewer.OpeningAction.Close:
+                        patient.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
+                        HrsHolders.Remove(Patient);
+                        Patient.Dispose();
+                        break;
+                }
+            }
+            else if (e.entity is Course)
+            {
+                var course = e.entity as Course;
+                switch (e.action)
+                {
+                    case PatientViewer.OpeningAction.Open:
+                        Course = new CourseViewModel1(course);
+                        Course.SelectAppointment(viewer.GetLastOpenedFor(course));
+
+                        HrsHolders.Add(Course);
+                        Show(course);
+
+                        course.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
+
+                        //if (course.Appointments.Count() == 0)
+                        //{
+                        //    course.AddAppointment(course.LeadDoctor); // добавляем первый осмотр
+                        //}
+                        break;
+
+                    case PatientViewer.OpeningAction.Close:
+                        course.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
+                        HrsHolders.Remove(Course);
+
+                        Course.Dispose();
+                        break;
+                }
+            }
+            else if (e.entity is Appointment)
+            {
+                var app = e.entity as Appointment;
+                switch (e.action)
+                {
+                    case PatientViewer.OpeningAction.Open:
+                        Appointment = new AppointmentViewModel(app);
+                        HrsHolders.Add(Appointment);
+                        Show(app);
+
+                        app.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
+
+                        //if (app.HealthRecords.Count() == 0)
+                        //{
+                        //    app.AddHealthRecord(); // добавляем первую запись
+                        //}
+                        // Show(app);
+                        break;
+
+                    case PatientViewer.OpeningAction.Close:
+                        app.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
+                        HrsHolders.Remove(Appointment);
+
+                        Appointment.Dispose();
+
+                        break;
+                }
+            }
+        }
+
+        private void HrList_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "SelectedHealthRecord")
+            {
+                if (HrList.SelectedHealthRecord != null)
+                {
+                    editorWasOpened = HealthRecordEditor.IsActive;
+                    if (editorWasOpened)
+                    {
+                        HealthRecordEditor.Load(HrList.SelectedHealthRecord.healthRecord);
+                    }
+                }
+            }
+        }
+
+        private void HrsHolder_HealthRecordsChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                // редактируем добавленную запись
+                var hr = (HealthRecord)e.NewItems[e.NewItems.Count - 1];
+                HrList.SelectHealthRecord(hr);
+                HealthRecordEditor.Load(hr);
+            }
         }
 
         protected override void Dispose(bool disposing)
         {
-            Contract.Assume(viewer.OpenedPatient != null);
+            if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
+            {
+                Contract.Assume(viewer.OpenedPatient != null);
+            }
             try
             {
                 if (disposing)
@@ -172,170 +385,6 @@ namespace Diagnosis.ViewModels
             finally
             {
                 base.Dispose(disposing);
-            }
-        }
-
-        /// <summary>
-        /// синхронизация:
-        /// при открытии модели меняем соответстующую viewmodel и подписываемся
-        /// на изменение выбранной вложенной сущности, чтобы открыть её модель
-        ///
-        /// при закрытии разрушаем viewmodel
-        /// 
-        /// Если в открываемых первый раз курсе нет осмотров или в осмотре нет записей, добавляет их.
-        ///
-        /// при закрытии курса, осмотра или записи сохраняем пациента (если закрывается пациент, сохранение при разрушении CardViewModel)
-        /// </summary>
-        private void viewer_OpenedChanged(object sender, PatientViewer.OpeningEventArgs e)
-        {
-            Debug.Print("{0} {1} {2}", e.action, e.entity.GetType().Name, e.entity);
-
-            // сохраняем все изменения при закрытии пациента, курса, осмотра, записи
-            if (e.action == PatientViewer.OpeningAction.Close)
-            {
-                Session.SaveOrUpdate(viewer.OpenedPatient);
-            }
-
-            if (e.entity is Patient)
-            {
-                var patient = e.entity as Patient;
-                switch (e.action)
-                {
-                    case PatientViewer.OpeningAction.Open:
-                        Patient = new PatientViewModel(patient);
-                        Patient.PropertyChanged += (s1, e1) =>
-                        {
-                            if (e1.PropertyName == "SelectedCourse")
-                            {
-                                if (Patient.SelectedCourse != null)
-                                    viewer.OpenedCourse = Patient.SelectedCourse.course;
-                                else
-                                    viewer.OpenedCourse = null;
-                            }
-                        };
-                        patient.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
-
-                        HrList = new HrListViewModel(patient);
-                        HrList.PropertyChanged += HrList_PropertyChanged;
-                        break;
-
-                    case PatientViewer.OpeningAction.Close:
-                        patient.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
-                        Patient.Dispose();
-                        break;
-                }
-            }
-            else if (e.entity is Course)
-            {
-                var course = e.entity as Course;
-                switch (e.action)
-                {
-                    case PatientViewer.OpeningAction.Open:
-                        Course = new CourseViewModel1(course);
-                        Course.PropertyChanged += (s1, e1) =>
-                        {
-                            if (e1.PropertyName == "SelectedAppointment")
-                            {
-                                if (Course.SelectedAppointment != null)
-                                    viewer.OpenedAppointment = Course.SelectedAppointment.appointment;
-                                else
-                                    viewer.OpenedAppointment = null;
-                            }
-                        };
-                        course.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
-
-                        Patient.SelectCourse(course);
-                        //if (course.Appointments.Count() == 0)
-                        //{
-                        //    course.AddAppointment(course.LeadDoctor); // добавляем первый осмотр
-                        //}
-                        HrList = new HrListViewModel(course);
-                        HrList.PropertyChanged += HrList_PropertyChanged;
-                        break;
-
-                    case PatientViewer.OpeningAction.Close:
-                        course.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
-                        Course.Dispose();
-                        break;
-                }
-            }
-            else if (e.entity is Appointment)
-            {
-                var app = e.entity as Appointment;
-                switch (e.action)
-                {
-                    case PatientViewer.OpeningAction.Open:
-                        Appointment = new AppointmentViewModel(app);
-                        app.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
-                        Course.SelectAppointment(app);
-
-                        //if (app.HealthRecords.Count() == 0)
-                        //{
-                        //    app.AddHealthRecord(); // добавляем первую запись
-                        //}
-                        HrList = new HrListViewModel(app);
-                        HrList.PropertyChanged += HrList_PropertyChanged;
-                        break;
-
-                    case PatientViewer.OpeningAction.Close:
-                        app.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
-
-                        Appointment.Dispose();
-                        // редактор записей после смены осмотра всегда закрыт
-                        editorWasOpened = false;
-
-                        // соханяем все изменения
-                        using (var t = Session.BeginTransaction())
-                        {
-                            t.Commit();
-                        }
-
-                        break;
-                }
-            }
-            else if (e.entity is HealthRecord)
-            {
-                var hr = e.entity as HealthRecord;
-                switch (e.action)
-                {
-                    case PatientViewer.OpeningAction.Open:
-                        HealthRecord = new HealthRecordViewModel(hr);
-                        HrList.SelectHealthRecord(hr);
-
-                        if (editorWasOpened)
-                        {
-                            HealthRecordEditor.Load(hr);
-                        }
-                        break;
-
-                    case PatientViewer.OpeningAction.Close:
-                        editorWasOpened = HealthRecordEditor.IsActive;
-                        HealthRecordEditor.Unload();
-                        HealthRecord.Dispose();
-                        break;
-                }
-            }
-        }
-
-        void HrList_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "SelectedHealthRecord")
-            {
-                if (HrList.SelectedHealthRecord != null)
-                    viewer.OpenedHealthRecord = HrList.SelectedHealthRecord.healthRecord;
-                else
-                    viewer.OpenedHealthRecord = null;
-            }
-        }
-
-        private void HrsHolder_HealthRecordsChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                // редактируем добавленную запись
-                var hr = (HealthRecord)e.NewItems[e.NewItems.Count - 1];
-                viewer.OpenHr(hr);
-                HealthRecordEditor.Load(hr);
             }
         }
     }
