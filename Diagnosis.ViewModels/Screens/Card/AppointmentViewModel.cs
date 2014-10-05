@@ -14,8 +14,6 @@ namespace Diagnosis.ViewModels
     {
         internal readonly Appointment appointment;
 
-        #region Model
-
         public Doctor Doctor
         {
             get { return appointment.Doctor; }
@@ -26,7 +24,10 @@ namespace Diagnosis.ViewModels
             get { return appointment.DateAndTime; }
         }
 
-        #endregion Model
+        public bool IsDoctorFromCourse
+        {
+            get { return Doctor == appointment.Course.LeadDoctor; }
+        }
 
         public AppointmentViewModel(Appointment appointment)
         {

@@ -21,7 +21,7 @@ namespace Diagnosis.ViewModels
             {
                 if (_appointments == null)
                 {
-                    var appVMs = course.Appointments.Select(app => new ShortAppointmentViewModel(app, app.Doctor == course.LeadDoctor));
+                    var appVMs = course.Appointments.Select(app => new ShortAppointmentViewModel(app));
 
                     _appointments = new ObservableCollection<ShortAppointmentViewModel>(appVMs);
 
@@ -46,7 +46,7 @@ namespace Diagnosis.ViewModels
             {
                 foreach (Appointment item in e.NewItems)
                 {
-                    var appVM = new ShortAppointmentViewModel(item, item.Doctor == course.LeadDoctor);
+                    var appVM = new ShortAppointmentViewModel(item);
                     Appointments.Add(appVM);
                 }
             }

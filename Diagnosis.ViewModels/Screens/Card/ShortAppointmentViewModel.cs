@@ -27,11 +27,9 @@ namespace Diagnosis.ViewModels
                 return appointment.DateAndTime;
             }
         }
-
         public bool IsDoctorFromCourse
         {
-            get;
-            private set;
+            get { return Doctor == appointment.Course.LeadDoctor; }
         }
 
         public RelayCommand OpenCommand
@@ -45,11 +43,10 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public ShortAppointmentViewModel(Appointment appointment, bool doctorFromCourse)
+        public ShortAppointmentViewModel(Appointment appointment)
         {
             Contract.Requires(appointment != null);
             this.appointment = appointment;
-            IsDoctorFromCourse = doctorFromCourse;
 
         }
         public override string ToString()

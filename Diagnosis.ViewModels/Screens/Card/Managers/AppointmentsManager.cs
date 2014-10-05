@@ -24,7 +24,7 @@ namespace Diagnosis.ViewModels
                     IList<SpecialCaseItem> wrappers;
 
                     wrappers = course.Appointments
-                        .Select(app => new ShortAppointmentViewModel(app, app.Doctor == course.LeadDoctor))
+                        .Select(app => new ShortAppointmentViewModel(app))
                         .Select(vm => new SpecialCaseItem(vm))
                         .ToList();
 
@@ -56,7 +56,7 @@ namespace Diagnosis.ViewModels
             {
                 foreach (Appointment item in e.NewItems)
                 {
-                    var appVM = new ShortAppointmentViewModel(item, item.Doctor == course.LeadDoctor);
+                    var appVM = new ShortAppointmentViewModel(item);
                     var wrapper = new SpecialCaseItem(appVM);
 
                     // TODO start course from card bug
