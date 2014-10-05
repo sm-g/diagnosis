@@ -13,7 +13,7 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.Native);
             });
 
-            Property(x => x.Order, m =>
+            Property(x => x.Ord, m =>
             {
                 m.Column("Ord");
                 m.NotNullable(true);

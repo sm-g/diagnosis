@@ -135,8 +135,7 @@ namespace Diagnosis.ViewModels
         /// </summary>
         private void CreateAutoComplete()
         {
-            var initials = from item in HealthRecord.healthRecord.HrItems
-                           orderby item.Order
+            var initials = from item in HealthRecord.healthRecord.HrItems // ordered by mapping
                            select item.Entity;
 
             _autocomplete = new Autocomplete(
@@ -146,43 +145,34 @@ namespace Diagnosis.ViewModels
 
             _autocomplete.EntitiesChanged += (s, e) =>
             {
-                var entities = _autocomplete.GetEntities().ToList();
-
                 // меняем элементы записи при завершении или удалении тега
-                // TODO save order
-                SetWords(HealthRecord.healthRecord, entities);
-                SetMeasures(HealthRecord.healthRecord, entities);
+                var entities = _autocomplete.GetEntities().ToList();
+                SetOrderedHrItems(HealthRecord.healthRecord, entities);
             };
 
             OnPropertyChanged("Autocomplete");
         }
 
-        private void SetMeasures(HealthRecord hr, IEnumerable<IDomainEntity> entities)
+        private static void SetOrderedHrItems(HealthRecord hr, List<IHrItemObject> entities)
         {
-            var measures = entities.Where(x => x is Measure).Cast<Measure>().ToList();
-            // сохраняем в измерениях их порядок в автокомплите
-            measures.ForEach(m => m.Order = (byte)measures.IndexOf(m));
+            var hrEntities = hr.HrItems.Select(x => x.Entity).ToList();
+            var toAdd = entities.Except(hrEntities).ToList();
+            var toRemove = hrEntities.Except(entities).ToList();
 
-            var toAdd = measures.Except(hr.Measures).ToList();
-            var toRemove = hr.Measures.Except(measures).ToList();
             toAdd.ForEach(m =>
             {
                 new HrItem(hr, m);
             });
-            toRemove.ForEach(m => hr.RemoveItem(hr.HrItems.First(i => i.Measure == m)));
-        }
-        private void SetWords(HealthRecord hr, IEnumerable<IDomainEntity> entities)
-        {
-            var words = entities.Where(x => x is Word).Cast<Word>().ToList();
-
-            var toAdd = words.Except(hr.Words).ToList();
-            var toRemove = hr.Words.Except(words).ToList();
-            toAdd.ForEach(m =>
+            toRemove.ForEach(m =>
             {
-                var item = new HrItem(hr, m);
-
+                hr.RemoveItem(hr.HrItems.First(i => i.Entity == m));
             });
-            toRemove.ForEach(m => hr.RemoveItem(hr.HrItems.First(i => i.Word == m)));
+
+            var ordered = hr.HrItems.OrderBy(i => entities.IndexOf(i.Entity)).ToList();
+            for (int i = 0; i < ordered.Count; i++)
+            {
+                ordered[i].Ord = i;
+            }
         }
 
         #endregion AutoComplete
