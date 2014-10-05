@@ -179,18 +179,35 @@ namespace Diagnosis.ViewModels
             Contract.Requires(holder != null);
             logger.DebugFormat("show {0}", holder);
 
+            // сначала создаем HrList, чтобы hrManager подписался на добавление записей первым, иначе HrList.SelectHealthRecord нечего выделять
+            if (holder != GetHolderOfVm(CurrentHolder))
+            {
+                if (HrList != null)
+                {
+                    HrList.Dispose();
+                }
+
+                HrList = new HrListViewModel(holder); // показваем записи активной сущности
+                HrList.PropertyChanged += HrList_PropertyChanged;
+            }
+
             OpenInViewer(holder);
 
             if (holder is Patient)
             {
                 CurrentHolder = Patient;
+                viewer.OpenedCourse = null;
+                viewer.OpenedAppointment = null;
             }
             else if (holder is Course)
             {
                 CurrentHolder = Course;
+                viewer.OpenedAppointment = null;
             }
             else if (holder is Appointment)
+            {
                 CurrentHolder = Appointment;
+            }
         }
 
         private static void OpenInViewer(IHrsHolder holder)
@@ -209,36 +226,24 @@ namespace Diagnosis.ViewModels
         {
             // add to history
             HealthRecordEditor.Unload(); // закрываем редактор при смене активной сущности
+        }
 
-            if (CurrentHolder != null)
+        private IHrsHolder GetHolderOfVm(ViewModelBase holderVm)
+        {
+            IHrsHolder holder = null;
+            if (holderVm is AppointmentViewModel)
             {
-                IHrsHolder holder;
-
-                if (CurrentHolder is AppointmentViewModel)
-                {
-                    holder = Appointment.appointment;
-                }
-                else if (CurrentHolder is CourseViewModel1)
-                {
-                    viewer.OpenedAppointment = null;
-
-                    holder = Course.course;
-                }
-                else
-                {
-                    viewer.OpenedCourse = null;
-                    viewer.OpenedAppointment = null;
-
-                    holder = Patient.patient;
-                }
-
-                if (HrList != null)
-                {
-                    HrList.Dispose();
-                }
-                HrList = new HrListViewModel(holder); // показваем записи активной сущности
-                HrList.PropertyChanged += HrList_PropertyChanged;
+                holder = Appointment.appointment;
             }
+            else if (holderVm is CourseViewModel1)
+            {
+                holder = Course.course;
+            }
+            else if (holderVm is PatientViewModel)
+            {
+                holder = Patient.patient;
+            }
+            return holder;
         }
 
         /// <summary>
@@ -368,6 +373,7 @@ namespace Diagnosis.ViewModels
             {
                 // редактируем добавленную запись
                 var hr = (HealthRecord)e.NewItems[e.NewItems.Count - 1];
+                // HrList.AddHealthRecordCommand
                 HrList.SelectHealthRecord(hr);
                 HealthRecordEditor.Load(hr);
             }
