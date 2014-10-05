@@ -180,17 +180,20 @@ namespace Diagnosis.ViewModels
             Contract.Requires(parameter != null);
             logger.DebugFormat("open {0}", parameter);
 
+            IHrsHolder holder;
             if (parameter is IHrsHolder)
-                Show(parameter as IHrsHolder);
+            {
+                holder = (IHrsHolder)Session.GetSessionImplementation().PersistenceContext.Unproxy(parameter);
+                Show(holder);
+            }
             else
             {
                 var hr = parameter as HealthRecord;
-                Show(hr.Holder);
+                holder = (IHrsHolder)Session.GetSessionImplementation().PersistenceContext.Unproxy(hr.Holder);
+                Show(holder);
                 HrList.SelectHealthRecord(hr);
             }
         }
-
-
 
         private void Show(IHrsHolder holder)
         {
@@ -209,7 +212,7 @@ namespace Diagnosis.ViewModels
                 HrList.PropertyChanged += HrList_PropertyChanged;
             }
 
-            OpenInViewer(holder);
+            viewer.Open(holder);
 
             if (holder is Patient)
             {
@@ -223,18 +226,6 @@ namespace Diagnosis.ViewModels
             {
                 CurrentHolder = Appointment;
             }
-        }
-
-        private static void OpenInViewer(IHrsHolder holder)
-        {
-            Contract.Requires(holder != null);
-            var @switch = new Dictionary<Type, Action> {
-                { typeof(Patient), () => viewer.OpenPatient(holder as Patient) },
-                { typeof(Course), () => viewer.OpenCourse(holder as Course) },
-                { typeof(Appointment), () => viewer.OpenAppointment(holder as Appointment) }
-            };
-
-            @switch[holder.GetType()]();
         }
 
         private void OnCurrentHolderChanged()

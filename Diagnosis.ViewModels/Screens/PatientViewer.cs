@@ -157,6 +157,22 @@ namespace Diagnosis.ViewModels
             OpenedAppointment = app;
         }
 
+        internal void Open(IHrsHolder holder)
+        {
+            if (holder is Patient)
+            {
+                OpenPatient(holder as Patient);
+            }
+            else if (holder is Course)
+            {
+                OpenCourse(holder as Course);
+            }
+            else if (holder is Appointment)
+            {
+                OpenAppointment(holder as Appointment);
+            }
+        }
+
         /// <summary>
         /// Открывает последний за час осмотр в последнем курсе.
         /// Создает новый, если такого нет, в последнем курсе.
