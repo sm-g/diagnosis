@@ -76,7 +76,10 @@ namespace Diagnosis.ViewModels
                     HealthRecords.Remove(vm);
                     var undoActions = new Action[] {
                         () => hr.IsDeleted = false,
-                        () => holder.RemoveHealthRecord(hr)                        
+                        () => {
+                            holder.RemoveHealthRecord(hr);
+                            DeletedHealthRecords.Remove(vm);
+                        }
                     };
                     this.Send(Events.ShowUndoOverlay, new object[] { undoActions, typeof(HealthRecord) }.AsParams(MessageKeys.UndoOverlay, MessageKeys.Type));
                 }

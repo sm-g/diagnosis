@@ -232,6 +232,10 @@ namespace Diagnosis.ViewModels
                     holder = Patient.patient;
                 }
 
+                if (HrList != null)
+                {
+                    HrList.Dispose();
+                }
                 HrList = new HrListViewModel(holder); // показваем записи активной сущности
                 HrList.PropertyChanged += HrList_PropertyChanged;
             }
