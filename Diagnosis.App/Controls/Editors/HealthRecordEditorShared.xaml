@@ -29,12 +29,12 @@
         
         <DockPanel>
             <ToolBar DockPanel.Dock="Left">
-                <Button Command="{Binding DataContext.Appointment.MoveHrSelectionCommand,  RelativeSource={RelativeSource AncestorType=screens:NewCard}}" FontSize="16"
+                <Button Command="{Binding DataContext.HrList.MoveHrSelectionCommand,  RelativeSource={RelativeSource AncestorType=screens:Card3}}" FontSize="16"
                     CommandParameter="{StaticResource True}" ToolTip="Открыть предыдущую запись (Crtl + Стрелка вверх)">↑</Button>
-                <Button Command="{Binding DataContext.Appointment.MoveHrSelectionCommand,  RelativeSource={RelativeSource AncestorType=screens:NewCard}}" FontSize="16"
+                <Button Command="{Binding DataContext.HrList.MoveHrSelectionCommand,  RelativeSource={RelativeSource AncestorType=screens:Card3}}" FontSize="16"
                     CommandParameter="{StaticResource False}" ToolTip="Открыть следующую запись (Crtl + Стрелка вниз)" >↓</Button>
                 <Separator />
-                <Button Command="{Binding DataContext.Appointment.AddHealthRecordCommand,  RelativeSource={RelativeSource AncestorType=screens:NewCard}}"
+                <Button Command="{Binding DataContext.HrList.AddHealthRecordCommand,  RelativeSource={RelativeSource AncestorType=screens:Card3}}"
                     ToolTip="Добавить запись (Ctrl + Enter)">
                     <DockPanel>
                         <Image Source="{StaticResource addImage}" />
@@ -70,15 +70,8 @@
                 <Style TargetType="DockPanel" BasedOn="{StaticResource formLine}" />
             </StackPanel.Resources>
             <DockPanel>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-
                     <!--DataContext is HrEditorViewModel-->
                     <search:NewAutocomplete DataContext="{Binding DataContext.Autocomplete, ElementName=editor}" />
-                </Grid>
             </DockPanel>
             <DockPanel>
                 <!--DataContext is HrEditorViewModel-->
