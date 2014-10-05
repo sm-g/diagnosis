@@ -139,7 +139,6 @@
   <ItemGroup>
     <Compile Include="EmptyChecker.cs" />
     <Compile Include="Entities\HrItem.cs" />
-    <Compile Include="IHrsHolder.cs" />
     <Compile Include="HealthRecordUnits.cs" />
     <Compile Include="DoctorSettings.cs" />
     <Compile Include="Entities\Measure.cs" />
@@ -157,6 +156,7 @@
     <Compile Include="EntityHelpers.cs" />
     <Compile Include="Entities\HrCategory.cs" />
     <Compile Include="Entities\Speciality.cs" />
+    <Compile Include="Interfaces.cs" />
     <Compile Include="ServiceTables\SpecialityIcdBlock.cs" />
     <Compile Include="Entities\Word.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

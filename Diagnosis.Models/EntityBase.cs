@@ -8,20 +8,6 @@ using System.Linq.Expressions;
 namespace Diagnosis.Models
 {
     /// <summary>
-    /// Доменный объект, не обязательно хранится в БД.
-    /// </summary>
-    public interface IDomainEntity
-    {
-    }
-
-    /// <summary>
-    /// Сущность в элементе записи.
-    /// </summary>
-    public interface IHrItemObject
-    {
-    }
-
-    /// <summary>
     /// Сущность БД.
     /// </summary>
     public abstract class EntityBase : NotifyPropertyChangedBase, IEditableObject
