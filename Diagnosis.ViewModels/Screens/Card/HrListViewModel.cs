@@ -186,12 +186,6 @@ namespace Diagnosis.ViewModels
         private void MakeDeletions()
         {
             this.Send(Events.HideOverlay, typeof(HealthRecord).AsParams(MessageKeys.Type));
-
-            foreach (var hrVm in hrManager.DeletedHealthRecords)
-            {
-                holder.RemoveHealthRecord(hrVm.healthRecord);
-            }
-            hrManager.DeletedHealthRecords.Clear();           
         }
 
         void DeleteEmpty()

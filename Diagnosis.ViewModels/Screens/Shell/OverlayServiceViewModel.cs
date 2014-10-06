@@ -37,7 +37,8 @@ namespace Diagnosis.ViewModels
                 var type = e.GetValue<Type>(MessageKeys.Type);
 
                 UndoOverlayViewModel existing = Overlays.SingleOrDefault(o => o.ObjectsType == type);
-                Overlays.Remove(existing);
+                if (existing != null)
+                    existing.CloseCommand.Execute(null);
             });
         }
 

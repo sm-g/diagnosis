@@ -33,6 +33,7 @@ namespace Diagnosis.ViewModels
             HrEditor = new HrEditorViewModel(Session);
             HrEditor.Unloaded += (s, e) =>
             {
+                // сохраняем запись при закрытии редаткора
                 var hr = e.entity as HealthRecord;
                 SaveHealthRecord(hr);
             };
@@ -234,7 +235,7 @@ namespace Diagnosis.ViewModels
         {
             if (HrList != null)
             {
-                HrList.Dispose();
+                HrList.Dispose(); // del hrs
             }
 
             if (holder != null)
@@ -256,6 +257,10 @@ namespace Diagnosis.ViewModels
                     {
                         HrEditor.Load(HrList.SelectedHealthRecord.healthRecord);
                     }
+                }
+                else
+                {
+                    HrEditor.Unload();
                 }
             }
         }
@@ -344,11 +349,7 @@ namespace Diagnosis.ViewModels
 
             if (e.action == PatientViewer.OpeningAction.Close)
             {
-                Session.SaveOrUpdate(viewer.OpenedPatient);
-                using (var t = Session.BeginTransaction())
-                {
-                    t.Commit();
-                }
+                SaveAll();
             }
 
             if (e.entity is Patient)
@@ -432,15 +433,28 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        private void SaveAll()
+        {
+            Session.SaveOrUpdate(viewer.OpenedPatient);
+            using (var t = Session.BeginTransaction())
+            {
+                t.Commit();
+            }
+        }
+
         private void HrsHolder_HealthRecordsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 // редактируем добавленную запись
                 var hr = (HealthRecord)e.NewItems[e.NewItems.Count - 1];
-                // HrList.AddHealthRecordCommand
                 HrList.SelectHealthRecord(hr);
                 HrEditor.Load(hr);
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                // удаляем записи в бд
+                SaveAll();
             }
         }
 
@@ -493,7 +507,7 @@ namespace Diagnosis.ViewModels
                 if (disposing)
                 {
                     HrEditor.Dispose();
-                    HrList.Dispose(); // сохраняются и удаляются все записи
+                    HrList.Dispose(); // удаляются все записи
 
                     viewer.ClosePatient(); // сохраняем пациента при закрытии
                     viewer.OpenedChanged -= viewer_OpenedChanged;

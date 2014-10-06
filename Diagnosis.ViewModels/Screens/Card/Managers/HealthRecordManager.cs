@@ -26,7 +26,7 @@ namespace Diagnosis.ViewModels
 
         public ObservableCollection<ShortHealthRecordViewModel> HealthRecords { get; private set; }
 
-        public ObservableCollection<ShortHealthRecordViewModel> DeletedHealthRecords { get; private set; }
+        private ObservableCollection<ShortHealthRecordViewModel> DeletedHealthRecords { get; set; }
 
         private void holder_HealthRecordsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
