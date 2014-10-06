@@ -252,22 +252,29 @@ namespace Diagnosis.Models
         public virtual void AddItem(HrItem item)
         {
             Contract.Requires(item != null);
-            EditHelper.Edit(() => HrItems);
             if (hrItems.Add(item))
             {
+                EditHelper.Edit(() => HrItems);
+                if (InEdit)
+                {
+                    IsDirty = true;
+                }
                 OnItemsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
-                // order устанавливается перед добавлением в редакторе записи
+                // order устанавливается в редакторе записи
             }
         }
 
         public virtual void RemoveItem(HrItem item)
         {
             Contract.Requires(item != null);
-
             if (hrItems.Remove(item))
             {
+                EditHelper.Edit(() => HrItems);
+                if (InEdit)
+                {
+                    IsDirty = true;
+                }
                 OnItemsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
-                // удаление не влияет на порядок других элементов
             }
         }
         public override string ToString()

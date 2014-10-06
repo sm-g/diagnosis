@@ -1,7 +1,5 @@
 ﻿using Diagnosis.Models;
 using log4net;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -33,9 +31,15 @@ namespace Diagnosis.ViewModels
         public CardViewModel()
         {
             HrEditor = new HrEditorViewModel(Session);
+            HrEditor.Unloaded += (s, e) =>
+            {
+                var hr = e.entity as HealthRecord;
+                SaveHealthRecord(hr);
+            };
             viewer.OpenedChanged += viewer_OpenedChanged;
             HrsHolders = new ObservableCollection<ViewModelBase>();
         }
+
         public bool CloseNestedHolderOnLevelUp
         {
             get
@@ -203,13 +207,7 @@ namespace Diagnosis.ViewModels
             // сначала создаем HrList, чтобы hrManager подписался на добавление записей первым, иначе HrList.SelectHealthRecord нечего выделять
             if (holder != GetHolderOfVm(CurrentHolder))
             {
-                if (HrList != null)
-                {
-                    HrList.Dispose();
-                }
-
-                HrList = new HrListViewModel(holder); // показваем записи активной сущности
-                HrList.PropertyChanged += HrList_PropertyChanged;
+                ShowHrsList(holder);
             }
 
             viewer.Open(holder);
@@ -228,12 +226,57 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        /// <summary>
+        /// Показвает записи активной сущности.
+        /// </summary>
+        /// <param name="holder"></param>
+        private void ShowHrsList(IHrsHolder holder)
+        {
+            if (HrList != null)
+            {
+                HrList.Dispose();
+            }
+
+            HrList = new HrListViewModel(holder);
+            HrList.PropertyChanged += HrList_PropertyChanged;
+            HrList.HealthRecords.CollectionChanged += HrList_HealthRecords_CollectionChanged;
+        }
+
+        private void HrList_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "SelectedHealthRecord")
+            {
+                if (HrList.SelectedHealthRecord != null)
+                {
+                    editorWasOpened = HrEditor.IsActive;
+                    if (editorWasOpened)
+                    {
+                        HrEditor.Load(HrList.SelectedHealthRecord.healthRecord);
+                    }
+                }
+            }
+        }
+
+        private void HrList_HealthRecords_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            // Catch hr.isDeleted = true
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                if (e.OldItems.Count > 0)
+                {
+                    SaveHealthRecord((e.OldItems[0] as ShortHealthRecordViewModel).healthRecord);
+                }
+            }
+        }
+
         private void OnCurrentHolderChanged()
         {
             // add to history
             HrEditor.Unload(); // закрываем редактор при смене активной сущности
 
             var holder = GetHolderOfVm(CurrentHolder);
+            ShowHrsList(holder);
+
             if (holder is Patient)
             {
                 Patient.SelectCourse(viewer.GetLastOpenedFor(holder as Patient));
@@ -252,6 +295,15 @@ namespace Diagnosis.ViewModels
                 {
                     viewer.OpenedAppointment = null;
                 }
+            }
+        }
+
+        private void SaveHealthRecord(HealthRecord hr)
+        {
+            Session.SaveOrUpdate(hr);
+            using (var t = Session.BeginTransaction())
+            {
+                t.Commit();
             }
         }
 
@@ -377,21 +429,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        private void HrList_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "SelectedHealthRecord")
-            {
-                if (HrList.SelectedHealthRecord != null)
-                {
-                    editorWasOpened = HrEditor.IsActive;
-                    if (editorWasOpened)
-                    {
-                        HrEditor.Load(HrList.SelectedHealthRecord.healthRecord);
-                    }
-                }
-            }
-        }
-
         private void HrsHolder_HealthRecordsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
@@ -447,15 +484,16 @@ namespace Diagnosis.ViewModels
             {
                 Contract.Assume(viewer.OpenedPatient != null);
             }
+
             try
             {
                 if (disposing)
                 {
+                    HrEditor.Dispose();
+                    HrList.Dispose(); // сохраняются и удаляются все записи
+
                     viewer.ClosePatient(); // сохраняем пациента при закрытии
                     viewer.OpenedChanged -= viewer_OpenedChanged;
-
-                    HrEditor.Dispose();
-                    HrList.Dispose();
                 }
             }
             finally

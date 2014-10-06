@@ -25,6 +25,8 @@ namespace Diagnosis.ViewModels
         private EventMessageHandler handler;
         private bool inSetSymptomOnTagCompleted;
 
+        public event EventHandler<DomainEntityEventArgs> Unloaded;
+
         public HrEditorViewModel(ISession session)
         {
             this.session = session;
@@ -85,6 +87,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        #endregion HealthRecord
         public bool IsActive
         {
             get
@@ -93,7 +96,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        #endregion HealthRecord
 
         public RelayCommand RevertCommand
         {
@@ -267,6 +269,7 @@ namespace Diagnosis.ViewModels
             {
                 HealthRecord.healthRecord.PropertyChanged -= hr_PropertyChanged;
                 (HealthRecord.healthRecord as IEditableObject).EndEdit();
+                OnUnloaded(HealthRecord.healthRecord);
             }
         }
 
@@ -296,6 +299,15 @@ namespace Diagnosis.ViewModels
                 Debug.Assert(inSetSymptomOnTagCompleted);
             }
         }
+        protected virtual void OnUnloaded(HealthRecord hr)
+        {
+            var h = Unloaded;
+            if (h != null)
+            {
+                h(this, new DomainEntityEventArgs(hr));
+            }
+        }
+
 
         public override string ToString()
         {

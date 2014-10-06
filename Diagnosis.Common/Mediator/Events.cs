@@ -48,6 +48,7 @@ namespace Diagnosis.Core
 
         ShowUndoOverlay,
         HideOverlay,
+        Shutdown,
     }
 
     public static class EventAggragatorExtensions
