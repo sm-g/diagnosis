@@ -237,9 +237,12 @@ namespace Diagnosis.ViewModels
                 HrList.Dispose();
             }
 
-            HrList = new HrListViewModel(holder);
-            HrList.PropertyChanged += HrList_PropertyChanged;
-            HrList.HealthRecords.CollectionChanged += HrList_HealthRecords_CollectionChanged;
+            if (holder != null)
+            {
+                HrList = new HrListViewModel(holder);
+                HrList.PropertyChanged += HrList_PropertyChanged;
+                HrList.HealthRecords.CollectionChanged += HrList_HealthRecords_CollectionChanged;
+            }
         }
 
         private void HrList_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
