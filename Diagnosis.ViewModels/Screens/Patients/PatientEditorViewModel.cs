@@ -1,14 +1,13 @@
 ﻿using Diagnosis.Core;
 using Diagnosis.Models;
-using EventAggregator;
+using log4net;
 using System.ComponentModel;
-using System.Linq;
-using Diagnosis.Data;
 
 namespace Diagnosis.ViewModels
 {
     public class PatientEditorViewModel : SessionVMBase
     {
+        private static readonly ILog logger = LogManager.GetLogger(typeof(PatientEditorViewModel));
         private readonly Patient patient;
         private PatientViewModel _vm;
         private bool shouldCommit;
@@ -104,9 +103,9 @@ namespace Diagnosis.ViewModels
 
             Patient = new PatientViewModel(patient);
 
-            Session.BeginTransaction();
             (patient as IEditableObject).BeginEdit();
         }
+
         /// <summary>
         /// Начинает редактировать нового пациента.
         /// </summary>
@@ -126,13 +125,23 @@ namespace Diagnosis.ViewModels
                 if (shouldCommit && patient.IsValid())
                 {
                     (patient as IEditableObject).EndEdit();
-                    Session.Transaction.Commit();
+                    using (var t = Session.BeginTransaction())
+                    {
+                        try
+                        {
+                            t.Commit();
+                        }
+                        catch (System.Exception e)
+                        {
+                            t.Rollback();
+                            logger.Error(e);
+                        }
+                    }
                 }
                 else
                 {
                     (patient as IEditableObject).CancelEdit();
                 }
-                Session.Transaction.Dispose();
                 Patient.Dispose();
             }
             base.Dispose(disposing);

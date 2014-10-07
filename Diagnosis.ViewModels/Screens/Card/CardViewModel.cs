@@ -11,7 +11,7 @@ namespace Diagnosis.ViewModels
     public partial class CardViewModel : SessionVMBase
     {
         private static PatientViewer viewer; // static to hold history
-        public static readonly ILog logger = LogManager.GetLogger(typeof(CardViewModel));
+        private static readonly ILog logger = LogManager.GetLogger(typeof(CardViewModel));
 
         private PatientViewModel _patient;
         private CourseViewModel1 _course;
@@ -315,7 +315,15 @@ namespace Diagnosis.ViewModels
             Session.SaveOrUpdate(hr);
             using (var t = Session.BeginTransaction())
             {
-                t.Commit();
+                try
+                {
+                    t.Commit();
+                }
+                catch (System.Exception e)
+                {
+                    t.Rollback();
+                    logger.Error(e);
+                }
             }
         }
 
@@ -437,12 +445,23 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        /// <summary>
+        /// Сохраняем пациента, его курсы, осмотры и все записи.
+        /// </summary>
         private void SaveAll()
         {
             Session.SaveOrUpdate(viewer.OpenedPatient);
             using (var t = Session.BeginTransaction())
             {
-                t.Commit();
+                try
+                {
+                    t.Commit();
+                }
+                catch (System.Exception e)
+                {
+                    t.Rollback();
+                    logger.Error(e);
+                }
             }
         }
 
