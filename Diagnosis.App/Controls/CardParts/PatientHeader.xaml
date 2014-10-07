@@ -13,25 +13,6 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <Button                     Height="26"  Width="26"
-                    Command="{Binding EditCommand}"
-                    ToolTip="Редактировать данные пациента" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.RowSpan="2">
-            <Button.Style>
-                <Style>
-                    <Setter Property="Button.Visibility" Value="Collapsed"></Setter>
-
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ElementName=header, Path=IsMouseOver}" Value="true">
-                            <Setter Property="Button.Visibility" Value="Visible"></Setter>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-            <DockPanel>
-                <Image Source="{StaticResource editImage}" Height="16" />
-            </DockPanel>
-        </Button>
-
         <DockPanel>
             <TextBlock Style="{StaticResource ScreenTitle}"
                        TextWrapping="Wrap"
@@ -65,5 +46,24 @@
                 <TextBlock Text="{Binding Age, Converter={StaticResource AgeToLabel}}" />
             </TextBlock>
         </DockPanel>
+
+        <Button Height="26"  Width="26"
+                    Command="{Binding EditCommand}"
+                    ToolTip="Редактировать данные пациента" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.RowSpan="2">
+            <Button.Style>
+                <Style>
+                    <Setter Property="Button.Visibility" Value="Collapsed"></Setter>
+
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=header, Path=IsMouseOver}" Value="true">
+                            <Setter Property="Button.Visibility" Value="Visible"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+            <DockPanel>
+                <Image Source="{StaticResource editImage}" Height="16" />
+            </DockPanel>
+        </Button>
     </Grid>
 </UserControl>
