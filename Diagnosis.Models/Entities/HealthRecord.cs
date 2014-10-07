@@ -4,6 +4,7 @@ using Iesi.Collections.Generic;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
+using System;
 
 namespace Diagnosis.Models
 {
@@ -152,7 +153,9 @@ namespace Diagnosis.Models
             {
                 if (_dateOffset == null)
                 {
-                    _dateOffset = new DateOffset(FromYear, FromMonth, FromDay, () => Appointment.DateAndTime);
+                    DateTime now = Appointment != null ? Appointment.DateAndTime : DateTime.Now; // TODO createdat for hr
+
+                    _dateOffset = new DateOffset(FromYear, FromMonth, FromDay, () => now);
                     _dateOffset.Settings = new DateOffset.DateOffsetSettings(DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.SavesUnit);
                     if (Unit != HealthRecordUnits.NotSet) // фиксируем единицу
                     {
@@ -279,8 +282,7 @@ namespace Diagnosis.Models
         }
         public override string ToString()
         {
-            return string.Format("{0} {1} {2} {3}", Id, Category,
-                new DateOffset(FromYear, FromMonth, FromDay, () => Appointment.DateAndTime), Comment);
+            return string.Format("{0} {1} {2} {3}", Id, Category, DateOffset, Comment);
         }
 
         protected virtual void OnItemsChanged(NotifyCollectionChangedEventArgs e)
