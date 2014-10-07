@@ -71,7 +71,8 @@ namespace Diagnosis.App.Controls.Search
             if (outs)
             {
                 logger.Debug("complete from xaml");
-                Vm.CompleteOnLostFocus(Vm.EditingTag);
+                if (Vm.EditingTag != null)
+                    Vm.CompleteOnLostFocus(Vm.EditingTag);
             }
         }
         private void input_GotFocus(object sender, RoutedEventArgs e)
