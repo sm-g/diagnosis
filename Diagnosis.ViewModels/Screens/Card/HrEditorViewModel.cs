@@ -23,7 +23,6 @@ namespace Diagnosis.ViewModels
         private ISession session;
         private IEnumerable<HrCategory> _categories;
         private EventMessageHandler handler;
-        private bool inSetSymptomOnTagCompleted;
 
         public event EventHandler<DomainEntityEventArgs> Unloaded;
 
@@ -267,6 +266,11 @@ namespace Diagnosis.ViewModels
         {
             if (HealthRecord != null)
             {
+                // завершаем теги
+                var tag = Autocomplete.Tags.Where(t => t.State == Tag.States.Typing).FirstOrDefault();
+                if (tag != null)
+                    Autocomplete.CompleteOnLostFocus(tag);
+
                 HealthRecord.healthRecord.PropertyChanged -= hr_PropertyChanged;
                 (HealthRecord.healthRecord as IEditableObject).EndEdit();
                 OnUnloaded(HealthRecord.healthRecord);
@@ -293,10 +297,6 @@ namespace Diagnosis.ViewModels
             if (e.PropertyName == "Category")
             {
                 OnPropertyChanged(e.PropertyName);
-            }
-            else if (e.PropertyName == "Symptom")
-            {
-                Debug.Assert(inSetSymptomOnTagCompleted);
             }
         }
         protected virtual void OnUnloaded(HealthRecord hr)
