@@ -11,6 +11,7 @@ namespace Diagnosis.ViewModels
         private readonly Patient patient;
         private PatientViewModel _vm;
         private bool shouldCommit;
+        private bool updateLabel = false;
 
         public PatientViewModel Patient
         {
@@ -35,7 +36,11 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                 {
+                    if (patient.IsTransient)
+                        updateLabel = true;
                     Session.SaveOrUpdate(patient);
+                    if (updateLabel)
+                        patient.Label = patient.Id.ToString();
                     shouldCommit = true;
 
                     this.Send(Events.LeavePatientEditor, patient.AsParams(MessageKeys.Patient));
@@ -49,7 +54,11 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                 {
+                    if (patient.IsTransient)
+                        updateLabel = true;
                     Session.SaveOrUpdate(patient);
+                    if (updateLabel)
+                        patient.Label = patient.Id.ToString();
                     shouldCommit = true;
 
                     this.Send(Events.AddPatient);
@@ -125,6 +134,7 @@ namespace Diagnosis.ViewModels
                 if (shouldCommit && patient.IsValid())
                 {
                     (patient as IEditableObject).EndEdit();
+
                     using (var t = Session.BeginTransaction())
                     {
                         try
