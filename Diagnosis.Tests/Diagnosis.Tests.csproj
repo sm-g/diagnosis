@@ -104,6 +104,7 @@
     <Reference Include="NHibernate.JetDriver">
       <HintPath>..\packages\NHibernate.JetDriver.2.0.0.1001\lib\net35\NHibernate.JetDriver.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
   </ItemGroup>
@@ -120,19 +121,19 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="DataTests\DbTestBase.cs" />
-    <Compile Include="RecognizerTest.cs" />
-    <Compile Include="SequencePartitionTest.cs" />
-    <Compile Include="DateFormatterTest.cs" />
-    <Compile Include="DateOffsetTest.cs" />
-    <Compile Include="DataTests\InMemoryTest.cs" />
-    <Compile Include="DataTests\InMemoryDatabaseTest.cs" />
-    <Compile Include="PatientTest.cs" />
+    <Compile Include="ViewModelsTests\CardTest.cs" />
+    <Compile Include="ViewModelsTests\RecognizerTest.cs" />
+    <Compile Include="CommonTests\SequencePartitionTest.cs" />
+    <Compile Include="CommonTests\DateFormatterTest.cs" />
+    <Compile Include="CommonTests\DateOffsetTest.cs" />
+    <Compile Include="DataTests\PersistTest.cs" />
+    <Compile Include="InMemoryDatabaseTest.cs" />
+    <Compile Include="ModelTests\PatientTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QuerySeparatorTest.cs" />
+    <Compile Include="CommonTests\QuerySeparatorTest.cs" />
     <Compile Include="DataTests\HrQueryTest.cs" />
     <Compile Include="DataTests\StartsWithTest.cs" />
-    <Compile Include="StringExtensionTest.cs" />
+    <Compile Include="CommonTests\StringExtensionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Diagnosis.App\Diagnosis.App.csproj">

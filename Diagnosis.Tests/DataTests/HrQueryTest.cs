@@ -8,21 +8,20 @@ using System.Linq;
 namespace Tests
 {
     [TestClass]
-    public class HrQueryTest : DbTestBase
+    public class HrQueryTest : InMemoryDatabaseTest
     {
+        protected Word w1;
+        protected Word w2;
+        protected HealthRecord hr1;
+        protected HealthRecord hr2;
+
         [TestInitialize]
         public void Init()
         {
-
-            using (var tx = session.BeginTransaction())
-            {
-                i1 = new HrItem(hr1, w1);
-                i2 = new HrItem(hr1, w2);
-                i3 = new HrItem(hr2, w1);
-                session.Update(hr1);
-                session.Update(hr2);
-                tx.Commit();
-            }
+            w1 = session.Get<Word>(1);
+            w2 = session.Get<Word>(2);
+            hr1 = session.Get<HealthRecord>(1);
+            hr2 = session.Get<HealthRecord>(2);
         }
 
         [TestMethod]
@@ -35,7 +34,6 @@ namespace Tests
 
             hrs = HealthRecordQuery.WithAllWords(session)(new Word[] { w1 });
 
-            Assert.IsTrue(hrs.Count() == 2);
             Assert.IsTrue(hrs.Contains(hr1));
             Assert.IsTrue(hrs.Contains(hr2));
         }
@@ -45,13 +43,11 @@ namespace Tests
         {
             var hrs = HealthRecordQuery.WithAnyWord(session)(new Word[] { w1, w2 });
 
-            Assert.IsTrue(hrs.Count() == 2);
             Assert.IsTrue(hrs.Contains(hr1));
             Assert.IsTrue(hrs.Contains(hr2));
 
             hrs = HealthRecordQuery.WithAnyWord(session)(new Word[] { w1 });
 
-            Assert.IsTrue(hrs.Count() == 2);
             Assert.IsTrue(hrs.Contains(hr1));
             Assert.IsTrue(hrs.Contains(hr2));
         }

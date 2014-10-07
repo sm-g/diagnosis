@@ -26,14 +26,26 @@ namespace Tests
         [TestMethod]
         public void TestOrder()
         {
-            var p1 = new PatientViewModel(new Patient("Иванов", "Иван"));
-            var p2 = new PatientViewModel(new Patient());
-            var p3 = new PatientViewModel(new Patient("Иванов", "Петр"));
+            var p1 = new Patient("Иванов", "Иван");
+            var p2 = new Patient();
+            var p3 = new Patient("Иванов", "Петр");
 
-            var list = new List<PatientViewModel>(new[] { p1, p2, p3 }.OrderBy(p => p.patient.FullName, new EmptyStringsAreLast()));
+            var list = new List<Patient>(new[] { p1, p2, p3 }.OrderBy(p => p.FullName, new EmptyStringsAreLast()));
             Assert.IsTrue(list[0] == p1);
             Assert.IsTrue(list[1] == p3);
             Assert.IsTrue(list[2] == p2);
+        }
+
+        [TestMethod]
+        public void StartCourse()
+        {
+            var p1 = new Patient("Иванов", "Иван");
+            var d1 = new Doctor("last", "first");
+
+            var patientCoursesBefore = p1.Courses.Count();
+            d1.StartCourse(p1);
+
+            Assert.AreEqual(patientCoursesBefore + 1, p1.Courses.Count());
         }
     }
 }

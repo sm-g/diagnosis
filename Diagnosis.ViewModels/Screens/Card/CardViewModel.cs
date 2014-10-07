@@ -10,7 +10,7 @@ namespace Diagnosis.ViewModels
 {
     public partial class CardViewModel : SessionVMBase
     {
-        private static PatientViewer viewer = new PatientViewer(); // static to hold history
+        private static PatientViewer viewer; // static to hold history
         public static readonly ILog logger = LogManager.GetLogger(typeof(CardViewModel));
 
         private PatientViewModel _patient;
@@ -22,14 +22,12 @@ namespace Diagnosis.ViewModels
         private bool editorWasOpened;
         private bool _closeNestedOnLevelUp;
 
-        public CardViewModel(object entity)
-            : this()
+        public CardViewModel(object entity, bool resetHistory = false)
         {
-            Open(entity);
-        }
+            if (resetHistory || viewer == null)
+                viewer = new PatientViewer();
 
-        public CardViewModel()
-        {
+            HrsHolders = new ObservableCollection<ViewModelBase>();
             HrEditor = new HrEditorViewModel(Session);
             HrEditor.Unloaded += (s, e) =>
             {
@@ -38,7 +36,8 @@ namespace Diagnosis.ViewModels
                 SaveHealthRecord(hr);
             };
             viewer.OpenedChanged += viewer_OpenedChanged;
-            HrsHolders = new ObservableCollection<ViewModelBase>();
+
+            Open(entity);
         }
 
         public bool CloseNestedHolderOnLevelUp
@@ -178,6 +177,11 @@ namespace Diagnosis.ViewModels
             {
                 HrEditor.Load(HrList.SelectedHealthRecord.healthRecord);
             }
+        }
+
+        public void ResetHistory()
+        {
+            viewer = new PatientViewer();
         }
 
         internal void Open(object parameter)

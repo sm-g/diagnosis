@@ -13,10 +13,10 @@ using NHibernate.Tool.hbm2ddl;
 namespace Tests
 {
     [TestClass]
-    public class InMemoryTest : InMemoryDatabaseTest
+    public class PersistTest : InMemoryDatabaseTest
     {
         [TestMethod]
-        public void MyTestMethod()
+        public void Patient()
         {
             object id;
 
