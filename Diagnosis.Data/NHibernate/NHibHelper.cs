@@ -129,10 +129,7 @@ namespace Diagnosis.Data
 
         private static Configuration LoadConfiguration()
         {
-            if (InMemory)
-                return null;
-
-            if (IsConfigurationFileValid == false)
+            if (IsConfigurationFileValid == false || InMemory)
                 return null;
             try
             {
@@ -142,7 +139,7 @@ namespace Diagnosis.Data
                     return serializer.Deserialize(stream) as Configuration;
                 }
             }
-            catch (System.Exception)
+            catch
             {
                 return null;
             }
@@ -150,10 +147,19 @@ namespace Diagnosis.Data
 
         private static void SaveConfiguration(Configuration cfg)
         {
-            using (Stream stream = File.OpenWrite(SerializedConfig))
+            if (InMemory)
+                return;
+
+            try
             {
-                var serializer = new BinaryFormatter();
-                serializer.Serialize(stream, cfg);
+                using (Stream stream = File.OpenWrite(SerializedConfig))
+                {
+                    var serializer = new BinaryFormatter();
+                    serializer.Serialize(stream, cfg);
+                }
+            }
+            catch
+            {
             }
         }
 

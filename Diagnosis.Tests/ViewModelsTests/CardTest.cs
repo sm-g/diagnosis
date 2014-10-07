@@ -6,7 +6,7 @@ using System.Linq;
 namespace Tests.CardTests
 {
     [TestClass]
-    public class SwitchAppTest : InMemoryDatabaseTest
+    public class CardTest : InMemoryDatabaseTest
     {
         protected Word w1;
         protected Word w2;
