@@ -32,4 +32,60 @@ namespace Diagnosis.App.Converters
         public NegateConverter() :
             base(false, true) { }
     }
+
+    public class NullableBooleanConverter<T> : IValueConverter
+    {
+        public NullableBooleanConverter(T trueValue, T falseValue, T nullValue)
+        {
+            True = trueValue;
+            False = falseValue;
+            Null = nullValue;
+        }
+
+        public T True { get; set; }
+        public T False { get; set; }
+        public T Null { get; set; }
+
+        public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var b = value as bool?;
+            if (b == null)
+                return Null;
+            return b.Value ? True : False;
+        }
+
+        public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is T)
+            {
+                if (EqualityComparer<T>.Default.Equals((T)value, True))
+                    return true;
+                if (EqualityComparer<T>.Default.Equals((T)value, False))
+                    return false;
+            }
+            return null;
+        }
+    }
+
+    public class NullableBooleanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var test = (bool?)value;
+            var result = bool.Parse((string)parameter);
+
+            if (test == result)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var result = bool.Parse((string)parameter);
+            return result;
+        }
+    }
 }

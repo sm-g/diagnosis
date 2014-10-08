@@ -214,7 +214,6 @@
     </Compile>
     <Compile Include="Converters\InList.cs" />
     <Compile Include="Converters\HrToItemsString.cs" />
-    <Compile Include="Converters\NullableBool.cs" />
     <Compile Include="Screens\CurrentHrsHolderDataTemplateSelector.cs" />
     <Compile Include="Controls\Common\AlignableWrapPanel.cs" />
     <Compile Include="Controls\CardParts\AppointmentsTabs.xaml.cs">

@@ -1,9 +1,9 @@
 ﻿
 namespace Diagnosis.App.Converters
 {
-    public sealed class BoolToSexSign : BooleanConverter<string>
+    public sealed class BoolToSexSign : NullableBooleanConverter<string>
     {
         public BoolToSexSign() :
-            base("♂", "♀") { }
+            base("♂", "♀", "") { }
     }
 }

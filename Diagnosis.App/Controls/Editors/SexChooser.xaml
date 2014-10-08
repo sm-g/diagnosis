@@ -13,9 +13,9 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <RadioButton IsChecked="{Binding IsMale}"
+        <RadioButton IsChecked="{Binding IsMale, Converter={StaticResource NullableBoolean}, ConverterParameter='true'}"
                      Content="муж" />
-        <RadioButton Grid.Column="1"
+        <RadioButton Grid.Column="1" IsChecked="{Binding IsMale, Converter={StaticResource NullableBoolean}, ConverterParameter='false'}"
                      Content="жен" />
     </Grid>
 </UserControl>

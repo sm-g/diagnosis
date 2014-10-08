@@ -24,7 +24,7 @@ namespace Diagnosis.Models
         private string _ln;
         private string _mn;
         private string _label;
-        private bool _isMale;
+        private bool? _isMale;
 
         public virtual event NotifyCollectionChangedEventHandler CoursesChanged;
 
@@ -93,7 +93,7 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual bool IsMale
+        public virtual bool? IsMale
         {
             get { return _isMale; }
             set
@@ -228,7 +228,7 @@ namespace Diagnosis.Models
             int? year = null,
             byte? month = null,
             byte? day = null,
-            bool isMale = true)
+            bool? isMale = null)
         {
             LastName = lastName;
             FirstName = firstName;

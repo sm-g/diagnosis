@@ -74,7 +74,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public bool IsMale
+        public bool? IsMale
         {
             get
             {
