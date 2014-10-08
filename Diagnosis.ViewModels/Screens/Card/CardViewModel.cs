@@ -342,7 +342,7 @@ namespace Diagnosis.ViewModels
             {
                 holder = Patient.patient;
             }
-            return holder;
+            return (IHrsHolder)Session.GetSessionImplementation().PersistenceContext.Unproxy(holder);
         }
 
         /// <summary>
