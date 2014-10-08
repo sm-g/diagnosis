@@ -24,6 +24,7 @@ namespace Diagnosis.Core
         public const string Settings = "settings";
         public const string UndoOverlay = "undooverlay";
         public const string Type = "type";
+        public const string Holder = "holder";
     }
 
     public enum Events
@@ -38,6 +39,7 @@ namespace Diagnosis.Core
         LeavePatientEditor,
         OpenHealthRecord,
         EditHealthRecord,
+        OpenHolder,
 
         OpenSettings,
         SettingsSaved,

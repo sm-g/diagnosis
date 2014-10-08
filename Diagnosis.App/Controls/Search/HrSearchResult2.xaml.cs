@@ -12,28 +12,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Diagnosis.App.Screens
+namespace Diagnosis.App.Controls.Search
 {
     /// <summary>
-    /// Interaction logic for Search.xaml
+    /// Interaction logic for SearchResult.xaml
     /// </summary>
-    public partial class Search : UserControl
+    public partial class HrSearchResult2 : UserControl
     {
-        public Search()
+        public HrSearchResult2()
         {
             InitializeComponent();
         }
-
-        private void item_selected(object sender, RoutedEventArgs e)
-        {
-            TreeViewItem tvi = sender as TreeViewItem;
-            if (tvi != null)
-            {
-                tvi.BringIntoView();
-                tvi.Focus();
-            }
-            e.Handled = true;
-        }
-
     }
 }

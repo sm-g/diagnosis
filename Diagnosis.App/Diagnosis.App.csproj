@@ -205,7 +205,16 @@
     <Compile Include="Controls\CardParts\Appointment.xaml.cs">
       <DependentUpon>Appointment.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Headers\Patient.xaml.cs">
+      <DependentUpon>Patient.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Search\HrsHolderDataTemplateSelector.cs" />
+    <Compile Include="Controls\Search\HrSearchResult2.xaml.cs">
+      <DependentUpon>HrSearchResult2.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\InList.cs" />
+    <Compile Include="Converters\HrToItemsString.cs" />
+    <Compile Include="Converters\NullableBool.cs" />
     <Compile Include="Screens\CurrentHrsHolderDataTemplateSelector.cs" />
     <Compile Include="Controls\Common\AlignableWrapPanel.cs" />
     <Compile Include="Controls\CardParts\AppointmentsTabs.xaml.cs">
@@ -372,6 +381,10 @@
     <Page Include="Controls\Search\Filter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Search\HrSearchResult2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\Search\HrSearchResult.xaml">
       <SubType>Designer</SubType>

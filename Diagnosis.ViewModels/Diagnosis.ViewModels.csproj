@@ -163,6 +163,7 @@
     <Compile Include="Screens\Shell\OverlayServiceViewModel.cs" />
     <Compile Include="Screens\Shell\UndoOverlayViewModel.cs" />
     <Compile Include="Screens\Words\WordEditorViewModel.cs" />
+    <Compile Include="Search\HrHolderSearchResultViewModel.cs" />
     <Compile Include="Types\CheckableBase.cs" />
     <Compile Include="Screens\Card\Managers\AppointmentsManager.cs" />
     <Compile Include="Screens\Card\AppointmentViewModel.cs" />

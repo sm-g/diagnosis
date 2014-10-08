@@ -20,4 +20,5 @@
     <conv:NullToVisibilityConverter x:Key="NullToVis" />
     <conv:AgeToYearsLabel x:Key="ageLabel" />
     <conv:InListConverter x:Key="inList" />
+    <conv:HrToItemsString x:Key="hrItems" />
 </ResourceDictionary>

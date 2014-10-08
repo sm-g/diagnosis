@@ -23,6 +23,11 @@
                 <KeyBinding Key="Enter" Command="{Binding OpenCommand}" />
                 <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding OpenCommand}" />
             </InputBindingCollection>
+            <InputBindingCollection x:Shared="False" x:Key="SearchResultInputBindings">
+                <KeyBinding Key="Space" Command="{Binding OpenCommand}" />
+                <KeyBinding Key="Enter" Command="{Binding OpenCommand}" />
+                <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding OpenCommand}" />
+            </InputBindingCollection>
             <InputBindingCollection x:Shared="False" x:Key="WordInputBindings">
                 <KeyBinding Key="Space" Command="{Binding ToggleCommand}" />
                 <KeyBinding Modifiers="Alt" Key="F" Command="{Binding SendToSearchCommand}" />

@@ -44,7 +44,7 @@ namespace Diagnosis.ViewModels
         {
             Autocomplete = new Autocomplete(new Recognizer(Session, false), true, null);
 
-            Results = new ObservableCollection<HrSearchResultViewModel>();
+            Results = new ObservableCollection<HrHolderSearchResultViewModel>();
             ControlsVisible = true;
             AnyWord = true;
 
@@ -346,21 +346,9 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public RelayCommand<Patient> OpenPatientCommand
-        {
-            get
-            {
-                return new RelayCommand<Patient>(
-                                          p =>
-                                          {
-                                              this.Send(Events.OpenPatient, p.AsParams(MessageKeys.Patient));
-                                          });
-            }
-        }
-
         public Autocomplete Autocomplete { get; private set; }
 
-        public ObservableCollection<HrSearchResultViewModel> Results
+        public ObservableCollection<HrHolderSearchResultViewModel> Results
         {
             get;
             private set;
@@ -432,11 +420,13 @@ namespace Diagnosis.ViewModels
             Results.Clear();
 
             MakeOptions();
-            var hrs = searcher.Search(Options);
-            // только одна запись из осмотра
-            // TODO записи везде
-            hrs.Distinct(new KeyEqualityComparer<HealthRecord, Appointment>(hr => hr.Appointment))
-                .ForAll(hr => Results.Add(new HrSearchResultViewModel(hr, Options)));
+            var hrs = searcher.Search(Session, Options);
+
+            HrHolderSearchResultViewModel.MakeFrom(hrs).ForAll(x =>
+            {
+                x.ForBranch(rvm => rvm.IsExpanded = true);
+                Results.Add(x);
+            });
 
             SearchWas = true;
             ControlsVisible = false;

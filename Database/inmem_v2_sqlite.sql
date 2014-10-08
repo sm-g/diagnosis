@@ -208,9 +208,11 @@ INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment
 INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[HrCategoryID],[FromYear],[FromMonth],[FromDay],[Unit],[IsDeleted]) VALUES (67,NULL,NULL,3,NULL,2,NULL,NULL,NULL,'NotSet',0);
 INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[HrCategoryID],[FromYear],[FromMonth],[FromDay],[Unit],[IsDeleted]) VALUES (68,NULL,NULL,3,NULL,1,NULL,NULL,NULL,'NotSet',0);
 INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[HrCategoryID],[FromYear],[FromMonth],[FromDay],[Unit],[IsDeleted]) VALUES (69,NULL,NULL,4,NULL,2,2005,2,10,'Year',0);
-INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[HrCategoryID],[FromYear],[FromMonth],[FromDay],[Unit],[IsDeleted]) VALUES (70,NULL,1,NULL,'запись курса',1,NULL,NULL,NULL,'NotSet',0);
-INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[HrCategoryID],[FromYear],[FromMonth],[FromDay],[Unit],[IsDeleted]) VALUES (71,NULL,2,NULL,'запись курса 2',1,NULL,NULL,NULL,'NotSet',0);
-INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[HrCategoryID],[FromYear],[FromMonth],[FromDay],[Unit],[IsDeleted]) VALUES (72,1,NULL,NULL,'запись пациента',NULL,NULL,NULL,NULL,'NotSet',0);
+INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[HrCategoryID],[FromYear],[FromMonth],[FromDay],[Unit],[IsDeleted]) VALUES (70,NULL,1,NULL,'курс',1,NULL,NULL,NULL,'NotSet',0);
+INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[HrCategoryID],[FromYear],[FromMonth],[FromDay],[Unit],[IsDeleted]) VALUES (71,NULL,2,NULL,'курс 2',1,NULL,NULL,NULL,'NotSet',0);
+INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[HrCategoryID],[FromYear],[FromMonth],[FromDay],[Unit],[IsDeleted]) VALUES (72,1,NULL,NULL,'пациент',NULL,NULL,NULL,NULL,'NotSet',0);
+INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[HrCategoryID],[FromYear],[FromMonth],[FromDay],[Unit],[IsDeleted]) VALUES (73,2,NULL,NULL,'пациент 2',NULL,NULL,NULL,NULL,'NotSet',0);
+INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[HrCategoryID],[FromYear],[FromMonth],[FromDay],[Unit],[IsDeleted]) VALUES (74,2,NULL,NULL,'пациент 2 дубль',NULL,NULL,NULL,NULL,'NotSet',0);
 
 
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (2,38,1,NULL,NULL,NULL,0);
@@ -229,7 +231,11 @@ INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[Dis
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (15,68,4,NULL,NULL,NULL,0);
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (16,69,22,NULL,NULL,NULL,0);
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (17,11,1,NULL,NULL,NULL,0);
-INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (18,11,44,NULL,NULL,NULL,0);
+INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (18,70,22,NULL,NULL,NULL,0);
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (19,66,67,NULL,NULL,NULL,0);
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (20,66,68,NULL,NULL,NULL,0);
+INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (21,72,22,NULL,NULL,NULL,0);
+INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (22,73,22,NULL,NULL,NULL,0);
+INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (23,74,22,NULL,NULL,NULL,0);
+INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (25,70,22,NULL,NULL,NULL,0);
 

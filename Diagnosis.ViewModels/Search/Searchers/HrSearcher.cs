@@ -6,38 +6,39 @@ using Diagnosis.Data.Repositories;
 using System.Diagnostics.Contracts;
 using Diagnosis.Models;
 using Diagnosis.Core;
+using Diagnosis.Data.Queries;
+using NHibernate;
+using NHibernate.Linq;
 
 namespace Diagnosis.ViewModels
 {
     public class HrSearcher
     {
-        public IEnumerable<HealthRecord> Search(HrSearchOptions options)
+        public IEnumerable<HealthRecord> Search(ISession session, HrSearchOptions options)
         {
             Contract.Requires(options != null);
-
-            var repo = new HealthRecordRepository();
             IEnumerable<HealthRecord> hrs;
 
             if (options.Words.Count() > 0)
                 if (options.AnyWord)
                 {
-                    hrs = repo.GetByWords(options.Words);
+                    hrs = HealthRecordQuery.WithAnyWord(session)(options.Words);
                 }
                 else
                 {
-                    hrs = repo.GetWithWordsSubset(options.Words);
+                    hrs = HealthRecordQuery.WithAllWords(session)(options.Words);
                 }
             else
             {
-                hrs = repo.GetAll();
+                hrs = session.Query<HealthRecord>();
             }
 
-            hrs = hrs.Where(hr => TestHrDate(hr, options));
+            //hrs = hrs.Where(hr => TestHrDate(hr, options));
 
-            hrs = hrs.Where(hr =>
-               (options.AppointmentDateLt.HasValue ? hr.Appointment.DateAndTime <= options.AppointmentDateLt.Value : true) &&
-               (options.AppointmentDateGt.HasValue ? hr.Appointment.DateAndTime >= options.AppointmentDateGt.Value : true)
-            );
+            //hrs = hrs.Where(hr =>
+            //   (options.AppointmentDateLt.HasValue ? hr.Appointment.DateAndTime <= options.AppointmentDateLt.Value : true) &&
+            //   (options.AppointmentDateGt.HasValue ? hr.Appointment.DateAndTime >= options.AppointmentDateGt.Value : true)
+            //);
 
             if (options.Categories.Count() > 0)
             {

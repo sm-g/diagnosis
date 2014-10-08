@@ -102,6 +102,12 @@ namespace Diagnosis.ViewModels
                 (CurrentView as CardViewModel).ToogleHrEditor();
             });
 
+            this.Subscribe(Events.OpenHolder, (e) =>
+            {
+                var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
+                OpenScreen(Screens.Card, holder);
+            });
+
             this.Subscribe(Events.Shutdown, (e) =>
             {
                 CurrentView.Dispose();

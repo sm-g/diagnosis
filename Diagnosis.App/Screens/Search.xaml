@@ -15,6 +15,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Styles/SplitExpander.xaml" />
+                <ResourceDictionary Source="../Styles/TreeStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <s:Double x:Key="lineMargin">10</s:Double>
 
@@ -52,7 +53,7 @@
             <Expander.Header>
                 <!--Описание запроса, к которому относятся результаты-->
                 <StackPanel x:Name="searchDescription" Margin="5,0,0,0">
-                    <StackPanel DataContext="{Binding Options}" Visibility="{Binding DataContext.SearchWas, ElementName=search, Converter={StaticResource BooleanToVisibilityConverter}}" >
+                    <StackPanel DataContext="{Binding Options}" Visibility="{Binding DataContext.SearchWas, ElementName=search, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel Orientation="Horizontal"
                                     Visibility="{Binding Words.Count, Converter={StaticResource CountToVisibility}}">
                             <TextBlock Text="любое из слов: " Visibility="{Binding AnyWord, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -109,7 +110,7 @@
                 <StackPanel.InputBindings>
                     <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
                 </StackPanel.InputBindings>
-                
+
                 <search:NewAutocomplete DataContext="{Binding Autocomplete}" />
                 <DockPanel Style="{StaticResource line}">
                     <CheckBox IsChecked="{Binding AnyWord}" Margin="0,10,0,0">Хотя бы одно слово</CheckBox>
@@ -117,7 +118,7 @@
                 <DockPanel Style="{StaticResource line}">
                     <editors:CategoryChooser CategoryMultiSelection="{StaticResource True}" />
                 </DockPanel>
-                <DockPanel>
+                <!--<DockPanel>
                     <TextBlock Style="{StaticResource lineHeader}">Дата осмотра</TextBlock>
                     <WrapPanel>
                         <DockPanel>
@@ -153,7 +154,7 @@
                         <TextBlock Margin="5,0,5,0">и</TextBlock>
                         <editors:DateOffsetPicker DateOffset="{Binding HrDateOffsetUpper}" />
                     </DockPanel>
-                </DockPanel>
+                </DockPanel>-->
                 <DockPanel Style="{StaticResource line}">
                     <TextBlock Style="{StaticResource lineHeader}">Комментарий</TextBlock>
                     <TextBox Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}" />
@@ -163,46 +164,27 @@
             </StackPanel>
         </Expander>
 
-        <ListView x:Name="results" Grid.Row="2" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,0,0,10"
-                      ItemsSource="{Binding Source={StaticResource resultsView}}"
-                      Style="{StaticResource list}"
-                      HorizontalContentAlignment="Stretch"
-                      Visibility="{Binding Items.Count, RelativeSource={RelativeSource Self}, Converter={StaticResource CountToVisibility}}">
-            <ListView.InputBindings>
-                <KeyBinding Key="Enter" Command="{Binding SelectedItem.OpenHealthRecordCommand, ElementName=results}" />
-                <KeyBinding Key="Space" Command="{Binding SelectedItem.OpenHealthRecordCommand, ElementName=results}" />
-            </ListView.InputBindings>
-            <ListView.GroupStyle>
-                <GroupStyle>
-                    <GroupStyle.HeaderTemplate>
-                        <DataTemplate>
-                            <StackPanel>
-                                <Button Command="{Binding DataContext.OpenPatientCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                        CommandParameter="{Binding Name}"
-                                        Padding="5"
-                                        BorderThickness="0"
-                                        HorizontalContentAlignment="Left"
-                                        FontWeight="Bold">
-                                    <DockPanel Focusable="False">
-                                        <TextBlock Text="{Binding Name.Label}" Width="30" />
-                                        <TextBlock Text="{Binding Name, Mode=OneWay, Converter={StaticResource ManToShortName}}" />
-                                    </DockPanel>
-                                </Button>
-                            </StackPanel>
-                        </DataTemplate>
-                    </GroupStyle.HeaderTemplate>
-                </GroupStyle>
-            </ListView.GroupStyle>
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <search:HrSearchResult Margin="0,3,0,3">
-                        <search:HrSearchResult.InputBindings>
-                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding OpenHealthRecordCommand}" />
-                        </search:HrSearchResult.InputBindings>
-                    </search:HrSearchResult>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <TreeView
+            x:Name="tree" Grid.Row="2" Margin="0,0,0,10"
+            Style="{StaticResource TreeViewStyle}"
+            Visibility="{Binding Results.Count, Converter={StaticResource CountToVisibility}}"
+            ItemsSource="{Binding Results}">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem"
+                    BasedOn="{StaticResource TreeViewItemStyle}">
+                    <EventSetter Event="Selected" Handler="item_selected" />
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
+                    <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
+                    <Setter Property="controls:Attached.InputBindings" Value="{StaticResource SearchResultInputBindings}" />
+                </Style>
+            </TreeView.ItemContainerStyle>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate
+                    ItemsSource="{Binding Children}">
+                    <search:HrSearchResult2 />
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
 
         <TextBlock Grid.Row="2"
                    HorizontalAlignment="Center"
