@@ -89,7 +89,7 @@
                     </editors:DateOffsetPicker.Resources>
                 </editors:DateOffsetPicker>
             </DockPanel>
-            <DockPanel>
+            <DockPanel x:Name="offsetSettings">
                 <DockPanel.Resources>
                     <ObjectDataProvider x:Key="dateSetting" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
                         <ObjectDataProvider.MethodParameters>

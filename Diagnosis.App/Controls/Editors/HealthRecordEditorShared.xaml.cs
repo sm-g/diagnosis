@@ -19,6 +19,9 @@ namespace Diagnosis.App.Controls.Editors
         public HealthRecordEditorShared()
         {
             InitializeComponent();
+#if !DEBUG
+            offsetSettings.Visibility = System.Windows.Visibility.Collapsed;
+#endif
         }
 
         private void hr_grid_MouseDown(object sender, MouseButtonEventArgs e)
