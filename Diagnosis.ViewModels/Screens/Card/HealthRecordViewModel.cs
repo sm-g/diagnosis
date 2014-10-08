@@ -50,7 +50,6 @@ namespace Diagnosis.ViewModels
 
                     OnPropertyChanged("Diagnosis");
                     OnPropertyChanged("ShowDiagnosis");
-                    OnPropertyChanged("Name");
                 }
             }
         }

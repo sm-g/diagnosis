@@ -26,10 +26,8 @@
             <HierarchicalDataTemplate
                 x:Key="fullTreeItemTemplate"
                 ItemsSource="{Binding Children}">
-                <ContentControl Content="{Binding}"
-                                ContentTemplate="{Binding ItemTemplate, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                Focusable="False" />
-                <!--Focusable to navigate-->
+                <ContentPresenter Content="{Binding}"
+                                ContentTemplate="{Binding ItemTemplate, RelativeSource={RelativeSource AncestorType=UserControl}}" />
             </HierarchicalDataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>

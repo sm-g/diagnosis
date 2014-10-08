@@ -37,15 +37,15 @@
             </search:HrsHolderDataTemplateSelector.AppointmentTemplate>
         </search:HrsHolderDataTemplateSelector>
     </UserControl.Resources>
-    <!--HrNewSearchResultViewModel-->
+    <!--HrHolderSearchResultViewModel-->
 
-    <Grid x:Name="appDescription">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <ContentControl Content="{Binding Holder}"
-                        ContentTemplateSelector="{StaticResource selector}" Focusable="False" />
+        <ContentPresenter Content="{Binding Holder}"
+                        ContentTemplateSelector="{StaticResource selector}" />
         <controls:CommaList ItemsSource="{Binding HealthRecords}" Grid.Row="2">
             <controls:CommaList.ItemTemplate>
                 <DataTemplate>
