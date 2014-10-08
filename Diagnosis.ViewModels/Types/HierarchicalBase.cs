@@ -253,6 +253,12 @@ namespace Diagnosis.ViewModels
             {
                 if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
                 {
+                    var item = (T)e.NewItems[0];
+                    if (item.Parent != this)
+                    {
+                        item.Parent = (T)this;
+                        OnParentChanged(new HierarchicalEventAgrs<T>(item));
+                    }
                     OnChildAdded((T)e.NewItems[0]);
                 }
                 else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
@@ -289,7 +295,7 @@ namespace Diagnosis.ViewModels
         }
 
     }
-    
+
     public class HierarchicalEventAgrs<T> : EventArgs
     {
         public readonly T IHierarchical;
