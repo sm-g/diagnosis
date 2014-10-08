@@ -1,4 +1,4 @@
-﻿<ItemsControl x:Class="Diagnosis.App.Controls.CommaList"
+﻿<UserControl x:Class="Diagnosis.App.Controls.CommaList"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,28 +6,37 @@
               mc:Ignorable="d"
               x:Name="commaList"
               d:DesignHeight="20" d:DesignWidth="300">
-    <ItemsControl.ItemsPanel>
-        <ItemsPanelTemplate>
-            <WrapPanel />
-        </ItemsPanelTemplate>
-    </ItemsControl.ItemsPanel>
-    <ItemsControl.ItemTemplate>
-        <DataTemplate>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding}" />
-                <TextBlock x:Name="commaTextBlock" Text=", " />
-            </StackPanel>
-            <DataTemplate.Triggers>
-                <DataTrigger Value="True">
-                    <DataTrigger.Binding>
-                        <MultiBinding Converter="{StaticResource IsLastItem}">
-                            <Binding />
-                            <Binding Path="ItemsSource" ElementName="commaList" />
-                        </MultiBinding>
-                    </DataTrigger.Binding>
-                    <Setter Property="Visibility" TargetName="commaTextBlock" Value="Collapsed" />
-                </DataTrigger>
-            </DataTemplate.Triggers>
-        </DataTemplate>
-    </ItemsControl.ItemTemplate>
-</ItemsControl>
+    <ItemsControl ItemsSource="{Binding ItemsSource, ElementName=commaList}" Focusable="False">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <WrapPanel />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <StackPanel Orientation="Horizontal" x:Name="item">
+                    <ContentPresenter Content="{Binding}" ContentTemplate="{Binding ItemTemplate, ElementName=commaList}" />
+                    <ContentPresenter x:Name="separator" Content="{Binding Separator, ElementName=commaList}">
+                        <ContentPresenter.Style>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Visibility" Value="Visible" />
+
+                                <Style.Triggers>
+                                    <DataTrigger Value="True">
+                                        <DataTrigger.Binding>
+                                            <MultiBinding Converter="{StaticResource IsLastItem}">
+                                                <Binding Path="DataContext" ElementName="item"  />
+                                                <Binding Path="ItemsSource" ElementName="commaList" />
+                                            </MultiBinding>
+                                        </DataTrigger.Binding>
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentPresenter.Style>
+                    </ContentPresenter>
+                </StackPanel>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</UserControl>
