@@ -10,12 +10,16 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="EditableTreeStyle.xaml" />
+                <ResourceDictionary Source="../../Styles/TreeStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Style x:Key="containerStyle"
-                   TargetType="TreeViewItem"
-                   BasedOn="{StaticResource TreeItemContainerStyle}">
+            <Style  x:Key="containerStyle"
+                    TargetType="TreeViewItem"
+                    BasedOn="{StaticResource TreeViewItemStyle}">
+                <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
+                <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
+                <Setter Property="controls:Attached.InputBindings" Value="{StaticResource WordInputBindings}" />
                 <EventSetter Event="Selected" Handler="item_selected" />
             </Style>
 
