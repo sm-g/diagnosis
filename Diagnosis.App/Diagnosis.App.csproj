@@ -205,6 +205,7 @@
     <Compile Include="Controls\CardParts\Appointment.xaml.cs">
       <DependentUpon>Appointment.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\InList.cs" />
     <Compile Include="Screens\CurrentHrsHolderDataTemplateSelector.cs" />
     <Compile Include="Controls\Common\AlignableWrapPanel.cs" />
     <Compile Include="Controls\CardParts\AppointmentsTabs.xaml.cs">
