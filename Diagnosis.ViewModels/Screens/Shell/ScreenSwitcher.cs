@@ -19,7 +19,7 @@ namespace Diagnosis.ViewModels
     {
         List<Screens> history = new List<Screens>();
         private Screens _curScreen;
-        private SessionVMBase _curView;
+        private ScreenBase _curView;
 
         public ScreenSwitcher()
         {
@@ -133,7 +133,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public SessionVMBase CurrentView
+        public ScreenBase CurrentView
         {
             get
             {

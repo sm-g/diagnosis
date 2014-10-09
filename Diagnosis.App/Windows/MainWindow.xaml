@@ -9,7 +9,7 @@
         x:Class="Diagnosis.App.Windows.MainWindow"
         mc:Ignorable="d" 
         x:Name="root"
-        Title="MainWindow" Height="700" Width="850">
+        Title="{Binding CurrentView.Title}" Height="700" Width="850">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

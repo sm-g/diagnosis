@@ -13,7 +13,7 @@ using Diagnosis.Data.Queries;
 
 namespace Diagnosis.ViewModels
 {
-    public class PatientsListViewModel : SessionVMBase
+    public class PatientsListViewModel : ScreenBase
     {
         private ShortPatientViewModel _current;
         private NewFilterViewModel<Patient> _filter;
@@ -43,6 +43,8 @@ namespace Diagnosis.ViewModels
             _filter.Clear(); // показываем всех
 
             SelectLastPatient();
+
+            Title = "Пациенты";
         }
 
         public ObservableCollection<ShortPatientViewModel> Patients { get { return _patients; } }

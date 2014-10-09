@@ -37,7 +37,7 @@ namespace Diagnosis.ViewModels
             (CurrentView as LoginViewModel).LoginCommand.Execute(null);
         }
 
-        public ViewModelBase CurrentView
+        public ScreenBase CurrentView
         {
             get
             {

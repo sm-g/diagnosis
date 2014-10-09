@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
-    public class LoginViewModel : SessionVMBase
+    public class LoginViewModel : ScreenBase
     {
         private SecureString _password;
         private bool _wrongpassword;
@@ -96,6 +96,8 @@ namespace Diagnosis.ViewModels
             {
                 CurrentDoctor = Doctors[0];
             }
+
+            Title = "Вход";
         }
 
         public class DoctorViewModel : ViewModelBase

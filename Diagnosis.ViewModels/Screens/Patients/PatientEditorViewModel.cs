@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace Diagnosis.ViewModels
 {
-    public class PatientEditorViewModel : SessionVMBase
+    public class PatientEditorViewModel : ScreenBase
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(PatientEditorViewModel));
         private readonly Patient patient;
@@ -113,6 +113,8 @@ namespace Diagnosis.ViewModels
             Patient = new PatientViewModel(patient);
 
             (patient as IEditableObject).BeginEdit();
+
+            Title = "Данные пациента";
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.Core;
+using Diagnosis.Models;
 using log4net;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -8,7 +9,7 @@ using System.Windows;
 
 namespace Diagnosis.ViewModels
 {
-    public partial class CardViewModel : SessionVMBase
+    public partial class CardViewModel : ScreenBase
     {
         private static PatientViewer viewer; // static to hold history
         private static readonly ILog logger = LogManager.GetLogger(typeof(CardViewModel));
@@ -308,6 +309,8 @@ namespace Diagnosis.ViewModels
                     viewer.OpenedAppointment = null;
                 }
             }
+
+            Title = MakeTitle();
         }
 
         private void SaveHealthRecord(HealthRecord hr)
@@ -343,6 +346,20 @@ namespace Diagnosis.ViewModels
                 holder = Patient.patient;
             }
             return (IHrsHolder)Session.GetSessionImplementation().PersistenceContext.Unproxy(holder);
+        }
+
+        private string MakeTitle()
+        {
+            string delim = " — ";
+            string result = string.Format("{0} {1}", Patient.Label, NameFormatter.GetShortName(Patient.patient));
+            if (Course != null)
+            {
+                result += delim + "курс " + DateFormatter.GetIntervalString(Course.Start, Course.End);
+            } if (Appointment != null)
+            {
+                result += delim + "осмотр " + DateFormatter.GetDateString(Appointment.DateTime);
+            }
+            return result;
         }
 
         /// <summary>

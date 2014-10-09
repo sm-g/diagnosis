@@ -13,7 +13,7 @@ using Diagnosis.Data.Queries;
 
 namespace Diagnosis.ViewModels
 {
-    public class WordsListViewModel : SessionVMBase
+    public class WordsListViewModel : ScreenBase
     {
         private NewFilterViewModel<Word> _filter;
 
@@ -132,6 +132,8 @@ namespace Diagnosis.ViewModels
             };
 
             _filter.Clear();// показываем все слова
+
+            Title = "Словарь";
         }
 
     }
