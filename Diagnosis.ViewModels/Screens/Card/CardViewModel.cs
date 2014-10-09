@@ -240,7 +240,10 @@ namespace Diagnosis.ViewModels
         {
             if (HrList != null)
             {
-                HrList.Dispose(); // del hrs
+                if (HrList.holder == holder)
+                    return; // список может быть уже создан в Show
+
+                HrList.Dispose(); // delete hrs here
             }
 
             if (holder != null)
