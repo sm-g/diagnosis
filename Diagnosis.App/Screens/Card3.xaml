@@ -135,16 +135,11 @@
                         <card:HealthRecordsList DataContext="{Binding HrList}" />
 
                         <Border Grid.Row="2" BorderThickness="0,1,0,0" SnapsToDevicePixels="True"
+                                Background="{StaticResource hrEditorBackgroundBrush}"
                                 Visibility="{Binding HrEditor.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Border.BorderBrush>
                                 <SolidColorBrush Color="Gray" />
                             </Border.BorderBrush>
-                            <Border.Background>
-                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                    <GradientStop Color="#FFFFEAD2" Offset="0" />
-                                    <GradientStop Color="#FFFFFBFB" Offset="1" />
-                                </LinearGradientBrush>
-                            </Border.Background>
 
                             <Grid Margin="10,0,10,10">
                                 <editors:HealthRecordEditorShared DataContext="{Binding HrEditor}" />

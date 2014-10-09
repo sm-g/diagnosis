@@ -7,7 +7,7 @@
         xmlns:screen="clr-namespace:Diagnosis.App.Screens"
         xmlns:shell="clr-namespace:Diagnosis.App.Windows.Shell"
         x:Class="Diagnosis.App.Windows.MainWindow"
-        mc:Ignorable="d"
+        mc:Ignorable="d" 
         x:Name="root"
         Title="MainWindow" Height="700" Width="850">
     <Window.Resources>
@@ -38,7 +38,7 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid>
+    <Grid Background="{DynamicResource mainWindowBackgroundBrush}" >
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
@@ -48,25 +48,26 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
-        
+
         <shell:MenuBar Grid.ColumnSpan="2"
                        DataContext="{Binding MenuBar}"
                        Visibility="{Binding DataContext.MenuVisible, ElementName=root,  Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-        <shell:AsidePanels 
+        <shell:AsidePanels
                         Margin="0,0,-2,0"
                         Padding="0"
                    DataContext="{Binding RightAside}"
                    Visibility="{Binding DataContext.MenuVisible, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}"
                    Grid.Row="1"
                    Grid.Column="1"
-                   Grid.RowSpan="2" />       
+                   Grid.RowSpan="2">
+        </shell:AsidePanels>
 
         <ContentControl Content="{Binding CurrentView}"
                         Grid.Row="2" />
 
         <ItemsControl DataContext="{Binding OverlayService}" ItemsSource="{Binding Overlays}" HorizontalAlignment="Right"
-                      Grid.Row="2">            
+                      Grid.Row="2">
         </ItemsControl>
     </Grid>
 </Window>

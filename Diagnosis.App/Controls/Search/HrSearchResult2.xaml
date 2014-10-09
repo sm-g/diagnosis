@@ -46,7 +46,7 @@
         </Grid.RowDefinitions>
         <ContentPresenter Content="{Binding Holder}"
                         ContentTemplateSelector="{StaticResource selector}" />
-        <controls:CommaList ItemsSource="{Binding HealthRecords}" Grid.Row="2">
+        <controls:CommaList ItemsSource="{Binding HealthRecords}" Visibility="{Binding HealthRecords.Count, Converter={StaticResource CountToVisibility}}" Grid.Row="2">
             <controls:CommaList.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Converter={StaticResource hrItems}}" TextWrapping="Wrap">
@@ -60,7 +60,8 @@
                                                 <Binding Path="DataContext.FoundHealthRecords" RelativeSource="{RelativeSource AncestorType=UserControl,AncestorLevel=2}" />
                                             </MultiBinding>
                                         </DataTrigger.Binding>
-                                        <Setter Property="Background" Value="Gray" />
+                                        <Setter Property="Background" Value="{StaticResource searchHighlightBackgroundBrush}" />
+                                        <Setter Property="Foreground" Value="{StaticResource searchHighlightForegroundBrush}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>

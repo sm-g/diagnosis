@@ -31,7 +31,8 @@
                                                     <Binding />
                                                 </MultiBinding>
                                             </DataTrigger.Binding>
-                                            <Setter Property="Background" Value="Yellow" />
+                                            <Setter Property="Background" Value="{StaticResource searchHighlightBackgroundBrush}" />
+                                            <Setter Property="Foreground" Value="{StaticResource searchHighlightForegroundBrush}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

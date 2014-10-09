@@ -8,7 +8,7 @@ namespace Diagnosis.App.Converters
 {
     public class IHierarchicalCheckableToBackground : IValueConverter
     {
-        private static Brush noCheckedChildBrush = new LinearGradientBrush(Colors.Beige, Colors.Transparent, 0);
+        private static Brush noCheckedChildBrush = new LinearGradientBrush(Colors.Transparent, Colors.Transparent, 0);
         private static Brush isCheckedChildBrush = new LinearGradientBrush(Colors.Turquoise, Colors.Transparent, 0);
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

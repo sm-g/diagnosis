@@ -19,7 +19,7 @@
             </DataTemplate>
             
             <Style TargetType="TabControl">
-                <Setter Property="BorderThickness" Value="1,0,1,0" />
+                <Setter Property="BorderThickness" Value="3,0,1,0" />
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding AllClosed}" Value="True">
                         <Setter Property="BorderThickness" Value="0,0,1,0" />
