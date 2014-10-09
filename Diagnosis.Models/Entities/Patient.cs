@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class Patient : ValidatableEntity, IDomainEntity, IHrsHolder
+    public class Patient : ValidatableEntity, IDomainEntity, IHrsHolder, IMan
     {
         private Iesi.Collections.Generic.ISet<Course> courses = new HashedSet<Course>();
         Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();

@@ -140,7 +140,9 @@
     <Compile Include="DateOffset.cs" />
     <Compile Include="Extensions\ConvertExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Formatters\NameFormatter.cs" />
     <Compile Include="Formatters\Plurals.cs" />
+    <Compile Include="Interfaces\IMan.cs" />
     <Compile Include="Types\DisposableBase.cs" />
     <Compile Include="Types\INCCReadOnlyObservableCollection.cs" />
     <Compile Include="Interfaces\IAutoComplete.cs" />

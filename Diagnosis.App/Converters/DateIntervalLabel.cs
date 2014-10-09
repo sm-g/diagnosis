@@ -13,47 +13,17 @@ namespace Diagnosis.App.Converters
         public object Convert(object[] values, Type targetType,
             object parameter, CultureInfo culture)
         {
-            if (values.Length < 1)
+            if (values.Length == 0)
                 return null;
-
-            var fromLabel = "с";
-            var toLabel = "по";
-            if (parameter != null)
-            {
-                var labels = parameter as IList<string>;
-                if (labels != null && labels.Count > 0)
-                {
-                    fromLabel = labels.First();
-                    toLabel = labels.Last();
-                }
-            }
 
             DateTime? from = (DateTime?)(values[0] is DateTime? ? values[0] : null);
             DateTime? to = (DateTime?)(values.Length > 1 && values[1] is DateTime? ? values[1] : null);
 
-            if (!(from.HasValue || to.HasValue))
+            if (from == null && to == null)
                 return null;
 
-            Tuple<string, string> formats;
-
-            if (from.HasValue)
-            {
-                formats = DateFormatter.GetFormat(from.Value, to);
-            }
-            else // only to.HasValue
-            {
-                formats = DateFormatter.GetFormat(to.Value, null);
-            }
-
-            if (from.HasValue && to.HasValue)
-                return string.Format("{0} {1} {2} {3}", fromLabel, from.Value.ToString(formats.Item1), toLabel, to.Value.ToString(formats.Item2));
-            else
-            {
-                if (from.HasValue)
-                    return string.Format("{0} {1}", fromLabel, from.Value.ToString(formats.Item1));
-                else // to.HasValue
-                    return string.Format("{0} {1}", toLabel, to.Value.ToString(formats.Item1));
-            }
+            var labels = parameter as IList<string>;
+            return DateFormatter.GetIntervalString(from, to, labels);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes,
@@ -68,14 +38,19 @@ namespace Diagnosis.App.Converters
         public object Convert(object value, Type targetType,
             object parameter, CultureInfo culture)
         {
-            if (value == null)
+            if (!(value is DateTime))
                 return null;
 
             DateTime from = (DateTime)value;
 
-            var formats = DateFormatter.GetFormat(from, null);
+            var prefix = parameter as string;
+            var str = DateFormatter.GetDateString(from);
 
-            return string.Format("{0} {1}", parameter ?? "", from.ToString(formats.Item1));
+            if (prefix == null)
+                return str;
+            else
+                return string.Format("{0} {1}", prefix, str);
+
         }
 
         public object ConvertBack(object value, Type targetType,
