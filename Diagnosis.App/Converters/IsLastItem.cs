@@ -17,6 +17,8 @@ namespace Diagnosis.App.Converters
             var list = values[1] as IList;
             if (list == null)
                 return false;
+            if (list.Count <= 1)
+                return true;
             return object.Equals(values[0], list[list.Count - 1]);
         }
 
