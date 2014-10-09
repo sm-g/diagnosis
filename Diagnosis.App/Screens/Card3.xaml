@@ -34,18 +34,18 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <TextBlock Text="Курсы" Margin="0,0,10,5" />
-                    <ListView Grid.Row="1" ItemsSource="{Binding Courses}" SelectedItem="{Binding SelectedCourse}">
-                        <ListView.ItemTemplate>
+                    <ListBox Grid.Row="1" ItemsSource="{Binding Courses}" SelectedItem="{Binding SelectedCourse}">
+                        <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <card:Course />
                             </DataTemplate>
-                        </ListView.ItemTemplate>
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListViewItem}">
+                        </ListBox.ItemTemplate>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                                 <Setter Property="controls:Attached.InputBindings" Value="{StaticResource CourseInputBindings}" />
                             </Style>
-                        </ListView.ItemContainerStyle>
-                    </ListView>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
                 </Grid>
 
                 <Button Command="{Binding StartCourseCommand}" Grid.Row="1"
@@ -69,18 +69,18 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <TextBlock Text="Осмотры" Margin="0,0,10,5" />
-                    <ListView Grid.Row="1" ItemsSource="{Binding Appointments}" SelectedItem="{Binding SelectedAppointment}">
-                        <ListView.ItemTemplate>
+                    <ListBox Grid.Row="1" ItemsSource="{Binding Appointments}" SelectedItem="{Binding SelectedAppointment}">
+                        <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <card:Appointment />
                             </DataTemplate>
-                        </ListView.ItemTemplate>
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListViewItem}">
+                        </ListBox.ItemTemplate>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                                 <Setter Property="controls:Attached.InputBindings" Value="{StaticResource AppointmentInputBindings}" />
                             </Style>
-                        </ListView.ItemContainerStyle>
-                    </ListView>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
                 </Grid>
 
                 <Button Command="{Binding AddAppointmentCommand}" Grid.Row="1"

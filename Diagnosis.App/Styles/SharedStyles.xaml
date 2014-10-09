@@ -14,7 +14,7 @@
         <Setter Property="Orientation" Value="Horizontal" />
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Style.Resources>
-            <Style TargetType="Button">
+            <Style TargetType="Button" >
                 <Setter Property="MinWidth" Value="75"/>
                 <Setter Property="MinHeight" Value="23"/>
                 <Setter Property="Margin" Value="10,10,0,0"/>
@@ -87,9 +87,5 @@
     <!-- misc -->
     <Style TargetType="TextBlock" x:Key="ScreenTitle">
         <Setter Property="FontSize" Value="20" />
-    </Style>
-
-    <Style TargetType="ListView" x:Key="list">
-        <Setter Property="BorderThickness" Value="0" />
-    </Style>   
+    </Style>  
 </ResourceDictionary>

@@ -38,7 +38,7 @@
         <Popup x:Name="popup"
                IsOpen="{Binding IsResultsVisible, Mode=TwoWay}"
                PlacementTarget="{Binding ElementName=input, Mode=OneWay}">
-            <ListView x:Name="results"
+            <ListBox x:Name="results"
                 MaxHeight="100"
                 ItemsSource="{Binding Filter.Results}"
                 SelectionChanged="results_SelectionChanged"
@@ -48,14 +48,14 @@
                 Visibility="{Binding Filter.Results.Count, Converter={StaticResource CountToVisibility}, Mode=OneWay}"
                   Grid.Row="1"
 >
-                <ListView.ItemTemplate>
+                <ListBox.ItemTemplate>
                     <DataTemplate>
                         <DockPanel>
                             <TextBlock Text="{Binding }" />
                         </DockPanel>
                     </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Popup>
     </Grid>
 </UserControl>

@@ -41,7 +41,7 @@
                 <KeyBinding Key="Enter" Command="{Binding EnterCommand}" CommandParameter="{Binding EditingTag}" />
             </ListBox.InputBindings>
             <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}">
+                <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                     <Style.Triggers>
                         <Trigger Property="IsKeyboardFocusWithin" Value="True">
                             <Setter Property="IsSelected" Value="True" />
@@ -83,7 +83,7 @@
                     <KeyBinding Key="Enter" Command="{Binding EnterCommand}" CommandParameter="{Binding EditingTag}" />
                 </ListBox.InputBindings>
                 <ListBox.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListBoxItem}">
+                    <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                         <Setter Property="controls:Attached.InputBindings" Value="{StaticResource SuggestionInputBindings}" />
                     </Style>
                 </ListBox.ItemContainerStyle>

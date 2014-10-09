@@ -36,18 +36,18 @@
 
             <StackPanel VerticalAlignment="Top" Visibility="{Binding Patient.NoCourses, Converter={StaticResource NegBooleanToVisibilityConverter}}" Margin="0,0,0,10">
                 <TextBlock Text="Курсы" Margin="0,0,10,5" />
-                <ListView ItemsSource="{Binding Patient.Courses}" SelectedIndex="-1">
-                    <ListView.ItemTemplate>
+                <ListBox ItemsSource="{Binding Patient.Courses}" SelectedIndex="-1">
+                    <ListBox.ItemTemplate>
                         <DataTemplate>
                             <card:Course />
                         </DataTemplate>
-                    </ListView.ItemTemplate>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListViewItem}">
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
                             <Setter Property="controls:Attached.InputBindings" Value="{StaticResource CourseInputBindings}" />
                         </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
                 <Button Command="{Binding StartCourseCommand}"
                         VerticalAlignment="Center"
                         Content="_Начать курс" />

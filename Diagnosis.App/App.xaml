@@ -9,6 +9,7 @@
                 <ResourceDictionary Source="Resources/ImageResources.xaml" />
                 <ResourceDictionary Source="Resources/ColorResources.xaml" />
                 <ResourceDictionary Source="Styles/SharedStyles.xaml" />
+                <ResourceDictionary Source="Styles/ListBoxItemAero2Style.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <s:Boolean x:Key="True">True</s:Boolean>
