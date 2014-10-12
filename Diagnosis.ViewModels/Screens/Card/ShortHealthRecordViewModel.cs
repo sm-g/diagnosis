@@ -211,6 +211,9 @@ namespace Diagnosis.ViewModels
                 case "FromYear":
                     OnPropertyChanged("SortingDate");
                     break;
+                case "HrItems":
+                    OnPropertyChanged("Name");
+                    break;
 
                 default:
                     break;

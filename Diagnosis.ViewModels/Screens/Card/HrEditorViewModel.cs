@@ -104,6 +104,7 @@ namespace Diagnosis.ViewModels
                        {
                            (HealthRecord.healthRecord as IEditableObject).CancelEdit();
                            (HealthRecord.healthRecord as IEditableObject).BeginEdit();
+                           CreateAutoComplete();
                        }, () => IsActive && HealthRecord.healthRecord.IsDirty);
             }
         }

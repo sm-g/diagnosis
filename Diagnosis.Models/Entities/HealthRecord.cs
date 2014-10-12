@@ -216,9 +216,14 @@ namespace Diagnosis.Models
         }
 
 
-        public virtual IEnumerable<HrItem> HrItems
+        public virtual Iesi.Collections.Generic.ISet<HrItem> HrItems
         {
             get { return hrItems; }
+            protected internal set
+            {
+                hrItems = value;
+                OnPropertyChanged("HrItems");
+            }
         }
         public virtual IEnumerable<Measure> Measures
         {
@@ -255,9 +260,10 @@ namespace Diagnosis.Models
         public virtual void AddItem(HrItem item)
         {
             Contract.Requires(item != null);
+            var hrItemsCopy = new HashedSet<HrItem>(hrItems);
             if (hrItems.Add(item))
             {
-                EditHelper.Edit(() => HrItems);
+                EditHelper.Edit("HrItems", hrItemsCopy);
                 if (InEdit)
                 {
                     IsDirty = true;
@@ -270,9 +276,10 @@ namespace Diagnosis.Models
         public virtual void RemoveItem(HrItem item)
         {
             Contract.Requires(item != null);
+            var hrItemsCopy = new HashedSet<HrItem>(hrItems);
             if (hrItems.Remove(item))
             {
-                EditHelper.Edit(() => HrItems);
+                EditHelper.Edit("HrItems", hrItemsCopy);
                 if (InEdit)
                 {
                     IsDirty = true;
