@@ -173,10 +173,7 @@
     <Compile Include="Queries\WordQuery.cs" />
     <Compile Include="Repositories\IcdChapterRepository.cs" />
     <Compile Include="Repositories\NHibernateRepository.cs" />
-    <Compile Include="Repositories\HealthRecordRepository.cs" />
-    <Compile Include="Repositories\WordRepository.cs" />
     <Compile Include="Repositories\ModelRepository.cs" />
-    <Compile Include="Repositories\IModelRepositories.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specs\DiagnosisSpecifications.cs" />
@@ -188,7 +185,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Repositories\RepositoriesClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Diagnosis.Common\Diagnosis.Common.csproj">
