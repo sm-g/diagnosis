@@ -43,8 +43,6 @@ namespace Diagnosis.ViewModels
             this.patient = patient;
             this.onCoursesChanged = onCoursesChanged;
 
-            Courses.Count();
-
             patient.CoursesChanged += patient_CoursesChanged;
             patient.CoursesChanged += onCoursesChanged;
         }

@@ -268,6 +268,11 @@ namespace Diagnosis.ViewModels
             };
         }
 
+        /// <summary>
+        /// If newState true, checks all parents.
+        /// Else unckecks all children.
+        /// </summary>
+        /// <param name="newState"></param>
         private void PropagateCheckedState(bool newState)
         {
             // check parent

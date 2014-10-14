@@ -45,8 +45,6 @@ namespace Diagnosis.ViewModels
         {
             this.course = course;
 
-            Appointments.Count();
-
             course.AppointmentsChanged += course_AppointmentsChanged;
         }
 
