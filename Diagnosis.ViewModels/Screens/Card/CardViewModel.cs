@@ -355,11 +355,16 @@ namespace Diagnosis.ViewModels
         {
             string delim = " — ";
             string result = string.Format("{0} {1}", Patient.Label, NameFormatter.GetShortName(Patient.patient));
-            if (Course != null)
+
+            var holder = GetHolderOfVm(CurrentHolder);
+
+            if (holder is Course)
             {
                 result += delim + "курс " + DateFormatter.GetIntervalString(Course.Start, Course.End);
-            } if (Appointment != null)
+            }
+            else if (holder is Appointment)
             {
+                result += delim + "курс " + DateFormatter.GetIntervalString(Course.Start, Course.End);
                 result += delim + "осмотр " + DateFormatter.GetDateString(Appointment.DateTime);
             }
             return result;
