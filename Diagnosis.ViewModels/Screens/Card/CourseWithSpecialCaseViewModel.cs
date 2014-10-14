@@ -7,11 +7,12 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
-    public class CourseViewModel1 : ViewModelBase
+    public class CourseWithSpecialCaseViewModel : ViewModelBase
     {
         internal readonly Course course;
-        private ShortAppointmentViewModel _selApp;
-        private AppointmentsManager1 appManager;
+        private bool addingApp;
+        private SpecialCaseItem _selApp;
+        private AppointmentsSpecialCaseManager appManager;
 
         #region Model
 
@@ -58,7 +59,7 @@ namespace Diagnosis.ViewModels
 
         #endregion Model
 
-        public ObservableCollection<ShortAppointmentViewModel> Appointments
+        public ObservableCollection<SpecialCaseItem> Appointments
         {
             get
             {
@@ -66,7 +67,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public ShortAppointmentViewModel SelectedAppointment
+        public SpecialCaseItem SelectedAppointment
         {
             get
             {
@@ -76,30 +77,38 @@ namespace Diagnosis.ViewModels
             {
                 if (_selApp != value)
                 {
-                    _selApp = value;
-                    OnPropertyChanged(() => SelectedAppointment);
+                    if (value.IsAddNew)
+                    {
+                        AddAppointmentCommand.Execute(null);
+                    }
+                    else
+                    {
+                        _selApp = value;
+                        OnPropertyChanged(() => SelectedAppointment);
+                    }
                 }
             }
         }
 
+        /// <summary>
+        /// Добавляет осмотр, если курс не закончился.
+        /// </summary>
         public ICommand AddAppointmentCommand
         {
             get
             {
                 return new RelayCommand(() =>
                         {
-                            course.AddAppointment(AuthorityController.CurrentDoctor);
+                            if (!addingApp)
+                            {
+                                addingApp = true;
+                                var app = course.AddAppointment(AuthorityController.CurrentDoctor);
+                                addingApp = false;
+                            }
                         }, () => !IsEnded);
             }
         }
 
-        public bool NoApps
-        {
-            get
-            {
-                return Appointments.Count == 0;
-            }
-        }
         public bool IsDoctorCurrent
         {
             get
@@ -108,12 +117,12 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public CourseViewModel1(Course course)
+        public CourseWithSpecialCaseViewModel(Course course)
         {
             Contract.Requires(course != null);
             this.course = course;
 
-            appManager = new AppointmentsManager1(course);
+            appManager = new AppointmentsSpecialCaseManager(course);
         }
 
         /// <summary>
@@ -131,7 +140,7 @@ namespace Diagnosis.ViewModels
 
         internal void SelectAppointment(Appointment appointment)
         {
-            SelectedAppointment = Appointments.FirstOrDefault(x => x.appointment == appointment);
+            SelectedAppointment = Appointments.FirstOrDefault(x => x.Content != null && x.To<ShortAppointmentViewModel>().appointment == appointment);
         }
     }
 }

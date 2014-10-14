@@ -8,30 +8,40 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
-    public class AppointmentsManager1 : DisposableBase
+    public class AppointmentsSpecialCaseManager : DisposableBase
     {
         private readonly Course course;
-        private ObservableCollection<ShortAppointmentViewModel> _appointments;
+        private ObservableCollection<SpecialCaseItem> _appointments;
 
         public event EventHandler AppointmentsLoaded;
 
-        public ObservableCollection<ShortAppointmentViewModel> Appointments
+        public ObservableCollection<SpecialCaseItem> Appointments
         {
             get
             {
                 if (_appointments == null)
                 {
-                    var appVMs = course.Appointments.Select(app => new ShortAppointmentViewModel(app));
+                    IList<SpecialCaseItem> wrappers;
 
-                    _appointments = new ObservableCollection<ShortAppointmentViewModel>(appVMs);
+                    wrappers = course.Appointments
+                        .Select(app => new ShortAppointmentViewModel(app))
+                        .Select(vm => new SpecialCaseItem(vm))
+                        .ToList();
 
+                    _appointments = new ObservableCollection<SpecialCaseItem>(wrappers);
+                    if (!course.End.HasValue)
+                    {
+                        _appointments.Add(new SpecialCaseItem(SpecialCaseItem.Cases.AddNew));
+                    }
+
+                    SetAppointmentsDeletable();
                     OnAppointmentsLoaded();
                 }
                 return _appointments;
             }
         }
 
-        public AppointmentsManager1(Course course)
+        public AppointmentsSpecialCaseManager(Course course)
         {
             this.course = course;
 
@@ -47,14 +57,17 @@ namespace Diagnosis.ViewModels
                 foreach (Appointment item in e.NewItems)
                 {
                     var appVM = new ShortAppointmentViewModel(item);
-                    Appointments.Add(appVM);
+                    var wrapper = new SpecialCaseItem(appVM);
+
+                    // TODO start course from card bug
+                    Appointments.Insert(Appointments.Count - 1, wrapper);
                 }
             }
             else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {
                 foreach (Appointment item in e.OldItems)
                 {
-                    var appVM = Appointments.Where(w => w.appointment == item).FirstOrDefault();
+                    var appVM = Appointments.Where(w => w.To<ShortAppointmentViewModel>().appointment == item).FirstOrDefault();
                     Appointments.Remove(appVM);
                 }
             }
@@ -67,6 +80,22 @@ namespace Diagnosis.ViewModels
             {
                 h(this, EventArgs.Empty);
             }
+        }
+
+        private void SetAppointmentsDeletable()
+        {
+            //// проверяем, остался ли курс пустым
+            //course.Editable.CanBeDeleted = course.IsEmpty;
+
+            //// нельзя удалять единственный непустой осмотр
+            //if (Appointments.Count > 1)
+            //{
+            //    Appointments.ForAll(app => app.Editable.CanBeDeleted = true);
+            //}
+            //else if (Appointments.Count == 1)
+            //{
+            //    Appointments[0].Editable.CanBeDeleted = Appointments[0].IsEmpty;
+            //}
         }
 
         protected override void Dispose(bool disposing)

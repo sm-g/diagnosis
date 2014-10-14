@@ -152,9 +152,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthorityController.cs" />
-    <Compile Include="Screens\Card\CourseViewModel1.cs" />
+    <Compile Include="Screens\Card\CourseViewModel.cs" />
     <Compile Include="Screens\Card\HrListViewModel.cs" />
-    <Compile Include="Screens\Card\Managers\AppointmentsManager1.cs" />
+    <Compile Include="Screens\Card\Managers\AppointmentsManager.cs" />
     <Compile Include="Screens\Card\ShortHealthRecordViewModel.cs" />
     <Compile Include="Screens\Card\ShortAppointmentViewModel.cs" />
     <Compile Include="Screens\Card\ShortCourseViewModel.cs" />
@@ -166,10 +166,10 @@
     <Compile Include="Screens\Words\WordEditorViewModel.cs" />
     <Compile Include="Search\HrHolderSearchResultViewModel.cs" />
     <Compile Include="Types\CheckableBase.cs" />
-    <Compile Include="Screens\Card\Managers\AppointmentsManager.cs" />
+    <Compile Include="Screens\Card\Managers\AppointmentsSpecialCaseManager.cs" />
     <Compile Include="Screens\Card\AppointmentViewModel.cs" />
     <Compile Include="Screens\Card\Managers\CoursesManager.cs" />
-    <Compile Include="Screens\Card\CourseViewModel.cs" />
+    <Compile Include="Screens\Card\CourseWithSpecialCaseViewModel.cs" />
     <Compile Include="Screens\Card\DiagnosisViewModel.cs" />
     <Compile Include="Screens\Card\Managers\HealthRecordManager.cs" />
     <Compile Include="Screens\Card\HealthRecordViewModel.cs" />

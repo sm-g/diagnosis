@@ -15,7 +15,7 @@ namespace Diagnosis.ViewModels
         private static readonly ILog logger = LogManager.GetLogger(typeof(CardViewModel));
 
         private PatientViewModel _patient;
-        private CourseViewModel1 _course;
+        private CourseViewModel _course;
         private AppointmentViewModel _appointment;
         private HrListViewModel _hrList;
         private HrEditorViewModel _hrEditor;
@@ -73,7 +73,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public CourseViewModel1 Course
+        public CourseViewModel Course
         {
             get
             {
@@ -340,7 +340,7 @@ namespace Diagnosis.ViewModels
             {
                 holder = Appointment.appointment;
             }
-            else if (holderVm is CourseViewModel1)
+            else if (holderVm is CourseViewModel)
             {
                 holder = Course.course;
             }
@@ -419,7 +419,7 @@ namespace Diagnosis.ViewModels
                 switch (e.action)
                 {
                     case PatientViewer.OpeningAction.Open:
-                        Course = new CourseViewModel1(course);
+                        Course = new CourseViewModel(course);
 
                         HrsHolders.Add(Course);
 

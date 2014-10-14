@@ -21,7 +21,7 @@ namespace Diagnosis.App.Controls.Screens
             {
                 return PatientTemplate;
             }
-            if (item is CourseViewModel1)
+            if (item is CourseViewModel)
             {
                 return CourseTemplate;
             }
