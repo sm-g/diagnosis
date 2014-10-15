@@ -23,17 +23,5 @@ namespace Diagnosis.App.Screens
         {
             InitializeComponent();
         }
-
-        private void item_selected(object sender, RoutedEventArgs e)
-        {
-            TreeViewItem tvi = sender as TreeViewItem;
-            if (tvi != null)
-            {
-                tvi.BringIntoView();
-                tvi.Focus();
-            }
-            e.Handled = true;
-        }
-
     }
 }

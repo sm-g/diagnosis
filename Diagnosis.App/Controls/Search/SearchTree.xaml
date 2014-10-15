@@ -12,27 +12,6 @@
              controls:EnhancedFocusScope.IsEnhancedFocusScope="True">
     <!--PopupSearch<DiagnosisViewModel>-->
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../../Styles/TreeStyle.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-
-            <Style x:Key="simpleTreeItemContainerStyle"
-                   TargetType="TreeViewItem"
-                   BasedOn="{StaticResource TreeViewItemStyle}">
-                <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
-                <Setter Property="Visibility" Value="{Binding IsExpanded, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <EventSetter Event="KeyDown" Handler="item_KeyDown" />
-                <EventSetter Event="MouseUp" Handler="item_MouseUp" />
-                <EventSetter Event="Selected" Handler="item_selected" />
-            </Style>
-
-            <HierarchicalDataTemplate
-                x:Key="simpleTreeItemTemplate"
-                ItemsSource="{Binding Children}">
-                <TextBlock Text="{Binding}" />
-            </HierarchicalDataTemplate>
-        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid MaxHeight="100">
@@ -68,12 +47,21 @@
         <Popup x:Name="popup"
                IsOpen="{Binding IsResultsVisible, Mode=TwoWay}"
                PlacementTarget="{Binding ElementName=input, Mode=OneWay}">
-            <TreeView x:Name="results"
-                Style="{StaticResource TreeViewStyle}"
-                ItemContainerStyle="{StaticResource simpleTreeItemContainerStyle}"
-                ItemTemplate="{StaticResource simpleTreeItemTemplate}"
-                ItemsSource="{Binding Filter.Results}">
-            </TreeView>
+            <controls:FullTree x:Name="results" DataContext="{Binding Filter.Results}">
+                <controls:FullTree.ItemContainerStyle>
+                    <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}">
+                        <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
+                        <Setter Property="Visibility" Value="{Binding IsExpanded, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <EventSetter Event="KeyDown" Handler="item_KeyDown" />
+                        <EventSetter Event="MouseUp" Handler="item_MouseUp" />
+                    </Style>
+                </controls:FullTree.ItemContainerStyle>
+                <controls:FullTree.ItemTemplate>
+                    <DataTemplate>
+                    <TextBlock Text="{Binding}" />
+                    </DataTemplate>
+                </controls:FullTree.ItemTemplate>
+            </controls:FullTree>
         </Popup>
     </Grid>
 </UserControl>

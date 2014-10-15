@@ -15,7 +15,6 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Styles/SplitExpander.xaml" />
-                <ResourceDictionary Source="../Styles/TreeStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <s:Double x:Key="lineMargin">10</s:Double>
 
@@ -164,27 +163,20 @@
             </StackPanel>
         </Expander>
 
-        <TreeView BorderThickness="0"
-            x:Name="tree" Grid.Row="2" Margin="5,5,5,10"
-            Style="{StaticResource TreeViewStyle}"
-            Visibility="{Binding Results.Count, Converter={StaticResource CountToVisibility}}"
-            ItemsSource="{Binding Results}">
-            <TreeView.ItemContainerStyle>
-                <Style TargetType="TreeViewItem"
-                    BasedOn="{StaticResource TreeViewItemStyle}">
-                    <EventSetter Event="Selected" Handler="item_selected" />
+        <controls:FullTree DataContext="{Binding Results}" Grid.Row="2" Margin="5,5,5,10"  Visibility="{Binding Results.Count, Converter={StaticResource CountToVisibility}}">
+            <controls:FullTree.ItemContainerStyle>
+                <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}">
                     <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
                     <Setter Property="controls:Attached.InputBindings" Value="{StaticResource SearchResultInputBindings}" />
                 </Style>
-            </TreeView.ItemContainerStyle>
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate
-                    ItemsSource="{Binding Children}">
+            </controls:FullTree.ItemContainerStyle>
+            <controls:FullTree.ItemTemplate>
+                <DataTemplate>
                     <search:HrSearchResult2 />
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>
-
+                </DataTemplate>
+            </controls:FullTree.ItemTemplate>
+        </controls:FullTree>
+      
         <TextBlock Grid.Row="2"
                    HorizontalAlignment="Center"
                    Margin="10"

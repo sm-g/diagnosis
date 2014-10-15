@@ -343,7 +343,7 @@
       <DependentUpon>WordTreeItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Styles\TreeStyle.cs" />
-    <Compile Include="Controls\Directory\FullTree.xaml.cs">
+    <Compile Include="Controls\Common\FullTree.xaml.cs">
       <DependentUpon>FullTree.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\DebugWindow.xaml.cs">
@@ -556,7 +556,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Directory\FullTree.xaml">
+    <Page Include="Controls\Common\FullTree.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

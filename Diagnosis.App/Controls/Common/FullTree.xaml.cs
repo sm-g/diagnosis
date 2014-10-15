@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Diagnosis.App.Controls
 {
@@ -13,16 +14,7 @@ namespace Diagnosis.App.Controls
             InitializeComponent();
         }
 
-        private void item_selected(object sender, RoutedEventArgs e)
-        {
-            TreeViewItem tvi = sender as TreeViewItem;
-            if (tvi != null)
-            {
-                tvi.BringIntoView();
-                tvi.Focus();
-            }
-            e.Handled = true;
-        }
+        public TreeView TreeView { get { return tree; } }
 
         public DataTemplate ItemTemplate
         {
@@ -32,5 +24,20 @@ namespace Diagnosis.App.Controls
 
         public static readonly DependencyProperty ItemTemplateProperty =
             DependencyProperty.Register("ItemTemplate", typeof(DataTemplate), typeof(FullTree));
+
+
+
+        public Style ItemContainerStyle
+        {
+            get { return (Style)GetValue(ItemContainerStyleProperty); }
+            set { SetValue(ItemContainerStyleProperty, value); }
+        }
+
+        public static readonly DependencyProperty ItemContainerStyleProperty =
+            DependencyProperty.Register("ItemContainerStyle", typeof(Style), typeof(FullTree));
+
+
+
+
     }
 }

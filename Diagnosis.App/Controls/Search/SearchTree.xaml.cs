@@ -65,14 +65,6 @@ namespace Diagnosis.App.Controls.Search
             }
         }
 
-        private void item_selected(object sender, RoutedEventArgs e)
-        {
-            TreeViewItem tvi = sender as TreeViewItem;
-            if (tvi != null)
-                tvi.BringIntoView();
-            e.Handled = true;
-        }
-
         private void item_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Space || e.Key == Key.Enter)
@@ -96,7 +88,7 @@ namespace Diagnosis.App.Controls.Search
 
         private void MoveSelection(bool down)
         {
-            int currentSelected = results.SelectedIndex();
+            int currentSelected = results.TreeView.SelectedIndex();
             dynamic item;
             if (currentSelected == -1 && !down)
             {
@@ -105,7 +97,7 @@ namespace Diagnosis.App.Controls.Search
                 do
                 {
                     selectedIndex++;
-                    item = results.FindByIndex(selectedIndex);
+                    item = results.TreeView.FindByIndex(selectedIndex);
 
                     if (item == null) // пока не дошли до конца
                         break;
@@ -121,7 +113,7 @@ namespace Diagnosis.App.Controls.Search
                 do
                 {
                     selectedIndex += down ? 1 : -1;
-                    item = results.FindByIndex(selectedIndex);
+                    item = results.TreeView.FindByIndex(selectedIndex);
 
                     // вышли за границы дерева
                     if (item == null)
@@ -132,7 +124,7 @@ namespace Diagnosis.App.Controls.Search
                 } while (!(item.IsExpanded && item.IsTerminal)); // пока не найдём видимый лист
             }
 
-            item = results.FindByIndex(selectedIndex);
+            item = results.TreeView.FindByIndex(selectedIndex);
             if (item != null && item.IsExpanded && item.IsTerminal)
             {
                 item.IsSelected = true;

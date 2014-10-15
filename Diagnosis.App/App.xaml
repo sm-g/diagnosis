@@ -9,6 +9,7 @@
                 <ResourceDictionary Source="Resources/ImageResources.xaml" />
                 <ResourceDictionary Source="Resources/ColorResources.xaml" />
                 <ResourceDictionary Source="Styles/SharedStyles.xaml" />
+                <ResourceDictionary Source="Styles/TreeStyle.xaml" />
                 <ResourceDictionary Source="Styles/ListBoxItemAero2Style.xaml" />
             </ResourceDictionary.MergedDictionaries>
 

@@ -5,6 +5,7 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:conv="clr-namespace:Diagnosis.App.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             x:Name="fullTree"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -13,27 +14,17 @@
                 <ResourceDictionary Source="../../Styles/TreeStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Style  x:Key="containerStyle"
-                    TargetType="TreeViewItem"
-                    BasedOn="{StaticResource TreeViewItemStyle}">
-                <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
-                <Setter Property="controls:Attached.InputBindings" Value="{StaticResource WordInputBindings}" />
-                <EventSetter Event="Selected" Handler="item_selected" />
-            </Style>
-
-            <HierarchicalDataTemplate
-                x:Key="fullTreeItemTemplate"
-                ItemsSource="{Binding Children}">
-                <ContentPresenter Content="{Binding}"
-                                ContentTemplate="{Binding ItemTemplate, RelativeSource={RelativeSource AncestorType=UserControl}}" />
-            </HierarchicalDataTemplate>
+           
         </ResourceDictionary>
     </UserControl.Resources>
-    <TreeView
-            x:Name="tree"
+    <TreeView x:Name="tree"
             Style="{StaticResource TreeViewStyle}"
-            ItemContainerStyle="{StaticResource containerStyle}"
-            ItemTemplate="{StaticResource fullTreeItemTemplate}"
+            ItemContainerStyle="{Binding ItemContainerStyle, ElementName=fullTree}"
             ItemsSource="{Binding}">
+        <TreeView.ItemTemplate>
+            <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                <ContentPresenter Content="{Binding}" ContentTemplate="{Binding ItemTemplate, ElementName=fullTree}" />
+            </HierarchicalDataTemplate>
+        </TreeView.ItemTemplate>
     </TreeView>
 </UserControl>

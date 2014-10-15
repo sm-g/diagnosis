@@ -10,6 +10,7 @@
     </SolidColorBrush>
 
     <Style x:Key="TreeViewStyle" TargetType="TreeView">
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="MinWidth" Value="100" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
@@ -78,6 +79,8 @@
         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
         <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}" />
         <Setter Property="KeyboardNavigation.AcceptsReturn" Value="True" />
+
+        <EventSetter Event="Selected" Handler="item_selected" />
 
         <Setter Property="IsSelected" Value="{Binding IsSelected}" />
         <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />

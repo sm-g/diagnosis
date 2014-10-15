@@ -40,6 +40,12 @@
         <search:Filter DataContext="{Binding Filter}" Grid.Row="1"/>
 
         <controls:FullTree DataContext="{Binding Words}" Grid.Row="2" >
+            <controls:FullTree.ItemContainerStyle>
+                <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}">
+                    <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
+                    <Setter Property="controls:Attached.InputBindings" Value="{StaticResource WordInputBindings}"/>
+                </Style>
+            </controls:FullTree.ItemContainerStyle>
             <controls:FullTree.ItemTemplate>
                 <DataTemplate>
                     <controls:WordTreeItem />
