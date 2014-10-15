@@ -21,15 +21,9 @@ namespace Diagnosis.App.Controls
             if (item == null)
                 return null;
 
-            var @switch = new Dictionary<Type, Func<DataTemplate>> {
-                { typeof(Patient), () => PatientTemplate },
-                { typeof(Course), () => CourseTemplate },
-                { typeof(Appointment), () => AppointmentTemplate }
-           };
-
             if (item is IHrsHolder)
             {
-                return @switch[item.GetType()]();
+                return Switch(item as IHrsHolder);
             }
 
             if (item is PatientViewModel)
@@ -47,7 +41,25 @@ namespace Diagnosis.App.Controls
 
             dynamic vm = item; // vm with Holder prop
 
-            return @switch[vm.Holder.GetType()]();
+            return Switch(vm.Holder);
+        }
+
+        // cannot use GetType because Nhibernate proxy
+        DataTemplate Switch(IHrsHolder holder)
+        {
+            if (holder is Patient)
+            {
+                return PatientTemplate;
+            }
+            if (holder is Course)
+            {
+                return CourseTemplate;
+            }
+            if (holder is Appointment)
+            {
+                return AppointmentTemplate;
+            }
+            throw new ArgumentOutOfRangeException();
         }
     }
 
