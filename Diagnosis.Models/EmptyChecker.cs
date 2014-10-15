@@ -17,7 +17,7 @@ namespace Diagnosis.Models
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static bool IsEmpty(this EntityBase entity)
+        public static bool IsEmpty(this IDomainEntity entity)
         {
             var @switch = new Dictionary<Type, Func<bool>> {
                 { typeof(Patient), () => 

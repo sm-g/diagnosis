@@ -23,7 +23,7 @@ namespace Diagnosis.Models
     /// <summary>
     /// Сущность, содержащая записи.
     /// </summary>
-    public interface IHrsHolder
+    public interface IHrsHolder : IDomainEntity
     {
         event NotifyCollectionChangedEventHandler HealthRecordsChanged;
         IEnumerable<HealthRecord> HealthRecords { get; }
