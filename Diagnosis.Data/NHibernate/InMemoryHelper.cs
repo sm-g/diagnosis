@@ -8,13 +8,13 @@ namespace Diagnosis.Data
 {
     internal class InMemoryHelper
     {
-        public static void Configure(Configuration cfg)
+        public static void Configure(Configuration cfg, bool showSql)
         {
             cfg.SetProperty(Environment.ReleaseConnections, "on_close")
                .SetProperty(Environment.Dialect, typeof(SQLiteDialect).AssemblyQualifiedName)
                .SetProperty(Environment.ConnectionDriver, typeof(SQLite20Driver).AssemblyQualifiedName)
                .SetProperty(Environment.ConnectionString, "data source=:memory:")
-               .SetProperty(Environment.ShowSql, "true");
+               .SetProperty(Environment.ShowSql, showSql ? "true" : "false");
         }
 
         public static void FillData(Configuration cfg, dynamic session)

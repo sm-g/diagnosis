@@ -26,6 +26,7 @@ namespace Diagnosis.Data
         private static ISessionFactory _sessionFactory;
 
         public static bool InMemory { get; set; }
+        public static bool ShowSql { get; set; }
 
         public static Configuration Configuration
         {
@@ -106,7 +107,7 @@ namespace Diagnosis.Data
             var cfg = new Configuration();
 
             if (InMemory)
-                InMemoryHelper.Configure(cfg);
+                InMemoryHelper.Configure(cfg, ShowSql);
             else
                 cfg.Configure(ConfigFile);
 

@@ -16,6 +16,7 @@ namespace Tests
         public InMemoryDatabaseTest()
         {
             NHibernateHelper.InMemory = true;
+            NHibernateHelper.ShowSql = true;
         }
 
         [TestInitialize]
