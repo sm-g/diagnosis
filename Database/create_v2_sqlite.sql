@@ -67,7 +67,7 @@
         IsDeleted BOOL not null,
         constraint FK_Hr_HrCategory foreign key (HrCategoryID) references HrCategory,
         constraint FK_Hr_Patient foreign key (PatientID) references Patient,
-        constraint FK_Hr_Course foreign key (CourseID) references Course
+        constraint FK_Hr_Course foreign key (CourseID) references Course,
         constraint FK_Hr_Appointment foreign key (AppointmentID) references Appointment,
         constraint CHK_Hr_PatientCourseAppointment CHECK ( -- patient or course or app
         (CASE WHEN PatientID IS NOT NULL THEN 1 ELSE 0 END
