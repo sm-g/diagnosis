@@ -6,7 +6,6 @@
              xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
              xmlns:card="clr-namespace:Diagnosis.App.Controls.CardParts"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
-             xmlns:screens="clr-namespace:Diagnosis.App.Controls.Screens"
              xmlns:vm="clr-namespace:Diagnosis.ViewModels;assembly=Diagnosis.ViewModels"
              x:Name="card"
              mc:Ignorable="d"
