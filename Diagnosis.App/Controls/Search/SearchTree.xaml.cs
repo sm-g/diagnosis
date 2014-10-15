@@ -110,7 +110,7 @@ namespace Diagnosis.App.Controls.Search
                     if (item == null) // пока не дошли до конца
                         break;
 
-                    if (item.IsFiltered && item.IsTerminal)
+                    if (item.IsExpanded && item.IsTerminal)
                         lastInd = selectedIndex;
                 } while (true);
 
@@ -129,11 +129,11 @@ namespace Diagnosis.App.Controls.Search
                         selectedIndex = currentSelected;
                         break;
                     }
-                } while (!(item.IsFiltered && item.IsTerminal)); // пока не найдём видимый лист
+                } while (!(item.IsExpanded && item.IsTerminal)); // пока не найдём видимый лист
             }
 
             item = results.FindByIndex(selectedIndex);
-            if (item != null && item.IsFiltered && item.IsTerminal)
+            if (item != null && item.IsExpanded && item.IsTerminal)
             {
                 item.IsSelected = true;
             }

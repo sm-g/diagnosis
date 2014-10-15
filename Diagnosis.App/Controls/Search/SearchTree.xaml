@@ -21,9 +21,7 @@
                    TargetType="TreeViewItem"
                    BasedOn="{StaticResource TreeViewItemStyle}">
                 <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
-                <Setter Property="IsSelected" Value="{Binding IsSelected}" />
-                <Setter Property="IsExpanded" Value="{Binding IsFiltered}" />
-                <Setter Property="Visibility" Value="{Binding IsFiltered, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <Setter Property="Visibility" Value="{Binding IsExpanded, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <EventSetter Event="KeyDown" Handler="item_KeyDown" />
                 <EventSetter Event="MouseUp" Handler="item_MouseUp" />
                 <EventSetter Event="Selected" Handler="item_selected" />

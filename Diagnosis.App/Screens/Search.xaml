@@ -173,7 +173,6 @@
                 <Style TargetType="TreeViewItem"
                     BasedOn="{StaticResource TreeViewItemStyle}">
                     <EventSetter Event="Selected" Handler="item_selected" />
-                    <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
                     <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
                     <Setter Property="controls:Attached.InputBindings" Value="{StaticResource SearchResultInputBindings}" />
                 </Style>

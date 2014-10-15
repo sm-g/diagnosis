@@ -217,7 +217,7 @@ namespace Diagnosis.ViewModels
             };
             DiagnosisSearch.Filter.Results.CollectionChanged += (s, e) =>
             {
-                // VM.IsFiltered
+                // VM.IsExpanded
             };
             UpdateDiagnosisQueryCode();
         }

@@ -78,6 +78,9 @@
         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
         <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}" />
         <Setter Property="KeyboardNavigation.AcceptsReturn" Value="True" />
+
+        <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+        <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
     </Style>
 
     <ControlTemplate TargetType="{x:Type TreeViewItem}" x:Key="treeViewItemControl">

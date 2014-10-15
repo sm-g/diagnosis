@@ -18,7 +18,7 @@ namespace Diagnosis.ViewModels
         }
 
         /// <summary>
-        /// Фильтрует элемент и рекурсивно всех детей, устанавливая значение <code>IsFiltered = true</code>,
+        /// Фильтрует элемент и рекурсивно всех детей, устанавливая значение <code>IsExpanded = true</code>,
         /// если запросу удовлетворяет сам элемент или хотя бы один потомок.
         /// </summary>
         protected override bool Filter(DiagnosisViewModel item, string query)
@@ -30,8 +30,8 @@ namespace Diagnosis.ViewModels
             lastQuery = query;
 
             // элементы, которые не подошли, можно не проверять при более длинном запросе
-           if (ignoreList.Contains(item))
-                return false;                    
+            if (ignoreList.Contains(item))
+                return false;
 
             var filterItem = base.Filter(item, query);
             bool anyChild = false;
@@ -50,7 +50,7 @@ namespace Diagnosis.ViewModels
                 ignoreList.Add(item);
             }
 
-            item.IsFiltered = result;
+            item.IsExpanded = result;
             return result;
         }
 

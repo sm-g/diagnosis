@@ -64,7 +64,7 @@ namespace Diagnosis.ViewModels
         }
 
         /// <summary>
-        /// Поисковик по всем диагнозам, кроме групп. Изменяет значение IsFiltered.
+        /// Поисковик по всем диагнозам, кроме групп. Изменяет значение IsExpanded.
         /// </summary>
         public DiagnosisFiltratingSearcher RootFiltratingSearcher
         {
