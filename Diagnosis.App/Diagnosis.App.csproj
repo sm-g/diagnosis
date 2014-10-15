@@ -208,7 +208,7 @@
     <Compile Include="Controls\Headers\Patient.xaml.cs">
       <DependentUpon>Patient.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Search\HrsHolderDataTemplateSelector.cs" />
+    <Compile Include="Controls\Common\HrsHolderDataTemplateSelector.cs" />
     <Compile Include="Controls\Search\HrSearchResult2.xaml.cs">
       <DependentUpon>HrSearchResult2.xaml</DependentUpon>
     </Compile>

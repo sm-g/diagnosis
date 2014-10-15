@@ -90,7 +90,7 @@
         <DataTemplate x:Key="AppointmentTemplate">
         </DataTemplate>
 
-        <screens:CurrentHrsHolderDataTemplateSelector x:Key="holderNestingSelector"
+        <controls:HrsHolderDataTemplateSelector x:Key="holderNestingSelector"
                                             PatientTemplate="{StaticResource PateintTemplate}"
                                             CourseTemplate="{StaticResource CourseTemplate}"
                                             AppointmentTemplate="{StaticResource AppointmentTemplate}" />
@@ -100,23 +100,23 @@
             <Setter Property="MinWidth" Value="200" />
         </Style>
 
-        <screens:CurrentHrsHolderDataTemplateSelector x:Key="holderHeaderSelector">
-            <screens:CurrentHrsHolderDataTemplateSelector.AppointmentTemplate>
+        <controls:HrsHolderDataTemplateSelector x:Key="holderHeaderSelector">
+            <controls:HrsHolderDataTemplateSelector.AppointmentTemplate>
                 <DataTemplate>
                     <card:Appointment Style="{StaticResource holderHeaderStyle}" />
                 </DataTemplate>
-            </screens:CurrentHrsHolderDataTemplateSelector.AppointmentTemplate>
-            <screens:CurrentHrsHolderDataTemplateSelector.CourseTemplate>
+            </controls:HrsHolderDataTemplateSelector.AppointmentTemplate>
+            <controls:HrsHolderDataTemplateSelector.CourseTemplate>
                 <DataTemplate>
                     <card:Course Style="{StaticResource holderHeaderStyle}" />
                 </DataTemplate>
-            </screens:CurrentHrsHolderDataTemplateSelector.CourseTemplate>
-            <screens:CurrentHrsHolderDataTemplateSelector.PatientTemplate>
+            </controls:HrsHolderDataTemplateSelector.CourseTemplate>
+            <controls:HrsHolderDataTemplateSelector.PatientTemplate>
                 <DataTemplate>
                     <card:PatientHeader Style="{StaticResource holderHeaderStyle}" />
                 </DataTemplate>
-            </screens:CurrentHrsHolderDataTemplateSelector.PatientTemplate>
-        </screens:CurrentHrsHolderDataTemplateSelector>
+            </controls:HrsHolderDataTemplateSelector.PatientTemplate>
+        </controls:HrsHolderDataTemplateSelector>
     </UserControl.Resources>
     <Grid Margin="10">
         <TabControl TabStripPlacement="Left"

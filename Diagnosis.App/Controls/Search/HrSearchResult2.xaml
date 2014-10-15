@@ -12,13 +12,13 @@
              Background="Transparent"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <search:HrsHolderDataTemplateSelector x:Key="selector">
-            <search:HrsHolderDataTemplateSelector.PatientTemplate>
+        <controls:HrsHolderDataTemplateSelector x:Key="selector">
+            <controls:HrsHolderDataTemplateSelector.PatientTemplate>
                 <DataTemplate>
                     <headers:Patient />
                 </DataTemplate>
-            </search:HrsHolderDataTemplateSelector.PatientTemplate>
-            <search:HrsHolderDataTemplateSelector.CourseTemplate>
+            </controls:HrsHolderDataTemplateSelector.PatientTemplate>
+            <controls:HrsHolderDataTemplateSelector.CourseTemplate>
                 <DataTemplate>
                     <TextBlock>
                     <Run>
@@ -29,13 +29,13 @@
                     </Run>
                     </TextBlock>
                 </DataTemplate>
-            </search:HrsHolderDataTemplateSelector.CourseTemplate>
-            <search:HrsHolderDataTemplateSelector.AppointmentTemplate>
+            </controls:HrsHolderDataTemplateSelector.CourseTemplate>
+            <controls:HrsHolderDataTemplateSelector.AppointmentTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding DateAndTime, Converter={StaticResource DateLabel}}" />
                 </DataTemplate>
-            </search:HrsHolderDataTemplateSelector.AppointmentTemplate>
-        </search:HrsHolderDataTemplateSelector>
+            </controls:HrsHolderDataTemplateSelector.AppointmentTemplate>
+        </controls:HrsHolderDataTemplateSelector>
     </UserControl.Resources>
     <!--HrHolderSearchResultViewModel-->
 
