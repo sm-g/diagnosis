@@ -17,5 +17,10 @@ namespace Diagnosis.ViewModels
             }
             return (TDest)Convert.ChangeType(source.Value, typeof(TDest));
         }
+
+        public static T As<T>(this object obj)
+        {
+            return (T)obj;
+        }
     }
 }

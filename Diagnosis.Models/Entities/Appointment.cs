@@ -53,7 +53,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("{0:d} {1}", DateAndTime, Doctor);
+            return string.Format("app {0:d} {1}", DateAndTime, Doctor);
         }
 
         protected virtual void OnHealthRecordsChanged(NotifyCollectionChangedEventArgs e)

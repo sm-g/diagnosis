@@ -84,7 +84,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("{0:d}, {1} {2}", Start, Patient, LeadDoctor);
+            return string.Format("course {0:d}, {1} {2}", Start, Patient, LeadDoctor);
         }
 
         protected virtual void OnAppointmentsChanged(NotifyCollectionChangedEventArgs e)

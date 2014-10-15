@@ -289,7 +289,7 @@ namespace Diagnosis.Models
         }
         public override string ToString()
         {
-            return string.Format("{0} {1} {2} {3}", Id, Category, DateOffset, Comment);
+            return string.Format("hr {0} {1} {2} {3}", Id, Category, DateOffset, Comment);
         }
 
         protected virtual void OnItemsChanged(NotifyCollectionChangedEventArgs e)
