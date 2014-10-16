@@ -29,13 +29,13 @@
         
         <DockPanel>
             <ToolBar DockPanel.Dock="Left">
-                <Button Command="{Binding DataContext.HrList.MoveHrSelectionCommand,  RelativeSource={RelativeSource AncestorType=screens:Card3}}" FontSize="16"
-                    CommandParameter="{StaticResource True}" ToolTip="Открыть предыдущую запись (Crtl + Стрелка вверх)">↑</Button>
-                <Button Command="{Binding DataContext.HrList.MoveHrSelectionCommand,  RelativeSource={RelativeSource AncestorType=screens:Card3}}" FontSize="16"
-                    CommandParameter="{StaticResource False}" ToolTip="Открыть следующую запись (Crtl + Стрелка вниз)" >↓</Button>
+                <Button Command="{Binding DataContext.HrList.MoveHrSelectionCommand,  RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}" FontSize="16"
+                    CommandParameter="{StaticResource True}" ToolTip="Открыть предыдущую запись">↑</Button>
+                <Button Command="{Binding DataContext.HrList.MoveHrSelectionCommand,  RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}" FontSize="16"
+                    CommandParameter="{StaticResource False}" ToolTip="Открыть следующую запись" >↓</Button>
                 <Separator />
-                <Button Command="{Binding DataContext.HrList.AddHealthRecordCommand,  RelativeSource={RelativeSource AncestorType=screens:Card3}}"
-                    ToolTip="Добавить запись (Ctrl + Enter)">
+                <Button Command="{Binding DataContext.HrList.AddHealthRecordCommand,  RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}"
+                    ToolTip="Добавить запись">
                     <DockPanel>
                         <Image Source="{StaticResource addImage}" />
                         <TextBlock Text="Добавить" />
@@ -48,7 +48,7 @@
                     </DockPanel>
                 </Button>
                 <Separator />
-                <Button Command="{Binding DeleteCommand}" ToolTip="Удалить запись (Del)">
+                <Button Command="{Binding DeleteCommand}" ToolTip="Удалить запись">
                     <DockPanel>
                         <Image Source="{StaticResource deleteImage}"  Width="16" />
                         <TextBlock Text="Удалить" />
