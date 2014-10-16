@@ -105,6 +105,11 @@ namespace Diagnosis.Data
             return dirtyProps.Contains(propIndex);
         }
 
+        public static T Unproxy<T>(this ISession session, T obj)
+        {
+            return (T)session.GetSessionImplementation().PersistenceContext.Unproxy(obj);
+        }
+
         private static EntityEntry GetOldEntry(ISession session, object entity)
         {
             var sessionImpl = session.GetSessionImplementation();
