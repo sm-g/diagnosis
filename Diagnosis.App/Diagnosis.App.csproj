@@ -205,6 +205,15 @@
     <Compile Include="Controls\CardParts\Appointment.xaml.cs">
       <DependentUpon>Appointment.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\CardParts\CardItem.xaml.cs">
+      <DependentUpon>CardItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Headers\Appointment.xaml.cs">
+      <DependentUpon>Appointment.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Headers\Course.xaml.cs">
+      <DependentUpon>Course.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Headers\Patient.xaml.cs">
       <DependentUpon>Patient.xaml</DependentUpon>
     </Compile>
@@ -214,6 +223,9 @@
     </Compile>
     <Compile Include="Converters\InList.cs" />
     <Compile Include="Converters\HrToItemsString.cs" />
+    <Compile Include="Screens\CardTree.xaml.cs">
+      <DependentUpon>CardTree.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Common\AlignableWrapPanel.cs" />
     <Compile Include="Controls\CardParts\AppointmentsTabs.xaml.cs">
       <DependentUpon>AppointmentsTabs.xaml</DependentUpon>
@@ -368,9 +380,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\CardParts\CardItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Common\UndoOverlay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Headers\Appointment.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Headers\Course.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\Headers\Patient.xaml">
       <SubType>Designer</SubType>
@@ -475,6 +499,10 @@
     <Page Include="Resources\ImageResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Screens\CardTree.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Screens\Card3.xaml">
       <Generator>MSBuild:Compile</Generator>
