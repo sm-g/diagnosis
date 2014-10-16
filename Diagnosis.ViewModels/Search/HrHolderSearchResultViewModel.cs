@@ -10,9 +10,10 @@ namespace Diagnosis.ViewModels
 {
     public class HrHolderSearchResultViewModel : HierarchicalBase<HrHolderSearchResultViewModel>
     {
-        public HrHolderSearchResultViewModel(IHrsHolder holder, IEnumerable<HealthRecord> hrs = null)
+        private HrHolderSearchResultViewModel(IHrsHolder holder, IEnumerable<HealthRecord> hrs = null)
         {
             Holder = holder;
+            // автообновление результатов поиска - сейчас только удаляются запись и добавляется, но не обновляется текст записи
             Holder.HealthRecordsChanged += Holder_HealthRecordsChanged;
             if (hrs != null)
             {
@@ -25,6 +26,11 @@ namespace Diagnosis.ViewModels
             HealthRecords = new ObservableCollection<HealthRecord>(holder.HealthRecords);
         }
 
+        /// <summary>
+        /// Создает результаты поиска по найденным записям.
+        /// </summary>
+        /// <param name="hrs"></param>
+        /// <returns></returns>
         public static IEnumerable<HrHolderSearchResultViewModel> MakeFrom(IEnumerable<HealthRecord> hrs)
         {
             return MakeTreeResults1(hrs);

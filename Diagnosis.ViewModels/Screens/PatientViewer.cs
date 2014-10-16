@@ -134,6 +134,15 @@ namespace Diagnosis.ViewModels
             return null;
         }
 
+        public IHrsHolder GetLastOpenedFor(IHrsHolder holder)
+        {
+            if (holder is Patient)
+                return GetLastOpenedFor(holder as Patient);
+            if (holder is Course)
+                return GetLastOpenedFor(holder as Course);
+            return null;
+        }
+
         public void ClosePatient()
         {
             OpenedPatient = null;
