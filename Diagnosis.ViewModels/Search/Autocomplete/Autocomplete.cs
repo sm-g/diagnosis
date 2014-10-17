@@ -138,7 +138,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             get
             {
-                return Tags.Last().State == Tag.States.Init;
+                return Tags.Count > 0 && Tags.Last().State == Tag.States.Init;
             }
         }
 
