@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public class AppointmentsManager : DisposableBase
     {

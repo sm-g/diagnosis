@@ -6,7 +6,7 @@ using System.Text;
 using EventAggregator;
 using Diagnosis.Core;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public class AsideViewModel : ViewModelBase
     {

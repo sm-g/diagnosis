@@ -3,7 +3,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:controls="clr-namespace:Diagnosis.App.Controls"
-        xmlns:vm="clr-namespace:Diagnosis.ViewModels;assembly=Diagnosis.ViewModels"
+        xmlns:vm="clr-namespace:Diagnosis.ViewModels.Screens;assembly=Diagnosis.ViewModels" 
         xmlns:screen="clr-namespace:Diagnosis.App.Screens"
         xmlns:shell="clr-namespace:Diagnosis.App.Windows.Shell"
         x:Class="Diagnosis.App.Windows.MainWindow"

@@ -2,7 +2,7 @@
 using NHibernate;
 using System.Diagnostics.Contracts;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public class WordEditorViewModel : ViewModelBase
     {

@@ -1,7 +1,7 @@
 ﻿using Diagnosis.Models;
 using System.Diagnostics.Contracts;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     /// <summary>
     /// Readonly viewmodel of Patient without associated courses.

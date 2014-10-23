@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using EventAggregator;
 using Diagnosis.Core;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public class MainWindowViewModel : ViewModelBase
     {

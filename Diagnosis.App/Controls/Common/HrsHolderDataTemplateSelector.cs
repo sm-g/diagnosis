@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using Diagnosis.ViewModels;
 using Diagnosis.Models;
 using System.Diagnostics;
+using Diagnosis.ViewModels.Screens;
 
 namespace Diagnosis.App.Controls
 {

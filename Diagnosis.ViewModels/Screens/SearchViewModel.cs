@@ -13,7 +13,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public class SearchViewModel : SessionVMBase
     {

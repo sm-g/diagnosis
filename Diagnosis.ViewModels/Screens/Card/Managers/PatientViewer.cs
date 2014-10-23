@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     /// <summary>
     /// Хранит последние загруженные курс, осмотр для пациента, курса.

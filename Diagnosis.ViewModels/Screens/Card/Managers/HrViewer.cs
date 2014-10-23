@@ -3,12 +3,12 @@ using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     /// <summary>
     /// Хранит последние выбранные записи для каждого пациента, курса, осмотра.
     /// </summary>
-    public class HrViewer : NotifyPropertyChangedBase
+    class HrViewer : NotifyPropertyChangedBase
     {
         private Dictionary<Patient, HealthRecord> patMap;
         private Dictionary<Course, HealthRecord> courseMap;

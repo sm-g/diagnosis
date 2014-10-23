@@ -9,7 +9,7 @@ using System.Windows.Input;
 using FluentValidation.Results;
 using System;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public class PatientViewModel : ViewModelBase
     {

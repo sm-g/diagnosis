@@ -11,7 +11,7 @@ using Diagnosis.Data;
 using NHibernate;
 using Diagnosis.Data.Queries;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public class WordsListViewModel : ScreenBase
     {
