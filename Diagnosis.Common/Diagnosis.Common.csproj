@@ -145,7 +145,6 @@
     <Compile Include="Interfaces\IMan.cs" />
     <Compile Include="Types\DisposableBase.cs" />
     <Compile Include="Types\INCCReadOnlyObservableCollection.cs" />
-    <Compile Include="Interfaces\IAutoComplete.cs" />
     <Compile Include="Mediator\Events.cs" />
     <Compile Include="Util\Comparers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
