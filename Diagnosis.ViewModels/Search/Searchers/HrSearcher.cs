@@ -10,7 +10,7 @@ using Diagnosis.Data.Queries;
 using NHibernate;
 using NHibernate.Linq;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Search
 {
     public class HrSearcher
     {

@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Core;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Search;
 using Diagnosis.ViewModels.Search.Autocomplete;
 using EventAggregator;
 using NHibernate;
@@ -17,7 +18,7 @@ namespace Diagnosis.ViewModels
     public class HrEditorViewModel : ViewModelBase
     {
         private Autocomplete _autocomplete;
-        private PopupSearch<DiagnosisViewModel> _diagnosisSearch;
+        private PopupSearchViewModel<DiagnosisViewModel> _diagnosisSearch;
 
         private HealthRecordViewModel _hr;
         private ISession session;
@@ -181,7 +182,7 @@ namespace Diagnosis.ViewModels
 
         #region Diagnosis search
 
-        public PopupSearch<DiagnosisViewModel> DiagnosisSearch
+        public PopupSearchViewModel<DiagnosisViewModel> DiagnosisSearch
         {
             get
             {
@@ -199,7 +200,7 @@ namespace Diagnosis.ViewModels
 
         private void CreateDiagnosisSearch()
         {
-            DiagnosisSearch = new PopupSearch<DiagnosisViewModel>(
+            DiagnosisSearch = new PopupSearchViewModel<DiagnosisViewModel>(
                    EntityProducers.DiagnosisProducer.RootFiltratingSearcher
                    );
 

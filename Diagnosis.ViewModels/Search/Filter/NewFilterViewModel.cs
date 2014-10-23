@@ -3,10 +3,9 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Linq;
 using System;
-using Diagnosis.ViewModels.Search;
 using Diagnosis.Models;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Search
 {
     public class NewFilterViewModel<T> : ViewModelBase, IFilter<T> where T : IDomainEntity
     {

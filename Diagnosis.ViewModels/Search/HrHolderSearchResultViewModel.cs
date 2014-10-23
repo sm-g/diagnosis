@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Search
 {
     public class HrHolderSearchResultViewModel : HierarchicalBase<HrHolderSearchResultViewModel>
     {
@@ -82,7 +82,7 @@ namespace Diagnosis.ViewModels
             foreach (var courseRvm in courseRvms)
             {
                 var patient = ((courseRvm.Holder) as Course).Patient;
-                var pRvm = patRvms.Where(rvm => rvm.Holder == patient).FirstOrDefault();
+                var pRvm = patRvms.Where(rvm => (Patient)rvm.Holder == patient).FirstOrDefault();
                 if (pRvm == null)
                 {
                     pRvm = new HrHolderSearchResultViewModel(patient);

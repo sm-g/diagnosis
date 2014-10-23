@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Search
 {
     public abstract class AutoCompleteBase<T> : ViewModelBase, IAutoComplete where T : class
     {

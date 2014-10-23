@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Search
 {
-    public class PopupSearch<T> : ViewModelBase where T : ViewModelBase
+    public class PopupSearchViewModel<T> : ViewModelBase where T : ViewModelBase
     {
         #region Fields
 
@@ -137,7 +137,7 @@ namespace Diagnosis.ViewModels
             IsResultsVisible = false;
         }
 
-        public PopupSearch(ISimpleSearcher<T> searcher)
+        public PopupSearchViewModel(ISimpleSearcher<T> searcher)
         {
             this.searcher = searcher;
             Filter = new FilterViewModel<T>(searcher);

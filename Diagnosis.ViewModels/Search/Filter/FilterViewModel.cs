@@ -4,7 +4,7 @@ using System.Windows.Input;
 using System.Linq;
 using System;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Search
 {
     public class FilterViewModel<T> : ViewModelBase, IFilter<T>
     {
