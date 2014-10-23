@@ -241,6 +241,7 @@ namespace Diagnosis.ViewModels.Screens
             if (disposing)
             {
                 patient.PropertyChanged -= patient_PropertyChanged;
+                coursesManager.Dispose();
             }
             base.Dispose(disposing);
         }
