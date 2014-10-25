@@ -215,6 +215,7 @@
     <Compile Include="Converters\InList.cs" />
     <Compile Include="Converters\HrToItemsString.cs" />
     <Compile Include="Controls\Common\AlignableWrapPanel.cs" />
+    <Compile Include="Controls\Common\WrapPanelLastChildFill.cs" />
     <Compile Include="Controls\CardParts\AppointmentsTabs.xaml.cs">
       <DependentUpon>AppointmentsTabs.xaml</DependentUpon>
     </Compile>
