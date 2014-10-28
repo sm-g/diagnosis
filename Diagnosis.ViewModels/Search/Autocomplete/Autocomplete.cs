@@ -155,6 +155,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     _popupOpened = value;
                     logger.DebugFormat("opened {0}", value);
 
+                    if (!value)
+                    {
+                        SelectedSuggestion = null; // нельзя выбирать предположения, когда попап скрыт
+                    }
+
                     OnPropertyChanged(() => IsPopupOpen);
                 }
             }
