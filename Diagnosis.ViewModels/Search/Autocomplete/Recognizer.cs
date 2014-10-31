@@ -14,8 +14,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
     {
         private readonly ISession session;
         private bool childrenFirstStrategy;
-        private static char[] measureStart = new char[] { '-', '.', ',' };
-        private static char[] numbersSeparators = new char[] { '\\', '/', ' ' };
 
         /// <summary>
         /// Создание новых сущностей (слов) из текста запроса.
@@ -48,20 +46,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             if (query.IsNullOrEmpty())
                 return false;
-            return IsMeasure(query)
-                || AutoNewFromQuery; // new word
-        }
-
-        /// <summary>
-        /// Запрос-измерение, начинается на число.
-        /// </summary>
-        /// <param name="query"></param>
-        /// <returns></returns>
-        public static bool IsMeasure(string query)
-        {
-            return !query.IsNullOrEmpty() &&
-                (char.IsDigit(query[0]) ||
-                 query.Length > 1 && char.IsDigit(query[1]) && measureStart.Contains(query[0]));
+            return AutoNewFromQuery; // new word
         }
 
         /// <summary>
@@ -87,15 +72,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             switch (tag.BlankType)
             {
                 case Tag.BlankTypes.Query:
-                    if (IsMeasure(tag.Blank as string))
-                    {
-                        var splittedQuery = SplitMeasureQuery(tag.Blank as string);
-                        foreach (var m in MakeMeasures(tag, splittedQuery.Item1, null)) // if splittedQuery.Item2 != "" uom is wrong, ignore such uom
-                        {
-                            yield return m;
-                        }
-                    }
-                    else if (AutoNewFromQuery)
+                    if (AutoNewFromQuery)
                     {
                         var w = new Word(tag.Blank as string);
                         tag.Entities = new List<IHrItemObject>() { w };
@@ -107,32 +84,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     tag.Entities = new List<IHrItemObject>() { tag.Blank as Word };
                     yield return tag.Blank as Word;
                     break;
-
-                case Tag.BlankTypes.Measure:
-                    var numbersWithUom = tag.Blank as NumbersWithUom;
-                    foreach (var m in MakeMeasures(tag, numbersWithUom.Item1, numbersWithUom.Item2))
-                    {
-                        yield return m;
-                    }
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Создает измерения, кешируя их в теге.
-        /// </summary>
-        private IEnumerable<Measure> MakeMeasures(Tag tag, string numbers, Uom uom)
-        {
-            var measures = new List<Measure>();
-
-            foreach (var val in GetFloats(numbers))
-            {
-                measures.Add(new Measure(val, uom));
-            }
-            tag.Entities = new List<IHrItemObject>(measures);
-            foreach (var m in measures)
-            {
-                yield return m;
             }
         }
 
@@ -145,45 +96,34 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <returns>Предположения - слово, число и единица или строка запроса.</returns>
         public List<object> SearchForSuggesstions(string query, object prevEntityBlank, IEnumerable<object> exclude = null)
         {
-            Contract.Ensures(Contract.Result<List<object>>().All(o => o is Word || o is NumbersWithUom || o is string));
+            Contract.Ensures(Contract.Result<List<object>>().All(o => o is Word || o is string));
             IEnumerable<IDomainEntity> found;
             List<object> results;
 
-            if (IsMeasure(query))
-            {
-                var splitted = SplitMeasureQuery(query);
 
-                found = QueryUoms(splitted.Item2);
-                // добавляем числовую часть к каждой единице
-                var numbers = splitted.Item1;
-                results = new List<object>(found.Select(uom => new NumbersWithUom(numbers, uom as Uom)));
-                // измерения могут повторяться
-            }
-            else
+            found = QueryWords(query, prevEntityBlank);
+            if (exclude != null)
             {
-                found = QueryWords(query, prevEntityBlank);
+                found = found.Where(i => !exclude.Contains(i));
+            }
+
+            results = new List<object>(found);
+
+            if (AutoNewFromQuery)
+            {
+                bool existsSame = results.Any(item => query == item.ToString());
                 if (exclude != null)
                 {
-                    found = found.Where(i => !exclude.Contains(i));
+                    existsSame |= exclude.Any(item => item != null ? query == item.ToString() : false);
                 }
 
-                results = new List<object>(found);
-
-                if (AutoNewFromQuery)
+                // не добавляем запрос, совпадающий со словом в результатах или словом/запросом в исключенных предположениях
+                if (!existsSame && !query.IsNullOrEmpty())
                 {
-                    bool existsSame = results.Any(item => query == item.ToString());
-                    if (exclude != null)
-                    {
-                        existsSame |= exclude.Any(item => item != null ? query == item.ToString() : false);
-                    }
-
-                    // не добавляем запрос, совпадающий со словом в результатах или словом/запросом в исключенных предположениях
-                    if (!existsSame && !query.IsNullOrEmpty())
-                    {
-                        results.Add(query);
-                    }
+                    results.Add(query);
                 }
             }
+
 
             return results;
         }
@@ -195,45 +135,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             if (suggestion is Word)
                 return (suggestion as Word).Title == query;
-            if (suggestion is NumbersWithUom)
-                // проверяем только совпадение uom, число копируется из запроса, не запрашивается из БД
-                return (suggestion as NumbersWithUom).Item2.Abbr == SplitMeasureQuery(query).Item2;
             return suggestion.ToString() == query;
-        }
-
-        /// <summary>
-        /// Разделяет запрос на части с числами и единицей измерения.
-        /// Если запрос не подходит, возвращает пустые строки.
-        /// </summary>
-        public static Tuple<string, string> SplitMeasureQuery(string query)
-        {
-            if (!IsMeasure(query))
-                return new Tuple<string, string>("", "");
-
-            // разбиваем строку [.|,|-]#[{/|\| }#][ ][uom]
-            int uomStart = 0;
-            while (uomStart < query.Length && !char.IsLetter(query[uomStart]))
-            {
-                uomStart++;
-            }
-            var numberPart = query.Substring(0, uomStart).Trim();
-            var uomPart = query.Substring(uomStart);
-            return new Tuple<string, string>(numberPart, uomPart);
-        }
-
-        /// <summary>
-        /// Возвращает числа из строки разделенных чисел.
-        /// </summary>
-        private IEnumerable<float> GetFloats(string str)
-        {
-            var numbers = str.Split(numbersSeparators, StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (var item in numbers)
-            {
-                float val;
-                if (float.TryParse(item.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out val)) // both dot and comma
-                    yield return val;
-            }
         }
 
         private IEnumerable<Word> QueryWords(string query, object prev)
@@ -247,54 +149,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 return WordQuery.StartingWithChildrenFirst(session)(parent, query);
             else
                 return WordQuery.StartingWith(session)(query);
-        }
-
-        private IEnumerable<Uom> QueryUoms(string query)
-        {
-            if (query.IsNullOrEmpty() && !ShowAllUomsOnEmptyQuery)
-                return Enumerable.Empty<Uom>();
-
-            return UomQuery.StartingWith(session)(query);
-        }
-
-        /// <summary>
-        /// Числа с сущностью-единицей измерения. В предположениях.
-        /// </summary>
-        internal class NumbersWithUom : Tuple<string, Uom>
-        {
-            public NumbersWithUom(string numbers, Uom uom)
-                : base(numbers, uom)
-            {
-            }
-
-            public override string ToString()
-            {
-                return string.Format("{0} {1}", Item1, Item2.Abbr); // descr?
-            }
-
-            public override bool Equals(object other)
-            {
-                NumbersWithUom nwu = other as NumbersWithUom;
-                if (nwu == null)
-                {
-                    return false;
-                }
-
-                if (Item2 == nwu.Item2 && Item1 == nwu.Item1)
-                {
-                    // не проверяем отдельно каждое число
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            public override int GetHashCode()
-            {
-                return Item1.GetHashCode() ^ Item2.GetHashCode();
-            }
         }
     }
 }

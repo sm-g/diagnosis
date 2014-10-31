@@ -79,8 +79,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             /// Строка-запрос, может быть словом или измерением
             /// </summary>
             Query,
-            Word,
-            Measure,
+            Word
         }
 
         /// <summary>
@@ -249,14 +248,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             else if (BlankType == Tag.BlankTypes.Query)
             {
                 var str = Blank as string;
-                if (!Recognizer.IsMeasure(str))
-                {
-                    Signalization = Signalizations.NewWord;
-                }
-                else if (Recognizer.SplitMeasureQuery(str).Item2 != "")
-                {
-                    Signalization = Signalizations.PartialMeasure;
-                }
+                Signalization = Signalizations.NewWord;
             }
         }
 
@@ -268,8 +260,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 return BlankTypes.Query;
             if (blank == null)
                 return BlankTypes.None;
-            if (blank is Recognizer.NumbersWithUom || blank is Measure)
-                return BlankTypes.Measure;
 
             throw new ArgumentOutOfRangeException("blank");
         }

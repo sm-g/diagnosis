@@ -125,7 +125,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ViewModelsTests\CardTest.cs" />
-    <Compile Include="ViewModelsTests\RecognizerTest.cs" />
     <Compile Include="CommonTests\SequencePartitionTest.cs" />
     <Compile Include="CommonTests\DateFormatterTest.cs" />
     <Compile Include="CommonTests\DateOffsetTest.cs" />
