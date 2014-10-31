@@ -314,27 +314,23 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// Завершает тег.
         /// </summary>
         /// <param name="tag"></param>
-        /// <param name="suggestion">Слово, число с единицей или запрос</param>
+        /// <param name="suggestion">Слово или запрос</param>
         /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
         private void CompleteCommon(Tag tag, object suggestion, bool exactMatchRequired)
         {
             if (suggestion == null)
             {
-                if (tag.Query == "")
+                if (tag.Query == "") // пустой тег — удаляем
                     tag.DeleteCommand.Execute(null);
-                else if (recognizer.CanMakeEntityFrom(tag.Query))
-                    tag.Blank = tag.Query; // измерение без правльной единицы
                 else
-                    tag.Blank = null;
+                    tag.Blank = tag.Query; // текст-комментарий
             }
             else
             {
                 if (!exactMatchRequired || Recognizer.Matches(suggestion, tag.Query))
                     tag.Blank = suggestion;
-                else if (recognizer.CanMakeEntityFrom(tag.Query))
-                    tag.Blank = tag.Query; // недописанное слово
                 else
-                    tag.Blank = null;
+                    tag.Blank = tag.Query; // запрос не совпал с предположением 
             }
 
             Suggestions.Clear();

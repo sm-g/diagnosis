@@ -36,23 +36,12 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private Signalizations _signal;
 
         /// <summary>
-        /// Создает тег с текстом в начальном состоянии.
-        /// </summary>
-        public Tag(string title, bool freezeOnComplete)
-        {
-            if (!string.IsNullOrEmpty(title))
-                Query = title;
-
-            this.freezeOnComplete = freezeOnComplete;
-            State = States.Init;
-        }
-
-        /// <summary>
         /// Создает пустой тег.
         /// </summary>
         public Tag(bool freezeOnComplete)
-            : this(null as string, freezeOnComplete)
         {
+            this.freezeOnComplete = freezeOnComplete;
+            State = States.Init;
         }
 
         /// <summary>
@@ -70,13 +59,13 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         public event EventHandler Deleted;
 
         /// <summary>
-        /// Типы сущностей в теге.
+        /// Типы заготовок в теге.
         /// </summary>
         public enum BlankTypes
         {
             None,
             /// <summary>
-            /// Строка-запрос, может быть словом или измерением
+            /// Строка-запрос
             /// </summary>
             Query,
             Word
@@ -87,8 +76,17 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         public enum States
         {
+            /// <summary>
+            /// Новый (пустой) - начальное состояние
+            /// </summary>
             Init,
+            /// <summary>
+            /// Редактируется
+            /// </summary>
             Typing,
+            /// <summary>
+            /// Завершен
+            /// </summary>
             Completed
         }
 
@@ -124,8 +122,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     _blank = value;
                     OnPropertyChanged("Blank");
                     OnPropertyChanged("BlankType");
-
-                    // logger.DebugFormat("{0} blank changed", this);
                 }
                 if (value != null)
                 {

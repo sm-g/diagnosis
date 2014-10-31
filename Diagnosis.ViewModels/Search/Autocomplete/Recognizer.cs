@@ -42,13 +42,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             this.childrenFirstStrategy = childrenFirstStrategy;
         }
 
-        public bool CanMakeEntityFrom(string query)
-        {
-            if (query.IsNullOrEmpty())
-                return false;
-            return AutoNewFromQuery; // new word
-        }
-
         /// <summary>
         /// Создает сущности из тега. Может получиться одно слово или несколько измерений.
         /// Кеширует созданные сущности в теге.
