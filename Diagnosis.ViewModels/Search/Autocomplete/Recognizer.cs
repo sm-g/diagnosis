@@ -18,9 +18,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private static char[] numbersSeparators = new char[] { '\\', '/', ' ' };
 
         /// <summary>
-        /// Разрешает создание новых слов из текста запроса.
+        /// Создание новых сущностей (слов) из текста запроса.
         /// </summary>
-        public bool AllowNewFromQuery { get; set; }
+        public bool AutoNewFromQuery { get; set; }
 
         /// <summary>
         /// Показывать все предположения-слова при пустом запросе. Если false, требуется первый символ.
@@ -49,7 +49,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             if (query.IsNullOrEmpty())
                 return false;
             return IsMeasure(query)
-                || AllowNewFromQuery; // new word
+                || AutoNewFromQuery; // new word
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                             yield return m;
                         }
                     }
-                    else if (AllowNewFromQuery)
+                    else if (AutoNewFromQuery)
                     {
                         var w = new Word(tag.Blank as string);
                         tag.Entities = new List<IHrItemObject>() { w };
@@ -169,7 +169,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
                 results = new List<object>(found);
 
-                if (AllowNewFromQuery)
+                if (AutoNewFromQuery)
                 {
                     bool existsSame = results.Any(item => query == item.ToString());
                     if (exclude != null)

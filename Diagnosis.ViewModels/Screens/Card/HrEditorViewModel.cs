@@ -142,7 +142,7 @@ namespace Diagnosis.ViewModels.Screens
                            select item.Entity;
 
             _autocomplete = new Autocomplete(
-                new Recognizer(session, true) { AllowNewFromQuery = true },
+                new Recognizer(session, true) { AutoNewFromQuery = true },
                 true,
                 initials);
 
@@ -150,7 +150,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 // меняем элементы записи при завершении или удалении тега
                 var entities = _autocomplete.GetEntities().ToList();
-                SetOrderedHrItems(HealthRecord.healthRecord, entities);
+                SetOrderedHrItems(HealthRecord.healthRecord, entities); // null ref?
             };
 
             OnPropertyChanged("Autocomplete");
