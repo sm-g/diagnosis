@@ -22,19 +22,20 @@
                   MinWidth="50"
                   IsEditable="True"
                   SelectionChanged="comboYears_SelectionChanged"
-                  LostFocus="comboYears_LostFocus"
-                  SelectedValue="{Binding Year, Mode=TwoWay, Converter={StaticResource IntToString}, ElementName=root}" />
+                  LostFocus="comboYears_LostFocus"                  
+                  SelectedValue="{Binding Year, Mode=TwoWay, FallbackValue='', Converter={StaticResource IntToString}, ElementName=root}">
+        </ComboBox>
         <ComboBox x:Name="comboMonths"
                   Style="{StaticResource comboRight}"
                   MinWidth="80"
                   SelectionChanged="comboMonths_SelectionChanged"
-                  SelectedValue="{Binding Month, Mode=TwoWay, Converter={StaticResource MonthToString}, ElementName=root}" />
+                  SelectedValue="{Binding Month, Mode=TwoWay, FallbackValue='', Converter={StaticResource MonthToString}, ElementName=root}" />
         <ComboBox x:Name="comboDays"
                   MinWidth="40"
                   IsEditable="True"
                   SelectionChanged="comboDays_SelectionChanged"
                   LostFocus="comboDays_LostFocus"
-                  SelectedValue="{Binding Day, Mode=TwoWay, Converter={StaticResource IntToString}, ElementName=root}">
+                  SelectedValue="{Binding Day, Mode=TwoWay, FallbackValue='', Converter={StaticResource IntToString}, ElementName=root}">
         </ComboBox>
     </StackPanel>
 </UserControl>
