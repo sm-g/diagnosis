@@ -134,7 +134,7 @@ namespace Diagnosis.ViewModels.Screens
         public Autocomplete Autocomplete { get { return _autocomplete; } }
 
         /// <summary>
-        /// Создает автокомплит с начальными словами и измерениями из редактируемой записи.
+        /// Создает автокомплит с начальными словами и комментами из редактируемой записи.
         /// </summary>
         private void CreateAutoComplete()
         {
@@ -142,7 +142,7 @@ namespace Diagnosis.ViewModels.Screens
                            select item.Entity;
 
             _autocomplete = new Autocomplete(
-                new Recognizer(session, true) { AutoNewFromQuery = true },
+                new Recognizer(session, true),
                 true,
                 initials);
 
@@ -162,13 +162,13 @@ namespace Diagnosis.ViewModels.Screens
             var toAdd = entities.Except(hrEntities).ToList();
             var toRemove = hrEntities.Except(entities).ToList();
 
-            toAdd.ForEach(m =>
+            toAdd.ForEach(e =>
             {
-                new HrItem(hr, m);
+                new HrItem(hr, e);
             });
-            toRemove.ForEach(m =>
+            toRemove.ForEach(e =>
             {
-                hr.RemoveItem(hr.HrItems.First(i => i.Entity == m));
+                hr.RemoveItem(hr.HrItems.First(i => i.Entity == e));
             });
 
             var ordered = hr.HrItems.OrderBy(i => entities.IndexOf(i.Entity)).ToList();

@@ -330,7 +330,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (!exactMatchRequired || Recognizer.Matches(suggestion, tag.Query))
                     tag.Blank = suggestion;
                 else
-                    tag.Blank = tag.Query; // запрос не совпал с предположением 
+                    tag.Blank = tag.Query; // CompleteOnLostFocus - запрос не совпал с предположением 
             }
 
             Suggestions.Clear();

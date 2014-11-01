@@ -38,5 +38,10 @@ namespace Diagnosis.Core
         {
             return str.ToCharArray().Select(ch => int.Parse(ch.ToString()));
         }
+
+        public static bool MatchesAsStrings(this string str, object obj)
+        {
+            return str.ToLowerInvariant() == obj.ToString().ToLowerInvariant(); // TODO use everywhere
+        }
     }
 }

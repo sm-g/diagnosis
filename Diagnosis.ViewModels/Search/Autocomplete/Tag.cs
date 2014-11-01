@@ -19,7 +19,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         PartialMeasure,
         /// <summary>
-        /// Некорректный тег (новое слово).
+        /// Некорректный тег (новый без заготовки).
         /// </summary>
         Forbidden
     }
@@ -245,7 +245,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             else if (BlankType == Tag.BlankTypes.Query)
             {
                 var str = Blank as string;
-                Signalization = Signalizations.NewWord;
+                Signalization = Signalizations.NewWord; // если новое слово создается автоматчски из запроса - показать это
             }
         }
 

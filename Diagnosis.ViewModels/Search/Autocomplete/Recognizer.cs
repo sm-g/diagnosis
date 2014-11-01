@@ -26,12 +26,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         public bool ShowAllWordsOnEmptyQuery { get; set; }
 
         /// <summary>
-        /// Показывать все предположения-единицы измерения при пустом запросе. Если false, требуется первый символ.
-        /// Нельзя завершить измерение без единицы энтером.
-        /// </summary>
-        public bool ShowAllUomsOnEmptyQuery { get; set; }
-
-        /// <summary>
         ///
         /// </summary>
         /// <param name="session"></param>
@@ -115,10 +109,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
             if (AutoNewFromQuery)
             {
-                bool existsSame = results.Any(item => query == item.ToString());
+                bool existsSame = results.Any(item => query.MatchesAsStrings(item));
                 if (exclude != null)
                 {
-                    existsSame |= exclude.Any(item => item != null ? query == item.ToString() : false);
+                    existsSame |= exclude.Any(item => item != null ? query.MatchesAsStrings(item) : false);
                 }
 
                 // не добавляем запрос, совпадающий со словом в результатах или словом/запросом в исключенных предположениях
@@ -138,8 +132,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         public static bool Matches(object suggestion, string query)
         {
             if (suggestion is Word)
-                return (suggestion as Word).Title == query;
-            return suggestion.ToString() == query;
+                return query.MatchesAsStrings(suggestion as Word);
+            return query.MatchesAsStrings(suggestion);
         }
 
         private IEnumerable<Word> QueryWords(string query, object prev)
