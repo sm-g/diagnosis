@@ -57,7 +57,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         public event EventHandler Deleted;
-
+        public event EventHandler Converting;
         /// <summary>
         /// Типы заготовок в теге.
         /// </summary>
@@ -99,15 +99,27 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
+        public RelayCommand ConvertCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Entities = null;
+                    OnConverting(EventArgs.Empty);
+                },
+                () => State != States.Init);
+            }
+        }
+
         /// <summary>
-        /// Сущности, созданные из тега. При изменении запроса сбрасывается.
+        /// Сущности, созданные из тега. При изменении запроса или конвертации сбрасывается.
         /// </summary>
         public IEnumerable<IHrItemObject> Entities { get; internal set; }
 
         /// <summary>
         /// Заготовка, из которой получаются сущности.
-        /// То, что оказалось введенным после энтера - найденное слово, текст запроса,
-        /// число c единицей или ничего, если новые слова недопустимы.
+        /// То, что оказалось введенным - найденное слово, текст запроса или ничего.
         /// </summary>
         public object Blank
         {
@@ -117,9 +129,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
             set
             {
-                Contract.Requires(State != States.Completed);
                 if (_blank != value)
                 {
+                    logger.DebugFormat("blonk ={0}", value);
+
                     _blank = value;
                     OnPropertyChanged("Blank");
                     OnPropertyChanged("BlankType");
@@ -189,6 +202,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 if (Query != value)
                 {
+                    logger.DebugFormat("query ={0}", value);
                     Contract.Assume(!IsDeleteOnly);
 
                     State = States.Typing;
@@ -242,10 +256,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 Signalization = Signalizations.Forbidden;
             }
-            else if (BlankType == Tag.BlankTypes.Query)
+            else if (BlankType == Tag.BlankTypes.Word)
             {
-                var str = Blank as string;
-                Signalization = Signalizations.NewWord; // если новое слово создается автоматчски из запроса - показать это
+                var word = Blank as Word;
+                if (word.IsTransient)
+                    Signalization = Signalizations.NewWord;
             }
         }
 
@@ -274,6 +289,15 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             if (h != null)
             {
                 h(this, EventArgs.Empty);
+            }
+        }
+
+        protected virtual void OnConverting(EventArgs e)
+        {
+            var h = Converting;
+            if (h != null)
+            {
+                h(this, e);
             }
         }
     }

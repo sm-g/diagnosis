@@ -3,7 +3,6 @@ using log4net;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -20,7 +19,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private bool _supressCompletion;
         private object _selectedSuggestion;
         private Recognizer recognizer;
-        bool inDispose;
+        private bool inDispose;
 
         public Autocomplete(Recognizer recognizer, bool allowTagEditing, IEnumerable<IHrItemObject> initItems)
         {
@@ -201,6 +200,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 Tags.Remove(tag);
                 OnEntitiesChanged();
             };
+            tag.Converting += (s, e) =>
+            {
+                CompleteOnConvert(tag);
+                OnEntitiesChanged();
+            };
             tag.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "Query")
@@ -283,33 +287,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        protected virtual void OnInputEnded()
-        {
-            var h = InputEnded;
-            if (h != null)
-            {
-                h(this, EventArgs.Empty);
-            }
-        }
-
-        protected virtual void OnTagCompleted(Tag tag)
-        {
-            var h = TagCompleted;
-            if (h != null)
-            {
-                h(this, new TagEventArgs(tag));
-            }
-        }
-
-        protected virtual void OnEntitiesChanged()
-        {
-            var h = EntitiesChanged;
-            if (h != null)
-            {
-                h(this, EventArgs.Empty);
-            }
-        }
-
         /// <summary>
         /// Завершает тег.
         /// </summary>
@@ -318,28 +295,48 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
         private void CompleteCommon(Tag tag, object suggestion, bool exactMatchRequired)
         {
-            if (suggestion == null)
+            if (tag.Query == "") // пустой тег — удаляем
             {
-                if (tag.Query == "") // пустой тег — удаляем
-                    tag.DeleteCommand.Execute(null);
-                else
-                    tag.Blank = tag.Query; // текст-комментарий
+                tag.DeleteCommand.Execute(null);
             }
             else
             {
-                if (!exactMatchRequired || Recognizer.Matches(suggestion, tag.Query))
-                    tag.Blank = suggestion;
+                if (suggestion == null)
+                {
+                    tag.Blank = tag.Query; // текст-комментарий
+                }
                 else
-                    tag.Blank = tag.Query; // CompleteOnLostFocus - запрос не совпал с предположением 
+                {
+                    if (!exactMatchRequired || Recognizer.Matches(suggestion, tag.Query))
+                        tag.Blank = suggestion;
+                    else
+                        tag.Blank = tag.Query; // запрос не совпал с предположением (CompleteOnLostFocus или Converting)
+                }
             }
 
-            Suggestions.Clear();
-            RefreshPopup();
-            tag.Validate();
+            CompleteEnding(tag);
+        }
 
-            // добавляем пустое поле
-            if (!IsLastTagEmpty)
-                AddTag();
+        private void CompleteOnConvert(Tag tag)
+        {
+            if (tag.BlankType == Tag.BlankTypes.Word)
+            {
+                // слово меняем на коммент
+                tag.Blank = new Comment(tag.Query);
+            }
+            else
+            {
+                // берем слово из словаря
+                MakeSuggestions(tag);
+                CompleteCommon(tag, SelectedSuggestion, true);
+                if (!(tag.Blank is Word))
+                {
+                    // создаем слово из запроса
+                    tag.Blank = new Word(tag.Query);
+                }
+            }
+
+            CompleteEnding(tag);
         }
 
         public void CompleteOnEnter(Tag tag)
@@ -373,6 +370,17 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
+        private void CompleteEnding(Tag tag)
+        {
+            Suggestions.Clear();
+            RefreshPopup();
+            tag.Validate();
+
+            // добавляем пустое поле
+            if (!IsLastTagEmpty)
+                AddTag();
+        }
+
         private void MakeSuggestions(Tag tag)
         {
             var tagIndex = Tags.IndexOf(tag);
@@ -393,6 +401,33 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private void RefreshPopup()
         {
             IsPopupOpen = Suggestions.Count > 0; // not on suggestion.collectionchanged - мигание при очистке, лишние запросы к IsPopupOpen
+        }
+
+        protected virtual void OnInputEnded()
+        {
+            var h = InputEnded;
+            if (h != null)
+            {
+                h(this, EventArgs.Empty);
+            }
+        }
+
+        protected virtual void OnTagCompleted(Tag tag)
+        {
+            var h = TagCompleted;
+            if (h != null)
+            {
+                h(this, new TagEventArgs(tag));
+            }
+        }
+
+        protected virtual void OnEntitiesChanged()
+        {
+            var h = EntitiesChanged;
+            if (h != null)
+            {
+                h(this, EventArgs.Empty);
+            }
         }
 
         [ContractInvariantMethod]

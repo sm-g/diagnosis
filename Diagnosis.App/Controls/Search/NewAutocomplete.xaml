@@ -14,11 +14,11 @@
             <KeyBinding Key="Delete" Command="{Binding DeleteCommand}" />
         </InputBindingCollection>
         <InputBindingCollection x:Shared="False" x:Key="SuggestionInputBindings">
-            <KeyBinding Key="Enter" 
-                        Command="{Binding DataContext.EnterCommand,ElementName=suggestions}" 
+            <KeyBinding Key="Enter"
+                        Command="{Binding DataContext.EnterCommand,ElementName=suggestions}"
                         CommandParameter="{Binding DataContext.EditingTag,ElementName=suggestions}" />
-            <MouseBinding MouseAction="LeftDoubleClick" 
-                          Command="{Binding DataContext.EnterCommand,ElementName=suggestions}" 
+            <MouseBinding MouseAction="LeftDoubleClick"
+                          Command="{Binding DataContext.EnterCommand,ElementName=suggestions}"
                           CommandParameter="{Binding DataContext.EditingTag,ElementName=suggestions}" />
         </InputBindingCollection>
     </UserControl.Resources>
@@ -48,13 +48,6 @@
                         </Trigger>
                     </Style.Triggers>
                     <Setter Property="controls:Attached.InputBindings" Value="{StaticResource TagInputBindings}" />
-                    <Setter Property="ContextMenu">
-                        <Setter.Value>
-                            <ContextMenu>
-                                <MenuItem Header="Удалить" Command="{Binding DeleteCommand}" />
-                            </ContextMenu>
-                        </Setter.Value>
-                    </Setter>
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 </Style>
             </ListBox.ItemContainerStyle>
@@ -64,7 +57,7 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-   
+
         <Popup x:Name="popup" Height="Auto" Width="auto"
                 StaysOpen="True"
                 Placement="Bottom"
