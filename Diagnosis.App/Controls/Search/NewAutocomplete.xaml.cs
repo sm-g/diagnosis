@@ -32,9 +32,6 @@ namespace Diagnosis.App.Controls.Search
             }
             else if (e.Key == Key.Escape)
             {
-                // нельзя выбирать предположения, когда попап скрыт (когда при пустом запросе показываем все предположения)
-                suggestions.SelectedItem = null;
-
                 popup.IsOpen = false;
             }
         }

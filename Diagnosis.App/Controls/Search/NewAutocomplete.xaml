@@ -24,7 +24,7 @@
     </UserControl.Resources>
     <!-- Autocomplete -->
     <StackPanel>
-        <ListBox x:Name="input"
+        <ListBox x:Name="input" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  ItemsSource="{Binding Tags}"
                  SelectedItem="{Binding SelectedTag}"
                  HorizontalContentAlignment="Stretch"
@@ -34,7 +34,7 @@
                  SelectionChanged="input_SelectionChanged">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <DockPanel LastChildFill="True" />
+                    <controls:WrapPanelLastChildFill />
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.InputBindings>
@@ -55,11 +55,12 @@
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 </Style>
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <search:Tag LostKeyboardFocus="Tag_LostKeyboardFocus" GotKeyboardFocus="Tag_GotKeyboardFocus" LostFocus="Tag_LostFocus" />
+                    <search:Tag MinWidth="30" LostKeyboardFocus="Tag_LostKeyboardFocus" GotKeyboardFocus="Tag_GotKeyboardFocus" LostFocus="Tag_LostFocus" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

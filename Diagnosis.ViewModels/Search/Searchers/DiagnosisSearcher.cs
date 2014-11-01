@@ -3,7 +3,7 @@ using System.Diagnostics.Contracts;
 using System;
 using System.Linq;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Search
 {
     public class DiagnosisSearcher : IHierarchicalSearcher<DiagnosisViewModel>
     {

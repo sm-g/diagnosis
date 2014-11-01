@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-namespace Diagnosis.ViewModels
+
+namespace Diagnosis.ViewModels.Search
 {
     internal interface IFilter<T>
     {

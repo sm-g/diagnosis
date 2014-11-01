@@ -3,7 +3,7 @@ using Diagnosis.Models;
 using log4net;
 using System.ComponentModel;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public class PatientEditorViewModel : ScreenBase
     {

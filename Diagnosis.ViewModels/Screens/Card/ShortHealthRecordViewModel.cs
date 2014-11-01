@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public class ShortHealthRecordViewModel : CheckableBase
     {
@@ -15,7 +15,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return string.Join(" ", healthRecord.HrItems.Select(i => i.Entity));
+                return string.Join(" ", healthRecord.GetOrderedEntities());
             }
         }
 

@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 using System.Windows.Input;
 using Diagnosis.Core;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Search
 {
     // TODO записи везде
     public class HrSearchResultViewModel : ViewModelBase

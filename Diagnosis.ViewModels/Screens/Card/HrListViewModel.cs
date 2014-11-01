@@ -7,7 +7,7 @@ using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public class HrListViewModel : ViewModelBase
     {

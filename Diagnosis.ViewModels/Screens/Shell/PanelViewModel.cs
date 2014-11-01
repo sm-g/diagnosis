@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public class PanelViewModel : ViewModelBase
     {

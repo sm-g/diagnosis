@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using Diagnosis.ViewModels;
+using Diagnosis.ViewModels.Screens;
 
 namespace Diagnosis.App.Controls.Search
 {

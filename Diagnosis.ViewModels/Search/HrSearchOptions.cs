@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Search
 {
     public class HrSearchOptions
     {

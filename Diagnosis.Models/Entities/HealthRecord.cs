@@ -287,6 +287,14 @@ namespace Diagnosis.Models
                 OnItemsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
             }
         }
+
+        public virtual IEnumerable<IHrItemObject> GetOrderedEntities()
+        {
+            return from item in HrItems
+                   orderby item.Ord
+                   select item.Entity;
+        }
+
         public override string ToString()
         {
             return string.Format("hr {0} {1} {2} {3}", Id, Category, DateOffset, Comment);

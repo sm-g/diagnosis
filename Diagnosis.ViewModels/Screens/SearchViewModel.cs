@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Core;
 using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Search;
 using Diagnosis.ViewModels.Search.Autocomplete;
 using EventAggregator;
 using System;
@@ -12,7 +13,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public class SearchViewModel : SessionVMBase
     {

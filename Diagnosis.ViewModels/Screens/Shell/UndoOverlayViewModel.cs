@@ -3,7 +3,7 @@ using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     /// <summary>
     /// Сообщение для отмены удаления нескольких сущностей одного типа.

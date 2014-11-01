@@ -1,9 +1,8 @@
-﻿using Diagnosis.Core;
+﻿using Diagnosis.ViewModels;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System;
 
 namespace Diagnosis.App.Controls.Search
 {
@@ -13,7 +12,7 @@ namespace Diagnosis.App.Controls.Search
     public partial class AutoComplete : UserControl
     {
         private bool focusFromPopup;
-        IAutoComplete vm;
+        private IAutoComplete vm;
 
         public AutoComplete()
         {

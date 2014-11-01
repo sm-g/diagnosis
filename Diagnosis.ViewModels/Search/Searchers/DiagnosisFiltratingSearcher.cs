@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Search
 {
     /// <summary>
     /// Для поиска по дереву, когда в Collection только элементы первого уровня.

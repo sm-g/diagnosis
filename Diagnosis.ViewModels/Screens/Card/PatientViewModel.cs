@@ -9,7 +9,7 @@ using System.Windows.Input;
 using FluentValidation.Results;
 using System;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public class PatientViewModel : ViewModelBase
     {
@@ -241,6 +241,7 @@ namespace Diagnosis.ViewModels
             if (disposing)
             {
                 patient.PropertyChanged -= patient_PropertyChanged;
+                coursesManager.Dispose();
             }
             base.Dispose(disposing);
         }

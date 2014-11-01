@@ -7,7 +7,7 @@ using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Windows;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public partial class CardViewModel : ScreenBase
     {

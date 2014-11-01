@@ -8,7 +8,7 @@ using EventAggregator;
 using Diagnosis.Core;
 using Diagnosis.Data.Repositories;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public class SettingsViewModel : SessionVMBase
     {

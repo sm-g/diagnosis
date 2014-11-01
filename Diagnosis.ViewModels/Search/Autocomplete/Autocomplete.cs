@@ -20,6 +20,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private bool _supressCompletion;
         private object _selectedSuggestion;
         private Recognizer recognizer;
+        bool inDispose;
 
         public Autocomplete(Recognizer recognizer, bool allowTagEditing, IEnumerable<IHrItemObject> initItems)
         {
@@ -154,6 +155,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 {
                     _popupOpened = value;
                     logger.DebugFormat("opened {0}", value);
+
+                    if (!value)
+                    {
+                        SelectedSuggestion = null; // нельзя выбирать предположения, когда попап скрыт
+                    }
 
                     OnPropertyChanged(() => IsPopupOpen);
                 }
@@ -397,11 +403,13 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            Contract.Invariant(Tags.Count > 0); // хотя бы один тег - поле ввода
+            if (!inDispose)
+                Contract.Invariant(Tags.Count > 0); // хотя бы один тег - поле ввода
         }
 
         protected override void Dispose(bool disposing)
         {
+            inDispose = true;
             if (disposing)
             {
                 Tags.Clear();

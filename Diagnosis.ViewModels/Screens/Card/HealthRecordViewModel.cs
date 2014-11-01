@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows.Input;
 using EventAggregator;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public class HealthRecordViewModel : ViewModelBase
     {

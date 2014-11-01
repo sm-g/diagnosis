@@ -8,6 +8,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using Diagnosis.Core;
 using System.Diagnostics;
+using Diagnosis.ViewModels.Search;
 
 namespace Diagnosis.ViewModels
 {

@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Input;
 
-namespace Diagnosis.Core
+namespace Diagnosis.ViewModels
 {
     public interface IAutoComplete
     {

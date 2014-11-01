@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Core;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Search;
 using Diagnosis.ViewModels.Search.Autocomplete;
 using EventAggregator;
 using NHibernate;
@@ -12,12 +13,12 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public class HrEditorViewModel : ViewModelBase
     {
         private Autocomplete _autocomplete;
-        private PopupSearch<DiagnosisViewModel> _diagnosisSearch;
+        private PopupSearchViewModel<DiagnosisViewModel> _diagnosisSearch;
 
         private HealthRecordViewModel _hr;
         private ISession session;
@@ -137,11 +138,10 @@ namespace Diagnosis.ViewModels
         /// </summary>
         private void CreateAutoComplete()
         {
-            var initials = from item in HealthRecord.healthRecord.HrItems // ordered by mapping
-                           select item.Entity;
+            var initials = HealthRecord.healthRecord.GetOrderedEntities();
 
             _autocomplete = new Autocomplete(
-                new Recognizer(session, true) { AllowNewFromQuery = true },
+                new Recognizer(session, true) { AutoNewFromQuery = true },
                 true,
                 initials);
 
@@ -149,7 +149,7 @@ namespace Diagnosis.ViewModels
             {
                 // меняем элементы записи при завершении или удалении тега
                 var entities = _autocomplete.GetEntities().ToList();
-                SetOrderedHrItems(HealthRecord.healthRecord, entities);
+                SetOrderedHrItems(HealthRecord.healthRecord, entities); // null ref?
             };
 
             OnPropertyChanged("Autocomplete");
@@ -158,30 +158,50 @@ namespace Diagnosis.ViewModels
         private static void SetOrderedHrItems(HealthRecord hr, List<IHrItemObject> entities)
         {
             var hrEntities = hr.HrItems.Select(x => x.Entity).ToList();
-            var toAdd = entities.Except(hrEntities).ToList();
-            var toRemove = hrEntities.Except(entities).ToList();
+            var toAddItems = entities
+                .Except(hrEntities)
+                .Select(i => new HrItem(hr, i))
+                .ToList();
+            var toRemoveEntities = hrEntities
+                .Except(entities)
+                .ToList();
 
-            toAdd.ForEach(m =>
+            // сначала формируем будущие элементы записи
+            var will = new HashSet<HrItem>(hr.HrItems);
+            toAddItems.ForEach(i =>
             {
-                new HrItem(hr, m);
+                will.Add(i);
             });
-            toRemove.ForEach(m =>
+            toRemoveEntities.ForEach(e =>
             {
-                hr.RemoveItem(hr.HrItems.First(i => i.Entity == m));
+                var item = hr.HrItems.First(i => i.Entity == e);
+                will.Remove(item);
             });
 
-            var ordered = hr.HrItems.OrderBy(i => entities.IndexOf(i.Entity)).ToList();
+            // ставим порядок
+            var ordered = will.OrderBy(i => entities.IndexOf(i.Entity)).ToList();
             for (int i = 0; i < ordered.Count; i++)
             {
                 ordered[i].Ord = i;
             }
+
+            // добавляем и удаляем элементы уже с порядком
+            toAddItems.ForEach(i =>
+            {
+                hr.AddItem(i);
+            });
+            toRemoveEntities.ForEach(e =>
+            {
+                var item = hr.HrItems.First(i => i.Entity == e);
+                hr.RemoveItem(item);
+            });
         }
 
         #endregion AutoComplete
 
         #region Diagnosis search
 
-        public PopupSearch<DiagnosisViewModel> DiagnosisSearch
+        public PopupSearchViewModel<DiagnosisViewModel> DiagnosisSearch
         {
             get
             {
@@ -199,7 +219,7 @@ namespace Diagnosis.ViewModels
 
         private void CreateDiagnosisSearch()
         {
-            DiagnosisSearch = new PopupSearch<DiagnosisViewModel>(
+            DiagnosisSearch = new PopupSearchViewModel<DiagnosisViewModel>(
                    EntityProducers.DiagnosisProducer.RootFiltratingSearcher
                    );
 
@@ -323,6 +343,9 @@ namespace Diagnosis.ViewModels
                 {
                     handler.Dispose();
                     Unload();
+
+                    if (_autocomplete != null)
+                        _autocomplete.Dispose();
                 }
             }
             finally
