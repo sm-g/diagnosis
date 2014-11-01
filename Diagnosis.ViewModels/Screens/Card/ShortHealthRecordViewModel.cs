@@ -15,7 +15,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return string.Join(" ", healthRecord.HrItems.Select(i => i.Entity));
+                return string.Join(" ", healthRecord.GetOrderedEntities());
             }
         }
 
