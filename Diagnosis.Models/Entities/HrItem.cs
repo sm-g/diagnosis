@@ -29,8 +29,6 @@ namespace Diagnosis.Models
                 comment = obj as Comment;
                 TextRepr = (obj as Comment).String;
             }
-
-            hr.AddItem(this);
         }
 
         protected HrItem()
