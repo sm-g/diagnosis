@@ -139,6 +139,7 @@
   <ItemGroup>
     <Compile Include="EmptyChecker.cs" />
     <Compile Include="Entities\HrItem.cs" />
+    <Compile Include="Entities\Comment.cs" />
     <Compile Include="HealthRecordUnits.cs" />
     <Compile Include="DoctorSettings.cs" />
     <Compile Include="Entities\Measure.cs" />

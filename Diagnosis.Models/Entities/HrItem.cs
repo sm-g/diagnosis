@@ -8,28 +8,11 @@ namespace Diagnosis.Models
 {
     public class HrItem : EntityBase, IDomainEntity
     {
+        private Comment comment;
 
         private IcdDisease _disease;
         private Word _word;
         private Measure _measure;
-
-        public HrItem(HealthRecord hr, Word word)
-        {
-            Contract.Requires(hr != null);
-
-            HealthRecord = hr;
-            Word = word;
-            hr.AddItem(this);
-        }
-
-        public HrItem(HealthRecord hr, Measure measure)
-        {
-            Contract.Requires(hr != null);
-
-            HealthRecord = hr;
-            Measure = measure;
-            hr.AddItem(this);
-        }
 
         public HrItem(HealthRecord hr, IHrItemObject obj)
         {
@@ -41,6 +24,11 @@ namespace Diagnosis.Models
                 Word = obj as Word;
             else if (obj is Measure)
                 Measure = obj as Measure;
+            else if (obj is Comment)
+            {
+                comment = obj as Comment;
+                TextRepr = (obj as Comment).String;
+            }
 
             hr.AddItem(this);
         }
@@ -50,6 +38,9 @@ namespace Diagnosis.Models
         }
 
         public virtual HealthRecord HealthRecord { get; protected set; }
+        public virtual string TextRepr { get; protected set; }
+
+
         public virtual IcdDisease Disease
         {
             get { return _disease; }
@@ -77,6 +68,7 @@ namespace Diagnosis.Models
                 }
             }
         }
+
         public virtual Measure Measure
         {
             get
@@ -100,6 +92,7 @@ namespace Diagnosis.Models
                 if (Word != null) return Word;
                 if (Measure != null) return Measure;
                 if (Disease != null) return Disease;
+                if (TextRepr != null) return comment ?? (comment = new Comment(TextRepr));
 
                 return null;
             }

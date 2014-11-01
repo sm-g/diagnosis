@@ -68,6 +68,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             /// Строка-запрос
             /// </summary>
             Query,
+            Comment,
             Word
         }
 
@@ -252,6 +253,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             if (blank is Word)
                 return BlankTypes.Word;
+            if (blank is Comment)
+                return BlankTypes.Comment;
             if (blank is string)
                 return BlankTypes.Query;
             if (blank == null)

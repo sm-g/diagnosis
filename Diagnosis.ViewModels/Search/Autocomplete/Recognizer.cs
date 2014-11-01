@@ -43,7 +43,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
-        /// Создает сущности из тега. Может получиться одно слово или несколько измерений.
+        /// Создает сущности из тега. Может получиться одно слово или один коммент.
         /// Кеширует созданные сущности в теге.
         /// </summary>
         /// <param name="blank"></param>
@@ -71,11 +71,22 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                         tag.Entities = new List<IHrItemObject>() { w };
                         yield return w;
                     }
+                    else
+                    {
+                        var c = new Comment(tag.Blank as string);
+                        tag.Entities = new List<IHrItemObject>() { c };
+                        yield return c;
+                    }
                     break;
 
                 case Tag.BlankTypes.Word:
                     tag.Entities = new List<IHrItemObject>() { tag.Blank as Word };
                     yield return tag.Blank as Word;
+                    break;
+
+                case Tag.BlankTypes.Comment:
+                    tag.Entities = new List<IHrItemObject>() { tag.Blank as Comment };
+                    yield return tag.Blank as Comment;
                     break;
             }
         }
