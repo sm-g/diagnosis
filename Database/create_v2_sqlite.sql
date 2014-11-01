@@ -86,6 +86,7 @@
     create table HrItem (
         Id integer primary key autoincrement,
         Ord INT not null,
+        TextRepr TEXT,
         DiseaseID INT,
         WordID INT,
         UomID INT,
