@@ -23,11 +23,14 @@ namespace Diagnosis.App.Controls
             Size curLineSize = new Size();
             Size panelSize = new Size(constraint.Width, 0);
 
-            UIElementCollection children = base.InternalChildren;
+            UIElementCollection children = this.InternalChildren;
 
             for (int i = 0; i < children.Count; i++)
             {
                 UIElement child = children[i] as UIElement;
+
+                if (child == null) // when clear ItemsSource collection
+                    continue;
 
                 // Flow passes its own constraint to children
                 child.Measure(constraint);
@@ -69,7 +72,12 @@ namespace Diagnosis.App.Controls
 
             for (int i = 0; i < children.Count; i++)
             {
-                Size sz = children[i].DesiredSize;
+                UIElement child = children[i] as UIElement;
+
+                if (child == null)
+                    continue;
+
+                Size sz = child.DesiredSize;
 
                 if (curLineSize.Width + sz.Width > arrangeBounds.Width) //need to switch to another line
                 {
@@ -102,10 +110,14 @@ namespace Diagnosis.App.Controls
         private void ArrangeLine(double y, Size lineSize, double boundsWidth, int start, int end)
         {
             double x = 0;
-            UIElementCollection children = InternalChildren;
+            UIElementCollection children = this.InternalChildren;
             for (int i = start; i < end; i++)
             {
                 UIElement child = children[i];
+
+                if (child == null)
+                    continue;
+
                 var w = child.DesiredSize.Width;
                 if (LastChildFill && i == end - 1) // last сhild fills remaining space
                 {
