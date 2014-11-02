@@ -16,7 +16,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private bool childrenFirstStrategy;
 
         /// <summary>
-        /// Создание новых сущностей (слов) из текста запроса.
+        /// Создание новых сущностей (слов) из текста запроса. По умолчанию создается коммент.
         /// </summary>
         public bool AutoNewFromQuery { get; set; }
 
@@ -24,6 +24,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// Показывать все предположения-слова при пустом запросе. Если false, требуется первый символ.
         /// </summary>
         public bool ShowAllWordsOnEmptyQuery { get; set; }
+
+        /// <summary>
+        /// Добавлять запрос в список предположений, если нет соответствующего слова.
+        /// </summary>
+        public bool AddQueryToSuggestions { get; set; }
 
         /// <summary>
         ///
@@ -98,7 +103,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             IEnumerable<IDomainEntity> found;
             List<object> results;
 
-
             found = QueryWords(query, prevEntityBlank);
             if (exclude != null)
             {
@@ -107,7 +111,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
             results = new List<object>(found);
 
-            if (AutoNewFromQuery)
+            if (AddQueryToSuggestions)
             {
                 bool existsSame = results.Any(item => query.MatchesAsStrings(item));
                 if (exclude != null)

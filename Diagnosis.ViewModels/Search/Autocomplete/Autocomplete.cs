@@ -330,8 +330,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             else
             {
                 // берем слово из словаря
-                MakeSuggestions(tag);
-                CompleteCommon(tag, SelectedSuggestion, true);
+                var word = MakeSuggestions(tag);
+                CompleteCommon(tag, word, true);
                 if (!(tag.Blank is Word))
                 {
                     // создаем слово из запроса
@@ -384,7 +384,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 AddTag();
         }
 
-        private void MakeSuggestions(Tag tag)
+        private object MakeSuggestions(Tag tag)
         {
             var tagIndex = Tags.IndexOf(tag);
             var results = recognizer.SearchForSuggesstions(
@@ -399,6 +399,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
 
             SelectedSuggestion = Suggestions.FirstOrDefault();
+            return Suggestions.FirstOrDefault();
         }
 
         private void RefreshPopup()
