@@ -144,7 +144,7 @@ namespace Diagnosis.ViewModels.Screens
             var initials = HealthRecord.healthRecord.GetOrderedEntities();
 
             _autocomplete = new Autocomplete(
-                new Recognizer(session, true),
+                new Recognizer(session) { ShowChildrenFirst = true },
                 true,
                 initials);
 

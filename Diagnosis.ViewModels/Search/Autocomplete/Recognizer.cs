@@ -13,12 +13,16 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
     public class Recognizer
     {
         private readonly ISession session;
-        private bool childrenFirstStrategy;
 
         /// <summary>
         /// Создание новых сущностей (слов) из текста запроса. По умолчанию создается коммент.
         /// </summary>
         public bool AutoNewFromQuery { get; set; }
+
+        /// <summary>
+        /// При поиске предположений-слов первыми - дети предыдущего слова.
+        /// </summary>
+        public bool ShowChildrenFirst { get; set; }
 
         /// <summary>
         /// Показывать все предположения-слова при пустом запросе. Если false, требуется первый символ.
@@ -34,11 +38,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         ///
         /// </summary>
         /// <param name="session"></param>
-        /// <param name="childrenFirstStrategy">При поиске предположений-слов первыми - дети предыдущего слова.</param>
-        public Recognizer(ISession session, bool childrenFirstStrategy)
+        public Recognizer(ISession session)
         {
             this.session = session;
-            this.childrenFirstStrategy = childrenFirstStrategy;
         }
 
         /// <summary>
@@ -147,7 +149,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
             Word parent = prev as Word;
 
-            if (childrenFirstStrategy)
+            if (ShowChildrenFirst)
                 return WordQuery.StartingWithChildrenFirst(session)(parent, query);
             else
                 return WordQuery.StartingWith(session)(query);
