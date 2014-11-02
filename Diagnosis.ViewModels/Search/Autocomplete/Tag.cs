@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using Diagnosis.Core;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
@@ -108,7 +109,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     Entities = null;
                     OnConverting(EventArgs.Empty);
                 },
-                () => State != States.Init);
+                () => State != States.Init && !Query.IsNullOrEmpty());
             }
         }
 

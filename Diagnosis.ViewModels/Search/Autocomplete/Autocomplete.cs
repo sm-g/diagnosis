@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using Diagnosis.Core;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
@@ -319,6 +320,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         private void CompleteOnConvert(Tag tag)
         {
+            Contract.Requires(!tag.Query.IsNullOrEmpty());
+
             if (tag.BlankType == Tag.BlankTypes.Word)
             {
                 // слово меняем на коммент
