@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Linq;
 using System;
+using Diagnosis.Core;
 
 namespace Diagnosis.ViewModels.Search
 {
@@ -104,14 +105,7 @@ namespace Diagnosis.ViewModels.Search
                 res = Searcher.Search(Query);
             }
 
-            foreach (var item in Results.Except(res).ToList())
-            {
-                Results.Remove(item);
-            }
-            foreach (var item in res.Except(Results).ToList())
-            {
-                Results.Add(item);
-            }
+            Results.SyncWith(res);
 
             OnFiltered();
         }

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Diagnosis.Core;
 
 namespace Diagnosis.App.Controls.Editors
 {
@@ -92,17 +93,13 @@ namespace Diagnosis.App.Controls.Editors
             var days = GetDaysComboItems();
             var daysInMonth = days.Count() - 1;
 
-            var daysToAdd = days.Except(Days).ToList();
-            var daysToRemove = Days.Except(days).ToList();
-
             // в новом месяце меньше дней - выбриаем последний
             if (Day > daysInMonth)
             {
                 Day = daysInMonth;
             }
 
-            daysToRemove.ForEach(d => Days.Remove(d));
-            daysToAdd.ForEach(d => Days.Add(d));
+            Days.SyncWith(days);
         }
 
         /// <summary>

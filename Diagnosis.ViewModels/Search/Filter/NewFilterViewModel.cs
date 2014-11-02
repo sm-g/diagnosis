@@ -4,6 +4,7 @@ using System.Windows.Input;
 using System.Linq;
 using System;
 using Diagnosis.Models;
+using Diagnosis.Core;
 
 namespace Diagnosis.ViewModels.Search
 {
@@ -104,14 +105,9 @@ namespace Diagnosis.ViewModels.Search
                 {
                     res = finder.Invoke(Query);
                 }
-            foreach (var item in Results.Except(res).ToList())
-            {
-                Results.Remove(item);
-            }
-            foreach (var item in res.Except(Results).ToList())
-            {
-                Results.Add(item);
-            }
+
+            Results.SyncWith(res);
+
 
             OnFiltered();
         }
