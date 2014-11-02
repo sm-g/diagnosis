@@ -41,6 +41,8 @@ namespace Diagnosis.Core
 
         public static bool MatchesAsStrings(this string str, object obj)
         {
+            if (str == null || obj == null)
+                return false;
             return str.ToLowerInvariant() == obj.ToString().ToLowerInvariant(); // TODO use everywhere
         }
     }

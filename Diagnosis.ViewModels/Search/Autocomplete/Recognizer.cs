@@ -43,6 +43,52 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             this.session = session;
         }
 
+        public void SetBlank(Tag tag, object suggestion, bool exactMatchRequired, bool inverse)
+        {
+            if (suggestion == null ^ inverse)
+            {
+                tag.Blank = tag.Query; // текст-комментарий
+            }
+            else if (!inverse)
+            {
+                if (!exactMatchRequired || Recognizer.Matches(suggestion, tag.Query))
+                    tag.Blank = suggestion;
+                else
+                    tag.Blank = tag.Query; // запрос не совпал с предположением (CompleteOnLostFocus)
+            }
+            else
+            {
+                var exists = SearchForSuggesstions(tag.Query, null, null).FirstOrDefault();
+                if (exists != null && Recognizer.Matches(exists, tag.Query))
+                    tag.Blank = exists;
+                else
+                    tag.Blank = new Word(tag.Query);
+            }
+        }
+
+        public void ConvertBlank(Tag tag)
+        {
+            if (tag.BlankType == Tag.BlankTypes.Word)
+            {
+                // слово меняем на коммент
+                tag.Blank = new Comment(tag.Query);
+            }
+            else
+            {
+                var word = SearchForSuggesstions(tag.Query, null, null).FirstOrDefault();
+                if (Recognizer.Matches(word, tag.Query))
+                {
+                    // берем слово из словаря
+                    tag.Blank = word;
+                }
+                else
+                {
+                    // или создаем слово из запроса
+                    tag.Blank = new Word(tag.Query);
+                }
+            }
+        }
+
         /// <summary>
         /// Создает сущности из тега. Может получиться одно слово или один коммент.
         /// Кеширует созданные сущности в теге.
@@ -135,7 +181,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <summary>
         /// Определяет сходство предположения и запроса.
         /// </summary>
-        public static bool Matches(object suggestion, string query)
+        private static bool Matches(object suggestion, string query)
         {
             if (suggestion is Word)
                 return query.MatchesAsStrings(suggestion as Word);

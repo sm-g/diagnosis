@@ -327,25 +327,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
             else
             {
-                if (suggestion == null ^ inverse)
-                {
-                    tag.Blank = tag.Query; // текст-комментарий
-                }
-                else if (!inverse)
-                {
-                    if (!exactMatchRequired || Recognizer.Matches(suggestion, tag.Query))
-                        tag.Blank = suggestion;
-                    else
-                        tag.Blank = tag.Query; // запрос не совпал с предположением (CompleteOnLostFocus или Converting)
-                }
-                else
-                {
-                    var exists = MakeSuggestions(tag);
-                    if (exists != null && Recognizer.Matches(exists, tag.Query))
-                        tag.Blank = exists;
-                    else
-                        tag.Blank = new Word(tag.Query);
-                }
+                recognizer.SetBlank(tag, suggestion, exactMatchRequired, inverse);
             }
 
             CompleteEnding(tag);
@@ -355,22 +337,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             Contract.Requires(!tag.Query.IsNullOrEmpty());
 
-            if (tag.BlankType == Tag.BlankTypes.Word)
-            {
-                // слово меняем на коммент
-                tag.Blank = new Comment(tag.Query);
-            }
-            else
-            {
-                // берем слово из словаря
-                var word = MakeSuggestions(tag);
-                CompleteCommon(tag, word, true);
-                if (!(tag.Blank is Word))
-                {
-                    // создаем слово из запроса
-                    tag.Blank = new Word(tag.Query);
-                }
-            }
+            recognizer.ConvertBlank(tag);
 
             CompleteEnding(tag);
         }
