@@ -17,6 +17,9 @@
             <KeyBinding Key="Enter"
                         Command="{Binding DataContext.EnterCommand,ElementName=suggestions}"
                         CommandParameter="{Binding DataContext.EditingTag,ElementName=suggestions}" />
+            <KeyBinding Key="Enter" Modifiers="Shift"
+                        Command="{Binding DataContext.InverseEnterCommand,ElementName=suggestions}"
+                        CommandParameter="{Binding DataContext.EditingTag,ElementName=suggestions}" />
             <MouseBinding MouseAction="LeftDoubleClick"
                           Command="{Binding DataContext.EnterCommand,ElementName=suggestions}"
                           CommandParameter="{Binding DataContext.EditingTag,ElementName=suggestions}" />
@@ -31,6 +34,7 @@
                  GotFocus="input_GotFocus"
                  LostFocus="input_LostFocus"
                  PreviewKeyDown="input_PreviewKeyDown"
+                 PreviewKeyUp="input_PreviewKeyUp"
                  SelectionChanged="input_SelectionChanged">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -39,6 +43,7 @@
             </ListBox.ItemsPanel>
             <ListBox.InputBindings>
                 <KeyBinding Key="Enter" Command="{Binding EnterCommand}" CommandParameter="{Binding EditingTag}" />
+                <KeyBinding Key="Enter" Modifiers="Shift" Command="{Binding InverseEnterCommand}" CommandParameter="{Binding EditingTag}" />
             </ListBox.InputBindings>
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">

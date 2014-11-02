@@ -64,7 +64,15 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     (tag) => tag != null);
             }
         }
-
+        public RelayCommand<Tag> InverseEnterCommand
+        {
+            get
+            {
+                return new RelayCommand<Tag>(
+                    (tag) => CompleteOnEnter(tag, true),
+                    (tag) => tag != null);
+            }
+        }
         public ObservableCollection<object> Suggestions
         {
             get;
@@ -176,6 +184,23 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 _supressCompletion = value;
                 logger.DebugFormat("supress {0}", value);
+            }
+        }
+
+        private bool _showALt;
+        public bool ShowAltSuggestion
+        {
+            get
+            {
+                return _showALt;
+            }
+            set
+            {
+                if (_showALt != value)
+                {
+                    _showALt = value;
+                    OnPropertyChanged(() => ShowAltSuggestion);
+                }
             }
         }
 
@@ -294,7 +319,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <param name="tag"></param>
         /// <param name="suggestion">Слово или запрос</param>
         /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
-        private void CompleteCommon(Tag tag, object suggestion, bool exactMatchRequired)
+        private void CompleteCommon(Tag tag, object suggestion, bool exactMatchRequired, bool inverse = false)
         {
             if (tag.Query == "") // пустой тег — удаляем
             {
@@ -302,16 +327,24 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
             else
             {
-                if (suggestion == null)
+                if (suggestion == null ^ inverse)
                 {
                     tag.Blank = tag.Query; // текст-комментарий
                 }
-                else
+                else if (!inverse)
                 {
                     if (!exactMatchRequired || Recognizer.Matches(suggestion, tag.Query))
                         tag.Blank = suggestion;
                     else
                         tag.Blank = tag.Query; // запрос не совпал с предположением (CompleteOnLostFocus или Converting)
+                }
+                else
+                {
+                    var exists = MakeSuggestions(tag);
+                    if (exists != null && Recognizer.Matches(exists, tag.Query))
+                        tag.Blank = exists;
+                    else
+                        tag.Blank = new Word(tag.Query);
                 }
             }
 
@@ -342,7 +375,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             CompleteEnding(tag);
         }
 
-        public void CompleteOnEnter(Tag tag)
+        public void CompleteOnEnter(Tag tag, bool inverse = false)
         {
             switch (tag.State)
             {
@@ -352,7 +385,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     return;
 
                 case Tag.States.Typing:
-                    CompleteCommon(tag, SelectedSuggestion, false);
+                    CompleteCommon(tag, SelectedSuggestion, false, inverse);
                     break;
 
                 case Tag.States.Completed:

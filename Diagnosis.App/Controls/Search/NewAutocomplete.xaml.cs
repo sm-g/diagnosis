@@ -34,7 +34,21 @@ namespace Diagnosis.App.Controls.Search
             {
                 popup.IsOpen = false;
             }
+            else if (e.Key == Key.LeftShift)
+            {
+                Vm.ShowAltSuggestion = true;
+            }
         }
+
+
+        private void input_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.LeftShift)
+            {
+                Vm.ShowAltSuggestion = false;
+            }
+        }
+
 
         private void suggestions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
