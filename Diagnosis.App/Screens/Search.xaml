@@ -94,11 +94,11 @@
                             <Run Text="{Binding HealthRecordOffsetLt, Mode=OneWay, Converter={StaticResource DateOffsetToUnitLabel}}" />
                             </TextBlock>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal"
+                        <!--<StackPanel Orientation="Horizontal"
                                     Visibility="{Binding CommentVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <TextBlock Text="комментарий: "></TextBlock>
                             <TextBlock Text="{Binding Comment, StringFormat='«{0}»', TargetNullValue=''}" />
-                        </StackPanel>
+                        </StackPanel>-->
                     </StackPanel>
                     <TextBlock Text="Не заданы условия поиска."
                                Visibility="{Binding AllEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -154,10 +154,10 @@
                         <editors:DateOffsetPicker DateOffset="{Binding HrDateOffsetUpper}" />
                     </DockPanel>
                 </DockPanel>-->
-                <DockPanel Style="{StaticResource line}">
+                <!--<DockPanel Style="{StaticResource line}">
                     <TextBlock Style="{StaticResource lineHeader}">Комментарий</TextBlock>
                     <TextBox Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}" />
-                </DockPanel>
+                </DockPanel>-->
 
                 <Button Command="{Binding SearchCommand}" Height="25" Width="150" HorizontalAlignment="Left" Style="{StaticResource line}">Найти</Button>
             </StackPanel>

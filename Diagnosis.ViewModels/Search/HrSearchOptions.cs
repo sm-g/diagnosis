@@ -26,16 +26,12 @@ namespace Diagnosis.ViewModels.Search
         #region Options
 
         /// <summary>
-        /// Слова, которые есть в симптоме
+        /// Слова, которые есть в записи
         /// </summary>
         public IEnumerable<Word> Words { get; set; }
-        /// <summary>
-        /// Измерения
-        /// </summary>
-        public IEnumerable<Measure> Measures { get; set; }
 
         /// <summary>
-        /// Достаточно ли любого слова в симптоме
+        /// Достаточно ли любого слова
         /// </summary>
         public bool AnyWord { get; set; }
 
@@ -135,10 +131,6 @@ namespace Diagnosis.ViewModels.Search
             }
         }
 
-        /// <summary>
-        /// Часть комментария.
-        /// </summary>
-        public string Comment { get; set; }
         #endregion
 
         public bool AppDateVisible
@@ -154,14 +146,6 @@ namespace Diagnosis.ViewModels.Search
             get
             {
                 return !HealthRecordOffsetLt.IsEmpty && !HealthRecordOffsetGt.IsEmpty;
-            }
-        }
-
-        public bool CommentVisible
-        {
-            get
-            {
-                return !string.IsNullOrEmpty(Comment);
             }
         }
 

@@ -408,9 +408,7 @@ namespace Diagnosis.ViewModels.Screens
 
             var entities = Autocomplete.GetEntities().ToList();
             options.Words = entities.Where(x => x is Word).Cast<Word>().ToList();
-            options.Measures = entities.Where(x => x is Measure).Cast<Measure>().ToList();
             options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
-            options.Comment = Comment;
 
             Options = options;
             return options;

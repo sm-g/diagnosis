@@ -46,10 +46,10 @@ namespace Diagnosis.ViewModels.Search
                     options.Categories.Any(cat => cat == hr.Category));
             }
 
-            if (options.Comment != null)
-            {
-                hrs = hrs.Where(hr => hr.Comment != null && hr.Comment.ToLower().Contains(options.Comment.ToLower()));
-            }
+            //if (options.Comment != null)
+            //{
+            //    hrs = hrs.Where(hr => hr.Comment != null && hr.Comment.ToLower().Contains(options.Comment.ToLower()));
+            //}
 
             return hrs;
         }
