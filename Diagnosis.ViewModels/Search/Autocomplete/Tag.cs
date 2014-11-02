@@ -28,7 +28,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
     public class Tag : ViewModelBase
     {
         public static readonly ILog logger = LogManager.GetLogger(typeof(Tag));
-        private readonly bool freezeOnComplete;
+        private readonly bool canConvert;
         private object _blank;
         private bool _focused;
         private string _query;
@@ -39,19 +39,19 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <summary>
         /// Создает пустой тег.
         /// </summary>
-        public Tag(bool freezeOnComplete)
+        public Tag(bool canConvert)
         {
-            this.freezeOnComplete = freezeOnComplete;
+            this.canConvert = canConvert;
             State = States.Init;
         }
 
         /// <summary>
         /// Создает тег с сущностью в завершенном состоянии.
         /// </summary>
-        public Tag(IHrItemObject entity, bool deleteOnly)
+        public Tag(IHrItemObject entity, bool canConvert)
         {
             Contract.Requires(entity != null);
-            freezeOnComplete = deleteOnly;
+            this.canConvert = canConvert;
 
             Blank = entity;
             Entities = new List<IHrItemObject>() { entity };
@@ -109,7 +109,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     Entities = null;
                     OnConverting(EventArgs.Empty);
                 },
-                () => State != States.Init && !Query.IsNullOrEmpty());
+                () => canConvert && State != States.Init && !Query.IsNullOrEmpty() && !IsDeleteOnly);
             }
         }
 
@@ -223,11 +223,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_state != value)
                 {
                     _state = value;
-                    if (value == States.Completed && freezeOnComplete)
-                    {
-                        IsDeleteOnly = true;
-                    }
-
                     OnPropertyChanged("State");
                 }
             }

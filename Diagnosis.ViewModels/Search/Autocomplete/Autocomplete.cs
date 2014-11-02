@@ -12,7 +12,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
     public class Autocomplete : ViewModelBase
     {
         public static readonly ILog logger = LogManager.GetLogger(typeof(Autocomplete));
-        private readonly bool _isEditable;
+        private readonly bool allowTagConvertion;
         private Tag _selItem;
         private bool _popupOpened;
         private object prevSelectedSuggestion;
@@ -22,10 +22,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private Recognizer recognizer;
         private bool inDispose;
 
-        public Autocomplete(Recognizer recognizer, bool allowTagEditing, IEnumerable<IHrItemObject> initItems)
+        public Autocomplete(Recognizer recognizer, bool allowTagConvertion, IEnumerable<IHrItemObject> initItems)
         {
             this.recognizer = recognizer;
-            this._isEditable = allowTagEditing;
+            this.allowTagConvertion = allowTagConvertion;
 
             Tags = new ObservableCollection<Tag>();
             AddTag();
@@ -70,7 +70,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 return new RelayCommand<Tag>(
                     (tag) => CompleteOnEnter(tag, true),
-                    (tag) => tag != null);
+                    (tag) => tag != null && !recognizer.OnlyWords);
             }
         }
         public ObservableCollection<object> Suggestions
@@ -205,11 +205,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
-        /// Показывает, что можно редактировать теги после завершения.
-        /// </summary>
-        public bool IsEditable { get { return _isEditable; } }
-
-        /// <summary>
         /// Добавляет тег в конец списка.
         /// </summary>
         public void AddTag(IHrItemObject item = null)
@@ -217,9 +212,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             Tag tag;
             bool empty = item == null;
             if (empty)
-                tag = new Tag(!IsEditable);
+                tag = new Tag(allowTagConvertion);
             else
-                tag = new Tag(item, !IsEditable);
+                tag = new Tag(item, allowTagConvertion);
 
             tag.Deleted += (s, e) =>
             {
@@ -244,7 +239,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     {
                         prevSelectedSuggestion = SelectedSuggestion; // сначала фокус получает выбранный тег
 
-                        if (tag.Signalization != Signalizations.None) // предположения для недописанных
+                        if (tag.Signalization != Signalizations.None) // TODO предположения для недописанных
                         {
                             MakeSuggestions(SelectedTag);
                         }

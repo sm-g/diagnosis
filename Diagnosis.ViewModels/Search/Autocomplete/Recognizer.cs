@@ -20,6 +20,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         public bool AutoNewFromQuery { get; set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public bool OnlyWords { get; set; }
+
+        /// <summary>
         /// При поиске предположений-слов первыми - дети предыдущего слова.
         /// </summary>
         public bool ShowChildrenFirst { get; set; }
@@ -43,11 +48,21 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             this.session = session;
         }
 
+        public bool CanMakeEntityFrom(string query)
+        {
+            if (query.IsNullOrEmpty() || OnlyWords)
+                return false;
+            return true;
+        }
+
         public void SetBlank(Tag tag, object suggestion, bool exactMatchRequired, bool inverse)
         {
             if (suggestion == null ^ inverse)
             {
-                tag.Blank = tag.Query; // текст-комментарий
+                if (CanMakeEntityFrom(tag.Query))
+                    tag.Blank = tag.Query; // текст-комментарий
+                else
+                    tag.Blank = null; // для поиска
             }
             else if (!inverse)
             {
