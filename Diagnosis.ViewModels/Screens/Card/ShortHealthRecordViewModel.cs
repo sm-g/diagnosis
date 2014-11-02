@@ -138,6 +138,13 @@ namespace Diagnosis.ViewModels.Screens
                 return new DateTime(year, month, day);
             }
         }
+        public bool ShowDiagnosis
+        {
+            get
+            {
+                return Diagnosis != null && AuthorityController.CurrentDoctor.DoctorSettings.HasFlag(DoctorSettings.ShowIcdDisease);
+            }
+        }
 
         public ICommand SendToSearchCommand
         {
