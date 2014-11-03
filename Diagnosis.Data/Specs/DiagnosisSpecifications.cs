@@ -10,11 +10,11 @@ using Diag = Diagnosis.Models.Diagnosis;
 
 namespace Diagnosis.Data.Specs
 {
-    class DiagsTItleContains : Specification<Diag>
+    class DiagsTitleContains : Specification<Diag>
     {
         private readonly string query;
 
-        public DiagsTItleContains(string q)
+        public DiagsTitleContains(string q)
         {
             query = q.ToLower();
         }
@@ -50,7 +50,7 @@ namespace Diagnosis.Data.Specs
 
         public override Expression<Func<Diag, bool>> IsSatisfiedBy()
         {
-            return m => m.Code.StartsWith(query, StringComparison.InvariantCultureIgnoreCase);
+            return m => m.Code.ToLower().StartsWith(query);
         }
     }
 
@@ -58,7 +58,7 @@ namespace Diagnosis.Data.Specs
     {
         public static Specification<Diag> TitleContains(string q)
         {
-            return new DiagsTItleContains(q);
+            return new DiagsTitleContains(q);
         }
         public static Specification<Diag> ChildrenOf(Diag p)
         {
