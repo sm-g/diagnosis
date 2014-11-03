@@ -215,7 +215,7 @@ INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment
 INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[HrCategoryID],[FromYear],[FromMonth],[FromDay],[Unit],[IsDeleted]) VALUES (74,2,NULL,NULL,'пациент 2 дубль',NULL,NULL,NULL,NULL,'NotSet',0);
 
 
-INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (2,21,1,NULL,NULL,NULL,0);
+INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[TextRepr],[Ord]) VALUES (2,21,1,'text repr with word',1);
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (3,22,1,NULL,NULL,NULL,0);
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (4,22,22,NULL,NULL,NULL,0);
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (5,22,NULL,50,4,NULL,0);
