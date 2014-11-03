@@ -25,6 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{B4
 		Database\create_sqlce.sql = Database\create_sqlce.sql
 		Database\create_v2_sqlite.sql = Database\create_v2_sqlite.sql
 		Database\diagnosis.accdb = Database\diagnosis.accdb
+		Database\diagnosis.dgml = Database\diagnosis.dgml
 		Database\diagnosis.sdf = Database\diagnosis.sdf
 		Database\diagnosis.sqlite = Database\diagnosis.sqlite
 		Database\inmem_v2_sqlite.sql = Database\inmem_v2_sqlite.sql
