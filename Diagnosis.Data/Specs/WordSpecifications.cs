@@ -20,7 +20,7 @@ namespace Diagnosis.Data.Specs
 
         public override Expression<Func<Word, bool>> IsSatisfiedBy()
         {
-            return m => m.Title.StartsWith(query);
+            return m => m.Title.ToLower().StartsWith(query);
         }
     }
     class WordsChilrenOf : Specification<Word>

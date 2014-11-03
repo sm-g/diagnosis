@@ -20,7 +20,7 @@ namespace Diagnosis.Data.Queries
             {
                 using (var tr = session.BeginTransaction())
                 {
-                    return session.QueryOver<Word>().WhereRestrictionOn(w => w.Title).IsLike(str, MatchMode.Start).List();
+                    return session.QueryOver<Word>().WhereRestrictionOn(w => w.Title).IsInsensitiveLike(str, MatchMode.Start).List();
                 }
             };
         }
