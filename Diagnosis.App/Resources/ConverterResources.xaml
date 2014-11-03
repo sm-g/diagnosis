@@ -22,4 +22,5 @@
     <conv:InListConverter x:Key="inList" />
     <conv:HrToItemsString x:Key="hrItems" />
     <conv:NullableBooleanConverter x:Key="NullableBoolean" />
+    <conv:ScopeToLabel x:Key="ScopeToLabel" />
 </ResourceDictionary>
