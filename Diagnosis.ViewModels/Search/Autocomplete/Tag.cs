@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using Diagnosis.Core;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
@@ -19,7 +20,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         PartialMeasure,
         /// <summary>
-        /// Некорректный тег (новое слово).
+        /// Некорректный тег (новый без заготовки).
         /// </summary>
         Forbidden
     }
@@ -27,7 +28,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
     public class Tag : ViewModelBase
     {
         public static readonly ILog logger = LogManager.GetLogger(typeof(Tag));
-        private readonly bool freezeOnComplete;
+        private readonly bool canConvert;
         private object _blank;
         private bool _focused;
         private string _query;
@@ -36,51 +37,40 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private Signalizations _signal;
 
         /// <summary>
-        /// Создает тег с текстом в начальном состоянии.
-        /// </summary>
-        public Tag(string title, bool freezeOnComplete)
-        {
-            if (!string.IsNullOrEmpty(title))
-                Query = title;
-
-            this.freezeOnComplete = freezeOnComplete;
-            State = States.Init;
-        }
-
-        /// <summary>
         /// Создает пустой тег.
         /// </summary>
-        public Tag(bool freezeOnComplete)
-            : this(null as string, freezeOnComplete)
+        public Tag(bool canConvert)
         {
+            this.canConvert = canConvert;
+            State = States.Init;
         }
 
         /// <summary>
         /// Создает тег с сущностью в завершенном состоянии.
         /// </summary>
-        public Tag(IHrItemObject entity, bool deleteOnly)
+        public Tag(IHrItemObject entity, bool canConvert)
         {
             Contract.Requires(entity != null);
-            freezeOnComplete = deleteOnly;
+            this.canConvert = canConvert;
 
             Blank = entity;
             Entities = new List<IHrItemObject>() { entity };
         }
 
         public event EventHandler Deleted;
-
+        public event EventHandler Converting;
         /// <summary>
-        /// Типы сущностей в теге.
+        /// Типы заготовок в теге.
         /// </summary>
         public enum BlankTypes
         {
             None,
             /// <summary>
-            /// Строка-запрос, может быть словом или измерением
+            /// Строка-запрос
             /// </summary>
             Query,
-            Word,
-            Measure,
+            Comment,
+            Word
         }
 
         /// <summary>
@@ -88,8 +78,17 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         public enum States
         {
+            /// <summary>
+            /// Новый (пустой) - начальное состояние
+            /// </summary>
             Init,
+            /// <summary>
+            /// Редактируется
+            /// </summary>
             Typing,
+            /// <summary>
+            /// Завершен
+            /// </summary>
             Completed
         }
 
@@ -101,15 +100,27 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
+        public RelayCommand ConvertCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Entities = null;
+                    OnConverting(EventArgs.Empty);
+                },
+                () => canConvert && State != States.Init && !Query.IsNullOrEmpty() && !IsDeleteOnly);
+            }
+        }
+
         /// <summary>
-        /// Сущности, созданные из тега. При изменении запроса сбрасывается.
+        /// Сущности, созданные из тега. При изменении запроса или конвертации сбрасывается.
         /// </summary>
         public IEnumerable<IHrItemObject> Entities { get; internal set; }
 
         /// <summary>
         /// Заготовка, из которой получаются сущности.
-        /// То, что оказалось введенным после энтера - найденное слово, текст запроса,
-        /// число c единицей или ничего, если новые слова недопустимы.
+        /// То, что оказалось введенным - найденное слово, текст запроса или ничего.
         /// </summary>
         public object Blank
         {
@@ -119,14 +130,13 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
             set
             {
-                Contract.Requires(State != States.Completed);
                 if (_blank != value)
                 {
+                    logger.DebugFormat("blonk ={0}", value);
+
                     _blank = value;
                     OnPropertyChanged("Blank");
                     OnPropertyChanged("BlankType");
-
-                    // logger.DebugFormat("{0} blank changed", this);
                 }
                 if (value != null)
                 {
@@ -193,6 +203,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 if (Query != value)
                 {
+                    logger.DebugFormat("query ={0}", value);
                     Contract.Assume(!IsDeleteOnly);
 
                     State = States.Typing;
@@ -212,11 +223,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_state != value)
                 {
                     _state = value;
-                    if (value == States.Completed && freezeOnComplete)
-                    {
-                        IsDeleteOnly = true;
-                    }
-
                     OnPropertyChanged("State");
                 }
             }
@@ -246,17 +252,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 Signalization = Signalizations.Forbidden;
             }
-            else if (BlankType == Tag.BlankTypes.Query)
+            else if (BlankType == Tag.BlankTypes.Word)
             {
-                var str = Blank as string;
-                if (!Recognizer.IsMeasure(str))
-                {
+                var word = Blank as Word;
+                if (word.IsTransient)
                     Signalization = Signalizations.NewWord;
-                }
-                else if (Recognizer.SplitMeasureQuery(str).Item2 != "")
-                {
-                    Signalization = Signalizations.PartialMeasure;
-                }
             }
         }
 
@@ -264,12 +264,12 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             if (blank is Word)
                 return BlankTypes.Word;
+            if (blank is Comment)
+                return BlankTypes.Comment;
             if (blank is string)
                 return BlankTypes.Query;
             if (blank == null)
                 return BlankTypes.None;
-            if (blank is Recognizer.NumbersWithUom || blank is Measure)
-                return BlankTypes.Measure;
 
             throw new ArgumentOutOfRangeException("blank");
         }
@@ -285,6 +285,15 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             if (h != null)
             {
                 h(this, EventArgs.Empty);
+            }
+        }
+
+        protected virtual void OnConverting(EventArgs e)
+        {
+            var h = Converting;
+            if (h != null)
+            {
+                h(this, e);
             }
         }
     }

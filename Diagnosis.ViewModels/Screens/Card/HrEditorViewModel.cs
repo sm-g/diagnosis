@@ -134,7 +134,7 @@ namespace Diagnosis.ViewModels.Screens
         public Autocomplete Autocomplete { get { return _autocomplete; } }
 
         /// <summary>
-        /// Создает автокомплит с начальными словами и измерениями из редактируемой записи.
+        /// Создает автокомплит с начальными словами и комментами из редактируемой записи.
         /// </summary>
         private void CreateAutoComplete()
         {
@@ -144,7 +144,7 @@ namespace Diagnosis.ViewModels.Screens
             var initials = HealthRecord.healthRecord.GetOrderedEntities();
 
             _autocomplete = new Autocomplete(
-                new Recognizer(session, true) { AutoNewFromQuery = true },
+                new Recognizer(session) { ShowChildrenFirst = true },
                 true,
                 initials);
 

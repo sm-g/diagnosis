@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Core;
+using Diagnosis.Data.Queries;
 using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Search;
@@ -21,7 +22,8 @@ namespace Diagnosis.ViewModels.Screens
 
         private HrSearchOptions _options;
 
-        private bool _any;
+        private bool _all;
+        private int _allSCope;
         private int? _appDayLower;
         private int? _appDayUpper;
         private int? _appMonthLower;
@@ -43,11 +45,11 @@ namespace Diagnosis.ViewModels.Screens
 
         public SearchViewModel()
         {
-            Autocomplete = new Autocomplete(new Recognizer(Session, false), true, null);
+            Autocomplete = new Autocomplete(new Recognizer(Session) { OnlyWords = true }, false, null);
 
             Results = new ObservableCollection<HrHolderSearchResultViewModel>();
             ControlsVisible = true;
-            AnyWord = true;
+            AllWords = true;
 
             Autocomplete.InputEnded += (s, e) =>
             {
@@ -260,18 +262,33 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public bool AnyWord
+        public bool AllWords
         {
             get
             {
-                return _any;
+                return _all;
             }
             set
             {
-                if (_any != value)
+                if (_all != value)
                 {
-                    _any = value;
-                    OnPropertyChanged("AnyWord");
+                    _all = value;
+                    OnPropertyChanged(() => AllWords);
+                }
+            }
+        }
+        public int AndScope
+        {
+            get
+            {
+                return _allSCope;
+            }
+            set
+            {
+                if (_allSCope != value)
+                {
+                    _allSCope = value;
+                    OnPropertyChanged(() => AndScope);
                 }
             }
         }
@@ -404,13 +421,12 @@ namespace Diagnosis.ViewModels.Screens
             options.HealthRecordOffsetLt = HrDateOffsetUpper;
             options.AppointmentDateGt = DateHelper.NullableDate(AppYearLower, AppMonthLower, AppDayLower);
             options.AppointmentDateLt = DateHelper.NullableDate(AppYearUpper, AppMonthUpper, AppDayUpper);
-            options.AnyWord = AnyWord;
+            options.AllWords = AllWords;
+            options.AndScope = (HealthRecordQuery.AndScopes)AndScope;
 
             var entities = Autocomplete.GetEntities().ToList();
             options.Words = entities.Where(x => x is Word).Cast<Word>().ToList();
-            options.Measures = entities.Where(x => x is Measure).Cast<Measure>().ToList();
             options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
-            options.Comment = Comment;
 
             Options = options;
             return options;
@@ -448,7 +464,7 @@ namespace Diagnosis.ViewModels.Screens
             Autocomplete.ReplaceTagsWith(allWords);
 
             // если несколько записей — любое из слов
-            AnyWord = hrs.Count() != 1;
+            AllWords = hrs.Count() != 1;
 
             // все категории из записей
             Categories.ForAll((cat) => cat.IsChecked = false);

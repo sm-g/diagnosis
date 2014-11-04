@@ -3,6 +3,7 @@ using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using Diagnosis.Data.Queries;
 
 namespace Diagnosis.ViewModels.Search
 {
@@ -26,18 +27,20 @@ namespace Diagnosis.ViewModels.Search
         #region Options
 
         /// <summary>
-        /// Слова, которые есть в симптоме
+        /// Слова, которые есть в записи
         /// </summary>
         public IEnumerable<Word> Words { get; set; }
-        /// <summary>
-        /// Измерения
-        /// </summary>
-        public IEnumerable<Measure> Measures { get; set; }
+
 
         /// <summary>
-        /// Достаточно ли любого слова в симптоме
+        /// В области должны быть все слова из запроса.
         /// </summary>
-        public bool AnyWord { get; set; }
+        public bool AllWords { get; set; }
+
+        /// <summary>
+        /// Область поиска всех слов.
+        /// </summary>
+        public HealthRecordQuery.AndScopes AndScope { get; set; }
 
         /// <summary>
         /// Категория. Если несколько, то любая их них.
@@ -94,7 +97,7 @@ namespace Diagnosis.ViewModels.Search
         // ищем X = 3 дня: HrDateGt < X < HrDateLt
 
         /// <summary>
-        /// Нижняя грань давности симптома
+        /// Нижняя грань давности записи
         /// </summary>
         public DateOffset HealthRecordOffsetGt
         {
@@ -115,7 +118,7 @@ namespace Diagnosis.ViewModels.Search
         }
 
         /// <summary>
-        /// Верхняя грань давности симптома
+        /// Верхняя грань давности записи
         /// </summary>
         public DateOffset HealthRecordOffsetLt
         {
@@ -135,10 +138,6 @@ namespace Diagnosis.ViewModels.Search
             }
         }
 
-        /// <summary>
-        /// Часть комментария.
-        /// </summary>
-        public string Comment { get; set; }
         #endregion
 
         public bool AppDateVisible
@@ -154,14 +153,6 @@ namespace Diagnosis.ViewModels.Search
             get
             {
                 return !HealthRecordOffsetLt.IsEmpty && !HealthRecordOffsetGt.IsEmpty;
-            }
-        }
-
-        public bool CommentVisible
-        {
-            get
-            {
-                return !string.IsNullOrEmpty(Comment);
             }
         }
 

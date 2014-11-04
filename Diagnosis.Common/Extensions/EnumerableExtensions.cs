@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics.Contracts;
+using System.Collections.ObjectModel;
 
 namespace Diagnosis.Core
 {
@@ -33,6 +34,24 @@ namespace Diagnosis.Core
             x.CopyTo(z, 0);
             y.CopyTo(z, x.Length);
             return z;
+        }
+
+        /// <summary>
+        /// Добавляет в коллекцию отсутствующие и удаляет пропавшие элементы.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="current"></param>
+        /// <param name="toBe"></param>
+        public static void SyncWith<T>(this ObservableCollection<T> current, IEnumerable<T> toBe)
+        {
+            foreach (var item in current.Except(toBe).ToList())
+            {
+                current.Remove(item);
+            }
+            foreach (var item in toBe.Except(current).ToList())
+            {
+                current.Add(item);
+            }
         }
     }
 }

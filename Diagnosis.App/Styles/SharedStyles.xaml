@@ -17,7 +17,15 @@
     </Style>
     <Style TargetType="DatePicker" BasedOn="{StaticResource ErrorToolTip}">
         <Setter Property="FirstDayOfWeek" Value="Monday" />
-    </Style>    
+    </Style>
+    <Style TargetType="TextBlock">
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground"
+                        Value="{StaticResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
     <!-- buttons -->
     <Style x:Key="DialogButtonsPanel" TargetType="{x:Type StackPanel}">

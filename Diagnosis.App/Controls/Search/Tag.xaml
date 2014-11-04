@@ -14,6 +14,7 @@
             <TextBox.Style>
                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                     <Setter Property="Background" Value="White" />
+                    <Setter Property="FontSize" Value="12" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Signalization}" Value="{x:Static auto:Signalizations.NewWord}">
                             <Setter Property="Background" Value="#FFEFFFD8" />
@@ -27,9 +28,46 @@
                             <Setter Property="Background" Value="#FFFFFDD8" />
                             <Setter Property="ToolTip" Value="Неизвестная единица измерения, сохраняется без единицы" />
                         </DataTrigger>
+
+                        <!--<DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Query}">
+                            <Setter Property="Foreground" Value="Red" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Comment}">
+                            <Setter Property="Foreground" Value="Green" />
+                        </DataTrigger>-->
+                        <DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Word}">
+                            <Setter Property="FontSize" Value="14" />
+                        </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </TextBox.Style>
+            <TextBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Удалить" Command="{Binding DeleteCommand}" />
+                    <MenuItem Command="{Binding ConvertCommand}">
+                        <MenuItem.Header>
+                            <TextBlock>
+                                <Run>
+                                    <Run.Style>
+                                        <Style TargetType="Run">
+                                            <Setter Property="Text" Value="Создать слово" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Word}">
+                                                    <Setter Property="Text" Value="Убрать слово" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Run.Style>
+                                </Run> «<Run Text="{Binding Query, TargetNullValue=' — '}" />»
+                            </TextBlock>
+                        </MenuItem.Header>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Command="{x:Static ApplicationCommands.Cut}" />
+                    <MenuItem Command="{x:Static ApplicationCommands.Copy}" />
+                    <MenuItem Command="{x:Static ApplicationCommands.Paste}" />
+                </ContextMenu>
+            </TextBox.ContextMenu>
         </TextBox>
     </StackPanel>
 </UserControl>

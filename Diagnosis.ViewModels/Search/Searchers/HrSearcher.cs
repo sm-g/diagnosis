@@ -20,13 +20,13 @@ namespace Diagnosis.ViewModels.Search
             IEnumerable<HealthRecord> hrs;
 
             if (options.Words.Count() > 0)
-                if (options.AnyWord)
+                if (options.AllWords)
                 {
-                    hrs = HealthRecordQuery.WithAnyWord(session)(options.Words);
+                    hrs = HealthRecordQuery.WithAllWords(session)(options.Words, options.AndScope);
                 }
                 else
                 {
-                    hrs = HealthRecordQuery.WithAllWords(session)(options.Words);
+                    hrs = HealthRecordQuery.WithAnyWord(session)(options.Words);
                 }
             else
             {
@@ -46,10 +46,10 @@ namespace Diagnosis.ViewModels.Search
                     options.Categories.Any(cat => cat == hr.Category));
             }
 
-            if (options.Comment != null)
-            {
-                hrs = hrs.Where(hr => hr.Comment != null && hr.Comment.ToLower().Contains(options.Comment.ToLower()));
-            }
+            //if (options.Comment != null)
+            //{
+            //    hrs = hrs.Where(hr => hr.Comment != null && hr.Comment.ToLower().Contains(options.Comment.ToLower()));
+            //}
 
             return hrs;
         }

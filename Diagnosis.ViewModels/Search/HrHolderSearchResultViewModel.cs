@@ -151,18 +151,5 @@ namespace Diagnosis.ViewModels.Search
 
             base.Dispose(disposing);
         }
-    }
-
-    public static class HrExtensions
-    {
-        public static Patient GetPatient(this HealthRecord hr)
-        {
-            return hr.Patient ?? (hr.Course != null ? hr.Course.Patient : hr.Appointment.Course.Patient);
-        }
-
-        public static Course GetCourse(this HealthRecord hr)
-        {
-            return hr.Course ?? (hr.Appointment != null ? hr.Appointment.Course : null);
-        }
-    }
+    }    
 }

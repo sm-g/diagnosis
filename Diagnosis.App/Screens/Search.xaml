@@ -94,11 +94,11 @@
                             <Run Text="{Binding HealthRecordOffsetLt, Mode=OneWay, Converter={StaticResource DateOffsetToUnitLabel}}" />
                             </TextBlock>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal"
+                        <!--<StackPanel Orientation="Horizontal"
                                     Visibility="{Binding CommentVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <TextBlock Text="комментарий: "></TextBlock>
                             <TextBlock Text="{Binding Comment, StringFormat='«{0}»', TargetNullValue=''}" />
-                        </StackPanel>
+                        </StackPanel>-->
                     </StackPanel>
                     <TextBlock Text="Не заданы условия поиска."
                                Visibility="{Binding AllEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -112,7 +112,18 @@
 
                 <search:NewAutocomplete DataContext="{Binding Autocomplete}" />
                 <DockPanel Style="{StaticResource line}">
-                    <CheckBox IsChecked="{Binding AnyWord}" Margin="0,10,0,0">Хотя бы одно слово</CheckBox>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <CheckBox IsChecked="{Binding AllWords}" Margin="0,10,0,0">
+                            <TextBlock>
+                            <Run>Все слова</Run> <Run Text="{Binding AndScope, Converter={StaticResource ScopeToLabel}}"></Run>
+                            </TextBlock>
+                        </CheckBox>
+                        <Slider Grid.Column="2" Value="{Binding AndScope}" IsEnabled="{Binding AllWords}" Minimum="0" Maximum="3" TickFrequency="1" TickPlacement="Both" Orientation="Horizontal" />
+                    </Grid>
                 </DockPanel>
                 <DockPanel Style="{StaticResource line}">
                     <editors:CategoryChooser CategoryMultiSelection="{StaticResource True}" />
@@ -154,10 +165,10 @@
                         <editors:DateOffsetPicker DateOffset="{Binding HrDateOffsetUpper}" />
                     </DockPanel>
                 </DockPanel>-->
-                <DockPanel Style="{StaticResource line}">
+                <!--<DockPanel Style="{StaticResource line}">
                     <TextBlock Style="{StaticResource lineHeader}">Комментарий</TextBlock>
                     <TextBox Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}" />
-                </DockPanel>
+                </DockPanel>-->
 
                 <Button Command="{Binding SearchCommand}" Height="25" Width="150" HorizontalAlignment="Left" Style="{StaticResource line}">Найти</Button>
             </StackPanel>

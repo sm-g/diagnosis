@@ -14,11 +14,14 @@
             <KeyBinding Key="Delete" Command="{Binding DeleteCommand}" />
         </InputBindingCollection>
         <InputBindingCollection x:Shared="False" x:Key="SuggestionInputBindings">
-            <KeyBinding Key="Enter" 
-                        Command="{Binding DataContext.EnterCommand,ElementName=suggestions}" 
+            <KeyBinding Key="Enter"
+                        Command="{Binding DataContext.EnterCommand,ElementName=suggestions}"
                         CommandParameter="{Binding DataContext.EditingTag,ElementName=suggestions}" />
-            <MouseBinding MouseAction="LeftDoubleClick" 
-                          Command="{Binding DataContext.EnterCommand,ElementName=suggestions}" 
+            <KeyBinding Key="Enter" Modifiers="Shift"
+                        Command="{Binding DataContext.InverseEnterCommand,ElementName=suggestions}"
+                        CommandParameter="{Binding DataContext.EditingTag,ElementName=suggestions}" />
+            <MouseBinding MouseAction="LeftDoubleClick"
+                          Command="{Binding DataContext.EnterCommand,ElementName=suggestions}"
                           CommandParameter="{Binding DataContext.EditingTag,ElementName=suggestions}" />
         </InputBindingCollection>
     </UserControl.Resources>
@@ -31,6 +34,7 @@
                  GotFocus="input_GotFocus"
                  LostFocus="input_LostFocus"
                  PreviewKeyDown="input_PreviewKeyDown"
+                 PreviewKeyUp="input_PreviewKeyUp"
                  SelectionChanged="input_SelectionChanged">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -39,6 +43,7 @@
             </ListBox.ItemsPanel>
             <ListBox.InputBindings>
                 <KeyBinding Key="Enter" Command="{Binding EnterCommand}" CommandParameter="{Binding EditingTag}" />
+                <KeyBinding Key="Enter" Modifiers="Shift" Command="{Binding InverseEnterCommand}" CommandParameter="{Binding EditingTag}" />
             </ListBox.InputBindings>
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
@@ -48,13 +53,6 @@
                         </Trigger>
                     </Style.Triggers>
                     <Setter Property="controls:Attached.InputBindings" Value="{StaticResource TagInputBindings}" />
-                    <Setter Property="ContextMenu">
-                        <Setter.Value>
-                            <ContextMenu>
-                                <MenuItem Header="Удалить" Command="{Binding DeleteCommand}" />
-                            </ContextMenu>
-                        </Setter.Value>
-                    </Setter>
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 </Style>
             </ListBox.ItemContainerStyle>
@@ -64,7 +62,7 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-   
+
         <Popup x:Name="popup" Height="Auto" Width="auto"
                 StaysOpen="True"
                 Placement="Bottom"

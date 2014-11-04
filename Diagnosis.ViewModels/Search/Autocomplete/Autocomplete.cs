@@ -3,16 +3,16 @@ using log4net;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using Diagnosis.Core;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
     public class Autocomplete : ViewModelBase
     {
         public static readonly ILog logger = LogManager.GetLogger(typeof(Autocomplete));
-        private readonly bool _isEditable;
+        private readonly bool allowTagConvertion;
         private Tag _selItem;
         private bool _popupOpened;
         private object prevSelectedSuggestion;
@@ -20,12 +20,12 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private bool _supressCompletion;
         private object _selectedSuggestion;
         private Recognizer recognizer;
-        bool inDispose;
+        private bool inDispose;
 
-        public Autocomplete(Recognizer recognizer, bool allowTagEditing, IEnumerable<IHrItemObject> initItems)
+        public Autocomplete(Recognizer recognizer, bool allowTagConvertion, IEnumerable<IHrItemObject> initItems)
         {
             this.recognizer = recognizer;
-            this._isEditable = allowTagEditing;
+            this.allowTagConvertion = allowTagConvertion;
 
             Tags = new ObservableCollection<Tag>();
             AddTag();
@@ -64,7 +64,15 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     (tag) => tag != null);
             }
         }
-
+        public RelayCommand<Tag> InverseEnterCommand
+        {
+            get
+            {
+                return new RelayCommand<Tag>(
+                    (tag) => CompleteOnEnter(tag, true),
+                    (tag) => tag != null && !recognizer.OnlyWords);
+            }
+        }
         public ObservableCollection<object> Suggestions
         {
             get;
@@ -179,10 +187,22 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        /// <summary>
-        /// Показывает, что можно редактировать теги после завершения.
-        /// </summary>
-        public bool IsEditable { get { return _isEditable; } }
+        private bool _showALt;
+        public bool ShowAltSuggestion
+        {
+            get
+            {
+                return _showALt;
+            }
+            set
+            {
+                if (_showALt != value)
+                {
+                    _showALt = value;
+                    OnPropertyChanged(() => ShowAltSuggestion);
+                }
+            }
+        }
 
         /// <summary>
         /// Добавляет тег в конец списка.
@@ -192,13 +212,18 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             Tag tag;
             bool empty = item == null;
             if (empty)
-                tag = new Tag(!IsEditable);
+                tag = new Tag(allowTagConvertion);
             else
-                tag = new Tag(item, !IsEditable);
+                tag = new Tag(item, allowTagConvertion);
 
             tag.Deleted += (s, e) =>
             {
                 Tags.Remove(tag);
+                OnEntitiesChanged();
+            };
+            tag.Converting += (s, e) =>
+            {
+                CompleteOnConvert(tag);
                 OnEntitiesChanged();
             };
             tag.PropertyChanged += (s, e) =>
@@ -214,7 +239,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     {
                         prevSelectedSuggestion = SelectedSuggestion; // сначала фокус получает выбранный тег
 
-                        if (tag.Signalization != Signalizations.None) // предположения для недописанных
+                        if (tag.Signalization != Signalizations.None) // TODO предположения для недописанных
                         {
                             MakeSuggestions(SelectedTag);
                         }
@@ -283,6 +308,100 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
+        /// <summary>
+        /// Завершает тег.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="suggestion">Слово или запрос</param>
+        /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
+        private void CompleteCommon(Tag tag, object suggestion, bool exactMatchRequired, bool inverse = false)
+        {
+            if (tag.Query == "") // пустой тег — удаляем
+            {
+                tag.DeleteCommand.Execute(null);
+            }
+            else
+            {
+                recognizer.SetBlank(tag, suggestion, exactMatchRequired, inverse);
+            }
+
+            CompleteEnding(tag);
+        }
+
+        private void CompleteOnConvert(Tag tag)
+        {
+            Contract.Requires(!tag.Query.IsNullOrEmpty());
+
+            recognizer.ConvertBlank(tag);
+
+            CompleteEnding(tag);
+        }
+
+        public void CompleteOnEnter(Tag tag, bool inverse = false)
+        {
+            switch (tag.State)
+            {
+                case Tag.States.Init:
+                    // Enter в пустом поле
+                    OnInputEnded();
+                    return;
+
+                case Tag.States.Typing:
+                    CompleteCommon(tag, SelectedSuggestion, false, inverse);
+                    break;
+
+                case Tag.States.Completed:
+                    // тег не изменен
+                    break;
+            }
+
+            // переходим к вводу нового слова
+            Tags.Last().IsFocused = true;
+        }
+
+        public void CompleteOnLostFocus(Tag tag)
+        {
+            if (tag.State == Tag.States.Typing)
+            {
+                logger.Debug("Complete from VM");
+                CompleteCommon(tag, prevSelectedSuggestion, true);
+            }
+        }
+
+        private void CompleteEnding(Tag tag)
+        {
+            Suggestions.Clear();
+            RefreshPopup();
+            tag.Validate();
+
+            // добавляем пустое поле
+            if (!IsLastTagEmpty)
+                AddTag();
+        }
+
+        private object MakeSuggestions(Tag tag)
+        {
+            var tagIndex = Tags.IndexOf(tag);
+            var results = recognizer.SearchForSuggesstions(
+                query: tag.Query,
+                prevEntityBlank: tagIndex > 0 ? Tags[tagIndex - 1].Blank : null,
+                exclude: Tags.Select((t, i) => i != tagIndex ? t.Blank : null)); // все сущности кроме сущности редактируемого тега
+
+            Suggestions.Clear();
+            foreach (var item in results)
+            {
+                Suggestions.Add(item);
+            }
+
+            SelectedSuggestion = Suggestions.FirstOrDefault();
+            return Suggestions.FirstOrDefault();
+        }
+
+        private void RefreshPopup()
+        {
+            IsPopupOpen = Suggestions.Count > 0; // not on suggestion.collectionchanged - мигание при очистке, лишние запросы к IsPopupOpen
+        }
+
         protected virtual void OnInputEnded()
         {
             var h = InputEnded;
@@ -308,95 +427,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 h(this, EventArgs.Empty);
             }
-        }
-
-        /// <summary>
-        /// Завершает тег.
-        /// </summary>
-        /// <param name="tag"></param>
-        /// <param name="suggestion">Слово, число с единицей или запрос</param>
-        /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
-        private void CompleteCommon(Tag tag, object suggestion, bool exactMatchRequired)
-        {
-            if (suggestion == null)
-            {
-                if (tag.Query == "")
-                    tag.DeleteCommand.Execute(null);
-                else if (recognizer.CanMakeEntityFrom(tag.Query))
-                    tag.Blank = tag.Query; // измерение без правльной единицы
-                else
-                    tag.Blank = null;
-            }
-            else
-            {
-                if (!exactMatchRequired || Recognizer.Matches(suggestion, tag.Query))
-                    tag.Blank = suggestion;
-                else if (recognizer.CanMakeEntityFrom(tag.Query))
-                    tag.Blank = tag.Query; // недописанное слово
-                else
-                    tag.Blank = null;
-            }
-
-            Suggestions.Clear();
-            RefreshPopup();
-            tag.Validate();
-
-            // добавляем пустое поле
-            if (!IsLastTagEmpty)
-                AddTag();
-        }
-
-        public void CompleteOnEnter(Tag tag)
-        {
-            switch (tag.State)
-            {
-                case Tag.States.Init:
-                    // Enter в пустом поле
-                    OnInputEnded();
-                    return;
-
-                case Tag.States.Typing:
-                    CompleteCommon(tag, SelectedSuggestion, false);
-                    break;
-
-                case Tag.States.Completed:
-                    // тег не изменен
-                    break;
-            }
-
-            // переходим к вводу нового слова
-            Tags.Last().IsFocused = true;
-        }
-
-        public void CompleteOnLostFocus(Tag tag)
-        {
-            if (tag.State == Tag.States.Typing)
-            {
-                logger.Debug("Complete from VM");
-                CompleteCommon(tag, prevSelectedSuggestion, true);
-            }
-        }
-
-        private void MakeSuggestions(Tag tag)
-        {
-            var tagIndex = Tags.IndexOf(tag);
-            var results = recognizer.SearchForSuggesstions(
-                query: tag.Query,
-                prevEntityBlank: tagIndex > 0 ? Tags[tagIndex - 1].Blank : null,
-                exclude: Tags.Select((t, i) => i != tagIndex ? t.Blank : null)); // все сущности кроме сущности редактируемого тега
-
-            Suggestions.Clear();
-            foreach (var item in results)
-            {
-                Suggestions.Add(item);
-            }
-
-            SelectedSuggestion = Suggestions.FirstOrDefault();
-        }
-
-        private void RefreshPopup()
-        {
-            IsPopupOpen = Suggestions.Count > 0; // not on suggestion.collectionchanged - мигание при очистке, лишние запросы к IsPopupOpen
         }
 
         [ContractInvariantMethod]

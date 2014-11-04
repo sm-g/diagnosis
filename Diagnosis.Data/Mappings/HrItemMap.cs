@@ -18,7 +18,7 @@ namespace Diagnosis.Data.Mappings
                 m.Column("Ord");
                 m.NotNullable(true);
             });
-
+            Property(x => x.TextRepr);
             ManyToOne(x => x.Word, m =>
             {
                 m.Column("WordID");
