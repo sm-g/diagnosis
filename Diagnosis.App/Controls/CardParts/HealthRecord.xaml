@@ -29,8 +29,8 @@
             <MenuItem Header="Удалить" Command="{Binding DeleteCommand}" />
         </ContextMenu>
     </UserControl.ContextMenu>
-    
-    <Grid>        
+
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20" />
             <ColumnDefinition Width="*" />
@@ -47,36 +47,34 @@
                                 <Condition Binding="{Binding IsChecked}" Value="False" />
                                 <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False" />
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="Visibility" Value="Collapsed" />                            
+                            <Setter Property="Visibility" Value="Collapsed" />
                         </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
             </CheckBox.Style>
         </CheckBox>
 
-        <StackPanel Grid.Column="1">
-            <Grid >
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-                <TextBlock>
-                    <Run Text="{Binding Name, Mode=OneWay}" />
-                </TextBlock>
-                <TextBlock Grid.Column="1" Text="{Binding Diagnosis.Code, FallbackValue=''}" Visibility="{Binding ShowDiagnosis, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                <TextBlock Grid.Row="1" Visibility="{Binding DateOffset.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-                    <Run Text="{Binding DateOffset.Offset}" />
-                    <Run Text="{Binding DateOffset, Mode=OneWay, Converter={StaticResource DateOffsetToUnitLabel}}" />
-                </TextBlock>
-                <TextBlock Grid.Row="2" Text="{Binding Comment}" Visibility="{Binding Comment, Converter={StaticResource NullToVis}}"/>
-            </Grid>
-        </StackPanel>
+            <TextBlock Grid.ColumnSpan="2" Text="{Binding Name, Mode=OneWay}" TextWrapping="Wrap" />
+            <TextBlock Grid.Column="1" Grid.Row="1" 
+                       Text="{Binding Diagnosis.Code, FallbackValue=''}" 
+                       Visibility="{Binding ShowDiagnosis, Converter={StaticResource BooleanToVisibilityConverter}}"  />
+            <TextBlock Grid.Row="1" Visibility="{Binding DateOffset.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                <Run Text="{Binding DateOffset.Offset}" />
+                <Run Text="{Binding DateOffset, Mode=OneWay, Converter={StaticResource DateOffsetToUnitLabel}}" />
+            </TextBlock>
+            <TextBlock Grid.Row="2" Text="{Binding Comment}" Visibility="{Binding Comment, Converter={StaticResource NullToVis}}" Grid.ColumnSpan="2" />
+        </Grid>
 
         <StackPanel x:Name="buttons" Grid.Column="2" Style="{StaticResource hidingButtons}">
             <StackPanel.Resources>

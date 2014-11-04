@@ -71,6 +71,7 @@
                   BorderThickness="0"
                   HorizontalContentAlignment="Stretch"
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   SelectionMode="Extended"
                   SelectionChanged="records_SelectionChanged">
             <ListBox.GroupStyle>
