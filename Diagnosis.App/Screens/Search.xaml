@@ -55,13 +55,15 @@
                     <StackPanel DataContext="{Binding Options}" Visibility="{Binding DataContext.SearchWas, ElementName=search, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel Orientation="Horizontal"
                                     Visibility="{Binding Words.Count, Converter={StaticResource CountToVisibility}}">
-                            <TextBlock Text="любое из слов: " Visibility="{Binding AnyWord, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                            <TextBlock Text="все слова: " Visibility="{Binding AnyWord, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
+                            <TextBlock Text="любое из слов: " Visibility="{Binding AllWords, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
+                            <TextBlock Visibility="{Binding AllWords, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Run>все слова</Run> <Run Text="{Binding AndScope, StringFormat='{}{0}: ', Converter={StaticResource ScopeToLabel}}" />
+                            </TextBlock>
                             <controls:CommaList ItemsSource="{Binding Words}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal"
                                     Visibility="{Binding Categories.Count, Converter={StaticResource CountToVisibility}}">
-                            <TextBlock Text="типы записи: "></TextBlock>
+                            <TextBlock Text="типы записей: "></TextBlock>
                             <controls:CommaList ItemsSource="{Binding Categories}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal"
