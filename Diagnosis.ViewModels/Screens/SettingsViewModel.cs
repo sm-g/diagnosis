@@ -10,14 +10,13 @@ using Diagnosis.Data.Repositories;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class SettingsViewModel : SessionVMBase
+    public class SettingsViewModel : DialogViewModel
     {
         private readonly Doctor doctor;
         private Dictionary<DoctorSettings, Func<bool>> map;
 
         private bool _onlyTopLevelIcdDisease;
         private bool _showIcdDisease;
-        private bool? _dialogResult;
 
         public SettingsViewModel(Doctor doctor)
         {
@@ -29,22 +28,6 @@ namespace Diagnosis.ViewModels.Screens
             map.Add(DoctorSettings.OnlyTopLevelIcdDisease, () => OnlyTopLevelIcdDisease);
 
             Load();
-        }
-
-        public bool? DialogResult
-        {
-            get
-            {
-                return _dialogResult;
-            }
-            set
-            {
-                if (_dialogResult != value)
-                {
-                    _dialogResult = value;
-                    OnPropertyChanged(() => DialogResult);
-                }
-            }
         }
 
         public bool ShowIcdDisease
@@ -79,18 +62,9 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public ICommand SaveCommand
+        protected override void OnOk()
         {
-            get
-            {
-                return new RelayCommand(Save);
-            }
-        }
-
-        public void Reload()
-        {
-            Load();
-            DialogResult = null;
+            Save();
         }
 
         private void SetFlag(DoctorSettings flag, bool value)
@@ -124,7 +98,6 @@ namespace Diagnosis.ViewModels.Screens
                 Session.SaveOrUpdate(doctor);
             }
 
-            DialogResult = true;
             this.Send(Events.SettingsSaved, doctor.AsParams(MessageKeys.Doctor));
         }
 
