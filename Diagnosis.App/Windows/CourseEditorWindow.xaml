@@ -11,18 +11,22 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         
-        <StackPanel Margin="10,10,0,0" DataContext="{Binding Course}">
+        <StackPanel Margin="10,10,0,0">
             <StackPanel.Resources>
                 <Style TargetType="DockPanel" BasedOn="{StaticResource formLine}" />
                 <Style TargetType="Label" BasedOn="{StaticResource label90}" />
             </StackPanel.Resources>
             <DockPanel>
                 <Label Content="Начало" />
-                <DatePicker SelectedDate="{Binding Start, Mode=TwoWay, ValidatesOnDataErrors=True}"  />
+                <DatePicker SelectedDate="{Binding Course.Start, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"  />
             </DockPanel>
-            <DockPanel>
+            <DockPanel Visibility="{Binding Course.IsEnded, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Label Content="Конец" />
-                <TextBox Text="{Binding End, ValidatesOnDataErrors=True, StringFormat={}{0:d}}" />
+                <DatePicker SelectedDate="{Binding Course.End,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+            </DockPanel>
+            <DockPanel Visibility="{Binding Course.IsEnded, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                <Label Content="" />
+                <TextBlock><Hyperlink Command="{Binding FinishCommand}">Завершить</Hyperlink></TextBlock>
             </DockPanel>
         </StackPanel>
 
