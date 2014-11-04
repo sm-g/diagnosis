@@ -6,7 +6,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public class CardItemViewModel : HierarchicalBase<CardItemViewModel>
     {
@@ -65,7 +65,16 @@ namespace Diagnosis.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    //this.Send(Events.Edit, Holder.AsParams(MessageKeys.Holder));
+                    IDialog vm = null;
+                    if (Holder is Course)
+                    {
+                        vm = new CourseEditorViewModel(Holder as Course);
+                        this.Send(Events.OpenHolderEditor, vm.AsParams(MessageKeys.Dialog));
+                    }
+                    else if (Holder is Patient)
+                    {
+                        this.Send(Events.EditPatient, Holder.AsParams(MessageKeys.Patient));
+                    }
                 });
             }
         }

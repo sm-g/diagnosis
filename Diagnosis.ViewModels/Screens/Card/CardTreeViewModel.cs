@@ -2,6 +2,7 @@
 using Diagnosis.Data;
 using Diagnosis.Models;
 using log4net;
+using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -40,6 +41,13 @@ namespace Diagnosis.ViewModels.Screens
 
             Open(entity);
         }
+
+        /// <summary>
+        /// For XAML-editor only
+        /// </summary>
+        [Obsolete]
+        public CardTreeViewModel()
+        { }
 
         public bool CloseNestedHolderOnLevelUp
         {
