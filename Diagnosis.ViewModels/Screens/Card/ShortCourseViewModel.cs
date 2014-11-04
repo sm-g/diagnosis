@@ -35,7 +35,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return course.End.HasValue;
+                return course.IsEnded;
             }
         }
 
@@ -47,7 +47,7 @@ namespace Diagnosis.ViewModels.Screens
             }
             set
             {
-                if (!course.End.HasValue || course.End.Value.Date != value.Value.Date)
+                if (!course.IsEnded || course.End.Value.Date != value.Value.Date)
                 {
                     course.End = value.Value.Date;
                     OnPropertyChanged("End");

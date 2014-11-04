@@ -29,7 +29,7 @@ namespace Diagnosis.ViewModels.Screens
                         .ToList();
 
                     _appointments = new ObservableCollection<SpecialCaseItem>(wrappers);
-                    if (!course.End.HasValue)
+                    if (!course.IsEnded)
                     {
                         _appointments.Add(new SpecialCaseItem(SpecialCaseItem.Cases.AddNew));
                     }

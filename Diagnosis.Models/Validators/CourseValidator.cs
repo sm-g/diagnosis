@@ -31,9 +31,11 @@ namespace Diagnosis.Models.Validators
 
             // курс начинается не позже даты первого осмотра
             RuleFor(p => p.Start).LessThanOrEqualTo(x => firstAppDate(x));
+            RuleFor(p => p.Start).LessThanOrEqualTo(x => x.End).When(x => x.IsEnded);
 
             // курс кончается не раньше даты последнего осмотра            
             RuleFor(p => p.End).GreaterThanOrEqualTo(x => lastAppDate(x));
+            RuleFor(p => p.End).GreaterThanOrEqualTo(x => x.Start);
 
             // no neeed to check nullable - http://www.jeremyskinner.co.uk/2011/04/29/fluentvalidation-v3-better-handling-of-nullable-types/
         }

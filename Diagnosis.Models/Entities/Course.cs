@@ -33,8 +33,14 @@ namespace Diagnosis.Models
         public virtual DateTime? End
         {
             get { return _end; }
-            set { SetProperty(ref _end, value.HasValue ? value.Value.Date : value, "End"); }
+            set
+            {
+                if (SetProperty(ref _end, value.HasValue ? value.Value.Date : value, "End"))
+                    OnPropertyChanged(() => IsEnded);
+            }
         }
+
+        public virtual bool IsEnded { get { return IsEnded; } }
 
         public virtual IEnumerable<Appointment> Appointments
         {
@@ -67,7 +73,7 @@ namespace Diagnosis.Models
         /// <returns></returns>
         public virtual Appointment AddAppointment(Doctor doctor)
         {
-            Contract.Requires(!End.HasValue);
+            Contract.Requires(!IsEnded);
             var a = new Appointment(this, doctor ?? LeadDoctor);
             appointments.Add(a);
 
@@ -95,6 +101,12 @@ namespace Diagnosis.Models
         {
             if (healthRecords.Remove(hr))
                 OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, hr));
+        }
+
+        public virtual void Finish()
+        {
+            Contract.Requires(!IsEnded);
+            End = DateTime.UtcNow;
         }
 
         public override string ToString()
@@ -130,7 +142,7 @@ namespace Diagnosis.Models
     {
         public int Compare(Course x, Course y)
         {
-            if (x.End.HasValue && y.End.HasValue)
+            if (x.IsEnded && y.IsEnded)
             {
                 // оба курса закончились — больше тот, что кончился позже
                 return x.End.Value.CompareTo(y.End.Value);
@@ -138,9 +150,9 @@ namespace Diagnosis.Models
             else
             {
                 // больше тот, что продолжается
-                if (x.End.HasValue)
+                if (x.IsEnded)
                     return -1;
-                if (y.End.HasValue)
+                if (y.IsEnded)
                     return 1;
 
                 // оба продолжаются — больше тот, что начался позже

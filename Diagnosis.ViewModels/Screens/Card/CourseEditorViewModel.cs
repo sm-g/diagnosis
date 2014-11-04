@@ -36,6 +36,15 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public RelayCommand FinishCommand
+        {
+            get
+            {
+                return new RelayCommand(course.Finish, 
+                () => course.End == null);
+            }
+        }
+
         public override bool CanOk
         {
             get

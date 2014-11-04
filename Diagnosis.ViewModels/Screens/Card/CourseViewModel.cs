@@ -49,7 +49,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return course.End.HasValue;
+                return course.IsEnded;
             }
         }
 
@@ -146,8 +146,6 @@ namespace Diagnosis.ViewModels.Screens
         private void course_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             OnPropertyChanged(e.PropertyName);
-            if (e.PropertyName == "End")
-                OnPropertyChanged(() => IsEnded);
         }
 
         protected override void Dispose(bool disposing)
