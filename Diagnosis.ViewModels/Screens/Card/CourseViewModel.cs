@@ -13,6 +13,16 @@ namespace Diagnosis.ViewModels.Screens
         private ShortAppointmentViewModel _selApp;
         private AppointmentsManager appManager;
 
+        public CourseViewModel(Course course)
+        {
+            Contract.Requires(course != null);
+            this.course = course;
+
+            course.PropertyChanged += course_PropertyChanged;
+            appManager = new AppointmentsManager(course);
+        }
+
+
         #region Model
 
         public Doctor LeadDoctor
@@ -28,6 +38,10 @@ namespace Diagnosis.ViewModels.Screens
             get
             {
                 return course.Start.Date;
+            }
+            set
+            {
+                course.Start = value;
             }
         }
 
@@ -47,12 +61,7 @@ namespace Diagnosis.ViewModels.Screens
             }
             set
             {
-                if (!course.End.HasValue || course.End.Value.Date != value.Value.Date)
-                {
-                    course.End = value.Value.Date;
-                    OnPropertyChanged("End");
-                    OnPropertyChanged("IsEnded");
-                }
+                course.End = value;
             }
         }
 
@@ -100,6 +109,7 @@ namespace Diagnosis.ViewModels.Screens
                 return Appointments.Count == 0;
             }
         }
+
         public bool IsDoctorCurrent
         {
             get
@@ -108,20 +118,19 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public CourseViewModel(Course course)
+        public override string this[string columnName]
         {
-            Contract.Requires(course != null);
-            this.course = course;
-
-            appManager = new AppointmentsManager(course);
-        }
-
-        /// <summary>
-        /// Вызывается при смене открытого осмотра.
-        /// </summary>
-        internal void OnOpenedAppointmentChanged()
-        {
-            OnPropertyChanged("SelectedAppointmentWithAddNew");
+            get
+            {
+                var results = course.SelfValidate();
+                if (results == null)
+                    return string.Empty;
+                var message = results.Errors
+                    .Where(x => x.PropertyName == columnName)
+                    .Select(x => x.ErrorMessage)
+                    .FirstOrDefault();
+                return message != null ? message : string.Empty;
+            }
         }
 
         public override string ToString()
@@ -132,6 +141,23 @@ namespace Diagnosis.ViewModels.Screens
         internal void SelectAppointment(Appointment appointment)
         {
             SelectedAppointment = Appointments.FirstOrDefault(x => x.appointment == appointment);
+        }
+
+        private void course_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(e.PropertyName);
+            if (e.PropertyName == "End")
+                OnPropertyChanged(() => IsEnded);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                course.PropertyChanged -= course_PropertyChanged;
+                appManager.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

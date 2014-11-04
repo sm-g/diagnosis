@@ -75,7 +75,7 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     var settingsVM = new SettingsViewModel(AuthorityController.CurrentDoctor);
-                    this.Send(Events.OpenSettings, settingsVM.AsParams(MessageKeys.Settings));
+                    this.Send(Events.OpenSettings, settingsVM.AsParams(MessageKeys.Dialog));
                 });
             }
         }

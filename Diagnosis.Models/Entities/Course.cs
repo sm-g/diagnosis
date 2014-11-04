@@ -1,38 +1,51 @@
-﻿using System;
+﻿using Diagnosis.Models.Validators;
+using FluentValidation.Results;
+using Iesi.Collections.Generic;
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
-    public class Course : EntityBase, IDomainEntity, IHrsHolder
+    public class Course : ValidatableEntity, IDomainEntity, IHrsHolder
     {
-        Iesi.Collections.Generic.ISet<Appointment> appointments = new HashedSet<Appointment>();
-        Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
+        private Iesi.Collections.Generic.ISet<Appointment> appointments = new HashedSet<Appointment>();
+        private Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
 
         public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
 
         public virtual event NotifyCollectionChangedEventHandler AppointmentsChanged;
 
+        private DateTime _start;
+        private DateTime? _end;
+
         public virtual Patient Patient { get; protected set; }
+
         public virtual Doctor LeadDoctor { get; protected set; }
-        public virtual DateTime Start { get; protected set; }
-        public virtual DateTime? End { get; set; }
+
+        public virtual DateTime Start
+        {
+            get { return _start; }
+            set { SetProperty(ref _start, value.Date, "Start"); }
+        }
+
+        public virtual DateTime? End
+        {
+            get { return _end; }
+            set { SetProperty(ref _end, value.HasValue ? value.Value.Date : value, "End"); }
+        }
 
         public virtual IEnumerable<Appointment> Appointments
         {
-            get
-            {
-                return appointments;
-            }
+            get { return appointments; }
         }
+
         public virtual IEnumerable<HealthRecord> HealthRecords
         {
             get { return healthRecords; }
         }
+
         public Course(Patient patient, Doctor doctor)
         {
             Contract.Requires(patient != null);
@@ -43,10 +56,12 @@ namespace Diagnosis.Models
             Start = DateTime.Today;
         }
 
-        protected Course() { }
+        protected Course()
+        {
+        }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="doctor">Доктор, ведущий осмотр. Если null, осмотр ведет доктор курса.</param>
         /// <returns></returns>
@@ -59,12 +74,12 @@ namespace Diagnosis.Models
             OnAppointmentsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, a));
             return a;
         }
+
         public virtual void RemoveAppointment(Appointment app)
         {
             Contract.Requires(app.IsEmpty());
             if (appointments.Remove(app))
                 OnAppointmentsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, app));
-
         }
 
         public virtual HealthRecord AddHealthRecord()
@@ -95,6 +110,7 @@ namespace Diagnosis.Models
                 h(this, e);
             }
         }
+
         protected virtual void OnHealthRecordsChanged(NotifyCollectionChangedEventArgs e)
         {
             var h = HealthRecordsChanged;
@@ -102,6 +118,11 @@ namespace Diagnosis.Models
             {
                 h(this, e);
             }
+        }
+
+        public override ValidationResult SelfValidate()
+        {
+            return new CourseValidator().Validate(this);
         }
     }
 
@@ -126,6 +147,5 @@ namespace Diagnosis.Models
                 return x.Start.CompareTo(y.Start);
             }
         }
-
     }
 }

@@ -59,13 +59,6 @@
                 <StackPanel.Resources>
                     <Style TargetType="DockPanel" BasedOn="{StaticResource formLine}" />
                     <Style TargetType="Label" BasedOn="{StaticResource label120}" />
-                    <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}" >
-                        <Style.Triggers>
-                            <Trigger Property="Validation.HasError" Value="true">
-                                <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
                 </StackPanel.Resources>
                 <!-- PatientViewModel -->
                 <DockPanel>

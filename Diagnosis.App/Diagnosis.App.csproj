@@ -360,6 +360,9 @@
     <Compile Include="Controls\Common\FullTree.xaml.cs">
       <DependentUpon>FullTree.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\CourseEditorWindow.xaml.cs">
+      <DependentUpon>CourseEditorWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\DebugWindow.xaml.cs">
       <DependentUpon>DebugWindow.xaml</DependentUpon>
     </Compile>
@@ -531,6 +534,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\SharedStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\CourseEditorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

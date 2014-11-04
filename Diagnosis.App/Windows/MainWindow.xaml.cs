@@ -1,19 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using EventAggregator;
-using Diagnosis.Core;
+﻿using Diagnosis.Core;
+using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Screens;
+using System.Windows;
 
 namespace Diagnosis.App.Windows
 {
@@ -27,14 +15,35 @@ namespace Diagnosis.App.Windows
             InitializeComponent();
             this.Subscribe(Events.OpenSettings, (e) =>
             {
-                var settingsVM = e.GetValue<SettingsViewModel>(MessageKeys.Settings);
+                var settingsVM = e.GetValue<IDialog>(MessageKeys.Dialog);
                 var settingsDialog = new SettingsWindow();
-                settingsDialog.Owner = this;
-                settingsDialog.DataContext = settingsVM;
-                var result = settingsDialog.ShowDialog();
+                ShowDialog(settingsVM, settingsDialog);
+            });
+            this.Subscribe(Events.OpenHolderEditor, (e) =>
+            {
+                var dialogVM = e.GetValue<IDialog>(MessageKeys.Dialog);
+                if (dialogVM is CourseEditorViewModel)
+                {
+                    ShowDialog(dialogVM, new CourseEditorWindow());
+                }
             });
 
             DataContext = new MainWindowViewModel();
+        }
+
+        private bool? ShowDialog(IDialog vm, Window w)
+        {
+            w.Owner = this;
+            w.Closing += (s, e) =>
+            {
+                if (vm.DialogResult == null)
+                {
+                    vm.CancelCommand.Execute(null);
+                }
+            };
+            w.DataContext = vm;
+            var result = w.ShowDialog();
+            return result;
         }
     }
 }

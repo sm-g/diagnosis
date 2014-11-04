@@ -155,6 +155,7 @@
     <Compile Include="Framework\DialogViewModel.cs" />
     <Compile Include="Framework\IDialog.cs" />
     <Compile Include="Screens\Card\CardItemViewModel.cs" />
+    <Compile Include="Screens\Card\CourseEditorViewModel.cs" />
     <Compile Include="Screens\Card\CardTreeViewModel.cs" />
     <Compile Include="Screens\Card\CourseViewModel.cs" />
     <Compile Include="Screens\Card\HrListViewModel.cs" />
