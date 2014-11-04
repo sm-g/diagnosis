@@ -133,5 +133,14 @@ namespace Diagnosis.ViewModels.Screens
         {
             SelectedAppointment = Appointments.FirstOrDefault(x => x.appointment == appointment);
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                appManager.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 }
