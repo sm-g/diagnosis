@@ -14,8 +14,16 @@ namespace Diagnosis.Data.Queries
 {
     public static class HealthRecordQuery
     {
+        public enum AndScopes
+        {
+            HealthRecord,
+            Appointment,
+            Course,
+            Patient
+        }
+
         /// <summary>
-        /// Возвращает записи с любым из слов в симптоме.
+        /// Возвращает записи с любым из слов.
         /// </summary>
         public static Func<IEnumerable<Word>, IEnumerable<HealthRecord>> WithAnyWord(ISession session)
         {
@@ -39,30 +47,36 @@ namespace Diagnosis.Data.Queries
             };
         }
         /// <summary>
-        /// Возвращает записи со всеми словами в симптоме, могут быть и другие.
+        /// Возвращает записи со всеми словами в области поиска.
         /// </summary>
-        public static Func<IEnumerable<Word>, IEnumerable<HealthRecord>> WithAllWords(ISession session)
+        public static Func<IEnumerable<Word>, HealthRecordQuery.AndScopes, IEnumerable<HealthRecord>> WithAllWords(ISession session)
         {
-            return (words) =>
+            return (words, scope) =>
             {
                 var withAny = WithAnyWord(session)(words);
-
-                return withAny.Where(hr => words.IsSubsetOf(hr.Words));
+                switch (scope)
+                {
+                    case AndScopes.Appointment:
+                        return GetHrsInScope(words, withAny, (hr) => hr.Appointment);
+                    case AndScopes.Course:
+                        return GetHrsInScope(words, withAny, (hr) => hr.GetCourse());
+                    case AndScopes.Patient:
+                        return GetHrsInScope(words, withAny, (hr) => hr.GetPatient());
+                    default:
+                    case AndScopes.HealthRecord:
+                        return withAny.Where(hr => words.IsSubsetOf(hr.Words));
+                }
             };
         }
 
-        /// <summary>
-        /// Возвращает записи с указанными словами в симптоме. То есть записи с симптомом.
-        /// </summary>
-        //public static Func<IEnumerable<Word>, IEnumerable<HealthRecord>> WithOnlyWords(ISession session)
-        //{
-        //    return (words) =>
-        //    {
-        //        using (var tr = session.BeginTransaction())
-        //        {
-
-        //        }
-        //    };
-        //}
+        private static IEnumerable<HealthRecord> GetHrsInScope(IEnumerable<Word> words, IEnumerable<HealthRecord> hrs, Func<HealthRecord, IHrsHolder> holderOf)
+        {
+            return (from hr in hrs
+                    group hr by holderOf(hr) into g
+                    where g.Key != null
+                    let allWords = g.Key.GetAllWords()
+                    where words.IsSubsetOf(allWords)
+                    select g).SelectMany(x => x).ToList();
+        }
     }
 }

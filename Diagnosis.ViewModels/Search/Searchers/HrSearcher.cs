@@ -20,13 +20,13 @@ namespace Diagnosis.ViewModels.Search
             IEnumerable<HealthRecord> hrs;
 
             if (options.Words.Count() > 0)
-                if (options.AnyWord)
+                if (options.AllWords)
                 {
-                    hrs = HealthRecordQuery.WithAnyWord(session)(options.Words);
+                    hrs = HealthRecordQuery.WithAllWords(session)(options.Words, options.AndScope);
                 }
                 else
                 {
-                    hrs = HealthRecordQuery.WithAllWords(session)(options.Words);
+                    hrs = HealthRecordQuery.WithAnyWord(session)(options.Words);
                 }
             else
             {

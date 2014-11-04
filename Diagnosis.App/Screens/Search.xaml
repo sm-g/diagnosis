@@ -112,7 +112,18 @@
 
                 <search:NewAutocomplete DataContext="{Binding Autocomplete}" />
                 <DockPanel Style="{StaticResource line}">
-                    <CheckBox IsChecked="{Binding AnyWord}" Margin="0,10,0,0">Хотя бы одно слово</CheckBox>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <CheckBox IsChecked="{Binding AllWords}" Margin="0,10,0,0">
+                            <TextBlock>
+                            <Run>Все слова</Run> <Run Text="{Binding AndScope, Converter={StaticResource ScopeToLabel}}"></Run>
+                            </TextBlock>
+                        </CheckBox>
+                        <Slider Grid.Column="2" Value="{Binding AndScope}" IsEnabled="{Binding AllWords}" Minimum="0" Maximum="3" TickFrequency="1" TickPlacement="Both" Orientation="Horizontal" />
+                    </Grid>
                 </DockPanel>
                 <DockPanel Style="{StaticResource line}">
                     <editors:CategoryChooser CategoryMultiSelection="{StaticResource True}" />
