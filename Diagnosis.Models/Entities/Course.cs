@@ -40,7 +40,7 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual bool IsEnded { get { return IsEnded; } }
+        public virtual bool IsEnded { get { return End.HasValue; } }
 
         public virtual IEnumerable<Appointment> Appointments
         {
