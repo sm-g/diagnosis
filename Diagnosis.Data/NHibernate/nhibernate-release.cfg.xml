@@ -13,6 +13,7 @@
     <property name="query.substitutions">true=1;false=0</property>-->
 
     <property name="connection.driver_class">NHibernate.Driver.SqlServerCeDriver</property>
+    <property name="connection.release_mode">on_close</property>
     <property name="connection.connection_string">Data Source="diagnosis.sdf";Persist Security Info=False;</property>
     <property name="dialect">NHibernate.Dialect.MsSqlCe40Dialect</property>
 
