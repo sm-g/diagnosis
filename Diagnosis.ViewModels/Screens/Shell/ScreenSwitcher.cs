@@ -99,7 +99,7 @@ namespace Diagnosis.ViewModels.Screens
                 var hr = e.GetValue<HealthRecord>(MessageKeys.HealthRecord);
 
                 OpenScreen(Screens.Card, hr);
-                (CurrentView as CardViewModel).ToogleHrEditor();
+                (CurrentView as CardTreeViewModel).ToogleHrEditor();
             });
 
             this.Subscribe(Events.OpenHolder, (e) =>
@@ -180,7 +180,7 @@ namespace Diagnosis.ViewModels.Screens
 
                     case Screens.Card:
                         if (parameter != null)
-                            CurrentView = new CardViewModel(parameter);
+                            CurrentView = new CardTreeViewModel(parameter);
                         else
                             throw new ArgumentNullException("parameter"); // что открывать в карте?
                         break;
@@ -201,7 +201,7 @@ namespace Diagnosis.ViewModels.Screens
             else
             {
                 if (screen == Screens.Card)
-                    (CurrentView as CardViewModel).Open(parameter);
+                    (CurrentView as CardTreeViewModel).Open(parameter);
             }
         }
 

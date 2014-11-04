@@ -1,0 +1,85 @@
+﻿<UserControl x:Class="Diagnosis.App.Screens.CardTree"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
+             xmlns:card="clr-namespace:Diagnosis.App.Controls.CardParts"
+             xmlns:controls="clr-namespace:Diagnosis.App.Controls"
+             xmlns:headers="clr-namespace:Diagnosis.App.Controls.Headers"
+             xmlns:screen="clr-namespace:Diagnosis.App.Screens"
+             xmlns:vm="clr-namespace:Diagnosis.ViewModels.Screens;assembly=Diagnosis.ViewModels"
+             x:Name="card"
+             mc:Ignorable="d"
+             d:DataContext="{DynamicResource Context}"
+             d:DesignHeight="300" d:DesignWidth="600">
+    <!-- CardTreeViewModel -->
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <vm:CardTreeViewModel x:Key="Context" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Добавить курс" Command="{Binding StartCourseCommand}" />
+            <MenuItem Header="Добавить осмотр" Command="{Binding AddAppointmentCommand}" />
+        </ContextMenu>
+    </UserControl.ContextMenu>
+
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="73*" />
+            <ColumnDefinition Width="217*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <controls:FullTree DataContext="{Binding TopCardItems}" Grid.RowSpan="2">
+            <controls:FullTree.ItemContainerStyle>
+                <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}">
+                    <Setter Property="controls:Attached.InputBindings" Value="{StaticResource CardElementsInputBindings}" />
+                    <Style.Triggers>
+                        <DataTrigger Value="True">
+                            <DataTrigger.Binding>
+                                <MultiBinding Converter="{StaticResource EqualityToBool}">
+                                    <Binding Path="DataContext.CurrentHolder" RelativeSource="{RelativeSource AncestorType=screen:CardTree}" />
+                                    <Binding />
+                                </MultiBinding>
+                            </DataTrigger.Binding>
+                            <Setter Property="Background" Value="Orange" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsHighlighted}" Value="True">
+                            <Setter Property="Background" Value="LightBlue" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </controls:FullTree.ItemContainerStyle>
+            <controls:FullTree.ItemTemplate>
+                <DataTemplate>
+                    <card:CardItem />
+                </DataTemplate>
+            </controls:FullTree.ItemTemplate>
+        </controls:FullTree>
+
+        <card:HealthRecordsList DataContext="{Binding HrList}" Grid.Column="1" />
+
+        <Border Grid.Row="1" BorderThickness="0,1,0,0" SnapsToDevicePixels="True"
+                                Background="{StaticResource hrEditorBackgroundBrush}"
+                                Visibility="{Binding HrEditor.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Column="1">
+            <Border.BorderBrush>
+                <SolidColorBrush Color="Gray" />
+            </Border.BorderBrush>
+
+            <Grid Margin="10,0,10,10">
+                <editors:HealthRecordEditorShared DataContext="{Binding HrEditor}" />
+            </Grid>
+        </Border>
+
+        <CheckBox IsChecked="{Binding CloseNestedHolderOnLevelUp}" Width="200" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5" Grid.ColumnSpan="2" Grid.Row="1">
+            <TextBlock TextWrapping="Wrap">Закрывать вложенное при переходе вверх</TextBlock>
+        </CheckBox>
+    </Grid>
+</UserControl>

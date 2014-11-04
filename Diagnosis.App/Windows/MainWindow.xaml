@@ -26,6 +26,9 @@
             <DataTemplate DataType="{x:Type vm:CardViewModel}">
                 <screen:Card3 />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:CardTreeViewModel}">
+                <screen:CardTree />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:PatientsListViewModel}">
                 <screen:Patients />
             </DataTemplate>
