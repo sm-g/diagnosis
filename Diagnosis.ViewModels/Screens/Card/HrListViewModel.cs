@@ -28,8 +28,8 @@ namespace Diagnosis.ViewModels.Screens
                     SortDescription sort1 = new SortDescription("Category", ListSortDirection.Ascending);
                     SortDescription sort2 = new SortDescription("SortingDate", ListSortDirection.Ascending);
                     healthRecordsView.GroupDescriptions.Add(groupDescription);
-                    healthRecordsView.SortDescriptions.Add(sort1);
-                    healthRecordsView.SortDescriptions.Add(sort2);
+                    //healthRecordsView.SortDescriptions.Add(sort1);
+                    //healthRecordsView.SortDescriptions.Add(sort2);
                 }
                 return hrManager.HealthRecords;
             }
