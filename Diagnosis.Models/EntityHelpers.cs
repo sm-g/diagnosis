@@ -77,6 +77,11 @@ namespace Diagnosis.Models
             }
         }
 
+        /// <summary>
+        /// Сохраняет значение свойства, каким оно было до вызова BeginEdit, один раз
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <param name="value"></param>
         public void Edit(string propertyName, object value)
         {
             lock (_syncRoot)
@@ -86,7 +91,6 @@ namespace Diagnosis.Models
 
                 if (_inEdit)
                 {
-                    // сохраняем значение свойства до вызова BeginEdit, один раз
                     if (!OriginalValues.Contains(propertyName))
                     {
                         OriginalValues.Add(
@@ -96,7 +100,11 @@ namespace Diagnosis.Models
                 }
             }
         }
-
+        /// <summary>
+        /// Сохраняет значение свойства, каким оно было до вызова BeginEdit, один раз
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="propertyExpression"></param>
         public void Edit<T>(Expression<Func<T>> propertyExpression)
         {
             lock (_syncRoot)
@@ -119,7 +127,6 @@ namespace Diagnosis.Models
                         value = propValuePair.Item2;
                     }
 
-                    // сохраняем значение свойства до вызова BeginEdit, один раз
                     if (!OriginalValues.Contains(propertyName))
                     {
                         OriginalValues.Add(

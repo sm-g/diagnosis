@@ -152,6 +152,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthorityController.cs" />
+    <Compile Include="Framework\DialogViewModel.cs" />
+    <Compile Include="Framework\IDialog.cs" />
+    <Compile Include="Screens\Card\CourseEditorViewModel.cs" />
     <Compile Include="Screens\Card\CourseViewModel.cs" />
     <Compile Include="Screens\Card\HrListViewModel.cs" />
     <Compile Include="Screens\Card\Managers\AppointmentsManager.cs" />

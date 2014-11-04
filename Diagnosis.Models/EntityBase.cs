@@ -142,6 +142,31 @@ namespace Diagnosis.Models
             }
         }
 
+        /// <summary>
+        /// Edits, sets the property and notifies listeners only when necessary.
+        /// </summary>
+        protected bool SetProperty<T>(ref T storage, T value, string propertyName)
+        {
+            if (object.Equals(storage, value)) return false;
+
+            EditHelper.Edit(propertyName, storage);
+            storage = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+        /// <summary>
+        /// Edits, sets the property and notifies listeners only when necessary.
+        /// </summary>
+        protected bool SetProperty<T>(ref T storage, T value, Expression<Func<T>> propertyExpression)
+        {
+            if (object.Equals(storage, value)) return false;
+
+            EditHelper.Edit(propertyExpression);
+            storage = value;
+            OnPropertyChanged(propertyExpression);
+            return true;
+        }
+
         // Maintain equality operator semantics for entities.
         public static bool operator ==(EntityBase x, EntityBase y)
         {
