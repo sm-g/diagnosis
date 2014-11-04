@@ -18,8 +18,8 @@
         </ListBox>
 
         <StackPanel Grid.Row="1" Style="{StaticResource DialogButtonsPanel}">
-            <Button Name="saveButton" IsDefault="True" Command="{Binding SaveCommand}">_Сохранить</Button>
-            <Button Name="cancelButton" IsCancel="True">Отмена</Button>
+            <Button Name="saveButton" IsDefault="True" Command="{Binding OkCommand}">_Сохранить</Button>
+            <Button Name="cancelButton" IsCancel="True" Command="{Binding CancelCommand}">Отмена</Button>
         </StackPanel>
     </Grid>
 </Window>
