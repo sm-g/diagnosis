@@ -10,7 +10,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public partial class CardTreeViewModel : ScreenBase
     {
