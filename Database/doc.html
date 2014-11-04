@@ -1,0 +1,775 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>diagnosis.sdf Database Schema</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <style type="text/css">
+                    body { background-color: #fff; color: #000; font-family: Consolas, monospace}
+                    a:link { color: #03d; }
+                    a:visited { color: #039; }
+                    a:hover { color: #09f; }
+                    table { border-collapse: collapse; width: 100%; }
+                    table caption { color: #666; text-align: right; font-size: 65%; margin-bottom: .5ex; }
+                    table td, table th { border: solid 1px #666; border-collapse: collapse; padding: .3ex .5ex; vertical-align: top; }
+                    table tbody tr:hover { background-color: #ffc; }
+                    table thead th { text-align: left; background-color: #ccc; }
+                    table tbody th { text-align: left; white-space: nowrap; }
+                    .table { page-break-inside: avoid; }
+                    .pk { float: right; cursor: arrow; color: #999; }
+                    .type { white-space: nowrap; }
+                    .null { text-align: center; }
+                    .flag { white-space: nowrap; font-size: 70%; display: inline-block; border: solid 1px #ccc; padding: .25ex .5ex; background-color: #ddd; margin-right: 1ex; }
+                    .tocref { float: right; text-decoration: none; font-weight: normal; }
+                    .footer { text-align: center; margin-top: 1em; font-size: 80%;}
+                    li.view:before { content: "VIEW"; font-size: 70%; display: inline-block; border: solid 1px #ccc; padding: .25ex .5ex; background-color: #ddd; margin-right: 1ex; }
+                    @media print {
+                    body { font-size: .8em; }
+                    #toc, .tocref { display: none; }
+                    a:link, a:visited { color: #000; text-decoration: none; }
+                    }
+                </style>
+  </head>
+  <body>
+    <h1>diagnosis.sdf Database Schema</h1>
+    <div id="toc">
+      <ul>
+        <li class="table"><a href="#Appointment">Appointment</a></li>
+        <li class="table"><a href="#Course">Course</a></li>
+        <li class="table"><a href="#Disease">Disease</a></li>
+        <li class="table"><a href="#Doctor">Doctor</a></li>
+        <li class="table"><a href="#HealthRecord">HealthRecord</a></li>
+        <li class="table"><a href="#HrCategory">HrCategory</a></li>
+        <li class="table"><a href="#HrItem">HrItem</a></li>
+        <li class="table"><a href="#IcdBlock">IcdBlock</a></li>
+        <li class="table"><a href="#IcdChapter">IcdChapter</a></li>
+        <li class="table"><a href="#Patient">Patient</a></li>
+        <li class="table"><a href="#Speciality">Speciality</a></li>
+        <li class="table"><a href="#SpecialityIcdBlocks">SpecialityIcdBlocks</a></li>
+        <li class="table"><a href="#Uom">Uom</a></li>
+        <li class="table"><a href="#Word">Word</a></li>
+      </ul>
+    </div>
+    <div class="table">
+      <h2 id=""><a href="#toc" class="tocref">⇧</a>
+        Database Properties
+      </h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="type">Locale Identifier</td>
+            <td class="type">1049</td>
+          </tr>
+          <tr>
+            <td class="type">Encryption Mode</td>
+            <td class="type">
+            </td>
+          </tr>
+          <tr>
+            <td class="type">Case Sensitive</td>
+            <td class="type">False</td>
+          </tr>
+          <tr>
+            <td class="type">Database</td>
+            <td class="type">C:\Users\smg\Documents\Visual Studio 2012\Projects\Diagnosis\Database\diagnosis.sdf</td>
+          </tr>
+          <tr>
+            <td class="type">ServerVersion</td>
+            <td class="type">4.0.8876.1</td>
+          </tr>
+          <tr>
+            <td class="type">DatabaseSize</td>
+            <td class="type">448 KB</td>
+          </tr>
+          <tr>
+            <td class="type">Created</td>
+            <td class="type">03.11.2014 21:18</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="Appointment"><a href="#toc" class="tocref">⇧</a>Table Appointment</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK__Appointment__0000000000000132">◆</span>Id</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>CourseID</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_Appoinmtment_Course">⇨ <a href="#Course">Course</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>DoctorID</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_Appoinmtment_Doctor">⇨ <a href="#Doctor">Doctor</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>DateAndTime</th>
+            <td class="type">datetime</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="Course"><a href="#toc" class="tocref">⇧</a>Table Course</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK__Course__000000000000011E">◆</span>Id</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>PatientID</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_Course_Patient">⇨ <a href="#Patient">Patient</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>DoctorID</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_Course_Doctor">⇨ <a href="#Doctor">Doctor</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>StartDate</th>
+            <td class="type">datetime</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>EndDate</th>
+            <td class="type">datetime</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="Disease"><a href="#toc" class="tocref">⇧</a>Table Disease</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK__Disease__0000000000000048">◆</span>Id</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>IcdBlockID</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_Disease_IcdBlock">⇨ <a href="#IcdBlock">IcdBlock</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>Title</th>
+            <td class="type">nvarchar (200)</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Code</th>
+            <td class="type">nvarchar (10)</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="Doctor"><a href="#toc" class="tocref">⇧</a>Table Doctor</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK__Doctor__00000000000000BA">◆</span>Id</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>FirstName</th>
+            <td class="type">nvarchar (20)</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>MiddleName</th>
+            <td class="type">nvarchar (20)</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>LastName</th>
+            <td class="type">nvarchar (20)</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>IsMale</th>
+            <td class="type">bit</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Settings</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>SpecialityID</th>
+            <td class="type">int</td>
+            <td class="null">☒</td>
+            <td><span class="flag" title="FK_Doctor_Speciality">⇨ <a href="#Speciality">Speciality</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="HealthRecord"><a href="#toc" class="tocref">⇧</a>Table HealthRecord</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK__HealthRecord__0000000000000156">◆</span>Id</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>PatientID</th>
+            <td class="type">int</td>
+            <td class="null">☒</td>
+            <td><span class="flag" title="FK_Hr_Patient">⇨ <a href="#Patient">Patient</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>CourseID</th>
+            <td class="type">int</td>
+            <td class="null">☒</td>
+            <td><span class="flag" title="FK_Hr_Course">⇨ <a href="#Course">Course</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>AppointmentID</th>
+            <td class="type">int</td>
+            <td class="null">☒</td>
+            <td><span class="flag" title="FK_Hr_Appointment">⇨ <a href="#Appointment">Appointment</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>Comment</th>
+            <td class="type">nvarchar (1000)</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>HrCategoryID</th>
+            <td class="type">int</td>
+            <td class="null">☒</td>
+            <td><span class="flag" title="FK_Hr_HrCategory">⇨ <a href="#HrCategory">HrCategory</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>FromDay</th>
+            <td class="type">smallint</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>FromMonth</th>
+            <td class="type">smallint</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>FromYear</th>
+            <td class="type">int</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Unit</th>
+            <td class="type">nvarchar (20)</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>IsDeleted</th>
+            <td class="type">bit</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="HrCategory"><a href="#toc" class="tocref">⇧</a>Table HrCategory</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK__HrCategory__000000000000000F">◆</span>Id</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Title</th>
+            <td class="type">nvarchar (20)</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Ord</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="HrItem"><a href="#toc" class="tocref">⇧</a>Table HrItem</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK__HrItem__000000000000018A">◆</span>Id</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Ord</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>DiseaseID</th>
+            <td class="type">int</td>
+            <td class="null">☒</td>
+            <td><span class="flag" title="FK_HrItem_Disease">⇨ <a href="#Disease">Disease</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>WordID</th>
+            <td class="type">int</td>
+            <td class="null">☒</td>
+            <td><span class="flag" title="FK_HrItem_Word">⇨ <a href="#Word">Word</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>UomID</th>
+            <td class="type">int</td>
+            <td class="null">☒</td>
+            <td><span class="flag" title="FK_HrItem_Uom">⇨ <a href="#Uom">Uom</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>MeasureValue</th>
+            <td class="type">float (53, 0)</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>HealthRecordID</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_HrItem_Hr">⇨ <a href="#HealthRecord">HealthRecord</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="IcdBlock"><a href="#toc" class="tocref">⇧</a>Table IcdBlock</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK__IcdBlock__0000000000000037">◆</span>Id</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>ChapterID</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_IcdBlock_IcdChapter">⇨ <a href="#IcdChapter">IcdChapter</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>Title</th>
+            <td class="type">nvarchar (150)</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Code</th>
+            <td class="type">nvarchar (10)</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="IcdChapter"><a href="#toc" class="tocref">⇧</a>Table IcdChapter</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK__IcdChapter__0000000000000029">◆</span>Id</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Title</th>
+            <td class="type">nvarchar (150)</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Code</th>
+            <td class="type">nvarchar (10)</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="Patient"><a href="#toc" class="tocref">⇧</a>Table Patient</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK__Patient__00000000000000A6">◆</span>Id</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Label</th>
+            <td class="type">nvarchar (10)</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>FirstName</th>
+            <td class="type">nvarchar (20)</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>MiddleName</th>
+            <td class="type">nvarchar (20)</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>LastName</th>
+            <td class="type">nvarchar (20)</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>IsMale</th>
+            <td class="type">bit</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>BirthYear</th>
+            <td class="type">int</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>BirthMonth</th>
+            <td class="type">smallint</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>BirthDay</th>
+            <td class="type">smallint</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="Speciality"><a href="#toc" class="tocref">⇧</a>Table Speciality</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK__Speciality__0000000000000055">◆</span>Id</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Title</th>
+            <td class="type">nvarchar (20)</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="SpecialityIcdBlocks"><a href="#toc" class="tocref">⇧</a>Table SpecialityIcdBlocks</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK__SpecialityIcdBlocks__0000000000000061">◆</span>Id</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>SpecialityID</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_SpecialityIcdBlocks_Specia">⇨ <a href="#Speciality">Speciality</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>IcdBlockID</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_SpecialityIcdBlocks_IcdBlo">⇨ <a href="#IcdBlock">IcdBlock</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="Uom"><a href="#toc" class="tocref">⇧</a>Table Uom</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK__Uom__000000000000008E">◆</span>Id</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Abbr</th>
+            <td class="type">nvarchar (10)</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td class="type">nvarchar (100)</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Factor</th>
+            <td class="type">float (53, 0)</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UomType</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="Word"><a href="#toc" class="tocref">⇧</a>Table Word</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK__Word__0000000000000171">◆</span>Id</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Title</th>
+            <td class="type">nvarchar (100)</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>DefHrCategoryID</th>
+            <td class="type">int</td>
+            <td class="null">☒</td>
+            <td><span class="flag" title="FK_Word_HrCategory">⇨ <a href="#HrCategory">HrCategory</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>ParentID</th>
+            <td class="type">int</td>
+            <td class="null">☒</td>
+            <td><span class="flag" title="FK_Word_Word">⇨ <a href="#Word">Word</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="footer">
+                    Generated by <a href="http://SqlDbDoc.codeplex.com/">DB&gt;doc</a> and <a href="http://sqlcetoolbox.codeplex.com/">SQL Server Compact/SQLite Toolbox</a> on
+                    November 03, 2014, 16:57:33</div>
+  </body>
+</html>

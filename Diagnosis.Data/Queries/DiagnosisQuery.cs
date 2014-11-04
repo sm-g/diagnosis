@@ -23,8 +23,8 @@ namespace Diagnosis.Data.Queries
                     var q = session.QueryOver<Diag>();
 
                     var disjunction = new Disjunction();
-                    disjunction.Add(Restrictions.On<Diag>(d => d.Title).IsLike(str, MatchMode.Anywhere));
-                    disjunction.Add(Restrictions.On<Diag>(d => d.Code).IsLike(str, MatchMode.Start));
+                    disjunction.Add(Restrictions.On<Diag>(d => d.Title).IsInsensitiveLike(str, MatchMode.Anywhere));
+                    disjunction.Add(Restrictions.On<Diag>(d => d.Code).IsInsensitiveLike(str, MatchMode.Start));
 
                     return q.Where(disjunction).Where(d => d.Parent == parent).List();
                 }

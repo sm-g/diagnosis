@@ -138,6 +138,9 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         private void CreateAutoComplete()
         {
+            if (Autocomplete != null)
+                Autocomplete.Dispose();
+
             var initials = HealthRecord.healthRecord.GetOrderedEntities();
 
             _autocomplete = new Autocomplete(
@@ -295,6 +298,9 @@ namespace Diagnosis.ViewModels.Screens
                 HealthRecord.healthRecord.PropertyChanged -= hr_PropertyChanged;
                 (HealthRecord.healthRecord as IEditableObject).EndEdit();
                 OnUnloaded(HealthRecord.healthRecord);
+
+                Autocomplete.Dispose();
+                _autocomplete = null;
             }
         }
 
@@ -343,9 +349,6 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     handler.Dispose();
                     Unload();
-
-                    if (_autocomplete != null)
-                        _autocomplete.Dispose();
                 }
             }
             finally

@@ -20,7 +20,7 @@ namespace Diagnosis.Data.Specs
 
         public override Expression<Func<Patient, bool>> IsSatisfiedBy()
         {
-            return m => m.FirstName.ToLower().IsLike(query + "%");// ||
+            return m => m.FirstName.IsInsensitiveLike(query + "%");// ||
             // m.MiddleName.ToLower().StartsWith(query) ||
             // m.LastName.ToLower().StartsWith(query);
         }

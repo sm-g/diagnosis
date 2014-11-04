@@ -17,7 +17,7 @@ namespace Diagnosis.Data.Queries
             {
                 using (var tr = session.BeginTransaction())
                 {
-                    return session.QueryOver<Uom>().WhereRestrictionOn(w => w.Abbr).IsLike(str, MatchMode.Start).List();
+                    return session.QueryOver<Uom>().WhereRestrictionOn(w => w.Abbr).IsInsensitiveLike(str, MatchMode.Start).List();
                 }
             };
         }

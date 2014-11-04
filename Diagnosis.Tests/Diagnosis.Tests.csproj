@@ -124,6 +124,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="SearchTests\DiagnosisSearchTest.cs" />
     <Compile Include="ViewModelsTests\CardTest.cs" />
     <Compile Include="ViewModelsTests\RecognizerTest.cs" />
     <Compile Include="CommonTests\SequencePartitionTest.cs" />

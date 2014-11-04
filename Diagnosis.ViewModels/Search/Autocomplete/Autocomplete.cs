@@ -403,8 +403,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            if (!inDispose)
-                Contract.Invariant(Tags.Count > 0); // хотя бы один тег - поле ввода
+            Contract.Invariant(inDispose || Tags.Count > 0); // хотя бы один тег - поле ввода
         }
 
         protected override void Dispose(bool disposing)
