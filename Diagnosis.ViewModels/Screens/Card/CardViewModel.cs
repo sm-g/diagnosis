@@ -24,18 +24,21 @@ namespace Diagnosis.ViewModels.Screens
         private bool editorWasOpened;
         private bool _closeNestedOnLevelUp;
 
+        private Saver saver;
+
         public CardViewModel(object entity, bool resetHistory = false)
         {
             if (resetHistory || viewer == null)
                 viewer = new PatientViewer();
 
+            saver = new Saver(Session);
             HrsHolders = new ObservableCollection<ViewModelBase>();
             HrEditor = new HrEditorViewModel(Session);
             HrEditor.Unloaded += (s, e) =>
             {
                 // сохраняем запись при закрытии редаткора
                 var hr = e.entity as HealthRecord;
-                SaveHealthRecord(hr);
+                saver.SaveHealthRecord(hr);
             };
             viewer.OpenedChanged += viewer_OpenedChanged;
 
@@ -288,7 +291,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (e.OldItems.Count > 0)
                 {
-                    SaveHealthRecord((e.OldItems[0] as ShortHealthRecordViewModel).healthRecord);
+                    saver.SaveHealthRecord((e.OldItems[0] as ShortHealthRecordViewModel).healthRecord);
                 }
             }
         }
@@ -322,23 +325,6 @@ namespace Diagnosis.ViewModels.Screens
             }
 
             Title = MakeTitle();
-        }
-
-        private void SaveHealthRecord(HealthRecord hr)
-        {
-            Session.SaveOrUpdate(hr);
-            using (var t = Session.BeginTransaction())
-            {
-                try
-                {
-                    t.Commit();
-                }
-                catch (System.Exception e)
-                {
-                    t.Rollback();
-                    logger.Error(e);
-                }
-            }
         }
 
         private IHrsHolder GetHolderOfVm(ViewModelBase holderVm)
@@ -394,7 +380,7 @@ namespace Diagnosis.ViewModels.Screens
 
             if (e.action == PatientViewer.OpeningAction.Close)
             {
-                SaveAll();
+                saver.SaveAll(viewer.OpenedPatient, deleteEmptyHrs: true);
             }
 
             if (e.entity is Patient)
@@ -478,26 +464,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        /// <summary>
-        /// Сохраняем пациента, его курсы, осмотры и все записи.
-        /// </summary>
-        private void SaveAll()
-        {
-            Session.SaveOrUpdate(viewer.OpenedPatient);
-            using (var t = Session.BeginTransaction())
-            {
-                try
-                {
-                    t.Commit();
-                }
-                catch (System.Exception e)
-                {
-                    t.Rollback();
-                    logger.Error(e);
-                }
-            }
-        }
-
         private void HrsHolder_HealthRecordsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
@@ -510,7 +476,7 @@ namespace Diagnosis.ViewModels.Screens
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 // удаляем записи в бд
-                SaveAll();
+                saver.SaveAll(viewer.OpenedPatient);
             }
         }
 
