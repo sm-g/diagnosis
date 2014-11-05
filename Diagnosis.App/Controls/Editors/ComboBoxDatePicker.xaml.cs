@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Diagnosis.Core;
+using Diagnosis.Common;
 
 namespace Diagnosis.App.Controls.Editors
 {

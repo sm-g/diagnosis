@@ -1,4 +1,4 @@
-﻿using Diagnosis.Core;
+﻿using Diagnosis.Common;
 using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Screens;
 using System.Windows;

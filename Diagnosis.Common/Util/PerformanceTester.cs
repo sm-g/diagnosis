@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 
-namespace Diagnosis.Core
+namespace Diagnosis.Common
 {
     public class PerformanceTester : IDisposable
     {

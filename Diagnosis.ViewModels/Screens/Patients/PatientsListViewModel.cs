@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Diagnosis.Core;
+using Diagnosis.Common;
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;

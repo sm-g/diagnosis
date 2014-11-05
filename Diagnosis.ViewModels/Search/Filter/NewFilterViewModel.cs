@@ -4,7 +4,7 @@ using System.Windows.Input;
 using System.Linq;
 using System;
 using Diagnosis.Models;
-using Diagnosis.Core;
+using Diagnosis.Common;
 
 namespace Diagnosis.ViewModels.Search
 {

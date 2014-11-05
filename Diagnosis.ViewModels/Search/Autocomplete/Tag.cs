@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using Diagnosis.Core;
+using Diagnosis.Common;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {

@@ -1,4 +1,4 @@
-﻿using Diagnosis.Core;
+﻿using Diagnosis.Common;
 using Diagnosis.Data.Queries;
 using Diagnosis.Data.Repositories;
 using Diagnosis.Models;

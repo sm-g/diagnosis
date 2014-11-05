@@ -5,7 +5,7 @@ using System.Text;
 using System.Diagnostics.Contracts;
 using System.Collections.ObjectModel;
 
-namespace Diagnosis.Core
+namespace Diagnosis.Common
 {
     public static class EnumerableExtensions
     {

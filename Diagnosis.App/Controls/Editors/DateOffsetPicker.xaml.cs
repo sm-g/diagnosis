@@ -1,6 +1,6 @@
 ﻿using Diagnosis.ViewModels;
 using System.Windows;
-using Diagnosis.Core;
+using Diagnosis.Common;
 using System.Windows.Controls;
 
 namespace Diagnosis.App.Controls.Editors

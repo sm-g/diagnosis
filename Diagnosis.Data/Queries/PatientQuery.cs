@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Diagnosis.Core;
+using Diagnosis.Common;
 using NHibernate.Criterion;
 
 namespace Diagnosis.Data.Queries

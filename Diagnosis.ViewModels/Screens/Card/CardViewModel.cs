@@ -1,4 +1,4 @@
-﻿using Diagnosis.Core;
+﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using log4net;
 using System;

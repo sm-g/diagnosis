@@ -1,4 +1,4 @@
-﻿using Diagnosis.Core;
+﻿using Diagnosis.Common;
 using Diagnosis.Models.Validators;
 using FluentValidation.Results;
 using Iesi.Collections.Generic;

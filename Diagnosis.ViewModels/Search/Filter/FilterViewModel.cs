@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Linq;
 using System;
-using Diagnosis.Core;
+using Diagnosis.Common;
 
 namespace Diagnosis.ViewModels.Search
 {

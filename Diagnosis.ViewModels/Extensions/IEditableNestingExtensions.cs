@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics.Contracts;
-using Diagnosis.Core;
+using Diagnosis.Common;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 

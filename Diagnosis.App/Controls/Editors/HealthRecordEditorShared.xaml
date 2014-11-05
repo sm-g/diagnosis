@@ -9,7 +9,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:Diagnosis.ViewModels"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             xmlns:core="clr-namespace:Diagnosis.Core;assembly=Diagnosis.Core"
+             xmlns:core="clr-namespace:Diagnosis.Common;assembly=Diagnosis.Common"
              x:Name="editor"
              mc:Ignorable="d"
              d:DesignHeight="200" d:DesignWidth="600">

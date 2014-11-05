@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Markup;
 using EventAggregator;
-using Diagnosis.Core;
+using Diagnosis.Common;
 
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
 

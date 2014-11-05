@@ -1,5 +1,5 @@
 ﻿using Diagnosis.App;
-using Diagnosis.Core;
+using Diagnosis.Common;
 using Diagnosis.ViewModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;

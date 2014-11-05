@@ -3,7 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
-namespace Diagnosis.Core
+namespace Diagnosis.Common
 {
     public enum DateUnits
     {

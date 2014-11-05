@@ -7,7 +7,7 @@ using NHibernate.Transform;
 using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
-using Diagnosis.Core;
+using Diagnosis.Common;
 using System.Linq;
 
 namespace Diagnosis.Data.Queries

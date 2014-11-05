@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
 using EventAggregator;
-using Diagnosis.Core;
+using Diagnosis.Common;
 using Diagnosis.Data.Repositories;
 
 namespace Diagnosis.ViewModels.Screens

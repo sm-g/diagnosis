@@ -1,5 +1,5 @@
 ﻿using EventAggregator;
-using Diagnosis.Core;
+using Diagnosis.Common;
 using Diagnosis.Models;
 using System;
 using System.Collections.Generic;

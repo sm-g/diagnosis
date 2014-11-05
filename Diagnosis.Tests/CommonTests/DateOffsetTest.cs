@@ -1,4 +1,4 @@
-﻿using Diagnosis.Core;
+﻿using Diagnosis.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 

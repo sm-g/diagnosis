@@ -1,4 +1,4 @@
-﻿using Diagnosis.Core;
+﻿using Diagnosis.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

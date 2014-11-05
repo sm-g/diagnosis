@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Navigation;
 using EventAggregator;
-using Diagnosis.Core;
+using Diagnosis.Common;
 using Diagnosis.Models;
 using System.Diagnostics;
 using System.Collections.Generic;

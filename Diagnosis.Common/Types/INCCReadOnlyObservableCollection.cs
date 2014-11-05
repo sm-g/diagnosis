@@ -5,7 +5,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 
-namespace Diagnosis.Core
+namespace Diagnosis.Common
 {
     public class INCCReadOnlyObservableCollection<T> : ReadOnlyObservableCollection<T>
     {

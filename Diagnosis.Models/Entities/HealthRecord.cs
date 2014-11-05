@@ -1,4 +1,4 @@
-﻿using Diagnosis.Core;
+﻿using Diagnosis.Common;
 using System.Linq;
 using Iesi.Collections.Generic;
 using System.Collections.Generic;

@@ -1,5 +1,5 @@
 ﻿using Diagnosis.App;
-using Diagnosis.Core;
+using Diagnosis.Common;
 using Diagnosis.Data;
 using Diagnosis.Data.Mappings;
 using Diagnosis.Models;

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Diagnosis.Core
+namespace Diagnosis.Common
 {
     /// <summary>
     /// Ключи событий для EventAggregator

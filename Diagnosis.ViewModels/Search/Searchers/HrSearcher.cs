@@ -5,7 +5,7 @@ using System.Text;
 using Diagnosis.Data.Repositories;
 using System.Diagnostics.Contracts;
 using Diagnosis.Models;
-using Diagnosis.Core;
+using Diagnosis.Common;
 using Diagnosis.Data.Queries;
 using NHibernate;
 using NHibernate.Linq;

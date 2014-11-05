@@ -1,4 +1,4 @@
-﻿using Diagnosis.Core;
+﻿using Diagnosis.Common;
 using PixelMEDIA.PixelCore.Helpers;
 using System;
 using System.Collections;

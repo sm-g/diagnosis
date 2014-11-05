@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using Diagnosis.Models;
 using Diagnosis.ViewModels;
-using Diagnosis.Core;
+using Diagnosis.Common;
 
 namespace Tests
 {

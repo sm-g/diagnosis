@@ -2,7 +2,7 @@
 using EventAggregator;
 using System.Diagnostics.Contracts;
 using System.Windows.Input;
-using Diagnosis.Core;
+using Diagnosis.Common;
 
 namespace Diagnosis.ViewModels.Screens
 {
