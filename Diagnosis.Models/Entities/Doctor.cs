@@ -8,7 +8,7 @@ using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
-    public class Doctor : EntityBase, IDomainEntity, IMan
+    public class Doctor : EntityBase, IDomainObject, IMan
     {
         private Iesi.Collections.Generic.ISet<Course> courses = new HashedSet<Course>();
         private Iesi.Collections.Generic.ISet<Appointment> appointments;

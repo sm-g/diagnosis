@@ -4,7 +4,7 @@ using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
-    public class IcdDisease : EntityBase, IDomainEntity, IHrItemObject
+    public class IcdDisease : EntityBase, IDomainObject, IHrItemObject
     {
         Iesi.Collections.Generic.ISet<HealthRecord> healthRecords;
 

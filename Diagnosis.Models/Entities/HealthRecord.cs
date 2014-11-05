@@ -8,7 +8,7 @@ using System;
 
 namespace Diagnosis.Models
 {
-    public class HealthRecord : EntityBase, IDomainEntity
+    public class HealthRecord : EntityBase, IDomainObject
     {
         private Iesi.Collections.Generic.ISet<HrItem> hrItems = new HashedSet<HrItem>();
         private int? _year;

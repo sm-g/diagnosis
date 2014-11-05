@@ -10,7 +10,7 @@ using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
-    public class Measure : IDomainEntity, IHrItemObject
+    public class Measure : IDomainObject, IHrItemObject
     {
         HealthRecord _hr;
         public virtual HealthRecord HealthRecord

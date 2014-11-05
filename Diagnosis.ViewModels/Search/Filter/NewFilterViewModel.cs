@@ -8,7 +8,7 @@ using Diagnosis.Core;
 
 namespace Diagnosis.ViewModels.Search
 {
-    public class NewFilterViewModel<T> : ViewModelBase, IFilter<T> where T : IDomainEntity
+    public class NewFilterViewModel<T> : ViewModelBase, IFilter<T> where T : IDomainObject
     {
         private readonly INewSearcher<T> searcher;
         Func<string, IEnumerable<T>> finder;

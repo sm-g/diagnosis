@@ -13,7 +13,6 @@ namespace Diagnosis.Models
     public abstract class EntityBase : NotifyPropertyChangedBase, IEditableObject
     {
         private int? cachedHashCode;
-        private bool _isDeleted;
         private EditableObjectHelper _editHelper;
         private object _syncRoot = new object();
         private bool? wasChangedBeforeEdit;

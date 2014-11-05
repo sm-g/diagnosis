@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class HrItem : EntityBase, IDomainEntity
+    public class HrItem : EntityBase, IDomainObject
     {
         private Comment comment;
 

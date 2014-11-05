@@ -163,7 +163,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         public List<object> SearchForSuggesstions(string query, object prevEntityBlank, IEnumerable<object> exclude = null)
         {
             Contract.Ensures(Contract.Result<List<object>>().All(o => o is Word || o is string));
-            IEnumerable<IDomainEntity> found;
+            IEnumerable<IDomainObject> found;
             List<object> results;
 
             found = QueryWords(query, prevEntityBlank);

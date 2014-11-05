@@ -9,21 +9,21 @@ namespace Diagnosis.Models
     /// <summary>
     /// Доменный объект, не обязательно хранится в БД.
     /// </summary>
-    public interface IDomainEntity
+    public interface IDomainObject
     {
     }
 
     /// <summary>
     /// Сущность в элементе записи.
     /// </summary>
-    public interface IHrItemObject
+    public interface IHrItemObject : IDomainObject
     {
     }
 
     /// <summary>
     /// Сущность, содержащая записи.
     /// </summary>
-    public interface IHrsHolder : IDomainEntity
+    public interface IHrsHolder : IDomainObject
     {
         event NotifyCollectionChangedEventHandler HealthRecordsChanged;
         IEnumerable<HealthRecord> HealthRecords { get; }
@@ -35,10 +35,10 @@ namespace Diagnosis.Models
     [Serializable]
     public class DomainEntityEventArgs : EventArgs
     {
-        public readonly IDomainEntity entity;
+        public readonly IDomainObject entity;
 
         [System.Diagnostics.DebuggerStepThrough]
-        public DomainEntityEventArgs(IDomainEntity entity)
+        public DomainEntityEventArgs(IDomainObject entity)
         {
             this.entity = entity;
         }

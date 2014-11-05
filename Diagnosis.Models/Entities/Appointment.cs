@@ -10,7 +10,7 @@ using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
-    public class Appointment : EntityBase, IDomainEntity, IHrsHolder
+    public class Appointment : EntityBase, IDomainObject, IHrsHolder
     {
         Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
 
