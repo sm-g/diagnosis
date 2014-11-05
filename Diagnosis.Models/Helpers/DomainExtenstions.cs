@@ -61,6 +61,17 @@ namespace Diagnosis.Models
 
             throw new ArgumentOutOfRangeException("holder");
         }
+
+        /// <summary>
+        /// Удаляет пустые записи держателя.
+        /// </summary>
+        /// <param name="holder"></param>
+        public static void DeleteEmptyHrs(this IHrsHolder holder)
+        {
+            var copy = holder.HealthRecords.ToList();
+            copy.Where(hr => hr.IsEmpty())
+                .ForAll(hr => holder.RemoveHealthRecord(hr));
+        }
     }
 
     public static class IDomainEntityExtensions
@@ -70,7 +81,7 @@ namespace Diagnosis.Models
         /// пациент  — без записей и курсов
         /// курс — без записей и осмотров
         /// осмотр — без записей
-        /// запись — без элементов (слов, дат, комментариев). категория не считается.
+        /// запись — без элементов (слов, дат, комментариев). Категория не считается.
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
@@ -92,7 +103,7 @@ namespace Diagnosis.Models
                 { typeof(Appointment), () => 
                     {
                         var app = entity as Appointment;
-                        return app.HealthRecords.All(x => x.IsEmpty() && app.HealthRecords.All(h => h.IsEmpty()));
+                        return app.HealthRecords.All(x => x.IsEmpty());
                     } 
                 },
                 { typeof(HealthRecord),() =>

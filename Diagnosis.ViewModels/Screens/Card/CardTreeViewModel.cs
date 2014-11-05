@@ -23,6 +23,7 @@ namespace Diagnosis.ViewModels.Screens
         private CardItemViewModel _curHolder;
         private bool editorWasOpened;
         private bool _closeNestedOnLevelUp;
+        private bool inSaveAll;
 
         public CardTreeViewModel(object entity, bool resetHistory = false)
         {
@@ -307,6 +308,8 @@ namespace Diagnosis.ViewModels.Screens
 
         private void SaveHealthRecord(HealthRecord hr)
         {
+            if (inSaveAll) return;
+
             Session.SaveOrUpdate(hr);
             using (var t = Session.BeginTransaction())
             {
@@ -380,7 +383,7 @@ namespace Diagnosis.ViewModels.Screens
 
             if (e.action == PatientViewer.OpeningAction.Close)
             {
-                SaveAll();
+                SaveAll(deleteEmptyHrs: true);
             }
 
             CardItemViewModel itemVm;
@@ -466,8 +469,22 @@ namespace Diagnosis.ViewModels.Screens
         /// <summary>
         /// Сохраняем пациента, его курсы, осмотры и все записи.
         /// </summary>
-        private void SaveAll()
+        private void SaveAll(bool deleteEmptyHrs = false)
         {
+            if (inSaveAll) return;
+
+            inSaveAll = true;
+
+            if (deleteEmptyHrs)
+            {
+                viewer.OpenedPatient.Courses.ForAll(x =>
+                {
+                    x.Appointments.ForAll(a => a.DeleteEmptyHrs());
+                    x.DeleteEmptyHrs();
+                });
+                viewer.OpenedPatient.DeleteEmptyHrs();
+            }
+
             Session.SaveOrUpdate(viewer.OpenedPatient);
             using (var t = Session.BeginTransaction())
             {
@@ -481,6 +498,7 @@ namespace Diagnosis.ViewModels.Screens
                     logger.Error(e);
                 }
             }
+            inSaveAll = false;
         }
         private void HrsHolder_HealthRecordsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
