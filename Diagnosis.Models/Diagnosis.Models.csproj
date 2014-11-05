@@ -137,17 +137,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EmptyChecker.cs" />
     <Compile Include="Entities\HrItem.cs" />
     <Compile Include="Entities\Comment.cs" />
-    <Compile Include="Extenstions.cs" />
-    <Compile Include="HealthRecordUnits.cs" />
-    <Compile Include="DoctorSettings.cs" />
+    <Compile Include="Helpers\DomainExtenstions.cs" />
+    <Compile Include="Enums\HealthRecordUnits.cs" />
+    <Compile Include="Enums\DoctorSettings.cs" />
     <Compile Include="Entities\Measure.cs" />
     <Compile Include="Entities\Uom.cs" />
     <Compile Include="Entities\Appointment.cs" />
     <Compile Include="Entities\Course.cs" />
-    <Compile Include="Diagnosis.cs" />
+    <Compile Include="Entities\Diagnosis.cs" />
     <Compile Include="Entities\Doctor.cs" />
     <Compile Include="Entities\HealthRecord.cs" />
     <Compile Include="Entities\IcdBlock.cs" />
@@ -155,11 +154,12 @@
     <Compile Include="Entities\IcdDisease.cs" />
     <Compile Include="EntityBase.cs" />
     <Compile Include="Entities\Patient.cs" />
-    <Compile Include="EntityHelpers.cs" />
+    <Compile Include="Helpers\EntityExtensions.cs" />
     <Compile Include="Entities\HrCategory.cs" />
     <Compile Include="Entities\Speciality.cs" />
+    <Compile Include="Helpers\EditableObjectHelper.cs" />
     <Compile Include="Interfaces.cs" />
-    <Compile Include="ServiceTables\SpecialityIcdBlock.cs" />
+    <Compile Include="Entities\SpecialityIcdBlock.cs" />
     <Compile Include="Entities\Word.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValidatableEntity.cs" />

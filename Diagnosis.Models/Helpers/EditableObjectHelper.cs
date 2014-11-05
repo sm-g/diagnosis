@@ -2,31 +2,11 @@
 using PixelMEDIA.PixelCore.Helpers;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace Diagnosis.Models
 {
-
-    public static class EntityHelpers
-    {
-        /// <summary>
-        /// To unproxy lozy-loaded entity. http://sessionfactory.blogspot.ru/2010/08/hacking-lazy-loaded-inheritance.html
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        public static T As<T>(this EntityBase entity)
-        {
-            if (entity == null)
-                return default(T);
-            return (T)entity.Actual;
-        }
-    }
-
     public class EditableObjectHelper
     {
         private object _syncRoot = new object();
@@ -100,6 +80,7 @@ namespace Diagnosis.Models
                 }
             }
         }
+
         /// <summary>
         /// Сохраняет значение свойства, каким оно было до вызова BeginEdit, один раз
         /// </summary>
