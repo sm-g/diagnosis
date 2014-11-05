@@ -23,6 +23,7 @@ namespace Diagnosis.App
             Exit += (s, e) =>
             {
                 this.Send(Events.Shutdown);
+                Diagnosis.App.Properties.Settings.Default.Save();
             };
 
             Startup += (s, e) =>

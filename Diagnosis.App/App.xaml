@@ -1,6 +1,7 @@
 ﻿<Application x:Class="Diagnosis.App.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:properties="clr-namespace:Diagnosis.App.Properties"
              xmlns:s="clr-namespace:System;assembly=mscorlib">
     <Application.Resources>
         <ResourceDictionary>
@@ -15,6 +16,8 @@
 
             <s:Boolean x:Key="True">True</s:Boolean>
             <s:Boolean x:Key="False">False</s:Boolean>
+
+            <properties:Settings x:Key="Settings" />
 
             <InputBindingCollection x:Shared="False" x:Key="CourseInputBindings">
                 <KeyBinding Key="Space" Command="{Binding OpenCommand}" />

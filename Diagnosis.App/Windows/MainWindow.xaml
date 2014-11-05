@@ -9,7 +9,12 @@
         x:Class="Diagnosis.App.Windows.MainWindow"
         mc:Ignorable="d" 
         x:Name="root"
-        Title="{Binding CurrentView.Title}" Height="700" Width="850">
+        Title="{Binding CurrentView.Title}" 
+        Height="{Binding Path=Default.MainWindowHeight, Mode=TwoWay, Source={StaticResource Settings}}"
+        Width="{Binding Path=Default.MainWindowWidth, Mode=TwoWay, Source={StaticResource Settings}}"
+        Top="{Binding Path=Default.MainWindowTop, Mode=TwoWay, Source={StaticResource Settings}}"
+        Left="{Binding Path=Default.MainWindowLeft, Mode=TwoWay, Source={StaticResource Settings}}"
+        WindowState="{Binding Path=Default.MainWindowState, Mode=TwoWay, Source={StaticResource Settings}}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
