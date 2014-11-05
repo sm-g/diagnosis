@@ -183,12 +183,10 @@
     <Compile Include="Screens\Words\WordViewModel.cs" />
     <Compile Include="Editable.cs" />
     <Compile Include="Extensions\HierarchicalExtensions.cs" />
-    <Compile Include="Extensions\IEditableNestingExtensions.cs" />
     <Compile Include="Framework\SessionVMBase.cs" />
     <Compile Include="Types\HierarchicalBase.cs" />
     <Compile Include="Screens\Card\HrEditorViewModel.cs" />
     <Compile Include="Interfaces\ICheckable.cs" />
-    <Compile Include="Interfaces\IEditableNesting.cs" />
     <Compile Include="Interfaces\IFilter.cs" />
     <Compile Include="Interfaces\IHierarchical.cs" />
     <Compile Include="Interfaces\IHierarchicalCheckable.cs" />
