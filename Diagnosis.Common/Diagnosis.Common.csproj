@@ -148,8 +148,9 @@
     <Compile Include="Mediator\Events.cs" />
     <Compile Include="Util\Comparers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Util\DebugOutput.cs" />
     <Compile Include="Util\ExpressionHelper.cs" />
-    <Compile Include="Util\Helpers.cs" />
+    <Compile Include="DateHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuerySeparator.cs" />
     <Compile Include="SequencePartition.cs" />

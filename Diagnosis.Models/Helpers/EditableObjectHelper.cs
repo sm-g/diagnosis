@@ -7,6 +7,9 @@ using System.Linq.Expressions;
 
 namespace Diagnosis.Models
 {
+    /// <summary>
+    /// Не в Common для unproxy
+    /// </summary>
     public class EditableObjectHelper
     {
         private object _syncRoot = new object();
@@ -38,7 +41,7 @@ namespace Diagnosis.Models
             }
         }
 
-        public EditableObjectHelper(IEditableObject master)
+        internal EditableObjectHelper(IEditableObject master)
         {
             if (master == null)
                 throw new ArgumentNullException("master");

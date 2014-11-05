@@ -319,7 +319,6 @@
     <Compile Include="Converters\BoolToSexSign.cs" />
     <Compile Include="Converters\CountToAppointmentsLabel.cs" />
     <Compile Include="Converters\IntToString.cs" />
-    <Compile Include="DebugOutput.cs" />
     <Compile Include="Screens\Card3.xaml.cs">
       <DependentUpon>Card3.xaml</DependentUpon>
     </Compile>

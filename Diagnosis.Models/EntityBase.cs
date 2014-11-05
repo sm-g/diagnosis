@@ -57,7 +57,7 @@ namespace Diagnosis.Models
         /// </summary>
         public virtual object Actual { get { return this; } }
 
-        protected EditableObjectHelper EditHelper
+        protected internal virtual EditableObjectHelper EditHelper
         {
             get
             {

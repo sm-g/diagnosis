@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Diagnosis.ViewModels;
-using Diagnosis.Models;
 using System.Diagnostics;
 using System.Threading;
 
-namespace Diagnosis.App
+namespace Diagnosis.Common
 {
     public class DebugOutput
     {
