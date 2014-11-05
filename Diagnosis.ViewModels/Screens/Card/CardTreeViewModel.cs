@@ -376,7 +376,7 @@ namespace Diagnosis.ViewModels.Screens
                 switch (e.action)
                 {
                     case PatientViewer.OpeningAction.Open:
-                        itemVm = new CardItemViewModel(patient, Session);
+                        itemVm = new CardItemViewModel(patient);
 
                         patient.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
                         patient.CoursesChanged += patient_CoursesChanged;

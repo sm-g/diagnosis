@@ -11,19 +11,16 @@ namespace Diagnosis.ViewModels.Screens
     public class CardItemViewModel : HierarchicalBase<CardItemViewModel>
     {
         private bool _isHighlighted;
-        ISession session;
 
-        public CardItemViewModel(IHrsHolder holder, ISession session)
+        public CardItemViewModel(IHrsHolder holder)
         {
-            this.session = session;
-
             Holder = holder;
             if (holder is Patient)
             {
                 var patient = holder as Patient;
                 var courseVMs = patient.Courses
                        .OrderByDescending(c => c, new CompareCourseByDate())
-                       .Select(i => new CardItemViewModel(session.Unproxy(i), session))
+                       .Select(i => new CardItemViewModel(i.Actual as Course))
                        .ToList();
                 foreach (var item in courseVMs)
                 {
@@ -35,7 +32,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 var course = holder as Course;
 
-                var appVMs = course.Appointments.Select(app => new CardItemViewModel(session.Unproxy(app), session));
+                var appVMs = course.Appointments.Select(app => new CardItemViewModel(app.Actual as Appointment));
 
                 foreach (var item in appVMs)
                 {
@@ -152,7 +149,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 foreach (IHrsHolder item in e.NewItems)
                 {
-                    var vm = new CardItemViewModel(item, session);
+                    var vm = new CardItemViewModel(item);
                     Children.Add(vm);
                 }
             }
