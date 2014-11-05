@@ -46,14 +46,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private void OnHrOpened<T>(IDictionary<T, HealthRecord> dict, T holder, HealthRecord hr)
         {
-            if (!dict.ContainsKey(holder))
-            {
-                dict.Add(holder, hr);
-            }
-            else
-            {
-                dict[holder] = hr;
-            }
+            dict[holder] = hr;
         }
     }
 }
