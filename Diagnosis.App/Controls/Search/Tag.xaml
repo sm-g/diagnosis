@@ -14,7 +14,9 @@
             <TextBox.Style>
                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                     <Setter Property="Background" Value="White" />
-                    <Setter Property="FontSize" Value="12" />
+                    <Setter Property="FontSize" Value="14" />
+                    <Setter Property="FontStyle" Value="Italic" />
+
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Signalization}" Value="{x:Static auto:Signalizations.NewWord}">
                             <Setter Property="Background" Value="#FFEFFFD8" />
@@ -31,12 +33,12 @@
 
                         <!--<DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Query}">
                             <Setter Property="Foreground" Value="Red" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Comment}">
-                            <Setter Property="Foreground" Value="Green" />
+                        </DataTrigger>-->
+                        <!--<DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Comment}">
+                            <Setter Property="FontStyle" Value="Italic" />
                         </DataTrigger>-->
                         <DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Word}">
-                            <Setter Property="FontSize" Value="14" />
+                            <Setter Property="FontStyle" Value="Normal" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
