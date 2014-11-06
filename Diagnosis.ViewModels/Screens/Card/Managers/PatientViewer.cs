@@ -143,9 +143,20 @@ namespace Diagnosis.ViewModels.Screens
             return null;
         }
 
-        public void ClosePatient()
+        internal void Close(IHrsHolder holder)
         {
-            OpenedPatient = null;
+            if (OpenedPatient == holder)
+            {
+                OpenedPatient = null;
+            }
+            else if (OpenedCourse == holder)
+            {
+                OpenedCourse = null;
+            }
+            else if (OpenedAppointment == holder)
+            {
+                OpenedAppointment = null;
+            }
         }
 
         internal void OpenPatient(Patient patient)
@@ -212,6 +223,27 @@ namespace Diagnosis.ViewModels.Screens
             else
             {
                 OpenedAppointment = lastApp;
+            }
+        }
+
+        internal void RemoveFromHistory(IHrsHolder holder)
+        {
+            if (holder is Patient)
+            {
+                patCourseMap.Remove(holder as Patient);
+            }
+            else if (holder is Course)
+            {
+                var p = patCourseMap.FirstOrDefault(x => x.Value == holder as Course).Key;
+                if (p != null)
+                    patCourseMap.Remove(p);
+                courseAppMap.Remove(holder as Course);
+            }
+            else if (holder is Appointment)
+            {
+                var c = courseAppMap.FirstOrDefault(x => x.Value == holder as Appointment).Key;
+                if (c != null)
+                    courseAppMap.Remove(c);
             }
         }
 

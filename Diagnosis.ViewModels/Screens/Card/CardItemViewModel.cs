@@ -82,6 +82,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
+                    this.Send(Events.EntityDeleted, Holder.AsParams(MessageKeys.Holder));
                 }, () => Holder.IsEmpty());
             }
         }
@@ -159,6 +160,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     var vm = Children.Where(w => w.Holder == item).FirstOrDefault();
                     Children.Remove(vm);
+                    vm.Dispose();
                 }
             }
         }

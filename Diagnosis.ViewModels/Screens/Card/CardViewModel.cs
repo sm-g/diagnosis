@@ -531,7 +531,7 @@ namespace Diagnosis.ViewModels.Screens
                     HrEditor.Dispose();
                     HrList.Dispose(); // удаляются все записи
 
-                    viewer.ClosePatient(); // сохраняем пациента при закрытии
+                    viewer.Close(viewer.OpenedPatient); // сохраняем пациента при закрытии
                     viewer.OpenedChanged -= viewer_OpenedChanged;
                 }
             }

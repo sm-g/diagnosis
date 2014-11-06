@@ -26,6 +26,7 @@ namespace Diagnosis.Common
         public const string Type = "type";
         public const string Holder = "holder";
         public const string Dialog = "dialog";
+        public const string Entity = "entity";
     }
 
     public enum Events
@@ -56,6 +57,7 @@ namespace Diagnosis.Common
         ShowUndoOverlay,
         HideOverlay,
         Shutdown,
+        EntityDeleted
     }
 
     public static class EventAggragatorExtensions

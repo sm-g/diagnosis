@@ -72,5 +72,22 @@ namespace Diagnosis.ViewModels.Screens
 
             savingPatient = null;
         }
+
+        internal void Delete(IHrsHolder holder)
+        {
+            using (var t = session.BeginTransaction())
+            {
+                try
+                {
+                    session.Delete(holder);
+                    t.Commit();
+                }
+                catch (System.Exception e)
+                {
+                    t.Rollback();
+                    logger.Error(e);
+                }
+            }
+        }
     }
 }

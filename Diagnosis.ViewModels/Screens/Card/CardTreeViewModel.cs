@@ -25,6 +25,7 @@ namespace Diagnosis.ViewModels.Screens
         private bool _closeNestedOnLevelUp;
 
         private Saver saver;
+        private EventAggregator.EventMessageHandler handler;
 
         public CardTreeViewModel(object entity, bool resetHistory = false)
         {
@@ -41,6 +42,30 @@ namespace Diagnosis.ViewModels.Screens
                 saver.SaveHealthRecord(hr);
             };
             viewer.OpenedChanged += viewer_OpenedChanged;
+            handler = this.Subscribe(Events.EntityDeleted, (e) =>
+             {
+                 var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
+
+                 viewer.Close(holder);
+                 viewer.RemoveFromHistory(holder);
+                 // убрать из результатов поиска (или проверять при открытии, удлаен ли)
+
+                 if (holder is Patient)
+                 {
+                     saver.Delete(holder);
+                     // закрыть карточку
+                 }
+                 else if (holder is Course)
+                 {
+                     var course = holder as Course;
+                     course.Patient.RemoveCourse(course);
+                 }
+                 else if (holder is Appointment)
+                 {
+                     var app = holder as Appointment;
+                     app.Course.RemoveAppointment(app);
+                 }
+             });
 
             Open(entity);
         }
@@ -351,10 +376,10 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         /// <summary>
-        /// при открытии модели меняем соответствующую viewmodel и добавляем её в список hrsholders
-        /// показываем holder
+        /// при открытии пациента добавляем viewmodel
+        /// при открытии курса, осмотра раскрываем элемент дерева
         ///
-        /// при закрытии разрушаем viewmodel и убираем из списка hrsholders,
+        /// при закрытии сворачиваем элемент дерева,
         /// сохраняем пациента
         ///
         /// опционально Если в открываемых первый раз курсе нет осмотров или в осмотре нет записей, добавляет их.
@@ -391,7 +416,12 @@ namespace Diagnosis.ViewModels.Screens
 
                         itemVm = FindItemVmOf(patient);
                         TopCardItems.Remove(itemVm);
-                        itemVm.Dispose();
+                        if (itemVm != null)
+                        {
+                            itemVm.IsExpanded = false;
+                            HrList.Dispose();
+                            itemVm.Dispose();
+                        }
                         break;
                 }
             }
@@ -406,11 +436,6 @@ namespace Diagnosis.ViewModels.Screens
 
                         course.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
                         course.AppointmentsChanged += course_AppointmentsChanged;
-
-                        //if (course.Appointments.Count() == 0)
-                        //{
-                        //    course.AddAppointment(course.LeadDoctor); // добавляем первый осмотр
-                        //}
                         break;
 
                     case PatientViewer.OpeningAction.Close:
@@ -418,7 +443,11 @@ namespace Diagnosis.ViewModels.Screens
                         course.AppointmentsChanged -= course_AppointmentsChanged;
 
                         itemVm = FindItemVmOf(course);
-                        itemVm.IsExpanded = false;
+                        if (itemVm != null)
+                        {
+                            itemVm.IsExpanded = false;
+                            HrList.Dispose();
+                        }
                         break;
                 }
             }
@@ -432,17 +461,16 @@ namespace Diagnosis.ViewModels.Screens
                         itemVm.IsExpanded = true;
 
                         app.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
-
-                        //if (app.HealthRecords.Count() == 0)
-                        //{
-                        //    app.AddHealthRecord(); // добавляем первую запись
-                        //}
                         break;
 
                     case PatientViewer.OpeningAction.Close:
                         app.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
                         itemVm = FindItemVmOf(app);
-                        itemVm.IsExpanded = false;
+                        if (itemVm != null)
+                        {
+                            itemVm.IsExpanded = false;
+                            HrList.Dispose();
+                        }
 
                         break;
                 }
@@ -516,8 +544,9 @@ namespace Diagnosis.ViewModels.Screens
                     HrEditor.Dispose();
                     HrList.Dispose(); // удаляются все записи
 
-                    viewer.ClosePatient(); // сохраняем пациента при закрытии
+                    viewer.Close(viewer.OpenedPatient); // сохраняем пациента при закрытии
                     viewer.OpenedChanged -= viewer_OpenedChanged;
+                    handler.Dispose();
                 }
             }
             finally
