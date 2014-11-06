@@ -46,8 +46,7 @@ namespace Diagnosis.ViewModels.Screens
              {
                  var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
 
-                 viewer.Close(holder);
-                 viewer.RemoveFromHistory(holder);
+
                  // убрать из результатов поиска (или проверять при открытии, удлаен ли)
 
                  if (holder is Patient)
@@ -65,6 +64,9 @@ namespace Diagnosis.ViewModels.Screens
                      var app = holder as Appointment;
                      app.Course.RemoveAppointment(app);
                  }
+
+                 viewer.Close(holder);
+                 viewer.RemoveFromHistory(holder);
              });
 
             Open(entity);
@@ -297,7 +299,6 @@ namespace Diagnosis.ViewModels.Screens
             var holder = GetHolderOfVm(CurrentHolder);
 
             CurrentHolder.IsSelected = true;
-            CurrentHolder.IsExpanded = true;
 
             ShowHrsList(holder);
 
@@ -394,11 +395,10 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     var patient = e.entity as Patient;
                     patient.CoursesChanged -= patient_CoursesChanged;
-                }
-                else if (holder is Course)
-                {
-                    var course = e.entity as Course;
-                    course.AppointmentsChanged -= course_AppointmentsChanged;
+                    foreach (var item in patient.Courses)
+                    {
+                        item.AppointmentsChanged -= course_AppointmentsChanged;
+                    }
                 }
 
                 saver.SaveAll(viewer.OpenedPatient, deleteEmptyHrs: true);
@@ -424,11 +424,10 @@ namespace Diagnosis.ViewModels.Screens
                     TopCardItems.Add(itemVm);
                     var patient = e.entity as Patient;
                     patient.CoursesChanged += patient_CoursesChanged;
-                }
-                else if (holder is Course)
-                {
-                    var course = e.entity as Course;
-                    course.AppointmentsChanged += course_AppointmentsChanged;
+                    foreach (var item in patient.Courses)
+                    {
+                        item.AppointmentsChanged += course_AppointmentsChanged;
+                    }
                 }
                 itemVm = FindItemVmOf(holder);
                 itemVm.IsExpanded = true;
@@ -455,19 +454,25 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
+                var course = (Course)e.NewItems[0];
+                course.AppointmentsChanged += course_AppointmentsChanged;
                 // при добавлении курса открываем его
-                Show((Course)e.NewItems[e.NewItems.Count - 1]);
+                Show(course);
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
-                // при удалении курса открываем курс рядом с удаленным
-                //var i = e.OldStartingIndex;
-                //if (OpenedPatient.Courses.Count() <= i)
-                //    i--;
-                //if (OpenedPatient.Courses.Count() > 0)
-                //{
-                //    OpenedCourse = OpenedPatient.Courses.ElementAt(i);
-                //}
+                var course = (Course)e.OldItems[0];
+                course.AppointmentsChanged -= course_AppointmentsChanged;
+
+                // при удалении открытого курса открываем курс рядом с удаленным или пациента, если это был последний курс
+                if (viewer.OpenedCourse == course)
+                {
+                    var near = viewer.OpenedPatient.Courses.ElementNear(e.OldStartingIndex);
+                    if (near == null)
+                        Open(viewer.OpenedPatient);
+                    else
+                        Open(near);
+                }
             }
         }
 
@@ -476,15 +481,20 @@ namespace Diagnosis.ViewModels.Screens
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 // при добавлении осмотра открываем его
-                Show((Appointment)e.NewItems[e.NewItems.Count - 1]);
+                Show((Appointment)e.NewItems[0]);
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
-                // при удалении осмотра открываем последний осмотр
-                //if (OpenedAppointment == null && OpenedCourse.Appointments.Count() > 0)
-                //{
-                //    OpenedAppointment = OpenedCourse.Appointments.LastOrDefault();
-                //}
+                var app = (Appointment)e.OldItems[0];
+                // при удалении открытого осмотра открываем осмотр рядом или курс, если это был последний осмотр
+                if (viewer.OpenedAppointment == app)
+                {
+                    var near = viewer.OpenedCourse.Appointments.ElementNear(e.OldStartingIndex);
+                    if (near == null)
+                        Open(viewer.OpenedCourse);
+                    else
+                        Open(near);
+                }
             }
         }
 

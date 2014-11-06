@@ -53,5 +53,21 @@ namespace Diagnosis.Common
                 current.Add(item);
             }
         }
+        /// <summary>
+        /// Возвращает элемент по индексу или первый/последний, если индекс за пределами.
+        /// Если коллекция пуста, возарщает null.
+        /// </summary>
+        public static T ElementNear<T>(this IEnumerable<T> collection, int i) where T : class
+        {
+            var count = collection.Count();
+            if (count == 0)
+                return null;
+
+            if (count <= i)
+                i = count - 1;
+            if (i < 0)
+                i = 0;
+            return collection.ElementAt(i);
+        }
     }
 }
