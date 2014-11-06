@@ -68,9 +68,8 @@ namespace Diagnosis.Models
         /// <param name="holder"></param>
         public static void DeleteEmptyHrs(this IHrsHolder holder)
         {
-            var copy = holder.HealthRecords.ToList();
-            copy.Where(hr => hr.IsEmpty())
-                .ForAll(hr => holder.RemoveHealthRecord(hr));
+            var emptyHrs = holder.HealthRecords.Where(hr => hr.IsEmpty()).ToList();
+            emptyHrs.ForEach(hr => holder.RemoveHealthRecord(hr));
         }
     }
 
@@ -109,7 +108,8 @@ namespace Diagnosis.Models
                 { typeof(HealthRecord),() =>
                     {
                         var hr = entity as HealthRecord;
-                        return hr.Comment.IsNullOrEmpty()
+                        return hr.IsDeleted ||
+                            hr.Comment.IsNullOrEmpty()
                             && hr.DateOffset.IsEmpty
                             && hr.HrItems.Count() == 0;
                     }

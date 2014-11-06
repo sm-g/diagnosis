@@ -187,11 +187,5 @@ namespace Diagnosis.ViewModels.Screens
         {
             this.Send(Events.HideOverlay, typeof(HealthRecord).AsParams(MessageKeys.Type));
         }
-
-        void DeleteEmpty()
-        {
-            var emptyHrs = holder.HealthRecords.Where(hr => hr.IsEmpty()).ToList();
-            emptyHrs.ForEach(hr => holder.RemoveHealthRecord(hr));
-        }
     }
 }
