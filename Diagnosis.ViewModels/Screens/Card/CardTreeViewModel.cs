@@ -302,17 +302,13 @@ namespace Diagnosis.ViewModels.Screens
             ShowHrsList(holder);
 
             TopCardItems.ForAll(x => HightlightLastOpenedFor(x));
-
-            if (holder is Patient)
+            if (CloseNestedHolderOnLevelUp)
             {
-                if (CloseNestedHolderOnLevelUp)
+                if (holder is Patient)
                 {
                     viewer.OpenedCourse = null;
                 }
-            }
-            else if (holder is Course)
-            {
-                if (CloseNestedHolderOnLevelUp)
+                else if (holder is Course)
                 {
                     viewer.OpenedAppointment = null;
                 }
@@ -389,91 +385,53 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Requires(e.entity is IHrsHolder);
             logger.DebugFormat("{0} {1} {2}", e.action, e.entity.GetType().Name, e.entity);
 
+            CardItemViewModel itemVm;
+            var holder = e.entity as IHrsHolder;
             if (e.action == PatientViewer.OpeningAction.Close)
             {
+                holder.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
+                if (holder is Patient)
+                {
+                    var patient = e.entity as Patient;
+                    patient.CoursesChanged -= patient_CoursesChanged;
+                }
+                else if (holder is Course)
+                {
+                    var course = e.entity as Course;
+                    course.AppointmentsChanged -= course_AppointmentsChanged;
+                }
+
                 saver.SaveAll(viewer.OpenedPatient, deleteEmptyHrs: true);
-            }
 
-            CardItemViewModel itemVm;
-            if (e.entity is Patient)
-            {
-                var patient = e.entity as Patient;
-                switch (e.action)
+                itemVm = FindItemVmOf(holder);
+                if (itemVm != null)
                 {
-                    case PatientViewer.OpeningAction.Open:
-                        itemVm = new CardItemViewModel(patient);
-
-                        patient.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
-                        patient.CoursesChanged += patient_CoursesChanged;
-
-                        TopCardItems.Add(itemVm);
-
-                        break;
-
-                    case PatientViewer.OpeningAction.Close:
-                        patient.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
-                        patient.CoursesChanged -= patient_CoursesChanged;
-
-                        itemVm = FindItemVmOf(patient);
+                    itemVm.IsExpanded = false;
+                    if (holder is Patient)
+                    {
                         TopCardItems.Remove(itemVm);
-                        if (itemVm != null)
-                        {
-                            itemVm.IsExpanded = false;
-                            HrList.Dispose();
-                            itemVm.Dispose();
-                        }
-                        break;
+                        itemVm.Dispose();
+                    }
                 }
             }
-            else if (e.entity is Course)
+            else
             {
-                var course = e.entity as Course;
-                switch (e.action)
+                holder.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
+
+                if (holder is Patient)
                 {
-                    case PatientViewer.OpeningAction.Open:
-                        itemVm = FindItemVmOf(course);
-                        itemVm.IsExpanded = true;
-
-                        course.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
-                        course.AppointmentsChanged += course_AppointmentsChanged;
-                        break;
-
-                    case PatientViewer.OpeningAction.Close:
-                        course.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
-                        course.AppointmentsChanged -= course_AppointmentsChanged;
-
-                        itemVm = FindItemVmOf(course);
-                        if (itemVm != null)
-                        {
-                            itemVm.IsExpanded = false;
-                            HrList.Dispose();
-                        }
-                        break;
+                    itemVm = new CardItemViewModel(holder);
+                    TopCardItems.Add(itemVm);
+                    var patient = e.entity as Patient;
+                    patient.CoursesChanged += patient_CoursesChanged;
                 }
-            }
-            else if (e.entity is Appointment)
-            {
-                var app = e.entity as Appointment;
-                switch (e.action)
+                else if (holder is Course)
                 {
-                    case PatientViewer.OpeningAction.Open:
-                        itemVm = FindItemVmOf(app);
-                        itemVm.IsExpanded = true;
-
-                        app.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
-                        break;
-
-                    case PatientViewer.OpeningAction.Close:
-                        app.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
-                        itemVm = FindItemVmOf(app);
-                        if (itemVm != null)
-                        {
-                            itemVm.IsExpanded = false;
-                            HrList.Dispose();
-                        }
-
-                        break;
+                    var course = e.entity as Course;
+                    course.AppointmentsChanged += course_AppointmentsChanged;
                 }
+                itemVm = FindItemVmOf(holder);
+                itemVm.IsExpanded = true;
             }
         }
 
