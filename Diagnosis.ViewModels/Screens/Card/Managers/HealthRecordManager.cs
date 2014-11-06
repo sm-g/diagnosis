@@ -95,6 +95,14 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        /// <summary>
+        /// Реальное удаление удаленных записей.
+        /// </summary>
+        private void MakeDeletions()
+        {
+            this.Send(Events.HideOverlay, typeof(HealthRecord).AsParams(MessageKeys.Type));
+        }
+
         protected override void Dispose(bool disposing)
         {
             try
@@ -114,6 +122,8 @@ namespace Diagnosis.ViewModels.Screens
                         shortHrVm.healthRecord.PropertyChanged -= hr_PropertyChanged;
                         shortHrVm.Dispose();
                     }
+
+                    MakeDeletions();
                 }
             }
             finally

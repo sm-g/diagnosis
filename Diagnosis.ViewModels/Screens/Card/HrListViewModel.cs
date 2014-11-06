@@ -11,7 +11,7 @@ namespace Diagnosis.ViewModels.Screens
 {
     public class HrListViewModel : ViewModelBase
     {
-        private static HrViewer viewer = new HrViewer();
+        private static HrViewer hrViewer = new HrViewer();
         internal readonly IHrsHolder holder;
         private HealthRecordManager hrManager;
         private ICollectionView healthRecordsView;
@@ -47,7 +47,7 @@ namespace Diagnosis.ViewModels.Screens
                     return;
 
                 if (value != null)
-                    viewer.Select(value.healthRecord, holder);
+                    hrViewer.Select(value.healthRecord, holder);
 
                 _selectedHealthRecord = value;
                 OnPropertyChanged(() => SelectedHealthRecord);
@@ -147,11 +147,11 @@ namespace Diagnosis.ViewModels.Screens
                 }
                 else if (e.PropertyName == "IsChecked")
                 {
-                    OnPropertyChanged("CheckedHrCount");
+                    OnPropertyChanged(() => CheckedHrCount);
                 }
             });
 
-            SelectHealthRecord(viewer.GetLastSelectedFor(holder));
+            SelectHealthRecord(hrViewer.GetLastSelectedFor(holder));
         }
 
         public override string ToString()
@@ -171,21 +171,12 @@ namespace Diagnosis.ViewModels.Screens
                 if (disposing)
                 {
                     hrManager.Dispose();
-                    MakeDeletions();
                 }
             }
             finally
             {
                 base.Dispose(disposing);
             }
-        }
-
-        /// <summary>
-        /// Реальное удаление удаленных записей.
-        /// </summary>
-        private void MakeDeletions()
-        {
-            this.Send(Events.HideOverlay, typeof(HealthRecord).AsParams(MessageKeys.Type));
         }
     }
 }
