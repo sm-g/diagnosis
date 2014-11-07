@@ -20,8 +20,8 @@ namespace Tests
         // 3 | -   0    1   1
         // 4 | 0   1    1   0    
         // 5 | 0   1    1   1    
-        // 6 | 1   1    1   1  // если нет второй даты или даты полностью совпадают, 
-        // 7 | 1   1    1   0  // проверяем только совпадение года первой даты с текущим
+        // 6 | 1   1    1   1  
+        // 7 | 1   1    1   0  
         Tuple<string, string> first = new Tuple<string, string>("d MMMM yyyy", "d MMMM yyyy");
         Tuple<string, string> second = new Tuple<string, string>("d MMMM", "d MMMM yyyy");
         Tuple<string, string> third = new Tuple<string, string>("d MMMM", "d MMMM");

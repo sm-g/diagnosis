@@ -33,7 +33,10 @@ namespace Diagnosis.Common
             }
 
             if (from.HasValue && to.HasValue)
-                return string.Format("{0} {1} {2} {3}", fromLabel, from.Value.ToString(formats.Item1), toLabel, to.Value.ToString(formats.Item2));
+                if (from == to)
+                    return string.Format("{0}", from.Value.ToString(formats.Item1)); // та же дата - интервала нет
+                else
+                    return string.Format("{0} {1} {2} {3}", fromLabel, from.Value.ToString(formats.Item1), toLabel, to.Value.ToString(formats.Item2));
             else
             {
                 if (from.HasValue)
@@ -55,6 +58,18 @@ namespace Diagnosis.Common
             string fromFormat = "d MMMM";
             string toFormat = "d MMMM yyyy";
 
+            // если нет второй даты или даты полностью совпадают, 
+            // то проверяем только совпадение года первой даты с текущим
+            //    формат второй даты неопределен
+            Action noTo = () =>
+            {
+                if (from.Year != now.Year)
+                {
+                    fromFormat = "d MMMM yyyy";
+                }
+                toFormat = "";
+            };
+
             if (to.HasValue)
             {
                 if (to.Value.Year == from.Year)
@@ -67,11 +82,7 @@ namespace Diagnosis.Common
                     {
                         if (to.Value.Day == from.Day)
                         {
-                            if (from.Year != now.Year)
-                            {
-                                fromFormat = "d MMMM yyyy";
-                            }
-                            toFormat = "";
+                            noTo();
                         }
                         else
                         {
@@ -86,11 +97,7 @@ namespace Diagnosis.Common
             }
             else
             {
-                toFormat = "";
-                if (from.Year != now.Year)
-                {
-                    fromFormat = "d MMMM yyyy";
-                }
+                noTo();
             }
 
             return new Tuple<string, string>(fromFormat, toFormat);
