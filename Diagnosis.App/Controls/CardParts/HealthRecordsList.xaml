@@ -8,7 +8,7 @@
              xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="600"
-             x:Name="appointment">
+             x:Name="hrList">
     <UserControl.Resources>
         <InputBindingCollection x:Shared="False" x:Key="HRInputBindings">
             <KeyBinding Key="Space" Command="{Binding ToggleCommand}" />
@@ -21,10 +21,8 @@
     <UserControl.InputBindings>
         <KeyBinding Modifiers="Control" Key="N" Command="{Binding AddHealthRecordCommand}" />
         <KeyBinding Modifiers="Control" Key="Enter" Command="{Binding AddHealthRecordCommand}" />
-        <KeyBinding Key="Delete" Command="{Binding DeleteHealthRecordsCommand}" />
+        <KeyBinding Key="Delete" Command="{Binding DeleteCommand}" />
         <KeyBinding Key="F2" Command="{Binding SelectedHealthRecord.EditCommand}" />
-        <KeyBinding Modifiers="Control" Key="Up" Command="{Binding MoveHrSelectionCommand}" CommandParameter="{StaticResource True}" />
-        <KeyBinding Modifiers="Control" Key="Down" Command="{Binding MoveHrSelectionCommand}" CommandParameter="{StaticResource False}" />
     </UserControl.InputBindings>
 
     <Grid>
@@ -38,10 +36,11 @@
             <Button Command="{Binding AddHealthRecordCommand}" ToolTip="Редактировать новую запись (Ctrl + N)">
                 <DockPanel>
                     <Image Source="{StaticResource addImage}" />
-                    <TextBlock Text="Добавить запись" />
+                    <TextBlock Text="Добавить" />
                 </DockPanel>
             </Button>
-            <Button Command="{Binding DeleteHealthRecordsCommand}">
+            <Separator />
+            <Button Command="{Binding DeleteCommand}" ToolTip="Удалить выбранные записи (Del)">
                 <DockPanel>
                     <Image Source="{StaticResource deleteImage}" />
                     <TextBlock>
@@ -51,7 +50,7 @@
                     </TextBlock>
                 </DockPanel>
             </Button>
-            <Button Command="{Binding SendHealthRecordsToSearchCommand}">
+            <Button Command="{Binding SendToSearchCommand}" ToolTip="Искать выбранные записи">
                 <DockPanel>
                     <Image Source="{StaticResource findImage}" />
                     <TextBlock>
@@ -112,6 +111,12 @@
                     <Setter Property="controls:Attached.InputBindings" Value="{StaticResource HRInputBindings}" />
                 </Style>
             </ListBox.ItemContainerStyle>
+            
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Добавить запись (Ctrl + N)" Command="{Binding AddHealthRecordCommand}" />
+                </ContextMenu>
+            </ListBox.ContextMenu>
         </ListBox>
     </Grid>
 </UserControl>

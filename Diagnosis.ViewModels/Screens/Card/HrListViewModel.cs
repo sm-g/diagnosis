@@ -76,7 +76,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public ICommand DeleteHealthRecordsCommand
+        public ICommand DeleteCommand
         {
             get
             {
@@ -87,7 +87,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public ICommand SendHealthRecordsToSearchCommand
+        public ICommand SendToSearchCommand
         {
             get
             {

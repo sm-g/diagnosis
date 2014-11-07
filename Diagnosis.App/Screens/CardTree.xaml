@@ -20,12 +20,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <UserControl.ContextMenu>
-        <ContextMenu>
-            <MenuItem Header="Добавить курс" Command="{Binding StartCourseCommand}" />
-            <MenuItem Header="Добавить осмотр" Command="{Binding AddAppointmentCommand}" />
-        </ContextMenu>
-    </UserControl.ContextMenu>
+
 
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -62,6 +57,12 @@
                     <card:CardItem />
                 </DataTemplate>
             </controls:FullTree.ItemTemplate>
+            <controls:FullTree.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Добавить курс" Command="{Binding StartCourseCommand}" />
+                    <MenuItem Header="Добавить осмотр" Command="{Binding AddAppointmentCommand}" />
+                </ContextMenu>
+            </controls:FullTree.ContextMenu>
         </controls:FullTree>
 
         <card:HealthRecordsList DataContext="{Binding HrList}" Grid.Column="1" />
