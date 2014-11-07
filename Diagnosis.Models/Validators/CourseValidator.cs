@@ -16,7 +16,7 @@ namespace Diagnosis.Models.Validators
             {
                 var first = x.Appointments.OrderBy(a => a.DateAndTime).FirstOrDefault();
                 if (first != null)
-                    return first.DateAndTime;
+                    return first.DateAndTime.Date;
                 else
                     return DateTime.MaxValue;
             };
@@ -24,7 +24,7 @@ namespace Diagnosis.Models.Validators
             {
                 var last = x.Appointments.OrderBy(a => a.DateAndTime).LastOrDefault();
                 if (last != null)
-                    return last.DateAndTime;
+                    return last.DateAndTime.Date;
                 else
                     return DateTime.MinValue;
             };
