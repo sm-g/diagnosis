@@ -70,7 +70,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             /// </summary>
             Query,
             Comment,
-            Word
+            Word,
+            Measure
         }
 
         /// <summary>
@@ -270,6 +271,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 return BlankTypes.Query;
             if (blank == null)
                 return BlankTypes.None;
+            if (blank is Measure)
+                return BlankTypes.Measure;
 
             throw new ArgumentOutOfRangeException("blank");
         }

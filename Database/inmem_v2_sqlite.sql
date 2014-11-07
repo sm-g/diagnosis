@@ -218,7 +218,7 @@ INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[TextRepr],[Ord]) VALUES (2,21,1,'text repr with word',1);
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (3,22,1,NULL,NULL,NULL,0);
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (4,22,22,NULL,NULL,NULL,0);
-INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (5,22,NULL,50,4,NULL,0);
+--INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (5,22,NULL,50,4,NULL,0);
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (6,30,5,NULL,NULL,NULL,0);
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (7,1,1,NULL,NULL,NULL,0);
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (8,1,2,NULL,NULL,NULL,0);
@@ -226,7 +226,7 @@ INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[Dis
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (10,2,4,NULL,NULL,NULL,0);
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (11,31,51,NULL,NULL,NULL,0);
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (12,31,94,NULL,NULL,NULL,0);
-INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (13,31,NULL,30,4,NULL,0);
+--INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (13,31,NULL,30,4,NULL,0);
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (14,32,3,NULL,NULL,NULL,0);
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (15,32,4,NULL,NULL,NULL,0);
 INSERT INTO [HrItem] ([ID],[HealthRecordID],[WordID],[MeasureValue],[UomID],[DiseaseID],[Ord]) VALUES (16,40,22,NULL,NULL,NULL,0);
