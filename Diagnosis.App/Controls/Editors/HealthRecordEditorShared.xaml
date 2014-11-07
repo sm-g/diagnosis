@@ -11,13 +11,18 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:core="clr-namespace:Diagnosis.Common;assembly=Diagnosis.Common"
              x:Name="editor"
+             Tag="{Binding DataContext.HrList, RelativeSource={RelativeSource AncestorType=UserControl}}" 
              mc:Ignorable="d"
              d:DesignHeight="200" d:DesignWidth="600">
     <!--DataContext is HrEditorViewModel-->
+    <!--Tag is HrListViewModel-->
     <UserControl.Resources>
         <Style TargetType="Label" BasedOn="{StaticResource label90}" />
     </UserControl.Resources>
-
+    <UserControl.InputBindings>
+        <KeyBinding Modifiers="Control" Key="Up" Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}" CommandParameter="{StaticResource True}" />
+        <KeyBinding Modifiers="Control" Key="Down" Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}" CommandParameter="{StaticResource False}" />
+    </UserControl.InputBindings>
     <Grid x:Name="hr_grid" MouseDown="hr_grid_MouseDown" Focusable="True" Background="Transparent">
         <Grid.InputBindings>
         </Grid.InputBindings>
@@ -29,29 +34,28 @@
         
         <DockPanel>
             <ToolBar DockPanel.Dock="Left">
-                <Button Command="{Binding DataContext.HrList.MoveHrSelectionCommand,  RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}" FontSize="16"
+                <Button Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}" FontSize="16"
                     CommandParameter="{StaticResource True}" ToolTip="Открыть предыдущую запись">↑</Button>
-                <Button Command="{Binding DataContext.HrList.MoveHrSelectionCommand,  RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}" FontSize="16"
+                <Button Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}" FontSize="16"
                     CommandParameter="{StaticResource False}" ToolTip="Открыть следующую запись" >↓</Button>
                 <Separator />
-                <Button Command="{Binding DataContext.HrList.AddHealthRecordCommand,  RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}"
+                <!--<Button Command="{Binding DataContext.HrList.AddHealthRecordCommand,  RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}"
                     ToolTip="Добавить запись">
                     <DockPanel>
                         <Image Source="{StaticResource addImage}" />
                         <TextBlock Text="Добавить" />
                     </DockPanel>
-                </Button>
+                </Button>-->
                 <Button Command="{Binding RevertCommand}" ToolTip="Отменить изменения">
                     <DockPanel>
                         <Image Source="{StaticResource undoImage}" />
-                        <TextBlock Text="Отменить" />
+                        <!--<TextBlock Text="Отменить" />-->
                     </DockPanel>
                 </Button>
-                <Separator />
                 <Button Command="{Binding DeleteCommand}" ToolTip="Удалить запись">
                     <DockPanel>
                         <Image Source="{StaticResource deleteImage}"  Width="16" />
-                        <TextBlock Text="Удалить" />
+                        <!--<TextBlock Text="Удалить" />-->
                     </DockPanel>
                 </Button>
             </ToolBar>

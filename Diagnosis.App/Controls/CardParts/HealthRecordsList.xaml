@@ -43,21 +43,21 @@
             <Button Command="{Binding DeleteCommand}" ToolTip="Удалить выбранные записи (Del)">
                 <DockPanel>
                     <Image Source="{StaticResource deleteImage}" />
-                    <TextBlock>
-                        <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" ToolTip="Удалить выбранные записи (Del)">Удалить</Run>
+                    <!--<TextBlock>
+                        <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" >Удалить</Run>
                         <TextBlock Text="{Binding CheckedHrCount, StringFormat='{}({0})'}"
                                    Visibility="{Binding CheckedHrCount, Converter={StaticResource CountToVisibility}, ConverterParameter=1}" />
-                    </TextBlock>
+                    </TextBlock>-->
                 </DockPanel>
             </Button>
             <Button Command="{Binding SendToSearchCommand}" ToolTip="Искать выбранные записи">
                 <DockPanel>
                     <Image Source="{StaticResource findImage}" />
-                    <TextBlock>
-                        <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" ToolTip="Искать выбранные записи ()">Искать</Run>
+                    <!--<TextBlock>
+                        <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}">Искать</Run>
                         <TextBlock Text="{Binding CheckedHrCount, StringFormat='{}({0})'}"
                                    Visibility="{Binding CheckedHrCount, Converter={StaticResource CountToVisibility}, ConverterParameter=1}" />
-                    </TextBlock>
+                    </TextBlock>-->
                 </DockPanel>
             </Button>
         </ToolBar>
