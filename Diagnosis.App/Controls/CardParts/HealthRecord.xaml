@@ -27,10 +27,10 @@
     <UserControl.ContextMenu>
         <ContextMenu>
             <MenuItem Header="Редактировать" Command="{Binding EditCommand}" />
-            <MenuItem Header="Искать" Command="{Binding PlacementTarget.Tag.SendToSearchCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-            <MenuItem Header="Удалить" Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+            <MenuItem Header="Искать" InputGestureText="Alt + F" Command="{Binding PlacementTarget.Tag.SendToSearchCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+            <MenuItem Header="Удалить" InputGestureText="Del" Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
             <Separator />
-            <MenuItem Header="Добавить запись (Ctrl + N)" Command="{Binding PlacementTarget.Tag.AddHealthRecordCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+            <MenuItem Header="Добавить запись" InputGestureText="Ctrl + Enter" Command="{Binding PlacementTarget.Tag.AddHealthRecordCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
         </ContextMenu>
     </UserControl.ContextMenu>
 

@@ -12,15 +12,13 @@
     <UserControl.Resources>
         <InputBindingCollection x:Shared="False" x:Key="HRInputBindings">
             <KeyBinding Key="Space" Command="{Binding ToggleCommand}" />
-            <KeyBinding Modifiers="Alt" Key="F" Command="{Binding SendToSearchCommand}" />
 
             <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding EditCommand}" />
         </InputBindingCollection>
     </UserControl.Resources>
 
     <UserControl.InputBindings>
-        <KeyBinding Modifiers="Control" Key="N" Command="{Binding AddHealthRecordCommand}" />
-        <KeyBinding Modifiers="Control" Key="Enter" Command="{Binding AddHealthRecordCommand}" />
+        <KeyBinding Modifiers="Alt" Key="F" Command="{Binding SendToSearchCommand}" />
         <KeyBinding Key="Delete" Command="{Binding DeleteCommand}" />
         <KeyBinding Key="F2" Command="{Binding SelectedHealthRecord.EditCommand}" />
     </UserControl.InputBindings>
@@ -33,7 +31,7 @@
         </Grid.RowDefinitions>
 
         <ToolBar>
-            <Button Command="{Binding AddHealthRecordCommand}" ToolTip="Редактировать новую запись (Ctrl + N)">
+            <Button Command="{Binding AddHealthRecordCommand}" ToolTip="Добавить запись (Ctrl + Enter)">
                 <DockPanel>
                     <Image Source="{StaticResource addImage}" />
                     <TextBlock Text="Добавить" />
@@ -50,7 +48,7 @@
                     </TextBlock>-->
                 </DockPanel>
             </Button>
-            <Button Command="{Binding SendToSearchCommand}" ToolTip="Искать выбранные записи">
+            <Button Command="{Binding SendToSearchCommand}" ToolTip="Искать выбранные записи (Alt + F)">
                 <DockPanel>
                     <Image Source="{StaticResource findImage}" />
                     <!--<TextBlock>
@@ -114,7 +112,7 @@
             
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Добавить запись (Ctrl + N)" Command="{Binding AddHealthRecordCommand}" />
+                    <MenuItem Header="Добавить запись" InputGestureText="Ctrl + Enter" Command="{Binding AddHealthRecordCommand}" />
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
