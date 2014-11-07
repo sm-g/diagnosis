@@ -13,7 +13,7 @@
              d:DesignHeight="300" d:DesignWidth="600">
     <!-- CardViewModel -->
     <UserControl.Resources>
-        <vm:CardViewModel x:Key="Context" />
+        <vm:CardTreeViewModel x:Key="Context" />
 
         <DataTemplate x:Key="PateintTemplate">
             <Grid>

@@ -28,9 +28,6 @@
             <DataTemplate DataType="{x:Type vm:WordsListViewModel}">
                 <screen:Words />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:CardViewModel}">
-                <screen:Card3 />
-            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:CardTreeViewModel}">
                 <screen:CardTree />
             </DataTemplate>

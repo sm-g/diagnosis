@@ -197,7 +197,6 @@
     <Compile Include="Producers\EntityProducers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Framework\RelayCommand.cs" />
-    <Compile Include="Screens\Card\CardViewModel.cs" />
     <Compile Include="Screens\LoginViewModel.cs" />
     <Compile Include="Screens\Patients\PatientEditorViewModel.cs" />
     <Compile Include="Screens\Shell\MainWindowViewModel.cs" />
