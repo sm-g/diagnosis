@@ -106,7 +106,7 @@ namespace Diagnosis.Models
         public virtual void Finish()
         {
             Contract.Requires(!IsEnded);
-            End = DateTime.UtcNow;
+            End = DateTime.Now;
         }
 
         public override string ToString()

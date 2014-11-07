@@ -216,7 +216,7 @@ namespace Diagnosis.ViewModels.Screens
 
             // последний осмотр в течение часа или новый
             var lastApp = OpenedCourse.Appointments.LastOrDefault();
-            if (lastApp != null && DateTime.UtcNow - lastApp.DateAndTime > TimeSpan.FromHours(1))
+            if (lastApp != null && DateTime.Now - lastApp.DateAndTime > TimeSpan.FromHours(1))
             {
                 OpenedCourse.AddAppointment(null);
             }

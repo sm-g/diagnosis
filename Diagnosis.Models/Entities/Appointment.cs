@@ -38,7 +38,7 @@ namespace Diagnosis.Models
 
             Course = course;
             Doctor = doctor;
-            DateAndTime = DateTime.UtcNow;
+            DateAndTime = DateTime.Now;
         }
 
         protected Appointment() { }
