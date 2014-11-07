@@ -1,12 +1,7 @@
-﻿using Diagnosis.Common;
-using Diagnosis.Models;
+﻿using Diagnosis.Models;
 using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Windows.Data;
-using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -14,14 +9,21 @@ namespace Diagnosis.ViewModels.Screens
     {
         internal readonly Appointment appointment;
 
+        public AppointmentViewModel(Appointment appointment)
+        {
+            Contract.Requires(appointment != null);
+            this.appointment = appointment;
+        }
+
         public Doctor Doctor
         {
             get { return appointment.Doctor; }
         }
 
-        public DateTime DateTime
+        public DateTime DateAndTime
         {
             get { return appointment.DateAndTime; }
+            set { appointment.DateAndTime = value; }
         }
 
         public bool IsDoctorFromCourse
@@ -29,10 +31,19 @@ namespace Diagnosis.ViewModels.Screens
             get { return Doctor == appointment.Course.LeadDoctor; }
         }
 
-        public AppointmentViewModel(Appointment appointment)
+        public override string this[string columnName]
         {
-            Contract.Requires(appointment != null);
-            this.appointment = appointment;
+            get
+            {
+                var results = appointment.SelfValidate();
+                if (results == null)
+                    return string.Empty;
+                var message = results.Errors
+                    .Where(x => x.PropertyName == columnName)
+                    .Select(x => x.ErrorMessage)
+                    .FirstOrDefault();
+                return message != null ? message : string.Empty;
+            }
         }
 
         public override string ToString()

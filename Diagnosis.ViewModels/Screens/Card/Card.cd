@@ -1,137 +1,198 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="Diagnosis.ViewModels.CardViewModel">
-    <Position X="0.75" Y="1" Width="1.5" />
+  <Class Name="Diagnosis.ViewModels.Screens.AppointmentViewModel" Collapsed="true">
+    <Position X="4" Y="3.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAwAAAAAACAAIABAAIAEAAGAQAAIAAAQAANACAABKAA=</HashCode>
-      <FileName>Screens\Card\CardViewModel.cs</FileName>
-    </TypeIdentifier>
-    <ShowAsAssociation>
-      <Field Name="viewer" />
-      <Property Name="Patient" />
-      <Property Name="Appointment" />
-      <Property Name="HealthRecord" />
-      <Property Name="HrEditor" />
-      <Property Name="Course" />
-      <Property Name="HrList" />
-    </ShowAsAssociation>
-  </Class>
-  <Class Name="Diagnosis.ViewModels.AppointmentViewModel" Collapsed="true">
-    <Position X="3.25" Y="3.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAABAAAAAAAAAAAQAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAEAABAAAAACAAAAAQAAAAAAAAAAAA=</HashCode>
       <FileName>Screens\Card\AppointmentViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diagnosis.ViewModels.HealthRecordViewModel" Collapsed="true">
-    <Position X="3.25" Y="4.5" Width="1.5" />
+  <Class Name="Diagnosis.ViewModels.Screens.HealthRecordViewModel" Collapsed="true">
+    <Position X="5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAhAChEACBAQBgMAAAAAAAEAAAAgAAAAAAAAAAACAA=</HashCode>
       <FileName>Screens\Card\HealthRecordViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diagnosis.ViewModels.HrEditorViewModel" Collapsed="true">
-    <Position X="5.5" Y="1" Width="1.5" />
+  <Class Name="Diagnosis.ViewModels.Screens.HrEditorViewModel" Collapsed="true">
+    <Position X="5" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAABgAiEASAAQkEEEAEAAFAgAAAQGAAQAACECgAAKAA=</HashCode>
+      <HashCode>AQABgAiEASAAQkEEEAEAAEAgAQAQGAAAgACECgAAKAA=</HashCode>
       <FileName>Screens\Card\HrEditorViewModel.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="HealthRecord" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="Diagnosis.ViewModels.PatientViewModel" Collapsed="true">
-    <Position X="3.25" Y="1.5" Width="1.5" />
+  <Class Name="Diagnosis.ViewModels.Screens.PatientViewModel" Collapsed="true">
+    <Position X="0.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>CAAIAGCAECCAQAAECEAQAAAAAAAIgAAkADAAABAAAAg=</HashCode>
+      <HashCode>CAAIAGCAECCAQAAECEAQEAAAAAAIgAAkADAAABAAAAg=</HashCode>
       <FileName>Screens\Card\PatientViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
       <Property Name="Courses" />
     </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="Diagnosis.ViewModels.PatientViewer" Collapsed="true">
-    <Position X="8.5" Y="1" Width="1.5" />
-    <NestedTypes>
-      <Class Name="Diagnosis.ViewModels.PatientViewer.OpeningEventArgs" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Screens\PatientViewer.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-      <Enum Name="Diagnosis.ViewModels.PatientViewer.OpeningAction" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Screens\PatientViewer.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-    </NestedTypes>
-    <TypeIdentifier>
-      <HashCode>AAAAlBEIpAAABGIQCQACCQEAUIBAIAAAIQEACAAAAAA=</HashCode>
-      <FileName>Screens\PatientViewer.cs</FileName>
-    </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="OpenedPatient" />
-      <Property Name="OpenedAppointment" />
-      <Property Name="OpenedCourse" />
-      <Property Name="OpenedHealthRecord" />
-    </ShowAsAssociation>
-  </Class>
   <Class Name="Diagnosis.Models.Patient" Collapsed="true">
-    <Position X="6.25" Y="2.75" Width="1.5" />
+    <Position X="10.5" Y="2" Width="1.5" />
     <TypeIdentifier />
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Diagnosis.ViewModels.CourseViewModel1" Collapsed="true">
-    <Position X="3.25" Y="2.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAIAAwAAACAAgAAEAAAQAAAEQEABAAAAiAAAAAAgAAA=</HashCode>
-      <FileName>Screens\Card\CourseViewModel1.cs</FileName>
-    </TypeIdentifier>
-    <ShowAsCollectionAssociation>
-      <Property Name="Appointments" />
-    </ShowAsCollectionAssociation>
-  </Class>
-  <Class Name="Diagnosis.ViewModels.HrListViewModel" Collapsed="true">
+  <Class Name="Diagnosis.ViewModels.Screens.HrListViewModel" Collapsed="true">
     <Position X="0.5" Y="6.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>CAAAABAAECAAKABEAAAAAAACAgAECAAAIAAQIAAAAAA=</HashCode>
+      <HashCode>CAAAABAAEKAACABEAAAAAAACAgAECAAAIAAQIAAAAAA=</HashCode>
       <FileName>Screens\Card\HrListViewModel.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="hrViewer" />
+      <Field Name="hrManager" />
+    </ShowAsAssociation>
     <ShowAsCollectionAssociation>
       <Property Name="HealthRecords" />
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Diagnosis.Models.Appointment" Collapsed="true">
-    <Position X="6.25" Y="5.25" Width="1.5" />
+    <Position X="10.5" Y="4.5" Width="1.5" />
     <TypeIdentifier />
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.Models.Course" Collapsed="true">
-    <Position X="6.25" Y="4" Width="1.5" />
+    <Position X="10.5" Y="3.25" Width="1.5" />
     <TypeIdentifier />
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.Models.HealthRecord" Collapsed="true">
-    <Position X="6.25" Y="6.5" Width="1.5" />
+    <Position X="10.5" Y="5.75" Width="1.5" />
     <TypeIdentifier />
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Diagnosis.ViewModels.ShortHealthRecordViewModel" Collapsed="true">
-    <Position X="3.25" Y="8.5" Width="1.5" />
+  <Class Name="Diagnosis.ViewModels.Screens.ShortHealthRecordViewModel" Collapsed="true">
+    <Position X="2.5" Y="8" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAhgChEACBAQBEMAEAAAAQUgAAAgAAIIAAAAAAACAA=</HashCode>
+      <HashCode>AAAhgChEACBAQBkMAEAAAAQUgAAAgAAIIAAAAAAACAA=</HashCode>
       <FileName>Screens\Card\ShortHealthRecordViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diagnosis.ViewModels.ShortAppointmentViewModel" Collapsed="true">
-    <Position X="3.25" Y="7.5" Width="1.5" />
+  <Class Name="Diagnosis.ViewModels.Screens.ShortAppointmentViewModel" Collapsed="true">
+    <Position X="2.25" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAEAABAAAAACEAAAAQAAAAAAAAAAAA=</HashCode>
       <FileName>Screens\Card\ShortAppointmentViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diagnosis.ViewModels.ShortCourseViewModel" Collapsed="true">
-    <Position X="3.25" Y="6.5" Width="1.5" />
+  <Class Name="Diagnosis.ViewModels.Screens.ShortCourseViewModel" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAIAAAAAACAAgAAEAAAQAAAAAEABAAAACAAAAAAAAAA=</HashCode>
       <FileName>Screens\Card\ShortCourseViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.CourseViewModel" Collapsed="true">
+    <Position X="2.25" Y="2.75" Width="1.5" />
+    <AssociationLine Name="Appointments" Type="Diagnosis.ViewModels.Screens.ShortAppointmentViewModel" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="2.938" Y="3.441" />
+        <Point X="2.938" Y="4.75" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.058" Y="-0.086" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAIAAwAAACAAgAAkCAAQAAAEwEABAAAAiAAAAAAAAAA=</HashCode>
+      <FileName>Screens\Card\CourseViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Appointments" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.CardTreeViewModel" Collapsed="true">
+    <Position X="6.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQEAQgABCACIABCAAAAEQWAAAAIAAAYAANEAAgAAAA=</HashCode>
+      <FileName>Screens\Card\CardTreeViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="viewer" />
+      <Field Name="saver" />
+      <Property Name="HrList" />
+      <Property Name="HrEditor" />
+      <Property Name="Navigator" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.CardItemViewModel" Collapsed="true">
+    <Position X="8.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAACCAAQAEEAMAAkAAAAEAACBAAAAAAAAAAAAA=</HashCode>
+      <FileName>Screens\Card\CardItemViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.CourseEditorViewModel" Collapsed="true">
+    <Position X="2.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAACAAkAACAIAgAAAQAAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>Screens\Card\CourseEditorViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Course" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.Saver" Collapsed="true">
+    <Position X="8.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAADAAEAAAAAAAEAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Screens\Card\Saver.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.PatientViewer" Collapsed="true">
+    <Position X="8.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAkAECBAAAJEISCQACAQAAUABAIAAAKQEACACAAAA=</HashCode>
+      <FileName>Screens\Card\Managers\PatientViewer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.HrViewer" Collapsed="true">
+    <Position X="0.5" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAACQACgIAA=</HashCode>
+      <FileName>Screens\Card\Managers\HrViewer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.HealthRecordManager" Collapsed="true">
+    <Position X="0.5" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAECAAIAAAAAAAAAAAAAAEAAAQAAAQAgAAAJA=</HashCode>
+      <FileName>Screens\Card\Managers\HealthRecordManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.PatientEditorViewModel" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAJAAAAACAAEAACAAAAEAACEAAAAAAAgAAAAAAEKAA=</HashCode>
+      <FileName>Screens\Patients\PatientEditorViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Patient" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.NavigatorViewModel" Collapsed="true">
+    <Position X="8.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAkQAQAASIAAABCAACgAAKAAAAIAAAIABAAAQAAACA=</HashCode>
+      <FileName>Screens\Card\Navigator.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Current" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="TopCardItems" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Interface Name="Diagnosis.Models.IHrsHolder" Collapsed="true">
+    <Position X="10.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

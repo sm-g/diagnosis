@@ -26,6 +26,10 @@ namespace Diagnosis.App.Windows
                 {
                     ShowDialog(dialogVM, new CourseEditorWindow());
                 }
+                else if (dialogVM is AppointmentEditorViewModel)
+                {
+                    ShowDialog(dialogVM, new AppointmentEditorWindow());
+                }
             });
 
             DataContext = new MainWindowViewModel();

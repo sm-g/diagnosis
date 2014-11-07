@@ -7,18 +7,25 @@ using System.Linq;
 using System.Text;
 using System.Collections.Specialized;
 using Iesi.Collections.Generic;
+using FluentValidation.Results;
+using Diagnosis.Models.Validators;
 
 namespace Diagnosis.Models
 {
-    public class Appointment : EntityBase, IDomainObject, IHrsHolder
+    public class Appointment : ValidatableEntity, IDomainObject, IHrsHolder
     {
         Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
+        private DateTime _dateTime;
 
         public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
 
         public virtual Course Course { get; protected set; }
         public virtual Doctor Doctor { get; set; }
-        public virtual DateTime DateAndTime { get; set; }
+        public virtual DateTime DateAndTime
+        {
+            get { return _dateTime; }
+            set { SetProperty(ref _dateTime, value, "DateAndTime"); }
+        }
         public virtual IEnumerable<HealthRecord> HealthRecords
         {
             get { return healthRecords; }
@@ -64,5 +71,10 @@ namespace Diagnosis.Models
                 h(this, e);
             }
         }
+        public override ValidationResult SelfValidate()
+        {
+            return new AppointmentValidator().Validate(this);
+        }
+
     }
 }

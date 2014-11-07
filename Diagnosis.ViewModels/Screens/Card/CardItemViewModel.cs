@@ -1,10 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
-using Diagnosis.Data;
-using NHibernate;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Reflection;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -63,7 +60,12 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     IDialog vm = null;
-                    if (Holder is Course)
+                    if (Holder is Appointment)
+                    {
+                        vm = new AppointmentEditorViewModel(Holder as Appointment);
+                        this.Send(Events.OpenHolderEditor, vm.AsParams(MessageKeys.Dialog));
+                    }
+                    else if (Holder is Course)
                     {
                         vm = new CourseEditorViewModel(Holder as Course);
                         this.Send(Events.OpenHolderEditor, vm.AsParams(MessageKeys.Dialog));
@@ -126,6 +128,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         protected override void OnSelectedChanged()
         {
             base.OnSelectedChanged();
@@ -164,6 +167,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         protected override void Dispose(bool disposing)
         {
             try
