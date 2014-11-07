@@ -1,14 +1,13 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
 using Diagnosis.Models;
+using EventAggregator;
 using log4net;
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Windows;
-using System.Linq;
-using EventAggregator;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -48,6 +47,11 @@ namespace Diagnosis.ViewModels.Screens
                 ShowHrsList(holder);
                 Title = MakeTitle();
             };
+            navigator.TopCardItems.CollectionChanged += (s, e) =>
+            {
+                if (navigator.TopCardItems.Count == 0)
+                    OnPatientClosed();
+            };
 
             HrEditor.Unloaded += (s, e) =>
             {
@@ -59,30 +63,29 @@ namespace Diagnosis.ViewModels.Screens
             viewer.OpenedChanged += viewer_OpenedChanged;
 
             handler = this.Subscribe(Events.EntityDeleted, (e) =>
-             {
-                 var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
+            {
+                var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
 
-                 // убрать из результатов поиска (или проверять при открытии, удлаен ли)
+                // убрать из результатов поиска (или проверять при открытии, удален ли)
 
-                 if (holder is Patient)
-                 {
-                     saver.Delete(holder);
-                     // закрыть карточку
-                 }
-                 else if (holder is Course)
-                 {
-                     var course = holder as Course;
-                     course.Patient.RemoveCourse(course);
-                 }
-                 else if (holder is Appointment)
-                 {
-                     var app = holder as Appointment;
-                     app.Course.RemoveAppointment(app);
-                 }
+                if (holder is Patient)
+                {
+                    saver.Delete(holder);
+                }
+                else if (holder is Course)
+                {
+                    var course = holder as Course;
+                    course.Patient.RemoveCourse(course);
+                }
+                else if (holder is Appointment)
+                {
+                    var app = holder as Appointment;
+                    app.Course.RemoveAppointment(app);
+                }
 
-                 viewer.Close(holder);
-                 viewer.RemoveFromHistory(holder);
-             });
+                viewer.Close(holder);
+                viewer.RemoveFromHistory(holder);
+            });
 
             Open(entity);
         }
@@ -93,6 +96,11 @@ namespace Diagnosis.ViewModels.Screens
         [Obsolete]
         public CardTreeViewModel()
         { }
+
+        /// <summary>
+        /// После удаления всех элементов, карточка пуста.
+        /// </summary>
+        public event EventHandler LastItemRemoved;
 
         public HrListViewModel HrList
         {
@@ -295,6 +303,15 @@ namespace Diagnosis.ViewModels.Screens
             {
                 // удаляем записи в бд
                 saver.SaveAll(viewer.OpenedPatient);
+            }
+        }
+
+        protected virtual void OnPatientClosed()
+        {
+            var h = LastItemRemoved;
+            if (h != null)
+            {
+                h(this, EventArgs.Empty);
             }
         }
 

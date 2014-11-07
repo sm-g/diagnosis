@@ -176,7 +176,7 @@ namespace Diagnosis.ViewModels.Screens
                         item.AppointmentsChanged -= course_AppointmentsChanged;
                     }
                     TopCardItems.Remove(itemVm);
-                    itemVm.Dispose();
+                    if (itemVm != null) itemVm.Dispose(); // если последний - удален при переходе к списку пациентов
                 }
 
                 if (itemVm != null)

@@ -180,7 +180,14 @@ namespace Diagnosis.ViewModels.Screens
 
                     case Screens.Card:
                         if (parameter != null)
-                            CurrentView = new CardTreeViewModel(parameter);
+                        {
+                            var cardVm = new CardTreeViewModel(parameter);
+                            cardVm.LastItemRemoved += (s, e) =>
+                            {
+                                OpenScreen(Screens.Patients);
+                            };
+                            CurrentView = cardVm;
+                        }
                         else
                             throw new ArgumentNullException("parameter"); // что открывать в карте?
                         break;
