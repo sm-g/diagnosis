@@ -3,29 +3,26 @@ using Diagnosis.Data;
 using Diagnosis.Models;
 using log4net;
 using System;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Windows;
+using System.Linq;
+using EventAggregator;
 
 namespace Diagnosis.ViewModels.Screens
 {
     public partial class CardTreeViewModel : ScreenBase
     {
-        private static PatientViewer viewer; // static to hold history
         private static readonly ILog logger = LogManager.GetLogger(typeof(CardTreeViewModel));
-
+        private static PatientViewer viewer; // static to hold history
         private HrListViewModel _hrList;
         private HrEditorViewModel _hrEditor;
-        private CardItemViewModel _curHolder;
         private bool editorWasOpened;
-        private bool _closeNestedOnLevelUp;
 
         private Saver saver;
-        private EventAggregator.EventMessageHandler handler;
+        private EventMessageHandler handler;
+        private NavigatorViewModel navigator;
 
         public CardTreeViewModel(object entity, bool resetHistory = false)
         {
@@ -33,19 +30,37 @@ namespace Diagnosis.ViewModels.Screens
                 viewer = new PatientViewer();
 
             saver = new Saver(Session);
-            TopCardItems = new ObservableCollection<CardItemViewModel>();
+            navigator = new NavigatorViewModel(viewer);
             HrEditor = new HrEditorViewModel(Session);
+
+            navigator.Navigating += (s, e) =>
+            {
+                // сначала создаем HrList, чтобы hrManager подписался на добавление записей первым, иначе HrList.SelectHealthRecord нечего выделять
+                ShowHrsList(e.holder);
+            };
+            navigator.CurrentChanged += (s, e) =>
+            {
+                // add to history
+                HrEditor.Unload(); // закрываем редактор при смене активной сущности
+
+                var holder = e.holder;
+
+                ShowHrsList(holder);
+                Title = MakeTitle();
+            };
+
             HrEditor.Unloaded += (s, e) =>
             {
-                // сохраняем запись при закрытии редаткора
+                // сохраняем запись при закрытии редактора
                 var hr = e.entity as HealthRecord;
                 saver.SaveHealthRecord(hr);
             };
+
             viewer.OpenedChanged += viewer_OpenedChanged;
+
             handler = this.Subscribe(Events.EntityDeleted, (e) =>
              {
                  var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
-
 
                  // убрать из результатов поиска (или проверять при открытии, удлаен ли)
 
@@ -79,51 +94,6 @@ namespace Diagnosis.ViewModels.Screens
         public CardTreeViewModel()
         { }
 
-        public bool CloseNestedHolderOnLevelUp
-        {
-            get
-            {
-                return _closeNestedOnLevelUp;
-            }
-            set
-            {
-                if (_closeNestedOnLevelUp != value)
-                {
-                    _closeNestedOnLevelUp = value;
-                    OnPropertyChanged(() => CloseNestedHolderOnLevelUp);
-                }
-            }
-        }
-
-        public CardItemViewModel CurrentHolder
-        {
-            get
-            {
-                return _curHolder;
-            }
-            set
-            {
-                if (_curHolder != value)
-                {
-                    _curHolder = value;
-
-                    OnCurrentHolderChanged();
-
-                    logger.DebugFormat("holder is {0}", value);
-                    OnPropertyChanged(() => CurrentHolder);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Пациенты в корне дерева.
-        /// </summary>
-        public ObservableCollection<CardItemViewModel> TopCardItems
-        {
-            get;
-            private set;
-        }
-
         public HrListViewModel HrList
         {
             get
@@ -155,6 +125,8 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
+        public NavigatorViewModel Navigator { get { return navigator; } }
 
         public RelayCommand StartCourseCommand
         {
@@ -210,32 +182,34 @@ namespace Diagnosis.ViewModels.Screens
             if (parameter is IHrsHolder)
             {
                 holder = Session.Unproxy(parameter as IHrsHolder);
-                Show(holder);
+                navigator.NavigateTo(holder);
             }
             else
             {
                 var hr = parameter as HealthRecord;
                 holder = Session.Unproxy(hr.Holder as IHrsHolder);
-                Show(holder);
+                navigator.NavigateTo(holder);
                 HrList.SelectHealthRecord(hr);
             }
         }
 
-        private void Show(IHrsHolder holder)
+        private string MakeTitle()
         {
-            Contract.Requires(holder != null);
-            Debug.Assert(holder is Patient || holder is Course || holder is Appointment);
-            logger.DebugFormat("show {0}", holder);
+            string delim = " — ";
+            string result = string.Format("{0} {1}", viewer.OpenedPatient.Label, NameFormatter.GetShortName(viewer.OpenedPatient));
 
-            // сначала создаем HrList, чтобы hrManager подписался на добавление записей первым, иначе HrList.SelectHealthRecord нечего выделять
-            if (holder != GetHolderOfVm(CurrentHolder))
+            var holder = navigator.Current.Holder;
+
+            if (holder is Course)
             {
-                ShowHrsList(holder);
+                result += delim + "курс " + DateFormatter.GetIntervalString(viewer.OpenedCourse.Start, viewer.OpenedCourse.End);
             }
-
-            viewer.Open(holder);
-
-            CurrentHolder = FindItemVmOf(holder);
+            else if (holder is Appointment)
+            {
+                result += delim + "курс " + DateFormatter.GetIntervalString(viewer.OpenedCourse.Start, viewer.OpenedCourse.End);
+                result += delim + "осмотр " + DateFormatter.GetDateString(viewer.OpenedAppointment.DateAndTime);
+            }
+            return result;
         }
 
         /// <summary>
@@ -247,7 +221,7 @@ namespace Diagnosis.ViewModels.Screens
             if (HrList != null)
             {
                 if (HrList.holder == holder)
-                    return; // список может быть уже создан в Show
+                    return; // список может быть уже создан
 
                 HrList.Dispose(); // delete hrs here
             }
@@ -291,146 +265,20 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private void OnCurrentHolderChanged()
-        {
-            // add to history
-            HrEditor.Unload(); // закрываем редактор при смене активной сущности
-
-            var holder = GetHolderOfVm(CurrentHolder);
-
-            CurrentHolder.IsSelected = true;
-
-            ShowHrsList(holder);
-
-            TopCardItems.ForAll(x => HightlightLastOpenedFor(x));
-            if (CloseNestedHolderOnLevelUp)
-            {
-                if (holder is Patient)
-                {
-                    viewer.OpenedCourse = null;
-                }
-                else if (holder is Course)
-                {
-                    viewer.OpenedAppointment = null;
-                }
-            }
-
-            Title = MakeTitle();
-        }
-
-        private void HightlightLastOpenedFor(CardItemViewModel vm)
-        {
-            vm.Children.ForAll(x => x.IsHighlighted = false);
-            var holder = viewer.GetLastOpenedFor(vm.Holder);
-            var item = vm.Children.Where(x => x.Holder == holder).FirstOrDefault();
-            if (item != null && item != CurrentHolder)
-            {
-                item.IsHighlighted = true;
-            }
-            vm.Children.ForAll(x => HightlightLastOpenedFor(x));
-        }
-
-        private IHrsHolder GetHolderOfVm(CardItemViewModel holderVm)
-        {
-            if (holderVm == null)
-                return null;
-            IHrsHolder holder = holderVm.Holder;
-            return Session.Unproxy(holder);
-        }
-
-        private CardItemViewModel FindItemVmOf(IHrsHolder holder)
-        {
-            holder = Session.Unproxy(holder);
-            CardItemViewModel vm;
-            foreach (var item in TopCardItems)
-            {
-                if (item.Holder == holder)
-                    return item;
-                vm = item.AllChildren.Where(x => x.Holder == holder).FirstOrDefault();
-                if (vm != null)
-                    return vm;
-            }
-            return null;
-        }
-
-        private string MakeTitle()
-        {
-            string delim = " — ";
-            string result = string.Format("{0} {1}", viewer.OpenedPatient.Label, NameFormatter.GetShortName(viewer.OpenedPatient));
-
-            var holder = GetHolderOfVm(CurrentHolder);
-
-            if (holder is Course)
-            {
-                result += delim + "курс " + DateFormatter.GetIntervalString(viewer.OpenedCourse.Start, viewer.OpenedCourse.End);
-            }
-            else if (holder is Appointment)
-            {
-                result += delim + "курс " + DateFormatter.GetIntervalString(viewer.OpenedCourse.Start, viewer.OpenedCourse.End);
-                result += delim + "осмотр " + DateFormatter.GetDateString(viewer.OpenedAppointment.DateAndTime);
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// при открытии пациента добавляем viewmodel
-        /// при открытии курса, осмотра раскрываем элемент дерева
-        ///
-        /// при закрытии сворачиваем элемент дерева,
-        /// сохраняем пациента
-        ///
-        /// опционально Если в открываемых первый раз курсе нет осмотров или в осмотре нет записей, добавляет их.
-        /// </summary>
         private void viewer_OpenedChanged(object sender, PatientViewer.OpeningEventArgs e)
         {
-            Contract.Requires(e.entity is IHrsHolder);
-            logger.DebugFormat("{0} {1} {2}", e.action, e.entity.GetType().Name, e.entity);
-
-            CardItemViewModel itemVm;
             var holder = e.entity as IHrsHolder;
+
             if (e.action == PatientViewer.OpeningAction.Close)
             {
                 holder.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
-                if (holder is Patient)
-                {
-                    var patient = e.entity as Patient;
-                    patient.CoursesChanged -= patient_CoursesChanged;
-                    foreach (var item in patient.Courses)
-                    {
-                        item.AppointmentsChanged -= course_AppointmentsChanged;
-                    }
-                }
 
+                // сохраняем сохраняем пациента при закрытии элемента (переход вверх без зарктыия не сохраняет)
                 saver.SaveAll(viewer.OpenedPatient, deleteEmptyHrs: true);
-
-                itemVm = FindItemVmOf(holder);
-                if (itemVm != null)
-                {
-                    itemVm.IsExpanded = false;
-                    if (holder is Patient)
-                    {
-                        TopCardItems.Remove(itemVm);
-                        itemVm.Dispose();
-                    }
-                }
             }
             else
             {
                 holder.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
-
-                if (holder is Patient)
-                {
-                    itemVm = new CardItemViewModel(holder);
-                    TopCardItems.Add(itemVm);
-                    var patient = e.entity as Patient;
-                    patient.CoursesChanged += patient_CoursesChanged;
-                    foreach (var item in patient.Courses)
-                    {
-                        item.AppointmentsChanged += course_AppointmentsChanged;
-                    }
-                }
-                itemVm = FindItemVmOf(holder);
-                itemVm.IsExpanded = true;
             }
         }
 
@@ -439,7 +287,7 @@ namespace Diagnosis.ViewModels.Screens
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 // редактируем добавленную запись
-                var hr = (HealthRecord)e.NewItems[e.NewItems.Count - 1];
+                var hr = (HealthRecord)e.NewItems[0];
                 HrList.SelectHealthRecord(hr);
                 HrEditor.Load(hr);
             }
@@ -447,54 +295,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 // удаляем записи в бд
                 saver.SaveAll(viewer.OpenedPatient);
-            }
-        }
-
-        private void patient_CoursesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                var course = (Course)e.NewItems[0];
-                course.AppointmentsChanged += course_AppointmentsChanged;
-                // при добавлении курса открываем его
-                Show(course);
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                var course = (Course)e.OldItems[0];
-                course.AppointmentsChanged -= course_AppointmentsChanged;
-
-                // при удалении открытого курса открываем курс рядом с удаленным или пациента, если это был последний курс
-                if (viewer.OpenedCourse == course)
-                {
-                    var near = viewer.OpenedPatient.Courses.ElementNear(e.OldStartingIndex);
-                    if (near == null)
-                        Open(viewer.OpenedPatient);
-                    else
-                        Open(near);
-                }
-            }
-        }
-
-        private void course_AppointmentsChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                // при добавлении осмотра открываем его
-                Show((Appointment)e.NewItems[0]);
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                var app = (Appointment)e.OldItems[0];
-                // при удалении открытого осмотра открываем осмотр рядом или курс, если это был последний осмотр
-                if (viewer.OpenedAppointment == app)
-                {
-                    var near = viewer.OpenedCourse.Appointments.ElementNear(e.OldStartingIndex);
-                    if (near == null)
-                        Open(viewer.OpenedCourse);
-                    else
-                        Open(near);
-                }
             }
         }
 
@@ -512,8 +312,9 @@ namespace Diagnosis.ViewModels.Screens
                     HrEditor.Dispose();
                     HrList.Dispose(); // удаляются все записи
 
-                    viewer.Close(viewer.OpenedPatient); // сохраняем пациента при закрытии
+                    viewer.Close(viewer.OpenedPatient); // сохраняется пациент
                     viewer.OpenedChanged -= viewer_OpenedChanged;
+                    navigator.Dispose();
                     handler.Dispose();
                 }
             }

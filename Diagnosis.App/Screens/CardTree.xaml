@@ -37,7 +37,7 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <controls:FullTree DataContext="{Binding TopCardItems}" Grid.RowSpan="2">
+        <controls:FullTree DataContext="{Binding Navigator.TopCardItems}" Grid.RowSpan="2">
             <controls:FullTree.ItemContainerStyle>
                 <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}">
                     <Setter Property="controls:Attached.InputBindings" Value="{StaticResource CardElementsInputBindings}" />

@@ -29,6 +29,7 @@ namespace Diagnosis.Models
         IEnumerable<HealthRecord> HealthRecords { get; }
         HealthRecord AddHealthRecord();
         void RemoveHealthRecord(HealthRecord hr);
+        object Actual { get; }
     }
 
 
@@ -41,6 +42,18 @@ namespace Diagnosis.Models
         public DomainEntityEventArgs(IDomainObject entity)
         {
             this.entity = entity;
+        }
+    }
+
+    [Serializable]
+    public class HrsHolderEventArgs : EventArgs
+    {
+        public readonly IHrsHolder holder;
+
+        [System.Diagnostics.DebuggerStepThrough]
+        public HrsHolderEventArgs(IHrsHolder holder)
+        {
+            this.holder = holder;
         }
     }
 }
