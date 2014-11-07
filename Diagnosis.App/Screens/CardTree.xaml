@@ -78,7 +78,7 @@
             </Grid>
         </Border>
 
-        <CheckBox IsChecked="{Binding CloseNestedHolderOnLevelUp}" Width="200" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5" Grid.ColumnSpan="2" Grid.Row="1">
+        <CheckBox IsChecked="{Binding Navigator.CloseNestedHolderOnLevelUp}" Width="200" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5" Grid.ColumnSpan="2" Grid.Row="1">
             <TextBlock TextWrapping="Wrap">Закрывать вложенное при переходе вверх</TextBlock>
         </CheckBox>
     </Grid>
