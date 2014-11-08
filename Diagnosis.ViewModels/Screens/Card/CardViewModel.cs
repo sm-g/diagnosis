@@ -17,11 +17,12 @@ namespace Diagnosis.ViewModels.Screens
         private static PatientViewer viewer; // static to hold history
         private HrListViewModel _hrList;
         private HrEditorViewModel _hrEditor;
-        private bool editorWasOpened;
+        private NavigatorViewModel _navigator;
 
+        private bool editorWasOpened;
+        private bool inDispose;
         private Saver saver;
         private EventMessageHandler handler;
-        private NavigatorViewModel navigator;
 
         public CardViewModel(object entity, bool resetHistory = false)
         {
@@ -29,15 +30,15 @@ namespace Diagnosis.ViewModels.Screens
                 viewer = new PatientViewer();
 
             saver = new Saver(Session);
-            navigator = new NavigatorViewModel(viewer);
-            HrEditor = new HrEditorViewModel(Session);
+            _navigator = new NavigatorViewModel(viewer);
+            _hrEditor = new HrEditorViewModel(Session);
 
-            navigator.Navigating += (s, e) =>
+            Navigator.Navigating += (s, e) =>
             {
                 // сначала создаем HrList, чтобы hrManager подписался на добавление записей первым, иначе HrList.SelectHealthRecord нечего выделять
                 ShowHrsList(e.holder);
             };
-            navigator.CurrentChanged += (s, e) =>
+            Navigator.CurrentChanged += (s, e) =>
             {
                 // add to history
                 HrEditor.Unload(); // закрываем редактор при смене активной сущности
@@ -47,10 +48,10 @@ namespace Diagnosis.ViewModels.Screens
                 ShowHrsList(holder);
                 Title = MakeTitle();
             };
-            navigator.TopCardItems.CollectionChanged += (s, e) =>
+            Navigator.TopCardItems.CollectionChanged += (s, e) =>
             {
-                if (navigator.TopCardItems.Count == 0)
-                    OnPatientClosed();
+                if (Navigator.TopCardItems.Count == 0 && !inDispose)
+                    OnLastItemRemoved();
             };
 
             HrEditor.Unloaded += (s, e) =>
@@ -118,23 +119,9 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public HrEditorViewModel HrEditor
-        {
-            get
-            {
-                return _hrEditor;
-            }
-            private set
-            {
-                if (_hrEditor != value)
-                {
-                    _hrEditor = value;
-                    OnPropertyChanged(() => HrEditor);
-                }
-            }
-        }
+        public HrEditorViewModel HrEditor { get { return _hrEditor; } }
 
-        public NavigatorViewModel Navigator { get { return navigator; } }
+        public NavigatorViewModel Navigator { get { return _navigator; } }
 
         public RelayCommand StartCourseCommand
         {
@@ -190,13 +177,13 @@ namespace Diagnosis.ViewModels.Screens
             if (parameter is IHrsHolder)
             {
                 holder = Session.Unproxy(parameter as IHrsHolder);
-                navigator.NavigateTo(holder);
+                Navigator.NavigateTo(holder);
             }
             else
             {
                 var hr = parameter as HealthRecord;
                 holder = Session.Unproxy(hr.Holder as IHrsHolder);
-                navigator.NavigateTo(holder);
+                Navigator.NavigateTo(holder);
                 HrList.SelectHealthRecord(hr);
             }
         }
@@ -206,7 +193,7 @@ namespace Diagnosis.ViewModels.Screens
             string delim = " — ";
             string result = string.Format("{0} {1}", viewer.OpenedPatient.Label, NameFormatter.GetShortName(viewer.OpenedPatient));
 
-            var holder = navigator.Current.Holder;
+            var holder = Navigator.Current.Holder;
 
             if (holder is Course)
             {
@@ -306,7 +293,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        protected virtual void OnPatientClosed()
+        protected virtual void OnLastItemRemoved()
         {
             var h = LastItemRemoved;
             if (h != null)
@@ -326,12 +313,13 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (disposing)
                 {
+                    inDispose = true;
                     HrEditor.Dispose();
                     HrList.Dispose(); // удаляются все записи
 
                     viewer.Close(viewer.OpenedPatient); // сохраняется пациент
                     viewer.OpenedChanged -= viewer_OpenedChanged;
-                    navigator.Dispose();
+                    Navigator.Dispose();
                     handler.Dispose();
                 }
             }
