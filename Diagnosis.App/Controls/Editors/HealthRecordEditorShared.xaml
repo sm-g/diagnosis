@@ -19,6 +19,7 @@
     <UserControl.Resources>
         <Style TargetType="Label" BasedOn="{StaticResource label90}" />
     </UserControl.Resources>
+    
     <UserControl.InputBindings>
         <KeyBinding Modifiers="Control" Key="Up" Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}" CommandParameter="{StaticResource True}" />
         <KeyBinding Modifiers="Control" Key="Down" Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}" CommandParameter="{StaticResource False}" />
@@ -32,7 +33,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         
-        <DockPanel>
+        <DockPanel Background="Transparent">
             <ToolBar DockPanel.Dock="Left">
                 <Button Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}" FontSize="16"
                     CommandParameter="{StaticResource True}" ToolTip="Открыть предыдущую запись">↑</Button>
@@ -59,12 +60,34 @@
                     </DockPanel>
                 </Button>
             </ToolBar>
-            <Button Command="{Binding CloseCommand}" ToolBar.OverflowMode="Never" VerticalAlignment="Top"  Height="16" HorizontalAlignment="Right" Width="25"
+            <Button x:Name="closeButton" Command="{Binding CloseCommand}" ToolBar.OverflowMode="Never" VerticalAlignment="Top"  Height="16" HorizontalAlignment="Right" Width="16"
                 ToolTip="Закрыть редактор, сохранив все изменения"
                 Grid.Column="2">
-                <DockPanel>
-                    <Image Source="{StaticResource closeImage}" />
-                </DockPanel>
+                <Path Data="{StaticResource CloseX}" Stretch="Uniform" Stroke="Black" Margin="1" />
+                <Button.Style>
+                    <Style>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Panel}}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0.3" To="25" Storyboard.TargetProperty="Width"/>
+                                        <DoubleAnimation Duration="0:0:0.3" To="25" Storyboard.TargetProperty="Height"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0.5" Storyboard.TargetProperty="Width"/>
+                                        <DoubleAnimation Duration="0:0:0.5" Storyboard.TargetProperty="Height"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
             </Button>
         </DockPanel>
 

@@ -7,4 +7,7 @@
     <BitmapImage x:Key="deleteImage" UriSource="/Resources/Images/Delete_black_32x32.png" />
     <BitmapImage x:Key="editImage" UriSource="/Resources/Images/126_Edit_24x24_72.png" />
     <BitmapImage x:Key="findImage" UriSource="/Resources/Images/Find_5650.png" />
+
+    <Geometry x:Key="CloseX">M0,0 L1,1 M0,1 L1,0</Geometry>
+    <Geometry x:Key="TreeArrow">M0,0 L0,6 L6,0</Geometry>
 </ResourceDictionary>
