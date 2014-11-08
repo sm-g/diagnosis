@@ -159,6 +159,11 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        internal void CloseAll()
+        {
+            OpenedPatient = null;
+        }
+
         internal void OpenPatient(Patient patient)
         {
             OpenedPatient = patient;

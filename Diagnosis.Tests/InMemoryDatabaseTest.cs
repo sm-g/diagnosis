@@ -22,7 +22,7 @@ namespace Tests
         [TestInitialize]
         public void InMemoryDatabaseTestInit()
         {
-            session = NHibernateHelper.OpenSession();
+            session = NHibernateHelper.GetSession();
         }
 
         [TestCleanup]

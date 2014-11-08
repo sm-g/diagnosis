@@ -5,9 +5,7 @@ using EventAggregator;
 using log4net;
 using System;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Diagnostics.Contracts;
-using System.Windows;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -20,7 +18,6 @@ namespace Diagnosis.ViewModels.Screens
         private NavigatorViewModel _navigator;
 
         private bool editorWasOpened;
-        private bool inDispose;
         private Saver saver;
         private EventMessageHandler handler;
 
@@ -48,11 +45,6 @@ namespace Diagnosis.ViewModels.Screens
                 ShowHrsList(holder);
                 Title = MakeTitle();
             };
-            Navigator.TopCardItems.CollectionChanged += (s, e) =>
-            {
-                if (Navigator.TopCardItems.Count == 0 && !inDispose)
-                    OnLastItemRemoved();
-            };
 
             HrEditor.Unloaded += (s, e) =>
             {
@@ -68,24 +60,28 @@ namespace Diagnosis.ViewModels.Screens
                 var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
 
                 // убрать из результатов поиска (или проверять при открытии, удален ли)
+                viewer.RemoveFromHistory(holder);
 
                 if (holder is Patient)
                 {
+                    Navigator.Remove(holder as Patient);
                     saver.Delete(holder);
+                    if (Navigator.TopCardItems.Count == 0 )
+                        OnLastItemRemoved();
+                    return;
                 }
                 else if (holder is Course)
                 {
                     var course = holder as Course;
                     course.Patient.RemoveCourse(course);
+                    saver.SaveAll(viewer.OpenedPatient); // сохраняем на случай, если удаление при открытом пациенте
                 }
                 else if (holder is Appointment)
                 {
                     var app = holder as Appointment;
                     app.Course.RemoveAppointment(app);
+                    saver.SaveAll(viewer.OpenedPatient);
                 }
-
-                viewer.Close(holder);
-                viewer.RemoveFromHistory(holder);
             });
 
             Open(entity);
@@ -182,6 +178,7 @@ namespace Diagnosis.ViewModels.Screens
             else
             {
                 var hr = parameter as HealthRecord;
+                Navigator.Add(hr.GetPatient());
                 holder = Session.Unproxy(hr.Holder as IHrsHolder);
                 Navigator.NavigateTo(holder);
                 HrList.SelectHealthRecord(hr);
@@ -190,6 +187,8 @@ namespace Diagnosis.ViewModels.Screens
 
         private string MakeTitle()
         {
+            if (Navigator.Current == null)
+                return "";
             string delim = " — ";
             string result = string.Format("{0} {1}", viewer.OpenedPatient.Label, NameFormatter.GetShortName(viewer.OpenedPatient));
 
@@ -268,7 +267,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 holder.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
 
-                // сохраняем сохраняем пациента при закрытии элемента (переход вверх без зарктыия не сохраняет)
+                // сохраняем пациента при закрытии чего-либо (переход вверх без закрытия не сохраняет)
                 saver.SaveAll(viewer.OpenedPatient, deleteEmptyHrs: true);
             }
             else
@@ -304,20 +303,14 @@ namespace Diagnosis.ViewModels.Screens
 
         protected override void Dispose(bool disposing)
         {
-            if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-            {
-                Contract.Assume(viewer.OpenedPatient != null);
-            }
-
             try
             {
                 if (disposing)
                 {
-                    inDispose = true;
                     HrEditor.Dispose();
                     HrList.Dispose(); // удаляются все записи
 
-                    viewer.Close(viewer.OpenedPatient); // сохраняется пациент
+                    viewer.CloseAll(); // сохраняется пациент если открыт
                     viewer.OpenedChanged -= viewer_OpenedChanged;
                     Navigator.Dispose();
                     handler.Dispose();

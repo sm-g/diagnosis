@@ -15,12 +15,27 @@ namespace Diagnosis.ViewModels.Screens
         private PatientViewer viewer;
         private CardItemViewModel _curHolder;
         private bool _closeNestedOnLevelUp;
+        private ObservableCollection<Patient> patients;
 
         public NavigatorViewModel(PatientViewer viewer)
         {
             this.viewer = viewer;
             TopCardItems = new ObservableCollection<CardItemViewModel>();
+            patients = new ObservableCollection<Patient>();
             viewer.OpenedChanged += viewer_OpenedChanged;
+            patients.CollectionChanged += (s, e) =>
+            {
+                if (e.Action == NotifyCollectionChangedAction.Remove)
+                {
+                    var p = (Patient)e.OldItems[0];
+
+                    if (viewer.OpenedPatient == p)
+                    {
+                        var near = patients.ElementNear(e.OldStartingIndex);
+                        NavigateTo(near);
+                    }
+                }
+            };
         }
 
         public event EventHandler<HrsHolderEventArgs> CurrentChanged;
@@ -74,11 +89,38 @@ namespace Diagnosis.ViewModels.Screens
 
         public void NavigateTo(IHrsHolder holder)
         {
-            Contract.Requires(holder != null);
-            OnCurrentChanging(new HrsHolderEventArgs(holder));
+            OnNavigating(new HrsHolderEventArgs(holder));
+            if (holder == null)
+            {
+                viewer.CloseAll();
+                Current = null;
+                return;
+            }
 
-            viewer.Open(holder); // создаем items если это пациент
+            Add(holder);
+
+            viewer.Open(holder);
             Current = FindItemVmOf(holder);
+        }
+
+        public void Add(IHrsHolder holder)
+        {
+            var p = holder.GetPatient();
+            if (!patients.Contains(p))
+            {
+                patients.Add(p);
+                var itemVm = new CardItemViewModel(p);
+                TopCardItems.Add(itemVm);
+            }
+        }
+
+        public void Remove(Patient p)
+        {
+            if (patients.Remove(p))
+            {
+                var itemVm = FindItemVmOf(p);
+                TopCardItems.Remove(itemVm);
+            }
         }
 
         private void OnCurrentHolderChanged()
@@ -133,11 +175,10 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         /// <summary>
-        /// при открытии пациента добавляем CardItemViewModel
+        /// при открытии пациента подписываемся на измение коллекций курсов и осмотров в курсах
         /// раскрываем открытый элемент дерева
         ///
-        /// при закрытии пациента удаляем CardItemViewModel
-        /// сворачиваем элемент дерева
+        /// при закрытии сворачиваем элемент дерева
         /// </summary>
         private void viewer_OpenedChanged(object sender, PatientViewer.OpeningEventArgs e)
         {
@@ -152,9 +193,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (holder is Patient)
                 {
-                    itemVm = new CardItemViewModel(holder);
-                    TopCardItems.Add(itemVm);
-
                     patient.CoursesChanged += patient_CoursesChanged;
                     foreach (var item in patient.Courses)
                     {
@@ -175,8 +213,6 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         item.AppointmentsChanged -= course_AppointmentsChanged;
                     }
-                    TopCardItems.Remove(itemVm);
-                    if (itemVm != null) itemVm.Dispose(); // если последний - удален при переходе к списку пациентов
                 }
 
                 if (itemVm != null)
@@ -205,7 +241,10 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     var near = viewer.OpenedPatient.Courses.ElementNear(e.OldStartingIndex);
                     if (near == null)
+                    {
+                        viewer.OpenedCourse = null;
                         NavigateTo(viewer.OpenedPatient);
+                    }
                     else
                         NavigateTo(near);
                 }
@@ -227,7 +266,10 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     var near = viewer.OpenedCourse.Appointments.ElementNear(e.OldStartingIndex);
                     if (near == null)
+                    {
+                        viewer.OpenedAppointment = null;
                         NavigateTo(viewer.OpenedCourse);
+                    }
                     else
                         NavigateTo(near);
                 }
@@ -245,9 +287,9 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        protected virtual void OnCurrentChanging(HrsHolderEventArgs e)
+        protected virtual void OnNavigating(HrsHolderEventArgs e)
         {
-            logger.DebugFormat("CurrentChanging to {0}", e.holder);
+            logger.DebugFormat("Navigating to {0}", e.holder);
 
             var h = Navigating;
             if (h != null)

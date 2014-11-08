@@ -24,18 +24,28 @@ namespace Tests.CardTests
         protected HealthRecord hr1;
         protected HealthRecord hr2;
 
+        Patient p3;
+        private Course c4;
+        private Appointment a5;
+
         [TestInitialize]
         public void Init()
         {
             d1 = session.Get<Doctor>(1);
             p1 = session.Get<Patient>(1);
+            course1 = session.Get<Course>(1);
+            course2 = session.Get<Course>(2);
+
             AuthorityController.LogIn(d1);
 
             app1 = course1.Appointments.First();
             app2 = course1.Appointments.Last();
 
-            Assert.IsTrue(course1.Patient == p1);
-            Assert.IsTrue(course2.Patient == p1);
+
+            // empty, for deletions
+            p3 = session.Get<Patient>(3);
+            c4 = session.Get<Course>(4);
+            a5 = session.Get<Appointment>(5);
         }
 
         [TestMethod]
@@ -136,6 +146,33 @@ namespace Tests.CardTests
             var card = new CardViewModel(app1, true);
 
             Assert.AreEqual(app1, card.Navigator.Current.Holder);
+        }
+
+        [TestMethod]
+        public void DeleteAppCoursePatient()
+        {
+            var card = new CardViewModel(a5, true);
+            IHrsHolder holder = null;
+            bool removed = false;
+            card.Navigator.Navigating += (s, e) =>
+            {
+                holder = e.holder;
+            };
+            card.LastItemRemoved += (s, e) =>
+            {
+                removed = true;
+            };
+            card.Navigator.Current.DeleteCommand.Execute(null);
+            Assert.IsTrue(holder == c4);
+
+            card.Navigator.Current.DeleteCommand.Execute(null);
+            Assert.IsTrue(holder == p3);
+
+            card.Navigator.Current.DeleteCommand.Execute(null);
+            Assert.IsTrue(holder == null);
+            Assert.IsTrue(removed);
+
+
         }
     }
 }

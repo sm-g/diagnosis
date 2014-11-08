@@ -193,11 +193,13 @@ INSERT INTO [Patient] ([ID], [Label], [LastName], [MiddleName], [FirstName], [Is
 INSERT INTO [Course] ([ID], [PatientID], [StartDate], [EndDate], [DoctorID]) VALUES (1, 1, '2014-03-07 00:00:00', '2014-03-14 00:00:00', 1);
 INSERT INTO [Course] ([ID], [PatientID], [StartDate], [EndDate], [DoctorID]) VALUES (2, 1, '2013-05-29 00:00:00', NULL, 1);
 INSERT INTO [Course] ([ID], [PatientID], [StartDate], [EndDate], [DoctorID]) VALUES (3, 5, '2014-05-04 00:00:00', NULL, 1);
+INSERT INTO [Course] ([ID], [PatientID], [StartDate], [EndDate], [DoctorID]) VALUES (4, 3, '2014-05-04 00:00:00', NULL, 1);
 
 INSERT INTO [Appointment] ([ID], [DateAndTime], [CourseID], [DoctorID]) VALUES (1, '2014-03-10 07:39:48', 1, 1);
 INSERT INTO [Appointment] ([ID], [DateAndTime], [CourseID], [DoctorID]) VALUES (2, '2014-03-14 09:03:56', 1, 1);
 INSERT INTO [Appointment] ([ID], [DateAndTime], [CourseID], [DoctorID]) VALUES (3, '2014-05-29 02:45:51', 2, 1);
 INSERT INTO [Appointment] ([ID], [DateAndTime], [CourseID], [DoctorID]) VALUES (4, '2014-06-03 05:39:52', 2, 1);
+INSERT INTO [Appointment] ([ID], [DateAndTime], [CourseID], [DoctorID]) VALUES (5, '2014-06-03 05:39:52', 4, 1);
 
 INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[HrCategoryID],[FromYear],[FromMonth],[FromDay],[Unit],[IsDeleted]) VALUES (1,NULL,NULL,1,NULL,5,2013,11,NULL,'NotSet',0);
 INSERT INTO [HealthRecord] ([ID],[PatientID],[CourseID],[AppointmentID],[Comment],[HrCategoryID],[FromYear],[FromMonth],[FromDay],[Unit],[IsDeleted]) VALUES (2,NULL,NULL,1,NULL,3,2013,12,NULL,'NotSet',0);
