@@ -11,7 +11,6 @@ namespace Diagnosis.ViewModels.Screens
         private readonly Patient patient;
         private PatientViewModel _vm;
         private bool shouldCommit;
-        private bool updateLabel = false;
 
         public PatientViewModel Patient
         {
@@ -25,7 +24,6 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     _vm = value;
                     OnPropertyChanged(() => Patient);
-                    OnPropertyChanged(() => IsUnsaved);
                 }
             }
         }
@@ -36,11 +34,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    if (patient.IsTransient)
-                        updateLabel = true;
-                    Session.SaveOrUpdate(patient);
-                    if (updateLabel)
-                        patient.Label = patient.Id.ToString();
+                    Save();
                     shouldCommit = true;
 
                     this.Send(Events.LeavePatientEditor, patient.AsParams(MessageKeys.Patient));
@@ -54,15 +48,11 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    if (patient.IsTransient)
-                        updateLabel = true;
-                    Session.SaveOrUpdate(patient);
-                    if (updateLabel)
-                        patient.Label = patient.Id.ToString();
+                    Save();
                     shouldCommit = true;
 
-                    this.Send(Events.AddPatient);
-                }, () => CanSave());
+                    this.Send(Events.CreatePatient);
+                }, () => CanSaveAndCreate());
             }
         }
 
@@ -79,18 +69,20 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public RelayCommand StartCourseCommand
+        public RelayCommand SaveAndOpenAppCommand
         {
             get
             {
                 return new RelayCommand(() =>
                 {
-                    Session.SaveOrUpdate(patient); // no
+                    Save();
                     shouldCommit = true;
 
                     var course = AuthorityController.CurrentDoctor.StartCourse(patient);
-                    this.Send(Events.OpenCourse, course.AsParams(MessageKeys.Course));
-                });
+                    var app = course.AddAppointment(AuthorityController.CurrentDoctor);
+
+                    this.Send(Events.OpenAppointment, app.AsParams(MessageKeys.Appointment));
+                }, () => CanSaveAndOpenApp());
             }
         }
 
@@ -126,7 +118,30 @@ namespace Diagnosis.ViewModels.Screens
 
         private bool CanSave()
         {
-            return (patient.IsTransient || patient.IsDirty) && patient.IsValid();
+            return (patient.IsTransient || patient.IsDirty) && patient.IsValid(); // есть изменения или при создании пациента
+        }
+
+        private bool CanSaveAndCreate()
+        {
+            return patient.IsValid();
+        }
+
+        private bool CanSaveAndOpenApp()
+        {
+            return patient.IsTransient && patient.IsValid(); // только при создании пациента
+        }
+
+        private void Save()
+        {
+            // получаем метку для нового
+            bool updateLabel = false;
+            if (patient.IsTransient)
+                updateLabel = true;
+
+            Session.SaveOrUpdate(patient);
+
+            if (updateLabel)
+                patient.Label = patient.Id.ToString();
         }
 
         protected override void Dispose(bool disposing)

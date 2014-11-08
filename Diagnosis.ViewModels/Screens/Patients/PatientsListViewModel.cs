@@ -73,7 +73,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Events.AddPatient);
+                    this.Send(Events.CreatePatient);
                 });
             }
         }

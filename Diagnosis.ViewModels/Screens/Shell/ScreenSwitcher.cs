@@ -9,7 +9,6 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    [Flags]
     public enum Screens
     {
         Login, Patients, Words, Card, PatientEditor
@@ -23,7 +22,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public ScreenSwitcher()
         {
-            this.Subscribe(Events.AddPatient, (e) =>
+            this.Subscribe(Events.CreatePatient, (e) =>
             {
                 // открываем экран редактора пациента, в нём новый пациент
                 OpenScreen(Screens.PatientEditor, replace: true);

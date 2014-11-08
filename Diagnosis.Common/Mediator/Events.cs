@@ -32,7 +32,7 @@ namespace Diagnosis.Common
     public enum Events
     {
         // for ScreenSwitcher
-        AddPatient,
+        CreatePatient,
         OpenPatient,
         OpenCourse,
         OpenAppointment,
