@@ -71,6 +71,28 @@ namespace Diagnosis.Models
             var emptyHrs = holder.HealthRecords.Where(hr => hr.IsEmpty()).ToList();
             emptyHrs.ForEach(hr => holder.RemoveHealthRecord(hr));
         }
+
+        /// <summary>
+        /// Пациент, к которому относится держатель.
+        /// </summary>
+        /// <param name="holder"></param>
+        public static Patient GetPatient(this IHrsHolder holder)
+        {
+            if (holder is Patient)
+            {
+                return holder as Patient;
+            }
+            if (holder is Course)
+            {
+                return (holder as Course).Patient;
+            }
+            if (holder is Appointment)
+            {
+                return (holder as Appointment).Course.Patient;
+            }
+
+            throw new ArgumentOutOfRangeException("holder");
+        }
     }
 
     public static class IDomainEntityExtensions
