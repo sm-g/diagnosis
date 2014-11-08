@@ -21,7 +21,7 @@
             <MenuItem Header="Добавить курс" Command="{Binding StartCourseCommand}" />
             <MenuItem Header="Добавить осмотр" Command="{Binding AddAppointmentCommand}" />
             <MenuItem Header="Открыть" Command="{Binding OpenCommand}" />
-            <MenuItem Header="Удалить" Command="{Binding DeleteCommand}" />
+            <MenuItem Header="Удалить" InputGestureText="Del" Command="{Binding DeleteCommand}" />
         </ContextMenu>
     </UserControl.ContextMenu>
 

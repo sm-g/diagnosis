@@ -33,6 +33,7 @@
             <InputBindingCollection x:Shared="False" x:Key="CardElementsInputBindings">
                 <!--<KeyBinding Key="Space" Command="{Binding OpenCommand}" />-->
                 <KeyBinding Key="Enter" Command="{Binding OpenCommand}" />
+                <KeyBinding Key="Del" Command="{Binding DeleteCommand}" />
                 <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding OpenCommand}" />
             </InputBindingCollection>
 
