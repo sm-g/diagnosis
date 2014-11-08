@@ -14,12 +14,9 @@ using System.Windows.Shapes;
 
 namespace Diagnosis.App.Screens
 {
-    /// <summary>
-    /// Interaction logic for NewCard.xaml
-    /// </summary>
-    public partial class Card3 : UserControl
+    public partial class Card : UserControl
     {
-        public Card3()
+        public Card()
         {
             InitializeComponent();
         }

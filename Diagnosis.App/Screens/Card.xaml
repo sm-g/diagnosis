@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Diagnosis.App.Screens.CardTree"
+﻿<UserControl x:Class="Diagnosis.App.Screens.Card"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -13,10 +13,10 @@
              mc:Ignorable="d"
              d:DataContext="{DynamicResource Context}"
              d:DesignHeight="300" d:DesignWidth="600">
-    <!-- CardTreeViewModel -->
+    <!-- CardViewModel -->
     <UserControl.Resources>
         <ResourceDictionary>
-            <vm:CardTreeViewModel x:Key="Context" />
+            <vm:CardViewModel x:Key="Context" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -42,7 +42,7 @@
                         <DataTrigger Value="True">
                             <DataTrigger.Binding>
                                 <MultiBinding Converter="{StaticResource EqualityToBool}">
-                                    <Binding Path="DataContext.CurrentHolder" RelativeSource="{RelativeSource AncestorType=screen:CardTree}" />
+                                    <Binding Path="DataContext.CurrentHolder" RelativeSource="{RelativeSource AncestorType=screen:Card}" />
                                     <Binding />
                                 </MultiBinding>
                             </DataTrigger.Binding>

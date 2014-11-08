@@ -46,11 +46,10 @@ namespace Tests.CardTests
         {
             // открываем курс
             var card = new CardViewModel(course1, true);
-            Assert.AreEqual(course1, card.Course.course);
+            Assert.AreEqual(course1, card.Navigator.Current.Holder);
 
             // открывается последний осмотр
-            Assert.IsNotNull(card.Appointment);
-            Assert.AreEqual(app2, card.Appointment.appointment);
+            Assert.AreEqual(app2, card.Navigator.Current.Holder);
         }
 
         [TestMethod]
@@ -97,13 +96,13 @@ namespace Tests.CardTests
             // открываем пациента
             var card = new CardViewModel(p1, true);
 
-            Assert.AreEqual(p1, card.Patient.patient);
+            Assert.AreEqual(p1, card.Navigator.Current.Holder);
 
             // начинаем курс
             d1.StartCourse(p1);
 
             // курс открывается
-            Assert.AreEqual(p1.Courses.LastOrDefault(), card.Course.course);
+            Assert.AreEqual(p1.Courses.LastOrDefault(), card.Navigator.Current.Holder);
         }
 
         [TestMethod]
@@ -111,27 +110,27 @@ namespace Tests.CardTests
         {
             // открываем курс
             var card = new CardViewModel(course2, true);
-            Assert.IsTrue(course2.End == null); // можно добавить осмотр
+            Assert.IsFalse(course2.IsEnded); // можно добавить осмотр
 
             // добавляем осмотр
-            card.Course.AddAppointmentCommand.Execute(null);
+            card.Navigator.Current.AddAppointmentCommand.Execute(null);
 
             // осмотр открывается
-            Assert.AreEqual(course2.Appointments.LastOrDefault(), card.Appointment.appointment);
+            Assert.AreEqual(course2.Appointments.LastOrDefault(), card.Navigator.Current.Holder);
         }
 
         [TestMethod]
         public void OpenPatient()
         {
             var card = new CardViewModel(p1, true);
-            Assert.AreEqual(p1, card.Patient.patient);
+            Assert.AreEqual(p1, card.Navigator.Current.Holder);
         }
 
         [TestMethod]
         public void OpenCourse()
         {
             var card = new CardViewModel(course1, true);
-            Assert.AreEqual(course1, card.Course.course);
+            Assert.AreEqual(course1, card.Navigator.Current.Holder);
         }
 
         [TestMethod]
@@ -139,7 +138,7 @@ namespace Tests.CardTests
         {
             var card = new CardViewModel(app1, true);
 
-            Assert.AreEqual(app1, card.Appointment.appointment);
+            Assert.AreEqual(app1, card.Navigator.Current.Holder);
         }
     }
 }

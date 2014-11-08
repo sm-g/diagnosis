@@ -11,9 +11,9 @@ using System.Windows;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public partial class CardTreeViewModel : ScreenBase
+    public partial class CardViewModel : ScreenBase
     {
-        private static readonly ILog logger = LogManager.GetLogger(typeof(CardTreeViewModel));
+        private static readonly ILog logger = LogManager.GetLogger(typeof(CardViewModel));
         private static PatientViewer viewer; // static to hold history
         private HrListViewModel _hrList;
         private HrEditorViewModel _hrEditor;
@@ -23,7 +23,7 @@ namespace Diagnosis.ViewModels.Screens
         private EventMessageHandler handler;
         private NavigatorViewModel navigator;
 
-        public CardTreeViewModel(object entity, bool resetHistory = false)
+        public CardViewModel(object entity, bool resetHistory = false)
         {
             if (resetHistory || viewer == null)
                 viewer = new PatientViewer();
@@ -94,7 +94,7 @@ namespace Diagnosis.ViewModels.Screens
         /// For XAML-editor only
         /// </summary>
         [Obsolete]
-        public CardTreeViewModel()
+        public CardViewModel()
         { }
 
         /// <summary>

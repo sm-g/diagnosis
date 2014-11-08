@@ -73,6 +73,7 @@
 
             <ListBox x:Name="suggestions"
                         MaxHeight="100"
+                     SelectionMode="Extended"
                         FocusManager.IsFocusScope="True"
                         ItemsSource="{Binding Suggestions}"
                         SelectedItem="{Binding SelectedSuggestion, Mode=TwoWay}"

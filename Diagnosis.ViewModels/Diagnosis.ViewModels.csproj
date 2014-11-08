@@ -159,7 +159,7 @@
     <Compile Include="Screens\Card\Saver.cs" />
     <Compile Include="Screens\Card\CardItemViewModel.cs" />
     <Compile Include="Screens\Card\CourseEditorViewModel.cs" />
-    <Compile Include="Screens\Card\CardTreeViewModel.cs" />
+    <Compile Include="Screens\Card\CardViewModel.cs" />
     <Compile Include="Screens\Card\CourseViewModel.cs" />
     <Compile Include="Screens\Card\HrListViewModel.cs" />
     <Compile Include="Screens\Card\Managers\AppointmentsManager.cs" />

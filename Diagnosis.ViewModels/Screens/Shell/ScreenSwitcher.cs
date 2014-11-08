@@ -99,7 +99,7 @@ namespace Diagnosis.ViewModels.Screens
                 var hr = e.GetValue<HealthRecord>(MessageKeys.HealthRecord);
 
                 OpenScreen(Screens.Card, hr);
-                (CurrentView as CardTreeViewModel).ToogleHrEditor();
+                (CurrentView as CardViewModel).ToogleHrEditor();
             });
 
             this.Subscribe(Events.OpenHolder, (e) =>
@@ -181,7 +181,7 @@ namespace Diagnosis.ViewModels.Screens
                     case Screens.Card:
                         if (parameter != null)
                         {
-                            var cardVm = new CardTreeViewModel(parameter);
+                            var cardVm = new CardViewModel(parameter);
                             cardVm.LastItemRemoved += (s, e) =>
                             {
                                 OpenScreen(Screens.Patients);
@@ -208,7 +208,7 @@ namespace Diagnosis.ViewModels.Screens
             else
             {
                 if (screen == Screens.Card)
-                    (CurrentView as CardTreeViewModel).Open(parameter);
+                    (CurrentView as CardViewModel).Open(parameter);
             }
         }
 

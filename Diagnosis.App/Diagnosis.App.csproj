@@ -225,8 +225,8 @@
     <Compile Include="Converters\ScopeToLabel.cs" />
     <Compile Include="Converters\InList.cs" />
     <Compile Include="Converters\HrToItemsString.cs" />
-    <Compile Include="Screens\CardTree.xaml.cs">
-      <DependentUpon>CardTree.xaml</DependentUpon>
+    <Compile Include="Screens\Card.xaml.cs">
+      <DependentUpon>Card.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Common\AlignableWrapPanel.cs" />
     <Compile Include="Controls\Common\WrapPanelLastChildFill.cs" />
@@ -319,12 +319,6 @@
     <Compile Include="Converters\BoolToSexSign.cs" />
     <Compile Include="Converters\CountToAppointmentsLabel.cs" />
     <Compile Include="Converters\IntToString.cs" />
-    <Compile Include="Screens\Card3.xaml.cs">
-      <DependentUpon>Card3.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Screens\NewCard.xaml.cs">
-      <DependentUpon>NewCard.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Screens\NewPatientEditor.xaml.cs">
       <DependentUpon>NewPatientEditor.xaml</DependentUpon>
     </Compile>
@@ -508,17 +502,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Screens\CardTree.xaml">
+    <Page Include="Screens\Card.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Screens\Card3.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Screens\NewCard.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Screens\NewPatientEditor.xaml">
       <SubType>Designer</SubType>
