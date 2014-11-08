@@ -90,13 +90,13 @@ namespace Diagnosis.Models
                 { typeof(Patient), () => 
                     {
                         var pat = entity as Patient;
-                        return pat.Courses.All(x => x.IsEmpty() && pat.HealthRecords.All(h => h.IsEmpty()));
+                        return pat.Courses.Count() == 0 && pat.HealthRecords.All(h => h.IsEmpty());
                     } 
                 },
                 { typeof(Course), () => 
                     {
                         var course = entity as Course;
-                        return course.Appointments.All(x => x.IsEmpty() && course.HealthRecords.All(h => h.IsEmpty()));
+                        return course.Appointments.Count() == 0 && course.HealthRecords.All(h => h.IsEmpty());
                     } 
                 },
                 { typeof(Appointment), () => 
