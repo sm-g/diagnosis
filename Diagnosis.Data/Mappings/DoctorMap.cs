@@ -19,19 +19,6 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.IsMale);
             Property(x => x.Settings, m => m.NotNullable(true));
 
-            Set(x => x.Courses, s =>
-            {
-                s.Key(k =>
-                {
-                    k.Column("DoctorID");
-                });
-                s.Inverse(true);
-                s.Cascade(Cascade.All);
-                s.Access(Accessor.Field);
-            }, r =>
-            {
-                r.OneToMany();
-            });
             Set(x => x.Appointments, s =>
             {
                 s.Key(k =>

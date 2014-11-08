@@ -31,9 +31,6 @@ namespace Tests.CardTests
             p1 = session.Get<Patient>(1);
             AuthorityController.LogIn(d1);
 
-            course1 = d1.Courses.ElementAt(0);
-            course2 = d1.Courses.ElementAt(1);
-
             app1 = course1.Appointments.First();
             app2 = course1.Appointments.Last();
 

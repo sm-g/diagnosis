@@ -10,7 +10,6 @@ namespace Diagnosis.Models
 {
     public class Doctor : EntityBase, IDomainObject, IMan
     {
-        private Iesi.Collections.Generic.ISet<Course> courses = new HashedSet<Course>();
         private Iesi.Collections.Generic.ISet<Appointment> appointments;
         private string _fn;
         private string _ln;
@@ -83,14 +82,6 @@ namespace Diagnosis.Models
 
         public virtual Speciality Speciality { get; set; }
 
-        public virtual IEnumerable<Course> Courses
-        {
-            get
-            {
-                return courses;
-            }
-        }
-
         public virtual IEnumerable<Appointment> Appointments
         {
             get
@@ -105,7 +96,6 @@ namespace Diagnosis.Models
             Contract.Ensures(patient.Courses.Contains(Contract.Result<Course>()));
 
             var course = new Course(patient, this);
-            courses.Add(course);
             patient.AddCourse(course);
             return course;
         }

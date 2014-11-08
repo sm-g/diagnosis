@@ -44,5 +44,22 @@ namespace Tests
                 tx.Commit();
             }
         }
+
+        [TestMethod]
+        public void MyTestMethod()
+        {
+            var d1 = session.Get<Doctor>(1);
+            AuthorityController.LogIn(d1);
+            using (var tx = session.BeginTransaction())
+            {
+                var p = new Patient();
+                var c = d1.StartCourse(p);
+                p.RemoveCourse(c);
+                Assert.IsTrue(p.Courses.Count() == 0); // see output
+
+                session.SaveOrUpdate(p);
+                tx.Commit();
+            }
+        }
     }
 }
