@@ -16,6 +16,7 @@ namespace Diagnosis.ViewModels.Screens
         private CardItemViewModel _curHolder;
         private bool _closeNestedOnLevelUp;
         private ObservableCollection<Patient> patients;
+        private IHrsHolder lastOpened;
 
         public NavigatorViewModel(PatientViewer viewer)
         {
@@ -41,7 +42,6 @@ namespace Diagnosis.ViewModels.Screens
         public event EventHandler<HrsHolderEventArgs> CurrentChanged;
 
         public event EventHandler<HrsHolderEventArgs> Navigating;
-
         public bool CloseNestedHolderOnLevelUp
         {
             get
@@ -100,7 +100,7 @@ namespace Diagnosis.ViewModels.Screens
             Add(holder);
 
             viewer.Open(holder);
-            Current = FindItemVmOf(holder);
+            Current = FindItemVmOf(lastOpened);
         }
 
         public void Add(IHrsHolder holder)
@@ -176,7 +176,7 @@ namespace Diagnosis.ViewModels.Screens
 
         /// <summary>
         /// при открытии пациента подписываемся на измение коллекций курсов и осмотров в курсах
-        /// раскрываем открытый элемент дерева
+        /// раскрываем открытый элемент дерева, сохраняем последний открытый
         ///
         /// при закрытии сворачиваем элемент дерева
         /// </summary>
@@ -201,6 +201,8 @@ namespace Diagnosis.ViewModels.Screens
                 }
                 itemVm = FindItemVmOf(holder);
                 itemVm.IsExpanded = true;
+
+                lastOpened = holder;
             }
             else
             {

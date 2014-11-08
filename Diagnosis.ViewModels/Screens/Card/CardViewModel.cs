@@ -4,6 +4,7 @@ using Diagnosis.Models;
 using EventAggregator;
 using log4net;
 using System;
+using System.Linq;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 
@@ -21,7 +22,7 @@ namespace Diagnosis.ViewModels.Screens
         private Saver saver;
         private EventMessageHandler handler;
 
-        public CardViewModel(object entity, bool resetHistory = false)
+        public CardViewModel(bool resetHistory = false)
         {
             if (resetHistory || viewer == null)
                 viewer = new PatientViewer();
@@ -66,7 +67,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     Navigator.Remove(holder as Patient);
                     saver.Delete(holder);
-                    if (Navigator.TopCardItems.Count == 0 )
+                    if (Navigator.TopCardItems.Count == 0)
                         OnLastItemRemoved();
                     return;
                 }
@@ -83,16 +84,14 @@ namespace Diagnosis.ViewModels.Screens
                     saver.SaveAll(viewer.OpenedPatient);
                 }
             });
+        }
 
+        public CardViewModel(object entity, bool resetHistory = false)
+            : this(resetHistory)
+        {
             Open(entity);
         }
 
-        /// <summary>
-        /// For XAML-editor only
-        /// </summary>
-        [Obsolete]
-        public CardViewModel()
-        { }
 
         /// <summary>
         /// После удаления всех элементов, карточка пуста.
@@ -164,7 +163,7 @@ namespace Diagnosis.ViewModels.Screens
             viewer = new PatientViewer();
         }
 
-        internal void Open(object parameter)
+        internal void Open(object parameter, bool lastAppOrCourse = false)
         {
             Contract.Requires(parameter != null);
             logger.DebugFormat("open {0}", parameter);
@@ -173,7 +172,14 @@ namespace Diagnosis.ViewModels.Screens
             if (parameter is IHrsHolder)
             {
                 holder = Session.Unproxy(parameter as IHrsHolder);
+
+                if (lastAppOrCourse)
+                    viewer.AutoOpen = true;
+
                 Navigator.NavigateTo(holder);
+
+                if (lastAppOrCourse)
+                    viewer.AutoOpen = false;
             }
             else
             {

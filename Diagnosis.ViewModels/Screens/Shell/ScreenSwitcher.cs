@@ -30,7 +30,7 @@ namespace Diagnosis.ViewModels.Screens
 
             this.Subscribe(Events.OpenPatient, (e) =>
             {
-                // открываем экран карточки и пациента
+                // открываем экран карточки и последний осмотр пациента
                 var pat = e.GetValue<Patient>(MessageKeys.Patient);
 
                 OpenScreen(Screens.Card, pat);
@@ -180,11 +180,12 @@ namespace Diagnosis.ViewModels.Screens
                     case Screens.Card:
                         if (parameter != null)
                         {
-                            var cardVm = new CardViewModel(parameter);
+                            var cardVm = new CardViewModel();
                             cardVm.LastItemRemoved += (s, e) =>
                             {
                                 OpenScreen(Screens.Patients);
                             };
+                            cardVm.Open(parameter, true);
                             CurrentView = cardVm;
                         }
                         else

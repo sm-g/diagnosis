@@ -262,7 +262,9 @@ namespace Diagnosis.ViewModels.Screens
                 Course course = GetLastOpenedFor(patient);
                 if (course == null)
                 {
-                    OpenedCourse = patient.Courses.FirstOrDefault();
+                    OpenedCourse = patient.Courses
+                        .OrderBy(c => c, new CompareCourseByDate())
+                        .LastOrDefault();
                 }
                 else
                 {
@@ -285,20 +287,16 @@ namespace Diagnosis.ViewModels.Screens
             var e = new OpeningEventArgs(course, OpeningAction.Open);
             OnOpenedChanged(e);
 
-            if (!patCourseMap.ContainsKey(OpenedPatient))
-            {
-                // пациент открыт первый раз
-                patCourseMap.Add(OpenedPatient, course);
-            }
-            else
-                patCourseMap[OpenedPatient] = course;
+            patCourseMap[OpenedPatient] = course;
 
             if (AutoOpen)
             {
                 Appointment app = GetLastOpenedFor(course);
                 if (app == null)
                 {
-                    OpenedAppointment = course.Appointments.LastOrDefault();
+                    OpenedAppointment = course.Appointments
+                        .OrderBy(a => a.DateAndTime)
+                        .LastOrDefault();
                 }
                 else
                 {
@@ -321,15 +319,7 @@ namespace Diagnosis.ViewModels.Screens
             var e = new OpeningEventArgs(app, OpeningAction.Open);
             OnOpenedChanged(e);
 
-            if (!courseAppMap.ContainsKey(OpenedCourse))
-            {
-                // курс открыт первый раз
-                courseAppMap.Add(OpenedCourse, app);
-            }
-            else
-            {
-                courseAppMap[OpenedCourse] = app;
-            }
+            courseAppMap[OpenedCourse] = app;
         }
 
         private void OnAppointmentClosed(Appointment app)
