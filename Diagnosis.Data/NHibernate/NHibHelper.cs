@@ -87,7 +87,7 @@ namespace Diagnosis.Data
         public static ISession OpenSession()
         {
             var s = SessionFactory.OpenSession();
-            s.FlushMode = FlushMode.Auto;
+            s.FlushMode = FlushMode.Commit;
 
             if (InMemory)
                 InMemoryHelper.FillData(Configuration, s);

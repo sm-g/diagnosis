@@ -32,6 +32,9 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     t.Rollback();
                     logger.Error(e);
+#if DEBUG
+                    throw;
+#endif
                 }
             }
         }
@@ -67,6 +70,9 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     t.Rollback();
                     logger.Error(e);
+#if DEBUG
+                    throw;
+#endif
                 }
             }
 
@@ -86,6 +92,9 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     t.Rollback();
                     logger.Error(e);
+#if DEBUG
+                    throw;
+#endif
                 }
             }
         }

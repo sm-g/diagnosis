@@ -27,9 +27,9 @@ namespace Diagnosis.Models
     {
         event NotifyCollectionChangedEventHandler HealthRecordsChanged;
         IEnumerable<HealthRecord> HealthRecords { get; }
+        object Actual { get; }
         HealthRecord AddHealthRecord();
         void RemoveHealthRecord(HealthRecord hr);
-        object Actual { get; }
     }
 
 
