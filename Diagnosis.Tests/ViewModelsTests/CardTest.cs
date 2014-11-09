@@ -1,7 +1,9 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.Common;
+using Diagnosis.Models;
 using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Tests.CardTests
@@ -9,62 +11,132 @@ namespace Tests.CardTests
     [TestClass]
     public class CardTest : InMemoryDatabaseTest
     {
-        protected Word w1;
-        protected Word w2;
-        protected Word w3;
-        protected HrItem i1;
-        protected HrItem i2;
-        protected HrItem i3;
-        protected Patient p1;
-        protected Doctor d1;
-        protected Course course1;
-        protected Course course2;
-        protected Appointment app1;
-        protected Appointment app2;
-        protected HealthRecord hr1;
-        protected HealthRecord hr2;
+        private Dictionary<int, Patient> p = new Dictionary<int, Patient>();
+        private Dictionary<int, Course> c = new Dictionary<int, Course>();
+        private Dictionary<int, Appointment> a = new Dictionary<int, Appointment>();
 
-        Patient p3;
-        private Course c4;
-        private Appointment a5;
+        private Doctor d1;
+
+        private static int[] pIds = new[] { 1, 2, 3, 4, 5 };
+        private static int[] cIds = new[] { 1, 2, 3, 4 };
+        private static int[] aIds = new[] { 1, 2, 3, 4, 5 };
 
         [TestInitialize]
         public void Init()
         {
             d1 = session.Get<Doctor>(1);
-            p1 = session.Get<Patient>(1);
-            course1 = session.Get<Course>(1);
-            course2 = session.Get<Course>(2);
-
             AuthorityController.LogIn(d1);
 
-            app1 = course1.Appointments.First();
-            app2 = course1.Appointments.Last();
+            pIds.ForAll((id) => p[id] = session.Get<Patient>(id));
+            cIds.ForAll((id) => c[id] = session.Get<Course>(id));
+            aIds.ForAll((id) => a[id] = session.Get<Appointment>(id));
 
+            // p[3] c[4] a[5] are empty, for deletions
+        }
 
-            // empty, for deletions
-            p3 = session.Get<Patient>(3);
-            c4 = session.Get<Course>(4);
-            a5 = session.Get<Appointment>(5);
+        [TestMethod]
+        public void OpenPatient()
+        {
+            var card = new CardViewModel(p[1], true);
+            Assert.AreEqual(p[1], card.Navigator.Current.Holder);
+        }
+
+        [TestMethod]
+        public void OpenPatientWithLastApp()
+        {
+            var card = new CardViewModel(true);
+            card.Open(p[1], lastAppOrCourse: true);
+
+            Assert.AreEqual(a[4], card.Navigator.Current.Holder);
+        }
+
+        [TestMethod]
+        public void OpenCourse()
+        {
+            var card = new CardViewModel(c[1], true);
+            Assert.AreEqual(c[1], card.Navigator.Current.Holder);
+        }
+
+        [TestMethod]
+        public void OpenApp()
+        {
+            var card = new CardViewModel(a[1], true);
+
+            Assert.AreEqual(a[1], card.Navigator.Current.Holder);
+        }
+
+        [TestMethod]
+        public void OrderCoursesDescending()
+        {
+            var card = new CardViewModel(p[1], true);
+            Assert.AreEqual(c[2], card.Navigator.Current.Children[0].Holder); // 29 мая
+            Assert.AreEqual(c[1], card.Navigator.Current.Children[1].Holder); // 7-14 марта
+        }
+
+        [TestMethod]
+        public void OpenNewCourse()
+        {
+            // открываем пациента
+            var card = new CardViewModel(p[1], true);
+            Assert.AreEqual(p[1], card.Navigator.Current.Holder);
+
+            // начинаем курс
+            d1.StartCourse(p[1]);
+
+            // курс открывается
+            Assert.AreEqual(p[1].Courses.LastOrDefault(), card.Navigator.Current.Holder);
+        }
+
+        [TestMethod]
+        public void OpenNewApp()
+        {
+            // открываем курс
+            var card = new CardViewModel(c[2], true);
+            Assert.IsFalse(c[2].IsEnded); // можно добавить осмотр
+
+            card.Navigator.Current.AddAppointmentCommand.Execute(null);
+
+            Assert.AreEqual(c[2].Appointments.LastOrDefault(), card.Navigator.Current.Holder);
+        }
+
+        [TestMethod]
+        public void OpenNewApp2()
+        {
+            var card = new CardViewModel(p[1], true);
+            Assert.AreEqual(c[2], card.Navigator.Current.Children[0].Holder);
+            Assert.IsFalse(c[2].IsEnded);
+
+            card.Navigator.Current.Children[0].AddAppointmentCommand.Execute(null);
+
+            Assert.AreEqual(c[2].Appointments.LastOrDefault(), card.Navigator.Current.Holder);
+        }
+
+        [TestMethod]
+        public void OpenNewHrInEditor()
+        {
+            var card = new CardViewModel(p[1], true);
+
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            Assert.AreEqual(p[1].HealthRecords.Last(), card.HrEditor.HealthRecord.healthRecord);
         }
 
         [TestMethod]
         public void OpenLastAppInCourse()
         {
             // открываем курс
-            var card = new CardViewModel(course1, true);
-            Assert.AreEqual(course1, card.Navigator.Current.Holder);
+            var card = new CardViewModel(true);
+            card.Open(c[1], lastAppOrCourse: true);
 
             // открывается последний осмотр
-            Assert.AreEqual(app2, card.Navigator.Current.Holder);
+            Assert.AreEqual(a[2], card.Navigator.Current.Holder);
         }
 
         [TestMethod]
-        public void CreateCourseWithFirstHr()
+        public void CreateCourseWithFirstHr()  // fails
         {
-            var card = new CardViewModel(p1, true);
-            d1.StartCourse(p1);
-            var newCourse = p1.Courses.LastOrDefault();
+            var card = new CardViewModel(p[1], true);
+            d1.StartCourse(p[1]);
+            var newCourse = p[1].Courses.LastOrDefault();
 
             // в курсе есть осмотр с записью
             Assert.AreEqual(1, newCourse.Appointments.Count());
@@ -80,78 +152,18 @@ namespace Tests.CardTests
         [TestMethod]
         public void SelectNewHr()
         {
-            var card = new CardViewModel(p1, true);
+            var card = new CardViewModel(p[1], true);
 
             Assert.IsNull(card.HrList.SelectedHealthRecord);
 
             card.HrList.AddHealthRecordCommand.Execute(null);
-            Assert.AreEqual(p1.HealthRecords.Last(), card.HrList.SelectedHealthRecord.healthRecord);
-        }
-
-        [TestMethod]
-        public void OpenNewHrInEditor()
-        {
-            var card = new CardViewModel(p1, true);
-
-            card.HrList.AddHealthRecordCommand.Execute(null);
-            Assert.AreEqual(p1.HealthRecords.Last(), card.HrEditor.HealthRecord.healthRecord);
-        }
-
-        [TestMethod]
-        public void OpenNewCourse()
-        {
-            // открываем пациента
-            var card = new CardViewModel(p1, true);
-
-            Assert.AreEqual(p1, card.Navigator.Current.Holder);
-
-            // начинаем курс
-            d1.StartCourse(p1);
-
-            // курс открывается
-            Assert.AreEqual(p1.Courses.LastOrDefault(), card.Navigator.Current.Holder);
-        }
-
-        [TestMethod]
-        public void OpenNewApp()
-        {
-            // открываем курс
-            var card = new CardViewModel(course2, true);
-            Assert.IsFalse(course2.IsEnded); // можно добавить осмотр
-
-            // добавляем осмотр
-            card.Navigator.Current.AddAppointmentCommand.Execute(null);
-
-            // осмотр открывается
-            Assert.AreEqual(course2.Appointments.LastOrDefault(), card.Navigator.Current.Holder);
-        }
-
-        [TestMethod]
-        public void OpenPatient()
-        {
-            var card = new CardViewModel(p1, true);
-            Assert.AreEqual(p1, card.Navigator.Current.Holder);
-        }
-
-        [TestMethod]
-        public void OpenCourse()
-        {
-            var card = new CardViewModel(course1, true);
-            Assert.AreEqual(course1, card.Navigator.Current.Holder);
-        }
-
-        [TestMethod]
-        public void OpenApp()
-        {
-            var card = new CardViewModel(app1, true);
-
-            Assert.AreEqual(app1, card.Navigator.Current.Holder);
+            Assert.AreEqual(p[1].HealthRecords.Last(), card.HrList.SelectedHealthRecord.healthRecord);
         }
 
         [TestMethod]
         public void DeleteAppCoursePatient()
         {
-            var card = new CardViewModel(a5, true);
+            var card = new CardViewModel(a[5], true);
             IHrsHolder holder = null;
             bool removed = false;
             card.Navigator.Navigating += (s, e) =>
@@ -163,16 +175,14 @@ namespace Tests.CardTests
                 removed = true;
             };
             card.Navigator.Current.DeleteCommand.Execute(null);
-            Assert.IsTrue(holder == c4);
+            Assert.IsTrue(holder == c[4]);
 
             card.Navigator.Current.DeleteCommand.Execute(null);
-            Assert.IsTrue(holder == p3);
+            Assert.IsTrue(holder == p[3]);
 
             card.Navigator.Current.DeleteCommand.Execute(null);
             Assert.IsTrue(holder == null);
             Assert.IsTrue(removed);
-
-
         }
     }
 }

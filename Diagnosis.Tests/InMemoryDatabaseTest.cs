@@ -17,12 +17,13 @@ namespace Tests
         {
             NHibernateHelper.InMemory = true;
             NHibernateHelper.ShowSql = true;
+            NHibernateHelper.FromTest = true;
         }
 
         [TestInitialize]
         public void InMemoryDatabaseTestInit()
         {
-            session = NHibernateHelper.GetSession();
+            session = NHibernateHelper.OpenSession();
         }
 
         [TestCleanup]

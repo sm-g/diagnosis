@@ -22,9 +22,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                if (session == null)
-                    session = NHibernateHelper.GetSession();
-                return session;
+                return NHibernateHelper.GetSession();
             }
         }
 

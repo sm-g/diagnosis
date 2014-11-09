@@ -27,8 +27,9 @@ namespace Diagnosis.Data
 
         public static bool InMemory { get; set; }
         public static bool ShowSql { get; set; }
+        public static bool FromTest { get; set; }
 
-        public static Configuration Configuration
+        private static Configuration Configuration
         {
             get
             {
@@ -61,7 +62,7 @@ namespace Diagnosis.Data
             }
         }
 
-        public static HbmMapping CreateMapping()
+        private static HbmMapping CreateMapping()
         {
             var mapper = new ModelMapper();
             var assemblyContainingMapping = Assembly.GetAssembly(typeof(WordMap));
@@ -91,6 +92,8 @@ namespace Diagnosis.Data
 
             if (InMemory)
                 InMemoryHelper.FillData(Configuration, s);
+            if (FromTest)
+                _session = s;
             return s;
         }
 

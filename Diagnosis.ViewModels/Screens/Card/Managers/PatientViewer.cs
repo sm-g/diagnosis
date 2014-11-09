@@ -264,7 +264,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     OpenedCourse = patient.Courses
                         .OrderBy(c => c, new CompareCourseByDate())
-                        .LastOrDefault();
+                        .LastOrDefault(); // последний курс
                 }
                 else
                 {

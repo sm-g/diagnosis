@@ -99,6 +99,8 @@ namespace Diagnosis.ViewModels.Screens
 
             Add(holder);
 
+            lastOpened = holder; // != если viewer открывает последний осмотр
+
             viewer.Open(holder);
             Current = FindItemVmOf(lastOpened);
         }

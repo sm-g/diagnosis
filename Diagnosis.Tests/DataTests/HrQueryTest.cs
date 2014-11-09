@@ -2,6 +2,7 @@
 using Diagnosis.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using Diagnosis.Common;
 using System.Linq;
 
 namespace Tests
@@ -12,20 +13,14 @@ namespace Tests
         private Dictionary<int, HealthRecord> hr = new Dictionary<int, HealthRecord>();
         private Dictionary<int, Word> w = new Dictionary<int, Word>();
 
+        static int[] hrIds = new[] { 1, 2, 20, 21, 22, 30, 31, 32, 40, 70, 71, 72, 73, 74 };
+        static int[] wIds = new[] { 1, 2, 3, 4, 5, 22, 51, 94 };
+
         [TestInitialize]
         public void Init()
         {
-            var hrIds = new[] { 1, 2, 20, 21, 22, 30, 31, 32, 40, 70, 71, 72, 73, 74 };
-            var wIds = new[] { 1, 2, 3, 4, 5, 22, 51, 94 };
-
-            foreach (var id in hrIds)
-            {
-                hr[id] = session.Get<HealthRecord>(id);
-            }
-            foreach (var id in wIds)
-            {
-                w[id] = session.Get<Word>(id);
-            }
+            hrIds.ForAll((id) => hr[id] = session.Get<HealthRecord>(id));
+            wIds.ForAll((id) => w[id] = session.Get<Word>(id));
         }
 
         [TestMethod]
