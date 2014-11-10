@@ -1,11 +1,11 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.Common;
+using Diagnosis.Models;
 using log4net;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using Diagnosis.Common;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
@@ -28,7 +28,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             this.allowTagConvertion = allowTagConvertion;
 
             Tags = new ObservableCollection<Tag>();
-            AddTag();
+            AddTag(isLast: true);
 
             if (initItems != null)
             {
@@ -64,6 +64,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     (tag) => tag != null);
             }
         }
+
         public RelayCommand<Tag> InverseEnterCommand
         {
             get
@@ -73,6 +74,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     (tag) => tag != null && !recognizer.OnlyWords);
             }
         }
+
         public ObservableCollection<object> Suggestions
         {
             get;
@@ -188,6 +190,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         private bool _showALt;
+
         public bool ShowAltSuggestion
         {
             get
@@ -207,7 +210,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <summary>
         /// Добавляет тег в конец списка.
         /// </summary>
-        public void AddTag(IHrItemObject item = null)
+        public Tag AddTag(IHrItemObject item = null, bool isLast = false)
         {
             Tag tag;
             bool empty = item == null;
@@ -269,10 +272,19 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 }
             };
 
+            if (isLast)
+            {
+                var last = Tags.SingleOrDefault(t => t.IsLast);
+                if (last != null)
+                    last.IsLast = false;
+                tag.IsLast = true;
+            }
+
             if (empty)
                 Tags.Add(tag);
             else
                 Tags.Insert(Tags.Count - 1, tag);
+            return tag;
         }
 
         public void ReplaceTagsWith(IEnumerable<IHrItemObject> items)
@@ -376,7 +388,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
             // добавляем пустое поле
             if (!IsLastTagEmpty)
-                AddTag();
+            {
+                AddTag(isLast: true);
+            }
         }
 
         private object MakeSuggestions(Tag tag)
@@ -433,7 +447,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            Contract.Invariant(inDispose || Tags.Count > 0); // хотя бы один тег - поле ввода
+            Contract.Invariant(inDispose || Tags.Count(t => t.IsLast) == 1); // хотя бы один тег - поле ввода
         }
 
         protected override void Dispose(bool disposing)

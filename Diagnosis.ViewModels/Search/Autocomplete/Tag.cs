@@ -34,6 +34,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private string _query;
         private States _state;
         private bool _isDeleteOnly;
+        private bool _isLast;
         private Signalizations _signal;
 
         /// <summary>
@@ -97,7 +98,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             get
             {
-                return new RelayCommand(OnDeleted);
+                return new RelayCommand(OnDeleted,
+                    () => !IsLast);
             }
         }
 
@@ -242,6 +244,23 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     _signal = value;
                     //  logger.InfoFormat("{0} signals", this);
                     OnPropertyChanged(() => Signalization);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Единственный последний тег — особенный. 
+        /// Не удаляется.
+        /// </summary>
+        public bool IsLast
+        {
+            get { return _isLast; }
+            set
+            {
+                if (_isLast != value)
+                {
+                    _isLast = value;
+                    OnPropertyChanged(() => IsLast);
                 }
             }
         }
