@@ -11,7 +11,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 {
     public class Autocomplete : ViewModelBase
     {
-        public static readonly ILog logger = LogManager.GetLogger(typeof(Autocomplete));
+        private static readonly ILog logger = LogManager.GetLogger(typeof(Autocomplete));
         private readonly bool allowTagConvertion;
         private Tag _selItem;
         private bool _popupOpened;

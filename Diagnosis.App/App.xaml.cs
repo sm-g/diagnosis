@@ -16,7 +16,7 @@ namespace Diagnosis.App
     /// </summary>
     public partial class App : Application
     {
-        public static readonly ILog logger = LogManager.GetLogger(typeof(App));
+        private static readonly ILog logger = LogManager.GetLogger(typeof(App));
 
         public App()
         {

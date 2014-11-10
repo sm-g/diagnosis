@@ -23,7 +23,7 @@ namespace Diagnosis.Data
     [Serializable]
     internal class AuditLogger : IAuditLogger
     {
-        public static readonly ILog logger = LogManager.GetLogger(typeof(AuditLogger));
+        private static readonly ILog logger = LogManager.GetLogger(typeof(AuditLogger));
 
         public void Insert(EntityBase entity)
         {

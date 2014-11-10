@@ -27,7 +27,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
     public class Tag : ViewModelBase
     {
-        public static readonly ILog logger = LogManager.GetLogger(typeof(Tag));
+        private static readonly ILog logger = LogManager.GetLogger(typeof(Tag));
         private readonly bool canConvert;
         private object _blank;
         private bool _focused;
