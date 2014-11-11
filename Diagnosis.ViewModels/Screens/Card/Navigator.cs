@@ -42,21 +42,6 @@ namespace Diagnosis.ViewModels.Screens
         public event EventHandler<HrsHolderEventArgs> CurrentChanged;
 
         public event EventHandler<HrsHolderEventArgs> Navigating;
-        public bool CloseNestedHolderOnLevelUp
-        {
-            get
-            {
-                return _closeNestedOnLevelUp;
-            }
-            set
-            {
-                if (_closeNestedOnLevelUp != value)
-                {
-                    _closeNestedOnLevelUp = value;
-                    OnPropertyChanged(() => CloseNestedHolderOnLevelUp);
-                }
-            }
-        }
 
         public CardItemViewModel Current
         {
@@ -136,16 +121,14 @@ namespace Diagnosis.ViewModels.Screens
 
             TopCardItems.ForAll(x => HightlightLastOpenedFor(x));
 
-            if (CloseNestedHolderOnLevelUp)
+            // close nested for saving
+            if (holder is Patient)
             {
-                if (holder is Patient)
-                {
-                    viewer.OpenedCourse = null;
-                }
-                else if (holder is Course)
-                {
-                    viewer.OpenedAppointment = null;
-                }
+                viewer.OpenedCourse = null;
+            }
+            else if (holder is Course)
+            {
+                viewer.OpenedAppointment = null;
             }
         }
 

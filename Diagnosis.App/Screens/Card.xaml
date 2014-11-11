@@ -42,14 +42,14 @@
                         <DataTrigger Value="True">
                             <DataTrigger.Binding>
                                 <MultiBinding Converter="{StaticResource EqualityToBool}">
-                                    <Binding Path="DataContext.CurrentHolder" RelativeSource="{RelativeSource AncestorType=screen:Card}" />
+                                    <Binding Path="DataContext.Current" RelativeSource="{RelativeSource AncestorType=screen:Card}" />
                                     <Binding />
                                 </MultiBinding>
                             </DataTrigger.Binding>
                             <Setter Property="Background" Value="Orange" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsHighlighted}" Value="True">
-                            <Setter Property="Background" Value="LightBlue" />
+                            <Setter Property="Background" Value="LightCyan" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -80,9 +80,5 @@
                 <editors:HealthRecordEditorShared DataContext="{Binding HrEditor}" />
             </Grid>
         </Border>
-
-        <CheckBox IsChecked="{Binding Navigator.CloseNestedHolderOnLevelUp}" Width="200" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5" Grid.ColumnSpan="2" Grid.Row="1">
-            <TextBlock TextWrapping="Wrap">Закрывать вложенное при переходе вверх</TextBlock>
-        </CheckBox>
     </Grid>
 </UserControl>
