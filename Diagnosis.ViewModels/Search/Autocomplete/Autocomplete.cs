@@ -51,7 +51,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         public event EventHandler<TagEventArgs> TagCompleted;
 
         /// <summary>
-        /// Возникает, когда меняется набор сущностей в тегах. (Завершение редактрования теги или удаление тега.)
+        /// Возникает, когда меняется набор сущностей в тегах. (Завершение редактрования, конвертация или удаление.)
         /// </summary>
         public event EventHandler EntitiesChanged;
 
@@ -302,22 +302,25 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
-        /// Возвращает сущности из тегов.
+        /// Возвращает сущности из тегов по порядку.
         /// </summary>
         public IEnumerable<IHrItemObject> GetEntities()
         {
             Contract.Requires(Tags.All(t => t.State != Tag.States.Typing));
 
+            List<IHrItemObject> result = new List<IHrItemObject>();
             foreach (var tag in Tags)
             {
                 if (tag.BlankType != Tag.BlankTypes.None)
                     foreach (var item in recognizer.MakeEntities(tag))
                     {
-                        yield return item;
+                        result.Add(item);
                     }
                 else if (tag.State != Tag.States.Init)
                     logger.WarnFormat("{0} without entity blank, skip", tag);
             }
+
+            return result;
         }
 
         /// <summary>
@@ -368,7 +371,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
 
             // переходим к вводу нового слова
-            Tags.Last().IsFocused = true;
+            SelectedTag = Tags.Last();
         }
 
         public void CompleteOnLostFocus(Tag tag)
@@ -396,10 +399,12 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private object MakeSuggestions(Tag tag)
         {
             var tagIndex = Tags.IndexOf(tag);
+            var exclude = Tags.Select((t, i) => i != tagIndex ? t.Blank : null); // все сущности кроме сущности редактируемого тега
+
             var results = recognizer.SearchForSuggesstions(
                 query: tag.Query,
                 prevEntityBlank: tagIndex > 0 ? Tags[tagIndex - 1].Blank : null,
-                exclude: Tags.Select((t, i) => i != tagIndex ? t.Blank : null)); // все сущности кроме сущности редактируемого тега
+                exclude: null);
 
             Suggestions.Clear();
             foreach (var item in results)

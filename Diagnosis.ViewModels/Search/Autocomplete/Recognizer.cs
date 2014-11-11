@@ -5,7 +5,6 @@ using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Globalization;
 using System.Linq;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
@@ -14,13 +13,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
     {
         private readonly ISession session;
 
-        /// <summary>
-        /// Создание новых сущностей (слов) из текста запроса. По умолчанию создается коммент.
-        /// </summary>
-        public bool AutoNewFromQuery { get; set; }
+        private List<Word> created = new List<Word>();
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public bool OnlyWords { get; set; }
 
@@ -54,30 +50,25 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 return false;
             return true;
         }
-
         public void SetBlank(Tag tag, object suggestion, bool exactMatchRequired, bool inverse)
         {
-            if (suggestion == null ^ inverse)
+            if (suggestion == null ^ inverse) // direct w\o sugg or inverse with sugg
             {
                 if (CanMakeEntityFrom(tag.Query))
                     tag.Blank = tag.Query; // текст-комментарий
                 else
                     tag.Blank = null; // для поиска
             }
-            else if (!inverse)
+            else if (!inverse) // main
             {
                 if (!exactMatchRequired || Recognizer.Matches(suggestion, tag.Query))
                     tag.Blank = suggestion;
                 else
                     tag.Blank = tag.Query; // запрос не совпал с предположением (CompleteOnLostFocus)
             }
-            else
+            else // inv, no sugg
             {
-                var exists = SearchForSuggesstions(tag.Query, null, null).FirstOrDefault();
-                if (exists != null && Recognizer.Matches(exists, tag.Query))
-                    tag.Blank = exists;
-                else
-                    tag.Blank = new Word(tag.Query);
+                tag.Blank = FirstMatchingOrNewWord(tag.Query);
             }
         }
 
@@ -90,17 +81,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
             else
             {
-                var word = SearchForSuggesstions(tag.Query, null, null).FirstOrDefault();
-                if (Recognizer.Matches(word, tag.Query))
-                {
-                    // берем слово из словаря
-                    tag.Blank = word;
-                }
-                else
-                {
-                    // или создаем слово из запроса
-                    tag.Blank = new Word(tag.Query);
-                }
+                tag.Blank = FirstMatchingOrNewWord(tag.Query);
             }
         }
 
@@ -126,19 +107,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
             switch (tag.BlankType)
             {
-                case Tag.BlankTypes.Query:
-                    if (AutoNewFromQuery)
-                    {
-                        var w = new Word(tag.Blank as string);
-                        tag.Entities = new List<IHrItemObject>() { w };
-                        yield return w;
-                    }
-                    else
-                    {
-                        var c = new Comment(tag.Blank as string);
-                        tag.Entities = new List<IHrItemObject>() { c };
-                        yield return c;
-                    }
+                case Tag.BlankTypes.Query: // нераспознаный запрос
+                    var c = new Comment(tag.Blank as string);
+                    tag.Entities = new List<IHrItemObject>() { c };
+                    yield return c;
                     break;
 
                 case Tag.BlankTypes.Word:
@@ -189,8 +161,21 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 }
             }
 
-
             return results;
+        }
+
+        // первое подходящее слово или новое
+        private Word FirstMatchingOrNewWord(string q)
+        {
+            var exists = (Word)SearchForSuggesstions(q, null, null).FirstOrDefault();
+            if (exists != null && Recognizer.Matches(exists, q))
+                return exists; // берем слово из словаря
+            else
+            {
+                var word = new Word(q); // или создаем слово из запроса
+                created.Add(word);
+                return word;
+            }
         }
 
         /// <summary>
@@ -210,10 +195,12 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
             Word parent = prev as Word;
 
+            var unsaved = created.Where(w => w.Title.StartsWith(query, StringComparison.InvariantCultureIgnoreCase));
+
             if (ShowChildrenFirst)
-                return WordQuery.StartingWithChildrenFirst(session)(parent, query);
+                return WordQuery.StartingWithChildrenFirst(session)(parent, query).Union(unsaved);
             else
-                return WordQuery.StartingWith(session)(query);
+                return WordQuery.StartingWith(session)(query).Union(unsaved);
         }
     }
 }
