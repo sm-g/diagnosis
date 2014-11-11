@@ -92,6 +92,11 @@ namespace Diagnosis.ViewModels.Screens
             Open(entity);
         }
 
+        /// <summary>
+        /// For XAML
+        /// </summary>
+        [Obsolete]
+        public CardViewModel() { }
 
         /// <summary>
         /// После удаления всех элементов, карточка пуста.

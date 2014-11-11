@@ -180,7 +180,7 @@ namespace Diagnosis.ViewModels.Screens
                     case Screens.Card:
                         if (parameter != null)
                         {
-                            var cardVm = new CardViewModel();
+                            var cardVm = new CardViewModel(false);
                             cardVm.LastItemRemoved += (s, e) =>
                             {
                                 OpenScreen(Screens.Patients);

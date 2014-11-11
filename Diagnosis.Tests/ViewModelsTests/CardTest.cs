@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Tests.CardTests
+namespace Tests
 {
     [TestClass]
     public class CardTest : InMemoryDatabaseTest
