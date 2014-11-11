@@ -116,6 +116,8 @@ namespace Diagnosis.ViewModels.Screens
                 return;
 
             Current.IsSelected = true;
+            Current.IsExpanded = true;
+            Current.ExpandParents();
 
             var holder = Current.Holder;
 
@@ -170,7 +172,6 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Requires(e.entity is IHrsHolder);
             logger.DebugFormat("{0} {1} {2}", e.action, e.entity.GetType().Name, e.entity);
 
-            CardItemViewModel itemVm;
             var holder = e.entity as IHrsHolder;
             var patient = holder as Patient;
 
@@ -184,15 +185,11 @@ namespace Diagnosis.ViewModels.Screens
                         item.AppointmentsChanged += course_AppointmentsChanged;
                     }
                 }
-                itemVm = FindItemVmOf(holder);
-                itemVm.IsExpanded = true;
 
                 lastOpened = holder;
             }
             else
             {
-                itemVm = FindItemVmOf(holder);
-
                 if (holder is Patient)
                 {
                     patient.CoursesChanged -= patient_CoursesChanged;
@@ -200,11 +197,6 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         item.AppointmentsChanged -= course_AppointmentsChanged;
                     }
-                }
-
-                if (itemVm != null)
-                {
-                    itemVm.IsExpanded = false;
                 }
             }
         }

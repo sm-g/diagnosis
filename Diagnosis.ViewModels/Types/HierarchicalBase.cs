@@ -166,6 +166,15 @@ namespace Diagnosis.ViewModels
             return (T)this;
         }
 
+        public void ExpandParents()
+        {
+            if (Parent != null)
+            {
+                Parent.IsExpanded = true;
+                Parent.ExpandParents();
+            }
+        }
+
         protected virtual void OnChildrenChanged(HierarchicalEventAgrs<T> e)
         {
             var h = ChildrenChanged;

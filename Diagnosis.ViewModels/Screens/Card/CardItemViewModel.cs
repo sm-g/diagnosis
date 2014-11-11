@@ -127,25 +127,7 @@ namespace Diagnosis.ViewModels.Screens
                     OnPropertyChanged(() => IsHighlighted);
                 }
             }
-        }
-
-        protected override void OnSelectedChanged()
-        {
-            base.OnSelectedChanged();
-            if (IsSelected)
-            {
-                ExpandParents();
-            }
-        }
-
-        private void ExpandParents()
-        {
-            if (Parent != null)
-            {
-                Parent.IsExpanded = true;
-                Parent.ExpandParents();
-            }
-        }
+        }       
 
         private void nested_IHrsHolders_Changed(object sender, NotifyCollectionChangedEventArgs e)
         {

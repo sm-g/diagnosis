@@ -28,5 +28,7 @@ namespace Diagnosis.ViewModels
         T Remove(IEnumerable<T> items);
 
         void Remove();
+
+        void ExpandParents();
     }
 }
