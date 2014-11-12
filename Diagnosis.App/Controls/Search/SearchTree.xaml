@@ -47,7 +47,7 @@
         <Popup x:Name="popup"
                IsOpen="{Binding IsResultsVisible, Mode=TwoWay}"
                PlacementTarget="{Binding ElementName=input, Mode=OneWay}">
-            <controls:FullTree x:Name="results" DataContext="{Binding Filter.Results}">
+            <controls:FullTree x:Name="results" ItemsSource="{Binding Filter.Results}">
                 <controls:FullTree.ItemContainerStyle>
                     <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}">
                         <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />

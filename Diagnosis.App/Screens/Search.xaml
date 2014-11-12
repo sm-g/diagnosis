@@ -176,7 +176,7 @@
             </StackPanel>
         </Expander>
 
-        <controls:FullTree DataContext="{Binding Results}" Grid.Row="2" Margin="5,5,5,10"  Visibility="{Binding Results.Count, Converter={StaticResource CountToVisibility}}">
+        <controls:FullTree ItemsSource="{Binding Results}" Grid.Row="2" Margin="5,5,5,10"  Visibility="{Binding Results.Count, Converter={StaticResource CountToVisibility}}">
             <controls:FullTree.ItemContainerStyle>
                 <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}">
                     <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />

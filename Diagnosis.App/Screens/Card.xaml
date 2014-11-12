@@ -34,7 +34,7 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <controls:FullTree DataContext="{Binding Navigator.TopCardItems}" Grid.RowSpan="2">
+        <controls:FullTree ItemsSource="{Binding Navigator.TopCardItems}" Grid.RowSpan="2">
             <controls:FullTree.ItemContainerStyle>
                 <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}">
                     <Setter Property="controls:Attached.InputBindings" Value="{StaticResource CardElementsInputBindings}" />
@@ -42,7 +42,7 @@
                         <DataTrigger Value="True">
                             <DataTrigger.Binding>
                                 <MultiBinding Converter="{StaticResource EqualityToBool}">
-                                    <Binding Path="DataContext.Current" RelativeSource="{RelativeSource AncestorType=screen:Card}" />
+                                    <Binding Path="DataContext.Navigator.Current" RelativeSource="{RelativeSource AncestorType=screen:Card}" />
                                     <Binding />
                                 </MultiBinding>
                             </DataTrigger.Binding>

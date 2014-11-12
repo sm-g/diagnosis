@@ -1,6 +1,6 @@
-﻿using System.Windows;
+﻿using System.Collections;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace Diagnosis.App.Controls
 {
@@ -16,6 +16,15 @@ namespace Diagnosis.App.Controls
 
         public TreeView TreeView { get { return tree; } }
 
+        public IEnumerable ItemsSource
+        {
+            get { return (IEnumerable)GetValue(ItemsSourceProperty); }
+            set { SetValue(ItemsSourceProperty, value); }
+        }
+
+        public static readonly DependencyProperty ItemsSourceProperty =
+            DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(FullTree));
+
         public DataTemplate ItemTemplate
         {
             get { return (DataTemplate)GetValue(ItemTemplateProperty); }
@@ -25,8 +34,6 @@ namespace Diagnosis.App.Controls
         public static readonly DependencyProperty ItemTemplateProperty =
             DependencyProperty.Register("ItemTemplate", typeof(DataTemplate), typeof(FullTree));
 
-
-
         public Style ItemContainerStyle
         {
             get { return (Style)GetValue(ItemContainerStyleProperty); }
@@ -35,9 +42,5 @@ namespace Diagnosis.App.Controls
 
         public static readonly DependencyProperty ItemContainerStyleProperty =
             DependencyProperty.Register("ItemContainerStyle", typeof(Style), typeof(FullTree));
-
-
-
-
     }
 }
