@@ -2,6 +2,7 @@
 using Diagnosis.Models;
 using log4net;
 using NHibernate;
+using System.Diagnostics;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -20,6 +21,8 @@ namespace Diagnosis.ViewModels.Screens
         public void SaveHealthRecord(HealthRecord hr)
         {
             if (hr.GetPatient() == savingPatient) return;
+
+            Debug.Assert(session.IsOpen);
 
             session.SaveOrUpdate(hr);
             using (var t = session.BeginTransaction())
@@ -45,6 +48,8 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         public void SaveAll(Patient patient, bool deleteEmptyHrs = false)
         {
+            Debug.Assert(session.IsOpen);
+
             if (savingPatient == patient) return;
 
             savingPatient = patient;

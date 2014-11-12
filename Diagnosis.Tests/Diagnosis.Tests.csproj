@@ -130,6 +130,7 @@
   <ItemGroup>
     <Compile Include="CommonTests\EnumerableExtensionsTest.cs" />
     <Compile Include="SearchTests\DiagnosisSearchTest.cs" />
+    <Compile Include="ViewModelsTests\AutocompleteTest.cs" />
     <Compile Include="ViewModelsTests\CardTest.cs" />
     <Compile Include="CommonTests\SequencePartitionTest.cs" />
     <Compile Include="CommonTests\DateFormatterTest.cs" />
