@@ -1,9 +1,9 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Search;
 using Diagnosis.ViewModels.Search.Autocomplete;
 using EventAggregator;
+using log4net;
 using NHibernate;
 using NHibernate.Linq;
 using System;
@@ -12,11 +12,14 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using Wintellect.PowerCollections;
 
 namespace Diagnosis.ViewModels.Screens
 {
     public class HrEditorViewModel : ViewModelBase
     {
+        private static readonly ILog logger = LogManager.GetLogger(typeof(HrEditorViewModel));
+
         private Autocomplete _autocomplete;
         private PopupSearchViewModel<DiagnosisViewModel> _diagnosisSearch;
 
@@ -88,6 +91,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         #endregion HealthRecord
+
         public bool IsActive
         {
             get
@@ -95,7 +99,6 @@ namespace Diagnosis.ViewModels.Screens
                 return HealthRecord != null;
             }
         }
-
 
         public RelayCommand RevertCommand
         {
@@ -152,52 +155,75 @@ namespace Diagnosis.ViewModels.Screens
             {
                 // меняем элементы записи при завершении или удалении тега
                 var entities = _autocomplete.GetEntities().ToList();
-                SetOrderedHrItems(HealthRecord.healthRecord, entities); // null ref?
+                SetOrderedHrItems(HealthRecord.healthRecord, entities);
             };
 
             OnPropertyChanged("Autocomplete");
         }
 
-        private static void SetOrderedHrItems(HealthRecord hr, List<IHrItemObject> entities)
+        private static void SetOrderedHrItems(HealthRecord hr, List<IHrItemObject> entitiesToBe)
         {
             var hrEntities = hr.HrItems.Select(x => x.Entity).ToList();
-            var toAddItems = entities
-                .Except(hrEntities)
-                .Select(i => new HrItem(hr, i))
-                .ToList();
-            var toRemoveEntities = hrEntities
-                .Except(entities)
-                .ToList();
 
-            // сначала формируем будущие элементы записи
-            var will = new HashSet<HrItem>(hr.HrItems);
-            toAddItems.ForEach(i =>
-            {
-                will.Add(i);
-            });
-            toRemoveEntities.ForEach(e =>
-            {
-                var item = hr.HrItems.First(i => i.Entity == e);
-                will.Remove(item);
-            });
+            var willSet = new OrderedBag<IHrItemObject>(entitiesToBe);
+            var wasSet = new OrderedBag<IHrItemObject>(hrEntities);
+            var toA = willSet.Difference(wasSet);
+            var toR = wasSet.Difference(willSet);
 
-            // ставим порядок
-            var ordered = will.OrderBy(i => entities.IndexOf(i.Entity)).ToList();
-            for (int i = 0; i < ordered.Count; i++)
+            var itemsToRem = new List<HrItem>();
+            var itemsToAdd = new List<HrItem>();
+
+            // items to be in Hr = hr.HrItems - itemsToRem + itemsToAdd
+            var itemsToBe = new List<HrItem>();
+
+            // добалвяем все существующие, чьи сущности не надо убирать
+            for (int i = 0; i < hrEntities.Count; i++)
             {
-                ordered[i].Ord = i;
+                var needRem = toR.Contains(hrEntities[i]);
+                if (needRem)
+                {
+                    toR.Remove(hrEntities[i]);
+                    itemsToRem.Add(hr.HrItems.ElementAt(i));
+                }
+                else
+                {
+                    itemsToBe.Add(hr.HrItems.ElementAt(i));
+                }
+            }
+            // добавляем новые
+            foreach (var item in toA)
+            {
+                var n = new HrItem(hr, item);
+                itemsToAdd.Add(n);
+                itemsToBe.Add(n);
             }
 
-            // добавляем и удаляем элементы уже с порядком
-            toAddItems.ForEach(i =>
+            // индексы начала поиска в автокомплите для каждой сущности
+            var dict = new Dictionary<IHrItemObject, int>();
+
+            // ставим порядок
+            for (int i = 0; i < itemsToBe.Count; i++)
             {
-                hr.AddItem(i);
-            });
-            toRemoveEntities.ForEach(e =>
+                var e = itemsToBe[i].Entity;
+                int start = 0;
+                dict.TryGetValue(e, out start);
+                var index = entitiesToBe.IndexOf(e, start);
+
+                Debug.Assert(index != -1); // itemsToBe contains all entitiesToBe
+
+                dict[e] = index + 1;
+                itemsToBe[i].Ord = index;
+            }
+
+            foreach (var item in itemsToRem)
             {
-                var item = hr.HrItems.First(i => i.Entity == e);
                 hr.RemoveItem(item);
-            });
+            }
+            // добавляем элементы уже с порядком
+            foreach (var item in itemsToAdd)
+            {
+                hr.AddItem(item);
+            }
         }
 
         #endregion AutoComplete
@@ -326,6 +352,7 @@ namespace Diagnosis.ViewModels.Screens
                 OnPropertyChanged(e.PropertyName);
             }
         }
+
         protected virtual void OnUnloaded(HealthRecord hr)
         {
             var h = Unloaded;
@@ -334,7 +361,6 @@ namespace Diagnosis.ViewModels.Screens
                 h(this, new DomainEntityEventArgs(hr));
             }
         }
-
 
         public override string ToString()
         {

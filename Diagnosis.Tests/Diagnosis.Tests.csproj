@@ -104,6 +104,10 @@
     <Reference Include="NHibernate.JetDriver">
       <HintPath>..\packages\NHibernate.JetDriver.2.0.0.1001\lib\net35\NHibernate.JetDriver.dll</HintPath>
     </Reference>
+    <Reference Include="PowerCollections, Version=1.0.5428.35854, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\PowerCollections.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -138,6 +142,8 @@
     <Compile Include="DataTests\HrQueryTest.cs" />
     <Compile Include="DataTests\StartsWithTest.cs" />
     <Compile Include="CommonTests\StringExtensionTest.cs" />
+    <Compile Include="ViewModelsTests\HrEditorTest.cs" />
+    <Compile Include="ModelTests\OrderedBagTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Diagnosis.App\Diagnosis.App.csproj">

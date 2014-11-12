@@ -6,7 +6,6 @@ using Diagnosis.ViewModels.Search;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using Diagnosis.ViewModels;
-using Diagnosis.ViewModels.Search;
 using Diag = Diagnosis.Models.Diagnosis;
 
 namespace Tests.SearchTests
