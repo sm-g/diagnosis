@@ -16,7 +16,7 @@ namespace Diagnosis.Models
     /// <summary>
     /// Сущность в элементе записи.
     /// </summary>
-    public interface IHrItemObject : IDomainObject
+    public interface IHrItemObject : IDomainObject, IComparable<IHrItemObject> // Icd < Measure < Comment < Word
     {
     }
 

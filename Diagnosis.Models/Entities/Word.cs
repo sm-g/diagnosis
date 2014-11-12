@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
-    public class Word : EntityBase, IDomainObject, IHrItemObject
+    public class Word : EntityBase, IDomainObject, IHrItemObject, IComparable<Word>
     {
         private Iesi.Collections.Generic.ISet<Word> children;
         private string _title;
@@ -23,6 +22,7 @@ namespace Diagnosis.Models
         public virtual HrCategory DefaultCategory { get; set; }
 
         public virtual Word Parent { get; set; }
+
         public virtual ObservableCollection<Word> Children
         {
             get
@@ -44,6 +44,20 @@ namespace Diagnosis.Models
         public override string ToString()
         {
             return Title;
+        }
+
+        public virtual int CompareTo(IHrItemObject hio)
+        {
+            var word = hio as Word;
+            if (word != null)
+                return this.CompareTo(word);
+
+            return 1; // 'biggest'
+        }
+
+        public virtual int CompareTo(Word other)
+        {
+            return this.Title.CompareTo(other.Title);
         }
     }
 }

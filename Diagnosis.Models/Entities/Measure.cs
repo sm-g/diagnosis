@@ -10,7 +10,7 @@ using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
-    public class Measure : IDomainObject, IHrItemObject
+    public class Measure : IDomainObject, IHrItemObject, IComparable<Measure>
     {
         HealthRecord _hr;
         public virtual HealthRecord HealthRecord
@@ -59,6 +59,24 @@ namespace Diagnosis.Models
         {
             return string.Format("{0} {1}", Value, Uom);
         }
+        public virtual int CompareTo(IHrItemObject hio)
+        {
+            var icd = hio as IcdDisease;
+            if (icd != null)
+                return 1;
 
+            var measure = hio as Measure;
+            if (measure != null)
+                return this.CompareTo(measure);
+
+            return -1;
+        }
+        public virtual int CompareTo(Measure other)
+        {
+            return 1; // TODO compareTo Measure
+
+            if (this.Uom.Type != other.Uom.Type)
+                return this.Uom.Type.CompareTo(other.Uom.Type);
+        }
     }
 }
