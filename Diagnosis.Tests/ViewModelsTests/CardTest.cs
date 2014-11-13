@@ -175,13 +175,13 @@ namespace Tests
                 removed = true;
             };
             card.Navigator.Current.DeleteCommand.Execute(null);
-            Assert.IsTrue(holder == c[4]);
+            Assert.AreEqual(c[4], holder);
 
             card.Navigator.Current.DeleteCommand.Execute(null);
-            Assert.IsTrue(holder == p[3]);
+            Assert.AreEqual(p[3], holder);
 
             card.Navigator.Current.DeleteCommand.Execute(null);
-            Assert.IsTrue(holder == null);
+            Assert.IsNull(holder);
             Assert.IsTrue(removed);
         }
     }

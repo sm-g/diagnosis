@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Markup;
 using EventAggregator;
 using Diagnosis.Common;
+using System.Diagnostics;
 
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
 
@@ -45,10 +46,7 @@ namespace Diagnosis.App
                     CultureInfo.CurrentCulture.IetfLanguageTag)));
 
                 System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Error;
-                AppDomain.CurrentDomain.UnhandledException += (s1, e1) =>
-                {
-                    logger.ErrorFormat("Unhandled: {0}", e1.ExceptionObject as Exception);
-                };
+                AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 #if DEBUG
                 new DebugOutput(0);
                 new DebugWindow().Show();
@@ -59,6 +57,13 @@ namespace Diagnosis.App
                 Application.Current.ShutdownMode = System.Windows.ShutdownMode.OnMainWindowClose;
                 main.Show();
             };
+        }
+        [DebuggerStepThrough]
+
+        void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            logger.ErrorFormat("Unhandled: {0}", e.ExceptionObject as Exception);
+
         }
     }
 }

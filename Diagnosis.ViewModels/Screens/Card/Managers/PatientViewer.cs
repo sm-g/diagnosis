@@ -145,15 +145,15 @@ namespace Diagnosis.ViewModels.Screens
 
         internal void Close(IHrsHolder holder)
         {
-            if (OpenedPatient == holder)
+            if (OpenedPatient.Equals(holder))
             {
                 OpenedPatient = null;
             }
-            else if (OpenedCourse == holder)
+            else if (OpenedCourse.Equals(holder))
             {
                 OpenedCourse = null;
             }
-            else if (OpenedAppointment == holder)
+            else if (OpenedAppointment.Equals(holder))
             {
                 OpenedAppointment = null;
             }

@@ -14,7 +14,6 @@ namespace Diagnosis.ViewModels.Screens
         private static readonly ILog logger = LogManager.GetLogger(typeof(NavigatorViewModel));
         private PatientViewer viewer;
         private CardItemViewModel _curHolder;
-        private bool _closeNestedOnLevelUp;
         private ObservableCollection<Patient> patients;
         private IHrsHolder lastOpened;
 

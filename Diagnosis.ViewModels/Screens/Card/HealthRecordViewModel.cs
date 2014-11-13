@@ -158,10 +158,6 @@ namespace Diagnosis.ViewModels.Screens
         {
             OnPropertyChanged(e.PropertyName);
 
-            switch (e.PropertyName)
-            {
-
-            }
         }
 
         public override string ToString()

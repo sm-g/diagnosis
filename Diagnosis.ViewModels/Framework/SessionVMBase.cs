@@ -5,7 +5,7 @@ namespace Diagnosis.ViewModels
 {
     public class SessionVMBase : ViewModelBase
     {
-        private ISession session;
+        // private ISession session;
         private IStatelessSession statelessSession;
 
         protected IStatelessSession StatelessSession

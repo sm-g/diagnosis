@@ -13,6 +13,7 @@ namespace Tests
         private string q;
         private string qFull;
         private Word word;
+        static string notExistQ = "qwe";
 
         public Tag First { get { return a.Tags.First(); } }
 
@@ -70,7 +71,7 @@ namespace Tests
         [TestMethod]
         public void QueryNotExisting()
         {
-            a.SelectedTag.Query = "qwe";
+            a.SelectedTag.Query = notExistQ;
 
             Assert.IsTrue(a.Suggestions.Count == 0);
             Assert.IsFalse(a.IsPopupOpen);
@@ -110,12 +111,12 @@ namespace Tests
 
             Assert.IsTrue(First.State == Tag.States.Completed);
             Assert.IsTrue(First.BlankType == Tag.BlankTypes.Word);
-            Assert.IsTrue(First.Blank == word);
+            Assert.AreEqual(word, First.Blank);
 
             var entities = a.GetEntities();
 
-            Assert.IsTrue(entities.Single() == word);
-            Assert.IsTrue(FirstItem as Word == word);
+            Assert.AreEqual(word, entities.Single());
+            Assert.AreEqual(word, FirstItem);
         }
 
         [TestMethod]
@@ -125,7 +126,7 @@ namespace Tests
             a.InverseEnterCommand.Execute(a.SelectedTag);
 
             Assert.IsTrue(First.State == Tag.States.Completed);
-            Assert.IsTrue(First.Blank == q);
+            Assert.AreEqual(q, First.Blank);
             Assert.IsTrue(First.BlankType == Tag.BlankTypes.Query);
 
             var entities = a.GetEntities();
@@ -137,23 +138,23 @@ namespace Tests
         [TestMethod]
         public void AcceptNotExisting()
         {
-            a.SelectedTag.Query = "qwe";
+            a.SelectedTag.Query = notExistQ;
             a.EnterCommand.Execute(a.SelectedTag);
 
             Assert.IsTrue(First.State == Tag.States.Completed);
-            Assert.IsTrue(First.Blank == "qwe");
+            Assert.AreEqual(notExistQ, First.Blank);
             Assert.IsTrue(First.BlankType == Tag.BlankTypes.Query);
 
             var entities = a.GetEntities();
 
             Assert.IsTrue(FirstItem is Comment);
-            Assert.IsTrue((FirstItem as Comment).String == "qwe");
+            Assert.IsTrue((FirstItem as Comment).String == notExistQ);
         }
 
         [TestMethod]
         public void InverseAcceptNotExisting()
         {
-            a.SelectedTag.Query = "qwe";
+            a.SelectedTag.Query = notExistQ;
             a.InverseEnterCommand.Execute(a.SelectedTag);
 
             Assert.IsTrue(First.State == Tag.States.Completed);
@@ -161,12 +162,12 @@ namespace Tests
             Assert.IsTrue(First.Signalization == Signalizations.NewWord);
 
             var newW = First.Blank as Word;
-            Assert.IsTrue(newW.Title == "qwe");
+            Assert.IsTrue(newW.Title == notExistQ);
             Assert.IsTrue(newW.IsTransient);
 
             var entities = a.GetEntities();
 
-            Assert.IsTrue(FirstItem == newW);
+            Assert.AreEqual(newW, FirstItem);
         }
 
         /// <summary>
@@ -175,12 +176,12 @@ namespace Tests
         [TestMethod]
         public void AcceptNotExistingAfterInverseAccept()
         {
-            a.SelectedTag.Query = "qwe";
+            a.SelectedTag.Query = notExistQ;
             a.InverseEnterCommand.Execute(a.SelectedTag);
 
-            a.SelectedTag.Query = "qwe";
+            a.SelectedTag.Query = notExistQ;
 
-            Assert.IsTrue(a.SelectedSuggestion.ToString() == "qwe");
+            Assert.IsTrue(a.SelectedSuggestion.ToString() == notExistQ);
 
             a.EnterCommand.Execute(a.SelectedTag);
             var second = a.Tags.ElementAt(1);
