@@ -54,6 +54,7 @@
                     </Style.Triggers>
                     <Setter Property="controls:Attached.InputBindings" Value="{StaticResource TagInputBindings}" />
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Padding" Value="2" />
                 </Style>
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>

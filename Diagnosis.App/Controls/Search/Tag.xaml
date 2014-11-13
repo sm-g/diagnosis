@@ -6,9 +6,25 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:auto="clr-namespace:Diagnosis.ViewModels.Search.Autocomplete;assembly=Diagnosis.Viewmodels"
              mc:Ignorable="d"
-             d:DesignHeight="20" d:DesignWidth="300">
-    <StackPanel>
-        <TextBox x:Name="text" controls:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
+             d:DesignHeight="25" d:DesignWidth="300">
+    <DockPanel>
+        <DockPanel.Style>
+            <Style TargetType="DockPanel" />
+        </DockPanel.Style>
+
+        <StackPanel x:Name="drag" Orientation="Horizontal" DockPanel.Dock="Left" Width="15" Height="20" Cursor="SizeAll" Background="Transparent">
+            <StackPanel.Resources>
+                <Path x:Key="line" x:Shared="False" Data="M0,0 L0,1" Stretch="Fill" Stroke="Gray"
+                      StrokeDashOffset="2"
+                      StrokeThickness="2"
+                      StrokeDashArray="0,2.5"
+                      StrokeDashCap="Round" />
+            </StackPanel.Resources>
+
+            <ContentPresenter Content="{StaticResource line}" />
+            <ContentPresenter Content="{StaticResource line}" Margin="2,0,0,0" />
+        </StackPanel>
+        <TextBox x:Name="query" controls:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
              Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
              IsReadOnly="{Binding IsDeleteOnly}">
             <TextBox.Style>
@@ -71,5 +87,5 @@
                 </ContextMenu>
             </TextBox.ContextMenu>
         </TextBox>
-    </StackPanel>
+    </DockPanel>
 </UserControl>
