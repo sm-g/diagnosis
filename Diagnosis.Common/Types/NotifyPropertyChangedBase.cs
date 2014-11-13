@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 
 namespace Diagnosis.Common
 {
+    [Serializable]
     public abstract class NotifyPropertyChangedBase : INotifyPropertyChanged
     {
         #region  INotifyPropertyChanged Members

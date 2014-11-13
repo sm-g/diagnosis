@@ -7,14 +7,19 @@ using System.Linq.Expressions;
 
 namespace Diagnosis.Models
 {
+    [Serializable]
     /// <summary>
     /// Сущность БД.
     /// </summary>
     public abstract class EntityBase : NotifyPropertyChangedBase, IEditableObject
     {
+        [NonSerialized]
         private int? cachedHashCode;
+        [NonSerialized]
         private EditableObjectHelper _editHelper;
+        [NonSerialized]
         private object _syncRoot = new object();
+        [NonSerialized]
         private bool? wasChangedBeforeEdit;
 
         public EntityBase()

@@ -4,9 +4,16 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
+    [Serializable]
     public class Word : EntityBase, IDomainObject, IHrItemObject, IComparable<Word>
     {
+        [NonSerialized]
         private Iesi.Collections.Generic.ISet<Word> children;
+        [NonSerialized]
+        private Word _parent;
+        [NonSerialized]
+        private HrCategory _defCat;
+
         private string _title;
 
         public virtual string Title
@@ -19,9 +26,17 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual HrCategory DefaultCategory { get; set; }
+        public virtual HrCategory DefaultCategory
+        {
+            get { return _defCat; }
+            set { _defCat = value; }
+        }
 
-        public virtual Word Parent { get; set; }
+        public virtual Word Parent
+        {
+            get { return _parent; }
+            set { _parent = value; }
+        }
 
         public virtual ObservableCollection<Word> Children
         {
