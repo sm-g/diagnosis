@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Windows;
+using System.Collections.Specialized;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
@@ -28,6 +30,15 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             this.allowTagConvertion = allowTagConvertion;
 
             Tags = new ObservableCollection<Tag>();
+            Tags.CollectionChanged += (s, e) =>
+            {
+                logger.DebugFormat("{0} '{1}' '{2}'", e.Action, e.OldStartingIndex, e.NewStartingIndex);
+
+                // кроме добавления пустого тега
+                if (!(e.Action == NotifyCollectionChangedAction.Add && ((Tag)e.NewItems[0]).State == Tag.States.Init))
+                    OnEntitiesChanged();
+            };
+
             AddTag(isLast: true);
 
             if (initItems != null)
@@ -51,7 +62,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         public event EventHandler<TagEventArgs> TagCompleted;
 
         /// <summary>
-        /// Возникает, когда меняется набор сущностей в тегах. (Завершение редактрования, конвертация или удаление.)
+        /// Возникает, когда меняется набор сущностей в тегах. (Завершение редактирования, конвертация, удаление, cut, paste.)
         /// </summary>
         public event EventHandler EntitiesChanged;
 
@@ -145,11 +156,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        public bool IsLastTagEmpty
+        public Tag LastTag
         {
             get
             {
-                return Tags.Count > 0 && Tags.Last().State == Tag.States.Init;
+                return Tags.LastOrDefault();
             }
         }
 
@@ -217,12 +228,12 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             if (empty)
                 tag = new Tag(allowTagConvertion);
             else
+                // для давления — искать связный тег и добавлять туда сущность
                 tag = new Tag(item, allowTagConvertion);
 
             tag.Deleted += (s, e) =>
             {
                 Tags.Remove(tag);
-                OnEntitiesChanged();
             };
             tag.Converting += (s, e) =>
             {
@@ -274,9 +285,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
             if (isLast)
             {
-                var last = Tags.SingleOrDefault(t => t.IsLast);
-                if (last != null)
-                    last.IsLast = false;
+                if (LastTag != null)
+                    LastTag.IsLast = false;
                 tag.IsLast = true;
             }
 
@@ -312,7 +322,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             foreach (var tag in Tags)
             {
                 if (tag.BlankType != Tag.BlankTypes.None)
-                    foreach (var item in recognizer.MakeEntities(tag))
+                    foreach (var item in recognizer.EntitiesOf(tag)) // у давлния мб две сущности, возвращаем их отдельно
                     {
                         result.Add(item);
                     }
@@ -390,7 +400,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             tag.Validate();
 
             // добавляем пустое поле
-            if (!IsLastTagEmpty)
+            if (LastTag.State != Tag.States.Init)
             {
                 AddTag(isLast: true);
             }
@@ -452,7 +462,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            Contract.Invariant(inDispose || Tags.Count(t => t.IsLast) == 1); // хотя бы один тег - поле ввода
+            Contract.Invariant(inDispose || Tags.Count(t => t.IsLast) == 1); // хотя бы один тег - поле ввода по умолчанию
+            Contract.Invariant(Tags.Count(t => t.State == Tag.States.Typing) <= 1);
         }
 
         protected override void Dispose(bool disposing)
@@ -465,4 +476,5 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             base.Dispose(disposing);
         }
     }
+
 }

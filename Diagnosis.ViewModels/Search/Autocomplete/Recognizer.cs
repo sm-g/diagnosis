@@ -9,6 +9,9 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
+    /// <summary>
+    /// Создает сущности из тегов, ищет предположения.
+    /// </summary>
     public class Recognizer
     {
         private readonly ISession session;
@@ -44,7 +47,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             this.session = session;
         }
 
-        public bool CanMakeEntityFrom(string query)
+        private bool CanMakeEntityFrom(string query)
         {
             if (query.IsNullOrEmpty() || OnlyWords)
                 return false;
@@ -86,12 +89,12 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
-        /// Создает сущности из тега. Может получиться одно слово или один коммент.
+        /// Возвращает сущности из тега. Может получиться одно слово или один коммент.
         /// Кеширует созданные сущности в теге.
         /// </summary>
         /// <param name="blank"></param>
         /// <returns></returns>
-        public IEnumerable<IHrItemObject> MakeEntities(Tag tag)
+        public IEnumerable<IHrItemObject> EntitiesOf(Tag tag)
         {
             Contract.Requires(tag.BlankType != Tag.BlankTypes.None);
 

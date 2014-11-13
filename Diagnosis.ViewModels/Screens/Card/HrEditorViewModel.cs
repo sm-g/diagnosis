@@ -153,8 +153,8 @@ namespace Diagnosis.ViewModels.Screens
 
             _autocomplete.EntitiesChanged += (s, e) =>
             {
-                // меняем элементы записи при завершении или удалении тега
                 var entities = _autocomplete.GetEntities().ToList();
+                // меняем элементы записи
                 SetOrderedHrItems(HealthRecord.healthRecord, entities);
             };
 

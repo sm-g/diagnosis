@@ -47,15 +47,15 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
-        /// Создает тег с сущностью в завершенном состоянии.
+        /// Создает тег с сущностями в завершенном состоянии.
         /// </summary>
-        public Tag(IHrItemObject entity, bool canConvert)
+        public Tag(IHrItemObject item, bool canConvert)
         {
-            Contract.Requires(entity != null);
+            Contract.Requires(item != null);
             this.canConvert = canConvert;
 
-            Blank = entity;
-            Entities = new List<IHrItemObject>() { entity };
+            Blank = item;
+            Entities = new List<IHrItemObject>() { item };
         }
 
         public event EventHandler Deleted;
@@ -109,7 +109,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 return new RelayCommand(() =>
                 {
-                    Entities = null;
                     OnConverting(EventArgs.Empty);
                 },
                 () => canConvert && State != States.Init && !Query.IsNullOrEmpty() && !IsDeleteOnly);
@@ -117,7 +116,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
-        /// Сущности, созданные из тега. При изменении запроса или конвертации сбрасывается.
+        /// Сущности, созданные из тега. При изменении запроса или бланка сбрасывается.
         /// </summary>
         public IEnumerable<IHrItemObject> Entities { get; internal set; }
 
@@ -135,7 +134,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 if (_blank != value)
                 {
-                    logger.DebugFormat("blonk ={0}", value);
+                    logger.DebugFormat("blank ={0}", value);
 
                     _blank = value;
                     OnPropertyChanged("Blank");
@@ -171,8 +170,25 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_focused != value)
                 {
                     _focused = value;
-                    //  Debug.Print("{0} focused = {1}", this, value);
+                    logger.DebugFormat("{0} focused = {1}", this, value);
                     OnPropertyChanged("IsFocused");
+                }
+            }
+        }
+
+        private bool _selected;
+        public bool IsSelected
+        {
+            get
+            {
+                return _selected;
+            }
+            set
+            {
+                if (_selected != value)
+                {
+                    _selected = value;
+                    OnPropertyChanged(() => IsSelected);
                 }
             }
         }
@@ -249,7 +265,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
-        /// Единственный последний тег — особенный. 
+        /// Единственный последний тег для набора текста по умолчанию. 
         /// Не удаляется.
         /// </summary>
         public bool IsLast
@@ -318,6 +334,16 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 h(this, e);
             }
         }
+
+        [ContractInvariantMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+        private void ObjectInvariant()
+        {
+            Contract.Invariant(State != States.Completed || BlankType != BlankTypes.None); // завершенный тег → есть бланк (тег завершается после смены бланка)
+            Contract.Invariant(State != States.Init || (BlankType == BlankTypes.None && Entities == null)); // в начальном состоянии → нет бланка и сущностей
+            // при редактирвоаии нет сущностей
+        }
+
     }
 
     [Serializable]
