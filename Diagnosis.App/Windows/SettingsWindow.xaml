@@ -1,8 +1,8 @@
 ﻿<Window x:Class="Diagnosis.App.Windows.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:windows="clr-namespace:Diagnosis.App.Windows"        
-        windows:DialogCloser.DialogResult="{Binding DialogResult}"
+        xmlns:controls="clr-namespace:Diagnosis.App.Controls"        
+        controls:DialogCloser.DialogResult="{Binding DialogResult}"
         Title="Настройки" Height="150" Width="300" ShowInTaskbar="False" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
     <Window.Resources>
     </Window.Resources>

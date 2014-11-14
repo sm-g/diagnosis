@@ -7,6 +7,7 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:card="clr-namespace:Diagnosis.App.Controls.CardParts"
              xmlns:screen="clr-namespace:Diagnosis.ViewModels.Screens;assembly=Diagnosis.ViewModels"
+             controls:FocusBehavior.FocusFirst="True"
              mc:Ignorable="d"
              d:DataContext="{DynamicResource vm}"
              d:DesignHeight="300" d:DesignWidth="500">
