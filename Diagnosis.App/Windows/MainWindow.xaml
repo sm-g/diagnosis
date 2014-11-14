@@ -71,7 +71,7 @@
         <ContentControl Content="{Binding CurrentView}"
                         Grid.Row="2" />
 
-        <ItemsControl DataContext="{Binding OverlayService}" ItemsSource="{Binding Overlays}" HorizontalAlignment="Right"
+        <ItemsControl DataContext="{Binding OverlayService}" ItemsSource="{Binding Overlays}" HorizontalAlignment="Right" IsTabStop="False"
                       Grid.Row="2">
         </ItemsControl>
     </Grid>
