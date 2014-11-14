@@ -9,6 +9,11 @@
              LostFocus="UserControl_LostFocus"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.CommandBindings>
+        <CommandBinding Command="Paste" Executed="CommandBinding_Executed"/>
+        <CommandBinding Command="Copy" Executed="CommandBinding_Executed"/>
+        <CommandBinding Command="Cut" Executed="CommandBinding_Executed"/>
+    </UserControl.CommandBindings>
     <UserControl.Resources>
         <InputBindingCollection x:Shared="False" x:Key="TagInputBindings">
             <KeyBinding Key="Delete" Command="{Binding DeleteCommand}" />
@@ -27,10 +32,13 @@
     </UserControl.Resources>
     <!-- Autocomplete -->
     <StackPanel>
-        <ListBox x:Name="input" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+        <!--<ToggleButton IsChecked="{Binding IsDrag}" Content="drag" />-->
+        <ListBox x:Name="input" 
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 HorizontalContentAlignment="Stretch"
                  ItemsSource="{Binding Tags}"
                  SelectedItem="{Binding SelectedTag}"
-                 HorizontalContentAlignment="Stretch"
+                 SelectionMode="Extended"                
                  GotFocus="input_GotFocus"
                  LostFocus="input_LostFocus"
                  PreviewKeyDown="input_PreviewKeyDown"
@@ -48,10 +56,14 @@
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                     <Style.Triggers>
-                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                        <!--<Trigger Property="IsKeyboardFocusWithin" Value="True">
                             <Setter Property="IsSelected" Value="True" />
-                        </Trigger>
+                        </Trigger>-->
+                        <!--<DataTrigger Binding="{Binding IsSelected}" Value="True">
+                            <Setter Property="IsSelected" Value="True" />
+                        </DataTrigger>-->
                     </Style.Triggers>
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                     <Setter Property="controls:Attached.InputBindings" Value="{StaticResource TagInputBindings}" />
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     <Setter Property="Padding" Value="2" />
@@ -74,7 +86,6 @@
 
             <ListBox x:Name="suggestions"
                         MaxHeight="100"
-                     SelectionMode="Extended"
                         FocusManager.IsFocusScope="True"
                         ItemsSource="{Binding Suggestions}"
                         SelectedItem="{Binding SelectedSuggestion, Mode=TwoWay}"

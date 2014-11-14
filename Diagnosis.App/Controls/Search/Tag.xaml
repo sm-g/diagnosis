@@ -12,7 +12,9 @@
             <Style TargetType="DockPanel" />
         </DockPanel.Style>
 
-        <StackPanel x:Name="drag" Orientation="Horizontal" DockPanel.Dock="Left" Width="15" Height="20" Cursor="SizeAll" Background="Transparent">
+        <StackPanel x:Name="drag" Orientation="Horizontal" Visibility="{Binding IsLast, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                    DockPanel.Dock="Left" Width="15" Height="20" 
+                    Cursor="SizeAll" Background="Transparent">
             <StackPanel.Resources>
                 <Path x:Key="line" x:Shared="False" Data="M0,0 L0,1" Stretch="Fill" Stroke="Gray"
                       StrokeDashOffset="2"
@@ -47,12 +49,12 @@
                             <Setter Property="ToolTip" Value="Неизвестная единица измерения, сохраняется без единицы" />
                         </DataTrigger>
 
-                        <!--<DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Query}">
+                        <DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Query}">
                             <Setter Property="Foreground" Value="Red" />
-                        </DataTrigger>-->
-                        <!--<DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Comment}">
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Comment}">
                             <Setter Property="FontStyle" Value="Italic" />
-                        </DataTrigger>-->
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Word}">
                             <Setter Property="FontStyle" Value="Normal" />
                         </DataTrigger>

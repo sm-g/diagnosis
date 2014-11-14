@@ -4,10 +4,10 @@ using log4net;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows;
-using System.Collections.Specialized;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
@@ -15,7 +15,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(Autocomplete));
         private readonly bool allowTagConvertion;
-        private Tag _selItem;
+        private Tag _selTag;
         private bool _popupOpened;
         private object prevSelectedSuggestion;
         private Tag _editingTag;
@@ -32,6 +32,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             Tags = new ObservableCollection<Tag>();
             Tags.CollectionChanged += (s, e) =>
             {
+                if (inDispose) return;
+
                 logger.DebugFormat("{0} '{1}' '{2}'", e.Action, e.OldStartingIndex, e.NewStartingIndex);
 
                 // кроме добавления пустого тега
@@ -119,22 +121,27 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             get
             {
-                return _selItem;
+                return _selTag;
             }
             set
             {
-                if (_selItem != value)
+                if (_selTag != value)
                 {
-                    _selItem = value;
+                    _selTag = value;
                     if (value != null)
                     {
-                        _selItem.IsFocused = true;
+                        //    _selTag.IsFocused = true;
                         EditingTag = value;
                     }
 
                     OnPropertyChanged(() => SelectedTag);
                 }
             }
+        }
+
+        private List<Tag> SelectedTags
+        {
+            get { return Tags.Where(t => t.IsSelected).ToList(); }
         }
 
         /// <summary>
@@ -188,7 +195,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
-        /// Не завершать тег при переходе фокуса на попап.
+        /// Тег завершается при потере фокуса.
         /// </summary>
         public bool CanCompleteOnLostFocus
         {
@@ -196,7 +203,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             set
             {
                 _supressCompletion = value;
-                logger.DebugFormat("supress {0}", value);
+                logger.DebugFormat("CanCompleteOnLostFocus {0}", value);
             }
         }
 
@@ -263,9 +270,12 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                         }
 
                         CanCompleteOnLostFocus = true;
+
+                        SelectedTags.Except(tag.ToEnumerable()).ForAll(t => t.IsSelected = false);
+                        tag.IsSelected = true;
                     }
 
-                    // потерялся фокус после перехода на другой тег → завершение введенного текста
+                    // потерялся фокус после перехода не в предположения → завершение введенного текста
                     if (!tag.IsFocused && CanCompleteOnLostFocus)
                     {
                         CompleteOnLostFocus(tag);
@@ -333,6 +343,89 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             return result;
         }
 
+        public void Cut()
+        {
+            var hios = Copy();
+
+            SelectedTags.ForAll(i => Tags.Remove(i));
+
+            LogHrItemObjects("cut", hios);
+        }
+
+        public List<IHrItemObject> Copy()
+        {
+            var completed = SelectedTags.Where(t => t.State == Tag.States.Completed);
+            var hios = SelectedTags
+                 .SelectMany(t => recognizer.EntitiesOf(t))
+                 .ToList();
+
+            var data = new TagData() { ItemObjects = hios };
+            var strings = string.Join(", ", hios);
+
+            IDataObject dataObj = new DataObject(TagData.DataFormat.Name, data);
+            dataObj.SetData(System.Windows.DataFormats.UnicodeText, strings);
+            Clipboard.SetDataObject(dataObj, false);
+
+            LogHrItemObjects("copy", hios);
+            return hios;
+        }
+
+        public void Paste()
+        {
+            TagData data = null;
+
+            var ido = Clipboard.GetDataObject();
+            if (ido.GetDataPresent(TagData.DataFormat.Name))
+            {
+                data = (TagData)ido.GetData(TagData.DataFormat.Name);
+            }
+            if (data != null)
+            {
+                for (int i = 0; i < data.ItemObjects.Count; i++)
+                {
+                    Word word = data.ItemObjects[i] as Word;
+                    if (word != null && word.IsTransient)
+                    {
+                        // копируем несохраненное слово - вставляем другое такое же
+                        // word1.Equals(word2) == false, but word1.CompareTo(word2) == 0
+                        // willSet in SetOrderedHrItems будет с первым совпадающим элементом в entitiesToBe
+                        var same = GetEntities().Where(e => e is Word).Where(e => (e as Word).CompareTo(word) == 0).FirstOrDefault();
+                        if (same != null)
+                        {
+                            data.ItemObjects[i] = same;
+                        }
+                    }
+                }
+                foreach (var item in data.ItemObjects)
+                {
+                    LogHrItemObjects("paste", data.ItemObjects);
+
+                    AddTag(item);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Формат {[id] ToString()[,] ...}
+        /// </summary>
+        private void LogHrItemObjects(string action, IEnumerable<IHrItemObject> hios)
+        {
+            var str = hios.Select(item =>
+            {
+                dynamic entity = item;
+                var pre = "";
+                try
+                {
+                    pre = entity.Id.ToString();
+                }
+                catch
+                {
+                }
+                return string.Format("{0} {1}", pre, item.ToString());
+            });
+            logger.DebugFormat("{0} hios: {1}", action, string.Join(", ", str));
+        }
+
         /// <summary>
         /// Завершает тег.
         /// </summary>
@@ -388,7 +481,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             if (tag.State == Tag.States.Typing)
             {
-                logger.Debug("Complete from VM");
+                logger.Debug("CompleteOnLostFocus");
                 CompleteCommon(tag, prevSelectedSuggestion, true);
             }
         }
@@ -462,8 +555,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            Contract.Invariant(inDispose || Tags.Count(t => t.IsLast) == 1); // хотя бы один тег - поле ввода по умолчанию
-            Contract.Invariant(Tags.Count(t => t.State == Tag.States.Typing) <= 1);
+            Contract.Invariant(inDispose || LastTag.IsLast); // поле ввода по умолчанию
+            Contract.Invariant(Tags.Count(t => t.State == Tag.States.Typing) <= 1); // только один тег редактируется
         }
 
         protected override void Dispose(bool disposing)
@@ -476,5 +569,4 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             base.Dispose(disposing);
         }
     }
-
 }

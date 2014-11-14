@@ -40,7 +40,6 @@ namespace Diagnosis.App.Controls.Search
             }
         }
 
-
         private void input_PreviewKeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.LeftShift)
@@ -48,7 +47,6 @@ namespace Diagnosis.App.Controls.Search
                 Vm.ShowAltSuggestion = false;
             }
         }
-
 
         private void suggestions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -62,6 +60,16 @@ namespace Diagnosis.App.Controls.Search
                 var element = input.ItemContainerGenerator.ContainerFromItem(e.AddedItems[e.AddedItems.Count - 1]) as UIElement;
                 popup.PlacementTarget = element;
             }
+        }
+
+        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (e.Command == ApplicationCommands.Cut)
+                Vm.Cut();
+            if (e.Command == ApplicationCommands.Copy)
+                Vm.Copy();
+            if (e.Command == ApplicationCommands.Paste)
+                Vm.Paste();
         }
 
         #region focus stuff
@@ -81,11 +89,12 @@ namespace Diagnosis.App.Controls.Search
 
             if (outs)
             {
-                logger.Debug("complete from xaml");
+                logger.Debug("autocomplete lost focus");
                 if (Vm != null && Vm.EditingTag != null)
                     Vm.CompleteOnLostFocus(Vm.EditingTag); // также в HrEditor.CloseCurrentHr()
             }
         }
+
         private void input_GotFocus(object sender, RoutedEventArgs e)
         {
             // logger.Debug("input got focus");
@@ -146,11 +155,11 @@ namespace Diagnosis.App.Controls.Search
             return FocusChecker.IsFocusOutsideDepObject(this) && FocusChecker.IsFocusOutsideDepObject(popup.Child);
         }
 
-        IInputElement GetFocusedInScope()
+        private IInputElement GetFocusedInScope()
         {
             return FocusManager.GetFocusedElement(FocusManager.GetFocusScope(this));
         }
-        #endregion
 
+        #endregion focus stuff
     }
 }

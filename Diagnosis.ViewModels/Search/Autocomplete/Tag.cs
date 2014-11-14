@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using Diagnosis.Common;
+using System.Windows;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
@@ -188,6 +189,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_selected != value)
                 {
                     _selected = value;
+                    logger.DebugFormat("{0} selected {1}", this, value);
                     OnPropertyChanged(() => IsSelected);
                 }
             }
@@ -356,5 +358,15 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             this.tag = tag;
         }
+    }
+
+
+    [Serializable]
+    public class TagData
+    {
+        public static readonly DataFormat DataFormat = DataFormats.GetDataFormat("tag");
+        public string Query { get; set; }
+        public object Blank { get; set; }
+        public List<IHrItemObject> ItemObjects { get; set; }
     }
 }
