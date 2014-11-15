@@ -47,12 +47,12 @@
                         <TextBlock Text="Добавить" />
                     </DockPanel>
                 </Button>-->
-                <Button Command="{Binding RevertCommand}" ToolTip="Отменить изменения">
+                <!--<Button Command="{Binding RevertCommand}" ToolTip="Отменить изменения">
                     <DockPanel>
                         <Image Source="{StaticResource undoImage}" />
-                        <!--<TextBlock Text="Отменить" />-->
+                        --><!--<TextBlock Text="Отменить" />--><!--
                     </DockPanel>
-                </Button>
+                </Button>-->
                 <Button Command="{Binding DeleteCommand}" ToolTip="Удалить запись">
                     <DockPanel>
                         <Image Source="{StaticResource deleteImage}"  Width="16" />
