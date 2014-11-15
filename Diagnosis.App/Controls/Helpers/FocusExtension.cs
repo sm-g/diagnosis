@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Input;
 
 namespace Diagnosis.App.Controls
 {
@@ -7,7 +8,13 @@ namespace Diagnosis.App.Controls
     public static class FocusExtension
     {
         public static readonly DependencyProperty IsFocusedProperty =
-            DependencyProperty.RegisterAttached("IsFocused", typeof(bool?), typeof(FocusExtension), new FrameworkPropertyMetadata(IsFocusedChanged));
+            DependencyProperty.RegisterAttached("IsTextBoxFocused", typeof(bool?), typeof(FocusExtension), new FrameworkPropertyMetadata(IsFocusedChanged));
+
+        /// <summary>
+        /// When element got logic focus, call Focus() only if it has keyboard focus.
+        /// </summary>
+        public static readonly DependencyProperty DirectProperty =
+            DependencyProperty.RegisterAttached("Direct", typeof(bool), typeof(FocusExtension));
 
         public static bool? GetIsFocused(DependencyObject element)
         {
@@ -28,6 +35,26 @@ namespace Diagnosis.App.Controls
 
             element.SetValue(IsFocusedProperty, value);
         }
+        public static bool GetDirect(DependencyObject element)
+        {
+            if (element == null)
+            {
+                throw new ArgumentNullException("element");
+            }
+
+            return (bool)element.GetValue(DirectProperty);
+        }
+
+        public static void SetDirect(DependencyObject element, bool? value)
+        {
+            if (element == null)
+            {
+                throw new ArgumentNullException("element");
+            }
+
+            element.SetValue(DirectProperty, value);
+        }
+
 
         private static void IsFocusedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -64,7 +91,8 @@ namespace Diagnosis.App.Controls
 
         private static void FrameworkElement_GotFocus(object sender, RoutedEventArgs e)
         {
-            ((FrameworkElement)sender).SetValue(IsFocusedProperty, true);
+            if (!GetDirect(sender as DependencyObject) || Keyboard.FocusedElement == sender)
+                ((FrameworkElement)sender).SetValue(IsFocusedProperty, true);
         }
 
         private static void FrameworkElement_LostFocus(object sender, RoutedEventArgs e)

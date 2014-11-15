@@ -36,6 +36,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private States _state;
         private bool _isDeleteOnly;
         private bool _isLast;
+        private bool _listItemFocused;
+        private bool _selected;
         private Signalizations _signal;
 
         /// <summary>
@@ -95,24 +97,38 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             Completed
         }
 
-        public RelayCommand DeleteCommand
+        public string Query
         {
             get
             {
-                return new RelayCommand(OnDeleted,
-                    () => !IsLast);
+                return _query;
+            }
+            set
+            {
+                if (Query != value)
+                {
+                    logger.DebugFormat("query ={0}", value);
+                    Contract.Assume(!IsDeleteOnly);
+
+                    State = States.Typing;
+
+                    _query = value;
+                    Entities = null;
+                    OnPropertyChanged("Query");
+                }
             }
         }
 
-        public RelayCommand ConvertCommand
+        public States State
         {
-            get
+            get { return _state; }
+            private set
             {
-                return new RelayCommand(() =>
+                if (_state != value)
                 {
-                    OnConverting(EventArgs.Empty);
-                },
-                () => canConvert && State != States.Init && !Query.IsNullOrEmpty() && !IsDeleteOnly);
+                    _state = value;
+                    OnPropertyChanged("State");
+                }
             }
         }
 
@@ -160,37 +176,41 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        public bool IsFocused
+        public RelayCommand DeleteCommand
         {
             get
             {
-                return _focused;
-            }
-            set
-            {
-                if (_focused != value)
-                {
-                    _focused = value;
-                    logger.DebugFormat("{0} focused = {1}", this, value);
-                    OnPropertyChanged("IsFocused");
-                }
+                return new RelayCommand(OnDeleted,
+                    () => !IsLast);
             }
         }
 
-        private bool _selected;
-        public bool IsSelected
+        public RelayCommand ConvertCommand
         {
             get
             {
-                return _selected;
+                return new RelayCommand(() =>
+                {
+                    OnConverting(EventArgs.Empty);
+                },
+                () => canConvert && State != States.Init && !Query.IsNullOrEmpty() && !IsDeleteOnly);
+            }
+        }
+        #region AutocompleteRelated
+
+        public Signalizations Signalization
+        {
+            get
+            {
+                return _signal;
             }
             set
             {
-                if (_selected != value)
+                if (_signal != value)
                 {
-                    _selected = value;
-                    logger.DebugFormat("{0} selected {1}", this, value);
-                    OnPropertyChanged(() => IsSelected);
+                    _signal = value;
+                    //  logger.InfoFormat("{0} signals", this);
+                    OnPropertyChanged(() => Signalization);
                 }
             }
         }
@@ -214,58 +234,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        public string Query
-        {
-            get
-            {
-                return _query;
-            }
-            set
-            {
-                if (Query != value)
-                {
-                    logger.DebugFormat("query ={0}", value);
-                    Contract.Assume(!IsDeleteOnly);
-
-                    State = States.Typing;
-
-                    _query = value;
-                    Entities = null;
-                    OnPropertyChanged("Query");
-                }
-            }
-        }
-
-        public States State
-        {
-            get { return _state; }
-            private set
-            {
-                if (_state != value)
-                {
-                    _state = value;
-                    OnPropertyChanged("State");
-                }
-            }
-        }
-
-        public Signalizations Signalization
-        {
-            get
-            {
-                return _signal;
-            }
-            set
-            {
-                if (_signal != value)
-                {
-                    _signal = value;
-                    //  logger.InfoFormat("{0} signals", this);
-                    OnPropertyChanged(() => Signalization);
-                }
-            }
-        }
-
         /// <summary>
         /// Единственный последний тег для набора текста по умолчанию. 
         /// Не удаляется.
@@ -282,6 +250,64 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 }
             }
         }
+
+        #endregion
+
+
+        #region ViewRelated
+
+        public bool IsTextBoxFocused
+        {
+            get
+            {
+                return _focused;
+            }
+            set
+            {
+                if (_focused != value)
+                {
+                    _focused = value;
+                    logger.DebugFormat("{0} focused = {1}, focused2 = {2}", this, value, _listItemFocused);
+                    OnPropertyChanged("IsTextBoxFocused");
+                }
+            }
+        }
+        public bool IsListItemFocused
+        {
+            get
+            {
+                return _listItemFocused;
+
+            }
+            set
+            {
+                if (_listItemFocused != value)
+                {
+                    _listItemFocused = value;
+                    logger.DebugFormat("{0} focused2 = {1}, focused = {2}", this, value, _focused);
+
+                    OnPropertyChanged(() => IsListItemFocused);
+                }
+            }
+        }
+        public bool IsSelected
+        {
+            get
+            {
+                return _selected;
+            }
+            set
+            {
+                if (_selected != value)
+                {
+                    _selected = value;
+                    logger.DebugFormat("{0} selected {1}", this, value);
+                    OnPropertyChanged(() => IsSelected);
+                }
+            }
+        }
+
+        #endregion
 
         public void Validate()
         {
@@ -341,7 +367,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            Contract.Invariant(State != States.Completed || BlankType != BlankTypes.None); // завершенный тег → есть бланк (тег завершается после смены бланка)
+            // Contract.Invariant(State != States.Completed || BlankType != BlankTypes.None); // завершенный тег → есть бланк (тег завершается после смены бланка) в поиске бланк мб пустой
             Contract.Invariant(State != States.Init || (BlankType == BlankTypes.None && Entities == null)); // в начальном состоянии → нет бланка и сущностей
             // при редактирвоаии нет сущностей
         }

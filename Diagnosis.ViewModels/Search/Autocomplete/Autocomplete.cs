@@ -145,6 +145,27 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
+        /// Switch focus between textbox and listitem.
+        /// </summary>
+        public RelayCommand EditCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    if (SelectedTag != null)
+                        if (SelectedTag.IsTextBoxFocused)
+                        {
+                            SelectedTag.IsListItemFocused = true;
+                        }
+                        else
+                        {
+                            SelectedTag.IsTextBoxFocused = true;
+                        }
+                });
+            }
+        }
+        /// <summary>
         /// При потере фокуса списком тегов SelectedTag будет null.
         /// </summary>
         public Tag EditingTag
@@ -254,9 +275,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     MakeSuggestions(EditingTag);
                     RefreshPopup();
                 }
-                else if (e.PropertyName == "IsFocused")
+                else if (e.PropertyName == "IsTextBoxFocused")
                 {
-                    if (tag.IsFocused)
+                    if (tag.IsTextBoxFocused)
                     {
                         prevSelectedSuggestion = SelectedSuggestion; // сначала фокус получает выбранный тег
 
@@ -276,7 +297,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     }
 
                     // потерялся фокус после перехода не в предположения → завершение введенного текста
-                    if (!tag.IsFocused && CanCompleteOnLostFocus)
+                    if (!tag.IsTextBoxFocused && CanCompleteOnLostFocus)
                     {
                         CompleteOnLostFocus(tag);
                     }

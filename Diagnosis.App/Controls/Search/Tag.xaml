@@ -26,7 +26,7 @@
             <ContentPresenter Content="{StaticResource line}" />
             <ContentPresenter Content="{StaticResource line}" Margin="2,0,0,0" />
         </StackPanel>
-        <TextBox x:Name="query" controls:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
+        <TextBox x:Name="query" controls:FocusExtension.IsFocused="{Binding IsTextBoxFocused, Mode=TwoWay}"
              Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
              IsReadOnly="{Binding IsDeleteOnly}">
             <TextBox.Style>
