@@ -179,16 +179,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 return GetBlankType(Blank);
             }
         }
-
-        public RelayCommand DeleteCommand
-        {
-            get
-            {
-                return new RelayCommand(OnDeleted,
-                    () => !IsLast);
-            }
-        }
-
         public RelayCommand ConvertCommand
         {
             get
@@ -201,6 +191,35 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
         #region AutocompleteRelated
+
+        public RelayCommand AddLeftCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    autocomplete.AddTag(index: autocomplete.Tags.IndexOf(this));
+                });
+            }
+        }
+        public RelayCommand AddRightCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    autocomplete.AddTag(index: autocomplete.Tags.IndexOf(this) + 1);
+                });
+            }
+        }
+        public RelayCommand DeleteCommand
+        {
+            get
+            {
+                return new RelayCommand(OnDeleted,
+                    () => !IsLast);
+            }
+        }
 
         public Signalizations Signalization
         {

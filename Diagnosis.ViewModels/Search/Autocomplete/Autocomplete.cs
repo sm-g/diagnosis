@@ -267,9 +267,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         public DropTargetHandler DropHandler { get; private set; }
 
         /// <summary>
-        /// Добавляет тег в конец списка.
+        /// Добавляет тег.
         /// </summary>
-        public Tag AddTag(IHrItemObject item = null, bool isLast = false)
+        public Tag AddTag(IHrItemObject item = null, int index = -1, bool isLast = false)
         {
             Tag tag;
             bool empty = item == null;
@@ -341,10 +341,12 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 tag.IsLast = true;
             }
 
-            if (empty)
-                Tags.Add(tag);
-            else
-                Tags.Insert(Tags.Count - 1, tag);
+            if (index < 0 || index > Tags.Count - 1)
+                index = Tags.Count - 1; // перед последним
+            if (isLast)
+                index = Tags.Count;
+
+            Tags.Insert(index, tag);
             return tag;
         }
 
@@ -437,11 +439,12 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                         }
                     }
                 }
+                var index = Tags.IndexOf(SelectedTag);
                 foreach (var item in data.ItemObjects)
                 {
                     LogHrItemObjects("paste", data.ItemObjects);
 
-                    AddTag(item);
+                    AddTag(item, index++);
                 }
             }
         }
@@ -475,7 +478,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
         private void CompleteCommon(Tag tag, object suggestion, bool exactMatchRequired, bool inverse = false)
         {
-            if (tag.Query == "") // пустой тег — удаляем
+            if (tag.Query == "" && !tag.IsLast)
             {
                 tag.DeleteCommand.Execute(null);
             }
