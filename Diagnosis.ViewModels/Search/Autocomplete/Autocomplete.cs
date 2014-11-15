@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
+using GongSolutions.Wpf.DragDrop;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private bool _supressCompletion;
         private object _selectedSuggestion;
         private Recognizer recognizer;
+        private bool _reorder;
         private bool inDispose;
 
         public Autocomplete(Recognizer recognizer, bool allowTagConvertion, IEnumerable<IHrItemObject> initItems)
@@ -29,6 +31,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             this.recognizer = recognizer;
             this.allowTagConvertion = allowTagConvertion;
 
+            DropHandler = new Autocomplete.DropTargetHandler(this);
             Tags = new ObservableCollection<Tag>();
             Tags.CollectionChanged += (s, e) =>
             {
@@ -165,6 +168,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 });
             }
         }
+
         /// <summary>
         /// При потере фокуса списком тегов SelectedTag будет null.
         /// </summary>
@@ -246,6 +250,24 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
+        public bool WithReorder
+        {
+            get
+            {
+                return _reorder;
+            }
+            set
+            {
+                if (_reorder != value)
+                {
+                    _reorder = value;
+                    OnPropertyChanged(() => WithReorder);
+                }
+            }
+        }
+
+        public DropTargetHandler DropHandler { get; private set; }
+
         /// <summary>
         /// Добавляет тег в конец списка.
         /// </summary>
@@ -254,10 +276,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             Tag tag;
             bool empty = item == null;
             if (empty)
-                tag = new Tag(allowTagConvertion);
+                tag = new Tag(this, allowTagConvertion);
             else
                 // для давления — искать связный тег и добавлять туда сущность
-                tag = new Tag(item, allowTagConvertion);
+                tag = new Tag(this, item, allowTagConvertion);
 
             tag.Deleted += (s, e) =>
             {
@@ -588,6 +610,84 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 Tags.Clear();
             }
             base.Dispose(disposing);
+        }
+
+        public class DropTargetHandler : DefaultDropHandler
+        {
+            private readonly Autocomplete master;
+
+            public DropTargetHandler(Autocomplete master)
+            {
+                this.master = master;
+            }
+
+            public bool ToSameAutocomplete(IDropInfo dropInfo)
+            {
+                var sourceList = GetList(dropInfo.DragInfo.SourceCollection);
+                return sourceList == master.Tags;
+            }
+
+            public bool ToOtherAutocomplete(IDropInfo dropInfo)
+            {
+                var destinationList = GetList(dropInfo.TargetCollection);
+                return destinationList is IEnumerable<Tag>;
+            }
+
+            public override void DragOver(IDropInfo dropInfo)
+            {
+                var destinationList = GetList(dropInfo.TargetCollection);
+                if (ToSameAutocomplete(dropInfo))
+                {
+                    dropInfo.Effects = DragDropEffects.Move;
+                    dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+                }
+                else if (ToOtherAutocomplete(dropInfo))
+                {
+                    dropInfo.Effects = DragDropEffects.Copy;
+                    dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+                }
+            }
+
+            public override void Drop(IDropInfo dropInfo)
+            {
+                var data = ExtractData(dropInfo.Data);
+                var insertIndex = dropInfo.InsertIndex;
+
+                var tags = data.Cast<Tag>();
+
+                if (ToSameAutocomplete(dropInfo))
+                {
+                    dropInfo.Effects = DragDropEffects.Move;
+
+                    foreach (var tag in tags)
+                    {
+                        var old = master.Tags.IndexOf(tag);
+                        //master.Tags.RemoveAt(old);
+                        //if (old < insertIndex)
+                        //{
+                        //    --insertIndex;
+                        //}
+                        var n = old < insertIndex ? insertIndex - 1 : insertIndex;
+                        master.Tags.Move(old, n);
+                    }
+                    //foreach (var tag in tags)
+                    //{
+                    //    master.Tags.Insert(insertIndex, tag);
+                    //}
+                }
+                else if (ToOtherAutocomplete(dropInfo))
+                {
+                    dropInfo.Effects = DragDropEffects.Copy;
+                    foreach (var tag in tags)
+                    {
+                        var items = master.recognizer.EntitiesOf(tag).ToList();
+                        foreach (var item in items)
+                        {
+                            master.AddTag(item);
+                        }
+                    }
+                }
+            }
         }
     }
 }

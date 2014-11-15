@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using Diagnosis.Common;
 using System.Windows;
+using GongSolutions.Wpf.DragDrop;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
@@ -26,9 +27,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         Forbidden
     }
 
-    public class Tag : ViewModelBase
+    public class Tag : ViewModelBase, IDropTarget
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(Tag));
+        readonly Autocomplete autocomplete;
         private readonly bool canConvert;
         private object _blank;
         private bool _focused;
@@ -43,19 +45,21 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <summary>
         /// Создает пустой тег.
         /// </summary>
-        public Tag(bool canConvert)
+        public Tag(Autocomplete parent, bool canConvert)
         {
             this.canConvert = canConvert;
+            autocomplete = parent;
             State = States.Init;
         }
 
         /// <summary>
         /// Создает тег с сущностями в завершенном состоянии.
         /// </summary>
-        public Tag(IHrItemObject item, bool canConvert)
+        public Tag(Autocomplete parent, IHrItemObject item, bool canConvert)
         {
             Contract.Requires(item != null);
             this.canConvert = canConvert;
+            autocomplete = parent;
 
             Blank = item;
             Entities = new List<IHrItemObject>() { item };
@@ -251,6 +255,16 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
+        void IDropTarget.DragOver(IDropInfo dropInfo)
+        {
+            autocomplete.DropHandler.DragOver(dropInfo);
+        }
+
+        void IDropTarget.Drop(IDropInfo dropInfo)
+        {
+            autocomplete.DropHandler.Drop(dropInfo);
+        }
+
         #endregion
 
 
@@ -371,7 +385,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             Contract.Invariant(State != States.Init || (BlankType == BlankTypes.None && Entities == null)); // в начальном состоянии → нет бланка и сущностей
             // при редактирвоаии нет сущностей
         }
-
     }
 
     [Serializable]

@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
+             xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              GotFocus="UserControl_GotFocus"
              LostFocus="UserControl_LostFocus"
              mc:Ignorable="d"
@@ -16,7 +17,6 @@
     </UserControl.CommandBindings>
     <UserControl.InputBindings>
         <KeyBinding Key="F2" Command="{Binding EditCommand}" />
-
     </UserControl.InputBindings>
     <UserControl.Resources>
         <InputBindingCollection x:Shared="False" x:Key="TagInputBindings">
@@ -36,13 +36,15 @@
     </UserControl.Resources>
     <!-- Autocomplete -->
     <StackPanel>
-        <!--<ToggleButton IsChecked="{Binding IsDrag}" Content="drag" />-->
         <ListBox x:Name="input"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  HorizontalContentAlignment="Stretch"
                  ItemsSource="{Binding Tags}"
                  SelectedItem="{Binding SelectedTag}"
-                 SelectionMode="Extended"                
+                 SelectionMode="Extended"
+                 dd:DragDrop.IsDragSource="True"
+                 dd:DragDrop.IsDropTarget="True"
+                 dd:DragDrop.DropHandler="{Binding DropHandler}"
                  GotFocus="input_GotFocus"
                  LostFocus="input_LostFocus"
                  PreviewKeyDown="input_PreviewKeyDown"
@@ -62,7 +64,7 @@
                     <Setter Property="controls:Attached.InputBindings" Value="{StaticResource TagInputBindings}" />
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     <Setter Property="Padding" Value="2" />
-                    
+
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                     <Setter Property="controls:FocusExtension.Direct" Value="True" />
                     <Setter Property="controls:FocusExtension.IsFocused" Value="{Binding IsListItemFocused, Mode=TwoWay}" />
