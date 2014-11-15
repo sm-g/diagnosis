@@ -22,8 +22,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private Tag _editingTag;
         private bool _supressCompletion;
         private object _selectedSuggestion;
-        private Recognizer recognizer;
         private bool _reorder;
+        private bool _showALt;
+        private Recognizer recognizer;
         private bool inDispose;
 
         public Autocomplete(Recognizer recognizer, bool allowTagConvertion, IEnumerable<IHrItemObject> initItems)
@@ -133,7 +134,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     _selTag = value;
                     if (value != null)
                     {
-                        //    _selTag.IsFocused = true;
                         EditingTag = value;
                     }
 
@@ -148,7 +148,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
-        /// Switch focus between textbox and listitem.
+        /// Switch focus between textbox and listitem for SelectedTag
         /// </summary>
         public RelayCommand EditCommand
         {
@@ -231,8 +231,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 logger.DebugFormat("CanCompleteOnLostFocus {0}", value);
             }
         }
-
-        private bool _showALt;
 
         public bool ShowAltSuggestion
         {
@@ -398,7 +396,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         public List<IHrItemObject> Copy()
         {
             var completed = SelectedTags.Where(t => t.State == Tag.States.Completed);
-            var hios = SelectedTags
+            var hios = completed
                  .SelectMany(t => recognizer.EntitiesOf(t))
                  .ToList();
 
@@ -517,7 +515,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
 
             // переходим к вводу нового слова
-            SelectedTag = Tags.Last();
+            LastTag.IsTextBoxFocused = true;
         }
 
         public void CompleteOnLostFocus(Tag tag)
