@@ -2,9 +2,9 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Diagnosis.App.Behaviors
+namespace Diagnosis.App.Controls
 {
-    public static class FocusBehavior
+    public static partial class FocusBehavior
     {
         public static readonly DependencyProperty FocusFirstProperty =
             DependencyProperty.RegisterAttached(

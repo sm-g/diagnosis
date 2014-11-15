@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 
-namespace Diagnosis.App.Windows
+namespace Diagnosis.App.Controls
 {
     // from http://stackoverflow.com/questions/501886/how-should-the-viewmodel-close-the-form
     public static class DialogCloser

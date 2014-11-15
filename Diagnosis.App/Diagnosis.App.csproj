@@ -238,7 +238,7 @@
       <DependentUpon>UndoOverlay.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Helpers\DataGridHelper.cs" />
-    <Compile Include="Controls\Helpers\FirstFocusedElementExtension.cs" />
+    <Compile Include="Behaviors\FirstFocusedElementExtension.cs" />
     <Compile Include="Controls\Search\Filter.xaml.cs">
       <DependentUpon>Filter.xaml</DependentUpon>
     </Compile>
@@ -296,8 +296,8 @@
     <Compile Include="Controls\Editors\SexChooser.xaml.cs">
       <DependentUpon>SexChooser.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Helpers\Attached.cs" />
-    <Compile Include="Controls\Helpers\FocusExtension.cs" />
+    <Compile Include="Behaviors\Attached.cs" />
+    <Compile Include="Behaviors\IsFocused.cs" />
     <Compile Include="Controls\Common\RadioListBox.xaml.cs">
       <DependentUpon>RadioListBox.xaml</DependentUpon>
     </Compile>
@@ -344,7 +344,7 @@
     <Compile Include="Converters\IHierarchicalCheckableToBackground.cs" />
     <Compile Include="Converters\TreeDepthToMargin.cs" />
     <Compile Include="Controls\Helpers\ChildFinder.cs" />
-    <Compile Include="Controls\Helpers\EnhancedFocusScope.cs" />
+    <Compile Include="Behaviors\EnhancedFocusScope.cs" />
     <Compile Include="Controls\Helpers\FocusChecker.cs" />
     <Compile Include="Controls\Helpers\TreeViewItemExtenstions.cs" />
     <Compile Include="Controls\Directory\WordTreeItem.xaml.cs">
@@ -363,7 +363,7 @@
     <Compile Include="Windows\DebugWindow.xaml.cs">
       <DependentUpon>DebugWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Helpers\DialogCloser.cs" />
+    <Compile Include="Behaviors\DialogCloser.cs" />
     <Compile Include="Windows\Helpers\TraceListener.cs" />
     <Compile Include="Windows\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>

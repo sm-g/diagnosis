@@ -8,12 +8,9 @@
              xmlns:app="clr-namespace:Diagnosis.App"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}" 
              Background="Transparent"
-             Focusable="True"
-             IsTabStop="True">
+             Focusable="False" >
     <!--DataContext is ShortHealthRecordViewModel-->
-    <!-- Tag is HrListViewModel -->
     <UserControl.Resources>
         <Style TargetType="StackPanel" x:Key="hidingButtons">
             <Setter Property="Visibility" Value="Collapsed" />
@@ -24,15 +21,7 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-    <UserControl.ContextMenu>
-        <ContextMenu>
-            <MenuItem Header="Редактировать" Command="{Binding EditCommand}" />
-            <MenuItem Header="Искать" InputGestureText="Alt + F" Command="{Binding PlacementTarget.Tag.SendToSearchCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-            <MenuItem Header="Удалить" InputGestureText="Del" Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-            <Separator />
-            <MenuItem Header="Добавить запись" InputGestureText="Ctrl + Enter" Command="{Binding PlacementTarget.Tag.AddHealthRecordCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-        </ContextMenu>
-    </UserControl.ContextMenu>
+   
 
     <Grid>
         <Grid.ColumnDefinitions>
