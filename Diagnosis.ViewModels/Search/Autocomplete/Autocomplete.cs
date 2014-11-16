@@ -33,6 +33,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             this.allowTagConvertion = allowTagConvertion;
 
             DropHandler = new Autocomplete.DropTargetHandler(this);
+            DragHandler = new Autocomplete.DragSourceHandler();
             Tags = new ObservableCollection<Tag>();
             Tags.CollectionChanged += (s, e) =>
             {
@@ -268,6 +269,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         public DropTargetHandler DropHandler { get; private set; }
+        public DragSourceHandler DragHandler { get; private set; }
 
         /// <summary>
         /// Создает тег.
@@ -417,7 +419,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             var hios = Copy();
 
-            SelectedTags.ForAll(i => Tags.Remove(i));
+            var completed = SelectedTags.Where(t => t.State == Tag.States.Completed); // do not remove init tags
+            completed.ForAll(i => Tags.Remove(i));
 
             LogHrItemObjects("cut", hios);
         }
@@ -738,8 +741,48 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                             }
                         }
                     }
+
+                    master.LastTag.IsSelected = false;
                 }
             }
+        }
+
+        public class DragSourceHandler : IDragSource
+        {
+            public void StartDrag(IDragInfo dragInfo)
+            {
+                var tags = dragInfo.SourceItems.Cast<Tag>().Where(t => !t.IsLast);
+                var itemCount = tags.Count();
+
+                if (itemCount == 1)
+                {
+                    dragInfo.Data = tags.First();
+                }
+                else if (itemCount > 1)
+                {
+                    dragInfo.Data = GongSolutions.Wpf.DragDrop.Utilities.TypeUtilities.CreateDynamicallyTypedList(tags);
+                }
+
+                dragInfo.Effects = (dragInfo.Data != null) ?
+                                     DragDropEffects.Copy | DragDropEffects.Move :
+                                     DragDropEffects.None;
+            }
+
+            public bool CanStartDrag(IDragInfo dragInfo)
+            {
+                var tags = dragInfo.SourceItems.Cast<Tag>().Where(t => !t.IsLast);
+                return tags.Count() > 0;
+            }
+
+            public void DragCancelled()
+            {
+            }
+
+            public void Dropped(IDropInfo dropInfo)
+            {
+            }
+
+
         }
 
         public void OnDrop(DragEventArgs e)
