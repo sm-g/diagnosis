@@ -289,6 +289,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
             tag.Deleted += (s, e) =>
             {
+                Contract.Requires(!tag.IsLast);
                 Tags.Remove(tag);
             };
             tag.Converting += (s, e) =>
@@ -508,7 +509,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
         private void CompleteCommon(Tag tag, object suggestion, bool exactMatchRequired, bool inverse = false)
         {
-            if (tag.Query == "" && !tag.IsLast)
+            if (tag.Query == "")
             {
                 tag.DeleteCommand.Execute(null);
             }
@@ -567,7 +568,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             tag.Validate();
 
             // добавляем пустое поле
-            if (LastTag.State != Tag.States.Init)
+            if (LastTag.State == Tag.States.Completed)
             {
                 AddTag(isLast: true);
             }

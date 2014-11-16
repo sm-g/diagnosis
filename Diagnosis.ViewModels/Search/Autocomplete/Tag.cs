@@ -235,8 +235,18 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             get
             {
-                return new RelayCommand(OnDeleted,
-                    () => !IsLast);
+                return new RelayCommand(() =>
+                {
+                    if (!IsLast)
+                    { 
+                        OnDeleted(); 
+                    }
+                    else
+                    {
+                        Query = null;
+                        State = States.Init;
+                    }
+                });
             }
         }
 
