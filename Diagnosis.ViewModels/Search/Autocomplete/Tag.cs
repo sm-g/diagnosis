@@ -457,6 +457,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             Contract.Invariant(State != States.Init || (BlankType == BlankTypes.None && Entities == null)); // в начальном состоянии → нет бланка и сущностей
             // при редактирвоаии нет сущностей
         }
+
+        public void OnDrop(DragEventArgs e)
+        {
+            autocomplete.OnDrop(e);
+        }
     }
 
     [Serializable]

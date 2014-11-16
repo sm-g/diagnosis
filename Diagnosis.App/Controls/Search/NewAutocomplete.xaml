@@ -8,10 +8,6 @@
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              GotFocus="UserControl_GotFocus"
              LostFocus="UserControl_LostFocus"
-             AllowDrop="True"
-             Padding="20"
-             Background="Transparent"
-             Drop="UserControl_Drop"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.CommandBindings>

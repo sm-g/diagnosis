@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Diagnosis.ViewModels.Search.Autocomplete;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,6 +28,10 @@ namespace Diagnosis.App.Controls.Editors
         private void hr_grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
             hr_grid.Focus();
+        }
+        private void UserControl_Drop(object sender, DragEventArgs e)
+        {
+            (autocomplete.DataContext as Autocomplete).OnDrop(e);
         }
     }
 }

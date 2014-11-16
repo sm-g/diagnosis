@@ -7,10 +7,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:vm="clr-namespace:Diagnosis.ViewModels"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:core="clr-namespace:Diagnosis.Common;assembly=Diagnosis.Common"
              x:Name="editor"
+             AllowDrop="True"
+             Background="Transparent"
+             Drop="UserControl_Drop"
              Tag="{Binding DataContext.HrList, RelativeSource={RelativeSource AncestorType=UserControl}}" 
              mc:Ignorable="d"
              d:DesignHeight="200" d:DesignWidth="600">
@@ -98,7 +100,7 @@
             </StackPanel.Resources>
             <DockPanel>
                     <!--DataContext is HrEditorViewModel-->
-                    <search:NewAutocomplete DataContext="{Binding DataContext.Autocomplete, ElementName=editor}" />
+                    <search:NewAutocomplete x:Name="autocomplete" DataContext="{Binding DataContext.Autocomplete, ElementName=editor}" />
             </DockPanel>
             <DockPanel>
                 <!--DataContext is HrEditorViewModel-->

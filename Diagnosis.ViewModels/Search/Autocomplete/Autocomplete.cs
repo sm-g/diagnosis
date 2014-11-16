@@ -795,7 +795,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 foreach (var str in strings)
                 {
                     var tag = CreateTag(str);
-                    CompleteCommon(tag, null, true);
+                    var sugg = recognizer.SearchForSuggesstions(str, null).FirstOrDefault();
+                    CompleteCommon(tag, sugg, true);
                     AddTag(tag);
                 }
             }

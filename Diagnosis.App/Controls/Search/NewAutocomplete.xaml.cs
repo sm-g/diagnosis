@@ -161,10 +161,5 @@ namespace Diagnosis.App.Controls.Search
         }
 
         #endregion focus stuff
-
-        private void UserControl_Drop(object sender, DragEventArgs e)
-        {
-            Vm.OnDrop(e);
-        }
     }
 }
