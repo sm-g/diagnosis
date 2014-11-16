@@ -465,12 +465,16 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                         }
                     }
                 }
-                var index = Tags.IndexOf(SelectedTag); // paste before SelectedTag
+                var index = Tags.IndexOf(SelectedTag); // paste before first SelectedTag
+
+                SelectedTags.ForEach(t => t.IsSelected = false);
+
                 foreach (var item in data.ItemObjects)
                 {
                     LogHrItemObjects("paste", data.ItemObjects);
 
-                    AddTag(item, index++);
+                    var tag = AddTag(item, index++);
+                    tag.IsSelected = true;
                 }
             }
         }
