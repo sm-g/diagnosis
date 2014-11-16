@@ -193,7 +193,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
                     if (data.ItemObjects[i] == null)
                     {
-                        // скопировано в другом автокомплите и не сохранено?
+                        // новое скопировано в другом автокомплите и не сохранено?
+                        // скопированно новое в поиск - static?
                         logger.WarnFormat("word not synced: {0}", word);
                     }
                 }

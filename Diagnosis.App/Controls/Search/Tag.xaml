@@ -66,12 +66,12 @@
                             <Setter Property="ToolTip" Value="Неизвестная единица измерения, сохраняется без единицы" />
                         </DataTrigger>
 
-                        <DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Query}">
+                        <!--<DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Query}">
                             <Setter Property="Foreground" Value="Red" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Comment}">
                             <Setter Property="FontStyle" Value="Italic" />
-                        </DataTrigger>
+                        </DataTrigger>-->
                         <DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Word}">
                             <Setter Property="FontStyle" Value="Normal" />
                         </DataTrigger>

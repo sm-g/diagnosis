@@ -162,7 +162,7 @@ namespace Diagnosis.Models
                     {
                     }
                 }
-                return string.Format("{0}{1}", pre, item.ToString());
+                return string.Format("{0}{1}", pre, item);
             });
             return string.Join(", ", str);
         }

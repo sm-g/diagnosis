@@ -269,6 +269,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         public DropTargetHandler DropHandler { get; private set; }
+
         public DragSourceHandler DragHandler { get; private set; }
 
         /// <summary>
@@ -465,11 +466,20 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
                 foreach (var item in data.ItemObjects)
                 {
+                    if (item == null) continue;
+
                     var tag = AddTag(item, index++);
                     tag.IsSelected = true;
+
+                    tag.Validate(Validator);
                 }
                 LogHrItemObjects("paste", data.ItemObjects);
             }
+        }
+
+        private Signalizations Validator(Tag tag)
+        {
+            return recognizer.OnlyWords && tag.BlankType != Tag.BlankTypes.Word ? Signalizations.Forbidden : Signalizations.None;
         }
 
         /// <summary>
@@ -709,14 +719,21 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     }
                     else if (FromOtherAutocomplete(dropInfo))
                     {
-                        // copy tags' HrItemObjects
+                        // copy tags' HrItemObjects or query
 
                         foreach (var tag in tags)
                         {
-                            var items = master.recognizer.EntitiesOf(tag).ToList();
-                            foreach (var item in items)
+                            if (tag.BlankType == Tag.BlankTypes.None)
                             {
-                                master.AddTag(item);
+                                master.AddTag(tag.Query).Validate(master.Validator);
+                            }
+                            else
+                            {
+                                var items = master.recognizer.EntitiesOf(tag).ToList();
+                                foreach (var item in items)
+                                {
+                                    master.AddTag(item).Validate(master.Validator);
+                                }
                             }
                         }
                     }
@@ -764,8 +781,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             public void Dropped(IDropInfo dropInfo)
             {
             }
-
-
         }
 
         public void OnDrop(DragEventArgs e)

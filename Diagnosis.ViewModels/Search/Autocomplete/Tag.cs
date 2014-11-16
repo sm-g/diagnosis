@@ -10,6 +10,7 @@ using GongSolutions.Wpf.DragDrop;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
+    [Flags]
     public enum Signalizations
     {
         None,
@@ -20,11 +21,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <summary>
         /// Частичное измерение с неправильной единицей.
         /// </summary>
-        PartialMeasure,
+        PartialMeasure = 2,
         /// <summary>
         /// Некорректный тег (новый без заготовки).
         /// </summary>
-        Forbidden
+        Forbidden = 4
     }
 
     public class Tag : ViewModelBase, IDropTarget
@@ -395,7 +396,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
         #endregion
 
-        public void Validate()
+        public void Validate(Func<Tag, Signalizations> filter = null)
         {
             Signalization = Signalizations.None;
             if (BlankType == Tag.BlankTypes.None && State != Tag.States.Init)
@@ -407,6 +408,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 var word = Blank as Word;
                 if (word.IsTransient)
                     Signalization = Signalizations.NewWord;
+            }
+
+            if (filter != null)
+            {
+                Signalization |= filter(this);
             }
         }
 
