@@ -721,7 +721,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                             // not after last
                             if (n == master.Tags.IndexOf(master.LastTag))
                                 n--;
-                            master.Tags.Move(old, n);
+
+                            if (old != n) // prevent deselecting
+                                master.Tags.Move(old, n);
                         }
                         //foreach (var tag in tags)
                         //{
