@@ -108,6 +108,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 if (_selectedSuggestion != value)
                 {
+                    if (value == null)
+                        prevSelectedSuggestion = _selectedSuggestion;
+
                     _selectedSuggestion = value;
                     //  logger.DebugFormat("selected sugg = {0}", value);
                     OnPropertyChanged(() => SelectedSuggestion);
@@ -304,8 +307,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 {
                     if (tag.IsTextBoxFocused)
                     {
-                        prevSelectedSuggestion = SelectedSuggestion; // сначала фокус получает выбранный тег
-
                         if (tag.Signalization != Signalizations.None) // TODO предположения для недописанных
                         {
                             MakeSuggestions(SelectedTag);
