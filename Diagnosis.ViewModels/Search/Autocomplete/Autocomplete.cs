@@ -267,17 +267,22 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         public DropTargetHandler DropHandler { get; private set; }
 
         /// <summary>
-        /// Добавляет тег.
+        /// Создает тег.
         /// </summary>
-        public Tag AddTag(IHrItemObject item = null, int index = -1, bool isLast = false)
+        /// <param name="сontent">Строка запроса, IHrsItemObject или null для пустого тега.</param>
+        public Tag CreateTag(object content = null)
         {
             Tag tag;
-            bool empty = item == null;
-            if (empty)
-                tag = new Tag(this, allowTagConvertion);
-            else
+            var itemObject = content as IHrItemObject;
+            var str = content as string;
+
+            if (itemObject != null)
                 // для давления — искать связный тег и добавлять туда сущность
-                tag = new Tag(this, item, allowTagConvertion);
+                tag = new Tag(this, itemObject, allowTagConvertion);
+            else if (str != null)
+                tag = new Tag(this, str, allowTagConvertion);
+            else
+                tag = new Tag(this, allowTagConvertion);
 
             tag.Deleted += (s, e) =>
             {
@@ -333,6 +338,20 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     }
                 }
             };
+            return tag;
+        }
+
+        /// <summary>
+        /// Добавляет тег в коллекцию.
+        /// <param name="tagOrContent">Созданный тег, строка запроса, IHrsItemObject или null для пустого тега.</param>
+        /// </summary>
+        public Tag AddTag(object tagOrContent = null, int index = -1, bool isLast = false)
+        {
+            var tag = tagOrContent as Tag;
+            if (tag == null)
+            {
+                tag = CreateTag(tagOrContent);
+            }
 
             if (isLast)
             {
@@ -622,71 +641,121 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 this.master = master;
             }
 
-            public bool ToSameAutocomplete(IDropInfo dropInfo)
+            public bool FromSameAutocomplete(IDropInfo dropInfo)
             {
+                if (dropInfo.DragInfo == null || dropInfo.DragInfo.SourceCollection == null)
+                    return false;
                 var sourceList = GetList(dropInfo.DragInfo.SourceCollection);
                 return sourceList == master.Tags;
             }
 
-            public bool ToOtherAutocomplete(IDropInfo dropInfo)
+            public bool FromOtherAutocomplete(IDropInfo dropInfo)
             {
-                var destinationList = GetList(dropInfo.TargetCollection);
-                return destinationList is IEnumerable<Tag>;
+                if (dropInfo.DragInfo == null || dropInfo.DragInfo.SourceCollection == null)
+                    return false;
+                var sourceList = GetList(dropInfo.DragInfo.SourceCollection);
+                return sourceList is IEnumerable<Tag>;
             }
 
             public override void DragOver(IDropInfo dropInfo)
             {
                 var destinationList = GetList(dropInfo.TargetCollection);
-                if (ToSameAutocomplete(dropInfo))
+                if (FromSameAutocomplete(dropInfo))
                 {
                     dropInfo.Effects = DragDropEffects.Move;
-                    dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
                 }
-                else if (ToOtherAutocomplete(dropInfo))
+                else if (FromOtherAutocomplete(dropInfo))
                 {
                     dropInfo.Effects = DragDropEffects.Copy;
-                    dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
                 }
+                else
+                {
+                    dropInfo.Effects = DragDropEffects.Scroll;
+
+                }
+                dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
             }
 
             public override void Drop(IDropInfo dropInfo)
             {
-                var data = ExtractData(dropInfo.Data);
+                var data = ExtractData(dropInfo.Data).Cast<object>();
+                if (data.Count() == 0)
+                    return;
+
+                logger.DebugFormat("ddrop {0} {1}", data.Count(), data.First().GetType());
+
                 var insertIndex = dropInfo.InsertIndex;
-
-                var tags = data.Cast<Tag>();
-
-                if (ToSameAutocomplete(dropInfo))
+                if (data.First() is Tag)
                 {
-                    dropInfo.Effects = DragDropEffects.Move;
+                    // drop tags from autocomplete
+                    var tags = data.Cast<Tag>();
 
-                    foreach (var tag in tags)
+                    if (FromSameAutocomplete(dropInfo))
                     {
-                        var old = master.Tags.IndexOf(tag);
-                        //master.Tags.RemoveAt(old);
-                        //if (old < insertIndex)
-                        //{
-                        //    --insertIndex;
-                        //}
-                        var n = old < insertIndex ? insertIndex - 1 : insertIndex;
-                        master.Tags.Move(old, n);
-                    }
-                    //foreach (var tag in tags)
-                    //{
-                    //    master.Tags.Insert(insertIndex, tag);
-                    //}
-                }
-                else if (ToOtherAutocomplete(dropInfo))
-                {
-                    dropInfo.Effects = DragDropEffects.Copy;
-                    foreach (var tag in tags)
-                    {
-                        var items = master.recognizer.EntitiesOf(tag).ToList();
-                        foreach (var item in items)
+                        // reorder tags
+
+                        foreach (var tag in tags)
                         {
-                            master.AddTag(item);
+                            var old = master.Tags.IndexOf(tag);
+                            //master.Tags.RemoveAt(old);
+                            //if (old < insertIndex)
+                            //{
+                            //    --insertIndex;
+                            //}
+                            var n = old < insertIndex ? insertIndex - 1 : insertIndex;
+                            master.Tags.Move(old, n);
+                        }
+                        //foreach (var tag in tags)
+                        //{
+                        //    master.Tags.Insert(insertIndex, tag);
+                        //}
+                    }
+                    else if (FromOtherAutocomplete(dropInfo))
+                    {
+                        // copy tags' HrItemObjects
+
+                        foreach (var tag in tags)
+                        {
+                            var items = master.recognizer.EntitiesOf(tag).ToList();
+                            foreach (var item in items)
+                            {
+                                master.AddTag(item);
+                            }
                         }
                     }
+                }
+            }
+        }
+
+        public void OnDrop(DragEventArgs e)
+        {
+            logger.DebugFormat("drop {0}", e.Data.ToString());
+
+            string text = null;
+            string unicodeText = null;
+
+            // prefer unicode format
+            if (e.Data.GetDataPresent(DataFormats.Text))
+            {
+                text = (string)e.Data.GetData(DataFormats.Text);
+            }
+            if (e.Data.GetDataPresent(DataFormats.UnicodeText))
+            {
+                unicodeText = (string)e.Data.GetData(DataFormats.UnicodeText);
+            }
+            if (unicodeText != null)
+                text = unicodeText;
+
+            if (text != null)
+            {
+                // drop strings - make tag with query and complete it
+
+                var strings = text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var str in strings)
+                {
+                    var tag = CreateTag(str);
+                    CompleteCommon(tag, null, true);
+                    AddTag(tag);
                 }
             }
         }

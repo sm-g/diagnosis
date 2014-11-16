@@ -47,19 +47,38 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         public Tag(Autocomplete parent, bool canConvert)
         {
+            Contract.Ensures(State == States.Init);
+
             this.canConvert = canConvert;
-            autocomplete = parent;
-            State = States.Init;
+            this.autocomplete = parent;
         }
 
         /// <summary>
-        /// Создает тег с сущностями в завершенном состоянии.
+        /// Создает тег с запросом.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="query"></param>
+        /// <param name="canConvert"></param>
+        public Tag(Autocomplete parent, string query, bool canConvert)
+        {
+            Contract.Ensures(State == States.Typing);
+
+            this.canConvert = canConvert;
+            this.autocomplete = parent;
+            Query = query;
+        }
+
+
+        /// <summary>
+        /// Создает тег с сущностями.
         /// </summary>
         public Tag(Autocomplete parent, IHrItemObject item, bool canConvert)
         {
             Contract.Requires(item != null);
+            Contract.Ensures(State == States.Completed);
+
             this.canConvert = canConvert;
-            autocomplete = parent;
+            this.autocomplete = parent;
 
             Blank = item;
             Entities = new List<IHrItemObject>() { item };
