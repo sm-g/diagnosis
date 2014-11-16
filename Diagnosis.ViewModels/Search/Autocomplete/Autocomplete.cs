@@ -370,6 +370,12 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             return tag;
         }
 
+        public void Add(Tag from, bool left)
+        {
+            var tag = AddTag(index: Tags.IndexOf(from) + (left ? 0 : 1));
+            tag.IsTextBoxFocused = true;
+        }
+
         public void ReplaceTagsWith(IEnumerable<IHrItemObject> items)
         {
             // оставляем последний тег
@@ -672,7 +678,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 else
                 {
                     dropInfo.Effects = DragDropEffects.Scroll;
-
                 }
                 dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
             }

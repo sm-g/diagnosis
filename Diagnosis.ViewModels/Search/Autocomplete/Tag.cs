@@ -217,7 +217,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 return new RelayCommand(() =>
                 {
-                    autocomplete.AddTag(index: autocomplete.Tags.IndexOf(this));
+                    autocomplete.Add(this, true);
                 });
             }
         }
@@ -227,8 +227,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 return new RelayCommand(() =>
                 {
-                    autocomplete.AddTag(index: autocomplete.Tags.IndexOf(this) + 1);
-                });
+                    autocomplete.Add(this, false);
+                }, () => !IsLast);
             }
         }
         public RelayCommand DeleteCommand
