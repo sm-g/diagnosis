@@ -465,7 +465,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                         }
                     }
                 }
-                var index = Tags.IndexOf(SelectedTag);
+                var index = Tags.IndexOf(SelectedTag); // paste before SelectedTag
                 foreach (var item in data.ItemObjects)
                 {
                     LogHrItemObjects("paste", data.ItemObjects);
@@ -709,6 +709,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                             //    --insertIndex;
                             //}
                             var n = old < insertIndex ? insertIndex - 1 : insertIndex;
+
+                            // not after last
+                            if (n == master.Tags.IndexOf(master.LastTag))
+                                n--;
                             master.Tags.Move(old, n);
                         }
                         //foreach (var tag in tags)
