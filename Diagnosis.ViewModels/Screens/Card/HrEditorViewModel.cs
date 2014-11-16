@@ -170,6 +170,8 @@ namespace Diagnosis.ViewModels.Screens
             var toA = willSet.Difference(wasSet);
             var toR = wasSet.Difference(willSet);
 
+            logger.DebugFormat("set HrItems. IHrItemObject was: {0}, will: {1}", wasSet.FlattenString(), willSet.FlattenString());
+
             var itemsToRem = new List<HrItem>();
             var itemsToAdd = new List<HrItem>();
 
@@ -198,6 +200,8 @@ namespace Diagnosis.ViewModels.Screens
                 itemsToBe.Add(n);
             }
 
+            logger.DebugFormat("set HrItems. itemsToAdd: {0}, itemsToRem: {1}", itemsToAdd.FlattenString(), itemsToRem.FlattenString());
+
             // индексы начала поиска в автокомплите для каждой сущности
             var dict = new Dictionary<IHrItemObject, int>();
 
@@ -209,11 +213,13 @@ namespace Diagnosis.ViewModels.Screens
                 dict.TryGetValue(e, out start);
                 var index = entitiesToBe.IndexOf(e, start);
 
-                Debug.Assert(index != -1); // itemsToBe contains all entitiesToBe
+                Debug.Assert(index != -1, "entitiesToBe does not contain entity from itemsToBe");
 
                 dict[e] = index + 1;
                 itemsToBe[i].Ord = index;
             }
+
+            logger.DebugFormat("set HrItems. itemsToBe: {0}", itemsToBe.FlattenString());
 
             foreach (var item in itemsToRem)
             {

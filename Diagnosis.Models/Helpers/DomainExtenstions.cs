@@ -141,5 +141,30 @@ namespace Diagnosis.Models
             return @switch[entity.GetType()]();
 
         }
+
+        /// <summary>
+        /// Формат {[id] ToString()[,] ...}
+        /// </summary>
+        public static string FlattenString(this IEnumerable<IDomainObject> mayBeEntities)
+        {
+            var str = mayBeEntities.Select(item =>
+            {
+                var pre = "";
+
+                if (item is IHrItemObject)
+                {
+                    dynamic entity = item;
+                    try
+                    {
+                        pre = entity.Id.ToString() + " ";
+                    }
+                    catch
+                    {
+                    }
+                }
+                return string.Format("{0}{1}", pre, item.ToString());
+            });
+            return string.Join(", ", str);
+        }
     }
 }

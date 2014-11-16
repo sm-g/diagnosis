@@ -72,7 +72,7 @@ namespace Diagnosis.Models
 
         public virtual int CompareTo(Word other)
         {
-            return this.Title.CompareTo(other.Title);
+            return this.Title.CompareTo(other.Title); // несохраненные могут быть с одним заголовком
         }
     }
 }

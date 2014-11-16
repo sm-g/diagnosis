@@ -458,32 +458,17 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
             if (data != null)
             {
-                for (int i = 0; i < data.ItemObjects.Count; i++)
-                {
-                    Word word = data.ItemObjects[i] as Word;
-                    if (word != null && word.IsTransient)
-                    {
-                        // копируем несохраненное слово - вставляем другое такое же
-                        // word1.Equals(word2) == false, but word1.CompareTo(word2) == 0
-                        // willSet in SetOrderedHrItems будет с первым совпадающим элементом в entitiesToBe
-                        var same = GetEntities().Where(e => e is Word).Where(e => (e as Word).CompareTo(word) == 0).FirstOrDefault();
-                        if (same != null)
-                        {
-                            data.ItemObjects[i] = same;
-                        }
-                    }
-                }
                 var index = Tags.IndexOf(SelectedTag); // paste before first SelectedTag
-
                 SelectedTags.ForEach(t => t.IsSelected = false);
+
+                data = recognizer.SyncWithSession(data);
 
                 foreach (var item in data.ItemObjects)
                 {
-                    LogHrItemObjects("paste", data.ItemObjects);
-
                     var tag = AddTag(item, index++);
                     tag.IsSelected = true;
                 }
+                LogHrItemObjects("paste", data.ItemObjects);
             }
         }
 
@@ -492,20 +477,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         private void LogHrItemObjects(string action, IEnumerable<IHrItemObject> hios)
         {
-            var str = hios.Select(item =>
-            {
-                dynamic entity = item;
-                var pre = "";
-                try
-                {
-                    pre = entity.Id.ToString();
-                }
-                catch
-                {
-                }
-                return string.Format("{0} {1}", pre, item.ToString());
-            });
-            logger.DebugFormat("{0} hios: {1}", action, string.Join(", ", str));
+            logger.DebugFormat("{0} hios: {1}", action, hios.FlattenString());
         }
 
         /// <summary>
@@ -626,6 +598,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         protected virtual void OnEntitiesChanged()
         {
+            logger.DebugFormat("entities changed in {0}", this);
             var h = EntitiesChanged;
             if (h != null)
             {
@@ -755,6 +728,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         public class DragSourceHandler : IDragSource
         {
+            /// <summary>
+            /// Data is tags without Last tag.
+            /// </summary>
+            /// <param name="dragInfo"></param>
             public void StartDrag(IDragInfo dragInfo)
             {
                 var tags = dragInfo.SourceItems.Cast<Tag>().Where(t => !t.IsLast);
