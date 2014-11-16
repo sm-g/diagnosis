@@ -13,9 +13,22 @@
             <Style TargetType="DockPanel" />
         </DockPanel.Style>
 
-        <StackPanel x:Name="drag" Orientation="Horizontal" Visibility="{Binding IsLast, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+        <StackPanel x:Name="drag" Orientation="Horizontal"
                     DockPanel.Dock="Left" Width="15" Height="20" 
                     Cursor="SizeAll" Background="Transparent">
+            <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsDraggable}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Style>
             <StackPanel.Resources>
                 <Path x:Key="line" x:Shared="False" Data="M0,0 L0,1" Stretch="Fill" Stroke="Gray"
                       StrokeDashOffset="2"

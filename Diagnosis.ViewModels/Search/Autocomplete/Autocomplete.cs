@@ -341,6 +341,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                         OnEntitiesChanged();
                     }
                 }
+                else if (e.PropertyName == "IsSelected")
+                {
+                    tag.IsDraggable = tag.IsSelected;
+                }
             };
             return tag;
         }

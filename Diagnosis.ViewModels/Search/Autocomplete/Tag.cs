@@ -40,6 +40,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private bool _isLast;
         private bool _listItemFocused;
         private bool _selected;
+        private bool _draggable;
         private Signalizations _signal;
 
         /// <summary>
@@ -134,6 +135,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     Contract.Assume(!IsDeleteOnly);
 
                     State = States.Typing;
+
+                    // show drag when type in last
+                    if (IsLast && !value.IsNullOrEmpty())
+                        IsDraggable = true;
 
                     _query = value;
                     Entities = null;
@@ -238,8 +243,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 return new RelayCommand(() =>
                 {
                     if (!IsLast)
-                    { 
-                        OnDeleted(); 
+                    {
+                        OnDeleted();
                     }
                     else
                     {
@@ -298,6 +303,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_isLast != value)
                 {
                     _isLast = value;
+
+                    // Last tag is not draggable before it has query
+                    if (value)
+                        IsDraggable = false;
+
                     OnPropertyChanged(() => IsLast);
                 }
             }
@@ -368,7 +378,21 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 }
             }
         }
-
+        public bool IsDraggable
+        {
+            get
+            {
+                return _draggable;
+            }
+            set
+            {
+                if (_draggable != value)
+                {
+                    _draggable = value;
+                    OnPropertyChanged(() => IsDraggable);
+                }
+            }
+        }
         #endregion
 
         public void Validate()
