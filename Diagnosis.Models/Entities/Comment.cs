@@ -10,6 +10,7 @@ using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
+    [Serializable]
     public class Comment : IHrItemObject, IComparable<Comment>
     {
         public virtual string String { get; set; }

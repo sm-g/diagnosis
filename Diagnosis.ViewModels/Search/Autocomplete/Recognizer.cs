@@ -9,8 +9,12 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
+    /// <summary>
+    /// Создает сущности из тегов, ищет предположения.
+    /// </summary>
     public class Recognizer
     {
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Recognizer));
         private readonly ISession session;
 
         private List<Word> created = new List<Word>();
@@ -44,7 +48,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             this.session = session;
         }
 
-        public bool CanMakeEntityFrom(string query)
+        private bool CanMakeEntityFrom(string query)
         {
             if (query.IsNullOrEmpty() || OnlyWords)
                 return false;
@@ -86,12 +90,12 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
-        /// Создает сущности из тега. Может получиться одно слово или один коммент.
+        /// Возвращает сущности из тега. Может получиться одно слово или один коммент.
         /// Кеширует созданные сущности в теге.
         /// </summary>
         /// <param name="blank"></param>
         /// <returns></returns>
-        public IEnumerable<IHrItemObject> MakeEntities(Tag tag)
+        public IEnumerable<IHrItemObject> EntitiesOf(Tag tag)
         {
             Contract.Requires(tag.BlankType != Tag.BlankTypes.None);
 
@@ -162,6 +166,39 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
 
             return results;
+        }
+
+        public TagData SyncWithSession(TagData data)
+        {
+            for (int i = 0; i < data.ItemObjects.Count; i++)
+            {
+                Word word = data.ItemObjects[i] as Word;
+                if (word != null)
+                {
+                    // при вставке создается другой объект Word
+
+                    if (word.IsTransient)
+                    {
+                        // несохраненное слово
+                        // word1.Equals(word2) == false, but word1.CompareTo(word2) == 0
+                        // willSet in SetOrderedHrItems будет с первым совпадающим элементом в entitiesToBe
+                        var same = created.Where(e => e is Word).Where(e => (e as Word).CompareTo(word) == 0).FirstOrDefault();
+
+                        data.ItemObjects[i] = same;
+                    }
+                    else
+                    {
+                        data.ItemObjects[i] = session.Get<Word>(word.Id);
+                    }
+
+                    if (data.ItemObjects[i] == null)
+                    {
+                        // скопировано в другом автокомплите и не сохранено?
+                        logger.WarnFormat("word not synced: {0}", word);
+                    }
+                }
+            }
+            return data;
         }
 
         // первое подходящее слово или новое

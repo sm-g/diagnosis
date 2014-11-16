@@ -20,10 +20,31 @@ namespace Diagnosis.Data.Queries
             {
                 using (var tr = session.BeginTransaction())
                 {
-                    return session.QueryOver<Word>().WhereRestrictionOn(w => w.Title).IsInsensitiveLike(str, MatchMode.Start).List();
+                    return session.QueryOver<Word>()
+                        .WhereRestrictionOn(w => w.Title)
+                        .IsInsensitiveLike(str, MatchMode.Start)
+                        .List();
                 }
             };
         }
+
+        /// <summary>
+        /// Возвращает слово по заголовку.
+        /// </summary>
+        public static Func<string, Word> ByTitle(ISession session)
+        {
+            return (str) =>
+            {
+                using (var tr = session.BeginTransaction())
+                {
+                    return session.QueryOver<Word>()
+                        .WhereRestrictionOn(w => w.Title)
+                        .IsInsensitiveLike(str, MatchMode.Exact)
+                        .SingleOrDefault();
+                }
+            };
+        }
+
         /// <summary>
         /// Возвращает все слова, которые начинаются на строку. 
         /// Если у слова есть родитель, вместо этого слова возвращается самый верхний предок слова.

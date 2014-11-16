@@ -5,10 +5,19 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
+             xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              GotFocus="UserControl_GotFocus"
              LostFocus="UserControl_LostFocus"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.CommandBindings>
+        <CommandBinding Command="Paste" Executed="CommandBinding_Executed" />
+        <CommandBinding Command="Copy" Executed="CommandBinding_Executed" />
+        <CommandBinding Command="Cut" Executed="CommandBinding_Executed" />
+    </UserControl.CommandBindings>
+    <UserControl.InputBindings>
+        <KeyBinding Key="F2" Command="{Binding EditCommand}" />
+    </UserControl.InputBindings>
     <UserControl.Resources>
         <InputBindingCollection x:Shared="False" x:Key="TagInputBindings">
             <KeyBinding Key="Delete" Command="{Binding DeleteCommand}" />
@@ -27,10 +36,16 @@
     </UserControl.Resources>
     <!-- Autocomplete -->
     <StackPanel>
-        <ListBox x:Name="input" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+        <ListBox x:Name="input"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 HorizontalContentAlignment="Stretch"
                  ItemsSource="{Binding Tags}"
                  SelectedItem="{Binding SelectedTag}"
-                 HorizontalContentAlignment="Stretch"
+                 SelectionMode="Extended"
+                 dd:DragDrop.IsDragSource="True"
+                 dd:DragDrop.IsDropTarget="True"
+                 dd:DragDrop.DropHandler="{Binding DropHandler}"
+                 dd:DragDrop.DragHandler="{Binding DragHandler}"
                  GotFocus="input_GotFocus"
                  LostFocus="input_LostFocus"
                  PreviewKeyDown="input_PreviewKeyDown"
@@ -47,13 +62,13 @@
             </ListBox.InputBindings>
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                    <Style.Triggers>
-                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                            <Setter Property="IsSelected" Value="True" />
-                        </Trigger>
-                    </Style.Triggers>
                     <Setter Property="controls:Attached.InputBindings" Value="{StaticResource TagInputBindings}" />
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Padding" Value="2" />
+
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                    <Setter Property="controls:FocusExtension.Direct" Value="True" />
+                    <Setter Property="controls:FocusExtension.IsFocused" Value="{Binding IsListItemFocused, Mode=TwoWay}" />
                 </Style>
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
@@ -73,7 +88,6 @@
 
             <ListBox x:Name="suggestions"
                         MaxHeight="100"
-                     SelectionMode="Extended"
                         FocusManager.IsFocusScope="True"
                         ItemsSource="{Binding Suggestions}"
                         SelectedItem="{Binding SelectedSuggestion, Mode=TwoWay}"

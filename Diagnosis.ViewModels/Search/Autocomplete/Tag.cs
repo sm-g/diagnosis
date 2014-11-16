@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using Diagnosis.Common;
+using System.Windows;
+using GongSolutions.Wpf.DragDrop;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
@@ -25,9 +27,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         Forbidden
     }
 
-    public class Tag : ViewModelBase
+    public class Tag : ViewModelBase, IDropTarget
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(Tag));
+        readonly Autocomplete autocomplete;
         private readonly bool canConvert;
         private object _blank;
         private bool _focused;
@@ -35,27 +38,51 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private States _state;
         private bool _isDeleteOnly;
         private bool _isLast;
+        private bool _listItemFocused;
+        private bool _selected;
+        private bool _draggable;
         private Signalizations _signal;
 
         /// <summary>
         /// Создает пустой тег.
         /// </summary>
-        public Tag(bool canConvert)
+        public Tag(Autocomplete parent, bool canConvert)
         {
+            Contract.Ensures(State == States.Init);
+
             this.canConvert = canConvert;
-            State = States.Init;
+            this.autocomplete = parent;
         }
 
         /// <summary>
-        /// Создает тег с сущностью в завершенном состоянии.
+        /// Создает тег с запросом.
         /// </summary>
-        public Tag(IHrItemObject entity, bool canConvert)
+        /// <param name="parent"></param>
+        /// <param name="query"></param>
+        /// <param name="canConvert"></param>
+        public Tag(Autocomplete parent, string query, bool canConvert)
         {
-            Contract.Requires(entity != null);
-            this.canConvert = canConvert;
+            Contract.Ensures(State == States.Typing);
 
-            Blank = entity;
-            Entities = new List<IHrItemObject>() { entity };
+            this.canConvert = canConvert;
+            this.autocomplete = parent;
+            Query = query;
+        }
+
+
+        /// <summary>
+        /// Создает тег с сущностями.
+        /// </summary>
+        public Tag(Autocomplete parent, IHrItemObject item, bool canConvert)
+        {
+            Contract.Requires(item != null);
+            Contract.Ensures(State == States.Completed);
+
+            this.canConvert = canConvert;
+            this.autocomplete = parent;
+
+            Blank = item;
+            Entities = new List<IHrItemObject>() { item };
         }
 
         public event EventHandler Deleted;
@@ -94,30 +121,47 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             Completed
         }
 
-        public RelayCommand DeleteCommand
+        public string Query
         {
             get
             {
-                return new RelayCommand(OnDeleted,
-                    () => !IsLast);
+                return _query;
+            }
+            set
+            {
+                if (Query != value)
+                {
+                    logger.DebugFormat("query ={0}", value);
+                    Contract.Assume(!IsDeleteOnly);
+
+                    State = States.Typing;
+
+                    // show drag when type in last
+                    if (IsLast && !value.IsNullOrEmpty())
+                        IsDraggable = true;
+
+                    _query = value;
+                    Entities = null;
+                    OnPropertyChanged("Query");
+                }
             }
         }
 
-        public RelayCommand ConvertCommand
+        public States State
         {
-            get
+            get { return _state; }
+            private set
             {
-                return new RelayCommand(() =>
+                if (_state != value)
                 {
-                    Entities = null;
-                    OnConverting(EventArgs.Empty);
-                },
-                () => canConvert && State != States.Init && !Query.IsNullOrEmpty() && !IsDeleteOnly);
+                    _state = value;
+                    OnPropertyChanged("State");
+                }
             }
         }
 
         /// <summary>
-        /// Сущности, созданные из тега. При изменении запроса или конвертации сбрасывается.
+        /// Сущности, созданные из тега. При изменении запроса или бланка сбрасывается.
         /// </summary>
         public IEnumerable<IHrItemObject> Entities { get; internal set; }
 
@@ -135,7 +179,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 if (_blank != value)
                 {
-                    logger.DebugFormat("blonk ={0}", value);
+                    logger.DebugFormat("blank ={0}", value);
 
                     _blank = value;
                     OnPropertyChanged("Blank");
@@ -159,20 +203,71 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 return GetBlankType(Blank);
             }
         }
-
-        public bool IsFocused
+        public RelayCommand ConvertCommand
         {
             get
             {
-                return _focused;
+                return new RelayCommand(() =>
+                {
+                    OnConverting(EventArgs.Empty);
+                },
+                () => canConvert && State != States.Init && !Query.IsNullOrEmpty() && !IsDeleteOnly);
+            }
+        }
+        #region AutocompleteRelated
+
+        public RelayCommand AddLeftCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    autocomplete.Add(this, true);
+                });
+            }
+        }
+        public RelayCommand AddRightCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    autocomplete.Add(this, false);
+                }, () => !IsLast);
+            }
+        }
+        public RelayCommand DeleteCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    if (!IsLast)
+                    {
+                        OnDeleted();
+                    }
+                    else
+                    {
+                        Query = null;
+                        State = States.Init;
+                    }
+                });
+            }
+        }
+
+        public Signalizations Signalization
+        {
+            get
+            {
+                return _signal;
             }
             set
             {
-                if (_focused != value)
+                if (_signal != value)
                 {
-                    _focused = value;
-                    //  Debug.Print("{0} focused = {1}", this, value);
-                    OnPropertyChanged("IsFocused");
+                    _signal = value;
+                    //  logger.InfoFormat("{0} signals", this);
+                    OnPropertyChanged(() => Signalization);
                 }
             }
         }
@@ -196,60 +291,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        public string Query
-        {
-            get
-            {
-                return _query;
-            }
-            set
-            {
-                if (Query != value)
-                {
-                    logger.DebugFormat("query ={0}", value);
-                    Contract.Assume(!IsDeleteOnly);
-
-                    State = States.Typing;
-
-                    _query = value;
-                    Entities = null;
-                    OnPropertyChanged("Query");
-                }
-            }
-        }
-
-        public States State
-        {
-            get { return _state; }
-            private set
-            {
-                if (_state != value)
-                {
-                    _state = value;
-                    OnPropertyChanged("State");
-                }
-            }
-        }
-
-        public Signalizations Signalization
-        {
-            get
-            {
-                return _signal;
-            }
-            set
-            {
-                if (_signal != value)
-                {
-                    _signal = value;
-                    //  logger.InfoFormat("{0} signals", this);
-                    OnPropertyChanged(() => Signalization);
-                }
-            }
-        }
-
         /// <summary>
-        /// Единственный последний тег — особенный. 
+        /// Единственный последний тег для набора текста по умолчанию. 
         /// Не удаляется.
         /// </summary>
         public bool IsLast
@@ -260,10 +303,97 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_isLast != value)
                 {
                     _isLast = value;
+
+                    // Last tag is not draggable before it has query
+                    if (value)
+                        IsDraggable = false;
+
                     OnPropertyChanged(() => IsLast);
                 }
             }
         }
+
+        void IDropTarget.DragOver(IDropInfo dropInfo)
+        {
+            autocomplete.DropHandler.DragOver(dropInfo);
+        }
+
+        void IDropTarget.Drop(IDropInfo dropInfo)
+        {
+            autocomplete.DropHandler.Drop(dropInfo);
+        }
+
+        #endregion
+
+
+        #region ViewRelated
+
+        public bool IsTextBoxFocused
+        {
+            get
+            {
+                return _focused;
+            }
+            set
+            {
+                if (_focused != value)
+                {
+                    _focused = value;
+                    logger.DebugFormat("{0} focused = {1}, focused2 = {2}", this, value, _listItemFocused);
+                    OnPropertyChanged("IsTextBoxFocused");
+                }
+            }
+        }
+        public bool IsListItemFocused
+        {
+            get
+            {
+                return _listItemFocused;
+
+            }
+            set
+            {
+                if (_listItemFocused != value)
+                {
+                    _listItemFocused = value;
+                    logger.DebugFormat("{0} focused2 = {1}, focused = {2}", this, value, _focused);
+
+                    OnPropertyChanged(() => IsListItemFocused);
+                }
+            }
+        }
+        public bool IsSelected
+        {
+            get
+            {
+                return _selected;
+            }
+            set
+            {
+                if (_selected != value)
+                {
+                    _selected = value;
+                    logger.DebugFormat("{0} selected {1}", this, value);
+                    OnPropertyChanged(() => IsSelected);
+                }
+            }
+        }
+        public bool IsDraggable
+        {
+            get
+            {
+                return _draggable;
+            }
+            set
+            {
+                if (_draggable != value)
+                {
+                    _draggable = value;
+                    OnPropertyChanged(() => IsDraggable);
+                }
+            }
+        }
+        #endregion
 
         public void Validate()
         {
@@ -318,6 +448,20 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 h(this, e);
             }
         }
+
+        [ContractInvariantMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+        private void ObjectInvariant()
+        {
+            // Contract.Invariant(State != States.Completed || BlankType != BlankTypes.None); // завершенный тег → есть бланк (тег завершается после смены бланка) в поиске бланк мб пустой
+            Contract.Invariant(State != States.Init || (BlankType == BlankTypes.None && Entities == null)); // в начальном состоянии → нет бланка и сущностей
+            // при редактирвоаии нет сущностей
+        }
+
+        public void OnDrop(DragEventArgs e)
+        {
+            autocomplete.OnDrop(e);
+        }
     }
 
     [Serializable]
@@ -330,5 +474,15 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             this.tag = tag;
         }
+    }
+
+
+    [Serializable]
+    public class TagData
+    {
+        public static readonly DataFormat DataFormat = DataFormats.GetDataFormat("tag");
+        public string Query { get; set; }
+        public object Blank { get; set; }
+        public List<IHrItemObject> ItemObjects { get; set; }
     }
 }

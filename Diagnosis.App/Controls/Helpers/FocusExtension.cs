@@ -8,7 +8,7 @@ namespace Diagnosis.App.Controls
     public static class FocusExtension
     {
         public static readonly DependencyProperty IsFocusedProperty =
-            DependencyProperty.RegisterAttached("IsFocused", typeof(bool?), typeof(FocusExtension), new FrameworkPropertyMetadata(IsFocusedChanged));
+            DependencyProperty.RegisterAttached("IsTextBoxFocused", typeof(bool?), typeof(FocusExtension), new FrameworkPropertyMetadata(IsFocusedChanged));
 
         /// <summary>
         /// When element got logic focus, call Focus() only if it has keyboard focus.

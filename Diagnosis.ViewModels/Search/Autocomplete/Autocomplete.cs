@@ -1,11 +1,14 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
+using GongSolutions.Wpf.DragDrop;
 using log4net;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Windows;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
@@ -13,12 +16,14 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(Autocomplete));
         private readonly bool allowTagConvertion;
-        private Tag _selItem;
+        private Tag _selTag;
         private bool _popupOpened;
         private object prevSelectedSuggestion;
         private Tag _editingTag;
         private bool _supressCompletion;
         private object _selectedSuggestion;
+        private bool _reorder;
+        private bool _showALt;
         private Recognizer recognizer;
         private bool inDispose;
 
@@ -27,7 +32,20 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             this.recognizer = recognizer;
             this.allowTagConvertion = allowTagConvertion;
 
+            DropHandler = new Autocomplete.DropTargetHandler(this);
+            DragHandler = new Autocomplete.DragSourceHandler();
             Tags = new ObservableCollection<Tag>();
+            Tags.CollectionChanged += (s, e) =>
+            {
+                if (inDispose) return;
+
+                logger.DebugFormat("{0} '{1}' '{2}'", e.Action, e.OldStartingIndex, e.NewStartingIndex);
+
+                // кроме добавления пустого тега
+                if (!(e.Action == NotifyCollectionChangedAction.Add && ((Tag)e.NewItems[0]).State == Tag.States.Init))
+                    OnEntitiesChanged();
+            };
+
             AddTag(isLast: true);
 
             if (initItems != null)
@@ -51,7 +69,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         public event EventHandler<TagEventArgs> TagCompleted;
 
         /// <summary>
-        /// Возникает, когда меняется набор сущностей в тегах. (Завершение редактрования, конвертация или удаление.)
+        /// Возникает, когда меняется набор сущностей в тегах. (Завершение редактирования, конвертация, удаление, cut, paste.)
         /// </summary>
         public event EventHandler EntitiesChanged;
 
@@ -91,6 +109,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 if (_selectedSuggestion != value)
                 {
+                    if (value == null)
+                        prevSelectedSuggestion = _selectedSuggestion;
+
                     _selectedSuggestion = value;
                     //  logger.DebugFormat("selected sugg = {0}", value);
                     OnPropertyChanged(() => SelectedSuggestion);
@@ -108,21 +129,47 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             get
             {
-                return _selItem;
+                return _selTag;
             }
             set
             {
-                if (_selItem != value)
+                if (_selTag != value)
                 {
-                    _selItem = value;
+                    _selTag = value;
                     if (value != null)
                     {
-                        _selItem.IsFocused = true;
                         EditingTag = value;
                     }
 
                     OnPropertyChanged(() => SelectedTag);
                 }
+            }
+        }
+
+        private List<Tag> SelectedTags
+        {
+            get { return Tags.Where(t => t.IsSelected).ToList(); }
+        }
+
+        /// <summary>
+        /// Switch focus between textbox and listitem for SelectedTag
+        /// </summary>
+        public RelayCommand EditCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    if (SelectedTag != null)
+                        if (SelectedTag.IsTextBoxFocused)
+                        {
+                            SelectedTag.IsListItemFocused = true;
+                        }
+                        else
+                        {
+                            SelectedTag.IsTextBoxFocused = true;
+                        }
+                });
             }
         }
 
@@ -145,11 +192,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        public bool IsLastTagEmpty
+        public Tag LastTag
         {
             get
             {
-                return Tags.Count > 0 && Tags.Last().State == Tag.States.Init;
+                return Tags.LastOrDefault();
             }
         }
 
@@ -177,7 +224,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
-        /// Не завершать тег при переходе фокуса на попап.
+        /// Тег завершается при потере фокуса.
         /// </summary>
         public bool CanCompleteOnLostFocus
         {
@@ -185,11 +232,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             set
             {
                 _supressCompletion = value;
-                logger.DebugFormat("supress {0}", value);
+                logger.DebugFormat("CanCompleteOnLostFocus {0}", value);
             }
         }
-
-        private bool _showALt;
 
         public bool ShowAltSuggestion
         {
@@ -207,22 +252,47 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
+        public bool WithReorder
+        {
+            get
+            {
+                return _reorder;
+            }
+            set
+            {
+                if (_reorder != value)
+                {
+                    _reorder = value;
+                    OnPropertyChanged(() => WithReorder);
+                }
+            }
+        }
+
+        public DropTargetHandler DropHandler { get; private set; }
+        public DragSourceHandler DragHandler { get; private set; }
+
         /// <summary>
-        /// Добавляет тег в конец списка.
+        /// Создает тег.
         /// </summary>
-        public Tag AddTag(IHrItemObject item = null, bool isLast = false)
+        /// <param name="сontent">Строка запроса, IHrsItemObject или null для пустого тега.</param>
+        public Tag CreateTag(object content = null)
         {
             Tag tag;
-            bool empty = item == null;
-            if (empty)
-                tag = new Tag(allowTagConvertion);
+            var itemObject = content as IHrItemObject;
+            var str = content as string;
+
+            if (itemObject != null)
+                // для давления — искать связный тег и добавлять туда сущность
+                tag = new Tag(this, itemObject, allowTagConvertion);
+            else if (str != null)
+                tag = new Tag(this, str, allowTagConvertion);
             else
-                tag = new Tag(item, allowTagConvertion);
+                tag = new Tag(this, allowTagConvertion);
 
             tag.Deleted += (s, e) =>
             {
+                Contract.Requires(!tag.IsLast);
                 Tags.Remove(tag);
-                OnEntitiesChanged();
             };
             tag.Converting += (s, e) =>
             {
@@ -236,12 +306,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     MakeSuggestions(EditingTag);
                     RefreshPopup();
                 }
-                else if (e.PropertyName == "IsFocused")
+                else if (e.PropertyName == "IsTextBoxFocused")
                 {
-                    if (tag.IsFocused)
+                    if (tag.IsTextBoxFocused)
                     {
-                        prevSelectedSuggestion = SelectedSuggestion; // сначала фокус получает выбранный тег
-
                         if (tag.Signalization != Signalizations.None) // TODO предположения для недописанных
                         {
                             MakeSuggestions(SelectedTag);
@@ -252,10 +320,13 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                         }
 
                         CanCompleteOnLostFocus = true;
+
+                        SelectedTags.Except(tag.ToEnumerable()).ForAll(t => t.IsSelected = false);
+                        tag.IsSelected = true;
                     }
 
-                    // потерялся фокус после перехода на другой тег → завершение введенного текста
-                    if (!tag.IsFocused && CanCompleteOnLostFocus)
+                    // потерялся фокус после перехода не в предположения → завершение введенного текста
+                    if (!tag.IsTextBoxFocused && CanCompleteOnLostFocus)
                     {
                         CompleteOnLostFocus(tag);
                     }
@@ -270,21 +341,46 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                         OnEntitiesChanged();
                     }
                 }
+                else if (e.PropertyName == "IsSelected")
+                {
+                    tag.IsDraggable = tag.IsSelected;
+                }
             };
+            return tag;
+        }
+
+        /// <summary>
+        /// Добавляет тег в коллекцию.
+        /// <param name="tagOrContent">Созданный тег, строка запроса, IHrsItemObject или null для пустого тега.</param>
+        /// </summary>
+        public Tag AddTag(object tagOrContent = null, int index = -1, bool isLast = false)
+        {
+            var tag = tagOrContent as Tag;
+            if (tag == null)
+            {
+                tag = CreateTag(tagOrContent);
+            }
 
             if (isLast)
             {
-                var last = Tags.SingleOrDefault(t => t.IsLast);
-                if (last != null)
-                    last.IsLast = false;
+                if (LastTag != null)
+                    LastTag.IsLast = false;
                 tag.IsLast = true;
             }
 
-            if (empty)
-                Tags.Add(tag);
-            else
-                Tags.Insert(Tags.Count - 1, tag);
+            if (index < 0 || index > Tags.Count - 1)
+                index = Tags.Count - 1; // перед последним
+            if (isLast)
+                index = Tags.Count;
+
+            Tags.Insert(index, tag);
             return tag;
+        }
+
+        public void Add(Tag from, bool left)
+        {
+            var tag = AddTag(index: Tags.IndexOf(from) + (left ? 0 : 1));
+            tag.IsTextBoxFocused = true;
         }
 
         public void ReplaceTagsWith(IEnumerable<IHrItemObject> items)
@@ -312,7 +408,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             foreach (var tag in Tags)
             {
                 if (tag.BlankType != Tag.BlankTypes.None)
-                    foreach (var item in recognizer.MakeEntities(tag))
+                    foreach (var item in recognizer.EntitiesOf(tag)) // у давлния мб две сущности, возвращаем их отдельно
                     {
                         result.Add(item);
                     }
@@ -323,6 +419,67 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             return result;
         }
 
+        public void Cut()
+        {
+            var hios = Copy();
+
+            var completed = SelectedTags.Where(t => t.State == Tag.States.Completed); // do not remove init tags
+            completed.ForAll(i => Tags.Remove(i));
+
+            LogHrItemObjects("cut", hios);
+        }
+
+        public List<IHrItemObject> Copy()
+        {
+            var completed = SelectedTags.Where(t => t.State == Tag.States.Completed);
+            var hios = completed
+                 .SelectMany(t => recognizer.EntitiesOf(t))
+                 .ToList();
+
+            var data = new TagData() { ItemObjects = hios };
+            var strings = string.Join(", ", hios);
+
+            IDataObject dataObj = new DataObject(TagData.DataFormat.Name, data);
+            dataObj.SetData(System.Windows.DataFormats.UnicodeText, strings);
+            Clipboard.SetDataObject(dataObj, false);
+
+            LogHrItemObjects("copy", hios);
+            return hios;
+        }
+
+        public void Paste()
+        {
+            TagData data = null;
+
+            var ido = Clipboard.GetDataObject();
+            if (ido.GetDataPresent(TagData.DataFormat.Name))
+            {
+                data = (TagData)ido.GetData(TagData.DataFormat.Name);
+            }
+            if (data != null)
+            {
+                var index = Tags.IndexOf(SelectedTag); // paste before first SelectedTag
+                SelectedTags.ForEach(t => t.IsSelected = false);
+
+                data = recognizer.SyncWithSession(data);
+
+                foreach (var item in data.ItemObjects)
+                {
+                    var tag = AddTag(item, index++);
+                    tag.IsSelected = true;
+                }
+                LogHrItemObjects("paste", data.ItemObjects);
+            }
+        }
+
+        /// <summary>
+        /// Формат {[id] ToString()[,] ...}
+        /// </summary>
+        private void LogHrItemObjects(string action, IEnumerable<IHrItemObject> hios)
+        {
+            logger.DebugFormat("{0} hios: {1}", action, hios.FlattenString());
+        }
+
         /// <summary>
         /// Завершает тег.
         /// </summary>
@@ -331,7 +488,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
         private void CompleteCommon(Tag tag, object suggestion, bool exactMatchRequired, bool inverse = false)
         {
-            if (tag.Query == "") // пустой тег — удаляем
+            if (tag.Query == "")
             {
                 tag.DeleteCommand.Execute(null);
             }
@@ -371,14 +528,14 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
 
             // переходим к вводу нового слова
-            SelectedTag = Tags.Last();
+            LastTag.IsTextBoxFocused = true;
         }
 
         public void CompleteOnLostFocus(Tag tag)
         {
             if (tag.State == Tag.States.Typing)
             {
-                logger.Debug("Complete from VM");
+                logger.Debug("CompleteOnLostFocus");
                 CompleteCommon(tag, prevSelectedSuggestion, true);
             }
         }
@@ -390,7 +547,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             tag.Validate();
 
             // добавляем пустое поле
-            if (!IsLastTagEmpty)
+            if (LastTag.State == Tag.States.Completed)
             {
                 AddTag(isLast: true);
             }
@@ -441,6 +598,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         protected virtual void OnEntitiesChanged()
         {
+            logger.DebugFormat("entities changed in {0}", this);
             var h = EntitiesChanged;
             if (h != null)
             {
@@ -452,7 +610,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            Contract.Invariant(inDispose || Tags.Count(t => t.IsLast) == 1); // хотя бы один тег - поле ввода
+            Contract.Invariant(inDispose || LastTag.IsLast); // поле ввода по умолчанию
+            Contract.Invariant(Tags.Count(t => t.State == Tag.States.Typing) <= 1); // только один тег редактируется
         }
 
         protected override void Dispose(bool disposing)
@@ -463,6 +622,184 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 Tags.Clear();
             }
             base.Dispose(disposing);
+        }
+
+        public class DropTargetHandler : DefaultDropHandler
+        {
+            private readonly Autocomplete master;
+
+            public DropTargetHandler(Autocomplete master)
+            {
+                this.master = master;
+            }
+
+            public bool FromSameAutocomplete(IDropInfo dropInfo)
+            {
+                if (dropInfo.DragInfo == null || dropInfo.DragInfo.SourceCollection == null)
+                    return false;
+                var sourceList = GetList(dropInfo.DragInfo.SourceCollection);
+                return sourceList == master.Tags;
+            }
+
+            public bool FromOtherAutocomplete(IDropInfo dropInfo)
+            {
+                if (dropInfo.DragInfo == null || dropInfo.DragInfo.SourceCollection == null)
+                    return false;
+                var sourceList = GetList(dropInfo.DragInfo.SourceCollection);
+                return sourceList is IEnumerable<Tag>;
+            }
+
+            public override void DragOver(IDropInfo dropInfo)
+            {
+                var destinationList = GetList(dropInfo.TargetCollection);
+                if (FromSameAutocomplete(dropInfo))
+                {
+                    dropInfo.Effects = DragDropEffects.Move;
+                }
+                else if (FromOtherAutocomplete(dropInfo))
+                {
+                    dropInfo.Effects = DragDropEffects.Copy;
+                }
+                else
+                {
+                    dropInfo.Effects = DragDropEffects.Scroll;
+                }
+                dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+            }
+
+            public override void Drop(IDropInfo dropInfo)
+            {
+                var data = ExtractData(dropInfo.Data).Cast<object>();
+                if (data.Count() == 0)
+                    return;
+
+                logger.DebugFormat("ddrop {0} {1}", data.Count(), data.First().GetType());
+
+                var insertIndex = dropInfo.InsertIndex;
+                if (data.First() is Tag)
+                {
+                    // drop tags from autocomplete
+                    var tags = data.Cast<Tag>();
+
+                    if (FromSameAutocomplete(dropInfo))
+                    {
+                        // reorder tags
+
+                        foreach (var tag in tags)
+                        {
+                            var old = master.Tags.IndexOf(tag);
+                            //master.Tags.RemoveAt(old);
+                            //if (old < insertIndex)
+                            //{
+                            //    --insertIndex;
+                            //}
+                            var n = old < insertIndex ? insertIndex - 1 : insertIndex;
+
+                            // not after last
+                            if (n == master.Tags.IndexOf(master.LastTag))
+                                n--;
+
+                            if (old != n) // prevent deselecting
+                                master.Tags.Move(old, n);
+                        }
+                        //foreach (var tag in tags)
+                        //{
+                        //    master.Tags.Insert(insertIndex, tag);
+                        //}
+                    }
+                    else if (FromOtherAutocomplete(dropInfo))
+                    {
+                        // copy tags' HrItemObjects
+
+                        foreach (var tag in tags)
+                        {
+                            var items = master.recognizer.EntitiesOf(tag).ToList();
+                            foreach (var item in items)
+                            {
+                                master.AddTag(item);
+                            }
+                        }
+                    }
+
+                    master.LastTag.IsSelected = false;
+                }
+            }
+        }
+
+        public class DragSourceHandler : IDragSource
+        {
+            /// <summary>
+            /// Data is tags without Last tag.
+            /// </summary>
+            /// <param name="dragInfo"></param>
+            public void StartDrag(IDragInfo dragInfo)
+            {
+                var tags = dragInfo.SourceItems.Cast<Tag>().Where(t => !t.IsLast);
+                var itemCount = tags.Count();
+
+                if (itemCount == 1)
+                {
+                    dragInfo.Data = tags.First();
+                }
+                else if (itemCount > 1)
+                {
+                    dragInfo.Data = GongSolutions.Wpf.DragDrop.Utilities.TypeUtilities.CreateDynamicallyTypedList(tags);
+                }
+
+                dragInfo.Effects = (dragInfo.Data != null) ?
+                                     DragDropEffects.Copy | DragDropEffects.Move :
+                                     DragDropEffects.None;
+            }
+
+            public bool CanStartDrag(IDragInfo dragInfo)
+            {
+                var tags = dragInfo.SourceItems.Cast<Tag>().Where(t => !t.IsLast);
+                return tags.Count() > 0;
+            }
+
+            public void DragCancelled()
+            {
+            }
+
+            public void Dropped(IDropInfo dropInfo)
+            {
+            }
+
+
+        }
+
+        public void OnDrop(DragEventArgs e)
+        {
+            logger.DebugFormat("drop {0}", e.Data.ToString());
+
+            string text = null;
+            string unicodeText = null;
+
+            // prefer unicode format
+            if (e.Data.GetDataPresent(DataFormats.Text))
+            {
+                text = (string)e.Data.GetData(DataFormats.Text);
+            }
+            if (e.Data.GetDataPresent(DataFormats.UnicodeText))
+            {
+                unicodeText = (string)e.Data.GetData(DataFormats.UnicodeText);
+            }
+            if (unicodeText != null)
+                text = unicodeText;
+
+            if (text != null)
+            {
+                // drop strings - make tag with query and complete it
+
+                var strings = text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var str in strings)
+                {
+                    var tag = CreateTag(str);
+                    var sugg = recognizer.SearchForSuggesstions(str, null).FirstOrDefault();
+                    CompleteCommon(tag, sugg, true);
+                    AddTag(tag);
+                }
+            }
         }
     }
 }

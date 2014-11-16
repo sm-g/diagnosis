@@ -5,12 +5,47 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:auto="clr-namespace:Diagnosis.ViewModels.Search.Autocomplete;assembly=Diagnosis.Viewmodels"
+             xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              mc:Ignorable="d"
-             d:DesignHeight="20" d:DesignWidth="300">
-    <StackPanel>
-        <TextBox x:Name="text" controls:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
-             Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
-             IsReadOnly="{Binding IsDeleteOnly}">
+             d:DesignHeight="25" d:DesignWidth="300">
+    <DockPanel>
+        <DockPanel.Style>
+            <Style TargetType="DockPanel" />
+        </DockPanel.Style>
+
+        <StackPanel x:Name="drag" Orientation="Horizontal"
+                    DockPanel.Dock="Left" Width="15" Height="20" 
+                    Cursor="SizeAll" Background="Transparent">
+            <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsDraggable}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Style>
+            <StackPanel.Resources>
+                <Path x:Key="line" x:Shared="False" Data="M0,0 L0,1" Stretch="Fill" Stroke="Gray"
+                      StrokeDashOffset="2"
+                      StrokeThickness="2"
+                      StrokeDashArray="0,2.5"
+                      StrokeDashCap="Round" />
+            </StackPanel.Resources>
+
+            <ContentPresenter Content="{StaticResource line}" />
+            <ContentPresenter Content="{StaticResource line}" Margin="2,0,0,0" />
+        </StackPanel>
+        <TextBox x:Name="query" 
+                 controls:FocusExtension.IsFocused="{Binding IsTextBoxFocused, Mode=TwoWay}"
+                 dd:DragDrop.IsDropTarget="True"
+                 dd:DragDrop.DropHandler="{Binding}"
+                 Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
+                 IsReadOnly="{Binding IsDeleteOnly}">
             <TextBox.Style>
                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                     <Setter Property="Background" Value="White" />
@@ -31,12 +66,12 @@
                             <Setter Property="ToolTip" Value="Неизвестная единица измерения, сохраняется без единицы" />
                         </DataTrigger>
 
-                        <!--<DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Query}">
+                        <DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Query}">
                             <Setter Property="Foreground" Value="Red" />
-                        </DataTrigger>-->
-                        <!--<DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Comment}">
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Comment}">
                             <Setter Property="FontStyle" Value="Italic" />
-                        </DataTrigger>-->
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Word}">
                             <Setter Property="FontStyle" Value="Normal" />
                         </DataTrigger>
@@ -65,11 +100,14 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <Separator />
+                    <MenuItem Header="Добавить слева" Command="{Binding AddLeftCommand}" />
+                    <MenuItem Header="Добавить справа" Command="{Binding AddRightCommand}" />
+                    <Separator />
                     <MenuItem Command="{x:Static ApplicationCommands.Cut}" />
                     <MenuItem Command="{x:Static ApplicationCommands.Copy}" />
                     <MenuItem Command="{x:Static ApplicationCommands.Paste}" />
                 </ContextMenu>
             </TextBox.ContextMenu>
         </TextBox>
-    </StackPanel>
+    </DockPanel>
 </UserControl>
