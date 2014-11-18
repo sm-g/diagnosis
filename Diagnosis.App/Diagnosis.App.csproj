@@ -711,7 +711,11 @@ REM copy db for release, if not exist
 if $(ConfigurationName)==Release  (echo n | xcopy "$(SolutionDir)Database\diagnosis.sdf" "$(TargetDir)"  /-y) 
 
 REM copy sqlite.dll
-xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)" /i /d /y</PostBuildEvent>
+xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)" /i /d /y
+
+REM copy sql server ce
+xcopy "$(SolutionDir)libs\x86" "$(TargetDir)\x86" /e /i /d /y
+xcopy "$(SolutionDir)libs\amd64" "$(TargetDir)\amd64" /e /i /d /y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
