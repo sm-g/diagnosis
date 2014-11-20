@@ -15,13 +15,13 @@ namespace Diagnosis.ViewModels.Screens
 {
     public class PatientsListViewModel : ScreenBase
     {
-        private ShortPatientViewModel _current;
+        private Patient _current;
         private NewFilterViewModel<Patient> _filter;
-        private ObservableCollection<ShortPatientViewModel> _patients;
+        private ObservableCollection<Patient> _patients;
 
         public PatientsListViewModel()
         {
-            _patients = new ObservableCollection<ShortPatientViewModel>();
+            _patients = new ObservableCollection<Patient>();
 
             _filter = new NewFilterViewModel<Patient>(PatientQuery.StartingWith(Session));
 
@@ -30,14 +30,13 @@ namespace Diagnosis.ViewModels.Screens
                 if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
                     foreach (Patient item in e.OldItems)
                     {
-                        var deleted = Patients.Where(w => w.patient == item).ToList();
+                        var deleted = Patients.Where(w => w == item).ToList();
                         deleted.ForEach((w) => Patients.Remove(w));
                     }
                 if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
                     foreach (Patient item in e.NewItems)
                     {
-                        var newVM = new ShortPatientViewModel(item);
-                        Patients.Add(newVM);
+                        Patients.Add(item);
                     }
             };
             _filter.Clear(); // показываем всех
@@ -47,11 +46,11 @@ namespace Diagnosis.ViewModels.Screens
             Title = "Пациенты";
         }
 
-        public ObservableCollection<ShortPatientViewModel> Patients { get { return _patients; } }
+        public ObservableCollection<Patient> Patients { get { return _patients; } }
 
         public NewFilterViewModel<Patient> Filter { get { return _filter; } }
 
-        public ShortPatientViewModel SelectedPatient
+        public Patient SelectedPatient
         {
             get
             {
@@ -84,7 +83,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                         {
-                            this.Send(Events.OpenPatient, SelectedPatient.patient.AsParams(MessageKeys.Patient));
+                            this.Send(Events.OpenPatient, SelectedPatient.AsParams(MessageKeys.Patient));
                         }, () => SelectedPatient != null);
             }
         }
@@ -94,7 +93,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Events.EditPatient, SelectedPatient.patient.AsParams(MessageKeys.Patient));
+                    this.Send(Events.EditPatient, SelectedPatient.AsParams(MessageKeys.Patient));
                 }, () => SelectedPatient != null);
             }
         }

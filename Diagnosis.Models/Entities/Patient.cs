@@ -38,20 +38,32 @@ namespace Diagnosis.Models
         public virtual string FirstName
         {
             get { return _fn; }
-            set { SetProperty(ref _fn, value.TrimedOrNull(), () => FirstName); }
+            set
+            {
+                if (SetProperty(ref _fn, value.TrimedOrNull(), () => FirstName))
+                    OnPropertyChanged(() => Actual);
+            }
         }
 
         public virtual string MiddleName
         {
             get { return _mn; }
-            set { SetProperty(ref _mn, value.TrimedOrNull(), () => MiddleName); }
+            set
+            {
+                if (SetProperty(ref _mn, value.TrimedOrNull(), () => MiddleName))
+                    OnPropertyChanged(() => Actual);
+            }
 
         }
 
         public virtual string LastName
         {
             get { return _ln; }
-            set { SetProperty(ref _ln, value.TrimedOrNull(), () => LastName); }
+            set
+            {
+                if (SetProperty(ref _ln, value.TrimedOrNull(), () => LastName))
+                    OnPropertyChanged(() => Actual);
+            }
         }
 
         public virtual bool? IsMale

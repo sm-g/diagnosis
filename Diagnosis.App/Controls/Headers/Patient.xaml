@@ -8,6 +8,6 @@
     <!--Patient-->
     <Grid>
         <TextBlock Text="{Binding Label}" Width="30" />
-        <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource ManToShortName}}" />
+        <TextBlock Text="{Binding Actual, Mode=OneWay, Converter={StaticResource ManToShortName}}" />
     </Grid>
 </UserControl>
