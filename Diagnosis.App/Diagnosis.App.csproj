@@ -296,8 +296,8 @@
     <Compile Include="Controls\Search\PopupSearch.xaml.cs">
       <DependentUpon>PopupSearch.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Editors\PatientEditor.xaml.cs">
-      <DependentUpon>PatientEditor.xaml</DependentUpon>
+    <Compile Include="Windows\PatientEditorWindow.xaml.cs">
+      <DependentUpon>PatientEditorWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Editors\SexChooser.xaml.cs">
       <DependentUpon>SexChooser.xaml</DependentUpon>
@@ -325,9 +325,6 @@
     <Compile Include="Converters\BoolToSexSign.cs" />
     <Compile Include="Converters\CountToAppointmentsLabel.cs" />
     <Compile Include="Converters\IntToString.cs" />
-    <Compile Include="Screens\NewPatientEditor.xaml.cs">
-      <DependentUpon>NewPatientEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Screens\Patients.xaml.cs">
       <DependentUpon>Patients.xaml</DependentUpon>
     </Compile>
@@ -476,7 +473,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Editors\PatientEditor.xaml">
+    <Page Include="Windows\PatientEditorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -511,10 +508,6 @@
     <Page Include="Screens\Card.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Screens\NewPatientEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Screens\Patients.xaml">
       <SubType>Designer</SubType>

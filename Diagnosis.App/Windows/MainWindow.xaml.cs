@@ -13,22 +13,25 @@ namespace Diagnosis.App.Windows
         public MainWindow()
         {
             InitializeComponent();
-            this.Subscribe(Events.OpenSettings, (e) =>
-            {
-                var settingsVM = e.GetValue<IDialog>(MessageKeys.Dialog);
-                var settingsDialog = new SettingsWindow();
-                ShowDialog(settingsVM, settingsDialog);
-            });
-            this.Subscribe(Events.OpenHolderEditor, (e) =>
+
+            this.Subscribe(Events.OpenDialog, (e) =>
             {
                 var dialogVM = e.GetValue<IDialog>(MessageKeys.Dialog);
-                if (dialogVM is CourseEditorViewModel)
+                if (dialogVM is PatientEditorViewModel)
+                {
+                    ShowDialog(dialogVM, new PatientEditorWindow());
+                }
+                else if (dialogVM is CourseEditorViewModel)
                 {
                     ShowDialog(dialogVM, new CourseEditorWindow());
                 }
                 else if (dialogVM is AppointmentEditorViewModel)
                 {
                     ShowDialog(dialogVM, new AppointmentEditorWindow());
+                }
+                else if (dialogVM is SettingsViewModel)
+                {
+                    ShowDialog(dialogVM, new SettingsWindow());
                 }
             });
 

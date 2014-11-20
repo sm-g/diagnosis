@@ -59,21 +59,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    IDialog vm = null;
-                    if (Holder is Appointment)
-                    {
-                        vm = new AppointmentEditorViewModel(Holder as Appointment);
-                        this.Send(Events.OpenHolderEditor, vm.AsParams(MessageKeys.Dialog));
-                    }
-                    else if (Holder is Course)
-                    {
-                        vm = new CourseEditorViewModel(Holder as Course);
-                        this.Send(Events.OpenHolderEditor, vm.AsParams(MessageKeys.Dialog));
-                    }
-                    else if (Holder is Patient)
-                    {
-                        this.Send(Events.EditPatient, Holder.AsParams(MessageKeys.Patient));
-                    }
+                    this.Send(Events.EditHolder, Holder.AsParams(MessageKeys.Holder));
                 });
             }
         }
@@ -127,7 +113,7 @@ namespace Diagnosis.ViewModels.Screens
                     OnPropertyChanged(() => IsHighlighted);
                 }
             }
-        }       
+        }
 
         private void nested_IHrsHolders_Changed(object sender, NotifyCollectionChangedEventArgs e)
         {

@@ -31,8 +31,6 @@ namespace Diagnosis.ViewModels.Screens
                 }
             };
 
-            AuthorityController.LoggedIn += OnLoggedIn;
-
             switcher.OpenScreen(Screens.Login, replace: true);
             (CurrentView as LoginViewModel).LoginCommand.Execute(null);
         }
@@ -65,10 +63,6 @@ namespace Diagnosis.ViewModels.Screens
                     OnPropertyChanged(() => MenuVisible);
                 }
             }
-        }
-        private void OnLoggedIn(object sender, EventArgs e)
-        {
-            switcher.OpenScreen(Screens.Patients);
         }
     }
 }

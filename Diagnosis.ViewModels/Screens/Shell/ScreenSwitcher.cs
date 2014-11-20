@@ -1,32 +1,76 @@
-﻿using System;
-using System.Windows.Navigation;
-using EventAggregator;
-using Diagnosis.Common;
+﻿using Diagnosis.Common;
 using Diagnosis.Models;
-using System.Diagnostics;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 
 namespace Diagnosis.ViewModels.Screens
 {
     public enum Screens
     {
-        Login, Patients, Words, Card, PatientEditor
+        Login, Patients, Words, Card
     }
 
     public class ScreenSwitcher : ViewModelBase
     {
-        List<Screens> history = new List<Screens>();
+        private List<Screens> history = new List<Screens>();
         private Screens _curScreen;
         private ScreenBase _curView;
 
         public ScreenSwitcher()
         {
+            // диалоги
+
+            this.Subscribe(Events.OpenSettings, (e) =>
+            {
+                var settingsVM = new SettingsViewModel(AuthorityController.CurrentDoctor);
+                this.Send(Events.OpenDialog, settingsVM.AsParams(MessageKeys.Dialog));
+            });
+
+            this.Subscribe(Events.EditPatient, (e) =>
+            {
+                var pat = e.GetValue<Patient>(MessageKeys.Patient);
+                IDialog vm;
+                if (pat != null)
+                    vm = new PatientEditorViewModel(pat as Patient);
+                else
+                    vm = new PatientEditorViewModel();
+                this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+            });
+
+            this.Subscribe(Events.EditHolder, (e) =>
+            {
+                IDialog vm;
+                var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
+                if (holder is Appointment)
+                {
+                    vm = new AppointmentEditorViewModel(holder as Appointment);
+                }
+                else if (holder is Course)
+                {
+                    vm = new CourseEditorViewModel(holder as Course);
+                }
+                else // holder is Patient
+                {
+                    vm = new PatientEditorViewModel(holder as Patient);
+                }
+                this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+            });
+
             this.Subscribe(Events.CreatePatient, (e) =>
             {
-                // открываем экран редактора пациента, в нём новый пациент
-                OpenScreen(Screens.PatientEditor, replace: true);
+                var vm = new PatientEditorViewModel();
+                this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
             });
+
+            // экраны
+
+            AuthorityController.LoggedIn += (s, e) =>
+            {
+                OpenScreen(Screens.Patients);
+            };
+
+            // карточка
 
             this.Subscribe(Events.OpenPatient, (e) =>
             {
@@ -34,21 +78,6 @@ namespace Diagnosis.ViewModels.Screens
                 var pat = e.GetValue<Patient>(MessageKeys.Patient);
 
                 OpenScreen(Screens.Card, pat);
-            });
-
-            this.Subscribe(Events.ShowPatient, (e) =>
-            {
-                // открываем карточку или редактор пациента
-                var pat = e.GetValue<Patient>(MessageKeys.Patient);
-
-                if (Screen == Screens.PatientEditor)
-                {
-                    OpenScreen(Screens.PatientEditor, pat, true);
-                }
-                else
-                {
-                    OpenScreen(Screens.Card, pat, true);
-                }
             });
 
             this.Subscribe(Events.OpenCourse, (e) =>
@@ -61,29 +90,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 var app = e.GetValue<Appointment>(MessageKeys.Appointment);
                 OpenScreen(Screens.Card, app);
-            });
-
-            this.Subscribe(Events.EditPatient, (e) =>
-            {
-                var pat = e.GetValue<Patient>(MessageKeys.Patient);
-
-                OpenScreen(Screens.PatientEditor, pat);
-            });
-
-            this.Subscribe(Events.LeavePatientEditor, (e) =>
-            {
-                // возвращаемся к предыдущему экрану
-                var pat = e.GetValue<Patient>(MessageKeys.Patient);
-
-                for (int i = history.Count - 1; i >= 0; i--)
-                {
-                    if (history[i] != Screens.PatientEditor)
-                    {
-                        OpenScreen(history[i], pat);
-                        return;
-                    }
-                }
-
             });
 
             this.Subscribe(Events.OpenHealthRecord, (e) =>
@@ -107,11 +113,12 @@ namespace Diagnosis.ViewModels.Screens
                 OpenScreen(Screens.Card, holder);
             });
 
+            // closing screen
+
             this.Subscribe(Events.Shutdown, (e) =>
             {
                 CurrentView.Dispose();
             });
-
         }
 
         public Screens Screen
@@ -147,6 +154,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         /// <summary>
         /// Открывает экран.
         /// </summary>
@@ -192,15 +200,6 @@ namespace Diagnosis.ViewModels.Screens
                             throw new ArgumentNullException("parameter"); // что открывать в карте?
                         break;
 
-                    case Screens.PatientEditor:
-                        if (parameter != null)
-                            CurrentView = new PatientEditorViewModel(parameter as Patient);
-                        else
-                            // новый пациент в редакторе
-                            CurrentView = new PatientEditorViewModel();
-
-                        break;
-
                     default:
                         break;
                 }
@@ -211,6 +210,5 @@ namespace Diagnosis.ViewModels.Screens
                     (CurrentView as CardViewModel).Open(parameter);
             }
         }
-
     }
 }

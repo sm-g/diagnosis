@@ -5,12 +5,11 @@ using System.ComponentModel;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class PatientEditorViewModel : ScreenBase
+    public class PatientEditorViewModel : DialogViewModel
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(PatientEditorViewModel));
         private readonly Patient patient;
         private PatientViewModel _vm;
-        private bool shouldCommit;
 
         public PatientViewModel Patient
         {
@@ -35,9 +34,23 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     Save();
-                    shouldCommit = true;
 
-                    this.Send(Events.LeavePatientEditor, patient.AsParams(MessageKeys.Patient));
+                    (patient as IEditableObject).EndEdit();
+
+                    using (var t = Session.BeginTransaction())
+                    {
+                        try
+                        {
+                            t.Commit();
+                        }
+                        catch (System.Exception e)
+                        {
+                            t.Rollback();
+                            logger.Error(e);
+                        }
+                    }
+
+                    DialogResult = true;
                 }, () => CanSave());
             }
         }
@@ -48,24 +61,10 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    Save();
-                    shouldCommit = true;
+                    SaveCommand.Execute(null);
 
                     this.Send(Events.CreatePatient);
                 }, () => CanSaveAndCreate());
-            }
-        }
-
-        public RelayCommand CancelCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    shouldCommit = false;
-
-                    this.Send(Events.LeavePatientEditor, patient.AsParams(MessageKeys.Patient));
-                });
             }
         }
 
@@ -75,8 +74,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    Save();
-                    shouldCommit = true;
+                    SaveCommand.Execute(null);
 
                     var course = AuthorityController.CurrentDoctor.StartCourse(patient);
                     var app = course.AddAppointment(AuthorityController.CurrentDoctor);
@@ -103,7 +101,6 @@ namespace Diagnosis.ViewModels.Screens
             this.patient = patient;
 
             Patient = new PatientViewModel(patient);
-
             (patient as IEditableObject).BeginEdit();
 
             Title = "Данные пациента";
@@ -115,6 +112,19 @@ namespace Diagnosis.ViewModels.Screens
         public PatientEditorViewModel()
             : this(new Patient())
         { }
+
+        private void Save()
+        {
+            // получаем метку для нового
+            bool updateLabel = false;
+            if (patient.IsTransient)
+                updateLabel = true;
+
+            Session.SaveOrUpdate(patient);
+
+            if (updateLabel)
+                patient.Label = patient.Id.ToString();
+        }
 
         private bool CanSave()
         {
@@ -131,44 +141,14 @@ namespace Diagnosis.ViewModels.Screens
             return patient.IsTransient && patient.IsValid(); // только при создании пациента
         }
 
-        private void Save()
+        protected override void OnCancel()
         {
-            // получаем метку для нового
-            bool updateLabel = false;
-            if (patient.IsTransient)
-                updateLabel = true;
-
-            Session.SaveOrUpdate(patient);
-
-            if (updateLabel)
-                patient.Label = patient.Id.ToString();
+            (patient as IEditableObject).CancelEdit();
         }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                if (shouldCommit && patient.IsValid())
-                {
-                    (patient as IEditableObject).EndEdit();
-
-                    using (var t = Session.BeginTransaction())
-                    {
-                        try
-                        {
-                            t.Commit();
-                        }
-                        catch (System.Exception e)
-                        {
-                            t.Rollback();
-                            logger.Error(e);
-                        }
-                    }
-                }
-                else
-                {
-                    (patient as IEditableObject).CancelEdit();
-                }
                 Patient.Dispose();
             }
             base.Dispose(disposing);

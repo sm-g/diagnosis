@@ -32,19 +32,17 @@ namespace Diagnosis.Common
     public enum Events
     {
         // for ScreenSwitcher
-        CreatePatient,
         OpenPatient,
         OpenCourse,
         OpenAppointment,
-        EditPatient,
-        ShowPatient,
-        LeavePatientEditor,
         OpenHealthRecord,
         EditHealthRecord,
         OpenHolder,
 
         // windows
-        OpenHolderEditor,
+        CreatePatient,
+        EditPatient,
+        EditHolder,
         OpenSettings,
         OpenDialog,
 
