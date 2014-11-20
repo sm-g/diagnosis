@@ -65,7 +65,7 @@
                   SelectionMode="Single"
                   AutoGenerateColumns="False">            
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Ключ" IsReadOnly="True" Binding="{Binding Label, Mode=OneWay}" />
+                <DataGridTextColumn Header="Метка" IsReadOnly="True" Binding="{Binding Label, Mode=OneWay}" />
                 <DataGridTextColumn Header="Фамилия" IsReadOnly="True" Binding="{Binding LastName, Mode=OneWay}" />
                 <DataGridTextColumn Header="Имя" IsReadOnly="True" Binding="{Binding FirstName, Mode=OneWay}" />
                 <DataGridTextColumn Header="Отчество" IsReadOnly="True" Binding="{Binding MiddleName, Mode=OneWay}" />

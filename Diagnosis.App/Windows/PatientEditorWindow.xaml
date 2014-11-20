@@ -8,7 +8,7 @@
         xmlns:card="clr-namespace:Diagnosis.App.Controls.CardParts"
         xmlns:screen="clr-namespace:Diagnosis.ViewModels.Screens;assembly=Diagnosis.ViewModels"
         Title="{Binding Title}"
-        Height="320" Width="500"
+        Height="350" Width="500"
         controls:DialogCloser.DialogResult="{Binding DialogResult}"
         controls:FocusBehavior.FocusFirst="True"
         ShowInTaskbar="False" ResizeMode="NoResize" WindowStyle="ToolWindow"
@@ -73,7 +73,7 @@
                 <!-- PatientViewModel -->
                 <DockPanel>
                     <Label Content="Метка" />
-                    <TextBlock Text="{Binding Label, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                    <TextBlock Text="{Binding Label, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" VerticalAlignment="Center" />
                 </DockPanel>
                 <DockPanel>
                     <Label Content="Фамилия" />
@@ -89,7 +89,20 @@
                 </DockPanel>
                 <DockPanel>
                     <Label Content="Дата рождения" />
-                    <editors:AgePicker Margin="0,1,0,-15" />
+                    <editors:ComboBoxDatePicker x:Name="comboDatePicker" VerticalAlignment="Top"
+                                    Year="{Binding BirthYear, Mode=TwoWay}"
+                                    Month="{Binding BirthMonth, Mode=TwoWay}"
+                                    Day="{Binding BirthDay, Mode=TwoWay}">
+                    </editors:ComboBoxDatePicker>
+                </DockPanel>
+                <DockPanel>
+                    <Label Content="Возраст" />
+                    <TextBox Text="{Binding Age, Mode=TwoWay, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                             Width="50"
+                             HorizontalContentAlignment="Right">
+                    </TextBox>
+
+                    <TextBlock Text="{Binding Age, Converter={StaticResource ageLabel}}" Margin="3,0,0,0" VerticalAlignment="Center"></TextBlock>
                 </DockPanel>
                 <DockPanel>
                     <Label Content="Пол" />
