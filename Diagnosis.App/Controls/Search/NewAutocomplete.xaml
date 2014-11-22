@@ -73,7 +73,7 @@
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <search:Tag MinWidth="30" LostKeyboardFocus="Tag_LostKeyboardFocus" GotKeyboardFocus="Tag_GotKeyboardFocus" LostFocus="Tag_LostFocus" />
+                    <search:Tag MinWidth="40" LostKeyboardFocus="Tag_LostKeyboardFocus" GotKeyboardFocus="Tag_GotKeyboardFocus" LostFocus="Tag_LostFocus" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

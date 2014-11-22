@@ -18,7 +18,7 @@
                     Cursor="SizeAll" Background="Transparent">
             <StackPanel.Style>
                 <Style TargetType="StackPanel">
-                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Setter Property="Visibility" Value="Hidden" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsDraggable}" Value="True">
                             <Setter Property="Visibility" Value="Visible" />
