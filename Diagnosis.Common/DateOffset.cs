@@ -18,7 +18,7 @@ namespace Diagnosis.Common
     /// Заданная днём, месяцем и годом дата будет иметь смещение в неделях, если число дней нацело делится на 7.
     /// При указании даты отсутствующий более крупный компонент считается сегодняшним (_ _ d -> now.y now.m d).
     /// </summary>
-    public class DateOffset : NotifyPropertyChangedBase
+    public class DateOffset : NotifyPropertyChangedBase // should be struct
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(DateOffset));
 
