@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Models;
+using Diagnosis.Common;
 using NHibernate.Event;
 using System;
 
@@ -23,6 +24,10 @@ namespace Diagnosis.Data
         public void Insert(EntityBase entity)
         {
             entity.IsDirty = false;
+            if (entity is Word)
+            {
+                this.Send(Events.WordPersisted, entity.AsParams(MessageKeys.Word));
+            }
         }
 
         public void Update(EntityBase entity)

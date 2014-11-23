@@ -25,6 +25,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private bool _reorder;
         private bool _showALt;
         private Recognizer recognizer;
+        private EventAggregator.EventMessageHandler hanlder;
         private bool inDispose;
 
         public Autocomplete(Recognizer recognizer, bool allowTagConvertion, IEnumerable<IHrItemObject> initItems)
@@ -45,6 +46,13 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (!(e.Action == NotifyCollectionChangedAction.Add && ((Tag)e.NewItems[0]).State == Tag.States.Init))
                     OnEntitiesChanged();
             };
+            hanlder = this.Subscribe(Events.WordPersisted, (e) =>
+            {
+                // созданные слова можно искать из поиска
+                var word = e.GetValue<Word>(MessageKeys.Word);
+                Tags.Where(t => t.Entities != null && t.Entities.Contains(word))
+                    .ForAll(t => t.Validate());
+            });
 
             AddTag(isLast: true);
 
@@ -630,6 +638,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             if (disposing)
             {
                 Tags.Clear();
+                hanlder.Dispose();
             }
             base.Dispose(disposing);
         }
