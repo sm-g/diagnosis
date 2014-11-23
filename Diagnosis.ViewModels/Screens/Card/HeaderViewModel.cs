@@ -229,7 +229,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private void ShowApps()
         {
-            var app = holder as Appointment;
+            var app = Holder as Appointment;
             var apps = new LinkedList<Appointment>(app.Course.Appointments
                     .OrderBy(c => c.DateAndTime));
             var triad = apps
@@ -242,7 +242,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private void ShowCourses()
         {
-            var course = holder as Course;
+            var course = Holder as Course;
             var courses = course.Patient.Courses
                     .OrderBy(c => c, new CompareCourseByDate());
 
@@ -256,6 +256,11 @@ namespace Diagnosis.ViewModels.Screens
 
         private void UpdatePrev()
         {
+            if (PrevHolder == null)
+            {
+                PrevSpan = TimeSpan.Zero;
+                return;
+            }
             if (Holder is Appointment)
             {
                 var app = Holder as Appointment;
@@ -272,6 +277,11 @@ namespace Diagnosis.ViewModels.Screens
 
         private void UpdateNext()
         {
+            if (NextHolder == null)
+            {
+                NextSpan = TimeSpan.Zero;
+                return;
+            }
             if (Holder is Appointment)
             {
                 var app = Holder as Appointment;

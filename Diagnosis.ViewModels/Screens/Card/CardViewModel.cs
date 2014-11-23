@@ -134,6 +134,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (_header != value)
                 {
+                    if (_header != null)
+                        _header.Dispose();
                     _header = value;
                     OnPropertyChanged(() => Header);
                 }
@@ -335,6 +337,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (disposing)
                 {
+                    Header.Dispose();
                     HrEditor.Dispose();
                     HrList.Dispose(); // удаляются все записи
 
