@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using System.Collections.Specialized;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
@@ -8,6 +9,7 @@ namespace Diagnosis.ViewModels.Screens
     public class CardItemViewModel : HierarchicalBase<CardItemViewModel>
     {
         private bool _isHighlighted;
+        private bool _showAppTime;
 
         public CardItemViewModel(IHrsHolder holder)
         {
@@ -36,10 +38,15 @@ namespace Diagnosis.ViewModels.Screens
                     Children.Add(item);
                 }
 
-                course.AppointmentsChanged += nested_IHrsHolders_Changed;
+                CorrectAppTimeVisibilty();
+
+                course.AppointmentsChanged += (s, e) =>
+                {
+                    nested_IHrsHolders_Changed(e, e);
+                    CorrectAppTimeVisibilty();
+                };
             }
         }
-
         public IHrsHolder Holder { get; private set; }
 
         public RelayCommand OpenCommand
@@ -112,6 +119,40 @@ namespace Diagnosis.ViewModels.Screens
                     _isHighlighted = value;
                     OnPropertyChanged(() => IsHighlighted);
                 }
+            }
+        }
+        public bool ShowAppTime
+        {
+            get
+            {
+                return _showAppTime;
+            }
+            set
+            {
+                if (_showAppTime != value)
+                {
+                    _showAppTime = value;
+                    OnPropertyChanged(() => ShowAppTime);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Показываем время для осмотров, если есть осмотр той же даты в курсе.
+        /// </summary>
+        private void CorrectAppTimeVisibilty()
+        {
+            Contract.Requires(Holder is Course);
+
+            // CardItem-осмотры, для которых нашлись другие c такой же датой
+            var appItemsWithSameDates = (from app in Children
+                                         group app by (app.Holder as Appointment).DateAndTime.Date into grs
+                                         where grs.Count() > 1
+                                         select grs).SelectMany(i => i).ToList();
+
+            foreach (var app in Children)
+            {
+                app.ShowAppTime = appItemsWithSameDates.Contains(app);
             }
         }
 

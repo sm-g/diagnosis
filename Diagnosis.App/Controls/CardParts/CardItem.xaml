@@ -30,6 +30,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <headers:Holder DataContext="{Binding Holder}" />
+        <headers:Holder DataContext="{Binding Holder}" 
+                        TimeVisibility="{Binding DataContext.ShowAppTime, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=UserControl}}" />
     </Grid>
 </UserControl>
