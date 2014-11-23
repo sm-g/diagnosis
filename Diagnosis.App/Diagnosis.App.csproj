@@ -231,6 +231,9 @@
     <Compile Include="Controls\Headers\Course.xaml.cs">
       <DependentUpon>Course.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Headers\Holder.xaml.cs">
+      <DependentUpon>Holder.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Headers\Patient.xaml.cs">
       <DependentUpon>Patient.xaml</DependentUpon>
     </Compile>
@@ -410,6 +413,10 @@
     <Page Include="Controls\Headers\Course.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Headers\Holder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Headers\Patient.xaml">
       <SubType>Designer</SubType>

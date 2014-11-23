@@ -6,8 +6,19 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <!--Patient-->
-    <Grid>
-        <TextBlock Text="{Binding Label}" Width="30" />
-        <TextBlock Text="{Binding Actual, Mode=OneWay, Converter={StaticResource ManToShortName}}" />
-    </Grid>
+    <DockPanel>
+        <TextBlock Text="{Binding Actual, Converter={StaticResource ManToShortName}}"
+                    VerticalAlignment="Center"
+                    Visibility="{Binding NoName, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                    MinWidth="30" />
+        <TextBlock Text="{Binding IsMale, Converter={StaticResource SexToSign}}"
+                   FontSize="20"
+                   Margin="20,0,5,0"
+                   VerticalAlignment="Center" />
+        <TextBlock Margin="5,0,10,0"
+                   VerticalAlignment="Center">
+            <TextBlock Text="{Binding Age}" />
+            <TextBlock Text="{Binding Age, Converter={StaticResource AgeToLabel}}" />
+        </TextBlock>
+    </DockPanel>
 </UserControl>

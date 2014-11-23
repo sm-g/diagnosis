@@ -12,30 +12,7 @@
              Background="Transparent"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <controls:HrsHolderDataTemplateSelector x:Key="selector">
-            <controls:HrsHolderDataTemplateSelector.PatientTemplate>
-                <DataTemplate>
-                    <headers:Patient />
-                </DataTemplate>
-            </controls:HrsHolderDataTemplateSelector.PatientTemplate>
-            <controls:HrsHolderDataTemplateSelector.CourseTemplate>
-                <DataTemplate>
-                    <TextBlock>
-                    <Run>
-                         <MultiBinding Converter="{StaticResource DateIntervalLabel}">
-                            <Binding Path="Start" Mode="OneWay" />
-                            <Binding Path="End" Mode="OneWay" />
-                        </MultiBinding>
-                    </Run>
-                    </TextBlock>
-                </DataTemplate>
-            </controls:HrsHolderDataTemplateSelector.CourseTemplate>
-            <controls:HrsHolderDataTemplateSelector.AppointmentTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding DateAndTime, Converter={StaticResource DateLabel}}" />
-                </DataTemplate>
-            </controls:HrsHolderDataTemplateSelector.AppointmentTemplate>
-        </controls:HrsHolderDataTemplateSelector>
+        
     </UserControl.Resources>
     <!--HrHolderSearchResultViewModel-->
 
@@ -44,8 +21,8 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <ContentPresenter Content="{Binding Holder}"
-                        ContentTemplateSelector="{StaticResource selector}" />
+        
+        <headers:Holder DataContext="{Binding Holder}" />
         <controls:CommaList ItemsSource="{Binding HealthRecords}" Visibility="{Binding HealthRecords.Count, Converter={StaticResource CountToVisibility}}" Grid.Row="2">
             <controls:CommaList.ItemTemplate>
                 <DataTemplate>

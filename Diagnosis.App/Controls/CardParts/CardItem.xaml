@@ -26,27 +26,10 @@
     </UserControl.ContextMenu>
 
     <UserControl.Resources>
-        <controls:HrsHolderDataTemplateSelector x:Key="cardItemSelector">
-            <controls:HrsHolderDataTemplateSelector.AppointmentTemplate>
-                <DataTemplate>
-                    <headers:Appointment DataContext="{Binding Holder}" />
-                </DataTemplate>
-            </controls:HrsHolderDataTemplateSelector.AppointmentTemplate>
-            <controls:HrsHolderDataTemplateSelector.CourseTemplate>
-                <DataTemplate>
-                    <headers:Course DataContext="{Binding Holder}" />
-                </DataTemplate>
-            </controls:HrsHolderDataTemplateSelector.CourseTemplate>
-            <controls:HrsHolderDataTemplateSelector.PatientTemplate>
-                <DataTemplate>
-                    <headers:Patient DataContext="{Binding Holder}" />
-                </DataTemplate>
-            </controls:HrsHolderDataTemplateSelector.PatientTemplate>
-        </controls:HrsHolderDataTemplateSelector>
+
     </UserControl.Resources>
 
     <Grid>
-        <ContentPresenter Content="{Binding}"  ContentTemplateSelector="{StaticResource cardItemSelector}">
-        </ContentPresenter>
+        <headers:Holder DataContext="{Binding Holder}" />
     </Grid>
 </UserControl>
