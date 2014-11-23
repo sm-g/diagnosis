@@ -59,4 +59,30 @@ namespace Diagnosis.App.Converters
             throw new NotSupportedException();
         }
     }
+    public class TimeSpanLabel : IValueConverter
+    {
+        public object Convert(object value, Type targetType,
+            object parameter, CultureInfo culture)
+        {
+            if (!(value is TimeSpan))
+                return null;
+
+            TimeSpan ts = (TimeSpan)value;
+
+            var prefix = parameter as string;
+            var str = DateFormatter.GetTimeSpanString(ts);
+
+            if (prefix == null)
+                return str;
+            else
+                return string.Format("{0} {1}", prefix, str);
+
+        }
+
+        public object ConvertBack(object value, Type targetType,
+            object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
 }

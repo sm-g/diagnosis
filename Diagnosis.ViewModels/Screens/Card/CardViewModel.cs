@@ -15,6 +15,7 @@ namespace Diagnosis.ViewModels.Screens
         private static readonly ILog logger = LogManager.GetLogger(typeof(CardViewModel));
         private static PatientViewer viewer; // static to hold history
         private HrListViewModel _hrList;
+        private HeaderViewModel _header;
         private HrEditorViewModel _hrEditor;
         private NavigatorViewModel _navigator;
 
@@ -44,6 +45,7 @@ namespace Diagnosis.ViewModels.Screens
                 var holder = e.holder;
 
                 ShowHrsList(holder);
+                Header = new HeaderViewModel(holder);
                 Title = MakeTitle();
             };
 
@@ -102,7 +104,6 @@ namespace Diagnosis.ViewModels.Screens
         /// После удаления всех элементов, карточка пуста.
         /// </summary>
         public event EventHandler LastItemRemoved;
-
         public HrListViewModel HrList
         {
             get
@@ -122,6 +123,22 @@ namespace Diagnosis.ViewModels.Screens
         public HrEditorViewModel HrEditor { get { return _hrEditor; } }
 
         public NavigatorViewModel Navigator { get { return _navigator; } }
+
+        public HeaderViewModel Header
+        {
+            get
+            {
+                return _header;
+            }
+            set
+            {
+                if (_header != value)
+                {
+                    _header = value;
+                    OnPropertyChanged(() => Header);
+                }
+            }
+        }
 
         public RelayCommand StartCourseCommand
         {

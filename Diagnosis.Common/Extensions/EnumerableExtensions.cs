@@ -69,5 +69,40 @@ namespace Diagnosis.Common
                 i = 0;
             return collection.ElementAt(i);
         }
+
+        /// <summary>
+        /// Return {prev, current, next} triad where current mathces predicate.
+        /// from http://stackoverflow.com/questions/8759849/get-previous-and-next-item-in-a-ienumerable-using-linq
+        /// </summary>
+        public static IEnumerable<T> FindTriad<T>(this IEnumerable<T> items, Predicate<T> matchFilling)
+        {
+            if (items == null)
+                throw new ArgumentNullException("items");
+            if (matchFilling == null)
+                throw new ArgumentNullException("matchFilling");
+
+            using (var iter = items.GetEnumerator())
+            {
+                T previous = default(T);
+                while (iter.MoveNext())
+                {
+                    if (matchFilling(iter.Current))
+                    {
+                        yield return previous;
+                        yield return iter.Current;
+                        if (iter.MoveNext())
+                            yield return iter.Current;
+                        else
+                            yield return default(T);
+                        yield break;
+                    }
+                    previous = iter.Current;
+                }
+            }
+            // If we get here nothing has been found so return three default values
+            yield return default(T); // Previous
+            yield return default(T); // Current
+            yield return default(T); // Next
+        }
     }
 }

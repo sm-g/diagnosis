@@ -30,14 +30,17 @@
             <ColumnDefinition Width="217*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <controls:FullTree ItemsSource="{Binding Navigator.TopCardItems}" Grid.RowSpan="2">
+        <controls:FullTree ItemsSource="{Binding Navigator.TopCardItems}" Grid.RowSpan="3">
             <controls:FullTree.ItemContainerStyle>
                 <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}">
                     <Setter Property="controls:Attached.InputBindings" Value="{StaticResource CardElementsInputBindings}" />
+                    <Setter Property="FontWeight" Value="Normal" />
+
                     <Style.Triggers>
                         <DataTrigger Value="True">
                             <DataTrigger.Binding>
@@ -46,7 +49,7 @@
                                     <Binding />
                                 </MultiBinding>
                             </DataTrigger.Binding>
-                            <Setter Property="Background" Value="Orange" />
+                            <Setter Property="FontWeight" Value="Bold" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsHighlighted}" Value="True">
                             <Setter Property="Background" Value="LightCyan" />
@@ -66,12 +69,13 @@
                 </ContextMenu>
             </controls:FullTree.ContextMenu>
         </controls:FullTree>
+        <card:Header DataContext="{Binding Header}" Grid.Column="1" Margin="0,0,0,10"/>
+        <card:HealthRecordsList DataContext="{Binding HrList}" Grid.Column="1" Grid.Row="1" />
 
-        <card:HealthRecordsList DataContext="{Binding HrList}" Grid.Column="1" />
-
-        <Border Grid.Row="1" BorderThickness="0,1,0,0" SnapsToDevicePixels="True"
-                                Background="{StaticResource hrEditorBackgroundBrush}"
-                                Visibility="{Binding HrEditor.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Column="1">
+        <Border Grid.Row="2"  Grid.Column="1"
+                BorderThickness="0,1,0,0" SnapsToDevicePixels="True"
+                Background="{StaticResource hrEditorBackgroundBrush}"
+                Visibility="{Binding HrEditor.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Border.BorderBrush>
                 <SolidColorBrush Color="Gray" />
             </Border.BorderBrush>

@@ -23,4 +23,5 @@
     <conv:HrToItemsString x:Key="hrItems" />
     <conv:NullableBooleanConverter x:Key="NullableBoolean" />
     <conv:ScopeToLabel x:Key="ScopeToLabel" />
+    <conv:TimeSpanLabel x:Key="TimeSpanToLabel" />
 </ResourceDictionary>

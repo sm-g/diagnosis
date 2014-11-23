@@ -162,6 +162,7 @@
     <Compile Include="Framework\DialogViewModel.cs" />
     <Compile Include="Framework\IDialog.cs" />
     <Compile Include="Screens\Card\AppointmentEditorViewModel.cs" />
+    <Compile Include="Screens\Card\HeaderViewModel.cs" />
     <Compile Include="Screens\Card\Navigator.cs" />
     <Compile Include="Screens\Card\Saver.cs" />
     <Compile Include="Screens\Card\CardItemViewModel.cs" />

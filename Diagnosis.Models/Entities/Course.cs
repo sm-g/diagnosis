@@ -26,13 +26,21 @@ namespace Diagnosis.Models
 
         public virtual DateTime Start
         {
-            get { return _start; }
+            get
+            {
+                Contract.Ensures(Contract.Result<DateTime>().TimeOfDay == TimeSpan.Zero);
+                return _start;
+            }
             set { SetProperty(ref _start, value.Date, "Start"); }
         }
 
         public virtual DateTime? End
         {
-            get { return _end; }
+            get
+            {
+                Contract.Ensures(Contract.Result<DateTime?>() == null || Contract.Result<DateTime?>().Value.TimeOfDay == TimeSpan.Zero);
+                return _end;
+            }
             set
             {
                 if (SetProperty(ref _end, value.HasValue ? value.Value.Date : value, "End"))

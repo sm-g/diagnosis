@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Diagnosis.Common
 {
     public static class DateFormatter
     {
+        private static string[] days = new string[3] { "день", "дня", "дней" };
+
         public static string GetIntervalString(DateTime? from, DateTime? to = null, IList<string> labels = null)
         {
             if (from == null && to == null)
@@ -52,13 +53,40 @@ namespace Diagnosis.Common
             return date.ToString(formats.Item1);
         }
 
+        public static string GetTimeSpanString(TimeSpan ts, int daysLimit = 3)
+        {
+            var i = Plurals.GetPluralEnding(ts.Days);
+
+            if (ts.TotalMinutes < 1)
+                return "только что";
+            var sb = new StringBuilder();
+
+            if (ts.Days > 0)
+            {
+                sb.Append("{0:%d} ");
+                sb.Append(days[i]);
+                if (ts.Days < daysLimit)
+                {
+                    sb.Append(" ");
+                }
+            }
+            if (ts.Days < daysLimit)
+            {
+                sb.Append("{0:%h} ч");
+
+                if (ts.Minutes > 0)
+                    sb.Append(" {0:%m} м");
+            }
+            return string.Format(sb.ToString(), ts);
+        }
+
         public static Tuple<string, string> GetFormat(DateTime from, DateTime? to = null)
         {
             DateTime now = DateTime.Today;
             string fromFormat = "d MMMM";
             string toFormat = "d MMMM yyyy";
 
-            // если нет второй даты или даты полностью совпадают, 
+            // если нет второй даты или даты полностью совпадают,
             // то проверяем только совпадение года первой даты с текущим
             //    формат второй даты неопределен
             Action noTo = () =>
