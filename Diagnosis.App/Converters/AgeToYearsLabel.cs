@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Data;
 using System.Globalization;
+using Diagnosis.Common;
 
 namespace Diagnosis.App.Converters
 {
@@ -16,15 +17,10 @@ namespace Diagnosis.App.Converters
                 return null;
 
             int age = (int)value;
-            if (age % 10 == 0 || age % 10 >= 5 || (age >= 11 && age <= 14))
-            {
-                return "лет";
-            }
-            if (age % 10 == 1)
-            {
-                return "год";
-            }
-            return "года";
+
+            var index = Plurals.GetPluralEnding(age);
+
+            return new[] { "год", "года", "лет" }[index];
         }
 
         public object ConvertBack(object value, Type targetType,

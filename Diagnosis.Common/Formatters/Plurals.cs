@@ -7,6 +7,11 @@ namespace Diagnosis.Common
 {
     public class Plurals
     {
+        /// <summary>
+        /// 0 - день, 1 - дня, 2 - дней
+        /// </summary>
+        /// <param name="count"></param>
+        /// <returns></returns>
         public static int GetPluralEnding(int count)
         {
             int ending;
