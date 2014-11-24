@@ -70,7 +70,7 @@ namespace Diagnosis.Models
             Start = DateTime.Today;
         }
 
-        protected Course()
+        protected internal Course()
         {
         }
 
@@ -153,7 +153,16 @@ namespace Diagnosis.Models
             if (x.IsEnded && y.IsEnded)
             {
                 // оба курса закончились — больше тот, что кончился позже
-                return x.End.Value.CompareTo(y.End.Value);
+                // закончились в один день — больше тот, что начался позже 
+                var end = x.End.Value.CompareTo(y.End.Value);
+                if (end == 0)
+                {
+                    return x.Start.CompareTo(y.Start);
+                }
+                else
+                {
+                    return end;
+                }
             }
             else
             {

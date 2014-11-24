@@ -4,6 +4,9 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("Tests")]
 
 namespace Diagnosis.Models
 {

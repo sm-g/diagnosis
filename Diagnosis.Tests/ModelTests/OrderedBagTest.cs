@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using Wintellect.PowerCollections;
 
-namespace Tests.ViewModelsTests
+namespace Tests.ModelTests
 {
     [TestClass]
     public class OrderedBagTest : InMemoryDatabaseTest
