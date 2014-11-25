@@ -163,8 +163,7 @@
             </Button>
             <headers:Holder DockPanel.Dock="Top" DataContext="{Binding PrevHolder}" TimeVisibility="Visible" />
 
-            <TextBlock Text="{Binding PrevSpan, Converter={StaticResource TimeSpanToLabel}}" />
-            <TextBlock Text=" ранее" />
+            <TextBlock Text="{Binding PrevSpan, Converter={StaticResource TimeSpanToLabel}, ConverterParameter=' ранее'}" />
         </DockPanel>
 
         <!-- next-->
@@ -174,8 +173,7 @@
             </Button>
             <headers:Holder HorizontalAlignment="Right" DockPanel.Dock="Top" DataContext="{Binding NextHolder}" TimeVisibility="Visible" />
 
-            <TextBlock HorizontalAlignment="Right" Text="через " />
-            <TextBlock HorizontalAlignment="Right" Text="{Binding NextSpan, Converter={StaticResource TimeSpanToLabel}}" />
+            <TextBlock HorizontalAlignment="Right" Text="{Binding NextSpan, Converter={StaticResource TimeSpanToLabel}, ConverterParameter='через '}" />
         </DockPanel>
     </DockPanel>
 </UserControl>

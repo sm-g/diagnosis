@@ -52,7 +52,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return _nextHolder;
             }
-            set
+            private set
             {
                 if (_nextHolder != value)
                 {
@@ -67,7 +67,6 @@ namespace Diagnosis.ViewModels.Screens
                     }
 
                     UpdateNext();
-
                     OnPropertyChanged(() => NextHolder);
                 }
             }
@@ -79,7 +78,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return _prevHolder;
             }
-            set
+            private set
             {
                 if (_prevHolder != value)
                 {
@@ -175,7 +174,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return _nextSpan;
             }
-            set
+            private set
             {
                 if (_nextSpan != value)
                 {
@@ -191,7 +190,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return _prevSpan;
             }
-            set
+            private set
             {
                 if (_prevSpan != value)
                 {

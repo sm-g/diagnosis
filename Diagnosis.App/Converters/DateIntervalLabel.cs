@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Data;
 using System.Globalization;
 using Diagnosis.Common;
+using System.Windows;
 
 namespace Diagnosis.App.Converters
 {
@@ -67,16 +68,26 @@ namespace Diagnosis.App.Converters
             if (!(value is TimeSpan))
                 return null;
 
+            // префикс, если в конце пробел: 'через '
+            var isPrefix = false;
+            var label = parameter as string;
+            if (label != null && label.Length > 0)
+            {
+                isPrefix = label.Last() == ' ';
+                label = label.Trim();
+            }
+
             TimeSpan ts = (TimeSpan)value;
+            var sameTime = "в то же время";
+            var str = DateFormatter.GetTimeSpanString(ts, 3, sameTime);
 
-            var prefix = parameter as string;
-            var str = DateFormatter.GetTimeSpanString(ts, 3, "в то же время");
-
-            if (prefix == null)
+            if (label == null || str == sameTime)
                 return str;
             else
-                return string.Format("{0} {1}", prefix, str);
-
+                if (isPrefix)
+                    return string.Format("{0} {1}", label, str);
+                else
+                    return string.Format("{0} {1}", str, label);
         }
 
         public object ConvertBack(object value, Type targetType,
