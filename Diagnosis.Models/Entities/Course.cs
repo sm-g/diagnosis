@@ -146,6 +146,9 @@ namespace Diagnosis.Models
         }
     }
 
+    /// <summary>
+    /// Use OrderBy to show first earlier cousrses.
+    /// </summary>
     public class CompareCourseByDate : IComparer<Course>
     {
         public int Compare(Course x, Course y)

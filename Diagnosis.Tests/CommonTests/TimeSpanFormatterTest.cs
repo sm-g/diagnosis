@@ -88,9 +88,19 @@ namespace Tests
             DateTime one = new DateTime(2014, 1, 1, 19, 5, 0);
             DateTime two = one;
             var ts = two - one;
-            var str = DateFormatter.GetTimeSpanString(ts, 3);
+            var str = DateFormatter.GetTimeSpanString(ts, 3, "equal");
 
-            Assert.AreEqual("только что", str);
+            Assert.AreEqual("equal", str);
+        }
+        [TestMethod]
+        public void Negative()
+        {
+            DateTime one = new DateTime(2014, 1, 2, 15, 6, 0);
+            DateTime two = new DateTime(2014, 1, 1, 19, 5, 0);
+            var ts = two - one;
+            var str = DateFormatter.GetTimeSpanString(ts, 3, "equal");
+
+            Assert.AreEqual("equal", str);
         }
     }
 }

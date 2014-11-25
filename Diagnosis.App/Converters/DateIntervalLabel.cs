@@ -70,7 +70,7 @@ namespace Diagnosis.App.Converters
             TimeSpan ts = (TimeSpan)value;
 
             var prefix = parameter as string;
-            var str = DateFormatter.GetTimeSpanString(ts);
+            var str = DateFormatter.GetTimeSpanString(ts, 3, "в то же время");
 
             if (prefix == null)
                 return str;

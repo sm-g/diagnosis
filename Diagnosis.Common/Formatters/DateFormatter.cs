@@ -53,14 +53,20 @@ namespace Diagnosis.Common
             return date.ToString(formats.Item1);
         }
 
-        public static string GetTimeSpanString(TimeSpan ts, int daysLimit = 3)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ts"></param>
+        /// <param name="daysLimit">Через сколько дней показывать часы и минуты</param>
+        /// <param name="sameAndNegative"></param>
+        /// <returns></returns>
+        public static string GetTimeSpanString(TimeSpan ts, int daysLimit, string sameAndNegative)
         {
-            var i = Plurals.GetPluralEnding(ts.Days);
+            if (ts < TimeSpan.Zero || ts.TotalMinutes < 1)
+                return sameAndNegative;
 
-            if (ts.TotalMinutes < 1)
-                return "только что";
             var sb = new StringBuilder();
-
+            var i = Plurals.GetPluralEnding(ts.Days);
             if (ts.Days > 0)
             {
                 sb.Append("{0:%d} ");
