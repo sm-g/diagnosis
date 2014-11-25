@@ -57,6 +57,7 @@ namespace Diagnosis.ViewModels.Screens
             };
             Autocomplete.Tags.CollectionChanged += (s, e) =>
             {
+                CommandManager.InvalidateRequerySuggested(); // when drop tag, search button still disabled
                 OnPropertyChanged("AllEmpty");
             };
             msgManager = new EventMessageHandlersManager(
