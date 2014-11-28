@@ -60,6 +60,16 @@
             </Button>
         </ToolBar>
 
+        <DockPanel Grid.Row="1" >
+            <TextBlock TextWrapping="Wrap" Margin="10"
+                       HorizontalAlignment="Center" VerticalAlignment="Top"
+                       Visibility="{Binding HealthRecords.Count, Converter={StaticResource LessThanToVisibility}}"
+                       >
+                <Run Text="Записей нет." />
+                <Hyperlink Command="{Binding AddHealthRecordCommand}">Добавить?</Hyperlink>
+            </TextBlock>
+        </DockPanel>
+
         <ListBox x:Name="records"
                   Grid.Row="1"
                   ItemsSource="{Binding HealthRecords}"
@@ -67,6 +77,7 @@
                   SelectedItem="{Binding SelectedHealthRecord}"
                   BorderThickness="0"
                   HorizontalContentAlignment="Stretch"
+                 Visibility="{Binding HealthRecords.Count, Converter={StaticResource MoreThanToVisibility}}"
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   SelectionMode="Extended"

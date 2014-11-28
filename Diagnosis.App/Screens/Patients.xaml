@@ -29,7 +29,7 @@
     <Grid HorizontalAlignment="Stretch" MaxWidth="500" MinWidth="300">
         <Grid.RowDefinitions>
             <RowDefinition Height="36" />
-            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" MinHeight="30" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -48,22 +48,33 @@
                     Command="{Binding AddPatientCommand}"
                     Margin="0,2,0,11" />
         </Grid>
-        
+
         <search:Filter  x:Name="filter"
                         DataContext="{Binding Filter}"
+                        Visibility="{Binding Patients.Count, Converter={StaticResource MoreThanToVisibility}}"
                         Grid.Row="1" />
+
+        <DockPanel Grid.Row="3" >
+            <TextBlock TextWrapping="Wrap" Margin="10"
+                       HorizontalAlignment="Center" VerticalAlignment="Top"
+                       Visibility="{Binding Patients.Count, Converter={StaticResource LessThanToVisibility}}"
+                       >
+                <Run Text="Сначала " /><Hyperlink Command="{Binding AddPatientCommand}">добавьте нового пациента</Hyperlink><Run>.</Run>
+            </TextBlock>
+        </DockPanel>
 
         <DataGrid x:Name="dataGrid"
                   Grid.Row="3"
                   ItemsSource="{Binding Patients}"
                   SelectedItem="{Binding SelectedPatient}"
+                  Visibility="{Binding Patients.Count, Converter={StaticResource MoreThanToVisibility}}"
                   GridLinesVisibility="None"
                   Margin="0,10,0,0"
                   FontSize="15"
                   IsReadOnly="True"
                   SelectionUnit="FullRow"
                   SelectionMode="Single"
-                  AutoGenerateColumns="False">            
+                  AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Метка" IsReadOnly="True" Binding="{Binding Label, Mode=OneWay}" />
                 <DataGridTextColumn Header="Фамилия" IsReadOnly="True" Binding="{Binding LastName, Mode=OneWay}" />
@@ -79,8 +90,8 @@
             </DataGrid.InputBindings>
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
-                    <Setter Property="BorderThickness" Value="0"/>
-                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                 </Style>
             </DataGrid.CellStyle>
         </DataGrid>
