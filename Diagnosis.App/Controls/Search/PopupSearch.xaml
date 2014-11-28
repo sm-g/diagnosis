@@ -45,7 +45,7 @@
                 MouseUp="results_MouseUp"
                 SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
                 IsTabStop="True"
-                Visibility="{Binding Filter.Results.Count, Converter={StaticResource CountToVisibility}, Mode=OneWay}"
+                Visibility="{Binding Filter.Results.Count, Converter={StaticResource MoreThanToVisibility}, Mode=OneWay}"
                   Grid.Row="1"
 >
                 <ListBox.ItemTemplate>

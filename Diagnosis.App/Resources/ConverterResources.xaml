@@ -4,7 +4,8 @@
     <conv:IHierarchicalCheckableToBackground x:Key="IHierarchicalCheckableToBackground" />
     <conv:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />
     <conv:NegateConverter x:Key="NegateBoolean" />
-    <conv:CountToVisibility x:Key="CountToVisibility" />
+    <conv:MoreThanToVisibility x:Key="MoreThanToVisibility" />
+    <conv:LessThanToVisibility x:Key="LessThanToVisibility" />
     <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <conv:AgeToYearsLabel x:Key="AgeToLabel" />
     <conv:BoolToSexSign x:Key="SexToSign" />

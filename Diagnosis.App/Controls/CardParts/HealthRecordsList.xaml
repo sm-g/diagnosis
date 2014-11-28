@@ -44,7 +44,7 @@
                     <!--<TextBlock>
                         <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" >Удалить</Run>
                         <TextBlock Text="{Binding CheckedHrCount, StringFormat='{}({0})'}"
-                                   Visibility="{Binding CheckedHrCount, Converter={StaticResource CountToVisibility}, ConverterParameter=1}" />
+                                   Visibility="{Binding CheckedHrCount, Converter={StaticResource MoreThanToVisibility}, ConverterParameter=1}" />
                     </TextBlock>-->
                 </DockPanel>
             </Button>
@@ -54,7 +54,7 @@
                     <!--<TextBlock>
                         <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}">Искать</Run>
                         <TextBlock Text="{Binding CheckedHrCount, StringFormat='{}({0})'}"
-                                   Visibility="{Binding CheckedHrCount, Converter={StaticResource CountToVisibility}, ConverterParameter=1}" />
+                                   Visibility="{Binding CheckedHrCount, Converter={StaticResource MoreThanToVisibility}, ConverterParameter=1}" />
                     </TextBlock>-->
                 </DockPanel>
             </Button>

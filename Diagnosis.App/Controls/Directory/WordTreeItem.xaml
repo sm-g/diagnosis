@@ -89,7 +89,7 @@
            
             <TextBlock x:Name="checkedChildren"
                    Text="{Binding CheckedChildren}"
-                   Visibility="{Binding CheckedChildren, Converter={StaticResource CountToVisibility}, Mode=OneWay}" />
+                   Visibility="{Binding CheckedChildren, Converter={StaticResource MoreThanToVisibility}, Mode=OneWay}" />
         </StackPanel>       
     </Grid>
 </UserControl>

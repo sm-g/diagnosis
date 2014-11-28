@@ -54,7 +54,7 @@
                 <StackPanel x:Name="searchDescription" Margin="5,0,0,0">
                     <StackPanel DataContext="{Binding Options}" Visibility="{Binding DataContext.SearchWas, ElementName=search, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel Orientation="Horizontal"
-                                    Visibility="{Binding Words.Count, Converter={StaticResource CountToVisibility}}">
+                                    Visibility="{Binding Words.Count, Converter={StaticResource MoreThanToVisibility}}">
                             <TextBlock Text="любое из слов: " Visibility="{Binding AllWords, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
                             <TextBlock Visibility="{Binding AllWords, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Run>все слова</Run> <Run Text="{Binding AndScope, StringFormat='{}{0}: ', Converter={StaticResource ScopeToLabel}}" />
@@ -62,7 +62,7 @@
                             <controls:CommaList ItemsSource="{Binding Words}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal"
-                                    Visibility="{Binding Categories.Count, Converter={StaticResource CountToVisibility}}">
+                                    Visibility="{Binding Categories.Count, Converter={StaticResource MoreThanToVisibility}}">
                             <TextBlock Text="типы записей: "></TextBlock>
                             <controls:CommaList ItemsSource="{Binding Categories}" />
                         </StackPanel>
@@ -176,7 +176,7 @@
             </StackPanel>
         </Expander>
 
-        <controls:FullTree ItemsSource="{Binding Results}" Grid.Row="2" Margin="5,5,5,10"  Visibility="{Binding Results.Count, Converter={StaticResource CountToVisibility}}">
+        <controls:FullTree ItemsSource="{Binding Results}" Grid.Row="2" Margin="5,5,5,10"  Visibility="{Binding Results.Count, Converter={StaticResource MoreThanToVisibility}}">
             <controls:FullTree.ItemContainerStyle>
                 <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}">
                     <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />

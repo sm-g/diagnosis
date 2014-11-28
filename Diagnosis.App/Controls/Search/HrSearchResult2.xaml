@@ -23,7 +23,7 @@
         </Grid.RowDefinitions>
         
         <headers:Holder DataContext="{Binding Holder}" />
-        <controls:CommaList ItemsSource="{Binding HealthRecords}" Visibility="{Binding HealthRecords.Count, Converter={StaticResource CountToVisibility}}" Grid.Row="2">
+        <controls:CommaList ItemsSource="{Binding HealthRecords}" Visibility="{Binding HealthRecords.Count, Converter={StaticResource MoreThanToVisibility}}" Grid.Row="2">
             <controls:CommaList.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Converter={StaticResource hrItems}}" TextWrapping="Wrap">
