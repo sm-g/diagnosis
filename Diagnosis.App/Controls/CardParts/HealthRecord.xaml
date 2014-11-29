@@ -59,9 +59,6 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.ColumnSpan="2" Text="{Binding Name, Mode=OneWay}" TextWrapping="Wrap" />
-            <TextBlock Grid.Column="1" Grid.Row="1" 
-                       Text="{Binding Diagnosis.Code, FallbackValue=''}" 
-                       Visibility="{Binding ShowDiagnosis, Converter={StaticResource BooleanToVisibilityConverter}}"  />
             <TextBlock Grid.Row="1" Visibility="{Binding DateOffset.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
                 <Run Text="{Binding DateOffset.Offset}" />
                 <Run Text="{Binding DateOffset, Mode=OneWay, Converter={StaticResource DateOffsetToUnitLabel}}" />
