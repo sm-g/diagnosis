@@ -5,13 +5,13 @@ using System;
 
 namespace Diagnosis.Models
 {
-    public class IcdDisease : EntityBase, IDomainObject, IHrItemObject, IComparable<IcdDisease>
+    public class IcdDisease : EntityBase, IDomainObject, IHrItemObject, IComparable<IcdDisease>, IIcdEntity
     {
         Iesi.Collections.Generic.ISet<HealthRecord> healthRecords;
 
         public virtual IcdBlock IcdBlock { get; protected set; }
-        public virtual string Title { get; set; }
-        public virtual string Code { get; set; }
+        public virtual string Title { get; protected set; }
+        public virtual string Code { get; protected set; }
         public virtual IEnumerable<HealthRecord> HealthRecords
         {
             get
@@ -33,6 +33,11 @@ namespace Diagnosis.Models
         public virtual int CompareTo(IcdDisease other)
         {
             return this.Code.CompareTo(other.Code);
+        }
+
+        IIcdEntity IIcdEntity.Parent
+        {
+            get { return IcdBlock; }
         }
     }
 }
