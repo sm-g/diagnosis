@@ -5,11 +5,11 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Search
 {
-    public class PopupSearchViewModel<T> : ViewModelBase where T : ViewModelBase
+    public class PopupSearchViewModel<T> : ViewModelBase where T : class
     {
         #region Fields
 
-        internal readonly ISimpleSearcher<T> searcher;
+        internal readonly Func<string, IEnumerable<T>> searcher;
 
         private int _selectedIndex = -1;
         private bool _searchFocused;
@@ -17,9 +17,9 @@ namespace Diagnosis.ViewModels.Search
 
         #endregion Fields
 
-        public event EventHandler<VmBaseEventArgs> ResultItemSelected;
+        public event EventHandler<ObjectEventArgs> ResultItemSelected;
 
-        public FilterViewModel<T> Filter
+        public NewFilterViewModel<T> Filter
         {
             get;
             private set;
@@ -131,16 +131,16 @@ namespace Diagnosis.ViewModels.Search
             var h = ResultItemSelected;
             if (h != null)
             {
-                h(this, new VmBaseEventArgs(item));
+                h(this, new ObjectEventArgs(item));
             }
 
             IsResultsVisible = false;
         }
 
-        public PopupSearchViewModel(ISimpleSearcher<T> searcher)
+        public PopupSearchViewModel(Func<string, IEnumerable<T>> searcher)
         {
             this.searcher = searcher;
-            Filter = new FilterViewModel<T>(searcher);
+            Filter = new NewFilterViewModel<T>(searcher);
             Filter.Filtered += (s, e) =>
             {
                 if (Filter.Results.Count > 0)
@@ -150,5 +150,20 @@ namespace Diagnosis.ViewModels.Search
 
             Filter.Clear(); // no results made here
         }
+
+        [Serializable]
+        public class ObjectEventArgs : EventArgs
+        {
+            public readonly T arg;
+
+            [System.Diagnostics.DebuggerStepThrough]
+            public ObjectEventArgs(T arg)
+            {
+                this.arg = arg;
+            }
+        }
     }
+
+
+
 }

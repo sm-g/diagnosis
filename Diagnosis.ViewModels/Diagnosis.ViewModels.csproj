@@ -222,7 +222,6 @@
     <Compile Include="Search\Autocomplete\Recognizer.cs" />
     <Compile Include="Search\Autocomplete\Tag.cs" />
     <Compile Include="Search\Filter\NewFilterViewModel.cs" />
-    <Compile Include="Search\Filter\FilterViewModel.cs" />
     <Compile Include="Search\HrSearchOptions.cs" />
     <Compile Include="Search\HrSearchResultViewModel.cs" />
     <Compile Include="Search\NewSearchers\DiagnosisSearchers.cs" />
