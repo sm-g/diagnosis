@@ -145,13 +145,7 @@
                 </ComboBox>
             </DockPanel>-->
             <!--DataContext is HrEditorViewModel-->
-            <DockPanel DataContext="{Binding DataContext,ElementName=editor}"
-                       Visibility="{Binding ShowIcdDiseaseSearch, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Label Content="диагноз МКБ" />
-                <StackPanel>
-                    <search:SearchTree DataContext="{Binding DiagnosisSearch}" />
-                </StackPanel>
-            </DockPanel>
+
             <!--<DockPanel>
                 <Label Content="комментарий" />
                 <TextBox Text="{Binding Comment}" />
