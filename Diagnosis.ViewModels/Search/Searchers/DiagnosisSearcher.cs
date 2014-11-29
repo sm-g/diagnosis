@@ -11,7 +11,6 @@ namespace Diagnosis.ViewModels.Search
 
         public bool WithNonCheckable { get; set; }
 
-        public bool WithCreatingNew { get; set; }
 
         public IEnumerable<DiagnosisViewModel> Collection { get; private set; }
 
@@ -26,7 +25,6 @@ namespace Diagnosis.ViewModels.Search
             Collection = parent.Children;
 
             WithNonCheckable = settings.WithNonCheckable;
-            WithCreatingNew = false;
             this.checkedDiagnoses = checkedDiagnoses;
         }
 
