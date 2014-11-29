@@ -20,7 +20,7 @@ namespace Diagnosis.ViewModels.Search
 
         private ObservableCollection<T> items;
         private ISimpleSearcher<T> searcher;
-        protected HierarchicalSearchSettings settings;
+        protected bool withNonCheckable;
 
         /// <summary>
         /// Возникает, когда принимается предложенние.
@@ -381,10 +381,10 @@ namespace Diagnosis.ViewModels.Search
         protected abstract string GetQueryString(T item);
 
 
-        public AutoCompleteBase(QuerySeparator separator, HierarchicalSearchSettings settings, IEnumerable<T> initItems = null)
+        public AutoCompleteBase(QuerySeparator separator, bool withNonCheckable, IEnumerable<T> initItems = null)
         {
             Contract.Requires(separator != null);
-            this.settings = settings;
+            this.withNonCheckable = withNonCheckable;
             this.separator = separator;
 
             items = new ObservableCollection<T>();

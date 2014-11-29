@@ -20,7 +20,7 @@ namespace Tests.SearchTests
             AuthorityController.LogIn(d1);
 
             var parent = EntityProducers.DiagnosisProducer.Diagnoses[0];
-            var s = new DiagnosisSearcher(parent, new Diagnosis.ViewModels.Search.HierarchicalSearchSettings());
+            var s = new DiagnosisSearcher(parent, false);
             var res1 = s.Search("перикард").Select(x => x.diagnosis);
 
             var repo = new NHibernateRepository<Diag>(session);

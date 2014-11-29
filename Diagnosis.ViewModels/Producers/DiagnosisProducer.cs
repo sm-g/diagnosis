@@ -34,7 +34,7 @@ namespace Diagnosis.ViewModels
                 {
                     _root = value;
                     _diaFiltratingSearcher = new DiagnosisFiltratingSearcher(_root);
-                    _diaRootSearcher = new DiagnosisSearcher(_root, new HierarchicalSearchSettings());
+                    _diaRootSearcher = new DiagnosisSearcher(_root, false);
 
                     OnPropertyChanged("RootSearcher");
                     OnPropertyChanged("RootFiltratingSearcher");

@@ -12,7 +12,7 @@ namespace Diagnosis.ViewModels.Search
         private string lastQuery = "";
 
         public DiagnosisFiltratingSearcher(DiagnosisViewModel parent)
-            : base(parent, new HierarchicalSearchSettings() { WithNonCheckable = true })
+            : base(parent, true)
         {
             ignoreList = new List<DiagnosisViewModel>();
         }
