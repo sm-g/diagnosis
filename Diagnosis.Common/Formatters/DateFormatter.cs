@@ -60,7 +60,7 @@ namespace Diagnosis.Common
         /// <param name="daysLimit">Через сколько дней показывать часы и минуты</param>
         /// <param name="sameAndNegative"></param>
         /// <returns></returns>
-        public static string GetTimeSpanString(TimeSpan ts, int daysLimit, string sameAndNegative)
+        public static string GetTimeSpanString(TimeSpan ts, int daysLimit, string sameAndNegative = "same")
         {
             if (ts < TimeSpan.Zero || ts.TotalMinutes < 1)
                 return sameAndNegative;

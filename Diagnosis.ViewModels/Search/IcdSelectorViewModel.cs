@@ -3,6 +3,8 @@ using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Search;
 using log4net;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -25,6 +27,7 @@ namespace Diagnosis.ViewModels.Screens
 
             Title = "Выбор диагноза МКБ";
         }
+
         public IcdDisease SelectedIcd
         {
             get
@@ -41,6 +44,9 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        /// <summary>
+        /// Корневые элементы дерева.
+        /// </summary>
         public ObservableCollection<DiagnosisViewModel> Chapters { get { return _chapters; } }
 
         public PopupSearchViewModel<IcdDisease> DiagnosisSearch
@@ -67,74 +73,68 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        /// <summary>
+        /// Обновляет VMs по найденным болезням
+        /// </summary>
+        /// <param name="results"></param>
         private void MakeVms(ObservableCollection<IcdDisease> results)
         {
-            var dict = (from d in results
+            var doctor = AuthorityController.CurrentDoctor;
+
+            Func<IcdDisease, bool> whereClause = d => true;
+            if (doctor.DoctorSettings.HasFlag(DoctorSettings.OnlyTopLevelIcdDisease))
+            {
+                // без уточненных болезней
+                whereClause = d => d.Code.IndexOf('.') == -1;
+            }
+
+            Dictionary<IcdChapter, Dictionary<IcdBlock, IEnumerable<IcdDisease>>>
+                dict = (from d in results
                         group d by d.IcdBlock.IcdChapter into gr
                         select new
                         {
                             Ch = gr.Key,
                             Blocks = (from be in gr
                                       group be by be.IcdBlock into grr
+                                      where doctor.Speciality.IcdBlocks.Contains(grr.Key) // блоки для специальности доктора
                                       select new
                                       {
                                           Block = grr.Key,
-                                          Diseases = grr.AsEnumerable()
+                                          Diseases = grr.Where(whereClause)
                                       }).ToDictionary(x => x.Block, x => x.Diseases)
                         }).ToDictionary(x => x.Ch, x => x.Blocks);
 
-            var q = from d in results
-                    group d by new { d.IcdBlock, d.IcdBlock.IcdChapter } into gr
-                    select new
-                    {
-                        Ch = gr.Key.IcdChapter,
-                        B = gr.Key.IcdBlock,
-                        Ds = gr.Select(x => x)
-                    };
-
-            //var bg = from d in results
-            //         group d by d.IcdBlock into gr
-            //         group gr by gr.Key.IcdChapter into ggr
-            //         select new {
-            //             Ch = ggr.Key,
-            //             Blocked = new {
-            //                 Block =
-            //             }
-            //         }
-
-            //   var ch = bg.SelectMany(x => x);
-
-            var blocks = results.Select(d => d.IcdBlock).Distinct();
-            var chs = blocks.Select(b => b.IcdChapter).Distinct();
-
+            // для каждого класса, блока и болезни ищем существующую VM или создаем 
+            // разворачиваем
+            // синхронизируем с детьми уровня выше
             var chVms = dict.Keys.Select(ch =>
+            {
+                var chVm = Chapters.Where(i => i.Icd as IcdChapter == ch)
+                    .FirstOrDefault() ?? new DiagnosisViewModel(ch);
+
+                var bVms = dict[ch].Keys.Select(b =>
                 {
-                    var chVm = Chapters.Where(i => i.Icd as IcdChapter == ch)
-                        .FirstOrDefault() ?? new DiagnosisViewModel(ch);
+                    var bVm = chVm.Children.Where(i => i.Icd as IcdBlock == b)
+                        .FirstOrDefault() ?? new DiagnosisViewModel(b);
 
-                    var bVms = dict[ch].Keys.Select(b =>
+                    var dVms = dict[ch][b].Select(d =>
                     {
-                        var bVm = chVm.Children.Where(i => i.Icd as IcdBlock == b)
-                            .FirstOrDefault() ?? new DiagnosisViewModel(b);
+                        var dVm = bVm.Children.Where(i => i.Icd as IcdDisease == d)
+                            .FirstOrDefault() ?? new DiagnosisViewModel(d);
 
-                        var dVms = dict[ch][b].Select(d =>
-                        {
-                            var dVm = bVm.Children.Where(i => i.Icd as IcdDisease == d)
-                                .FirstOrDefault() ?? new DiagnosisViewModel(d);
-
-                            dVm.IsExpanded = true;
-                            return dVm;
-                        });
-
-                        bVm.IsExpanded = true;
-                        bVm.Children.SyncWith(dVms);
-                        return bVm;
+                        dVm.IsExpanded = true;
+                        return dVm;
                     });
 
-                    chVm.IsExpanded = true;
-                    chVm.Children.SyncWith(bVms);
-                    return chVm;
+                    bVm.IsExpanded = true;
+                    bVm.Children.SyncWith(dVms);
+                    return bVm;
                 });
+
+                chVm.IsExpanded = true;
+                chVm.Children.SyncWith(bVms);
+                return chVm;
+            });
 
             Chapters.SyncWith(chVms);
         }
@@ -155,6 +155,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (dvm != null)
                 {
                     SelectedIcd = dvm.Icd as IcdDisease;
+                    UpdateDiagnosisQueryCode(dvm.Icd as IcdDisease);
                 }
             };
             DiagnosisSearch.Filter.Filtered += (s, e) =>
