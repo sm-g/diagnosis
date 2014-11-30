@@ -19,7 +19,7 @@ namespace Tests.SearchTests
             var d1 = session.Get<Doctor>(1);
             AuthorityController.LogIn(d1);
 
-            var filter = new NewFilterViewModel<IcdDisease>(DiagnosisQuery.StartingWith(session));
+            var filter = new FilterViewModel<IcdDisease>(DiagnosisQuery.StartingWith(session));
             filter.Query = "перикард";
             var res1 = filter.Results;
 

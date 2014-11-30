@@ -8,7 +8,7 @@ using Diagnosis.Common;
 
 namespace Diagnosis.ViewModels.Search
 {
-    public class NewFilterViewModel<T> : ViewModelBase, IFilter<T> where T : class
+    public class FilterViewModel<T> : ViewModelBase, IFilter<T> where T : class
     {
         private readonly INewSearcher<T> searcher;
         Func<string, IEnumerable<T>> finder;
@@ -118,13 +118,13 @@ namespace Diagnosis.ViewModels.Search
         }
         #endregion IFilter
 
-        public NewFilterViewModel(INewSearcher<T> searcher)
+        public FilterViewModel(INewSearcher<T> searcher)
         {
             this.searcher = searcher;
             Results = new ObservableCollection<T>();
             UpdateResultsOnQueryChanges = true;
         }
-        public NewFilterViewModel(Func<string, IEnumerable<T>> finder)
+        public FilterViewModel(Func<string, IEnumerable<T>> finder)
         {
             this.finder = finder;
             Results = new ObservableCollection<T>();

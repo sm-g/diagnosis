@@ -20,7 +20,7 @@ namespace Diagnosis.ViewModels.Search
 
         public event EventHandler<ObjectEventArgs> ResultItemSelected;
 
-        public NewFilterViewModel<T> Filter
+        public FilterViewModel<T> Filter
         {
             get;
             private set;
@@ -136,7 +136,7 @@ namespace Diagnosis.ViewModels.Search
         public PopupSearchViewModel(Func<string, IEnumerable<T>> searcher)
         {
             this.searcher = searcher;
-            Filter = new NewFilterViewModel<T>(searcher);
+            Filter = new FilterViewModel<T>(searcher);
             Filter.Filtered += (s, e) =>
             {
                 logger.DebugFormat("filtered in popupsearch, results: {0}", Filter.Results.Count);
