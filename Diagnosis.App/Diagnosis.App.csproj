@@ -264,9 +264,6 @@
     <Compile Include="Controls\Search\Filter.xaml.cs">
       <DependentUpon>Filter.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Search\HrSearchResult.xaml.cs">
-      <DependentUpon>HrSearchResult.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Common\CommaList.xaml.cs">
       <DependentUpon>CommaList.xaml</DependentUpon>
     </Compile>
@@ -438,10 +435,6 @@
     <Page Include="Controls\Search\HrSearchResult2.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\Search\HrSearchResult.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Common\CommaList.xaml">
       <SubType>Designer</SubType>

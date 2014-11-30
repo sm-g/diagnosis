@@ -222,10 +222,9 @@
     <Compile Include="Search\Autocomplete\Tag.cs" />
     <Compile Include="Search\FilterViewModel.cs" />
     <Compile Include="Search\HrSearchOptions.cs" />
-    <Compile Include="Search\HrSearchResultViewModel.cs" />
     <Compile Include="Search\SpecSearchers\DiagnosisSearchers.cs" />
     <Compile Include="Search\SpecSearchers\WordSearchers.cs" />
-    <Compile Include="Search\Searchers\PopupSearchViewModel.cs" />
+    <Compile Include="Search\PopupSearchViewModel.cs" />
     <Compile Include="Search\Searchers\DiagnosisFiltratingSearcher.cs" />
     <Compile Include="Search\Searchers\DiagnosisSearcher.cs" />
     <Compile Include="Search\Searchers\HrSearcher.cs" />
