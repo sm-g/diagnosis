@@ -5,10 +5,11 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Search
 {
-    public class PopupSearchViewModel<T> : ViewModelBase where T : class
+    public class PopupSearchViewModel<T> : ViewModelBase
+        where T : class
     {
         #region Fields
-
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(PopupSearchViewModel<>));
         internal readonly Func<string, IEnumerable<T>> searcher;
 
         private int _selectedIndex = -1;
@@ -98,6 +99,8 @@ namespace Diagnosis.ViewModels.Search
         {
             get
             {
+                logger.DebugFormat("get IsResultsVisible");
+
                 return _isResultsVisible;
             }
             set
@@ -106,32 +109,25 @@ namespace Diagnosis.ViewModels.Search
                 if (_isResultsVisible != value && (value == IsFocused || IsFocused))
                 {
                     _isResultsVisible = value;
+                    logger.DebugFormat("IsResultsVisible {0}", value);
 
-                    OnPropertyChanged("IsResultsVisible");
+                    OnPropertyChanged(() => IsResultsVisible);
                 }
             }
         }
 
         /// <summary>
-        /// Для выбора элемента, который не совпадает с SelectedItem (SearchTree).
+        /// public для выбора мышью (dynamic) и
+        /// для выбора элемента, который не совпадает с SelectedItem (SearchTree).
         /// </summary>
-        public void SelectReal(object item)
+        public void RaiseResultItemSelected(object realItem)
         {
-            T asT = item as T;
-            if (asT == null)
-            {
-                throw new ArgumentException("Selected item type is wrong.");
-            }
+            logger.DebugFormat("raise");
 
-            RaiseResultItemSelected(asT);
-        }
-
-        public void RaiseResultItemSelected(T item) // public for selecting by mouse in FloatSearch (dynamic)
-        {
             var h = ResultItemSelected;
             if (h != null)
             {
-                h(this, new ObjectEventArgs(item));
+                h(this, new ObjectEventArgs(realItem));
             }
 
             IsResultsVisible = false;
@@ -143,6 +139,7 @@ namespace Diagnosis.ViewModels.Search
             Filter = new NewFilterViewModel<T>(searcher);
             Filter.Filtered += (s, e) =>
             {
+                logger.DebugFormat("filtered in popupsearch, results: {0}", Filter.Results.Count);
                 if (Filter.Results.Count > 0)
                     SelectedIndex = 0;
                 IsResultsVisible = true;
@@ -154,10 +151,10 @@ namespace Diagnosis.ViewModels.Search
         [Serializable]
         public class ObjectEventArgs : EventArgs
         {
-            public readonly T arg;
+            public readonly object arg;
 
             [System.Diagnostics.DebuggerStepThrough]
-            public ObjectEventArgs(T arg)
+            public ObjectEventArgs(object arg)
             {
                 this.arg = arg;
             }

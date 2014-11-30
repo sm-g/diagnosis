@@ -1,16 +1,25 @@
-﻿using System.Windows;
+﻿using Diagnosis.ViewModels.Search;
+using System.Collections;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Linq;
-using System.Collections;
 
 namespace Diagnosis.App.Controls.Search
 {
     public partial class SearchTree : UserControl
     {
         private int selectedIndex = -1;
-
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(SearchTree));
         private dynamic selectedItem; // IHierarchicalCheckable
+
+        public IEnumerable Collection
+        {
+            get { return (IEnumerable)GetValue(CollectionProperty); }
+            set { SetValue(CollectionProperty, value); }
+        }
+
+        public static readonly DependencyProperty CollectionProperty =
+            DependencyProperty.Register("Collection", typeof(IEnumerable), typeof(SearchTree));
 
         public SearchTree()
         {
@@ -79,7 +88,7 @@ namespace Diagnosis.App.Controls.Search
                 dynamic item = source.Content;
                 if (item.IsTerminal)
                 {
-                    // выбираем только дистья
+                    // выбираем только листья
                     RaiseSearchSelected();
                 }
                 e.Handled = true;
@@ -114,6 +123,7 @@ namespace Diagnosis.App.Controls.Search
                 {
                     selectedIndex += down ? 1 : -1;
                     item = results.TreeView.FindByIndex(selectedIndex);
+                    logger.DebugFormat("select search tree {0}: {1}", selectedIndex, item);
 
                     // вышли за границы дерева
                     if (item == null)
@@ -127,7 +137,16 @@ namespace Diagnosis.App.Controls.Search
             item = results.TreeView.FindByIndex(selectedIndex);
             if (item != null && item.IsExpanded && item.IsTerminal)
             {
+                logger.DebugFormat("bef sel");
+
                 item.IsSelected = true;
+
+                logger.DebugFormat("aft sel");
+
+            }
+            else
+            {
+                ;
             }
 
             selectedItem = item;
@@ -140,7 +159,7 @@ namespace Diagnosis.App.Controls.Search
                 MoveSelection(true); // выбираем первый элемент
             }
             if (selectedItem != null)
-                (DataContext as dynamic).SelectReal(selectedItem);  //  DataContext is PopupSearch<>;
+                (DataContext as dynamic).RaiseResultItemSelected(selectedItem);  //  DataContext is PopupSearch<>;
         }
     }
 }

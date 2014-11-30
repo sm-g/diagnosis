@@ -10,7 +10,7 @@
              GotFocus="UserControl_GotFocus"
              LostFocus="UserControl_LostFocus"
              controls:EnhancedFocusScope.IsEnhancedFocusScope="True">
-    <!--PopupSearch<DiagnosisViewModel>-->
+    <!--PopupSearch<>-->
     <UserControl.Resources>
     </UserControl.Resources>
 

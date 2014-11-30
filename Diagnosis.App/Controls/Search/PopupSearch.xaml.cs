@@ -84,7 +84,7 @@ namespace Diagnosis.App.Controls.Search
 
         private void OnResultItemSelected()
         {
-            dynamic isearch = DataContext;
+            dynamic isearch = DataContext; // PopupSearch
             isearch.RaiseResultItemSelected();
         }
     }
