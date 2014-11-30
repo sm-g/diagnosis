@@ -30,12 +30,14 @@ namespace Diagnosis.App.Controls.Search
 
         private void UserControl_GotFocus(object sender, RoutedEventArgs e)
         {
-            EnhancedFocusScope.SetFocusOnActiveElementInScope(this);
+            //  EnhancedFocusScope.SetFocusOnActiveElementInScope(this);
         }
 
         private void UserControl_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (FocusChecker.IsFocusOutsideDepObject(this) && FocusChecker.IsFocusOutsideDepObject(popup.Child))
+            if (FocusChecker.IsFocusOutsideDepObject(this)
+                // && FocusChecker.IsFocusOutsideDepObject(popup.Child)
+               )
             {
                 HidePopup();
             }
@@ -48,12 +50,12 @@ namespace Diagnosis.App.Controls.Search
 
         private void ShowPopup()
         {
-            popup.IsOpen = true;
+            // popup.IsOpen = true;
         }
 
         private void HidePopup()
         {
-            popup.IsOpen = false;
+            //  popup.IsOpen = false;
         }
 
         #endregion Focus stuff
@@ -70,14 +72,21 @@ namespace Diagnosis.App.Controls.Search
             }
             else if (e.Key == Key.Enter)
             {
-                RaiseSearchSelected();
+                RaiseSearchSelected(selectedItem);
             }
         }
 
         private void item_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Space || e.Key == Key.Enter)
-                RaiseSearchSelected();
+            {
+                var source = e.Source as TreeViewItem;
+                if (source != null)
+                {
+                    dynamic item = source.Header;
+                    RaiseSearchSelected(item);
+                }
+            }
         }
 
         private void item_MouseUp(object sender, MouseButtonEventArgs e)
@@ -86,11 +95,7 @@ namespace Diagnosis.App.Controls.Search
             if (source != null)
             {
                 dynamic item = source.Content;
-                if (item.IsTerminal)
-                {
-                    // выбираем только листья
-                    RaiseSearchSelected();
-                }
+                RaiseSearchSelected(item);
                 e.Handled = true;
             }
         }
@@ -98,6 +103,8 @@ namespace Diagnosis.App.Controls.Search
         private void MoveSelection(bool down)
         {
             int currentSelected = results.TreeView.SelectedIndex();
+            logger.DebugFormat("search tree current: {0}", currentSelected);
+
             dynamic item;
             if (currentSelected == -1 && !down)
             {
@@ -144,22 +151,19 @@ namespace Diagnosis.App.Controls.Search
                 logger.DebugFormat("aft sel");
 
             }
-            else
-            {
-                ;
-            }
 
             selectedItem = item;
         }
 
-        private void RaiseSearchSelected()
+        private void RaiseSearchSelected(dynamic item)
         {
-            if (selectedItem == null)
+            if (item == null)
             {
                 MoveSelection(true); // выбираем первый элемент
             }
-            if (selectedItem != null)
-                (DataContext as dynamic).RaiseResultItemSelected(selectedItem);  //  DataContext is PopupSearch<>;
+            // выбираем только листья
+            if (item != null && item.IsTerminal)
+                (DataContext as dynamic).RaiseResultItemSelected(item);  //  DataContext is PopupSearch<>;
         }
     }
 }
