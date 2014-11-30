@@ -39,5 +39,10 @@ namespace Diagnosis.Models
         {
             get { return IcdBlock; }
         }
+
+        public override string ToString()
+        {
+            return Code;
+        }
     }
 }

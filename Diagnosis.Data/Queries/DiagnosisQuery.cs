@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Diag = Diagnosis.Models.Diagnosis;
+using Diag = Diagnosis.Models.IcdDisease;
 
 namespace Diagnosis.Data.Queries
 {
@@ -12,11 +12,11 @@ namespace Diagnosis.Data.Queries
     {
 
         /// <summary>
-        /// Возвращает все диагнозы - детей родителя, у которых заголовок содержит строку или код начинается на строку.
+        /// Возвращает все диагнозы, у которых заголовок содержит строку или код начинается на строку.
         /// </summary>
-        public static Func<Diag, string, IEnumerable<Diag>> ChildrenStartingWith(ISession session)
+        public static Func<string, IEnumerable<Diag>> StartingWith(ISession session)
         {
-            return (parent, str) =>
+            return (str) =>
             {
                 using (var tr = session.BeginTransaction())
                 {
@@ -26,7 +26,7 @@ namespace Diagnosis.Data.Queries
                     disjunction.Add(Restrictions.On<Diag>(d => d.Title).IsInsensitiveLike(str, MatchMode.Anywhere));
                     disjunction.Add(Restrictions.On<Diag>(d => d.Code).IsInsensitiveLike(str, MatchMode.Start));
 
-                    return q.Where(disjunction).Where(d => d.Parent == parent).List();
+                    return q.Where(disjunction).List();
                 }
             };
         }

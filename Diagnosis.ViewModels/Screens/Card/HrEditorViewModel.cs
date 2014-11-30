@@ -118,6 +118,22 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public RelayCommand AddIcdCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    var vm = new IcdSelectorViewModel();
+                    this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+                    if (vm.DialogResult == true)
+                    {
+                        Autocomplete.AddTag(vm.SelectedIcd);
+                    }
+                });
+            }
+        }
+
         public RelayCommand CloseCommand
         {
             get

@@ -33,6 +33,10 @@ namespace Diagnosis.App.Windows
                 {
                     ShowDialog(dialogVM, new SettingsWindow());
                 }
+                else if (dialogVM is IcdSelectorViewModel)
+                {
+                    ShowDialog(dialogVM, new IcdSelectorWindow());
+                }
             });
 
             DataContext = new MainWindowViewModel();

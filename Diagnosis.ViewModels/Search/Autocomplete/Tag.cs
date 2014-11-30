@@ -100,7 +100,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             Query,
             Comment,
             Word,
-            Measure
+            Measure,
+            Icd
         }
 
         /// <summary>
@@ -168,7 +169,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         /// <summary>
         /// Заготовка, из которой получаются сущности.
-        /// То, что оказалось введенным - найденное слово, текст запроса или ничего.
+        /// То, что оказалось введенным - найденное слово, текст запроса, МКБ или ничего.
         /// </summary>
         public object Blank
         {
@@ -185,6 +186,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     _blank = value;
                     OnPropertyChanged("Blank");
                     OnPropertyChanged("BlankType");
+                    OnPropertyChanged(() => Focusable);
                 }
                 if (value != null)
                 {
@@ -345,6 +347,15 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 }
             }
         }
+
+        public bool Focusable
+        {
+            get
+            {
+                return BlankType != BlankTypes.Icd; // icd редактируется через селектор
+            }
+        }
+
         public bool IsListItemFocused
         {
             get
@@ -428,6 +439,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 return BlankTypes.None;
             if (blank is Measure)
                 return BlankTypes.Measure;
+            if (blank is IcdDisease)
+                return BlankTypes.Icd;
 
             throw new ArgumentOutOfRangeException("blank");
         }

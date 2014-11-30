@@ -169,14 +169,28 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 return new RelayCommand(() =>
                 {
                     if (SelectedTag != null)
-                        if (SelectedTag.IsTextBoxFocused)
+                    {
+                        if (SelectedTag.BlankType != Tag.BlankTypes.Icd)
                         {
-                            SelectedTag.IsListItemFocused = true;
+                            if (SelectedTag.IsTextBoxFocused)
+                            {
+                                SelectedTag.IsListItemFocused = true;
+                            }
+                            else
+                            {
+                                SelectedTag.IsTextBoxFocused = true;
+                            }
                         }
                         else
                         {
-                            SelectedTag.IsTextBoxFocused = true;
+                            var vm = new Diagnosis.ViewModels.Screens.IcdSelectorViewModel(SelectedTag.Entities.First() as IcdDisease);
+                            this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+                            if (vm.DialogResult == true)
+                            {
+                                CompleteCommon(SelectedTag, vm.SelectedIcd, false);
+                            }
                         }
+                    }
                 });
             }
         }
@@ -506,13 +520,13 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
         private void CompleteCommon(Tag tag, object suggestion, bool exactMatchRequired, bool inverse = false)
         {
+            recognizer.SetBlank(tag, suggestion, exactMatchRequired, inverse);
             if (tag.Query == "")
             {
                 tag.DeleteCommand.Execute(null);
             }
             else
             {
-                recognizer.SetBlank(tag, suggestion, exactMatchRequired, inverse);
             }
 
             CompleteEnding(tag);

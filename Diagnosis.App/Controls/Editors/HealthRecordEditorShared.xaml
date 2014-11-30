@@ -61,6 +61,11 @@
                         <!--<TextBlock Text="Удалить" />-->
                     </DockPanel>
                 </Button>
+                <Button Command="{Binding AddIcdCommand}" ToolTip="Добавить МКБ">
+                    <DockPanel>
+                        <TextBlock Text="МКБ" />
+                    </DockPanel>
+                </Button>
             </ToolBar>
             <Button x:Name="closeButton" Command="{Binding CloseCommand}" ToolBar.OverflowMode="Never" VerticalAlignment="Top"  Height="16" HorizontalAlignment="Right" Width="16"
                 ToolTip="Закрыть редактор, сохранив все изменения"
