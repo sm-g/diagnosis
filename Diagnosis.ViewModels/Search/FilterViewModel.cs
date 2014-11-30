@@ -10,7 +10,7 @@ namespace Diagnosis.ViewModels.Search
 {
     public class FilterViewModel<T> : ViewModelBase, IFilter<T> where T : class
     {
-        private readonly INewSearcher<T> searcher;
+        private readonly ISimpleSearcher<T> searcher;
         Func<string, IEnumerable<T>> finder;
         private string _query;
         private bool _resultsOnQueryChanges;
@@ -118,7 +118,7 @@ namespace Diagnosis.ViewModels.Search
         }
         #endregion IFilter
 
-        public FilterViewModel(INewSearcher<T> searcher)
+        public FilterViewModel(ISimpleSearcher<T> searcher)
         {
             this.searcher = searcher;
             Results = new ObservableCollection<T>();

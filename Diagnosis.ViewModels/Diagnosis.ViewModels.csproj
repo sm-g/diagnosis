@@ -224,7 +224,6 @@
     <Compile Include="Search\HrSearchOptions.cs" />
     <Compile Include="Search\HrSearchResultViewModel.cs" />
     <Compile Include="Search\NewSearchers\DiagnosisSearchers.cs" />
-    <Compile Include="Search\NewSearchers\INewSearcher.cs" />
     <Compile Include="Search\NewSearchers\WordSearchers.cs" />
     <Compile Include="Search\Searchers\PopupSearchViewModel.cs" />
     <Compile Include="Search\Searchers\DiagnosisFiltratingSearcher.cs" />

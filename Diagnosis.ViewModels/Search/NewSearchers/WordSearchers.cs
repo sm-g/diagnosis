@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Diagnosis.ViewModels.Search
 {
-    public class NewWordSearcher : INewSearcher<Word>
+    public class NewWordSearcher : ISimpleSearcher<Word>
     {
         readonly INHibernateRepository<Word> repo;
         public NewWordSearcher(INHibernateRepository<Word> repo)
@@ -27,7 +27,7 @@ namespace Diagnosis.ViewModels.Search
     }
 
     // TODO withnoncheckable = true
-    public class NewWordTopParentSearcher : INewSearcher<Word>
+    public class NewWordTopParentSearcher : ISimpleSearcher<Word>
     {
         readonly INHibernateRepository<Word> repo;
         public NewWordTopParentSearcher(INHibernateRepository<Word> repo)
@@ -61,7 +61,7 @@ namespace Diagnosis.ViewModels.Search
         }
     }
 
-    public class NewWordCompositeSearcher : INewSearcher<Word>
+    public class NewWordCompositeSearcher : ISimpleSearcher<Word>
     {
         readonly Word parent;
         readonly INHibernateRepository<Word> repo;
