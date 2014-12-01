@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:conv="clr-namespace:Diagnosis.App.Converters">
     <conv:IHierarchicalCheckableToBackground x:Key="IHierarchicalCheckableToBackground" />
+    <conv:TreeDepthToMargin Length="19" x:Key="lengthConverter" />
     <conv:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />
     <conv:NegateConverter x:Key="NegateBoolean" />
     <conv:MoreThanToVisibility x:Key="MoreThanToVisibility" />

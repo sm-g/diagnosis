@@ -21,8 +21,8 @@ namespace Diagnosis.ViewModels.Screens
         public IcdSelectorViewModel(IcdDisease initial = null)
         {
             _chapters = new ObservableCollection<DiagnosisViewModel>();
-            SelectedIcd = initial;
             CreateDiagnosisSearch();
+            SelectedIcd = initial;
             UpdateDiagnosisQueryCode(initial, true);
 
             Title = "Выбор диагноза МКБ";
@@ -124,12 +124,14 @@ namespace Diagnosis.ViewModels.Screens
                         var dVm = bVm.Children.Where(i => i.Icd as IcdDisease == d)
                             .FirstOrDefault() ?? new DiagnosisViewModel(d);
 
-                        dVm.IsExpanded = true;
                         return dVm;
                     }).ToList();
 
-                    bVm.IsExpanded = true;
-                    bVm.Children.SyncWith(dVms);
+                    bVm.IsExpanded = bVm.IsExpanded || DiagnosisSearch.Filter.Query.Length > 2; // expand block if enough info
+
+                    bVm.Children.SyncWith(dVms); // TODO сохранить порядок
+                    //bVm.Children.Clear();
+                    //bVm.Add(dVms);
                     return bVm;
                 }).ToList();
 

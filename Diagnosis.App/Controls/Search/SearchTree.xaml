@@ -48,14 +48,16 @@
         <DockPanel x:Name="popup"
                    Grid.Row="1"
                    Visibility="{Binding IsResultsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <controls:FullTree x:Name="results"
+            <!--<controls:FullTree x:Name="results"
                                FocusManager.IsFocusScope="True"
                                ItemsSource="{Binding Collection, ElementName=searchTree}">
                 <controls:FullTree.ItemContainerStyle>
                     <Style TargetType="TreeViewItem"
                            BasedOn="{StaticResource TreeViewItemStyle}">
-                        <Setter Property="Template"
-                                Value="{StaticResource treeViewItemControl}" />
+                        -->
+            <!--<Setter Property="Template"
+                                Value="{StaticResource treeViewItemControl}" />-->
+            <!--
                         <EventSetter Event="KeyDown"
                                      Handler="item_KeyDown" />
                         <EventSetter Event="MouseUp"
@@ -67,7 +69,27 @@
                         <TextBlock Text="{Binding}" />
                     </DataTemplate>
                 </controls:FullTree.ItemTemplate>
-            </controls:FullTree>
+            </controls:FullTree>-->
+            <TreeView x:Name="results1"
+                      Style="{StaticResource TreeViewStyle}"
+                      ScrollViewer.IsDeferredScrollingEnabled="True"
+                      FocusManager.IsFocusScope="True"
+                      ItemsSource="{Binding Collection, ElementName=searchTree}">
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="TreeViewItem"
+                           BasedOn="{StaticResource TreeViewItemStyle}">
+                        <EventSetter Event="KeyDown"
+                                     Handler="item_KeyDown" />
+                        <EventSetter Event="MouseUp"
+                                     Handler="item_MouseUp" />
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                        <TextBlock Text="{Binding}" />
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
         </DockPanel>
     </Grid>
 </UserControl>

@@ -112,7 +112,8 @@ namespace Diagnosis.App.Controls.Search
 
         private void MoveSelection(bool down)
         {
-            int currentSelected = results.TreeView.SelectedIndex();
+            var tree = results1; // results.TreeView;
+            int currentSelected = tree.SelectedIndex();
             logger.DebugFormat("search tree current: {0}", currentSelected);
 
             dynamic item;
@@ -123,12 +124,12 @@ namespace Diagnosis.App.Controls.Search
                 do
                 {
                     selectedIndex++;
-                    item = results.TreeView.FindByIndex(selectedIndex);
+                    item = tree.FindByIndex(selectedIndex);
 
                     if (item == null) // пока не дошли до конца
                         break;
 
-                    if (item.IsExpanded && item.IsTerminal)
+                    if (item.IsTerminal)
                         lastInd = selectedIndex;
                 } while (true);
 
@@ -139,7 +140,7 @@ namespace Diagnosis.App.Controls.Search
                 do
                 {
                     selectedIndex += down ? 1 : -1;
-                    item = results.TreeView.FindByIndex(selectedIndex);
+                    item = tree.FindByIndex(selectedIndex);
                     logger.DebugFormat("select search tree {0}: {1}", selectedIndex, item);
 
                     // вышли за границы дерева
@@ -148,17 +149,17 @@ namespace Diagnosis.App.Controls.Search
                         selectedIndex = currentSelected;
                         break;
                     }
-                } while (!(item.IsExpanded && item.IsTerminal)); // пока не найдём видимый лист
+                } while (!(item.IsTerminal)); // пока не найдём видимый лист
             }
 
-            item = results.TreeView.FindByIndex(selectedIndex);
-            if (item != null && item.IsExpanded && item.IsTerminal)
+            item = tree.FindByIndex(selectedIndex);
+            if (item != null && item.IsTerminal)
             {
-                logger.DebugFormat("bef sel");
+                // logger.DebugFormat("bef sel");
 
                 item.IsSelected = true;
 
-                logger.DebugFormat("aft sel");
+                // logger.DebugFormat("aft sel");
 
             }
 
