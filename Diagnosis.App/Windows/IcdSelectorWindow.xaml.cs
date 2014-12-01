@@ -9,17 +9,13 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Diagnosis.App.Controls.Search
+namespace Diagnosis.App.Windows
 {
-    /// <summary>
-    /// Interaction logic for SearchResult.xaml
-    /// </summary>
-    public partial class HrSearchResult : UserControl
+    public partial class IcdSelectorWindow : Window
     {
-        public HrSearchResult()
+        public IcdSelectorWindow()
         {
             InitializeComponent();
         }

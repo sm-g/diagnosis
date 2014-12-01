@@ -8,7 +8,7 @@ namespace Diagnosis.Data.Mappings
     {
         public IcdDiseaseMap()
         {
-            Table("Disease");
+            Table("IcdDisease");
 
             Id(x => x.Id, m =>
             {

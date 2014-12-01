@@ -12,7 +12,6 @@
     <Style x:Key="TreeViewStyle" TargetType="TreeView">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-        <Setter Property="MinWidth" Value="100" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True" />
         <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling" />
@@ -85,14 +84,8 @@
     </Style>
 
     <ControlTemplate TargetType="{x:Type TreeViewItem}" x:Key="treeViewItemControl">
-        <ControlTemplate.Resources>
-            <conv:TreeDepthToMargin Length="19" x:Key="lengthConverter" />
-        </ControlTemplate.Resources>
-
         <Border Name="Bd"
-                Binding.SourceUpdated ="Bd_SourceUpdated"
-                Binding.TargetUpdated ="Bd_TargetUpdated"
-                Background="{Binding Content, ElementName=PART_Header, Converter={StaticResource IHierarchicalCheckableToBackground}}"
+                Background="Transparent"
                 BorderBrush="{TemplateBinding BorderBrush}"
                 BorderThickness="{TemplateBinding BorderThickness}"
                 Padding="0,5"

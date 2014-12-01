@@ -5,11 +5,12 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              x:Class="Diagnosis.App.Controls.Search.PopupSearch"
              mc:Ignorable="d"
-             d:DesignHeight="100" d:DesignWidth="300"
+             d:DesignHeight="100"
+             d:DesignWidth="300"
              x:Name="floatSearch"
              GotFocus="UserControl_GotFocus"
              controls:EnhancedFocusScope.IsEnhancedFocusScope="True">
-
+    <!--PopupSearch<,>-->
     <Grid MaxHeight="100">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -39,15 +40,14 @@
                IsOpen="{Binding IsResultsVisible, Mode=TwoWay}"
                PlacementTarget="{Binding ElementName=input, Mode=OneWay}">
             <ListBox x:Name="results"
-                MaxHeight="100"
-                ItemsSource="{Binding Filter.Results}"
-                SelectionChanged="results_SelectionChanged"
-                MouseUp="results_MouseUp"
-                SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
-                IsTabStop="True"
-                Visibility="{Binding Filter.Results.Count, Converter={StaticResource MoreThanToVisibility}, Mode=OneWay}"
-                  Grid.Row="1"
->
+                     MaxHeight="100"
+                     ItemsSource="{Binding Filter.Results}"
+                     SelectionChanged="results_SelectionChanged"
+                     MouseUp="results_MouseUp"
+                     SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
+                     IsTabStop="True"
+                     Visibility="{Binding Filter.Results.Count, Converter={StaticResource MoreThanToVisibility}, Mode=OneWay}"
+                     Grid.Row="1">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <DockPanel>

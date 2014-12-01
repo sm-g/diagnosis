@@ -1,6 +1,5 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Search;
 using Diagnosis.ViewModels.Search.Autocomplete;
 using EventAggregator;
 using log4net;
@@ -21,7 +20,6 @@ namespace Diagnosis.ViewModels.Screens
         private static readonly ILog logger = LogManager.GetLogger(typeof(HrEditorViewModel));
 
         private Autocomplete _autocomplete;
-        private PopupSearchViewModel<DiagnosisViewModel> _diagnosisSearch;
 
         private HealthRecordViewModel _hr;
         private ISession session;
@@ -38,11 +36,7 @@ namespace Diagnosis.ViewModels.Screens
              {
                  OnPropertyChanged(() => ShowIcdDiseaseSearch);
                  // после смены настроек доктора может понадобиться поиск по диагнозам
-                 CreateDiagnosisSearch();
              });
-
-            if (ShowIcdDiseaseSearch)
-                CreateDiagnosisSearch();
         }
 
         #region HealthRecord
@@ -121,6 +115,22 @@ namespace Diagnosis.ViewModels.Screens
                        {
                            HealthRecord.healthRecord.IsDeleted = true;
                        });
+            }
+        }
+
+        public RelayCommand AddIcdCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    var vm = new IcdSelectorViewModel();
+                    this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+                    if (vm.DialogResult == true)
+                    {
+                        Autocomplete.AddTag(vm.SelectedIcd);
+                    }
+                });
             }
         }
 
@@ -234,51 +244,6 @@ namespace Diagnosis.ViewModels.Screens
 
         #endregion AutoComplete
 
-        #region Diagnosis search
-
-        public PopupSearchViewModel<DiagnosisViewModel> DiagnosisSearch
-        {
-            get
-            {
-                return _diagnosisSearch;
-            }
-            private set
-            {
-                if (_diagnosisSearch != value)
-                {
-                    _diagnosisSearch = value;
-                    OnPropertyChanged("DiagnosisSearch");
-                }
-            }
-        }
-
-        private void CreateDiagnosisSearch()
-        {
-            DiagnosisSearch = new PopupSearchViewModel<DiagnosisViewModel>(
-                   EntityProducers.DiagnosisProducer.RootFiltratingSearcher
-                   );
-
-            DiagnosisSearch.Filter.Cleared += (s, e) =>
-            {
-                HealthRecord.Diagnosis = null;
-            };
-            DiagnosisSearch.ResultItemSelected += (s, e) =>
-            {
-                if (HealthRecord != null)
-                {
-                    HealthRecord.Diagnosis = e.vm as DiagnosisViewModel;
-                    UpdateDiagnosisQueryCode();
-                }
-            };
-            DiagnosisSearch.Filter.Results.CollectionChanged += (s, e) =>
-            {
-                // VM.IsExpanded
-            };
-            UpdateDiagnosisQueryCode();
-        }
-
-        #endregion Diagnosis search
-
         public bool ShowIcdDiseaseSearch
         {
             get
@@ -306,7 +271,6 @@ namespace Diagnosis.ViewModels.Screens
             (hr as IEditableObject).BeginEdit();
 
             CreateAutoComplete();
-            UpdateDiagnosisQueryCode();
         }
 
         /// <summary>
@@ -333,21 +297,6 @@ namespace Diagnosis.ViewModels.Screens
 
                 Autocomplete.Dispose();
                 _autocomplete = null;
-            }
-        }
-
-        private void UpdateDiagnosisQueryCode()
-        {
-            if (DiagnosisSearch != null && HealthRecord != null)
-            {
-                DiagnosisSearch.Filter.UpdateResultsOnQueryChanges = false;
-
-                if (HealthRecord.Diagnosis != null)
-                    DiagnosisSearch.Filter.Query = HealthRecord.Diagnosis.Code;
-                else
-                    DiagnosisSearch.Filter.Query = "";
-
-                DiagnosisSearch.Filter.UpdateResultsOnQueryChanges = true;
             }
         }
 

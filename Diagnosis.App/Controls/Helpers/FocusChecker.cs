@@ -8,7 +8,7 @@ namespace Diagnosis.App.Controls
     {
         public static bool IsFocusOutsideDepObject<T>(T obj) where T : DependencyObject
         {
-            var element = FocusManager.GetFocusedElement(Application.Current.MainWindow);
+            var element = FocusManager.GetFocusedElement(Window.GetWindow(obj));
             return ChildFinder.FindVisualChildren(obj).FirstOrDefault(child => child == element) == null;
         }
     }

@@ -16,62 +16,33 @@ INSERT INTO [Uom] ([ID],[Abbr],[Factor],[UomType],[Description]) VALUES (6,'ме
 INSERT INTO [Uom] ([ID],[Abbr],[Factor],[UomType],[Description]) VALUES (7,'г',2.5623,2,'год');
 
 INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (1, 'I', 'Некоторые инфекционные и паразитарные болезни');
-INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (2, 'II', 'Новообразования');
-INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (3, 'III', 'Болезни крови, кроветворных органов и отдельные нарушения, вовлекающие иммунный механизм');
-INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (4, 'IV', 'Болезни эндокринной системы, расстройства питания и нарушения обмена веществ');
 INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (5, 'IX', 'Болезни системы кровообращения');
-INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (6, 'V', 'Психические расстройства и расстройства поведения');
-INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (7, 'VI', 'Болезни нервной системы');
-INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (8, 'VII', 'Болезни глаза и его придаточного аппарата');
-INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (9, 'VIII', 'Болезни уха и сосцевидного отростка');
-INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (10, 'X', 'Болезни органов дыхания');
-INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (11, 'XI', 'Болезни органов пищеварения');
-INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (12, 'XII', 'Болезни кожи и подкожной клетчатки');
-INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (13, 'XIII', 'Болезни костно-мышечной системы и соединительной ткани');
-INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (14, 'XIV', 'Болезни мочеполовой системы');
-INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (15, 'XIX', 'Травмы, отравления и некоторые другие последствия воздействия внешних причин');
-INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (16, 'XV', 'Беременность, роды и послеродовой период');
-INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (17, 'XVI', 'Отдельные состояния, возникающие в перинатальном периоде');
-INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (18, 'XVII', 'Врожденные аномалии [пороки крови], деформации и хромосомные нарушения');
-INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (19, 'XVIII', 'Симптомы, признаки и отклонения от нормы, выявленные при клинических и лабораторных исследованиях, не классифицированные в других рубриках');
-INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (20, 'XX', 'Внешние причины заболеваемости и смертности');
-INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (21, 'XXI', 'Факторы, влияющие на состояние здоровья населения и обращения в учреждения здравоохранения');
--- 21 records
 
 INSERT INTO [IcdBlock] ([ID], [Code], [Title], [ChapterID]) VALUES (91, '(I00-I02)', 'Острая ревматическая лихорадка', 5);
 INSERT INTO [IcdBlock] ([ID], [Code], [Title], [ChapterID]) VALUES (92, '(I05-I09)', 'Хронические ревматические болезни сердца', 5);
-INSERT INTO [IcdBlock] ([ID], [Code], [Title], [ChapterID]) VALUES (93, '(I10-I15)', 'Болезни, характеризующиеся повышенным кровяным давлением', 5);
-INSERT INTO [IcdBlock] ([ID], [Code], [Title], [ChapterID]) VALUES (94, '(I20-I25)', 'Ишемическая болезнь сердца', 5);
-INSERT INTO [IcdBlock] ([ID], [Code], [Title], [ChapterID]) VALUES (95, '(I26-I28)', 'Легочное сердце и нарушения легочного кровообращения', 5);
-INSERT INTO [IcdBlock] ([ID], [Code], [Title], [ChapterID]) VALUES (96, '(I30-I52)', 'Другие болезни сердца', 5);
-INSERT INTO [IcdBlock] ([ID], [Code], [Title], [ChapterID]) VALUES (97, '(I60-I69)', 'Цереброваскулярные болезни', 5);
-INSERT INTO [IcdBlock] ([ID], [Code], [Title], [ChapterID]) VALUES (98, '(I70-I79)', 'Болезни артерий, артериол и капилляров', 5);
-INSERT INTO [IcdBlock] ([ID], [Code], [Title], [ChapterID]) VALUES (99, '(I80-I89)', 'Болезни вен, лимфатических сосудов и лимфатических узлов, не классифицированные в других рубриках', 5);
-INSERT INTO [IcdBlock] ([ID], [Code], [Title], [ChapterID]) VALUES (100, '(I95-I99)', 'Другие и неуточненные болезни системы кровообращения', 5);
 
-
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (1   , 'I00', 'Ревматическая лихорадка без упоминания о  вовлечении сердца', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (2   , 'I01', 'Ревматическая лихорадка с вовлечением сердца', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3   , 'I01.0', 'Острый ревматический перикардит', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (4   , 'I01.1', 'Острый ревматический эндокардит', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (5   , 'I01.2', 'Острый ревматический миокардит', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (6   , 'I01.8', 'Другие острые ревматические болезни сердца', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (7   , 'I01.9', 'Острая ревматическая болезнь сердца неуточненная', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (8   , 'I02', 'Ревматическая хорея', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (9   , 'I02.0', 'Ревматическая хорея с вовлечением сердца', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (10  , 'I02.9', 'Ревматическая хорея без вовлечения сердца', 91);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (11  , 'I05', 'Ревматические болезни митрального клапана', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (12  , 'I05.0', 'Митральный стеноз', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (13  , 'I05.1', 'Ревматическая недостаточность митрального клапана', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (14  , 'I05.2', 'Митральный стеноз с недостаточностью', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (15  , 'I05.8', 'Другие болезни митрального клапана', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (16  , 'I05.9', 'Болезнь митрального клапана неуточненная', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (17  , 'I06', 'Ревматические болезни аортального клапана', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (18  , 'I06.0', 'Ревматический аортальный стеноз', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (19  , 'I06.1', 'Ревматическая недостаточность аортального клапана', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (20  , 'I06.2', 'Ревматический аортальный стеноз с недостаточностью', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (21  , 'I06.8', 'Другие ревматические болезни аортального клапана', 92);
-INSERT INTO [Disease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (22  , 'I06.9', 'Ревматическая болезнь аортального клапана неуточненная (ый)', 92);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (1   , 'I00', 'Ревматическая лихорадка без упоминания о  вовлечении сердца', 91);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (2   , 'I01', 'Ревматическая лихорадка с вовлечением сердца', 91);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (3   , 'I01.0', 'Острый ревматический перикардит', 91);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (4   , 'I01.1', 'Острый ревматический эндокардит', 91);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (5   , 'I01.2', 'Острый ревматический миокардит', 91);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (6   , 'I01.8', 'Другие острые ревматические болезни сердца', 91);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (7   , 'I01.9', 'Острая ревматическая болезнь сердца неуточненная', 91);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (8   , 'I02', 'Ревматическая хорея', 91);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (9   , 'I02.0', 'Ревматическая хорея с вовлечением сердца', 91);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (10  , 'I02.9', 'Ревматическая хорея без вовлечения сердца', 91);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (11  , 'I05', 'Ревматические болезни митрального клапана', 92);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (12  , 'I05.0', 'Митральный стеноз', 92);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (13  , 'I05.1', 'Ревматическая недостаточность митрального клапана', 92);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (14  , 'I05.2', 'Митральный стеноз с недостаточностью', 92);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (15  , 'I05.8', 'Другие болезни митрального клапана', 92);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (16  , 'I05.9', 'Болезнь митрального клапана неуточненная', 92);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (17  , 'I06', 'Ревматические болезни аортального клапана', 92);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (18  , 'I06.0', 'Ревматический аортальный стеноз', 92);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (19  , 'I06.1', 'Ревматическая недостаточность аортального клапана', 92);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (20  , 'I06.2', 'Ревматический аортальный стеноз с недостаточностью', 92);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (21  , 'I06.8', 'Другие ревматические болезни аортального клапана', 92);
+INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (22  , 'I06.9', 'Ревматическая болезнь аортального клапана неуточненная (ый)', 92);
 
 INSERT INTO [Word] ([Id],[Title],[DefHrCategoryID],[ParentID]) VALUES (1,'анемия',1,NULL);
 INSERT INTO [Word] ([Id],[Title],[DefHrCategoryID],[ParentID]) VALUES (2,'озноб',NULL,NULL);
@@ -171,14 +142,6 @@ INSERT INTO [Speciality] ([ID], [Title]) VALUES (1, 'Кардиолог');
 
 
 INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (1, 1, 92);
-INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (2, 1, 93);
-INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (3, 1, 94);
-INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (4, 1, 95);
-INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (5, 1, 96);
-INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (6, 1, 97);
-INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (7, 1, 98);
-INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (8, 1, 99);
-INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (9, 1, 100);
 
 
 INSERT INTO [Doctor] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [SpecialityID], [Settings]) VALUES (1, 'Смирнов', NULL, 'Василий', 1, 1, 0);

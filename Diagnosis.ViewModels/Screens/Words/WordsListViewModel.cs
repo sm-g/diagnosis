@@ -15,9 +15,9 @@ namespace Diagnosis.ViewModels.Screens
 {
     public class WordsListViewModel : ScreenBase
     {
-        private NewFilterViewModel<Word> _filter;
+        private FilterViewModel<Word> _filter;
 
-        public NewFilterViewModel<Word> Filter
+        public FilterViewModel<Word> Filter
         {
             get { return _filter; }
         }
@@ -112,7 +112,7 @@ namespace Diagnosis.ViewModels.Screens
             Words = new ObservableCollection<WordViewModel>();
             Editor = new WordEditorViewModel(Session);
 
-            _filter = new NewFilterViewModel<Word>(WordQuery.StartingWith(Session));
+            _filter = new FilterViewModel<Word>(WordQuery.StartingWith(Session));
 
 
             _filter.Results.CollectionChanged += (s, e) =>

@@ -10,11 +10,8 @@ namespace Diagnosis.ViewModels.Screens
     public class HealthRecordViewModel : ViewModelBase
     {
         internal readonly HealthRecord healthRecord;
-        EventMessageHandler handler;
 
         #region Model
-
-        private DiagnosisViewModel _diagnosis;
 
         public string Comment
         {
@@ -25,32 +22,6 @@ namespace Diagnosis.ViewModels.Screens
             set
             {
                 healthRecord.Comment = value;
-            }
-        }
-
-        public DiagnosisViewModel Diagnosis
-        {
-            get
-            {
-                return _diagnosis;
-            }
-            set
-            {
-                if (_diagnosis != value)
-                {
-                    _diagnosis = value;
-                    //if (value != null)
-                    //{
-                    //    healthRecord.Disease = value.diagnosis.Disease;
-                    //}
-                    //else
-                    //{
-                    //    healthRecord.Disease = null;
-                    //}
-
-                    OnPropertyChanged("Diagnosis");
-                    OnPropertyChanged("ShowDiagnosis");
-                }
             }
         }
 
@@ -111,14 +82,6 @@ namespace Diagnosis.ViewModels.Screens
 
         #endregion Model
 
-        public bool ShowDiagnosis
-        {
-            get
-            {
-                return Diagnosis != null && AuthorityController.CurrentDoctor.DoctorSettings.HasFlag(DoctorSettings.ShowIcdDisease);
-            }
-        }
-
         public ICommand SendToSearchCommand
         {
             get
@@ -147,11 +110,6 @@ namespace Diagnosis.ViewModels.Screens
             this.healthRecord = hr;
 
             healthRecord.PropertyChanged += healthRecord_PropertyChanged;
-
-            handler = this.Subscribe(Events.SettingsSaved, (e) =>
-            {
-                OnPropertyChanged("ShowDiagnosis");
-            });
         }
 
         private void healthRecord_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -170,7 +128,6 @@ namespace Diagnosis.ViewModels.Screens
             if (disposing)
             {
                 healthRecord.PropertyChanged -= healthRecord_PropertyChanged;
-                handler.Dispose();
             }
             base.Dispose(disposing);
         }

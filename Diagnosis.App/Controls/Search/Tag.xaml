@@ -45,6 +45,7 @@
                  dd:DragDrop.IsDropTarget="True"
                  dd:DragDrop.DropHandler="{Binding}"
                  Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
+                 Focusable="{Binding Focusable}"
                  IsReadOnly="{Binding IsDeleteOnly}">
             <TextBox.Style>
                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
@@ -74,6 +75,13 @@
                         </DataTrigger>-->
                         <DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Word}">
                             <Setter Property="FontStyle" Value="Normal" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding BlankType}"
+                                     Value="{x:Static auto:Tag+BlankTypes.Icd}">
+                            <Setter Property="FontStyle"
+                                    Value="Normal" />
+                            <Setter Property="Foreground"
+                                    Value="Red" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>

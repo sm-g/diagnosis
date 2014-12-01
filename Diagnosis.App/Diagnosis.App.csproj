@@ -264,9 +264,6 @@
     <Compile Include="Controls\Search\Filter.xaml.cs">
       <DependentUpon>Filter.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Search\HrSearchResult.xaml.cs">
-      <DependentUpon>HrSearchResult.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Common\CommaList.xaml.cs">
       <DependentUpon>CommaList.xaml</DependentUpon>
     </Compile>
@@ -311,6 +308,9 @@
     </Compile>
     <Compile Include="Controls\Search\PopupSearch.xaml.cs">
       <DependentUpon>PopupSearch.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\IcdSelectorWindow.xaml.cs">
+      <DependentUpon>IcdSelectorWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\PatientEditorWindow.xaml.cs">
       <DependentUpon>PatientEditorWindow.xaml</DependentUpon>
@@ -359,7 +359,6 @@
     <Compile Include="Converters\BoolToAligment.cs" />
     <Compile Include="Converters\MonthToString.cs" />
     <Compile Include="Converters\CountToVisibility.cs" />
-    <Compile Include="Converters\IHierarchicalCheckableToBackground.cs" />
     <Compile Include="Converters\TreeDepthToMargin.cs" />
     <Compile Include="Controls\Helpers\ChildFinder.cs" />
     <Compile Include="Behaviors\EnhancedFocusScope.cs" />
@@ -436,10 +435,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\Search\HrSearchResult.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\Common\CommaList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -495,6 +490,10 @@
     <Page Include="Controls\Search\PopupSearch.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\IcdSelectorWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\PatientEditorWindow.xaml">
       <SubType>Designer</SubType>

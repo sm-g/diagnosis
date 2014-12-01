@@ -5,11 +5,15 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Search
 {
-    public class PopupSearchViewModel<T> : ViewModelBase where T : ViewModelBase
+    /// <summary>
+    /// Показывает результаты при установке фокуса.
+    /// </summary>
+    public class PopupSearchViewModel<T> : ViewModelBase
+        where T : class
     {
         #region Fields
-
-        internal readonly ISimpleSearcher<T> searcher;
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(PopupSearchViewModel<>));
+        internal readonly Func<string, IEnumerable<T>> searcher;
 
         private int _selectedIndex = -1;
         private bool _searchFocused;
@@ -17,7 +21,7 @@ namespace Diagnosis.ViewModels.Search
 
         #endregion Fields
 
-        public event EventHandler<VmBaseEventArgs> ResultItemSelected;
+        public event EventHandler<ObjectEventArgs> ResultItemSelected;
 
         public FilterViewModel<T> Filter
         {
@@ -58,10 +62,10 @@ namespace Diagnosis.ViewModels.Search
             get
             {
                 return new RelayCommand(() =>
-                        {
-                            IsResultsVisible = !IsResultsVisible;
-                        }
-                       );
+                    {
+                        IsResultsVisible = !IsResultsVisible;
+                    }
+                );
             }
         }
 
@@ -102,53 +106,64 @@ namespace Diagnosis.ViewModels.Search
             }
             set
             {
-                // set to true only if IsFocused
-                if (_isResultsVisible != value && (value == IsFocused || IsFocused))
+                if (_isResultsVisible != value)
                 {
                     _isResultsVisible = value;
+                    logger.DebugFormat("IsResultsVisible {0}", value);
 
-                    OnPropertyChanged("IsResultsVisible");
+                    OnPropertyChanged(() => IsResultsVisible);
                 }
             }
         }
 
+        public bool HideResultsAfterSelected { get; set; }
+
         /// <summary>
-        /// Для выбора элемента, который не совпадает с SelectedItem (SearchTree).
+        /// public для выбора мышью (dynamic) и
+        /// для выбора элемента, который не совпадает с SelectedItem (SearchTree).
         /// </summary>
-        public void SelectReal(object item)
+        public void RaiseResultItemSelected(object realItem)
         {
-            T asT = item as T;
-            if (asT == null)
-            {
-                throw new ArgumentException("Selected item type is wrong.");
-            }
+            // logger.DebugFormat("raise");
 
-            RaiseResultItemSelected(asT);
-        }
-
-        public void RaiseResultItemSelected(T item) // public for selecting by mouse in FloatSearch (dynamic)
-        {
             var h = ResultItemSelected;
             if (h != null)
             {
-                h(this, new VmBaseEventArgs(item));
+                h(this, new ObjectEventArgs(realItem));
             }
 
-            IsResultsVisible = false;
+            if (HideResultsAfterSelected)
+                IsResultsVisible = false;
         }
 
-        public PopupSearchViewModel(ISimpleSearcher<T> searcher)
+        public PopupSearchViewModel(Func<string, IEnumerable<T>> searcher)
         {
             this.searcher = searcher;
             Filter = new FilterViewModel<T>(searcher);
             Filter.Filtered += (s, e) =>
             {
+                logger.DebugFormat("filtered in popupsearch, results: {0}", Filter.Results.Count);
                 if (Filter.Results.Count > 0)
                     SelectedIndex = 0;
                 IsResultsVisible = true;
             };
 
-            Filter.Clear(); // no results made here
+           // Filter.Clear(); // no results made here
+        }
+
+        [Serializable]
+        public class ObjectEventArgs : EventArgs
+        {
+            public readonly object arg;
+
+            [System.Diagnostics.DebuggerStepThrough]
+            public ObjectEventArgs(object arg)
+            {
+                this.arg = arg;
+            }
         }
     }
+
+
+
 }

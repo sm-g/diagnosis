@@ -11,7 +11,6 @@ namespace Diagnosis.ViewModels.Search
 
         public bool WithNonCheckable { get; set; }
 
-        public bool WithCreatingNew { get; set; }
 
         public IEnumerable<DiagnosisViewModel> Collection { get; private set; }
 
@@ -20,13 +19,12 @@ namespace Diagnosis.ViewModels.Search
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="settings"></param>
-        public DiagnosisSearcher(DiagnosisViewModel parent, HierarchicalSearchSettings settings, IEnumerable<DiagnosisViewModel> checkedDiagnoses = null)
+        public DiagnosisSearcher(DiagnosisViewModel parent, bool withNonCheckable, IEnumerable<DiagnosisViewModel> checkedDiagnoses = null)
         {
             Contract.Requires(parent != null);
             Collection = parent.Children;
 
-            WithNonCheckable = settings.WithNonCheckable;
-            WithCreatingNew = false;
+            WithNonCheckable = withNonCheckable;
             this.checkedDiagnoses = checkedDiagnoses;
         }
 

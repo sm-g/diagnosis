@@ -39,6 +39,7 @@ namespace Diagnosis.ViewModels
             {
                 _parent = value;
                 OnPropertyChanged("Parent");
+                OnParentChanged(new HierarchicalEventAgrs<T>((T)this));
             }
         }
         /// <summary>
@@ -114,7 +115,6 @@ namespace Diagnosis.ViewModels
             }
 
             item.Parent = (T)this;
-            OnParentChanged(new HierarchicalEventAgrs<T>(item));
             Children.Add(item);
             return (T)this;
         }
@@ -139,7 +139,8 @@ namespace Diagnosis.ViewModels
         /// <returns></returns>
         public T Remove(T item)
         {
-            Children.Remove(item);
+            if (Children.Remove(item))
+                item.Parent = null;
             return (T)this;
         }
         /// <summary>
@@ -253,6 +254,14 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        protected override void OnSelectedChanged()
+        {
+            base.OnSelectedChanged();
+
+            if (IsSelected && !IsRoot)
+                Parent.IsExpanded = true;
+        }
+
         #endregion ICheckable
 
         public HierarchicalBase()
@@ -266,7 +275,6 @@ namespace Diagnosis.ViewModels
                     if (item.Parent != this)
                     {
                         item.Parent = (T)this;
-                        OnParentChanged(new HierarchicalEventAgrs<T>(item));
                     }
                     OnChildAdded((T)e.NewItems[0]);
                 }

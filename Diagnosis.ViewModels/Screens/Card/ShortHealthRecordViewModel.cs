@@ -15,7 +15,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return string.Join(" ", healthRecord.GetOrderedEntities());// сущнсоти давления надо форматировать
+                return string.Join(" ", healthRecord.GetOrderedEntities());// сущности давления надо форматировать
             }
         }
 
@@ -48,41 +48,11 @@ namespace Diagnosis.ViewModels.Screens
 
         #region Model
 
-        private DiagnosisViewModel _diagnosis;
-        private EventAggregator.EventMessageHandler handler;
-
         public string Comment
         {
             get
             {
                 return healthRecord.Comment;
-            }
-        }
-
-        public DiagnosisViewModel Diagnosis
-        {
-            get
-            {
-                return _diagnosis;
-            }
-            set
-            {
-                if (_diagnosis != value)
-                {
-                    _diagnosis = value;
-                    //if (value != null)
-                    //{
-                    //    healthRecord.Disease = value.diagnosis.Disease;
-                    //}
-                    //else
-                    //{
-                    //    healthRecord.Disease = null;
-                    //}
-
-                    OnPropertyChanged("Diagnosis");
-                    OnPropertyChanged("ShowDiagnosis");
-                    OnPropertyChanged("Name");
-                }
             }
         }
 
@@ -138,13 +108,6 @@ namespace Diagnosis.ViewModels.Screens
                 return new DateTime(year, month, day);
             }
         }
-        public bool ShowDiagnosis
-        {
-            get
-            {
-                return Diagnosis != null && AuthorityController.CurrentDoctor.DoctorSettings.HasFlag(DoctorSettings.ShowIcdDisease);
-            }
-        }
 
         public ICommand SendToSearchCommand
         {
@@ -187,11 +150,6 @@ namespace Diagnosis.ViewModels.Screens
             healthRecord.PropertyChanged += healthRecord_PropertyChanged;
             healthRecord.ItemsChanged += healthRecord_ItemsChanged;
             healthRecord.DateOffset.PropertyChanged += DateOffset_PropertyChanged;
-
-            handler = this.Subscribe(Events.SettingsSaved, (e) =>
-            {
-                OnPropertyChanged("ShowDiagnosis");
-            });
         }
 
         private void healthRecord_ItemsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -239,7 +197,6 @@ namespace Diagnosis.ViewModels.Screens
                 healthRecord.PropertyChanged -= healthRecord_PropertyChanged;
                 healthRecord.ItemsChanged -= healthRecord_ItemsChanged;
                 healthRecord.DateOffset.PropertyChanged -= DateOffset_PropertyChanged;
-                handler.Dispose();
             }
             base.Dispose(disposing);
         }

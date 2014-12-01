@@ -1,12 +1,20 @@
-﻿using EventAggregator;
+﻿using Diagnosis.Models;
 using System.Diagnostics.Contracts;
-using System;
 
 namespace Diagnosis.ViewModels
 {
     public class DiagnosisViewModel : HierarchicalBase<DiagnosisViewModel>
     {
         internal readonly Diagnosis.Models.Diagnosis diagnosis;
+        private readonly IIcdEntity _icd;
+
+        public IIcdEntity Icd
+        {
+            get
+            {
+                return _icd;
+            }
+        }
 
         public string Name
         {
@@ -48,14 +56,23 @@ namespace Diagnosis.ViewModels
             ChildrenChanged += (s, e) =>
             {
                 IsNonCheckable = !IsTerminal;
+            };
+        }
 
+        public DiagnosisViewModel(IIcdEntity icd)
+        {
+            Contract.Requires(icd != null);
+            _icd = icd;
+
+            ChildrenChanged += (s, e) =>
+            {
+                IsNonCheckable = !IsTerminal;
             };
         }
 
         public override string ToString()
         {
-            return diagnosis.ToString();
+            return string.Format("{0} {1}", Icd.Code, Icd.Title);
         }
-
     }
 }

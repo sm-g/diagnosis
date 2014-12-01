@@ -1,22 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using Diagnosis.Common;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using System.Linq;
-using System;
-using Diagnosis.Models;
-using Diagnosis.Common;
 
 namespace Diagnosis.ViewModels.Search
 {
-    public class NewFilterViewModel<T> : ViewModelBase, IFilter<T> where T : IDomainObject
+    public class FilterViewModel<T> : ViewModelBase, IFilter<T> where T : class
     {
-        private readonly INewSearcher<T> searcher;
-        Func<string, IEnumerable<T>> finder;
+        private readonly ISimpleSearcher<T> searcher;
+        private Func<string, IEnumerable<T>> finder;
         private string _query;
+        private bool _isFocused;
         private bool _resultsOnQueryChanges;
 
         #region IFilter
+
         public event EventHandler Cleared;
+
         public event EventHandler Filtered;
 
         public string Query
@@ -108,7 +109,7 @@ namespace Diagnosis.ViewModels.Search
 
             Results.SyncWith(res);
 
-
+            IsFocused = true;
             OnFiltered();
         }
 
@@ -116,20 +117,39 @@ namespace Diagnosis.ViewModels.Search
         {
             Query = "";
         }
+
         #endregion IFilter
 
-        public NewFilterViewModel(INewSearcher<T> searcher)
+        public bool IsFocused
+        {
+            get
+            {
+                return _isFocused;
+            }
+            set
+            {
+                if (_isFocused != value)
+                {
+                    _isFocused = value;
+                    OnPropertyChanged("IsFocused");
+                }
+            }
+        }
+
+        public FilterViewModel(ISimpleSearcher<T> searcher)
         {
             this.searcher = searcher;
             Results = new ObservableCollection<T>();
             UpdateResultsOnQueryChanges = true;
         }
-        public NewFilterViewModel(Func<string, IEnumerable<T>> finder)
+
+        public FilterViewModel(Func<string, IEnumerable<T>> finder)
         {
             this.finder = finder;
             Results = new ObservableCollection<T>();
             UpdateResultsOnQueryChanges = true;
         }
+
         protected void OnCleared()
         {
             var h = Cleared;

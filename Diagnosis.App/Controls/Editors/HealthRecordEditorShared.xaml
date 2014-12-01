@@ -61,6 +61,11 @@
                         <!--<TextBlock Text="Удалить" />-->
                     </DockPanel>
                 </Button>
+                <Button Command="{Binding AddIcdCommand}" ToolTip="Добавить МКБ">
+                    <DockPanel>
+                        <TextBlock Text="МКБ" />
+                    </DockPanel>
+                </Button>
             </ToolBar>
             <Button x:Name="closeButton" Command="{Binding CloseCommand}" ToolBar.OverflowMode="Never" VerticalAlignment="Top"  Height="16" HorizontalAlignment="Right" Width="16"
                 ToolTip="Закрыть редактор, сохранив все изменения"
@@ -145,13 +150,7 @@
                 </ComboBox>
             </DockPanel>-->
             <!--DataContext is HrEditorViewModel-->
-            <DockPanel DataContext="{Binding DataContext,ElementName=editor}"
-                       Visibility="{Binding ShowIcdDiseaseSearch, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Label Content="диагноз МКБ" />
-                <StackPanel>
-                    <search:SearchTree DataContext="{Binding DiagnosisSearch}" />
-                </StackPanel>
-            </DockPanel>
+
             <!--<DockPanel>
                 <Label Content="комментарий" />
                 <TextBox Text="{Binding Comment}" />

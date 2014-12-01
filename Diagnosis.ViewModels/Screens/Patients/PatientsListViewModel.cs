@@ -16,14 +16,14 @@ namespace Diagnosis.ViewModels.Screens
     public class PatientsListViewModel : ScreenBase
     {
         private Patient _current;
-        private NewFilterViewModel<Patient> _filter;
+        private FilterViewModel<Patient> _filter;
         private ObservableCollection<Patient> _patients;
 
         public PatientsListViewModel()
         {
             _patients = new ObservableCollection<Patient>();
 
-            _filter = new NewFilterViewModel<Patient>(PatientQuery.StartingWith(Session));
+            _filter = new FilterViewModel<Patient>(PatientQuery.StartingWith(Session));
 
             _filter.Results.CollectionChanged += (s, e) =>
             {
@@ -48,7 +48,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public ObservableCollection<Patient> Patients { get { return _patients; } }
 
-        public NewFilterViewModel<Patient> Filter { get { return _filter; } }
+        public FilterViewModel<Patient> Filter { get { return _filter; } }
 
         public Patient SelectedPatient
         {

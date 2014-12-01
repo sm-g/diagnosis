@@ -10,7 +10,7 @@ using Diag = Diagnosis.Models.Diagnosis;
 
 namespace Diagnosis.ViewModels.Search
 {
-    public class NewDiagnosisSearcher : INewSearcher<Diag>
+    public class NewDiagnosisSearcher : ISimpleSearcher<Diag>
     {
         readonly Diag parent;
         readonly INHibernateRepository<Diag> repo;

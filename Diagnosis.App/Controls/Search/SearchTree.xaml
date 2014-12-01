@@ -5,16 +5,17 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              x:Class="Diagnosis.App.Controls.Search.SearchTree"
              mc:Ignorable="d"
-             d:DesignHeight="100" d:DesignWidth="300"
+             d:DesignHeight="200"
+             d:DesignWidth="300"
              x:Name="searchTree"
              GotFocus="UserControl_GotFocus"
-             LostFocus="UserControl_LostFocus"
-             controls:EnhancedFocusScope.IsEnhancedFocusScope="True">
-    <!--PopupSearch<DiagnosisViewModel>-->
+             controls:EnhancedFocusScope.IsEnhancedFocusScope="True"
+             LostFocus="UserControl_LostFocus">
+    <!--PopupSearch<>-->
     <UserControl.Resources>
     </UserControl.Resources>
 
-    <Grid MaxHeight="100">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition />
@@ -27,41 +28,68 @@
 
             <TextBox x:Name="input"
                      Text="{Binding Filter.Query, UpdateSourceTrigger=PropertyChanged}"
-                     controls:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
+                     controls:FocusExtension.IsFocused="{Binding Filter.IsFocused, Mode=TwoWay}"
                      PreviewKeyDown="input_PreviewKeyDown"
                      GotMouseCapture="input_GotMouseCapture">
                 <controls:WatermarkService.Watermark>
-                    <TextBlock Style="{StaticResource watermark}">Поиск</TextBlock>
+                    <TextBlock Style="{StaticResource watermark}">Код или описание</TextBlock>
                 </controls:WatermarkService.Watermark>
 
-                <TextBox.InputBindings>
-                    <KeyBinding Key="Escape" Command="{Binding ToggleResultsVisibleCommand}" />
-                </TextBox.InputBindings>
+                <!--<TextBox.InputBindings>
+                    <KeyBinding Key="Escape"
+                                Command="{Binding ToggleResultsVisibleCommand}" />
+                </TextBox.InputBindings>-->
             </TextBox>
             <Button Grid.Column="1"
                     Content="×"
                     Style="{StaticResource squareButton}"
                     Command="{Binding Filter.ClearCommand}" />
         </Grid>
-
-        <Popup x:Name="popup"
-               IsOpen="{Binding IsResultsVisible, Mode=TwoWay}"
-               PlacementTarget="{Binding ElementName=input, Mode=OneWay}">
-            <controls:FullTree x:Name="results" ItemsSource="{Binding Filter.Results}">
+        <DockPanel x:Name="popup"
+                   Grid.Row="1"
+                   Visibility="{Binding IsResultsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <!--<controls:FullTree x:Name="results"
+                               FocusManager.IsFocusScope="True"
+                               ItemsSource="{Binding Collection, ElementName=searchTree}">
                 <controls:FullTree.ItemContainerStyle>
-                    <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}">
-                        <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
-                        <Setter Property="Visibility" Value="{Binding IsExpanded, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                        <EventSetter Event="KeyDown" Handler="item_KeyDown" />
-                        <EventSetter Event="MouseUp" Handler="item_MouseUp" />
+                    <Style TargetType="TreeViewItem"
+                           BasedOn="{StaticResource TreeViewItemStyle}">
+                        -->
+            <!--<Setter Property="Template"
+                                Value="{StaticResource treeViewItemControl}" />-->
+            <!--
+                        <EventSetter Event="KeyDown"
+                                     Handler="item_KeyDown" />
+                        <EventSetter Event="MouseUp"
+                                     Handler="item_MouseUp" />
                     </Style>
                 </controls:FullTree.ItemContainerStyle>
                 <controls:FullTree.ItemTemplate>
                     <DataTemplate>
-                    <TextBlock Text="{Binding}" />
+                        <TextBlock Text="{Binding}" />
                     </DataTemplate>
                 </controls:FullTree.ItemTemplate>
-            </controls:FullTree>
-        </Popup>
+            </controls:FullTree>-->
+            <TreeView x:Name="results1"
+                      Style="{StaticResource TreeViewStyle}"
+                      ScrollViewer.IsDeferredScrollingEnabled="True"
+                      FocusManager.IsFocusScope="True"
+                      ItemsSource="{Binding Collection, ElementName=searchTree}">
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="TreeViewItem"
+                           BasedOn="{StaticResource TreeViewItemStyle}">
+                        <EventSetter Event="KeyDown"
+                                     Handler="item_KeyDown" />
+                        <EventSetter Event="MouseUp"
+                                     Handler="item_MouseUp" />
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                        <TextBlock Text="{Binding}" />
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+        </DockPanel>
     </Grid>
 </UserControl>

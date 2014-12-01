@@ -18,35 +18,6 @@ namespace Diagnosis.App.Styles
             InitializeComponent();
         }
 
-        private void Bd_SourceUpdated(object sender, DataTransferEventArgs e)
-        {
-            var bd = sender as Border;
-            try
-            {
-                //Debug.Print("try Bd_SourceUpdated");
-                bd.GetBindingExpression(Border.BackgroundProperty).UpdateTarget();
-            }
-            catch
-            {
-                // IsSelected trigger sets Background
-                //Debug.Print("exc Bd_SourceUpdated");
-            }
-        }
-        private void Bd_TargetUpdated(object sender, DataTransferEventArgs e)
-        {
-            var bd = sender as Border;
-            try
-            {
-                //Debug.Print("try Bd_TargetUpdated");
-                bd.GetBindingExpression(Border.BackgroundProperty).UpdateTarget();
-            }
-            catch
-            {
-                // IsSelected trigger sets Background
-                //Debug.Print("exc Bd_TargetUpdated");
-            }
-        }
-
         private void item_selected(object sender, RoutedEventArgs e)
         {
             TreeViewItem tvi = sender as TreeViewItem;

@@ -21,6 +21,16 @@ namespace Diagnosis.Models
     }
 
     /// <summary>
+    /// Сущность МКБ
+    /// </summary>
+    public interface IIcdEntity
+    {
+        string Code { get; }
+        string Title { get; }
+        IIcdEntity Parent { get; }
+    }
+
+    /// <summary>
     /// Сущность, содержащая записи.
     /// </summary>
     public interface IHrsHolder : IDomainObject

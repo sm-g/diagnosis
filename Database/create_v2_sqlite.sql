@@ -5,7 +5,7 @@
     drop table if exists HrCategory;
     drop table if exists Speciality;
     drop table if exists SpecialityIcdBlocks;
-    drop table if exists Disease;
+    drop table if exists IcdDisease;
     drop table if exists IcdBlock;
     drop table if exists IcdChapter;
     drop table if exists Word;
@@ -34,12 +34,12 @@
         constraint FK_Course_Doctor foreign key (DoctorID) references Doctor
     );
 
-    create table Disease (
+    create table IcdDisease (
         Id integer primary key autoincrement,
         IcdBlockID INT not null,
         Title TEXT not null,
         Code TEXT not null,
-        constraint FK_Disease_IcdBlock foreign key (IcdBlockID) references IcdBlock
+        constraint FK_IcdDisease_IcdBlock foreign key (IcdBlockID) references IcdBlock
     );
 
     create table Doctor (
@@ -92,7 +92,7 @@
         UomID INT,
         MeasureValue FLOAT,
         HealthRecordID INT not null, 
-        constraint FK_HrItem_Disease foreign key (DiseaseID) references Disease,
+        constraint FK_HrItem_Disease foreign key (DiseaseID) references IcdDisease,
         constraint FK_HrItem_Word foreign key (WordID) references Word,
         constraint FK_HrItem_Uom foreign key (UomID) references Uom,
         constraint FK_HrItem_Hr foreign key (HealthRecordID) references HealthRecord
@@ -156,6 +156,6 @@
 
     CREATE UNIQUE INDEX IF NOT EXISTS BlockCode ON IcdBlock(Code);
     CREATE UNIQUE INDEX IF NOT EXISTS ChapterCode ON IcdChapter(Code);
-    CREATE UNIQUE INDEX IF NOT EXISTS DiseaseCode ON Disease(Code);
+    CREATE UNIQUE INDEX IF NOT EXISTS DiseaseCode ON IcdDisease(Code);
     
     CREATE INDEX IF NOT EXISTS WordTitle ON Word(Title);

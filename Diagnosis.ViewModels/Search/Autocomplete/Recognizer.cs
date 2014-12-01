@@ -54,6 +54,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 return false;
             return true;
         }
+
         public void SetBlank(Tag tag, object suggestion, bool exactMatchRequired, bool inverse)
         {
             if (suggestion == null ^ inverse) // direct w\o sugg or inverse with sugg
@@ -83,7 +84,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 // слово меняем на коммент
                 tag.Blank = new Comment(tag.Query);
             }
-            else
+            else // Icd !
             {
                 tag.Blank = FirstMatchingOrNewWord(tag.Query);
             }
@@ -125,6 +126,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 case Tag.BlankTypes.Comment:
                     tag.Entities = new List<IHrItemObject>() { tag.Blank as Comment };
                     yield return tag.Blank as Comment;
+                    break;
+
+                case Tag.BlankTypes.Icd:
+                    tag.Entities = new List<IHrItemObject>() { tag.Blank as IcdDisease };
+                    yield return tag.Blank as IcdDisease;
                     break;
             }
         }

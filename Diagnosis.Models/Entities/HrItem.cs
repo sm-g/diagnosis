@@ -24,6 +24,8 @@ namespace Diagnosis.Models
                 Word = obj as Word;
             else if (obj is Measure)
                 Measure = obj as Measure;
+            else if (obj is IcdDisease)
+                Disease = obj as IcdDisease;
             else if (obj is Comment)
             {
                 comment = obj as Comment;
