@@ -162,6 +162,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 MakeVms(DiagnosisSearch.Filter.Results);
             };
+            DiagnosisSearch.IsResultsVisible = true;
         }
 
         private void UpdateDiagnosisQueryCode(IcdDisease d, bool updateResult = false)

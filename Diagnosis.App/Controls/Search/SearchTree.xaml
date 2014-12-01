@@ -28,17 +28,17 @@
 
             <TextBox x:Name="input"
                      Text="{Binding Filter.Query, UpdateSourceTrigger=PropertyChanged}"
-                     controls:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
+                     controls:FocusExtension.IsFocused="{Binding Filter.IsFocused, Mode=TwoWay}"
                      PreviewKeyDown="input_PreviewKeyDown"
                      GotMouseCapture="input_GotMouseCapture">
                 <controls:WatermarkService.Watermark>
                     <TextBlock Style="{StaticResource watermark}">Код или описание</TextBlock>
                 </controls:WatermarkService.Watermark>
 
-                <TextBox.InputBindings>
+                <!--<TextBox.InputBindings>
                     <KeyBinding Key="Escape"
                                 Command="{Binding ToggleResultsVisibleCommand}" />
-                </TextBox.InputBindings>
+                </TextBox.InputBindings>-->
             </TextBox>
             <Button Grid.Column="1"
                     Content="×"

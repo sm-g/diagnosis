@@ -163,6 +163,7 @@ namespace Diagnosis.App.Controls.Search
             }
 
             selectedItem = item;
+            input.Focus();
         }
 
         private void RaiseSearchSelected(dynamic item)

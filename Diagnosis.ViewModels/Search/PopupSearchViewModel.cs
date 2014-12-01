@@ -5,6 +5,9 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Search
 {
+    /// <summary>
+    /// Показывает результаты при установке фокуса.
+    /// </summary>
     public class PopupSearchViewModel<T> : ViewModelBase
         where T : class
     {
@@ -59,10 +62,10 @@ namespace Diagnosis.ViewModels.Search
             get
             {
                 return new RelayCommand(() =>
-                        {
-                            IsResultsVisible = !IsResultsVisible;
-                        }
-                       );
+                    {
+                        IsResultsVisible = !IsResultsVisible;
+                    }
+                );
             }
         }
 
@@ -99,14 +102,11 @@ namespace Diagnosis.ViewModels.Search
         {
             get
             {
-                logger.DebugFormat("get IsResultsVisible");
-
                 return _isResultsVisible;
             }
             set
             {
-                // set to true only if IsFocused
-                if (_isResultsVisible != value && (value == IsFocused || IsFocused))
+                if (_isResultsVisible != value)
                 {
                     _isResultsVisible = value;
                     logger.DebugFormat("IsResultsVisible {0}", value);
@@ -116,13 +116,15 @@ namespace Diagnosis.ViewModels.Search
             }
         }
 
+        public bool HideResultsAfterSelected { get; set; }
+
         /// <summary>
         /// public для выбора мышью (dynamic) и
         /// для выбора элемента, который не совпадает с SelectedItem (SearchTree).
         /// </summary>
         public void RaiseResultItemSelected(object realItem)
         {
-            logger.DebugFormat("raise");
+            // logger.DebugFormat("raise");
 
             var h = ResultItemSelected;
             if (h != null)
@@ -130,7 +132,8 @@ namespace Diagnosis.ViewModels.Search
                 h(this, new ObjectEventArgs(realItem));
             }
 
-            IsResultsVisible = false;
+            if (HideResultsAfterSelected)
+                IsResultsVisible = false;
         }
 
         public PopupSearchViewModel(Func<string, IEnumerable<T>> searcher)
@@ -145,7 +148,7 @@ namespace Diagnosis.ViewModels.Search
                 IsResultsVisible = true;
             };
 
-            Filter.Clear(); // no results made here
+           // Filter.Clear(); // no results made here
         }
 
         [Serializable]
