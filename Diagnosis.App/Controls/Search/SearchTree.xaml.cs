@@ -91,13 +91,23 @@ namespace Diagnosis.App.Controls.Search
 
         private void item_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            var source = e.Source as ContentPresenter;
-            if (source != null)
+            ContentPresenter content = e.Source as ContentPresenter;
+
+            // click on border or on content itself
+            var bd = e.Source as Border;
+            if (bd != null)
             {
-                dynamic item = source.Content;
+                content = bd.FindName("PART_Header") as ContentPresenter;
+            }
+
+            if (content != null)
+            {
+                dynamic item = content.Content;
                 RaiseSearchSelected(item);
                 e.Handled = true;
             }
+
+
         }
 
         private void MoveSelection(bool down)
