@@ -359,7 +359,6 @@
     <Compile Include="Converters\BoolToAligment.cs" />
     <Compile Include="Converters\MonthToString.cs" />
     <Compile Include="Converters\CountToVisibility.cs" />
-    <Compile Include="Converters\IHierarchicalCheckableToBackground.cs" />
     <Compile Include="Converters\TreeDepthToMargin.cs" />
     <Compile Include="Controls\Helpers\ChildFinder.cs" />
     <Compile Include="Behaviors\EnhancedFocusScope.cs" />

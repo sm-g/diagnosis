@@ -84,10 +84,8 @@
     </Style>
 
     <ControlTemplate TargetType="{x:Type TreeViewItem}" x:Key="treeViewItemControl">
-                <!--Binding.SourceUpdated ="Bd_SourceUpdated"
-                Binding.TargetUpdated ="Bd_TargetUpdated"-->
         <Border Name="Bd"
-                Background="{Binding Content, ElementName=PART_Header, Converter={StaticResource IHierarchicalCheckableToBackground}}"
+                Background="Transparent"
                 BorderBrush="{TemplateBinding BorderBrush}"
                 BorderThickness="{TemplateBinding BorderThickness}"
                 Padding="0,5"
