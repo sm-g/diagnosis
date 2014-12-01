@@ -91,10 +91,7 @@ namespace Diagnosis.ViewModels.Screens
             Dictionary<IcdChapter, Dictionary<IcdBlock, IEnumerable<IcdDisease>>>
                 dict = (from d in results
                         group d by d.IcdBlock.IcdChapter into gr
-                        select new
-                        {
-                            Ch = gr.Key,
-                            Blocks = (from be in gr
+                        let blocks = (from be in gr
                                       group be by be.IcdBlock into grr
                                       where doctor.Speciality.IcdBlocks.Contains(grr.Key) // блоки для специальности доктора
                                       select new
@@ -102,7 +99,12 @@ namespace Diagnosis.ViewModels.Screens
                                           Block = grr.Key,
                                           Diseases = grr.Where(whereClause)
                                       }).ToDictionary(x => x.Block, x => x.Diseases)
-                        }).ToDictionary(x => x.Ch, x => x.Blocks);
+                        where blocks.Count > 0 // без пустых классов
+                        select new
+                        {
+                            Chapter = gr.Key,
+                            Blocks = blocks
+                        }).ToDictionary(x => x.Chapter, x => x.Blocks);
 
             // для каждого класса, блока и болезни ищем существующую VM или создаем 
             // разворачиваем
