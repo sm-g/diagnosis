@@ -124,17 +124,17 @@ namespace Diagnosis.ViewModels.Screens
 
                         dVm.IsExpanded = true;
                         return dVm;
-                    });
+                    }).ToList();
 
                     bVm.IsExpanded = true;
                     bVm.Children.SyncWith(dVms);
                     return bVm;
-                });
+                }).ToList();
 
                 chVm.IsExpanded = true;
                 chVm.Children.SyncWith(bVms);
                 return chVm;
-            });
+            }).ToList();
 
             Chapters.SyncWith(chVms);
         }
