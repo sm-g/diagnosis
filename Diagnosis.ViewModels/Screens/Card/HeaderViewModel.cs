@@ -38,7 +38,8 @@ namespace Diagnosis.ViewModels.Screens
                 ShowApps();
             }
 
-            ((INotifyPropertyChanged)holder).PropertyChanged += Holder_PropertyChanged;
+            if (holder != null)
+                ((INotifyPropertyChanged)holder).PropertyChanged += Holder_PropertyChanged;
         }
 
         public IHrsHolder Holder
