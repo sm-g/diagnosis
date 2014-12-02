@@ -1,14 +1,11 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data.Queries;
-using Diagnosis.Data.Repositories;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Search;
 using Diagnosis.ViewModels.Search.Autocomplete;
 using EventAggregator;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -36,7 +33,7 @@ namespace Diagnosis.ViewModels.Screens
         private bool _controlsVisible;
 
         private IEnumerable<HrCategoryViewModel> _categories;
-        private bool _searchWas;
+        private SearchResult _res;
         private HrSearcher searcher = new HrSearcher();
 
         private EventMessageHandlersManager msgManager;
@@ -47,7 +44,6 @@ namespace Diagnosis.ViewModels.Screens
         {
             Autocomplete = new Autocomplete(new Recognizer(Session) { OnlyWords = true }, false, null);
 
-            Results = new ObservableCollection<HrHolderSearchResultViewModel>();
             ControlsVisible = true;
             AllWords = true;
 
@@ -278,6 +274,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         public int AndScope
         {
             get
@@ -313,16 +310,6 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         #endregion Options bindings
-
-        public bool SearchWas
-        {
-            get { return _searchWas; }
-            set
-            {
-                _searchWas = value;
-                OnPropertyChanged("SearchWas");
-            }
-        }
 
         public IList<HrCategoryViewModel> SelectedCategories
         {
@@ -367,23 +354,37 @@ namespace Diagnosis.ViewModels.Screens
 
         public Autocomplete Autocomplete { get; private set; }
 
-        public ObservableCollection<HrHolderSearchResultViewModel> Results
-        {
-            get;
-            private set;
-        }
-        /// <summary>
-        /// Показывать сообщение «ничего не найдено»
-        /// </summary>
-        public bool NoResultsVisible
+
+        public SearchResult Result
         {
             get
             {
-                return Results.Count == 0 && SearchWas;
+                return _res;
+            }
+            set
+            {
+                if (_res != value)
+                {
+                    _res = value;
+                    OnPropertyChanged(() => Result);
+                    OnPropertyChanged(() => NothingFound);
+                }
             }
         }
+
         /// <summary>
-        /// Показывать поисковую форму 
+        /// Показывать сообщение «ничего не найдено»
+        /// </summary>
+        public bool NothingFound
+        {
+            get
+            {
+                return Result != null && Result.Statistic.Count == 0;
+            }
+        }
+
+        /// <summary>
+        /// Показывать поисковую форму
         /// </summary>
         public bool ControlsVisible
         {
@@ -435,21 +436,10 @@ namespace Diagnosis.ViewModels.Screens
 
         private void Search()
         {
-            Results.Clear();
-
             MakeOptions();
             var hrs = searcher.Search(Session, Options);
-
-            HrHolderSearchResultViewModel.MakeFrom(hrs).ForAll(x =>
-            {
-                x.ForBranch(rvm => rvm.IsExpanded = true);
-                Results.Add(x);
-            });
-
-            SearchWas = true;
+            Result = new SearchResult(hrs);
             ControlsVisible = false;
-
-            OnPropertyChanged("NoResultsVisible");
         }
 
         private void RecieveHealthRecords(IEnumerable<HealthRecord> hrs)
@@ -483,7 +473,6 @@ namespace Diagnosis.ViewModels.Screens
             HrDateOffsetLower = new DateOffset(lastHr.FromYear, lastHr.FromMonth, lastHr.FromDay);
             Comment = lastHr.Comment;
 
-
             RemoveLastResults();
         }
 
@@ -500,8 +489,7 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         private void RemoveLastResults()
         {
-            Results.Clear();
-            SearchWas = false;
+            Result = null;
             ControlsVisible = true;
         }
 
@@ -528,7 +516,6 @@ namespace Diagnosis.ViewModels.Screens
         {
             internal readonly HrCategory category;
 
-
             public string Name
             {
                 get
@@ -536,7 +523,6 @@ namespace Diagnosis.ViewModels.Screens
                     return category.Name;
                 }
             }
-
 
             public HrCategoryViewModel(HrCategory category)
             {
@@ -562,7 +548,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return category.ToString();
             }
-
         }
     }
 }

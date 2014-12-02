@@ -10,7 +10,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              x:Name="search"
              mc:Ignorable="d"
-             d:DesignHeight="400" d:DesignWidth="430" MinWidth="250" MaxWidth="300">
+             d:DesignHeight="400"
+             MinWidth="270"
+             MaxWidth="270">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -18,23 +20,28 @@
             </ResourceDictionary.MergedDictionaries>
             <s:Double x:Key="lineMargin">10</s:Double>
 
-            <Style x:Key="line" TargetType="FrameworkElement">
+            <Style x:Key="line"
+                   TargetType="FrameworkElement">
                 <Setter Property="Margin">
                     <Setter.Value>
                         <Thickness Bottom="{StaticResource lineMargin}" />
                     </Setter.Value>
                 </Setter>
             </Style>
-            <Style x:Key="lineHeader" TargetType="FrameworkElement">
-                <Setter Property="DockPanel.Dock" Value="Top" />
-                <Setter Property="Margin" Value="0,0,0,2" />
+            <Style x:Key="lineHeader"
+                   TargetType="FrameworkElement">
+                <Setter Property="DockPanel.Dock"
+                        Value="Top" />
+                <Setter Property="Margin"
+                        Value="0,0,0,2" />
             </Style>
 
-            <CollectionViewSource x:Key="resultsView" Source="{Binding Results}">
+            <!--<CollectionViewSource x:Key="resultsView"
+                                  Source="{Binding Results}">
                 <CollectionViewSource.GroupDescriptions>
                     <PropertyGroupDescription PropertyName="Patient" />
                 </CollectionViewSource.GroupDescriptions>
-            </CollectionViewSource>
+            </CollectionViewSource>-->
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -42,8 +49,10 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <TextBlock Style="{StaticResource ScreenTitle}" Margin="5,0,0,0">Поиск</TextBlock>
+        <TextBlock Style="{StaticResource ScreenTitle}"
+                   Margin="5,0,0,0">Поиск</TextBlock>
         <Expander x:Name="searchControls"
                   Style="{StaticResource SplitExpanderStyle}"
                   Grid.Row="1"
@@ -51,11 +60,14 @@
                   ExpandDirection="Up">
             <Expander.Header>
                 <!--Описание запроса, к которому относятся результаты-->
-                <StackPanel x:Name="searchDescription" Margin="5,0,0,0">
-                    <StackPanel DataContext="{Binding Options}" Visibility="{Binding DataContext.SearchWas, ElementName=search, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel x:Name="searchDescription"
+                            Margin="5,0,0,0">
+                    <StackPanel DataContext="{Binding Options}"
+                                Visibility="{Binding DataContext.Result, ElementName=search, Converter={StaticResource NullToVis}}">
                         <StackPanel Orientation="Horizontal"
                                     Visibility="{Binding Words.Count, Converter={StaticResource MoreThanToVisibility}}">
-                            <TextBlock Text="любое из слов: " Visibility="{Binding AllWords, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
+                            <TextBlock Text="любое из слов: "
+                                       Visibility="{Binding AllWords, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
                             <TextBlock Visibility="{Binding AllWords, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Run>все слова</Run> <Run Text="{Binding AndScope, StringFormat='{}{0}: ', Converter={StaticResource ScopeToLabel}}" />
                             </TextBlock>
@@ -72,8 +84,10 @@
                             <TextBlock>
                                 <TextBlock.Text>
                                     <MultiBinding Converter="{StaticResource DateIntervalLabel}">
-                                        <Binding Path="AppointmentDateGt" Mode="OneWay" />
-                                        <Binding Path="AppointmentDateLt" Mode="OneWay" />
+                                        <Binding Path="AppointmentDateGt"
+                                                 Mode="OneWay" />
+                                        <Binding Path="AppointmentDateLt"
+                                                 Mode="OneWay" />
                                         <MultiBinding.ConverterParameter>
                                             <x:ArrayExtension Type="s:String">
                                                 <s:String>от</s:String>
@@ -109,7 +123,8 @@
 
             <StackPanel Margin="5,10,5,0">
                 <StackPanel.InputBindings>
-                    <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
+                    <KeyBinding Key="Enter"
+                                Command="{Binding SearchCommand}" />
                 </StackPanel.InputBindings>
 
                 <search:NewAutocomplete DataContext="{Binding Autocomplete}" />
@@ -119,12 +134,20 @@
                             <ColumnDefinition />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <CheckBox IsChecked="{Binding AllWords}" Margin="0,10,0,0">
+                        <CheckBox IsChecked="{Binding AllWords}"
+                                  Margin="0,10,0,0">
                             <TextBlock>
                             <Run>Все слова</Run> <Run Text="{Binding AndScope, Converter={StaticResource ScopeToLabel}}"></Run>
                             </TextBlock>
                         </CheckBox>
-                        <Slider Grid.Column="2" Value="{Binding AndScope}" IsEnabled="{Binding AllWords}" Minimum="0" Maximum="3" TickFrequency="1" TickPlacement="Both" Orientation="Horizontal" />
+                        <Slider Grid.Column="2"
+                                Value="{Binding AndScope}"
+                                IsEnabled="{Binding AllWords}"
+                                Minimum="0"
+                                Maximum="3"
+                                TickFrequency="1"
+                                TickPlacement="Both"
+                                Orientation="Horizontal" />
                     </Grid>
                 </DockPanel>
                 <DockPanel Style="{StaticResource line}">
@@ -172,15 +195,25 @@
                     <TextBox Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}" />
                 </DockPanel>-->
 
-                <Button Command="{Binding SearchCommand}" Height="25" Width="150" HorizontalAlignment="Left" Style="{StaticResource line}">Найти</Button>
+                <Button Command="{Binding SearchCommand}"
+                        Height="25"
+                        Width="150"
+                        HorizontalAlignment="Left"
+                        Style="{StaticResource line}">Найти</Button>
             </StackPanel>
         </Expander>
 
-        <controls:FullTree ItemsSource="{Binding Results}" Grid.Row="2" Margin="5,5,5,10"  Visibility="{Binding Results.Count, Converter={StaticResource MoreThanToVisibility}}">
+        <controls:FullTree ItemsSource="{Binding Result.Patients}"
+                           Grid.Row="2"
+                           Margin="5"
+                           Visibility="{Binding Result, Converter={StaticResource NullToVis}}">
             <controls:FullTree.ItemContainerStyle>
-                <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}">
-                    <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
-                    <Setter Property="controls:Attached.InputBindings" Value="{StaticResource SearchResultInputBindings}" />
+                <Style TargetType="TreeViewItem"
+                       BasedOn="{StaticResource TreeViewItemStyle}">
+                    <Setter Property="Template"
+                            Value="{StaticResource treeViewItemControl}" />
+                    <Setter Property="controls:Attached.InputBindings"
+                            Value="{StaticResource SearchResultInputBindings}" />
                 </Style>
             </controls:FullTree.ItemContainerStyle>
             <controls:FullTree.ItemTemplate>
@@ -189,12 +222,47 @@
                 </DataTemplate>
             </controls:FullTree.ItemTemplate>
         </controls:FullTree>
-      
+
         <TextBlock Grid.Row="2"
                    HorizontalAlignment="Center"
                    Margin="10"
-                   Visibility="{Binding NoResultsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                   Visibility="{Binding NothingFound, Converter={StaticResource BooleanToVisibilityConverter}}">
             Не найдено подходящих записей.
         </TextBlock>
+
+        <StackPanel Grid.Row="3"
+                    Visibility="{Binding Result, Converter={StaticResource NullToVis}}"
+                    Background="{x:Static SystemColors.ControlBrush}">
+            <controls:WrapPanelLastChildFill  DataContext="{Binding Result}"
+                                              Margin="5"
+                                              Visibility="{Binding Statistic.Count, Converter={StaticResource MoreThanToVisibility}}">
+                <TextBlock>
+                    Пациентов: <Run Text="{Binding Statistic.Count, Mode=OneWay}" />,
+                    М: <Run Text="{Binding Statistic.Males, Mode=OneWay}" />
+                    Ж: <Run Text="{Binding Statistic.Females, Mode=OneWay}" />
+                    ?: <Run Text="{Binding Statistic.UnknownSex, Mode=OneWay}" />
+                </TextBlock>
+                <Rectangle VerticalAlignment="Stretch"
+                           HorizontalAlignment="Left"
+                           Width="1"
+                           Margin="5,0"
+                           Stroke="{x:Static SystemColors.ActiveBorderBrush}" />
+                <TextBlock Grid.Column="2">
+                    Возраст от <Run Text="{Binding Statistic.MinAge, Mode=OneWay}" /> до <Run Text="{Binding Statistic.MaxAge, Mode=OneWay}" />
+                </TextBlock>
+
+                <StackPanel Style="{StaticResource DialogButtonsPanel}"
+                            HorizontalAlignment="Right">
+                    <Button Command="{Binding ExportCommand}"
+                            Style="{StaticResource squareButton}"
+                            ToolTip="Экспорт в xlsx">
+                        <DockPanel>
+                            <Image Source="{StaticResource saveImage}"
+                                   Width="16" />
+                        </DockPanel>
+                    </Button>
+                </StackPanel>
+            </controls:WrapPanelLastChildFill>
+        </StackPanel>
     </Grid>
 </UserControl>

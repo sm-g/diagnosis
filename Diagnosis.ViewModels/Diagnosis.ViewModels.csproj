@@ -118,6 +118,9 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EPPlus">
+      <HintPath>..\libs\EPPlus.dll</HintPath>
+    </Reference>
     <Reference Include="EventAggregator">
       <HintPath>..\libs\EventAggregator.dll</HintPath>
     </Reference>
@@ -180,9 +183,12 @@
     <Compile Include="Screens\Shell\OverlayServiceViewModel.cs" />
     <Compile Include="Screens\Shell\UndoOverlayViewModel.cs" />
     <Compile Include="Screens\Words\WordEditorViewModel.cs" />
+    <Compile Include="Search\Exporter.cs" />
     <Compile Include="Search\IcdSelectorViewModel.cs" />
     <Compile Include="Search\Autocomplete\IAutoComplete.cs" />
     <Compile Include="Search\HrHolderSearchResultViewModel.cs" />
+    <Compile Include="Search\SearchResult.cs" />
+    <Compile Include="Search\Statistic.cs" />
     <Compile Include="Types\CheckableBase.cs" />
     <Compile Include="Screens\Card\Managers\AppointmentsSpecialCaseManager.cs" />
     <Compile Include="Screens\Card\AppointmentViewModel.cs" />

@@ -51,7 +51,7 @@ namespace Diagnosis.ViewModels.Search
             //    hrs = hrs.Where(hr => hr.Comment != null && hr.Comment.ToLower().Contains(options.Comment.ToLower()));
             //}
 
-            return hrs;
+            return hrs.ToList();
         }
 
         bool TestHrDate(HealthRecord hr, HrSearchOptions options)
