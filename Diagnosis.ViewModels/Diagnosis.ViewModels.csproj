@@ -202,10 +202,10 @@
     <Compile Include="Framework\SessionVMBase.cs" />
     <Compile Include="Types\HierarchicalBase.cs" />
     <Compile Include="Screens\Card\HrEditorViewModel.cs" />
-    <Compile Include="Interfaces\ICheckable.cs" />
-    <Compile Include="Interfaces\IFilter.cs" />
-    <Compile Include="Interfaces\IHierarchical.cs" />
-    <Compile Include="Interfaces\IHierarchicalCheckable.cs" />
+    <Compile Include="Types\ICheckable.cs" />
+    <Compile Include="Search\IFilter.cs" />
+    <Compile Include="Types\IHierarchical.cs" />
+    <Compile Include="Types\IHierarchicalCheckable.cs" />
     <Compile Include="Search\Searchers\ISimpleSearcher.cs" />
     <Compile Include="Screens\Card\Managers\PatientViewer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
