@@ -85,14 +85,25 @@ namespace Diagnosis.App.Controls.Search
         private void UserControl_LostFocus(object sender, RoutedEventArgs e)
         {
             var outs = IsFocusOutside();
-            // logger.DebugFormat("autocomplete lost focus to {0}, out? {1}", GetFocusedInScope(), outs);
-
+            //logger.DebugFormat("autocomplete lost focus to {0}, out? {1}", GetFocusedInScope(), outs);
+            if (outs)
+            {
+                //logger.Debug("autocomplete lost focus");
+                // if (Vm != null && Vm.EditingTag != null)
+                //       Vm.CompleteOnLostFocus(Vm.EditingTag); // также в HrEditor.CloseCurrentHr()
+            }
+        }
+        private void UserControl_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            var outs = IsFocusOutside();
+            // logger.DebugFormat("autocomplete lost kb focus to {0}, out? {1}", e.NewFocus, outs);
             if (outs)
             {
                 logger.Debug("autocomplete lost focus");
                 if (Vm != null && Vm.EditingTag != null)
                     Vm.CompleteOnLostFocus(Vm.EditingTag); // также в HrEditor.CloseCurrentHr()
             }
+
         }
 
         private void input_GotFocus(object sender, RoutedEventArgs e)
@@ -161,5 +172,6 @@ namespace Diagnosis.App.Controls.Search
         }
 
         #endregion focus stuff
+
     }
 }

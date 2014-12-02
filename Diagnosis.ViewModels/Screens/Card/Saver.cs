@@ -22,6 +22,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (hr.GetPatient() == savingPatient) return;
 
+            logger.DebugFormat("saving hr {0}", hr);
             Debug.Assert(session.IsOpen);
 
             session.SaveOrUpdate(hr);
@@ -48,9 +49,10 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         public void SaveAll(Patient patient, bool deleteEmptyHrs = false)
         {
-            Debug.Assert(session.IsOpen);
-
             if (savingPatient == patient) return;
+
+            logger.DebugFormat("saving patient {0}", patient);
+            Debug.Assert(session.IsOpen);
 
             savingPatient = patient;
 
