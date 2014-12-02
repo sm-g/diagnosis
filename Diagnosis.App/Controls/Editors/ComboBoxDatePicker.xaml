@@ -3,6 +3,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:Converters="clr-namespace:Diagnosis.App.Converters"
+             xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              x:Class="Diagnosis.App.Controls.Editors.ComboBoxDatePicker"
              mc:Ignorable="d"
              d:DesignWidth="300"
@@ -24,6 +25,10 @@
                   SelectionChanged="comboYears_SelectionChanged"
                   LostFocus="comboYears_LostFocus"                  
                   SelectedValue="{Binding Year, Mode=TwoWay, FallbackValue='', Converter={StaticResource IntToString}, ElementName=root}">
+            <controls:WatermarkService.Watermark>
+                <TextBlock Style="{StaticResource watermark}"
+                           Margin="5,0,0,0">Год</TextBlock>
+            </controls:WatermarkService.Watermark>
         </ComboBox>
         <ComboBox x:Name="comboMonths"
                   Style="{StaticResource comboRight}"
