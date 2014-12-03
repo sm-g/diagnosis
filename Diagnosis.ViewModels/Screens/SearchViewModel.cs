@@ -33,7 +33,7 @@ namespace Diagnosis.ViewModels.Screens
         private bool _controlsVisible;
 
         private IEnumerable<HrCategoryViewModel> _categories;
-        private SearchResult _res;
+        private SearchResultViewModel _res;
         private HrSearcher searcher = new HrSearcher();
 
         private EventMessageHandlersManager msgManager;
@@ -355,7 +355,7 @@ namespace Diagnosis.ViewModels.Screens
         public Autocomplete Autocomplete { get; private set; }
 
 
-        public SearchResult Result
+        public SearchResultViewModel Result
         {
             get
             {
@@ -438,7 +438,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             MakeOptions();
             var hrs = searcher.Search(Session, Options);
-            Result = new SearchResult(hrs);
+            Result = new SearchResultViewModel(hrs);
             ControlsVisible = false;
         }
 

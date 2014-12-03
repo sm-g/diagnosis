@@ -190,7 +190,7 @@
     <Compile Include="Search\IcdSelectorViewModel.cs" />
     <Compile Include="Search\Autocomplete\IAutoComplete.cs" />
     <Compile Include="Search\HrHolderSearchResultViewModel.cs" />
-    <Compile Include="Search\SearchResult.cs" />
+    <Compile Include="Search\SearchResultViewModel.cs" />
     <Compile Include="Search\Statistic.cs" />
     <Compile Include="Types\CheckableBase.cs" />
     <Compile Include="Screens\Card\Managers\AppointmentsSpecialCaseManager.cs" />

@@ -8,9 +8,9 @@ using System.Text;
 
 namespace Diagnosis.ViewModels.Search
 {
-    public class SearchResult : ViewModelBase
+    public class SearchResultViewModel : ViewModelBase
     {
-        public SearchResult(IEnumerable<HealthRecord> hrs)
+        public SearchResultViewModel(IEnumerable<HealthRecord> hrs)
         {
             Patients = new ObservableCollection<HrHolderSearchResultViewModel>();
 
