@@ -52,6 +52,8 @@
                     <Setter Property="Background" Value="White" />
                     <Setter Property="FontSize" Value="14" />
                     <Setter Property="FontStyle" Value="Italic" />
+                    <Setter Property="BorderBrush"
+                            Value="{x:Null}" />
 
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Signalization}" Value="{x:Static auto:Signalizations.NewWord}">
