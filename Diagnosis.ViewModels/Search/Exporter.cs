@@ -1,4 +1,6 @@
-﻿using OfficeOpenXml;
+﻿using Diagnosis.Common;
+using Diagnosis.ViewModels.Framework;
+using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
 using System.IO;
@@ -7,15 +9,27 @@ namespace Diagnosis.ViewModels.Search
 {
     internal class Exporter
     {
-        private const string filename = "sample1.xlsx";
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Exporter));
+        private const string defName = "sample";
 
         public void ExportToXlsx(Statistic stats)
         {
-            FileInfo newFile = CreateNewFile(filename);
+            var result = new FileDialogService().ShowSaveFileDialog(null,
+                  FileType.Xlsx.ToEnumerable(),
+                  FileType.Xlsx,
+                  string.Format("{0} {1:yyyy.MM.dd HH.mm}", defName, DateTime.Now));
 
-            ExcelPackage package = new ExcelPackage(newFile);
+            if (result.IsValid)
+            {
+                var newFile = CreateNewFile(result.FileName);
+                ExcelPackage package = MakeExcelPackage(stats);
+                SaveTo(package, newFile);
+            }
+        }
 
+        private static ExcelPackage MakeExcelPackage(Statistic stats)
+        {
+            ExcelPackage package = new ExcelPackage();
             ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Матрица");
 
             var patientCols = 3;
@@ -86,15 +100,7 @@ namespace Diagnosis.ViewModels.Search
 
             // set some document properties
             package.Workbook.Properties.Title = "Матрица";
-
-            try
-            {
-                package.Save();
-            }
-            catch (Exception e)
-            {
-                logger.WarnFormat("Error when save {0}: {1}", filename, e);
-            }
+            return package;
         }
 
         private static FileInfo CreateNewFile(string filename)
@@ -117,6 +123,18 @@ namespace Diagnosis.ViewModels.Search
             }
             newFile = new FileInfo(filename);
             return newFile;
+        }
+
+        private static void SaveTo(ExcelPackage package, FileInfo file)
+        {
+            try
+            {
+                package.SaveAs(file);
+            }
+            catch (Exception e)
+            {
+                logger.WarnFormat("Error when save {0}: {1}", file.FullName, e);
+            }
         }
     }
 }

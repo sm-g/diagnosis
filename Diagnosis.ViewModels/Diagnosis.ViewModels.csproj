@@ -163,7 +163,10 @@
   <ItemGroup>
     <Compile Include="AuthorityController.cs" />
     <Compile Include="Framework\DialogViewModel.cs" />
+    <Compile Include="Framework\Services\FileDialogResult.cs" />
+    <Compile Include="Framework\Services\FileDialogService.cs" />
     <Compile Include="Framework\IDialog.cs" />
+    <Compile Include="Framework\Services\FileType.cs" />
     <Compile Include="Screens\Card\AppointmentEditorViewModel.cs" />
     <Compile Include="Screens\Card\HeaderViewModel.cs" />
     <Compile Include="Screens\Card\Navigator.cs" />
