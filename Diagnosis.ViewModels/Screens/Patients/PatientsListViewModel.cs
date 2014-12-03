@@ -10,6 +10,8 @@ using Diagnosis.Data;
 using Diagnosis.ViewModels.Search;
 using NHibernate;
 using Diagnosis.Data.Queries;
+using System.Windows.Data;
+using System.ComponentModel;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -21,8 +23,6 @@ namespace Diagnosis.ViewModels.Screens
 
         public PatientsListViewModel()
         {
-            _patients = new ObservableCollection<Patient>();
-
             _filter = new FilterViewModel<Patient>(PatientQuery.StartingWith(Session));
 
             _filter.Results.CollectionChanged += (s, e) =>
@@ -46,7 +46,24 @@ namespace Diagnosis.ViewModels.Screens
             Title = "Пациенты";
         }
 
-        public ObservableCollection<Patient> Patients { get { return _patients; } }
+        public ObservableCollection<Patient> Patients
+        {
+            get
+            {
+                if (_patients == null)
+                {
+                    _patients = new ObservableCollection<Patient>();
+                    var patientsView = (CollectionView)CollectionViewSource.GetDefaultView(_patients);
+                    SortDescription sort1 = new SortDescription("LastName", ListSortDirection.Ascending);
+                    SortDescription sort2 = new SortDescription("FirstName", ListSortDirection.Ascending);
+                    SortDescription sort3 = new SortDescription("MiddleName", ListSortDirection.Ascending);
+                    patientsView.SortDescriptions.Add(sort1);
+                    patientsView.SortDescriptions.Add(sort2);
+                    patientsView.SortDescriptions.Add(sort3);
+                }
+                return _patients;
+            }
+        }
 
         public FilterViewModel<Patient> Filter { get { return _filter; } }
 
