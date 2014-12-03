@@ -1,5 +1,6 @@
 ﻿using Diagnosis.App.Windows;
 using Diagnosis.Common;
+using Diagnosis.Data;
 using log4net;
 using System;
 using System.Diagnostics;
@@ -19,6 +20,7 @@ namespace Diagnosis.App
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(App));
         private static bool inExit = false;
+        private const string BackupFolder = "Backup\\";
 
         public App()
         {
@@ -38,7 +40,7 @@ namespace Diagnosis.App
                 {
                     if (e.Args[i] == "-inmemory")
                     {
-                        Diagnosis.Data.NHibernateHelper.InMemory = true;
+                        NHibernateHelper.InMemory = true;
                     }
                 }
 
@@ -54,6 +56,7 @@ namespace Diagnosis.App
                 new DebugOutput(0);
                 new DebugWindow().Show();
 #endif
+                BackupDb();
 
                 var main = new MainWindow();
                 Application.Current.MainWindow = main;
@@ -66,6 +69,18 @@ namespace Diagnosis.App
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             logger.ErrorFormat("Unhandled: {0}", e.ExceptionObject as Exception);
+        }
+
+        private static void BackupDb()
+        {
+#if !DEBUG
+            if (NHibernateHelper.InMemory)
+                return;
+
+            var constr = NHibernateHelper.Configuration.GetProperty(NHibernate.Cfg.Environment.ConnectionString);
+            var b = new System.Data.SqlServerCe.SqlCeConnectionStringBuilder(constr);
+            FileHelper.Backup(b.DataSource, BackupFolder, 5);
+#endif
         }
 
         public class MyLock : log4net.Appender.FileAppender.MinimalLock

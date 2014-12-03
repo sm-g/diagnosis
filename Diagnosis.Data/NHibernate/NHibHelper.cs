@@ -16,7 +16,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Diagnosis.Data
 {
-    public class NHibernateHelper
+    public static class NHibernateHelper
     {
         private const string SerializedConfig = "NHibernate\\Configuration.serialized";
         private const string ConfigFile = "NHibernate\\nhibernate.cfg.xml";
@@ -26,10 +26,12 @@ namespace Diagnosis.Data
         private static ISessionFactory _sessionFactory;
 
         public static bool InMemory { get; set; }
+
         public static bool ShowSql { get; set; }
+
         public static bool FromTest { get; set; }
 
-        private static Configuration Configuration
+        public static Configuration Configuration
         {
             get
             {
@@ -188,9 +190,10 @@ namespace Diagnosis.Data
 
         private static void ExportSchemaToFile()
         {
+            string desktop = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop);
             new SchemaExport(Configuration)
                 .SetDelimiter(";")
-                .SetOutputFile(string.Format("P:\\schema {0}.sql", System.DateTime.Now.Ticks))
+                .SetOutputFile(string.Format(desktop + "\\schema {0}.sql", System.DateTime.Now.Ticks))
                 .Execute(true, false, false);
         }
     }

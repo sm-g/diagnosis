@@ -156,6 +156,7 @@
     <Compile Include="SequencePartition.cs" />
     <Compile Include="Types\NotifyPropertyChangedBase.cs" />
     <Compile Include="Mediator\EventMessageHandlersManager.cs" />
+    <Compile Include="Util\FileHelper.cs" />
     <Compile Include="Util\PerformanceTester.cs" />
     <Compile Include="Util\ReflectionHelper.cs" />
   </ItemGroup>
