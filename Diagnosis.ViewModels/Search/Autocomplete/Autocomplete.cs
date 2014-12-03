@@ -15,23 +15,25 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
     public class Autocomplete : ViewModelBase
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(Autocomplete));
+        private readonly Recognizer recognizer;
+        private readonly bool allowSendToSearch;
         private readonly bool allowTagConvertion;
+
         private Tag _selTag;
         private bool _popupOpened;
         private object prevSelectedSuggestion;
         private Tag _editingTag;
         private bool _supressCompletion;
         private object _selectedSuggestion;
-        private bool _reorder;
         private bool _showALt;
-        private Recognizer recognizer;
         private EventAggregator.EventMessageHandler hanlder;
         private bool inDispose;
 
-        public Autocomplete(Recognizer recognizer, bool allowTagConvertion, IEnumerable<IHrItemObject> initItems)
+        public Autocomplete(Recognizer recognizer, bool allowTagConvertion, bool allowSendToSearch, IEnumerable<IHrItemObject> initItems)
         {
             this.recognizer = recognizer;
             this.allowTagConvertion = allowTagConvertion;
+            this.allowSendToSearch = allowSendToSearch;
 
             DropHandler = new Autocomplete.DropTargetHandler(this);
             DragHandler = new Autocomplete.DragSourceHandler();
@@ -101,6 +103,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
+
+
         public ObservableCollection<object> Suggestions
         {
             get;
@@ -159,9 +163,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             get { return Tags.Where(t => t.IsSelected).ToList(); }
         }
 
-        /// <summary>
-        /// Switch focus between textbox and listitem for SelectedTag
-        /// </summary>
+
         public RelayCommand EditCommand
         {
             get
@@ -172,14 +174,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     {
                         if (SelectedTag.BlankType != Tag.BlankTypes.Icd)
                         {
-                            if (SelectedTag.IsTextBoxFocused)
-                            {
-                                SelectedTag.IsListItemFocused = true;
-                            }
-                            else
-                            {
-                                SelectedTag.IsTextBoxFocused = true;
-                            }
+                            SelectedTag.SwitchEdit();
                         }
                         else
                         {
@@ -191,6 +186,30 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                             }
                         }
                     }
+                });
+            }
+        }
+
+        public RelayCommand SendToSearchCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    var entities = GetEntitiesOfSelected();
+                    this.Send(Events.SendToSearch, entities.AsParams(MessageKeys.HrItemObjects));
+
+                });
+            }
+        }
+
+        public RelayCommand DeleteCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    SelectedTags.ForEach(t => t.DeleteCommand.Execute(null));
                 });
             }
         }
@@ -274,19 +293,19 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        public bool WithReorder
+        public bool WithSendToSearch
         {
             get
             {
-                return _reorder;
+                return allowSendToSearch;
             }
-            set
+        }
+
+        public bool WithConvert
+        {
+            get
             {
-                if (_reorder != value)
-                {
-                    _reorder = value;
-                    OnPropertyChanged(() => WithReorder);
-                }
+                return allowTagConvertion;
             }
         }
 
@@ -306,11 +325,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
             if (itemObject != null)
                 // для давления — искать связный тег и добавлять туда сущность
-                tag = new Tag(this, itemObject, allowTagConvertion);
+                tag = new Tag(this, itemObject);
             else if (str != null)
-                tag = new Tag(this, str, allowTagConvertion);
+                tag = new Tag(this, str);
             else
-                tag = new Tag(this, allowTagConvertion);
+                tag = new Tag(this);
 
             tag.Deleted += (s, e) =>
             {
@@ -416,7 +435,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
             foreach (var item in items)
             {
-                AddTag(item);
+                AddTag(item).Validate(Validator);
             }
         }
 
@@ -442,9 +461,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             return result;
         }
 
-        public void Cut()
+        public void CutSelected()
         {
-            var hios = Copy();
+            var hios = CopySelected();
 
             var completed = SelectedTags.Where(t => t.State == Tag.States.Completed); // do not remove init tags
             completed.ForAll(i => Tags.Remove(i));
@@ -452,13 +471,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             LogHrItemObjects("cut", hios);
         }
 
-        public List<IHrItemObject> Copy()
+        public List<IHrItemObject> CopySelected()
         {
-            var completed = SelectedTags.Where(t => t.State == Tag.States.Completed);
-            var hios = completed
-                 .SelectMany(t => recognizer.EntitiesOf(t))
-                 .ToList();
-
+            var hios = GetEntitiesOfSelected();
             var data = new TagData() { ItemObjects = hios };
             var strings = string.Join(", ", hios);
 
@@ -467,6 +482,15 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             Clipboard.SetDataObject(dataObj, false);
 
             LogHrItemObjects("copy", hios);
+            return hios;
+        }
+
+        private List<IHrItemObject> GetEntitiesOfSelected()
+        {
+            var completed = SelectedTags.Where(t => t.State == Tag.States.Completed);
+            var hios = completed
+                 .SelectMany(t => recognizer.EntitiesOf(t))
+                 .ToList();
             return hios;
         }
 

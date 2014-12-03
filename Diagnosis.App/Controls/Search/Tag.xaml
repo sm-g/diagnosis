@@ -8,6 +8,7 @@
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              mc:Ignorable="d"
              d:DesignHeight="25" d:DesignWidth="300">
+    
     <DockPanel>
         <DockPanel.Style>
             <Style TargetType="DockPanel" />
@@ -90,7 +91,11 @@
             </TextBox.Style>
             <TextBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Удалить" Command="{Binding DeleteCommand}" />
+                    <MenuItem Header="Выделить"
+                              InputGestureText="F2"
+                              Command="{Binding SelectCommand}" />
+                    <MenuItem Header="Удалить"
+                              Command="{Binding DeleteCommand}" />
                     <MenuItem Command="{Binding ConvertCommand}">
                         <MenuItem.Header>
                             <TextBlock>

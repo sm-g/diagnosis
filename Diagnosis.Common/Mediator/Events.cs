@@ -26,7 +26,7 @@ namespace Diagnosis.Common
         public const string Type = "type";
         public const string Holder = "holder";
         public const string Dialog = "dialog";
-        public const string Entity = "entity";
+        public const string HrItemObjects = "entity";
     }
 
     public enum Events

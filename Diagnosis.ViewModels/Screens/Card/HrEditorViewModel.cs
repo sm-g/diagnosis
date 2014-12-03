@@ -159,6 +159,7 @@ namespace Diagnosis.ViewModels.Screens
             _autocomplete = new Autocomplete(
                 new Recognizer(session) { ShowChildrenFirst = true },
                 true,
+                true,
                 initials);
 
             _autocomplete.EntitiesChanged += (s, e) =>

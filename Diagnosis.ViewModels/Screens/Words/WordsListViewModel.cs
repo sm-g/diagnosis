@@ -71,7 +71,7 @@ namespace Diagnosis.ViewModels.Screens
                         {
                             this.Send(Events.SendToSearch, Words.Where(w => w.IsChecked)
                                 .Select(w => w.word)
-                                .AsParams(MessageKeys.Words));
+                                .AsParams(MessageKeys.HrItemObjects));
                         }, () => CheckedWordsNumber > 0);
             }
         }

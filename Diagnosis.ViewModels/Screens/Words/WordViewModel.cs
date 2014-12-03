@@ -53,7 +53,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                    {
-                       this.Send(Events.SendToSearch, word.ToEnumerable().AsParams(MessageKeys.Words));
+                       this.Send(Events.SendToSearch, word.ToEnumerable().AsParams(MessageKeys.HrItemObjects));
                    });
             }
         }

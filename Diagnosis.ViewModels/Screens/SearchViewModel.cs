@@ -42,7 +42,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public SearchViewModel()
         {
-            Autocomplete = new Autocomplete(new Recognizer(Session) { OnlyWords = true }, false, null);
+            Autocomplete = new Autocomplete(new Recognizer(Session) { OnlyWords = true }, false, false, null);
 
             ControlsVisible = true;
             AllWords = true;
@@ -70,10 +70,10 @@ namespace Diagnosis.ViewModels.Screens
                     catch { }
                     try
                     {
-                        var words = e.GetValue<IEnumerable<Word>>(MessageKeys.Words);
-                        if (words != null && words.Count() > 0)
+                        var hios = e.GetValue<IEnumerable<IHrItemObject>>(MessageKeys.HrItemObjects);
+                        if (hios != null && hios.Count() > 0)
                         {
-                            RecieveWords(words);
+                            RecieveHrItemObjects(hios);
                         }
                     }
                     catch { }
@@ -452,7 +452,6 @@ namespace Diagnosis.ViewModels.Screens
                     hr.Words.ForAll((w) => words.Add(w));
                     return words;
                 });
-            Autocomplete.ReplaceTagsWith(allWords);
 
             // если несколько записей — любое из слов
             AllWords = hrs.Count() != 1;
@@ -473,13 +472,12 @@ namespace Diagnosis.ViewModels.Screens
             HrDateOffsetLower = new DateOffset(lastHr.FromYear, lastHr.FromMonth, lastHr.FromDay);
             Comment = lastHr.Comment;
 
-            RemoveLastResults();
+            RecieveHrItemObjects(allWords);
         }
 
-        private void RecieveWords(IEnumerable<Word> words)
+        private void RecieveHrItemObjects(IEnumerable<IHrItemObject> hios)
         {
-            // ищем переданные слова
-            Autocomplete.ReplaceTagsWith(words);
+            Autocomplete.ReplaceTagsWith(hios);
 
             RemoveLastResults();
         }

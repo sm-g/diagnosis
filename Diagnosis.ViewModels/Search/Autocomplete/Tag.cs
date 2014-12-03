@@ -32,7 +32,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(Tag));
         readonly Autocomplete autocomplete;
-        private readonly bool canConvert;
         private object _blank;
         private bool _focused;
         private string _query;
@@ -47,25 +46,20 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <summary>
         /// Создает пустой тег.
         /// </summary>
-        public Tag(Autocomplete parent, bool canConvert)
+        public Tag(Autocomplete parent)
         {
             Contract.Ensures(State == States.Init);
 
-            this.canConvert = canConvert;
             this.autocomplete = parent;
         }
 
         /// <summary>
         /// Создает тег с запросом.
         /// </summary>
-        /// <param name="parent"></param>
-        /// <param name="query"></param>
-        /// <param name="canConvert"></param>
-        public Tag(Autocomplete parent, string query, bool canConvert)
+        public Tag(Autocomplete parent, string query)
         {
             Contract.Ensures(State == States.Typing);
 
-            this.canConvert = canConvert;
             this.autocomplete = parent;
             Query = query;
         }
@@ -74,12 +68,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <summary>
         /// Создает тег с сущностями.
         /// </summary>
-        public Tag(Autocomplete parent, IHrItemObject item, bool canConvert)
+        public Tag(Autocomplete parent, IHrItemObject item)
         {
             Contract.Requires(item != null);
             Contract.Ensures(State == States.Completed);
 
-            this.canConvert = canConvert;
             this.autocomplete = parent;
 
             Blank = item;
@@ -164,6 +157,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         /// <summary>
         /// Сущности, созданные из тега. При изменении запроса или бланка сбрасывается.
+        /// Копируются.
         /// </summary>
         public IEnumerable<IHrItemObject> Entities { get; internal set; }
 
@@ -214,9 +208,48 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 {
                     OnConverting(EventArgs.Empty);
                 },
-                () => canConvert && State != States.Init && !Query.IsNullOrEmpty() && !IsDeleteOnly);
+                () => autocomplete.WithConvert && State != States.Init && !Query.IsNullOrEmpty() && !IsDeleteOnly);
             }
         }
+
+        public RelayCommand SendToSearchCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    this.Send(Events.SendToSearch, Blank.ToEnumerable().AsParams(MessageKeys.HrItemObjects));
+                },
+                () => autocomplete.WithSendToSearch);
+            }
+        }
+
+        public RelayCommand SelectCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    SwitchEdit();
+                });
+            }
+        }
+
+        /// <summary>
+        /// Switch focus between textbox and listitem for SelectedTag
+        /// </summary>
+        public void SwitchEdit()
+        {
+            if (IsTextBoxFocused)
+            {
+                IsListItemFocused = true;
+            }
+            else
+            {
+                IsTextBoxFocused = true;
+            }
+        }
+
         #region AutocompleteRelated
 
         public RelayCommand AddLeftCommand

@@ -9,6 +9,7 @@
              GotFocus="UserControl_GotFocus"
              LostFocus="UserControl_LostFocus"
              LostKeyboardFocus="UserControl_LostKeyboardFocus"
+             x:Name="autocomplete"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.CommandBindings>
@@ -21,7 +22,10 @@
     </UserControl.InputBindings>
     <UserControl.Resources>
         <InputBindingCollection x:Shared="False" x:Key="TagInputBindings">
-            <KeyBinding Key="Delete" Command="{Binding DeleteCommand}" />
+            <KeyBinding Key="Delete"
+                        Command="{Binding DataContext.DeleteCommand,ElementName=autocomplete}" />
+            <KeyBinding Key="F" Modifiers="Alt"
+                        Command="{Binding DataContext.SendToSearchCommand,ElementName=autocomplete}" />
         </InputBindingCollection>
         <InputBindingCollection x:Shared="False" x:Key="SuggestionInputBindings">
             <KeyBinding Key="Enter"
@@ -70,11 +74,62 @@
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                     <Setter Property="controls:FocusExtension.Direct" Value="True" />
                     <Setter Property="controls:FocusExtension.IsFocused" Value="{Binding IsListItemFocused, Mode=TwoWay}" />
+                    
+                    <Setter Property="Tag"
+                            Value="{Binding DataContext, ElementName=autocomplete}" />
+
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu>
+                                <!-- Autocomplete, для выделенных -->
+                                <MenuItem Header="Удалить"
+                                          InputGestureText="Del"                                          
+                                          Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                <MenuItem Header="Искать"
+                                          InputGestureText="Alt + F"
+                                          Command="{Binding PlacementTarget.Tag.SendToSearchCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                <!--<MenuItem Command="{Binding ConvertCommand}">
+                                    <MenuItem.Header>
+                                        <TextBlock>
+                                <Run>
+                                    <Run.Style>
+                                        <Style TargetType="Run">
+                                            <Setter Property="Text"
+                                                        Value="Создать слово" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding BlankType}"
+                                                             Value="{x:Static auto:Tag+BlankTypes.Word}">
+                                                    <Setter Property="Text"
+                                                                Value="Убрать слово" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Run.Style>
+                                </Run> «<Run Text="{Binding Query, TargetNullValue=' — '}" />»
+                                        </TextBlock>
+                                    </MenuItem.Header>
+                                </MenuItem>-->
+                                <!-- TagViewModel -->
+                                <Separator />
+                                <MenuItem Header="Добавить слева"
+                                          Command="{Binding AddLeftCommand}" />
+                                <MenuItem Header="Добавить справа"
+                                          Command="{Binding AddRightCommand}" />
+                                <Separator />
+                                <!-- для выделенных -->
+                                <MenuItem Command="{x:Static ApplicationCommands.Cut}" />
+                                <MenuItem Command="{x:Static ApplicationCommands.Copy}" />
+                                <MenuItem Command="{x:Static ApplicationCommands.Paste}" />
+                          
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
                 </Style>
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <search:Tag MinWidth="40" LostKeyboardFocus="Tag_LostKeyboardFocus" GotKeyboardFocus="Tag_GotKeyboardFocus" LostFocus="Tag_LostFocus" />
+                    
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
