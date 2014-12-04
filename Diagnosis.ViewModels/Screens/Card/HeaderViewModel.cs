@@ -3,6 +3,7 @@ using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
@@ -19,6 +20,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public HeaderViewModel(IHrsHolder holder)
         {
+            Contract.Requires(holder != null);
             this.holder = holder;
 
             if (holder is Patient)
@@ -38,8 +40,7 @@ namespace Diagnosis.ViewModels.Screens
                 ShowApps();
             }
 
-            if (holder != null)
-                ((INotifyPropertyChanged)holder).PropertyChanged += Holder_PropertyChanged;
+            ((INotifyPropertyChanged)holder).PropertyChanged += Holder_PropertyChanged;
         }
 
         public IHrsHolder Holder
@@ -329,6 +330,7 @@ namespace Diagnosis.ViewModels.Screens
                     var app = holder as Appointment;
                     app.Course.AppointmentsChanged -= Course_AppointmentsChanged;
                 }
+
                 ((INotifyPropertyChanged)holder).PropertyChanged -= Holder_PropertyChanged;
             }
             base.Dispose(disposing);

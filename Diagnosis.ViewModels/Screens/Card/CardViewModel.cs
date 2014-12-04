@@ -4,7 +4,6 @@ using Diagnosis.Models;
 using EventAggregator;
 using log4net;
 using System;
-using System.Linq;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 
@@ -45,7 +44,7 @@ namespace Diagnosis.ViewModels.Screens
                 var holder = e.holder;
 
                 ShowHrsList(holder);
-                Header = new HeaderViewModel(holder);
+                ShowHeader(holder);
                 Title = MakeTitle();
             };
 
@@ -104,6 +103,7 @@ namespace Diagnosis.ViewModels.Screens
         /// После удаления всех элементов, карточка пуста.
         /// </summary>
         public event EventHandler LastItemRemoved;
+
         public HrListViewModel HrList
         {
             get
@@ -255,6 +255,22 @@ namespace Diagnosis.ViewModels.Screens
                 HrList = new HrListViewModel(holder);
                 HrList.PropertyChanged += HrList_PropertyChanged;
                 HrList.HealthRecords.CollectionChanged += HrList_HealthRecords_CollectionChanged;
+            }
+        }
+
+        private void ShowHeader(IHrsHolder holder)
+        {
+            if (Header != null)
+            {
+                if (Header.Holder == holder)
+                    return;
+
+                Header.Dispose();
+            }
+
+            if (holder != null)
+            {
+                Header = new HeaderViewModel(holder);
             }
         }
 
