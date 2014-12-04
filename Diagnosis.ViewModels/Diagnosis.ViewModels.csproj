@@ -170,7 +170,6 @@
     <Compile Include="Screens\Card\AppointmentEditorViewModel.cs" />
     <Compile Include="Screens\Card\HeaderViewModel.cs" />
     <Compile Include="Screens\Card\Navigator.cs" />
-    <Compile Include="Screens\Card\Saver.cs" />
     <Compile Include="Screens\Card\CardItemViewModel.cs" />
     <Compile Include="Screens\Card\CourseEditorViewModel.cs" />
     <Compile Include="Screens\Card\CardViewModel.cs" />

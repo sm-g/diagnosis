@@ -9,6 +9,7 @@ using Diagnosis.Models;
 using Diagnosis.Data;
 using Diagnosis.ViewModels.Search;
 using NHibernate;
+using NHibernate.Linq;
 using Diagnosis.Data.Queries;
 using System.Windows.Data;
 using System.ComponentModel;
@@ -18,32 +19,38 @@ namespace Diagnosis.ViewModels.Screens
     public class PatientsListViewModel : ScreenBase
     {
         private Patient _current;
+        private bool _noPatients;
+        EventMessageHandlersManager emhManager;
         private FilterViewModel<Patient> _filter;
         private ObservableCollection<Patient> _patients;
+        private Saver saver;
 
         public PatientsListViewModel()
         {
-            _filter = new FilterViewModel<Patient>(PatientQuery.StartingWith(Session));
 
-            _filter.Results.CollectionChanged += (s, e) =>
+            _filter = new FilterViewModel<Patient>(PatientQuery.StartingWith(Session));
+            saver = new Saver(Session);
+
+            Filter.Filtered += (s, e) =>
             {
-                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
-                    foreach (Patient item in e.OldItems)
-                    {
-                        var deleted = Patients.Where(w => w == item).ToList();
-                        deleted.ForEach((w) => Patients.Remove(w));
-                    }
-                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
-                    foreach (Patient item in e.NewItems)
-                    {
-                        Patients.Add(item);
-                    }
+                Patients.SyncWith(Filter.Results);
             };
-            _filter.Clear(); // показываем всех
+            Filter.Clear(); // показываем всех
 
             SelectLastPatient();
 
             Title = "Пациенты";
+
+            NoPatients = !Session.Query<Patient>().Any();
+
+            emhManager = new EventMessageHandlersManager(new[] {
+                this.Subscribe(Events.PatientSaved, (e) =>
+                {
+                    // нового пациента или изменившегося с учетом фильтра
+                    Filter.Filter();
+                    NoPatients = false;
+                })
+            });
         }
 
         public ObservableCollection<Patient> Patients
@@ -114,6 +121,25 @@ namespace Diagnosis.ViewModels.Screens
                 }, () => SelectedPatient != null);
             }
         }
+
+        /// <summary>
+        /// В БД нет пациентов.
+        /// </summary>
+        public bool NoPatients
+        {
+            get
+            {
+                return _noPatients;
+            }
+            set
+            {
+                if (_noPatients != value)
+                {
+                    _noPatients = value;
+                    OnPropertyChanged(() => NoPatients);
+                }
+            }
+        }
         public void SelectLastPatient()
         {
             if (Patients.Count > 0)
@@ -121,6 +147,13 @@ namespace Diagnosis.ViewModels.Screens
                 SelectedPatient = Patients[0];
             }
         }
-
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                emhManager.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 }

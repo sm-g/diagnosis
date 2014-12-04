@@ -33,14 +33,14 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    Save();
-
                     (patient as IEditableObject).EndEdit();
+
 
                     using (var t = Session.BeginTransaction())
                     {
                         try
                         {
+                            Save();
                             t.Commit();
                         }
                         catch (System.Exception e)
@@ -50,6 +50,7 @@ namespace Diagnosis.ViewModels.Screens
                         }
                     }
 
+                    this.Send(Events.PatientSaved, patient.AsParams(MessageKeys.Patient));
                     DialogResult = true;
                 }, () => CanSave());
             }

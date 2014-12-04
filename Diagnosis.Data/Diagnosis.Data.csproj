@@ -170,6 +170,7 @@
     <Compile Include="NHibernate\InMemoryHelper.cs" />
     <Compile Include="NHibernate\Logging.cs" />
     <Compile Include="NHibernate\NHibHelper.cs" />
+    <Compile Include="NHibernate\Saver.cs" />
     <Compile Include="Queries\DiagnosisQuery.cs" />
     <Compile Include="Queries\PatientQuery.cs" />
     <Compile Include="Queries\HealthRecordQuery.cs" />

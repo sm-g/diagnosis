@@ -55,8 +55,9 @@ namespace Diagnosis.Common
         ShowUndoOverlay,
         HideOverlay,
         Shutdown,
-        EntityDeleted,
-        WordPersisted
+        DeleteHolder,
+        WordPersisted,
+        PatientSaved
     }
 
     public static class EventAggragatorExtensions

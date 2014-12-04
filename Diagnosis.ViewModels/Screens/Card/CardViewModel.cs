@@ -58,7 +58,7 @@ namespace Diagnosis.ViewModels.Screens
 
             viewer.OpenedChanged += viewer_OpenedChanged;
 
-            handler = this.Subscribe(Events.EntityDeleted, (e) =>
+            handler = this.Subscribe(Events.DeleteHolder, (e) =>
             {
                 var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
 

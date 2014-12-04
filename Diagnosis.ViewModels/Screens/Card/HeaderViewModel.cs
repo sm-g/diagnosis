@@ -153,7 +153,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Events.EntityDeleted, Holder.AsParams(MessageKeys.Holder));
+                    this.Send(Events.DeleteHolder, Holder.AsParams(MessageKeys.Holder));
                 }, () => Holder.IsEmpty());
             }
         }
