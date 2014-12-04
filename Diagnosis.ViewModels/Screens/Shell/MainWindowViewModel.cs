@@ -64,5 +64,16 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
+        public RelayCommand OpenSearchCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    RightAside.SearchPanel.Opened = true;
+                });
+            }
+        }
     }
 }

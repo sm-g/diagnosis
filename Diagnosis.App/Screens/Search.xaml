@@ -11,8 +11,8 @@
              x:Name="search"
              mc:Ignorable="d"
              d:DesignHeight="400"
-             MinWidth="270"
-             MaxWidth="270">
+             MinWidth="300"
+             MaxWidth="300">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

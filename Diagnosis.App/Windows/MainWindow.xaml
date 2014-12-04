@@ -39,6 +39,12 @@
             </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
+    
+    <Window.InputBindings>
+        <KeyBinding Key="F"
+                    Modifiers="Control"
+                    Command="{Binding OpenSearchCommand}" />
+    </Window.InputBindings>
 
     <Grid Background="{DynamicResource mainWindowBackgroundBrush}" >
         <Grid.RowDefinitions>
