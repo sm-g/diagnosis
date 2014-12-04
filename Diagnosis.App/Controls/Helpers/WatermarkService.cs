@@ -62,7 +62,15 @@ namespace Diagnosis.App.Controls
             control.Loaded += Control_Loaded;
 
             if (d is TextBox)
-                (control as TextBox).TextChanged += TextBox_TextChanged;
+                (control as TextBoxBase).TextChanged += (s, e1) => TestWatermark(s);
+
+            if (d is ComboBox)
+            {
+                (d as ComboBox).AddHandler(TextBoxBase.TextChangedEvent, new RoutedEventHandler((o, e1) =>
+                {
+                    TestWatermark(d);
+                }));
+            }
 
             if (d is ItemsControl && !(d is ComboBox))
             {
@@ -78,7 +86,7 @@ namespace Diagnosis.App.Controls
             }
         }
 
-        static void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        static void TestWatermark(object sender)
         {
             Control c = (Control)sender;
             if (ShouldShowWatermark(c))

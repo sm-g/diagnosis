@@ -97,7 +97,7 @@
                 </DockPanel>
                 <DockPanel>
                     <Label Content="Возраст" />
-                    <TextBox Text="{Binding Age, Mode=TwoWay, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                    <TextBox Text="{Binding Age, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, TargetNullValue=''}"
                              Width="50"
                              HorizontalContentAlignment="Right">
                     </TextBox>
