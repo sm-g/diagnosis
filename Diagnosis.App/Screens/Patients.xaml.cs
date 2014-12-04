@@ -26,7 +26,7 @@ namespace Diagnosis.App.Screens
             InitializeComponent();
         }
 
-        private void patientsControl_Loaded(object sender, RoutedEventArgs e)
+        private void dataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
             if (dataGrid.SelectedCells.Count > 0)
                 Keyboard.Focus(DataGridHelper.GetDataGridCell(dataGrid.SelectedCells[0]));

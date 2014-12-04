@@ -37,6 +37,8 @@ namespace Diagnosis.ViewModels.Screens
             };
             Filter.Clear(); // показываем всех
 
+            SelectedPatients = new ObservableCollection<Patient>();
+            //SelectedPatients.Add(Patients[0]);
             SelectLastPatient();
 
             Title = "Пациенты";
@@ -48,6 +50,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     // нового пациента или изменившегося с учетом фильтра
                     Filter.Filter();
+                    SelectedPatient = e.GetValue<Patient>(MessageKeys.Patient);
                     NoPatients = false;
                 })
             });
@@ -90,6 +93,8 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public ObservableCollection<Patient> SelectedPatients { get; private set; }
+
         public ICommand AddPatientCommand
         {
             get
@@ -101,7 +106,29 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public ICommand OpenPatientCommand
+        public ICommand DeleteCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    var toDel = SelectedPatients
+                        .Where(p => p.IsEmpty())
+                        .ToArray();
+                    saver.Delete(toDel);
+
+                    // убираем удаленных из списка
+                    Filter.Filter();
+
+                    // оставляем выделение тех, кто не удаляется
+                    //toDel.Where(p => Patients.Contains(p))
+                    //    .ForEach(p => SelectedPatients.Add(p));
+
+                    NoPatients = !Session.Query<Patient>().Any();
+                }, () => SelectedPatients.Any(p => p.IsEmpty()));
+            }
+        }
+        public ICommand OpenCommand
         {
             get
             {
@@ -111,7 +138,7 @@ namespace Diagnosis.ViewModels.Screens
                         }, () => SelectedPatient != null);
             }
         }
-        public ICommand EditPatientCommand
+        public ICommand EditCommand
         {
             get
             {

@@ -219,6 +219,8 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Compile Include="Behaviors\FocusBehavior.cs" />
+    <Compile Include="Behaviors\MultiSelectorBehaviours.cs" />
+    <Compile Include="Behaviors\TwoListSynchronizer.cs" />
     <Compile Include="Controls\CardParts\Appointment.xaml.cs">
       <DependentUpon>Appointment.xaml</DependentUpon>
     </Compile>
