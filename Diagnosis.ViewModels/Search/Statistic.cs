@@ -13,8 +13,14 @@ namespace Diagnosis.ViewModels.Search
 
         public Statistic(IEnumerable<Patient> ps)
         {
-            Patients = ps.ToList().AsReadOnly();
-            Words = Patients.SelectMany(p => p.GetAllWords()).Distinct().ToList().AsReadOnly();
+            Patients = ps.OrderBy(p => p.FullName)
+                .ToList()
+                .AsReadOnly();
+            Words = Patients.SelectMany(p => p.GetAllWords())
+                .Distinct()
+                .OrderBy(w => w.Title)
+                .ToList()
+                .AsReadOnly();
 
             PatientHasWord = new bool[Patients.Count, Words.Count];
             for (int p = 0; p < Patients.Count; p++)
