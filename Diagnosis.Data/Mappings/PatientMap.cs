@@ -14,9 +14,18 @@ namespace Diagnosis.Data.Mappings
             });
 
             Property(x => x.Label);
-            Property(x => x.FirstName);
-            Property(x => x.MiddleName);
-            Property(x => x.LastName);
+            Property(x => x.FirstName, m =>
+            {
+                m.Length(20);
+            });
+            Property(x => x.MiddleName, m =>
+            {
+                m.Length(20);
+            });
+            Property(x => x.LastName, m =>
+            {
+                m.Length(20);
+            });
             Property(x => x.IsMale);
             Property(x => x.BirthYear);
             Property(x => x.BirthMonth);

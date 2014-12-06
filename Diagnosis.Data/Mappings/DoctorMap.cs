@@ -13,9 +13,19 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.Native);
             });
 
-            Property(x => x.FirstName, m => m.NotNullable(true));
-            Property(x => x.MiddleName);
-            Property(x => x.LastName);
+            Property(x => x.FirstName, m =>
+            {
+                m.NotNullable(true);
+                m.Length(20);
+            });
+            Property(x => x.MiddleName, m =>
+            {
+                m.Length(20);
+            });
+            Property(x => x.LastName, m =>
+            {
+                m.Length(20);
+            });
             Property(x => x.IsMale);
             Property(x => x.Settings, m => m.NotNullable(true));
 
