@@ -6,7 +6,7 @@
              xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
-             x:Name="patientsControl"
+             x:Name="patients"
              FocusManager.IsFocusScope="True"
              d:DesignHeight="300" d:DesignWidth="400">
     <!--PatientsListViewModel-->
@@ -74,15 +74,22 @@
 
         <search:Filter  x:Name="filter"
                         DataContext="{Binding Filter}"
-                        Visibility="{Binding Patients.Count, Converter={StaticResource MoreThanToVisibility}}"
+                        Visibility="{Binding DataContext.NoPatients, ElementName=patients, Converter={StaticResource NegBooleanToVisibilityConverter}}"
                         Grid.Row="1" />
 
         <DockPanel Grid.Row="3" >
-            <TextBlock TextWrapping="Wrap" Margin="10"
+            <TextBlock TextWrapping="Wrap"
+                       Margin="10"
                        HorizontalAlignment="Center" VerticalAlignment="Top"
                        Visibility="{Binding NoPatients, Converter={StaticResource BooleanToVisibilityConverter}}"
                        >
-                <Run Text="Сначала " /><Hyperlink Command="{Binding AddPatientCommand}">добавьте нового пациента</Hyperlink><Run>.</Run>
+                <Run Text="Сначала " /><Hyperlink Command="{Binding AddPatientCommand}">
+                    <Hyperlink.Style>
+                        <Style TargetType="Hyperlink">
+                            <Setter Property="Focusable"
+                                    Value="{Binding NoPatients}" />
+                        </Style>
+                    </Hyperlink.Style>добавьте нового пациента</Hyperlink><Run>.</Run>
             </TextBlock>
         </DockPanel>
 

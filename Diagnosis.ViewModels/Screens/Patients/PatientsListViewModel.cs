@@ -38,7 +38,6 @@ namespace Diagnosis.ViewModels.Screens
             Filter.Clear(); // показываем всех
 
             SelectedPatients = new ObservableCollection<Patient>();
-            //SelectedPatients.Add(Patients[0]);
             SelectLastPatient();
 
             Title = "Пациенты";
