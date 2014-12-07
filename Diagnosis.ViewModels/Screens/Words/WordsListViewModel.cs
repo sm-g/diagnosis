@@ -1,22 +1,53 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Data.Queries;
+using Diagnosis.Models;
+using Diagnosis.ViewModels.Search;
+using EventAggregator;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Data;
+using NHibernate.Linq;
 using System.Windows.Input;
-using EventAggregator;
-using Diagnosis.Models;
-using Diagnosis.ViewModels.Search;
-using Diagnosis.Data.Repositories;
-using Diagnosis.Data;
-using NHibernate;
-using Diagnosis.Data.Queries;
 
 namespace Diagnosis.ViewModels.Screens
 {
     public class WordsListViewModel : ScreenBase
     {
         private FilterViewModel<Word> _filter;
+        private ObservableCollection<WordViewModel> _words;
+        private bool _noWords;
+        private EventMessageHandler handler;
 
+        public WordsListViewModel()
+        {
+            _filter = new FilterViewModel<Word>(WordQuery.StartingWith(Session));
+
+            Filter.Filtered += (s, e) =>
+            {
+                MakeVms(Filter.Results);
+            };
+            Filter.Clear(); // показываем все
+
+            handler = this.Subscribe(Events.WordSaved, (e) =>
+            {
+                // новое слово или изменившееся с учетом фильтра
+                Filter.Filter();
+                var saved = e.GetValue<Word>(MessageKeys.Word);
+
+                // сохраненное слово с таким текстом
+                var persisted = WordQuery.ByTitle(Session)(saved.Title);
+
+                var vm = Words.Where(w => w.word == persisted).FirstOrDefault();
+                if (vm != null)
+                    vm.IsSelected = true;
+
+                NoWords = false;
+            });
+
+            Title = "Словарь";
+            NoWords = !Session.Query<Patient>().Any();
+        }
         public FilterViewModel<Word> Filter
         {
             get { return _filter; }
@@ -24,11 +55,18 @@ namespace Diagnosis.ViewModels.Screens
 
         public ObservableCollection<WordViewModel> Words
         {
-            get;
-            private set;
+            get
+            {
+                if (_words == null)
+                {
+                    _words = new ObservableCollection<WordViewModel>();
+                    var patientsView = (CollectionView)CollectionViewSource.GetDefaultView(_words);
+                    SortDescription sort1 = new SortDescription("Title", ListSortDirection.Ascending);
+                    patientsView.SortDescriptions.Add(sort1);
+                }
+                return _words;
+            }
         }
-
-        public WordEditorViewModel Editor { get; private set; }
 
         public RelayCommand<WordViewModel> AddCommand
         {
@@ -36,33 +74,12 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand<WordViewModel>((current) =>
                         {
-                            // убираем несохраненные слова
-
-
-
-                            var newW = new Word(_filter.Query);
-                            newW.Parent = current != null ? current.word : null;
-                            var newVM = new WordViewModel(newW);
-
-                            // новое слово открываем для редактирования
-                            newVM.IsSelected = true;
-                            // newVM.Editable.IsEditorActive = true;
-
-                            if (current != null)
-                            {
-                                // добавили слово родителю
-                                current.IsExpanded = true;
-                            }
-                            else
-                            {
-                                // to update searcher collection to new Root.Children
-                                //filter.Searcher = new WordTopParentSearcher();
-                                // filter.Filter();
-                            }
-                            Subscribe(newVM);
+                            var word = new Word(Filter.Query);
+                            this.Send(Events.EditWord, word.AsParams(MessageKeys.Word));
                         });
             }
         }
+
         public ICommand SendToSearchCommand
         {
             get
@@ -72,69 +89,50 @@ namespace Diagnosis.ViewModels.Screens
                             this.Send(Events.SendToSearch, Words.Where(w => w.IsChecked)
                                 .Select(w => w.word)
                                 .AsParams(MessageKeys.HrItemObjects));
-                        }, () => CheckedWordsNumber > 0);
+                        }, () => CheckedWordsCount > 0);
             }
         }
 
-        /// <summary>
-        /// Количество отмеченных слов.
-        /// </summary>
-        public int CheckedWordsNumber
+        public int CheckedWordsCount
         {
             get
             {
-                return Words.Count(w => w.IsChecked);
+                return Words.Where(w => w.IsChecked).Count();
             }
         }
-
-        private void UncheckBranch(WordViewModel word)
+        /// <summary>
+        /// В БД нет слов.
+        /// </summary>
+        public bool NoWords
         {
-            word.ForBranch((w) =>
+            get
             {
-                w.IsChecked = false;
-                w.IsSelected = false;
-            });
-        }
-
-        private void Subscribe(WordViewModel vm)
-        {
-            vm.PropertyChanged += (s, e) =>
+                return _noWords;
+            }
+            set
             {
-                if (e.PropertyName == "IsChecked")
+                if (_noWords != value)
                 {
-                    OnPropertyChanged("CheckedWords");
+                    _noWords = value;
+                    OnPropertyChanged(() => NoWords);
                 }
-            };
+            }
         }
-
-        public WordsListViewModel()
+        private void MakeVms(ObservableCollection<Word> results)
         {
-            Words = new ObservableCollection<WordViewModel>();
-            Editor = new WordEditorViewModel(Session);
+            var vms = results.Select(w => Words.Where(vm => vm.word == w)
+                .FirstOrDefault() ?? new WordViewModel(w));
 
-            _filter = new FilterViewModel<Word>(WordQuery.StartingWith(Session));
-
-
-            _filter.Results.CollectionChanged += (s, e) =>
-            {
-                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
-                    foreach (Word item in e.OldItems)
-                    {
-                        var deleted = Words.Where(w => w.word == item).ToList();
-                        deleted.ForEach((w) => Words.Remove(w));
-                    }
-                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
-                    foreach (Word item in e.NewItems)
-                    {
-                        var newVM = new WordViewModel(item);
-                        Words.Add(newVM);
-                    }
-            };
-
-            _filter.Clear();// показываем все слова
-
-            Title = "Словарь";
+            Words.SyncWith(vms);
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                handler.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 }

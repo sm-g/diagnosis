@@ -43,6 +43,7 @@ namespace Diagnosis.Common
         CreatePatient,
         EditPatient,
         EditHolder,
+        EditWord,
         OpenSettings,
         OpenDialog,
 
@@ -57,7 +58,8 @@ namespace Diagnosis.Common
         Shutdown,
         DeleteHolder,
         WordPersisted,
-        PatientSaved
+        WordSaved,
+        PatientSaved,
     }
 
     public static class EventAggragatorExtensions

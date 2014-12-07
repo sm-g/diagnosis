@@ -311,6 +311,9 @@
     <Compile Include="Controls\Search\PopupSearch.xaml.cs">
       <DependentUpon>PopupSearch.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\WordEditorWindow.xaml.cs">
+      <DependentUpon>WordEditorWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\IcdSelectorWindow.xaml.cs">
       <DependentUpon>IcdSelectorWindow.xaml</DependentUpon>
     </Compile>
@@ -492,6 +495,10 @@
     <Page Include="Controls\Search\PopupSearch.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\WordEditorWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\IcdSelectorWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

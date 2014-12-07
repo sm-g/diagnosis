@@ -39,7 +39,7 @@
 
         <search:Filter DataContext="{Binding Filter}" Grid.Row="1"/>
 
-        <controls:FullTree ItemsSource="{Binding Words}" Grid.Row="2" >
+        <controls:FullTree x:Name="words" ItemsSource="{Binding Words}" Grid.Row="2">
             <controls:FullTree.ItemContainerStyle>
                 <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}">
                     <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />

@@ -3,6 +3,7 @@ using EventAggregator;
 using System.Diagnostics.Contracts;
 using System.Windows.Input;
 using Diagnosis.Common;
+using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -10,9 +11,17 @@ namespace Diagnosis.ViewModels.Screens
     {
         internal readonly Word word;
 
+        public WordViewModel(Word w)
+        {
+            Contract.Requires(w != null);
+            word = w;
+            word.PropertyChanged += word_PropertyChanged;
+
+        }
+
         #region Model
 
-        public string Name
+        public string Title
         {
             get
             {
@@ -20,11 +29,7 @@ namespace Diagnosis.ViewModels.Screens
             }
             set
             {
-                if (word.Title != value)
-                {
-                    word.Title = value;
-                    OnPropertyChanged("Name");
-                }
+                word.Title = value;
             }
         }
 
@@ -36,12 +41,7 @@ namespace Diagnosis.ViewModels.Screens
             }
             set
             {
-                if (word.DefaultCategory != value)
-                {
-                    word.DefaultCategory = value;
-
-                    OnPropertyChanged("DefaultCategory");
-                }
+                word.DefaultCategory = value;
             }
         }
 
@@ -57,6 +57,16 @@ namespace Diagnosis.ViewModels.Screens
                    });
             }
         }
+        public ICommand EditCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    this.Send(Events.EditWord, word.AsParams(MessageKeys.Word));
+                });
+            }
+        }
 
         public bool Unsaved
         {
@@ -65,19 +75,37 @@ namespace Diagnosis.ViewModels.Screens
                 return word.IsDirty;
             }
         }
-
-        public WordViewModel(Word w)
+        public override string this[string columnName]
         {
-            Contract.Requires(w != null);
-            word = w;
-
-
-            DefaultCategory = w.DefaultCategory;
+            get
+            {
+                var results = word.SelfValidate();
+                if (results == null)
+                    return string.Empty;
+                var message = results.Errors
+                    .Where(x => x.PropertyName == columnName)
+                    .Select(x => x.ErrorMessage)
+                    .FirstOrDefault();
+                return message != null ? message : string.Empty;
+            }
+        }
+        private void word_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(e.PropertyName);
         }
 
         public override string ToString()
         {
             return word.ToString();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                word.PropertyChanged -= word_PropertyChanged;
+            }
+            base.Dispose(disposing);
         }
     }
 }

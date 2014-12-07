@@ -9,20 +9,15 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Diagnosis.App.Screens
+namespace Diagnosis.App.Windows
 {
-    public partial class Words : UserControl
+    public partial class WordEditorWindow : Window
     {
-        public Words()
+        public WordEditorWindow()
         {
             InitializeComponent();
-            words.TreeView.SelectedItemChanged += (s, e) =>
-            {
-                //  scroll into view
-            };
         }
     }
 }

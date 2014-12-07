@@ -45,6 +45,7 @@
             </InputBindingCollection>
             <InputBindingCollection x:Shared="False" x:Key="WordInputBindings">
                 <KeyBinding Key="Space" Command="{Binding ToggleCommand}" />
+                <KeyBinding Key="F2" Command="{Binding EditCommand}" />
                 <KeyBinding Modifiers="Alt" Key="F" Command="{Binding SendToSearchCommand}" />
                 <KeyBinding Modifiers="Control" Key="N" 
                     Command="{Binding DataContext.AddCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}" 

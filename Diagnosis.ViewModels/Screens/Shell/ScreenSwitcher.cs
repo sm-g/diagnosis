@@ -32,9 +32,16 @@ namespace Diagnosis.ViewModels.Screens
                 var pat = e.GetValue<Patient>(MessageKeys.Patient);
                 IDialog vm;
                 if (pat != null)
-                    vm = new PatientEditorViewModel(pat as Patient);
+                    vm = new PatientEditorViewModel(pat);
                 else
                     vm = new PatientEditorViewModel();
+                this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+            });
+
+            this.Subscribe(Events.EditWord, (e) =>
+            {
+                var w = e.GetValue<Word>(MessageKeys.Word);
+                IDialog vm = new WordEditorViewModel(w);
                 this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
             });
 

@@ -37,6 +37,10 @@ namespace Diagnosis.App.Windows
                 {
                     ShowDialog(dialogVM, new IcdSelectorWindow());
                 }
+                else if (dialogVM is WordEditorViewModel)
+                {
+                    ShowDialog(dialogVM, new WordEditorWindow());
+                }
             });
 
             DataContext = new MainWindowViewModel();

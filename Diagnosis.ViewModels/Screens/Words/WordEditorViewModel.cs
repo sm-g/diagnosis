@@ -1,45 +1,81 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.Common;
+using EventAggregator;
+using Diagnosis.Models;
 using NHibernate;
+using System.ComponentModel;
 using System.Diagnostics.Contracts;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class WordEditorViewModel : ViewModelBase
+    public class WordEditorViewModel : DialogViewModel
     {
-        private Word _word;
-        private readonly ISession session;
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(WordEditorViewModel));
+        private readonly Word word;
 
-        public WordEditorViewModel(ISession session)
+        public WordEditorViewModel(Word word)
         {
-            this.session = session;
+            this.word = word;
+            (word as IEditableObject).BeginEdit();
+
+            Word = new WordViewModel(word);
+            Title = "Редактирование слова";
         }
 
-        public Word Word
+        /// <summary>
+        /// Начинает редактировать новое слово.
+        /// </summary>
+        public WordEditorViewModel(string text)
+            : this(new Word(text))
+        { }
+
+        public WordViewModel Word
+        {
+            get;
+            private set;
+        }
+
+
+        public override bool CanOk
         {
             get
             {
-                return _word;
+                return word.IsValid();
             }
-            set
+        }
+
+        protected override void OnOk()
+        {
+            (word as IEditableObject).EndEdit();
+
+            using (var t = Session.BeginTransaction())
             {
-                if (_word != value)
+                try
                 {
-                    _word = value;
-                    OnPropertyChanged("Word");
+                    Session.SaveOrUpdate(word);
+                    t.Commit();
                 }
+                catch (System.Exception e)
+                {
+                    t.Rollback();
+                    logger.Error(e);
+                }
+
+                this.Send(Events.WordSaved, word.AsParams(MessageKeys.Word));
             }
         }
 
-        public string Title
+        protected override void OnCancel()
         {
-            get
+            (word as IEditableObject).CancelEdit();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
             {
-                return _word.Title;
+                Word.Dispose();
             }
-            set
-            {
-                _word.Title = value;
-            }
+            base.Dispose(disposing);
         }
     }
 }

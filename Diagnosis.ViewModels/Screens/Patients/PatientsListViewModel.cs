@@ -47,7 +47,7 @@ namespace Diagnosis.ViewModels.Screens
             emhManager = new EventMessageHandlersManager(new[] {
                 this.Subscribe(Events.PatientSaved, (e) =>
                 {
-                    // нового пациента или изменившегося с учетом фильтра
+                    // выбираем нового пациента или изменившегося с учетом фильтра
                     Filter.Filter();
                     SelectedPatient = e.GetValue<Patient>(MessageKeys.Patient);
                     NoPatients = false;

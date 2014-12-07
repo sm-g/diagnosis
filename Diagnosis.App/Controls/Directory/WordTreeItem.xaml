@@ -45,11 +45,11 @@
             Focusable="False"
             Visibility="{Binding IsNonCheckable, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
 
-        <DockPanel x:Name="title" Grid.Column="1">
-            <TextBlock Text="{Binding Code, FallbackValue=''}" />
-            <TextBlock Text="{Binding Name}"
+        <DockPanel x:Name="title"
+                   Grid.Column="1"
+                   MinWidth="50">
+            <TextBlock Text="{Binding Title}"
                        TextWrapping="Wrap"
-                       MaxWidth="200"
                        Margin="0,0,5,0"
                        HorizontalAlignment="Left" />
         </DockPanel>
@@ -68,10 +68,10 @@
                 </Button>
 
                 <!--WordsListViewModel-->
-                <Button Command="{Binding DataContext.AddCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=3}}"
+                <!--<Button Command="{Binding DataContext.AddCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=3}}"
                         CommandParameter="{Binding}" Margin="10,0,0,0" ToolTip="Добавить подчинённое слово (Ctrl + N)">
                     <Image Source="{StaticResource addImage}" />
-                </Button>
+                </Button>-->
                 <Button Command="{Binding SendToSearchCommand}" Margin="10,0,0,0" ToolTip="Искать (Alt + F)">
                     <Image Source="{StaticResource findImage}" />
                 </Button>
