@@ -171,6 +171,13 @@
     <Compile Include="Mappings\DoctorMap.cs" />
     <Compile Include="Mappings\CourseMap.cs" />
     <Compile Include="Mappings\PatientMap.cs" />
+    <Compile Include="Versions\Migrations\05 InsertSpecialityIcdBlock.cs" />
+    <Compile Include="Versions\Migrator.cs" />
+    <Compile Include="Versions\Names.cs" />
+    <Compile Include="Versions\Migrations\03 InsertFirstWordSet.cs" />
+    <Compile Include="Versions\Migrations\02 InsertAllIcd.cs" />
+    <Compile Include="Versions\Migrations\04 InsertUomHrCatSpeciality.cs" />
+    <Compile Include="Versions\Migrations\01 CreateClientDb.cs" />
     <Compile Include="NHibernate\EntityChecker.cs" />
     <Compile Include="NHibernate\Extensions.cs" />
     <Compile Include="NHibernate\InMemoryHelper.cs" />
@@ -209,6 +216,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="NHibernate\nhibernate-release.cfg.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Versions\Sql\insert_all_Icd.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Versions\Sql\create_client.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Versions\Sql\insert_Icd.sql" />
+    <EmbeddedResource Include="Versions\Sql\insert_Word.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Versions\Sql\insert_Uom_HrCat_Speciality.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

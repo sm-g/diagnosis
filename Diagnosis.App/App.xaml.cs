@@ -1,8 +1,10 @@
 ﻿using Diagnosis.App.Windows;
 using Diagnosis.Common;
 using Diagnosis.Data;
+using Diagnosis.Data.Versions;
 using log4net;
 using System;
+using System.Data.SqlServerCe;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -56,7 +58,7 @@ namespace Diagnosis.App
                 new DebugOutput(0);
                 new DebugWindow().Show();
 #endif
-                BackupDb();
+                DbMaintenance();
 
                 var main = new MainWindow();
                 Application.Current.MainWindow = main;
@@ -71,15 +73,41 @@ namespace Diagnosis.App
             logger.ErrorFormat("Unhandled: {0}", e.ExceptionObject as Exception);
         }
 
-        private static void BackupDb()
+        private static void DbMaintenance()
         {
 #if !DEBUG
             if (NHibernateHelper.InMemory)
                 return;
 
+            // create db
             var constr = NHibernateHelper.Configuration.GetProperty(NHibernate.Cfg.Environment.ConnectionString);
-            var b = new System.Data.SqlServerCe.SqlCeConnectionStringBuilder(constr);
-            FileHelper.Backup(b.DataSource, BackupFolder, 5);
+            var builder = new SqlCeConnectionStringBuilder(constr);
+            var sdfPath = builder.DataSource;
+            if (!System.IO.File.Exists(sdfPath))
+            {
+                using (var engine = new SqlCeEngine(constr))
+                {
+                    engine.CreateDatabase();
+                }
+            }
+
+            // backup
+            FileHelper.Backup(sdfPath, BackupFolder, 5, 7);
+
+            // migrate to last version
+            var a = "Diagnosis.Data.dll";
+            var db = "sqlserverce";
+            var task = "";//"-t rollback";
+            // Process.Start(Migrate.exe, string.Format("-c \"{0}\" -db {1} -a {2} -o -of Backup\\migrated-{3:yyyy-MM-dd-HH-mm-ss}.sql {4}", constr, db, a, DateTime.UtcNow, task));
+            var rollback = false;
+            if (rollback)
+            {
+                new Migrator(constr, BackupFolder).Rollback();
+            }
+            else
+            {
+                new Migrator(constr, BackupFolder).MigrateToLatest();
+            }
 #endif
         }
 
