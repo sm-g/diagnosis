@@ -7,7 +7,7 @@ using System.Diagnostics.Contracts;
 namespace Diagnosis.Models
 {
     [Serializable]
-    public class Word : ValidatableEntity, IDomainObject, IHrItemObject, IComparable<Word>
+    public class Word : ValidatableEntity<Guid>, IDomainObject, IHrItemObject, IComparable<Word>
     {
         [NonSerialized]
         private Iesi.Collections.Generic.ISet<Word> children;

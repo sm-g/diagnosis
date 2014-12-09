@@ -7,21 +7,21 @@ namespace Diagnosis.Data
 {
     internal interface IEntityChecher
     {
-        void Delete(EntityBase entity);
-        void Insert(EntityBase entity);
-        void Update(EntityBase entity);
-        void Load(EntityBase entity);
+        void Delete(IEntity entity);
+        void Insert(IEntity entity);
+        void Update(IEntity entity);
+        void Load(IEntity entity);
     }
 
     [Serializable]
     internal class EntityChecker : IEntityChecher
     {
-        public void Delete(EntityBase entity)
+        public void Delete(IEntity entity)
         {
 
         }
 
-        public void Insert(EntityBase entity)
+        public void Insert(IEntity entity)
         {
             entity.IsDirty = false;
             if (entity is Word)
@@ -30,12 +30,12 @@ namespace Diagnosis.Data
             }
         }
 
-        public void Update(EntityBase entity)
+        public void Update(IEntity entity)
         {
             entity.IsDirty = false;
         }
 
-        public void Load(EntityBase entity)
+        public void Load(IEntity entity)
         {
 
         }
@@ -57,22 +57,22 @@ namespace Diagnosis.Data
 
         public void OnPostInsert(PostInsertEvent e)
         {
-            _checker.Insert(e.Entity as EntityBase);
+            _checker.Insert(e.Entity as IEntity);
         }
 
         public void OnPostUpdate(PostUpdateEvent e)
         {
-            _checker.Update(e.Entity as EntityBase);
+            _checker.Update(e.Entity as IEntity);
         }
 
         public void OnPostDelete(PostDeleteEvent e)
         {
-            _checker.Delete(e.Entity as EntityBase);
+            _checker.Delete(e.Entity as IEntity);
         }
 
         public void OnPostLoad(PostLoadEvent e)
         {
-            _checker.Load(e.Entity as EntityBase);
+            _checker.Load(e.Entity as IEntity);
         }
     }
 }

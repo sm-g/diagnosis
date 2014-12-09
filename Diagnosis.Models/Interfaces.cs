@@ -7,6 +7,15 @@ using System.Text;
 namespace Diagnosis.Models
 {
     /// <summary>
+    /// Сущность БД.
+    /// </summary>
+    public interface IEntity
+    {
+        bool IsDirty { get; set; }
+        object Id { get; }
+    }
+
+    /// <summary>
     /// Доменный объект, не обязательно хранится в БД.
     /// </summary>
     public interface IDomainObject

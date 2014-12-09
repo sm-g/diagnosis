@@ -11,13 +11,13 @@ namespace Diagnosis.Data
 {
     internal interface IAuditLogger
     {
-        void Delete(EntityBase entity);
+        void Delete(IEntity entity);
 
-        void Insert(EntityBase entity);
+        void Insert(IEntity entity);
 
-        void Update(EntityBase entity);
+        void Update(IEntity entity);
 
-        void Load(EntityBase entityBase);
+        void Load(IEntity entity);
     }
 
     [Serializable]
@@ -25,22 +25,22 @@ namespace Diagnosis.Data
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(AuditLogger));
 
-        public void Insert(EntityBase entity)
+        public void Insert(IEntity entity)
         {
             logger.InfoFormat("{0} #{1} inserted.", entity.GetType(), entity.Id);
         }
 
-        public void Update(EntityBase entity)
+        public void Update(IEntity entity)
         {
             logger.InfoFormat("{0} #{1} updated.", entity.GetType(), entity.Id);
         }
 
-        public void Delete(EntityBase entity)
+        public void Delete(IEntity entity)
         {
             logger.InfoFormat("{0} #{1} deleted.", entity.GetType(), entity.Id);
         }
 
-        public void Load(EntityBase entity)
+        public void Load(IEntity entity)
         {
             logger.InfoFormat("{0} #{1} loaded.", entity.GetType(), entity.Id);
         }
@@ -62,25 +62,25 @@ namespace Diagnosis.Data
 
         public bool OnPreInsert(PreInsertEvent e)
         {
-            _logger.Insert(e.Entity as EntityBase);
+            _logger.Insert(e.Entity as IEntity);
             return false;
         }
 
         public bool OnPreUpdate(PreUpdateEvent e)
         {
-            _logger.Update(e.Entity as EntityBase);
+            _logger.Update(e.Entity as IEntity);
             return false;
         }
 
         public bool OnPreDelete(PreDeleteEvent e)
         {
-            _logger.Delete(e.Entity as EntityBase);
+            _logger.Delete(e.Entity as IEntity);
             return false;
         }
 
         public void OnPreLoad(PreLoadEvent e)
         {
-            _logger.Load(e.Entity as EntityBase);
+            _logger.Load(e.Entity as IEntity);
         }
     }
 

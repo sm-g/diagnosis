@@ -8,7 +8,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class Course : ValidatableEntity, IDomainObject, IHrsHolder
+    public class Course : ValidatableEntity<Guid>, IDomainObject, IHrsHolder
     {
         private Iesi.Collections.Generic.ISet<Appointment> appointments = new HashedSet<Appointment>();
         private Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();

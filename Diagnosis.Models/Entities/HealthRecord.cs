@@ -8,7 +8,7 @@ using System;
 
 namespace Diagnosis.Models
 {
-    public class HealthRecord : EntityBase, IDomainObject
+    public class HealthRecord : EntityBase<Guid>, IDomainObject
     {
         private Iesi.Collections.Generic.ISet<HrItem> hrItems = new HashedSet<HrItem>();
         private int? _year;
@@ -44,7 +44,7 @@ namespace Diagnosis.Models
             {
                 if (_isDeleted == value)
                     return;
-                EditHelper.Edit(() => IsDeleted);
+                EditHelper.Edit<bool, Guid>(() => IsDeleted);
                 _isDeleted = value;
                 OnPropertyChanged("IsDeleted");
             }
@@ -71,7 +71,7 @@ namespace Diagnosis.Models
                 if (_category == value)
                     return;
 
-                EditHelper.Edit(() => Category);
+                EditHelper.Edit<HrCategory, Guid>(() => Category);
                 _category = value;
                 OnPropertyChanged("Category");
             }
@@ -297,7 +297,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("hr {0} {1} {2} {3}", Id, Category, DateOffset, Comment);
+            return string.Format("hr {0} {1} {2}", Id, Category, DateOffset);
         }
 
         protected virtual void OnItemsChanged(NotifyCollectionChangedEventArgs e)

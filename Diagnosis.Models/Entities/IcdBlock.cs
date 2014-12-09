@@ -4,7 +4,7 @@ using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
-    public class IcdBlock : EntityBase, IDomainObject, IIcdEntity
+    public class IcdBlock : EntityBase<int>, IDomainObject, IIcdEntity
     {
         Iesi.Collections.Generic.ISet<IcdDisease> icdDiseases;
         Iesi.Collections.Generic.ISet<SpecialityIcdBlocks> specialityIcdBlocks;

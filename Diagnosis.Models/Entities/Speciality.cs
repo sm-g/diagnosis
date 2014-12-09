@@ -6,7 +6,7 @@ using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
-    public class Speciality : EntityBase, IDomainObject
+    public class Speciality : EntityBase<int>, IDomainObject
     {
         IList<IcdBlock> icdBlocks;
         Iesi.Collections.Generic.ISet<Doctor> doctors;

@@ -10,7 +10,7 @@ using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
-    public class Uom : EntityBase, IDomainObject
+    public class Uom : EntityBase<int>, IDomainObject
     {
         public virtual string Abbr { get; protected set; }
         public virtual string Description { get; set; }

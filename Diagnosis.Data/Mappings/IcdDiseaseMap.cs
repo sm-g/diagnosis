@@ -8,8 +8,6 @@ namespace Diagnosis.Data.Mappings
     {
         public IcdDiseaseMap()
         {
-            Table("IcdDisease");
-
             Id(x => x.Id, m =>
             {
                 m.Generator(Generators.Native);
@@ -28,7 +26,7 @@ namespace Diagnosis.Data.Mappings
             {
                 s.Key(k =>
                 {
-                    k.Column("DiseaseID");
+                    k.Column("IcdDiseaseID");
                 });
                 s.Inverse(true);
                 s.Cascade(Cascade.All);

@@ -5,7 +5,7 @@ using System;
 
 namespace Diagnosis.Models
 {
-    public class IcdDisease : EntityBase, IDomainObject, IHrItemObject, IComparable<IcdDisease>, IIcdEntity
+    public class IcdDisease : EntityBase<int>, IDomainObject, IHrItemObject, IComparable<IcdDisease>, IIcdEntity
     {
         Iesi.Collections.Generic.ISet<HealthRecord> healthRecords;
 

@@ -8,7 +8,7 @@
         /// <typeparam name="T"></typeparam>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static T As<T>(this EntityBase entity)
+        public static T As<T,TId>(this EntityBase<TId> entity)
         {
             if (entity == null)
                 return default(T);

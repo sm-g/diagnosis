@@ -20,6 +20,8 @@ namespace Diagnosis.Common
 
         public static T As<T>(this object obj)
         {
+            if (obj == null)
+                return default(T);
             return (T)obj;
         }
     }

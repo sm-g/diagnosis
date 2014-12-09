@@ -89,7 +89,7 @@ namespace Diagnosis.Models
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="propertyExpression"></param>
-        public void Edit<T>(Expression<Func<T>> propertyExpression)
+        public void Edit<T,TId>(Expression<Func<T>> propertyExpression)
         {
             lock (_syncRoot)
             {
@@ -102,9 +102,9 @@ namespace Diagnosis.Models
                     var propertyName = propValuePair.Item1;
                     T value;
 
-                    if (propValuePair.Item2 is EntityBase)
+                    if (propValuePair.Item2 is EntityBase<TId>)
                     {
-                        value = (propValuePair.Item2 as EntityBase).As<T>();  // unproxy
+                        value = (propValuePair.Item2 as EntityBase<TId>).As<T,TId>();  // unproxy
                     }
                     else
                     {

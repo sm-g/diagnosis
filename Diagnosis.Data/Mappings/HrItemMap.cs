@@ -10,7 +10,7 @@ namespace Diagnosis.Data.Mappings
         {
             Id(x => x.Id, m =>
             {
-                m.Generator(Generators.Native);
+                m.Generator(Generators.GuidComb);
             });
 
             Property(x => x.Ord, m =>
@@ -18,7 +18,10 @@ namespace Diagnosis.Data.Mappings
                 m.Column("Ord");
                 m.NotNullable(true);
             });
-            Property(x => x.TextRepr);
+            Property(x => x.TextRepr, m =>
+            {
+                m.Length(255);
+            });
             ManyToOne(x => x.Word, m =>
             {
                 m.Column("WordID");
@@ -35,7 +38,7 @@ namespace Diagnosis.Data.Mappings
             });
             ManyToOne(x => x.Disease, m =>
             {
-                m.Column("DiseaseID");
+                m.Column("IcdDiseaseID");
             });
 
             ManyToOne(x => x.HealthRecord, m =>

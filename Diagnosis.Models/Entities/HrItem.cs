@@ -1,12 +1,13 @@
 ﻿using Diagnosis.Common;
 using Iesi.Collections.Generic;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class HrItem : EntityBase, IDomainObject
+    public class HrItem : EntityBase<Guid>, IDomainObject
     {
         private Comment comment;
 
@@ -48,7 +49,7 @@ namespace Diagnosis.Models
             {
                 if (_disease == value)
                     return;
-                EditHelper.Edit(() => Disease);
+                EditHelper.Edit<IcdDisease, Guid>(() => Disease);
                 _disease = value;
                 OnPropertyChanged("Disease");
             }

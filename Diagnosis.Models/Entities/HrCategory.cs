@@ -5,7 +5,7 @@ using System;
 
 namespace Diagnosis.Models
 {
-    public class HrCategory : EntityBase, IDomainObject, IComparable
+    public class HrCategory : EntityBase<int>, IDomainObject, IComparable
     {
         public virtual string Name { get; set; }
         public virtual int Ord { get; set; }

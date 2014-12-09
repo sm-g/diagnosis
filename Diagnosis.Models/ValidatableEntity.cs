@@ -2,7 +2,7 @@
 
 namespace Diagnosis.Models
 {
-    public abstract class ValidatableEntity : EntityBase
+    public abstract class ValidatableEntity<T> : EntityBase<T>
     {
         private bool? isValidCache;
 

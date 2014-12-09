@@ -2,6 +2,7 @@
 using PixelMEDIA.PixelCore.Helpers;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
@@ -12,9 +13,9 @@ namespace Diagnosis.Models
 {
     [Serializable]
     /// <summary>
-    /// Сущность БД.
+    /// Сущность БД c Id типа int или Giud.
     /// </summary>
-    public abstract class EntityBase : NotifyPropertyChangedBase, IEditableObject
+    public abstract class EntityBase<TId> : NotifyPropertyChangedBase, IEditableObject, IEntity
     {
         [NonSerialized]
         private int? cachedHashCode;
@@ -36,7 +37,7 @@ namespace Diagnosis.Models
             };
         }
 
-        public virtual int Id { get; protected set; }
+        public virtual TId Id { get; protected set; }
 
         /// <summary>
         /// Указывает, что есть несохраненные изменения.
@@ -52,7 +53,7 @@ namespace Diagnosis.Models
         /// </summary>
         public virtual bool IsTransient
         {
-            get { return Id == 0; }
+            get { return EqualityComparer<TId>.Default.Equals(Id, default(TId)); }
         }
 
         public virtual bool InEdit
@@ -120,7 +121,7 @@ namespace Diagnosis.Models
 
         public override bool Equals(object obj)
         {
-            return EntityEquals(obj as EntityBase);
+            return EntityEquals(obj as EntityBase<TId>);
         }
 
         public override int GetHashCode()
@@ -131,7 +132,7 @@ namespace Diagnosis.Models
             return cachedHashCode.Value;
         }
 
-        protected bool EntityEquals(EntityBase other)
+        protected bool EntityEquals(EntityBase<TId> other)
         {
             if (other == null)
             {
@@ -145,7 +146,7 @@ namespace Diagnosis.Models
             else
             {
                 // one of entities saved.
-                return Id == other.Id;
+                return EqualityComparer<TId>.Default.Equals(Id, other.Id);
             }
         }
 
@@ -168,14 +169,14 @@ namespace Diagnosis.Models
         {
             if (object.Equals(storage, value)) return false;
 
-            EditHelper.Edit(propertyExpression);
+            EditHelper.Edit<T, TId>(propertyExpression);
             storage = value;
             OnPropertyChanged(propertyExpression);
             return true;
         }
 
         // Maintain equality operator semantics for entities.
-        public static bool operator ==(EntityBase x, EntityBase y)
+        public static bool operator ==(EntityBase<TId> x, EntityBase<TId> y)
         {
             // By default, == and Equals compares references. In order to
             // maintain these semantics with entities, we need to compare by
@@ -185,10 +186,21 @@ namespace Diagnosis.Models
         }
 
         // Maintain inequality operator semantics for entities.
-        public static bool operator !=(EntityBase x, EntityBase y)
+        public static bool operator !=(EntityBase<TId> x, EntityBase<TId> y)
         {
             return !(x == y);
         }
 
+
+        bool IEntity.IsDirty
+        {
+            get { return IsDirty; }
+            set { IsDirty = value; }
+        }
+
+        object IEntity.Id
+        {
+            get { return Id; }
+        }
     }
 }

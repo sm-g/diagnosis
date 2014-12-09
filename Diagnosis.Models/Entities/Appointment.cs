@@ -12,7 +12,7 @@ using Diagnosis.Models.Validators;
 
 namespace Diagnosis.Models
 {
-    public class Appointment : ValidatableEntity, IDomainObject, IHrsHolder
+    public class Appointment : ValidatableEntity<Guid>, IDomainObject, IHrsHolder
     {
         Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
         private DateTime _dateTime;

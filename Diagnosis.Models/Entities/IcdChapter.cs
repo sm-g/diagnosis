@@ -8,7 +8,7 @@ using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
-    public class IcdChapter : EntityBase, IDomainObject, IIcdEntity
+    public class IcdChapter : EntityBase<int>, IDomainObject, IIcdEntity
     {
         Iesi.Collections.Generic.ISet<IcdBlock> iclBlocks;
 
