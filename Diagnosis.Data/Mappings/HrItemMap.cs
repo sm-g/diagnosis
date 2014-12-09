@@ -15,8 +15,13 @@ namespace Diagnosis.Data.Mappings
 
             Property(x => x.Ord, m =>
             {
-                m.Column("Ord");
+                m.Column(c =>
+                {
+                    c.Name("Ord");
+                    c.Default(0);
+                });
                 m.NotNullable(true);
+
             });
             Property(x => x.TextRepr, m =>
             {

@@ -13,7 +13,7 @@ namespace Diagnosis.Data
             cfg.SetProperty(Environment.ReleaseConnections, "on_close")
                .SetProperty(Environment.Dialect, typeof(SQLiteDialect).AssemblyQualifiedName)
                .SetProperty(Environment.ConnectionDriver, typeof(SQLite20Driver).AssemblyQualifiedName)
-               .SetProperty(Environment.ConnectionString, "data source=:memory:")
+               .SetProperty(Environment.ConnectionString, "data source=:memory:;BinaryGuid=False")
                .SetProperty(Environment.ShowSql, showSql ? "true" : "false");
         }
 

@@ -7,18 +7,9 @@ namespace Diagnosis.Models
 {
     public class IcdDisease : EntityBase<int>, IDomainObject, IHrItemObject, IComparable<IcdDisease>, IIcdEntity
     {
-        Iesi.Collections.Generic.ISet<HealthRecord> healthRecords;
-
         public virtual IcdBlock IcdBlock { get; protected set; }
         public virtual string Title { get; protected set; }
         public virtual string Code { get; protected set; }
-        public virtual IEnumerable<HealthRecord> HealthRecords
-        {
-            get
-            {
-                return healthRecords;
-            }
-        }
 
         protected IcdDisease() { }
 

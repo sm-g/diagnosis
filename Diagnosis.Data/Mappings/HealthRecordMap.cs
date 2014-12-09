@@ -16,7 +16,14 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.FromYear);
             Property(x => x.FromMonth);
             Property(x => x.FromDay);
-            Property(x => x.IsDeleted, m => m.NotNullable(true));
+            Property(x => x.IsDeleted, m =>
+            {
+                m.NotNullable(true);
+                m.Column(c =>
+                {
+                    c.Default(0);
+                });
+            });
             Property(x => x.Unit, m => m.Type<NHibernate.Type.EnumStringType<HealthRecordUnits>>());
 
             Set(x => x.HrItems, s =>

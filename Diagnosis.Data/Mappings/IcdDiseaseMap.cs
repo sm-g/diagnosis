@@ -22,20 +22,6 @@ namespace Diagnosis.Data.Mappings
                 m.NotNullable(true);
             });
 
-            Set(x => x.HealthRecords, s =>
-            {
-                s.Key(k =>
-                {
-                    k.Column("IcdDiseaseID");
-                });
-                s.Inverse(true);
-                s.Cascade(Cascade.All);
-                s.Access(Accessor.Field);
-            }, r =>
-            {
-                r.OneToMany();
-            });
-
             ManyToOne(x => x.IcdBlock, m =>
             {
                 m.Column("IcdBlockID");

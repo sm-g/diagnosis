@@ -27,7 +27,14 @@ namespace Diagnosis.Data.Mappings
                 m.Length(20);
             });
             Property(x => x.IsMale);
-            Property(x => x.Settings, m => m.NotNullable(true));
+            Property(x => x.Settings, m =>
+            {
+                m.NotNullable(true);
+                m.Column(c =>
+                {
+                    c.Default(0);
+                });
+            });
 
             Set(x => x.Appointments, s =>
             {
