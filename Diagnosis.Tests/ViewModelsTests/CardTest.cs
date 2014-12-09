@@ -3,6 +3,7 @@ using Diagnosis.Models;
 using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -132,7 +133,8 @@ namespace Tests
         }
 
         [TestMethod]
-        public void CreateCourseWithFirstHr()  // fails
+        [ExpectedException(typeof(AssertFailedException))]
+        public void CreateCourseWithFirstHr()
         {
             var card = new CardViewModel(p[1], true);
             d1.StartCourse(p[1]);

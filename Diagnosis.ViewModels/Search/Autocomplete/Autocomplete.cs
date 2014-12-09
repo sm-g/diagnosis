@@ -584,6 +584,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
 
             // переходим к вводу нового слова
+            SelectedTag = LastTag;
             LastTag.IsTextBoxFocused = true;
         }
 
