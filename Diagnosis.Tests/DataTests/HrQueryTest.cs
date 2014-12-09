@@ -19,8 +19,8 @@ namespace Tests
         [TestInitialize]
         public void Init()
         {
-            hrIds.ForAll((id) => hr[id] = session.Get<HealthRecord>(id));
-            wIds.ForAll((id) => w[id] = session.Get<Word>(id));
+            hrIds.ForAll((id) => hr[id] = session.Get<HealthRecord>(IntToGuid<HealthRecord>(id)));
+            wIds.ForAll((id) => w[id] = session.Get<Word>(IntToGuid<Word>(id)));
         }
 
         [TestMethod]

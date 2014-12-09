@@ -21,12 +21,12 @@ namespace Tests.ViewModelsTests
         [TestInitialize]
         public void HrEditorTestInit()
         {
-            d1 = session.Get<Doctor>(1);
+            d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
             AuthorityController.LogIn(d1);
 
             e = new HrEditorViewModel(session);
-            hr = session.Get<HealthRecord>(1);
-            word = session.Get<Word>(3);
+            hr = session.Get<HealthRecord>(IntToGuid<HealthRecord>(1));
+            word = session.Get<Word>(IntToGuid<Word>(3));
             q = word.Title.Substring(0, word.Title.Length - 1);
         }
 

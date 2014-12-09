@@ -24,12 +24,12 @@ namespace Tests
         [TestInitialize]
         public void Init()
         {
-            d1 = session.Get<Doctor>(1);
+            d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
             AuthorityController.LogIn(d1);
 
-            pIds.ForAll((id) => p[id] = session.Get<Patient>(id));
-            cIds.ForAll((id) => c[id] = session.Get<Course>(id));
-            aIds.ForAll((id) => a[id] = session.Get<Appointment>(id));
+            pIds.ForAll((id) => p[id] = session.Get<Patient>(IntToGuid<Patient>(id)));
+            cIds.ForAll((id) => c[id] = session.Get<Course>(IntToGuid<Course>(id)));
+            aIds.ForAll((id) => a[id] = session.Get<Appointment>(IntToGuid<Appointment>(id)));
 
             // p[3] c[4] a[5] are empty, for deletions
         }

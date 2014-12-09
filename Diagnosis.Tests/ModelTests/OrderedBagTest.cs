@@ -17,7 +17,7 @@ namespace Tests.ModelTests
         [TestInitialize]
         public void Init()
         {
-            wIds.ForAll((id) => w[id] = session.Get<Word>(id));
+            wIds.ForAll((id) => w[id] = session.Get<Word>(IntToGuid<Word>(id)));
             icdIds.ForAll((id) => icd[id] = session.Get<IcdDisease>(id));
         }
 

@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Models;
 using Diagnosis.ViewModels.Search.Autocomplete;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 
 namespace Tests
@@ -26,7 +27,7 @@ namespace Tests
         {
             r = new Recognizer(session);
             a = new Autocomplete(r, true, true, null);
-            word = session.Get<Word>(1);
+            word = session.Get<Word>(IntToGuid<Word>(1));
             q = word.Title.Substring(0, word.Title.Length - 1);
             qFull = word.Title;
 

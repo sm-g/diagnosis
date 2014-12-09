@@ -48,7 +48,7 @@ namespace Tests
         [TestMethod]
         public void MyTestMethod()
         {
-            var d1 = session.Get<Doctor>(1);
+            var d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
             AuthorityController.LogIn(d1);
             using (var tx = session.BeginTransaction())
             {
