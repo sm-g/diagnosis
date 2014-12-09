@@ -220,7 +220,7 @@ namespace Diagnosis.ViewModels.Screens
             if (Navigator.Current == null)
                 return "";
             string delim = " — ";
-            string result = string.Format("{0} {1}", viewer.OpenedPatient.Label, NameFormatter.GetShortName(viewer.OpenedPatient));
+            string result = string.Format("{0}", NameFormatter.GetShortName(viewer.OpenedPatient));
 
             var holder = Navigator.Current.Holder;
 

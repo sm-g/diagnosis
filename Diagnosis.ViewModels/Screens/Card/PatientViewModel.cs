@@ -18,19 +18,6 @@ namespace Diagnosis.ViewModels.Screens
         private CoursesManager coursesManager;
 
         #region Model
-
-        public string Label
-        {
-            get
-            {
-                return patient.Label;
-            }
-            set
-            {
-                patient.Label = value;
-            }
-        }
-
         public string FirstName
         {
             get

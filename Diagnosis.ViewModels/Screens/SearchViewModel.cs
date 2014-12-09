@@ -27,7 +27,6 @@ namespace Diagnosis.ViewModels.Screens
         private int? _appMonthUpper;
         private int? _appYearLower;
         private int? _appYearUpper;
-        private string _comment;
         private DateOffset _hrDateOffsetLower;
         private DateOffset _hrDateOffsetUpper;
         private bool _controlsVisible;
@@ -291,23 +290,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public string Comment
-        {
-            get
-            {
-                return _comment;
-            }
-            set
-            {
-                if (_comment != value)
-                {
-                    _comment = value;
-                    OnPropertyChanged("Comment");
-                    OnPropertyChanged("CommentVisible");
-                    OnPropertyChanged("AllEmpty");
-                }
-            }
-        }
 
         #endregion Options bindings
 
@@ -339,8 +321,7 @@ namespace Diagnosis.ViewModels.Screens
                 return AppDateGt == null && AppDateLt == null
                     && (HrDateOffsetLower.IsEmpty || HrDateOffsetUpper.IsEmpty)
                     && SelectedCategories.Count() == 0
-                    && Autocomplete.Tags.Count == 1
-                    && string.IsNullOrEmpty(Comment);
+                    && Autocomplete.Tags.Count == 1;
             }
         }
 
@@ -470,7 +451,6 @@ namespace Diagnosis.ViewModels.Screens
             // комментарий и давность из последней записи
             var lastHr = hrs.Last();
             HrDateOffsetLower = new DateOffset(lastHr.FromYear, lastHr.FromMonth, lastHr.FromDay);
-            Comment = lastHr.Comment;
 
             RecieveHrItemObjects(allWords);
         }

@@ -23,17 +23,9 @@ namespace Diagnosis.Models
         private string _fn;
         private string _ln;
         private string _mn;
-        private string _label;
         private bool? _isMale;
 
         public virtual event NotifyCollectionChangedEventHandler CoursesChanged;
-
-
-        public virtual string Label
-        {
-            get { return _label ?? Id.ToString(); }
-            set { SetProperty(ref _label, value.TrimedOrNull(), () => Label); }
-        }
 
         public virtual string FirstName
         {
@@ -216,7 +208,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return Id + " " + Label + " " + FullName;
+            return Id + " " + FullName;
         }
 
         protected virtual void OnCoursesChanged(NotifyCollectionChangedEventArgs e)

@@ -48,14 +48,6 @@ namespace Diagnosis.ViewModels.Screens
 
         #region Model
 
-        public string Comment
-        {
-            get
-            {
-                return healthRecord.Comment;
-            }
-        }
-
         public HrCategory Category
         {
             get

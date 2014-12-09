@@ -40,7 +40,7 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         try
                         {
-                            Save();
+                            Session.SaveOrUpdate(patient);
                             t.Commit();
                         }
                         catch (System.Exception e)
@@ -113,19 +113,6 @@ namespace Diagnosis.ViewModels.Screens
         public PatientEditorViewModel()
             : this(new Patient())
         { }
-
-        private void Save()
-        {
-            // получаем метку для нового
-            bool updateLabel = false;
-            if (patient.IsTransient)
-                updateLabel = true;
-
-            Session.SaveOrUpdate(patient);
-
-            if (updateLabel)
-                patient.Label = patient.Id.ToString();
-        }
 
         private bool CanSave()
         {

@@ -63,7 +63,6 @@
                 <Run Text="{Binding DateOffset.Offset}" />
                 <Run Text="{Binding DateOffset, Mode=OneWay, Converter={StaticResource DateOffsetToUnitLabel}}" />
             </TextBlock>
-            <TextBlock Grid.Row="2" Text="{Binding Comment}" Visibility="{Binding Comment, Converter={StaticResource NullToVis}}" Grid.ColumnSpan="2" />
         </Grid>
 
         <StackPanel x:Name="buttons" Grid.Column="2" Style="{StaticResource hidingButtons}">

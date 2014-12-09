@@ -150,11 +150,6 @@
                 </ComboBox>
             </DockPanel>-->
             <!--DataContext is HrEditorViewModel-->
-
-            <!--<DockPanel>
-                <Label Content="комментарий" />
-                <TextBox Text="{Binding Comment}" />
-            </DockPanel>-->
         </StackPanel>
     </Grid>
 </UserControl>

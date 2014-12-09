@@ -13,7 +13,6 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.GuidComb);
             });
 
-            Property(x => x.Label);
             Property(x => x.FirstName, m =>
             {
                 m.Length(20);

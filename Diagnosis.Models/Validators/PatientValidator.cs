@@ -15,7 +15,6 @@ namespace Diagnosis.Models.Validators
             RuleFor(p => p.LastName).Length(0, 20);
             RuleFor(p => p.MiddleName).Length(0, 20);
             RuleFor(p => p.FirstName).Length(0, 20);
-            RuleFor(p => p.Label).NotEmpty().WithMessage("Метка должна быть."); // только если нет ФИО?
             RuleFor(p => p.Age).InclusiveBetween(0, 120);
 
             Custom(p =>

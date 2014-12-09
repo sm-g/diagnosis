@@ -70,11 +70,7 @@
                     <Style TargetType="DockPanel" BasedOn="{StaticResource formLine}" />
                     <Style TargetType="Label" BasedOn="{StaticResource label120}" />
                 </StackPanel.Resources>
-                <!-- PatientViewModel -->
-                <DockPanel>
-                    <Label Content="Метка" />
-                    <TextBlock Text="{Binding Label, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" VerticalAlignment="Center" />
-                </DockPanel>
+                <!-- PatientViewModel -->                
                 <DockPanel>
                     <Label Content="Фамилия" />
                     <TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />

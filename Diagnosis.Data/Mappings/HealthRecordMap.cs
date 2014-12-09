@@ -13,7 +13,6 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.GuidComb);
             });
 
-            Property(x => x.Comment);
             Property(x => x.FromYear);
             Property(x => x.FromMonth);
             Property(x => x.FromDay);

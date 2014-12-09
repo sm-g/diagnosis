@@ -10,14 +10,6 @@ namespace Diagnosis.ViewModels.Screens
     {
         internal readonly Patient patient;
 
-        public string Label
-        {
-            get
-            {
-                return patient.Label;
-            }
-        }
-
         public string FirstName
         {
             get

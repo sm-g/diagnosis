@@ -14,7 +14,6 @@ namespace Diagnosis.Models
         private int? _year;
         private byte? _month;
         private byte? _day;
-        private string _comment;
         private bool _isDeleted;
         private HrCategory _category;
         private DateOffset _dateOffset;
@@ -47,19 +46,6 @@ namespace Diagnosis.Models
                 EditHelper.Edit<bool, Guid>(() => IsDeleted);
                 _isDeleted = value;
                 OnPropertyChanged("IsDeleted");
-            }
-        }
-
-        public virtual string Comment
-        {
-            get { return _comment; }
-            set
-            {
-                if (_comment == value)
-                    return;
-                EditHelper.Edit(() => Comment);
-                _comment = value.TrimedOrNull();
-                OnPropertyChanged("Comment");
             }
         }
 
