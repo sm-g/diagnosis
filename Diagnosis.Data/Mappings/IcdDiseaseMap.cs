@@ -16,6 +16,7 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.Title, m =>
             {
                 m.NotNullable(true);
+                m.UniqueKey("DiseaseCode");
             });
             Property(x => x.Code, m =>
             {

@@ -17,6 +17,7 @@ namespace Diagnosis.Data.Mappings
             {
                 m.NotNullable(true);
                 m.Length(100);
+                m.UniqueKey("WordTitle");
             });
 
             ManyToOne(x => x.DefaultCategory, m =>
