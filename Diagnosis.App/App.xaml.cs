@@ -8,6 +8,7 @@ using System.Data.SqlServerCe;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Threading;
 using System.Windows;
 using System.Windows.Markup;
 
@@ -37,6 +38,15 @@ namespace Diagnosis.App
 
             Startup += (s, e) =>
             {
+                bool aIsNewInstance = false;
+                var myMutex = new Mutex(true, "ac2ee38e-31c5-45f5-8fde-4a9a126df451", out aIsNewInstance);
+                if (!aIsNewInstance)
+                {
+                    MessageBox.Show("Приложение уже запущено.", "Diagnosis", MessageBoxButton.OK, MessageBoxImage.Information);
+                    App.Current.Shutdown();
+                    return;
+                }
+
                 // command line args
                 for (int i = 0; i != e.Args.Length; ++i)
                 {
