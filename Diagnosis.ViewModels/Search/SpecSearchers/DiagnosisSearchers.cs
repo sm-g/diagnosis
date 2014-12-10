@@ -1,5 +1,4 @@
-﻿using Diagnosis.Data.Repositories;
-using Diagnosis.Data.Specs;
+﻿using Diagnosis.Data.Specs;
 using Diagnosis.Models;
 using System;
 using System.Collections.Generic;

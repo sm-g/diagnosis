@@ -189,10 +189,7 @@
     <Compile Include="Queries\HealthRecordQuery.cs" />
     <Compile Include="Queries\UomQuery.cs" />
     <Compile Include="Queries\WordQuery.cs" />
-    <Compile Include="Repositories\IcdChapterRepository.cs" />
-    <Compile Include="Repositories\NHibernateRepository.cs" />
-    <Compile Include="Repositories\ModelRepository.cs" />
-    <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Specs\NHibernateRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specs\DiagnosisSpecifications.cs" />
     <Compile Include="Specs\PatientSpecifications.cs" />
@@ -228,6 +225,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Versions\Sql\insert_Uom_HrCat_Speciality.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Repositories\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

@@ -1,6 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data.Queries;
-using Diagnosis.Data.Repositories;
+using Diagnosis.Data.Specs;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Search;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

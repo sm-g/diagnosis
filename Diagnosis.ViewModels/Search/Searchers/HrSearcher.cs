@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Diagnosis.Data.Repositories;
+using Diagnosis.Data.Specs;
 using System.Diagnostics.Contracts;
 using Diagnosis.Models;
 using Diagnosis.Common;

@@ -1,5 +1,5 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Data.Repositories;
+using Diagnosis.Data.Specs;
 using Diagnosis.Models;
 using EventAggregator;
 using System;

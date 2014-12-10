@@ -6,7 +6,7 @@ using System.Linq;
 using System.Windows.Input;
 using EventAggregator;
 using Diagnosis.Common;
-using Diagnosis.Data.Repositories;
+using Diagnosis.Data.Specs;
 
 namespace Diagnosis.ViewModels.Screens
 {

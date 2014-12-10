@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Diagnosis.Common;
+using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
@@ -107,6 +108,7 @@ namespace Diagnosis.Models
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
+        [Pure]
         public static bool IsEmpty(this IDomainObject entity)
         {
             var @switch = new Dictionary<Type, Func<bool>> {

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace Diagnosis.Data.Repositories
+namespace Diagnosis.Data.Specs
 {
     public interface INHibernateRepository<T>
     {

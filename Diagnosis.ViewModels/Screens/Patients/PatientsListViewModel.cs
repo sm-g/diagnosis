@@ -4,7 +4,7 @@ using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using Diagnosis.Data.Repositories;
+using Diagnosis.Data.Specs;
 using Diagnosis.Models;
 using Diagnosis.Data;
 using Diagnosis.ViewModels.Search;

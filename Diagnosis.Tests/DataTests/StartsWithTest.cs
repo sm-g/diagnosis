@@ -6,7 +6,7 @@ using System.Text;
 using NHibernate.Linq;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Search;
-using Diagnosis.Data.Repositories;
+using Diagnosis.Data.Specs;
 
 namespace Tests
 {
