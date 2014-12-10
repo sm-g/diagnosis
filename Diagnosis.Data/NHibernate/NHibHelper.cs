@@ -178,11 +178,10 @@ namespace Diagnosis.Data
                 if (ass.Location == null)
                     return false;
                 var configInfo = new FileInfo(SerializedConfig);
-                var assInfo = new FileInfo(ass.Location);
                 var configFileInfo = new FileInfo(ConfigFile);
-                if (configInfo.LastWriteTime < assInfo.LastWriteTime)
-                    return false;
-                if (configInfo.LastWriteTime < configFileInfo.LastWriteTime)
+                var assInfo = new FileInfo(ass.Location);
+                if (configInfo.LastWriteTime < assInfo.LastWriteTime ||
+                    configInfo.LastWriteTime < configFileInfo.LastWriteTime)
                     return false;
                 return true;
             }
@@ -193,7 +192,7 @@ namespace Diagnosis.Data
             string desktop = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop);
             new SchemaExport(Configuration)
                 .SetDelimiter(";")
-                .SetOutputFile(string.Format(desktop + "\\schema {0}.sql", System.DateTime.Now.Ticks))
+                .SetOutputFile(string.Format(desktop + "\\sqlite create {0:yyyy-MM-dd-HHmm}.sql", System.DateTime.Now))
                 .Execute(true, false, false);
         }
     }

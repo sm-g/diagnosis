@@ -57,6 +57,8 @@ namespace Diagnosis.App
 #if DEBUG
                 new DebugOutput(0);
                 new DebugWindow().Show();
+                NHibernateHelper.ShowSql = true;
+
 #endif
                 DbMaintenance();
 
@@ -75,7 +77,6 @@ namespace Diagnosis.App
 
         private static void DbMaintenance()
         {
-#if !DEBUG
             if (NHibernateHelper.InMemory)
                 return;
 
@@ -92,23 +93,25 @@ namespace Diagnosis.App
             }
 
             // backup
+#if !DEBUG
             FileHelper.Backup(sdfPath, BackupFolder, 5, 7);
-
-            // migrate to last version
-            var a = "Diagnosis.Data.dll";
-            var db = "sqlserverce";
-            var task = "";//"-t rollback";
-            // Process.Start(Migrate.exe, string.Format("-c \"{0}\" -db {1} -a {2} -o -of Backup\\migrated-{3:yyyy-MM-dd-HH-mm-ss}.sql {4}", constr, db, a, DateTime.UtcNow, task));
-            var rollback = false;
-            if (rollback)
-            {
-                new Migrator(constr, BackupFolder).Rollback();
-            }
-            else
-            {
-                new Migrator(constr, BackupFolder).MigrateToLatest();
-            }
 #endif
+
+            bool? migrateUp = null;
+
+            // migrate to last version in release
+#if !DEBUG
+            migrateUp = true;
+#endif
+            if (migrateUp.HasValue)
+                if (migrateUp.Value)
+                {
+                    new Migrator(constr, BackupFolder).MigrateToLatest();
+                }
+                else
+                {
+                    new Migrator(constr, BackupFolder).Rollback();
+                }
         }
 
         public class MyLock : log4net.Appender.FileAppender.MinimalLock

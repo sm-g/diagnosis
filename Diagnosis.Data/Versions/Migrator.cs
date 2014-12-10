@@ -30,6 +30,10 @@ namespace Diagnosis.Data.Versions
 
         private void Do(Action<IMigrationRunner> runnerAct)
         {
+            var dir = new DirectoryInfo(outputDir);
+            if (!dir.Exists)
+                dir.Create();
+
             var filename = Path.Combine(outputDir, string.Format("migrated-{0:yyyy-MM-dd-HH-mm-ss}.sql", DateTime.Now));
             using (var fs = File.CreateText(filename))
             {

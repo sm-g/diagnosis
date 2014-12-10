@@ -732,10 +732,7 @@
   <PropertyGroup>
     <PostBuildEvent>REM copy nhibernate config
 
-if $(ConfigurationName)==Release (echo f | xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate-release.cfg.xml" "$(TargetDir)NHibernate\nhibernate.cfg.xml" /d /y) else (echo f | xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate-debug.cfg.xml" "$(TargetDir)NHibernate\nhibernate.cfg.xml" /d /y)
-
-REM copy db for release, if not exist
-if $(ConfigurationName)==Release  (echo n | xcopy "$(SolutionDir)Database\diagnosis.sdf" "$(TargetDir)"  /-y) 
+echo f | xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate.cfg.xml" "$(TargetDir)NHibernate\nhibernate.cfg.xml" /d /y
 
 REM copy sqlite.dll
 xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)" /i /d /y

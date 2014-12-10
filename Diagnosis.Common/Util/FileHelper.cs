@@ -26,7 +26,6 @@ namespace Diagnosis.Common
             if (file.Exists)
             {
                 var dir = new DirectoryInfo(backupDir);
-
                 if (!dir.Exists)
                     dir.Create();
 

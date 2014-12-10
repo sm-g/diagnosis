@@ -199,7 +199,9 @@
     <Compile Include="Specs\WordSpecifications.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="NHibernate\nhibernate-debug.cfg.xml" />
+    <None Include="NHibernate\nhibernate.cfg.xml">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -213,9 +215,6 @@
       <Project>{f1ef016e-80f6-461c-ac4b-e087e42a9f0c}</Project>
       <Name>Diagnosis.Models</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="NHibernate\nhibernate-release.cfg.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Versions\Sql\insert_all_Icd.sql" />
