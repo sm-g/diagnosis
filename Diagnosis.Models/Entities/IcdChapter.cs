@@ -10,7 +10,7 @@ namespace Diagnosis.Models
 {
     public class IcdChapter : EntityBase<int>, IDomainObject, IIcdEntity
     {
-        Iesi.Collections.Generic.ISet<IcdBlock> iclBlocks;
+        Iesi.Collections.Generic.ISet<IcdBlock> iclBlocks = new HashedSet<IcdBlock>();
 
         public virtual string Title { get; protected set; }
         public virtual string Code { get; protected set; }

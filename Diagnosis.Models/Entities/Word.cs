@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Models.Validators;
 using FluentValidation.Results;
+using Iesi.Collections.Generic;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
@@ -10,7 +11,7 @@ namespace Diagnosis.Models
     public class Word : ValidatableEntity<Guid>, IDomainObject, IHrItemObject, IComparable<Word>
     {
         [NonSerialized]
-        private Iesi.Collections.Generic.ISet<Word> children;
+        private Iesi.Collections.Generic.ISet<Word> children = new HashedSet<Word>();
         [NonSerialized]
         private Word _parent;
         [NonSerialized]

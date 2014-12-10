@@ -6,8 +6,8 @@ namespace Diagnosis.Models
 {
     public class IcdBlock : EntityBase<int>, IDomainObject, IIcdEntity
     {
-        Iesi.Collections.Generic.ISet<IcdDisease> icdDiseases;
-        Iesi.Collections.Generic.ISet<SpecialityIcdBlocks> specialityIcdBlocks;
+        Iesi.Collections.Generic.ISet<IcdDisease> icdDiseases = new HashedSet<IcdDisease>();
+        Iesi.Collections.Generic.ISet<SpecialityIcdBlocks> specialityIcdBlocks = new HashedSet<SpecialityIcdBlocks>();
 
         public virtual IcdChapter IcdChapter { get; protected set; }
         public virtual string Title { get; protected set; }
