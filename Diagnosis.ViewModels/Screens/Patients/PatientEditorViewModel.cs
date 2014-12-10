@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Data;
 using Diagnosis.Models;
 using log4net;
 using System.ComponentModel;
@@ -35,20 +36,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     (patient as IEditableObject).EndEdit();
 
-
-                    using (var t = Session.BeginTransaction())
-                    {
-                        try
-                        {
-                            Session.SaveOrUpdate(patient);
-                            t.Commit();
-                        }
-                        catch (System.Exception e)
-                        {
-                            t.Rollback();
-                            logger.Error(e);
-                        }
-                    }
+                    new Saver(Session).Save(patient);
 
                     this.Send(Events.PatientSaved, patient.AsParams(MessageKeys.Patient));
                     DialogResult = true;

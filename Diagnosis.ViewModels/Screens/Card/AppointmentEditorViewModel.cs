@@ -1,4 +1,5 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.Data;
+using Diagnosis.Models;
 using log4net;
 using System.ComponentModel;
 
@@ -48,18 +49,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             (app as IEditableObject).EndEdit();
 
-            using (var t = Session.BeginTransaction())
-            {
-                try
-                {
-                    t.Commit();
-                }
-                catch (System.Exception e)
-                {
-                    t.Rollback();
-                    logger.Error(e);
-                }
-            }
+            new Saver(Session).Save(app);
         }
 
         protected override void OnCancel()

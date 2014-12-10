@@ -4,6 +4,7 @@ using Diagnosis.Models;
 using NHibernate;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
+using Diagnosis.Data;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -47,21 +48,9 @@ namespace Diagnosis.ViewModels.Screens
         {
             (word as IEditableObject).EndEdit();
 
-            using (var t = Session.BeginTransaction())
-            {
-                try
-                {
-                    Session.SaveOrUpdate(word);
-                    t.Commit();
-                }
-                catch (System.Exception e)
-                {
-                    t.Rollback();
-                    logger.Error(e);
-                }
+            new Saver(Session).Save(word);
 
-                this.Send(Events.WordSaved, word.AsParams(MessageKeys.Word));
-            }
+            this.Send(Events.WordSaved, word.AsParams(MessageKeys.Word));
         }
 
         protected override void OnCancel()

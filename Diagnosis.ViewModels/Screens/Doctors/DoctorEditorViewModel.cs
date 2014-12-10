@@ -1,18 +1,19 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Data;
 using Diagnosis.Models;
 using log4net;
-using System.ComponentModel;
 using NHibernate.Linq;
-using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
     public class DoctorEditorViewModel : DialogViewModel
     {
-        private List<Speciality> _specialities;
         private static readonly ILog logger = LogManager.GetLogger(typeof(DoctorEditorViewModel));
         private readonly Doctor doctor;
+        private List<Speciality> _specialities;
         private DoctorViewModel _vm;
 
         public DoctorViewModel Doctor
@@ -30,6 +31,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         public IEnumerable<Speciality> Specialities { get { return _specialities; } }
 
         public RelayCommand SaveCommand
@@ -40,20 +42,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     (doctor as IEditableObject).EndEdit();
 
-
-                    using (var t = Session.BeginTransaction())
-                    {
-                        try
-                        {
-                            Session.SaveOrUpdate(doctor);
-                            t.Commit();
-                        }
-                        catch (System.Exception e)
-                        {
-                            t.Rollback();
-                            logger.Error(e);
-                        }
-                    }
+                    new Saver(Session).Save(doctor);
 
                     this.Send(Events.DoctorSaved, doctor.AsParams(MessageKeys.Doctor));
                     DialogResult = true;
@@ -94,6 +83,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             (doctor as IEditableObject).CancelEdit();
         }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

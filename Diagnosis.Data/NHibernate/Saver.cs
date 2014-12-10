@@ -25,22 +25,7 @@ namespace Diagnosis.Data
             logger.DebugFormat("saving hr {0}", hr);
             Debug.Assert(session.IsOpen);
 
-            session.SaveOrUpdate(hr);
-            using (var t = session.BeginTransaction())
-            {
-                try
-                {
-                    t.Commit();
-                }
-                catch (System.Exception e)
-                {
-                    t.Rollback();
-                    logger.Error(e);
-#if DEBUG
-                    throw;
-#endif
-                }
-            }
+            Save(hr);
         }
 
         /// <summary>
@@ -66,22 +51,7 @@ namespace Diagnosis.Data
                 patient.DeleteEmptyHrs();
             }
 
-            session.SaveOrUpdate(patient);
-            using (var t = session.BeginTransaction())
-            {
-                try
-                {
-                    t.Commit();
-                }
-                catch (System.Exception e)
-                {
-                    t.Rollback();
-                    logger.Error(e);
-#if DEBUG
-                    throw;
-#endif
-                }
-            }
+            Save(patient);
 
             savingPatient = null;
         }
@@ -110,6 +80,7 @@ namespace Diagnosis.Data
             }
             return false;
         }
+
         public bool Save(params IDomainObject[] domainObjects)
         {
             using (var t = session.BeginTransaction())
