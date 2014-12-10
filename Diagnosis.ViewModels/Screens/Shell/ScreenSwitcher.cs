@@ -8,7 +8,7 @@ namespace Diagnosis.ViewModels.Screens
 {
     public enum Screens
     {
-        Login, Patients, Words, Card
+        Login, Doctors, Patients, Words, Card
     }
 
     public class ScreenSwitcher : ViewModelBase
@@ -25,6 +25,17 @@ namespace Diagnosis.ViewModels.Screens
             {
                 var settingsVM = new SettingsViewModel(AuthorityController.CurrentDoctor);
                 this.Send(Events.OpenDialog, settingsVM.AsParams(MessageKeys.Dialog));
+            });
+
+            this.Subscribe(Events.EditDoctor, (e) =>
+            {
+                var doc = e.GetValue<Doctor>(MessageKeys.Doctor);
+                IDialog vm;
+                if (doc != null)
+                    vm = new DoctorEditorViewModel(doc);
+                else
+                    vm = new DoctorEditorViewModel();
+                this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
             });
 
             this.Subscribe(Events.EditPatient, (e) =>
@@ -182,6 +193,10 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     case Screens.Login:
                         CurrentView = new LoginViewModel();
+                        break;
+
+                    case Screens.Doctors:
+                        CurrentView = new DoctorsListViewModel();
                         break;
 
                     case Screens.Patients:

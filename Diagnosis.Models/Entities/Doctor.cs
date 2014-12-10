@@ -1,21 +1,28 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Models.Validators;
+using FluentValidation.Results;
+using Iesi.Collections.Generic;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
-    public class Doctor : EntityBase<Guid>, IDomainObject, IMan
+    public class Doctor : ValidatableEntity<Guid>, IDomainObject, IMan
     {
-        private Iesi.Collections.Generic.ISet<Appointment> appointments;
+        public static Doctor Admin = new AdminDoctor();
+
+        private Iesi.Collections.Generic.ISet<Appointment> appointments = new HashedSet<Appointment>();
+        private Iesi.Collections.Generic.ISet<Course> courses = new HashedSet<Course>();
         private string _fn;
         private string _ln;
         private string _mn;
         private int _settings;
         private DoctorSettings _docSettings;
+        private bool _male;
+        private bool _isMale;
+        private Speciality _speciality;
 
         public virtual DoctorSettings DoctorSettings
         {
@@ -24,48 +31,43 @@ namespace Diagnosis.Models
             {
                 _docSettings = value;
                 _settings = (int)_docSettings;
+                SetProperty(ref _docSettings, value, () => DoctorSettings);
             }
         }
 
         public virtual string FirstName
         {
-            get
-            {
-                return _fn;
-            }
+            get { return _fn; }
             set
             {
-                Contract.Requires(!String.IsNullOrWhiteSpace(value));
-                _fn = value.Trim();
+                SetProperty(ref _fn, value.TrimedOrNull(), "FirstName");
             }
         }
 
         public virtual string MiddleName
         {
-            get
-            {
-                return _mn;
-            }
+            get { return _mn; }
             set
             {
-                _mn = value.TrimedOrNull();
+                SetProperty(ref _mn, value.TrimedOrNull(), "MiddleName");
             }
         }
 
         public virtual string LastName
         {
-            get
-            {
-                return _ln;
-            }
+            get { return _ln; }
             set
             {
                 Contract.Requires(!String.IsNullOrWhiteSpace(value));
-                _ln = value.Trim();
+                SetProperty(ref _ln, value.Trim(), "LastName");
             }
         }
 
-        public virtual bool IsMale { get; set; }
+        public virtual bool IsMale
+        {
+            get { return _isMale; }
+            set { SetProperty(ref _isMale, value, () => IsMale); }
+        }
 
         public virtual int Settings
         {
@@ -80,13 +82,31 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual Speciality Speciality { get; set; }
+        public virtual Speciality Speciality
+        {
+            get { return _speciality; }
+            set
+            {
+                if (value == Speciality.Null) value = null;
+                SetProperty(ref _speciality, value, () => Speciality);
+            }
+        }
 
         public virtual IEnumerable<Appointment> Appointments
         {
+            get { return appointments; }
+        }
+
+        public virtual IEnumerable<Course> Courses
+        {
+            get { return courses; }
+        }
+
+        public virtual string FullName
+        {
             get
             {
-                return appointments;
+                return LastName + " " + FirstName + " " + MiddleName;
             }
         }
 
@@ -100,10 +120,9 @@ namespace Diagnosis.Models
             return course;
         }
 
-        public Doctor(string lastName, string firstName, string middleName = null, Speciality speciality = null)
+        public Doctor(string lastName, string firstName = null, string middleName = null, Speciality speciality = null)
         {
-            Contract.Requires(lastName != null);
-            Contract.Requires(firstName != null);
+            Contract.Requires(!lastName.IsNullOrEmpty());
 
             LastName = lastName;
             FirstName = firstName;
@@ -118,7 +137,22 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return LastName + " " + FirstName + " " + MiddleName;
+            return FullName;
+        }
+
+        public override ValidationResult SelfValidate()
+        {
+            return new DoctorValidator().Validate(this);
+        }
+
+        public class AdminDoctor : Doctor
+        {
+            private const string AdminLastName = "Администратор";
+
+            public AdminDoctor()
+                : base(AdminLastName)
+            {
+            }
         }
     }
 }

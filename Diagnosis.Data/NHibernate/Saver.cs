@@ -86,17 +86,18 @@ namespace Diagnosis.Data
             savingPatient = null;
         }
 
-        public void Delete(params IHrsHolder[] holder)
+        public bool Delete(params IDomainObject[] domainObjects)
         {
             using (var t = session.BeginTransaction())
             {
                 try
                 {
-                    foreach (var item in holder)
+                    foreach (var item in domainObjects)
                     {
                         session.Delete(item);
                     }
                     t.Commit();
+                    return true;
                 }
                 catch (System.Exception e)
                 {
@@ -107,6 +108,31 @@ namespace Diagnosis.Data
 #endif
                 }
             }
+            return false;
+        }
+        public bool Save(params IDomainObject[] domainObjects)
+        {
+            using (var t = session.BeginTransaction())
+            {
+                try
+                {
+                    foreach (var item in domainObjects)
+                    {
+                        session.SaveOrUpdate(item);
+                    }
+                    t.Commit();
+                    return true;
+                }
+                catch (System.Exception e)
+                {
+                    t.Rollback();
+                    logger.Error(e);
+#if DEBUG
+                    throw;
+#endif
+                }
+            }
+            return false;
         }
     }
 }

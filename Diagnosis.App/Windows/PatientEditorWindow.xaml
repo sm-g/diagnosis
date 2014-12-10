@@ -27,10 +27,6 @@
         </Style>
     </Window.Resources>
     <Grid Margin="10">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition MaxWidth="180" Width="auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
@@ -107,7 +103,7 @@
             </StackPanel>
         </ScrollViewer>
 
-        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Style="{StaticResource DialogButtonsPanel}">
+        <StackPanel Grid.Row="1" Style="{StaticResource DialogButtonsPanel}">
             <!--<Button Name="saveAddButton" Command="{Binding SaveAndCreateCommand}" ToolTip="Сохранить и добавить нового пациента">
                 <AccessText Text="_Добавить нового" />
             </Button>-->

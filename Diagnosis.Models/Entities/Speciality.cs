@@ -8,6 +8,8 @@ namespace Diagnosis.Models
 {
     public class Speciality : EntityBase<int>, IDomainObject
     {
+        public static Speciality Null = new Speciality("—");  // для врача без специальности
+
         IList<IcdBlock> icdBlocks;
         Iesi.Collections.Generic.ISet<Doctor> doctors;
         Iesi.Collections.Generic.ISet<SpecialityIcdBlocks> specialityIcdBlocks;

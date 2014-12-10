@@ -1,0 +1,115 @@
+﻿<UserControl x:Class="Diagnosis.App.Screens.Doctors"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
+             xmlns:controls="clr-namespace:Diagnosis.App.Controls"
+             mc:Ignorable="d"
+             x:Name="doctors"
+             FocusManager.IsFocusScope="True"
+             d:DesignHeight="300" d:DesignWidth="400">
+    <!--DoctorsListViewModel-->
+    <UserControl.Resources>        
+        <Style x:Key="CellStyle" TargetType="DataGridCell">
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="FocusVisualStyle"
+                    Value="{x:Null}" />
+            <Setter Property="KeyboardNavigation.IsTabStop"
+                    Value="False" />
+        </Style>
+
+        <Style  x:Key="SelectableCellStyle"
+                TargetType="{x:Type DataGridCell}"
+                BasedOn="{StaticResource CellStyle}">
+            <Style.Triggers>
+                <Trigger Property="IsSelected"
+                         Value="True">
+                    <Setter Property="KeyboardNavigation.IsTabStop"
+                            Value="True" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid HorizontalAlignment="Stretch" MaxWidth="500" MinWidth="300">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="36" />
+            <RowDefinition Height="auto" MinHeight="30" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Style="{StaticResource ScreenTitle}">Врачи</TextBlock>
+            <Button Content="Новый..."
+                    Grid.Column="1"
+                    Height="23"
+                    Width="70"
+                    HorizontalAlignment="Right"
+                    Command="{Binding AddCommand}"
+                    Margin="0,2,0,11" />
+        </Grid>
+
+        <DataGrid x:Name="dataGrid"
+                  Grid.Row="3"
+                  ItemsSource="{Binding Doctors}"
+                  SelectedItem="{Binding SelectedDoctor}"
+                  CellStyle="{StaticResource CellStyle}"
+                  GridLinesVisibility="None"
+                  Margin="0,10,0,0"
+                  FontSize="15"
+                  IsReadOnly="True"
+                  SelectionUnit="FullRow"
+                  SelectionMode="Extended"
+                  AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Фамилия"
+                                    Binding="{Binding LastName, Mode=OneWay}" />
+                <DataGridTextColumn Header="Имя"
+                                    Binding="{Binding FirstName, Mode=OneWay}" />
+                <DataGridTextColumn Header="Отчество"
+                                    Binding="{Binding MiddleName, Mode=OneWay}" />
+                <DataGridCheckBoxColumn Header="Муж"
+                                        Binding="{Binding IsMale, Mode=OneWay}" />
+                <DataGridTextColumn Header="Специальность"
+                                    Binding="{Binding Speciality, Mode=OneWay}">
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+            <DataGrid.InputBindings>
+                <KeyBinding Key="Enter"
+                            Command="{Binding EditCommand}" />
+                <KeyBinding Key="F2"
+                            Command="{Binding EditCommand}" />
+                <KeyBinding Key="Delete"
+                            Command="{Binding DeleteCommand}" />
+                <MouseBinding MouseAction="LeftDoubleClick"
+                              Command="{Binding EditCommand}" />
+            </DataGrid.InputBindings>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Tag"
+                            Value="{Binding DataContext, ElementName=dataGrid}" />
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu>
+                                <MenuItem Header="Редактировать"
+                                          InputGestureText="F2"
+                                          Command="{Binding PlacementTarget.Tag.EditCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                <MenuItem Header="Удалить"
+                                          InputGestureText="Del"
+                                          Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
+    </Grid>
+</UserControl>

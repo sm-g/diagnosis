@@ -40,6 +40,7 @@ namespace Diagnosis.Common
         OpenHolder,
 
         // windows
+        EditDoctor,
         CreatePatient,
         EditPatient,
         EditHolder,
@@ -60,6 +61,7 @@ namespace Diagnosis.Common
         WordPersisted,
         WordSaved,
         PatientSaved,
+        DoctorSaved
     }
 
     public static class EventAggragatorExtensions

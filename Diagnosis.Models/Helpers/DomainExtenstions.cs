@@ -99,6 +99,7 @@ namespace Diagnosis.Models
     {
         /// <summary>
         /// Определяет, пуста ли сущность.
+        /// доктор — без курсов и осмотров
         /// пациент  — без записей и курсов
         /// курс — без записей и осмотров
         /// осмотр — без записей
@@ -109,6 +110,12 @@ namespace Diagnosis.Models
         public static bool IsEmpty(this IDomainObject entity)
         {
             var @switch = new Dictionary<Type, Func<bool>> {
+                { typeof(Doctor), () => 
+                    {
+                        var doc = entity as Doctor;
+                        return doc.Appointments.Count() == 0 && doc.Courses.Count() == 0;
+                    } 
+                },
                 { typeof(Patient), () => 
                     {
                         var pat = entity as Patient;

@@ -15,7 +15,6 @@ namespace Diagnosis.Data.Mappings
 
             Property(x => x.FirstName, m =>
             {
-                m.NotNullable(true);
                 m.Length(20);
             });
             Property(x => x.MiddleName, m =>
@@ -24,6 +23,7 @@ namespace Diagnosis.Data.Mappings
             });
             Property(x => x.LastName, m =>
             {
+                m.NotNullable(true);
                 m.Length(20);
             });
             Property(x => x.IsMale);
@@ -48,7 +48,18 @@ namespace Diagnosis.Data.Mappings
             {
                 r.OneToMany();
             });
-
+            Set(x => x.Courses, s =>
+            {
+                s.Key(k =>
+                {
+                    k.Column("DoctorID");
+                });
+                s.Inverse(true);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.OneToMany();
+            });
             ManyToOne(x => x.Speciality, m =>
             {
                 m.Column("SpecialityID");
