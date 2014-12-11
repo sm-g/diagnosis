@@ -1,8 +1,11 @@
-﻿using NHibernate;
+﻿using Diagnosis.Data.Versions;
+using Diagnosis.Models;
+using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Dialect;
 using NHibernate.Driver;
 using NHibernate.Tool.hbm2ddl;
+using PasswordHash;
 
 namespace Diagnosis.Data
 {
@@ -28,6 +31,10 @@ namespace Diagnosis.Data
                 using (ITransaction tx = session.BeginTransaction())
                 {
                     session.CreateSQLQuery(sql).ExecuteUpdate();
+                    session.CreateSQLQuery(string.Format("INSERT INTO {0} ([Id], [HashAndSalt]) Values ('{1}','{2}')",
+                        Names.PassportTbl,
+                        Admin.DefaultId,
+                        PasswordHashManager.CreateHash(Admin.DefaultPassword))).ExecuteUpdate();
                     tx.Commit();
                 }
             }

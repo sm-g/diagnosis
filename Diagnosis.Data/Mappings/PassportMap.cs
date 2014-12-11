@@ -10,7 +10,7 @@ namespace Diagnosis.Data.Mappings
         {
             Id(x => x.Id, m =>
             {
-                m.Generator(Generators.GuidComb);
+                m.Generator(Generators.Foreign<Passport>(x => x.Doctor));
             });
 
 
@@ -18,7 +18,15 @@ namespace Diagnosis.Data.Mappings
             {
                 m.Length(PasswordHash.PasswordHashManager.HASH_LENGTH);
             });
-            Property(x => x.Remember);
+            Property(x => x.Remember, m =>
+            {
+                m.Column(c =>
+                {
+                    c.Default(0);
+                });
+                m.NotNullable(true);
+            });
+            OneToOne(x => x.Doctor, m => { });
         }
     }
 }

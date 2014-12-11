@@ -5,6 +5,8 @@ namespace Diagnosis.Data.Versions
     [Migration(201412080002)]
     public class InsertFirstWordSet : Migration
     {
+        private const string FKWordWord = "FK_Word_Word";
+
         public override void Up()
         {
             Execute.EmbeddedScript("insert_Word.sql");
@@ -12,9 +14,9 @@ namespace Diagnosis.Data.Versions
 
         public override void Down()
         {
-            Delete.ForeignKey(Names.FKWordWord).OnTable(Names.WordTbl);
+            Delete.ForeignKey(FKWordWord).OnTable(Names.WordTbl);
             Delete.FromTable(Names.WordTbl).AllRows();
-            Create.ForeignKey(Names.FKWordWord).FromTable(Names.WordTbl)
+            Create.ForeignKey(FKWordWord).FromTable(Names.WordTbl)
                 .ForeignColumn("WordID")
                 .ToTable(Names.WordTbl)
                 .PrimaryColumn("Id")

@@ -17,6 +17,7 @@ namespace Diagnosis.Data.Mappings
             {
                 m.Cascade(Cascade.All | Cascade.DeleteOrphans);
                 m.Access(Accessor.Field);
+                m.Constrained(true);
             });
 
             Property(x => x.FirstName, m =>

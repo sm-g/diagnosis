@@ -15,10 +15,10 @@ namespace Diagnosis.Models
         public static Guid DefaultId = Guid.Parse("3B817ABA-9110-45EF-B81E-A5B975A720DF");
         public const string DefaultPassword = "123";
 
-        public Admin(Passport user)
+        public Admin(Passport passport)
             : this()
         {
-            Passport = user;
+            Passport = passport;
         }
 
         protected Admin()

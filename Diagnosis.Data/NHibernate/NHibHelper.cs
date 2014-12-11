@@ -77,7 +77,7 @@ namespace Diagnosis.Data
         {
             if (_session == null)
             {
-                // ExportSchemaToFile();
+                //ExportSchemaToFile();
                 _session = SessionFactory.OpenSession();
                 _session.FlushMode = FlushMode.Commit;
 

@@ -26,6 +26,5 @@ namespace Diagnosis.Data.Versions
 
         public static string PassportTbl = "Passport";
 
-        public static string FKWordWord = "FK_Word_Word";
     }
 }

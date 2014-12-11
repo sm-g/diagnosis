@@ -30,7 +30,7 @@ namespace Diagnosis.ViewModels.Screens
             Doctors.SyncWith(docs);
 
             emhManager = new EventMessageHandlersManager(new[] {
-                this.Subscribe(Events.PatientSaved, (e) =>
+                this.Subscribe(Events.DoctorSaved, (e) =>
                 {
                     // выбираем нового доктора или изменившегося
                     var doc = e.GetValue<Doctor>(MessageKeys.Doctor);

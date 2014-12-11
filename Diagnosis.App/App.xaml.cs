@@ -67,7 +67,7 @@ namespace Diagnosis.App
 #if DEBUG
                 new DebugOutput(0);
                 new DebugWindow().Show();
-                NHibernateHelper.ShowSql = true;
+                NHibernateHelper.ShowSql = !NHibernateHelper.InMemory;
 
 #endif
                 DbMaintenance();

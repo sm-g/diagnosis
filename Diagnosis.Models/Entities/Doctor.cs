@@ -20,7 +20,7 @@ namespace Diagnosis.Models
         private DoctorSettings _docSettings;
         private bool _isMale;
         private Speciality _speciality;
-        private Models.Passport passport;
+        private Passport passport;
 
         public virtual DoctorSettings DoctorSettings
         {
