@@ -1,9 +1,8 @@
-﻿using Diagnosis.Models;
-using EventAggregator;
+﻿using Diagnosis.Common;
+using Diagnosis.Models;
 using System.Diagnostics.Contracts;
-using System.Windows.Input;
-using Diagnosis.Common;
 using System.Linq;
+using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -16,7 +15,6 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Requires(w != null);
             word = w;
             word.PropertyChanged += word_PropertyChanged;
-
         }
 
         #region Model
@@ -45,7 +43,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        #endregion
+        #endregion Model
 
         public ICommand SendToSearchCommand
         {
@@ -57,6 +55,7 @@ namespace Diagnosis.ViewModels.Screens
                    });
             }
         }
+
         public ICommand EditCommand
         {
             get
@@ -75,6 +74,9 @@ namespace Diagnosis.ViewModels.Screens
                 return word.IsDirty;
             }
         }
+
+        public bool HasExistingTitle { get; set; }
+
         public override string this[string columnName]
         {
             get
@@ -86,9 +88,11 @@ namespace Diagnosis.ViewModels.Screens
                     .Where(x => x.PropertyName == columnName)
                     .Select(x => x.ErrorMessage)
                     .FirstOrDefault();
+                if (HasExistingTitle) message = "Такое слово уже есть.";
                 return message != null ? message : string.Empty;
             }
         }
+
         private void word_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             OnPropertyChanged(e.PropertyName);

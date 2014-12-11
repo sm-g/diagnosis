@@ -1,10 +1,11 @@
 ﻿using Diagnosis.Common;
 using EventAggregator;
 using Diagnosis.Models;
-using NHibernate;
+using NHibernate.Linq;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using Diagnosis.Data;
+using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -18,7 +19,18 @@ namespace Diagnosis.ViewModels.Screens
             this.word = word;
             (word as IEditableObject).BeginEdit();
 
+            var titles = Session.Query<Word>()
+                .Select(w => w.Title)
+                .ToList();
+
             Word = new WordViewModel(word);
+            Word.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "Title")
+                {
+                    Word.HasExistingTitle = titles.Contains(word.Title); // нельзя ввести слово, которое уже есть в словаре
+                }
+            };
             Title = "Редактирование слова";
         }
 
@@ -40,7 +52,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return word.IsValid();
+                return word.IsValid() && !Word.HasExistingTitle;
             }
         }
 
