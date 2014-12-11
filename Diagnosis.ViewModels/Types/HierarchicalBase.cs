@@ -10,7 +10,7 @@ namespace Diagnosis.ViewModels
     /// <summary>
     /// Элемент иерархии.
     /// </summary>
-    public abstract class HierarchicalBase<T> : CheckableBase, IHierarchicalCheckable<T> where T : HierarchicalBase<T>
+    public abstract class HierarchicalBase<T> : CheckableBase where T : HierarchicalBase<T>
     {
         private T _parent;
         private bool _isFiltered;
@@ -176,6 +176,18 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        /// <summary>
+        /// Применяет действие к элементу и всем его детям.
+        /// </summary>
+        public void ForBranch(Action<HierarchicalBase<T>> action)
+        {
+            action(this);
+            foreach (var item in this.AllChildren)
+            {
+                action(item);
+            }
+        }
+
         protected virtual void OnChildrenChanged(HierarchicalEventAgrs<T> e)
         {
             var h = ChildrenChanged;
@@ -241,7 +253,7 @@ namespace Diagnosis.ViewModels
 
         #endregion IHierarchicalCheckable
 
-        #region ICheckable
+        #region CheckableBase
 
         protected override void OnCheckedChanged()
         {
@@ -262,7 +274,7 @@ namespace Diagnosis.ViewModels
                 Parent.IsExpanded = true;
         }
 
-        #endregion ICheckable
+        #endregion CheckableBase
 
         public HierarchicalBase()
         {
@@ -318,7 +330,7 @@ namespace Diagnosis.ViewModels
 
     }
 
-    public class HierarchicalEventAgrs<T> : EventArgs
+    public class HierarchicalEventAgrs<T> : EventArgs where T : HierarchicalBase<T>
     {
         public readonly T IHierarchical;
 

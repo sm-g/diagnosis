@@ -44,7 +44,7 @@ namespace Diagnosis.ViewModels.Search
                item.Code.StartsWith(query, StringComparison.InvariantCultureIgnoreCase);
         }
 
-        protected virtual bool FilterCheckable(ICheckable obj)
+        protected virtual bool FilterCheckable(CheckableBase obj)
         {
             return (WithNonCheckable || !obj.IsNonCheckable)
                    && (checkedDiagnoses == null || !checkedDiagnoses.Contains(obj));

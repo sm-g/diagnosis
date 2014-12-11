@@ -4,10 +4,10 @@ using System.Diagnostics;
 
 namespace Diagnosis.ViewModels
 {
-    public abstract class CheckableBase : ViewModelBase, ICheckable
+    public abstract class CheckableBase : ViewModelBase
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(CheckableBase));
-        #region ICheckable
+        #region CheckableBase
 
         private bool _isNonCheckable;
         private bool _isChecked;
@@ -102,16 +102,16 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        #endregion ICheckable
+        #endregion CheckableBase
     }
 
     [Serializable]
     public class CheckableEventArgs : EventArgs
     {
-        public readonly ICheckable vm;
+        public readonly CheckableBase vm;
 
         [DebuggerStepThrough]
-        public CheckableEventArgs(ICheckable vm)
+        public CheckableEventArgs(CheckableBase vm)
         {
             this.vm = vm;
         }

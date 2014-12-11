@@ -11,8 +11,8 @@ namespace Diagnosis.ViewModels.Search
 {
     public class NewWordSearcher : ISimpleSearcher<Word>
     {
-        readonly INHibernateRepository<Word> repo;
-        public NewWordSearcher(INHibernateRepository<Word> repo)
+        readonly NHibernateRepository<Word> repo;
+        public NewWordSearcher(NHibernateRepository<Word> repo)
         {
             this.repo = repo;
         }
@@ -28,8 +28,8 @@ namespace Diagnosis.ViewModels.Search
     // TODO withnoncheckable = true
     public class NewWordTopParentSearcher : ISimpleSearcher<Word>
     {
-        readonly INHibernateRepository<Word> repo;
-        public NewWordTopParentSearcher(INHibernateRepository<Word> repo)
+        readonly NHibernateRepository<Word> repo;
+        public NewWordTopParentSearcher(NHibernateRepository<Word> repo)
         {
             this.repo = repo;
         }
@@ -63,8 +63,8 @@ namespace Diagnosis.ViewModels.Search
     public class NewWordCompositeSearcher : ISimpleSearcher<Word>
     {
         readonly Word parent;
-        readonly INHibernateRepository<Word> repo;
-        public NewWordCompositeSearcher(Word parent, INHibernateRepository<Word> repo)
+        readonly NHibernateRepository<Word> repo;
+        public NewWordCompositeSearcher(Word parent, NHibernateRepository<Word> repo)
         {
             this.parent = parent;
             this.repo = repo;

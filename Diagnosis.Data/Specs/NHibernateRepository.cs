@@ -9,16 +9,7 @@ using System.Text;
 
 namespace Diagnosis.Data.Specs
 {
-    public interface INHibernateRepository<T>
-    {
-        void Create(T entity);
-        void Update(T entity);
-        void Delete(T entity);
-        IEnumerable<T> FindAll(Specification<T> specification);
-        T GetById(int id);
-    }
-
-    public class NHibernateRepository<T> : INHibernateRepository<T>
+    public class NHibernateRepository<T>
     {
         protected ISession session;
         public NHibernateRepository(ISession session)

@@ -54,7 +54,7 @@ namespace Diagnosis.ViewModels.Search
             return result;
         }
 
-        protected override bool FilterCheckable(ICheckable obj)
+        protected override bool FilterCheckable(CheckableBase obj)
         {
             return base.FilterCheckable(obj) && !obj.IsChecked;
         }

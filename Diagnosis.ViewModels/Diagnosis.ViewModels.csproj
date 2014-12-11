@@ -202,14 +202,10 @@
     <Compile Include="Screens\Card\Managers\HealthRecordManager.cs" />
     <Compile Include="Screens\Card\HealthRecordViewModel.cs" />
     <Compile Include="Screens\Words\WordViewModel.cs" />
-    <Compile Include="Extensions\HierarchicalExtensions.cs" />
     <Compile Include="Framework\SessionVMBase.cs" />
     <Compile Include="Types\HierarchicalBase.cs" />
     <Compile Include="Screens\Card\HrEditorViewModel.cs" />
-    <Compile Include="Types\ICheckable.cs" />
     <Compile Include="Search\IFilter.cs" />
-    <Compile Include="Types\IHierarchical.cs" />
-    <Compile Include="Types\IHierarchicalCheckable.cs" />
     <Compile Include="Search\Searchers\ISimpleSearcher.cs" />
     <Compile Include="Screens\Card\Managers\PatientViewer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -260,7 +256,9 @@
     <None Include="Search\Autocomplete\CodeMap1.dgml" />
     <None Include="Search\SearchClassDiagram.cd" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

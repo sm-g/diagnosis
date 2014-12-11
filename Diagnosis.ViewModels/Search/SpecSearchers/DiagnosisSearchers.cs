@@ -12,8 +12,8 @@ namespace Diagnosis.ViewModels.Search
     public class NewDiagnosisSearcher : ISimpleSearcher<Diag>
     {
         readonly Diag parent;
-        readonly INHibernateRepository<Diag> repo;
-        public NewDiagnosisSearcher(Diag parent, INHibernateRepository<Diag> repo)
+        readonly NHibernateRepository<Diag> repo;
+        public NewDiagnosisSearcher(Diag parent, NHibernateRepository<Diag> repo)
         {
             this.parent = parent;
             this.repo = repo;
