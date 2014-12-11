@@ -10,7 +10,7 @@ namespace Diagnosis.Models
     {
         public static Speciality Null = new Speciality("—");  // для врача без специальности
 
-        Iesi.Collections.Generic.ISet<IcdBlock> icdBlocks = new HashedSet<IcdBlock>();
+        IList<IcdBlock> icdBlocks = new List<IcdBlock>(); // many-2-many bag
         Iesi.Collections.Generic.ISet<Doctor> doctors = new HashedSet<Doctor>();
         Iesi.Collections.Generic.ISet<SpecialityIcdBlocks> specialityIcdBlocks = new HashedSet<SpecialityIcdBlocks>();
 
