@@ -156,6 +156,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mappings\PassportMap.cs" />
     <Compile Include="Mappings\HrItemMap.cs" />
     <Compile Include="Mappings\MeasureMap.cs" />
     <Compile Include="Mappings\UomMap.cs" />
@@ -171,6 +172,7 @@
     <Compile Include="Mappings\DoctorMap.cs" />
     <Compile Include="Mappings\CourseMap.cs" />
     <Compile Include="Mappings\PatientMap.cs" />
+    <Compile Include="Versions\Migrations\06 AddPassportTable.cs" />
     <Compile Include="Versions\Migrations\05 InsertSpecialityIcdBlock.cs" />
     <Compile Include="Versions\Migrator.cs" />
     <Compile Include="Versions\Names.cs" />

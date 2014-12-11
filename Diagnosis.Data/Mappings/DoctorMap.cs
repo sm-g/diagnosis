@@ -13,6 +13,12 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.GuidComb);
             });
 
+            OneToOne(x => x.User, m =>
+            {
+                m.Cascade(Cascade.All | Cascade.DeleteOrphans);
+                m.Access(Accessor.Field);
+            });
+
             Property(x => x.FirstName, m =>
             {
                 m.Length(20);

@@ -11,8 +11,6 @@ namespace Diagnosis.Models
 {
     public class Doctor : ValidatableEntity<Guid>, IDomainObject, IMan
     {
-        public static Doctor Admin = new AdminDoctor();
-
         private Iesi.Collections.Generic.ISet<Appointment> appointments = new HashedSet<Appointment>();
         private Iesi.Collections.Generic.ISet<Course> courses = new HashedSet<Course>();
         private string _fn;
@@ -20,9 +18,9 @@ namespace Diagnosis.Models
         private string _mn;
         private int _settings;
         private DoctorSettings _docSettings;
-        private bool _male;
         private bool _isMale;
         private Speciality _speciality;
+        private Models.Passport _user;
 
         public virtual DoctorSettings DoctorSettings
         {
@@ -92,6 +90,15 @@ namespace Diagnosis.Models
             }
         }
 
+        public virtual Passport User
+        {
+            get { return _user; }
+            set
+            {
+                SetProperty(ref _user, value, () => User);
+            }
+        }
+
         public virtual IEnumerable<Appointment> Appointments
         {
             get { return appointments; }
@@ -129,6 +136,7 @@ namespace Diagnosis.Models
             MiddleName = middleName;
             Speciality = speciality;
             IsMale = true;
+            User = new Passport(this);
         }
 
         protected Doctor()
@@ -145,13 +153,31 @@ namespace Diagnosis.Models
             return new DoctorValidator().Validate(this);
         }
 
-        public class AdminDoctor : Doctor
+        /// <summary>
+        /// Пользователь-администратор
+        /// </summary>
+        public class Admin : Doctor
         {
             private const string AdminLastName = "Администратор";
+            public static Guid DefaultId = Guid.Parse("3B817ABA-9110-45EF-B81E-A5B975A720DF");
+            public const string DefaultPassword = "123";
 
-            public AdminDoctor()
+            public Admin(Passport user)
+                : this()
+            {
+                User = user;
+            }
+
+            protected Admin()
                 : base(AdminLastName)
             {
+            }
+            public override Guid Id
+            {
+                get { return DefaultId; }
+                protected set // no rewrite
+                {
+                }
             }
         }
     }
