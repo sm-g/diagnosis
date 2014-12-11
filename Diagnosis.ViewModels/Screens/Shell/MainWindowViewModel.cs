@@ -8,6 +8,7 @@ namespace Diagnosis.ViewModels.Screens
     public class MainWindowViewModel : ViewModelBase
     {
         private bool _menuVisible;
+        private bool _searchVis;
         private ScreenSwitcher switcher;
 
         public MainWindowViewModel()
@@ -22,6 +23,10 @@ namespace Diagnosis.ViewModels.Screens
                 if (e.PropertyName == "CurrentView")
                 {
                     MenuVisible = switcher.Screen != Screens.Login;
+                    // TODO fix auto open tab when make tabcontrol visible
+                    SearchVisible =
+                        (switcher.Screen != Screens.Login) &&
+                        (switcher.Screen != Screens.Doctors);
 
                     if ((switcher.Screen & (Screens.Login | Screens.Words)) == switcher.Screen)
                     {
@@ -32,7 +37,6 @@ namespace Diagnosis.ViewModels.Screens
             };
 
             switcher.OpenScreen(Screens.Login, replace: true);
-            (CurrentView as LoginViewModel).LoginCommand.Execute(null);
         }
 
         public ScreenBase CurrentView
@@ -61,6 +65,21 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     _menuVisible = value;
                     OnPropertyChanged(() => MenuVisible);
+                }
+            }
+        }
+        public bool SearchVisible
+        {
+            get
+            {
+                return _searchVis;
+            }
+            set
+            {
+                if (_searchVis != value)
+                {
+                    _searchVis = value;
+                    OnPropertyChanged(() => SearchVisible);
                 }
             }
         }

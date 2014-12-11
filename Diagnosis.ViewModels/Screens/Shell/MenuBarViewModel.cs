@@ -20,7 +20,7 @@ namespace Diagnosis.ViewModels.Screens
 
             AuthorityController.LoggedIn += (s, e) =>
             {
-                OnPropertyChanged(() => CurrentDoctor);
+                OnPropertyChanged(() => CurrentUser);
             };
         }
 
@@ -32,8 +32,8 @@ namespace Diagnosis.ViewModels.Screens
                     () =>
                     {
                         // viewer.clearhistory()
-                        switcher.OpenScreen(Screens.Login);
-                    }, () => switcher.Screen != Screens.Login);
+                        AuthorityController.LogOut();
+                    }, () => switcher.Screen != Screens.Login && AuthorityController.CurrentUserCanOpen(Screens.Login));
             }
         }
 
@@ -45,7 +45,7 @@ namespace Diagnosis.ViewModels.Screens
                     () =>
                     {
                         switcher.OpenScreen(Screens.Words);
-                    }, () => switcher.Screen != Screens.Words);
+                    }, () => switcher.Screen != Screens.Words && AuthorityController.CurrentUserCanOpen(Screens.Words));
             }
         }
 
@@ -56,7 +56,7 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     switcher.OpenScreen(Screens.Patients);
-                }, () => switcher.Screen != Screens.Patients);
+                }, () => switcher.Screen != Screens.Patients && AuthorityController.CurrentUserCanOpen(Screens.Patients));
             }
         }
 
@@ -74,7 +74,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Events.OpenSettings);
+                    this.Send(Events.OpenSettings, AuthorityController.CurrentUser.AsParams(MessageKeys.User));
                 });
             }
         }
@@ -87,9 +87,9 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public Doctor CurrentDoctor
+        public IUser CurrentUser
         {
-            get { return AuthorityController.CurrentDoctor; }
+            get { return AuthorityController.CurrentUser; }
         }
     }
 }

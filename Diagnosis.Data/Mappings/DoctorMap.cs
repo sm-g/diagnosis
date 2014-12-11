@@ -13,7 +13,7 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.GuidComb);
             });
 
-            OneToOne(x => x.User, m =>
+            OneToOne(x => x.Passport, m =>
             {
                 m.Cascade(Cascade.All | Cascade.DeleteOrphans);
                 m.Access(Accessor.Field);

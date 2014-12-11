@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Diagnosis.Common;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -40,6 +41,14 @@ namespace Diagnosis.Models
     }
 
     /// <summary>
+    /// Пользователь системы
+    /// </summary>
+    public interface IUser : IEntity
+    {
+        Passport Passport { get; }
+    }
+
+    /// <summary>
     /// Сущность, содержащая записи.
     /// </summary>
     public interface IHrsHolder : IDomainObject
@@ -73,6 +82,19 @@ namespace Diagnosis.Models
         public HrsHolderEventArgs(IHrsHolder holder)
         {
             this.holder = holder;
+        }
+    }
+
+
+    [Serializable]
+    public class UserEventArgs : EventArgs
+    {
+        public readonly IUser user;
+
+        [System.Diagnostics.DebuggerStepThrough]
+        public UserEventArgs(IUser user)
+        {
+            this.user = user;
         }
     }
 }

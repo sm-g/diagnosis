@@ -128,6 +128,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -158,6 +159,7 @@
     <Compile Include="Types\NotifyPropertyChangedBase.cs" />
     <Compile Include="Mediator\EventMessageHandlersManager.cs" />
     <Compile Include="Util\FileHelper.cs" />
+    <Compile Include="Util\PasswordService.cs" />
     <Compile Include="Util\PerformanceTester.cs" />
     <Compile Include="Util\ReflectionHelper.cs" />
   </ItemGroup>

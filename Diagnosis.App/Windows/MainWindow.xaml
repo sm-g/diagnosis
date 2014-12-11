@@ -68,7 +68,7 @@
                         Margin="0,0,-2,0"
                         Padding="0"
                    DataContext="{Binding RightAside}"
-                   Visibility="{Binding DataContext.MenuVisible, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}"
+                   Visibility="{Binding DataContext.SearchVisible, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}"
                    Grid.Row="1"
                    Grid.Column="1"
                    Grid.RowSpan="2">

@@ -11,9 +11,9 @@ namespace Diagnosis.Common
     public static class MessageKeys
     {
         public const string Word = "word";
-        public const string Words = "words";
         public const string Patient = "patient";
         public const string Doctor = "doctor";
+        public const string User = "user";
         public const string Diagnosis = "diagnosis";
         public const string Course = "course";
         public const string Appointment = "appointment";

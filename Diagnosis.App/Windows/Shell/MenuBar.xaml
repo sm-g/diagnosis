@@ -24,7 +24,7 @@
         <!--<CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding FastAddingMode}">_Осмотр пациентов</CheckBox>-->
 
         <Menu HorizontalAlignment="Right">
-            <MenuItem Header="{Binding CurrentDoctor, Converter={StaticResource ManToShortName}}">
+            <MenuItem Header="{Binding CurrentUser, Converter={StaticResource ManToShortName}}">
                 <MenuItem Header="_Настройки..." Command="{Binding OpenSettingsCommand}" />
                 <MenuItem Header="_Выйти" Command="{Binding LogoutCommand}" />
             </MenuItem>

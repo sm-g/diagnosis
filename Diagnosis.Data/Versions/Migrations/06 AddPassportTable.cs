@@ -18,8 +18,8 @@ namespace Diagnosis.Data.Versions
             Insert.IntoTable(Names.PassportTbl)
                 .Row(new
                 {
-                    Id = Doctor.Admin.DefaultId,
-                    HashAndSalt = PasswordHashManager.CreateHash(Doctor.Admin.DefaultPassword)
+                    Id = Admin.DefaultId,
+                    HashAndSalt = PasswordHashManager.CreateHash(Admin.DefaultPassword)
                 });
 
             // для каждого врача - без пароля

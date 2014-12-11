@@ -12,11 +12,24 @@ namespace Diagnosis.App.Screens
         public Login()
         {
             InitializeComponent();
+            Loaded += (s, e) =>
+            {
+                Vm.PropertyChanged += (s1, e1) =>
+                {
+                    if (e1.PropertyName == "PasswordVisibility" && !Vm.PasswordVisible)
+                    {
+                        password.Clear();
+                    }
+                };
+            };
+           
         }
+
+        LoginViewModel Vm { get { return (DataContext as LoginViewModel); } }
 
         private void password_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            (DataContext as LoginViewModel).Password = password.SecurePassword;
+            Vm.Password = password.SecurePassword;
         }
     }
 }

@@ -4,53 +4,81 @@ using Diagnosis.Models;
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Security;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using NHibernate.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
     public class LoginViewModel : ScreenBase
     {
+        private IUser _selected;
+        private bool _passVis;
         private SecureString _password;
+        private bool _remember;
+        private bool _rememberVis;
         private bool _wrongpassword;
-        private DoctorViewModel _current;
 
-        public DoctorViewModel CurrentDoctor
+        public LoginViewModel()
         {
-            get
+            var doctors = Session.QueryOver<Doctor>().List()
+                .OrderBy(d => d.FullName)
+                .ToList();
+
+            var adminUser = Session.Query<Passport>().
+                Where(u => u.Id == Admin.DefaultId).FirstOrDefault();
+            var admin = new Admin(adminUser);
+
+            Users = new ObservableCollection<IUser>(doctors);
+            Users.Add(admin);
+
+            Title = "Вход";
+            SelectedUser = Users[0];
+
+            if (AuthorityController.AutoLogon)
             {
-                return _current;
+                var doc = doctors.Where(d => d.Passport.Remember).FirstOrDefault();
+                if (doc != null)
+                {
+                    SelectedUser = doc;
+                    DelayedLogon();
+                }
             }
+        }
+        public IUser SelectedUser
+        {
+            get { return _selected; }
             set
             {
-                if (_current != value)
+                if (_selected != value)
                 {
-                    _current = value;
-
-                    OnPropertyChanged("CurrentDoctor");
+                    _selected = value;
+                    if (value is Admin)
+                    {
+                        PasswordVisible = true;
+                        RememberVisible = false;
+                    }
+                    else
+                    {
+                        PasswordVisible = false;
+                        RememberVisible = true;
+                    }
+                    OnPropertyChanged(() => SelectedUser);
                 }
             }
         }
 
-        public ReadOnlyObservableCollection<DoctorViewModel> Doctors { get; private set; }
-
-        public SecureString Password
-        {
-            private get { return _password; }
-            set
-            {
-                _password = value;
-            }
-        }
+        public ObservableCollection<IUser> Users { get; private set; }
 
         public bool IsLoginEnabled
         {
             get
             {
-                return true; //!String.IsNullOrWhiteSpace(Username ?? "") && Password != null && Password.Length > 0;
+                // пароль введен или не нужен
+                return !PasswordVisible ||
+                    Password != null && Password.Length > 0;
             }
         }
 
@@ -67,127 +95,94 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public SecureString Password
+        {
+            private get { return _password; }
+            set
+            {
+                _password = value;
+            }
+        }
+
+        public bool PasswordVisible
+        {
+            get { return _passVis; }
+            set
+            {
+                if (_passVis != value)
+                {
+                    _passVis = value;
+                    OnPropertyChanged(() => PasswordVisible);
+                }
+            }
+        }
+        public bool Remember
+        {
+            get { return _remember; }
+            set
+            {
+                if (_remember != value)
+                {
+                    _remember = value;
+                    OnPropertyChanged(() => Remember);
+                }
+            }
+        }
+
+        public bool RememberVisible
+        {
+            get { return _rememberVis; }
+            set
+            {
+                if (_rememberVis != value)
+                {
+                    _rememberVis = value;
+                    OnPropertyChanged(() => RememberVisible);
+                }
+            }
+        }
+
         public ICommand LoginCommand
         {
             get
             {
                 return new RelayCommand(() =>
                 {
-                    // Password.MakeReadOnly();
-                    if (CurrentDoctor == null)
-                    {
-                        AuthorityController.LogIn(null);
+                    if (Password != null)
+                        Password.MakeReadOnly();
 
-                    }
-                    else
+                    try
                     {
-                        AuthorityController.LogIn(CurrentDoctor.doctor);
+                        var user = SelectedUser;
+                        AuthorityController.LogIn(user, Password, Remember);
+
+                        if (user is Doctor)
+                        {
+                            // сохраняем remember после входа
+                            user.Passport.Remember = Remember;
+                            new Diagnosis.Data.Saver(Session).Save(user);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        // show error
                     }
                 }, () => IsLoginEnabled);
             }
         }
 
-        public LoginViewModel()
+        private void DelayedLogon()
         {
-            var doctorVMs = Session.QueryOver<Doctor>().List().Select(d => new DoctorViewModel(d)).ToList();
-            Doctors = new ReadOnlyObservableCollection<DoctorViewModel>(new ObservableCollection<DoctorViewModel>(doctorVMs));
-
-            if (Doctors.Count > 0)
+            // need time to complete LoginViewModel ctor and change Current screen
+            var timer = new System.Timers.Timer();
+            timer.Elapsed += (obj, args) =>
             {
-                CurrentDoctor = Doctors[0];
-            }
-
-            Title = "Вход";
-        }
-
-        public class DoctorViewModel : ViewModelBase
-        {
-            internal readonly Doctor doctor;
-
-            public string FirstName
-            {
-                get
-                {
-                    return doctor.FirstName;
-                }
-                set
-                {
-                    if (doctor.FirstName != value)
-                    {
-                        doctor.FirstName = value;
-                        OnPropertyChanged(() => FirstName);
-                    }
-                }
-            }
-
-            public string MiddleName
-            {
-                get
-                {
-                    return doctor.MiddleName ?? "";
-                }
-                set
-                {
-                    if (doctor.MiddleName != value)
-                    {
-                        doctor.MiddleName = value;
-                        OnPropertyChanged(() => MiddleName);
-                    }
-                }
-            }
-
-            public string LastName
-            {
-                get
-                {
-                    return doctor.LastName;
-                }
-                set
-                {
-                    if (doctor.LastName != value)
-                    {
-                        doctor.LastName = value;
-                        OnPropertyChanged(() => LastName);
-                    }
-                }
-            }
-
-            public bool IsMale
-            {
-                get
-                {
-                    return doctor.IsMale;
-                }
-                set
-                {
-                    if (doctor.IsMale != value)
-                    {
-                        doctor.IsMale = value;
-                        OnPropertyChanged(() => IsMale);
-                    }
-                }
-            }
-
-            public string Speciality
-            {
-                get
-                {
-                    return doctor.Speciality.Title;
-                }
-            }
-
-            public DoctorViewModel(Doctor d)
-            {
-                Contract.Requires(d != null);
-                doctor = d;
-            }
-
-            public override string ToString()
-            {
-                return doctor.ToString();
-            }
+                Remember = true;
+                LoginCommand.Execute(null);
+            };
+            timer.Interval = 100;
+            timer.AutoReset = false;
+            timer.Start();
         }
     }
-
-
 }

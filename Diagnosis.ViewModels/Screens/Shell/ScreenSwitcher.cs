@@ -23,8 +23,13 @@ namespace Diagnosis.ViewModels.Screens
 
             this.Subscribe(Events.OpenSettings, (e) =>
             {
-                var settingsVM = new SettingsViewModel(AuthorityController.CurrentDoctor);
-                this.Send(Events.OpenDialog, settingsVM.AsParams(MessageKeys.Dialog));
+                IDialog vm;
+                var user = e.GetValue<IUser>(MessageKeys.User);
+                if (user is Doctor)
+                    vm = new SettingsViewModel(user as Doctor);
+                else
+                    vm = null; // настройка админа
+                this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
             });
 
             this.Subscribe(Events.EditDoctor, (e) =>
@@ -85,9 +90,17 @@ namespace Diagnosis.ViewModels.Screens
 
             AuthorityController.LoggedIn += (s, e) =>
             {
-                OpenScreen(Screens.Patients);
-            };
+                if (e.user is Admin)
+                    OpenScreen(Screens.Doctors);
+                else if (e.user is Doctor)
+                    OpenScreen(Screens.Patients);
 
+            };
+            AuthorityController.LoggedOut += (s, e) =>
+            {
+                OpenScreen(Screens.Login);
+
+            };
             // карточка
 
             this.Subscribe(Events.OpenPatient, (e) =>
@@ -181,6 +194,8 @@ namespace Diagnosis.ViewModels.Screens
         public void OpenScreen(Screens screen, object parameter = null, bool replace = false)
         {
             var updateCurView = replace || Screen != screen; // не обновляем, если экран тот же и не надо заменять
+            if (!AuthorityController.CurrentUserCanOpen(screen))
+                throw new InvalidOperationException(string.Format("{0} не может открывать {1}", AuthorityController.CurrentUser, screen));
 
             Screen = screen;
 

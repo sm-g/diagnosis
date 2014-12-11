@@ -7,6 +7,7 @@ using System.Windows.Input;
 using EventAggregator;
 using Diagnosis.Common;
 using Diagnosis.Data.Specs;
+using Diagnosis.Data;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -95,7 +96,7 @@ namespace Diagnosis.ViewModels.Screens
 
             if (changed.Count > 0)
             {
-                Session.SaveOrUpdate(doctor);
+                new Saver(Session).Save(doctor);
             }
 
             this.Send(Events.SettingsSaved, doctor.AsParams(MessageKeys.Doctor));

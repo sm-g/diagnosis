@@ -81,13 +81,13 @@ namespace Diagnosis.Data
             return false;
         }
 
-        public bool Save(params IDomainObject[] domainObjects)
+        public bool Save(params IEntity[] entity)
         {
             using (var t = session.BeginTransaction())
             {
                 try
                 {
-                    foreach (var item in domainObjects)
+                    foreach (var item in entity)
                     {
                         session.SaveOrUpdate(item);
                     }

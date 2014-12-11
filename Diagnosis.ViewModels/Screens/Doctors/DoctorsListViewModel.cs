@@ -1,18 +1,11 @@
-﻿using System.Linq;
-using Diagnosis.Common;
-using EventAggregator;
-using System;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
-using Diagnosis.Data.Repositories;
-using Diagnosis.Models;
+﻿using Diagnosis.Common;
 using Diagnosis.Data;
-using Diagnosis.ViewModels.Search;
-using NHibernate;
-using NHibernate.Linq;
-using Diagnosis.Data.Queries;
+using Diagnosis.Models;
+using EventAggregator;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Data;
-using System.ComponentModel;
+using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -80,6 +73,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         public RelayCommand AddCommand
         {
             get
@@ -91,6 +85,7 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
+
         public ICommand EditCommand
         {
             get
@@ -101,7 +96,6 @@ namespace Diagnosis.ViewModels.Screens
                 }, () => SelectedDoctor != null);
             }
         }
-
 
         public ICommand DeleteCommand
         {
