@@ -190,7 +190,6 @@
     <Compile Include="Screens\Words\WordEditorViewModel.cs" />
     <Compile Include="Search\Exporter.cs" />
     <Compile Include="Search\IcdSelectorViewModel.cs" />
-    <Compile Include="Search\Autocomplete\IAutoComplete.cs" />
     <Compile Include="Search\HrHolderSearchResultViewModel.cs" />
     <Compile Include="Search\SearchResultViewModel.cs" />
     <Compile Include="Search\Statistic.cs" />
@@ -227,7 +226,6 @@
     <Compile Include="Screens\SearchViewModel.cs" />
     <Compile Include="Screens\SettingsViewModel.cs" />
     <Compile Include="Screens\Words\WordsListViewModel.cs" />
-    <Compile Include="Search\Autocomplete\AutoCompleteBase.cs" />
     <Compile Include="Search\Autocomplete\Autocomplete.cs" />
     <Compile Include="Search\Autocomplete\Recognizer.cs" />
     <Compile Include="Search\Autocomplete\Tag.cs" />

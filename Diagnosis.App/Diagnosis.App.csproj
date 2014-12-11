@@ -273,10 +273,6 @@
       <DependentUpon>HealthRecordEditorShared.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Helpers\ItemCollectionExtensions.cs" />
-    <Compile Include="Controls\Search\AutoComplete.xaml.cs">
-      <DependentUpon>AutoComplete.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Search\AutocompleteDataTemplateSelector.cs" />
     <Compile Include="Controls\CardParts\HealthRecordsList.xaml.cs">
       <DependentUpon>HealthRecordsList.xaml</DependentUpon>
     </Compile>
@@ -453,10 +449,6 @@
     <Page Include="Controls\Editors\HealthRecordEditorShared.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\Search\AutoComplete.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\CardParts\HealthRecordsList.xaml">
       <SubType>Designer</SubType>
