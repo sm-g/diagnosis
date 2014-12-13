@@ -9,6 +9,7 @@ using System.Security;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using NHibernate.Linq;
+using System.Windows.Threading;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -174,13 +175,16 @@ namespace Diagnosis.ViewModels.Screens
         private void DelayedLogon()
         {
             // need time to complete LoginViewModel ctor and change Current screen
-            var timer = new System.Timers.Timer();
+            var timer = new System.Timers.Timer(100);
+            var disp = Dispatcher.CurrentDispatcher;
             timer.Elapsed += (obj, args) =>
             {
-                Remember = true;
-                LoginCommand.Execute(null);
+                disp.Invoke((Action)delegate
+                {
+                    Remember = true;
+                    LoginCommand.Execute(null);
+                });
             };
-            timer.Interval = 100;
             timer.AutoReset = false;
             timer.Start();
         }
