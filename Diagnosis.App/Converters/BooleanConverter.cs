@@ -69,11 +69,12 @@ namespace Diagnosis.App.Converters
 
     public class NullableBooleanConverter : IValueConverter
     {
+        // http://stackoverflow.com/a/18451465/3009578
+        // works if initial is null. if initial is false, cannot set to true (double OnPropertyChanged?)
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             var test = (bool?)value;
             var result = bool.Parse((string)parameter);
-
             if (test == result)
             {
                 return true;

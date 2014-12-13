@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Diagnosis.App.Controls.Editors
 {
@@ -23,5 +12,14 @@ namespace Diagnosis.App.Controls.Editors
         {
             InitializeComponent();
         }
+
+        public bool WithUnknown
+        {
+            get { return (bool)GetValue(WithUnknownProperty); }
+            set { SetValue(WithUnknownProperty, value); }
+        }
+
+        public static readonly DependencyProperty WithUnknownProperty =
+            DependencyProperty.Register("WithUnknown", typeof(bool), typeof(SexChooser), new PropertyMetadata(false));
     }
 }

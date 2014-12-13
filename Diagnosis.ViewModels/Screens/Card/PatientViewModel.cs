@@ -102,15 +102,41 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public bool? IsMale
+        public bool IsMale
         {
             get
             {
-                return patient.IsMale;
+                return patient.IsMale.HasValue && patient.IsMale.Value;
             }
             set
             {
-                patient.IsMale = value;
+                if (value)
+                    patient.IsMale = true;
+            }
+        }
+
+        public bool IsFemale
+        {
+            get
+            {
+                return patient.IsMale.HasValue && !patient.IsMale.Value;
+            }
+            set
+            {
+                if (value)
+                    patient.IsMale = false;
+            }
+        }
+        public bool UnknownSex
+        {
+            get
+            {
+                return patient.IsMale == null;
+            }
+            set
+            {
+                if (value)
+                    patient.IsMale = null;
             }
         }
         #endregion Model related

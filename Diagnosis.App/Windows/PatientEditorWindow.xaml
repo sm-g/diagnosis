@@ -98,7 +98,7 @@
                 </DockPanel>
                 <DockPanel>
                     <Label Content="Пол" />
-                    <editors:SexChooser Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                    <editors:SexChooser HorizontalAlignment="Left" VerticalAlignment="Center" WithUnknown="True" />
                 </DockPanel>
             </StackPanel>
         </ScrollViewer>

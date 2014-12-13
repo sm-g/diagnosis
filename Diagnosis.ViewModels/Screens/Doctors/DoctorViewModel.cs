@@ -53,7 +53,21 @@ namespace Diagnosis.ViewModels.Screens
             }
             set
             {
-                doctor.IsMale = value;
+                if (value)
+                    doctor.IsMale = true;
+            }
+        }
+
+        public bool IsFemale
+        {
+            get
+            {
+                return !doctor.IsMale;
+            }
+            set
+            {
+                if (value)
+                    doctor.IsMale = false;
             }
         }
 
