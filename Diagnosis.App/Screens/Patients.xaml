@@ -8,10 +8,12 @@
              mc:Ignorable="d"
              x:Name="patients"
              FocusManager.IsFocusScope="True"
-             d:DesignHeight="300" d:DesignWidth="400">
+             d:DesignHeight="300"
+             d:DesignWidth="400">
     <!--PatientsListViewModel-->
     <UserControl.Resources>
-        <Style x:Key="SexCheckbox" TargetType="{x:Type CheckBox}">
+        <Style x:Key="SexCheckbox"
+               TargetType="{x:Type CheckBox}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type CheckBox}">
@@ -25,8 +27,8 @@
             </Setter>
         </Style>
 
-        
-        <Style x:Key="CellStyle" TargetType="DataGridCell">
+        <Style x:Key="CellStyle"
+               TargetType="DataGridCell">
             <Setter Property="BorderThickness"
                     Value="0" />
             <Setter Property="FocusVisualStyle"
@@ -46,13 +48,15 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-
     </UserControl.Resources>
 
-    <Grid HorizontalAlignment="Stretch" MaxWidth="500" MinWidth="300">
+    <Grid HorizontalAlignment="Stretch"
+          MaxWidth="500"
+          MinWidth="300">
         <Grid.RowDefinitions>
             <RowDefinition Height="36" />
-            <RowDefinition Height="auto" MinHeight="30" />
+            <RowDefinition Height="auto"
+                           MinHeight="30" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -77,12 +81,12 @@
                         Visibility="{Binding DataContext.NoPatients, ElementName=patients, Converter={StaticResource NegBooleanToVisibilityConverter}}"
                         Grid.Row="1" />
 
-        <DockPanel Grid.Row="3" >
+        <DockPanel Grid.Row="3">
             <TextBlock TextWrapping="Wrap"
                        Margin="10"
-                       HorizontalAlignment="Center" VerticalAlignment="Top"
-                       Visibility="{Binding NoPatients, Converter={StaticResource BooleanToVisibilityConverter}}"
-                       >
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"
+                       Visibility="{Binding NoPatients, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Run Text="Сначала " /><Hyperlink Command="{Binding AddPatientCommand}">
                     <Hyperlink.Style>
                         <Style TargetType="Hyperlink">
@@ -110,22 +114,35 @@
                   SelectedCellsChanged="dataGrid_SelectedCellsChanged">
             <DataGrid.Columns>
                 <!--<DataGridTextColumn Header="Метка" IsReadOnly="True" Binding="{Binding Label, Mode=OneWay}" />-->
-                <DataGridTextColumn Header="Фамилия" IsReadOnly="True" Binding="{Binding LastName, Mode=OneWay}" />
-                <DataGridTextColumn Header="Имя" IsReadOnly="True" Binding="{Binding FirstName, Mode=OneWay}" />
-                <DataGridTextColumn Header="Отчество" IsReadOnly="True" Binding="{Binding MiddleName, Mode=OneWay}" />
-                <DataGridCheckBoxColumn Header="Пол" IsReadOnly="True" Binding="{Binding IsMale, Mode=OneWay}" ElementStyle="{StaticResource SexCheckbox}" />
-                <DataGridTextColumn Header="Возраст" IsReadOnly="True" Binding="{Binding Age, Mode=OneWay}" />
+                <DataGridTextColumn Header="Фамилия"
+                                    IsReadOnly="True"
+                                    Binding="{Binding LastName, Mode=OneWay}" />
+                <DataGridTextColumn Header="Имя"
+                                    IsReadOnly="True"
+                                    Binding="{Binding FirstName, Mode=OneWay}" />
+                <DataGridTextColumn Header="Отчество"
+                                    IsReadOnly="True"
+                                    Binding="{Binding MiddleName, Mode=OneWay}" />
+                <DataGridCheckBoxColumn Header="Пол"
+                                        IsReadOnly="True"
+                                        Binding="{Binding IsMale, Mode=OneWay}"
+                                        ElementStyle="{StaticResource SexCheckbox}" />
+                <DataGridTextColumn Header="Возраст"
+                                    IsReadOnly="True"
+                                    Binding="{Binding Age, Mode=OneWay}" />
             </DataGrid.Columns>
             <DataGrid.InputBindings>
-                <KeyBinding Key="Enter" Command="{Binding OpenCommand}" />
+                <KeyBinding Key="Enter"
+                            Command="{Binding OpenCommand}" />
                 <KeyBinding Key="F2"
                             Command="{Binding EditCommand}" />
                 <KeyBinding Key="Delete"
                             Command="{Binding DeleteCommand}" />
-                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding OpenCommand}" />
             </DataGrid.InputBindings>
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
+                    <Setter Property="controls:RowDblClick.DoubleClickCommand"
+                            Value="{Binding ElementName=dataGrid, Path=DataContext.OpenCommand}" />
                     <Setter Property="Tag"
                             Value="{Binding DataContext, ElementName=dataGrid}" />
                     <Setter Property="ContextMenu">
