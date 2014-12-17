@@ -1,0 +1,14 @@
+﻿<Window x:Class="Diagnosis.App.Windows.HelpWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Помощь" Height="500" Width="300">
+    <Grid>
+        <RichTextBox x:Name="rtb" 
+                     BorderThickness="0"                     
+                     Margin="10"
+                     IsReadOnly="True"
+                     IsReadOnlyCaretVisible="True"
+                     HorizontalContentAlignment="Stretch">
+        </RichTextBox>
+    </Grid>
+</Window>

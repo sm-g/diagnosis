@@ -28,6 +28,8 @@
                 <MenuItem Header="_Настройки..." Command="{Binding OpenSettingsCommand}" />
                 <MenuItem Header="_Выйти" Command="{Binding LogoutCommand}" />
             </MenuItem>
+            <MenuItem Header="_Помощь" Click="MenuItem_Click">
+            </MenuItem>
         </Menu>
     </Grid>
 </UserControl>

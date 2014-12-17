@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -9,24 +10,23 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Diagnosis.App.Windows.Shell
+namespace Diagnosis.App.Windows
 {
     /// <summary>
-    /// Interaction logic for MenuBar.xaml
+    /// Interaction logic for HelpWindow.xaml
     /// </summary>
-    public partial class MenuBar : UserControl
+    public partial class HelpWindow : Window
     {
-        public MenuBar()
+        public HelpWindow()
         {
             InitializeComponent();
-        }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            new HelpWindow().Show();
+            Loaded += (s, e) =>
+            {
+                MemoryStream ms = new MemoryStream(UTF8Encoding.Default.GetBytes(Diagnosis.App.Properties.Resources.Help));
+                rtb.Selection.Load(ms, DataFormats.Rtf);
+            };
         }
     }
 }
