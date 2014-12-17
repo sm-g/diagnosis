@@ -81,11 +81,17 @@ namespace Diagnosis.ViewModels.Screens
         {
             var doctor = AuthorityController.CurrentDoctor;
 
-            Func<IcdDisease, bool> whereClause = d => true;
+            Func<IcdDisease, bool> diseaseClause = d => true;
             if (doctor.DoctorSettings.HasFlag(DoctorSettings.OnlyTopLevelIcdDisease))
             {
                 // без уточненных болезней
-                whereClause = d => d.Code.IndexOf('.') == -1;
+                diseaseClause = d => d.Code.IndexOf('.') == -1;
+            }
+            Func<IcdBlock, bool> blockClause = b => true;
+            if (doctor.Speciality != null)
+            {
+                // блоки для специальности доктора
+                blockClause = b => doctor.Speciality.IcdBlocks.Contains(b);
             }
 
             Dictionary<IcdChapter, Dictionary<IcdBlock, IEnumerable<IcdDisease>>>
@@ -93,11 +99,11 @@ namespace Diagnosis.ViewModels.Screens
                         group d by d.IcdBlock.IcdChapter into gr
                         let blocks = (from be in gr
                                       group be by be.IcdBlock into grr
-                                      where doctor.Speciality.IcdBlocks.Contains(grr.Key) // блоки для специальности доктора
+                                      where blockClause(grr.Key)
                                       select new
                                       {
                                           Block = grr.Key,
-                                          Diseases = grr.Where(whereClause)
+                                          Diseases = grr.Where(diseaseClause)
                                       }).ToDictionary(x => x.Block, x => x.Diseases)
                         where blocks.Count > 0 // без пустых классов
                         select new
