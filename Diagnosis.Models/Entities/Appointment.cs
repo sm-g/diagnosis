@@ -43,9 +43,9 @@ namespace Diagnosis.Models
 
         protected Appointment() { }
 
-        public virtual HealthRecord AddHealthRecord()
+        public virtual HealthRecord AddHealthRecord(Doctor author)
         {
-            var hr = new HealthRecord(this);
+            var hr = new HealthRecord(this, author);
             healthRecords.Add(hr);
             OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, hr));
 

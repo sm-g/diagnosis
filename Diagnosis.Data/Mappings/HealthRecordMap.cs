@@ -24,6 +24,24 @@ namespace Diagnosis.Data.Mappings
                     c.Default(0);
                 });
             });
+            Property(x => x.Ord, m =>
+            {
+                m.Column(c =>
+                {
+                    c.Default(0);
+                });
+                m.NotNullable(true);
+
+            });
+            Property(x => x.CreatedAt, m =>
+            {
+                m.Update(false);
+                m.Insert(false);
+                m.Generated(PropertyGeneration.Insert);
+                m.NotNullable(true);
+
+            });
+
             Property(x => x.Unit, m => m.Type<NHibernate.Type.EnumStringType<HealthRecordUnits>>());
 
             Set(x => x.HrItems, s =>
@@ -53,6 +71,11 @@ namespace Diagnosis.Data.Mappings
             {
                 m.Column("PatientID");
                 m.Cascade(Cascade.Persist);
+            });
+            ManyToOne(x => x.Doctor, m =>
+            {
+                m.Column("DoctorID");
+                m.NotNullable(true);
             });
             ManyToOne(x => x.Category, m =>
             {

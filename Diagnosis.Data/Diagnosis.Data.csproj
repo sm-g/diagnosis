@@ -172,6 +172,7 @@
     <Compile Include="Mappings\DoctorMap.cs" />
     <Compile Include="Mappings\CourseMap.cs" />
     <Compile Include="Mappings\PatientMap.cs" />
+    <Compile Include="Versions\Migrations\07 HrWithDoctor.cs" />
     <Compile Include="Versions\Migrations\06 AddPassportTable.cs" />
     <Compile Include="Versions\Migrations\05 InsertSpecialityIcdBlock.cs" />
     <Compile Include="Versions\Migrator.cs" />

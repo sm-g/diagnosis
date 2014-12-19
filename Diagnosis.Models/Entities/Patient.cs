@@ -173,9 +173,9 @@ namespace Diagnosis.Models
         {
 
         }
-        public virtual HealthRecord AddHealthRecord()
+        public virtual HealthRecord AddHealthRecord(Doctor author)
         {
-            var hr = new HealthRecord(this);
+            var hr = new HealthRecord(this, author);
             healthRecords.Add(hr);
             OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, hr));
 
@@ -196,6 +196,7 @@ namespace Diagnosis.Models
                 OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, course));
             }
         }
+
         public virtual void RemoveCourse(Course course)
         {
             Contract.Requires(course.IsEmpty());

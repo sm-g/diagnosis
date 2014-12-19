@@ -63,7 +63,7 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                     {
                         var lastHrVM = SelectedHealthRecord ?? HealthRecords.LastOrDefault();
-                        var newHr = holder.AddHealthRecord();
+                        var newHr = holder.AddHealthRecord(AuthorityController.CurrentDoctor);
                         if (lastHrVM != null)
                         {
                             // копируем категории из последней записи

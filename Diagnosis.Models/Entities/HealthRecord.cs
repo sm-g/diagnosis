@@ -24,6 +24,7 @@ namespace Diagnosis.Models
         public virtual Patient Patient { get; protected set; }
         public virtual Course Course { get; protected set; }
         public virtual Appointment Appointment { get; protected set; }
+        public virtual Doctor Doctor { get; protected set; }
 
         public virtual IHrsHolder Holder
         {
@@ -132,6 +133,8 @@ namespace Diagnosis.Models
                 OnPropertyChanged("Unit");
             }
         }
+        public virtual int Ord { get; set; }
+        public virtual DateTime CreatedAt { get; protected set; }
 
         public virtual DateOffset DateOffset
         {
@@ -220,23 +223,30 @@ namespace Diagnosis.Models
             get { return hrItems.Where(x => x.Word != null).Select(x => x.Word); }
         }
 
-        public HealthRecord(Appointment appointment)
+        public HealthRecord(Appointment appointment, Doctor author)
         {
             Contract.Requires(appointment != null);
+            Contract.Requires(author != null);
 
             Appointment = appointment;
+            Doctor = author;
         }
-        public HealthRecord(Course course)
+        public HealthRecord(Course course, Doctor author)
         {
             Contract.Requires(course != null);
+            Contract.Requires(author != null);
 
             Course = course;
+            Doctor = author;
         }
-        public HealthRecord(Patient patient)
+        public HealthRecord(Patient patient, Doctor author)
         {
             Contract.Requires(patient != null);
+            Contract.Requires(author != null);
 
             Patient = patient;
+            Doctor = author;
+
         }
 
         protected HealthRecord()
