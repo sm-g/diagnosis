@@ -12,6 +12,8 @@ namespace Diagnosis.Models
 {
     public class Uom : EntityBase<int>, IDomainObject
     {
+        public static Uom Null = new Uom("—", 1, -1);  // для измерения без единицы
+
         public virtual string Abbr { get; protected set; }
         public virtual string Description { get; set; }
         /// <summary>
@@ -19,10 +21,10 @@ namespace Diagnosis.Models
         /// базовой единицы этого типа (единицы объема: -3 для мкл, 0 для мл).
         /// При сохранении в БД Measure.Value = Value * 10^Factor.
         /// </summary>
-        public virtual float Factor { get; set; }
+        public virtual double Factor { get; set; }
         public virtual int Type { get; set; }
 
-        public Uom(string abbr, int factor, int type)
+        public Uom(string abbr, double factor, int type)
         {
             Contract.Requires(!string.IsNullOrWhiteSpace(abbr));
 

@@ -167,6 +167,7 @@
     <Compile Include="Framework\Services\FileDialogService.cs" />
     <Compile Include="Framework\IDialog.cs" />
     <Compile Include="Framework\Services\FileType.cs" />
+    <Compile Include="Screens\Card\MeasureEditorViewModel.cs" />
     <Compile Include="Screens\Doctors\DoctorsListViewModel.cs" />
     <Compile Include="Screens\Doctors\DoctorEditorViewModel.cs" />
     <Compile Include="Screens\Doctors\DoctorViewModel.cs" />

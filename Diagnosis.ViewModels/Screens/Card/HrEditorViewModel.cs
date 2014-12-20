@@ -133,7 +133,21 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
-
+        public RelayCommand AddMeasureCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    var vm = new MeasureEditorViewModel();
+                    this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+                    if (vm.DialogResult == true)
+                    {
+                        Autocomplete.AddTag(vm.Measure);
+                    }
+                });
+            }
+        }
         public RelayCommand CloseCommand
         {
             get

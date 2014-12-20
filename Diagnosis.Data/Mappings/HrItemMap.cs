@@ -17,7 +17,6 @@ namespace Diagnosis.Data.Mappings
             {
                 m.Column(c =>
                 {
-                    c.Name("Ord");
                     c.Default(0);
                 });
                 m.NotNullable(true);

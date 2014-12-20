@@ -91,7 +91,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
-        /// Возвращает сущности из тега. Может получиться одно слово или один коммент.
+        /// Возвращает сущности из тега. Может получиться одно: слово, коммент, диагноз, измерение со словом.
         /// Кеширует созданные сущности в теге.
         /// </summary>
         /// <param name="blank"></param>
@@ -131,6 +131,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 case Tag.BlankTypes.Icd:
                     tag.Entities = new List<IHrItemObject>() { tag.Blank as IcdDisease };
                     yield return tag.Blank as IcdDisease;
+                    break;
+
+                case Tag.BlankTypes.Measure:
+                    tag.Entities = new List<IHrItemObject>() { tag.Blank as Measure };
+                    yield return tag.Blank as Measure;
                     break;
             }
         }

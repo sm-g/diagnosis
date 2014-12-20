@@ -86,6 +86,13 @@
                             <Setter Property="Foreground"
                                     Value="Red" />
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding BlankType}"
+                                     Value="{x:Static auto:Tag+BlankTypes.Measure}">
+                            <Setter Property="FontStyle"
+                                    Value="Normal" />
+                            <Setter Property="Foreground"
+                                    Value="Green" />
+                        </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </TextBox.Style>

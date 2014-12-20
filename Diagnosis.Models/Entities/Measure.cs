@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Collections.Specialized;
-using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
     public class Measure : IDomainObject, IHrItemObject, IComparable<Measure>
     {
-        HealthRecord _hr;
+        private HealthRecord _hr;
+        private Uom _uom;
+
         public virtual HealthRecord HealthRecord
         {
             get
@@ -29,36 +23,57 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual Uom Uom { get; protected set; }
+        public virtual Word Word { get; set; }
+
+        public virtual Uom Uom
+        {
+            get { return _uom; }
+            set
+            {
+                if (value == Uom.Null) value = null;
+
+                // save value after chanage uom
+                var val = Value;
+                _uom = value;
+                Value = val;
+            }
+        }
+
         /// <summary>
         /// Значение измерения, приведенное к базовой единице измерения.
         /// </summary>
-        public virtual float DbValue { get; protected set; }
+        public virtual double DbValue { get; protected set; }
+
         /// <summary>
         /// Значение измерения. Если не указана единица, Value == DbValue.
         /// </summary>
-        public virtual float Value
+        public virtual double Value
         {
             get
             {
-                return DbValue * (Uom != null ? (float)Math.Pow(10, -Uom.Factor) : 1);
+                return DbValue * (Uom != null ? (double)Math.Pow(10, -Uom.Factor) : 1);
             }
-            protected set
+            set
             {
-                DbValue = value * (Uom != null ? (float)Math.Pow(10, Uom.Factor) : 1);
+                DbValue = value * (Uom != null ? (double)Math.Pow(10, Uom.Factor) : 1);
             }
         }
-        public Measure(float value, Uom uom = null)
+
+        public Measure(double value, Uom uom = null)
         {
             Uom = uom;
             Value = value;
         }
-        protected Measure() { }
+
+        protected Measure()
+        {
+        }
 
         public override string ToString()
         {
-            return string.Format("{0} {1}", Value, Uom);
+            return string.Format("{0} {1}{2}", Word, Value, Uom != null ? " " + Uom : "");
         }
+
         public virtual int CompareTo(IHrItemObject hio)
         {
             var icd = hio as IcdDisease;
@@ -71,12 +86,28 @@ namespace Diagnosis.Models
 
             return -1;
         }
+
         public virtual int CompareTo(Measure other)
         {
-            return 1; // TODO compareTo Measure
-
-            if (this.Uom.Type != other.Uom.Type)
+            // сравниваем по словам
+            if (this.Word != null)
+            {
+                if (other.Word == null)
+                    return 1;
+                else
+                {
+                    var byWord = this.Word.CompareTo(other.Word);
+                    if (byWord != 0)
+                        return byWord;
+                }
+            }
+            // по типу
+            if (this.Uom != null && other.Uom != null
+                && this.Uom.Type != other.Uom.Type)
                 return this.Uom.Type.CompareTo(other.Uom.Type);
+
+            // по значению
+            return this.DbValue.CompareTo(other.DbValue);
         }
     }
 }

@@ -24,7 +24,10 @@ namespace Diagnosis.Models
             if (obj is Word)
                 Word = obj as Word;
             else if (obj is Measure)
+            {
                 Measure = obj as Measure;
+                Word = Measure.Word;
+            }
             else if (obj is IcdDisease)
                 Disease = obj as IcdDisease;
             else if (obj is Comment)
@@ -74,6 +77,10 @@ namespace Diagnosis.Models
         {
             get
             {
+                if (_measure != null && _word != null)
+                {
+                    _measure.Word = _word;
+                }
                 return _measure;
             }
             protected set
@@ -81,6 +88,7 @@ namespace Diagnosis.Models
                 if (_measure != value)
                 {
                     _measure = value;
+
                     OnPropertyChanged(() => Measure);
                 }
             }
@@ -90,8 +98,9 @@ namespace Diagnosis.Models
         {
             get
             {
-                if (Word != null) return Word;
+                // measure and word in one Hri
                 if (Measure != null) return Measure;
+                if (Word != null) return Word;
                 if (Disease != null) return Disease;
                 if (TextRepr != null) return comment ?? (comment = new Comment(TextRepr));
 

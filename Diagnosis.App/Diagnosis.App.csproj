@@ -317,6 +317,9 @@
     <Compile Include="Windows\HelpWindow.xaml.cs">
       <DependentUpon>HelpWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\MeasureEditorWindow.xaml.cs">
+      <DependentUpon>MeasureEditorWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\WordEditorWindow.xaml.cs">
       <DependentUpon>WordEditorWindow.xaml</DependentUpon>
     </Compile>
@@ -509,6 +512,10 @@
     <Page Include="Windows\HelpWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\MeasureEditorWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\WordEditorWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Screens;
 using GongSolutions.Wpf.DragDrop;
 using log4net;
 using System;
@@ -172,18 +173,27 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 {
                     if (SelectedTag != null)
                     {
-                        if (SelectedTag.BlankType != Tag.BlankTypes.Icd)
+                        switch (SelectedTag.BlankType)
                         {
-                            SelectedTag.SwitchEdit();
-                        }
-                        else
-                        {
-                            var vm = new Diagnosis.ViewModels.Screens.IcdSelectorViewModel(SelectedTag.Entities.First() as IcdDisease);
-                            this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
-                            if (vm.DialogResult == true)
-                            {
-                                CompleteCommon(SelectedTag, vm.SelectedIcd, false);
-                            }
+                            case Tag.BlankTypes.Measure:
+                                MeasureEditorViewModel vm = new MeasureEditorViewModel(SelectedTag.Entities.First() as Measure);
+                                this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+                                if (vm.DialogResult == true)
+                                {
+                                    CompleteCommon(SelectedTag, vm.Measure, false);
+                                }
+                                break;
+                            case Tag.BlankTypes.Icd:
+                                var vm0 = new IcdSelectorViewModel(SelectedTag.Entities.First() as IcdDisease);
+                                this.Send(Events.OpenDialog, vm0.AsParams(MessageKeys.Dialog));
+                                if (vm0.DialogResult == true)
+                                {
+                                    CompleteCommon(SelectedTag, (vm0 as IcdSelectorViewModel).SelectedIcd, false);
+                                }
+                                break;
+                            default:
+                                SelectedTag.SwitchEdit();
+                                break;
                         }
                     }
                 });
@@ -561,6 +571,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             Contract.Requires(!tag.Query.IsNullOrEmpty());
 
             recognizer.ConvertBlank(tag);
+            // показать редаткор измр
 
             CompleteEnding(tag);
         }

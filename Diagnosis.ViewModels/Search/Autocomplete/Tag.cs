@@ -385,7 +385,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             get
             {
-                return BlankType != BlankTypes.Icd; // icd редактируется через селектор
+                return BlankType != BlankTypes.Icd   // редактируются через отдльный редактор
+                    && BlankType != BlankTypes.Measure;
             }
         }
 
