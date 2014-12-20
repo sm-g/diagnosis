@@ -1,7 +1,6 @@
 ﻿using Diagnosis.Models;
 using Diagnosis.ViewModels.Search.Autocomplete;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Linq;
 
 namespace Tests
@@ -14,7 +13,7 @@ namespace Tests
         private string q;
         private string qFull;
         private Word word;
-        static string notExistQ = "qwe";
+        private static string notExistQ = "qwe";
 
         public Tag First { get { return a.Tags.First(); } }
 
@@ -26,7 +25,7 @@ namespace Tests
         public void AutocompleteTestInit()
         {
             r = new Recognizer(session);
-            a = new Autocomplete(r, true, true, null);
+            a = new Autocomplete(r, true, true, false, null);
             word = session.Get<Word>(IntToGuid<Word>(1));
             q = word.Title.Substring(0, word.Title.Length - 1);
             qFull = word.Title;
@@ -191,6 +190,16 @@ namespace Tests
             Assert.IsTrue(second.Blank == First.Blank);
         }
 
+        [TestMethod]
+        public void AddTagWhenSingleTag()
+        {
+            var a = new Autocomplete(r, true, true, true, null);
+            Assert.IsTrue(a.Tags.Count == 1);
+
+            a.AddTag(word);
+            Assert.AreEqual(word, a.LastTag.Blank);
+            Assert.IsTrue(a.Tags.Count == 1);
+        }
 
         [TestMethod]
         public void CopyPaste()

@@ -19,6 +19,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private readonly Recognizer recognizer;
         private readonly bool allowSendToSearch;
         private readonly bool allowTagConvertion;
+        private readonly bool singleTag;
 
         private Tag _selTag;
         private bool _popupOpened;
@@ -30,11 +31,12 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private EventAggregator.EventMessageHandler hanlder;
         private bool inDispose;
 
-        public Autocomplete(Recognizer recognizer, bool allowTagConvertion, bool allowSendToSearch, IEnumerable<IHrItemObject> initItems)
+        public Autocomplete(Recognizer recognizer, bool allowTagConvertion, bool allowSendToSearch, bool singleTag, IEnumerable<IHrItemObject> initItems)
         {
             this.recognizer = recognizer;
             this.allowTagConvertion = allowTagConvertion;
             this.allowSendToSearch = allowSendToSearch;
+            this.singleTag = singleTag;
 
             DropHandler = new Autocomplete.DropTargetHandler(this);
             DragHandler = new Autocomplete.DragSourceHandler();
@@ -104,8 +106,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-
-
         public ObservableCollection<object> Suggestions
         {
             get;
@@ -165,7 +165,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             get { return Tags.Where(t => t.IsSelected).ToList(); }
         }
 
-
         public RelayCommand EditCommand
         {
             get
@@ -177,13 +176,14 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                         switch (SelectedTag.BlankType)
                         {
                             case Tag.BlankTypes.Measure:
-                                MeasureEditorViewModel vm = new MeasureEditorViewModel(SelectedTag.Entities.First() as Measure);
+                                var vm = new MeasureEditorViewModel(SelectedTag.Entities.First() as Measure);
                                 this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
                                 if (vm.DialogResult == true)
                                 {
                                     CompleteCommon(SelectedTag, vm.Measure, false);
                                 }
                                 break;
+
                             case Tag.BlankTypes.Icd:
                                 var vm0 = new IcdSelectorViewModel(SelectedTag.Entities.First() as IcdDisease);
                                 this.Send(Events.OpenDialog, vm0.AsParams(MessageKeys.Dialog));
@@ -192,6 +192,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                                     CompleteCommon(SelectedTag, (vm0 as IcdSelectorViewModel).SelectedIcd, false);
                                 }
                                 break;
+
                             default:
                                 SelectedTag.SwitchEdit();
                                 break;
@@ -209,7 +210,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 {
                     var entities = GetEntitiesOfSelected();
                     this.Send(Events.SendToSearch, entities.AsParams(MessageKeys.HrItemObjects));
-
                 });
             }
         }
@@ -302,6 +302,14 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     OnPropertyChanged(() => ShowAltSuggestion);
                 }
             }
+        }
+
+        /// <summary>
+        /// Автокомплит с единственным тегом (не IsLast). Добавление новых заменяет его.
+        /// </summary>
+        public bool SingleTag
+        {
+            get { return singleTag; }
         }
 
         public bool WithSendToSearch
@@ -418,7 +426,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 if (LastTag != null)
                     LastTag.IsLast = false;
-                tag.IsLast = true;
+                tag.IsLast = true && !SingleTag;
             }
 
             if (index < 0 || index > Tags.Count - 1)
@@ -426,7 +434,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             if (isLast)
                 index = Tags.Count;
 
-            Tags.Insert(index, tag);
+            if (SingleTag && Tags.Count > 0)
+                Tags[0] = tag;
+            else
+                Tags.Insert(index, tag);
             return tag;
         }
 
@@ -477,7 +488,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             var hios = CopySelected();
 
             var completed = SelectedTags.Where(t => t.State == Tag.States.Completed); // do not remove init tags
-            completed.ForAll(i => Tags.Remove(i));
+            completed.ForAll(t => t.DeleteCommand.Execute(null));
 
             LogHrItemObjects("cut", hios);
         }
@@ -616,7 +627,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             tag.Validate();
 
             // добавляем пустое поле
-            if (LastTag.State == Tag.States.Completed)
+            if (LastTag.State == Tag.States.Completed
+                && !SingleTag)
             {
                 AddTag(isLast: true);
             }
@@ -679,8 +691,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            Contract.Invariant(inDispose || LastTag.IsLast); // поле ввода по умолчанию
+            Contract.Invariant(inDispose || LastTag.IsLast || SingleTag); // поле ввода по умолчанию
+            Contract.Invariant(inDispose || LastTag.IsLast != SingleTag); // единственный тег не IsLast
             Contract.Invariant(Tags.Count(t => t.State == Tag.States.Typing) <= 1); // только один тег редактируется
+            Contract.Invariant(Tags.Count == 1 || !SingleTag); // единственный тег
         }
 
         protected override void Dispose(bool disposing)

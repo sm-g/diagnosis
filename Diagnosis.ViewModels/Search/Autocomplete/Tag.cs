@@ -259,7 +259,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 return new RelayCommand(() =>
                 {
                     autocomplete.Add(this, true);
-                });
+                }, () => !autocomplete.SingleTag);
             }
         }
         public RelayCommand AddRightCommand
@@ -269,7 +269,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 return new RelayCommand(() =>
                 {
                     autocomplete.Add(this, false);
-                }, () => !IsLast);
+                }, () => !IsLast && !autocomplete.SingleTag);
             }
         }
         public RelayCommand DeleteCommand
@@ -278,7 +278,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 return new RelayCommand(() =>
                 {
-                    if (!IsLast)
+                    if (!IsLast && !autocomplete.SingleTag)
                     {
                         OnDeleted();
                     }
@@ -286,6 +286,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     {
                         Query = null;
                         State = States.Init;
+                        _blank = null;
+                        OnPropertyChanged("Blank");
                     }
                 });
             }
@@ -328,8 +330,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
-        /// Единственный последний тег для набора текста по умолчанию. 
-        /// Не удаляется.
+        /// Специальный последний тег для набора текста по умолчанию. 
+        /// Не удаляется. Не копируется.
+        /// Всегда есть, кроме случая, когда в автокомплите единствевнный тег.
         /// </summary>
         public bool IsLast
         {
@@ -506,9 +509,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            // Contract.Invariant(State != States.Completed || BlankType != BlankTypes.None); // завершенный тег → есть бланк (тег завершается после смены бланка) в поиске бланк мб пустой
+            Contract.Invariant(State != States.Completed || BlankType != BlankTypes.None || Signalization == Signalizations.Forbidden); // завершенный тег → есть бланк (тег завершается после смены бланка) в поиске бланк мб пустой
             Contract.Invariant(State != States.Init || (BlankType == BlankTypes.None && Entities == null)); // в начальном состоянии → нет бланка и сущностей
-            // при редактирвоаии нет сущностей
+            // при редактировании нет сущностей
         }
 
         public void OnDrop(DragEventArgs e)

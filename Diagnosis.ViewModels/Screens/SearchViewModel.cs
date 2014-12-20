@@ -41,7 +41,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public SearchViewModel()
         {
-            Autocomplete = new Autocomplete(new Recognizer(Session) { OnlyWords = true }, false, false, null);
+            Autocomplete = new Autocomplete(new Recognizer(Session) { OnlyWords = true }, false, false, false, null);
 
             ControlsVisible = true;
             AllWords = true;
