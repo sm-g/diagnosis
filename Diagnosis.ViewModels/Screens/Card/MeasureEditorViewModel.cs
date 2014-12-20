@@ -12,6 +12,8 @@ namespace Diagnosis.ViewModels.Screens
         private static readonly ILog logger = LogManager.GetLogger(typeof(MeasureEditorViewModel));
 
         private List<Uom> _uoms;
+        private string _val;
+        private bool isValueValid;
         MeasureEditorViewModel(Measure measure, Word w)
         {
             _uoms = new List<Uom> { Uom.Null };
@@ -29,11 +31,13 @@ namespace Diagnosis.ViewModels.Screens
                     Word = w ?? measure.Word  // новое слово или бывшее с измерением
                 };
             }
+            Value = Measure.Value.ToString();
 
             Autocomplete = new Search.Autocomplete.Autocomplete(
                 new Recognizer(Session) { OnlyWords = true },
                 false,
                 false,
+                true,
                 Word == null ? null : new[] { Word });
             Autocomplete.EntitiesChanged += (s, e) =>
             {
@@ -60,10 +64,10 @@ namespace Diagnosis.ViewModels.Screens
 
         public Autocomplete Autocomplete { get; private set; }
 
-        public double Value
+        public string Value
         {
-            get { return Measure.Value; }
-            set { Measure.Value = value; }
+            get { return _val; }
+            set { _val = value; }
         }
 
         public Uom Uom
@@ -85,27 +89,27 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return Word != null && Measure != null;
+                return Word != null && Measure != null && isValueValid;
             }
         }
 
-        //public override string this[string columnName]
-        //{
-        //    get
-        //    {
-        //        var results = appointment.SelfValidate();
-        //        if (results == null)
-        //            return string.Empty;
-        //        var message = results.Errors
-        //            .Where(x => x.PropertyName == columnName)
-        //            .Select(x => x.ErrorMessage)
-        //            .FirstOrDefault();
-        //        return message != null ? message : string.Empty;
-        //    }
-        //}
+        public override string this[string columnName]
+        {
+            get
+            {
+                double d;
+                if (columnName == "Value")
+                    isValueValid = double.TryParse(Value, out d);
+
+                if (!isValueValid)
+                    return "Из этого не получается число.";
+                return string.Empty;
+            }
+        }
 
         protected override void OnOk()
         {
+            Measure.Value = double.Parse(Value);
         }
 
         protected override void OnCancel()
