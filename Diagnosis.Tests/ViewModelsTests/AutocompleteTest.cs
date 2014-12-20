@@ -191,5 +191,28 @@ namespace Tests
             Assert.IsTrue(second.Blank == First.Blank);
         }
 
+
+        [TestMethod]
+        public void CopyPaste()
+        {
+            a.AddTag(word);
+            a.SelectedTag = a.Tags.First();
+            a.CopySelected();
+
+            a.Paste();
+
+            Assert.AreEqual(3, a.Tags.Count);
+            Assert.AreEqual(a.Tags[0].Blank, a.Tags[1].Blank);
+        }
+
+        [TestMethod]
+        public void Cut()
+        {
+            a.AddTag(word);
+            a.SelectedTag = a.Tags.First();
+            a.CutSelected();
+
+            Assert.AreEqual(1, a.Tags.Count);
+        }
     }
 }

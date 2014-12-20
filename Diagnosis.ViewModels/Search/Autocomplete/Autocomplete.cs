@@ -152,6 +152,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     if (value != null)
                     {
                         EditingTag = value;
+                        _selTag.IsSelected = true;
                     }
 
                     OnPropertyChanged(() => SelectedTag);
