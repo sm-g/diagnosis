@@ -783,6 +783,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                             if (n == master.Tags.IndexOf(master.LastTag))
                                 n--;
 
+                            n = Math.Max(n, 0); // when single n == -1
+
                             if (old != n) // prevent deselecting
                                 master.Tags.Move(old, n);
                         }
