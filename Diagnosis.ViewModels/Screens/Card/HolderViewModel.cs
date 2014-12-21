@@ -40,6 +40,17 @@ namespace Diagnosis.ViewModels.Screens
             get { return holder.IsEmpty(); }
         }
 
+        public RelayCommand OpenCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    this.Send(Events.OpenHolder, Holder.AsParams(MessageKeys.Holder));
+                });
+            }
+        }
+
         public RelayCommand StartCourseCommand
         {
             get
@@ -98,6 +109,7 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
+
         public RelayCommand OpenLastCommand
         {
             get
@@ -119,6 +131,7 @@ namespace Diagnosis.ViewModels.Screens
                 }, () => !holder.IsEmpty() && !(holder is Appointment));
             }
         }
+
         private void course_AppointmentsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged(() => IsEmpty);

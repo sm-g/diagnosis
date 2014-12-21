@@ -7,6 +7,7 @@
              xmlns:headers="clr-namespace:Diagnosis.App.Controls.Headers"
              xmlns:vm="clr-namespace:Diagnosis.ViewModels.Screens;assembly=Diagnosis.ViewModels"
              mc:Ignorable="d"
+             x:Name="header"
              d:DesignHeight="300" d:DesignWidth="300">
     <!-- HeaderViewModel -->
     <UserControl.Resources>
@@ -144,9 +145,12 @@
     <DockPanel>
         <!-- current -->
         <DockPanel DockPanel.Dock="Top" Background="Transparent" Margin="5,0,5,5">
-            <ContentPresenter Content="{Binding}" ContentTemplateSelector="{StaticResource selector}">
+            
+            <ContentPresenter Content="{Binding}"
+                              Tag="{Binding HolderVm}"
+                              ContentTemplateSelector="{StaticResource selector}">
                 <ContentPresenter.ContextMenu>
-                    <ContextMenu>
+                    <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
                         <MenuItem Header="Редактировать" InputGestureText="F2" Command="{Binding EditCommand}" />
                         <MenuItem Header="Добавить курс" Command="{Binding StartCourseCommand}" />
                         <MenuItem Header="Добавить осмотр" Command="{Binding AddAppointmentCommand}" />

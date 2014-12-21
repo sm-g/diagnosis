@@ -95,7 +95,7 @@ namespace Tests
             var card = new CardViewModel(c[2], true);
             Assert.IsFalse(c[2].IsEnded); // можно добавить осмотр
 
-            card.Navigator.Current.AddAppointmentCommand.Execute(null);
+            card.Navigator.Current.HolderVm.AddAppointmentCommand.Execute(null);
 
             Assert.AreEqual(c[2].Appointments.LastOrDefault(), card.Navigator.Current.Holder);
         }
@@ -107,7 +107,7 @@ namespace Tests
             Assert.AreEqual(c[2], card.Navigator.Current.Children[0].Holder);
             Assert.IsFalse(c[2].IsEnded);
 
-            card.Navigator.Current.Children[0].AddAppointmentCommand.Execute(null);
+            card.Navigator.Current.Children[0].HolderVm.AddAppointmentCommand.Execute(null);
 
             Assert.AreEqual(c[2].Appointments.LastOrDefault(), card.Navigator.Current.Holder);
         }
@@ -176,13 +176,13 @@ namespace Tests
             {
                 removed = true;
             };
-            card.Navigator.Current.DeleteCommand.Execute(null);
+            card.Navigator.Current.HolderVm.DeleteCommand.Execute(null);
             Assert.AreEqual(c[4], holder);
 
-            card.Navigator.Current.DeleteCommand.Execute(null);
+            card.Navigator.Current.HolderVm.DeleteCommand.Execute(null);
             Assert.AreEqual(p[3], holder);
 
-            card.Navigator.Current.DeleteCommand.Execute(null);
+            card.Navigator.Current.HolderVm.DeleteCommand.Execute(null);
             Assert.IsNull(holder);
             Assert.IsTrue(removed);
         }

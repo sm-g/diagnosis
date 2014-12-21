@@ -22,6 +22,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             Contract.Requires(holder != null);
             this.holder = holder;
+            HolderVm = new HolderViewModel(holder);
 
             if (holder is Patient)
             {
@@ -47,6 +48,8 @@ namespace Diagnosis.ViewModels.Screens
         {
             get { return holder; }
         }
+
+        public HolderViewModel HolderVm { get; private set; }
 
         public IHrsHolder NextHolder
         {
@@ -121,52 +124,6 @@ namespace Diagnosis.ViewModels.Screens
                     this.Send(Events.OpenHolder, PrevHolder.AsParams(MessageKeys.Holder));
                 },
                 () => PrevHolder != null);
-            }
-        }
-
-        public RelayCommand StartCourseCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    AuthorityController.CurrentDoctor.StartCourse(Holder as Patient);
-                },
-                () => Holder is Patient);
-            }
-        }
-
-        public RelayCommand AddAppointmentCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    (Holder as Course).AddAppointment(AuthorityController.CurrentDoctor);
-                },
-                () => Holder is Course && !(Holder as Course).IsEnded);
-            }
-        }
-
-        public RelayCommand DeleteCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    this.Send(Events.DeleteHolder, Holder.AsParams(MessageKeys.Holder));
-                }, () => Holder.IsEmpty());
-            }
-        }
-
-        public RelayCommand EditCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    this.Send(Events.EditHolder, Holder.AsParams(MessageKeys.Holder));
-                });
             }
         }
 
@@ -332,6 +289,8 @@ namespace Diagnosis.ViewModels.Screens
                 }
 
                 ((INotifyPropertyChanged)holder).PropertyChanged -= Holder_PropertyChanged;
+
+                HolderVm.Dispose();
             }
             base.Dispose(disposing);
         }

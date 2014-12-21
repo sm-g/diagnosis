@@ -14,6 +14,7 @@ namespace Diagnosis.ViewModels.Screens
         public CardItemViewModel(IHrsHolder holder)
         {
             Holder = holder;
+            HolderVm = new HolderViewModel(holder);
             if (holder is Patient)
             {
                 var patient = holder as Patient;
@@ -48,63 +49,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
         public IHrsHolder Holder { get; private set; }
-
-        public RelayCommand OpenCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    this.Send(Events.OpenHolder, Holder.AsParams(MessageKeys.Holder));
-                });
-            }
-        }
-
-        public RelayCommand EditCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    this.Send(Events.EditHolder, Holder.AsParams(MessageKeys.Holder));
-                });
-            }
-        }
-
-        public RelayCommand DeleteCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    this.Send(Events.DeleteHolder, Holder.AsParams(MessageKeys.Holder));
-                }, () => Holder.IsEmpty());
-            }
-        }
-
-        public RelayCommand StartCourseCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    AuthorityController.CurrentDoctor.StartCourse(Holder as Patient);
-                },
-                () => Holder is Patient);
-            }
-        }
-
-        public RelayCommand AddAppointmentCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    (Holder as Course).AddAppointment(AuthorityController.CurrentDoctor);
-                },
-                () => Holder is Course && (Holder as Course).End == null);
-            }
-        }
+        public HolderViewModel HolderVm { get; private set; }
 
         public bool IsHighlighted
         {
@@ -191,6 +136,7 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         (Holder as Course).AppointmentsChanged -= nested_IHrsHolders_Changed;
                     }
+                    HolderVm.Dispose();
                 }
             }
             finally

@@ -31,11 +31,15 @@
             </InputBindingCollection>
 
             <InputBindingCollection x:Shared="False" x:Key="CardElementsInputBindings">
-                <!--<KeyBinding Key="Space" Command="{Binding OpenCommand}" />-->
-                <KeyBinding Key="Enter" Command="{Binding OpenCommand}" />
-                <KeyBinding Key="F2" Command="{Binding EditCommand}" />
-                <KeyBinding Key="Del" Command="{Binding DeleteCommand}" />
-                <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding OpenCommand}" />
+                <!--<KeyBinding Key="Space" Command="{Binding HolderVm.OpenCommand}" />-->
+                <KeyBinding Key="Enter" 
+                            Command="{Binding HolderVm.OpenCommand}" />
+                <KeyBinding Key="F2"
+                            Command="{Binding HolderVm.EditCommand}" />
+                <KeyBinding Key="Del"
+                            Command="{Binding HolderVm.DeleteCommand}" />
+                <MouseBinding  MouseAction="LeftDoubleClick"
+                               Command="{Binding HolderVm.OpenCommand}" />
             </InputBindingCollection>
 
             <InputBindingCollection x:Shared="False" x:Key="SearchResultInputBindings">
