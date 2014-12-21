@@ -112,12 +112,8 @@
                 <AccessText Text="_Добавить осмотр" />
             </Button>
             <Separator Width="60" Height="0" />
-            <Button Name="saveButton" IsDefault="True" Command="{Binding SaveCommand}">
-                <AccessText Text="_Сохранить" />
-            </Button>
-            <Button Name="cancelButton" IsCancel="True" Command="{Binding CancelCommand}">
-                <AccessText Text="Отмена" />
-            </Button>
+            <Button Name="saveButton" IsDefault="True" Command="{Binding SaveCommand}" Content="Сохранить" />
+            <Button Name="cancelButton" IsCancel="True" Command="{Binding CancelCommand}" Content="Отмена" />
         </StackPanel>
     </Grid>
 </Window>

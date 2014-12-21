@@ -13,12 +13,16 @@
         </Grid.RowDefinitions>
 
         <ListBox Margin="10,10,0,0">
-            <CheckBox IsChecked="{Binding ShowIcdDisease}" Content="Использовать _МКБ"/>
-            <CheckBox IsChecked="{Binding OnlyTopLevelIcdDisease}" Content="_Болезни МКБ только верхнего уровня"/>
+            <CheckBox IsChecked="{Binding ShowIcdDisease}">
+                <AccessText>Использовать _МКБ</AccessText>
+            </CheckBox>
+            <CheckBox IsChecked="{Binding OnlyTopLevelIcdDisease}">
+                <AccessText>_Болезни МКБ только верхнего уровня</AccessText>
+            </CheckBox>
         </ListBox>
 
         <StackPanel Grid.Row="1" Style="{StaticResource DialogButtonsPanel}">
-            <Button Name="saveButton" IsDefault="True" Command="{Binding OkCommand}">_Сохранить</Button>
+            <Button Name="saveButton" IsDefault="True" Command="{Binding OkCommand}">Сохранить</Button>
             <Button Name="cancelButton" IsCancel="True" Command="{Binding CancelCommand}">Отмена</Button>
         </StackPanel>
     </Grid>

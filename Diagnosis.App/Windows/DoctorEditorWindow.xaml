@@ -80,14 +80,12 @@
                     Style="{StaticResource DialogButtonsPanel}">
             <Button Name="saveButton"
                     IsDefault="True"
-                    Command="{Binding SaveCommand}">
-                <AccessText Text="Сохранить" />
-            </Button>
+                    Command="{Binding SaveCommand}"
+                    Content="Сохранить" />
             <Button Name="cancelButton"
                     IsCancel="True"
-                    Command="{Binding CancelCommand}">
-                <AccessText Text="Отмена" />
-            </Button>
+                    Command="{Binding CancelCommand}"
+                    Content="Отмена" />
         </StackPanel>
     </Grid>
 </Window>
