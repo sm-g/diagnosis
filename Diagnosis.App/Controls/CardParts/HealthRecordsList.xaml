@@ -7,20 +7,28 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="600"
+             d:DesignHeight="300"
+             d:DesignWidth="600"
              x:Name="hrList">
     <UserControl.Resources>
-        <InputBindingCollection x:Shared="False" x:Key="HRInputBindings">
-            <KeyBinding Key="Space" Command="{Binding ToggleCommand}" />
+        <InputBindingCollection x:Shared="False"
+                                x:Key="HRInputBindings">
+            <KeyBinding Key="Space"
+                        Command="{Binding ToggleCommand}" />
 
-            <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding EditCommand}" />
+            <MouseBinding  MouseAction="LeftDoubleClick"
+                           Command="{Binding EditCommand}" />
         </InputBindingCollection>
     </UserControl.Resources>
 
     <UserControl.InputBindings>
-        <KeyBinding Modifiers="Alt" Key="F" Command="{Binding SendToSearchCommand}" />
-        <KeyBinding Key="Delete" Command="{Binding DeleteCommand}" />
-        <KeyBinding Key="F2" Command="{Binding SelectedHealthRecord.EditCommand}" />
+        <KeyBinding Modifiers="Alt"
+                    Key="F"
+                    Command="{Binding SendToSearchCommand}" />
+        <KeyBinding Key="Delete"
+                    Command="{Binding DeleteCommand}" />
+        <KeyBinding Key="F2"
+                    Command="{Binding SelectedHealthRecord.EditCommand}" />
     </UserControl.InputBindings>
 
     <Grid>
@@ -31,14 +39,16 @@
         </Grid.RowDefinitions>
 
         <ToolBar>
-            <Button Command="{Binding AddHealthRecordCommand}" ToolTip="Добавить запись (Ctrl + Enter)">
+            <Button Command="{Binding AddHealthRecordCommand}"
+                    ToolTip="Добавить запись (Ctrl + Enter)">
                 <DockPanel>
                     <Image Source="{StaticResource addImage}" />
                     <TextBlock Text="Добавить" />
                 </DockPanel>
             </Button>
             <Separator />
-            <Button Command="{Binding DeleteCommand}" ToolTip="Удалить выбранные записи (Del)">
+            <Button Command="{Binding DeleteCommand}"
+                    ToolTip="Удалить выбранные записи (Del)">
                 <DockPanel>
                     <Image Source="{StaticResource deleteImage}" />
                     <!--<TextBlock>
@@ -48,7 +58,8 @@
                     </TextBlock>-->
                 </DockPanel>
             </Button>
-            <Button Command="{Binding SendToSearchCommand}" ToolTip="Искать выбранные записи (Alt + F)">
+            <Button Command="{Binding SendToSearchCommand}"
+                    ToolTip="Искать выбранные записи (Alt + F)">
                 <DockPanel>
                     <Image Source="{StaticResource findImage}" />
                     <!--<TextBlock>
@@ -60,28 +71,100 @@
             </Button>
         </ToolBar>
 
-        <DockPanel Grid.Row="1" >
-            <TextBlock TextWrapping="Wrap" Margin="10"
-                       HorizontalAlignment="Center" VerticalAlignment="Top"
-                       Visibility="{Binding HealthRecords.Count, Converter={StaticResource LessThanToVisibility}}"
-                       >
+        <Grid Grid.Row="1"
+              Visibility="{Binding HealthRecords.Count, Converter={StaticResource LessThanToVisibility}}">
+            <Grid.Resources>
+                <controls:HrsHolderDataTemplateSelector x:Key="empty">
+                    <controls:HrsHolderDataTemplateSelector.PatientTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <Hyperlink Command="{Binding AddFirstAppointmentCommand}">Добавить осмотр</Hyperlink>
+                                <LineBreak />
+                                <Hyperlink Command="{Binding DeleteCommand}">Удалить этого пациента</Hyperlink>
+                            </TextBlock>
+                        </DataTemplate>
+                    </controls:HrsHolderDataTemplateSelector.PatientTemplate>
+                    <controls:HrsHolderDataTemplateSelector.CourseTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <Hyperlink Command="{Binding AddAppointmentCommand}">Добавить осмотр</Hyperlink>
+                                <LineBreak />
+                                <Hyperlink Command="{Binding DeleteCommand}">Удалить этот курс</Hyperlink>
+                            </TextBlock>
+                        </DataTemplate>
+                    </controls:HrsHolderDataTemplateSelector.CourseTemplate>
+                    <controls:HrsHolderDataTemplateSelector.AppointmentTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <Hyperlink Command="{Binding DeleteCommand}">Удалить этот осмотр</Hyperlink>
+                            </TextBlock>
+                        </DataTemplate>
+                    </controls:HrsHolderDataTemplateSelector.AppointmentTemplate>
+                </controls:HrsHolderDataTemplateSelector>
+                <controls:HrsHolderDataTemplateSelector x:Key="withNested">
+                    <controls:HrsHolderDataTemplateSelector.PatientTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <Hyperlink Command="{Binding OpenLastCommand}">Открыть последний курс</Hyperlink>
+                                <LineBreak />
+                                <Hyperlink Command="{Binding StartCourseCommand}">Добавить новый курс</Hyperlink>
+                            </TextBlock>
+                        </DataTemplate>
+                    </controls:HrsHolderDataTemplateSelector.PatientTemplate>
+                    <controls:HrsHolderDataTemplateSelector.CourseTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <Hyperlink Command="{Binding OpenLastCommand}">Открыть последний осмотр</Hyperlink>
+                                <LineBreak />
+                                <Hyperlink Command="{Binding AddAppointmentCommand}">Добавить новый осмотр</Hyperlink>
+                            </TextBlock>
+                        </DataTemplate>
+                    </controls:HrsHolderDataTemplateSelector.CourseTemplate>
+                    <controls:HrsHolderDataTemplateSelector.AppointmentTemplate>
+                        <DataTemplate>
+                            <TextBlock>это не видно</TextBlock>
+                        </DataTemplate>
+                    </controls:HrsHolderDataTemplateSelector.AppointmentTemplate>
+                </controls:HrsHolderDataTemplateSelector>
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <TextBlock TextWrapping="Wrap"
+                       Margin="10"
+                       HorizontalAlignment="Center">
                 <Run Text="Записей нет." />
                 <Hyperlink Command="{Binding AddHealthRecordCommand}">Добавить?</Hyperlink>
             </TextBlock>
-        </DockPanel>
+
+            <StackPanel Grid.Row="1"
+                        HorizontalAlignment="Center">
+                <TextBlock Visibility="{Binding ShowCanAlso, Converter={StaticResource BooleanToVisibilityConverter}}">Тaкже можно</TextBlock>
+
+                <ContentControl Content="{Binding Holder}"
+                                Visibility="{Binding Holder.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                  ContentTemplateSelector="{StaticResource empty}" />
+                <ContentControl Content="{Binding Holder}"
+                                Visibility="{Binding Holder.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                                  ContentTemplateSelector="{StaticResource withNested}" />
+            </StackPanel>
+        </Grid>
 
         <ListBox x:Name="records"
-                  Grid.Row="1"
-                  ItemsSource="{Binding HealthRecords}"
-                  IsSynchronizedWithCurrentItem="True"
-                  SelectedItem="{Binding SelectedHealthRecord}"
-                  BorderThickness="0"
-                  HorizontalContentAlignment="Stretch"
+                 Grid.Row="1"
+                 ItemsSource="{Binding HealthRecords}"
+                 IsSynchronizedWithCurrentItem="True"
+                 SelectedItem="{Binding SelectedHealthRecord}"
+                 BorderThickness="0"
+                 HorizontalContentAlignment="Stretch"
                  Visibility="{Binding HealthRecords.Count, Converter={StaticResource MoreThanToVisibility}}"
-                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                  SelectionMode="Extended"
-                  SelectionChanged="records_SelectionChanged">
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 SelectionMode="Extended"
+                 SelectionChanged="records_SelectionChanged"
+                 d:IsHidden="True">
             <ListBox.GroupStyle>
                 <GroupStyle>
                     <GroupStyle.ContainerStyle>
@@ -95,8 +178,12 @@
                                                     <ColumnDefinition />
                                                     <ColumnDefinition Width="auto" />
                                                 </Grid.ColumnDefinitions>
-                                                <Separator Foreground="Gray" VerticalAlignment="Center" />
-                                                <TextBlock Text="{Binding Name, Mode=OneWay}" Grid.Column="1" HorizontalAlignment="Right" Margin="10,0,5,0" />
+                                                <Separator Foreground="Gray"
+                                                           VerticalAlignment="Center" />
+                                                <TextBlock Text="{Binding Name, Mode=OneWay}"
+                                                           Grid.Column="1"
+                                                           HorizontalAlignment="Right"
+                                                           Margin="10,0,5,0" />
                                             </Grid>
                                             <ItemsPresenter />
                                         </StackPanel>
@@ -115,21 +202,32 @@
             </ListBox.ItemTemplate>
 
             <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                    <Setter Property="controls:Attached.InputBindings" Value="{StaticResource HRInputBindings}" />
-                    <Setter Property="Tag" Value="{Binding DataContext, ElementName=hrList}" />
+                <Style TargetType="{x:Type ListBoxItem}"
+                       BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                    <Setter Property="IsSelected"
+                            Value="{Binding IsSelected, Mode=TwoWay}" />
+                    <Setter Property="controls:Attached.InputBindings"
+                            Value="{StaticResource HRInputBindings}" />
+                    <Setter Property="Tag"
+                            Value="{Binding DataContext, ElementName=hrList}" />
                     <Setter Property="ContextMenu">
                         <!-- here because HR is not focusable -->
                         <Setter.Value>
                             <ContextMenu>
                                 <!-- ShortHr -->
-                                <MenuItem Header="Редактировать" Command="{Binding EditCommand}" />
-                                <MenuItem Header="Искать" InputGestureText="Alt + F" Command="{Binding SendToSearchCommand}" />
-                                <MenuItem Header="Удалить" InputGestureText="Del" Command="{Binding DeleteCommand}" />
+                                <MenuItem Header="Редактировать"
+                                          Command="{Binding EditCommand}" />
+                                <MenuItem Header="Искать"
+                                          InputGestureText="Alt + F"
+                                          Command="{Binding SendToSearchCommand}" />
+                                <MenuItem Header="Удалить"
+                                          InputGestureText="Del"
+                                          Command="{Binding DeleteCommand}" />
                                 <Separator />
                                 <!-- HrList -->
-                                <MenuItem Header="Добавить запись" InputGestureText="Ctrl + Enter" Command="{Binding PlacementTarget.Tag.AddHealthRecordCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                <MenuItem Header="Добавить запись"
+                                          InputGestureText="Ctrl + Enter"
+                                          Command="{Binding PlacementTarget.Tag.AddHealthRecordCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>
@@ -138,7 +236,9 @@
 
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Добавить запись" InputGestureText="Ctrl + Enter" Command="{Binding AddHealthRecordCommand}" />
+                    <MenuItem Header="Добавить запись"
+                              InputGestureText="Ctrl + Enter"
+                              Command="{Binding AddHealthRecordCommand}" />
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>

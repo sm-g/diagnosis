@@ -17,6 +17,8 @@ namespace Diagnosis.ViewModels.Screens
         private ICollectionView healthRecordsView;
         private ShortHealthRecordViewModel _selectedHealthRecord;
 
+        public HolderViewModel Holder { get; private set; }
+
         public ObservableCollection<ShortHealthRecordViewModel> HealthRecords
         {
             get
@@ -134,10 +136,19 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public bool ShowCanAlso
+        {
+            get
+            {
+                return !(holder is Appointment && !holder.IsEmpty()); // непустой осмотр - ничего дополнительного
+            }
+        }
+
         public HrListViewModel(IHrsHolder holder)
         {
             Contract.Requires(holder != null);
             this.holder = holder;
+            Holder = new HolderViewModel(holder);
 
             hrManager = new HealthRecordManager(holder, onHrVmPropChanged: (s, e) =>
             {
@@ -171,6 +182,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (disposing)
                 {
                     hrManager.Dispose();
+                    Holder.Dispose();
                 }
             }
             finally
