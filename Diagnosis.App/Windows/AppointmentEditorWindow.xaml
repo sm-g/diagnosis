@@ -19,12 +19,14 @@
                 <Style TargetType="Label" BasedOn="{StaticResource label90}" />
             </StackPanel.Resources>
             <DockPanel>
-                <Label Content="Дата" />
-                <DatePicker Text="{Binding Appointment.DateAndTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                <Label Content="_Дата"
+                       Target="{Binding ElementName=date}" />
+                <DatePicker x:Name="date" Text="{Binding Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
             </DockPanel>
             <DockPanel>
-                <Label Content="Время" />
-                <ex:TimePicker Value="{Binding Appointment.DateAndTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"  />
+                <Label Content="_Время" 
+                       Target="{Binding ElementName=time}" />
+                <ex:TimePicker x:Name="time" Value="{Binding Time, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"  />
             </DockPanel>
         </StackPanel>
 
