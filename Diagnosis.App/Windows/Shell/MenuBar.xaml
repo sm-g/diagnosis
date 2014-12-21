@@ -19,9 +19,8 @@
             <!--<MenuItem Header="_Вид">
                 <MenuItem IsCheckable="true" IsChecked="{Binding SearchAside.Opened}" Header="_Поиск" />
             </MenuItem>-->
+            
         </Menu>
-
-        <!--<CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding FastAddingMode}">_Осмотр пациентов</CheckBox>-->
 
         <Menu HorizontalAlignment="Right">
             <MenuItem Header="{Binding CurrentUser, Converter={StaticResource ManToShortName}}">

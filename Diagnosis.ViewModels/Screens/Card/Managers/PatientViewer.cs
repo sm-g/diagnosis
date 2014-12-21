@@ -114,7 +114,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         /// <summary>
-        /// Открывать последний курс/осмотр при открытии пациента\курса.
+        /// Открывать последний открытый курс/осмотр при открытии карточки.
         /// </summary>
         public bool AutoOpen { get; set; }
 
@@ -199,16 +199,17 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         /// <summary>
-        /// Открывает последний за час осмотр в последнем курсе.
+        /// Открывает последний осмотр в последнем курсе.
         /// Создает новый, если такого нет, в последнем курсе.
         /// Создает курс, если нет ни одного курса.
+        /// 
+        /// Имеет смысл только при создании пациента. Иначе каждый раз при открытии создается осмотр.
         /// </summary>
         /// <param name="patient"></param>
         public void OpenLastAppointment(Patient patient)
         {
             OpenPatient(patient);
 
-            // последний курс или новый, если курсов нет
             var lastCourse = patient.Courses.FirstOrDefault();
             if (lastCourse == null)
             {
@@ -219,11 +220,10 @@ namespace Diagnosis.ViewModels.Screens
                 OpenedCourse = lastCourse;
             }
 
-            // последний осмотр в течение часа или новый
             var lastApp = OpenedCourse.Appointments.LastOrDefault();
-            if (lastApp != null && DateTime.Now - lastApp.DateAndTime > TimeSpan.FromHours(1))
+            if (lastApp == null)
             {
-                OpenedCourse.AddAppointment(null);
+                OpenedCourse.AddAppointment(AuthorityController.CurrentDoctor);
             }
             else
             {

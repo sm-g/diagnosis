@@ -72,8 +72,7 @@
                     Height="23"
                     Width="70"
                     HorizontalAlignment="Right"
-                    Command="{Binding AddPatientCommand}"
-                    Margin="0,2,0,11" />
+                    Command="{Binding AddPatientCommand}" />
         </Grid>
 
         <search:Filter  x:Name="filter"
@@ -113,7 +112,6 @@
                   AutoGenerateColumns="False"
                   SelectedCellsChanged="dataGrid_SelectedCellsChanged">
             <DataGrid.Columns>
-                <!--<DataGridTextColumn Header="Метка" IsReadOnly="True" Binding="{Binding Label, Mode=OneWay}" />-->
                 <DataGridTextColumn Header="Фамилия"
                                     IsReadOnly="True"
                                     Binding="{Binding LastName, Mode=OneWay}" />
