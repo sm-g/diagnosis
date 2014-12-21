@@ -83,25 +83,11 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public override string this[string columnName]
-        {
-            get
-            {
-                var results = doctor.SelfValidate();
-                if (results == null)
-                    return string.Empty;
-                var message = results.Errors
-                    .Where(x => x.PropertyName == columnName)
-                    .Select(x => x.ErrorMessage)
-                    .FirstOrDefault();
-                return message != null ? message : string.Empty;
-            }
-        }
-
         public DoctorViewModel(Doctor d)
         {
             Contract.Requires(d != null);
             doctor = d;
+            this.validatableEntity = d;
             doctor.PropertyChanged += doctor_PropertyChanged;
         }
 

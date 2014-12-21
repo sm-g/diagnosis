@@ -17,6 +17,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             Contract.Requires(course != null);
             this.course = course;
+            this.validatableEntity = course;
 
             course.PropertyChanged += course_PropertyChanged;
             appManager = new AppointmentsManager(course);
@@ -115,21 +116,6 @@ namespace Diagnosis.ViewModels.Screens
             get
             {
                 return LeadDoctor == AuthorityController.CurrentDoctor;
-            }
-        }
-
-        public override string this[string columnName]
-        {
-            get
-            {
-                var results = course.SelfValidate();
-                if (results == null)
-                    return string.Empty;
-                var message = results.Errors
-                    .Where(x => x.PropertyName == columnName)
-                    .Select(x => x.ErrorMessage)
-                    .FirstOrDefault();
-                return message != null ? message : string.Empty;
             }
         }
 

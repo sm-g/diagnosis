@@ -4,6 +4,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+using Diagnosis.Models;
+using System.Linq;
+using System.Collections.Generic;
 
 [assembly: InternalsVisibleTo("Tests")]
 
@@ -42,6 +45,10 @@ namespace Diagnosis.ViewModels
         #endregion
 
         #region IDataErrorInfo
+
+        protected IValidatable validatableEntity;
+        protected Dictionary<string, string> columnToPropertyMap;
+
         public virtual string Error
         {
             get { return null; }
@@ -49,7 +56,22 @@ namespace Diagnosis.ViewModels
 
         public virtual string this[string columnName]
         {
-            get { return null; }
+            get
+            {
+                if (validatableEntity == null)
+                    return string.Empty;
+
+                var results = validatableEntity.SelfValidate();
+                if (results == null)
+                    return string.Empty;
+                var message = results.Errors
+                    .Where(x => x.PropertyName == columnName ||
+                            columnToPropertyMap != null &&
+                            x.PropertyName == columnToPropertyMap.GetValueOrDefault(columnName))
+                    .Select(x => x.ErrorMessage)
+                    .FirstOrDefault();
+                return message != null ? message : string.Empty;
+            }
         }
         #endregion
     }

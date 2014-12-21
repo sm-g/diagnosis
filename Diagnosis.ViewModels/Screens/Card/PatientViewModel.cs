@@ -196,25 +196,12 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public override string this[string columnName]
-        {
-            get
-            {
-                var results = patient.SelfValidate();
-                if (results == null)
-                    return string.Empty;
-                var message = results.Errors
-                    .Where(x => x.PropertyName == columnName)
-                    .Select(x => x.ErrorMessage)
-                    .FirstOrDefault();
-                return message != null ? message : string.Empty;
-            }
-        }
-
         public PatientViewModel(Patient p)
         {
             Contract.Requires(p != null);
             this.patient = p;
+            this.validatableEntity = p;
+
             patient.PropertyChanged += patient_PropertyChanged;
 
             coursesManager = new CoursesManager(patient, onCoursesChanged: (s, e) =>

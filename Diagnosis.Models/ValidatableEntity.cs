@@ -4,7 +4,7 @@ using System;
 namespace Diagnosis.Models
 {
     [Serializable]
-    public abstract class ValidatableEntity<T> : EntityBase<T>
+    public abstract class ValidatableEntity<T> : EntityBase<T>, IValidatable
     {
         private bool? isValidCache;
 
@@ -26,5 +26,11 @@ namespace Diagnosis.Models
         }
 
         public abstract ValidationResult SelfValidate();
+    }
+
+    public interface IValidatable
+    {
+        ValidationResult SelfValidate();
+        bool IsValid();
     }
 }

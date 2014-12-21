@@ -26,5 +26,19 @@ namespace Diagnosis.Common
                 return default(TVal);
             }
         }
+        /// <summary>
+        /// Return dict value or empty string.
+        /// </summary>
+        public static string GetValueOrDefault<TKey>(this IDictionary<TKey, string> dict, TKey key)
+        {
+
+            string result;
+            if (dict.TryGetValue(key, out result))
+                return result;
+            else
+            {
+                return string.Empty;
+            }
+        }
     }
 }

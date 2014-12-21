@@ -13,6 +13,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             Contract.Requires(appointment != null);
             this.appointment = appointment;
+            this.validatableEntity = appointment;
         }
 
         public Doctor Doctor
@@ -29,21 +30,6 @@ namespace Diagnosis.ViewModels.Screens
         public bool IsDoctorFromCourse
         {
             get { return Doctor == appointment.Course.LeadDoctor; }
-        }
-
-        public override string this[string columnName]
-        {
-            get
-            {
-                var results = appointment.SelfValidate();
-                if (results == null)
-                    return string.Empty;
-                var message = results.Errors
-                    .Where(x => x.PropertyName == columnName)
-                    .Select(x => x.ErrorMessage)
-                    .FirstOrDefault();
-                return message != null ? message : string.Empty;
-            }
         }
 
         public override string ToString()
