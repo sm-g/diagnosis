@@ -41,7 +41,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private bool _listItemFocused;
         private bool _selected;
         private bool _draggable;
-        private Signalizations _signal;
+        private Signalizations? _signal;
 
         /// <summary>
         /// Создает пустой тег.
@@ -81,6 +81,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         public event EventHandler Deleted;
         public event EventHandler Converting;
+        public event EventHandler<BlankTypeEventArgs> ConvertingTo;
         /// <summary>
         /// Типы заготовок в теге.
         /// </summary>
@@ -116,6 +117,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             Completed
         }
 
+        /// <summary>
+        /// Текстовое представление
+        /// </summary>
         public string Query
         {
             get
@@ -175,7 +179,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 if (_blank != value)
                 {
-                    logger.DebugFormat("blank ={0}", value);
+                    logger.DebugFormat("blank = {0} ({1})", value, GetBlankType(value));
 
                     _blank = value;
                     OnPropertyChanged("Blank");
@@ -187,6 +191,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     Query = value.ToString();
                 }
                 State = States.Completed;
+                Signalization = null;
             }
         }
 
@@ -199,6 +204,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 return GetBlankType(Blank);
             }
+            set { } // for binding
         }
         public RelayCommand ConvertCommand
         {
@@ -249,6 +255,17 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 IsTextBoxFocused = true;
             }
         }
+        public RelayCommand<BlankTypes> ConvertToCommand
+        {
+            get
+            {
+                return new RelayCommand<BlankTypes>((t) =>
+                {
+                    OnConvertingTo(t);
+                },
+                (t) => autocomplete.WithConvert && t != BlankType && State != States.Init && !Query.IsNullOrEmpty() && !IsDeleteOnly);
+            }
+        }
 
         #region AutocompleteRelated
 
@@ -293,7 +310,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        public Signalizations Signalization
+        public Signalizations? Signalization
         {
             get
             {
@@ -442,6 +459,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 }
             }
         }
+        /// <summary>
+        /// Radio group name
+        /// </summary>
+        public string Hash { get { return GetHashCode().ToString(); } }
         #endregion
 
         public void Validate(Func<Tag, Signalizations> filter = null)
@@ -504,12 +525,21 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 h(this, e);
             }
         }
+        protected virtual void OnConvertingTo(BlankTypes targetType)
+        {
+            var h = ConvertingTo;
+            if (h != null)
+            {
+                h(this, new BlankTypeEventArgs(targetType));
+            }
+        }
 
         [ContractInvariantMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            Contract.Invariant(State != States.Completed || BlankType != BlankTypes.None || Signalization == Signalizations.Forbidden); // завершенный тег → есть бланк (тег завершается после смены бланка) в поиске бланк мб пустой
+            Contract.Invariant(State != States.Completed || BlankType != BlankTypes.None
+                || Signalization == null || Signalization == Signalizations.Forbidden); // завершенный тег → есть бланк (тег завершается после смены бланка) в поиске бланк мб пустой
             Contract.Invariant(State != States.Init || (BlankType == BlankTypes.None && Entities == null)); // в начальном состоянии → нет бланка и сущностей
             // при редактировании нет сущностей
         }
@@ -529,6 +559,19 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         public TagEventArgs(Tag tag)
         {
             this.tag = tag;
+        }
+    }
+
+
+    [Serializable]
+    public class BlankTypeEventArgs : EventArgs
+    {
+        public readonly Tag.BlankTypes type;
+
+        [DebuggerStepThrough]
+        public BlankTypeEventArgs(Tag.BlankTypes type)
+        {
+            this.type = type;
         }
     }
 

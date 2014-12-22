@@ -1,9 +1,11 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Screens;
 using NHibernate;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -57,37 +59,97 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         public void SetBlank(Tag tag, object suggestion, bool exactMatchRequired, bool inverse)
         {
-            if (suggestion == null ^ inverse) // direct w\o sugg or inverse with sugg
+            if (suggestion == null ^ inverse) // direct no suggestion or inverse with suggestion
             {
                 if (CanMakeEntityFrom(tag.Query))
+                {
                     tag.Blank = tag.Query; // текст-комментарий
+                    Debug.Assert(tag.BlankType == Tag.BlankTypes.Query);
+                }
                 else
+                {
                     tag.Blank = null; // для поиска
+                    Debug.Assert(tag.BlankType == Tag.BlankTypes.None);
+                }
             }
-            else if (!inverse) // main
+            else if (!inverse) // direct with suggestion
             {
                 if (!exactMatchRequired || Recognizer.Matches(suggestion, tag.Query))
-                    tag.Blank = suggestion;
+                {
+                    tag.Blank = suggestion; // main
+                    Debug.Assert(tag.BlankType == Tag.BlankTypes.Word ||
+                                 tag.BlankType == Tag.BlankTypes.Measure ||
+                                 tag.BlankType == Tag.BlankTypes.Icd);
+                }
                 else
+                {
                     tag.Blank = tag.Query; // запрос не совпал с предположением (CompleteOnLostFocus)
+                    Debug.Assert(tag.BlankType == Tag.BlankTypes.Query);
+                }
             }
-            else // inv, no sugg
+            else // inverse, no suggestion
             {
                 tag.Blank = FirstMatchingOrNewWord(tag.Query);
+                Debug.Assert(tag.BlankType == Tag.BlankTypes.Word);
             }
         }
 
-        public void ConvertBlank(Tag tag)
+        public void ConvertBlank(Tag tag, Tag.BlankTypes toType)
         {
-            if (tag.BlankType == Tag.BlankTypes.Word)
+            Contract.Requires(tag.BlankType != toType);
+            Contract.Requires(toType != Tag.BlankTypes.None && toType != Tag.BlankTypes.Query);
+
+            string query;
+            if (tag.BlankType == Tag.BlankTypes.Measure)
             {
-                // слово меняем на коммент
-                tag.Blank = new Comment(tag.Query);
+                query = (tag.Blank as Measure).Word.Title;
             }
-            else // Icd !
+            else
             {
-                tag.Blank = FirstMatchingOrNewWord(tag.Query);
+                query = tag.Query; //
             }
+
+            switch (toType)
+            {
+                case Tag.BlankTypes.Comment: //
+                    tag.Blank = new Comment(tag.Query);
+                    break;
+
+                case Tag.BlankTypes.Word: // новое или существующее
+                    tag.Blank = FirstMatchingOrNewWord(query);
+                    // отдельный комментарий из числа измерения, везде?
+                    break;
+
+                case Tag.BlankTypes.Measure: // слово 
+                    var w = FirstMatchingOrNewWord(query);
+                    var vm = new MeasureEditorViewModel(w);
+                    this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+                    if (vm.DialogResult == true)
+                    {
+                        tag.Blank = vm.Measure;
+                    }
+                    break;
+
+                case Tag.BlankTypes.Icd: // слово/коммент в поисковый запрос                   
+
+                    var vm0 = new IcdSelectorViewModel(query);
+                    this.Send(Events.OpenDialog, vm0.AsParams(MessageKeys.Dialog));
+                    if (vm0.DialogResult == true)
+                    {
+                        tag.Blank = vm0.SelectedIcd;
+                    }
+                    break;
+            }
+
+            //if (tag.BlankType == Tag.BlankTypes.Word)
+            //{
+            //    // слово меняем на коммент
+            //    tag.Blank = new Comment(tag.Query);
+            //}
+            //else // Icd !
+            //{
+            //    tag.Blank = FirstMatchingOrNewWord(tag.Query);
+            //}
         }
 
         /// <summary>
@@ -232,8 +294,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         private static bool Matches(object suggestion, string query)
         {
-            if (suggestion is Word)
-                return query.MatchesAsStrings(suggestion as Word);
             return query.MatchesAsStrings(suggestion);
         }
 

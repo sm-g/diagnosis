@@ -18,14 +18,29 @@ namespace Diagnosis.ViewModels.Screens
         private IcdDisease _selected;
         private PopupSearchViewModel<IcdDisease> _diagnosisSearch;
 
-        public IcdSelectorViewModel(IcdDisease initial = null)
+        private IcdSelectorViewModel(IcdDisease initial = null, string query = null)
         {
             _chapters = new ObservableCollection<DiagnosisViewModel>();
             CreateDiagnosisSearch();
             SelectedIcd = initial;
             UpdateDiagnosisQueryCode(initial, true);
 
+            if (query != null)
+            {
+                DiagnosisSearch.Filter.Query = query;
+            }
+
             Title = "Выбор диагноза МКБ";
+        }
+
+        public IcdSelectorViewModel(IcdDisease initial = null)
+            : this(initial, null)
+        {
+        }
+
+        public IcdSelectorViewModel(string query)
+            : this(null, query)
+        {
         }
 
         public IcdDisease SelectedIcd
@@ -69,7 +84,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return DiagnosisSearch.SelectedItem != null;
+                return SelectedIcd != null;
             }
         }
 
@@ -112,7 +127,7 @@ namespace Diagnosis.ViewModels.Screens
                             Blocks = blocks
                         }).ToDictionary(x => x.Chapter, x => x.Blocks);
 
-            // для каждого класса, блока и болезни ищем существующую VM или создаем 
+            // для каждого класса, блока и болезни ищем существующую VM или создаем
             // разворачиваем
             // синхронизируем с детьми уровня выше
             var chVms = dict.Keys.Select(ch =>

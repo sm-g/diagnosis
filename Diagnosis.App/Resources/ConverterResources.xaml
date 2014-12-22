@@ -13,7 +13,8 @@
     <conv:DateOffsetToUnitLabel x:Key="DateOffsetToUnitLabel" />
     <conv:Summator x:Key="SummatorConverter" />
     <conv:ManToShortName x:Key="ManToShortName" />
-    <conv:EqualityToBoolConverter x:Key="EqualityToBool" />
+    <conv:EqualityToBoolConverter x:Key="EqualToBool" />
+    <conv:EqualityToBoolMultiConverter x:Key="EqualAllToBool" />
     <conv:IsLastItem x:Key="IsLastItem" />
     <conv:DateIntervalLabel x:Key="DateIntervalLabel" />
     <conv:DateLabel x:Key="DateLabel" />

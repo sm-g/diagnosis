@@ -23,6 +23,5 @@ namespace Diagnosis.App.Controls.Search
         {
             InitializeComponent();
         }
-
     }
 }

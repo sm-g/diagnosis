@@ -44,7 +44,7 @@
                     <Style.Triggers>
                         <DataTrigger Value="True">
                             <DataTrigger.Binding>
-                                <MultiBinding Converter="{StaticResource EqualityToBool}">
+                                <MultiBinding Converter="{StaticResource EqualAllToBool}">
                                     <Binding Path="DataContext.Navigator.Current" RelativeSource="{RelativeSource AncestorType=screen:Card}" />
                                     <Binding />
                                 </MultiBinding>

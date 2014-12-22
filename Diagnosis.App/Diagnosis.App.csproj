@@ -219,6 +219,7 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Compile Include="Behaviors\FocusBehavior.cs" />
+    <Compile Include="Behaviors\MenuItemExtensions.cs" />
     <Compile Include="Behaviors\MultiSelectorBehaviours.cs" />
     <Compile Include="Behaviors\RowDblClick.cs" />
     <Compile Include="Behaviors\TwoListSynchronizer.cs" />

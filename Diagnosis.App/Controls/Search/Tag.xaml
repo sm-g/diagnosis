@@ -70,12 +70,12 @@
                             <Setter Property="ToolTip" Value="Неизвестная единица измерения, сохраняется без единицы" />
                         </DataTrigger>
 
-                        <!--<DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Query}">
+                        <DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Query}">
                             <Setter Property="Foreground" Value="Red" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Comment}">
                             <Setter Property="FontStyle" Value="Italic" />
-                        </DataTrigger>-->
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding BlankType}" Value="{x:Static auto:Tag+BlankTypes.Word}">
                             <Setter Property="FontStyle" Value="Normal" />
                         </DataTrigger>
@@ -98,11 +98,62 @@
             </TextBox.Style>
             <TextBox.ContextMenu>
                 <ContextMenu>
+                    <ContextMenu.Resources>
+                        <Style TargetType="MenuItem"
+                               x:Key="convert"
+                               x:Shared="False">
+                            <Setter Property="IsCheckable"
+                                    Value="True" />
+                            <Setter Property="controls:MenuItemExtensions.GroupName"
+                                    Value="{Binding Hash}" />
+                            <Setter Property="Command"
+                                    Value="{Binding ConvertToCommand}" />
+
+                            <!--<Setter Property="IsChecked"
+                                    Value="False" />
+                            
+                            <Style.Triggers>
+                                
+                                <DataTrigger Value="True">
+                                    <DataTrigger.Binding>
+                                        <MultiBinding Converter="{StaticResource EqualAllToBool}">
+                                            <Binding Path="BlankType"/>
+                                            <Binding Path="CommandParameter" RelativeSource="{RelativeSource Self}" />
+                                        </MultiBinding>
+                                    </DataTrigger.Binding>
+                                    <Setter Property="IsChecked"
+                                            Value="True" />
+                                </DataTrigger>
+                            </Style.Triggers>-->
+                        </Style>
+                    </ContextMenu.Resources>
                     <MenuItem Header="Выделить"
                               InputGestureText="F2"
                               Command="{Binding SelectCommand}" />
                     <MenuItem Header="Удалить"
                               Command="{Binding DeleteCommand}" />
+                    <Separator />
+
+                    <MenuItem Header="Слово"
+                              CommandParameter="{x:Static auto:Tag+BlankTypes.Word}"
+                              IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static auto:Tag+BlankTypes.Word}}"
+                              Style="{StaticResource convert}"
+                             />
+                    <MenuItem Header="Комментарий"
+                              CommandParameter="{x:Static auto:Tag+BlankTypes.Comment}"
+                              IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static auto:Tag+BlankTypes.Comment}}"
+                              Style="{StaticResource convert}" />
+                    <MenuItem Header="МКБ"
+                              CommandParameter="{x:Static auto:Tag+BlankTypes.Icd}"
+                              IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static auto:Tag+BlankTypes.Icd}}"
+                              Style="{StaticResource convert}"
+                               />
+                    <MenuItem Header="Измерение"
+                              CommandParameter="{x:Static auto:Tag+BlankTypes.Measure}"
+                              IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static auto:Tag+BlankTypes.Measure}}"
+                              Style="{StaticResource convert}" />
+                    <Separator />
+
                     <MenuItem Command="{Binding ConvertCommand}">
                         <MenuItem.Header>
                             <TextBlock>

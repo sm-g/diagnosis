@@ -7,17 +7,30 @@ using System.Globalization;
 
 namespace Diagnosis.App.Converters
 {
-    public class EqualityToBoolConverter : IMultiValueConverter
+    public class EqualityToBoolMultiConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values.Length < 2)
-                return false;
-            return object.Equals(values[0], values[1]);
+            return values.Distinct().Count() == 1;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
+            throw new NotSupportedException();
+        }
+    }
+
+    public class EqualityToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value.Equals(parameter);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (parameter.GetType() == targetType)
+                return parameter;
             throw new NotSupportedException();
         }
     }

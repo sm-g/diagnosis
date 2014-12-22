@@ -189,7 +189,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                                 this.Send(Events.OpenDialog, vm0.AsParams(MessageKeys.Dialog));
                                 if (vm0.DialogResult == true)
                                 {
-                                    CompleteCommon(SelectedTag, (vm0 as IcdSelectorViewModel).SelectedIcd, false);
+                                    CompleteCommon(SelectedTag, vm0.SelectedIcd, false);
                                 }
                                 break;
 
@@ -210,7 +210,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 {
                     var entities = GetEntitiesOfSelected();
                     this.Send(Events.SendToSearch, entities.AsParams(MessageKeys.HrItemObjects));
-                });
+                }, () => WithSendToSearch);
             }
         }
 
@@ -357,7 +357,12 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             };
             tag.Converting += (s, e) =>
             {
-                CompleteOnConvert(tag);
+                CompleteOnConvert(tag, Tag.BlankTypes.None);
+                OnEntitiesChanged();
+            };
+            tag.ConvertingTo += (s, e) =>
+            {
+                CompleteOnConvert(tag, e.type);
                 OnEntitiesChanged();
             };
             tag.PropertyChanged += (s, e) =>
@@ -371,13 +376,13 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 {
                     if (tag.IsTextBoxFocused)
                     {
-                        if (tag.Signalization != Signalizations.None) // TODO предположения для недописанных
+                        if (tag.Signalization == null || tag.Signalization == Signalizations.None)
                         {
-                            MakeSuggestions(SelectedTag);
+                            Suggestions.Clear();
                         }
                         else
                         {
-                            Suggestions.Clear();
+                            MakeSuggestions(SelectedTag); // TODO предположения для недописанных
                         }
 
                         CanCompleteOnLostFocus = true;
@@ -578,12 +583,20 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             CompleteEnding(tag);
         }
 
-        private void CompleteOnConvert(Tag tag)
+        private void CompleteOnConvert(Tag tag, Tag.BlankTypes toType)
         {
             Contract.Requires(!tag.Query.IsNullOrEmpty());
 
-            recognizer.ConvertBlank(tag);
-            // показать редаткор измр
+            if (toType == Tag.BlankTypes.None)
+            {
+                if (tag.BlankType == Tag.BlankTypes.Comment)
+                    toType = Tag.BlankTypes.Word;
+                else
+                    toType = Tag.BlankTypes.Comment;
+
+            }
+
+            recognizer.ConvertBlank(tag, toType);
 
             CompleteEnding(tag);
         }
