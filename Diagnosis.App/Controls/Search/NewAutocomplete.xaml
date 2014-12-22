@@ -82,6 +82,9 @@
                         <Setter.Value>
                             <ContextMenu>
                                 <!-- Autocomplete, для выделенных -->
+                                <MenuItem Header="Редактировать"
+                                          InputGestureText="F2"
+                                          Command="{Binding PlacementTarget.Tag.EditCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <MenuItem Header="Удалить"
                                           InputGestureText="Del"                                          
                                           Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />

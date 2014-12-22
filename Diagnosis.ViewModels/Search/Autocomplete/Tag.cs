@@ -80,8 +80,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         public event EventHandler Deleted;
-        public event EventHandler Converting;
-        public event EventHandler<BlankTypeEventArgs> ConvertingTo;
+        public event EventHandler<BlankTypeEventArgs> Converting;
         /// <summary>
         /// Типы заготовок в теге.
         /// </summary>
@@ -206,89 +205,20 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
             set { } // for binding
         }
-        public RelayCommand ConvertCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    OnConverting(EventArgs.Empty);
-                },
-                () => autocomplete.WithConvert && State != States.Init && !Query.IsNullOrEmpty() && !IsDeleteOnly);
-            }
-        }
+        #region AutocompleteRelated
 
-        public RelayCommand SendToSearchCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    this.Send(Events.SendToSearch, Blank.ToEnumerable().AsParams(MessageKeys.HrItemObjects));
-                },
-                () => autocomplete.WithSendToSearch);
-            }
-        }
 
-        public RelayCommand SelectCommand
+        public RelayCommand EditCommand
         {
             get
             {
                 return new RelayCommand(() =>
                 {
-                    SwitchEdit();
+                    autocomplete.EditCommand.Execute(null);
                 });
             }
         }
 
-        /// <summary>
-        /// Switch focus between textbox and listitem for SelectedTag
-        /// </summary>
-        public void SwitchEdit()
-        {
-            if (IsTextBoxFocused)
-            {
-                IsListItemFocused = true;
-            }
-            else
-            {
-                IsTextBoxFocused = true;
-            }
-        }
-        public RelayCommand<BlankTypes> ConvertToCommand
-        {
-            get
-            {
-                return new RelayCommand<BlankTypes>((t) =>
-                {
-                    OnConvertingTo(t);
-                },
-                (t) => autocomplete.WithConvert && t != BlankType && State != States.Init && !Query.IsNullOrEmpty() && !IsDeleteOnly);
-            }
-        }
-
-        #region AutocompleteRelated
-
-        public RelayCommand AddLeftCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    autocomplete.Add(this, true);
-                }, () => !autocomplete.SingleTag);
-            }
-        }
-        public RelayCommand AddRightCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    autocomplete.Add(this, false);
-                }, () => !IsLast && !autocomplete.SingleTag);
-            }
-        }
         public RelayCommand DeleteCommand
         {
             get
@@ -310,22 +240,50 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        public Signalizations? Signalization
+        public RelayCommand SendToSearchCommand
         {
             get
             {
-                return _signal;
-            }
-            set
-            {
-                if (_signal != value)
+                return new RelayCommand(() =>
                 {
-                    _signal = value;
-                    //  logger.InfoFormat("{0} signals", this);
-                    OnPropertyChanged(() => Signalization);
-                }
+                    this.Send(Events.SendToSearch, Blank.ToEnumerable().AsParams(MessageKeys.HrItemObjects));
+                },
+                () => autocomplete.WithSendToSearch);
             }
         }
+        public RelayCommand<BlankTypes> ConvertToCommand
+        {
+            get
+            {
+                return new RelayCommand<BlankTypes>((t) =>
+                {
+                    OnConverting(t);
+                },
+                (t) => autocomplete.WithConvert && t != BlankType && State != States.Init && !Query.IsNullOrEmpty() && !IsDeleteOnly);
+            }
+        }
+
+        public RelayCommand AddLeftCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    autocomplete.Add(this, true);
+                }, () => !autocomplete.SingleTag);
+            }
+        }
+        public RelayCommand AddRightCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    autocomplete.Add(this, false);
+                }, () => !IsLast && !autocomplete.SingleTag);
+            }
+        }
+
 
         /// <summary>
         /// Тег не редактируется, можно только удалить.
@@ -383,7 +341,25 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
 
         #region ViewRelated
-
+        public Signalizations? Signalization
+        {
+            get
+            {
+                return _signal;
+            }
+            set
+            {
+                if (_signal != value)
+                {
+                    _signal = value;
+                    //  logger.InfoFormat("{0} signals", this);
+                    OnPropertyChanged(() => Signalization);
+                }
+            }
+        }
+        /// <summary>
+        /// Редактируется (слово или коммент)
+        /// </summary>
         public bool IsTextBoxFocused
         {
             get
@@ -405,11 +381,13 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             get
             {
-                return BlankType != BlankTypes.Icd   // редактируются через отдльный редактор
+                return BlankType != BlankTypes.Icd   // редактируются через отдельный редактор
                     && BlankType != BlankTypes.Measure;
             }
         }
-
+        /// <summary>
+        /// Тег выделен
+        /// </summary>
         public bool IsListItemFocused
         {
             get
@@ -463,6 +441,21 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// Radio group name
         /// </summary>
         public string Hash { get { return GetHashCode().ToString(); } }
+
+        /// <summary>
+        /// Switch focus between textbox and listitem for SelectedTag
+        /// </summary>
+        public void SwitchEdit()
+        {
+            if (IsTextBoxFocused)
+            {
+                IsListItemFocused = true;
+            }
+            else
+            {
+                IsTextBoxFocused = true;
+            }
+        }
         #endregion
 
         public void Validate(Func<Tag, Signalizations> filter = null)
@@ -517,17 +510,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        protected virtual void OnConverting(EventArgs e)
+        protected virtual void OnConverting(BlankTypes targetType)
         {
             var h = Converting;
-            if (h != null)
-            {
-                h(this, e);
-            }
-        }
-        protected virtual void OnConvertingTo(BlankTypes targetType)
-        {
-            var h = ConvertingTo;
             if (h != null)
             {
                 h(this, new BlankTypeEventArgs(targetType));

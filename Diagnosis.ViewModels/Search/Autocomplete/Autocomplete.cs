@@ -354,13 +354,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 Contract.Requires(!tag.IsLast);
                 Tags.Remove(tag);
-            };
+            };          
             tag.Converting += (s, e) =>
-            {
-                CompleteOnConvert(tag, Tag.BlankTypes.None);
-                OnEntitiesChanged();
-            };
-            tag.ConvertingTo += (s, e) =>
             {
                 CompleteOnConvert(tag, e.type);
                 OnEntitiesChanged();

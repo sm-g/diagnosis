@@ -127,11 +127,27 @@
                             </Style.Triggers>-->
                         </Style>
                     </ContextMenu.Resources>
-                    <MenuItem Header="Выделить"
-                              InputGestureText="F2"
-                              Command="{Binding SelectCommand}" />
+                    <MenuItem InputGestureText="F2"
+                              Command="{Binding EditCommand}">
+                        <MenuItem.Style>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="Header"
+                                        Value="Выделить" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsListItemFocused}"
+                                                 Value="True">
+                                        <Setter Property="Header"
+                                                Value="Редактировать" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.Style>
+                    </MenuItem>
                     <MenuItem Header="Удалить"
                               Command="{Binding DeleteCommand}" />
+                    <MenuItem Header="Искать"
+                              InputGestureText="Alt + F"
+                              Command="{Binding SendToSearchCommand}" />
                     <Separator />
 
                     <MenuItem Header="Слово"
@@ -152,9 +168,9 @@
                               CommandParameter="{x:Static auto:Tag+BlankTypes.Measure}"
                               IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static auto:Tag+BlankTypes.Measure}}"
                               Style="{StaticResource convert}" />
-                    <Separator />
-
-                    <MenuItem Command="{Binding ConvertCommand}">
+                    
+                    <!--<Separator />-->
+                    <!--<MenuItem Command="{Binding ConvertCommand}">
                         <MenuItem.Header>
                             <TextBlock>
                                 <Run>
@@ -171,7 +187,7 @@
                                 </Run> «<Run Text="{Binding Query, TargetNullValue=' — '}" />»
                             </TextBlock>
                         </MenuItem.Header>
-                    </MenuItem>
+                    </MenuItem>-->
                     <Separator />
                     <MenuItem Header="Добавить слева" Command="{Binding AddLeftCommand}" />
                     <MenuItem Header="Добавить справа" Command="{Binding AddRightCommand}" />
