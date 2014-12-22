@@ -13,7 +13,7 @@ namespace Diagnosis.App.Converters
             if (d == null)
                 return null;
 
-            return DateOffset.FormatUnit(d.Offset, d.Unit);
+            return DateOffsetFormatter.FormatUnit(d.Offset, d.Unit);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -30,7 +30,7 @@ namespace Diagnosis.App.Converters
             var unit = (DateUnits)values[0];
             int? offset = (int?)values[1];
 
-            return DateOffset.FormatUnit(offset, unit);
+            return DateOffsetFormatter.FormatUnit(offset, unit);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

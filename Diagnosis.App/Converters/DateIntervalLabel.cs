@@ -79,7 +79,7 @@ namespace Diagnosis.App.Converters
 
             TimeSpan ts = (TimeSpan)value;
             var sameTime = "в то же время";
-            var str = DateFormatter.GetTimeSpanString(ts, 3, sameTime);
+            var str = TimeSpanFormatter.GetTimeSpanString(ts, 3, sameTime);
 
             if (label == null || str == sameTime)
                 return str;

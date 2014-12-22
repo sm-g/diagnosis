@@ -7,6 +7,11 @@ namespace Diagnosis.Common
 {
     public class Plurals
     {
+        public static string[] days = new string[3] { "день", "дня", "дней" };
+        public static string[] weeks = new string[3] { "неделя", "недели", "недель" };
+        public static string[] months = new string[3] { "месяц", "месяца", "месяцев" };
+        public static string[] years = new string[3] { "год", "года", "лет" };
+
         /// <summary>
         /// 0 - день, 1 - дня, 2 - дней
         /// </summary>

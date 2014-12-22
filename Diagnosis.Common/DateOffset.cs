@@ -21,11 +21,6 @@ namespace Diagnosis.Common
     public class DateOffset : NotifyPropertyChangedBase // should be struct
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(DateOffset));
-
-        private static string[] days = new string[3] { "день", "дня", "дней" };
-        private static string[] weeks = new string[3] { "неделя", "недели", "недель" };
-        private static string[] months = new string[3] { "месяц", "месяца", "месяцев" };
-        private static string[] years = new string[3] { "год", "года", "лет" };
         private int? _offset;
         private DateUnits _unit;
         private int? _year;
@@ -63,6 +58,9 @@ namespace Diagnosis.Common
             }
         }
 
+        /// <summary>
+        /// 1..12
+        /// </summary>
         public int? Month
         {
             get
@@ -84,7 +82,9 @@ namespace Diagnosis.Common
                 }
             }
         }
-
+        /// <summary>
+        /// 1..
+        /// </summary>
         public int? Day
         {
             get
@@ -696,6 +696,14 @@ namespace Diagnosis.Common
         }
 
         /// <summary>
+        /// Возвращает DateTime представление для объекта DateOffset, если возможно.
+        /// </summary>
+        public DateTime? GetNullableDateTime()
+        {
+            return DateHelper.NullableDate(Year, Month, Day);
+        }
+
+        /// <summary>
         /// Проверяет дату, опционально исправляет.
         /// </summary>
         /// <returns>true, если было исправление.</returns>
@@ -838,32 +846,6 @@ namespace Diagnosis.Common
         }
 
         #endregion operators
-
-        public static string FormatUnit(int? offset, DateUnits unit)
-        {
-            if (offset == null)
-                offset = 0;
-
-            int ending = Plurals.GetPluralEnding(offset.Value);
-
-            switch (unit)
-            {
-                case DateUnits.Day: return days[ending];
-                case DateUnits.Week: return weeks[ending];
-                case DateUnits.Month: return months[ending];
-                case DateUnits.Year: return years[ending];
-            }
-            throw new ArgumentOutOfRangeException("unit");
-        }
-
-        /// <summary>
-        /// Возвращает DateTime представление для объекта DateOffset, если возможно.
-        /// </summary>
-        public DateTime? GetNullableDateTime()
-        {
-            return DateHelper.NullableDate(Year, Month, Day);
-        }
-
         public enum UnitSetting
         {
             /// <summary>
@@ -915,6 +897,22 @@ namespace Diagnosis.Common
                 this.AutoCorrection = autoCorrection;
                 this.CutsDate = cutsDate;
             }
+            public static bool operator ==(DateOffsetSettings do1, DateOffsetSettings do2)
+            {
+                if (object.ReferenceEquals(do1, null) || object.ReferenceEquals(do2, null))
+                {
+                    return object.ReferenceEquals(do1, do2);
+                }
+                return do1.Unit == do2.Unit
+                    && do1.Date == do2.Date
+                    && do1.AutoCorrection == do2.AutoCorrection
+                    && do1.CutsDate == do2.CutsDate;
+            }
+
+            public static bool operator !=(DateOffsetSettings do1, DateOffsetSettings do2)
+            {
+                return !(do1 == do2);
+            }
         }
 
         [ContractInvariantMethod]
@@ -927,7 +925,20 @@ namespace Diagnosis.Common
 
         public override string ToString()
         {
-            return string.Format("{0} {1} {2}.{3}.{4}", Offset, DateOffset.FormatUnit(Offset, Unit), Year ?? 0, Month ?? 0, Day ?? 0);
+            return string.Format("{0} {1} {2}.{3}.{4}", Offset, DateOffsetFormatter.FormatUnit(Offset, Unit), Year ?? 0, Month ?? 0, Day ?? 0);
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as DateOffset;
+            if (other == null)
+                return false;
+            return this == other && this.Settings == other.Settings;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode(); // TODO
         }
     }
 }

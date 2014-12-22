@@ -17,7 +17,7 @@ namespace Tests
             DateTime one = new DateTime(2014, 1, 1, 0, 0, 0);
             DateTime two = new DateTime(2014, 1, 3, 6, 5, 0);
             var ts = two - one;
-            var str = DateFormatter.GetTimeSpanString(ts, 3);
+            var str = TimeSpanFormatter.GetTimeSpanString(ts, 3);
 
             Assert.AreEqual("2 дня 6 ч 5 м", str);
         }
@@ -27,7 +27,7 @@ namespace Tests
             DateTime one = new DateTime(2014, 1, 1);
             DateTime two = new DateTime(2014, 1, 5);
             var ts = two - one;
-            var str = DateFormatter.GetTimeSpanString(ts, 3);
+            var str = TimeSpanFormatter.GetTimeSpanString(ts, 3);
 
             Assert.AreEqual("4 дня", str);
         }
@@ -37,7 +37,7 @@ namespace Tests
             DateTime one = new DateTime(2014, 1, 1, 19, 5, 0);
             DateTime two = new DateTime(2014, 1, 2, 15, 6, 0);
             var ts = two - one;
-            var str = DateFormatter.GetTimeSpanString(ts, 3);
+            var str = TimeSpanFormatter.GetTimeSpanString(ts, 3);
 
             Assert.AreEqual("20 ч 1 м", str);
         }
@@ -47,7 +47,7 @@ namespace Tests
             DateTime one = new DateTime(2014, 1, 1, 0, 5, 0);
             DateTime two = new DateTime(2014, 1, 3, 6, 5, 0);
             var ts = two - one;
-            var str = DateFormatter.GetTimeSpanString(ts, 3);
+            var str = TimeSpanFormatter.GetTimeSpanString(ts, 3);
 
             Assert.AreEqual("2 дня 6 ч", str);
         }
@@ -58,7 +58,7 @@ namespace Tests
             DateTime one = new DateTime(2014, 1, 1, 15, 5, 0);
             DateTime two = new DateTime(2014, 1, 3, 15, 5, 0);
             var ts = two - one;
-            var str = DateFormatter.GetTimeSpanString(ts, 3);
+            var str = TimeSpanFormatter.GetTimeSpanString(ts, 3);
 
             Assert.AreEqual("2 дня 0 ч", str);
         }
@@ -68,7 +68,7 @@ namespace Tests
             DateTime one = new DateTime(2014, 1, 1, 19, 5, 0);
             DateTime two = new DateTime(2014, 1, 1, 20, 5, 0);
             var ts = two - one;
-            var str = DateFormatter.GetTimeSpanString(ts, 3);
+            var str = TimeSpanFormatter.GetTimeSpanString(ts, 3);
 
             Assert.AreEqual("1 ч", str);
         }
@@ -78,7 +78,7 @@ namespace Tests
             DateTime one = new DateTime(2014, 1, 1, 20, 5, 0);
             DateTime two = new DateTime(2014, 1, 1, 20, 6, 0);
             var ts = two - one;
-            var str = DateFormatter.GetTimeSpanString(ts, 3);
+            var str = TimeSpanFormatter.GetTimeSpanString(ts, 3);
 
             Assert.AreEqual("0 ч 1 м", str);
         }
@@ -88,7 +88,7 @@ namespace Tests
             DateTime one = new DateTime(2014, 1, 1, 19, 5, 0);
             DateTime two = one;
             var ts = two - one;
-            var str = DateFormatter.GetTimeSpanString(ts, 3, "equal");
+            var str = TimeSpanFormatter.GetTimeSpanString(ts, 3, "equal");
 
             Assert.AreEqual("equal", str);
         }
@@ -98,7 +98,7 @@ namespace Tests
             DateTime one = new DateTime(2014, 1, 2, 15, 6, 0);
             DateTime two = new DateTime(2014, 1, 1, 19, 5, 0);
             var ts = two - one;
-            var str = DateFormatter.GetTimeSpanString(ts, 3, "equal");
+            var str = TimeSpanFormatter.GetTimeSpanString(ts, 3, "equal");
 
             Assert.AreEqual("equal", str);
         }

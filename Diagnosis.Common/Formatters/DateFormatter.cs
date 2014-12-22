@@ -6,8 +6,14 @@ namespace Diagnosis.Common
 {
     public static class DateFormatter
     {
-        private static string[] days = new string[3] { "день", "дня", "дней" };
-
+        /// <summary>
+        /// Интервал дат без дублирования информации.
+        /// Например: с 10 по 25 мая 2000
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="labels"></param>
+        /// <returns></returns>
         public static string GetIntervalString(DateTime? from, DateTime? to = null, IList<string> labels = null)
         {
             if (from == null && to == null)
@@ -47,43 +53,15 @@ namespace Diagnosis.Common
             }
         }
 
+        /// <summary>
+        /// Дата без года, если он равен текущему.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
         public static string GetDateString(DateTime date)
         {
             var formats = DateFormatter.GetFormat(date, null);
             return date.ToString(formats.Item1);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="ts"></param>
-        /// <param name="daysLimit">Через сколько дней показывать часы и минуты</param>
-        /// <param name="sameAndNegative"></param>
-        /// <returns></returns>
-        public static string GetTimeSpanString(TimeSpan ts, int daysLimit, string sameAndNegative = "same")
-        {
-            if (ts < TimeSpan.Zero || ts.TotalMinutes < 1)
-                return sameAndNegative;
-
-            var sb = new StringBuilder();
-            var i = Plurals.GetPluralEnding(ts.Days);
-            if (ts.Days > 0)
-            {
-                sb.Append("{0:%d} ");
-                sb.Append(days[i]);
-                if (ts.Days < daysLimit)
-                {
-                    sb.Append(" ");
-                }
-            }
-            if (ts.Days < daysLimit)
-            {
-                sb.Append("{0:%h} ч");
-
-                if (ts.Minutes > 0)
-                    sb.Append(" {0:%m} м");
-            }
-            return string.Format(sb.ToString(), ts);
         }
 
         public static Tuple<string, string> GetFormat(DateTime from, DateTime? to = null)
@@ -135,6 +113,79 @@ namespace Diagnosis.Common
             }
 
             return new Tuple<string, string>(fromFormat, toFormat);
+        }
+    }
+
+    public static class TimeSpanFormatter
+    {
+        /// <summary>
+        /// Промежуток времени. При кол-ве дней меньше daysLimit показываются часы и минуты.
+        /// </summary>
+        /// <param name="ts"></param>
+        /// <param name="daysLimit">Через сколько дней показывать часы и минуты</param>
+        /// <param name="sameAndNegative"></param>
+        /// <returns></returns>
+        public static string GetTimeSpanString(TimeSpan ts, int daysLimit, string sameAndNegative = "same")
+        {
+            if (ts < TimeSpan.Zero || ts.TotalMinutes < 1)
+                return sameAndNegative;
+
+            var sb = new StringBuilder();
+            var i = Plurals.GetPluralEnding(ts.Days);
+            if (ts.Days > 0)
+            {
+                sb.Append("{0:%d} ");
+                sb.Append(Plurals.days[i]);
+                if (ts.Days < daysLimit)
+                {
+                    sb.Append(" ");
+                }
+            }
+            if (ts.Days < daysLimit)
+            {
+                sb.Append("{0:%h} ч");
+
+                if (ts.Minutes > 0)
+                    sb.Append(" {0:%m} м");
+            }
+            return string.Format(sb.ToString(), ts);
+        }
+    }
+
+    public static class DateOffsetFormatter
+    {
+        /// <summary>
+        /// Unit of DateOffset with ending for given offset.
+        /// </summary>
+        public static string FormatUnit(int? offset, DateUnits unit)
+        {
+            if (offset == null)
+                offset = 0;
+
+            int ending = Plurals.GetPluralEnding(offset.Value);
+
+            switch (unit)
+            {
+                case DateUnits.Day: return Plurals.days[ending];
+                case DateUnits.Week: return Plurals.weeks[ending];
+                case DateUnits.Month: return Plurals.months[ending];
+                case DateUnits.Year: return Plurals.years[ending];
+            }
+            throw new ArgumentOutOfRangeException("unit");
+        }
+
+        /// <summary>
+        /// DateOffset as partial DateTime, i.e. "2014"
+        /// </summary>
+        public static string GetPartialDateString(DateOffset d)
+        {
+            if (d == null || d.IsEmpty)
+                return string.Empty;
+            if (!d.Month.HasValue) // year
+                return d.Year.ToString();
+            if (!d.Day.HasValue) // month year
+                return System.Globalization.DateTimeFormatInfo.CurrentInfo.MonthNames[d.Month.Value - 1].ToLower() + " " + d.Year.ToString();
+            return d.GetNullableDateTime().Value.ToString("d MMMM yyyy"); // full
         }
     }
 }
