@@ -1,10 +1,10 @@
 ﻿using Diagnosis.Common;
-using System.Linq;
 using Iesi.Collections.Generic;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
-using System;
+using System.Linq;
 
 namespace Diagnosis.Models
 {
@@ -18,12 +18,16 @@ namespace Diagnosis.Models
         private HrCategory _category;
         private DateOffset _dateOffset;
         private HealthRecordUnits _unit;
+        DateTime _createdAt;
 
         public virtual event NotifyCollectionChangedEventHandler ItemsChanged;
 
         public virtual Patient Patient { get; protected set; }
+
         public virtual Course Course { get; protected set; }
+
         public virtual Appointment Appointment { get; protected set; }
+
         public virtual Doctor Doctor { get; protected set; }
 
         public virtual IHrsHolder Holder
@@ -133,8 +137,18 @@ namespace Diagnosis.Models
                 OnPropertyChanged("Unit");
             }
         }
+
         public virtual int Ord { get; set; }
-        public virtual DateTime CreatedAt { get; protected set; }
+
+        public virtual DateTime CreatedAt
+        {
+            get { return _createdAt; }
+            protected set
+            {
+                _createdAt = value;
+                DateOffset.Now = value;
+            }
+        }
 
         public virtual DateOffset DateOffset
         {
@@ -142,12 +156,15 @@ namespace Diagnosis.Models
             {
                 if (_dateOffset == null)
                 {
-                    DateTime now = Appointment != null ? Appointment.DateAndTime : DateTime.Now; // TODO createdat for hr
+                    _dateOffset = new DateOffset(FromYear, FromMonth, FromDay,
+                        () => CreatedAt,
+                        DateOffset.DateOffsetSettings.ExactSetting());
 
-                    _dateOffset = new DateOffset(FromYear, FromMonth, FromDay, () => now);
-                    _dateOffset.Settings = new DateOffset.DateOffsetSettings(DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.SavesUnit);
-                    if (Unit != HealthRecordUnits.NotSet) // фиксируем единицу
+                    if (Unit != HealthRecordUnits.NotSet
+                        && Unit != HealthRecordUnits.ByAge
+                        && _dateOffset.DateSettingStrategy == DateOffset.DateSetting.SavesUnit)
                     {
+                        // фиксируем единицу
                         _dateOffset.Unit = Unit.ToDateOffsetUnit().Value;
                         _dateOffset.UnitFixed = true;
                     }
@@ -169,41 +186,20 @@ namespace Diagnosis.Models
                                 break;
 
                             case "Unit":
-                                if (_dateOffset.UnitFixed)
+                                if (_dateOffset.UnitFixed ||
+                                    Unit != HealthRecordUnits.ByAge &&
+                                    Unit != HealthRecordUnits.NotSet)
+                                {
                                     Unit = _dateOffset.Unit.ToHealthRecordUnit();
+                                }
                                 break;
                         }
-                    };
-                    this.PropertyChanged += (s, e) =>
-                    {
-                        if (e.PropertyName.StartsWith("From"))
-                            try
-                            {
-                                switch (e.PropertyName)
-                                {
-                                    case "FromDay":
-                                        _dateOffset.Day = FromDay;
-                                        break;
-
-                                    case "FromMonth":
-                                        _dateOffset.Month = FromMonth;
-                                        break;
-
-                                    case "FromYear":
-                                        _dateOffset.Year = FromYear;
-                                        break;
-                                }
-                            }
-                            catch
-                            {
-                                // не меняем DateOffset, компоненты даты поменяются потом
-                            }
+                        OnPropertyChanged(() => DateOffset);
                     };
                 }
                 return _dateOffset;
             }
         }
-
 
         public virtual Iesi.Collections.Generic.ISet<HrItem> HrItems
         {
@@ -214,10 +210,12 @@ namespace Diagnosis.Models
                 OnPropertyChanged("HrItems");
             }
         }
+
         public virtual IEnumerable<Measure> Measures
         {
             get { return hrItems.Where(x => x.Measure != null).Select(x => x.Measure); }
         }
+
         public virtual IEnumerable<Word> Words
         {
             get { return hrItems.Where(x => x.Word != null).Select(x => x.Word); }
@@ -231,6 +229,7 @@ namespace Diagnosis.Models
             Appointment = appointment;
             Doctor = author;
         }
+
         public HealthRecord(Course course, Doctor author)
         {
             Contract.Requires(course != null);
@@ -239,6 +238,7 @@ namespace Diagnosis.Models
             Course = course;
             Doctor = author;
         }
+
         public HealthRecord(Patient patient, Doctor author)
         {
             Contract.Requires(patient != null);
@@ -246,11 +246,38 @@ namespace Diagnosis.Models
 
             Patient = patient;
             Doctor = author;
-
         }
 
         protected HealthRecord()
         {
+            this.PropertyChanged += (s, e) =>
+            {
+                try
+                {
+                switch (e.PropertyName)
+                {
+                    case "FromDay":
+                        DateOffset.Day = FromDay;
+                        break;
+
+                    case "FromMonth":
+                        DateOffset.Month = FromMonth;
+                        break;
+
+                    case "FromYear":
+                        DateOffset.Year = FromYear;
+                        break;
+                    case "Unit":
+                        var doUnit = Unit.ToDateOffsetUnit();
+                        DateOffset.Unit = doUnit ?? DateOffset.Unit; // меняем Unit на конкретную часть даты
+                        break;
+                }
+                }
+                catch
+                {
+                    // не меняем DateOffset, компоненты даты поменяются потом
+                }
+            };
         }
 
         public virtual void AddItem(HrItem item)

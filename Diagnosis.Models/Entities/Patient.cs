@@ -70,7 +70,23 @@ namespace Diagnosis.Models
             set
             {
                 if (SetProperty(ref _year, value, () => BirthYear))
+                {
                     OnPropertyChanged("Age");
+                    if (value == null)
+                    {
+                        // нельзя рассчитать возраст
+                        // меняем Unit c ByAge на NotSet
+                        var allHrs = HealthRecords
+                            .Union(Courses.SelectMany(c => c.HealthRecords
+                            .Union(c.Appointments.SelectMany(a => a.HealthRecords))));
+
+                        foreach (var hr in allHrs.Where(hr => hr.Unit == HealthRecordUnits.ByAge))
+                        {
+                            hr.Unit = HealthRecordUnits.NotSet;
+                        }
+                    }
+
+                }
             }
         }
 

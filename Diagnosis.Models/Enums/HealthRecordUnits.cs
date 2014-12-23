@@ -5,11 +5,20 @@ namespace Diagnosis.Models
 {
     public enum HealthRecordUnits
     {
+        /// <summary>
+        /// Показываем дату
+        /// </summary>
         NotSet,
+
         Day,
         Week,
         Month,
         Year,
+
+        /// <summary>
+        /// Показываем, с какого возраста пациента
+        /// </summary>
+        ByAge
     }
 
     public static class UnitConverter
@@ -18,9 +27,6 @@ namespace Diagnosis.Models
         {
             switch (unit)
             {
-                case HealthRecordUnits.NotSet:
-                    return null;
-
                 case HealthRecordUnits.Day:
                     return DateUnits.Day;
 
@@ -34,7 +40,7 @@ namespace Diagnosis.Models
                     return DateUnits.Year;
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    return null;
             }
         }
 

@@ -14,13 +14,14 @@ namespace Diagnosis.Common
     }
 
     /// <summary>
-    /// Неполная дата со смещением относительно сегодня в днях, неделях, месяцах или годах, зависит от полноты даты.
+    /// Неполная дата со смещением относительно некоторой даты в днях, неделях, месяцах или годах, зависит от полноты даты.
     /// Заданная днём, месяцем и годом дата будет иметь смещение в неделях, если число дней нацело делится на 7.
     /// При указании даты отсутствующий более крупный компонент считается сегодняшним (_ _ d -> now.y now.m d).
     /// </summary>
     public class DateOffset : NotifyPropertyChangedBase // should be struct
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(DateOffset));
+        private DateTime _now;
         private int? _offset;
         private DateUnits _unit;
         private int? _year;
@@ -34,7 +35,21 @@ namespace Diagnosis.Common
         private UnitSetting _unitSetting;
         private bool inSetting;
 
-        readonly public Func<DateTime> NowDate = () => DateTime.Today;
+        /// <summary>
+        /// Момент, с которого считается смещение.
+        /// </summary>
+        public DateTime Now
+        {
+            get { return _now; }
+            set
+            {
+                if (_now != value)
+                {
+                    _now = value;
+                    SetDate(Year, Month, Day);
+                }
+            }
+        }
 
         public int? Year
         {
@@ -82,6 +97,7 @@ namespace Diagnosis.Common
                 }
             }
         }
+
         /// <summary>
         /// 1..
         /// </summary>
@@ -108,7 +124,7 @@ namespace Diagnosis.Common
         }
 
         /// <summary>
-        /// Смещение относительно даты, возвращаемой NowDate.
+        /// Смещение относительно даты, возвращаемой Now.
         /// </summary>
         public int? Offset
         {
@@ -149,7 +165,14 @@ namespace Diagnosis.Common
                     if (!inSetting)
                     {
                         UnitFixed = true;
-                        SetOffset(Offset, value);
+                        try
+                        {
+                            SetOffset(Offset, value);
+                        }
+                        catch (Exception e)
+                        {
+                            logger.DebugFormat("{0}", e.Message);
+                        }
                     }
                     OnPropertyChanged("Unit");
                 }
@@ -339,8 +362,6 @@ namespace Diagnosis.Common
                     break;
             }
         }
-
-        private DateTime Now { get { return NowDate(); } }
 
         /// <summary>
         /// Задает смещение и единицу.
@@ -704,6 +725,17 @@ namespace Diagnosis.Common
         }
 
         /// <summary>
+        /// Возвращает DateTime представление для объекта DateOffset, отсутствующие значения заменены 1.
+        /// </summary>
+        public DateTime GetSortingDate()
+        {
+            int year = Year ?? 1;
+            int month = Month ?? 1;
+            int day = Day ?? 1;
+            return new DateTime(year, month, day);
+        }
+
+        /// <summary>
         /// Проверяет дату, опционально исправляет.
         /// </summary>
         /// <returns>true, если было исправление.</returns>
@@ -733,7 +765,7 @@ namespace Diagnosis.Common
             : this()
         {
             if (now != null)
-                NowDate = now;
+                Now = now();
             if (settings != null)
                 Settings = settings;
             SetDate(year, month, day);
@@ -748,14 +780,14 @@ namespace Diagnosis.Common
             : this()
         {
             if (now != null)
-                NowDate = now;
+                Now = now();
             if (settings != null)
                 Settings = settings;
             SetOffset(offset, unit, true);
         }
 
         /// <summary>
-        /// TODO Для смены nowdate при поиске.
+        /// Для смены nowdate. (поиск)
         /// </summary>
         /// <param name="dateOffset"></param>
         /// <param name="now"></param>
@@ -764,7 +796,8 @@ namespace Diagnosis.Common
         {
             Contract.Requires(dateOffset != null);
             Contract.Requires(now != null);
-            NowDate = now;
+            Now = now();
+            Settings = dateOffset.Settings;
             SetOffset(dateOffset.Offset, dateOffset.Unit);
         }
 
@@ -846,6 +879,7 @@ namespace Diagnosis.Common
         }
 
         #endregion operators
+
         public enum UnitSetting
         {
             /// <summary>
@@ -853,6 +887,7 @@ namespace Diagnosis.Common
             /// Не может быть вместе с DateSetting.SavesUnit
             /// </summary>
             SetsDate,
+
             /// <summary>
             /// Установка единицы измерения не меняет дату, меняется величина смещения.
             /// Не может быть вместе с DateSetting.SetsUnitSilly
@@ -867,10 +902,12 @@ namespace Diagnosis.Common
             /// Не может быть вместе с UnitSetting.RoundsOffset
             /// </summary>
             SetsUnitSilly,
+
             /// <summary>
             /// Установка даты меняет единицу измерения и смещение на наиболее подходящие. Дата 30 дней назад -> 1 месяц.
             /// </summary>
             RoundsUnit,
+
             /// <summary>
             /// Установка даты меняет единицу измерения и смещение на наиболее подходящие.
             /// После того, как единица была сохранена или установлена непосредственно,
@@ -886,8 +923,19 @@ namespace Diagnosis.Common
 
             public DateSetting Date { get; private set; }
 
+            /// <summary>
+            /// Исправлять число при изменении месяца, чтобы дата оставалась корректной.
+            /// По умолчанию true.
+            /// 31 dec. month = nov -> day == 30.
+            /// 29 feb 2012. year = 2013 -> day == 28.
+            /// </summary>
             public bool AutoCorrection { get; private set; }
 
+            /// <summary>
+            /// Убирать несущественные части даты (Unit = Month -> day = null).
+            /// По умолчанию true.
+            /// (5 дней - дата с точностью до дня - меняем на 5 лет - день и месяц пропадают)
+            /// </summary>
             public bool CutsDate { get; private set; }
 
             public DateOffsetSettings(UnitSetting unit = UnitSetting.SetsDate, DateSetting date = DateSetting.SetsUnitSilly, bool autoCorrection = true, bool cutsDate = true)
@@ -897,6 +945,26 @@ namespace Diagnosis.Common
                 this.AutoCorrection = autoCorrection;
                 this.CutsDate = cutsDate;
             }
+
+            /// <summary>
+            /// Точная взаимно-однозначная установка
+            /// </summary>
+            /// <returns></returns>
+            public static DateOffsetSettings ExactSetting()
+            {
+                return new DateOffsetSettings(UnitSetting.SetsDate, DateSetting.SetsUnitSilly, true, true);
+            }
+
+            /// <summary>
+            /// Установить дату, откорректировать единицу округления на желаемую.
+            /// При смене даты единица снова округляется.
+            /// </summary>
+            /// <returns></returns>
+            public static DateOffsetSettings Rounding()
+            {
+                return new DateOffsetSettings(UnitSetting.RoundsOffset, DateSetting.SavesUnit, true, true);
+            }
+
             public static bool operator ==(DateOffsetSettings do1, DateOffsetSettings do2)
             {
                 if (object.ReferenceEquals(do1, null) || object.ReferenceEquals(do2, null))
@@ -919,13 +987,15 @@ namespace Diagnosis.Common
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            //Contract.Invariant(!(DateSettingStrategy == DateSetting.SavesUnit && UnitSettingStrategy == UnitSetting.SetsDate));
-            //Contract.Invariant(!(DateSettingStrategy == DateSetting.SetsUnitSilly && UnitSettingStrategy == UnitSetting.RoundsOffset));
+#if !DEBUG
+            Contract.Invariant(!(DateSettingStrategy == DateSetting.SavesUnit && UnitSettingStrategy == UnitSetting.SetsDate));
+            Contract.Invariant(!(DateSettingStrategy == DateSetting.SetsUnitSilly && UnitSettingStrategy == UnitSetting.RoundsOffset));
+#endif
         }
 
         public override string ToString()
         {
-            return string.Format("{0} {1} {2}.{3}.{4}", Offset, DateOffsetFormatter.FormatUnit(Offset, Unit), Year ?? 0, Month ?? 0, Day ?? 0);
+            return string.Format("{0} {1} {2}.{3}.{4}", Offset, DateOffsetFormatter.GetUnitString(Offset, Unit), Year ?? 0, Month ?? 0, Day ?? 0);
         }
 
         public override bool Equals(object obj)
