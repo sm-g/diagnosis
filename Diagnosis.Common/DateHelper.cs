@@ -111,5 +111,27 @@ namespace Diagnosis.Common
                 return null;
             }
         }
+        /// <summary>
+        /// Возвращает возраст к указанному моменту.
+        /// </summary>
+        public static int? GetAge(int? year, int? month, int? day, DateTime now)
+        {
+            if (!year.HasValue)
+            {
+                return null;
+            }
+
+            int age = now.Year - year.Value;
+            try
+            {
+                if (new DateTime(year.Value, month.Value, day.Value) > now.AddYears(-age))
+                    age--;
+            }
+            catch
+            {
+                // корректируем возраст только если указана полная дата рождения
+            }
+            return age;
+        }
     }
 }

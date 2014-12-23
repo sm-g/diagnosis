@@ -107,22 +107,7 @@ namespace Diagnosis.Models
         {
             get
             {
-                if (!BirthYear.HasValue)
-                {
-                    return null;
-                }
-
-                int age = DateTime.Today.Year - BirthYear.Value;
-                try
-                {
-                    if (new DateTime(BirthYear.Value, BirthMonth.Value, BirthDay.Value) > DateTime.Today.AddYears(-age))
-                        age--;
-                }
-                catch
-                {
-                    // корректируем возраст только если указана полная дата рождения
-                }
-                return age;
+                return DateHelper.GetAge(BirthYear, BirthMonth, BirthDay, DateTime.Now);
             }
             set
             {
