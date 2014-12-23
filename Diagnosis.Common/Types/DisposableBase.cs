@@ -30,6 +30,8 @@ namespace Diagnosis.Common
                 // Set large fields to null.
                 disposed = true;
 #if DEBUG
+                if (this.GetType().Name.StartsWith("DiagnosisViewModel")) return;
+
                 string msg = string.Format("    Disposed {0} ({1}) ({2}) ", this.GetType().Name, this.ToString(), this.GetHashCode());
                 Debug.Print(msg);
 #endif
@@ -40,6 +42,7 @@ namespace Diagnosis.Common
         {
             Dispose(false);
 #if DEBUG
+            if (this.GetType().Name.StartsWith("DiagnosisViewModel")) return;
             string msg = string.Format("!!! Finalized {0} ({1}) ({2}) ", this.GetType().Name, this.ToString(), this.GetHashCode());
             Debug.Print(msg);
 #endif

@@ -535,7 +535,7 @@ namespace Tests
             var date = new DateOffset(2014, 3, 31, getNow);
             Assert.IsTrue(date.Offset == 1);
             date.Settings = new DateOffset.DateOffsetSettings(
-                DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.RoundsUnit, cutsDate: false); // или DateSetting.SavesUnit
+                DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.RoundsUnit, true, cutsDate: false); // или DateSetting.SavesUnit
 
             date.Unit = DateUnits.Year;
             Assert.IsTrue(date.Offset == 0);
@@ -548,7 +548,7 @@ namespace Tests
         public void OffsetSettingSetsDateWhenUnitSettingRoundsOffset()
         {
             var date = new DateOffset(getNow(), getNow, new DateOffset.DateOffsetSettings(
-                DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.RoundsUnit)); // или DateSetting.SavesUnit
+                DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.RoundsUnit, true, true)); // или DateSetting.SavesUnit
 
             date.Offset = 5;
             Assert.IsTrue(date.Year == 2014);
@@ -574,7 +574,7 @@ namespace Tests
         public void DateSettingSavesUnit()
         {
             var date = new DateOffset(5, DateUnits.Day, getNow, new DateOffset.DateOffsetSettings(
-                DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.SavesUnit)); // только так UnitSetting.RoundsOffset
+                DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.SavesUnit, true, true)); // только так UnitSetting.RoundsOffset
 
             // юнит подстраивается
             date.Year = 2013;
@@ -600,7 +600,7 @@ namespace Tests
         public void DateSettingSavesUnit2()
         {
             var date = new DateOffset(5, DateUnits.Day, getNow, new DateOffset.DateOffsetSettings(
-                DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.SavesUnit)); // только так UnitSetting.RoundsOffset
+                DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.SavesUnit, true, true)); // только так UnitSetting.RoundsOffset
 
             date.UnitFixed = true;
             date.Day = null;
