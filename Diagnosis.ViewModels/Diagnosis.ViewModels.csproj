@@ -253,6 +253,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Framework\CodeMap1.dgml" />
     <None Include="packages.config" />
     <None Include="Screens\Card\Card.cd" />
     <None Include="Search\Autocomplete\CodeMap1.dgml" />

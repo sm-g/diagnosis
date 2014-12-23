@@ -6,7 +6,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAIACAAAABgAAEAIAAAAQAAAAEAAQAAACAAAAAAAA=</HashCode>
+      <HashCode>AAAAIACQAAABgAAEAJAAAAQAAAAEAAQAAACAAAAAAAA=</HashCode>
       <FileName>Entities\Appointment.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -21,9 +21,12 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAIAAAAAACAAAAAEAABQAAAEQAAAAAAAAAkQAAAACAA=</HashCode>
+      <HashCode>AAIAIACAACABgAAEABBQAAQEQAAFAAAAAAmABAQACAg=</HashCode>
       <FileName>Entities\Course.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Patient" />
+    </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.Models.Diagnosis">
@@ -33,7 +36,7 @@
     </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAEAEAEAAAgQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Diagnosis.cs</FileName>
+      <FileName>Entities\Diagnosis.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Parent" />
@@ -46,11 +49,12 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AACAQEAAAAEAAIAEgABQAAAAQAAAgAACkAAAABICAAg=</HashCode>
+      <HashCode>AACAQEAAAAEAAIAEgBBQAAAQQAAAgEACkAAAABICCAg=</HashCode>
       <FileName>Entities\Doctor.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Speciality" />
+      <Property Name="Passport" />
     </ShowAsAssociation>
     <ShowAsCollectionAssociation>
       <Property Name="Courses" />
@@ -63,14 +67,16 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAABEEABAFAAMIIEACAMEwBAAAAAUABAAEAAgCAI=</HashCode>
+      <HashCode>AAABAABAAABAFAAMIKEASAMEwBAAABQ0CBAAEQAgCAI=</HashCode>
       <FileName>Entities\HealthRecord.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
+      <Property Name="Patient" />
+      <Property Name="Course" />
       <Property Name="Appointment" />
       <Property Name="Category" />
-      <Property Name="Course" />
-      <Property Name="Patient" />
+      <Property Name="Doctor" />
+      <Property Name="Unit" />
     </ShowAsAssociation>
     <ShowAsCollectionAssociation>
       <Property Name="HrItems" />
@@ -83,7 +89,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AACIQEiAEAAAAIAEAFEQBAMAAAAIgAAGEAAAABAACAg=</HashCode>
+      <HashCode>AACIYEiAAABBAIAMAFEQBAcAAAAMgAAGEACAABAACAg=</HashCode>
       <FileName>Entities\Patient.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -94,7 +100,7 @@
   <Class Name="Diagnosis.Models.IcdBlock" Collapsed="true">
     <Position X="1" Y="10.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAACAAAAAAEAAAAAgAAAAAAAAAAAAAAIAAgACAAI=</HashCode>
+      <HashCode>AAAEAACAAAAAAEAAAAAgAAAAAAAAAAAAAAIAAgACAAI=</HashCode>
       <FileName>Entities\IcdBlock.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -108,7 +114,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAEAAAAAgAAAAAAAAQAAAAEAAAAAAAAA=</HashCode>
+      <HashCode>AAAEAAAAAAAAAEAAAAAgAAAAAAAAQAAAAEAAAAAAAAA=</HashCode>
       <FileName>Entities\IcdChapter.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -122,7 +128,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAEAAAAAgAAQAAAAEAAAAAEAAAAAAAAA=</HashCode>
+      <HashCode>AAAEAAAAAAAAAEQEAAAgAAAAAAAAAAAAAEAAAAAAAAA=</HashCode>
       <FileName>Entities\IcdDisease.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -144,12 +150,12 @@
   <Class Name="Diagnosis.Models.Word" Collapsed="true">
     <Position X="11.75" Y="8.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAIAAAEQEAAAEQAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAIAAAEQEABAEQAAQBAAAAAAAAAAQAAAAAAA=</HashCode>
       <FileName>Entities\Word.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="Parent" />
       <Property Name="DefaultCategory" />
+      <Property Name="Parent" />
     </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
@@ -164,19 +170,20 @@
   <Class Name="Diagnosis.Models.HrItem" Collapsed="true">
     <Position X="9" Y="9.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>kAEAAAAAAAAEAAAEAAAAgAAAAAACAAAAAABAAAAAIAA=</HashCode>
+      <HashCode>kAUAAAAAAAAEAAAEAAgAgAAAAAACAAAgAABAAAAAIAA=</HashCode>
       <FileName>Entities\HrItem.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="Measure" />
       <Property Name="Word" />
+      <Property Name="Measure" />
+      <Property Name="Disease" />
     </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.Models.Measure" Collapsed="true">
-    <Position X="6.75" Y="11" Width="1.5" />
+    <Position X="6.75" Y="10.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAAAAAAAAAAAAEAAAAAAAAAAAEAAAAAAAgCBAAIAA=</HashCode>
+      <HashCode>AAEAAAAAAAAAAAQEAAIAAAAAAAIEAAAAAAAgCBAAMAA=</HashCode>
       <FileName>Entities\Measure.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -185,12 +192,41 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.Models.Uom" Collapsed="true">
-    <Position X="10.5" Y="11.5" Width="1.5" />
+    <Position X="8.75" Y="11.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAABAAAAgAAAEAAAAAAAAAAIAAAAAAQAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAABAAAAgAAAEAAAAAAAAAAIAAAAAAQIAAAAAAAA=</HashCode>
       <FileName>Entities\Uom.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
+  <Class Name="Diagnosis.Models.Admin" Collapsed="true">
+    <Position X="15" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAEAAAAAAAAAAABAQAAAAABAAAAAAAAAAAAEAAAg=</HashCode>
+      <FileName>Entities\Admin.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Passport" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.Models.Passport">
+    <Position X="16.25" Y="3.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAIAAAAUAAAAAAAAAAAAAABAAAAACAQAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Passport.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Enum Name="Diagnosis.Models.HealthRecordUnits" Collapsed="true">
+    <Position X="4.25" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAJAAAAAAAAAAAAAAAAAAAAAAEAAAAAIgAAAA=</HashCode>
+      <FileName>Enums\HealthRecordUnits.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>
