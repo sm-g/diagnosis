@@ -246,7 +246,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Events.SendToSearch, Blank.ToEnumerable().AsParams(MessageKeys.HrItemObjects));
+                    autocomplete.SendToSearchCommand.Execute(this);
                 },
                 () => autocomplete.WithSendToSearch);
             }

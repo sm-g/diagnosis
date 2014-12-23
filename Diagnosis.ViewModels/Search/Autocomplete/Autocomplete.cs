@@ -202,15 +202,19 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        public RelayCommand SendToSearchCommand
+        public RelayCommand<Tag> SendToSearchCommand
         {
             get
             {
-                return new RelayCommand(() =>
+                return new RelayCommand<Tag>((t) =>
                 {
-                    var entities = GetEntitiesOfSelected();
+                    IEnumerable<IHrItemObject> entities;
+                    if (t != null)
+                        entities = recognizer.EntitiesOf(t);
+                    else
+                        entities = GetEntitiesOfSelected();
                     this.Send(Events.SendToSearch, entities.AsParams(MessageKeys.HrItemObjects));
-                }, () => WithSendToSearch);
+                }, (t) => WithSendToSearch);
             }
         }
 
@@ -354,7 +358,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 Contract.Requires(!tag.IsLast);
                 Tags.Remove(tag);
-            };          
+            };
             tag.Converting += (s, e) =>
             {
                 CompleteOnConvert(tag, e.type);
