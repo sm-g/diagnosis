@@ -282,6 +282,8 @@ namespace Diagnosis.ViewModels.Screens
             CloseCurrentHr();
 
             HealthRecord = new HealthRecordViewModel(hr);
+            hr.DateOffset.Settings = DateOffset.DateOffsetSettings.ExactSetting();
+
             hr.PropertyChanged += hr_PropertyChanged;
 
             (hr as IEditableObject).BeginEdit();

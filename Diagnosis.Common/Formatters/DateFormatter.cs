@@ -185,7 +185,7 @@ namespace Diagnosis.Common
                 return d.Year.ToString();
             if (!d.Day.HasValue) // month year
                 return System.Globalization.DateTimeFormatInfo.CurrentInfo.MonthNames[d.Month.Value - 1].ToLower() + " " + d.Year.ToString();
-            return d.GetNullableDateTime().Value.ToString("d MMMM yyyy"); // full
+            return ((DateTime)d).ToString("d MMMM yyyy"); // full
         }
 
         /// <summary>

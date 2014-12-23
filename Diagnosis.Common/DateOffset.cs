@@ -21,7 +21,7 @@ namespace Diagnosis.Common
     public class DateOffset : NotifyPropertyChangedBase // should be struct
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(DateOffset));
-        private DateTime _now;
+        private DateTime _now = DateTime.Now;
         private int? _offset;
         private DateUnits _unit;
         private int? _year;
@@ -450,10 +450,10 @@ namespace Diagnosis.Common
                     break;
 
                 case DateSetting.SavesUnit:
-                    if (!UnitFixed)
-                        SetOffsetUnitByDateRound();
+                    if (UnitFixed)
+                        RoundOffset();
                     else
-                        RoundOffset(); // after ctor
+                        SetOffsetUnitByDateRound(); // from ctor
                     break;
             }
 
@@ -530,7 +530,8 @@ namespace Diagnosis.Common
         }
 
         /// <summary>
-        /// TODO Округляет смещение.
+        /// Округляет смещение.
+        /// При укрупнении единицы смещение считается для полной даты с 1 вместо отсутствующих значений.
         /// </summary>
         private void RoundOffset()
         {
@@ -547,50 +548,26 @@ namespace Diagnosis.Common
             switch (Unit)
             {
                 case DateUnits.Day:
-                    if (Day.HasValue)
-                    {
-                        Offset = (Now - GetNullableDateTime().Value).Days;
-                    }
-                    else if (Month.HasValue)
-                    {
-                        Offset = 999;
-                    }
-                    else
-                    {
-                        Offset = 999; // как считать дни из месяцев и лет, укрупнение
-                    }
-
+                    Offset = (Now - GetSortingDate()).Days;
                     break;
 
                 case DateUnits.Week:
-                    if (Day.HasValue)
-                    {
-                        Offset = (Now - GetNullableDateTime().Value).Days / 7;
-                    }
-                    else if (Month.HasValue)
-                    {
-                        Offset = 999;
-                    }
-                    else
-                    {
-                        Offset = 999;
-                    }
+                    Offset = (Now - GetSortingDate()).Days / 7;
                     break;
 
                 case DateUnits.Month:
                     if (Month.HasValue)
                     {
-                        Offset = GetTotalMonths();
+                        Offset = DateHelper.GetTotalMonthsBetween(Now, Year.Value, Month.Value);
                     }
                     else
                     {
-                        Offset = 999;
+                        Offset = DateHelper.GetTotalMonthsBetween(Now, Year.Value, 1);
                     }
                     break;
 
                 case DateUnits.Year:
                     Offset = Now.Year - Year.Value;
-
                     break;
 
                 default:
@@ -603,6 +580,7 @@ namespace Diagnosis.Common
         /// </summary>
         private void SetOffsetUnitByDateSilly(bool yearWas)
         {
+            Contract.Requires(Year != null);
             Contract.Ensures(Contract.OldValue(_year) == Contract.ValueAtReturn(out _year));
             Contract.Ensures(Contract.OldValue(_month) == Contract.ValueAtReturn(out _month));
             Contract.Ensures(Contract.OldValue(_day) == Contract.ValueAtReturn(out _day));
@@ -612,7 +590,7 @@ namespace Diagnosis.Common
                 if (Day.HasValue)
                 {
                     // ? m d
-                    Offset = (Now - GetNullableDateTime().Value).Days;
+                    Offset = (Now - (DateTime)this).Days;
                     if (Offset % 7 == 0 && Math.Abs(Offset.Value) > 1)
                     {
                         Offset /= 7;
@@ -626,7 +604,7 @@ namespace Diagnosis.Common
                 else
                 {
                     // ? m _
-                    Offset = GetTotalMonths();
+                    Offset = DateHelper.GetTotalMonthsBetween(Now, Year.Value, Month.Value);
                     Unit = DateUnits.Month;
                 }
             }
@@ -652,76 +630,58 @@ namespace Diagnosis.Common
         /// </summary>
         private void SetOffsetUnitByDateRound()
         {
+            Contract.Requires(Year != null);
             Contract.Ensures(Contract.OldValue(_year) == Contract.ValueAtReturn(out _year));
             Contract.Ensures(Contract.OldValue(_month) == Contract.ValueAtReturn(out _month));
             Contract.Ensures(Contract.OldValue(_day) == Contract.ValueAtReturn(out _day));
 
-            if (Month == null && (Day == null || !CutsDate))
+            if (Month == null && (Day == null || !CutsDate)) // _ _ y (или d _ y без автообрезания)
             {
                 Offset = Now.Year - Year.Value;
                 Unit = DateUnits.Year;
             }
-            else if (Day == null && Month != null)
+            else if (Day == null && Month != null) // _ m y
             {
-                var months = GetTotalMonths();
-                if (months > 12)
-                {
-                    Offset = Now.Year - Year.Value;
-                    Unit = DateUnits.Year;
-                }
-                else
+                var months = DateHelper.GetTotalMonthsBetween(Now, Year.Value, Month.Value);
+                if (months < 12)
                 {
                     Offset = months;
                     Unit = DateUnits.Month;
                 }
+                else
+                {
+                    Offset = Now.Year - Year.Value;
+                    Unit = DateUnits.Year;
+                }
             }
-            else
+            else // d m y
             {
-                Debug.Assert(!IsEmpty);
-
-                var days = (Now - GetNullableDateTime().Value).Days;
-                if (days < 7)
+                var days = (Now - (DateTime)this).Days;
+                if (days < 7) // меньше недели - дни
                 {
                     Offset = days;
                     Unit = DateUnits.Day;
                 }
-                else if (days < 4 * 7)
+                else if (days < 4 * 7) // меньше месяца - недели
                 {
                     Offset = days / 7;
                     Unit = DateUnits.Week;
                 }
                 else
                 {
-                    var months = GetTotalMonths();
-                    if (months > 12)
-                    {
-                        Offset = Now.Year - Year.Value;
-                        Unit = DateUnits.Year;
-                    }
-                    else
+                    var months = DateHelper.GetTotalMonthsBetween(Now, Year.Value, Month.Value);
+                    if (months < 12) // меньше года - месяцы
                     {
                         Offset = months;
                         Unit = DateUnits.Month;
                     }
+                    else
+                    {
+                        Offset = Now.Year - Year.Value;
+                        Unit = DateUnits.Year;
+                    }
                 }
             }
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <returns></returns>
-        public int GetTotalMonths()
-        {
-            return (Now.Year - Year.Value) * 12 + Now.Month - Month.Value;
-        }
-
-        /// <summary>
-        /// Возвращает DateTime представление для объекта DateOffset, если возможно.
-        /// </summary>
-        public DateTime? GetNullableDateTime()
-        {
-            return DateHelper.NullableDate(Year, Month, Day);
         }
 
         /// <summary>
@@ -878,6 +838,19 @@ namespace Diagnosis.Common
             return !(do1 == do2);
         }
 
+        public static explicit operator DateTime(DateOffset d)
+        {
+            if (d.Day == null || d.Month == null || d.Year == null)
+                throw new NotSupportedException();
+
+            return new DateTime(d.Year.Value, d.Month.Value, d.Day.Value);
+        }
+
+        public static explicit operator DateOffset(DateTime d)
+        {
+            return new DateOffset(d);
+        }
+
         #endregion operators
 
         public enum UnitSetting
@@ -949,7 +922,6 @@ namespace Diagnosis.Common
             /// <summary>
             /// Точная взаимно-однозначная установка
             /// </summary>
-            /// <returns></returns>
             public static DateOffsetSettings ExactSetting()
             {
                 return new DateOffsetSettings(UnitSetting.SetsDate, DateSetting.SetsUnitSilly, true, true);
@@ -959,10 +931,16 @@ namespace Diagnosis.Common
             /// Установить дату, откорректировать единицу округления на желаемую.
             /// При смене даты единица снова округляется.
             /// </summary>
-            /// <returns></returns>
             public static DateOffsetSettings Rounding()
             {
-                return new DateOffsetSettings(UnitSetting.RoundsOffset, DateSetting.SavesUnit, true, true);
+                return new DateOffsetSettings(UnitSetting.RoundsOffset, DateSetting.RoundsUnit, true, true);
+            }
+            /// <summary>
+            /// Установить дату и единицу на сохраненные, смещение округляется по единице.
+            /// </summary>
+            public static DateOffsetSettings OnLoading()
+            {
+                return new DateOffsetSettings(UnitSetting.RoundsOffset, DateSetting.SetsUnitSilly, true, true);
             }
 
             public static bool operator ==(DateOffsetSettings do1, DateOffsetSettings do2)

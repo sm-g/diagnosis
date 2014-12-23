@@ -157,12 +157,12 @@ namespace Diagnosis.Models
                 if (_dateOffset == null)
                 {
                     _dateOffset = new DateOffset(FromYear, FromMonth, FromDay,
-                        () => CreatedAt,
-                        DateOffset.DateOffsetSettings.ExactSetting());
+                        () => CreatedAt != DateTime.MinValue ? CreatedAt : DateTime.Now,
+                        DateOffset.DateOffsetSettings.OnLoading());
 
-                    if (Unit != HealthRecordUnits.NotSet
-                        && Unit != HealthRecordUnits.ByAge
-                        && _dateOffset.DateSettingStrategy == DateOffset.DateSetting.SavesUnit)
+                    if (Unit != HealthRecordUnits.NotSet && 
+                        Unit != HealthRecordUnits.ByAge
+                        || _dateOffset.DateSettingStrategy == DateOffset.DateSetting.SavesUnit)
                     {
                         // фиксируем единицу
                         _dateOffset.Unit = Unit.ToDateOffsetUnit().Value;
@@ -196,6 +196,34 @@ namespace Diagnosis.Models
                         }
                         OnPropertyChanged(() => DateOffset);
                     };
+                    this.PropertyChanged += (s, e) =>
+                    {
+                        try
+                        {
+                            switch (e.PropertyName)
+                            {
+                                case "FromDay":
+                                    DateOffset.Day = FromDay;
+                                    break;
+
+                                case "FromMonth":
+                                    DateOffset.Month = FromMonth;
+                                    break;
+
+                                case "FromYear":
+                                    DateOffset.Year = FromYear;
+                                    break;
+                                case "Unit":
+                                    var doUnit = Unit.ToDateOffsetUnit();
+                                    DateOffset.Unit = doUnit ?? DateOffset.Unit; // меняем Unit на конкретную часть даты
+                                    break;
+                            }
+                        }
+                        catch
+                        {
+                            // не меняем DateOffset, компоненты даты поменяются потом
+                        }
+                    };
                 }
                 return _dateOffset;
             }
@@ -222,6 +250,7 @@ namespace Diagnosis.Models
         }
 
         public HealthRecord(Appointment appointment, Doctor author)
+            : this()
         {
             Contract.Requires(appointment != null);
             Contract.Requires(author != null);
@@ -231,6 +260,7 @@ namespace Diagnosis.Models
         }
 
         public HealthRecord(Course course, Doctor author)
+            : this()
         {
             Contract.Requires(course != null);
             Contract.Requires(author != null);
@@ -240,6 +270,7 @@ namespace Diagnosis.Models
         }
 
         public HealthRecord(Patient patient, Doctor author)
+            : this()
         {
             Contract.Requires(patient != null);
             Contract.Requires(author != null);
@@ -250,34 +281,8 @@ namespace Diagnosis.Models
 
         protected HealthRecord()
         {
-            this.PropertyChanged += (s, e) =>
-            {
-                try
-                {
-                switch (e.PropertyName)
-                {
-                    case "FromDay":
-                        DateOffset.Day = FromDay;
-                        break;
-
-                    case "FromMonth":
-                        DateOffset.Month = FromMonth;
-                        break;
-
-                    case "FromYear":
-                        DateOffset.Year = FromYear;
-                        break;
-                    case "Unit":
-                        var doUnit = Unit.ToDateOffsetUnit();
-                        DateOffset.Unit = doUnit ?? DateOffset.Unit; // меняем Unit на конкретную часть даты
-                        break;
-                }
-                }
-                catch
-                {
-                    // не меняем DateOffset, компоненты даты поменяются потом
-                }
-            };
+        //    CreatedAt = DateTime.Now;
+            
         }
 
         public virtual void AddItem(HrItem item)

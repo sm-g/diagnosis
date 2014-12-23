@@ -133,5 +133,14 @@ namespace Diagnosis.Common
             }
             return age;
         }
+
+        /// <summary>
+        /// 31 и 1 другого месяца отличаются на месяц
+        /// from http://stackoverflow.com/a/4639057/3009578
+        /// </summary>
+        public static int GetTotalMonthsBetween(DateTime now, int year, int month)
+        {
+            return (now.Year - year) * 12 + now.Month - month;
+        }
     }
 }

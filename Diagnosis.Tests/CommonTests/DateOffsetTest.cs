@@ -231,11 +231,11 @@ namespace Tests
         [TestMethod]
         public void TestSetMonth()
         {
-            date = new DateOffset(offset, DateUnits.Day);
-            var d = DateTime.Today.AddMonths(-1);
+            date = new DateOffset(offset, DateUnits.Day, getNow);
+            var d = getNow().AddMonths(-2);
             date.Month = d.Month;
 
-            Assert.AreEqual(DateTime.DaysInMonth(DateTime.Today.Year, d.Month) + offset, date.Offset);
+            Assert.AreEqual(DateTime.DaysInMonth(getNow().Year, d.Month) + offset, date.Offset);
             Assert.IsTrue(date.Unit == DateUnits.Day);
         }
 
@@ -303,6 +303,18 @@ namespace Tests
             Assert.IsTrue(date.Year == 2013);
             Assert.IsTrue(date.Month == 4);
             Assert.IsTrue(date.Day == null);
+        }
+        [TestMethod]
+        public void SetNow()
+        {
+            var d = new DateOffset(null, null, null);
+            d.Month = 1;
+            d.Year = 2014;
+            d.Now = new DateTime(2014, 11, 4);
+
+            Assert.AreEqual(1, d.Month);
+            Assert.AreEqual(2014, d.Year);
+            Assert.AreEqual(10, d.Offset);
         }
 
         #endregion Setters
@@ -613,11 +625,5 @@ namespace Tests
 
         #endregion Setting
 
-        [TestMethod]
-        public void GetTotalMonths()
-        {
-            var date = new DateOffset(5, DateUnits.Day, getNow);
-            Assert.AreEqual(1, date.GetTotalMonths()); // 31 и 1 другого месяца отличаются на месяц
-        }
     }
 }
