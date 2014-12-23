@@ -217,14 +217,14 @@
                                 <!-- ShortHr -->
                                 <MenuItem Header="Редактировать"
                                           Command="{Binding EditCommand}" />
+                                <!-- HrList -->
                                 <MenuItem Header="Искать"
                                           InputGestureText="Alt + F"
-                                          Command="{Binding SendToSearchCommand}" />
+                                          Command="{Binding PlacementTarget.Tag.SendToSearchCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <MenuItem Header="Удалить"
                                           InputGestureText="Del"
-                                          Command="{Binding DeleteCommand}" />
+                                          Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <Separator />
-                                <!-- HrList -->
                                 <MenuItem Header="Добавить запись"
                                           InputGestureText="Ctrl + Enter"
                                           Command="{Binding PlacementTarget.Tag.AddHealthRecordCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
