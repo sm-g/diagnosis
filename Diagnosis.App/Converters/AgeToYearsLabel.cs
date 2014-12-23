@@ -20,7 +20,7 @@ namespace Diagnosis.App.Converters
 
             var index = Plurals.GetPluralEnding(age);
 
-            return new[] { "год", "года", "лет" }[index];
+            return Plurals.years[index];
         }
 
         public object ConvertBack(object value, Type targetType,

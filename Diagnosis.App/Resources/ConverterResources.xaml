@@ -1,29 +1,37 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:conv="clr-namespace:Diagnosis.App.Converters">
+    
     <conv:TreeDepthToMargin Length="19" x:Key="lengthConverter" />
-    <conv:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />
+    
     <conv:NegateConverter x:Key="NegateBoolean" />
+    <conv:NullableBooleanConverter x:Key="NullableBoolean" />
+    
+    <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <conv:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />    
     <conv:MoreThanToVisibility x:Key="MoreThanToVisibility" />
     <conv:LessThanToVisibility x:Key="LessThanToVisibility" />
-    <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <conv:NullToVisibilityConverter x:Key="NullToVis" />
+    
     <conv:AgeToYearsLabel x:Key="AgeToLabel" />
     <conv:BoolToSexSign x:Key="SexToSign" />
+    
     <conv:OffsetUnitToUnitLabel x:Key="OffsetUnitToUnitLabel" />
     <conv:DateOffsetToUnitLabel x:Key="DateOffsetToUnitLabel" />
-    <conv:Summator x:Key="SummatorConverter" />
-    <conv:ManToShortName x:Key="ManToShortName" />
-    <conv:EqualityToBoolConverter x:Key="EqualToBool" />
-    <conv:EqualityToBoolMultiConverter x:Key="EqualAllToBool" />
-    <conv:IsLastItem x:Key="IsLastItem" />
+    <conv:DateOffsetToLabel x:Key="DateOffsetToLabel" />
+    <conv:TimeSpanLabel x:Key="TimeSpanToLabel" />
     <conv:DateIntervalLabel x:Key="DateIntervalLabel" />
     <conv:DateLabel x:Key="DateLabel" />
+    
+    <conv:Summator x:Key="SummatorConverter" />
+    <conv:ManToShortName x:Key="ManToShortName" />
+    
+    <conv:EqualityToBoolConverter x:Key="EqualToBool" />
+    <conv:EqualityToBoolMultiConverter x:Key="EqualAllToBool" />
+    
+    <conv:IsLastItem x:Key="IsLastItem" />
     <conv:LessThanConverter x:Key="LessThan" />
-    <conv:NullToVisibilityConverter x:Key="NullToVis" />
-    <conv:AgeToYearsLabel x:Key="ageLabel" />
     <conv:InListConverter x:Key="inList" />
     <conv:HrToItemsString x:Key="hrItems" />
-    <conv:NullableBooleanConverter x:Key="NullableBoolean" />
     <conv:ScopeToLabel x:Key="ScopeToLabel" />
-    <conv:TimeSpanLabel x:Key="TimeSpanToLabel" />
 </ResourceDictionary>

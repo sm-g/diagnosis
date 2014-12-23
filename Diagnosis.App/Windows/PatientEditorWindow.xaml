@@ -94,7 +94,7 @@
                              HorizontalContentAlignment="Right">
                     </TextBox>
 
-                    <TextBlock Text="{Binding Age, Converter={StaticResource ageLabel}}" Margin="3,0,0,0" VerticalAlignment="Center"></TextBlock>
+                    <TextBlock Text="{Binding Age, Converter={StaticResource AgeToLabel}}" Margin="3,0,0,0" VerticalAlignment="Center"></TextBlock>
                 </DockPanel>
                 <DockPanel>
                     <Label Content="Пол" />
