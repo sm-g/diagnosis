@@ -7,21 +7,25 @@
              xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
              xmlns:app="clr-namespace:Diagnosis.App"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="300"
+             d:DesignWidth="300"
              Background="Transparent"
-             Focusable="False" >
+             Focusable="False">
     <!--DataContext is ShortHealthRecordViewModel-->
     <UserControl.Resources>
-        <Style TargetType="StackPanel" x:Key="hidingButtons">
-            <Setter Property="Visibility" Value="Collapsed" />
+        <Style TargetType="StackPanel"
+               x:Key="hidingButtons">
+            <Setter Property="Visibility"
+                    Value="Collapsed" />
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
-                    <Setter Property="Visibility" Value="Visible" />
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                             Value="True">
+                    <Setter Property="Visibility"
+                            Value="Visible" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-   
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -30,17 +34,25 @@
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
-        <CheckBox IsChecked="{Binding IsChecked}" Focusable="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Top">
+        <CheckBox IsChecked="{Binding IsChecked}"
+                  Focusable="False"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  VerticalContentAlignment="Top">
             <CheckBox.Style>
                 <Style TargetType="CheckBox">
-                    <Setter Property="Visibility" Value="Visible" />
+                    <Setter Property="Visibility"
+                            Value="Visible" />
                     <Style.Triggers>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsChecked}" Value="False" />
-                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False" />
+                                <Condition Binding="{Binding IsChecked}"
+                                           Value="False" />
+                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="False" />
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Setter Property="Visibility"
+                                    Value="Collapsed" />
                         </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -58,21 +70,31 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.ColumnSpan="2" Text="{Binding Name, Mode=OneWay}" TextWrapping="Wrap" />
-            <TextBlock Grid.Row="1" Visibility="{Binding DateOffset.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-                <Run Text="{Binding DateOffset.Offset}" />
-                <Run Text="{Binding DateOffset, Mode=OneWay, Converter={StaticResource DateOffsetToUnitLabel}}" />
-            </TextBlock>
+            <TextBlock Grid.ColumnSpan="2"
+                       Text="{Binding Name, Mode=OneWay}"
+                       TextWrapping="Wrap" />
+            <StackPanel Grid.Row="1"
+                        Visibility="{Binding DateOffset.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                <TextBlock Grid.Row="1"
+                           Text="{Binding DateOffsetString, Mode=OneWay}" />
+
+            </StackPanel>
         </Grid>
 
-        <StackPanel x:Name="buttons" Grid.Column="2" Style="{StaticResource hidingButtons}">
+        <StackPanel x:Name="buttons"
+                    Grid.Column="2"
+                    Style="{StaticResource hidingButtons}">
             <StackPanel.Resources>
-                <Style TargetType="Image" BasedOn="{StaticResource buttonIcon}" />
+                <Style TargetType="Image"
+                       BasedOn="{StaticResource buttonIcon}" />
                 <Style TargetType="Button">
-                    <Setter Property="Height" Value="16" />
+                    <Setter Property="Height"
+                            Value="16" />
                 </Style>
             </StackPanel.Resources>
-            <Button Command="{Binding SendToSearchCommand}" Margin="10,0,0,0" ToolTip="Искать (Alt + F)">
+            <Button Command="{Binding SendToSearchCommand}"
+                    Margin="10,0,0,0"
+                    ToolTip="Искать (Alt + F)">
                 <Image Source="{StaticResource findImage}" />
             </Button>
         </StackPanel>

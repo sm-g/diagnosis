@@ -117,18 +117,52 @@
                 <!--DataContext is HrEditorViewModel-->
                 <editors:CategoryChooser HorizontalAlignment="Left" DataContext="{Binding DataContext, ElementName=editor}" />
             </DockPanel>
-            <!--<DockPanel>
-                <Label Content="дата" />
-                <editors:ComboBoxDatePicker Year="{Binding FromYear, Mode=TwoWay}"
-                                        Month="{Binding FromMonth, Mode=TwoWay}"
-                                        Day="{Binding FromDay, Mode=TwoWay}" />
-                <Label Content="давность" Margin="10,0,0,0" Width="60" />
-                <editors:DateOffsetPicker DateOffset="{Binding DateOffset}" ReadOnlyOffset="{Binding DateOffset.UnitFixed, Mode=OneWay}">
-                    <editors:DateOffsetPicker.Resources>
-                        <Style TargetType="DockPanel" />
-                    </editors:DateOffsetPicker.Resources>
-                </editors:DateOffsetPicker>
+            <DockPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                    <DockPanel>
+                        <Label Content="Дата" />
+                        <editors:ComboBoxDatePicker Year="{Binding FromYear, Mode=TwoWay}"
+                                                    Month="{Binding FromMonth, Mode=TwoWay}"
+                                                    Day="{Binding FromDay, Mode=TwoWay}" />
+                    </DockPanel>
+                    <DockPanel>
+                          <Label Content="Давность" />
+                        <editors:DateOffsetPicker DateOffset="{Binding DateOffset}"
+                                                  ReadOnlyOffset="{Binding DateOffset.UnitFixed, Mode=OneWay}">
+                            <editors:DateOffsetPicker.Resources>
+                                <Style TargetType="DockPanel" />
+                            </editors:DateOffsetPicker.Resources>
+                        </editors:DateOffsetPicker>
+                    </DockPanel>
+                    </StackPanel>
+                    <DockPanel Grid.Column="1">
+                        <ToggleButton IsChecked="{Binding DoRound}"
+                                      Height="25"
+                                      VerticalAlignment="Bottom"
+                                      Content="Округлять давность" />
+                        
+                        <GroupBox Header="Показывать" HorizontalAlignment="Right">
+                            <StackPanel>
+                                <RadioButton IsChecked="{Binding ShowAsDate}"
+                                             Content="дату" />
+                                <RadioButton IsChecked="{Binding ShowAsOffset}"
+                                             Content="давность" />
+                                <RadioButton IsChecked="{Binding ShowAsAge}"
+                                             IsEnabled="{Binding CanShowAsAge}"
+                                             Content="возраст" />
+                            </StackPanel>
+                        </GroupBox>
+                        
+                    </DockPanel>
+                </Grid>
             </DockPanel>
+            
+            
             <DockPanel x:Name="offsetSettings">
                 <DockPanel.Resources>
                     <ObjectDataProvider x:Key="dateSetting" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
@@ -154,8 +188,8 @@
                         <Binding Path="DateOffset.UnitSettingStrategy" Mode="TwoWay" />
                     </ComboBox.SelectedItem>
                 </ComboBox>
-            </DockPanel>-->
-            <!--DataContext is HrEditorViewModel-->
+                
+            </DockPanel>
         </StackPanel>
     </Grid>
 </UserControl>

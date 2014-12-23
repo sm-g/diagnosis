@@ -10,6 +10,19 @@ namespace Diagnosis.ViewModels.Screens
     public class ShortHealthRecordViewModel : CheckableBase
     {
         internal readonly HealthRecord healthRecord;
+        private readonly Patient patient;
+
+        public ShortHealthRecordViewModel(HealthRecord hr)
+        {
+            Contract.Requires(hr != null);
+            this.healthRecord = hr;
+
+            patient = hr.GetPatient();
+            patient.PropertyChanged += patient_PropertyChanged;
+
+            healthRecord.PropertyChanged += healthRecord_PropertyChanged;
+            healthRecord.ItemsChanged += healthRecord_ItemsChanged;
+        }
 
         public string Name
         {
@@ -94,10 +107,27 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                int year = FromYear ?? 1;
-                int month = FromMonth ?? 1;
-                int day = FromDay ?? 1;
-                return new DateTime(year, month, day);
+                return DateOffset.GetSortingDate();
+            }
+        }
+
+        public string DateOffsetString
+        {
+            get
+            {
+                switch (healthRecord.Unit)
+                {
+                    case HealthRecordUnits.NotSet:
+                        return DateOffsetFormatter.GetPartialDateString(DateOffset);
+
+                    case HealthRecordUnits.ByAge:
+                        var pat = healthRecord.GetPatient();
+                        var age = DateHelper.GetAge(pat.BirthYear, pat.BirthMonth, pat.BirthDay, DateOffset.GetSortingDate());
+                        var index = Plurals.GetPluralEnding(age.Value);
+                        return string.Format("{0} {1}", age, Plurals.years[index]);
+                    default:
+                        return DateOffsetFormatter.GetOffsetUnitString(DateOffset);
+                }
             }
         }
 
@@ -133,28 +163,9 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
-
-        public ShortHealthRecordViewModel(HealthRecord hr)
-        {
-            Contract.Requires(hr != null);
-            this.healthRecord = hr;
-
-            healthRecord.PropertyChanged += healthRecord_PropertyChanged;
-            healthRecord.ItemsChanged += healthRecord_ItemsChanged;
-            healthRecord.DateOffset.PropertyChanged += DateOffset_PropertyChanged;
-        }
-
         private void healthRecord_ItemsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged("Name");
-        }
-
-        private void DateOffset_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "Unit")
-            {
-                OnPropertyChanged("DateOffset"); // for converters binding
-            }
         }
 
         private void healthRecord_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -166,16 +177,27 @@ namespace Diagnosis.ViewModels.Screens
                 case "FromDay":
                 case "FromMonth":
                 case "FromYear":
+                case "Unit":
                     OnPropertyChanged("SortingDate");
+                    OnPropertyChanged("DateOffsetString");
                     break;
                 case "HrItems":
                     OnPropertyChanged("Name");
                     break;
-
-                default:
+            }
+        }
+        private void patient_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "BirthDay":
+                case "BirthMonth":
+                case "BirthYear":
+                    OnPropertyChanged("DateOffsetString");
                     break;
             }
         }
+
 
         public override string ToString()
         {
@@ -188,7 +210,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 healthRecord.PropertyChanged -= healthRecord_PropertyChanged;
                 healthRecord.ItemsChanged -= healthRecord_ItemsChanged;
-                healthRecord.DateOffset.PropertyChanged -= DateOffset_PropertyChanged;
+                patient.PropertyChanged -= patient_PropertyChanged;
             }
             base.Dispose(disposing);
         }

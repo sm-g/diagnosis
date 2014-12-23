@@ -21,7 +21,7 @@ namespace Diagnosis.App.Controls.Editors
         {
             InitializeComponent();
 #if !DEBUG
-            //    offsetSettings.Visibility = System.Windows.Visibility.Collapsed;
+            offsetSettings.Visibility = System.Windows.Visibility.Collapsed;
 #endif
         }
 
