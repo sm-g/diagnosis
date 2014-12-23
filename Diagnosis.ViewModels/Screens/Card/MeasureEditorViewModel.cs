@@ -33,8 +33,8 @@ namespace Diagnosis.ViewModels.Screens
             }
             Value = Measure.Value.ToString();
 
-            Autocomplete = new Search.Autocomplete.Autocomplete(
-                new Recognizer(Session) { OnlyWords = true },
+            Autocomplete = new Autocomplete(
+                new Recognizer(Session) { OnlyWords = true, AddQueryToSuggestions = true },
                 false,
                 false,
                 true,

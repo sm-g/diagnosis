@@ -37,7 +37,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         public bool ShowAllWordsOnEmptyQuery { get; set; }
 
         /// <summary>
-        /// Добавлять запрос в список предположений, если нет соответствующего слова.
+        /// Добавлять запрос как новое слово в список предположений, если нет соответствующего слова.
         /// </summary>
         public bool AddQueryToSuggestions { get; set; }
 
@@ -140,16 +140,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     }
                     break;
             }
-
-            //if (tag.BlankType == Tag.BlankTypes.Word)
-            //{
-            //    // слово меняем на коммент
-            //    tag.Blank = new Comment(tag.Query);
-            //}
-            //else // Icd !
-            //{
-            //    tag.Blank = FirstMatchingOrNewWord(tag.Query);
-            //}
         }
 
         /// <summary>
@@ -234,7 +224,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 // не добавляем запрос, совпадающий со словом в результатах или словом/запросом в исключенных предположениях
                 if (!existsSame && !query.IsNullOrEmpty())
                 {
-                    results.Add(query);
+                    var w = FirstMatchingOrNewWord(query);
+                    results.Add(w);
                 }
             }
 
@@ -278,7 +269,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         // первое подходящее слово или новое
         private Word FirstMatchingOrNewWord(string q)
         {
-            var exists = (Word)SearchForSuggesstions(q, null, null).FirstOrDefault();
+            var exists = (Word)SearchForSuggesstions(q, null,  q.ToEnumerable()).FirstOrDefault();
             if (exists != null && Recognizer.Matches(exists, q))
                 return exists; // берем слово из словаря
             else
