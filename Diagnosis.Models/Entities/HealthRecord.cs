@@ -12,8 +12,8 @@ namespace Diagnosis.Models
     {
         private Iesi.Collections.Generic.ISet<HrItem> hrItems = new HashedSet<HrItem>();
         private int? _year;
-        private byte? _month;
-        private byte? _day;
+        private int? _month;
+        private int? _day;
         private bool _isDeleted;
         private HrCategory _category;
         private DateOffset _dateOffset;
@@ -64,7 +64,7 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual byte? FromDay
+        public virtual int? FromDay
         {
             get
             {
@@ -81,7 +81,7 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual byte? FromMonth
+        public virtual int? FromMonth
         {
             get
             {
@@ -161,11 +161,11 @@ namespace Diagnosis.Models
                                 break;
 
                             case "Month":
-                                FromMonth = (byte?)_dateOffset.Month;
+                                FromMonth = _dateOffset.Month;
                                 break;
 
                             case "Day":
-                                FromDay = (byte?)_dateOffset.Day;
+                                FromDay = _dateOffset.Day;
                                 break;
 
                             case "Unit":
