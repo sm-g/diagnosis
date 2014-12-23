@@ -34,7 +34,12 @@ namespace Diagnosis.Data.Mappings
 
             Component(x => x.Measure, m =>
             {
-                m.Property(x => x.DbValue, x => x.Column("MeasureValue"));
+                m.Property(x => x.DbValue, x =>
+                {
+                    x.Column("MeasureValue");
+                    x.Precision(Measure.Precision);
+                    x.Scale(Measure.Scale);
+                });
                 m.ManyToOne(x => x.Uom, x =>
                 {
                     x.Column("UomID");

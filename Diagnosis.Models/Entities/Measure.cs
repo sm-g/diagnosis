@@ -4,6 +4,9 @@ namespace Diagnosis.Models
 {
     public class Measure : IDomainObject, IHrItemObject, IComparable<Measure>
     {
+        public const short Scale = 6;
+        public const short Precision = 18;
+
         private HealthRecord _hr;
         private Uom _uom;
 
@@ -51,7 +54,7 @@ namespace Diagnosis.Models
         {
             get
             {
-                return DbValue * (Uom != null ? (double)Math.Pow(10, -Uom.Factor) : 1);
+                return Math.Round(DbValue * (Uom != null ? (double)Math.Pow(10, -Uom.Factor) : 1), Scale);
             }
             set
             {

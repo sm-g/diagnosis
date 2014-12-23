@@ -158,7 +158,6 @@
   <ItemGroup>
     <Compile Include="Mappings\PassportMap.cs" />
     <Compile Include="Mappings\HrItemMap.cs" />
-    <Compile Include="Mappings\MeasureMap.cs" />
     <Compile Include="Mappings\UomMap.cs" />
     <Compile Include="Mappings\AppointmentMap.cs" />
     <Compile Include="Mappings\HrCategoryMap.cs" />
