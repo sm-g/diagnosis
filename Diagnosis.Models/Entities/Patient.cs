@@ -18,8 +18,8 @@ namespace Diagnosis.Models
         public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
 
         private int? _year;
-        private byte? _month;
-        private byte? _day;
+        private int? _month;
+        private int? _day;
         private string _fn;
         private string _ln;
         private string _mn;
@@ -74,7 +74,7 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual byte? BirthMonth
+        public virtual int? BirthMonth
         {
             get { return _month; }
             set
@@ -84,7 +84,7 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual byte? BirthDay
+        public virtual int? BirthDay
         {
             get { return _day; }
             set
@@ -156,8 +156,8 @@ namespace Diagnosis.Models
             string firstName = null,
             string middleName = null,
             int? year = null,
-            byte? month = null,
-            byte? day = null,
+            int? month = null,
+            int? day = null,
             bool? isMale = null)
         {
             LastName = lastName;

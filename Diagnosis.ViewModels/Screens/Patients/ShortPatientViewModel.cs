@@ -50,7 +50,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public byte? BirthMonth
+        public int? BirthMonth
         {
             get
             {
@@ -58,7 +58,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public byte? BirthDay
+        public int? BirthDay
         {
             get
             {
