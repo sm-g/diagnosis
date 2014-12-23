@@ -233,6 +233,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     {
                         Query = null;
                         State = States.Init;
+
+                        // setting Blank sets State, so
+                        Signalization = null;
                         _blank = null;
                         OnPropertyChanged("Blank");
                     }
