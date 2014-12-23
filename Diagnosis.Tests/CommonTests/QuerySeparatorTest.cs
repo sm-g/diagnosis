@@ -28,7 +28,7 @@ namespace Tests
         public void TestFormatDelimeters2()
         {
             var i = "a,   b ";
-            var o = "a, b";
+            var o = "a, b ";
             Assert.AreEqual(o, qs.FormatDelimiters(i));
         }
 

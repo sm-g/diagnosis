@@ -614,7 +614,8 @@ namespace Tests
             var date = new DateOffset(5, DateUnits.Day, getNow, new DateOffset.DateOffsetSettings(
                 DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.SavesUnit, true, true)); // только так UnitSetting.RoundsOffset
 
-            date.UnitFixed = true;
+            Assert.IsTrue(!date.UnitFixed);
+
             date.Day = null;
             // юнит укрупняется
             Assert.IsTrue(date.Unit == DateUnits.Month);

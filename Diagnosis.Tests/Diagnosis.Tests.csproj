@@ -131,10 +131,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CommonTests\DateHelperTest.cs" />
     <Compile Include="CommonTests\DateOffsetFormatterTest.cs" />
     <Compile Include="CommonTests\TimeSpanFormatterTest.cs" />
     <Compile Include="CommonTests\EnumerableExtensionsTest.cs" />
     <Compile Include="ModelTests\CourseTest.cs" />
+    <Compile Include="ModelTests\HealthRecordTest.cs" />
     <Compile Include="SearchTests\DiagnosisSearchTest.cs" />
     <Compile Include="ViewModelsTests\AutocompleteTest.cs" />
     <Compile Include="ViewModelsTests\CardTest.cs" />
