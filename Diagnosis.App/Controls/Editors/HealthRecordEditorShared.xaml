@@ -13,34 +13,49 @@
              AllowDrop="True"
              Background="Transparent"
              Drop="UserControl_Drop"
-             Tag="{Binding DataContext.HrList, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+             Tag="{Binding DataContext.HrList, RelativeSource={RelativeSource AncestorType=UserControl}}"
              mc:Ignorable="d"
-             d:DesignHeight="200" d:DesignWidth="600">
+             d:DesignHeight="200"
+             d:DesignWidth="600">
     <!--DataContext is HrEditorViewModel-->
     <!--Tag is HrListViewModel-->
     <UserControl.Resources>
-        <Style TargetType="Label" BasedOn="{StaticResource label90}" />
+        <Style TargetType="Label"
+               BasedOn="{StaticResource label90}" />
     </UserControl.Resources>
-    
+
     <UserControl.InputBindings>
-        <KeyBinding Modifiers="Control" Key="Up" Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}" CommandParameter="{StaticResource True}" />
-        <KeyBinding Modifiers="Control" Key="Down" Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}" CommandParameter="{StaticResource False}" />
+        <KeyBinding Modifiers="Control"
+                    Key="Up"
+                    Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}"
+                    CommandParameter="{StaticResource True}" />
+        <KeyBinding Modifiers="Control"
+                    Key="Down"
+                    Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}"
+                    CommandParameter="{StaticResource False}" />
     </UserControl.InputBindings>
-    <Grid x:Name="hr_grid" MouseDown="hr_grid_MouseDown" Focusable="True" Background="Transparent">
+    <Grid x:Name="hr_grid"
+          MouseDown="hr_grid_MouseDown"
+          Focusable="True"
+          Background="Transparent">
         <Grid.InputBindings>
         </Grid.InputBindings>
-        
+
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        
+
         <DockPanel Background="Transparent">
             <ToolBar DockPanel.Dock="Left">
-                <Button Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}" FontSize="16"
-                    CommandParameter="{StaticResource True}" ToolTip="Открыть предыдущую запись">↑</Button>
-                <Button Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}" FontSize="16"
-                    CommandParameter="{StaticResource False}" ToolTip="Открыть следующую запись" >↓</Button>
+                <Button Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}"
+                        FontSize="16"
+                        CommandParameter="{StaticResource True}"
+                        ToolTip="Открыть предыдущую запись">↑</Button>
+                <Button Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}"
+                        FontSize="16"
+                        CommandParameter="{StaticResource False}"
+                        ToolTip="Открыть следующую запись">↓</Button>
                 <Separator />
                 <!--<Button Command="{Binding DataContext.HrList.AddHealthRecordCommand,  RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}"
                     ToolTip="Добавить запись">
@@ -52,16 +67,21 @@
                 <!--<Button Command="{Binding RevertCommand}" ToolTip="Отменить изменения">
                     <DockPanel>
                         <Image Source="{StaticResource undoImage}" />
-                        --><!--<TextBlock Text="Отменить" />--><!--
+                        -->
+                <!--<TextBlock Text="Отменить" />-->
+                <!--
                     </DockPanel>
                 </Button>-->
-                <Button Command="{Binding DeleteCommand}" ToolTip="Удалить запись">
+                <Button Command="{Binding DeleteCommand}"
+                        ToolTip="Удалить запись">
                     <DockPanel>
-                        <Image Source="{StaticResource deleteImage}"  Width="16" />
+                        <Image Source="{StaticResource deleteImage}"
+                               Width="16" />
                         <!--<TextBlock Text="Удалить" />-->
                     </DockPanel>
                 </Button>
-                <Button Command="{Binding AddIcdCommand}" ToolTip="Добавить МКБ">
+                <Button Command="{Binding AddIcdCommand}"
+                        ToolTip="Добавить МКБ">
                     <DockPanel>
                         <TextBlock Text="МКБ" />
                     </DockPanel>
@@ -73,31 +93,47 @@
                     </DockPanel>
                 </Button>
             </ToolBar>
-            <Button x:Name="closeButton" Command="{Binding CloseCommand}" ToolBar.OverflowMode="Never" VerticalAlignment="Top"  Height="16" HorizontalAlignment="Right" Width="16"
-                ToolTip="Закрыть редактор, сохранив все изменения"
-                Grid.Column="2">
-                <Path Data="{StaticResource CloseX}" Stretch="Uniform" Stroke="Black" Margin="1" />
+            <Button x:Name="closeButton"
+                    Command="{Binding CloseCommand}"
+                    ToolBar.OverflowMode="Never"
+                    VerticalAlignment="Top"
+                    Height="16"
+                    HorizontalAlignment="Right"
+                    Width="16"
+                    ToolTip="Закрыть редактор, сохранив все изменения"
+                    Grid.Column="2">
+                <Path Data="{StaticResource CloseX}"
+                      Stretch="Uniform"
+                      Stroke="Black"
+                      Margin="1" />
                 <Button.Style>
                     <Style>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Panel}}" Value="True">
-                            <DataTrigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation Duration="0:0:0.3" To="25" Storyboard.TargetProperty="Width"/>
-                                        <DoubleAnimation Duration="0:0:0.3" To="25" Storyboard.TargetProperty="Height"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </DataTrigger.EnterActions>
-                            <DataTrigger.ExitActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation Duration="0:0:0.5" Storyboard.TargetProperty="Width"/>
-                                        <DoubleAnimation Duration="0:0:0.5" Storyboard.TargetProperty="Height"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </DataTrigger.ExitActions>
-                        </DataTrigger>
+                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Panel}}"
+                                         Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Duration="0:0:0.3"
+                                                             To="25"
+                                                             Storyboard.TargetProperty="Width" />
+                                            <DoubleAnimation Duration="0:0:0.3"
+                                                             To="25"
+                                                             Storyboard.TargetProperty="Height" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Duration="0:0:0.5"
+                                                             Storyboard.TargetProperty="Width" />
+                                            <DoubleAnimation Duration="0:0:0.5"
+                                                             Storyboard.TargetProperty="Height" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
@@ -105,17 +141,22 @@
         </DockPanel>
 
         <!--DataContext is editing HealthRecordViewModel -->
-        <StackPanel Grid.Row="1" DataContext="{Binding HealthRecord}" Margin="0,10,0,0">
+        <StackPanel Grid.Row="1"
+                    DataContext="{Binding HealthRecord}"
+                    Margin="0,10,0,0">
             <StackPanel.Resources>
-                <Style TargetType="DockPanel" BasedOn="{StaticResource formLine}" />
+                <Style TargetType="DockPanel"
+                       BasedOn="{StaticResource formLine}" />
             </StackPanel.Resources>
             <DockPanel>
-                    <!--DataContext is HrEditorViewModel-->
-                    <search:NewAutocomplete x:Name="autocomplete" DataContext="{Binding DataContext.Autocomplete, ElementName=editor}" />
+                <!--DataContext is HrEditorViewModel-->
+                <search:NewAutocomplete x:Name="autocomplete"
+                                        DataContext="{Binding DataContext.Autocomplete, ElementName=editor}" />
             </DockPanel>
             <DockPanel>
                 <!--DataContext is HrEditorViewModel-->
-                <editors:CategoryChooser HorizontalAlignment="Left" DataContext="{Binding DataContext, ElementName=editor}" />
+                <editors:CategoryChooser HorizontalAlignment="Left"
+                                         DataContext="{Binding DataContext, ElementName=editor}" />
             </DockPanel>
             <DockPanel>
                 <Grid>
@@ -124,26 +165,28 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <StackPanel>
-                    <DockPanel>
-                        <Label Content="Дата" />
-                        <editors:ComboBoxDatePicker Year="{Binding FromYear, Mode=TwoWay}"
-                                                    Month="{Binding FromMonth, Mode=TwoWay}"
-                                                    Day="{Binding FromDay, Mode=TwoWay}" />
-                    </DockPanel>
-                    <DockPanel>
-                          <Label Content="Давность" />
-                        <editors:DateOffsetPicker DateOffset="{Binding DateOffset}"
-                                                  ReadOnlyOffset="{Binding DateOffset.UnitFixed, Mode=OneWay}">
-                        </editors:DateOffsetPicker>
-                    </DockPanel>
+                        <DockPanel>
+                            <Label Content="Дата" />
+                            <editors:ComboBoxDatePicker Year="{Binding FromYear, Mode=TwoWay}"
+                                                        Month="{Binding FromMonth, Mode=TwoWay}"
+                                                        Day="{Binding FromDay, Mode=TwoWay}" />
+                        </DockPanel>
+                        <DockPanel>
+                            <Label Content="Давность" />
+                            <editors:DateOffsetPicker DateOffset="{Binding DateOffset}"
+                                                      ReadOnlyOffset="{Binding DateOffset.UnitFixed, Mode=OneWay}" />
+                        </DockPanel>
                     </StackPanel>
-                    <DockPanel Grid.Column="1">
+                    <StackPanel Orientation="Horizontal" Grid.Column="1">
                         <ToggleButton IsChecked="{Binding DoRound}"
-                                      Height="25"
-                                      VerticalAlignment="Bottom"
-                                      Content="Округлять давность" />
-                        
-                        <GroupBox Header="Показывать" HorizontalAlignment="Right">
+                                      Width="100"
+                                      Margin="10"
+                                      VerticalAlignment="Center"
+                                      >
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center" Text="Менять единицу давности"/>
+                        </ToggleButton>
+
+                        <GroupBox Header="Показывать">
                             <StackPanel>
                                 <RadioButton IsChecked="{Binding ShowAsDate}"
                                              Content="дату" />
@@ -154,38 +197,43 @@
                                              Content="возраст" />
                             </StackPanel>
                         </GroupBox>
-                        
-                    </DockPanel>
+                    </StackPanel>
                 </Grid>
             </DockPanel>
-            
-            
+
             <DockPanel x:Name="offsetSettings">
                 <DockPanel.Resources>
-                    <ObjectDataProvider x:Key="dateSetting" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                    <ObjectDataProvider x:Key="dateSetting"
+                                        MethodName="GetValues"
+                                        ObjectType="{x:Type sys:Enum}">
                         <ObjectDataProvider.MethodParameters>
                             <x:Type TypeName="core:DateOffset+DateSetting" />
                         </ObjectDataProvider.MethodParameters>
                     </ObjectDataProvider>
-                    <ObjectDataProvider x:Key="unitSetting" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                    <ObjectDataProvider x:Key="unitSetting"
+                                        MethodName="GetValues"
+                                        ObjectType="{x:Type sys:Enum}">
                         <ObjectDataProvider.MethodParameters>
                             <x:Type TypeName="core:DateOffset+UnitSetting" />
                         </ObjectDataProvider.MethodParameters>
                     </ObjectDataProvider>
                 </DockPanel.Resources>
                 <Label Content="DateSetting" />
-                <ComboBox ItemsSource="{Binding Source={StaticResource dateSetting}}" Width="150">
+                <ComboBox ItemsSource="{Binding Source={StaticResource dateSetting}}"
+                          Width="150">
                     <ComboBox.SelectedItem>
-                        <Binding Path="DateOffset.DateSettingStrategy" Mode="TwoWay" />
+                        <Binding Path="DateOffset.DateSettingStrategy"
+                                 Mode="TwoWay" />
                     </ComboBox.SelectedItem>
                 </ComboBox>
-                <Label Content="UnitSetting" Margin="10,0,0,0" />
+                <Label Content="UnitSetting"
+                       Margin="10,0,0,0" />
                 <ComboBox ItemsSource="{Binding Source={StaticResource unitSetting}}">
                     <ComboBox.SelectedItem>
-                        <Binding Path="DateOffset.UnitSettingStrategy" Mode="TwoWay" />
+                        <Binding Path="DateOffset.UnitSettingStrategy"
+                                 Mode="TwoWay" />
                     </ComboBox.SelectedItem>
                 </ComboBox>
-                
             </DockPanel>
         </StackPanel>
     </Grid>

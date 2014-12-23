@@ -23,11 +23,11 @@
                     <Setter Property="Background" Value="LightGray" />
                 </Trigger>
             </Style.Triggers>
-        </Style>
+        </Style>       
     </UserControl.Resources>
-    <DockPanel LastChildFill="False">
-        <TextBox x:Name="offset" 
-                 Text="{Binding DateOffset.Offset, ElementName=root, Mode=TwoWay, TargetNullValue=''}" 
+    <StackPanel Orientation="Horizontal">
+        <TextBox x:Name="offset"
+                 Text="{Binding DateOffset.Offset, ElementName=root, Mode=TwoWay, TargetNullValue='', UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" 
                  IsReadOnly="{Binding ReadOnlyOffset, ElementName=root}"
                  MinWidth="50" Margin="0,0,5,0" TextAlignment="Right" />
         <ComboBox x:Name="units"
@@ -49,5 +49,5 @@
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
-    </DockPanel>
+    </StackPanel>
 </UserControl>
