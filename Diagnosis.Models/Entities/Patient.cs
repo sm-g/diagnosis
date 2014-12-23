@@ -208,6 +208,11 @@ namespace Diagnosis.Models
             }
         }
 
+        public virtual IEnumerable<Course> GetOrderedCourses()
+        {
+            return Courses.OrderBy(c => c, new CompareCourseByDate());
+        }
+
         public override string ToString()
         {
             return Id + " " + FullName;
