@@ -157,7 +157,7 @@ namespace Diagnosis.Common
         /// <summary>
         /// Unit of DateOffset with ending for given offset.
         /// </summary>
-        public static string FormatUnit(int? offset, DateUnits unit)
+        public static string GetUnitString(int? offset, DateUnits unit)
         {
             if (offset == null)
                 offset = 0;
@@ -186,6 +186,16 @@ namespace Diagnosis.Common
             if (!d.Day.HasValue) // month year
                 return System.Globalization.DateTimeFormatInfo.CurrentInfo.MonthNames[d.Month.Value - 1].ToLower() + " " + d.Year.ToString();
             return d.GetNullableDateTime().Value.ToString("d MMMM yyyy"); // full
+        }
+
+        /// <summary>
+        /// DateOffset as Offset with Unit, i.e. "1 день"
+        /// </summary>
+        public static string GetOffsetUnitString(DateOffset d)
+        {
+            if (d == null || d.IsEmpty)
+                return string.Empty;
+            return string.Format("{0} {1}", d.Offset, GetUnitString(d.Offset, d.Unit));
         }
     }
 }

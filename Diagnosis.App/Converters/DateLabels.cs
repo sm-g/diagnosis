@@ -1,11 +1,10 @@
-﻿using System;
+﻿using Diagnosis.Common;
+using Diagnosis.Models;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Data;
 using System.Globalization;
-using Diagnosis.Common;
-using System.Windows;
+using System.Linq;
+using System.Windows.Data;
 
 namespace Diagnosis.App.Converters
 {
@@ -51,7 +50,6 @@ namespace Diagnosis.App.Converters
                 return str;
             else
                 return string.Format("{0} {1}", prefix, str);
-
         }
 
         public object ConvertBack(object value, Type targetType,
@@ -60,6 +58,7 @@ namespace Diagnosis.App.Converters
             throw new NotSupportedException();
         }
     }
+
     public class TimeSpanLabel : IValueConverter
     {
         public object Convert(object value, Type targetType,
@@ -94,6 +93,74 @@ namespace Diagnosis.App.Converters
             object parameter, CultureInfo culture)
         {
             throw new NotSupportedException();
+        }
+    }
+
+    public class DateOffsetToUnitLabel : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var d = value as DateOffset;
+            if (d == null)
+                return null;
+
+            return DateOffsetFormatter.GetUnitString(d.Offset, d.Unit);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    public class DateOffsetToLabel : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var d = value as DateOffset;
+            if (d == null)
+                return null;
+
+            var unit = HealthRecordUnits.NotSet;
+
+            if (parameter is HealthRecordUnits)
+                unit = (HealthRecordUnits)parameter;
+            switch (unit)
+            {
+                case HealthRecordUnits.NotSet:
+                    return DateOffsetFormatter.GetPartialDateString(d);
+
+                case HealthRecordUnits.ByAge: // by age должен брать дату пациента
+                default:
+                    return DateOffsetFormatter.GetOffsetUnitString(d);
+            }
+
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Для DateOffsetPicker
+    /// </summary>
+    public class OffsetUnitToUnitLabel : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values.Length < 2 || !(values[0] is DateUnits) || !(values[1] is int?))
+                return null;
+            var unit = (DateUnits)values[0];
+            int? offset = (int?)values[1];
+
+            return DateOffsetFormatter.GetUnitString(offset, unit);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            return new object[] { value };
         }
     }
 }
