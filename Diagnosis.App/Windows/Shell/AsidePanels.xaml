@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:screen="clr-namespace:Diagnosis.App.Screens"             
-             xmlns:vm="clr-namespace:Diagnosis.ViewModels.Screens;assembly=Diagnosis.ViewModels"
+             xmlns:screen="clr-namespace:Diagnosis.App.Screens"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -14,7 +14,7 @@
                 <ResourceDictionary Source="../../Styles/EmptyToggle.xaml" />
             </ResourceDictionary.MergedDictionaries>
             
-            <DataTemplate DataType="{x:Type vm:SearchViewModel}">
+            <DataTemplate DataType="{x:Type diag:SearchViewModel}">
                 <screen:Search />
             </DataTemplate>
             

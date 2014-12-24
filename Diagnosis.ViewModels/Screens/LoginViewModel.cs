@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using NHibernate.Linq;
 using System.Windows.Threading;
+using Diagnosis.ViewModels.Screens;
+using System.Windows.Markup;
 
 namespace Diagnosis.ViewModels.Screens
 {

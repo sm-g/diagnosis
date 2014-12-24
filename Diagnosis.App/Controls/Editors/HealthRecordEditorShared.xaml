@@ -8,7 +8,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             xmlns:core="clr-namespace:Diagnosis.Common;assembly=Diagnosis.Common"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
              x:Name="editor"
              AllowDrop="True"
              Background="Transparent"
@@ -207,14 +207,14 @@
                                         MethodName="GetValues"
                                         ObjectType="{x:Type sys:Enum}">
                         <ObjectDataProvider.MethodParameters>
-                            <x:Type TypeName="core:DateOffset+DateSetting" />
+                            <x:Type TypeName="diag:DateOffset+DateSetting" />
                         </ObjectDataProvider.MethodParameters>
                     </ObjectDataProvider>
                     <ObjectDataProvider x:Key="unitSetting"
                                         MethodName="GetValues"
                                         ObjectType="{x:Type sys:Enum}">
                         <ObjectDataProvider.MethodParameters>
-                            <x:Type TypeName="core:DateOffset+UnitSetting" />
+                            <x:Type TypeName="diag:DateOffset+UnitSetting" />
                         </ObjectDataProvider.MethodParameters>
                     </ObjectDataProvider>
                 </DockPanel.Resources>

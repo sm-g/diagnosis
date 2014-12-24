@@ -7,7 +7,7 @@
         xmlns:controls="clr-namespace:Diagnosis.App.Controls"
         xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
         xmlns:card="clr-namespace:Diagnosis.App.Controls.CardParts"
-        xmlns:screen="clr-namespace:Diagnosis.ViewModels.Screens;assembly=Diagnosis.ViewModels"
+        xmlns:diag="http://schemas.smg.com/diagnosis"
         Title="{Binding Title}"
         Height="350"
         Width="500"
@@ -20,7 +20,7 @@
         d:DataContext="{DynamicResource vm}">
     <!--DoctorEditorViewModel-->
     <Window.Resources>
-        <screen:DoctorEditorViewModel x:Key="vm" />
+        <diag:DoctorEditorViewModel x:Key="vm" />
 
         <Style TargetType="DockPanel"
                BasedOn="{StaticResource formLine}" />

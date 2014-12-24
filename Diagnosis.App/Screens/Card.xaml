@@ -9,7 +9,7 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:headers="clr-namespace:Diagnosis.App.Controls.Headers"
              xmlns:screen="clr-namespace:Diagnosis.App.Screens"
-             xmlns:vm="clr-namespace:Diagnosis.ViewModels.Screens;assembly=Diagnosis.ViewModels"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
              x:Name="card"
              mc:Ignorable="d"
              d:DataContext="{DynamicResource Context}"
@@ -17,7 +17,7 @@
     <!-- CardViewModel -->
     <UserControl.Resources>
         <ResourceDictionary>
-            <vm:CardViewModel x:Key="Context" />
+            <diag:CardViewModel x:Key="Context" />
         </ResourceDictionary>
     </UserControl.Resources>
 

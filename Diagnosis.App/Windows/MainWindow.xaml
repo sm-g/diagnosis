@@ -3,7 +3,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:controls="clr-namespace:Diagnosis.App.Controls"
-        xmlns:vm="clr-namespace:Diagnosis.ViewModels.Screens;assembly=Diagnosis.ViewModels" 
+        xmlns:diag="http://schemas.smg.com/diagnosis" 
         xmlns:screen="clr-namespace:Diagnosis.App.Screens"
         xmlns:shell="clr-namespace:Diagnosis.App.Windows.Shell"
         x:Class="Diagnosis.App.Windows.MainWindow"
@@ -22,22 +22,22 @@
                 <ResourceDictionary Source="../Styles/EmptyToggle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <DataTemplate DataType="{x:Type vm:LoginViewModel}">
+            <DataTemplate DataType="{x:Type diag:LoginViewModel}">
                 <screen:Login />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:WordsListViewModel}">
+            <DataTemplate DataType="{x:Type diag:WordsListViewModel}">
                 <screen:Words />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:CardViewModel}">
+            <DataTemplate DataType="{x:Type diag:CardViewModel}">
                 <screen:Card />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:PatientsListViewModel}">
+            <DataTemplate DataType="{x:Type diag:PatientsListViewModel}">
                 <screen:Patients />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:DoctorsListViewModel}">
+            <DataTemplate DataType="{x:Type diag:DoctorsListViewModel}">
                 <screen:Doctors />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:UndoOverlayViewModel}">
+            <DataTemplate DataType="{x:Type diag:UndoOverlayViewModel}">
                 <controls:UndoOverlay />
             </DataTemplate>
         </ResourceDictionary>

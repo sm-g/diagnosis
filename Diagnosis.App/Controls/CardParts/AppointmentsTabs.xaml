@@ -6,7 +6,6 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:card="clr-namespace:Diagnosis.App.Controls.CardParts"
              xmlns:screen="clr-namespace:Diagnosis.App.Screens"
-             xmlns:vm="clr-namespace:Diagnosis.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="50" d:DesignWidth="300">
     <!--DataContext is CourseViewModel-->
@@ -30,7 +29,7 @@
                     ItemTemplateSelector="{StaticResource addNewSelector}">
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <card:HealthRecordsList DataContext="{Binding DataContext.Appointment, RelativeSource={RelativeSource AncestorType=screen:NewCard}}" />
+                    <card:HealthRecordsList DataContext="{Binding DataContext.Appointment, RelativeSource={RelativeSource AncestorType=screen:Card}}" />
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>
