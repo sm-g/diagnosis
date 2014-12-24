@@ -586,16 +586,15 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             Contract.Requires(!tag.Query.IsNullOrEmpty());
 
-            if (toType == Tag.BlankTypes.None)
+            var measure = (tag.Blank as Measure);
+            var converted = recognizer.ConvertBlank(tag, toType);
+
+            if (converted && measure != null && toType != Tag.BlankTypes.Comment)
             {
-                if (tag.BlankType == Tag.BlankTypes.Comment)
-                    toType = Tag.BlankTypes.Word;
-                else
-                    toType = Tag.BlankTypes.Comment;
-
+                // отдельный комментарий из числа измерения
+                var comment = new Comment(string.Format("{0} {1}", measure.Value, measure.Uom).Trim());
+                AddTag(comment, Tags.IndexOf(tag) + 1);
             }
-
-            recognizer.ConvertBlank(tag, toType);
 
             CompleteEnding(tag);
         }

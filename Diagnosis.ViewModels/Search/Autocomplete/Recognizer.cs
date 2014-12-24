@@ -94,8 +94,13 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        public void ConvertBlank(Tag tag, Tag.BlankTypes toType)
+        /// <summary>
+        /// Изменяет заготовку тега с одной сущности на другую.
+        /// Возвращает успешность конвертации.
+        /// </summary>
+        public bool ConvertBlank(Tag tag, Tag.BlankTypes toType)
         {
+            Contract.Requires(!tag.Query.IsNullOrEmpty());
             Contract.Requires(tag.BlankType != toType);
             Contract.Requires(toType != Tag.BlankTypes.None && toType != Tag.BlankTypes.Query);
 
@@ -106,40 +111,41 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
             else
             {
-                query = tag.Query; //
+                query = tag.Query;
             }
 
             switch (toType)
             {
-                case Tag.BlankTypes.Comment: //
+                case Tag.BlankTypes.Comment:
                     tag.Blank = new Comment(tag.Query);
-                    break;
+                    return true;
 
                 case Tag.BlankTypes.Word: // новое или существующее
                     tag.Blank = FirstMatchingOrNewWord(query);
-                    // отдельный комментарий из числа измерения, везде?
-                    break;
+                    return true;
 
-                case Tag.BlankTypes.Measure: // слово 
+                case Tag.BlankTypes.Measure: // слово
                     var w = FirstMatchingOrNewWord(query);
                     var vm = new MeasureEditorViewModel(w);
                     this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
                     if (vm.DialogResult == true)
                     {
                         tag.Blank = vm.Measure;
+                        return true;
                     }
                     break;
 
-                case Tag.BlankTypes.Icd: // слово/коммент в поисковый запрос                   
-
+                case Tag.BlankTypes.Icd: // слово/коммент в поисковый запрос
                     var vm0 = new IcdSelectorViewModel(query);
                     this.Send(Events.OpenDialog, vm0.AsParams(MessageKeys.Dialog));
                     if (vm0.DialogResult == true)
                     {
                         tag.Blank = vm0.SelectedIcd;
+                        return true;
                     }
                     break;
             }
+            return false;
         }
 
         /// <summary>
@@ -269,7 +275,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         // первое подходящее слово или новое
         private Word FirstMatchingOrNewWord(string q)
         {
-            var exists = (Word)SearchForSuggesstions(q, null,  q.ToEnumerable()).FirstOrDefault();
+            var exists = (Word)SearchForSuggesstions(q, null, q.ToEnumerable()).FirstOrDefault();
             if (exists != null && Recognizer.Matches(exists, q))
                 return exists; // берем слово из словаря
             else
