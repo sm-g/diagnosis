@@ -26,5 +26,14 @@ namespace Diagnosis.App.Controls.CardParts
             records.UpdateLayout();
             records.ScrollIntoView(records.SelectedItem);
         }
+
+        private void item_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount > 1)
+            {
+                // e.Handled = true;
+            }
+            ;
+        }
     }
 }
