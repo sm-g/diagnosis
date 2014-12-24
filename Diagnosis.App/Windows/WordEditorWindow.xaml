@@ -3,12 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:Diagnosis.App.Controls"
         xmlns:ex="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+        xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
         Title="{Binding Title}"
         Height="170"
         Width="300"
         MinWidth="200"
-        controls:DialogCloser.DialogResult="{Binding DialogResult}"
-        controls:FocusBehavior.FocusFirst="True"
+        beh:DialogCloser.DialogResult="{Binding DialogResult}"
+        beh:FocusBehavior.FocusFirst="True"
         ShowInTaskbar="False"
         WindowStyle="ToolWindow">
     <Grid Margin="0,0,10,10">

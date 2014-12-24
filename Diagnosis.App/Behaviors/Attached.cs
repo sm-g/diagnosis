@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.App.Behaviors
 {
     public class Attached
     {

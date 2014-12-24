@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.App.Behaviors
 {
     /// <summary>
     /// A sync behaviour for a multiselector.

@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.App.Behaviors
 {
     public static partial class FocusBehavior
     {

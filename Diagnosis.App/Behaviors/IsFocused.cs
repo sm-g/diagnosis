@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.App.Behaviors
 {
     // see http://stackoverflow.com/questions/1356045
     public static class FocusExtension

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
@@ -67,13 +68,13 @@
             </ListBox.InputBindings>
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                    <Setter Property="controls:Attached.InputBindings" Value="{StaticResource TagInputBindings}" />
+                    <Setter Property="beh:Attached.InputBindings" Value="{StaticResource TagInputBindings}" />
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     <Setter Property="Padding" Value="2" />
 
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                    <Setter Property="controls:FocusExtension.Direct" Value="True" />
-                    <Setter Property="controls:FocusExtension.IsFocused" Value="{Binding IsListItemFocused, Mode=TwoWay}" />
+                    <Setter Property="beh:FocusExtension.Direct" Value="True" />
+                    <Setter Property="beh:FocusExtension.IsFocused" Value="{Binding IsListItemFocused, Mode=TwoWay}" />
                     
                     <Setter Property="Tag"
                             Value="{Binding DataContext, ElementName=autocomplete}" />
@@ -157,7 +158,7 @@
                 </ListBox.InputBindings>
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                        <Setter Property="controls:Attached.InputBindings" Value="{StaticResource SuggestionInputBindings}" />
+                        <Setter Property="beh:Attached.InputBindings" Value="{StaticResource SuggestionInputBindings}" />
                     </Style>
                 </ListBox.ItemContainerStyle>
             </ListBox>

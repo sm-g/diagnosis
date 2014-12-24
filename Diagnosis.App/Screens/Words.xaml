@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
              mc:Ignorable="d"
@@ -43,7 +44,7 @@
             <controls:FullTree.ItemContainerStyle>
                 <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}">
                     <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
-                    <Setter Property="controls:Attached.InputBindings" Value="{StaticResource WordInputBindings}"/>
+                    <Setter Property="beh:Attached.InputBindings" Value="{StaticResource WordInputBindings}"/>
                 </Style>
             </controls:FullTree.ItemContainerStyle>
             <controls:FullTree.ItemTemplate>

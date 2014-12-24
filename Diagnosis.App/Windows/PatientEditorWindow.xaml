@@ -5,12 +5,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
         xmlns:controls="clr-namespace:Diagnosis.App.Controls"
+        xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
         xmlns:card="clr-namespace:Diagnosis.App.Controls.CardParts"
         xmlns:screen="clr-namespace:Diagnosis.ViewModels.Screens;assembly=Diagnosis.ViewModels"
         Title="{Binding Title}"
         Height="350" Width="500"
-        controls:DialogCloser.DialogResult="{Binding DialogResult}"
-        controls:FocusBehavior.FocusFirst="True"
+        beh:DialogCloser.DialogResult="{Binding DialogResult}"
+        beh:FocusBehavior.FocusFirst="True"
         ShowInTaskbar="False" ResizeMode="NoResize" WindowStyle="ToolWindow"
         mc:Ignorable="d"
         d:DataContext="{DynamicResource vm}">
@@ -50,7 +51,7 @@
                     </ListBox.ItemTemplate>
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="{x:Type ListBoxItem}">
-                            <Setter Property="controls:Attached.InputBindings" Value="{StaticResource CourseInputBindings}" />
+                            <Setter Property="beh:Attached.InputBindings" Value="{StaticResource CourseInputBindings}" />
                         </Style>
                     </ListBox.ItemContainerStyle>
                 </ListBox>

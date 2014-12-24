@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
              xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
              xmlns:card="clr-namespace:Diagnosis.App.Controls.CardParts"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
@@ -38,7 +39,7 @@
         <controls:FullTree ItemsSource="{Binding Navigator.TopCardItems}" Grid.RowSpan="3">
             <controls:FullTree.ItemContainerStyle>
                 <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}">
-                    <Setter Property="controls:Attached.InputBindings" Value="{StaticResource CardElementsInputBindings}" />
+                    <Setter Property="beh:Attached.InputBindings" Value="{StaticResource CardElementsInputBindings}" />
                     <Setter Property="FontWeight" Value="Normal" />
 
                     <Style.Triggers>

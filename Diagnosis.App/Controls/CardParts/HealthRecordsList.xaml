@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:card="clr-namespace:Diagnosis.App.Controls.CardParts"
+             xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
              mc:Ignorable="d"
@@ -164,7 +165,7 @@
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  SelectionMode="Extended"
                  SelectionChanged="records_SelectionChanged"
-                 controls:ListBoxSelector.Enabled="True"
+                 beh:ListBoxSelector.Enabled="True"
                  d:IsHidden="True">
             <ListBox.GroupStyle>
                 <GroupStyle>
@@ -212,7 +213,7 @@
                     
                     <Setter Property="IsSelected"
                             Value="{Binding IsSelected, Mode=TwoWay}" />
-                    <Setter Property="controls:Attached.InputBindings"
+                    <Setter Property="beh:Attached.InputBindings"
                             Value="{StaticResource HRInputBindings}" />
                     
                     <Setter Property="Tag"

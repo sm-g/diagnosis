@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.App.Behaviors
 {
     // http://stackoverflow.com/a/17420256/3009578
     public class RowDblClick
