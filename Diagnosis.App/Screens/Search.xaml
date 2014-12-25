@@ -123,7 +123,7 @@
                                 Command="{Binding SearchCommand}" />
                 </StackPanel.InputBindings>
 
-                <search:NewAutocomplete DataContext="{Binding Autocomplete}" />
+                <search:Autocomplete DataContext="{Binding Autocomplete}" />
                 <DockPanel Style="{StaticResource line}">
                     <Grid>
                         <Grid.ColumnDefinitions>

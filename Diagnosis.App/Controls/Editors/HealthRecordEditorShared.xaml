@@ -150,7 +150,7 @@
             </StackPanel.Resources>
             <DockPanel>
                 <!--DataContext is HrEditorViewModel-->
-                <search:NewAutocomplete x:Name="autocomplete"
+                <search:Autocomplete x:Name="autocomplete"
                                         DataContext="{Binding DataContext.Autocomplete, ElementName=editor}" />
             </DockPanel>
             <DockPanel>

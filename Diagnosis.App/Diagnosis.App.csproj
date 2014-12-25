@@ -275,8 +275,8 @@
       <DependentUpon>HealthRecord.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Helpers\ParentFinder.cs" />
-    <Compile Include="Controls\Search\NewAutocomplete.xaml.cs">
-      <DependentUpon>NewAutocomplete.xaml</DependentUpon>
+    <Compile Include="Controls\Search\Autocomplete.xaml.cs">
+      <DependentUpon>Autocomplete.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Search\SearchTree.xaml.cs">
       <DependentUpon>SearchTree.xaml</DependentUpon>
@@ -440,7 +440,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\Search\NewAutocomplete.xaml">
+    <Page Include="Controls\Search\Autocomplete.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

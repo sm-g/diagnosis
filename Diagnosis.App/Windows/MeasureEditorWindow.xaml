@@ -42,7 +42,7 @@
             <Label Content="Что"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Top" />
-            <search:NewAutocomplete x:Name="autocomplete"
+            <search:Autocomplete x:Name="autocomplete"
                                     DataContext="{Binding Autocomplete}"
                                     Grid.Row="1" />
 

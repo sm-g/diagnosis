@@ -6,16 +6,13 @@ using System.Windows.Input;
 
 namespace Diagnosis.App.Controls.Search
 {
-    /// <summary>
-    /// Interaction logic for NewAutocomplete.xaml
-    /// </summary>
-    public partial class NewAutocomplete : UserControl
+    public partial class Autocomplete : UserControl
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(AutocompleteViewModel));
 
         private AutocompleteViewModel Vm { get { return DataContext as AutocompleteViewModel; } }
 
-        public NewAutocomplete()
+        public Autocomplete()
         {
             InitializeComponent();
         }
