@@ -13,27 +13,7 @@
              d:DesignWidth="400">
     <!--DoctorsListViewModel-->
     <UserControl.Resources>
-        <Style x:Key="CellStyle"
-               TargetType="DataGridCell">
-            <Setter Property="BorderThickness"
-                    Value="0" />
-            <Setter Property="FocusVisualStyle"
-                    Value="{x:Null}" />
-            <Setter Property="KeyboardNavigation.IsTabStop"
-                    Value="False" />
-        </Style>
-
-        <Style  x:Key="SelectableCellStyle"
-                TargetType="{x:Type DataGridCell}"
-                BasedOn="{StaticResource CellStyle}">
-            <Style.Triggers>
-                <Trigger Property="IsSelected"
-                         Value="True">
-                    <Setter Property="KeyboardNavigation.IsTabStop"
-                            Value="True" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
+        
     </UserControl.Resources>
 
     <Grid HorizontalAlignment="Stretch"

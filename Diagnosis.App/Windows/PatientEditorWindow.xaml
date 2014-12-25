@@ -21,19 +21,6 @@
     <!--PatientViewModel-->
     <Window.Resources>
         <diag:PatientEditorViewModel x:Key="vm" />
-
-        <Style TargetType="DockPanel"
-               BasedOn="{StaticResource formLine}" />
-        <Style TargetType="Label"
-               BasedOn="{StaticResource label120}" />
-        <Style TargetType="Button">
-            <Setter Property="MaxWidth"
-                    Value="100" />
-            <Setter Property="Height"
-                    Value="23" />
-            <Setter Property="Margin"
-                    Value="5" />
-        </Style>
     </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
