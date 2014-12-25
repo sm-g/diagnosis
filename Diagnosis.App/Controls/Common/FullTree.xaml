@@ -18,7 +18,7 @@
     <TreeView x:Name="tree"
               Style="{StaticResource TreeViewStyle}"
               ItemContainerStyle="{Binding ItemContainerStyle, ElementName=fullTree}"
-              ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource AncestorType=UserControl}}">
+              ItemsSource="{Binding ItemsSource, ElementName=fullTree}">
         <TreeView.ItemTemplate>
             <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                 <ContentPresenter Content="{Binding}"

@@ -128,12 +128,13 @@
 
     <ControlTemplate TargetType="{x:Type TreeViewItem}"
                      x:Key="treeViewItemControl">
-        <Border Name="Bd"
+        <Border x:Name="Bd"
                 Background="Transparent"
                 BorderBrush="{TemplateBinding BorderBrush}"
                 BorderThickness="{TemplateBinding BorderThickness}"
                 Padding="0,5"
                 CornerRadius="5">
+            <!-- Border with children inside, toggle at right -->
             <StackPanel>
                 <Grid Margin="{Binding Converter={StaticResource lengthConverter}, RelativeSource={RelativeSource TemplatedParent}}">
                     <Grid.ColumnDefinitions>
@@ -141,24 +142,17 @@
                         <ColumnDefinition MinWidth="19"
                                           Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <ToggleButton x:Name="Expander"
-                                  Grid.Column="2"
-                                  Style="{StaticResource ExpandCollapseToggleStyle}"
-                                  ClickMode="Press"
-                                  IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" />
                     <ContentPresenter x:Name="PART_Header"
                                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                       ContentSource="Header" />
+                    <ToggleButton x:Name="Expander"
+                                  Grid.Column="1"
+                                  Style="{StaticResource ExpandCollapseToggleStyle}"
+                                  ClickMode="Press"
+                                  IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" />
                 </Grid>
-                <ItemsPresenter x:Name="ItemsHost"
-                                Grid.Column="0"
-                                Grid.ColumnSpan="2"
-                                Grid.Row="1" />
+                <ItemsPresenter x:Name="ItemsHost" />
             </StackPanel>
         </Border>
         <ControlTemplate.Triggers>
