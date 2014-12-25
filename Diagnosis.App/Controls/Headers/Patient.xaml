@@ -10,7 +10,6 @@
     <DockPanel>
         <TextBlock Text="{Binding Actual, Converter={StaticResource ManToShortName}}"
                    VerticalAlignment="Center"
-                   Visibility="{Binding NoName, Converter={StaticResource NegBooleanToVisibilityConverter}}"
                    MinWidth="30" />
         <TextBlock Text="{Binding IsMale, Converter={StaticResource SexToSign}}"
                    FontSize="20"
