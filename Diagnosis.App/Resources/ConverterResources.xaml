@@ -14,6 +14,7 @@
     <conv:LessThanToVisibility x:Key="LessThanToVisibility" />
     <conv:NullToVisibilityConverter x:Key="NullToVis" />
 
+    <conv:IntToString x:Key="IntToString" />
     <conv:AgeToYearsLabel x:Key="AgeToLabel" />
     <conv:BoolToSexSign x:Key="SexToSign" />
 
@@ -23,6 +24,7 @@
     <conv:TimeSpanLabel x:Key="TimeSpanToLabel" />
     <conv:DateIntervalLabel x:Key="DateIntervalLabel" />
     <conv:DateLabel x:Key="DateLabel" />
+    <conv:MonthToString x:Key="MonthToString" />
 
     <conv:Summator x:Key="SummatorConverter" />
     <conv:ManToShortName x:Key="ManToShortName" />
@@ -35,4 +37,5 @@
     <conv:InListConverter x:Key="inList" />
     <conv:HrToItemsString x:Key="hrItems" />
     <conv:ScopeToLabel x:Key="ScopeToLabel" />
+
 </ResourceDictionary>
