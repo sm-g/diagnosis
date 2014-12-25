@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Diagnosis.ViewModels.Screens
+namespace Diagnosis.ViewModels.Search.Autocomplete
 {
     public class IcdSelectorViewModel : DialogViewModel
     {

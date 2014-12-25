@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Screens;
+using Diagnosis.ViewModels.Search.Autocomplete;
 using System.Windows;
 
 namespace Diagnosis.App.Windows
@@ -33,10 +34,6 @@ namespace Diagnosis.App.Windows
                 {
                     ShowDialog(dialogVM, new SettingsWindow());
                 }
-                else if (dialogVM is IcdSelectorViewModel)
-                {
-                    ShowDialog(dialogVM, new IcdSelectorWindow());
-                }
                 else if (dialogVM is WordEditorViewModel)
                 {
                     ShowDialog(dialogVM, new WordEditorWindow());
@@ -44,6 +41,10 @@ namespace Diagnosis.App.Windows
                 else if (dialogVM is DoctorEditorViewModel)
                 {
                     ShowDialog(dialogVM, new DoctorEditorWindow());
+                }
+                else if (dialogVM is IcdSelectorViewModel)
+                {
+                    ShowDialog(dialogVM, new IcdSelectorWindow());
                 }
                 else if (dialogVM is MeasureEditorViewModel)
                 {

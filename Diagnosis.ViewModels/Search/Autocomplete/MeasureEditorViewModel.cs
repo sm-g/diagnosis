@@ -5,7 +5,7 @@ using NHibernate.Linq;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Diagnosis.ViewModels.Screens
+namespace Diagnosis.ViewModels.Search.Autocomplete
 {
     public class MeasureEditorViewModel : DialogViewModel
     {

@@ -2,6 +2,7 @@
 using System.Diagnostics.Contracts;
 using System;
 using System.Linq;
+using Diagnosis.ViewModels.Search.Autocomplete;
 
 namespace Diagnosis.ViewModels.Search
 {
