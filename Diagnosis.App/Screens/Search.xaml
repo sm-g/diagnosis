@@ -203,7 +203,7 @@
                 <Style TargetType="TreeViewItem"
                        BasedOn="{StaticResource TreeViewItemStyle}">
                     <Setter Property="Template"
-                            Value="{StaticResource treeViewItemControl}" />
+                            Value="{StaticResource TreeViewItemRightToggleControl}" />
                     <Setter Property="beh:Attached.InputBindings"
                             Value="{StaticResource SearchResultInputBindings}" />
                 </Style>

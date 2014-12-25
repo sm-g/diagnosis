@@ -54,7 +54,9 @@
                             Value="{Binding HolderVm}" />
                     <Setter Property="ContextMenu"
                             Value="{StaticResource HolderContextMenu}" />
-
+                    <Setter Property="Template"
+                            Value="{StaticResource TreeViewItemFullWidthControl}" />
+                    
                     <Style.Triggers>
                         <DataTrigger Value="True">
                             <DataTrigger.Binding>

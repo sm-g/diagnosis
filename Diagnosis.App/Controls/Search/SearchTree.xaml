@@ -57,7 +57,7 @@
                            BasedOn="{StaticResource TreeViewItemStyle}">
                         -->
             <!--<Setter Property="Template"
-                                Value="{StaticResource treeViewItemControl}" />-->
+                                Value="{StaticResource TreeViewItemRightToggleControl}" />-->
             <!--
                         <EventSetter Event="KeyDown"
                                      Handler="item_KeyDown" />
