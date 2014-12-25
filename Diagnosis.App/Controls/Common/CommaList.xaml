@@ -17,34 +17,28 @@
         <ItemsControl.ItemTemplate>
             <DataTemplate>
                 <StackPanel Orientation="Horizontal"
+                            Loaded="item_Loaded"
                             x:Name="item">
                     <ContentPresenter Content="{Binding}"
                                       ContentTemplate="{Binding ItemTemplate, ElementName=commaList}" />
+                    <!-- Clone Separator FrameworkElement in code -->
                     <ContentPresenter x:Name="separator"
-                                      Content="{Binding Separator, ElementName=commaList}">
-                        <ContentPresenter.Style>
-                            <Style TargetType="ContentPresenter">
-                                <Setter Property="Visibility"
-                                        Value="Visible" />
-
-                                <Style.Triggers>
-                                    <DataTrigger Value="True">
-                                        <DataTrigger.Binding>
-                                            <MultiBinding Converter="{StaticResource IsLastItem}">
-                                                <Binding Path="DataContext"
-                                                         ElementName="item" />
-                                                <Binding Path="ItemsSource"
-                                                         ElementName="commaList" />
-                                            </MultiBinding>
-                                        </DataTrigger.Binding>
-                                        <Setter Property="Visibility"
-                                                Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ContentPresenter.Style>
-                    </ContentPresenter>
+                                      Content="" />
                 </StackPanel>
+                <DataTemplate.Triggers>
+                    <DataTrigger Value="True">
+                        <DataTrigger.Binding>
+                            <MultiBinding Converter="{StaticResource IsLastItem}">
+                                <Binding />
+                                <Binding Path="ItemsSource"
+                                         ElementName="commaList" />
+                            </MultiBinding>
+                        </DataTrigger.Binding>
+                        <Setter TargetName="separator"
+                                Property="Visibility"
+                                Value="Collapsed" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
             </DataTemplate>
         </ItemsControl.ItemTemplate>
     </ItemsControl>

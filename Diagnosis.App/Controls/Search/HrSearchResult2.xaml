@@ -38,7 +38,7 @@
                                             <MultiBinding Converter="{StaticResource inList}">
                                                 <Binding />
                                                 <Binding Path="DataContext.FoundHealthRecords"
-                                                         RelativeSource="{RelativeSource AncestorType=UserControl,AncestorLevel=2}" />
+                                                         RelativeSource="{RelativeSource AncestorType=UserControl, AncestorLevel=2}" />
                                             </MultiBinding>
                                         </DataTrigger.Binding>
                                         <Setter Property="Background"

@@ -10,14 +10,14 @@ namespace Diagnosis.ViewModels.Search
 {
     public class HrHolderSearchResultViewModel : HierarchicalBase<HrHolderSearchResultViewModel>
     {
-        private HrHolderSearchResultViewModel(IHrsHolder holder, IEnumerable<HealthRecord> hrs = null)
+        private HrHolderSearchResultViewModel(IHrsHolder holder, IEnumerable<HealthRecord> foundHrs = null)
         {
             Holder = holder;
             // автообновление результатов поиска - сейчас только удаляются запись и добавляется, но не обновляется текст записи
             Holder.HealthRecordsChanged += Holder_HealthRecordsChanged;
-            if (hrs != null)
+            if (foundHrs != null)
             {
-                FoundHealthRecords = new ObservableCollection<HealthRecord>(hrs);
+                FoundHealthRecords = new ObservableCollection<HealthRecord>(foundHrs);
             }
             else
             {
@@ -38,10 +38,19 @@ namespace Diagnosis.ViewModels.Search
 
         public IHrsHolder Holder { get; private set; }
 
+        /// <summary>
+        /// Записи, подходящие под поиковый запрос
+        /// </summary>
         public ObservableCollection<HealthRecord> FoundHealthRecords { get; private set; }
 
+        /// <summary>
+        /// Все записи держателя
+        /// </summary>
         public ObservableCollection<HealthRecord> HealthRecords { get; private set; }
 
+        /// <summary>
+        /// Открывает первую найденную запись или держателя.
+        /// </summary>
         public ICommand OpenCommand
         {
             get
@@ -151,5 +160,5 @@ namespace Diagnosis.ViewModels.Search
 
             base.Dispose(disposing);
         }
-    }    
+    }
 }

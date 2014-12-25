@@ -9,11 +9,16 @@ namespace Diagnosis.App.Controls
     /// </summary>
     public partial class CommaList : UserControl
     {
+        static FrameworkElement def = new TextBlock() { Text = ", " };
         public CommaList()
         {
             InitializeComponent();
-            if (Separator == null)
-                Separator = new TextBlock() { Text = ", " };
+            this.Loaded += (s, e) =>
+            {
+                if (Separator == null)
+                    Separator = def;
+
+            };
         }
 
         public FrameworkElement Separator
@@ -23,7 +28,7 @@ namespace Diagnosis.App.Controls
         }
 
         public static readonly DependencyProperty SeparatorProperty =
-            DependencyProperty.Register("Separator", typeof(FrameworkElement), typeof(CommaList));
+            DependencyProperty.Register("Separator", typeof(FrameworkElement), typeof(CommaList)); // cannot set default FrameworkElement
 
         public IEnumerable ItemsSource
         {
@@ -42,5 +47,12 @@ namespace Diagnosis.App.Controls
 
         public static readonly DependencyProperty ItemTemplateProperty =
             DependencyProperty.Register("ItemTemplate", typeof(DataTemplate), typeof(CommaList));
+
+        private void item_Loaded(object sender, RoutedEventArgs e)
+        {
+            var ch = ChildFinder.FindChild<ContentPresenter>((sender as DependencyObject), "separator");
+            if (ch != null)
+                ch.Content = Separator.XamlClone();
+        }
     }
 }
