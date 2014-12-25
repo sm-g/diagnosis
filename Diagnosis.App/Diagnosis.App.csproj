@@ -264,8 +264,8 @@
     <Compile Include="Controls\Common\CommaList.xaml.cs">
       <DependentUpon>CommaList.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Editors\HealthRecordEditorShared.xaml.cs">
-      <DependentUpon>HealthRecordEditorShared.xaml</DependentUpon>
+    <Compile Include="Controls\CardParts\HealthRecordEditor.xaml.cs">
+      <DependentUpon>HealthRecordEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Helpers\ItemCollectionExtensions.cs" />
     <Compile Include="Controls\CardParts\HealthRecordsList.xaml.cs">
@@ -428,7 +428,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Editors\HealthRecordEditorShared.xaml">
+    <Page Include="Controls\CardParts\HealthRecordEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

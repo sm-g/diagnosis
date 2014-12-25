@@ -3,11 +3,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Diagnosis.App.Controls.Editors
+namespace Diagnosis.App.Controls.CardParts
 {
-    public partial class HealthRecordEditorShared : UserControl
+    public partial class HealthRecordEditor : UserControl
     {
-        public HealthRecordEditorShared()
+        public HealthRecordEditor()
         {
             InitializeComponent();
 #if !DEBUG
