@@ -144,11 +144,11 @@
                         HorizontalAlignment="Center">
                 <TextBlock Visibility="{Binding ShowCanAlso, Converter={StaticResource BooleanToVisibilityConverter}}">Тaкже можно</TextBlock>
 
-                <ContentControl Content="{Binding Holder}"
-                                Visibility="{Binding Holder.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"
+                <ContentControl Content="{Binding HolderVm}"
+                                Visibility="{Binding HolderVm.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 ContentTemplateSelector="{StaticResource empty}" />
-                <ContentControl Content="{Binding Holder}"
-                                Visibility="{Binding Holder.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                <ContentControl Content="{Binding HolderVm}"
+                                Visibility="{Binding HolderVm.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}"
                                 ContentTemplateSelector="{StaticResource withNested}" />
             </StackPanel>
         </Grid>

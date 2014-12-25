@@ -9,6 +9,7 @@ namespace Diagnosis.ViewModels.Screens
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HolderViewModel));
         private readonly IHrsHolder holder;
+        private bool _showOpen;
 
         public HolderViewModel(IHrsHolder holder)
         {
@@ -38,6 +39,22 @@ namespace Diagnosis.ViewModels.Screens
         public bool IsEmpty
         {
             get { return holder.IsEmpty(); }
+        }
+
+        public bool ShowOpen
+        {
+            get
+            {
+                return _showOpen;
+            }
+            set
+            {
+                if (_showOpen != value)
+                {
+                    _showOpen = value;
+                    OnPropertyChanged(() => ShowOpen);
+                }
+            }
         }
 
         public RelayCommand OpenCommand

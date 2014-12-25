@@ -17,7 +17,7 @@ namespace Diagnosis.ViewModels.Screens
         private ICollectionView healthRecordsView;
         private ShortHealthRecordViewModel _selectedHealthRecord;
 
-        public HolderViewModel Holder { get; private set; }
+        public HolderViewModel HolderVm { get; private set; }
 
         public ObservableCollection<ShortHealthRecordViewModel> HealthRecords
         {
@@ -148,7 +148,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             Contract.Requires(holder != null);
             this.holder = holder;
-            Holder = new HolderViewModel(holder);
+            HolderVm = new HolderViewModel(holder);
 
             hrManager = new HealthRecordManager(holder, onHrVmPropChanged: (s, e) =>
             {
@@ -182,7 +182,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (disposing)
                 {
                     hrManager.Dispose();
-                    Holder.Dispose();
+                    HolderVm.Dispose();
                 }
             }
             finally

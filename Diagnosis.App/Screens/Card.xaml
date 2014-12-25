@@ -49,6 +49,11 @@
                             Value="{StaticResource CardElementsInputBindings}" />
                     <Setter Property="FontWeight"
                             Value="Normal" />
+                    
+                    <Setter Property="Tag"
+                            Value="{Binding HolderVm}" />
+                    <Setter Property="ContextMenu"
+                            Value="{StaticResource HolderContextMenu}" />
 
                     <Style.Triggers>
                         <DataTrigger Value="True">
@@ -72,7 +77,8 @@
             </controls:FullTree.ItemContainerStyle>
             <controls:FullTree.ItemTemplate>
                 <DataTemplate>
-                    <card:CardItem />
+                    <headers:Holder DataContext="{Binding Holder}"
+                                    TimeVisibility="{Binding DataContext.ShowAppTime, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" />
                 </DataTemplate>
             </controls:FullTree.ItemTemplate>
             <controls:FullTree.ContextMenu>

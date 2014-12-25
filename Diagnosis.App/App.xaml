@@ -77,6 +77,24 @@
                 <MouseBinding MouseAction="LeftClick"
                               Command="{Binding ToggleCommand}" />
             </InputBindingCollection>
+
+            <!-- Tag is HolderVm -->
+            <ContextMenu x:Key="HolderContextMenu" 
+                         DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                <MenuItem Header="Редактировать"
+                          InputGestureText="F2"
+                          Command="{Binding EditCommand}" />
+                <MenuItem Header="Добавить курс"
+                          Command="{Binding StartCourseCommand}" />
+                <MenuItem Header="Добавить осмотр"
+                          Command="{Binding AddAppointmentCommand}" />
+                <MenuItem Header="Открыть"
+                          Visibility="{Binding ShowOpen, Converter={StaticResource BooleanToVisibilityConverter}}"
+                          Command="{Binding OpenCommand}" />
+                <MenuItem Header="Удалить"
+                          InputGestureText="Del"
+                          Command="{Binding DeleteCommand}" />
+            </ContextMenu>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

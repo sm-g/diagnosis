@@ -14,7 +14,7 @@ namespace Diagnosis.ViewModels.Screens
         public CardItemViewModel(IHrsHolder holder)
         {
             Holder = holder;
-            HolderVm = new HolderViewModel(holder);
+            HolderVm = new HolderViewModel(holder) { ShowOpen = true };
             if (holder is Patient)
             {
                 var patient = holder as Patient;
