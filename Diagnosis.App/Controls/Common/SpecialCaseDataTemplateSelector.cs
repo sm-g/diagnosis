@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Diagnosis.App.Controls.CardParts
+namespace Diagnosis.App.Controls
 {
     public class SpecialCaseDataTemplateSelector : DataTemplateSelector
     {
