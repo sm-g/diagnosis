@@ -168,7 +168,6 @@
     <Compile Include="Framework\Services\FileDialogService.cs" />
     <Compile Include="Framework\IDialog.cs" />
     <Compile Include="Framework\Services\FileType.cs" />
-    <Compile Include="Framework\XmlnsDefinitions\Diagnosis.Common.cs" />
     <Compile Include="Framework\XmlnsDefinitions\Diagnosis.ViewModels.Search.Autocomplete.cs" />
     <Compile Include="Framework\XmlnsDefinitions\Diagnosis.ViewModels.Search.cs" />
     <Compile Include="Framework\XmlnsDefinitions\Diagnosis.ViewModels.Screens.cs" />
