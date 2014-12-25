@@ -16,7 +16,7 @@ namespace Tests.ViewModelsTests
         private Word word;
         private string q;
 
-        private Autocomplete a { get { return e.Autocomplete; } }
+        private AutocompleteViewModel a { get { return e.Autocomplete; } }
 
         [TestInitialize]
         public void HrEditorTestInit()

@@ -41,7 +41,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public SearchViewModel()
         {
-            Autocomplete = new Autocomplete(new Recognizer(Session) { OnlyWords = true }, false, false, false, null);
+            Autocomplete = new AutocompleteViewModel(new Recognizer(Session) { OnlyWords = true }, false, false, false, null);
 
             ControlsVisible = true;
             AllWords = true;
@@ -333,7 +333,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public Autocomplete Autocomplete { get; private set; }
+        public AutocompleteViewModel Autocomplete { get; private set; }
 
 
         public SearchResultViewModel Result

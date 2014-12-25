@@ -19,7 +19,7 @@ namespace Diagnosis.ViewModels.Screens
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(HrEditorViewModel));
 
-        private Autocomplete _autocomplete;
+        private AutocompleteViewModel _autocomplete;
 
         private HealthRecordViewModel _hr;
         private ISession session;
@@ -158,7 +158,7 @@ namespace Diagnosis.ViewModels.Screens
 
         #region AutoComplete
 
-        public Autocomplete Autocomplete { get { return _autocomplete; } }
+        public AutocompleteViewModel Autocomplete { get { return _autocomplete; } }
 
         /// <summary>
         /// Создает автокомплит с начальными словами и комментами из редактируемой записи.
@@ -170,7 +170,7 @@ namespace Diagnosis.ViewModels.Screens
 
             var initials = HealthRecord.healthRecord.GetOrderedEntities();
 
-            _autocomplete = new Autocomplete(
+            _autocomplete = new AutocompleteViewModel(
                 new Recognizer(session) { ShowChildrenFirst = true },
                 true,
                 true,
@@ -305,7 +305,7 @@ namespace Diagnosis.ViewModels.Screens
             if (HealthRecord != null)
             {
                 // завершаем теги
-                var tag = Autocomplete.Tags.Where(t => t.State == Tag.States.Typing).FirstOrDefault();
+                var tag = Autocomplete.Tags.Where(t => t.State == TagViewModel.States.Typing).FirstOrDefault();
                 if (tag != null)
                     Autocomplete.CompleteOnLostFocus(tag);
 

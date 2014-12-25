@@ -11,9 +11,9 @@ namespace Diagnosis.App.Controls.Search
     /// </summary>
     public partial class NewAutocomplete : UserControl
     {
-        private static readonly ILog logger = LogManager.GetLogger(typeof(Autocomplete));
+        private static readonly ILog logger = LogManager.GetLogger(typeof(AutocompleteViewModel));
 
-        private Autocomplete Vm { get { return DataContext as Autocomplete; } }
+        private AutocompleteViewModel Vm { get { return DataContext as AutocompleteViewModel; } }
 
         public NewAutocomplete()
         {

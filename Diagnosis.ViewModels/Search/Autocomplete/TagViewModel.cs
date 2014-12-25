@@ -28,10 +28,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         Forbidden = 4
     }
 
-    public class Tag : ViewModelBase, IDropTarget
+    public class TagViewModel : ViewModelBase, IDropTarget
     {
-        private static readonly ILog logger = LogManager.GetLogger(typeof(Tag));
-        readonly Autocomplete autocomplete;
+        private static readonly ILog logger = LogManager.GetLogger(typeof(TagViewModel));
+        readonly AutocompleteViewModel autocomplete;
         private object _blank;
         private bool _focused;
         private string _query;
@@ -46,7 +46,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <summary>
         /// Создает пустой тег.
         /// </summary>
-        public Tag(Autocomplete parent)
+        public TagViewModel(AutocompleteViewModel parent)
         {
             Contract.Ensures(State == States.Init);
 
@@ -56,7 +56,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <summary>
         /// Создает тег с запросом.
         /// </summary>
-        public Tag(Autocomplete parent, string query)
+        public TagViewModel(AutocompleteViewModel parent, string query)
         {
             Contract.Ensures(State == States.Typing);
 
@@ -68,7 +68,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <summary>
         /// Создает тег с сущностями.
         /// </summary>
-        public Tag(Autocomplete parent, IHrItemObject item)
+        public TagViewModel(AutocompleteViewModel parent, IHrItemObject item)
         {
             Contract.Requires(item != null);
             Contract.Ensures(State == States.Completed);
@@ -461,14 +461,14 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
         #endregion
 
-        public void Validate(Func<Tag, Signalizations> filter = null)
+        public void Validate(Func<TagViewModel, Signalizations> filter = null)
         {
             Signalization = Signalizations.None;
-            if (BlankType == Tag.BlankTypes.None && State != Tag.States.Init)
+            if (BlankType == TagViewModel.BlankTypes.None && State != TagViewModel.States.Init)
             {
                 Signalization = Signalizations.Forbidden;
             }
-            else if (BlankType == Tag.BlankTypes.Word)
+            else if (BlankType == TagViewModel.BlankTypes.Word)
             {
                 var word = Blank as Word;
                 if (word.IsTransient)
@@ -541,10 +541,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
     [Serializable]
     public class TagEventArgs : EventArgs
     {
-        public readonly Tag tag;
+        public readonly TagViewModel tag;
 
         [DebuggerStepThrough]
-        public TagEventArgs(Tag tag)
+        public TagEventArgs(TagViewModel tag)
         {
             this.tag = tag;
         }
@@ -554,10 +554,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
     [Serializable]
     public class BlankTypeEventArgs : EventArgs
     {
-        public readonly Tag.BlankTypes type;
+        public readonly TagViewModel.BlankTypes type;
 
         [DebuggerStepThrough]
-        public BlankTypeEventArgs(Tag.BlankTypes type)
+        public BlankTypeEventArgs(TagViewModel.BlankTypes type)
         {
             this.type = type;
         }

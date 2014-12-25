@@ -9,13 +9,13 @@ namespace Tests
     public class AutocompleteTest : InMemoryDatabaseTest
     {
         private Recognizer r;
-        private Autocomplete a;
+        private AutocompleteViewModel a;
         private string q;
         private string qFull;
         private Word word;
         private static string notExistQ = "qwe";
 
-        public Tag First { get { return a.Tags.First(); } }
+        public TagViewModel First { get { return a.Tags.First(); } }
 
         public IHrItemObject FirstItem { get { return First.Entities.First(); } }
 
@@ -25,7 +25,7 @@ namespace Tests
         public void AutocompleteTestInit()
         {
             r = new Recognizer(session);
-            a = new Autocomplete(r, true, true, false, null);
+            a = new AutocompleteViewModel(r, true, true, false, null);
             word = session.Get<Word>(IntToGuid<Word>(1));
             q = word.Title.Substring(0, word.Title.Length - 1);
             qFull = word.Title;
@@ -37,7 +37,7 @@ namespace Tests
         public void Create()
         {
             Assert.IsTrue(a.Tags.Count == 1);
-            Assert.IsTrue(a.Tags.Last().State == Tag.States.Init);
+            Assert.IsTrue(a.Tags.Last().State == TagViewModel.States.Init);
             Assert.IsTrue(a.Tags.Last().IsLast);
         }
 
@@ -45,7 +45,7 @@ namespace Tests
         public void TypeQuery()
         {
             a.SelectedTag.Query = "123";
-            Assert.IsTrue(a.SelectedTag.State == Tag.States.Typing);
+            Assert.IsTrue(a.SelectedTag.State == TagViewModel.States.Typing);
         }
 
         [TestMethod]
@@ -99,7 +99,7 @@ namespace Tests
 
             Assert.IsTrue(a.Tags.Count == 2);
             Assert.IsTrue(a.Tags.Last().IsLast);
-            Assert.IsTrue(a.Tags.Last().State == Tag.States.Init);
+            Assert.IsTrue(a.Tags.Last().State == TagViewModel.States.Init);
             Assert.IsTrue(a.SelectedTag == a.Tags.Last());
         }
 
@@ -109,8 +109,8 @@ namespace Tests
             a.SelectedTag.Query = q;
             a.EnterCommand.Execute(a.SelectedTag);
 
-            Assert.IsTrue(First.State == Tag.States.Completed);
-            Assert.IsTrue(First.BlankType == Tag.BlankTypes.Word);
+            Assert.IsTrue(First.State == TagViewModel.States.Completed);
+            Assert.IsTrue(First.BlankType == TagViewModel.BlankTypes.Word);
             Assert.AreEqual(word, First.Blank);
 
             var entities = a.GetEntities();
@@ -125,9 +125,9 @@ namespace Tests
             a.SelectedTag.Query = q;
             a.InverseEnterCommand.Execute(a.SelectedTag);
 
-            Assert.IsTrue(First.State == Tag.States.Completed);
+            Assert.IsTrue(First.State == TagViewModel.States.Completed);
             Assert.AreEqual(q, First.Blank);
-            Assert.IsTrue(First.BlankType == Tag.BlankTypes.Query);
+            Assert.IsTrue(First.BlankType == TagViewModel.BlankTypes.Query);
 
             var entities = a.GetEntities();
 
@@ -141,9 +141,9 @@ namespace Tests
             a.SelectedTag.Query = notExistQ;
             a.EnterCommand.Execute(a.SelectedTag);
 
-            Assert.IsTrue(First.State == Tag.States.Completed);
+            Assert.IsTrue(First.State == TagViewModel.States.Completed);
             Assert.AreEqual(notExistQ, First.Blank);
-            Assert.IsTrue(First.BlankType == Tag.BlankTypes.Query);
+            Assert.IsTrue(First.BlankType == TagViewModel.BlankTypes.Query);
 
             var entities = a.GetEntities();
 
@@ -157,8 +157,8 @@ namespace Tests
             a.SelectedTag.Query = notExistQ;
             a.InverseEnterCommand.Execute(a.SelectedTag);
 
-            Assert.IsTrue(First.State == Tag.States.Completed);
-            Assert.IsTrue(First.BlankType == Tag.BlankTypes.Word);
+            Assert.IsTrue(First.State == TagViewModel.States.Completed);
+            Assert.IsTrue(First.BlankType == TagViewModel.BlankTypes.Word);
             Assert.IsTrue(First.Signalization == Signalizations.NewWord);
 
             var newW = First.Blank as Word;
@@ -193,7 +193,7 @@ namespace Tests
         [TestMethod]
         public void AddTagWhenSingleTag()
         {
-            var a = new Autocomplete(r, true, true, true, null);
+            var a = new AutocompleteViewModel(r, true, true, true, null);
             Assert.IsTrue(a.Tags.Count == 1);
 
             a.AddTag(word);

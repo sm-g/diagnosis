@@ -13,34 +13,34 @@ using System.Windows;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
-    public class Autocomplete : ViewModelBase
+    public class AutocompleteViewModel : ViewModelBase
     {
-        private static readonly ILog logger = LogManager.GetLogger(typeof(Autocomplete));
+        private static readonly ILog logger = LogManager.GetLogger(typeof(AutocompleteViewModel));
         private readonly Recognizer recognizer;
         private readonly bool allowSendToSearch;
         private readonly bool allowTagConvertion;
         private readonly bool singleTag;
 
-        private Tag _selTag;
+        private TagViewModel _selTag;
         private bool _popupOpened;
         private object prevSelectedSuggestion;
-        private Tag _editingTag;
+        private TagViewModel _editingTag;
         private bool _supressCompletion;
         private object _selectedSuggestion;
         private bool _showALt;
         private EventAggregator.EventMessageHandler hanlder;
         private bool inDispose;
 
-        public Autocomplete(Recognizer recognizer, bool allowTagConvertion, bool allowSendToSearch, bool singleTag, IEnumerable<IHrItemObject> initItems)
+        public AutocompleteViewModel(Recognizer recognizer, bool allowTagConvertion, bool allowSendToSearch, bool singleTag, IEnumerable<IHrItemObject> initItems)
         {
             this.recognizer = recognizer;
             this.allowTagConvertion = allowTagConvertion;
             this.allowSendToSearch = allowSendToSearch;
             this.singleTag = singleTag;
 
-            DropHandler = new Autocomplete.DropTargetHandler(this);
-            DragHandler = new Autocomplete.DragSourceHandler();
-            Tags = new ObservableCollection<Tag>();
+            DropHandler = new AutocompleteViewModel.DropTargetHandler(this);
+            DragHandler = new AutocompleteViewModel.DragSourceHandler();
+            Tags = new ObservableCollection<TagViewModel>();
             Tags.CollectionChanged += (s, e) =>
             {
                 if (inDispose) return;
@@ -48,7 +48,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 logger.DebugFormat("{0} '{1}' '{2}'", e.Action, e.OldStartingIndex, e.NewStartingIndex);
 
                 // кроме добавления пустого тега
-                if (!(e.Action == NotifyCollectionChangedAction.Add && ((Tag)e.NewItems[0]).State == Tag.States.Init))
+                if (!(e.Action == NotifyCollectionChangedAction.Add && ((TagViewModel)e.NewItems[0]).State == TagViewModel.States.Init))
                     OnEntitiesChanged();
             };
             hanlder = this.Subscribe(Events.WordPersisted, (e) =>
@@ -86,21 +86,21 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         public event EventHandler EntitiesChanged;
 
-        public RelayCommand<Tag> EnterCommand
+        public RelayCommand<TagViewModel> EnterCommand
         {
             get
             {
-                return new RelayCommand<Tag>(
+                return new RelayCommand<TagViewModel>(
                     (tag) => CompleteOnEnter(tag),
                     (tag) => tag != null);
             }
         }
 
-        public RelayCommand<Tag> InverseEnterCommand
+        public RelayCommand<TagViewModel> InverseEnterCommand
         {
             get
             {
-                return new RelayCommand<Tag>(
+                return new RelayCommand<TagViewModel>(
                     (tag) => CompleteOnEnter(tag, true),
                     (tag) => tag != null && !recognizer.OnlyWords);
             }
@@ -132,13 +132,13 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        public ObservableCollection<Tag> Tags
+        public ObservableCollection<TagViewModel> Tags
         {
             get;
             set;
         }
 
-        public Tag SelectedTag
+        public TagViewModel SelectedTag
         {
             get
             {
@@ -160,7 +160,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        private List<Tag> SelectedTags
+        private List<TagViewModel> SelectedTags
         {
             get { return Tags.Where(t => t.IsSelected).ToList(); }
         }
@@ -175,7 +175,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     {
                         switch (SelectedTag.BlankType)
                         {
-                            case Tag.BlankTypes.Measure:
+                            case TagViewModel.BlankTypes.Measure:
                                 var vm = new MeasureEditorViewModel(SelectedTag.Entities.First() as Measure);
                                 this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
                                 if (vm.DialogResult == true)
@@ -184,7 +184,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                                 }
                                 break;
 
-                            case Tag.BlankTypes.Icd:
+                            case TagViewModel.BlankTypes.Icd:
                                 var vm0 = new IcdSelectorViewModel(SelectedTag.Entities.First() as IcdDisease);
                                 this.Send(Events.OpenDialog, vm0.AsParams(MessageKeys.Dialog));
                                 if (vm0.DialogResult == true)
@@ -202,11 +202,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        public RelayCommand<Tag> SendToSearchCommand
+        public RelayCommand<TagViewModel> SendToSearchCommand
         {
             get
             {
-                return new RelayCommand<Tag>((t) =>
+                return new RelayCommand<TagViewModel>((t) =>
                 {
                     IEnumerable<IHrItemObject> entities;
                     if (t != null)
@@ -232,7 +232,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <summary>
         /// При потере фокуса списком тегов SelectedTag будет null.
         /// </summary>
-        public Tag EditingTag
+        public TagViewModel EditingTag
         {
             get
             {
@@ -248,7 +248,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        public Tag LastTag
+        public TagViewModel LastTag
         {
             get
             {
@@ -340,19 +340,19 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// Создает тег.
         /// </summary>
         /// <param name="сontent">Строка запроса, IHrsItemObject или null для пустого тега.</param>
-        public Tag CreateTag(object content = null)
+        public TagViewModel CreateTag(object content = null)
         {
-            Tag tag;
+            TagViewModel tag;
             var itemObject = content as IHrItemObject;
             var str = content as string;
 
             if (itemObject != null)
                 // для давления — искать связный тег и добавлять туда сущность
-                tag = new Tag(this, itemObject);
+                tag = new TagViewModel(this, itemObject);
             else if (str != null)
-                tag = new Tag(this, str);
+                tag = new TagViewModel(this, str);
             else
-                tag = new Tag(this);
+                tag = new TagViewModel(this);
 
             tag.Deleted += (s, e) =>
             {
@@ -400,7 +400,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 }
                 else if (e.PropertyName == "State")
                 {
-                    if (tag.State == Tag.States.Completed)
+                    if (tag.State == TagViewModel.States.Completed)
                     {
                         OnTagCompleted(tag);
                         OnEntitiesChanged();
@@ -418,9 +418,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// Добавляет тег в коллекцию.
         /// <param name="tagOrContent">Созданный тег, строка запроса, IHrsItemObject или null для пустого тега.</param>
         /// </summary>
-        public Tag AddTag(object tagOrContent = null, int index = -1, bool isLast = false)
+        public TagViewModel AddTag(object tagOrContent = null, int index = -1, bool isLast = false)
         {
-            var tag = tagOrContent as Tag;
+            var tag = tagOrContent as TagViewModel;
             if (tag == null)
             {
                 tag = CreateTag(tagOrContent);
@@ -445,7 +445,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             return tag;
         }
 
-        public void Add(Tag from, bool left)
+        public void Add(TagViewModel from, bool left)
         {
             var tag = AddTag(index: Tags.IndexOf(from) + (left ? 0 : 1));
             tag.IsTextBoxFocused = true;
@@ -470,17 +470,17 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         public IEnumerable<IHrItemObject> GetEntities()
         {
-            Contract.Requires(Tags.All(t => t.State != Tag.States.Typing));
+            Contract.Requires(Tags.All(t => t.State != TagViewModel.States.Typing));
 
             List<IHrItemObject> result = new List<IHrItemObject>();
             foreach (var tag in Tags)
             {
-                if (tag.BlankType != Tag.BlankTypes.None)
+                if (tag.BlankType != TagViewModel.BlankTypes.None)
                     foreach (var item in recognizer.EntitiesOf(tag)) // у давлния мб две сущности, возвращаем их отдельно
                     {
                         result.Add(item);
                     }
-                else if (tag.State != Tag.States.Init)
+                else if (tag.State != TagViewModel.States.Init)
                     logger.WarnFormat("{0} without entity blank, skip", tag);
             }
 
@@ -491,7 +491,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             var hios = CopySelected();
 
-            var completed = SelectedTags.Where(t => t.State == Tag.States.Completed); // do not remove init tags
+            var completed = SelectedTags.Where(t => t.State == TagViewModel.States.Completed); // do not remove init tags
             completed.ForAll(t => t.DeleteCommand.Execute(null));
 
             LogHrItemObjects("cut", hios);
@@ -513,7 +513,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         private List<IHrItemObject> GetEntitiesOfSelected()
         {
-            var completed = SelectedTags.Where(t => t.State == Tag.States.Completed);
+            var completed = SelectedTags.Where(t => t.State == TagViewModel.States.Completed);
             var hios = completed
                  .SelectMany(t => recognizer.EntitiesOf(t))
                  .ToList();
@@ -549,9 +549,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        private Signalizations Validator(Tag tag)
+        private Signalizations Validator(TagViewModel tag)
         {
-            return recognizer.OnlyWords && tag.BlankType != Tag.BlankTypes.Word ? Signalizations.Forbidden : Signalizations.None;
+            return recognizer.OnlyWords && tag.BlankType != TagViewModel.BlankTypes.Word ? Signalizations.Forbidden : Signalizations.None;
         }
 
         /// <summary>
@@ -568,7 +568,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <param name="tag"></param>
         /// <param name="suggestion">Слово или запрос</param>
         /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
-        private void CompleteCommon(Tag tag, object suggestion, bool exactMatchRequired, bool inverse = false)
+        private void CompleteCommon(TagViewModel tag, object suggestion, bool exactMatchRequired, bool inverse = false)
         {
             recognizer.SetBlank(tag, suggestion, exactMatchRequired, inverse);
             if (tag.Query == "")
@@ -582,14 +582,14 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             CompleteEnding(tag);
         }
 
-        private void CompleteOnConvert(Tag tag, Tag.BlankTypes toType)
+        private void CompleteOnConvert(TagViewModel tag, TagViewModel.BlankTypes toType)
         {
             Contract.Requires(!tag.Query.IsNullOrEmpty());
 
             var measure = (tag.Blank as Measure);
             var converted = recognizer.ConvertBlank(tag, toType);
 
-            if (converted && measure != null && toType != Tag.BlankTypes.Comment)
+            if (converted && measure != null && toType != TagViewModel.BlankTypes.Comment)
             {
                 // отдельный комментарий из числа измерения
                 var comment = new Comment(string.Format("{0} {1}", measure.Value, measure.Uom).Trim());
@@ -599,20 +599,20 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             CompleteEnding(tag);
         }
 
-        public void CompleteOnEnter(Tag tag, bool inverse = false)
+        public void CompleteOnEnter(TagViewModel tag, bool inverse = false)
         {
             switch (tag.State)
             {
-                case Tag.States.Init:
+                case TagViewModel.States.Init:
                     // Enter в пустом поле
                     OnInputEnded();
                     return;
 
-                case Tag.States.Typing:
+                case TagViewModel.States.Typing:
                     CompleteCommon(tag, SelectedSuggestion, false, inverse);
                     break;
 
-                case Tag.States.Completed:
+                case TagViewModel.States.Completed:
                     // тег не изменен
                     break;
             }
@@ -622,30 +622,30 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             LastTag.IsTextBoxFocused = true;
         }
 
-        public void CompleteOnLostFocus(Tag tag)
+        public void CompleteOnLostFocus(TagViewModel tag)
         {
-            if (tag.State == Tag.States.Typing)
+            if (tag.State == TagViewModel.States.Typing)
             {
                 logger.Debug("CompleteOnLostFocus");
                 CompleteCommon(tag, prevSelectedSuggestion, true);
             }
         }
 
-        private void CompleteEnding(Tag tag)
+        private void CompleteEnding(TagViewModel tag)
         {
             Suggestions.Clear();
             RefreshPopup();
             tag.Validate();
 
             // добавляем пустое поле
-            if (LastTag.State == Tag.States.Completed
+            if (LastTag.State == TagViewModel.States.Completed
                 && !SingleTag)
             {
                 AddTag(isLast: true);
             }
         }
 
-        private object MakeSuggestions(Tag tag)
+        private object MakeSuggestions(TagViewModel tag)
         {
             var tagIndex = Tags.IndexOf(tag);
             var exclude = Tags.Select((t, i) => i != tagIndex ? t.Blank : null); // все сущности кроме сущности редактируемого тега
@@ -679,7 +679,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        protected virtual void OnTagCompleted(Tag tag)
+        protected virtual void OnTagCompleted(TagViewModel tag)
         {
             var h = TagCompleted;
             if (h != null)
@@ -704,7 +704,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             Contract.Invariant(inDispose || LastTag.IsLast || SingleTag); // поле ввода по умолчанию
             Contract.Invariant(inDispose || LastTag.IsLast != SingleTag); // единственный тег не IsLast
-            Contract.Invariant(Tags.Count(t => t.State == Tag.States.Typing) <= 1); // только один тег редактируется
+            Contract.Invariant(Tags.Count(t => t.State == TagViewModel.States.Typing) <= 1); // только один тег редактируется
             Contract.Invariant(Tags.Count == 1 || !SingleTag); // единственный тег
         }
 
@@ -721,9 +721,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         public class DropTargetHandler : DefaultDropHandler
         {
-            private readonly Autocomplete master;
+            private readonly AutocompleteViewModel master;
 
-            public DropTargetHandler(Autocomplete master)
+            public DropTargetHandler(AutocompleteViewModel master)
             {
                 this.master = master;
             }
@@ -741,7 +741,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (dropInfo.DragInfo == null || dropInfo.DragInfo.SourceCollection == null)
                     return false;
                 var sourceList = GetList(dropInfo.DragInfo.SourceCollection);
-                return sourceList is IEnumerable<Tag>;
+                return sourceList is IEnumerable<TagViewModel>;
             }
 
             public override void DragOver(IDropInfo dropInfo)
@@ -771,10 +771,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 logger.DebugFormat("ddrop {0} {1}", data.Count(), data.First().GetType());
 
                 var insertIndex = dropInfo.InsertIndex;
-                if (data.First() is Tag)
+                if (data.First() is TagViewModel)
                 {
                     // drop tags from autocomplete
-                    var tags = data.Cast<Tag>();
+                    var tags = data.Cast<TagViewModel>();
 
                     if (FromSameAutocomplete(dropInfo))
                     {
@@ -810,7 +810,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
                         foreach (var tag in tags)
                         {
-                            if (tag.BlankType == Tag.BlankTypes.None)
+                            if (tag.BlankType == TagViewModel.BlankTypes.None)
                             {
                                 master.AddTag(tag.Query).Validate(master.Validator);
                             }
@@ -838,7 +838,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             /// <param name="dragInfo"></param>
             public void StartDrag(IDragInfo dragInfo)
             {
-                var tags = dragInfo.SourceItems.Cast<Tag>().Where(t => !t.IsLast);
+                var tags = dragInfo.SourceItems.Cast<TagViewModel>().Where(t => !t.IsLast);
                 var itemCount = tags.Count();
 
                 if (itemCount == 1)
@@ -857,7 +857,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
             public bool CanStartDrag(IDragInfo dragInfo)
             {
-                var tags = dragInfo.SourceItems.Cast<Tag>().Where(t => !t.IsLast);
+                var tags = dragInfo.SourceItems.Cast<TagViewModel>().Where(t => !t.IsLast);
                 return tags.Count() > 0;
             }
 

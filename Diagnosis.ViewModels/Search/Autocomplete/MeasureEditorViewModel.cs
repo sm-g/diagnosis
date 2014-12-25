@@ -33,7 +33,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
             Value = Measure.Value.ToString();
 
-            Autocomplete = new Autocomplete(
+            Autocomplete = new AutocompleteViewModel(
                 new Recognizer(Session) { OnlyWords = true, AddQueryToSuggestions = true },
                 false,
                 false,
@@ -62,7 +62,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
         }
 
-        public Autocomplete Autocomplete { get; private set; }
+        public AutocompleteViewModel Autocomplete { get; private set; }
 
         public string Value
         {

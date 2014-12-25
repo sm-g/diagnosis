@@ -21,7 +21,7 @@ namespace Diagnosis.App.Controls.Editors
         }
         private void UserControl_Drop(object sender, DragEventArgs e)
         {
-            (autocomplete.DataContext as Autocomplete).OnDrop(e);
+            (autocomplete.DataContext as AutocompleteViewModel).OnDrop(e);
         }
     }
 }
