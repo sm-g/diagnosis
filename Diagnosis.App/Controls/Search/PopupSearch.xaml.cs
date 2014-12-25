@@ -1,5 +1,4 @@
 ﻿using Diagnosis.App.Behaviors;
-using Diagnosis.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;

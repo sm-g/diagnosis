@@ -20,8 +20,6 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-       
-
         <Grid Margin="10,10,0,0"
               Grid.Row="1">
             <Grid.Resources>

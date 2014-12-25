@@ -9,32 +9,40 @@
              VerticalAlignment="Bottom"
              d:DesignWidth="300"
              x:Name="root">
-    <UserControl.Resources>        
-        <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="dataFromEnum"
+                            MethodName="GetValues"
                             ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="diag:DateUnits" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
         <Style TargetType="TextBox">
-            <Setter Property="Background" Value="White" />
+            <Setter Property="Background"
+                    Value="White" />
             <Style.Triggers>
-                <Trigger Property="IsReadOnly" Value="True">
-                    <Setter Property="Background" Value="LightGray" />
+                <Trigger Property="IsReadOnly"
+                         Value="True">
+                    <Setter Property="Background"
+                            Value="LightGray" />
                 </Trigger>
             </Style.Triggers>
-        </Style>       
+        </Style>
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal">
         <TextBox x:Name="offset"
-                 Text="{Binding DateOffset.Offset, ElementName=root, Mode=TwoWay, TargetNullValue='', UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" 
+                 Text="{Binding DateOffset.Offset, ElementName=root, Mode=TwoWay, TargetNullValue='', UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                  IsReadOnly="{Binding ReadOnlyOffset, ElementName=root}"
-                 MinWidth="50" Margin="0,0,5,0" TextAlignment="Right" />
+                 MinWidth="50"
+                 Margin="0,0,5,0"
+                 TextAlignment="Right" />
         <ComboBox x:Name="units"
                   ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
-        	      MinWidth="50">
+                  MinWidth="50">
             <ComboBox.SelectedItem>
-                <Binding Path="DateOffset.Unit" ElementName="root" Mode="TwoWay" />
+                <Binding Path="DateOffset.Unit"
+                         ElementName="root"
+                         Mode="TwoWay" />
             </ComboBox.SelectedItem>
             <ComboBox.ItemTemplate>
                 <DataTemplate>
@@ -42,7 +50,8 @@
                         <TextBlock.Text>
                             <MultiBinding Converter="{StaticResource OffsetUnitToUnitLabel}">
                                 <Binding />
-                                <Binding Path="DateOffset.Offset" ElementName="root" />
+                                <Binding Path="DateOffset.Offset"
+                                         ElementName="root" />
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>

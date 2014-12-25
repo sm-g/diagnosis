@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Collections;
 
 namespace Diagnosis.App.Controls
 {
@@ -45,8 +34,6 @@ namespace Diagnosis.App.Controls
         public static readonly DependencyProperty ItemsSourseProperty =
             DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(CommaList));
 
-
-
         public DataTemplate ItemTemplate
         {
             get { return (DataTemplate)GetValue(ItemTemplateProperty); }
@@ -55,7 +42,5 @@ namespace Diagnosis.App.Controls
 
         public static readonly DependencyProperty ItemTemplateProperty =
             DependencyProperty.Register("ItemTemplate", typeof(DataTemplate), typeof(CommaList));
-
-        
     }
 }

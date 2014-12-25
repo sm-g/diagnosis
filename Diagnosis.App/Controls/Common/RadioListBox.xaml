@@ -1,60 +1,71 @@
 ﻿<ListBox x:Class="Diagnosis.App.Controls.RadioListBox"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:s="clr-namespace:System;assembly=mscorlib"
+         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:s="clr-namespace:System;assembly=mscorlib"
          Style="{DynamicResource selfStyle}">
 
     <ListBox.Resources>
-        <Style x:Key="selfStyle" TargetType="ListBox">
+        <Style x:Key="selfStyle"
+               TargetType="ListBox">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding MultiSelection, RelativeSource={RelativeSource Self}}" Value="{StaticResource True}">
-                    <Setter Property="SelectionMode" Value="Extended" />
+                <DataTrigger Binding="{Binding MultiSelection, RelativeSource={RelativeSource Self}}"
+                             Value="{StaticResource True}">
+                    <Setter Property="SelectionMode"
+                            Value="Extended" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        
-        <Style x:Key="checkbox" TargetType="CheckBox">
-            <EventSetter Event="Checked" Handler="chkBox_CheckedChanged"/>
-            <EventSetter Event="Unchecked" Handler="chkBox_CheckedChanged"/>
+
+        <Style x:Key="checkbox"
+               TargetType="CheckBox">
+            <EventSetter Event="Checked"
+                         Handler="chkBox_CheckedChanged" />
+            <EventSetter Event="Unchecked"
+                         Handler="chkBox_CheckedChanged" />
         </Style>
-        
-        <Style x:Key="{x:Type ListBoxItem}" TargetType="ListBoxItem">
-            <Setter Property="SnapsToDevicePixels" Value="true" />
-            <Setter Property="OverridesDefaultStyle" Value="true" />
+
+        <Style x:Key="{x:Type ListBoxItem}"
+               TargetType="ListBoxItem">
+            <Setter Property="SnapsToDevicePixels"
+                    Value="true" />
+            <Setter Property="OverridesDefaultStyle"
+                    Value="true" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBoxItem">
-                        <RadioButton x:Name="radio" Focusable="False"
+                        <RadioButton x:Name="radio"
+                                     Focusable="False"
                                      IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected, Mode=TwoWay}">
                             <RadioButton.Content>
-                                <ContentPresenter
-                                    Content="{TemplateBinding ContentControl.Content}"
-                                    ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
-                                    ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
-                                    HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
-                                    VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
-                                    SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                                <ContentPresenter Content="{TemplateBinding ContentControl.Content}"
+                                                  ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                                                  ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
+                                                  HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                                                  SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
                             </RadioButton.Content>
                         </RadioButton>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding MultiSelection, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}" Value="{StaticResource True}">
+                <DataTrigger Binding="{Binding MultiSelection, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"
+                             Value="{StaticResource True}">
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="ListBoxItem">
-                                <CheckBox x:Name="radio" Focusable="False" 
+                                <CheckBox x:Name="radio"
+                                          Focusable="False"
                                           Style="{StaticResource checkbox}"
-                                    IsChecked="{Binding IsChecked, Mode=TwoWay}"> <!-- for multiselection, use ViewModel with IsChecked prop -->
+                                          IsChecked="{Binding IsChecked, Mode=TwoWay}">
+                                    <!-- for multiselection, use ViewModel with IsChecked prop -->
                                     <CheckBox.Content>
-                                        <ContentPresenter
-                                            Content="{TemplateBinding ContentControl.Content}"
-                                            ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
-                                            ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
-                                            HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
-                                            VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
-                                            SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                                        <ContentPresenter Content="{TemplateBinding ContentControl.Content}"
+                                                          ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                                                          ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
+                                                          HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                                          VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                                                          SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
                                     </CheckBox.Content>
                                 </CheckBox>
                             </ControlTemplate>
@@ -68,17 +79,20 @@
     <ListBox.Template>
         <ControlTemplate>
             <Border BorderThickness="0"
-                Padding="1,1,1,1"
-                Background="Transparent"
-                Name="theBorder"
-                SnapsToDevicePixels="True">
-                <ScrollViewer Padding="{TemplateBinding Control.Padding}" Focusable="False">
+                    Padding="1,1,1,1"
+                    Background="Transparent"
+                    Name="theBorder"
+                    SnapsToDevicePixels="True">
+                <ScrollViewer Padding="{TemplateBinding Control.Padding}"
+                              Focusable="False">
                     <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
                 </ScrollViewer>
             </Border>
             <ControlTemplate.Triggers>
-                <Trigger Property="ItemsControl.IsGrouping" Value="True">
-                    <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
+                <Trigger Property="ItemsControl.IsGrouping"
+                         Value="True">
+                    <Setter Property="ScrollViewer.CanContentScroll"
+                            Value="False" />
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>

@@ -19,20 +19,29 @@
 
             <properties:Settings x:Key="Settings" />
 
-            <InputBindingCollection x:Shared="False" x:Key="CourseInputBindings">
-                <KeyBinding Key="Space" Command="{Binding OpenCommand}" />
-                <KeyBinding Key="Enter" Command="{Binding OpenCommand}" />
-                <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding OpenCommand}" />
+            <InputBindingCollection x:Shared="False"
+                                    x:Key="CourseInputBindings">
+                <KeyBinding Key="Space"
+                            Command="{Binding OpenCommand}" />
+                <KeyBinding Key="Enter"
+                            Command="{Binding OpenCommand}" />
+                <MouseBinding  MouseAction="LeftDoubleClick"
+                               Command="{Binding OpenCommand}" />
             </InputBindingCollection>
-            <InputBindingCollection x:Shared="False" x:Key="AppointmentInputBindings">
-                <KeyBinding Key="Space" Command="{Binding OpenCommand}" />
-                <KeyBinding Key="Enter" Command="{Binding OpenCommand}" />
-                <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding OpenCommand}" />
+            <InputBindingCollection x:Shared="False"
+                                    x:Key="AppointmentInputBindings">
+                <KeyBinding Key="Space"
+                            Command="{Binding OpenCommand}" />
+                <KeyBinding Key="Enter"
+                            Command="{Binding OpenCommand}" />
+                <MouseBinding  MouseAction="LeftDoubleClick"
+                               Command="{Binding OpenCommand}" />
             </InputBindingCollection>
 
-            <InputBindingCollection x:Shared="False" x:Key="CardElementsInputBindings">
+            <InputBindingCollection x:Shared="False"
+                                    x:Key="CardElementsInputBindings">
                 <!--<KeyBinding Key="Space" Command="{Binding HolderVm.OpenCommand}" />-->
-                <KeyBinding Key="Enter" 
+                <KeyBinding Key="Enter"
                             Command="{Binding HolderVm.OpenCommand}" />
                 <KeyBinding Key="F2"
                             Command="{Binding HolderVm.EditCommand}" />
@@ -42,20 +51,31 @@
                                Command="{Binding HolderVm.OpenCommand}" />
             </InputBindingCollection>
 
-            <InputBindingCollection x:Shared="False" x:Key="SearchResultInputBindings">
-                <KeyBinding Key="Space" Command="{Binding OpenCommand}" />
-                <KeyBinding Key="Enter" Command="{Binding OpenCommand}" />
-                <MouseBinding  MouseAction="LeftDoubleClick" Command="{Binding OpenCommand}" />
+            <InputBindingCollection x:Shared="False"
+                                    x:Key="SearchResultInputBindings">
+                <KeyBinding Key="Space"
+                            Command="{Binding OpenCommand}" />
+                <KeyBinding Key="Enter"
+                            Command="{Binding OpenCommand}" />
+                <MouseBinding  MouseAction="LeftDoubleClick"
+                               Command="{Binding OpenCommand}" />
             </InputBindingCollection>
-            <InputBindingCollection x:Shared="False" x:Key="WordInputBindings">
-                <KeyBinding Key="Space" Command="{Binding ToggleCommand}" />
-                <KeyBinding Key="F2" Command="{Binding EditCommand}" />
-                <KeyBinding Modifiers="Alt" Key="F" Command="{Binding SendToSearchCommand}" />
-                <KeyBinding Modifiers="Control" Key="N" 
-                    Command="{Binding DataContext.AddCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}" 
-                    CommandParameter="{Binding}"/>
+            <InputBindingCollection x:Shared="False"
+                                    x:Key="WordInputBindings">
+                <KeyBinding Key="Space"
+                            Command="{Binding ToggleCommand}" />
+                <KeyBinding Key="F2"
+                            Command="{Binding EditCommand}" />
+                <KeyBinding Modifiers="Alt"
+                            Key="F"
+                            Command="{Binding SendToSearchCommand}" />
+                <KeyBinding Modifiers="Control"
+                            Key="N"
+                            Command="{Binding DataContext.AddCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}"
+                            CommandParameter="{Binding}" />
 
-                <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleCommand}" />
+                <MouseBinding MouseAction="LeftClick"
+                              Command="{Binding ToggleCommand}" />
             </InputBindingCollection>
         </ResourceDictionary>
     </Application.Resources>

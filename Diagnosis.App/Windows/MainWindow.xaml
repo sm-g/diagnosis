@@ -3,13 +3,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:controls="clr-namespace:Diagnosis.App.Controls"
-        xmlns:diag="http://schemas.smg.com/diagnosis" 
+        xmlns:diag="http://schemas.smg.com/diagnosis"
         xmlns:screen="clr-namespace:Diagnosis.App.Screens"
         xmlns:shell="clr-namespace:Diagnosis.App.Windows.Shell"
         x:Class="Diagnosis.App.Windows.MainWindow"
-        mc:Ignorable="d" 
+        mc:Ignorable="d"
         x:Name="root"
-        Title="{Binding CurrentView.Title}" 
+        Title="{Binding CurrentView.Title}"
         Height="{Binding Path=Default.MainWindowHeight, Mode=TwoWay, Source={StaticResource Settings}}"
         Width="{Binding Path=Default.MainWindowWidth, Mode=TwoWay, Source={StaticResource Settings}}"
         Top="{Binding Path=Default.MainWindowTop, Mode=TwoWay, Source={StaticResource Settings}}"
@@ -42,14 +42,14 @@
             </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
-    
+
     <Window.InputBindings>
         <KeyBinding Key="F"
                     Modifiers="Control"
                     Command="{Binding OpenSearchCommand}" />
     </Window.InputBindings>
 
-    <Grid Background="{DynamicResource mainWindowBackgroundBrush}" >
+    <Grid Background="{DynamicResource mainWindowBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
@@ -64,20 +64,22 @@
                        DataContext="{Binding MenuBar}"
                        Visibility="{Binding DataContext.MenuVisible, ElementName=root,  Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-        <shell:AsidePanels
-                        Margin="0,0,-2,0"
-                        Padding="0"
-                   DataContext="{Binding RightAside}"
-                   Visibility="{Binding DataContext.SearchVisible, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}"
-                   Grid.Row="1"
-                   Grid.Column="1"
-                   Grid.RowSpan="2">
+        <shell:AsidePanels Margin="0,0,-2,0"
+                           Padding="0"
+                           DataContext="{Binding RightAside}"
+                           Visibility="{Binding DataContext.SearchVisible, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}"
+                           Grid.Row="1"
+                           Grid.Column="1"
+                           Grid.RowSpan="2">
         </shell:AsidePanels>
 
         <ContentControl Content="{Binding CurrentView}"
                         Grid.Row="2" />
 
-        <ItemsControl DataContext="{Binding OverlayService}" ItemsSource="{Binding Overlays}" HorizontalAlignment="Right" IsTabStop="False"
+        <ItemsControl DataContext="{Binding OverlayService}"
+                      ItemsSource="{Binding Overlays}"
+                      HorizontalAlignment="Right"
+                      IsTabStop="False"
                       Grid.Row="2">
         </ItemsControl>
     </Grid>

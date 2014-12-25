@@ -77,7 +77,7 @@
             </StackPanel>
         </ScrollViewer>
 
-        <StackPanel Grid.Row="1"                   
+        <StackPanel Grid.Row="1"
                     Style="{StaticResource DialogButtonsPanel}">
             <Button Name="saveButton"
                     IsDefault="True"

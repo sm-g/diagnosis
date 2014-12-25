@@ -8,24 +8,35 @@
              x:Class="Diagnosis.App.Controls.WordTreeItem"
              mc:Ignorable="d"
              Focusable="False"
-             d:DesignHeight="23" d:DesignWidth="300">
+             d:DesignHeight="23"
+             d:DesignWidth="300">
     <!-- WordViewModel -->
     <UserControl.Resources>
-        <Style TargetType="Grid" x:Key="hidingButtons" x:Shared="False">
-            <Setter Property="Visibility" Value="Collapsed" />
+        <Style TargetType="Grid"
+               x:Key="hidingButtons"
+               x:Shared="False">
+            <Setter Property="Visibility"
+                    Value="Collapsed" />
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" Value="True">
-                    <Setter Property="Visibility" Value="Visible" />
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=TreeViewItem}}"
+                             Value="True">
+                    <Setter Property="Visibility"
+                            Value="Visible" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                    <Setter Property="Visibility" Value="Visible" />
+                <DataTrigger Binding="{Binding IsSelected}"
+                             Value="True">
+                    <Setter Property="Visibility"
+                            Value="Visible" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
 
-        <Style TargetType="Button" BasedOn="{StaticResource squareButton}">
-            <Setter Property="Height" Value="20" />
-            <Setter Property="Focusable" Value="False" />
+        <Style TargetType="Button"
+               BasedOn="{StaticResource squareButton}">
+            <Setter Property="Height"
+                    Value="20" />
+            <Setter Property="Focusable"
+                    Value="False" />
         </Style>
     </UserControl.Resources>
     <Grid>
@@ -37,13 +48,14 @@
             <ColumnDefinition Width="20" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
-            <ColumnDefinition MinWidth="20" Width="auto" />
+            <ColumnDefinition MinWidth="20"
+                              Width="auto" />
         </Grid.ColumnDefinitions>
 
         <CheckBox x:Name="checkbox"
-            IsChecked="{Binding IsChecked}"
-            Focusable="False"
-            Visibility="{Binding IsNonCheckable, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
+                  IsChecked="{Binding IsChecked}"
+                  Focusable="False"
+                  Visibility="{Binding IsNonCheckable, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
 
         <DockPanel x:Name="title"
                    Grid.Column="1"
@@ -54,16 +66,21 @@
                        HorizontalAlignment="Left" />
         </DockPanel>
 
-        <Grid Grid.Column="2" Width="80"
-                        Style="{StaticResource hidingButtons}">
+        <Grid Grid.Column="2"
+              Width="80"
+              Style="{StaticResource hidingButtons}">
             <Grid.Resources>
-                <Style TargetType="Image" BasedOn="{StaticResource buttonIcon}">
-                    <Setter Property="Margin" Value="0" />
+                <Style TargetType="Image"
+                       BasedOn="{StaticResource buttonIcon}">
+                    <Setter Property="Margin"
+                            Value="0" />
                 </Style>
             </Grid.Resources>
-            <StackPanel x:Name="titleButtons" Orientation="Horizontal">
+            <StackPanel x:Name="titleButtons"
+                        Orientation="Horizontal">
                 <!--открыть редактор, добавить слово, искать-->
-                <Button Command="{Binding EditCommand}" ToolTip="Редактировать (F2)">
+                <Button Command="{Binding EditCommand}"
+                        ToolTip="Редактировать (F2)">
                     <Image Source="{StaticResource editImage}" />
                 </Button>
 
@@ -72,7 +89,9 @@
                         CommandParameter="{Binding}" Margin="10,0,0,0" ToolTip="Добавить подчинённое слово (Ctrl + N)">
                     <Image Source="{StaticResource addImage}" />
                 </Button>-->
-                <Button Command="{Binding SendToSearchCommand}" Margin="10,0,0,0" ToolTip="Искать (Alt + F)">
+                <Button Command="{Binding SendToSearchCommand}"
+                        Margin="10,0,0,0"
+                        ToolTip="Искать (Alt + F)">
                     <Image Source="{StaticResource findImage}" />
                 </Button>
             </StackPanel>
@@ -83,13 +102,14 @@
                     Grid.Column="3">
             <StackPanel.Resources>
                 <Style TargetType="TextBlock">
-                    <Setter Property="Margin" Value="5,0,0,0" />
+                    <Setter Property="Margin"
+                            Value="5,0,0,0" />
                 </Style>
             </StackPanel.Resources>
-           
+
             <TextBlock x:Name="checkedChildren"
-                   Text="{Binding CheckedChildren}"
-                   Visibility="{Binding CheckedChildren, Converter={StaticResource MoreThanToVisibility}, Mode=OneWay}" />
-        </StackPanel>       
+                       Text="{Binding CheckedChildren}"
+                       Visibility="{Binding CheckedChildren, Converter={StaticResource MoreThanToVisibility}, Mode=OneWay}" />
+        </StackPanel>
     </Grid>
 </UserControl>

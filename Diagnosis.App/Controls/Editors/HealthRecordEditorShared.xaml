@@ -177,13 +177,15 @@
                                                       ReadOnlyOffset="{Binding DateOffset.UnitFixed, Mode=OneWay}" />
                         </DockPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Grid.Column="1">
+                    <StackPanel Orientation="Horizontal"
+                                Grid.Column="1">
                         <ToggleButton IsChecked="{Binding DoRound}"
                                       Width="100"
                                       Margin="10"
-                                      VerticalAlignment="Center"
-                                      >
-                            <TextBlock TextWrapping="Wrap" TextAlignment="Center" Text="Менять единицу давности"/>
+                                      VerticalAlignment="Center">
+                            <TextBlock TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       Text="Менять единицу давности" />
                         </ToggleButton>
 
                         <GroupBox Header="Показывать">

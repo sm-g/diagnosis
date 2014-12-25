@@ -7,23 +7,23 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              x:Name="fullTree"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300"
+             d:DesignWidth="300">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../../Styles/TreeStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-           
         </ResourceDictionary>
     </UserControl.Resources>
     <TreeView x:Name="tree"
-            Style="{StaticResource TreeViewStyle}"
-            ItemContainerStyle="{Binding ItemContainerStyle, ElementName=fullTree}"
-            ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource AncestorType=UserControl}}">
+              Style="{StaticResource TreeViewStyle}"
+              ItemContainerStyle="{Binding ItemContainerStyle, ElementName=fullTree}"
+              ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource AncestorType=UserControl}}">
         <TreeView.ItemTemplate>
             <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                <ContentPresenter Content="{Binding}" ContentTemplate="{Binding ItemTemplate, ElementName=fullTree}" />
+                <ContentPresenter Content="{Binding}"
+                                  ContentTemplate="{Binding ItemTemplate, ElementName=fullTree}" />
             </HierarchicalDataTemplate>
         </TreeView.ItemTemplate>
     </TreeView>

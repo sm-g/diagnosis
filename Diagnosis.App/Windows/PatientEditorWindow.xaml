@@ -9,22 +9,30 @@
         xmlns:card="clr-namespace:Diagnosis.App.Controls.CardParts"
         xmlns:diag="http://schemas.smg.com/diagnosis"
         Title="{Binding Title}"
-        Height="350" Width="500"
+        Height="350"
+        Width="500"
         beh:DialogCloser.DialogResult="{Binding DialogResult}"
         beh:FocusBehavior.FocusFirst="True"
-        ShowInTaskbar="False" ResizeMode="NoResize" WindowStyle="ToolWindow"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        WindowStyle="ToolWindow"
         mc:Ignorable="d"
         d:DataContext="{DynamicResource vm}">
     <!--PatientViewModel-->
     <Window.Resources>
         <diag:PatientEditorViewModel x:Key="vm" />
 
-        <Style TargetType="DockPanel" BasedOn="{StaticResource formLine}" />
-        <Style TargetType="Label" BasedOn="{StaticResource label120}" />
+        <Style TargetType="DockPanel"
+               BasedOn="{StaticResource formLine}" />
+        <Style TargetType="Label"
+               BasedOn="{StaticResource label120}" />
         <Style TargetType="Button">
-            <Setter Property="MaxWidth" Value="100" />
-            <Setter Property="Height" Value="23" />
-            <Setter Property="Margin" Value="5" />
+            <Setter Property="MaxWidth"
+                    Value="100" />
+            <Setter Property="Height"
+                    Value="23" />
+            <Setter Property="Margin"
+                    Value="5" />
         </Style>
     </Window.Resources>
     <Grid Margin="10">
@@ -61,13 +69,16 @@
             </StackPanel>-->
         </Grid>
 
-        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Column="1"
+                      VerticalScrollBarVisibility="Auto">
             <StackPanel  DataContext="{Binding Patient}">
                 <StackPanel.Resources>
-                    <Style TargetType="DockPanel" BasedOn="{StaticResource formLine}" />
-                    <Style TargetType="Label" BasedOn="{StaticResource label120}" />
+                    <Style TargetType="DockPanel"
+                           BasedOn="{StaticResource formLine}" />
+                    <Style TargetType="Label"
+                           BasedOn="{StaticResource label120}" />
                 </StackPanel.Resources>
-                <!-- PatientViewModel -->                
+                <!-- PatientViewModel -->
                 <DockPanel>
                     <Label Content="Фамилия" />
                     <TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
@@ -82,10 +93,11 @@
                 </DockPanel>
                 <DockPanel>
                     <Label Content="Дата рождения" />
-                    <editors:ComboBoxDatePicker x:Name="comboDatePicker" VerticalAlignment="Top"
-                                    Year="{Binding BirthYear, Mode=TwoWay}"
-                                    Month="{Binding BirthMonth, Mode=TwoWay}"
-                                    Day="{Binding BirthDay, Mode=TwoWay}">
+                    <editors:ComboBoxDatePicker x:Name="comboDatePicker"
+                                                VerticalAlignment="Top"
+                                                Year="{Binding BirthYear, Mode=TwoWay}"
+                                                Month="{Binding BirthMonth, Mode=TwoWay}"
+                                                Day="{Binding BirthDay, Mode=TwoWay}">
                     </editors:ComboBoxDatePicker>
                 </DockPanel>
                 <DockPanel>
@@ -95,26 +107,39 @@
                              HorizontalContentAlignment="Right">
                     </TextBox>
 
-                    <TextBlock Text="{Binding Age, Converter={StaticResource AgeToLabel}}" Margin="3,0,0,0" VerticalAlignment="Center"></TextBlock>
+                    <TextBlock Text="{Binding Age, Converter={StaticResource AgeToLabel}}"
+                               Margin="3,0,0,0"
+                               VerticalAlignment="Center"></TextBlock>
                 </DockPanel>
                 <DockPanel>
                     <Label Content="Пол" />
-                    <editors:SexChooser HorizontalAlignment="Left" VerticalAlignment="Center" WithUnknown="True" />
+                    <editors:SexChooser HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        WithUnknown="True" />
                 </DockPanel>
             </StackPanel>
         </ScrollViewer>
 
-        <StackPanel Grid.Row="1" Style="{StaticResource DialogButtonsPanel}">
+        <StackPanel Grid.Row="1"
+                    Style="{StaticResource DialogButtonsPanel}">
             <!--<Button Name="saveAddButton" Command="{Binding SaveAndCreateCommand}" ToolTip="Сохранить и добавить нового пациента">
                 <AccessText Text="_Добавить нового" />
             </Button>-->
-            <Button Name="saveOpenAppButton" Command="{Binding SaveAndOpenAppCommand}"
+            <Button Name="saveOpenAppButton"
+                    Command="{Binding SaveAndOpenAppCommand}"
                     Visibility="{Binding IsUnsaved, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <AccessText Text="_Добавить осмотр" />
             </Button>
-            <Separator Width="60" Height="0" />
-            <Button Name="saveButton" IsDefault="True" Command="{Binding SaveCommand}" Content="Сохранить" />
-            <Button Name="cancelButton" IsCancel="True" Command="{Binding CancelCommand}" Content="Отмена" />
+            <Separator Width="60"
+                       Height="0" />
+            <Button Name="saveButton"
+                    IsDefault="True"
+                    Command="{Binding SaveCommand}"
+                    Content="Сохранить" />
+            <Button Name="cancelButton"
+                    IsCancel="True"
+                    Command="{Binding CancelCommand}"
+                    Content="Отмена" />
         </StackPanel>
     </Grid>
 </Window>

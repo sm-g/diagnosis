@@ -1,11 +1,11 @@
-﻿using log4net;
+﻿using Diagnosis.Common;
+using log4net;
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Diagnosis.Common;
 
 namespace Diagnosis.App.Controls.Editors
 {
@@ -103,7 +103,7 @@ namespace Diagnosis.App.Controls.Editors
         }
 
         /// <summary>
-        /// '', '1', ..., '30' 
+        /// '', '1', ..., '30'
         /// </summary>
         /// <returns></returns>
         private string[] GetDaysComboItems()
@@ -146,11 +146,11 @@ namespace Diagnosis.App.Controls.Editors
             if (Year == null)
                 comboYears.SelectedIndex = 0;
         }
+
         private void comboDays_LostFocus(object sender, RoutedEventArgs e)
         {
             if (Day == null)
                 comboDays.SelectedIndex = 0;
         }
-
     }
 }

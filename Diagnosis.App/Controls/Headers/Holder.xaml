@@ -7,22 +7,23 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
              x:Name="holder"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300"
+             d:DesignWidth="300">
     <UserControl.Resources>
         <controls:HrsHolderDataTemplateSelector x:Key="selector">
             <controls:HrsHolderDataTemplateSelector.PatientTemplate>
                 <DataTemplate>
                     <DockPanel>
                         <TextBlock Text="{Binding Actual, Converter={StaticResource ManToShortName}}"
-                            VerticalAlignment="Center"
-                            Visibility="{Binding NoName, Converter={StaticResource NegBooleanToVisibilityConverter}}"
-                            MinWidth="30" />
+                                   VerticalAlignment="Center"
+                                   Visibility="{Binding NoName, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                                   MinWidth="30" />
                         <TextBlock Text="{Binding IsMale, Converter={StaticResource SexToSign}}"
-                           FontSize="20"
-                           Margin="20,0,5,0"
-                           VerticalAlignment="Center" />
+                                   FontSize="20"
+                                   Margin="20,0,5,0"
+                                   VerticalAlignment="Center" />
                         <TextBlock Margin="5,0,10,0"
-                            VerticalAlignment="Center">
+                                   VerticalAlignment="Center">
                             <TextBlock Text="{Binding Age}" />
                             <TextBlock Text="{Binding Age, Converter={StaticResource AgeToLabel}}" />
                         </TextBlock>
@@ -34,8 +35,10 @@
                     <TextBlock>
                         <Run>
                              <MultiBinding Converter="{StaticResource DateIntervalLabel}">
-                                <Binding Path="Start" Mode="OneWay" />
-                                <Binding Path="End" Mode="OneWay" />
+                                <Binding Path="Start"
+                                         Mode="OneWay" />
+                                <Binding Path="End"
+                                         Mode="OneWay" />
                             </MultiBinding>
                         </Run>
                     </TextBlock>

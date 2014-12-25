@@ -22,10 +22,9 @@ namespace Diagnosis.App.Screens
                     }
                 };
             };
-           
         }
 
-        LoginViewModel Vm { get { return (DataContext as LoginViewModel); } }
+        private LoginViewModel Vm { get { return (DataContext as LoginViewModel); } }
 
         private void password_PasswordChanged(object sender, RoutedEventArgs e)
         {

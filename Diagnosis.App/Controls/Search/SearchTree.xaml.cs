@@ -1,5 +1,4 @@
-﻿using Diagnosis.ViewModels.Search;
-using System.Collections;
+﻿using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -106,8 +105,6 @@ namespace Diagnosis.App.Controls.Search
                 RaiseSearchSelected(item);
                 e.Handled = true;
             }
-
-
         }
 
         private void MoveSelection(bool down)
@@ -160,7 +157,6 @@ namespace Diagnosis.App.Controls.Search
                 item.IsSelected = true;
 
                 // logger.DebugFormat("aft sel");
-
             }
 
             selectedItem = item;

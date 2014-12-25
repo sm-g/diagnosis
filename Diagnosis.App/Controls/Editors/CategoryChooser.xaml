@@ -3,29 +3,31 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Diagnosis.App.Controls.Editors"  
+             xmlns:local="clr-namespace:Diagnosis.App.Controls.Editors"
              x:Class="Diagnosis.App.Controls.Editors.CategoryChooser"
-             mc:Ignorable="d"             
-             d:DesignHeight="300" d:DesignWidth="300">
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="300">
     <Grid>
         <!--HrEditorViewModel or SearchViewModel-->
         <Controls:RadioListBox ItemsSource="{Binding Categories}"
-            Focusable="False"
-            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            SelectedItem="{Binding Category, FallbackValue=null}"
-            MultiSelection="{Binding CategoryMultiSelection, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:CategoryChooser}}}">
+                               Focusable="False"
+                               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                               SelectedItem="{Binding Category, FallbackValue=null}"
+                               MultiSelection="{Binding CategoryMultiSelection, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:CategoryChooser}}}">
 
             <Controls:RadioListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid Rows="2" Columns="3" />
+                    <UniformGrid Rows="2"
+                                 Columns="3" />
                 </ItemsPanelTemplate>
             </Controls:RadioListBox.ItemsPanel>
             <Controls:RadioListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Name}" Margin="1,0"/>
+                    <TextBlock Text="{Binding Name}"
+                               Margin="1,0" />
                 </DataTemplate>
             </Controls:RadioListBox.ItemTemplate>
         </Controls:RadioListBox>
-
     </Grid>
 </UserControl>

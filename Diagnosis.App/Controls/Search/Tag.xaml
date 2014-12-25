@@ -8,31 +8,45 @@
              xmlns:diag="http://schemas.smg.com/diagnosis"
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              mc:Ignorable="d"
-             d:DesignHeight="25" d:DesignWidth="300">
-    
+             d:DesignHeight="25"
+             d:DesignWidth="300">
+
     <DockPanel>
         <DockPanel.Style>
             <Style TargetType="DockPanel" />
         </DockPanel.Style>
 
-        <StackPanel x:Name="drag" Orientation="Horizontal"
-                    DockPanel.Dock="Left" Width="15" Height="20" 
-                    Cursor="SizeAll" Background="Transparent">
+        <StackPanel x:Name="drag"
+                    Orientation="Horizontal"
+                    DockPanel.Dock="Left"
+                    Width="15"
+                    Height="20"
+                    Cursor="SizeAll"
+                    Background="Transparent">
             <StackPanel.Style>
                 <Style TargetType="StackPanel">
-                    <Setter Property="Visibility" Value="Hidden" />
+                    <Setter Property="Visibility"
+                            Value="Hidden" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsDraggable}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
+                        <DataTrigger Binding="{Binding IsDraggable}"
+                                     Value="True">
+                            <Setter Property="Visibility"
+                                    Value="Visible" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
+                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                                     Value="True">
+                            <Setter Property="Visibility"
+                                    Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </StackPanel.Style>
             <StackPanel.Resources>
-                <Path x:Key="line" x:Shared="False" Data="M0,0 L0,1" Stretch="Fill" Stroke="Gray"
+                <Path x:Key="line"
+                      x:Shared="False"
+                      Data="M0,0 L0,1"
+                      Stretch="Fill"
+                      Stroke="Gray"
                       StrokeDashOffset="2"
                       StrokeThickness="2"
                       StrokeDashArray="0,2.5"
@@ -40,9 +54,10 @@
             </StackPanel.Resources>
 
             <ContentPresenter Content="{StaticResource line}" />
-            <ContentPresenter Content="{StaticResource line}" Margin="2,0,0,0" />
+            <ContentPresenter Content="{StaticResource line}"
+                              Margin="2,0,0,0" />
         </StackPanel>
-        <TextBox x:Name="query" 
+        <TextBox x:Name="query"
                  beh:FocusExtension.IsFocused="{Binding IsTextBoxFocused, Mode=TwoWay}"
                  dd:DragDrop.IsDropTarget="True"
                  dd:DragDrop.DropHandler="{Binding}"
@@ -50,35 +65,54 @@
                  Focusable="{Binding Focusable}"
                  IsReadOnly="{Binding IsDeleteOnly}">
             <TextBox.Style>
-                <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-                    <Setter Property="Background" Value="White" />
-                    <Setter Property="FontSize" Value="14" />
-                    <Setter Property="FontStyle" Value="Italic" />
+                <Style TargetType="TextBox"
+                       BasedOn="{StaticResource {x:Type TextBox}}">
+                    <Setter Property="Background"
+                            Value="White" />
+                    <Setter Property="FontSize"
+                            Value="14" />
+                    <Setter Property="FontStyle"
+                            Value="Italic" />
                     <Setter Property="BorderBrush"
                             Value="{x:Null}" />
 
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Signalization}" Value="{x:Static diag:Signalizations.NewWord}">
-                            <Setter Property="Background" Value="#FFEFFFD8" />
-                            <Setter Property="ToolTip" Value="Новое слово" />
+                        <DataTrigger Binding="{Binding Signalization}"
+                                     Value="{x:Static diag:Signalizations.NewWord}">
+                            <Setter Property="Background"
+                                    Value="#FFEFFFD8" />
+                            <Setter Property="ToolTip"
+                                    Value="Новое слово" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding Signalization}" Value="{x:Static diag:Signalizations.Forbidden}">
-                            <Setter Property="Background" Value="#FFFFD8D8" />
-                            <Setter Property="ToolTip" Value="Некорректный текст, игнорируется" />
+                        <DataTrigger Binding="{Binding Signalization}"
+                                     Value="{x:Static diag:Signalizations.Forbidden}">
+                            <Setter Property="Background"
+                                    Value="#FFFFD8D8" />
+                            <Setter Property="ToolTip"
+                                    Value="Некорректный текст, игнорируется" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding Signalization}" Value="{x:Static diag:Signalizations.PartialMeasure}">
-                            <Setter Property="Background" Value="#FFFFFDD8" />
-                            <Setter Property="ToolTip" Value="Неизвестная единица измерения, сохраняется без единицы" />
+                        <DataTrigger Binding="{Binding Signalization}"
+                                     Value="{x:Static diag:Signalizations.PartialMeasure}">
+                            <Setter Property="Background"
+                                    Value="#FFFFFDD8" />
+                            <Setter Property="ToolTip"
+                                    Value="Неизвестная единица измерения, сохраняется без единицы" />
                         </DataTrigger>
 
-                        <DataTrigger Binding="{Binding BlankType}" Value="{x:Static diag:Tag+BlankTypes.Query}">
-                            <Setter Property="Foreground" Value="Red" />
+                        <DataTrigger Binding="{Binding BlankType}"
+                                     Value="{x:Static diag:Tag+BlankTypes.Query}">
+                            <Setter Property="Foreground"
+                                    Value="Red" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding BlankType}" Value="{x:Static diag:Tag+BlankTypes.Comment}">
-                            <Setter Property="FontStyle" Value="Italic" />
+                        <DataTrigger Binding="{Binding BlankType}"
+                                     Value="{x:Static diag:Tag+BlankTypes.Comment}">
+                            <Setter Property="FontStyle"
+                                    Value="Italic" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding BlankType}" Value="{x:Static diag:Tag+BlankTypes.Word}">
-                            <Setter Property="FontStyle" Value="Normal" />
+                        <DataTrigger Binding="{Binding BlankType}"
+                                     Value="{x:Static diag:Tag+BlankTypes.Word}">
+                            <Setter Property="FontStyle"
+                                    Value="Normal" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding BlankType}"
                                      Value="{x:Static diag:Tag+BlankTypes.Icd}">
@@ -112,13 +146,13 @@
 
                             <!--<Setter Property="IsChecked"
                                     Value="False" />
-                            
+
                             <Style.Triggers>
-                                
+
                                 <DataTrigger Value="True">
                                     <DataTrigger.Binding>
                                         <MultiBinding Converter="{StaticResource EqualAllToBool}">
-                                            <Binding Path="BlankType"/>
+                                            <Binding Path="BlankType" />
                                             <Binding Path="CommandParameter" RelativeSource="{RelativeSource Self}" />
                                         </MultiBinding>
                                     </DataTrigger.Binding>
@@ -154,8 +188,7 @@
                     <MenuItem Header="Слово"
                               CommandParameter="{x:Static diag:Tag+BlankTypes.Word}"
                               IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:Tag+BlankTypes.Word}}"
-                              Style="{StaticResource convert}"
-                             />
+                              Style="{StaticResource convert}" />
                     <MenuItem Header="Комментарий"
                               CommandParameter="{x:Static diag:Tag+BlankTypes.Comment}"
                               IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:Tag+BlankTypes.Comment}}"
@@ -163,13 +196,12 @@
                     <MenuItem Header="МКБ"
                               CommandParameter="{x:Static diag:Tag+BlankTypes.Icd}"
                               IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:Tag+BlankTypes.Icd}}"
-                              Style="{StaticResource convert}"
-                               />
+                              Style="{StaticResource convert}" />
                     <MenuItem Header="Измерение"
                               CommandParameter="{x:Static diag:Tag+BlankTypes.Measure}"
                               IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:Tag+BlankTypes.Measure}}"
                               Style="{StaticResource convert}" />
-                    
+
                     <!--<Separator />-->
                     <!--<MenuItem Command="{Binding ConvertCommand}">
                         <MenuItem.Header>
@@ -190,8 +222,10 @@
                         </MenuItem.Header>
                     </MenuItem>-->
                     <Separator />
-                    <MenuItem Header="Добавить слева" Command="{Binding AddLeftCommand}" />
-                    <MenuItem Header="Добавить справа" Command="{Binding AddRightCommand}" />
+                    <MenuItem Header="Добавить слева"
+                              Command="{Binding AddLeftCommand}" />
+                    <MenuItem Header="Добавить справа"
+                              Command="{Binding AddRightCommand}" />
                     <Separator />
                     <MenuItem Command="{x:Static ApplicationCommands.Cut}" />
                     <MenuItem Command="{x:Static ApplicationCommands.Copy}" />

@@ -7,52 +7,98 @@
              xmlns:headers="clr-namespace:Diagnosis.App.Controls.Headers"
              mc:Ignorable="d"
              x:Name="header"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300"
+             d:DesignWidth="300">
     <!-- HeaderViewModel -->
     <UserControl.Resources>
-        <Style x:Key="HeaderNavButton" TargetType="{x:Type Button}">
-            <Setter Property="Width" Value="30" />
-            <Setter Property="Height" Value="30" />
-            <Setter Property="Margin" Value="5" />
+        <Style x:Key="HeaderNavButton"
+               TargetType="{x:Type Button}">
+            <Setter Property="Width"
+                    Value="30" />
+            <Setter Property="Height"
+                    Value="30" />
+            <Setter Property="Margin"
+                    Value="5" />
             <Setter Property="FocusVisualStyle">
                 <Setter.Value>
                     <Style>
                         <Setter Property="Control.Template">
                             <Setter.Value>
                                 <ControlTemplate>
-                                    <Rectangle Margin="2" SnapsToDevicePixels="True" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2" />
+                                    <Rectangle Margin="2"
+                                               SnapsToDevicePixels="True"
+                                               Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                                               StrokeThickness="1"
+                                               StrokeDashArray="1 2" />
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
                     </Style>
                 </Setter.Value>
             </Setter>
-            <Setter Property="Background" Value="#FFDDDDDD" />
-            <Setter Property="BorderBrush" Value="#FF707070" />
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="HorizontalContentAlignment" Value="Center" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="Padding" Value="1" />
+            <Setter Property="Background"
+                    Value="#FFDDDDDD" />
+            <Setter Property="BorderBrush"
+                    Value="#FF707070" />
+            <Setter Property="Foreground"
+                    Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+            <Setter Property="BorderThickness"
+                    Value="1" />
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Center" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center" />
+            <Setter Property="Padding"
+                    Value="1" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
-                        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-                            <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        <Border x:Name="border"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Background="{TemplateBinding Background}"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter x:Name="contentPresenter"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Content="{TemplateBinding Content}"
+                                              ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                              Focusable="False"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}"
+                                              RecognizesAccessKey="True"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                         </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" TargetName="border" Value="#FFBEE6FD" />
-                                <Setter Property="BorderBrush" TargetName="border" Value="#FF3C7FB1" />
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        TargetName="border"
+                                        Value="#FFBEE6FD" />
+                                <Setter Property="BorderBrush"
+                                        TargetName="border"
+                                        Value="#FF3C7FB1" />
                             </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" TargetName="border" Value="#FFC4E5F6" />
-                                <Setter Property="BorderBrush" TargetName="border" Value="#FF2C628B" />
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        TargetName="border"
+                                        Value="#FFC4E5F6" />
+                                <Setter Property="BorderBrush"
+                                        TargetName="border"
+                                        Value="#FF2C628B" />
                             </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Background" TargetName="border" Value="#FFF4F4F4" />
-                                <Setter Property="BorderBrush" TargetName="border" Value="#FFADB2B5" />
-                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="#FF838383" />
+                            <Trigger Property="IsEnabled"
+                                     Value="False">
+                                <Setter Property="Background"
+                                        TargetName="border"
+                                        Value="#FFF4F4F4" />
+                                <Setter Property="BorderBrush"
+                                        TargetName="border"
+                                        Value="#FFADB2B5" />
+                                <Setter Property="TextElement.Foreground"
+                                        TargetName="contentPresenter"
+                                        Value="#FF838383" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -68,48 +114,57 @@
                             <RowDefinition Height="auto" />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        
-                            <DockPanel DataContext="{Binding Holder}">
-                                <TextBlock Style="{StaticResource ScreenTitle}"
-                                           TextWrapping="Wrap">
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat='{}{0} {1} {2}'>
-                                            <Binding Path="LastName" />
-                                            <Binding Path="FirstName" />
-                                            <Binding Path="MiddleName" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                            </DockPanel>
 
-                            <DockPanel Grid.Row="1" DataContext="{Binding Holder}">
-                                <TextBlock Text="{Binding IsMale, Converter={StaticResource SexToSign}}"
-                                           FontSize="20"
-                                           Margin="20,0,5,0"
-                                           VerticalAlignment="Center" />
-                                <TextBlock Margin="5,0,10,0"
-                                             VerticalAlignment="Center">
+                        <DockPanel DataContext="{Binding Holder}">
+                            <TextBlock Style="{StaticResource ScreenTitle}"
+                                       TextWrapping="Wrap">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat='{}{0} {1} {2}'>
+                                        <Binding Path="LastName" />
+                                        <Binding Path="FirstName" />
+                                        <Binding Path="MiddleName" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </DockPanel>
+
+                        <DockPanel Grid.Row="1"
+                                   DataContext="{Binding Holder}">
+                            <TextBlock Text="{Binding IsMale, Converter={StaticResource SexToSign}}"
+                                       FontSize="20"
+                                       Margin="20,0,5,0"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Margin="5,0,10,0"
+                                       VerticalAlignment="Center">
                                     <TextBlock Text="{Binding Age}" />
                                     <TextBlock Text="{Binding Age, Converter={StaticResource AgeToLabel}}" />
                                 </TextBlock>
-                            </DockPanel>
+                        </DockPanel>
 
-                        <Button Height="26"  Width="26"
+                        <Button Height="26"
+                                Width="26"
                                 Command="{Binding EditCommand}"
-                                ToolTip="Редактировать" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.RowSpan="2">
+                                ToolTip="Редактировать"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Grid.RowSpan="2">
                             <Button.Style>
                                 <Style>
-                                    <Setter Property="Button.Visibility" Value="Collapsed"></Setter>
+                                    <Setter Property="Button.Visibility"
+                                            Value="Collapsed"></Setter>
 
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, Path=IsMouseOver}" Value="true">
-                                            <Setter Property="Button.Visibility" Value="Visible"></Setter>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, Path=IsMouseOver}"
+                                                     Value="true">
+                                            <Setter Property="Button.Visibility"
+                                                    Value="Visible"></Setter>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
                             <DockPanel>
-                                <Image Source="{StaticResource editImage}" Height="16" />
+                                <Image Source="{StaticResource editImage}"
+                                       Height="16" />
                             </DockPanel>
                         </Button>
                     </Grid>
@@ -121,8 +176,10 @@
                             <Run Text="Курс" />
                             <Run DataContext="{Binding Holder}">
                                 <MultiBinding Converter="{StaticResource DateIntervalLabel}">
-                                    <Binding Path="Start" Mode="OneWay" />
-                                    <Binding Path="End" Mode="OneWay" />
+                                    <Binding Path="Start"
+                                             Mode="OneWay" />
+                                    <Binding Path="End"
+                                             Mode="OneWay" />
                                 </MultiBinding>
                             </Run>
                     </TextBlock>
@@ -143,40 +200,61 @@
     </UserControl.Resources>
     <DockPanel>
         <!-- current -->
-        <DockPanel DockPanel.Dock="Top" Background="Transparent" Margin="5,0,5,5">
-            
+        <DockPanel DockPanel.Dock="Top"
+                   Background="Transparent"
+                   Margin="5,0,5,5">
+
             <ContentPresenter Content="{Binding}"
                               Tag="{Binding HolderVm}"
                               ContentTemplateSelector="{StaticResource selector}">
                 <ContentPresenter.ContextMenu>
                     <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
-                        <MenuItem Header="Редактировать" InputGestureText="F2" Command="{Binding EditCommand}" />
-                        <MenuItem Header="Добавить курс" Command="{Binding StartCourseCommand}" />
-                        <MenuItem Header="Добавить осмотр" Command="{Binding AddAppointmentCommand}" />
-                        <MenuItem Header="Удалить" InputGestureText="Del" Command="{Binding DeleteCommand}" />
+                        <MenuItem Header="Редактировать"
+                                  InputGestureText="F2"
+                                  Command="{Binding EditCommand}" />
+                        <MenuItem Header="Добавить курс"
+                                  Command="{Binding StartCourseCommand}" />
+                        <MenuItem Header="Добавить осмотр"
+                                  Command="{Binding AddAppointmentCommand}" />
+                        <MenuItem Header="Удалить"
+                                  InputGestureText="Del"
+                                  Command="{Binding DeleteCommand}" />
                     </ContextMenu>
                 </ContentPresenter.ContextMenu>
             </ContentPresenter>
         </DockPanel>
 
         <!-- prev -->
-        <DockPanel DockPanel.Dock="Left" Visibility="{Binding PrevHolder, Converter={StaticResource NullToVis}}">
-            <Button DockPanel.Dock="Left" Command="{Binding OpenPrevCommand}" Style="{StaticResource HeaderNavButton}">
+        <DockPanel DockPanel.Dock="Left"
+                   Visibility="{Binding PrevHolder, Converter={StaticResource NullToVis}}">
+            <Button DockPanel.Dock="Left"
+                    Command="{Binding OpenPrevCommand}"
+                    Style="{StaticResource HeaderNavButton}">
                 «
             </Button>
-            <headers:Holder DockPanel.Dock="Top" DataContext="{Binding PrevHolder}" TimeVisibility="Visible" />
+            <headers:Holder DockPanel.Dock="Top"
+                            DataContext="{Binding PrevHolder}"
+                            TimeVisibility="Visible" />
 
             <TextBlock Text="{Binding PrevSpan, Converter={StaticResource TimeSpanToLabel}, ConverterParameter=' ранее'}" />
         </DockPanel>
 
         <!-- next-->
-        <DockPanel DockPanel.Dock="Right" HorizontalAlignment="Right" Visibility="{Binding NextHolder, Converter={StaticResource NullToVis}}">
-            <Button DockPanel.Dock="Right" Command="{Binding OpenNextCommand}" Style="{StaticResource HeaderNavButton}">
+        <DockPanel DockPanel.Dock="Right"
+                   HorizontalAlignment="Right"
+                   Visibility="{Binding NextHolder, Converter={StaticResource NullToVis}}">
+            <Button DockPanel.Dock="Right"
+                    Command="{Binding OpenNextCommand}"
+                    Style="{StaticResource HeaderNavButton}">
                 »
             </Button>
-            <headers:Holder HorizontalAlignment="Right" DockPanel.Dock="Top" DataContext="{Binding NextHolder}" TimeVisibility="Visible" />
+            <headers:Holder HorizontalAlignment="Right"
+                            DockPanel.Dock="Top"
+                            DataContext="{Binding NextHolder}"
+                            TimeVisibility="Visible" />
 
-            <TextBlock HorizontalAlignment="Right" Text="{Binding NextSpan, Converter={StaticResource TimeSpanToLabel}, ConverterParameter='через '}" />
+            <TextBlock HorizontalAlignment="Right"
+                       Text="{Binding NextSpan, Converter={StaticResource TimeSpanToLabel}, ConverterParameter='через '}" />
         </DockPanel>
     </DockPanel>
 </UserControl>

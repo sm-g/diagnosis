@@ -3,25 +3,30 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:Diagnosis.App.Controls"
         xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
-        Title="{Binding Title}" 
-        Height="170" Width="250"
+        Title="{Binding Title}"
+        Height="170"
+        Width="250"
         beh:DialogCloser.DialogResult="{Binding DialogResult}"
         beh:FocusBehavior.FocusFirst="True"
-        ShowInTaskbar="False" ResizeMode="NoResize" WindowStyle="ToolWindow"  >
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        WindowStyle="ToolWindow">
     <Grid Margin="0,0,10,10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        
+
         <StackPanel Margin="10,10,0,0">
             <StackPanel.Resources>
-                <Style TargetType="DockPanel" BasedOn="{StaticResource formLine}" />
-                <Style TargetType="Label" BasedOn="{StaticResource label90}" />
+                <Style TargetType="DockPanel"
+                       BasedOn="{StaticResource formLine}" />
+                <Style TargetType="Label"
+                       BasedOn="{StaticResource label90}" />
             </StackPanel.Resources>
             <DockPanel>
                 <Label Content="Начало" />
-                <DatePicker Text="{Binding Course.Start, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"  />
+                <DatePicker Text="{Binding Course.Start, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
             </DockPanel>
             <DockPanel Visibility="{Binding Course.IsEnded, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Label Content="Конец" />
@@ -33,9 +38,14 @@
             </DockPanel>
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Style="{StaticResource DialogButtonsPanel}">
-            <Button Name="saveButton" IsDefault="True" Command="{Binding OkCommand}">Сохранить</Button>
-            <Button Name="cancelButton" IsCancel="True" Command="{Binding CancelCommand}">Отмена</Button>
+        <StackPanel Grid.Row="1"
+                    Style="{StaticResource DialogButtonsPanel}">
+            <Button Name="saveButton"
+                    IsDefault="True"
+                    Command="{Binding OkCommand}">Сохранить</Button>
+            <Button Name="cancelButton"
+                    IsCancel="True"
+                    Command="{Binding CancelCommand}">Отмена</Button>
         </StackPanel>
     </Grid>
 </Window>

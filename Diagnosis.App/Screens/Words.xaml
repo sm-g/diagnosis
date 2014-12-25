@@ -7,9 +7,12 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300"
+             d:DesignWidth="300">
     <UserControl.InputBindings>
-        <KeyBinding Modifiers="Control" Key="N" Command="{Binding AddCommand}" />
+        <KeyBinding Modifiers="Control"
+                    Key="N"
+                    Command="{Binding AddCommand}" />
     </UserControl.InputBindings>
     <!--WordsListViewModel-->
     <Grid Margin="10">
@@ -20,7 +23,8 @@
         </Grid.RowDefinitions>
 
         <ToolBar>
-            <Button Command="{Binding AddCommand}" ToolTip="Редактировать новое слово (Ctrl + N)">
+            <Button Command="{Binding AddCommand}"
+                    ToolTip="Редактировать новое слово (Ctrl + N)">
                 <DockPanel>
                     <Image Source="{StaticResource addImage}" />
                     <TextBlock Text="Добавить слово" />
@@ -30,21 +34,28 @@
                 <DockPanel>
                     <Image Source="{StaticResource findImage}" />
                     <TextBlock>
-                        <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" ToolTip="Искать выбранные слова ()">Искать</Run>
+                        <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}"
+                             ToolTip="Искать выбранные слова ()">Искать</Run>
                         <TextBlock Text="{Binding CheckedWords, StringFormat='{}({0})'}"
-                                    Visibility="{Binding CheckedWords, Converter={StaticResource MoreThanToVisibility}, ConverterParameter=1}" />
+                                   Visibility="{Binding CheckedWords, Converter={StaticResource MoreThanToVisibility}, ConverterParameter=1}" />
                     </TextBlock>
                 </DockPanel>
             </Button>
         </ToolBar>
 
-        <search:Filter DataContext="{Binding Filter}" Grid.Row="1"/>
+        <search:Filter DataContext="{Binding Filter}"
+                       Grid.Row="1" />
 
-        <controls:FullTree x:Name="words" ItemsSource="{Binding Words}" Grid.Row="2">
+        <controls:FullTree x:Name="words"
+                           ItemsSource="{Binding Words}"
+                           Grid.Row="2">
             <controls:FullTree.ItemContainerStyle>
-                <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}">
-                    <Setter Property="Template" Value="{StaticResource treeViewItemControl}" />
-                    <Setter Property="beh:Attached.InputBindings" Value="{StaticResource WordInputBindings}"/>
+                <Style TargetType="TreeViewItem"
+                       BasedOn="{StaticResource TreeViewItemStyle}">
+                    <Setter Property="Template"
+                            Value="{StaticResource treeViewItemControl}" />
+                    <Setter Property="beh:Attached.InputBindings"
+                            Value="{StaticResource WordInputBindings}" />
                 </Style>
             </controls:FullTree.ItemContainerStyle>
             <controls:FullTree.ItemTemplate>

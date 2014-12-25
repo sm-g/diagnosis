@@ -146,10 +146,10 @@
 
                 <ContentControl Content="{Binding Holder}"
                                 Visibility="{Binding Holder.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                  ContentTemplateSelector="{StaticResource empty}" />
+                                ContentTemplateSelector="{StaticResource empty}" />
                 <ContentControl Content="{Binding Holder}"
                                 Visibility="{Binding Holder.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}"
-                                  ContentTemplateSelector="{StaticResource withNested}" />
+                                ContentTemplateSelector="{StaticResource withNested}" />
             </StackPanel>
         </Grid>
 
@@ -209,13 +209,13 @@
                     <EventSetter Event="MouseLeftButtonDown"
                                  Handler="item_MouseLeftButtonDown" />
                     <Setter Property="Background"
-                            Value="Transparent"/>
-                    
+                            Value="Transparent" />
+
                     <Setter Property="IsSelected"
                             Value="{Binding IsSelected, Mode=TwoWay}" />
                     <Setter Property="beh:Attached.InputBindings"
                             Value="{StaticResource HRInputBindings}" />
-                    
+
                     <Setter Property="Tag"
                             Value="{Binding DataContext, ElementName=hrList}" />
                     <Setter Property="ContextMenu">

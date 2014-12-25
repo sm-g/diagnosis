@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
+             xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
@@ -12,27 +12,36 @@
              LostKeyboardFocus="UserControl_LostKeyboardFocus"
              x:Name="autocomplete"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300"
+             d:DesignWidth="300">
     <UserControl.CommandBindings>
-        <CommandBinding Command="Paste" Executed="CommandBinding_Executed" />
-        <CommandBinding Command="Copy" Executed="CommandBinding_Executed" />
-        <CommandBinding Command="Cut" Executed="CommandBinding_Executed" />
+        <CommandBinding Command="Paste"
+                        Executed="CommandBinding_Executed" />
+        <CommandBinding Command="Copy"
+                        Executed="CommandBinding_Executed" />
+        <CommandBinding Command="Cut"
+                        Executed="CommandBinding_Executed" />
     </UserControl.CommandBindings>
     <UserControl.InputBindings>
-        <KeyBinding Key="F2" Command="{Binding EditCommand}" />
+        <KeyBinding Key="F2"
+                    Command="{Binding EditCommand}" />
     </UserControl.InputBindings>
     <UserControl.Resources>
-        <InputBindingCollection x:Shared="False" x:Key="TagInputBindings">
+        <InputBindingCollection x:Shared="False"
+                                x:Key="TagInputBindings">
             <KeyBinding Key="Delete"
                         Command="{Binding DataContext.DeleteCommand,ElementName=autocomplete}" />
-            <KeyBinding Key="F" Modifiers="Alt"
+            <KeyBinding Key="F"
+                        Modifiers="Alt"
                         Command="{Binding DataContext.SendToSearchCommand,ElementName=autocomplete}" />
         </InputBindingCollection>
-        <InputBindingCollection x:Shared="False" x:Key="SuggestionInputBindings">
+        <InputBindingCollection x:Shared="False"
+                                x:Key="SuggestionInputBindings">
             <KeyBinding Key="Enter"
                         Command="{Binding DataContext.EnterCommand,ElementName=suggestions}"
                         CommandParameter="{Binding DataContext.EditingTag,ElementName=suggestions}" />
-            <KeyBinding Key="Enter" Modifiers="Shift"
+            <KeyBinding Key="Enter"
+                        Modifiers="Shift"
                         Command="{Binding DataContext.InverseEnterCommand,ElementName=suggestions}"
                         CommandParameter="{Binding DataContext.EditingTag,ElementName=suggestions}" />
             <MouseBinding MouseAction="LeftDoubleClick"
@@ -63,19 +72,31 @@
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.InputBindings>
-                <KeyBinding Key="Enter" Command="{Binding EnterCommand}" CommandParameter="{Binding EditingTag}" />
-                <KeyBinding Key="Enter" Modifiers="Shift" Command="{Binding InverseEnterCommand}" CommandParameter="{Binding EditingTag}" />
+                <KeyBinding Key="Enter"
+                            Command="{Binding EnterCommand}"
+                            CommandParameter="{Binding EditingTag}" />
+                <KeyBinding Key="Enter"
+                            Modifiers="Shift"
+                            Command="{Binding InverseEnterCommand}"
+                            CommandParameter="{Binding EditingTag}" />
             </ListBox.InputBindings>
             <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                    <Setter Property="beh:Attached.InputBindings" Value="{StaticResource TagInputBindings}" />
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    <Setter Property="Padding" Value="2" />
+                <Style TargetType="{x:Type ListBoxItem}"
+                       BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                    <Setter Property="beh:Attached.InputBindings"
+                            Value="{StaticResource TagInputBindings}" />
+                    <Setter Property="HorizontalContentAlignment"
+                            Value="Stretch" />
+                    <Setter Property="Padding"
+                            Value="2" />
 
-                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                    <Setter Property="beh:FocusExtension.Direct" Value="True" />
-                    <Setter Property="beh:FocusExtension.IsFocused" Value="{Binding IsListItemFocused, Mode=TwoWay}" />
-                    
+                    <Setter Property="IsSelected"
+                            Value="{Binding IsSelected, Mode=TwoWay}" />
+                    <Setter Property="beh:FocusExtension.Direct"
+                            Value="True" />
+                    <Setter Property="beh:FocusExtension.IsFocused"
+                            Value="{Binding IsListItemFocused, Mode=TwoWay}" />
+
                     <Setter Property="Tag"
                             Value="{Binding DataContext, ElementName=autocomplete}" />
 
@@ -87,7 +108,7 @@
                                           InputGestureText="F2"
                                           Command="{Binding PlacementTarget.Tag.EditCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <MenuItem Header="Удалить"
-                                          InputGestureText="Del"                                          
+                                          InputGestureText="Del"
                                           Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <MenuItem Header="Искать"
                                           InputGestureText="Alt + F"
@@ -124,7 +145,6 @@
                                 <MenuItem Command="{x:Static ApplicationCommands.Cut}" />
                                 <MenuItem Command="{x:Static ApplicationCommands.Copy}" />
                                 <MenuItem Command="{x:Static ApplicationCommands.Paste}" />
-                          
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>
@@ -132,33 +152,42 @@
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <search:Tag MinWidth="40" LostKeyboardFocus="Tag_LostKeyboardFocus" GotKeyboardFocus="Tag_GotKeyboardFocus" LostFocus="Tag_LostFocus" />
-                    
+                    <search:Tag MinWidth="40"
+                                LostKeyboardFocus="Tag_LostKeyboardFocus"
+                                GotKeyboardFocus="Tag_GotKeyboardFocus"
+                                LostFocus="Tag_LostFocus" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <Popup x:Name="popup" Height="Auto" Width="auto"
-                StaysOpen="True"
-                Placement="Bottom"
-                GotFocus="popup_GotFocus"
-                LostFocus="popup_LostFocus"
-                IsOpen="{Binding IsPopupOpen}"
-                HorizontalAlignment="Left" Grid.RowSpan="2">
+        <Popup x:Name="popup"
+               Height="Auto"
+               Width="auto"
+               StaysOpen="True"
+               Placement="Bottom"
+               GotFocus="popup_GotFocus"
+               LostFocus="popup_LostFocus"
+               IsOpen="{Binding IsPopupOpen}"
+               HorizontalAlignment="Left"
+               Grid.RowSpan="2">
 
             <ListBox x:Name="suggestions"
-                        MaxHeight="100"
-                        FocusManager.IsFocusScope="True"
-                        ItemsSource="{Binding Suggestions}"
-                        SelectedItem="{Binding SelectedSuggestion, Mode=TwoWay}"
-                        SelectionChanged="suggestions_SelectionChanged"
-                        HorizontalContentAlignment="Stretch">
+                     MaxHeight="100"
+                     FocusManager.IsFocusScope="True"
+                     ItemsSource="{Binding Suggestions}"
+                     SelectedItem="{Binding SelectedSuggestion, Mode=TwoWay}"
+                     SelectionChanged="suggestions_SelectionChanged"
+                     HorizontalContentAlignment="Stretch">
                 <ListBox.InputBindings>
-                    <KeyBinding Key="Enter" Command="{Binding EnterCommand}" CommandParameter="{Binding EditingTag}" />
+                    <KeyBinding Key="Enter"
+                                Command="{Binding EnterCommand}"
+                                CommandParameter="{Binding EditingTag}" />
                 </ListBox.InputBindings>
                 <ListBox.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                        <Setter Property="beh:Attached.InputBindings" Value="{StaticResource SuggestionInputBindings}" />
+                    <Style TargetType="{x:Type ListBoxItem}"
+                           BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                        <Setter Property="beh:Attached.InputBindings"
+                                Value="{StaticResource SuggestionInputBindings}" />
                     </Style>
                 </ListBox.ItemContainerStyle>
             </ListBox>

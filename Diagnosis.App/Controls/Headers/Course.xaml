@@ -5,14 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:conv="clr-namespace:Diagnosis.App.Converters"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300"
+             d:DesignWidth="300">
     <!-- Course-->
     <StackPanel x:Name="description">
         <TextBlock>
                     <Run>
                          <MultiBinding Converter="{StaticResource DateIntervalLabel}">
-                            <Binding Path="Start" Mode="OneWay" />
-                            <Binding Path="End" Mode="OneWay" />
+                            <Binding Path="Start"
+                                     Mode="OneWay" />
+                            <Binding Path="End"
+                                     Mode="OneWay" />
                         </MultiBinding>
                     </Run>
         </TextBlock>

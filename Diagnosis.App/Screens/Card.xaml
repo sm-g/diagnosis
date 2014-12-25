@@ -13,7 +13,8 @@
              x:Name="card"
              mc:Ignorable="d"
              d:DataContext="{DynamicResource Context}"
-             d:DesignHeight="300" d:DesignWidth="600">
+             d:DesignHeight="300"
+             d:DesignWidth="600">
     <!-- CardViewModel -->
     <UserControl.Resources>
         <ResourceDictionary>
@@ -22,13 +23,16 @@
     </UserControl.Resources>
 
     <UserControl.InputBindings>
-        <KeyBinding Modifiers="Control" Key="Enter" Command="{Binding HrList.AddHealthRecordCommand}" />
+        <KeyBinding Modifiers="Control"
+                    Key="Enter"
+                    Command="{Binding HrList.AddHealthRecordCommand}" />
     </UserControl.InputBindings>
 
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="73*" />
-            <ColumnDefinition Width="217*" />
+            <ColumnDefinition Width="1*"
+                              MinWidth="150" />
+            <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -36,24 +40,32 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <controls:FullTree ItemsSource="{Binding Navigator.TopCardItems}" Grid.RowSpan="3">
+        <controls:FullTree ItemsSource="{Binding Navigator.TopCardItems}"
+                           Grid.RowSpan="3">
             <controls:FullTree.ItemContainerStyle>
-                <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}">
-                    <Setter Property="beh:Attached.InputBindings" Value="{StaticResource CardElementsInputBindings}" />
-                    <Setter Property="FontWeight" Value="Normal" />
+                <Style TargetType="TreeViewItem"
+                       BasedOn="{StaticResource TreeViewItemStyle}">
+                    <Setter Property="beh:Attached.InputBindings"
+                            Value="{StaticResource CardElementsInputBindings}" />
+                    <Setter Property="FontWeight"
+                            Value="Normal" />
 
                     <Style.Triggers>
                         <DataTrigger Value="True">
                             <DataTrigger.Binding>
                                 <MultiBinding Converter="{StaticResource EqualAllToBool}">
-                                    <Binding Path="DataContext.Navigator.Current" RelativeSource="{RelativeSource AncestorType=screen:Card}" />
+                                    <Binding Path="DataContext.Navigator.Current"
+                                             RelativeSource="{RelativeSource AncestorType=screen:Card}" />
                                     <Binding />
                                 </MultiBinding>
                             </DataTrigger.Binding>
-                            <Setter Property="FontWeight" Value="Bold" />
+                            <Setter Property="FontWeight"
+                                    Value="Bold" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding IsHighlighted}" Value="True">
-                            <Setter Property="Background" Value="LightCyan" />
+                        <DataTrigger Binding="{Binding IsHighlighted}"
+                                     Value="True">
+                            <Setter Property="Background"
+                                    Value="LightCyan" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -65,16 +77,23 @@
             </controls:FullTree.ItemTemplate>
             <controls:FullTree.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Добавить курс" Command="{Binding StartCourseCommand}" />
-                    <MenuItem Header="Добавить осмотр" Command="{Binding AddAppointmentCommand}" />
+                    <MenuItem Header="Добавить курс"
+                              Command="{Binding StartCourseCommand}" />
+                    <MenuItem Header="Добавить осмотр"
+                              Command="{Binding AddAppointmentCommand}" />
                 </ContextMenu>
             </controls:FullTree.ContextMenu>
         </controls:FullTree>
-        <card:Header DataContext="{Binding Header}" Grid.Column="1" Margin="0,0,0,10"/>
-        <card:HealthRecordsList DataContext="{Binding HrList}" Grid.Column="1" Grid.Row="1" />
+        <card:Header DataContext="{Binding Header}"
+                     Grid.Column="1"
+                     Margin="0,0,0,10" />
+        <card:HealthRecordsList DataContext="{Binding HrList}"
+                                Grid.Column="1"
+                                Grid.Row="1" />
 
-        <Border Grid.Row="2"  Grid.Column="1"
-                BorderThickness="0,1,0,0" SnapsToDevicePixels="True"
+        <Border Grid.Row="2" Grid.Column="1"
+                BorderThickness="0,1,0,0"
+                SnapsToDevicePixels="True"
                 Background="{StaticResource hrEditorBackgroundBrush}"
                 Visibility="{Binding HrEditor.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Border.BorderBrush>

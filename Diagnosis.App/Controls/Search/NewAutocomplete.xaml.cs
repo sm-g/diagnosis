@@ -93,6 +93,7 @@ namespace Diagnosis.App.Controls.Search
                 //       Vm.CompleteOnLostFocus(Vm.EditingTag); // также в HrEditor.CloseCurrentHr()
             }
         }
+
         private void UserControl_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             var outs = IsFocusOutside();
@@ -103,7 +104,6 @@ namespace Diagnosis.App.Controls.Search
                 if (Vm != null && Vm.EditingTag != null)
                     Vm.CompleteOnLostFocus(Vm.EditingTag); // также в HrEditor.CloseCurrentHr()
             }
-
         }
 
         private void input_GotFocus(object sender, RoutedEventArgs e)
@@ -172,6 +172,5 @@ namespace Diagnosis.App.Controls.Search
         }
 
         #endregion focus stuff
-
     }
 }

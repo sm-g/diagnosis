@@ -77,7 +77,6 @@
                         Visibility="{Binding DateOffset.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
                 <TextBlock Grid.Row="1"
                            Text="{Binding DateOffsetString, Mode=OneWay}" />
-
             </StackPanel>
         </Grid>
 

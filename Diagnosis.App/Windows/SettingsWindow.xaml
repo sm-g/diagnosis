@@ -4,13 +4,18 @@
         xmlns:controls="clr-namespace:Diagnosis.App.Controls"
         xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
         beh:DialogCloser.DialogResult="{Binding DialogResult}"
-        Title="Настройки" Height="150" Width="300" ShowInTaskbar="False" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+        Title="Настройки"
+        Height="150"
+        Width="300"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner">
     <Window.Resources>
     </Window.Resources>
     <Grid Margin="0,0,10,10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
         <ListBox Margin="10,10,0,0">
@@ -22,9 +27,14 @@
             </CheckBox>
         </ListBox>
 
-        <StackPanel Grid.Row="1" Style="{StaticResource DialogButtonsPanel}">
-            <Button Name="saveButton" IsDefault="True" Command="{Binding OkCommand}">Сохранить</Button>
-            <Button Name="cancelButton" IsCancel="True" Command="{Binding CancelCommand}">Отмена</Button>
+        <StackPanel Grid.Row="1"
+                    Style="{StaticResource DialogButtonsPanel}">
+            <Button Name="saveButton"
+                    IsDefault="True"
+                    Command="{Binding OkCommand}">Сохранить</Button>
+            <Button Name="cancelButton"
+                    IsCancel="True"
+                    Command="{Binding CancelCommand}">Отмена</Button>
         </StackPanel>
     </Grid>
 </Window>

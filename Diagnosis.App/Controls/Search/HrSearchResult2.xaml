@@ -10,9 +10,9 @@
              mc:Ignorable="d"
              x:Name="searchResult"
              Background="Transparent"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300"
+             d:DesignWidth="300">
     <UserControl.Resources>
-        
     </UserControl.Resources>
     <!--HrHolderSearchResultViewModel-->
 
@@ -21,12 +21,15 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        
+
         <headers:Holder DataContext="{Binding Holder}" />
-        <controls:CommaList ItemsSource="{Binding HealthRecords}" Visibility="{Binding HealthRecords.Count, Converter={StaticResource MoreThanToVisibility}}" Grid.Row="2">
+        <controls:CommaList ItemsSource="{Binding HealthRecords}"
+                            Visibility="{Binding HealthRecords.Count, Converter={StaticResource MoreThanToVisibility}}"
+                            Grid.Row="2">
             <controls:CommaList.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Converter={StaticResource hrItems}}" TextWrapping="Wrap">
+                    <TextBlock Text="{Binding Converter={StaticResource hrItems}}"
+                               TextWrapping="Wrap">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Style.Triggers>
@@ -34,11 +37,14 @@
                                         <DataTrigger.Binding>
                                             <MultiBinding Converter="{StaticResource inList}">
                                                 <Binding />
-                                                <Binding Path="DataContext.FoundHealthRecords" RelativeSource="{RelativeSource AncestorType=UserControl,AncestorLevel=2}" />
+                                                <Binding Path="DataContext.FoundHealthRecords"
+                                                         RelativeSource="{RelativeSource AncestorType=UserControl,AncestorLevel=2}" />
                                             </MultiBinding>
                                         </DataTrigger.Binding>
-                                        <Setter Property="Background" Value="{StaticResource searchHighlightBackgroundBrush}" />
-                                        <Setter Property="Foreground" Value="{StaticResource searchHighlightForegroundBrush}" />
+                                        <Setter Property="Background"
+                                                Value="{StaticResource searchHighlightBackgroundBrush}" />
+                                        <Setter Property="Foreground"
+                                                Value="{StaticResource searchHighlightForegroundBrush}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
