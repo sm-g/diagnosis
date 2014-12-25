@@ -28,36 +28,7 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <Grid Margin="0,0,10,0">
-            <!--<StackPanel VerticalAlignment="Center" Visibility="{Binding Patient.NoCourses, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,0,10">
-                <TextBlock Text="У пациента нет курсов"
-                            HorizontalAlignment="Center"
-                            Visibility="{Binding Patient.NoCourses, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <Button VerticalAlignment="Center" Command="{Binding StartCourseCommand}">_Начать запись</Button>
-            </StackPanel>
-
-            <StackPanel VerticalAlignment="Top" Visibility="{Binding Patient.NoCourses, Converter={StaticResource NegBooleanToVisibilityConverter}}" Margin="0,0,0,10">
-                <TextBlock Text="Курсы" Margin="0,0,10,5" />
-                <ListBox ItemsSource="{Binding Patient.Courses}" SelectedIndex="-1">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <card:Course />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListBoxItem}">
-                            <Setter Property="beh:Attached.InputBindings" Value="{StaticResource CourseInputBindings}" />
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                </ListBox>
-                <Button Command="{Binding StartCourseCommand}"
-                        VerticalAlignment="Center"
-                        Content="_Начать курс" />
-            </StackPanel>-->
-        </Grid>
-
-        <ScrollViewer Grid.Column="1"
-                      VerticalScrollBarVisibility="Auto">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel  DataContext="{Binding Patient}">
                 <StackPanel.Resources>
                     <Style TargetType="DockPanel"

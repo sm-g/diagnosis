@@ -224,9 +224,6 @@
     <Compile Include="Behaviors\MultiSelectorBehaviours.cs" />
     <Compile Include="Behaviors\RowDblClick.cs" />
     <Compile Include="Behaviors\TwoListSynchronizer.cs" />
-    <Compile Include="Controls\CardParts\Appointment.xaml.cs">
-      <DependentUpon>Appointment.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\CardParts\Header.xaml.cs">
       <DependentUpon>Header.xaml</DependentUpon>
     </Compile>
@@ -255,9 +252,6 @@
     </Compile>
     <Compile Include="Controls\Common\AlignableWrapPanel.cs" />
     <Compile Include="Controls\Common\WrapPanelLastChildFill.cs" />
-    <Compile Include="Controls\CardParts\AppointmentsTabs.xaml.cs">
-      <DependentUpon>AppointmentsTabs.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\CardParts\SpecialCaseDataTemplateSelector.cs" />
     <Compile Include="Controls\Common\UndoOverlay.xaml.cs">
       <DependentUpon>UndoOverlay.xaml</DependentUpon>
@@ -279,12 +273,6 @@
     </Compile>
     <Compile Include="Controls\CardParts\HealthRecord.xaml.cs">
       <DependentUpon>HealthRecord.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\CardParts\Course.xaml.cs">
-      <DependentUpon>Course.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\CardParts\PatientHeader.xaml.cs">
-      <DependentUpon>PatientHeader.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Helpers\ParentFinder.cs" />
     <Compile Include="Controls\Search\NewAutocomplete.xaml.cs">
@@ -404,14 +392,6 @@
     <Compile Include="Windows\Shell\MenuBar.xaml.cs">
       <DependentUpon>MenuBar.xaml</DependentUpon>
     </Compile>
-    <Page Include="Controls\CardParts\AppointmentsTabs.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\CardParts\Appointment.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Controls\CardParts\Header.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -459,14 +439,6 @@
     <Page Include="Controls\CardParts\HealthRecord.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\CardParts\Course.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\CardParts\Patient.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Search\NewAutocomplete.xaml">
       <SubType>Designer</SubType>
