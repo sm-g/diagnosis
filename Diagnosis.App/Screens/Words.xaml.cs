@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using Diagnosis.App.Controls;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Diagnosis.App.Screens
 {
@@ -7,10 +9,12 @@ namespace Diagnosis.App.Screens
         public Words()
         {
             InitializeComponent();
-            words.TreeView.SelectedItemChanged += (s, e) =>
-            {
-                //  scroll into view
-            };
+        }
+
+        private void dataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            if (dataGrid.SelectedCells.Count > 0)
+                Keyboard.Focus(DataGridHelper.GetDataGridCell(dataGrid.SelectedCells[0]));
         }
     }
 }

@@ -30,6 +30,7 @@ namespace Diagnosis.ViewModels.Screens
 
             _filter = new FilterViewModel<Patient>(PatientQuery.StartingWith(Session));
             saver = new Saver(Session);
+            SelectedPatients = new ObservableCollection<Patient>();
 
             Filter.Filtered += (s, e) =>
             {
@@ -37,7 +38,6 @@ namespace Diagnosis.ViewModels.Screens
             };
             Filter.Clear(); // показываем всех
 
-            SelectedPatients = new ObservableCollection<Patient>();
             SelectLastPatient();
 
             Title = "Пациенты";

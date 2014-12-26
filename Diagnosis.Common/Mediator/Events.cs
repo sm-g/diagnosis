@@ -58,10 +58,11 @@ namespace Diagnosis.Common
         HideOverlay,
         Shutdown,
         DeleteHolder,
+        DeleteWord,
         WordPersisted,
         WordSaved,
         PatientSaved,
-        DoctorSaved
+        DoctorSaved,
     }
 
     public static class EventAggragatorExtensions

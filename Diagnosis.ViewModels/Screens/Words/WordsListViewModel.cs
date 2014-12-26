@@ -9,6 +9,7 @@ using System.Linq;
 using System.Windows.Data;
 using NHibernate.Linq;
 using System.Windows.Input;
+using Diagnosis.Data;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -17,11 +18,14 @@ namespace Diagnosis.ViewModels.Screens
         private FilterViewModel<Word> _filter;
         private ObservableCollection<WordViewModel> _words;
         private bool _noWords;
-        private EventMessageHandler handler;
-
+        private WordViewModel _current;
+        EventMessageHandlersManager emhManager;
+        private Saver saver;
         public WordsListViewModel()
         {
             _filter = new FilterViewModel<Word>(WordQuery.StartingWith(Session));
+            saver = new Saver(Session);
+            SelectedWords = new ObservableCollection<WordViewModel>();
 
             Filter.Filtered += (s, e) =>
             {
@@ -29,20 +33,32 @@ namespace Diagnosis.ViewModels.Screens
             };
             Filter.Clear(); // показываем все
 
-            handler = this.Subscribe(Events.WordSaved, (e) =>
-            {
-                // новое слово или изменившееся с учетом фильтра
-                Filter.Filter();
-                var saved = e.GetValue<Word>(MessageKeys.Word);
+            emhManager = new EventMessageHandlersManager(new[] {
+                this.Subscribe(Events.WordSaved, (e) =>
+                {
+                    // новое слово или изменившееся с учетом фильтра
+                    Filter.Filter();
+                    var saved = e.GetValue<Word>(MessageKeys.Word);
 
-                // сохраненное слово с таким текстом
-                var persisted = WordQuery.ByTitle(Session)(saved.Title);
+                    // сохраненное слово с таким текстом
+                    var persisted = WordQuery.ByTitle(Session)(saved.Title);
 
-                var vm = Words.Where(w => w.word == persisted).FirstOrDefault();
-                if (vm != null)
-                    vm.IsSelected = true;
+                    var vm = Words.Where(w => w.word == persisted).FirstOrDefault();
+                    if (vm != null)
+                        vm.IsSelected = true;
 
-                NoWords = false;
+                    NoWords = false;
+                }),
+                this.Subscribe(Events.DeleteWord, (e) =>
+                {
+                    var w = e.GetValue<Word>(MessageKeys.Word);
+                    saver.Delete(w);
+
+                    // убираем удаленных из списка
+                    Filter.Filter();
+
+                    NoWords = !Session.Query<Word>().Any();
+                })
             });
 
             Title = "Словарь";
@@ -67,6 +83,22 @@ namespace Diagnosis.ViewModels.Screens
                 return _words;
             }
         }
+        public WordViewModel SelectedWord
+        {
+            get
+            {
+                return _current;
+            }
+            set
+            {
+                if (_current != value)
+                {
+                    _current = value;
+                    OnPropertyChanged(() => SelectedWord);
+                }
+            }
+        }
+        public ObservableCollection<WordViewModel> SelectedWords { get; private set; }
 
         public RelayCommand<WordViewModel> AddCommand
         {
@@ -79,7 +111,16 @@ namespace Diagnosis.ViewModels.Screens
                         });
             }
         }
-
+        public ICommand EditCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    this.Send(Events.EditWord, SelectedWord.word.AsParams(MessageKeys.Word));
+                }, () => SelectedWord != null);
+            }
+        }
         public ICommand SendToSearchCommand
         {
             get
@@ -90,6 +131,21 @@ namespace Diagnosis.ViewModels.Screens
                                 .Select(w => w.word)
                                 .AsParams(MessageKeys.HrItemObjects));
                         }, () => CheckedWordsCount > 0);
+            }
+        }
+        public ICommand DeleteCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    var toDel = SelectedWords
+                        .Where(p => p.DeleteCommand.CanExecute(null))
+                        .ToArray();
+
+                    //
+
+                }, () => SelectedWords.Any(p => p.DeleteCommand.CanExecute(null)));
             }
         }
 
@@ -120,7 +176,8 @@ namespace Diagnosis.ViewModels.Screens
         }
         private void MakeVms(ObservableCollection<Word> results)
         {
-            var vms = results.Select(w => Words.Where(vm => vm.word == w)
+            var vms = results.Select(w => Words
+                .Where(vm => vm.word == w)
                 .FirstOrDefault() ?? new WordViewModel(w));
 
             Words.SyncWith(vms);
@@ -130,7 +187,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (disposing)
             {
-                handler.Dispose();
+                emhManager.Dispose();
             }
             base.Dispose(disposing);
         }

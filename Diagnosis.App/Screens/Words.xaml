@@ -9,12 +9,20 @@
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300">
+    <!--WordsListViewModel-->
     <UserControl.InputBindings>
         <KeyBinding Modifiers="Control"
                     Key="N"
                     Command="{Binding AddCommand}" />
+        <KeyBinding Modifiers="Alt"
+                    Key="F"
+                    Command="{Binding SendToSearchCommand}" />
+        <KeyBinding Key="Delete"
+                    Command="{Binding DeleteCommand}" />
+        <KeyBinding Key="F2"
+                    Command="{Binding SelectedWord.EditCommand}" />
     </UserControl.InputBindings>
-    <!--WordsListViewModel-->
+
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -35,9 +43,7 @@
                     <Image Source="{StaticResource findImage}" />
                     <TextBlock>
                         <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}"
-                             ToolTip="Искать выбранные слова ()">Искать</Run>
-                        <TextBlock Text="{Binding CheckedWords, StringFormat='{}({0})'}"
-                                   Visibility="{Binding CheckedWords, Converter={StaticResource MoreThanToVisibility}, ConverterParameter=1}" />
+                             ToolTip="Искать выбранные слова (Alt + F)">Искать</Run>
                     </TextBlock>
                 </DockPanel>
             </Button>
@@ -46,23 +52,84 @@
         <search:Filter DataContext="{Binding Filter}"
                        Grid.Row="1" />
 
-        <controls:FullTree x:Name="words"
-                           ItemsSource="{Binding Words}"
-                           Grid.Row="2">
-            <controls:FullTree.ItemContainerStyle>
-                <Style TargetType="TreeViewItem"
-                       BasedOn="{StaticResource TreeViewItemStyle}">
-                    <Setter Property="Template"
-                            Value="{StaticResource TreeViewItemRightToggleControl}" />
-                    <Setter Property="beh:Attached.InputBindings"
-                            Value="{StaticResource WordInputBindings}" />
+        <!-- Set VirtualizationMode for IsSelected binding -->
+        <DataGrid x:Name="dataGrid"
+                  Grid.Row="2"
+                  ItemsSource="{Binding Words}"
+                  SelectedItem="{Binding SelectedWord}"
+                  beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedWords}"
+                  Visibility="{Binding NoWords, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                  CellStyle="{StaticResource CellStyle}"
+                  GridLinesVisibility="None"
+                  Margin="0,10,0,0"
+                  FontSize="15"
+                  IsReadOnly="True"
+                  SelectionUnit="FullRow"
+                  SelectionMode="Extended"
+                  AutoGenerateColumns="False"
+                  VirtualizingStackPanel.VirtualizationMode="Standard"
+                  SelectedCellsChanged="dataGrid_SelectedCellsChanged">
+            <DataGrid.Resources>
+                <Style x:Key="Checkbox"
+                       TargetType="{x:Type CheckBox}"
+                       BasedOn="{StaticResource {x:Type CheckBox}}">
+                    <Setter Property="Focusable"
+                            Value="False" />
                 </Style>
-            </controls:FullTree.ItemContainerStyle>
-            <controls:FullTree.ItemTemplate>
-                <DataTemplate>
-                    <controls:WordTreeItem />
-                </DataTemplate>
-            </controls:FullTree.ItemTemplate>
-        </controls:FullTree>
+                <Style x:Key="RightTextBlock"
+                       TargetType="{x:Type TextBlock}"
+                       BasedOn="{StaticResource {x:Type TextBlock}}">
+                    <Setter Property="HorizontalAlignment"
+                            Value="Right" />
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn Header=""
+                                        IsReadOnly="True"
+                                        ElementStyle="{StaticResource Checkbox}"
+                                        Binding="{Binding IsChecked, Mode=OneWay}" />
+                <DataGridTextColumn Header="Текст"
+                                    IsReadOnly="True"
+                                    Binding="{Binding Title, Mode=OneWay}" />
+                <DataGridTextColumn Header="Использовано"
+                                    IsReadOnly="True"
+                                    ElementStyle="{StaticResource RightTextBlock}"
+                                    Binding="{Binding Usage, Mode=OneWay}" />
+                <DataGridTextColumn Header="Категория"
+                                    IsReadOnly="True"
+                                    Binding="{Binding DefaultCategory, Mode=OneWay}" />
+            </DataGrid.Columns>
+            <DataGrid.InputBindings>
+                <KeyBinding Key="Enter"
+                            Command="{Binding EditCommand}" />
+            </DataGrid.InputBindings>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="IsSelected"
+                            Value="{Binding IsSelected, Mode=TwoWay}" />
+                    <Setter Property="beh:RowDblClick.DoubleClickCommand"
+                            Value="{Binding ElementName=dataGrid, Path=DataContext.EditCommand}" />
+                    <Setter Property="Tag"
+                            Value="{Binding DataContext, ElementName=dataGrid}" />
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu>
+                                <!--WordsViewModel-->
+                                <MenuItem Header="Редактировать"
+                                          InputGestureText="F2"
+                                          Command="{Binding EditCommand}" />
+                                <!--WordsListViewModel-->
+                                <MenuItem Header="Искать"
+                                          InputGestureText="Alt + F"
+                                          Command="{Binding PlacementTarget.Tag.SendToSearchCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                <MenuItem Header="Удалить"
+                                          InputGestureText="Del"
+                                          Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
     </Grid>
 </UserControl>

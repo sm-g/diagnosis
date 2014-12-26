@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
+using Remotion.Linq.Collections;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
@@ -15,6 +16,8 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Requires(w != null);
             word = w;
             word.PropertyChanged += word_PropertyChanged;
+
+            HealthRecords = new ObservableCollection<HealthRecord>();
         }
 
         #region Model
@@ -31,6 +34,8 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public ObservableCollection<HealthRecord> HealthRecords { get; private set; }
+
         public HrCategory DefaultCategory
         {
             get
@@ -43,8 +48,50 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        #endregion Model
+        private int _usage;
+        public int Usage
+        {
+            get
+            {
+                return _usage;
+            }
+            set
+            {
+                if (_usage != value)
+                {
+                    _usage = value;
+                    OnPropertyChanged(() => Usage);
+                }
+            }
+        }
 
+        #endregion Model
+        #region CheckableBase
+
+        private bool checkedBySelection;
+
+        protected override void OnSelectedChanged()
+        {
+            base.OnSelectedChanged();
+
+            // check when select and uncheck when selection goes away
+            // except was checked by checkbox before
+            if (!IsChecked || checkedBySelection)
+            {
+                checkedBySelection = IsSelected;
+                IsChecked = IsSelected;
+            }
+        }
+
+        protected override void OnCheckedChanged()
+        {
+            base.OnCheckedChanged();
+
+            // убираем выделение при снятии флажка
+            IsSelected = IsChecked;
+        }
+
+        #endregion CheckableBase
         public ICommand SendToSearchCommand
         {
             get
@@ -66,6 +113,20 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
+        public ICommand DeleteCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    if (HealthRecords.Count == 0)
+                    {
+                        this.Send(Events.DeleteWord, word.AsParams(MessageKeys.Word));
+                    }
+
+                }, () => HealthRecords.Count == 0);
+            }
+        }
 
         public bool Unsaved
         {
@@ -76,7 +137,6 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         public bool HasExistingTitle { get; set; }
-
         public override string this[string columnName]
         {
             get
