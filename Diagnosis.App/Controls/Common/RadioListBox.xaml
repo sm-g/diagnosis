@@ -17,7 +17,8 @@
         </Style>
 
         <Style x:Key="checkbox"
-               TargetType="CheckBox">
+               TargetType="CheckBox"
+               BasedOn="{StaticResource {x:Type CheckBox}}">
             <EventSetter Event="Checked"
                          Handler="chkBox_CheckedChanged" />
             <EventSetter Event="Unchecked"
@@ -81,7 +82,7 @@
             <Border BorderThickness="0"
                     Padding="1,1,1,1"
                     Background="Transparent"
-                    Name="theBorder"
+                    Name="Border"
                     SnapsToDevicePixels="True">
                 <ScrollViewer Padding="{TemplateBinding Control.Padding}"
                               Focusable="False">
