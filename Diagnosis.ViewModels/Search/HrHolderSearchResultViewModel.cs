@@ -136,6 +136,7 @@ namespace Diagnosis.ViewModels.Search
             return (from hr in hrs
                     where holderOf(hr) != null
                     group hr by holderOf(hr) into g
+                    orderby g.Key
                     select new HrHolderSearchResultViewModel(g.Key, g)).ToList();
         }
 
