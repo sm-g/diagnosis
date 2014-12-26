@@ -141,7 +141,7 @@ namespace Diagnosis.ViewModels.Screens
                     }
                     else if (holder is Course)
                     {
-                        var app = (holder as Course).Appointments.LastOrDefault();
+                        var app = (holder as Course).GetOrderedAppointments().LastOrDefault();
                         if (app != null)
                             this.Send(Events.OpenAppointment, app.AsParams(MessageKeys.Appointment));
                     }

@@ -21,7 +21,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (_appointments == null)
                 {
-                    var appVMs = course.Appointments.Select(app => new ShortAppointmentViewModel(app));
+                    var appVMs = course.GetOrderedAppointments()
+                        .Select(app => new ShortAppointmentViewModel(app));
 
                     _appointments = new ObservableCollection<ShortAppointmentViewModel>(appVMs);
 

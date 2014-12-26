@@ -210,7 +210,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             OpenPatient(patient);
 
-            var lastCourse = patient.Courses.FirstOrDefault();
+            var lastCourse = patient.GetOrderedCourses().FirstOrDefault();
             if (lastCourse == null)
             {
                 AuthorityController.CurrentDoctor.StartCourse(patient);
@@ -220,7 +220,7 @@ namespace Diagnosis.ViewModels.Screens
                 OpenedCourse = lastCourse;
             }
 
-            var lastApp = OpenedCourse.Appointments.LastOrDefault();
+            var lastApp = OpenedCourse.GetOrderedAppointments().LastOrDefault();
             if (lastApp == null)
             {
                 OpenedCourse.AddAppointment(AuthorityController.CurrentDoctor);
@@ -263,7 +263,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (course == null)
                 {
                     OpenedCourse = patient.GetOrderedCourses()
-                        .LastOrDefault(); // последний курс
+                        .LastOrDefault();
                 }
                 else
                 {
@@ -293,8 +293,7 @@ namespace Diagnosis.ViewModels.Screens
                 Appointment app = GetLastOpenedFor(course);
                 if (app == null)
                 {
-                    OpenedAppointment = course.Appointments
-                        .OrderBy(a => a.DateAndTime)
+                    OpenedAppointment = course.GetOrderedAppointments()
                         .LastOrDefault();
                 }
                 else

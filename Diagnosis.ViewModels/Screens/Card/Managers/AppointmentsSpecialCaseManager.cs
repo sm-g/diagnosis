@@ -23,7 +23,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     IList<SpecialCaseItem> wrappers;
 
-                    wrappers = course.Appointments
+                    wrappers = course.GetOrderedAppointments()
                         .Select(app => new ShortAppointmentViewModel(app))
                         .Select(vm => new SpecialCaseItem(vm))
                         .ToList();

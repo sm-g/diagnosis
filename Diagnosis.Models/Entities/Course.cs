@@ -2,6 +2,7 @@
 using FluentValidation.Results;
 using Iesi.Collections.Generic;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
@@ -115,6 +116,14 @@ namespace Diagnosis.Models
         {
             Contract.Requires(!IsEnded);
             End = DateTime.Now;
+        }
+
+        /// <summary>
+        /// Осмотры, отсорированные по дате. Первый — самый ранний осмотр.
+        /// </summary>
+        public virtual IEnumerable<Appointment> GetOrderedAppointments()
+        {
+            return Appointments.OrderBy(a => a.DateAndTime);
         }
 
         public override string ToString()

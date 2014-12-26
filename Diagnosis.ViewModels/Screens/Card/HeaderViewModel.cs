@@ -188,8 +188,8 @@ namespace Diagnosis.ViewModels.Screens
         private void ShowApps()
         {
             var app = Holder as Appointment;
-            var apps = new LinkedList<Appointment>(app.Course.Appointments
-                    .OrderBy(c => c.DateAndTime));
+            var apps = app.Course.GetOrderedAppointments();
+
             var triad = apps
                     .FindTriad(a => a == app)
                     .ToList();

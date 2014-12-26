@@ -32,7 +32,9 @@ namespace Diagnosis.ViewModels.Screens
             {
                 var course = holder as Course;
 
-                var appVMs = course.Appointments.Select(app => new CardItemViewModel(app.Actual as Appointment));
+                var appVMs = course.GetOrderedAppointments()
+                    .Select(app => new CardItemViewModel(app.Actual as Appointment))
+                    .ToList();
 
                 foreach (var item in appVMs)
                 {
