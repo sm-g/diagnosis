@@ -26,8 +26,8 @@ namespace Diagnosis.ViewModels.Screens
                 if (_courses == null)
                 {
                     IList<ShortCourseViewModel> courseVMs;
-                    courseVMs = patient.Courses
-                       .OrderByDescending(c => c, new CompareCourseByDate())
+                    courseVMs = patient.GetOrderedCourses()
+                       .Reverse()
                        .Select(i => new ShortCourseViewModel(i))
                        .ToList();
 

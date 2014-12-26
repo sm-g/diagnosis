@@ -201,8 +201,7 @@ namespace Diagnosis.ViewModels.Screens
         private void ShowCourses()
         {
             var course = Holder as Course;
-            var courses = course.Patient.Courses
-                    .OrderBy(c => c, new CompareCourseByDate());
+            var courses = course.Patient.GetOrderedCourses();
 
             var triad = courses
                   .FindTriad(a => a == course)

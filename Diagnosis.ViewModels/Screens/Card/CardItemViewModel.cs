@@ -18,8 +18,8 @@ namespace Diagnosis.ViewModels.Screens
             if (holder is Patient)
             {
                 var patient = holder as Patient;
-                var courseVMs = patient.Courses
-                       .OrderByDescending(c => c, new CompareCourseByDate())
+                var courseVMs = patient.GetOrderedCourses()
+                       .Reverse()
                        .Select(i => new CardItemViewModel(i.Actual as Course))
                        .ToList();
                 foreach (var item in courseVMs)

@@ -262,8 +262,7 @@ namespace Diagnosis.ViewModels.Screens
                 Course course = GetLastOpenedFor(patient);
                 if (course == null)
                 {
-                    OpenedCourse = patient.Courses
-                        .OrderBy(c => c, new CompareCourseByDate())
+                    OpenedCourse = patient.GetOrderedCourses()
                         .LastOrDefault(); // последний курс
                 }
                 else

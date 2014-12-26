@@ -207,7 +207,9 @@ namespace Diagnosis.Models
                 OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, course));
             }
         }
-
+        /// <summary>
+        /// Курсы, отсорированные по дате. Первый — самый ранний курс.
+        /// </summary>
         public virtual IEnumerable<Course> GetOrderedCourses()
         {
             return Courses.OrderBy(c => c, new CompareCourseByDate());
