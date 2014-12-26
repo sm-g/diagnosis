@@ -29,7 +29,7 @@ namespace Tests.ModelTests
             var c1 = new Course() { Start = dt[0], End = dt[1] };
             var c2 = new Course() { Start = dt[2], End = dt[3] };
 
-            var r = new CompareCourseByDate().Compare(c1, c2);
+            var r = new CourseEarlierFirst().Compare(c1, c2);
             Assert.IsTrue(r == -1);
         }
 
@@ -43,7 +43,7 @@ namespace Tests.ModelTests
             var c1 = new Course() { Start = dt[0], End = dt[3] };
             var c2 = new Course() { Start = dt[2], End = dt[3] };
 
-            var r = new CompareCourseByDate().Compare(c1, c2);
+            var r = new CourseEarlierFirst().Compare(c1, c2);
             Assert.IsTrue(r == -1);
         }
 
@@ -57,7 +57,7 @@ namespace Tests.ModelTests
             var c1 = new Course() { Start = dt[0], End = dt[3] };
             var c2 = new Course() { Start = dt[1], End = dt[2] };
 
-            var r = new CompareCourseByDate().Compare(c1, c2);
+            var r = new CourseEarlierFirst().Compare(c1, c2);
             Assert.IsTrue(r == 1);
         }
 
@@ -71,7 +71,7 @@ namespace Tests.ModelTests
             var c1 = new Course() { Start = dt[1], End = dt[3] };
             var c2 = new Course() { Start = dt[0], End = dt[2] };
 
-            var r = new CompareCourseByDate().Compare(c1, c2);
+            var r = new CourseEarlierFirst().Compare(c1, c2);
             Assert.IsTrue(r == 1);
         }
 
@@ -85,7 +85,7 @@ namespace Tests.ModelTests
             var c1 = new Course() { Start = dt[3] };
             var c2 = new Course() { Start = dt[1], End = dt[2] };
 
-            var r = new CompareCourseByDate().Compare(c1, c2);
+            var r = new CourseEarlierFirst().Compare(c1, c2);
             Assert.IsTrue(r == 1);
         }
 
@@ -99,7 +99,7 @@ namespace Tests.ModelTests
             var c1 = new Course() { Start = dt[0] };
             var c2 = new Course() { Start = dt[1], End = dt[2] };
 
-            var r = new CompareCourseByDate().Compare(c1, c2);
+            var r = new CourseEarlierFirst().Compare(c1, c2);
             Assert.IsTrue(r == 1);
         }
 
@@ -113,7 +113,7 @@ namespace Tests.ModelTests
             var c1 = new Course() { Start = dt[0] };
             var c2 = new Course() { Start = dt[1] };
 
-            var r = new CompareCourseByDate().Compare(c1, c2);
+            var r = new CourseEarlierFirst().Compare(c1, c2);
             Assert.IsTrue(r == -1);
         }
     }

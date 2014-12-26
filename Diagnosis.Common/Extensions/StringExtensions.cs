@@ -47,5 +47,20 @@ namespace Diagnosis.Common
                 return false;
             return str.ToLowerInvariant() == obj.ToString().ToLowerInvariant(); // TODO use everywhere
         }
+
+        public static int CompareToNullSafe(this string one, string two)
+        {
+            if (one == null ^ two == null)
+            {
+                return (one == null) ? -1 : 1;
+            }
+
+            if (one == null && two == null)
+            {
+                return 0;
+            }
+
+            return one.CompareTo(two);
+        }
     }
 }

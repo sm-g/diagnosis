@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class Patient : ValidatableEntity<Guid>, IDomainObject, IHrsHolder, IMan
+    public class Patient : ValidatableEntity<Guid>, IDomainObject, IHrsHolder, IMan, IComparable<Patient>
     {
         private Iesi.Collections.Generic.ISet<Course> courses = new HashedSet<Course>();
         Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
@@ -212,7 +212,7 @@ namespace Diagnosis.Models
         /// </summary>
         public virtual IEnumerable<Course> GetOrderedCourses()
         {
-            return Courses.OrderBy(c => c, new CompareCourseByDate());
+            return Courses.OrderBy(c => Comparer<Course>.Default);
         }
 
         public override string ToString()
@@ -240,6 +240,32 @@ namespace Diagnosis.Models
         public override ValidationResult SelfValidate()
         {
             return new PatientValidator().Validate(this);
+        }
+
+        public virtual int CompareTo(IHrsHolder h)
+        {
+            var pat = h as Patient;
+            if (pat != null)
+                return this.CompareTo(pat);
+
+            return 1;
+        }
+
+        public virtual int CompareTo(Patient other)
+        {
+            // по ФИО
+            var byLast = this.LastName.CompareToNullSafe(other.LastName);
+            if (byLast == 0)
+            {
+                var byFirst = this.FirstName.CompareToNullSafe(other.FirstName);
+                if (byFirst == 0)
+                {
+                    var byMiddle = this.MiddleName.CompareToNullSafe(other.MiddleName);
+                    return byMiddle;
+                }
+                return byFirst;
+            }
+            return byLast;
         }
     }
 }

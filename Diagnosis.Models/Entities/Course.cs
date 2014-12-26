@@ -9,7 +9,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class Course : ValidatableEntity<Guid>, IDomainObject, IHrsHolder
+    public class Course : ValidatableEntity<Guid>, IDomainObject, IHrsHolder, IComparable<Course>
     {
         private Iesi.Collections.Generic.ISet<Appointment> appointments = new HashedSet<Appointment>();
         private Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
@@ -119,11 +119,11 @@ namespace Diagnosis.Models
         }
 
         /// <summary>
-        /// Осмотры, отсорированные по дате. Первый — самый ранний осмотр.
+        /// Осмотры, отсортированные по дате. Первый — самый ранний осмотр.
         /// </summary>
         public virtual IEnumerable<Appointment> GetOrderedAppointments()
         {
-            return Appointments.OrderBy(a => a.DateAndTime);
+            return Appointments.OrderBy(a => Comparer<Appointment>.Default);
         }
 
         public override string ToString()
@@ -153,14 +153,32 @@ namespace Diagnosis.Models
         {
             return new CourseValidator().Validate(this);
         }
+
+        public virtual int CompareTo(IHrsHolder h)
+        {
+            var app = h as Appointment;
+            if (app != null)
+                return 1;
+
+            var course = h as Course;
+            if (course != null)
+                return this.CompareTo(course);
+
+            return -1; // h is Patient
+        }
+
+        public virtual int CompareTo(Course other)
+        {
+            if (this.Patient != other.Patient)
+                return this.Patient.CompareTo(other.Patient);
+
+            return new CourseEarlierFirst().Compare(this, other);
+        }
     }
 
-    /// <summary>
-    /// Use OrderBy to show first earlier cousrses.
-    /// </summary>
-    public class CompareCourseByDate : IComparer<Course>
+    internal class CourseEarlierFirst : Comparer<Course>
     {
-        public int Compare(Course x, Course y)
+        public override int Compare(Course x, Course y)
         {
             if (x.IsEnded && y.IsEnded)
             {

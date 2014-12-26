@@ -12,7 +12,7 @@ using Diagnosis.Models.Validators;
 
 namespace Diagnosis.Models
 {
-    public class Appointment : ValidatableEntity<Guid>, IDomainObject, IHrsHolder
+    public class Appointment : ValidatableEntity<Guid>, IDomainObject, IHrsHolder, IComparable<Appointment>
     {
         Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
         private DateTime _dateTime;
@@ -76,5 +76,21 @@ namespace Diagnosis.Models
             return new AppointmentValidator().Validate(this);
         }
 
+        public virtual int CompareTo(IHrsHolder h)
+        {
+            var app = h as Appointment;
+            if (app != null)
+                return this.CompareTo(app);
+
+            return -1;
+        }
+
+        public virtual int CompareTo(Appointment other)
+        {
+            if (this.Course != other.Course)
+                return this.Course.CompareTo(other.Course);
+
+            return this.DateAndTime.CompareTo(other.DateAndTime);
+        }
     }
 }

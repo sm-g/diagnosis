@@ -51,7 +51,7 @@ namespace Diagnosis.Models
     /// <summary>
     /// Сущность, содержащая записи.
     /// </summary>
-    public interface IHrsHolder : IDomainObject
+    public interface IHrsHolder : IDomainObject, IComparable<IHrsHolder> // App < Course < Patient
     {
         event NotifyCollectionChangedEventHandler HealthRecordsChanged;
         IEnumerable<HealthRecord> HealthRecords { get; }
