@@ -43,10 +43,22 @@
         <li class="table"><a href="#IcdBlock">IcdBlock</a></li>
         <li class="table"><a href="#IcdChapter">IcdChapter</a></li>
         <li class="table"><a href="#IcdDisease">IcdDisease</a></li>
+        <li class="table"><a href="#Passport">Passport</a></li>
         <li class="table"><a href="#Patient">Patient</a></li>
         <li class="table"><a href="#Speciality">Speciality</a></li>
         <li class="table"><a href="#SpecialityIcdBlocks">SpecialityIcdBlocks</a></li>
+        <li class="table"><a href="#sync_Appointment_tracking">sync_Appointment_tracking</a></li>
+        <li class="table"><a href="#sync_Course_tracking">sync_Course_tracking</a></li>
+        <li class="table"><a href="#sync_Doctor_tracking">sync_Doctor_tracking</a></li>
+        <li class="table"><a href="#sync_HealthRecord_tracking">sync_HealthRecord_tracking</a></li>
+        <li class="table"><a href="#sync_HrItem_tracking">sync_HrItem_tracking</a></li>
+        <li class="table"><a href="#sync_Patient_tracking">sync_Patient_tracking</a></li>
+        <li class="table"><a href="#sync_schema_info">sync_schema_info</a></li>
+        <li class="table"><a href="#sync_scope_config">sync_scope_config</a></li>
+        <li class="table"><a href="#sync_scope_info">sync_scope_info</a></li>
+        <li class="table"><a href="#sync_Word_tracking">sync_Word_tracking</a></li>
         <li class="table"><a href="#Uom">Uom</a></li>
+        <li class="table"><a href="#VersionInfo">VersionInfo</a></li>
         <li class="table"><a href="#Word">Word</a></li>
       </ul>
     </div>
@@ -77,7 +89,7 @@
           </tr>
           <tr>
             <td class="type">Database</td>
-            <td class="type">C:\Users\smg\Documents\Visual Studio 2012\Projects\Diagnosis\Database\diagnosis.sdf</td>
+            <td class="type">C:\Users\smg\Documents\Visual Studio 2012\Projects\Diagnosis\Diagnosis.App\bin\Debug\diagnosis.sdf</td>
           </tr>
           <tr>
             <td class="type">ServerVersion</td>
@@ -85,11 +97,11 @@
           </tr>
           <tr>
             <td class="type">DatabaseSize</td>
-            <td class="type">448 KB</td>
+            <td class="type">2,313 MB</td>
           </tr>
           <tr>
             <td class="type">Created</td>
-            <td class="type">06.11.2014 20:57</td>
+            <td class="type">19.12.2014 13:26</td>
           </tr>
         </tbody>
       </table>
@@ -107,20 +119,20 @@
         </thead>
         <tbody>
           <tr>
-            <th><span class="pk" title="PRIMARY KEY PK__Appointment__0000000000000132">◆</span>Id</th>
-            <td class="type">int</td>
+            <th><span class="pk" title="PRIMARY KEY PK__Appointment">◆</span>Id</th>
+            <td class="type">uniqueidentifier</td>
             <td class="null">☐</td>
-            <td><span class="flag">IDENTITY (1,1)</span></td>
+            <td><span class="flag">ROWGUIDCOL</span><span class="flag">DEFAULT NEWID()</span></td>
           </tr>
           <tr>
             <th>CourseID</th>
-            <td class="type">int</td>
+            <td class="type">uniqueidentifier</td>
             <td class="null">☐</td>
             <td><span class="flag" title="FK_Appoinmtment_Course">⇨ <a href="#Course">Course</a>.Id</span></td>
           </tr>
           <tr>
             <th>DoctorID</th>
-            <td class="type">int</td>
+            <td class="type">uniqueidentifier</td>
             <td class="null">☐</td>
             <td><span class="flag" title="FK_Appoinmtment_Doctor">⇨ <a href="#Doctor">Doctor</a>.Id</span></td>
           </tr>
@@ -147,20 +159,20 @@
         </thead>
         <tbody>
           <tr>
-            <th><span class="pk" title="PRIMARY KEY PK__Course__000000000000011E">◆</span>Id</th>
-            <td class="type">int</td>
+            <th><span class="pk" title="PRIMARY KEY PK__Course">◆</span>Id</th>
+            <td class="type">uniqueidentifier</td>
             <td class="null">☐</td>
-            <td><span class="flag">IDENTITY (1,1)</span></td>
+            <td><span class="flag">ROWGUIDCOL</span><span class="flag">DEFAULT NEWID()</span></td>
           </tr>
           <tr>
             <th>PatientID</th>
-            <td class="type">int</td>
+            <td class="type">uniqueidentifier</td>
             <td class="null">☐</td>
             <td><span class="flag" title="FK_Course_Patient">⇨ <a href="#Patient">Patient</a>.Id</span></td>
           </tr>
           <tr>
             <th>DoctorID</th>
-            <td class="type">int</td>
+            <td class="type">uniqueidentifier</td>
             <td class="null">☐</td>
             <td><span class="flag" title="FK_Course_Doctor">⇨ <a href="#Doctor">Doctor</a>.Id</span></td>
           </tr>
@@ -194,10 +206,10 @@
         </thead>
         <tbody>
           <tr>
-            <th><span class="pk" title="PRIMARY KEY PK__Doctor__00000000000000BA">◆</span>Id</th>
-            <td class="type">int</td>
+            <th><span class="pk" title="PRIMARY KEY PK__Doctor">◆</span>Id</th>
+            <td class="type">uniqueidentifier</td>
             <td class="null">☐</td>
-            <td><span class="flag">IDENTITY (1,1)</span></td>
+            <td><span class="flag">ROWGUIDCOL</span><span class="flag">DEFAULT NEWID()</span><span class="flag" title="FK_Doctor_Passport">⇨ <a href="#Passport">Passport</a>.Id</span></td>
           </tr>
           <tr>
             <th>FirstName</th>
@@ -231,8 +243,7 @@
             <th>Settings</th>
             <td class="type">int</td>
             <td class="null">☐</td>
-            <td>
-            </td>
+            <td><span class="flag">DEFAULT 0</span></td>
           </tr>
           <tr>
             <th>SpecialityID</th>
@@ -256,35 +267,46 @@
         </thead>
         <tbody>
           <tr>
-            <th><span class="pk" title="PRIMARY KEY PK__HealthRecord__0000000000000156">◆</span>Id</th>
-            <td class="type">int</td>
+            <th><span class="pk" title="PRIMARY KEY PK__HealthRecord">◆</span>Id</th>
+            <td class="type">uniqueidentifier</td>
             <td class="null">☐</td>
-            <td><span class="flag">IDENTITY (1,1)</span></td>
+            <td><span class="flag">ROWGUIDCOL</span><span class="flag">DEFAULT NEWID()</span></td>
+          </tr>
+          <tr>
+            <th>Ord</th>
+            <td class="type">tinyint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">DEFAULT 0</span></td>
+          </tr>
+          <tr>
+            <th>CreatedAt</th>
+            <td class="type">datetime</td>
+            <td class="null">☐</td>
+            <td><span class="flag">DEFAULT GETDATE()</span></td>
           </tr>
           <tr>
             <th>PatientID</th>
-            <td class="type">int</td>
+            <td class="type">uniqueidentifier</td>
             <td class="null">☒</td>
             <td><span class="flag" title="FK_Hr_Patient">⇨ <a href="#Patient">Patient</a>.Id</span></td>
           </tr>
           <tr>
             <th>CourseID</th>
-            <td class="type">int</td>
+            <td class="type">uniqueidentifier</td>
             <td class="null">☒</td>
             <td><span class="flag" title="FK_Hr_Course">⇨ <a href="#Course">Course</a>.Id</span></td>
           </tr>
           <tr>
             <th>AppointmentID</th>
-            <td class="type">int</td>
+            <td class="type">uniqueidentifier</td>
             <td class="null">☒</td>
             <td><span class="flag" title="FK_Hr_Appointment">⇨ <a href="#Appointment">Appointment</a>.Id</span></td>
           </tr>
           <tr>
-            <th>Comment</th>
-            <td class="type">nvarchar (1000)</td>
-            <td class="null">☒</td>
-            <td>
-            </td>
+            <th>DoctorID</th>
+            <td class="type">uniqueidentifier</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_Hr_Doctor">⇨ <a href="#Doctor">Doctor</a>.Id</span></td>
           </tr>
           <tr>
             <th>HrCategoryID</th>
@@ -324,8 +346,7 @@
             <th>IsDeleted</th>
             <td class="type">bit</td>
             <td class="null">☐</td>
-            <td>
-            </td>
+            <td><span class="flag">DEFAULT 0</span></td>
           </tr>
         </tbody>
       </table>
@@ -343,7 +364,7 @@
         </thead>
         <tbody>
           <tr>
-            <th><span class="pk" title="PRIMARY KEY PK__HrCategory__000000000000000F">◆</span>Id</th>
+            <th><span class="pk" title="PRIMARY KEY PK__HrCategory">◆</span>Id</th>
             <td class="type">int</td>
             <td class="null">☐</td>
             <td><span class="flag">IDENTITY (1,1)</span></td>
@@ -378,27 +399,26 @@
         </thead>
         <tbody>
           <tr>
-            <th><span class="pk" title="PRIMARY KEY PK__HrItem__000000000000018A">◆</span>Id</th>
-            <td class="type">int</td>
+            <th><span class="pk" title="PRIMARY KEY PK__HrItem">◆</span>Id</th>
+            <td class="type">uniqueidentifier</td>
             <td class="null">☐</td>
-            <td><span class="flag">IDENTITY (1,1)</span></td>
+            <td><span class="flag">ROWGUIDCOL</span><span class="flag">DEFAULT NEWID()</span></td>
           </tr>
           <tr>
             <th>Ord</th>
             <td class="type">int</td>
             <td class="null">☐</td>
-            <td>
-            </td>
+            <td><span class="flag">DEFAULT 0</span></td>
           </tr>
           <tr>
-            <th>DiseaseID</th>
+            <th>IcdDiseaseID</th>
             <td class="type">int</td>
             <td class="null">☒</td>
-            <td><span class="flag" title="FK_HrItem_Disease">⇨ <a href="#IcdDisease">IcdDisease</a>.Id</span></td>
+            <td><span class="flag" title="FK_HrItem_IcdDisease">⇨ <a href="#IcdDisease">IcdDisease</a>.Id</span></td>
           </tr>
           <tr>
             <th>WordID</th>
-            <td class="type">int</td>
+            <td class="type">uniqueidentifier</td>
             <td class="null">☒</td>
             <td><span class="flag" title="FK_HrItem_Word">⇨ <a href="#Word">Word</a>.Id</span></td>
           </tr>
@@ -410,14 +430,14 @@
           </tr>
           <tr>
             <th>MeasureValue</th>
-            <td class="type">float (53, 0)</td>
+            <td class="type">numeric (18, 6)</td>
             <td class="null">☒</td>
             <td>
             </td>
           </tr>
           <tr>
             <th>HealthRecordID</th>
-            <td class="type">int</td>
+            <td class="type">uniqueidentifier</td>
             <td class="null">☐</td>
             <td><span class="flag" title="FK_HrItem_Hr">⇨ <a href="#HealthRecord">HealthRecord</a>.Id</span></td>
           </tr>
@@ -444,7 +464,7 @@
         </thead>
         <tbody>
           <tr>
-            <th><span class="pk" title="PRIMARY KEY PK__IcdBlock__0000000000000037">◆</span>Id</th>
+            <th><span class="pk" title="PRIMARY KEY PK__IcdBlock">◆</span>Id</th>
             <td class="type">int</td>
             <td class="null">☐</td>
             <td><span class="flag">IDENTITY (1,1)</span></td>
@@ -485,7 +505,7 @@
         </thead>
         <tbody>
           <tr>
-            <th><span class="pk" title="PRIMARY KEY PK__IcdChapter__0000000000000029">◆</span>Id</th>
+            <th><span class="pk" title="PRIMARY KEY PK__IcdChapter">◆</span>Id</th>
             <td class="type">int</td>
             <td class="null">☐</td>
             <td><span class="flag">IDENTITY (1,1)</span></td>
@@ -520,7 +540,7 @@
         </thead>
         <tbody>
           <tr>
-            <th><span class="pk" title="PRIMARY KEY PK__Disease__0000000000000048">◆</span>Id</th>
+            <th><span class="pk" title="PRIMARY KEY PK__IcdDisease">◆</span>Id</th>
             <td class="type">int</td>
             <td class="null">☐</td>
             <td><span class="flag">IDENTITY (1,1)</span></td>
@@ -529,7 +549,7 @@
             <th>IcdBlockID</th>
             <td class="type">int</td>
             <td class="null">☐</td>
-            <td><span class="flag" title="FK_Disease_IcdBlock">⇨ <a href="#IcdBlock">IcdBlock</a>.Id</span></td>
+            <td><span class="flag" title="FK_IcdDisease_IcdBlock">⇨ <a href="#IcdBlock">IcdBlock</a>.Id</span></td>
           </tr>
           <tr>
             <th>Title</th>
@@ -549,6 +569,41 @@
       </table>
     </div>
     <div class="table">
+      <h2 id="Passport"><a href="#toc" class="tocref">⇧</a>Table Passport</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK__Passport">◆</span>Id</th>
+            <td class="type">uniqueidentifier</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>HashAndSalt</th>
+            <td class="type">nchar (70)</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Remember</th>
+            <td class="type">bit</td>
+            <td class="null">☐</td>
+            <td><span class="flag">DEFAULT 0</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
       <h2 id="Patient"><a href="#toc" class="tocref">⇧</a>Table Patient</h2>
       <table>
         <thead>
@@ -561,17 +616,10 @@
         </thead>
         <tbody>
           <tr>
-            <th><span class="pk" title="PRIMARY KEY PK__Patient__00000000000000A6">◆</span>Id</th>
-            <td class="type">int</td>
+            <th><span class="pk" title="PRIMARY KEY PK__Patient">◆</span>Id</th>
+            <td class="type">uniqueidentifier</td>
             <td class="null">☐</td>
-            <td><span class="flag">IDENTITY (1,1)</span></td>
-          </tr>
-          <tr>
-            <th>Label</th>
-            <td class="type">nvarchar (10)</td>
-            <td class="null">☒</td>
-            <td>
-            </td>
+            <td><span class="flag">ROWGUIDCOL</span><span class="flag">DEFAULT NEWID()</span></td>
           </tr>
           <tr>
             <th>FirstName</th>
@@ -638,14 +686,14 @@
         </thead>
         <tbody>
           <tr>
-            <th><span class="pk" title="PRIMARY KEY PK__Speciality__0000000000000055">◆</span>Id</th>
+            <th><span class="pk" title="PRIMARY KEY PK__Speciality">◆</span>Id</th>
             <td class="type">int</td>
             <td class="null">☐</td>
             <td><span class="flag">IDENTITY (1,1)</span></td>
           </tr>
           <tr>
             <th>Title</th>
-            <td class="type">nvarchar (20)</td>
+            <td class="type">nvarchar (50)</td>
             <td class="null">☐</td>
             <td>
             </td>
@@ -666,7 +714,7 @@
         </thead>
         <tbody>
           <tr>
-            <th><span class="pk" title="PRIMARY KEY PK__SpecialityIcdBlocks__0000000000000061">◆</span>Id</th>
+            <th><span class="pk" title="PRIMARY KEY PK__SpecialityIcdBlocks">◆</span>Id</th>
             <td class="type">int</td>
             <td class="null">☐</td>
             <td><span class="flag">IDENTITY (1,1)</span></td>
@@ -687,6 +735,636 @@
       </table>
     </div>
     <div class="table">
+      <h2 id="sync_Appointment_tracking"><a href="#toc" class="tocref">⇧</a>Table sync_Appointment_tracking</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK_sync_Appointment_tracking">◆</span>Id</th>
+            <td class="type">uniqueidentifier</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_row_is_tombstone</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_peer_key</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_peer_timestamp</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_create_peer_key</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_create_peer_timestamp</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_bsn</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">DEFAULT 0</span></td>
+          </tr>
+          <tr>
+            <th>last_change_datetime</th>
+            <td class="type">datetime</td>
+            <td class="null">☒</td>
+            <td><span class="flag">DEFAULT GETDATE()</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="sync_Course_tracking"><a href="#toc" class="tocref">⇧</a>Table sync_Course_tracking</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK_sync_Course_tracking">◆</span>Id</th>
+            <td class="type">uniqueidentifier</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_row_is_tombstone</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_peer_key</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_peer_timestamp</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_create_peer_key</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_create_peer_timestamp</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_bsn</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">DEFAULT 0</span></td>
+          </tr>
+          <tr>
+            <th>last_change_datetime</th>
+            <td class="type">datetime</td>
+            <td class="null">☒</td>
+            <td><span class="flag">DEFAULT GETDATE()</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="sync_Doctor_tracking"><a href="#toc" class="tocref">⇧</a>Table sync_Doctor_tracking</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK_sync_Doctor_tracking">◆</span>Id</th>
+            <td class="type">uniqueidentifier</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_row_is_tombstone</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_peer_key</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_peer_timestamp</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_create_peer_key</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_create_peer_timestamp</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_bsn</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">DEFAULT 0</span></td>
+          </tr>
+          <tr>
+            <th>last_change_datetime</th>
+            <td class="type">datetime</td>
+            <td class="null">☒</td>
+            <td><span class="flag">DEFAULT GETDATE()</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="sync_HealthRecord_tracking"><a href="#toc" class="tocref">⇧</a>Table sync_HealthRecord_tracking</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK_sync_HealthRecord_tracking">◆</span>Id</th>
+            <td class="type">uniqueidentifier</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_row_is_tombstone</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_peer_key</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_peer_timestamp</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_create_peer_key</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_create_peer_timestamp</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_bsn</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">DEFAULT 0</span></td>
+          </tr>
+          <tr>
+            <th>last_change_datetime</th>
+            <td class="type">datetime</td>
+            <td class="null">☒</td>
+            <td><span class="flag">DEFAULT GETDATE()</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="sync_HrItem_tracking"><a href="#toc" class="tocref">⇧</a>Table sync_HrItem_tracking</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK_sync_HrItem_tracking">◆</span>Id</th>
+            <td class="type">uniqueidentifier</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_row_is_tombstone</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_peer_key</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_peer_timestamp</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_create_peer_key</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_create_peer_timestamp</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_bsn</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">DEFAULT 0</span></td>
+          </tr>
+          <tr>
+            <th>last_change_datetime</th>
+            <td class="type">datetime</td>
+            <td class="null">☒</td>
+            <td><span class="flag">DEFAULT GETDATE()</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="sync_Patient_tracking"><a href="#toc" class="tocref">⇧</a>Table sync_Patient_tracking</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK_sync_Patient_tracking">◆</span>Id</th>
+            <td class="type">uniqueidentifier</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_row_is_tombstone</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_peer_key</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_peer_timestamp</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_create_peer_key</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_create_peer_timestamp</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_bsn</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">DEFAULT 0</span></td>
+          </tr>
+          <tr>
+            <th>last_change_datetime</th>
+            <td class="type">datetime</td>
+            <td class="null">☒</td>
+            <td><span class="flag">DEFAULT GETDATE()</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="sync_schema_info"><a href="#toc" class="tocref">⇧</a>Table sync_schema_info</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK_sync_schema_info">◆</span>schema_major_version</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK_sync_schema_info">◆</span>schema_minor_version</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>schema_extended_info</th>
+            <td class="type">nvarchar (100)</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="sync_scope_config"><a href="#toc" class="tocref">⇧</a>Table sync_scope_config</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK_sync_scope_config">◆</span>config_id</th>
+            <td class="type">uniqueidentifier</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>config_data</th>
+            <td class="type">ntext</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="sync_scope_info"><a href="#toc" class="tocref">⇧</a>Table sync_scope_info</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>scope_local_id</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>scope_id</th>
+            <td class="type">uniqueidentifier</td>
+            <td class="null">☐</td>
+            <td><span class="flag">DEFAULT NEWID()</span></td>
+          </tr>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK_sync_scope_info">◆</span>sync_scope_name</th>
+            <td class="type">nvarchar (100)</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>scope_sync_knowledge</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>scope_tombstone_cleanup_knowledge</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>scope_timestamp</th>
+            <td class="type">bigint</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>snapshot_timestamp</th>
+            <td class="type">bigint</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>scope_config_id</th>
+            <td class="type">uniqueidentifier</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>scope_user_comment</th>
+            <td class="type">ntext</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>scope_tomb_mark</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">DEFAULT 0</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="sync_Word_tracking"><a href="#toc" class="tocref">⇧</a>Table sync_Word_tracking</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY PK_sync_Word_tracking">◆</span>Id</th>
+            <td class="type">uniqueidentifier</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_row_is_tombstone</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_peer_key</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_peer_timestamp</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_create_peer_key</th>
+            <td class="type">int</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_create_peer_timestamp</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>sync_update_bsn</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">DEFAULT 0</span></td>
+          </tr>
+          <tr>
+            <th>last_change_datetime</th>
+            <td class="type">datetime</td>
+            <td class="null">☒</td>
+            <td><span class="flag">DEFAULT GETDATE()</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
       <h2 id="Uom"><a href="#toc" class="tocref">⇧</a>Table Uom</h2>
       <table>
         <thead>
@@ -699,7 +1377,7 @@
         </thead>
         <tbody>
           <tr>
-            <th><span class="pk" title="PRIMARY KEY PK__Uom__000000000000008E">◆</span>Id</th>
+            <th><span class="pk" title="PRIMARY KEY PK__Uom">◆</span>Id</th>
             <td class="type">int</td>
             <td class="null">☐</td>
             <td><span class="flag">IDENTITY (1,1)</span></td>
@@ -736,6 +1414,42 @@
       </table>
     </div>
     <div class="table">
+      <h2 id="VersionInfo"><a href="#toc" class="tocref">⇧</a>Table VersionInfo</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Version</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>AppliedOn</th>
+            <td class="type">datetime</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td class="type">nvarchar (1024)</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
       <h2 id="Word"><a href="#toc" class="tocref">⇧</a>Table Word</h2>
       <table>
         <thead>
@@ -748,10 +1462,10 @@
         </thead>
         <tbody>
           <tr>
-            <th><span class="pk" title="PRIMARY KEY PK__Word__0000000000000171">◆</span>Id</th>
-            <td class="type">int</td>
+            <th><span class="pk" title="PRIMARY KEY PK__Word">◆</span>Id</th>
+            <td class="type">uniqueidentifier</td>
             <td class="null">☐</td>
-            <td><span class="flag">IDENTITY (1,1)</span></td>
+            <td><span class="flag">ROWGUIDCOL</span><span class="flag">DEFAULT NEWID()</span></td>
           </tr>
           <tr>
             <th>Title</th>
@@ -768,7 +1482,7 @@
           </tr>
           <tr>
             <th>ParentID</th>
-            <td class="type">int</td>
+            <td class="type">uniqueidentifier</td>
             <td class="null">☒</td>
             <td><span class="flag" title="FK_Word_Word">⇨ <a href="#Word">Word</a>.Id</span></td>
           </tr>
@@ -777,6 +1491,6 @@
     </div>
     <div class="footer">
                     Generated by <a href="http://SqlDbDoc.codeplex.com/">DB&gt;doc</a> and <a href="http://sqlcetoolbox.codeplex.com/">SQL Server Compact/SQLite Toolbox</a> on
-                    December 01, 2014, 08:11:04</div>
+                    December 26, 2014, 16:26:46</div>
   </body>
 </html>

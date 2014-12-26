@@ -28,6 +28,7 @@
     drop table if exists Course;
 
     drop table if exists Patient;
+    drop table if exists Passport;
 
     PRAGMA foreign_keys = ON;
 
@@ -122,9 +123,12 @@
 
     create table HealthRecord (
         Id UNIQUEIDENTIFIER not null,
+       Ord tinyint NOT NULL DEFAULT 0,
+       CreatedAt datetime NOT NULL DEFAULT 'now',
        PatientID UNIQUEIDENTIFIER,
        CourseID UNIQUEIDENTIFIER,
        AppointmentID UNIQUEIDENTIFIER,
+       DoctorID uniqueidentifier NOT NULL,
        IsDeleted BOOL default 0  not null,
        HrCategoryID INT,
        FromDay TINYINT,
@@ -135,6 +139,7 @@
        constraint FK80ADA1CA1EB4737E foreign key (PatientID) references Patient,
        constraint FK80ADA1CAFFADC614 foreign key (CourseID) references Course,
        constraint FK80ADA1CA2166F67F foreign key (AppointmentID) references Appointment,
+       constraint FK80ADA1CA1EB47111 foreign key (DoctorID) references Doctor,
        constraint FK80ADA1CA4D800310 foreign key (HrCategoryID) references HrCategory
     );
 
@@ -171,4 +176,12 @@
        BirthMonth TINYINT,
        BirthDay TINYINT,
        primary key (Id)
+    );
+
+    create table Passport (
+        Id UNIQUEIDENTIFIER not null UNIQUE,
+       HashAndSalt TEXT,
+       Remember BOOL default 0 not null,
+       primary key (Id),
+       constraint FKFFF434035F112345 foreign key (Id) references Doctor
     );
