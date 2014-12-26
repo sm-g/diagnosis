@@ -58,7 +58,6 @@ namespace Diagnosis.Common
         HideOverlay,
         Shutdown,
         DeleteHolder,
-        DeleteWord,
         WordPersisted,
         WordSaved,
         PatientSaved,

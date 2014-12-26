@@ -12,7 +12,7 @@
     <!--WordsListViewModel-->
     <UserControl.InputBindings>
         <KeyBinding Modifiers="Control"
-                    Key="N"
+                    Key="Enter"
                     Command="{Binding AddCommand}" />
         <KeyBinding Modifiers="Alt"
                     Key="F"
@@ -102,6 +102,11 @@
             <DataGrid.InputBindings>
                 <KeyBinding Key="Enter"
                             Command="{Binding EditCommand}" />
+                <KeyBinding Key="Delete"
+                            Command="{Binding DeleteCommand}" />
+                <KeyBinding Key="Enter"
+                            Modifiers="Control"
+                            Command="{Binding AddCommand}" />
             </DataGrid.InputBindings>
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">

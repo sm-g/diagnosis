@@ -1,15 +1,15 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Search;
 using EventAggregator;
+using NHibernate.Linq;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
-using NHibernate.Linq;
 using System.Windows.Input;
-using Diagnosis.Data;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -19,8 +19,9 @@ namespace Diagnosis.ViewModels.Screens
         private ObservableCollection<WordViewModel> _words;
         private bool _noWords;
         private WordViewModel _current;
-        EventMessageHandlersManager emhManager;
+        private EventMessageHandlersManager emhManager;
         private Saver saver;
+
         public WordsListViewModel()
         {
             _filter = new FilterViewModel<Word>(WordQuery.StartingWith(Session));
@@ -49,21 +50,13 @@ namespace Diagnosis.ViewModels.Screens
 
                     NoWords = false;
                 }),
-                this.Subscribe(Events.DeleteWord, (e) =>
-                {
-                    var w = e.GetValue<Word>(MessageKeys.Word);
-                    saver.Delete(w);
-
-                    // убираем удаленных из списка
-                    Filter.Filter();
-
-                    NoWords = !Session.Query<Word>().Any();
-                })
+               
             });
 
             Title = "Словарь";
             NoWords = !Session.Query<Patient>().Any();
         }
+
         public FilterViewModel<Word> Filter
         {
             get { return _filter; }
@@ -76,13 +69,14 @@ namespace Diagnosis.ViewModels.Screens
                 if (_words == null)
                 {
                     _words = new ObservableCollection<WordViewModel>();
-                    var patientsView = (CollectionView)CollectionViewSource.GetDefaultView(_words);
+                    var view = (CollectionView)CollectionViewSource.GetDefaultView(_words);
                     SortDescription sort1 = new SortDescription("Title", ListSortDirection.Ascending);
-                    patientsView.SortDescriptions.Add(sort1);
+                    view.SortDescriptions.Add(sort1);
                 }
                 return _words;
             }
         }
+
         public WordViewModel SelectedWord
         {
             get
@@ -98,6 +92,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         public ObservableCollection<WordViewModel> SelectedWords { get; private set; }
 
         public RelayCommand<WordViewModel> AddCommand
@@ -111,6 +106,7 @@ namespace Diagnosis.ViewModels.Screens
                         });
             }
         }
+
         public ICommand EditCommand
         {
             get
@@ -121,6 +117,7 @@ namespace Diagnosis.ViewModels.Screens
                 }, () => SelectedWord != null);
             }
         }
+
         public ICommand SendToSearchCommand
         {
             get
@@ -133,6 +130,7 @@ namespace Diagnosis.ViewModels.Screens
                         }, () => CheckedWordsCount > 0);
             }
         }
+
         public ICommand DeleteCommand
         {
             get
@@ -140,12 +138,17 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     var toDel = SelectedWords
-                        .Where(p => p.DeleteCommand.CanExecute(null))
+                        .Select(w => w.word)
+                        .Where(w => w.IsEmpty())
                         .ToArray();
 
-                    //
+                    saver.Delete(toDel);
 
-                }, () => SelectedWords.Any(p => p.DeleteCommand.CanExecute(null)));
+                    // убираем удаленных из списка
+                    Filter.Filter();
+
+                    NoWords = !Session.Query<Word>().Any();
+                }, () => SelectedWords.Any(w => w.word.IsEmpty()));
             }
         }
 
@@ -156,6 +159,7 @@ namespace Diagnosis.ViewModels.Screens
                 return Words.Where(w => w.IsChecked).Count();
             }
         }
+
         /// <summary>
         /// В БД нет слов.
         /// </summary>
@@ -174,6 +178,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         private void MakeVms(ObservableCollection<Word> results)
         {
             var vms = results.Select(w => Words

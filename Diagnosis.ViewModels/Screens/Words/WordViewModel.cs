@@ -1,6 +1,5 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
-using Remotion.Linq.Collections;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
@@ -16,56 +15,32 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Requires(w != null);
             word = w;
             word.PropertyChanged += word_PropertyChanged;
-
-            HealthRecords = new ObservableCollection<HealthRecord>();
         }
 
         #region Model
 
         public string Title
         {
-            get
-            {
-                return word.Title;
-            }
-            set
-            {
-                word.Title = value;
-            }
+            get { return word.Title; }
+            set { word.Title = value; }
         }
-
-        public ObservableCollection<HealthRecord> HealthRecords { get; private set; }
 
         public HrCategory DefaultCategory
         {
-            get
-            {
-                return word.DefaultCategory;
-            }
-            set
-            {
-                word.DefaultCategory = value;
-            }
+            get { return word.DefaultCategory; }
+            set { word.DefaultCategory = value; }
         }
 
-        private int _usage;
         public int Usage
         {
             get
             {
-                return _usage;
-            }
-            set
-            {
-                if (_usage != value)
-                {
-                    _usage = value;
-                    OnPropertyChanged(() => Usage);
-                }
+                return word.HealthRecords.Count();
             }
         }
 
         #endregion Model
+
         #region CheckableBase
 
         private bool checkedBySelection;
@@ -92,6 +67,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         #endregion CheckableBase
+
         public ICommand SendToSearchCommand
         {
             get
@@ -113,20 +89,6 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
-        public ICommand DeleteCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    if (HealthRecords.Count == 0)
-                    {
-                        this.Send(Events.DeleteWord, word.AsParams(MessageKeys.Word));
-                    }
-
-                }, () => HealthRecords.Count == 0);
-            }
-        }
 
         public bool Unsaved
         {
@@ -137,6 +99,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         public bool HasExistingTitle { get; set; }
+
         public override string this[string columnName]
         {
             get
