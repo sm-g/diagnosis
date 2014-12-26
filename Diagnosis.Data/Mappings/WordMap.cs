@@ -42,6 +42,24 @@ namespace Diagnosis.Data.Mappings
             {
                 r.OneToMany();
             });
+
+            Bag(x => x.HealthRecords, s =>
+            {
+                s.Table("HrItem");
+                s.Key(k =>
+                {
+                    k.Column("WordID");
+                });
+                s.Cascade(Cascade.All);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.ManyToMany(x =>
+                {
+                    x.Column("HealthRecordID");
+                    x.Class(typeof(HealthRecord));
+                });
+            });
         }
     }
 }

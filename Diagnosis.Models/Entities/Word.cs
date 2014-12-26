@@ -2,6 +2,7 @@
 using FluentValidation.Results;
 using Iesi.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 
@@ -12,6 +13,8 @@ namespace Diagnosis.Models
     {
         [NonSerialized]
         private Iesi.Collections.Generic.ISet<Word> children = new HashedSet<Word>();
+        [NonSerialized]
+        IList<HealthRecord> healthRecords = new List<HealthRecord>(); // many-2-many bag
         [NonSerialized]
         private Word _parent;
         [NonSerialized]
@@ -41,14 +44,14 @@ namespace Diagnosis.Models
             set { SetProperty(ref _parent, value, () => Parent); }
         }
 
-        public virtual ObservableCollection<Word> Children
+        public virtual IEnumerable<Word> Children
         {
-            get
-            {
-                return new ObservableCollection<Word>(children);
-            }
+            get { return children;    }
         }
-
+        public virtual IEnumerable<HealthRecord> HealthRecords
+        {
+            get { return healthRecords; }
+        }
         public Word(string title)
         {
             Title = title;

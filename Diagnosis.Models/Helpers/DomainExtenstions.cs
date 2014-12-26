@@ -105,6 +105,7 @@ namespace Diagnosis.Models
         /// курс — без записей и осмотров
         /// осмотр — без записей
         /// запись — без элементов (слов, дат, комментариев). Категория не считается.
+        /// слово — без записей с этим словом
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
@@ -142,6 +143,12 @@ namespace Diagnosis.Models
                         return hr.IsDeleted ||
                             hr.DateOffset.IsEmpty
                             && hr.HrItems.Count() == 0;
+                    }
+                },
+                { typeof(Word),() =>
+                    {
+                        var w = entity as Word;
+                        return w.HealthRecords.Count() == 0;
                     }
                 },
            };
