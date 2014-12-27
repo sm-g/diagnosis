@@ -101,7 +101,11 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand<WordViewModel>((current) =>
                         {
-                            var word = new Word(Filter.Query);
+                            var title = Filter.Query;
+                            if (SelectedWord != null)
+                                title = SelectedWord.Title;
+
+                            var word = new Word(title);
                             this.Send(Events.EditWord, word.AsParams(MessageKeys.Word));
                         });
             }

@@ -99,11 +99,14 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         public bool HasExistingTitle { get; set; }
+        public bool WasEdited { get; set; }
 
         public override string this[string columnName]
         {
             get
             {
+                if (!WasEdited) return string.Empty;
+
                 var results = word.SelfValidate();
                 if (results == null)
                     return string.Empty;
@@ -119,6 +122,7 @@ namespace Diagnosis.ViewModels.Screens
         private void word_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             OnPropertyChanged(e.PropertyName);
+            WasEdited = true;
         }
 
         public override string ToString()

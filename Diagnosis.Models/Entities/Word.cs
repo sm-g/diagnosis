@@ -27,7 +27,7 @@ namespace Diagnosis.Models
             get { return _title; }
             set
             {
-                var filtered = value.Replace(Environment.NewLine, " ").Replace('\t', ' ');
+                var filtered = value.Replace(Environment.NewLine, " ").Replace('\t', ' ').Trim();
                 SetProperty(ref _title, filtered, () => Title);
             }
         }

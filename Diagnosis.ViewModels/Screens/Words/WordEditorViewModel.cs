@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using Diagnosis.Data;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -19,8 +20,7 @@ namespace Diagnosis.ViewModels.Screens
             this.word = word;
             (word as IEditableObject).BeginEdit();
 
-            var titles = Session.Query<Word>()
-                .Select(w => w.Title)
+            var ws = Session.Query<Word>()
                 .ToList();
 
             Word = new WordViewModel(word);
@@ -28,10 +28,20 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (e.PropertyName == "Title")
                 {
-                    Word.HasExistingTitle = titles.Contains(word.Title); // нельзя ввести слово, которое уже есть в словаре
+                    TestExisting(Word, ws);
                 }
             };
+            TestExisting(Word, ws);
+
             Title = "Редактирование слова";
+        }
+
+        /// <summary>
+        /// Нельзя ввести слово, которое уже есть в словаре
+        /// </summary>
+        private void TestExisting(WordViewModel vm, IEnumerable<Word> ws)
+        {
+            vm.HasExistingTitle = ws.Any(w => w.Title == word.Title && w != word);
         }
 
         /// <summary>

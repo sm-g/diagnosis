@@ -32,7 +32,7 @@
 
         <ToolBar>
             <Button Command="{Binding AddCommand}"
-                    ToolTip="Редактировать новое слово (Ctrl + N)">
+                    ToolTip="Редактировать новое слово (Ctrl + Enter)">
                 <DockPanel>
                     <Image Source="{StaticResource addImage}" />
                     <TextBlock Text="Добавить слово" />
