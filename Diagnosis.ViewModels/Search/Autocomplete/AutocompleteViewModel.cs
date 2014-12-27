@@ -372,6 +372,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 Contract.Requires(!tag.IsLast);
                 Tags.Remove(tag);
+                LastTag.IsTextBoxFocused = true;
             };
             tag.Converting += (s, e) =>
             {
