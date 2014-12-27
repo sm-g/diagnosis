@@ -29,8 +29,9 @@
                TargetType="ListBoxItem">
             <Setter Property="SnapsToDevicePixels"
                     Value="true" />
-            <Setter Property="OverridesDefaultStyle"
-                    Value="true" />
+            <EventSetter Event="KeyDown"
+                         Handler="ListBoxItem_KeyDown" />
+
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBoxItem">
@@ -55,7 +56,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="ListBoxItem">
-                                <CheckBox x:Name="radio"
+                                <CheckBox x:Name="chkbox"
                                           Focusable="False"
                                           Style="{StaticResource checkbox}"
                                           IsChecked="{Binding IsChecked, Mode=TwoWay}">

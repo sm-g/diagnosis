@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Diagnosis.App.Controls
 {
@@ -35,6 +36,21 @@ namespace Diagnosis.App.Controls
                 var parent = ParentFinder.FindAncestorOrSelf<ListBoxItem>(chkBox);
                 parent.IsSelected = chkBox.IsChecked.Value;
             }
+        }
+
+        private void ListBoxItem_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+            {
+                var item = sender as ListBoxItem;
+                if (item != null)
+                {
+                    var chkBox = ChildFinder.FindChild<CheckBox>(item, "chkbox");
+                    if (chkBox != null)
+                        chkBox.IsChecked = !chkBox.IsChecked;
+                }
+            }
+
         }
     }
 }
