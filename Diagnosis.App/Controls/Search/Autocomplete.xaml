@@ -25,6 +25,9 @@
     <UserControl.InputBindings>
         <KeyBinding Key="F2"
                     Command="{Binding EditCommand}" />
+        <KeyBinding Key="Space"
+                    Modifiers="Control"
+                    Command="{Binding ShowSuggestionsCommand}" />
     </UserControl.InputBindings>
     <UserControl.Resources>
         <InputBindingCollection x:Shared="False"

@@ -374,7 +374,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_focused != value)
                 {
                     _focused = value;
-                    logger.DebugFormat("{0} focused = {1}, focused2 = {2}", this, value, _listItemFocused);
+                    logger.DebugFormat("{0} focusedTxt = {1}, focusedItem = {2}", this, value, _listItemFocused);
                     OnPropertyChanged("IsTextBoxFocused");
                 }
             }
@@ -403,7 +403,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_listItemFocused != value)
                 {
                     _listItemFocused = value;
-                    logger.DebugFormat("{0} focused2 = {1}, focused = {2}", this, value, _focused);
+                    logger.DebugFormat("{0} focusedItem = {1}, focusedTxt = {2}", this, value, _focused);
 
                     OnPropertyChanged(() => IsListItemFocused);
                 }

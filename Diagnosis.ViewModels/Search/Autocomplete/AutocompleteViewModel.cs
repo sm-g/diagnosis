@@ -164,7 +164,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             get { return Tags.Where(t => t.IsSelected).ToList(); }
         }
-
         public RelayCommand EditCommand
         {
             get
@@ -199,6 +198,21 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                         }
                     }
                 });
+            }
+        }
+
+        /// <summary>
+        /// Показывает предположения для редактируемого тега.
+        /// </summary>
+        public RelayCommand ShowSuggestionsCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    MakeSuggestions(SelectedTag);
+                    RefreshPopup();
+                }, () => SelectedTag != null && SelectedTag.IsTextBoxFocused);
             }
         }
 
@@ -381,7 +395,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                         }
                         else
                         {
-                            MakeSuggestions(SelectedTag); // TODO предположения для недописанных
+                            MakeSuggestions(SelectedTag); // предположения для недописанных, новых
                         }
 
                         CanCompleteOnLostFocus = true;
@@ -389,11 +403,16 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                         SelectedTags.Except(tag.ToEnumerable()).ForAll(t => t.IsSelected = false);
                         tag.IsSelected = true;
                     }
-
-                    // потерялся фокус после перехода не в предположения → завершение введенного текста
-                    if (!tag.IsTextBoxFocused && CanCompleteOnLostFocus)
+                    else
                     {
-                        CompleteOnLostFocus(tag);
+                        // выход из редактирования
+                        Suggestions.Clear();
+
+                        // потерялся фокус после перехода не в предположения → завершение введенного текста
+                        if (CanCompleteOnLostFocus)
+                        {
+                            CompleteOnLostFocus(tag);
+                        }
                     }
 
                     RefreshPopup();
@@ -667,7 +686,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         private void RefreshPopup()
         {
-            IsPopupOpen = Suggestions.Count > 0; // not on suggestion.collectionchanged - мигание при очистке, лишние запросы к IsPopupOpen
+            IsPopupOpen = Suggestions.Count > 0; // not on suggestion.collectionchanged - мигание при очистке
         }
 
         protected virtual void OnInputEnded()
