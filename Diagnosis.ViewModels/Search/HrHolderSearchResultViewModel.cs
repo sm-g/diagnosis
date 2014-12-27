@@ -59,7 +59,7 @@ namespace Diagnosis.ViewModels.Search
                     () =>
                     {
                         if (FoundHealthRecords.Count > 0)
-                            this.Send(Events.OpenHealthRecord, FoundHealthRecords.First().AsParams(MessageKeys.HealthRecord));
+                            this.Send(Events.OpenHealthRecords, FoundHealthRecords.AsParams(MessageKeys.HealthRecords));
                         else
                             this.Send(Events.OpenHolder, Holder.AsParams(MessageKeys.Holder));
                     });

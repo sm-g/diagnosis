@@ -35,7 +35,7 @@ namespace Diagnosis.Common
         OpenPatient,
         OpenCourse,
         OpenAppointment,
-        OpenHealthRecord,
+        OpenHealthRecords,
         EditHealthRecord,
         OpenHolder,
 

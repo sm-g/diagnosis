@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -123,10 +124,13 @@ namespace Diagnosis.ViewModels.Screens
                 OpenScreen(Screens.Card, app);
             });
 
-            this.Subscribe(Events.OpenHealthRecord, (e) =>
+            this.Subscribe(Events.OpenHealthRecords, (e) =>
             {
-                var hr = e.GetValue<HealthRecord>(MessageKeys.HealthRecord);
-                OpenScreen(Screens.Card, hr);
+                var hrs = e.GetValue<IEnumerable<HealthRecord>>(MessageKeys.HealthRecords);
+                if (hrs != null && hrs.Count() > 0)
+                {
+                    OpenScreen(Screens.Card, hrs);
+                }
             });
 
             this.Subscribe(Events.EditHealthRecord, (e) =>

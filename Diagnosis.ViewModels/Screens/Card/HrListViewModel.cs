@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
@@ -173,6 +174,11 @@ namespace Diagnosis.ViewModels.Screens
         internal void SelectHealthRecord(HealthRecord healthRecord)
         {
             SelectedHealthRecord = HealthRecords.FirstOrDefault(x => x.healthRecord == healthRecord);
+        }
+        internal void SelectHealthRecords(IEnumerable<HealthRecord> hrs)
+        {
+            HealthRecords.Where(vm => hrs.Contains(vm.healthRecord))
+                .ForAll(vm => vm.IsSelected = true);
         }
 
         protected override void Dispose(bool disposing)
