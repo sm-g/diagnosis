@@ -4,10 +4,10 @@ using Diagnosis.Models;
 using EventAggregator;
 using log4net;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -207,7 +207,15 @@ namespace Diagnosis.ViewModels.Screens
                 if (lastAppOrCourse)
                     viewer.AutoOpen = false;
             }
-            else
+            else if (parameter is HealthRecord)
+            {
+                var hr = parameter as HealthRecord;
+                Navigator.Add(hr.GetPatient());
+                holder = Session.Unproxy(hr.Holder as IHrsHolder);
+                Navigator.NavigateTo(holder);
+                HrList.SelectHealthRecord(hr);
+            }
+            else if (parameter is IEnumerable<HealthRecord>)
             {
                 var hrs = parameter as IEnumerable<HealthRecord>;
                 var first = hrs.FirstOrDefault();
