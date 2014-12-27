@@ -18,7 +18,7 @@ namespace Diagnosis.Models
         private HrCategory _category;
         private DateOffset _dateOffset;
         private HealthRecordUnits _unit;
-        DateTime _createdAt;
+        private DateTime _createdAt;
 
         public virtual event NotifyCollectionChangedEventHandler ItemsChanged;
 
@@ -46,11 +46,7 @@ namespace Diagnosis.Models
             get { return _isDeleted; }
             set
             {
-                if (_isDeleted == value)
-                    return;
-                EditHelper.Edit<bool, Guid>(() => IsDeleted);
-                _isDeleted = value;
-                OnPropertyChanged("IsDeleted");
+                SetProperty(ref _isDeleted, value, () => IsDeleted);
             }
         }
 
@@ -59,83 +55,44 @@ namespace Diagnosis.Models
             get { return _category; }
             set
             {
-                if (_category == value)
-                    return;
-
                 if (value == HrCategory.Null) value = null;
-                EditHelper.Edit<HrCategory, Guid>(() => Category);
-                _category = value;
-                OnPropertyChanged("Category");
+                SetProperty(ref _category, value, () => Category);
             }
         }
 
         public virtual int? FromDay
         {
-            get
-            {
-                return _day;
-            }
+            get { return _day; }
             set
             {
-                if (_day == value)
-                    return;
-
-                EditHelper.Edit("FromDay", _day);
-                _day = value;
-                OnPropertyChanged("FromDay");
+                SetProperty(ref _day, value, () => FromDay);
             }
         }
 
         public virtual int? FromMonth
         {
-            get
-            {
-                return _month;
-            }
+            get { return _month; }
             set
             {
-                if (_month == value)
-                    return;
-
-                EditHelper.Edit("FromMonth", _month);
-                _month = value;
-                OnPropertyChanged("FromMonth");
+                SetProperty(ref _month, value, () => FromMonth);
             }
         }
 
         public virtual int? FromYear
         {
-            get
-            {
-                return _year;
-            }
+            get { return _year; }
             set
             {
-                if (_year == value)
-                    return;
-
-                EditHelper.Edit("FromYear", _year);
-                _year = value;
-
-                OnPropertyChanged("FromYear");
+                SetProperty(ref _year, value, () => FromYear);
             }
         }
 
         public virtual HealthRecordUnits Unit
         {
-            get
-            {
-                return _unit;
-            }
+            get { return _unit; }
             set
             {
-                if (_unit == value)
-                    return;
-
-                EditHelper.Edit("Unit", _unit);
-                _unit = value;
-
-                OnPropertyChanged("Unit");
+                SetProperty(ref _unit, value, () => Unit);
             }
         }
 
@@ -197,7 +154,7 @@ namespace Diagnosis.Models
                         }
                         OnPropertyChanged(() => DateOffset);
                     };
-                    this.PropertyChanged += (s, e) =>
+                    this.PropertyChanged += (s, e) => // подписываемся в первую очередь
                     {
                         try
                         {
@@ -214,6 +171,7 @@ namespace Diagnosis.Models
                                 case "FromYear":
                                     DateOffset.Year = FromYear;
                                     break;
+
                                 case "Unit":
                                     var doUnit = Unit.ToDateOffsetUnit();
                                     DateOffset.Unit = doUnit ?? DateOffset.Unit; // меняем Unit на конкретную часть даты
@@ -282,8 +240,6 @@ namespace Diagnosis.Models
 
         protected HealthRecord()
         {
-            //    CreatedAt = DateTime.Now;
-
         }
 
         public virtual void AddItem(HrItem item)
