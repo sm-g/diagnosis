@@ -7,6 +7,8 @@ namespace Diagnosis.Models
 {
     public class HrCategory : EntityBase<int>, IDomainObject, IComparable
     {
+        public static HrCategory Null = new HrCategory() { Name = "без категории", Ord = int.MaxValue };
+
         public virtual string Name { get; set; }
         public virtual int Ord { get; set; }
 

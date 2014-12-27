@@ -18,14 +18,13 @@
 
             <Controls:RadioListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid Rows="2"
-                                 Columns="3" />
+                    <Controls:UniformGridWithOrientation Orientation="Vertical" 
+                                                         Rows="2"/>
                 </ItemsPanelTemplate>
             </Controls:RadioListBox.ItemsPanel>
             <Controls:RadioListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Name}"
-                               Margin="1,0" />
+                    <TextBlock Text="{Binding Name}" />
                 </DataTemplate>
             </Controls:RadioListBox.ItemTemplate>
         </Controls:RadioListBox>

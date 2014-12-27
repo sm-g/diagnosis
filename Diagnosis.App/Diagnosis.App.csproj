@@ -227,6 +227,7 @@
     <Compile Include="Controls\CardParts\Header.xaml.cs">
       <DependentUpon>Header.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Common\UniformGridWithOrientation.cs" />
     <Compile Include="Controls\Headers\Appointment.xaml.cs">
       <DependentUpon>Appointment.xaml</DependentUpon>
     </Compile>

@@ -62,6 +62,7 @@ namespace Diagnosis.Models
                 if (_category == value)
                     return;
 
+                if (value == HrCategory.Null) value = null;
                 EditHelper.Edit<HrCategory, Guid>(() => Category);
                 _category = value;
                 OnPropertyChanged("Category");
@@ -160,7 +161,7 @@ namespace Diagnosis.Models
                         () => CreatedAt != DateTime.MinValue ? CreatedAt : DateTime.Now,
                         DateOffset.DateOffsetSettings.OnLoading());
 
-                    if (Unit != HealthRecordUnits.NotSet && 
+                    if (Unit != HealthRecordUnits.NotSet &&
                         Unit != HealthRecordUnits.ByAge
                         || _dateOffset.DateSettingStrategy == DateOffset.DateSetting.SavesUnit)
                     {
@@ -281,8 +282,8 @@ namespace Diagnosis.Models
 
         protected HealthRecord()
         {
-        //    CreatedAt = DateTime.Now;
-            
+            //    CreatedAt = DateTime.Now;
+
         }
 
         public virtual void AddItem(HrItem item)

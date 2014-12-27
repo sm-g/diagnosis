@@ -196,7 +196,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (_categories == null)
                 {
-                    var catsVM = Session.QueryOver<HrCategory>().List().Select(cat => new HrCategoryViewModel(cat)).ToList();
+                    var catsVM = Session.QueryOver<HrCategory>().List()
+                        .Select(cat => new HrCategoryViewModel(cat)).ToList();
                     catsVM.ForAll(cat => cat.PropertyChanged += (s, e) =>
                     {
                         if (e.PropertyName == "IsChecked")

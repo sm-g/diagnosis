@@ -65,7 +65,9 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (_categories == null)
                 {
-                    _categories = new List<HrCategory>(session.Query<HrCategory>()
+                    var cats = new List<HrCategory>(session.Query<HrCategory>().ToList());
+                    cats.Add(HrCategory.Null);
+                    _categories = new List<HrCategory>(cats
                         .OrderBy(cat => cat.Ord).ToList());
                 }
                 return _categories;
@@ -76,12 +78,11 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return HealthRecord != null ? HealthRecord.Category : null;
+                return HealthRecord != null && HealthRecord.Category != null 
+                    ? HealthRecord.Category 
+                    : HrCategory.Null;
             }
-            set
-            {
-                HealthRecord.Category = value;
-            }
+            set { HealthRecord.Category = value; }
         }
 
         #endregion HealthRecord
