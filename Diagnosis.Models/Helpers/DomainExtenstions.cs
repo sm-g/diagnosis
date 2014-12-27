@@ -96,7 +96,7 @@ namespace Diagnosis.Models
         }
     }
 
-    public static class IDomainEntityExtensions
+    public static class IEntityExtensions
     {
         /// <summary>
         /// Определяет, пуста ли сущность.
@@ -110,7 +110,7 @@ namespace Diagnosis.Models
         /// <param name="entity"></param>
         /// <returns></returns>
         [Pure]
-        public static bool IsEmpty(this IDomainObject entity)
+        public static bool IsEmpty(this IEntity entity)
         {
             var @switch = new Dictionary<Type, Func<bool>> {
                 { typeof(Doctor), () => 
@@ -153,7 +153,7 @@ namespace Diagnosis.Models
                 },
            };
 
-            return @switch[entity.GetType()]();
+            return @switch[entity.Actual.GetType()]();
 
         }
 

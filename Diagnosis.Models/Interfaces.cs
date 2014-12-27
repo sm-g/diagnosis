@@ -14,6 +14,7 @@ namespace Diagnosis.Models
     {
         bool IsDirty { get; set; }
         object Id { get; }
+        object Actual { get; }
     }
 
     /// <summary>
@@ -51,11 +52,10 @@ namespace Diagnosis.Models
     /// <summary>
     /// Сущность, содержащая записи.
     /// </summary>
-    public interface IHrsHolder : IDomainObject, IComparable<IHrsHolder> // App < Course < Patient
+    public interface IHrsHolder : IEntity, IDomainObject, IComparable<IHrsHolder> // App < Course < Patient
     {
         event NotifyCollectionChangedEventHandler HealthRecordsChanged;
         IEnumerable<HealthRecord> HealthRecords { get; }
-        object Actual { get; }
         HealthRecord AddHealthRecord(Doctor author);
         void RemoveHealthRecord(HealthRecord hr);
     }
