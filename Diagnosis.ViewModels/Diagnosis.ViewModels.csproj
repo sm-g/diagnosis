@@ -168,9 +168,6 @@
     <Compile Include="Framework\Services\FileDialogService.cs" />
     <Compile Include="Framework\IDialog.cs" />
     <Compile Include="Framework\Services\FileType.cs" />
-    <Compile Include="Framework\XmlnsDefinitions\Diagnosis.ViewModels.Search.Autocomplete.cs" />
-    <Compile Include="Framework\XmlnsDefinitions\Diagnosis.ViewModels.Search.cs" />
-    <Compile Include="Framework\XmlnsDefinitions\Diagnosis.ViewModels.Screens.cs" />
     <Compile Include="Screens\Card\HolderViewModel.cs" />
     <Compile Include="Search\Autocomplete\MeasureEditorViewModel.cs" />
     <Compile Include="Screens\Doctors\DoctorsListViewModel.cs" />
@@ -258,7 +255,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Framework\CodeMap1.dgml" />
-    <Compile Include="Framework\XmlnsDefinitions\Diagnosis.ViewModels.cs" />
     <None Include="packages.config" />
     <None Include="Screens\Card\Card.cd" />
     <None Include="Search\Autocomplete\CodeMap1.dgml" />

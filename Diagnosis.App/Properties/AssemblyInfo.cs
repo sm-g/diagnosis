@@ -54,9 +54,3 @@ using System.Windows.Markup;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-
-//[assembly: XmlnsPrefix("http://schemas.smg.com/diagnosis", "diag")]
-//[assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels.Screens")]
-//[assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels.Search.Autocomplete")]
-//[assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels.Search")]
-//[assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels")]

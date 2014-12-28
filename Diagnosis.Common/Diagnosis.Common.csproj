@@ -149,7 +149,6 @@
     <Compile Include="Types\DisposableBase.cs" />
     <Compile Include="Types\INCCReadOnlyObservableCollection.cs" />
     <Compile Include="Mediator\Events.cs" />
-    <Compile Include="Types\XmlnsDefinition.cs" />
     <Compile Include="Util\Comparers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Util\DebugOutput.cs" />
