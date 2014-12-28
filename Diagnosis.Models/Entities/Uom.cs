@@ -10,6 +10,8 @@ using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
+    [Serializable]
+
     public class Uom : EntityBase<int>, IDomainObject
     {
         public static Uom Null = new Uom("—", 1, -1);  // для измерения без единицы

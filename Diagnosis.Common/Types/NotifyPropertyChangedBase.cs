@@ -9,7 +9,7 @@ namespace Diagnosis.Common
     public abstract class NotifyPropertyChangedBase : INotifyPropertyChanged
     {
         #region  INotifyPropertyChanged Members
-
+        [field: NonSerialized]
         public virtual event PropertyChangedEventHandler PropertyChanged;
 
         [DebuggerStepThrough]

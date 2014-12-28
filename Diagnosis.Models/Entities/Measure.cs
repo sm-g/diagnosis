@@ -2,12 +2,15 @@
 
 namespace Diagnosis.Models
 {
+    [Serializable]
     public class Measure : IDomainObject, IHrItemObject, IComparable<Measure>
     {
         public const short Scale = 6;
         public const short Precision = 18;
+        [NonSerialized]
 
         private HealthRecord _hr;
+
         private Uom _uom;
 
         public virtual HealthRecord HealthRecord
@@ -111,6 +114,34 @@ namespace Diagnosis.Models
 
             // по значению
             return this.DbValue.CompareTo(other.DbValue);
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as Measure;
+            if (other == null)
+            {
+                return false;
+            }
+            else
+            {
+                return this.Word == other.Word && this.Uom == other.Uom && this.DbValue == other.DbValue;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode(); // TODO
+        }
+
+        public static bool operator ==(Measure x, Measure y)
+        {
+            return Object.Equals(x, y);
+        }
+
+        public static bool operator !=(Measure x, Measure y)
+        {
+            return !(x == y);
         }
     }
 }

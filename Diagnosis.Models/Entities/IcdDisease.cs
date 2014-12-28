@@ -5,10 +5,16 @@ using System;
 
 namespace Diagnosis.Models
 {
+    [Serializable]
     public class IcdDisease : EntityBase<int>, IDomainObject, IHrItemObject, IComparable<IcdDisease>, IIcdEntity
     {
-        public virtual IcdBlock IcdBlock { get; protected set; }
-        public virtual string Title { get; protected set; }
+        [NonSerialized]
+        IcdBlock _icdBlock;
+        [NonSerialized]
+        private string _title;
+
+        public virtual IcdBlock IcdBlock { get { return _icdBlock; } protected set { _icdBlock = value; } }
+        public virtual string Title { get { return _title; } protected set { _title = value; } }
         public virtual string Code { get; protected set; }
 
         protected IcdDisease() { }

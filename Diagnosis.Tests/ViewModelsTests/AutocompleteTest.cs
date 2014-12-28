@@ -1,4 +1,5 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.Data;
+using Diagnosis.Models;
 using Diagnosis.ViewModels.Search.Autocomplete;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace Tests
         private string q;
         private string qFull;
         private Word word;
+        private IcdDisease icd;
         private static string notExistQ = "qwe";
 
         public TagViewModel First { get { return a.Tags.First(); } }
@@ -27,6 +29,7 @@ namespace Tests
             r = new Recognizer(session);
             a = new AutocompleteViewModel(r, true, true, false, null);
             word = session.Get<Word>(IntToGuid<Word>(1));
+            icd = session.Get<IcdDisease>(1);
             q = word.Title.Substring(0, word.Title.Length - 1);
             qFull = word.Title;
 
@@ -202,7 +205,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public void CopyPaste()
+        public void CopyPasteWord()
         {
             a.AddTag(word);
             a.SelectedTag = a.Tags.First();
@@ -211,17 +214,79 @@ namespace Tests
             a.Paste();
 
             Assert.AreEqual(3, a.Tags.Count);
-            Assert.AreEqual(a.Tags[0].Blank, a.Tags[1].Blank);
+            Assert.AreEqual(word, a.Tags[1].Blank);
         }
 
         [TestMethod]
-        public void Cut()
+        public void CutPasteWord()
         {
             a.AddTag(word);
             a.SelectedTag = a.Tags.First();
             a.CutSelected();
 
             Assert.AreEqual(1, a.Tags.Count);
+
+            a.Paste();
+
+            Assert.AreEqual(word, a.Tags[0].Blank);
+        }
+
+        [TestMethod]
+        public void CopyPasteMeasure()
+        {
+            var m = new Measure(0) { Word = word };
+            a.AddTag(m);
+            a.SelectedTag = a.Tags.First();
+            a.CopySelected();
+
+            a.Paste();
+
+            Assert.AreEqual(3, a.Tags.Count);
+            Assert.AreEqual(m, a.Tags[1].Blank);
+        }
+
+        [TestMethod]
+        public void CopyPasteIcd()
+        {
+            a.AddTag(icd);
+            a.SelectedTag = a.Tags.First();
+            a.CopySelected();
+
+            a.Paste();
+
+            Assert.AreEqual(3, a.Tags.Count);
+            Assert.AreEqual(icd, a.Tags[1].Blank);
+        }
+
+        [TestMethod]
+        public void CopyPasteToOtherAutocomplete()
+        {
+            a.AddTag(word);
+            a.SelectedTag = a.Tags.First();
+            a.CopySelected();
+
+            var r2 = new Recognizer(session);
+            var a2 = new AutocompleteViewModel(r2, true, true, false, null);
+            a2.Paste();
+
+            Assert.AreEqual(word, a2.Tags[0].Blank);
+        }
+
+        [TestMethod]
+        public void CopyPasteNewWordToOtherAutocomplete()
+        {
+            var w = new Word("11");
+            a.AddTag(w);
+            a.SelectedTag = a.Tags.First();
+            a.CopySelected();
+
+            var r2 = new Recognizer(session);
+            var a2 = new AutocompleteViewModel(r2, true, true, false, null);
+
+            new Saver(session).Save(new[] { w });
+            a2.Paste();
+
+            Assert.AreEqual(w, a2.Tags[0].Blank);
         }
     }
 }
