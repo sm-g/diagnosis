@@ -7,16 +7,44 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows;
+using System;
+using Diagnosis.ViewModels.Search.Autocomplete;
 
 namespace Diagnosis.ViewModels.Screens
 {
     public class HrListViewModel : ViewModelBase
     {
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HrListViewModel));
         private static HrViewer hrViewer = new HrViewer();
         internal readonly IHrsHolder holder;
         private HealthRecordManager hrManager;
         private ICollectionView healthRecordsView;
         private ShortHealthRecordViewModel _selectedHealthRecord;
+        private Action<HealthRecord, HrData.HrInfo> fill;
+
+        public event EventHandler<ListEventArgs<HealthRecord>> Pasted;
+
+        protected virtual void OnPasted(List<HealthRecord> pasted = null)
+        {
+            var h = Pasted;
+            if (h != null)
+            {
+                h(this, new ListEventArgs<HealthRecord>(pasted));
+            }
+        }
+
+        [Serializable]
+        public class ListEventArgs<T> : EventArgs
+        {
+            public readonly IList<T> list;
+
+            [System.Diagnostics.DebuggerStepThrough]
+            public ListEventArgs(IList<T> list)
+            {
+                this.list = list;
+            }
+        }
 
         public HolderViewModel HolderVm { get; private set; }
 
@@ -56,7 +84,9 @@ namespace Diagnosis.ViewModels.Screens
                 OnPropertyChanged(() => SelectedHealthRecord);
             }
         }
+        public ObservableCollection<ShortHealthRecordViewModel> SelectedHealthRecords { get; private set; }
 
+        public bool InAddHrCommand { get; private set; }
         #region Commands
 
         public ICommand AddHealthRecordCommand
@@ -65,8 +95,12 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                     {
+
                         var lastHrVM = SelectedHealthRecord ?? HealthRecords.LastOrDefault();
+                        InAddHrCommand = true;
                         var newHr = holder.AddHealthRecord(AuthorityController.CurrentDoctor);
+                        InAddHrCommand = false;
+
                         if (lastHrVM != null)
                         {
                             // копируем категории из последней записи
@@ -96,8 +130,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                         {
-                            this.Send(Events.SendToSearch, HealthRecords.Where(hr => hr.IsChecked)
-                                .Select(vm => vm.healthRecord)
+                            this.Send(Events.SendToSearch, hrManager.GetSelectedHrs()
                                 .AsParams(MessageKeys.HealthRecords));
                         }, () => CheckedHrCount > 0);
             }
@@ -145,10 +178,11 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public HrListViewModel(IHrsHolder holder)
+        public HrListViewModel(IHrsHolder holder, Action<HealthRecord, HrData.HrInfo> onSync)
         {
             Contract.Requires(holder != null);
             this.holder = holder;
+            this.fill = onSync;
             HolderVm = new HolderViewModel(holder);
 
             hrManager = new HealthRecordManager(holder, onHrVmPropChanged: (s, e) =>
@@ -163,9 +197,75 @@ namespace Diagnosis.ViewModels.Screens
                 }
             });
 
+            SelectedHealthRecords = new ObservableCollection<ShortHealthRecordViewModel>();
             SelectHealthRecord(hrViewer.GetLastSelectedFor(holder));
         }
+        public void Cut()
+        {
+            var hrs = Copy();
+            hrManager.DeleteCheckedHealthRecords(withCancel: false);
 
+            LogHrs("cut", hrs);
+        }
+
+        public List<HrData.HrInfo> Copy()
+        {
+            var hrs = hrManager.GetSelectedHrs();
+            var hrInfos = hrs.Select(hr => new HrData.HrInfo()
+            {
+                HolderId = (Guid)hr.Holder.Id,
+                DoctorId = hr.Doctor.Id,
+                CategoryId = hr.Category != null ? (int?)hr.Category.Id : null,
+                FromDay = hr.FromDay,
+                FromMonth = hr.FromMonth,
+                FromYear = hr.FromYear,
+                Unit = hr.Unit,
+                Hios = new List<IHrItemObject>(hr.HrItems.Select(x => x.Entity))
+
+            }).ToList();
+
+            var data = new HrData() { Hrs = hrInfos };
+
+            var strings = string.Join(".\n", hrs.Select(hr => string.Join(", ", hr.GetOrderedEntities()))) + ".";
+
+            IDataObject dataObj = new DataObject(HrData.DataFormat.Name, data);
+            dataObj.SetData(System.Windows.DataFormats.UnicodeText, strings);
+            Clipboard.SetDataObject(dataObj, false);
+
+            LogHrs("copy", hrInfos);
+            return hrInfos;
+        }
+
+
+        public void Paste()
+        {
+            HrData data = null;
+
+            var ido = Clipboard.GetDataObject();
+            if (ido.GetDataPresent(HrData.DataFormat.Name))
+            {
+                data = (HrData)ido.GetData(HrData.DataFormat.Name);
+            }
+            if (data != null)
+            {
+                var index = HealthRecords.IndexOf(SelectedHealthRecord); // paste before first Selected
+                SelectedHealthRecords.ForEach(t => t.IsSelected = false);
+                var pasted = new List<HealthRecord>();
+                foreach (var hr2 in data.Hrs)
+                {
+                    if (hr2 == null) continue;
+
+                    var newHR = holder.AddHealthRecord(AuthorityController.CurrentDoctor);
+                    fill(newHR, hr2);
+                    pasted.Add(newHR);
+                }
+                OnPasted(pasted);
+
+                //  select pasted
+                SelectedHealthRecords.SyncWith(pasted.Select(hr => HealthRecords.First(vm => vm.healthRecord == hr)));
+                LogHrs("paste", data.Hrs);
+            }
+        }
         public override string ToString()
         {
             return holder.ToString();
@@ -179,6 +279,10 @@ namespace Diagnosis.ViewModels.Screens
         {
             HealthRecords.Where(vm => hrs.Contains(vm.healthRecord))
                 .ForAll(vm => vm.IsSelected = true);
+        }
+        private void LogHrs(string action, IEnumerable<HrData.HrInfo> hrs)
+        {
+            logger.DebugFormat("{0} hrs with hios: {1}", action, string.Join("\n", hrs.Select((hr, i) => string.Format("{0} {1}", i, hr.Hios.FlattenString()))));
         }
 
         protected override void Dispose(bool disposing)
@@ -196,5 +300,28 @@ namespace Diagnosis.ViewModels.Screens
                 base.Dispose(disposing);
             }
         }
+
+    }
+    [Serializable]
+    public class HrData
+    {
+        public static readonly DataFormat DataFormat = DataFormats.GetDataFormat("hr");
+        public List<HrInfo> Hrs { get; set; }
+        [Serializable]
+
+        public class HrInfo
+        {
+            public Guid HolderId { get; set; }
+            public Guid DoctorId { get; set; }
+            public int? CategoryId { get; set; }
+            public int? FromDay { get; set; }
+            public int? FromMonth { get; set; }
+            public int? FromYear { get; set; }
+            public HealthRecordUnits Unit { get; set; }
+            public List<IHrItemObject> Hios { get; set; }
+
+
+        }
+
     }
 }

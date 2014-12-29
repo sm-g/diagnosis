@@ -21,7 +21,15 @@
                            Command="{Binding EditCommand}" />
         </InputBindingCollection>
     </UserControl.Resources>
-
+    <UserControl.CommandBindings>
+        <CommandBinding Command="Paste"
+                        Executed="CommandBinding_Executed" />
+        <CommandBinding Command="Copy"
+                        Executed="CommandBinding_Executed" />
+        <CommandBinding Command="Cut"
+                        Executed="CommandBinding_Executed" />
+    </UserControl.CommandBindings>
+    
     <UserControl.InputBindings>
         <KeyBinding Modifiers="Alt"
                     Key="F"

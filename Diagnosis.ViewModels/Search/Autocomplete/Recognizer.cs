@@ -238,32 +238,27 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             return results;
         }
 
-        public TagData SyncWithSession(TagData data)
+        public void SyncWithSession(List<IHrItemObject> hios)
         {
-            for (int i = 0; i < data.ItemObjects.Count; i++)
+            for (int i = 0; i < hios.Count; i++)
             {
-                if (data.ItemObjects[i] is Word)
+                if (hios[i] is Word)
                 {
-                    Word word = data.ItemObjects[i] as Word;
-                    data.ItemObjects[i] = SyncWord(word);
+                    Word word = hios[i] as Word;
+                    hios[i] = SyncWord(word);
                 }
-                else if (data.ItemObjects[i] is IcdDisease)
+                else if (hios[i] is Measure)
                 {
-                    var icd = data.ItemObjects[i] as IcdDisease;
-                }
-                else if (data.ItemObjects[i] is Measure)
-                {
-                    var m = data.ItemObjects[i] as Measure;
+                    var m = hios[i] as Measure;
                     if (m.Word != null)
                     {
-                        (data.ItemObjects[i] as Measure).Word = SyncWord(m.Word);
+                        (hios[i] as Measure).Word = SyncWord(m.Word);
                     }
                 }
             }
-            return data;
         }
 
-        private Word SyncWord(Word word)
+        public Word SyncWord(Word word)
         {
             // при вставке создается другой объект
 

@@ -25,6 +25,7 @@ namespace Diagnosis.ViewModels.Screens
         private EventMessageHandler handler;
 
         public event EventHandler<DomainEntityEventArgs> Unloaded;
+        private Recognizer recognizer;
 
         public HrEditorViewModel(ISession session)
         {
@@ -76,8 +77,8 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return HealthRecord != null && HealthRecord.Category != null 
-                    ? HealthRecord.Category 
+                return HealthRecord != null && HealthRecord.Category != null
+                    ? HealthRecord.Category
                     : HrCategory.Null;
             }
             set { HealthRecord.Category = value; }
@@ -132,6 +133,7 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
+
         public RelayCommand AddMeasureCommand
         {
             get
@@ -147,6 +149,7 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
+
         public RelayCommand CloseCommand
         {
             get
@@ -156,21 +159,30 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         #region AutoComplete
-
         public AutocompleteViewModel Autocomplete { get { return _autocomplete; } }
 
+        public Word SyncWord(Word w)
+        {
+            if (recognizer != null)
+            {
+                return recognizer.SyncWord(w);
+            }
+            return w;
+        }
         /// <summary>
         /// Создает автокомплит с начальными словами и комментами из редактируемой записи.
         /// </summary>
         private void CreateAutoComplete()
         {
             if (Autocomplete != null)
+            {
                 Autocomplete.Dispose();
+            }
 
             var initials = HealthRecord.healthRecord.GetOrderedEntities();
-
+            recognizer = new Recognizer(session) { ShowChildrenFirst = true };
             _autocomplete = new AutocompleteViewModel(
-                new Recognizer(session) { ShowChildrenFirst = true },
+                recognizer,
                 true,
                 true,
                 false,
@@ -243,6 +255,7 @@ namespace Diagnosis.ViewModels.Screens
 
                 Autocomplete.Dispose();
                 _autocomplete = null;
+                recognizer = null; // editor closed, created words persisted
             }
         }
 

@@ -554,7 +554,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 var index = Tags.IndexOf(SelectedTag); // paste before first SelectedTag
                 SelectedTags.ForEach(t => t.IsSelected = false);
 
-                data = recognizer.SyncWithSession(data);
+                recognizer.SyncWithSession(data.ItemObjects);
 
                 foreach (var item in data.ItemObjects)
                 {

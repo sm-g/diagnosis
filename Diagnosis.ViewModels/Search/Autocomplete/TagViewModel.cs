@@ -568,8 +568,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
     public class TagData
     {
         public static readonly DataFormat DataFormat = DataFormats.GetDataFormat("tag");
-        public string Query { get; set; }
-        public object Blank { get; set; }
         public List<IHrItemObject> ItemObjects { get; set; }
     }
 }

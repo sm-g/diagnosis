@@ -1,7 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
-using NHibernate;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -48,11 +48,20 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public void DeleteCheckedHealthRecords()
+        public List<HealthRecord> GetSelectedHrs()
         {
-            HealthRecords.Where(hr => hr.IsChecked).ToList().ForAll(hr =>
+            return HealthRecords.Where(hr => hr.IsChecked)
+                                .Select(vm => vm.healthRecord).ToList();
+        }
+
+        public void DeleteCheckedHealthRecords(bool withCancel = true)
+        {
+            GetSelectedHrs().ForAll(hr =>
             {
-                hr.healthRecord.IsDeleted = true;
+                if (withCancel)
+                    hr.IsDeleted = true;
+                else
+                    holder.RemoveHealthRecord(hr);
             });
         }
 

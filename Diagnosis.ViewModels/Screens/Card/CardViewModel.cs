@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using NHibernate.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -266,8 +267,65 @@ namespace Diagnosis.ViewModels.Screens
 
             if (holder != null)
             {
-                HrList = new HrListViewModel(holder);
+                HrList = new HrListViewModel(holder, (hr, hr2) =>
+                {
+                    for (int i = 0; i < hr2.Hios.Count; i++)
+                    {
+                        if (hr2.Hios[i] is Word)
+                        {
+                            Word word = hr2.Hios[i] as Word;
+                            if (word.IsTransient)
+                                hr2.Hios[i] = HrEditor.SyncWord(word);
+                            else
+                                hr2.Hios[i] = Session.Get<Word>(word.Id);
+
+                            // Console.WriteLine((hr2.Hios[i] as Diagnosis.Models.Word).Equals(word.Actual)); false!
+
+                        }
+                        else if (hr2.Hios[i] is IcdDisease)
+                        {
+                            var icd = hr2.Hios[i] as IcdDisease;
+                        }
+                        else if (hr2.Hios[i] is Measure)
+                        {
+                            var m = hr2.Hios[i] as Measure;
+                            if (m.Word != null)
+                            {
+                                if (m.Word.IsTransient)
+                                    (hr2.Hios[i] as Measure).Word = HrEditor.SyncWord(m.Word);
+                                else
+                                    (hr2.Hios[i] as Measure).Word = Session.Get<Word>(m.Word.Id);
+                            }
+                        }
+                    }
+                    //HrEditor.Sync(hr2.Hios);
+
+                    if (hr2.CategoryId != null)
+                    {
+                        hr.Category = Session.Get<HrCategory>(hr2.CategoryId.Value);
+                    }
+                    hr.Unit = hr2.Unit;
+                    hr.FromDay = hr2.FromDay;
+                    hr.FromMonth = hr2.FromMonth;
+                    hr.FromYear = hr2.FromYear;
+                    hr.SetItems(hr2.Hios);
+                });
                 HrList.PropertyChanged += HrList_PropertyChanged;
+                HrList.Pasted += (s, e) =>
+                {
+                    logger.DebugFormat("pasted");
+                    // select
+                    // ставим порядок
+                    for (int i = 0; i < HrList.HealthRecords.Count; i++)
+                    {
+                        HrList.HealthRecords[i].healthRecord.Ord = i;
+                    }
+                    // сохраняем все записи кроме открытой в редакторе
+                    saver.Save(HrList.HealthRecords
+                        .Select(vm => vm.healthRecord)
+                        .Except(HrEditor.IsActive ? HrEditor.HealthRecord.healthRecord.ToEnumerable() : Enumerable.Empty<HealthRecord>())
+                        .ToArray());
+                };
                 HrList.HealthRecords.CollectionChanged += HrList_HealthRecords_CollectionChanged;
             }
         }
@@ -309,13 +367,24 @@ namespace Diagnosis.ViewModels.Screens
 
         private void HrList_HealthRecords_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            // Catch hr.isDeleted = true
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
-                if (e.OldItems.Count > 0)
+                // Catch hr.isDeleted = true
+                foreach (ShortHealthRecordViewModel vm in e.OldItems)
                 {
-                    saver.SaveHealthRecord((e.OldItems[0] as ShortHealthRecordViewModel).healthRecord);
+                    if (vm.healthRecord.IsDeleted)
+                        saver.SaveHealthRecord(vm.healthRecord);
+
                 }
+
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Move)
+            {
+
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                // порядок
             }
         }
 
@@ -340,15 +409,18 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                // редактируем добавленную запись
-                var hr = (HealthRecord)e.NewItems[0];
-                HrList.SelectHealthRecord(hr);
-                HrEditor.Load(hr);
+                if (HrList.InAddHrCommand)
+                {
+                    // редактируем добавленную запись
+                    var hr = (HealthRecord)e.NewItems[0];
+                    HrList.SelectHealthRecord(hr);
+                    HrEditor.Load(hr);
+                }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 // удаляем записи в бд
-                saver.SaveAll(viewer.OpenedPatient);
+                saver.SaveAll(viewer.OpenedPatient); // кроме
             }
         }
 
