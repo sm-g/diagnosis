@@ -3,13 +3,16 @@ using Iesi.Collections.Generic;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using Wintellect.PowerCollections;
 
 namespace Diagnosis.Models
 {
     public class HealthRecord : EntityBase<Guid>, IDomainObject
     {
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HealthRecord));
         private Iesi.Collections.Generic.ISet<HrItem> hrItems = new HashedSet<HrItem>();
         private int? _year;
         private int? _month;
@@ -242,7 +245,7 @@ namespace Diagnosis.Models
         {
         }
 
-        public virtual void AddItem(HrItem item)
+        void AddItem(HrItem item)
         {
             Contract.Requires(item != null);
             var hrItemsCopy = new HashedSet<HrItem>(hrItems);
@@ -258,7 +261,7 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual void RemoveItem(HrItem item)
+        void RemoveItem(HrItem item)
         {
             Contract.Requires(item != null);
             var hrItemsCopy = new HashedSet<HrItem>(hrItems);
@@ -273,6 +276,82 @@ namespace Diagnosis.Models
             }
         }
 
+        public virtual void AddItems(IEnumerable<IHrItemObject> items)
+        {
+            SetItems(HrItems.Select(hri => hri.Entity).Concat(items).ToList());
+        }
+
+        public virtual void SetItems(List<IHrItemObject> entitiesToBe)
+        {
+            var hrEntities = this.HrItems.Select(x => x.Entity).ToList();
+
+            var willSet = new OrderedBag<IHrItemObject>(entitiesToBe);
+            var wasSet = new OrderedBag<IHrItemObject>(hrEntities);
+            var toA = willSet.Difference(wasSet);
+            var toR = wasSet.Difference(willSet);
+
+            logger.DebugFormat("set HrItems. IHrItemObject was: {0}, will: {1}", wasSet.FlattenString(), willSet.FlattenString());
+
+            var itemsToRem = new List<HrItem>();
+            var itemsToAdd = new List<HrItem>();
+
+            // items to be in Hr = this.HrItems - itemsToRem + itemsToAdd
+            var itemsToBe = new List<HrItem>();
+
+            // добалвяем все существующие, чьи сущности не надо убирать
+            for (int i = 0; i < hrEntities.Count; i++)
+            {
+                var needRem = toR.Contains(hrEntities[i]);
+                if (needRem)
+                {
+                    toR.Remove(hrEntities[i]);
+                    itemsToRem.Add(this.HrItems.ElementAt(i));
+                }
+                else
+                {
+                    itemsToBe.Add(this.HrItems.ElementAt(i));
+                }
+            }
+            // добавляем новые
+            foreach (var item in toA)
+            {
+                var n = new HrItem(this, item);
+                itemsToAdd.Add(n);
+                itemsToBe.Add(n);
+            }
+
+            logger.DebugFormat("set HrItems. itemsToAdd: {0}, itemsToRem: {1}", itemsToAdd.FlattenString(), itemsToRem.FlattenString());
+
+            // индексы начала поиска в автокомплите для каждой сущности
+            var dict = new Dictionary<IHrItemObject, int>();
+
+            // ставим порядок
+            for (int i = 0; i < itemsToBe.Count; i++)
+            {
+                var e = itemsToBe[i].Entity;
+                int start = 0;
+                dict.TryGetValue(e, out start);
+                var index = entitiesToBe.IndexOf(e, start);
+
+                Debug.Assert(index != -1, "entitiesToBe does not contain entity from itemsToBe");
+
+                dict[e] = index + 1;
+                itemsToBe[i].Ord = index;
+            }
+
+            logger.DebugFormat("set HrItems. itemsToBe: {0}", itemsToBe.FlattenString());
+
+            foreach (var item in itemsToRem)
+            {
+                this.RemoveItem(item);
+            }
+            // добавляем элементы уже с порядком
+            foreach (var item in itemsToAdd)
+            {
+                this.AddItem(item);
+            }
+        }
+
         public virtual IEnumerable<IHrItemObject> GetOrderedEntities()
         {
             return from item in HrItems
@@ -282,7 +361,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("hr {0} {1} {2}", Id, Category, DateOffset);
+            return string.Format("hr {0} {1} {2} {3}", Id, Category, DateOffset, HrItems.FlattenString());
         }
 
         protected virtual void OnItemsChanged(NotifyCollectionChangedEventArgs e)

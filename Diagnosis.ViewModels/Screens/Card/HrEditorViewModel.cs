@@ -8,10 +8,8 @@ using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using Wintellect.PowerCollections;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -180,83 +178,12 @@ namespace Diagnosis.ViewModels.Screens
 
             _autocomplete.EntitiesChanged += (s, e) =>
             {
-                var entities = _autocomplete.GetEntities().ToList();
                 // меняем элементы записи
-                SetOrderedHrItems(HealthRecord.healthRecord, entities);
+                var items = _autocomplete.GetEntities().ToList();
+                HealthRecord.healthRecord.SetItems(items);
             };
 
             OnPropertyChanged("Autocomplete");
-        }
-
-        private static void SetOrderedHrItems(HealthRecord hr, List<IHrItemObject> entitiesToBe)
-        {
-            var hrEntities = hr.HrItems.Select(x => x.Entity).ToList();
-
-            var willSet = new OrderedBag<IHrItemObject>(entitiesToBe);
-            var wasSet = new OrderedBag<IHrItemObject>(hrEntities);
-            var toA = willSet.Difference(wasSet);
-            var toR = wasSet.Difference(willSet);
-
-            logger.DebugFormat("set HrItems. IHrItemObject was: {0}, will: {1}", wasSet.FlattenString(), willSet.FlattenString());
-
-            var itemsToRem = new List<HrItem>();
-            var itemsToAdd = new List<HrItem>();
-
-            // items to be in Hr = hr.HrItems - itemsToRem + itemsToAdd
-            var itemsToBe = new List<HrItem>();
-
-            // добалвяем все существующие, чьи сущности не надо убирать
-            for (int i = 0; i < hrEntities.Count; i++)
-            {
-                var needRem = toR.Contains(hrEntities[i]);
-                if (needRem)
-                {
-                    toR.Remove(hrEntities[i]);
-                    itemsToRem.Add(hr.HrItems.ElementAt(i));
-                }
-                else
-                {
-                    itemsToBe.Add(hr.HrItems.ElementAt(i));
-                }
-            }
-            // добавляем новые
-            foreach (var item in toA)
-            {
-                var n = new HrItem(hr, item);
-                itemsToAdd.Add(n);
-                itemsToBe.Add(n);
-            }
-
-            logger.DebugFormat("set HrItems. itemsToAdd: {0}, itemsToRem: {1}", itemsToAdd.FlattenString(), itemsToRem.FlattenString());
-
-            // индексы начала поиска в автокомплите для каждой сущности
-            var dict = new Dictionary<IHrItemObject, int>();
-
-            // ставим порядок
-            for (int i = 0; i < itemsToBe.Count; i++)
-            {
-                var e = itemsToBe[i].Entity;
-                int start = 0;
-                dict.TryGetValue(e, out start);
-                var index = entitiesToBe.IndexOf(e, start);
-
-                Debug.Assert(index != -1, "entitiesToBe does not contain entity from itemsToBe");
-
-                dict[e] = index + 1;
-                itemsToBe[i].Ord = index;
-            }
-
-            logger.DebugFormat("set HrItems. itemsToBe: {0}", itemsToBe.FlattenString());
-
-            foreach (var item in itemsToRem)
-            {
-                hr.RemoveItem(item);
-            }
-            // добавляем элементы уже с порядком
-            foreach (var item in itemsToAdd)
-            {
-                hr.AddItem(item);
-            }
         }
 
         #endregion AutoComplete
