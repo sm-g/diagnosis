@@ -166,6 +166,7 @@
                  ItemsSource="{Binding HealthRecords}"
                  IsSynchronizedWithCurrentItem="True"
                  SelectedItem="{Binding SelectedHealthRecord}"
+                 beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedHealthRecords}"
                  BorderThickness="0"
                  HorizontalContentAlignment="Stretch"
                  Visibility="{Binding HealthRecords.Count, Converter={StaticResource MoreThanToVisibility}}"

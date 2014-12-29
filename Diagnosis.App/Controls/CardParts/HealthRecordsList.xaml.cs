@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using Diagnosis.ViewModels.Screens;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Diagnosis.App.Controls.CardParts

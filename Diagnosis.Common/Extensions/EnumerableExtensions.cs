@@ -22,6 +22,13 @@ namespace Diagnosis.Common
                 action(item);
             }
         }
+        public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
+        {
+            foreach (var item in collection.ToList())
+            {
+                action(item);
+            }
+        }
 
         public static IEnumerable<T> ToEnumerable<T>(this T item) where T : class
         {
