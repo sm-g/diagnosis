@@ -101,6 +101,21 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public Doctor Doctor
+        {
+            get { return healthRecord.Doctor; }
+        }
+
+        public DateTime CreatedAt
+        {
+            get { return healthRecord.CreatedAt; }
+        }
+
+        public int Ord
+        {
+            get { return healthRecord.Ord; }
+        }
+
         #endregion Model
 
         public DateTime SortingDate

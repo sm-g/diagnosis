@@ -58,8 +58,9 @@ namespace Diagnosis.ViewModels.Screens
                     PropertyGroupDescription groupDescription = new PropertyGroupDescription("Category");
                     SortDescription sort1 = new SortDescription("Category", ListSortDirection.Ascending);
                     SortDescription sort2 = new SortDescription("SortingDate", ListSortDirection.Ascending);
+                    SortDescription sort3 = new SortDescription("Ord", ListSortDirection.Ascending);
                     healthRecordsView.GroupDescriptions.Add(groupDescription);
-                    //healthRecordsView.SortDescriptions.Add(sort1);
+                    healthRecordsView.SortDescriptions.Add(sort3);
                     //healthRecordsView.SortDescriptions.Add(sort2);
                 }
                 return hrManager.HealthRecords;

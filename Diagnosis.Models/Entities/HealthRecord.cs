@@ -24,6 +24,7 @@ namespace Diagnosis.Models
         private DateTime _createdAt;
 
         public virtual event NotifyCollectionChangedEventHandler ItemsChanged;
+        private int _ord;
 
         public virtual Patient Patient { get; protected set; }
 
@@ -99,7 +100,14 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual int Ord { get; set; }
+        public virtual int Ord
+        {
+            get { return _ord; }
+            set
+            {
+                SetProperty(ref _ord, value, () => Ord);
+            }
+        }
 
         public virtual DateTime CreatedAt
         {

@@ -78,6 +78,9 @@
                 <TextBlock Grid.Row="1"
                            Text="{Binding DateOffsetString, Mode=OneWay}" />
             </StackPanel>
+            <TextBlock Grid.Row="1"
+                       Grid.Column="1"
+                       Text="{Binding Ord, Mode=OneWay}" />
         </Grid>
 
         <StackPanel x:Name="buttons"
