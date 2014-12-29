@@ -8,6 +8,7 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
              mc:Ignorable="d"
+             beh:ClipboardBehavior.ClipboardTarget="True"             
              d:DesignHeight="300"
              d:DesignWidth="600"
              x:Name="hrList">
@@ -21,14 +22,6 @@
                            Command="{Binding EditCommand}" />
         </InputBindingCollection>
     </UserControl.Resources>
-    <UserControl.CommandBindings>
-        <CommandBinding Command="Paste"
-                        Executed="CommandBinding_Executed" />
-        <CommandBinding Command="Copy"
-                        Executed="CommandBinding_Executed" />
-        <CommandBinding Command="Cut"
-                        Executed="CommandBinding_Executed" />
-    </UserControl.CommandBindings>
     
     <UserControl.InputBindings>
         <KeyBinding Modifiers="Alt"

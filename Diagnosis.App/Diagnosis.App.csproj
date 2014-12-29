@@ -218,6 +218,7 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Behaviors\ClipboardBehavior.cs" />
     <Compile Include="Behaviors\FocusBehavior.cs" />
     <Compile Include="Behaviors\ListBoxSelector.cs" />
     <Compile Include="Behaviors\MenuItemExtensions.cs" />

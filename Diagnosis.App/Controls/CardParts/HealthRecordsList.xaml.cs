@@ -1,5 +1,4 @@
-﻿using Diagnosis.ViewModels.Screens;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Diagnosis.App.Controls.CardParts
@@ -10,7 +9,6 @@ namespace Diagnosis.App.Controls.CardParts
         {
             InitializeComponent();
         }
-        private HrListViewModel Vm { get { return DataContext as HrListViewModel; } }
 
         private void records_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -26,15 +24,5 @@ namespace Diagnosis.App.Controls.CardParts
             }
             ;
         }
-        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (e.Command == ApplicationCommands.Cut)
-                Vm.Cut();
-            if (e.Command == ApplicationCommands.Copy)
-                Vm.Copy();
-            if (e.Command == ApplicationCommands.Paste)
-                Vm.Paste();
-        }
-
     }
 }

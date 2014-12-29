@@ -59,16 +59,6 @@ namespace Diagnosis.App.Controls.Search
             }
         }
 
-        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (e.Command == ApplicationCommands.Cut)
-                Vm.CutSelected();
-            if (e.Command == ApplicationCommands.Copy)
-                Vm.CopySelected();
-            if (e.Command == ApplicationCommands.Paste)
-                Vm.Paste();
-        }
-
         #region focus stuff
 
         private void UserControl_GotFocus(object sender, RoutedEventArgs e)

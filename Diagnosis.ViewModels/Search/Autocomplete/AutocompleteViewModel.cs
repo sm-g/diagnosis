@@ -13,7 +13,7 @@ using System.Windows;
 
 namespace Diagnosis.ViewModels.Search.Autocomplete
 {
-    public class AutocompleteViewModel : ViewModelBase
+    public class AutocompleteViewModel : ViewModelBase, IClipboardTarget
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(AutocompleteViewModel));
         private readonly Recognizer recognizer;
@@ -507,17 +507,16 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             return result;
         }
 
-        public void CutSelected()
+        public void Cut()
         {
-            var hios = CopySelected();
+            logger.Debug("cut");
+            Copy();
 
             var completed = SelectedTags.Where(t => t.State == TagViewModel.States.Completed); // do not remove init tags
             completed.ForAll(t => t.DeleteCommand.Execute(null));
-
-            LogHrItemObjects("cut", hios);
         }
 
-        public List<IHrItemObject> CopySelected()
+        public void Copy()
         {
             var hios = GetEntitiesOfSelected();
             var data = new TagData() { ItemObjects = hios };
@@ -528,7 +527,6 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             Clipboard.SetDataObject(dataObj, false);
 
             LogHrItemObjects("copy", hios);
-            return hios;
         }
 
         private List<IHrItemObject> GetEntitiesOfSelected()

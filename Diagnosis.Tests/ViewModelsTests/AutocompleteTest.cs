@@ -209,7 +209,7 @@ namespace Tests
         {
             a.AddTag(word);
             a.SelectedTag = a.Tags.First();
-            a.CopySelected();
+            a.Copy();
 
             a.Paste();
 
@@ -222,7 +222,7 @@ namespace Tests
         {
             a.AddTag(word);
             a.SelectedTag = a.Tags.First();
-            a.CutSelected();
+            a.Cut();
 
             Assert.AreEqual(1, a.Tags.Count);
 
@@ -237,7 +237,7 @@ namespace Tests
             var m = new Measure(0) { Word = word };
             a.AddTag(m);
             a.SelectedTag = a.Tags.First();
-            a.CopySelected();
+            a.Copy();
 
             a.Paste();
 
@@ -250,7 +250,7 @@ namespace Tests
         {
             a.AddTag(icd);
             a.SelectedTag = a.Tags.First();
-            a.CopySelected();
+            a.Copy();
 
             a.Paste();
 
@@ -263,7 +263,7 @@ namespace Tests
         {
             a.AddTag(word);
             a.SelectedTag = a.Tags.First();
-            a.CopySelected();
+            a.Copy();
 
             var r2 = new Recognizer(session);
             var a2 = new AutocompleteViewModel(r2, true, true, false, null);
@@ -278,7 +278,7 @@ namespace Tests
             var w = new Word("11");
             a.AddTag(w);
             a.SelectedTag = a.Tags.First();
-            a.CopySelected();
+            a.Copy();
 
             var r2 = new Recognizer(session);
             var a2 = new AutocompleteViewModel(r2, true, true, false, null);

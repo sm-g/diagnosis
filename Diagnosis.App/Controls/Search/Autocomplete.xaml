@@ -11,17 +11,10 @@
              LostFocus="UserControl_LostFocus"
              LostKeyboardFocus="UserControl_LostKeyboardFocus"
              x:Name="autocomplete"
+             beh:ClipboardBehavior.ClipboardTarget="True"
              mc:Ignorable="d"
              d:DesignHeight="300"
-             d:DesignWidth="300">
-    <UserControl.CommandBindings>
-        <CommandBinding Command="Paste"
-                        Executed="CommandBinding_Executed" />
-        <CommandBinding Command="Copy"
-                        Executed="CommandBinding_Executed" />
-        <CommandBinding Command="Cut"
-                        Executed="CommandBinding_Executed" />
-    </UserControl.CommandBindings>
+             d:DesignWidth="300">    
     <UserControl.InputBindings>
         <KeyBinding Key="F2"
                     Command="{Binding EditCommand}" />

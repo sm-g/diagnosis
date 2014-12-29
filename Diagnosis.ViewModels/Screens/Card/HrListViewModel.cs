@@ -13,7 +13,7 @@ using Diagnosis.ViewModels.Search.Autocomplete;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class HrListViewModel : ViewModelBase
+    public class HrListViewModel : ViewModelBase, IClipboardTarget
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HrListViewModel));
         private static HrViewer hrViewer = new HrViewer();
@@ -203,13 +203,12 @@ namespace Diagnosis.ViewModels.Screens
         }
         public void Cut()
         {
-            var hrs = Copy();
+            logger.Debug("cut");
+            Copy();
             hrManager.DeleteCheckedHealthRecords(withCancel: false);
-
-            LogHrs("cut", hrs);
         }
 
-        public List<HrData.HrInfo> Copy()
+        public void Copy()
         {
             var hrs = hrManager.GetSelectedHrs();
             var hrInfos = hrs.Select(hr => new HrData.HrInfo()
@@ -234,7 +233,6 @@ namespace Diagnosis.ViewModels.Screens
             Clipboard.SetDataObject(dataObj, false);
 
             LogHrs("copy", hrInfos);
-            return hrInfos;
         }
 
 
