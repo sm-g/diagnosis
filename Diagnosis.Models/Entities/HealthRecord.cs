@@ -115,7 +115,6 @@ namespace Diagnosis.Models
             protected set
             {
                 _createdAt = value;
-                DateOffset.Now = value;
             }
         }
 
@@ -125,8 +124,10 @@ namespace Diagnosis.Models
             {
                 if (_dateOffset == null)
                 {
+                    Debug.Assert(CreatedAt != DateTime.MinValue);
+
                     _dateOffset = new DateOffset(FromYear, FromMonth, FromDay,
-                        () => CreatedAt != DateTime.MinValue ? CreatedAt : DateTime.Now,
+                        () => CreatedAt,
                         DateOffset.DateOffsetSettings.OnLoading());
 
                     if (Unit != HealthRecordUnits.NotSet &&
@@ -251,6 +252,7 @@ namespace Diagnosis.Models
 
         protected HealthRecord()
         {
+            CreatedAt = DateTime.Now;
         }
 
         void AddItem(HrItem item)

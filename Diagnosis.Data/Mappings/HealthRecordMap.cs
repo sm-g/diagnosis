@@ -35,11 +35,14 @@ namespace Diagnosis.Data.Mappings
             });
             Property(x => x.CreatedAt, m =>
             {
-                m.Update(false);
-                m.Insert(false);
-                m.Generated(PropertyGeneration.Insert);
                 m.NotNullable(true);
-
+                m.Column(c =>
+                {
+                    if (NHibernateHelper.InMemory)
+                        c.Default("now"); // sqlite
+                    else
+                        c.Default("GETDATE()"); // sqlserver ce
+                });
             });
 
             Property(x => x.Unit, m => m.Type<NHibernate.Type.EnumStringType<HealthRecordUnits>>());
