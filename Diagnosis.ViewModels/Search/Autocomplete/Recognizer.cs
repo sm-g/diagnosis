@@ -238,51 +238,26 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             return results;
         }
 
-        public void SyncWithSession(List<IHrItemObject> hios)
+        public void Sync(IList<IHrItemObject> hios)
         {
-            for (int i = 0; i < hios.Count; i++)
-            {
-                if (hios[i] is Word)
-                {
-                    Word word = hios[i] as Word;
-                    hios[i] = SyncWord(word);
-                }
-                else if (hios[i] is Measure)
-                {
-                    var m = hios[i] as Measure;
-                    if (m.Word != null)
-                    {
-                        (hios[i] as Measure).Word = SyncWord(m.Word);
-                    }
-                }
-            }
+            hios.Sync(session, (w) => SyncTransientWord(w));
         }
 
-        public Word SyncWord(Word word)
+        public Word SyncTransientWord(Word word)
         {
             // при вставке создается другой объект
 
-            Word res = null;
             if (word.IsTransient)
             {
                 // несохраненное слово
                 // word1.Equals(word2) == false, but word1.CompareTo(word2) == 0
                 // willSet in SetOrderedHrItems будет с первым совпадающим элементом в entitiesToBe
                 var same = created.Where(e => e is Word).Where(e => (e as Word).CompareTo(word) == 0).FirstOrDefault();
-                res = same;
-            }
-            else
-            {
-                res = session.Get<Word>(word.Id);
-            }
 
-            if (res == null)
-            {
-                // новое скопировано в другом автокомплите и не сохранено
-                // скопированно новое в поиск - после WordPersisted можно будет найти
-                logger.WarnFormat("Word not synced: {0}", word);
+                if (same != null)
+                    return same;
             }
-            return res;
+            return word;
         }
 
         // первое подходящее слово или новое

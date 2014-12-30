@@ -163,6 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthorityController.cs" />
+    <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Framework\DialogViewModel.cs" />
     <Compile Include="Framework\Services\FileDialogResult.cs" />
     <Compile Include="Framework\Services\FileDialogService.cs" />
@@ -260,9 +261,7 @@
     <None Include="Search\Autocomplete\CodeMap1.dgml" />
     <None Include="Search\SearchClassDiagram.cd" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

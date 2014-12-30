@@ -161,11 +161,11 @@ namespace Diagnosis.ViewModels.Screens
         #region AutoComplete
         public AutocompleteViewModel Autocomplete { get { return _autocomplete; } }
 
-        public Word SyncWord(Word w)
+        public Word SyncTransientWord(Word w)
         {
             if (recognizer != null)
             {
-                return recognizer.SyncWord(w);
+                return recognizer.SyncTransientWord(w);
             }
             return w;
         }

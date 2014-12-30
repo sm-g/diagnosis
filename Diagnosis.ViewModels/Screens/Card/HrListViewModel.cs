@@ -69,23 +69,27 @@ namespace Diagnosis.ViewModels.Screens
 
         public ShortHealthRecordViewModel SelectedHealthRecord
         {
-            get
-            {
-                return _selectedHealthRecord;
-            }
+            get { return _selectedHealthRecord; }
             set
             {
                 if (_selectedHealthRecord == value)
                     return;
 
+                if (_selectedHealthRecord != null)
+                {
+                    _selectedHealthRecord.IsSelected = false;
+                }
                 if (value != null)
+                {
                     hrViewer.Select(value.healthRecord, holder);
+                    value.IsSelected = true;
+                }
 
                 _selectedHealthRecord = value;
                 OnPropertyChanged(() => SelectedHealthRecord);
             }
         }
-        public ObservableCollection<ShortHealthRecordViewModel> SelectedHealthRecords { get; private set; }
+
 
         public bool InAddHrCommand { get; private set; }
         #region Commands
@@ -198,7 +202,6 @@ namespace Diagnosis.ViewModels.Screens
                 }
             });
 
-            SelectedHealthRecords = new ObservableCollection<ShortHealthRecordViewModel>();
             SelectHealthRecord(hrViewer.GetLastSelectedFor(holder));
         }
         public void Cut()
@@ -248,7 +251,9 @@ namespace Diagnosis.ViewModels.Screens
             if (data != null)
             {
                 var index = HealthRecords.IndexOf(SelectedHealthRecord); // paste before first Selected
-                SelectedHealthRecords.ForEach(t => t.IsSelected = false);
+
+                HealthRecords.ForAll(vm => vm.IsSelected = false);
+
                 var pasted = new List<HealthRecord>();
                 foreach (var hr2 in data.Hrs)
                 {
@@ -260,8 +265,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
                 OnPasted(pasted);
 
-                //  select pasted
-                SelectedHealthRecords.SyncWith(pasted.Select(hr => HealthRecords.First(vm => vm.healthRecord == hr)));
+                SelectHealthRecords(pasted);
                 LogHrs("paste", data.Hrs);
             }
         }
@@ -278,6 +282,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             HealthRecords.Where(vm => hrs.Contains(vm.healthRecord))
                 .ForAll(vm => vm.IsSelected = true);
+            SelectHealthRecord(hrs.LastOrDefault());
         }
         private void LogHrs(string action, IEnumerable<HrData.HrInfo> hrs)
         {
