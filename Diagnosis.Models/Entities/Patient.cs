@@ -212,7 +212,7 @@ namespace Diagnosis.Models
         /// </summary>
         public virtual IEnumerable<Course> GetOrderedCourses()
         {
-            return Courses.OrderBy(c => Comparer<Course>.Default);
+            return Courses.OrderBy(c => c);
         }
 
         public override string ToString()

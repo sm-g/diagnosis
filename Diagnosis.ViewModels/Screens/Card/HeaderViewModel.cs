@@ -258,7 +258,7 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         private TimeSpan GetOffsetBetween(Course c1, Course c2)
         {
-            var ordered = new[] { c1, c2 }.OrderBy(c => Comparer<Course>.Default).ToArray();
+            var ordered = new[] { c1, c2 }.OrderBy(c => c).ToArray();
             var f = ordered[0];
             var l = ordered[1];
             if (f.IsEnded && l.Start >= f.End.Value)

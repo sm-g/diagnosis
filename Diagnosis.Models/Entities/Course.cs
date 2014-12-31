@@ -123,7 +123,7 @@ namespace Diagnosis.Models
         /// </summary>
         public virtual IEnumerable<Appointment> GetOrderedAppointments()
         {
-            return Appointments.OrderBy(a => Comparer<Appointment>.Default);
+            return Appointments.OrderBy(a => a);
         }
 
         public override string ToString()

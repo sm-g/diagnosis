@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -28,7 +29,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
                 patient.CoursesChanged += nested_IHrsHolders_Changed;
             }
-            if (holder is Course)
+            else if (holder is Course)
             {
                 var course = holder as Course;
 
@@ -43,14 +44,14 @@ namespace Diagnosis.ViewModels.Screens
 
                 CorrectAppTimeVisibilty();
 
-                course.AppointmentsChanged += (s, e) =>
-                {
-                    nested_IHrsHolders_Changed(e, e);
-                    CorrectAppTimeVisibilty();
-                };
+                course.AppointmentsChanged += nested_IHrsHolders_Changed;
             }
+
+            (holder as INotifyPropertyChanged).PropertyChanged += holder_PropertyChanged;
         }
+
         public IHrsHolder Holder { get; private set; }
+
         public HolderViewModel HolderVm { get; private set; }
 
         public bool IsHighlighted
@@ -68,6 +69,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         public bool ShowAppTime
         {
             get
@@ -110,7 +112,7 @@ namespace Diagnosis.ViewModels.Screens
                 foreach (IHrsHolder item in e.NewItems)
                 {
                     var vm = new CardItemViewModel(item);
-                    Children.Add(vm);
+                    Children.AddSorted(vm, x => x.Holder);
                 }
             }
             else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
@@ -122,6 +124,15 @@ namespace Diagnosis.ViewModels.Screens
                     vm.Dispose();
                 }
             }
+
+            if (sender is Course)
+                CorrectAppTimeVisibilty();
+        }
+
+        private void holder_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (sender is Course || sender is Appointment)
+                Parent.Children.Sort(vm => vm.Holder);
         }
 
         protected override void Dispose(bool disposing)
@@ -138,6 +149,8 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         (Holder as Course).AppointmentsChanged -= nested_IHrsHolders_Changed;
                     }
+                    (Holder as INotifyPropertyChanged).PropertyChanged -= holder_PropertyChanged;
+
                     HolderVm.Dispose();
                 }
             }
