@@ -202,6 +202,11 @@ namespace Diagnosis.ViewModels.Screens
                 }
             });
 
+            HealthRecords.CollectionChanged += (s, e) =>
+            {
+                HolderVm.UpdateIsEmpty();
+            };
+
             SelectHealthRecord(hrViewer.GetLastSelectedFor(holder));
         }
         public void Cut()

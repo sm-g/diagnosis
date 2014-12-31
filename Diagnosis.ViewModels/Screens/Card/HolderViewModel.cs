@@ -18,16 +18,20 @@ namespace Diagnosis.ViewModels.Screens
             if (holder is Patient)
             {
                 var pat = holder as Patient;
-                pat.CoursesChanged += pat_CoursesChanged;
+                pat.CoursesChanged += holder_CollectionChanged;
+                pat.HealthRecordsChanged += holder_CollectionChanged;
             }
             else if (holder is Course)
             {
                 var course = holder as Course;
-                course.AppointmentsChanged += course_AppointmentsChanged;
+                course.AppointmentsChanged += holder_CollectionChanged;
+                course.HealthRecordsChanged += holder_CollectionChanged;
+
             }
             else if (holder is Appointment)
             {
                 var app = holder as Appointment;
+                app.HealthRecordsChanged += holder_CollectionChanged;
             }
         }
 
@@ -145,16 +149,16 @@ namespace Diagnosis.ViewModels.Screens
                         if (app != null)
                             this.Send(Events.OpenAppointment, app.AsParams(MessageKeys.Appointment));
                     }
-                }, () => !holder.IsEmpty() && !(holder is Appointment));
+                }, () => !(holder.IsEmpty() || (holder is Appointment)));
             }
         }
 
-        private void course_AppointmentsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void holder_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            OnPropertyChanged(() => IsEmpty);
+            UpdateIsEmpty();
         }
 
-        private void pat_CoursesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        internal void UpdateIsEmpty()
         {
             OnPropertyChanged(() => IsEmpty);
         }
@@ -171,16 +175,20 @@ namespace Diagnosis.ViewModels.Screens
                 if (holder is Patient)
                 {
                     var pat = holder as Patient;
-                    pat.CoursesChanged -= pat_CoursesChanged;
+                    pat.CoursesChanged -= holder_CollectionChanged;
+                    pat.HealthRecordsChanged -= holder_CollectionChanged;
                 }
                 else if (holder is Course)
                 {
                     var course = holder as Course;
-                    course.AppointmentsChanged -= course_AppointmentsChanged;
+                    course.AppointmentsChanged -= holder_CollectionChanged;
+                    course.HealthRecordsChanged -= holder_CollectionChanged;
+
                 }
                 else if (holder is Appointment)
                 {
                     var app = holder as Appointment;
+                    app.HealthRecordsChanged -= holder_CollectionChanged;
                 }
             }
             base.Dispose(disposing);

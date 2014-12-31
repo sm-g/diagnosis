@@ -76,55 +76,84 @@
         <Grid Grid.Row="1"
               Visibility="{Binding HealthRecords.Count, Converter={StaticResource LessThanToVisibility}}">
             <Grid.Resources>
-                <controls:HrsHolderDataTemplateSelector x:Key="empty">
+                <controls:HrsHolderDataTemplateSelector x:Key="canAlso">
                     <controls:HrsHolderDataTemplateSelector.PatientTemplate>
                         <DataTemplate>
-                            <TextBlock>
-                                <Hyperlink Command="{Binding AddFirstAppointmentCommand}">Добавить осмотр</Hyperlink>
-                                <LineBreak />
-                                <Hyperlink Command="{Binding DeleteCommand}">Удалить этого пациента</Hyperlink>
-                            </TextBlock>
+                            <ContentPresenter Name="cp">
+                                <ContentPresenter.Content>
+                                    <TextBlock>
+                                        <Hyperlink Command="{Binding OpenLastCommand}">Открыть последний курс</Hyperlink>
+                                        <LineBreak />
+                                        <Hyperlink Command="{Binding StartCourseCommand}">Добавить новый курс</Hyperlink>
+                                    </TextBlock>
+                                </ContentPresenter.Content>
+                            </ContentPresenter>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding IsEmpty}"
+                                             Value="True">
+                                    <Setter Property="Content"
+                                            TargetName="cp">
+                                        <Setter.Value>
+                                            <TextBlock>
+                                                <Hyperlink Command="{Binding AddFirstAppointmentCommand}">Добавить осмотр</Hyperlink>
+                                                <LineBreak />
+                                                <Hyperlink Command="{Binding DeleteCommand}">Удалить этого пациента</Hyperlink>
+                                            </TextBlock>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
                         </DataTemplate>
                     </controls:HrsHolderDataTemplateSelector.PatientTemplate>
                     <controls:HrsHolderDataTemplateSelector.CourseTemplate>
                         <DataTemplate>
-                            <TextBlock>
-                                <Hyperlink Command="{Binding AddAppointmentCommand}">Добавить осмотр</Hyperlink>
-                                <LineBreak />
-                                <Hyperlink Command="{Binding DeleteCommand}">Удалить этот курс</Hyperlink>
-                            </TextBlock>
+                            <ContentPresenter Name="cp">
+                                <ContentPresenter.Content>
+                                    <TextBlock>
+                                        <Hyperlink Command="{Binding OpenLastCommand}">Открыть последний осмотр</Hyperlink>
+                                        <LineBreak />
+                                        <Hyperlink Command="{Binding AddAppointmentCommand}">Добавить новый осмотр</Hyperlink>
+                                    </TextBlock>
+                                </ContentPresenter.Content>
+                            </ContentPresenter>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding IsEmpty}"
+                                             Value="True">
+                                    <Setter Property="Content"
+                                            TargetName="cp">
+                                        <Setter.Value>
+                                            <TextBlock>
+                                                <Hyperlink Command="{Binding AddAppointmentCommand}">Добавить осмотр</Hyperlink>
+                                                <LineBreak />
+                                                <Hyperlink Command="{Binding DeleteCommand}">Удалить этот курс</Hyperlink>
+                                            </TextBlock>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                           
                         </DataTemplate>
                     </controls:HrsHolderDataTemplateSelector.CourseTemplate>
                     <controls:HrsHolderDataTemplateSelector.AppointmentTemplate>
                         <DataTemplate>
-                            <TextBlock>
-                                <Hyperlink Command="{Binding DeleteCommand}">Удалить этот осмотр</Hyperlink>
-                            </TextBlock>
-                        </DataTemplate>
-                    </controls:HrsHolderDataTemplateSelector.AppointmentTemplate>
-                </controls:HrsHolderDataTemplateSelector>
-                <controls:HrsHolderDataTemplateSelector x:Key="withNested">
-                    <controls:HrsHolderDataTemplateSelector.PatientTemplate>
-                        <DataTemplate>
-                            <TextBlock>
-                                <Hyperlink Command="{Binding OpenLastCommand}">Открыть последний курс</Hyperlink>
-                                <LineBreak />
-                                <Hyperlink Command="{Binding StartCourseCommand}">Добавить новый курс</Hyperlink>
-                            </TextBlock>
-                        </DataTemplate>
-                    </controls:HrsHolderDataTemplateSelector.PatientTemplate>
-                    <controls:HrsHolderDataTemplateSelector.CourseTemplate>
-                        <DataTemplate>
-                            <TextBlock>
-                                <Hyperlink Command="{Binding OpenLastCommand}">Открыть последний осмотр</Hyperlink>
-                                <LineBreak />
-                                <Hyperlink Command="{Binding AddAppointmentCommand}">Добавить новый осмотр</Hyperlink>
-                            </TextBlock>
-                        </DataTemplate>
-                    </controls:HrsHolderDataTemplateSelector.CourseTemplate>
-                    <controls:HrsHolderDataTemplateSelector.AppointmentTemplate>
-                        <DataTemplate>
-                            <TextBlock>это не видно</TextBlock>
+                            <ContentPresenter Name="cp">
+                                <ContentPresenter.Content>
+                                    не видно
+                                </ContentPresenter.Content>
+                            </ContentPresenter>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding IsEmpty}"
+                                             Value="True">
+                                    <Setter Property="Content"
+                                            TargetName="cp">
+                                        <Setter.Value>
+                                            <TextBlock>
+                                                <Hyperlink Command="{Binding DeleteCommand}">Удалить этот осмотр</Hyperlink>
+                                            </TextBlock>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
                         </DataTemplate>
                     </controls:HrsHolderDataTemplateSelector.AppointmentTemplate>
                 </controls:HrsHolderDataTemplateSelector>
@@ -146,11 +175,7 @@
                 <TextBlock Visibility="{Binding ShowCanAlso, Converter={StaticResource BooleanToVisibilityConverter}}">Тaкже можно</TextBlock>
 
                 <ContentControl Content="{Binding HolderVm}"
-                                Visibility="{Binding HolderVm.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                ContentTemplateSelector="{StaticResource empty}" />
-                <ContentControl Content="{Binding HolderVm}"
-                                Visibility="{Binding HolderVm.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}"
-                                ContentTemplateSelector="{StaticResource withNested}" />
+                                ContentTemplateSelector="{StaticResource canAlso}" />
             </StackPanel>
         </Grid>
 
