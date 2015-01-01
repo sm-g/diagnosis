@@ -8,7 +8,7 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
              mc:Ignorable="d"
-             beh:ClipboardBehavior.ClipboardTarget="True"             
+             beh:ClipboardBehavior.ClipboardTarget="True"
              d:DesignHeight="300"
              d:DesignWidth="600"
              x:Name="hrList">
@@ -22,7 +22,7 @@
                            Command="{Binding EditCommand}" />
         </InputBindingCollection>
     </UserControl.Resources>
-    
+
     <UserControl.InputBindings>
         <KeyBinding Modifiers="Alt"
                     Key="F"
@@ -74,6 +74,7 @@
         </ToolBar>
 
         <Grid Grid.Row="1"
+              beh:FocusBehavior.FocusablePanel="True"
               Visibility="{Binding HealthRecords.Count, Converter={StaticResource LessThanToVisibility}}">
             <Grid.Resources>
                 <controls:HrsHolderDataTemplateSelector x:Key="canAlso">

@@ -15,10 +15,6 @@ namespace Diagnosis.App.Controls.CardParts
 #endif
         }
 
-        private void hr_grid_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            hr_grid.Focus();
-        }
         private void UserControl_Drop(object sender, DragEventArgs e)
         {
             (autocomplete.DataContext as AutocompleteViewModel).OnDrop(e);

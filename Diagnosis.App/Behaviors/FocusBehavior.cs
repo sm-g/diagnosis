@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Diagnosis.App.Behaviors
 {
@@ -10,8 +11,16 @@ namespace Diagnosis.App.Behaviors
             DependencyProperty.RegisterAttached(
                 "FocusFirst",
                 typeof(bool),
-                typeof(Control),
+                typeof(FocusBehavior),
                 new PropertyMetadata(false, OnFocusFirstPropertyChanged));
+
+        public static readonly DependencyProperty FocusablePanelProperty =
+           DependencyProperty.RegisterAttached(
+               "FocusablePanel",
+               typeof(bool),
+               typeof(FocusBehavior),
+               new PropertyMetadata(false, OnFocusablePanelPropertyChanged));
+
 
         public static bool GetFocusFirst(Control control)
         {
@@ -22,20 +31,48 @@ namespace Diagnosis.App.Behaviors
         {
             control.SetValue(FocusFirstProperty, value);
         }
+        public static bool GetFocusablePanel(Control control)
+        {
+            return (bool)control.GetValue(FocusablePanelProperty);
+        }
+
+        public static void SetFocusablePanel(Control control, bool value)
+        {
+            control.SetValue(FocusablePanelProperty, value);
+        }
+
 
         static void OnFocusFirstPropertyChanged(
             DependencyObject obj, DependencyPropertyChangedEventArgs args)
         {
-            Control control = obj as Control;
-            if (control == null || !(args.NewValue is bool))
+            var element = obj as FrameworkElement;
+            if (element == null || !(args.NewValue is bool))
             {
                 return;
             }
 
             if ((bool)args.NewValue)
             {
-                control.Loaded += (sender, e) =>
-                    control.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+                element.Loaded += (sender, e) =>
+                    element.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+            }
+        }
+        private static void OnFocusablePanelPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs args)
+        {
+            var panel = d as Panel;
+            if (panel == null || !(args.NewValue is bool))
+            {
+                return;
+            }
+
+            if ((bool)args.NewValue)
+            {
+                panel.Focusable = true;
+                panel.Background = Brushes.Transparent;
+                panel.MouseDown += (s, e) =>
+                {
+                    panel.Focus();
+                };
             }
         }
     }

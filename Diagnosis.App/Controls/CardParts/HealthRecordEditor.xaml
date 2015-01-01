@@ -8,6 +8,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              x:Name="editor"
              AllowDrop="True"
@@ -34,19 +35,13 @@
                     Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}"
                     CommandParameter="{StaticResource False}" />
     </UserControl.InputBindings>
-    <Grid x:Name="hr_grid"
-          MouseDown="hr_grid_MouseDown"
-          Focusable="True"
-          Background="Transparent">
-        <Grid.InputBindings>
-        </Grid.InputBindings>
-
+    <Grid beh:FocusBehavior.FocusablePanel="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <DockPanel Background="Transparent">
+        <DockPanel>
             <ToolBar DockPanel.Dock="Left">
                 <Button Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}"
                         FontSize="16"

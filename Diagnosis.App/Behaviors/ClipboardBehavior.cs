@@ -7,8 +7,8 @@ namespace Diagnosis.App.Behaviors
     public class ClipboardBehavior
     {
         public static readonly DependencyProperty ClipboardTargetProperty =
-          DependencyProperty.RegisterAttached("ClipboardTarget", typeof(bool), typeof(UIElement),
-              new FrameworkPropertyMetadata(false,
+          DependencyProperty.RegisterAttached("ClipboardTarget", typeof(bool), typeof(ClipboardBehavior),
+              new PropertyMetadata(false,
               (sender, e) =>
               {
                   if ((bool)e.NewValue)
