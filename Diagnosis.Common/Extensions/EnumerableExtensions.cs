@@ -116,13 +116,17 @@ namespace Diagnosis.Common
         /// <summary>
         /// from http://codereview.stackexchange.com/questions/37208/sort-observablecollection-after-added-new-item
         /// </summary>
-        public static void AddSorted<T, TKey>(this IList<T> list, T item, Func<T, TKey> keyExtractor, IComparer<TKey> comparer = null)
+        public static void AddSorted<T, TKey>(this IList<T> list, T item, Func<T, TKey> keyExtractor, bool reverse = false, IComparer<TKey> comparer = null)
         {
             comparer = comparer ?? Comparer<TKey>.Default;
 
             int i = 0;
-            while (i < list.Count && comparer.Compare(keyExtractor(list[i]), keyExtractor(item)) < 0)
-                i++;
+            if (reverse)
+                while (i < list.Count && comparer.Compare(keyExtractor(list[i]), keyExtractor(item)) > 0)
+                    i++;
+            else
+                while (i < list.Count && comparer.Compare(keyExtractor(list[i]), keyExtractor(item)) < 0)
+                    i++;
 
             list.Insert(i, item);
         }

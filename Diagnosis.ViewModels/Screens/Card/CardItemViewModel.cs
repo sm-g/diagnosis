@@ -112,7 +112,7 @@ namespace Diagnosis.ViewModels.Screens
                 foreach (IHrsHolder item in e.NewItems)
                 {
                     var vm = new CardItemViewModel(item);
-                    Children.AddSorted(vm, x => x.Holder);
+                    Children.AddSorted(vm, x => x.Holder, true);
                 }
             }
             else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)

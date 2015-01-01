@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.ComponentModel;
 using Diagnosis.Common;
+using System.Collections.ObjectModel;
 
 namespace Tests
 {
@@ -20,6 +22,25 @@ namespace Tests
 
             list = new List<object> { };
             Assert.AreEqual(null, list.ElementNear(5));
+        }
+
+        [TestMethod]
+        public void TestAddSorted()
+        {
+            var coll = new ObservableCollection<int>() { 1, 3, 5 };
+            coll.AddSorted(2, x => x);
+
+            Assert.AreEqual(1, coll.IndexOf(2));
+
+        }
+        [TestMethod]
+        public void TestAddSortedReverse()
+        {
+            var coll = new ObservableCollection<int>(new[] { 1, 3, 5 }.Reverse());
+            coll.AddSorted(2, x => x, true);
+
+            Assert.AreEqual(2, coll.IndexOf(2));
+
         }
     }
 }
