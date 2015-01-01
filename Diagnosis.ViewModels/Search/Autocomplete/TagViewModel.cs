@@ -48,6 +48,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         public TagViewModel(AutocompleteViewModel parent)
         {
+            Contract.Requires(parent != null);
             Contract.Ensures(State == States.Init);
 
             this.autocomplete = parent;
@@ -58,6 +59,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         public TagViewModel(AutocompleteViewModel parent, string query)
         {
+            Contract.Requires(parent != null);
             Contract.Ensures(State == States.Typing);
 
             this.autocomplete = parent;
@@ -70,6 +72,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         public TagViewModel(AutocompleteViewModel parent, IHrItemObject item)
         {
+            Contract.Requires(parent != null);
             Contract.Requires(item != null);
             Contract.Ensures(State == States.Completed);
 

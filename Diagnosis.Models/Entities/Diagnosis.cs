@@ -15,7 +15,8 @@ namespace Diagnosis.Models
         public Diagnosis(string code, string title, Diagnosis parent = null, IcdDisease disease = null)
         {
             Contract.Requires(!string.IsNullOrEmpty(title));
-            Contract.Requires(code != null && code.Length <= 10);
+            Contract.Requires(code != null);
+            Contract.Requires(code.Length <= 10);
 
             Code = code;
             Title = title;

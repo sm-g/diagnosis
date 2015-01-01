@@ -207,7 +207,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <returns>Предположения - слово, число и единица или строка запроса.</returns>
         public List<object> SearchForSuggesstions(string query, object prevEntityBlank, IEnumerable<object> exclude = null)
         {
+            Contract.Requires(query != null);
             Contract.Ensures(Contract.Result<List<object>>().All(o => o is Word || o is string));
+
             IEnumerable<IDomainObject> found;
             List<object> results;
 

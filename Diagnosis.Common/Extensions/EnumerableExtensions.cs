@@ -87,6 +87,7 @@ namespace Diagnosis.Common
                 throw new ArgumentNullException("items");
             if (matchFilling == null)
                 throw new ArgumentNullException("matchFilling");
+            Contract.EndContractBlock();
 
             using (var iter = items.GetEnumerator())
             {

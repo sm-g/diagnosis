@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
@@ -52,6 +53,7 @@ namespace Diagnosis.Models
     /// <summary>
     /// Сущность, содержащая записи.
     /// </summary>
+    [ContractClass(typeof(ContractForIHrsHolder))]
     public interface IHrsHolder : IEntity, IDomainObject, IComparable<IHrsHolder> // App < Course < Patient
     {
         event NotifyCollectionChangedEventHandler HealthRecordsChanged;
@@ -96,5 +98,40 @@ namespace Diagnosis.Models
         {
             this.user = user;
         }
+    }
+
+    [ContractClassFor(typeof(IHrsHolder))]
+    abstract class ContractForIHrsHolder : IHrsHolder
+    {
+
+        event NotifyCollectionChangedEventHandler IHrsHolder.HealthRecordsChanged
+        {
+            add { throw new NotImplementedException(); }
+            remove { throw new NotImplementedException(); }
+        }
+
+        IEnumerable<HealthRecord> IHrsHolder.HealthRecords { get { throw new NotImplementedException(); } }
+
+        HealthRecord IHrsHolder.AddHealthRecord(Doctor author)
+        {
+            IHrsHolder test = this;
+            Contract.Requires(author != null);
+            Contract.Ensures(test.HealthRecords.Count() == Contract.OldValue(test.HealthRecords.Count()) + 1);
+
+            return null;
+        }
+
+        void IHrsHolder.RemoveHealthRecord(HealthRecord hr)
+        {
+            IHrsHolder test = this;
+            Contract.Ensures(test.HealthRecords.Count() <= Contract.OldValue(test.HealthRecords.Count()));
+        }
+
+        bool IEntity.IsDirty { get { throw new NotImplementedException(); } set { throw new NotImplementedException(); } }
+        object IEntity.Id { get { throw new NotImplementedException(); } }
+
+        object IEntity.Actual { get { throw new NotImplementedException(); } }
+
+        int IComparable<IHrsHolder>.CompareTo(IHrsHolder other) { throw new NotImplementedException(); }
     }
 }

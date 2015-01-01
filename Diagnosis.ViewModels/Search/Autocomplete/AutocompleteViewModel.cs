@@ -473,6 +473,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         public void ReplaceTagsWith(IEnumerable<IHrItemObject> items)
         {
+            Contract.Requires(items != null);
+
             // оставляем последний тег
             while (Tags.Count != 1)
             {
@@ -509,6 +511,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         public void Cut()
         {
+            Contract.Ensures(Tags.Count <= Contract.OldValue(Tags).Count);
+
             logger.Debug("cut");
             Copy();
 
@@ -540,6 +544,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         public void Paste()
         {
+            Contract.Ensures(Tags.Count >= Contract.OldValue(Tags).Count);
+
             TagData data = null;
 
             var ido = Clipboard.GetDataObject();

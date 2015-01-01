@@ -17,6 +17,8 @@ namespace Diagnosis.ViewModels.Search
         public IEnumerable<HealthRecord> Search(ISession session, HrSearchOptions options)
         {
             Contract.Requires(options != null);
+            Contract.Requires(session != null);
+
             IEnumerable<HealthRecord> hrs;
 
             if (options.Words.Count() > 0)

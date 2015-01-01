@@ -18,6 +18,7 @@ namespace Diagnosis.Models
         public HrItem(HealthRecord hr, IHrItemObject obj)
         {
             Contract.Requires(hr != null);
+            Contract.Requires(obj != null);
 
             HealthRecord = hr;
 

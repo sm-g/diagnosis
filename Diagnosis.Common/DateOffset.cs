@@ -333,6 +333,7 @@ namespace Diagnosis.Common
         {
             if (unit.CompareTo(Unit) < 0 && !(unit == DateUnits.Day && Unit == DateUnits.Week))
                 throw new ArgumentException("Can not add such part of date to current dateoffset.");
+            Contract.EndContractBlock();
 
             DateTime dt;
             switch (unit)

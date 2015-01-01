@@ -9,16 +9,6 @@ namespace Diagnosis.ViewModels.Search
 {
     public class HrSearchOptions
     {
-        [ContractInvariantMethod]
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(!AppointmentDateGt.HasValue || !AppointmentDateLt.HasValue ||
-                AppointmentDateGt <= AppointmentDateLt);
-
-            Contract.Invariant(HealthRecordOffsetGt == null || HealthRecordOffsetLt == null || HealthRecordOffsetGt.IsEmpty || HealthRecordOffsetLt.IsEmpty ||
-                HealthRecordOffsetGt <= HealthRecordOffsetLt);
-        }
-
         private DateTime? _appointmentDateGt;
         private DateTime? _appointmentDateLt;
         DateOffset _hrOffsetGt;
@@ -154,6 +144,16 @@ namespace Diagnosis.ViewModels.Search
             {
                 return !HealthRecordOffsetLt.IsEmpty && !HealthRecordOffsetGt.IsEmpty;
             }
+        }
+
+        [ContractInvariantMethod]
+        private void ObjectInvariant()
+        {
+            Contract.Invariant(!AppointmentDateGt.HasValue || !AppointmentDateLt.HasValue ||
+                AppointmentDateGt <= AppointmentDateLt);
+
+            Contract.Invariant(HealthRecordOffsetGt == null || HealthRecordOffsetLt == null || HealthRecordOffsetGt.IsEmpty || HealthRecordOffsetLt.IsEmpty ||
+                HealthRecordOffsetGt <= HealthRecordOffsetLt);
         }
 
     }

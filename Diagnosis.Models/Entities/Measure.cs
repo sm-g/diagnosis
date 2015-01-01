@@ -7,27 +7,8 @@ namespace Diagnosis.Models
     {
         public const short Scale = 6;
         public const short Precision = 18;
-        [NonSerialized]
-
-        private HealthRecord _hr;
 
         private Uom _uom;
-
-        public virtual HealthRecord HealthRecord
-        {
-            get
-            {
-                return _hr;
-            }
-            set
-            {
-                if (_hr != null)
-                {
-                    throw new InvalidOperationException("Can not change HealthRecord associated wiht measure.");
-                }
-                _hr = value;
-            }
-        }
 
         public virtual Word Word { get; set; }
 

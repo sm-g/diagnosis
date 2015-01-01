@@ -7,6 +7,7 @@ using System.Security;
 using System.Text;
 using Diagnosis.Common;
 using PasswordHash;
+using System.Diagnostics.Contracts;
 
 namespace Diagnosis.ViewModels
 {
@@ -54,6 +55,7 @@ namespace Diagnosis.ViewModels
             OnLoggedOut();
         }
 
+        [Pure]
         public static bool CurrentUserCanOpen(Screens.Screens screen)
         {
             if (screen == Screens.Screens.Login)

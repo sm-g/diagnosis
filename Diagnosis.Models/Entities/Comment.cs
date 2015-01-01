@@ -17,6 +17,8 @@ namespace Diagnosis.Models
 
         public Comment(string text)
         {
+            Contract.Requires(!String.IsNullOrEmpty(text));
+
             String = text;
         }
 
@@ -28,14 +30,6 @@ namespace Diagnosis.Models
         }
         public virtual int CompareTo(IHrItemObject hio)
         {
-            var icd = hio as IcdDisease;
-            if (icd != null)
-                return 1;
-
-            var measure = hio as Measure;
-            if (measure != null)
-                return 1;
-
             var comment = hio as Comment;
             if (comment != null)
                 return this.CompareTo(comment);
@@ -44,7 +38,7 @@ namespace Diagnosis.Models
             if (word != null)
                 return -1;
 
-            throw new ArgumentOutOfRangeException();
+            return 1;
         }
 
         public override bool Equals(object obj)

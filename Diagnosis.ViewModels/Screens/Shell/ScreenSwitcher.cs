@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -197,10 +198,10 @@ namespace Diagnosis.ViewModels.Screens
         /// <param name="replace">Открывать ли экран заново, если совпадает с текущим экраном.</param>
         public void OpenScreen(Screens screen, object parameter = null, bool replace = false)
         {
-            var updateCurView = replace || Screen != screen; // не обновляем, если экран тот же и не надо заменять
             if (!AuthorityController.CurrentUserCanOpen(screen))
                 throw new InvalidOperationException(string.Format("{0} не может открывать {1}", AuthorityController.CurrentUser, screen));
 
+            var updateCurView = replace || Screen != screen; // не обновляем, если экран тот же и не надо заменять
             Screen = screen;
 
             if (updateCurView)
@@ -227,18 +228,13 @@ namespace Diagnosis.ViewModels.Screens
                         break;
 
                     case Screens.Card:
-                        if (parameter != null)
+                        var cardVm = new CardViewModel(false);
+                        cardVm.LastItemRemoved += (s, e) =>
                         {
-                            var cardVm = new CardViewModel(false);
-                            cardVm.LastItemRemoved += (s, e) =>
-                            {
-                                OpenScreen(Screens.Patients);
-                            };
-                            cardVm.Open(parameter, true);
-                            CurrentView = cardVm;
-                        }
-                        else
-                            throw new ArgumentNullException("parameter"); // что открывать в карте?
+                            OpenScreen(Screens.Patients);
+                        };
+                        cardVm.Open(parameter, true);
+                        CurrentView = cardVm;
                         break;
 
                     default:

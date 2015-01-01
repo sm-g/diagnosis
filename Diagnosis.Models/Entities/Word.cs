@@ -54,6 +54,8 @@ namespace Diagnosis.Models
         }
         public Word(string title)
         {
+            Contract.Requires(!String.IsNullOrEmpty(title));
+
             Title = title;
         }
 

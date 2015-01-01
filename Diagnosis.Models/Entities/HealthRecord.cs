@@ -258,6 +258,8 @@ namespace Diagnosis.Models
         void AddItem(HrItem item)
         {
             Contract.Requires(item != null);
+            Contract.Ensures(hrItems.Contains(item));
+
             var hrItemsCopy = new HashedSet<HrItem>(hrItems);
             if (hrItems.Add(item))
             {
@@ -274,6 +276,8 @@ namespace Diagnosis.Models
         void RemoveItem(HrItem item)
         {
             Contract.Requires(item != null);
+            Contract.Ensures(!hrItems.Contains(item));
+
             var hrItemsCopy = new HashedSet<HrItem>(hrItems);
             if (hrItems.Remove(item))
             {

@@ -8,7 +8,6 @@ namespace Tests
     public class DateOffsetFormatterTest
     {
         private DateOffset date;
-        private int offset = 5;
         private DateTime now;
 
         [TestInitialize]

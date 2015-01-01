@@ -3,6 +3,7 @@ using PixelMEDIA.PixelCore.Helpers;
 using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Diagnostics.Contracts;
 using System.Linq.Expressions;
 
 namespace Diagnosis.Models
@@ -43,8 +44,7 @@ namespace Diagnosis.Models
 
         internal EditableObjectHelper(IEditableObject master)
         {
-            if (master == null)
-                throw new ArgumentNullException("master");
+            Contract.Requires(master != null); ;
 
             _master = master;
         }
@@ -89,7 +89,7 @@ namespace Diagnosis.Models
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="propertyExpression"></param>
-        public void Edit<T,TId>(Expression<Func<T>> propertyExpression)
+        public void Edit<T, TId>(Expression<Func<T>> propertyExpression)
         {
             lock (_syncRoot)
             {
@@ -104,7 +104,7 @@ namespace Diagnosis.Models
 
                     if (propValuePair.Item2 is EntityBase<TId>)
                     {
-                        value = (propValuePair.Item2 as EntityBase<TId>).As<T,TId>();  // unproxy
+                        value = (propValuePair.Item2 as EntityBase<TId>).As<T, TId>();  // unproxy
                     }
                     else
                     {
