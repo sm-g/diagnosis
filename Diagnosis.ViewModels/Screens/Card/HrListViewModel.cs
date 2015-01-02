@@ -24,6 +24,7 @@ namespace Diagnosis.ViewModels.Screens
         private Action<HealthRecord, HrData.HrInfo> fill;
 
         public event EventHandler<ListEventArgs<HealthRecord>> Pasted;
+        private bool inSelectMany;
 
         protected virtual void OnPasted(List<HealthRecord> pasted = null)
         {
@@ -75,7 +76,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (_selectedHealthRecord == value)
                     return;
 
-                if (_selectedHealthRecord != null)
+                if (_selectedHealthRecord != null && !inSelectMany) // снимаем выделение с прошлой выделенной
                 {
                     _selectedHealthRecord.IsSelected = false;
                 }
@@ -84,7 +85,7 @@ namespace Diagnosis.ViewModels.Screens
                     hrViewer.Select(value.healthRecord, holder);
                     value.IsSelected = true;
                 }
-
+                logger.DebugFormat("hrList selected {0} -> {1}", _selectedHealthRecord, value);
                 _selectedHealthRecord = value;
                 OnPropertyChanged(() => SelectedHealthRecord);
             }
@@ -287,7 +288,10 @@ namespace Diagnosis.ViewModels.Screens
         {
             HealthRecords.Where(vm => hrs.Contains(vm.healthRecord))
                 .ForAll(vm => vm.IsSelected = true);
+
+            inSelectMany = true;
             SelectHealthRecord(hrs.LastOrDefault());
+            inSelectMany = false;
         }
         private void LogHrs(string action, IEnumerable<HrData.HrInfo> hrs)
         {

@@ -67,6 +67,7 @@ namespace Tests
             card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
 
             Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(2, card.HrList.HealthRecords.Where(vm => vm.IsSelected).Count());
         }
 
         [TestMethod]
@@ -77,6 +78,7 @@ namespace Tests
             card.HrList.SelectHealthRecord(hr[21]);
 
             Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(1, card.HrList.HealthRecords.Where(vm => vm.IsSelected).Count());
         }
 
         [TestMethod]
