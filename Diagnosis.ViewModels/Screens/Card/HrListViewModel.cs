@@ -21,31 +21,11 @@ namespace Diagnosis.ViewModels.Screens
         private HealthRecordManager hrManager;
         private ICollectionView healthRecordsView;
         private ShortHealthRecordViewModel _selectedHealthRecord;
-        private Action<HealthRecord, HrData.HrInfo> fill;
-
-        public event EventHandler<ListEventArgs<HealthRecord>> Pasted;
+        private Action<HealthRecord, HrData.HrInfo> fillHr;
+        private Action<List<IHrItemObject>> syncHios;
         private bool inSelectMany;
 
-        protected virtual void OnPasted(List<HealthRecord> pasted = null)
-        {
-            var h = Pasted;
-            if (h != null)
-            {
-                h(this, new ListEventArgs<HealthRecord>(pasted));
-            }
-        }
-
-        [Serializable]
-        public class ListEventArgs<T> : EventArgs
-        {
-            public readonly IList<T> list;
-
-            [System.Diagnostics.DebuggerStepThrough]
-            public ListEventArgs(IList<T> list)
-            {
-                this.list = list;
-            }
-        }
+        public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;
 
         public HolderViewModel HolderVm { get; private set; }
 
@@ -184,11 +164,15 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public HrListViewModel(IHrsHolder holder, Action<HealthRecord, HrData.HrInfo> onSync)
+        public HrListViewModel(IHrsHolder holder, Action<HealthRecord, HrData.HrInfo> filler, Action<List<IHrItemObject>> syncer)
         {
             Contract.Requires(holder != null);
+            Contract.Requires(filler != null);
+            Contract.Requires(syncer != null);
             this.holder = holder;
-            this.fill = onSync;
+            this.fillHr = filler;
+            this.syncHios = syncer;
+
             HolderVm = new HolderViewModel(holder);
 
             hrManager = new HealthRecordManager(holder, onHrVmPropChanged: (s, e) =>
@@ -247,37 +231,68 @@ namespace Diagnosis.ViewModels.Screens
 
         public void Paste()
         {
-            HrData data = null;
-
+            TagData data = null;
             var ido = Clipboard.GetDataObject();
-            if (ido.GetDataPresent(HrData.DataFormat.Name))
+
+            if (ido.GetDataPresent(TagData.DataFormat.Name))
             {
-                data = (HrData)ido.GetData(HrData.DataFormat.Name);
+                data = (TagData)ido.GetData(TagData.DataFormat.Name);
             }
             if (data != null)
             {
-                var index = HealthRecords.IndexOf(SelectedHealthRecord); // paste before first Selected
+                syncHios(data.ItemObjects);
+
+                var hrs = hrManager.GetSelectedHrs();
+                if (hrs.Count > 0)
+                {
+                    // add hios to end of Selected Hrs
+                    hrs.ForAll(hr => hr.AddItems(data.ItemObjects));
+                    OnSaveNeeded(hrManager.GetSelectedHrs());
+
+                }
+                else
+                {
+                    // new hr with pasted hios
+                    var newHR = holder.AddHealthRecord(AuthorityController.CurrentDoctor);
+                    newHR.AddItems(data.ItemObjects);
+                    OnSaveNeeded(); // save all
+                }
+                LogHrItemObjects("paste", data.ItemObjects);
+            }
+
+
+            HrData hrDat = null;
+
+            if (ido.GetDataPresent(HrData.DataFormat.Name))
+            {
+                hrDat = (HrData)ido.GetData(HrData.DataFormat.Name);
+            }
+            if (hrDat != null)
+            {
+                // paste hrs TODO before first Selected
+                var index = HealthRecords.IndexOf(SelectedHealthRecord);
 
                 HealthRecords.ForAll(vm => vm.IsSelected = false);
 
                 var pasted = new List<HealthRecord>();
-                foreach (var hr2 in data.Hrs)
+                foreach (var hr2 in hrDat.Hrs)
                 {
                     if (hr2 == null) continue;
 
                     var newHR = holder.AddHealthRecord(AuthorityController.CurrentDoctor);
-                    fill(newHR, hr2);
+                    fillHr(newHR, hr2);
                     pasted.Add(newHR);
                 }
-                OnPasted(pasted);
+                OnSaveNeeded(); // save all
 
                 SelectHealthRecords(pasted);
-                LogHrs("paste", data.Hrs);
+                LogHrs("paste", hrDat.Hrs);
             }
+
         }
         public override string ToString()
         {
-            return holder.ToString();
+            return "HrList for " + holder.ToString();
         }
 
         internal void SelectHealthRecord(HealthRecord healthRecord)
@@ -293,11 +308,24 @@ namespace Diagnosis.ViewModels.Screens
             SelectHealthRecord(hrs.LastOrDefault());
             inSelectMany = false;
         }
+
         private void LogHrs(string action, IEnumerable<HrData.HrInfo> hrs)
         {
             logger.DebugFormat("{0} hrs with hios: {1}", action, string.Join("\n", hrs.Select((hr, i) => string.Format("{0} {1}", i, hr.Hios.FlattenString()))));
         }
+        private void LogHrItemObjects(string action, IEnumerable<IHrItemObject> hios)
+        {
+            logger.DebugFormat("{0} hios: {1}", action, hios.FlattenString());
+        }
 
+        protected virtual void OnSaveNeeded(List<HealthRecord> hrsToSave = null)
+        {
+            var h = SaveNeeded;
+            if (h != null)
+            {
+                h(this, new ListEventArgs<HealthRecord>(hrsToSave));
+            }
+        }
         protected override void Dispose(bool disposing)
         {
             try
@@ -315,6 +343,19 @@ namespace Diagnosis.ViewModels.Screens
         }
 
     }
+
+    [Serializable]
+    public class ListEventArgs<T> : EventArgs
+    {
+        public readonly IList<T> list;
+
+        [System.Diagnostics.DebuggerStepThrough]
+        public ListEventArgs(IList<T> list)
+        {
+            this.list = list;
+        }
+    }
+
     [Serializable]
     public class HrData
     {

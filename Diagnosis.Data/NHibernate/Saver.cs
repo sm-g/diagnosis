@@ -58,6 +58,8 @@ namespace Diagnosis.Data
 
         public bool Delete(params IDomainObject[] domainObjects)
         {
+            logger.DebugFormat("deleting {0} IDomainObject", domainObjects.Length);
+
             using (var t = session.BeginTransaction())
             {
                 try
@@ -81,13 +83,15 @@ namespace Diagnosis.Data
             return false;
         }
 
-        public bool Save(params IEntity[] entity)
+        public bool Save(params IEntity[] entities)
         {
+            logger.DebugFormat("saving {0} IEntity", entities.Length);
+
             using (var t = session.BeginTransaction())
             {
                 try
                 {
-                    foreach (var item in entity)
+                    foreach (var item in entities)
                     {
                         session.SaveOrUpdate(item);
                     }

@@ -250,7 +250,6 @@ namespace Diagnosis.ViewModels.Screens
             return result;
         }
 
-
         /// <summary>
         /// Показвает записи активной сущности.
         /// </summary>
@@ -280,23 +279,32 @@ namespace Diagnosis.ViewModels.Screens
                     hr.FromMonth = hr2.FromMonth;
                     hr.FromYear = hr2.FromYear;
                     hr.SetItems(hr2.Hios);
-
+                }, (hios) =>
+                {
+                    hios.Sync(Session, (w) => HrEditor.SyncTransientWord(w));
                 });
                 HrList.PropertyChanged += HrList_PropertyChanged;
-                HrList.Pasted += (s, e) =>
+                HrList.SaveNeeded += (s, e) =>
                 {
-                    logger.DebugFormat("pasted");
-                    // select
-                    // ставим порядок
-                    for (int i = 0; i < HrList.HealthRecords.Count; i++)
+                    logger.DebugFormat("SaveNeeded for hrs: {0}", e.list == null ? "All" : e.list.Count.ToString());
+
+                    if (e.list == null)
                     {
-                        HrList.HealthRecords[i].healthRecord.Ord = i;
+                        // ставим порядок
+                        for (int i = 0; i < HrList.HealthRecords.Count; i++)
+                        {
+                            HrList.HealthRecords[i].healthRecord.Ord = i;
+                        }
+                        // сохраняем все записи кроме открытой в редакторе
+                        saver.Save(HrList.HealthRecords
+                            .Select(vm => vm.healthRecord)
+                            .Except(HrEditor.IsActive ? HrEditor.HealthRecord.healthRecord.ToEnumerable() : Enumerable.Empty<HealthRecord>())
+                            .ToArray());
                     }
-                    // сохраняем все записи кроме открытой в редакторе
-                    saver.Save(HrList.HealthRecords
-                        .Select(vm => vm.healthRecord)
-                        .Except(HrEditor.IsActive ? HrEditor.HealthRecord.healthRecord.ToEnumerable() : Enumerable.Empty<HealthRecord>())
-                        .ToArray());
+                    else
+                    {
+                        saver.Save(e.list.ToArray());
+                    }
                 };
                 HrList.HealthRecords.CollectionChanged += HrList_HealthRecords_CollectionChanged;
             }
@@ -341,7 +349,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
-                // Catch hr.isDeleted = true
+                // удаление
                 foreach (ShortHealthRecordViewModel vm in e.OldItems)
                 {
                     if (vm.healthRecord.IsDeleted)
@@ -350,10 +358,18 @@ namespace Diagnosis.ViewModels.Screens
             }
             else if (e.Action == NotifyCollectionChangedAction.Move)
             {
+                // порядок
             }
             else if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                // порядок
+                // отмена удаления
+                if (!HrList.InAddHrCommand)
+                {
+                    saver.Save(e.NewItems
+                        .Cast<ShortHealthRecordViewModel>()
+                        .Select(vm => vm.healthRecord)
+                        .ToArray());
+                }
             }
         }
 
@@ -389,7 +405,7 @@ namespace Diagnosis.ViewModels.Screens
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 // удаляем записи в бд
-                saver.SaveAll(viewer.OpenedPatient); // кроме
+                saver.SaveAll(viewer.OpenedPatient); // удалили несколько записей, открыли редактор, завершили удаление — сохранение с открытой записью
             }
         }
 
