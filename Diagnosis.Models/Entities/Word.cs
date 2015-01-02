@@ -46,7 +46,7 @@ namespace Diagnosis.Models
 
         public virtual IEnumerable<Word> Children
         {
-            get { return children;    }
+            get { return children; }
         }
         public virtual IEnumerable<HealthRecord> HealthRecords
         {
@@ -54,7 +54,7 @@ namespace Diagnosis.Models
         }
         public Word(string title)
         {
-            Contract.Requires(!String.IsNullOrEmpty(title));
+            Contract.Requires(title != null); // empty when adding new
 
             Title = title;
         }

@@ -17,7 +17,7 @@ namespace Diagnosis.Models
 
         public Comment(string text)
         {
-            Contract.Requires(!String.IsNullOrEmpty(text));
+            Contract.Requires(text != null);
 
             String = text;
         }

@@ -52,6 +52,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             Contract.Ensures(State == States.Init);
 
             this.autocomplete = parent;
+            Reset();
         }
 
         /// <summary>
@@ -120,19 +121,20 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
-        /// Текстовое представление
+        /// Текстовое представление.
         /// </summary>
         public string Query
         {
             get
             {
+                Contract.Ensures(Contract.Result<string>() != null);
                 return _query;
             }
             set
             {
-                if (Query != value)
+                if (_query != value)
                 {
-                    logger.DebugFormat("query ={0}", value);
+                    logger.DebugFormat("query = {0}", value);
                     Contract.Assume(!IsDeleteOnly);
 
                     State = States.Typing;
@@ -141,7 +143,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     if (IsLast && !value.IsNullOrEmpty())
                         IsDraggable = true;
 
-                    _query = value;
+                    _query = value ?? string.Empty;
                     Entities = null;
                     OnPropertyChanged("Query");
                 }
@@ -234,13 +236,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     }
                     else
                     {
-                        Query = null;
-                        State = States.Init;
-
-                        // setting Blank sets State, so
-                        Signalization = null;
-                        _blank = null;
-                        OnPropertyChanged("Blank");
+                        Reset();
                     }
                 });
             }
@@ -523,6 +519,17 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 h(this, new BlankTypeEventArgs(targetType));
             }
+        }
+
+        private void Reset()
+        {
+            Query = string.Empty;
+            State = States.Init;
+
+            // setting Blank sets State, so
+            Signalization = null;
+            _blank = null;
+            OnPropertyChanged("Blank");
         }
 
         [ContractInvariantMethod]
