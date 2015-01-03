@@ -80,7 +80,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             this.autocomplete = parent;
 
             Blank = item;
-            Entities = new List<IHrItemObject>() { item };
+            Entity = item;
         }
 
         public event EventHandler Deleted;
@@ -144,7 +144,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                         IsDraggable = true;
 
                     _query = value ?? string.Empty;
-                    Entities = null;
+                    Entity = null;
                     OnPropertyChanged("Query");
                 }
             }
@@ -164,14 +164,14 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
-        /// Сущности, созданные из тега. При изменении запроса или бланка сбрасывается.
-        /// Копируются.
+        /// Сущность, созданная из тега. При изменении запроса или бланка сбрасывается.
+        /// Копируется.
         /// </summary>
-        public IEnumerable<IHrItemObject> Entities { get; internal set; }
+        public IHrItemObject Entity { get; internal set; }
 
         /// <summary>
         /// Заготовка, из которой получаются сущности.
-        /// То, что оказалось введенным - найденное слово, текст запроса, МКБ или ничего.
+        /// То, что оказалось введенным - найденное слово, текст запроса, МКБ, измерение или ничего.
         /// </summary>
         public object Blank
         {
@@ -271,7 +271,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 return new RelayCommand(() =>
                 {
-                    autocomplete.Add(this, true);
+                    autocomplete.AddTag(this, true);
                 }, () => !autocomplete.SingleTag);
             }
         }
@@ -281,7 +281,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 return new RelayCommand(() =>
                 {
-                    autocomplete.Add(this, false);
+                    autocomplete.AddTag(this, false);
                 }, () => !IsLast && !autocomplete.SingleTag);
             }
         }
@@ -538,7 +538,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             Contract.Invariant(State != States.Completed || BlankType != BlankTypes.None
                 || Signalization == null || Signalization == Signalizations.Forbidden); // завершенный тег → есть бланк (тег завершается после смены бланка) в поиске бланк мб пустой
-            Contract.Invariant(State != States.Init || (BlankType == BlankTypes.None && Entities == null)); // в начальном состоянии → нет бланка и сущностей
+            Contract.Invariant(State != States.Init || (BlankType == BlankTypes.None && Entity == null)); // в начальном состоянии → нет бланка и сущностей
             // при редактировании нет сущностей
         }
 

@@ -33,6 +33,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         public AutocompleteViewModel(Recognizer recognizer, bool allowTagConvertion, bool allowSendToSearch, bool singleTag, IEnumerable<IHrItemObject> initItems)
         {
+            Contract.Requires(recognizer != null);
+
             this.recognizer = recognizer;
             this.allowTagConvertion = allowTagConvertion;
             this.allowSendToSearch = allowSendToSearch;
@@ -55,7 +57,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 // созданные слова можно искать из поиска
                 var word = e.GetValue<Word>(MessageKeys.Word);
-                Tags.Where(t => t.Entities != null && t.Entities.Contains(word))
+                Tags.Where(t => (t.Entity as Word) == word)
                     .ForAll(t => t.Validate());
             });
 
@@ -175,7 +177,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                         switch (SelectedTag.BlankType)
                         {
                             case TagViewModel.BlankTypes.Measure:
-                                var vm = new MeasureEditorViewModel(SelectedTag.Entities.First() as Measure);
+                                var vm = new MeasureEditorViewModel(SelectedTag.Entity as Measure);
                                 this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
                                 if (vm.DialogResult == true)
                                 {
@@ -184,7 +186,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                                 break;
 
                             case TagViewModel.BlankTypes.Icd:
-                                var vm0 = new IcdSelectorViewModel(SelectedTag.Entities.First() as IcdDisease);
+                                var vm0 = new IcdSelectorViewModel(SelectedTag.Entity as IcdDisease);
                                 this.Send(Events.OpenDialog, vm0.AsParams(MessageKeys.Dialog));
                                 if (vm0.DialogResult == true)
                                 {
@@ -224,7 +226,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 {
                     IEnumerable<IHrItemObject> entities;
                     if (t != null)
-                        entities = recognizer.EntitiesOf(t);
+                        entities = recognizer.EntityOf(t).ToEnumerable();
                     else
                         entities = GetEntitiesOfSelected();
                     this.Send(Events.SendToSearch, entities.AsParams(MessageKeys.HrItemObjects));
@@ -464,8 +466,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 Tags.Insert(index, tag);
             return tag;
         }
-
-        public void Add(TagViewModel from, bool left)
+        /// <summary>
+        /// Добавляет пустой тег рядом с другим.
+        /// </summary>
+        public void AddTag(TagViewModel from, bool left)
         {
             var tag = AddTag(index: Tags.IndexOf(from) + (left ? 0 : 1));
             tag.IsTextBoxFocused = true;
@@ -498,10 +502,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             foreach (var tag in Tags)
             {
                 if (tag.BlankType != TagViewModel.BlankTypes.None)
-                    foreach (var item in recognizer.EntitiesOf(tag)) // у давлния мб две сущности, возвращаем их отдельно
-                    {
-                        result.Add(item);
-                    }
+                    result.Add(recognizer.EntityOf(tag));
                 else if (tag.State != TagViewModel.States.Init)
                     logger.WarnFormat("{0} without entity blank, skip", tag);
             }
@@ -537,7 +538,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             var completed = SelectedTags.Where(t => t.State == TagViewModel.States.Completed);
             var hios = completed
-                 .SelectMany(t => recognizer.EntitiesOf(t))
+                 .Select(t => recognizer.EntityOf(t))
                  .ToList();
             return hios;
         }
@@ -840,11 +841,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                             }
                             else
                             {
-                                var items = master.recognizer.EntitiesOf(tag).ToList();
-                                foreach (var item in items)
-                                {
-                                    master.AddTag(item).Validate(master.Validator);
-                                }
+                                var item = master.recognizer.EntityOf(tag);
+                                master.AddTag(item).Validate(master.Validator);
                             }
                         }
                     }

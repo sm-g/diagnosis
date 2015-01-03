@@ -47,6 +47,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <param name="session"></param>
         public Recognizer(ISession session)
         {
+            Contract.Requires(session != null);
+
             this.session = session;
         }
 
@@ -59,6 +61,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         public void SetBlank(TagViewModel tag, object suggestion, bool exactMatchRequired, bool inverse)
         {
+            Contract.Requires(tag != null);
+
             if (suggestion == null ^ inverse) // direct no suggestion or inverse with suggestion
             {
                 if (CanMakeEntityFrom(tag.Query))
@@ -103,6 +107,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             Contract.Requires(!tag.Query.IsNullOrEmpty());
             Contract.Requires(tag.BlankType != toType);
             Contract.Requires(toType != TagViewModel.BlankTypes.None && toType != TagViewModel.BlankTypes.Query);
+            Contract.Ensures(tag.BlankType == toType);
 
             string query;
             if (tag.BlankType == TagViewModel.BlankTypes.Measure)
@@ -149,53 +154,43 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         }
 
         /// <summary>
-        /// Возвращает сущности из тега. Может получиться одно: слово, коммент, диагноз, измерение со словом.
-        /// Кеширует созданные сущности в теге.
+        /// Возвращает сущность из тега. Может получиться одно: слово, коммент, диагноз, измерение со словом.
+        /// Кеширует сущность в теге.
         /// </summary>
-        /// <param name="blank"></param>
-        /// <returns></returns>
-        public IEnumerable<IHrItemObject> EntitiesOf(TagViewModel tag)
+        public IHrItemObject EntityOf(TagViewModel tag)
         {
             Contract.Requires(tag.BlankType != TagViewModel.BlankTypes.None);
 
             // неизмененые теги - сущности уже созданы
-            if (tag.Entities != null)
+            if (tag.Entity != null)
             {
-                foreach (var e in tag.Entities)
-                {
-                    yield return e;
-                }
-                yield break;
+                return tag.Entity;
             }
 
             switch (tag.BlankType)
             {
                 case TagViewModel.BlankTypes.Query: // нераспознаный запрос
                     var c = new Comment(tag.Blank as string);
-                    tag.Entities = new List<IHrItemObject>() { c };
-                    yield return c;
-                    break;
+                    tag.Entity = c;
+                    return c;
 
                 case TagViewModel.BlankTypes.Word:
-                    tag.Entities = new List<IHrItemObject>() { tag.Blank as Word };
-                    yield return tag.Blank as Word;
-                    break;
+                    tag.Entity = tag.Blank as Word;
+                    return tag.Blank as Word;
 
                 case TagViewModel.BlankTypes.Comment:
-                    tag.Entities = new List<IHrItemObject>() { tag.Blank as Comment };
-                    yield return tag.Blank as Comment;
-                    break;
+                    tag.Entity = tag.Blank as Comment;
+                    return tag.Blank as Comment;
 
                 case TagViewModel.BlankTypes.Icd:
-                    tag.Entities = new List<IHrItemObject>() { tag.Blank as IcdDisease };
-                    yield return tag.Blank as IcdDisease;
-                    break;
+                    tag.Entity = tag.Blank as IcdDisease;
+                    return tag.Blank as IcdDisease;
 
                 case TagViewModel.BlankTypes.Measure:
-                    tag.Entities = new List<IHrItemObject>() { tag.Blank as Measure };
-                    yield return tag.Blank as Measure;
-                    break;
+                    tag.Entity = tag.Blank as Measure;
+                    return tag.Blank as Measure;
             }
+            return null;
         }
 
         /// <summary>
@@ -247,6 +242,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         public Word SyncTransientWord(Word word)
         {
+            Contract.Requires(word != null);
+
             // при вставке создается другой объект
 
             if (word.IsTransient)

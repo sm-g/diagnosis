@@ -19,7 +19,7 @@ namespace Tests
 
         public TagViewModel First { get { return a.Tags.First(); } }
 
-        public IHrItemObject FirstItem { get { return First.Entities.First(); } }
+        public IHrItemObject FirstItem { get { return First.Entity; } }
 
         public object FirstBlank { get { return First.Blank; } }
 
