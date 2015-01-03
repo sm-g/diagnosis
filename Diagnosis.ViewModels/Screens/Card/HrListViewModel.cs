@@ -71,6 +71,10 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public IEnumerable<ShortHealthRecordViewModel> SelectedHealthRecords
+        {
+            get { return HealthRecords.Where(vm => vm.IsSelected).ToList(); }
+        }
 
         public bool InAddHrCommand { get; private set; }
         #region Commands

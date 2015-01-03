@@ -136,7 +136,6 @@ namespace Diagnosis.Models
                     {
                         // фиксируем единицу
                         _dateOffset.Unit = Unit.ToDateOffsetUnit().Value;
-                        _dateOffset.UnitFixed = true;
                     }
 
                     _dateOffset.PropertyChanged += (s, e) =>
@@ -156,45 +155,17 @@ namespace Diagnosis.Models
                                 break;
 
                             case "Unit":
-                                if (_dateOffset.UnitFixed ||
-                                    Unit != HealthRecordUnits.ByAge &&
+                                if (Unit != HealthRecordUnits.ByAge &&
                                     Unit != HealthRecordUnits.NotSet)
                                 {
+                                    // меняем Unit записи только если показываем давность записи
                                     Unit = _dateOffset.Unit.ToHealthRecordUnit();
                                 }
                                 break;
                         }
                         OnPropertyChanged(() => DateOffset);
                     };
-                    this.PropertyChanged += (s, e) => // подписываемся в первую очередь
-                    {
-                        try
-                        {
-                            switch (e.PropertyName)
-                            {
-                                case "FromDay":
-                                    DateOffset.Day = FromDay;
-                                    break;
 
-                                case "FromMonth":
-                                    DateOffset.Month = FromMonth;
-                                    break;
-
-                                case "FromYear":
-                                    DateOffset.Year = FromYear;
-                                    break;
-
-                                case "Unit":
-                                    var doUnit = Unit.ToDateOffsetUnit();
-                                    DateOffset.Unit = doUnit ?? DateOffset.Unit; // меняем Unit на конкретную часть даты
-                                    break;
-                            }
-                        }
-                        catch
-                        {
-                            // не меняем DateOffset, компоненты даты поменяются потом
-                        }
-                    };
                 }
                 return _dateOffset;
             }
@@ -253,6 +224,35 @@ namespace Diagnosis.Models
         protected HealthRecord()
         {
             CreatedAt = DateTime.Now;
+            this.PropertyChanged += (s, e) => // подписываемся в первую очередь
+            {
+                try
+                {
+                    switch (e.PropertyName)
+                    {
+                        case "FromDay":
+                            DateOffset.Day = FromDay;
+                            break;
+
+                        case "FromMonth":
+                            DateOffset.Month = FromMonth;
+                            break;
+
+                        case "FromYear":
+                            DateOffset.Year = FromYear;
+                            break;
+
+                        case "Unit":
+                            var doUnit = Unit.ToDateOffsetUnit();
+                            DateOffset.Unit = doUnit ?? DateOffset.Unit; // меняем Unit на конкретную часть даты
+                            break;
+                    }
+                }
+                catch
+                {
+                    // не меняем DateOffset, компоненты даты поменяются потом
+                }
+            };
         }
 
         void AddItem(HrItem item)

@@ -274,10 +274,10 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         hr.Category = Session.Get<HrCategory>(hr2.CategoryId.Value);
                     }
-                    hr.Unit = hr2.Unit;
-                    hr.FromDay = hr2.FromDay;
-                    hr.FromMonth = hr2.FromMonth;
                     hr.FromYear = hr2.FromYear;
+                    hr.FromMonth = hr2.FromMonth;
+                    hr.FromDay = hr2.FromDay;
+                    hr.Unit = hr2.Unit;
                     hr.SetItems(hr2.Hios);
                 }, (hios) =>
                 {

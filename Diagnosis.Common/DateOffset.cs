@@ -148,7 +148,7 @@ namespace Diagnosis.Common
         }
 
         /// <summary>
-        /// Единица измерения смещения.
+        /// Единица измерения смещения. Устанавливается после Year, Month, Day.
         /// </summary>
         public DateUnits Unit
         {
@@ -272,14 +272,16 @@ namespace Diagnosis.Common
                 {
                     _unitSetting = value;
                     //   logger.DebugFormat("{0}", value);
-                    //if (value == UnitSetting.RoundsOffset && DateSettingStrategy == DateSetting.SetsUnitSilly)
-                    //{
-                    //    DateSettingStrategy = DateSetting.RoundsUnit;
-                    //}
-                    //if (value == UnitSetting.SetsDate && DateSettingStrategy == DateSetting.SavesUnit)
-                    //{
-                    //    DateSettingStrategy = DateSetting.RoundsUnit;
-                    //}
+#if !DEBUG
+                    if (value == UnitSetting.RoundsOffset && DateSettingStrategy == DateSetting.SetsUnitSilly)
+                    {
+                        DateSettingStrategy = DateSetting.RoundsUnit;
+                    }
+                    if (value == UnitSetting.SetsDate && DateSettingStrategy == DateSetting.SavesUnit)
+                    {
+                        DateSettingStrategy = DateSetting.RoundsUnit;
+                    }
+#endif
                     OnPropertyChanged(() => UnitSettingStrategy);
                 }
             }
@@ -301,14 +303,16 @@ namespace Diagnosis.Common
                     {
                         UnitFixed = false;
                     }
-                    //if (value == DateSetting.SetsUnitSilly && UnitSettingStrategy == UnitSetting.RoundsOffset)
-                    //{
-                    //    UnitSettingStrategy = UnitSetting.SetsDate;
-                    //}
-                    //if (value == DateSetting.SavesUnit && UnitSettingStrategy == UnitSetting.SetsDate)
-                    //{
-                    //    UnitSettingStrategy = UnitSetting.RoundsOffset;
-                    //}
+#if !DEBUG
+                    if (value == DateSetting.SetsUnitSilly && UnitSettingStrategy == UnitSetting.RoundsOffset)
+                    {
+                        UnitSettingStrategy = UnitSetting.SetsDate;
+                    }
+                    if (value == DateSetting.SavesUnit && UnitSettingStrategy == UnitSetting.SetsDate)
+                    {
+                        UnitSettingStrategy = UnitSetting.RoundsOffset;
+                    }
+#endif
                     OnPropertyChanged(() => DateSettingStrategy);
                 }
             }
@@ -831,7 +835,12 @@ namespace Diagnosis.Common
             {
                 return object.ReferenceEquals(do1, do2);
             }
-            return do1.Offset == do2.Offset && do1.Unit == do2.Unit;
+            // offset и unit могут совпадать с разными датами
+
+            return do1.Year == do2.Year &&
+                do1.Month == do2.Month &&
+                do1.Day == do2.Day &&
+                do1.Unit == do2.Unit;
         }
 
         public static bool operator !=(DateOffset do1, DateOffset do2)
@@ -936,6 +945,7 @@ namespace Diagnosis.Common
             {
                 return new DateOffsetSettings(UnitSetting.RoundsOffset, DateSetting.RoundsUnit, true, true);
             }
+
             /// <summary>
             /// Установить дату и единицу на сохраненные, смещение округляется по единице.
             /// </summary>

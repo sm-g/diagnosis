@@ -67,7 +67,7 @@ namespace Tests
             card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
 
             Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
-            Assert.AreEqual(2, card.HrList.HealthRecords.Where(vm => vm.IsSelected).Count());
+            Assert.AreEqual(2, card.HrList.SelectedHealthRecords.Count());
         }
 
         [TestMethod]
@@ -78,11 +78,11 @@ namespace Tests
             card.HrList.SelectHealthRecord(hr[21]);
 
             Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
-            Assert.AreEqual(1, card.HrList.HealthRecords.Where(vm => vm.IsSelected).Count());
+            Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
         }
 
         [TestMethod]
-        public void CopyPasteHrs()
+        public void CopyPasteHr()
         {
             var card = new CardViewModel(a[2], true);
 
@@ -119,6 +119,52 @@ namespace Tests
             Assert.IsTrue(!newWord.IsTransient);
 
 
+        }
+
+        [TestMethod]
+        public void CutPasteHrs()
+        {
+            var card = new CardViewModel(a[2], true);
+            var count = card.HrList.HealthRecords.Count;
+
+            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
+            card.HrList.Cut();
+            card.HrList.Paste();
+
+            Assert.AreEqual(count, card.HrList.HealthRecords.Count);
+            Assert.AreEqual(2, card.HrList.SelectedHealthRecords.Count());
+
+
+        }
+
+        [TestMethod]
+        public void PastedHrEqual()
+        {
+            var card = new CardViewModel(a[2], true);
+            var count = card.HrList.HealthRecords.Count;
+
+            card.HrList.SelectHealthRecord(hr[20]);
+            card.HrList.Cut();
+            card.HrList.Paste();
+
+
+            var new20 = card.HrList.SelectedHealthRecords.First().healthRecord;
+
+            Assert.AreEqual(hr[20].Appointment, new20.Appointment);
+            Assert.AreEqual(hr[20].Category, new20.Category);
+            Assert.AreEqual(hr[20].Course, new20.Course);
+            Assert.AreEqual(hr[20].DateOffset, new20.DateOffset);
+            Assert.AreEqual(hr[20].Doctor, new20.Doctor);
+            Assert.AreEqual(hr[20].FromDay, new20.FromDay);
+            Assert.AreEqual(hr[20].FromMonth, new20.FromMonth);
+            Assert.AreEqual(hr[20].FromYear, new20.FromYear);
+            // Assert.AreEqual(hr[20].Ord, new20.Ord);
+            Assert.AreEqual(hr[20].Patient, new20.Patient);
+            Assert.AreEqual(hr[20].Unit, new20.Unit);
+
+            Assert.AreEqual(false, new20.IsDeleted);
+            Assert.AreEqual(false, new20.IsDirty);
+            Assert.AreNotEqual(hr[20].CreatedAt, new20.CreatedAt);
         }
     }
 }
