@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Data;
+using GongSolutions.Wpf.DragDrop;
 using System.Windows.Input;
 using System.Windows;
 using System;
@@ -29,24 +30,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public HolderViewModel HolderVm { get; private set; }
 
-        public ObservableCollection<ShortHealthRecordViewModel> HealthRecords
-        {
-            get
-            {
-                if (healthRecordsView == null)
-                {
-                    healthRecordsView = (CollectionView)CollectionViewSource.GetDefaultView(hrManager.HealthRecords);
-                    PropertyGroupDescription groupDescription = new PropertyGroupDescription("Category");
-                    SortDescription sort1 = new SortDescription("Category", ListSortDirection.Ascending);
-                    SortDescription sort2 = new SortDescription("SortingDate", ListSortDirection.Ascending);
-                    SortDescription sort3 = new SortDescription("Ord", ListSortDirection.Ascending);
-                    healthRecordsView.GroupDescriptions.Add(groupDescription);
-                    healthRecordsView.SortDescriptions.Add(sort3);
-                    //healthRecordsView.SortDescriptions.Add(sort2);
-                }
-                return hrManager.HealthRecords;
-            }
-        }
+        public ObservableCollection<ShortHealthRecordViewModel> HealthRecords { get { return hrManager.HealthRecords; } }
 
         public ShortHealthRecordViewModel SelectedHealthRecord
         {
@@ -76,7 +60,7 @@ namespace Diagnosis.ViewModels.Screens
             get { return HealthRecords.Where(vm => vm.IsSelected).ToList(); }
         }
 
-        public bool InAddHrCommand { get; private set; }
+        public bool AddingHrByCommnd { get; private set; }
         #region Commands
 
         public ICommand AddHealthRecordCommand
@@ -87,9 +71,7 @@ namespace Diagnosis.ViewModels.Screens
                     {
 
                         var lastHrVM = SelectedHealthRecord ?? HealthRecords.LastOrDefault();
-                        InAddHrCommand = true;
-                        var newHr = holder.AddHealthRecord(AuthorityController.CurrentDoctor);
-                        InAddHrCommand = false;
+                        var newHr = AddHr(true);
 
                         if (lastHrVM != null)
                         {
@@ -102,14 +84,15 @@ namespace Diagnosis.ViewModels.Screens
                     );
             }
         }
-
         public ICommand DeleteCommand
         {
             get
             {
                 return new RelayCommand(() =>
                     {
+                        var toSave = hrManager.GetSelectedHrs();
                         hrManager.DeleteCheckedHealthRecords();
+                        OnSaveNeeded(toSave);
                     }, () => CheckedHrCount > 0);
             }
         }
@@ -167,6 +150,71 @@ namespace Diagnosis.ViewModels.Screens
                 return !(holder is Appointment && !holder.IsEmpty()); // непустой осмотр - ничего дополнительного
             }
         }
+        public DropTargetHandler DropHandler { get; private set; }
+
+        public DragSourceHandler DragHandler { get; private set; }
+
+        private bool _rectSelect;
+        public bool RectSelect
+        {
+            get
+            {
+                return _rectSelect;
+            }
+            set
+            {
+                if (_rectSelect != value)
+                {
+                    _rectSelect = value;
+                    OnPropertyChanged(() => RectSelect);
+                }
+            }
+        }
+        private Sortings _sort;
+        public Sortings Sorting
+        {
+            get
+            {
+                return _sort;
+            }
+            set
+            {
+                if (_sort != value)
+                {
+                    _sort = value;
+                    healthRecordsView.SortDescriptions.Clear();
+                    if (value != Sortings.None)
+                    {
+                        var sort = new SortDescription(value.ToString(), ListSortDirection.Ascending);
+                        healthRecordsView.SortDescriptions.Add(sort);
+                    }
+                    OnPropertyChanged(() => Sorting);
+                }
+            }
+        }
+
+        private Groupings _group;
+        public Groupings Grouping
+        {
+            get
+            {
+                return _group;
+            }
+            set
+            {
+                if (_group != value)
+                {
+                    _group = value;
+                    healthRecordsView.GroupDescriptions.Clear();
+                    if (value != Groupings.None)
+                    {
+                        var grDesc = new PropertyGroupDescription(value.ToString());
+                        healthRecordsView.GroupDescriptions.Add(grDesc);
+                    }
+                    OnPropertyChanged(() => Grouping);
+                }
+            }
+        }
 
         public HrListViewModel(IHrsHolder holder, Action<HealthRecord, HrData.HrInfo> filler, Action<List<IHrItemObject>> syncer)
         {
@@ -183,20 +231,33 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (e.PropertyName == "Category")
                 {
+                    var sel = SelectedHealthRecords;
                     healthRecordsView.Refresh();
+                    sel.ForAll(vm => vm.IsSelected = true); // fix only one selected after Refresh
                 }
                 else if (e.PropertyName == "IsChecked")
                 {
                     OnPropertyChanged(() => CheckedHrCount);
                 }
             });
+            hrManager.Undeleted += (s, e) =>
+            {
+                OnSaveNeeded(new List<HealthRecord>() { e.entity as HealthRecord });
+            };
 
             HealthRecords.CollectionChanged += (s, e) =>
             {
                 HolderVm.UpdateIsEmpty();
             };
 
+            healthRecordsView = (CollectionView)CollectionViewSource.GetDefaultView(HealthRecords);
+            Grouping = Groupings.Category;
+            Sorting = Sortings.None;
+
             SelectHealthRecord(hrViewer.GetLastSelectedFor(holder));
+
+            DropHandler = new DropTargetHandler(this);
+            DragHandler = new DragSourceHandler();
         }
         public void Cut()
         {
@@ -257,7 +318,7 @@ namespace Diagnosis.ViewModels.Screens
                 else
                 {
                     // new hr with pasted hios
-                    var newHR = holder.AddHealthRecord(AuthorityController.CurrentDoctor);
+                    var newHR = AddHr();
                     newHR.AddItems(data.ItemObjects);
                     OnSaveNeeded(); // save all
                 }
@@ -283,7 +344,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     if (hr2 == null) continue;
 
-                    var newHR = holder.AddHealthRecord(AuthorityController.CurrentDoctor);
+                    var newHR = AddHr();
                     fillHr(newHR, hr2);
                     pasted.Add(newHR);
                 }
@@ -318,6 +379,14 @@ namespace Diagnosis.ViewModels.Screens
             hrManager.MakeDeletions();
         }
 
+        private HealthRecord AddHr(bool fromCommand = false)
+        {
+            AddingHrByCommnd = fromCommand;
+            var newHr = holder.AddHealthRecord(AuthorityController.CurrentDoctor);
+            AddingHrByCommnd = false;
+            return newHr;
+        }
+
         private void LogHrs(string action, IEnumerable<HrData.HrInfo> hrs)
         {
             logger.DebugFormat("{0} hrs with hios: {1}", action, string.Join("\n", hrs.Select((hr, i) => string.Format("{0} {1}", i, hr.Hios.FlattenString()))));
@@ -348,6 +417,169 @@ namespace Diagnosis.ViewModels.Screens
             finally
             {
                 base.Dispose(disposing);
+            }
+        }
+
+        public enum Groupings
+        {
+            None,
+            Category
+        }
+        public enum Sortings
+        {
+            None,
+            Ord,
+            Date
+        }
+        public class DropTargetHandler : DefaultDropHandler
+        {
+            private readonly HrListViewModel master;
+
+            public DropTargetHandler(HrListViewModel master)
+            {
+                this.master = master;
+            }
+
+            public bool FromSameHrList(IDropInfo dropInfo)
+            {
+                var sourceList = GetList(dropInfo.DragInfo.SourceCollection);
+                return sourceList == master.HealthRecords;
+            }
+
+            public bool FromAutocomplete(IDropInfo dropInfo)
+            {
+                var sourceList = GetList(dropInfo.DragInfo.SourceCollection);
+                return sourceList is IEnumerable<TagViewModel>;
+            }
+
+            public override void DragOver(IDropInfo dropInfo)
+            {
+                var data = ExtractData(dropInfo.Data).Cast<object>();
+                if (dropInfo.DragInfo == null || dropInfo.DragInfo.SourceCollection == null || data.Count() == 0)
+                {
+                    dropInfo.Effects = DragDropEffects.None;
+                    return;
+                }
+                if (FromSameHrList(dropInfo))
+                {
+                    dropInfo.Effects = DragDropEffects.Move;
+                }
+                else if (FromAutocomplete(dropInfo))
+                {
+                    dropInfo.Effects = DragDropEffects.Copy;
+                }
+                else
+                {
+                    dropInfo.Effects = DragDropEffects.Scroll;
+                }
+                dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+            }
+
+            public override void Drop(IDropInfo dropInfo)
+            {
+                var data = ExtractData(dropInfo.Data).Cast<object>();
+
+                logger.DebugFormat("ddrop {0} {1}", data.Count(), data.First().GetType());
+
+                var insertIndex = dropInfo.InsertIndex;
+
+                if (FromSameHrList(dropInfo))
+                {
+                    // drop hrs from hrslist
+                    var hrs = data.Cast<ShortHealthRecordViewModel>();
+                    logger.DebugFormat("selected bef {0} ", master.SelectedHealthRecords.Count());
+
+                    // reorder hrs
+                    foreach (var hr in hrs)
+                    {
+                        var old = master.HealthRecords.IndexOf(hr);
+                        var n = old < insertIndex ? insertIndex - 1 : insertIndex;
+
+                        logger.DebugFormat("move {0} - {1}", old, n);
+                        if (old != n)
+                        {
+                            master.HealthRecords.Move(old, n);
+
+                            // меняем порядок
+
+                            //var down = old < insertIndex;
+                            //for (int i = down ? old+1 : n; i < (down ? n+1 : old); i ++)
+                            //{
+                            //    master.HealthRecords[i].healthRecord.Ord += (down ? -1 : 1);
+
+                            //}
+                            //master.HealthRecords[old].healthRecord.Ord = n;
+
+                            // remove insert
+
+                            //var t1 = master.HealthRecords[old];
+                            //master.HealthRecords.RemoveAt(old);
+                            //master.HealthRecords.Insert(n, t1);
+                        }
+                        if (dropInfo.TargetGroup != null)
+                            hr.healthRecord.Category = dropInfo.TargetGroup.Name as HrCategory;
+                    }
+                    logger.DebugFormat("selected after dd {0} ", master.SelectedHealthRecords.Count());
+
+                }
+                else if (FromAutocomplete(dropInfo))
+                {
+                    // drop tags from autocomplete
+
+                    var tags = data.Cast<TagViewModel>();
+
+                    // new hr from tags
+                    var newHR = master.AddHr();
+                    var items = tags.Select(t => t.Entity).ToList();
+                    newHR.SetItems(items);
+                }
+                //if (dropInfo.TargetCollection is ICollectionView)
+                //{
+                //    ((ICollectionView)dropInfo.TargetCollection).Refresh();
+                //}
+                master.OnSaveNeeded();
+                logger.DebugFormat("selected after save {0} ", master.SelectedHealthRecords.Count());
+
+
+            }
+        }
+
+        public class DragSourceHandler : IDragSource
+        {
+            /// <summary>
+            /// Data is hrs vm.
+            /// </summary>
+            /// <param name="dragInfo"></param>
+            public void StartDrag(IDragInfo dragInfo)
+            {
+                var hrs = dragInfo.SourceItems.Cast<ShortHealthRecordViewModel>();
+                var itemCount = hrs.Count();
+
+                if (itemCount == 1)
+                {
+                    dragInfo.Data = hrs.First();
+
+                }
+                else if (itemCount > 1)
+                {
+                    dragInfo.Data = GongSolutions.Wpf.DragDrop.Utilities.TypeUtilities.CreateDynamicallyTypedList(hrs);
+                }
+                dragInfo.Effects = (dragInfo.Data != null) ?
+                                     DragDropEffects.Copy | DragDropEffects.Move :
+                                     DragDropEffects.None;
+            }
+
+            public bool CanStartDrag(IDragInfo dragInfo)
+            {
+                return dragInfo.SourceItems.Cast<ShortHealthRecordViewModel>().Count() > 0;
+            }
+
+            public void DragCancelled()
+            {
+            }
+
+            public void Dropped(IDropInfo dropInfo)
+            {
             }
         }
 

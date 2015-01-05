@@ -290,6 +290,9 @@ namespace Diagnosis.ViewModels.Screens
 
                     if (e.list == null)
                     {
+                        // новые записи — вставка/дроп записей/тегов на список
+                        // смена порядка — дроп записей
+
                         // ставим порядок
                         for (int i = 0; i < HrList.HealthRecords.Count; i++)
                         {
@@ -303,6 +306,9 @@ namespace Diagnosis.ViewModels.Screens
                     }
                     else
                     {
+                        // вставка/дроп тегов в записи
+                        // изменение видимости (IsDeleted)
+
                         saver.Save(e.list.ToArray());
                     }
                 };
@@ -347,29 +353,9 @@ namespace Diagnosis.ViewModels.Screens
 
         private void HrList_HealthRecords_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                // удаление
-                foreach (ShortHealthRecordViewModel vm in e.OldItems)
-                {
-                    if (vm.healthRecord.IsDeleted)
-                        saver.SaveHealthRecord(vm.healthRecord);
-                }
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Move)
+            if (e.Action == NotifyCollectionChangedAction.Move)
             {
                 // порядок
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                // отмена удаления
-                if (!HrList.InAddHrCommand)
-                {
-                    saver.Save(e.NewItems
-                        .Cast<ShortHealthRecordViewModel>()
-                        .Select(vm => vm.healthRecord)
-                        .ToArray());
-                }
             }
         }
 
@@ -394,7 +380,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                if (HrList.InAddHrCommand)
+                if (HrList.AddingHrByCommnd)
                 {
                     // редактируем добавленную запись
                     var hr = (HealthRecord)e.NewItems[0];
@@ -405,7 +391,7 @@ namespace Diagnosis.ViewModels.Screens
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 // удаляем записи в бд
-                saver.SaveAll(viewer.OpenedPatient); // удалили несколько записей, открыли редактор, завершили удаление — сохранение с открытой записью
+                saver.Delete(e.OldItems.Cast<HealthRecord>().ToArray());
             }
         }
 

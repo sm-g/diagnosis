@@ -10,6 +10,12 @@ namespace Diagnosis.App.Controls.CardParts
         public HealthRecord()
         {
             InitializeComponent();
+            Loaded += (s, e) =>
+            {
+#if !DEBUG
+                order.Visibility = System.Windows.Visibility.Collapsed;
+#endif
+            };
         }
     }
 }

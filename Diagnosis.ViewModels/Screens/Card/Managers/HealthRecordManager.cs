@@ -13,6 +13,8 @@ namespace Diagnosis.ViewModels.Screens
         private readonly IHrsHolder holder;
         private readonly PropertyChangedEventHandler onHrVmPropChanged;
 
+        public event EventHandler<DomainEntityEventArgs> Undeleted;
+
         public HealthRecordManager(IHrsHolder holder, PropertyChangedEventHandler onHrVmPropChanged)
         {
             this.holder = holder;
@@ -99,6 +101,7 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         DeletedHealthRecords.Remove(vm);
                         HealthRecords.Add(vm);
+                        OnUndeleted(vm.healthRecord);
                     }
                 }
             }
@@ -110,6 +113,15 @@ namespace Diagnosis.ViewModels.Screens
         internal void MakeDeletions()
         {
             this.Send(Events.HideOverlay, typeof(HealthRecord).AsParams(MessageKeys.Type));
+        }
+
+        protected virtual void OnUndeleted(HealthRecord hr)
+        {
+            var h = Undeleted;
+            if (h != null)
+            {
+                h(this, new DomainEntityEventArgs(hr));
+            }
         }
 
         protected override void Dispose(bool disposing)
