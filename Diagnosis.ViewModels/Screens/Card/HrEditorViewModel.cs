@@ -227,6 +227,8 @@ namespace Diagnosis.ViewModels.Screens
             hr.PropertyChanged += hr_PropertyChanged;
 
             (hr as IEditableObject).BeginEdit();
+            if (!hr.IsTransient)
+                session.SetReadOnly(hr, true);
 
             CreateAutoComplete();
         }
@@ -249,9 +251,15 @@ namespace Diagnosis.ViewModels.Screens
                 if (tag != null)
                     Autocomplete.CompleteOnLostFocus(tag);
 
-                HealthRecord.healthRecord.PropertyChanged -= hr_PropertyChanged;
-                (HealthRecord.healthRecord as IEditableObject).EndEdit();
-                OnUnloaded(HealthRecord.healthRecord);
+                var hr = HealthRecord.healthRecord;
+                hr.PropertyChanged -= hr_PropertyChanged;
+                (hr as IEditableObject).EndEdit();
+                if (!hr.IsTransient)
+                {
+                    session.SetReadOnly(hr, false);
+                    session.Evict(hr);
+                }
+                OnUnloaded(hr);
 
                 Autocomplete.Dispose();
                 _autocomplete = null;

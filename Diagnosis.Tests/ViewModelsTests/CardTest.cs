@@ -15,12 +15,14 @@ namespace Tests
         private Dictionary<int, Patient> p = new Dictionary<int, Patient>();
         private Dictionary<int, Course> c = new Dictionary<int, Course>();
         private Dictionary<int, Appointment> a = new Dictionary<int, Appointment>();
+        private Dictionary<int, HealthRecord> hr = new Dictionary<int, HealthRecord>();
 
         private Doctor d1;
 
         private static int[] pIds = new[] { 1, 2, 3, 4, 5 };
         private static int[] cIds = new[] { 1, 2, 3, 4 };
         private static int[] aIds = new[] { 1, 2, 3, 4, 5 };
+        private static int[] hrIds = new[] { 1, 2, 20, 21, 22, 30, 31, 32, 40, 70, 71, 72, 73, 74 };
 
         [TestInitialize]
         public void Init()
@@ -31,6 +33,7 @@ namespace Tests
             pIds.ForAll((id) => p[id] = session.Get<Patient>(IntToGuid<Patient>(id)));
             cIds.ForAll((id) => c[id] = session.Get<Course>(IntToGuid<Course>(id)));
             aIds.ForAll((id) => a[id] = session.Get<Appointment>(IntToGuid<Appointment>(id)));
+            hrIds.ForAll((id) => hr[id] = session.Get<HealthRecord>(IntToGuid<HealthRecord>(id)));
 
             // p[3] c[4] a[5] are empty, for deletions
         }
@@ -130,6 +133,13 @@ namespace Tests
 
             // открывается последний осмотр
             Assert.AreEqual(a[2], card.Navigator.Current.Holder);
+
+            card.Open(p[5], lastAppOrCourse: true);
+
+            // открывается последний курс
+            Assert.AreEqual(0, c[3].Appointments.Count());
+            Assert.AreEqual(c[3], card.Navigator.Current.Holder);
+
         }
 
         [TestMethod]
@@ -185,6 +195,36 @@ namespace Tests
             card.Navigator.Current.HolderVm.DeleteCommand.Execute(null);
             Assert.IsNull(holder);
             Assert.IsTrue(removed);
+        }
+
+        [TestMethod]
+        public void DontSaveEditingHr()
+        {
+            var OverlayService = new OverlayServiceViewModel();
+
+            // удалили несколько записей
+            var card = new CardViewModel(a[2], true);
+            var hrsBefore = a[2].HealthRecords.Count();
+            card.HrList.SelectHealthRecord(hr[20]);
+            card.HrList.DeleteCommand.Execute(null);
+
+            // открыли редактор
+            card.HrList.SelectHealthRecord(hr[21]);
+            card.ToogleHrEditor();
+            hr[21].FromYear = 2010;
+
+            // завершили удаление
+            card.HrList.RemoveDeleted();
+
+            // не сохраненяем открытую запись
+            Assert.IsTrue(!hr[20].IsDirty);
+            Assert.AreEqual(hrsBefore - 1, a[2].HealthRecords.Count());
+
+            Assert.IsTrue(hr[21].IsDirty);
+
+            // сохраненяем открытую запись
+            card.ToogleHrEditor();
+            Assert.IsTrue(!hr[21].IsDirty);
         }
     }
 }

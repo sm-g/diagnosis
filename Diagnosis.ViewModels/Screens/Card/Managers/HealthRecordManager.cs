@@ -107,7 +107,7 @@ namespace Diagnosis.ViewModels.Screens
         /// <summary>
         /// Реальное удаление удаленных записей.
         /// </summary>
-        private void MakeDeletions()
+        internal void MakeDeletions()
         {
             this.Send(Events.HideOverlay, typeof(HealthRecord).AsParams(MessageKeys.Type));
         }

@@ -313,6 +313,11 @@ namespace Diagnosis.ViewModels.Screens
             inSelectMany = false;
         }
 
+        internal void RemoveDeleted()
+        {
+            hrManager.MakeDeletions();
+        }
+
         private void LogHrs(string action, IEnumerable<HrData.HrInfo> hrs)
         {
             logger.DebugFormat("{0} hrs with hios: {1}", action, string.Join("\n", hrs.Select((hr, i) => string.Format("{0} {1}", i, hr.Hios.FlattenString()))));
