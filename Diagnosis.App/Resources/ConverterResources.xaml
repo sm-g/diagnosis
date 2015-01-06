@@ -25,6 +25,7 @@
     <conv:DateIntervalLabel x:Key="DateIntervalLabel" />
     <conv:DateLabel x:Key="DateLabel" />
     <conv:MonthToString x:Key="MonthToString" />
+    <conv:EnumToLabel x:Key="EnumToLabel" />
 
     <conv:Summator x:Key="SummatorConverter" />
     <conv:ManToShortName x:Key="ManToShortName" />

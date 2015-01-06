@@ -142,4 +142,13 @@
   <data name="Help" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Help.rtf;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
+  <data name="Groupings_Category" xml:space="preserve">
+    <value>Категория</value>
+  </data>
+  <data name="Sorting_Date" xml:space="preserve">
+    <value>По дате</value>
+  </data>
+  <data name="Sorting_Ord" xml:space="preserve">
+    <value>По порядку</value>
+  </data>
 </root>

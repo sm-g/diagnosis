@@ -25,20 +25,13 @@
                            Command="{Binding EditCommand}" />
         </InputBindingCollection>
 
-        <ObjectDataProvider x:Key="Sortings"
-                            MethodName="GetValues"
-                            ObjectType="{x:Type sys:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="diag:HrListViewModel+Sortings" />
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
-        <ObjectDataProvider x:Key="Groupings"
-                            MethodName="GetValues"
-                            ObjectType="{x:Type sys:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="diag:HrListViewModel+Groupings" />
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
+        <DataTemplate x:Key="EnumComboTemplate">
+            <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource EnumToLabel}}"
+                       Height="Auto"
+                       Margin="0"
+                       VerticalAlignment="Center" />
+
+        </DataTemplate>
     </UserControl.Resources>
 
     <UserControl.InputBindings>
@@ -95,10 +88,13 @@
                 <TextBlock Text="{Binding SelectedItems.Count, ElementName=records}"
                            Width="20" />
                 <Separator />
-                <ComboBox ItemsSource="{Binding Source={StaticResource Sortings}}"
-                          SelectedItem="{Binding Sorting, Mode=TwoWay}"></ComboBox>
-                <ComboBox ItemsSource="{Binding Source={StaticResource Groupings}}"
-                          SelectedItem="{Binding Grouping, Mode=TwoWay}"></ComboBox>
+                <ComboBox ItemsSource="{Binding Source={beh:EnumListExtension {x:Type diag:HrListViewModel+Sortings}}}"
+                          SelectedItem="{Binding Sorting, Mode=TwoWay}"
+                          ItemTemplate="{StaticResource EnumComboTemplate}">
+                </ComboBox>
+                <ComboBox ItemsSource="{Binding Source={beh:EnumListExtension {x:Type diag:HrListViewModel+Groupings}}}"
+                          SelectedItem="{Binding Grouping, Mode=TwoWay}"
+                          ItemTemplate="{StaticResource EnumComboTemplate}" />
             </DockPanel>
         </ToolBar>
 

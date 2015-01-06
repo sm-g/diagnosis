@@ -1,5 +1,6 @@
 ﻿using Diagnosis.App.Windows;
 using Diagnosis.Common;
+using Diagnosis.Common.Util;
 using Diagnosis.Data;
 using Diagnosis.Data.Versions;
 using log4net;
@@ -62,6 +63,8 @@ namespace Diagnosis.App
                     new FrameworkPropertyMetadata(
                     XmlLanguage.GetLanguage(
                     CultureInfo.CurrentCulture.IetfLanguageTag)));
+                // enum localization
+                LocalizableDescriptionAttribute.ResourcesType = typeof(Diagnosis.App.Properties.Resources);
 
                 System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Error;
 #if DEBUG

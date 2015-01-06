@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows;
 using System;
 using Diagnosis.ViewModels.Search.Autocomplete;
+using Diagnosis.Common.Util;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -423,12 +424,15 @@ namespace Diagnosis.ViewModels.Screens
         public enum Groupings
         {
             None,
+            [LocalizableDescription(@"Groupings_Category")]
             Category
         }
         public enum Sortings
         {
             None,
+            [LocalizableDescription(@"Sorting_Ord")]
             Ord,
+            [LocalizableDescription(@"Sorting_Date")]
             Date
         }
         public class DropTargetHandler : DefaultDropHandler

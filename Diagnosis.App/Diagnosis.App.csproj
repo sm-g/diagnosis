@@ -219,6 +219,7 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Compile Include="Behaviors\ClipboardBehavior.cs" />
+    <Compile Include="Behaviors\EnumListExtension.cs" />
     <Compile Include="Behaviors\FocusBehavior.cs" />
     <Compile Include="Behaviors\ListBoxSelector.cs" />
     <Compile Include="Behaviors\MenuItemExtensions.cs" />
@@ -246,6 +247,7 @@
     <Compile Include="Controls\Search\HrSearchResult2.xaml.cs">
       <DependentUpon>HrSearchResult2.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\EnumToLabel.cs" />
     <Compile Include="Converters\ScopeToLabel.cs" />
     <Compile Include="Converters\InList.cs" />
     <Compile Include="Converters\HrToItemsString.cs" />
