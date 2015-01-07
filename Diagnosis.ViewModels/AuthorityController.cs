@@ -56,18 +56,18 @@ namespace Diagnosis.ViewModels
         }
 
         [Pure]
-        public static bool CurrentUserCanOpen(Screens.Screens screen)
+        public static bool CurrentUserCanOpen(Screens.Screen screen)
         {
-            if (screen == Screens.Screens.Login)
+            if (screen == Screens.Screen.Login)
                 return true;
 
             if (CurrentUser is Admin)
             {
-                return screen == Screens.Screens.Doctors;
+                return screen == Screens.Screen.Doctors;
             }
             if (CurrentUser is Doctor)
             {
-                return screen != Screens.Screens.Doctors;
+                return screen != Screens.Screen.Doctors;
             }
             return false;
         }

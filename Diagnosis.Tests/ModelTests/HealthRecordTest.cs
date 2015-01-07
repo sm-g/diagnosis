@@ -24,19 +24,19 @@ namespace Tests
         [TestMethod]
         public void Unit()
         {
-            Assert.AreEqual(HealthRecordUnits.Year, hr[40].Unit);
+            Assert.AreEqual(HealthRecordUnit.Year, hr[40].Unit);
             Assert.AreEqual(2005, hr[40].FromYear);
 
 
-            Assert.AreEqual(HealthRecordUnits.Month, hr[20].Unit);
+            Assert.AreEqual(HealthRecordUnit.Month, hr[20].Unit);
             Assert.AreEqual(2014, hr[20].FromYear);
             Assert.AreEqual(1, hr[20].FromMonth);
 
-            Assert.AreEqual(HealthRecordUnits.NotSet, hr[1].Unit);
+            Assert.AreEqual(HealthRecordUnit.NotSet, hr[1].Unit);
             Assert.AreEqual(2013, hr[1].FromYear);
             Assert.AreEqual(11, hr[1].FromMonth);
 
-            Assert.AreEqual(HealthRecordUnits.ByAge, hr[2].Unit);
+            Assert.AreEqual(HealthRecordUnit.ByAge, hr[2].Unit);
             Assert.AreEqual(2013, hr[2].FromYear);
             Assert.AreEqual(12, hr[2].FromMonth);
 

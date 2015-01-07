@@ -40,7 +40,7 @@ namespace Tests
         public void Create()
         {
             Assert.IsTrue(a.Tags.Count == 1);
-            Assert.IsTrue(a.Tags.Last().State == TagViewModel.States.Init);
+            Assert.IsTrue(a.Tags.Last().State == State.Init);
             Assert.IsTrue(a.Tags.Last().IsLast);
         }
 
@@ -48,7 +48,7 @@ namespace Tests
         public void TypeQuery()
         {
             a.SelectedTag.Query = "123";
-            Assert.IsTrue(a.SelectedTag.State == TagViewModel.States.Typing);
+            Assert.IsTrue(a.SelectedTag.State == State.Typing);
         }
 
         [TestMethod]
@@ -102,7 +102,7 @@ namespace Tests
 
             Assert.IsTrue(a.Tags.Count == 2);
             Assert.IsTrue(a.Tags.Last().IsLast);
-            Assert.IsTrue(a.Tags.Last().State == TagViewModel.States.Init);
+            Assert.IsTrue(a.Tags.Last().State == State.Init);
             Assert.IsTrue(a.SelectedTag == a.Tags.Last());
         }
 
@@ -112,8 +112,8 @@ namespace Tests
             a.SelectedTag.Query = q;
             a.EnterCommand.Execute(a.SelectedTag);
 
-            Assert.IsTrue(First.State == TagViewModel.States.Completed);
-            Assert.IsTrue(First.BlankType == TagViewModel.BlankTypes.Word);
+            Assert.IsTrue(First.State == State.Completed);
+            Assert.IsTrue(First.BlankType == BlankType.Word);
             Assert.AreEqual(word, First.Blank);
 
             var entities = a.GetEntities();
@@ -128,9 +128,9 @@ namespace Tests
             a.SelectedTag.Query = q;
             a.InverseEnterCommand.Execute(a.SelectedTag);
 
-            Assert.IsTrue(First.State == TagViewModel.States.Completed);
+            Assert.IsTrue(First.State == State.Completed);
             Assert.AreEqual(q, First.Blank);
-            Assert.IsTrue(First.BlankType == TagViewModel.BlankTypes.Query);
+            Assert.IsTrue(First.BlankType == BlankType.Query);
 
             var entities = a.GetEntities();
 
@@ -144,9 +144,9 @@ namespace Tests
             a.SelectedTag.Query = notExistQ;
             a.EnterCommand.Execute(a.SelectedTag);
 
-            Assert.IsTrue(First.State == TagViewModel.States.Completed);
+            Assert.IsTrue(First.State == State.Completed);
             Assert.AreEqual(notExistQ, First.Blank);
-            Assert.IsTrue(First.BlankType == TagViewModel.BlankTypes.Query);
+            Assert.IsTrue(First.BlankType == BlankType.Query);
 
             var entities = a.GetEntities();
 
@@ -160,8 +160,8 @@ namespace Tests
             a.SelectedTag.Query = notExistQ;
             a.InverseEnterCommand.Execute(a.SelectedTag);
 
-            Assert.IsTrue(First.State == TagViewModel.States.Completed);
-            Assert.IsTrue(First.BlankType == TagViewModel.BlankTypes.Word);
+            Assert.IsTrue(First.State == State.Completed);
+            Assert.IsTrue(First.BlankType == BlankType.Word);
             Assert.IsTrue(First.Signalization == Signalizations.NewWord);
 
             var newW = First.Blank as Word;

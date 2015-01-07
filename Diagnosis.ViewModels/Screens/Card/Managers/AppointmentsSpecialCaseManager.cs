@@ -31,7 +31,7 @@ namespace Diagnosis.ViewModels.Screens
                     _appointments = new ObservableCollection<SpecialCaseItem>(wrappers);
                     if (!course.IsEnded)
                     {
-                        _appointments.Add(new SpecialCaseItem(SpecialCaseItem.Cases.AddNew));
+                        _appointments.Add(new SpecialCaseItem(SpecialCaseItem.Case.AddNew));
                     }
 
                     SetAppointmentsDeletable();

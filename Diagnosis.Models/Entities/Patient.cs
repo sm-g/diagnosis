@@ -80,9 +80,9 @@ namespace Diagnosis.Models
                             .Union(Courses.SelectMany(c => c.HealthRecords
                             .Union(c.Appointments.SelectMany(a => a.HealthRecords))));
 
-                        foreach (var hr in allHrs.Where(hr => hr.Unit == HealthRecordUnits.ByAge))
+                        foreach (var hr in allHrs.Where(hr => hr.Unit == HealthRecordUnit.ByAge))
                         {
-                            hr.Unit = HealthRecordUnits.NotSet;
+                            hr.Unit = HealthRecordUnit.NotSet;
                         }
                     }
 

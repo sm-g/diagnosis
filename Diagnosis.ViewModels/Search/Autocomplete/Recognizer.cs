@@ -68,12 +68,12 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (CanMakeEntityFrom(tag.Query))
                 {
                     tag.Blank = tag.Query; // текст-комментарий
-                    Debug.Assert(tag.BlankType == TagViewModel.BlankTypes.Query);
+                    Debug.Assert(tag.BlankType == BlankType.Query);
                 }
                 else
                 {
                     tag.Blank = null; // для поиска
-                    Debug.Assert(tag.BlankType == TagViewModel.BlankTypes.None);
+                    Debug.Assert(tag.BlankType == BlankType.None);
                 }
             }
             else if (!inverse) // direct with suggestion
@@ -81,20 +81,20 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (!exactMatchRequired || Recognizer.Matches(suggestion, tag.Query))
                 {
                     tag.Blank = suggestion; // main
-                    Debug.Assert(tag.BlankType == TagViewModel.BlankTypes.Word ||
-                                 tag.BlankType == TagViewModel.BlankTypes.Measure ||
-                                 tag.BlankType == TagViewModel.BlankTypes.Icd);
+                    Debug.Assert(tag.BlankType == BlankType.Word ||
+                                 tag.BlankType == BlankType.Measure ||
+                                 tag.BlankType == BlankType.Icd);
                 }
                 else
                 {
                     tag.Blank = tag.Query; // запрос не совпал с предположением (CompleteOnLostFocus)
-                    Debug.Assert(tag.BlankType == TagViewModel.BlankTypes.Query);
+                    Debug.Assert(tag.BlankType == BlankType.Query);
                 }
             }
             else // inverse, no suggestion
             {
                 tag.Blank = FirstMatchingOrNewWord(tag.Query);
-                Debug.Assert(tag.BlankType == TagViewModel.BlankTypes.Word);
+                Debug.Assert(tag.BlankType == BlankType.Word);
             }
         }
 
@@ -102,15 +102,15 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// Изменяет заготовку тега с одной сущности на другую.
         /// Возвращает успешность конвертации.
         /// </summary>
-        public bool ConvertBlank(TagViewModel tag, TagViewModel.BlankTypes toType)
+        public bool ConvertBlank(TagViewModel tag, BlankType toType)
         {
             Contract.Requires(!tag.Query.IsNullOrEmpty());
             Contract.Requires(tag.BlankType != toType);
-            Contract.Requires(toType != TagViewModel.BlankTypes.None && toType != TagViewModel.BlankTypes.Query);
+            Contract.Requires(toType != BlankType.None && toType != BlankType.Query);
             Contract.Ensures(tag.BlankType == toType);
 
             string query;
-            if (tag.BlankType == TagViewModel.BlankTypes.Measure)
+            if (tag.BlankType == BlankType.Measure)
             {
                 query = (tag.Blank as Measure).Word.Title;
             }
@@ -121,18 +121,18 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
             switch (toType)
             {
-                case TagViewModel.BlankTypes.Comment:
+                case BlankType.Comment:
                     tag.Blank = new Comment(tag.Query);
                     return true;
 
-                case TagViewModel.BlankTypes.Word: // новое или существующее
+                case BlankType.Word: // новое или существующее
                     tag.Blank = FirstMatchingOrNewWord(query);
                     return true;
 
-                case TagViewModel.BlankTypes.Measure: // слово
+                case BlankType.Measure: // слово
                     var w = FirstMatchingOrNewWord(query);
                     var vm = new MeasureEditorViewModel(w);
-                    this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+                    this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
                     if (vm.DialogResult == true)
                     {
                         tag.Blank = vm.Measure;
@@ -140,9 +140,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     }
                     break;
 
-                case TagViewModel.BlankTypes.Icd: // слово/коммент в поисковый запрос
+                case BlankType.Icd: // слово/коммент в поисковый запрос
                     var vm0 = new IcdSelectorViewModel(query);
-                    this.Send(Events.OpenDialog, vm0.AsParams(MessageKeys.Dialog));
+                    this.Send(Event.OpenDialog, vm0.AsParams(MessageKeys.Dialog));
                     if (vm0.DialogResult == true)
                     {
                         tag.Blank = vm0.SelectedIcd;
@@ -159,7 +159,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         public IHrItemObject EntityOf(TagViewModel tag)
         {
-            Contract.Requires(tag.BlankType != TagViewModel.BlankTypes.None);
+            Contract.Requires(tag.BlankType != BlankType.None);
 
             // неизмененые теги - сущности уже созданы
             if (tag.Entity != null)
@@ -169,24 +169,24 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
             switch (tag.BlankType)
             {
-                case TagViewModel.BlankTypes.Query: // нераспознаный запрос
+                case BlankType.Query: // нераспознаный запрос
                     var c = new Comment(tag.Blank as string);
                     tag.Entity = c;
                     return c;
 
-                case TagViewModel.BlankTypes.Word:
+                case BlankType.Word:
                     tag.Entity = tag.Blank as Word;
                     return tag.Blank as Word;
 
-                case TagViewModel.BlankTypes.Comment:
+                case BlankType.Comment:
                     tag.Entity = tag.Blank as Comment;
                     return tag.Blank as Comment;
 
-                case TagViewModel.BlankTypes.Icd:
+                case BlankType.Icd:
                     tag.Entity = tag.Blank as IcdDisease;
                     return tag.Blank as IcdDisease;
 
-                case TagViewModel.BlankTypes.Measure:
+                case BlankType.Measure:
                     tag.Entity = tag.Blank as Measure;
                     return tag.Blank as Measure;
             }

@@ -121,16 +121,16 @@ namespace Diagnosis.App.Converters
             if (d == null)
                 return null;
 
-            var unit = HealthRecordUnits.NotSet;
+            var unit = HealthRecordUnit.NotSet;
 
-            if (parameter is HealthRecordUnits)
-                unit = (HealthRecordUnits)parameter;
+            if (parameter is HealthRecordUnit)
+                unit = (HealthRecordUnit)parameter;
             switch (unit)
             {
-                case HealthRecordUnits.NotSet:
+                case HealthRecordUnit.NotSet:
                     return DateOffsetFormatter.GetPartialDateString(d);
 
-                case HealthRecordUnits.ByAge: // by age должен брать дату пациента
+                case HealthRecordUnit.ByAge: // by age должен брать дату пациента
                 default:
                     return DateOffsetFormatter.GetOffsetUnitString(d);
             }
@@ -150,9 +150,9 @@ namespace Diagnosis.App.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values.Length < 2 || !(values[0] is DateUnits) || !(values[1] is int?))
+            if (values.Length < 2 || !(values[0] is DateUnit) || !(values[1] is int?))
                 return null;
-            var unit = (DateUnits)values[0];
+            var unit = (DateUnit)values[0];
             int? offset = (int?)values[1];
 
             return DateOffsetFormatter.GetUnitString(offset, unit);

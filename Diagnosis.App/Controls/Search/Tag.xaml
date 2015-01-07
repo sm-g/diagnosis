@@ -100,29 +100,29 @@
                         </DataTrigger>
 
                         <DataTrigger Binding="{Binding BlankType}"
-                                     Value="{x:Static diag:TagViewModel+BlankTypes.Query}">
+                                     Value="{x:Static diag:BlankType.Query}">
                             <Setter Property="Foreground"
                                     Value="Red" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding BlankType}"
-                                     Value="{x:Static diag:TagViewModel+BlankTypes.Comment}">
+                                     Value="{x:Static diag:BlankType.Comment}">
                             <Setter Property="FontStyle"
                                     Value="Italic" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding BlankType}"
-                                     Value="{x:Static diag:TagViewModel+BlankTypes.Word}">
+                                     Value="{x:Static diag:BlankType.Word}">
                             <Setter Property="FontStyle"
                                     Value="Normal" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding BlankType}"
-                                     Value="{x:Static diag:TagViewModel+BlankTypes.Icd}">
+                                     Value="{x:Static diag:BlankType.Icd}">
                             <Setter Property="FontStyle"
                                     Value="Normal" />
                             <Setter Property="Foreground"
                                     Value="Red" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding BlankType}"
-                                     Value="{x:Static diag:TagViewModel+BlankTypes.Measure}">
+                                     Value="{x:Static diag:BlankType.Measure}">
                             <Setter Property="FontStyle"
                                     Value="Normal" />
                             <Setter Property="Foreground"
@@ -186,20 +186,20 @@
                     <Separator />
 
                     <MenuItem Header="Слово"
-                              CommandParameter="{x:Static diag:TagViewModel+BlankTypes.Word}"
-                              IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:TagViewModel+BlankTypes.Word}}"
+                              CommandParameter="{x:Static diag:BlankType.Word}"
+                              IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:BlankType.Word}}"
                               Style="{StaticResource convert}" />
                     <MenuItem Header="Комментарий"
-                              CommandParameter="{x:Static diag:TagViewModel+BlankTypes.Comment}"
-                              IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:TagViewModel+BlankTypes.Comment}}"
+                              CommandParameter="{x:Static diag:BlankType.Comment}"
+                              IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:BlankType.Comment}}"
                               Style="{StaticResource convert}" />
                     <MenuItem Header="МКБ"
-                              CommandParameter="{x:Static diag:TagViewModel+BlankTypes.Icd}"
-                              IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:TagViewModel+BlankTypes.Icd}}"
+                              CommandParameter="{x:Static diag:BlankType.Icd}"
+                              IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:BlankType.Icd}}"
                               Style="{StaticResource convert}" />
                     <MenuItem Header="Измерение"
-                              CommandParameter="{x:Static diag:TagViewModel+BlankTypes.Measure}"
-                              IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:TagViewModel+BlankTypes.Measure}}"
+                              CommandParameter="{x:Static diag:BlankType.Measure}"
+                              IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:BlankType.Measure}}"
                               Style="{StaticResource convert}" />
 
                     <!--<Separator />-->
@@ -211,7 +211,7 @@
                                         <Style TargetType="Run">
                                             <Setter Property="Text" Value="Создать слово" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding BlankType}" Value="{x:Static diag:TagViewModel+BlankTypes.Word}">
+                                                <DataTrigger Binding="{Binding BlankType}" Value="{x:Static diag:BlankType.Word}">
                                                     <Setter Property="Text" Value="Убрать слово" />
                                                 </DataTrigger>
                                             </Style.Triggers>

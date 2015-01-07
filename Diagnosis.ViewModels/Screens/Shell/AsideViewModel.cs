@@ -30,7 +30,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             };
 
-            this.Subscribe(Events.SendToSearch, (e) =>
+            this.Subscribe(Event.SendToSearch, (e) =>
             {
                 SearchPanel.Opened = true;
             });

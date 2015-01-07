@@ -72,7 +72,7 @@ namespace Diagnosis.ViewModels.Screens
 
             new Saver(Session).Save(word);
 
-            this.Send(Events.WordSaved, word.AsParams(MessageKeys.Word));
+            this.Send(Event.WordSaved, word.AsParams(MessageKeys.Word));
         }
 
         protected override void OnCancel()

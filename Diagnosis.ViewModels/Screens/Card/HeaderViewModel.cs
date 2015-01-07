@@ -109,7 +109,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Events.OpenHolder, NextHolder.AsParams(MessageKeys.Holder));
+                    this.Send(Event.OpenHolder, NextHolder.AsParams(MessageKeys.Holder));
                 },
                 () => NextHolder != null);
             }
@@ -121,7 +121,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Events.OpenHolder, PrevHolder.AsParams(MessageKeys.Holder));
+                    this.Send(Event.OpenHolder, PrevHolder.AsParams(MessageKeys.Holder));
                 },
                 () => PrevHolder != null);
             }

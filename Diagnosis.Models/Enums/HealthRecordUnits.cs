@@ -3,7 +3,7 @@ using System;
 
 namespace Diagnosis.Models
 {
-    public enum HealthRecordUnits
+    public enum HealthRecordUnit
     {
         /// <summary>
         /// Показываем дату
@@ -23,42 +23,42 @@ namespace Diagnosis.Models
 
     public static class UnitConverter
     {
-        public static DateUnits? ToDateOffsetUnit(this HealthRecordUnits unit)
+        public static DateUnit? ToDateOffsetUnit(this HealthRecordUnit unit)
         {
             switch (unit)
             {
-                case HealthRecordUnits.Day:
-                    return DateUnits.Day;
+                case HealthRecordUnit.Day:
+                    return DateUnit.Day;
 
-                case HealthRecordUnits.Week:
-                    return DateUnits.Week;
+                case HealthRecordUnit.Week:
+                    return DateUnit.Week;
 
-                case HealthRecordUnits.Month:
-                    return DateUnits.Month;
+                case HealthRecordUnit.Month:
+                    return DateUnit.Month;
 
-                case HealthRecordUnits.Year:
-                    return DateUnits.Year;
+                case HealthRecordUnit.Year:
+                    return DateUnit.Year;
 
                 default:
                     return null;
             }
         }
 
-        public static HealthRecordUnits ToHealthRecordUnit(this DateUnits unit)
+        public static HealthRecordUnit ToHealthRecordUnit(this DateUnit unit)
         {
             switch (unit)
             {
-                case DateUnits.Day:
-                    return HealthRecordUnits.Day;
+                case DateUnit.Day:
+                    return HealthRecordUnit.Day;
 
-                case DateUnits.Week:
-                    return HealthRecordUnits.Week;
+                case DateUnit.Week:
+                    return HealthRecordUnit.Week;
 
-                case DateUnits.Month:
-                    return HealthRecordUnits.Month;
+                case DateUnit.Month:
+                    return HealthRecordUnit.Month;
 
-                case DateUnits.Year:
-                    return HealthRecordUnits.Year;
+                case DateUnit.Year:
+                    return HealthRecordUnit.Year;
 
                 default:
                     throw new ArgumentOutOfRangeException();

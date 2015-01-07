@@ -45,7 +45,7 @@ namespace Diagnosis.Data.Mappings
                 });
             });
 
-            Property(x => x.Unit, m => m.Type<NHibernate.Type.EnumStringType<HealthRecordUnits>>());
+            Property(x => x.Unit, m => m.Type<NHibernate.Type.EnumStringType<HealthRecordUnit>>());
 
             Set(x => x.HrItems, s =>
             {

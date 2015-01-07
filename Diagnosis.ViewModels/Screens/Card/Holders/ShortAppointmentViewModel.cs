@@ -38,7 +38,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Events.OpenAppointment, appointment.AsParams(MessageKeys.Appointment));
+                    this.Send(Event.OpenAppointment, appointment.AsParams(MessageKeys.Appointment));
                 });
             }
         }

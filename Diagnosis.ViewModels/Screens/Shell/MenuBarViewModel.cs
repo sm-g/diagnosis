@@ -33,7 +33,7 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         // viewer.clearhistory()
                         AuthorityController.LogOut();
-                    }, () => switcher.Screen != Screens.Login && AuthorityController.CurrentUserCanOpen(Screens.Login));
+                    }, () => switcher.Screen != Screen.Login && AuthorityController.CurrentUserCanOpen(Screen.Login));
             }
         }
 
@@ -44,8 +44,8 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(
                     () =>
                     {
-                        switcher.OpenScreen(Screens.Words);
-                    }, () => switcher.Screen != Screens.Words && AuthorityController.CurrentUserCanOpen(Screens.Words));
+                        switcher.OpenScreen(Screen.Words);
+                    }, () => switcher.Screen != Screen.Words && AuthorityController.CurrentUserCanOpen(Screen.Words));
             }
         }
 
@@ -55,8 +55,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    switcher.OpenScreen(Screens.Patients);
-                }, () => switcher.Screen != Screens.Patients && AuthorityController.CurrentUserCanOpen(Screens.Patients));
+                    switcher.OpenScreen(Screen.Patients);
+                }, () => switcher.Screen != Screen.Patients && AuthorityController.CurrentUserCanOpen(Screen.Patients));
             }
         }
 
@@ -74,7 +74,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Events.OpenSettings, AuthorityController.CurrentUser.AsParams(MessageKeys.User));
+                    this.Send(Event.OpenSettings, AuthorityController.CurrentUser.AsParams(MessageKeys.User));
                 });
             }
         }

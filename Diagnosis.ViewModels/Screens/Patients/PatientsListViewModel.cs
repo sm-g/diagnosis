@@ -45,7 +45,7 @@ namespace Diagnosis.ViewModels.Screens
             NoPatients = !Session.Query<Patient>().Any();
 
             emhManager = new EventMessageHandlersManager(new[] {
-                this.Subscribe(Events.PatientSaved, (e) =>
+                this.Subscribe(Event.PatientSaved, (e) =>
                 {
                     // выбираем нового пациента или изменившегося с учетом фильтра
                     Filter.Filter();
@@ -100,7 +100,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Events.CreatePatient);
+                    this.Send(Event.CreatePatient);
                 });
             }
         }
@@ -133,7 +133,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                         {
-                            this.Send(Events.OpenPatient, SelectedPatient.AsParams(MessageKeys.Patient));
+                            this.Send(Event.OpenPatient, SelectedPatient.AsParams(MessageKeys.Patient));
                         }, () => SelectedPatient != null);
             }
         }
@@ -143,7 +143,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Events.EditPatient, SelectedPatient.AsParams(MessageKeys.Patient));
+                    this.Send(Event.EditPatient, SelectedPatient.AsParams(MessageKeys.Patient));
                 }, () => SelectedPatient != null);
             }
         }

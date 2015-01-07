@@ -14,7 +14,7 @@
                             MethodName="GetValues"
                             ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="diag:DateUnits" />
+                <x:Type TypeName="diag:DateUnit" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
         <Style TargetType="TextBox">

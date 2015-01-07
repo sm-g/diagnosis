@@ -15,7 +15,7 @@ namespace Diagnosis.App.Windows
         {
             InitializeComponent();
 
-            this.Subscribe(Events.OpenDialog, (e) =>
+            this.Subscribe(Event.OpenDialog, (e) =>
             {
                 var dialogVM = e.GetValue<IDialog>(MessageKeys.Dialog);
                 if (dialogVM is PatientEditorViewModel)

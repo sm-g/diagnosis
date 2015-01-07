@@ -121,15 +121,6 @@ namespace Diagnosis.App.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Категория.
-        /// </summary>
-        public static string Groupings_Category {
-            get {
-                return ResourceManager.GetString("Groupings_Category", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {\rtf1\adeflang1025\ansi\ansicpg1251\uc1\adeff0\deff0\stshfdbch0\stshfloch31506\stshfhich31506\stshfbi31506\deflang1049\deflangfe1049\themelang1049\themelangfe0\themelangcs0{\fonttbl{\f0\fbidi \froman\fcharset204\fprq2{\*\panose 02020603050405020304}Times New Roman;}
         ///{\f34\fbidi \froman\fcharset204\fprq2{\*\panose 02040503050406030204}Cambria Math;}{\f36\fbidi \fswiss\fcharset204\fprq2{\*\panose 020f0302020204030204}Calibri Light;}{\f37\fbidi \fswiss\fcharset204\fprq2{\*\panose 020f0502020204030204}Calibri [rest of string was truncated]&quot;;.
         /// </summary>
@@ -146,6 +137,15 @@ namespace Diagnosis.App.Properties {
             get {
                 object obj = ResourceManager.GetObject("save_16xLG", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to По категории.
+        /// </summary>
+        public static string Sorting_Category {
+            get {
+                return ResourceManager.GetString("Sorting_Category", resourceCulture);
             }
         }
         

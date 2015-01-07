@@ -132,10 +132,10 @@ namespace Diagnosis.ViewModels.Screens
             {
                 switch (healthRecord.Unit)
                 {
-                    case HealthRecordUnits.NotSet:
+                    case HealthRecordUnit.NotSet:
                         return DateOffsetFormatter.GetPartialDateString(DateOffset);
 
-                    case HealthRecordUnits.ByAge:
+                    case HealthRecordUnit.ByAge:
                         var pat = healthRecord.GetPatient();
                         var age = DateHelper.GetAge(pat.BirthYear, pat.BirthMonth, pat.BirthDay, DateOffset.GetSortingDate());
                         var index = Plurals.GetPluralEnding(age.Value);
@@ -152,7 +152,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                         {
-                            this.Send(Events.SendToSearch, healthRecord.ToEnumerable().AsParams(MessageKeys.HealthRecords));
+                            this.Send(Event.SendToSearch, healthRecord.ToEnumerable().AsParams(MessageKeys.HealthRecords));
                         });
             }
         }
@@ -163,7 +163,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                        {
-                           this.Send(Events.EditHealthRecord, healthRecord.AsParams(MessageKeys.HealthRecord));
+                           this.Send(Event.EditHealthRecord, healthRecord.AsParams(MessageKeys.HealthRecord));
                        });
             }
         }

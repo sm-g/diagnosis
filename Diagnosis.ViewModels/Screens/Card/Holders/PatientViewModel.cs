@@ -165,7 +165,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                        {
-                           this.Send(Events.EditPatient, patient.AsParams(MessageKeys.Patient));
+                           this.Send(Event.EditPatient, patient.AsParams(MessageKeys.Patient));
                        });
             }
         }

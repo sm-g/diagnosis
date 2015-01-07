@@ -67,7 +67,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Events.OpenHolder, Holder.AsParams(MessageKeys.Holder));
+                    this.Send(Event.OpenHolder, Holder.AsParams(MessageKeys.Holder));
                 });
             }
         }
@@ -115,7 +115,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Events.DeleteHolder, Holder.AsParams(MessageKeys.Holder));
+                    this.Send(Event.DeleteHolder, Holder.AsParams(MessageKeys.Holder));
                 }, () => Holder.IsEmpty());
             }
         }
@@ -126,7 +126,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Events.EditHolder, Holder.AsParams(MessageKeys.Holder));
+                    this.Send(Event.EditHolder, Holder.AsParams(MessageKeys.Holder));
                 });
             }
         }
@@ -141,13 +141,13 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         var course = (holder as Patient).GetOrderedCourses().LastOrDefault();
                         if (course != null)
-                            this.Send(Events.OpenCourse, course.AsParams(MessageKeys.Course));
+                            this.Send(Event.OpenCourse, course.AsParams(MessageKeys.Course));
                     }
                     else if (holder is Course)
                     {
                         var app = (holder as Course).GetOrderedAppointments().LastOrDefault();
                         if (app != null)
-                            this.Send(Events.OpenAppointment, app.AsParams(MessageKeys.Appointment));
+                            this.Send(Event.OpenAppointment, app.AsParams(MessageKeys.Appointment));
                     }
                 }, () => !(holder.IsEmpty() || (holder is Appointment)));
             }

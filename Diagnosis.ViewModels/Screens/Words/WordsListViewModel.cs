@@ -35,7 +35,7 @@ namespace Diagnosis.ViewModels.Screens
             Filter.Clear(); // показываем все
 
             emhManager = new EventMessageHandlersManager(new[] {
-                this.Subscribe(Events.WordSaved, (e) =>
+                this.Subscribe(Event.WordSaved, (e) =>
                 {
                     // новое слово или изменившееся с учетом фильтра
                     Filter.Filter();
@@ -106,7 +106,7 @@ namespace Diagnosis.ViewModels.Screens
                                 title = SelectedWord.Title;
 
                             var word = new Word(title);
-                            this.Send(Events.EditWord, word.AsParams(MessageKeys.Word));
+                            this.Send(Event.EditWord, word.AsParams(MessageKeys.Word));
                         });
             }
         }
@@ -117,7 +117,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Events.EditWord, SelectedWord.word.AsParams(MessageKeys.Word));
+                    this.Send(Event.EditWord, SelectedWord.word.AsParams(MessageKeys.Word));
                 }, () => SelectedWord != null);
             }
         }
@@ -128,7 +128,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                         {
-                            this.Send(Events.SendToSearch, Words.Where(w => w.IsChecked)
+                            this.Send(Event.SendToSearch, Words.Where(w => w.IsChecked)
                                 .Select(w => w.word)
                                 .AsParams(MessageKeys.HrItemObjects));
                         }, () => CheckedWordsCount > 0);

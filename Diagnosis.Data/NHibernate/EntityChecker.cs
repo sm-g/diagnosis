@@ -26,7 +26,7 @@ namespace Diagnosis.Data
             entity.IsDirty = false;
             if (entity is Word)
             {
-                this.Send(Events.WordPersisted, entity.AsParams(MessageKeys.Word));
+                this.Send(Event.WordPersisted, entity.AsParams(MessageKeys.Word));
             }
         }
 

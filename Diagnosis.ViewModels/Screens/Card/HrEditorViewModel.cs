@@ -31,7 +31,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             this.session = session;
 
-            handler = this.Subscribe(Events.SettingsSaved, (e) =>
+            handler = this.Subscribe(Event.SettingsSaved, (e) =>
              {
                  OnPropertyChanged(() => ShowIcdDiseaseSearch);
                  // после смены настроек доктора может понадобиться поиск по диагнозам
@@ -125,7 +125,7 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     var vm = new IcdSelectorViewModel();
-                    this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+                    this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
                     if (vm.DialogResult == true)
                     {
                         Autocomplete.AddTag(vm.SelectedIcd);
@@ -141,7 +141,7 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     var vm = new MeasureEditorViewModel();
-                    this.Send(Events.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+                    this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
                     if (vm.DialogResult == true)
                     {
                         Autocomplete.AddTag(vm.Measure);
@@ -247,7 +247,7 @@ namespace Diagnosis.ViewModels.Screens
             if (HealthRecord != null)
             {
                 // завершаем теги
-                var tag = Autocomplete.Tags.Where(t => t.State == TagViewModel.States.Typing).FirstOrDefault();
+                var tag = Autocomplete.Tags.Where(t => t.State == State.Typing).FirstOrDefault();
                 if (tag != null)
                     Autocomplete.CompleteOnLostFocus(tag);
 

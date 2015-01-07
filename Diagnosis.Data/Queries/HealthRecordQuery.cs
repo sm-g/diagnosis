@@ -13,7 +13,7 @@ namespace Diagnosis.Data.Queries
 {
     public static class HealthRecordQuery
     {
-        public enum AndScopes
+        public enum AndScope
         {
             HealthRecord,
             Appointment,
@@ -48,21 +48,21 @@ namespace Diagnosis.Data.Queries
         /// <summary>
         /// Возвращает записи со всеми словами в области поиска.
         /// </summary>
-        public static Func<IEnumerable<Word>, HealthRecordQuery.AndScopes, IEnumerable<HealthRecord>> WithAllWords(ISession session)
+        public static Func<IEnumerable<Word>, HealthRecordQuery.AndScope, IEnumerable<HealthRecord>> WithAllWords(ISession session)
         {
             return (words, scope) =>
             {
                 var withAny = WithAnyWord(session)(words);
                 switch (scope)
                 {
-                    case AndScopes.Appointment:
+                    case AndScope.Appointment:
                         return GetHrsInScope(words, withAny, (hr) => hr.Appointment);
-                    case AndScopes.Course:
+                    case AndScope.Course:
                         return GetHrsInScope(words, withAny, (hr) => hr.GetCourse());
-                    case AndScopes.Patient:
+                    case AndScope.Patient:
                         return GetHrsInScope(words, withAny, (hr) => hr.GetPatient());
                     default:
-                    case AndScopes.HealthRecord:
+                    case AndScope.HealthRecord:
                         return withAny.Where(hr => words.IsSubsetOf(hr.Words));
                 }
             };

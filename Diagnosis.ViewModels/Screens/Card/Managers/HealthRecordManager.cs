@@ -92,7 +92,7 @@ namespace Diagnosis.ViewModels.Screens
                             DeletedHealthRecords.Remove(vm);
                         }
                     };
-                    this.Send(Events.ShowUndoOverlay, new object[] { undoActions, typeof(HealthRecord) }.AsParams(MessageKeys.UndoOverlay, MessageKeys.Type));
+                    this.Send(Event.ShowUndoOverlay, new object[] { undoActions, typeof(HealthRecord) }.AsParams(MessageKeys.UndoOverlay, MessageKeys.Type));
                 }
                 else
                 {
@@ -112,7 +112,7 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         internal void MakeDeletions()
         {
-            this.Send(Events.HideOverlay, typeof(HealthRecord).AsParams(MessageKeys.Type));
+            this.Send(Event.HideOverlay, typeof(HealthRecord).AsParams(MessageKeys.Type));
         }
 
         protected virtual void OnUndeleted(HealthRecord hr)

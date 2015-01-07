@@ -99,7 +99,7 @@ namespace Diagnosis.ViewModels.Screens
                 new Saver(Session).Save(doctor);
             }
 
-            this.Send(Events.SettingsSaved, doctor.AsParams(MessageKeys.Doctor));
+            this.Send(Event.SettingsSaved, doctor.AsParams(MessageKeys.Doctor));
         }
 
         private IList<DoctorSettings> ChangedFlags()

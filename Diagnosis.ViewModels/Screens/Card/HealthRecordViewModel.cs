@@ -112,12 +112,12 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return healthRecord.Unit == HealthRecordUnits.NotSet;
+                return healthRecord.Unit == HealthRecordUnit.NotSet;
             }
             set
             {
                 if (value)
-                    healthRecord.Unit = HealthRecordUnits.NotSet;
+                    healthRecord.Unit = HealthRecordUnit.NotSet;
             }
         }
 
@@ -125,12 +125,12 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return healthRecord.Unit == HealthRecordUnits.ByAge;
+                return healthRecord.Unit == HealthRecordUnit.ByAge;
             }
             set
             {
                 if (value)
-                    healthRecord.Unit = HealthRecordUnits.ByAge;
+                    healthRecord.Unit = HealthRecordUnit.ByAge;
             }
         }
 
@@ -138,8 +138,8 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return healthRecord.Unit != HealthRecordUnits.ByAge
-                    && healthRecord.Unit != HealthRecordUnits.NotSet;
+                return healthRecord.Unit != HealthRecordUnit.ByAge
+                    && healthRecord.Unit != HealthRecordUnit.NotSet;
             }
             set
             {
@@ -162,7 +162,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                         {
-                            this.Send(Events.SendToSearch, healthRecord.ToEnumerable().AsParams(MessageKeys.HealthRecords));
+                            this.Send(Event.SendToSearch, healthRecord.ToEnumerable().AsParams(MessageKeys.HealthRecords));
                         });
             }
         }
@@ -173,7 +173,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                        {
-                           this.Send(Events.EditHealthRecord, healthRecord.AsParams(MessageKeys.HealthRecord));
+                           this.Send(Event.EditHealthRecord, healthRecord.AsParams(MessageKeys.HealthRecord));
                        });
             }
         }

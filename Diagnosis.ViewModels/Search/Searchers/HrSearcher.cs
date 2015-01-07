@@ -61,7 +61,7 @@ namespace Diagnosis.ViewModels.Search
             if (options.HealthRecordOffsetLt.IsEmpty || options.HealthRecordOffsetGt.IsEmpty)
                 return true; // условия поиска не заданы
             var hrDateOffset = new DateOffset(hr.FromYear, hr.FromMonth, hr.FromDay, () => hr.Appointment.DateAndTime);
-            if (hrDateOffset.Unit == DateUnits.Week)
+            if (hrDateOffset.Unit == DateUnit.Week)
             {
                 ;
             }

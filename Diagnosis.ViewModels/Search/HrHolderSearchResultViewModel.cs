@@ -59,9 +59,9 @@ namespace Diagnosis.ViewModels.Search
                     () =>
                     {
                         if (FoundHealthRecords.Count > 0)
-                            this.Send(Events.OpenHealthRecords, FoundHealthRecords.AsParams(MessageKeys.HealthRecords));
+                            this.Send(Event.OpenHealthRecords, FoundHealthRecords.AsParams(MessageKeys.HealthRecords));
                         else
-                            this.Send(Events.OpenHolder, Holder.AsParams(MessageKeys.Holder));
+                            this.Send(Event.OpenHolder, Holder.AsParams(MessageKeys.Holder));
                     });
             }
         }

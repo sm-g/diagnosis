@@ -56,7 +56,7 @@ namespace Diagnosis.ViewModels.Screens
                 OnPropertyChanged("AllEmpty");
             };
             msgManager = new EventMessageHandlersManager(
-                this.Subscribe(Events.SendToSearch, (e) =>
+                this.Subscribe(Event.SendToSearch, (e) =>
                 {
                     try
                     {
@@ -218,7 +218,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (_hrDateOffsetLower == null)
                 {
-                    _hrDateOffsetLower = new DateOffset(null, DateUnits.Day);
+                    _hrDateOffsetLower = new DateOffset(null, DateUnit.Day);
                     _hrDateOffsetLower.PropertyChanged += (s, e) =>
                     {
                         if (e.PropertyName == "Offset" || e.PropertyName == "Unit")
@@ -244,7 +244,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (_hrDateOffsetUpper == null)
                 {
-                    _hrDateOffsetUpper = new DateOffset(null, DateUnits.Day);
+                    _hrDateOffsetUpper = new DateOffset(null, DateUnit.Day);
                     _hrDateOffsetUpper.PropertyChanged += (s, e) =>
                     {
                         if (e.PropertyName == "Offset" || e.PropertyName == "Unit")
@@ -406,7 +406,7 @@ namespace Diagnosis.ViewModels.Screens
             options.AppointmentDateGt = DateHelper.NullableDate(AppYearLower, AppMonthLower, AppDayLower);
             options.AppointmentDateLt = DateHelper.NullableDate(AppYearUpper, AppMonthUpper, AppDayUpper);
             options.AllWords = AllWords;
-            options.AndScope = (HealthRecordQuery.AndScopes)AndScope;
+            options.AndScope = (HealthRecordQuery.AndScope)AndScope;
 
             var entities = Autocomplete.GetEntities().ToList();
             options.Words = entities.Where(x => x is Word).Cast<Word>().ToList();

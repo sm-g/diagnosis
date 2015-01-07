@@ -15,6 +15,17 @@ using Diagnosis.Common.Util;
 
 namespace Diagnosis.ViewModels.Screens
 {
+    public enum HrViewColumn
+    {
+        None,
+        [LocalizableDescription(@"Sorting_Category")]
+        Category,
+        [LocalizableDescription(@"Sorting_Ord")]
+        Ord,
+        [LocalizableDescription(@"Sorting_Date")]
+        Date
+    }
+
     public class HrListViewModel : ViewModelBase, IClipboardTarget
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HrListViewModel));
@@ -104,7 +115,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                         {
-                            this.Send(Events.SendToSearch, hrManager.GetSelectedHrs()
+                            this.Send(Event.SendToSearch, hrManager.GetSelectedHrs()
                                 .AsParams(MessageKeys.HealthRecords));
                         }, () => CheckedHrCount > 0);
             }
@@ -171,8 +182,8 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-        private Sortings _sort;
-        public Sortings Sorting
+        private HrViewColumn _sort;
+        public HrViewColumn Sorting
         {
             get
             {
@@ -184,7 +195,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     _sort = value;
                     healthRecordsView.SortDescriptions.Clear();
-                    if (value != Sortings.None)
+                    if (value != HrViewColumn.None)
                     {
                         var sort = new SortDescription(value.ToString(), ListSortDirection.Ascending);
                         healthRecordsView.SortDescriptions.Add(sort);
@@ -194,8 +205,8 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private Groupings _group;
-        public Groupings Grouping
+        private HrViewColumn _group;
+        public HrViewColumn Grouping
         {
             get
             {
@@ -207,7 +218,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     _group = value;
                     healthRecordsView.GroupDescriptions.Clear();
-                    if (value != Groupings.None)
+                    if (value != HrViewColumn.None)
                     {
                         var grDesc = new PropertyGroupDescription(value.ToString());
                         healthRecordsView.GroupDescriptions.Add(grDesc);
@@ -252,8 +263,8 @@ namespace Diagnosis.ViewModels.Screens
             };
 
             healthRecordsView = (CollectionView)CollectionViewSource.GetDefaultView(HealthRecords);
-            Grouping = Groupings.Category;
-            Sorting = Sortings.None;
+            Grouping = HrViewColumn.Category;
+            Sorting = HrViewColumn.None;
 
             SelectHealthRecord(hrViewer.GetLastSelectedFor(holder));
 
@@ -421,20 +432,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public enum Groupings
-        {
-            None,
-            [LocalizableDescription(@"Groupings_Category")]
-            Category
-        }
-        public enum Sortings
-        {
-            None,
-            [LocalizableDescription(@"Sorting_Ord")]
-            Ord,
-            [LocalizableDescription(@"Sorting_Date")]
-            Date
-        }
         public class DropTargetHandler : DefaultDropHandler
         {
             private readonly HrListViewModel master;
@@ -616,7 +613,7 @@ namespace Diagnosis.ViewModels.Screens
             public int? FromDay { get; set; }
             public int? FromMonth { get; set; }
             public int? FromYear { get; set; }
-            public HealthRecordUnits Unit { get; set; }
+            public HealthRecordUnit Unit { get; set; }
             public List<IHrItemObject> Hios { get; set; }
 
 

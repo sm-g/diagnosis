@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Common
 {
-    public enum DateUnits
+    public enum DateUnit
     {
         Day,
         Week,
@@ -23,7 +23,7 @@ namespace Diagnosis.Common
         private static readonly ILog logger = LogManager.GetLogger(typeof(DateOffset));
         private DateTime _now = DateTime.Now;
         private int? _offset;
-        private DateUnits _unit;
+        private DateUnit _unit;
         private int? _year;
         private int? _month;
         private int? _day;
@@ -150,7 +150,7 @@ namespace Diagnosis.Common
         /// <summary>
         /// Единица измерения смещения. Устанавливается после Year, Month, Day.
         /// </summary>
-        public DateUnits Unit
+        public DateUnit Unit
         {
             get
             {
@@ -333,32 +333,32 @@ namespace Diagnosis.Common
         /// Добавляет указанное количество дней, недель (как 7 дней), месяцев или лет.
         /// Нельзя прибавить дни, если Unit - месяц или год и т.п.
         /// </summary>
-        public void Add(int value, DateUnits unit)
+        public void Add(int value, DateUnit unit)
         {
-            if (unit.CompareTo(Unit) < 0 && !(unit == DateUnits.Day && Unit == DateUnits.Week))
+            if (unit.CompareTo(Unit) < 0 && !(unit == DateUnit.Day && Unit == DateUnit.Week))
                 throw new ArgumentException("Can not add such part of date to current dateoffset.");
             Contract.EndContractBlock();
 
             DateTime dt;
             switch (unit)
             {
-                case DateUnits.Day:
+                case DateUnit.Day:
                     dt = new DateTime(Year.Value, Month.Value, Day.Value).AddDays(value);
                     SetDate(dt.Year, dt.Month, dt.Day);
                     break;
 
-                case DateUnits.Week:
+                case DateUnit.Week:
                     dt = new DateTime(Year.Value, Month.Value, Day.Value).AddDays(value * 7);
                     SetDate(dt.Year, dt.Month, dt.Day);
                     break;
 
-                case DateUnits.Month:
+                case DateUnit.Month:
                     dt = new DateTime(Year.Value, Month.Value, 1).AddMonths(value);
                     Month = dt.Month;
                     Year = dt.Year;
                     break;
 
-                case DateUnits.Year:
+                case DateUnit.Year:
                     dt = new DateTime(Year.Value, 1, 1).AddYears(value);
                     Year = dt.Year;
                     break;
@@ -372,7 +372,7 @@ namespace Diagnosis.Common
         /// Задает смещение и единицу.
         /// </summary>
         /// <param name="forceSetDateByOffsetUnit">Установка даты при задании только смещения или создании объекта.</param>
-        private void SetOffset(int? offset, DateUnits unit, bool forceSetDateByOffsetUnit = false)
+        private void SetOffset(int? offset, DateUnit unit, bool forceSetDateByOffsetUnit = false)
         {
             inSetting = true;
 
@@ -483,21 +483,21 @@ namespace Diagnosis.Common
             }
             switch (Unit)
             {
-                case DateUnits.Day:
+                case DateUnit.Day:
                     var date = Now.AddDays(-Offset.Value);
                     Year = date.Year;
                     Month = date.Month;
                     Day = date.Day;
                     break;
 
-                case DateUnits.Week:
+                case DateUnit.Week:
                     date = Now.AddDays(-Offset.Value * 7);
                     Year = date.Year;
                     Month = date.Month;
                     Day = date.Day;
                     break;
 
-                case DateUnits.Month:
+                case DateUnit.Month:
                     if (Offset < Now.Month)
                     {
                         Year = Now.Year;
@@ -515,7 +515,7 @@ namespace Diagnosis.Common
                     }
                     break;
 
-                case DateUnits.Year:
+                case DateUnit.Year:
                     Year = Now.Year - Offset;
                     if (CutsDate)
                     {
@@ -552,15 +552,15 @@ namespace Diagnosis.Common
             }
             switch (Unit)
             {
-                case DateUnits.Day:
+                case DateUnit.Day:
                     Offset = (Now - GetSortingDate()).Days;
                     break;
 
-                case DateUnits.Week:
+                case DateUnit.Week:
                     Offset = (Now - GetSortingDate()).Days / 7;
                     break;
 
-                case DateUnits.Month:
+                case DateUnit.Month:
                     if (Month.HasValue)
                     {
                         Offset = DateHelper.GetTotalMonthsBetween(Now, Year.Value, Month.Value);
@@ -571,7 +571,7 @@ namespace Diagnosis.Common
                     }
                     break;
 
-                case DateUnits.Year:
+                case DateUnit.Year:
                     Offset = Now.Year - Year.Value;
                     break;
 
@@ -599,18 +599,18 @@ namespace Diagnosis.Common
                     if (Offset % 7 == 0 && Math.Abs(Offset.Value) > 1)
                     {
                         Offset /= 7;
-                        Unit = DateUnits.Week;
+                        Unit = DateUnit.Week;
                     }
                     else
                     {
-                        Unit = DateUnits.Day;
+                        Unit = DateUnit.Day;
                     }
                 }
                 else
                 {
                     // ? m _
                     Offset = DateHelper.GetTotalMonthsBetween(Now, Year.Value, Month.Value);
-                    Unit = DateUnits.Month;
+                    Unit = DateUnit.Month;
                 }
             }
             else
@@ -619,13 +619,13 @@ namespace Diagnosis.Common
                 {
                     // y _ ? - день игнорируем
                     Offset = Now.Year - Year.Value;
-                    Unit = DateUnits.Year;
+                    Unit = DateUnit.Year;
                 }
                 else
                 {
                     // _ _ d
                     Offset = Now.Day - Day.Value;
-                    Unit = DateUnits.Day;
+                    Unit = DateUnit.Day;
                 }
             }
         }
@@ -643,7 +643,7 @@ namespace Diagnosis.Common
             if (Month == null && (Day == null || !CutsDate)) // _ _ y (или d _ y без автообрезания)
             {
                 Offset = Now.Year - Year.Value;
-                Unit = DateUnits.Year;
+                Unit = DateUnit.Year;
             }
             else if (Day == null && Month != null) // _ m y
             {
@@ -651,12 +651,12 @@ namespace Diagnosis.Common
                 if (months < 12)
                 {
                     Offset = months;
-                    Unit = DateUnits.Month;
+                    Unit = DateUnit.Month;
                 }
                 else
                 {
                     Offset = Now.Year - Year.Value;
-                    Unit = DateUnits.Year;
+                    Unit = DateUnit.Year;
                 }
             }
             else // d m y
@@ -665,12 +665,12 @@ namespace Diagnosis.Common
                 if (days < 7) // меньше недели - дни
                 {
                     Offset = days;
-                    Unit = DateUnits.Day;
+                    Unit = DateUnit.Day;
                 }
                 else if (days < 4 * 7) // меньше месяца - недели
                 {
                     Offset = days / 7;
-                    Unit = DateUnits.Week;
+                    Unit = DateUnit.Week;
                 }
                 else
                 {
@@ -678,12 +678,12 @@ namespace Diagnosis.Common
                     if (months < 12) // меньше года - месяцы
                     {
                         Offset = months;
-                        Unit = DateUnits.Month;
+                        Unit = DateUnit.Month;
                     }
                     else
                     {
                         Offset = Now.Year - Year.Value;
-                        Unit = DateUnits.Year;
+                        Unit = DateUnit.Year;
                     }
                 }
             }
@@ -741,7 +741,7 @@ namespace Diagnosis.Common
         {
         }
 
-        public DateOffset(int? offset, DateUnits unit, Func<DateTime> now = null, DateOffsetSettings settings = null)
+        public DateOffset(int? offset, DateUnit unit, Func<DateTime> now = null, DateOffsetSettings settings = null)
             : this()
         {
             if (now != null)
@@ -784,16 +784,16 @@ namespace Diagnosis.Common
                 return do1.Offset > do2.Offset;
             }
 
-            if (do1.Unit == DateUnits.Week)
+            if (do1.Unit == DateUnit.Week)
             {
                 var d1 = (DateOffset)do1.MemberwiseClone();
-                d1.SetOffset(do1.Offset * 7, DateUnits.Day);
+                d1.SetOffset(do1.Offset * 7, DateUnit.Day);
                 return d1 < do2;
             }
-            else if (do2.Unit == DateUnits.Week)
+            else if (do2.Unit == DateUnit.Week)
             {
                 var d2 = (DateOffset)do2.MemberwiseClone();
-                d2.SetOffset(do2.Offset * 7, DateUnits.Day);
+                d2.SetOffset(do2.Offset * 7, DateUnit.Day);
                 return do1 < d2;
             }
 

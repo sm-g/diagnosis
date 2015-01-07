@@ -14,7 +14,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             Overlays = new ObservableCollection<UndoOverlayViewModel>();
 
-            this.Subscribe(Events.ShowUndoOverlay, (e) =>
+            this.Subscribe(Event.ShowUndoOverlay, (e) =>
             {
                 Action[] actions = e.GetValue<Action[]>(MessageKeys.UndoOverlay);
                 Type type = e.GetValue<Type>(MessageKeys.Type);
@@ -32,7 +32,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             });
 
-            this.Subscribe(Events.HideOverlay, (e) =>
+            this.Subscribe(Event.HideOverlay, (e) =>
             {
                 var type = e.GetValue<Type>(MessageKeys.Type);
 

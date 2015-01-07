@@ -119,7 +119,7 @@
                                                         Value="Создать слово" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding BlankType}"
-                                                             Value="{x:Static auto:Tag+BlankTypes.Word}">
+                                                             Value="{x:Static auto:BlankType.Word}">
                                                     <Setter Property="Text"
                                                                 Value="Убрать слово" />
                                                 </DataTrigger>

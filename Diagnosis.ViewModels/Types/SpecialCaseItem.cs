@@ -11,7 +11,7 @@ namespace Diagnosis.ViewModels
     /// </summary>
     public class SpecialCaseItem
     {
-        public enum Cases
+        public enum Case
         {
             AddNew
         }
@@ -23,11 +23,11 @@ namespace Diagnosis.ViewModels
         {
             Content = item;
         }
-        public SpecialCaseItem(Cases @case)
+        public SpecialCaseItem(Case @case)
         {
             switch (@case)
             {
-                case Cases.AddNew:
+                case Case.AddNew:
                     IsAddNew = true;
                     break;
                 default:

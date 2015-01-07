@@ -16,16 +16,16 @@ namespace Diagnosis.App.Converters
             if (value == null)
                 return null;
 
-            var scope = (HealthRecordQuery.AndScopes)value;
+            var scope = (HealthRecordQuery.AndScope)value;
             switch (scope)
             {
-                case HealthRecordQuery.AndScopes.HealthRecord:
+                case HealthRecordQuery.AndScope.HealthRecord:
                     return "в записи";
-                case HealthRecordQuery.AndScopes.Appointment:
+                case HealthRecordQuery.AndScope.Appointment:
                     return "в осмотре";
-                case HealthRecordQuery.AndScopes.Course:
+                case HealthRecordQuery.AndScope.Course:
                     return "в курсе";
-                case HealthRecordQuery.AndScopes.Patient:
+                case HealthRecordQuery.AndScope.Patient:
                     return "у пациента";
                 default:
                     return null;

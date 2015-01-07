@@ -33,7 +33,7 @@ namespace Diagnosis.App
             Exit += (s, e) =>
             {
                 inExit = true;
-                this.Send(Events.Shutdown);
+                this.Send(Event.Shutdown);
                 Diagnosis.App.Properties.Settings.Default.Save();
             };
 

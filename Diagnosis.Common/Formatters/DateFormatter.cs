@@ -157,7 +157,7 @@ namespace Diagnosis.Common
         /// <summary>
         /// Unit of DateOffset with ending for given offset.
         /// </summary>
-        public static string GetUnitString(int? offset, DateUnits unit)
+        public static string GetUnitString(int? offset, DateUnit unit)
         {
             if (offset == null)
                 offset = 0;
@@ -166,10 +166,10 @@ namespace Diagnosis.Common
 
             switch (unit)
             {
-                case DateUnits.Day: return Plurals.days[ending];
-                case DateUnits.Week: return Plurals.weeks[ending];
-                case DateUnits.Month: return Plurals.months[ending];
-                case DateUnits.Year: return Plurals.years[ending];
+                case DateUnit.Day: return Plurals.days[ending];
+                case DateUnit.Week: return Plurals.weeks[ending];
+                case DateUnit.Month: return Plurals.months[ending];
+                case DateUnit.Year: return Plurals.years[ending];
             }
             throw new ArgumentOutOfRangeException("unit");
         }

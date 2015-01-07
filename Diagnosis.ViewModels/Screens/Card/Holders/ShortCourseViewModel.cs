@@ -69,7 +69,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Events.OpenCourse, course.AsParams(MessageKeys.Course));
+                    this.Send(Event.OpenCourse, course.AsParams(MessageKeys.Course));
                 });
             }
         }

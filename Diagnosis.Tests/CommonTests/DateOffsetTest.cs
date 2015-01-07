@@ -24,12 +24,12 @@ namespace Tests
         [TestMethod]
         public void TestConstructorOffsetDay()
         {
-            date = new DateOffset(offset, DateUnits.Day);
+            date = new DateOffset(offset, DateUnit.Day);
 
             var d = now.AddDays(-offset);
 
             Assert.IsTrue(date.Offset == offset);
-            Assert.IsTrue(date.Unit == DateUnits.Day);
+            Assert.IsTrue(date.Unit == DateUnit.Day);
             Assert.IsTrue(date.Year == d.Year);
             Assert.IsTrue(date.Month == d.Month);
             Assert.IsTrue(date.Day == d.Day);
@@ -38,12 +38,12 @@ namespace Tests
         [TestMethod]
         public void TestConstructorOffsetWeek()
         {
-            date = new DateOffset(offset, DateUnits.Week);
+            date = new DateOffset(offset, DateUnit.Week);
 
             var d = now.AddDays(-offset * 7);
 
             Assert.IsTrue(date.Offset == offset);
-            Assert.IsTrue(date.Unit == DateUnits.Week);
+            Assert.IsTrue(date.Unit == DateUnit.Week);
             Assert.IsTrue(date.Year == d.Year);
             Assert.IsTrue(date.Month == d.Month);
             Assert.IsTrue(date.Day == d.Day);
@@ -52,12 +52,12 @@ namespace Tests
         [TestMethod]
         public void TestConstructorOffsetMonth()
         {
-            date = new DateOffset(offset, DateUnits.Month);
+            date = new DateOffset(offset, DateUnit.Month);
 
             var d = now.AddMonths(-offset);
 
             Assert.IsTrue(date.Offset == offset);
-            Assert.IsTrue(date.Unit == DateUnits.Month);
+            Assert.IsTrue(date.Unit == DateUnit.Month);
             Assert.IsTrue(date.Year == d.Year);
             Assert.IsTrue(date.Month == d.Month);
             Assert.IsTrue(date.Day == null);
@@ -66,12 +66,12 @@ namespace Tests
         [TestMethod]
         public void TestConstructorOffsetYear()
         {
-            date = new DateOffset(offset, DateUnits.Year);
+            date = new DateOffset(offset, DateUnit.Year);
 
             var d = now.AddYears(-offset);
 
             Assert.IsTrue(date.Offset == offset);
-            Assert.IsTrue(date.Unit == DateUnits.Year);
+            Assert.IsTrue(date.Unit == DateUnit.Year);
             Assert.IsTrue(date.Year == d.Year);
             Assert.IsTrue(date.Month == null);
             Assert.IsTrue(date.Day == null);
@@ -80,10 +80,10 @@ namespace Tests
         [TestMethod]
         public void TestConstructorOffsetNull()
         {
-            date = new DateOffset(null, DateUnits.Day);
+            date = new DateOffset(null, DateUnit.Day);
 
             Assert.IsTrue(date.Offset == null);
-            Assert.IsTrue(date.Unit == DateUnits.Day);
+            Assert.IsTrue(date.Unit == DateUnit.Day);
             Assert.IsTrue(date.Year == null);
             Assert.IsTrue(date.Month == null);
             Assert.IsTrue(date.Day == null);
@@ -95,7 +95,7 @@ namespace Tests
             date = new DateOffset(now);
 
             Assert.IsTrue(date.Offset == 0);
-            Assert.IsTrue(date.Unit == DateUnits.Day);
+            Assert.IsTrue(date.Unit == DateUnit.Day);
             Assert.IsTrue(date.Year == now.Year);
             Assert.IsTrue(date.Month == now.Month);
             Assert.IsTrue(date.Day == now.Day);
@@ -107,7 +107,7 @@ namespace Tests
             date = new DateOffset(now.Year, now.Month, now.Day);
 
             Assert.IsTrue(date.Offset == 0);
-            Assert.IsTrue(date.Unit == DateUnits.Day);
+            Assert.IsTrue(date.Unit == DateUnit.Day);
             Assert.IsTrue(date.Year == now.Year);
             Assert.IsTrue(date.Month == now.Month);
             Assert.IsTrue(date.Day == now.Day);
@@ -119,7 +119,7 @@ namespace Tests
             date = new DateOffset(now.Year, null, null);
 
             Assert.IsTrue(date.Offset == 0);
-            Assert.IsTrue(date.Unit == DateUnits.Year);
+            Assert.IsTrue(date.Unit == DateUnit.Year);
             Assert.IsTrue(date.Year == now.Year);
             Assert.IsTrue(date.Month == null);
             Assert.IsTrue(date.Day == null);
@@ -131,7 +131,7 @@ namespace Tests
             date = new DateOffset(now.Year, now.Month, null);
 
             Assert.IsTrue(date.Offset == 0);
-            Assert.IsTrue(date.Unit == DateUnits.Month);
+            Assert.IsTrue(date.Unit == DateUnit.Month);
             Assert.IsTrue(date.Year == now.Year);
             Assert.IsTrue(date.Month == now.Month);
             Assert.IsTrue(date.Day == null);
@@ -143,7 +143,7 @@ namespace Tests
             date = new DateOffset(now.Year, null, now.Day);
 
             Assert.IsTrue(date.Offset == 0);
-            Assert.IsTrue(date.Unit == DateUnits.Year);
+            Assert.IsTrue(date.Unit == DateUnit.Year);
             Assert.IsTrue(date.Year == now.Year);
             Assert.IsTrue(date.Month == null);
             Assert.IsTrue(date.Day == null);
@@ -155,7 +155,7 @@ namespace Tests
             date = new DateOffset(null, now.Month, null);
 
             Assert.IsTrue(date.Offset == 0);
-            Assert.IsTrue(date.Unit == DateUnits.Month);
+            Assert.IsTrue(date.Unit == DateUnit.Month);
             Assert.IsTrue(date.Year == now.Year);
             Assert.IsTrue(date.Month == now.Month);
             Assert.IsTrue(date.Day == null);
@@ -167,7 +167,7 @@ namespace Tests
             date = new DateOffset(null, now.Month, now.Day);
 
             Assert.IsTrue(date.Offset == 0);
-            Assert.IsTrue(date.Unit == DateUnits.Day);
+            Assert.IsTrue(date.Unit == DateUnit.Day);
             Assert.IsTrue(date.Year == now.Year);
             Assert.IsTrue(date.Month == now.Month);
             Assert.IsTrue(date.Day == now.Day);
@@ -181,7 +181,7 @@ namespace Tests
             date = new DateOffset(null, null, now.Day + 1, getNow);
 
             Assert.IsTrue(date.Offset == -1);
-            Assert.IsTrue(date.Unit == DateUnits.Day);
+            Assert.IsTrue(date.Unit == DateUnit.Day);
             Assert.IsTrue(date.Year == now.Year);
             Assert.IsTrue(date.Month == now.Month);
             Assert.IsTrue(date.Day == now.Day + 1);
@@ -203,7 +203,7 @@ namespace Tests
             var now = DateOffsetTest.getNow();
 
             date = new DateOffset(now.Year, 3, 20, getNow); // 10 дней назад
-            Assert.IsTrue(date.Unit == DateUnits.Day);
+            Assert.IsTrue(date.Unit == DateUnit.Day);
         }
 
         [TestMethod]
@@ -220,44 +220,44 @@ namespace Tests
         [TestMethod]
         public void TestSetDay()
         {
-            date = new DateOffset(offset, DateUnits.Day, getNow);
+            date = new DateOffset(offset, DateUnit.Day, getNow);
 
             date.Day = getNow().Day;
 
             Assert.IsTrue(date.Offset == 31); // days in 3 month
-            Assert.IsTrue(date.Unit == DateUnits.Day);
+            Assert.IsTrue(date.Unit == DateUnit.Day);
         }
 
         [TestMethod]
         public void TestSetMonth()
         {
-            date = new DateOffset(offset, DateUnits.Day, getNow);
+            date = new DateOffset(offset, DateUnit.Day, getNow);
             var d = getNow().AddMonths(-2);
             date.Month = d.Month;
 
             Assert.AreEqual(DateTime.DaysInMonth(getNow().Year, d.Month) + offset, date.Offset);
-            Assert.IsTrue(date.Unit == DateUnits.Day);
+            Assert.IsTrue(date.Unit == DateUnit.Day);
         }
 
         [TestMethod]
         public void TestSetMonthNull()
         {
-            date = new DateOffset(offset, DateUnits.Day, getNow);
+            date = new DateOffset(offset, DateUnit.Day, getNow);
             date.Month = null;
 
             Assert.IsTrue(date.Offset == 0);
-            Assert.IsTrue(date.Unit == DateUnits.Year);
+            Assert.IsTrue(date.Unit == DateUnit.Year);
         }
 
         [TestMethod]
         public void TestSetUnitWider()
         {
-            date = new DateOffset(offset, DateUnits.Day, getNow);
+            date = new DateOffset(offset, DateUnit.Day, getNow);
             date.CutsDate = true;
-            date.Unit = DateUnits.Month;
+            date.Unit = DateUnit.Month;
 
             Assert.IsTrue(date.Offset == offset);
-            Assert.IsTrue(date.Unit == DateUnits.Month);
+            Assert.IsTrue(date.Unit == DateUnit.Month);
             Assert.IsTrue(date.Year == 2013);
             Assert.IsTrue(date.Month == 11);
             Assert.IsTrue(date.Day == null);
@@ -266,12 +266,12 @@ namespace Tests
         [TestMethod]
         public void TestSetUnitWiderWeek()
         {
-            date = new DateOffset(offset, DateUnits.Day, getNow);
+            date = new DateOffset(offset, DateUnit.Day, getNow);
 
-            date.Unit = DateUnits.Week;
+            date.Unit = DateUnit.Week;
 
             Assert.IsTrue(date.Offset == offset);
-            Assert.IsTrue(date.Unit == DateUnits.Week);
+            Assert.IsTrue(date.Unit == DateUnit.Week);
             Assert.IsTrue(date.Year == 2014);
             Assert.IsTrue(date.Month == 2);
             Assert.IsTrue(date.Day == 25);
@@ -280,12 +280,12 @@ namespace Tests
         [TestMethod]
         public void TestSetUnitNarrower()
         {
-            date = new DateOffset(offset, DateUnits.Year, getNow);
+            date = new DateOffset(offset, DateUnit.Year, getNow);
 
-            date.Unit = DateUnits.Month;
+            date.Unit = DateUnit.Month;
 
             Assert.IsTrue(date.Offset == offset);
-            Assert.IsTrue(date.Unit == DateUnits.Month);
+            Assert.IsTrue(date.Unit == DateUnit.Month);
             Assert.IsTrue(date.Year == 2013);
             Assert.IsTrue(date.Month == 11);
             Assert.IsTrue(date.Day == null);
@@ -294,12 +294,12 @@ namespace Tests
         [TestMethod]
         public void TestSetMonth2()
         {
-            date = new DateOffset(1, DateUnits.Year, getNow);
+            date = new DateOffset(1, DateUnit.Year, getNow);
 
             date.Month = 4;
 
             Assert.IsTrue(date.Offset == 12);
-            Assert.IsTrue(date.Unit == DateUnits.Month);
+            Assert.IsTrue(date.Unit == DateUnit.Month);
             Assert.IsTrue(date.Year == 2013);
             Assert.IsTrue(date.Month == 4);
             Assert.IsTrue(date.Day == null);
@@ -324,8 +324,8 @@ namespace Tests
         [TestMethod]
         public void TestLtDayMonth()
         {
-            var date1 = new DateOffset(40, DateUnits.Day, getNow);
-            var date2 = new DateOffset(0, DateUnits.Month, getNow);
+            var date1 = new DateOffset(40, DateUnit.Day, getNow);
+            var date2 = new DateOffset(0, DateUnit.Month, getNow);
 
             Assert.IsTrue(date1 < date2);
         }
@@ -333,8 +333,8 @@ namespace Tests
         [TestMethod]
         public void TestGtDayYear()
         {
-            var date1 = new DateOffset(40, DateUnits.Day, getNow);
-            var date2 = new DateOffset(1, DateUnits.Year, getNow);
+            var date1 = new DateOffset(40, DateUnit.Day, getNow);
+            var date2 = new DateOffset(1, DateUnit.Year, getNow);
 
             Assert.IsTrue(date1 > date2);
         }
@@ -342,8 +342,8 @@ namespace Tests
         [TestMethod]
         public void TestLtMonthYear()
         {
-            var date1 = new DateOffset(40, DateUnits.Month, getNow);
-            var date2 = new DateOffset(2, DateUnits.Year, getNow);
+            var date1 = new DateOffset(40, DateUnit.Month, getNow);
+            var date2 = new DateOffset(2, DateUnit.Year, getNow);
 
             Assert.IsTrue(date1 < date2);
         }
@@ -351,8 +351,8 @@ namespace Tests
         [TestMethod]
         public void TestLtSameUnit()
         {
-            var date1 = new DateOffset(40, DateUnits.Day, getNow);
-            var date2 = new DateOffset(0, DateUnits.Day, getNow);
+            var date1 = new DateOffset(40, DateUnit.Day, getNow);
+            var date2 = new DateOffset(0, DateUnit.Day, getNow);
 
             Assert.IsTrue(date1 < date2);
         }
@@ -369,8 +369,8 @@ namespace Tests
         [TestMethod]
         public void TestLtGtNull()
         {
-            var date1 = new DateOffset(null, DateUnits.Month, getNow);
-            var date2 = new DateOffset(5, DateUnits.Year, getNow);
+            var date1 = new DateOffset(null, DateUnit.Month, getNow);
+            var date2 = new DateOffset(5, DateUnit.Year, getNow);
 
             Assert.IsFalse(date1 < date2);
             Assert.IsFalse(date1 > date2);
@@ -398,7 +398,7 @@ namespace Tests
         [TestMethod]
         public void TestEqual2()
         {
-            var date1 = new DateOffset(2, DateUnits.Month, getNow);
+            var date1 = new DateOffset(2, DateUnit.Month, getNow);
             var date2 = new DateOffset(2014, 2, null, getNow);
 
             Assert.IsTrue(date1 == date2);
@@ -407,12 +407,12 @@ namespace Tests
         [TestMethod]
         public void TestEqual3()
         {
-            var date1 = new DateOffset(2, DateUnits.Month, getNow);
+            var date1 = new DateOffset(2, DateUnit.Month, getNow);
             var date2 = new DateOffset(2014, 2, 15, getNow);
 
             date2.Settings = DateOffset.DateOffsetSettings.Rounding();
 
-            date2.Unit = DateUnits.Month;
+            date2.Unit = DateUnit.Month;
 
             Assert.IsTrue(date1 != date2);
             Assert.AreNotEqual(date1, date2);
@@ -421,8 +421,8 @@ namespace Tests
         [TestMethod]
         public void TestEqualSameYear()
         {
-            var date1 = new DateOffset(3, DateUnits.Day, getNow);
-            var date2 = new DateOffset(0, DateUnits.Year, getNow);
+            var date1 = new DateOffset(3, DateUnit.Day, getNow);
+            var date2 = new DateOffset(0, DateUnit.Year, getNow);
 
             Assert.IsTrue(date1 <= date2);
             Assert.IsTrue(date1 >= date2);
@@ -441,7 +441,7 @@ namespace Tests
         public void TestCompareWithWeek()
         {
             var date1 = new DateOffset(getNow(), getNow);
-            var date2 = new DateOffset(2, DateUnits.Week, getNow);
+            var date2 = new DateOffset(2, DateUnit.Week, getNow);
 
             Assert.IsTrue(date1 > date2);
         }
@@ -454,7 +454,7 @@ namespace Tests
         public void AddYear()
         {
             var date = new DateOffset(2010, 2, null);
-            date.Add(-2, DateUnits.Year);
+            date.Add(-2, DateUnit.Year);
 
             Assert.IsTrue(date.Year == 2008);
             Assert.IsTrue(date.Month == 2);
@@ -465,7 +465,7 @@ namespace Tests
         public void AddYear29Feb()
         {
             var date = new DateOffset(2012, 2, 29);
-            date.Add(1, DateUnits.Year);
+            date.Add(1, DateUnit.Year);
 
             Assert.IsTrue(date.Year == 2013);
             Assert.IsTrue(date.Month == 2);
@@ -476,7 +476,7 @@ namespace Tests
         public void AddMonth()
         {
             var date = new DateOffset(2012, 2, 29);
-            date.Add(1, DateUnits.Month);
+            date.Add(1, DateUnit.Month);
 
             Assert.IsTrue(date.Year == 2012);
             Assert.IsTrue(date.Month == 3);
@@ -487,7 +487,7 @@ namespace Tests
         public void AddWeek()
         {
             var date = new DateOffset(2012, 1, 1);
-            date.Add(5, DateUnits.Week);
+            date.Add(5, DateUnit.Week);
 
             Assert.IsTrue(date.Year == 2012);
             Assert.IsTrue(date.Month == 2);
@@ -498,7 +498,7 @@ namespace Tests
         public void AddDay()
         {
             var date = new DateOffset(2012, 2, 29);
-            date.Add(-68, DateUnits.Day);
+            date.Add(-68, DateUnit.Day);
 
             Assert.IsTrue(date.Year == 2011);
             Assert.IsTrue(date.Month == 12);
@@ -510,7 +510,7 @@ namespace Tests
         public void AddWrong()
         {
             var date = new DateOffset(2012, null, null);
-            date.Add(-68, DateUnits.Day);
+            date.Add(-68, DateUnit.Day);
         }
 
         #endregion Add
@@ -525,7 +525,7 @@ namespace Tests
             date.UnitSettingStrategy = DateOffset.UnitSetting.SetsDate;
             date.CutsDate = false;
 
-            date.Unit = DateUnits.Year;
+            date.Unit = DateUnit.Year;
             Assert.IsTrue(date.Year == 2013);
             Assert.IsTrue(date.Month == 3);
             Assert.IsTrue(date.Day == 31);
@@ -539,7 +539,7 @@ namespace Tests
             date.UnitSettingStrategy = DateOffset.UnitSetting.SetsDate;
             date.CutsDate = true;
 
-            date.Unit = DateUnits.Year;
+            date.Unit = DateUnit.Year;
             Assert.IsTrue(date.Year == 2013);
             Assert.IsTrue(date.Month == null);
             Assert.IsTrue(date.Day == null);
@@ -564,7 +564,7 @@ namespace Tests
             date.Settings = new DateOffset.DateOffsetSettings(
                 DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.RoundsUnit, true, cutsDate: false); // или DateSetting.SavesUnit
 
-            date.Unit = DateUnits.Year;
+            date.Unit = DateUnit.Year;
             Assert.IsTrue(date.Offset == 0);
             Assert.IsTrue(date.Year == 2014);
             Assert.IsTrue(date.Month == 3);
@@ -586,13 +586,13 @@ namespace Tests
         [TestMethod]
         public void DateSettingRoundsUnit()
         {
-            var date = new DateOffset(5, DateUnits.Day, getNow);
+            var date = new DateOffset(5, DateUnit.Day, getNow);
             Assert.IsTrue(date.Offset == 5);
             date.DateSettingStrategy = DateOffset.DateSetting.RoundsUnit;
 
             date.Year = 2013;
             Assert.IsTrue(date.Offset == 1);
-            Assert.IsTrue(date.Unit == DateUnits.Year);
+            Assert.IsTrue(date.Unit == DateUnit.Year);
             Assert.IsTrue(date.Month == 3);
             Assert.IsTrue(date.Day == 27);
         }
@@ -600,17 +600,17 @@ namespace Tests
         [TestMethod]
         public void DateSettingSavesUnit()
         {
-            var date = new DateOffset(5, DateUnits.Day, getNow, new DateOffset.DateOffsetSettings(
+            var date = new DateOffset(5, DateUnit.Day, getNow, new DateOffset.DateOffsetSettings(
                 DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.SavesUnit, true, true)); // только так UnitSetting.RoundsOffset
 
             // юнит подстраивается
             date.Year = 2013;
             Assert.IsTrue(date.Offset == 1);
-            Assert.IsTrue(date.Unit == DateUnits.Year);
+            Assert.IsTrue(date.Unit == DateUnit.Year);
             Assert.IsTrue(date.Month == 3);
             Assert.IsTrue(date.Day == 27);
             // юнит сохраняется
-            date.Unit = DateUnits.Month;
+            date.Unit = DateUnit.Month;
             Assert.IsTrue(date.UnitFixed);
             Assert.IsTrue(date.Offset == 13);
             Assert.IsTrue(date.Year == 2013);
@@ -619,21 +619,21 @@ namespace Tests
 
             // юнит не меняется
             date.Year = 2014;
-            Assert.IsTrue(date.Unit == DateUnits.Month);
+            Assert.IsTrue(date.Unit == DateUnit.Month);
             Assert.IsTrue(date.Offset == 1);
         }
 
         [TestMethod]
         public void DateSettingSavesUnit2()
         {
-            var date = new DateOffset(5, DateUnits.Day, getNow, new DateOffset.DateOffsetSettings(
+            var date = new DateOffset(5, DateUnit.Day, getNow, new DateOffset.DateOffsetSettings(
                 DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.SavesUnit, true, true)); // только так UnitSetting.RoundsOffset
 
             Assert.IsTrue(!date.UnitFixed);
 
             date.Day = null;
             // юнит укрупняется
-            Assert.IsTrue(date.Unit == DateUnits.Month);
+            Assert.IsTrue(date.Unit == DateUnit.Month);
             Assert.IsTrue(date.Year == 2014);
             Assert.IsTrue(date.Month == 3);
             Assert.IsTrue(date.Offset == 1);

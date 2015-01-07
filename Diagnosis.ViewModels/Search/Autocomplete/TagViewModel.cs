@@ -27,6 +27,40 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// </summary>
         Forbidden = 4
     }
+    /// <summary>
+    /// Типы заготовок в теге.
+    /// </summary>
+    public enum BlankType
+    {
+        None,
+        /// <summary>
+        /// Строка-запрос
+        /// </summary>
+        Query,
+        Comment,
+        Word,
+        Measure,
+        Icd
+    }
+
+    /// <summary>
+    /// Состояния тега.
+    /// </summary>
+    public enum State
+    {
+        /// <summary>
+        /// Новый (пустой) - начальное состояние
+        /// </summary>
+        Init,
+        /// <summary>
+        /// Редактируется
+        /// </summary>
+        Typing,
+        /// <summary>
+        /// Завершен
+        /// </summary>
+        Completed
+    }
 
     public class TagViewModel : ViewModelBase, IDropTarget
     {
@@ -35,7 +69,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private object _blank;
         private bool _focused;
         private string _query;
-        private States _state;
+        private State _state;
         private bool _isDeleteOnly;
         private bool _isLast;
         private bool _listItemFocused;
@@ -49,7 +83,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         public TagViewModel(AutocompleteViewModel parent)
         {
             Contract.Requires(parent != null);
-            Contract.Ensures(State == States.Init);
+            Contract.Ensures(State == State.Init);
 
             this.autocomplete = parent;
             Reset();
@@ -61,7 +95,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         public TagViewModel(AutocompleteViewModel parent, string query)
         {
             Contract.Requires(parent != null);
-            Contract.Ensures(State == States.Typing);
+            Contract.Ensures(State == State.Typing);
 
             this.autocomplete = parent;
             Query = query;
@@ -75,7 +109,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             Contract.Requires(parent != null);
             Contract.Requires(item != null);
-            Contract.Ensures(State == States.Completed);
+            Contract.Ensures(State == State.Completed);
 
             this.autocomplete = parent;
 
@@ -85,41 +119,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         public event EventHandler Deleted;
         public event EventHandler<BlankTypeEventArgs> Converting;
-        /// <summary>
-        /// Типы заготовок в теге.
-        /// </summary>
-        public enum BlankTypes
-        {
-            None,
-            /// <summary>
-            /// Строка-запрос
-            /// </summary>
-            Query,
-            Comment,
-            Word,
-            Measure,
-            Icd
-        }
-
-        /// <summary>
-        /// Состояния тега.
-        /// </summary>
-        public enum States
-        {
-            /// <summary>
-            /// Новый (пустой) - начальное состояние
-            /// </summary>
-            Init,
-            /// <summary>
-            /// Редактируется
-            /// </summary>
-            Typing,
-            /// <summary>
-            /// Завершен
-            /// </summary>
-            Completed
-        }
-
+     
         /// <summary>
         /// Текстовое представление.
         /// </summary>
@@ -137,7 +137,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                     logger.DebugFormat("query = {0}", value);
                     Contract.Assume(!IsDeleteOnly);
 
-                    State = States.Typing;
+                    State = State.Typing;
 
                     // show drag when type in last
                     if (IsLast && !value.IsNullOrEmpty())
@@ -150,7 +150,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        public States State
+        public State State
         {
             get { return _state; }
             private set
@@ -194,7 +194,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 {
                     Query = value.ToString();
                 }
-                State = States.Completed;
+                State = State.Completed;
                 Signalization = null;
             }
         }
@@ -202,7 +202,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         /// <summary>
         /// Тип заготовки.
         /// </summary>
-        public BlankTypes BlankType
+        public BlankType BlankType
         {
             get
             {
@@ -253,15 +253,15 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 () => autocomplete.WithSendToSearch);
             }
         }
-        public RelayCommand<BlankTypes> ConvertToCommand
+        public RelayCommand<BlankType> ConvertToCommand
         {
             get
             {
-                return new RelayCommand<BlankTypes>((t) =>
+                return new RelayCommand<BlankType>((t) =>
                 {
                     OnConverting(t);
                 },
-                (t) => autocomplete.WithConvert && t != BlankType && State != States.Init && !Query.IsNullOrEmpty() && !IsDeleteOnly);
+                (t) => autocomplete.WithConvert && t != BlankType && State != State.Init && !Query.IsNullOrEmpty() && !IsDeleteOnly);
             }
         }
 
@@ -383,8 +383,8 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         {
             get
             {
-                return BlankType != BlankTypes.Icd   // редактируются через отдельный редактор
-                    && BlankType != BlankTypes.Measure;
+                return BlankType != BlankType.Icd   // редактируются через отдельный редактор
+                    && BlankType != BlankType.Measure;
             }
         }
         /// <summary>
@@ -463,11 +463,11 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         public void Validate(Func<TagViewModel, Signalizations> filter = null)
         {
             Signalization = Signalizations.None;
-            if (BlankType == TagViewModel.BlankTypes.None && State != TagViewModel.States.Init)
+            if (BlankType == BlankType.None && State != State.Init)
             {
                 Signalization = Signalizations.Forbidden;
             }
-            else if (BlankType == TagViewModel.BlankTypes.Word)
+            else if (BlankType == BlankType.Word)
             {
                 var word = Blank as Word;
                 if (word.IsTransient)
@@ -480,20 +480,20 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        public static BlankTypes GetBlankType(object blank)
+        public static BlankType GetBlankType(object blank)
         {
             if (blank is Word)
-                return BlankTypes.Word;
+                return BlankType.Word;
             if (blank is Comment)
-                return BlankTypes.Comment;
+                return BlankType.Comment;
             if (blank is string)
-                return BlankTypes.Query;
+                return BlankType.Query;
             if (blank == null)
-                return BlankTypes.None;
+                return BlankType.None;
             if (blank is Measure)
-                return BlankTypes.Measure;
+                return BlankType.Measure;
             if (blank is IcdDisease)
-                return BlankTypes.Icd;
+                return BlankType.Icd;
 
             throw new ArgumentOutOfRangeException("blank");
         }
@@ -512,7 +512,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             }
         }
 
-        protected virtual void OnConverting(BlankTypes targetType)
+        protected virtual void OnConverting(BlankType targetType)
         {
             var h = Converting;
             if (h != null)
@@ -524,7 +524,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         private void Reset()
         {
             Query = string.Empty;
-            State = States.Init;
+            State = State.Init;
 
             // setting Blank sets State, so
             Signalization = null;
@@ -536,9 +536,9 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            Contract.Invariant(State != States.Completed || BlankType != BlankTypes.None
+            Contract.Invariant(State != State.Completed || BlankType != BlankType.None
                 || Signalization == null || Signalization == Signalizations.Forbidden); // завершенный тег → есть бланк (тег завершается после смены бланка) в поиске бланк мб пустой
-            Contract.Invariant(State != States.Init || (BlankType == BlankTypes.None && Entity == null)); // в начальном состоянии → нет бланка и сущностей
+            Contract.Invariant(State != State.Init || (BlankType == BlankType.None && Entity == null)); // в начальном состоянии → нет бланка и сущностей
             // при редактировании нет сущностей
         }
 
@@ -564,10 +564,10 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
     [Serializable]
     public class BlankTypeEventArgs : EventArgs
     {
-        public readonly TagViewModel.BlankTypes type;
+        public readonly BlankType type;
 
         [DebuggerStepThrough]
-        public BlankTypeEventArgs(TagViewModel.BlankTypes type)
+        public BlankTypeEventArgs(BlankType type)
         {
             this.type = type;
         }

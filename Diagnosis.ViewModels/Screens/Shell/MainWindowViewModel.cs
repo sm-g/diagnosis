@@ -22,13 +22,13 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (e.PropertyName == "CurrentView")
                 {
-                    MenuVisible = switcher.Screen != Screens.Login;
+                    MenuVisible = switcher.Screen != Screen.Login;
                     // TODO fix auto open tab when make tabcontrol visible
                     SearchVisible =
-                        (switcher.Screen != Screens.Login) &&
-                        (switcher.Screen != Screens.Doctors);
+                        (switcher.Screen != Screen.Login) &&
+                        (switcher.Screen != Screen.Doctors);
 
-                    if ((switcher.Screen & (Screens.Login | Screens.Words)) == switcher.Screen)
+                    if ((switcher.Screen & (Screen.Login | Screen.Words)) == switcher.Screen)
                     {
                         RightAside.SearchPanel.Opened = false;
                     }
@@ -36,7 +36,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             };
 
-            switcher.OpenScreen(Screens.Login, replace: true);
+            switcher.OpenScreen(Screen.Login, replace: true);
         }
 
         public ScreenBase CurrentView

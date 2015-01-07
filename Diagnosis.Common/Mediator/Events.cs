@@ -29,7 +29,7 @@ namespace Diagnosis.Common
         public const string HrItemObjects = "entity";
     }
 
-    public enum Events
+    public enum Event
     {
         // for ScreenSwitcher
         OpenPatient,
@@ -66,12 +66,12 @@ namespace Diagnosis.Common
 
     public static class EventAggragatorExtensions
     {
-        public static EventMessageHandler Subscribe(this object obj, Events @event, Action<EventMessage> handler)
+        public static EventMessageHandler Subscribe(this object obj, Event @event, Action<EventMessage> handler)
         {
             return obj.Subscribe((int)@event, handler);
         }
 
-        public static EventMessage Send(this object obj, Events @event, params KeyValuePair<string, object>[] parameters)
+        public static EventMessage Send(this object obj, Event @event, params KeyValuePair<string, object>[] parameters)
         {
             return obj.Send((int)@event, parameters);
         }

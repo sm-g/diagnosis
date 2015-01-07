@@ -20,7 +20,7 @@ namespace Diagnosis.Models
         private bool _isDeleted;
         private HrCategory _category;
         private DateOffset _dateOffset;
-        private HealthRecordUnits _unit;
+        private HealthRecordUnit _unit;
         private DateTime _createdAt;
 
         public virtual event NotifyCollectionChangedEventHandler ItemsChanged;
@@ -91,7 +91,7 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual HealthRecordUnits Unit
+        public virtual HealthRecordUnit Unit
         {
             get { return _unit; }
             set
@@ -130,8 +130,8 @@ namespace Diagnosis.Models
                         () => CreatedAt,
                         DateOffset.DateOffsetSettings.OnLoading());
 
-                    if (Unit != HealthRecordUnits.NotSet &&
-                        Unit != HealthRecordUnits.ByAge
+                    if (Unit != HealthRecordUnit.NotSet &&
+                        Unit != HealthRecordUnit.ByAge
                         || _dateOffset.DateSettingStrategy == DateOffset.DateSetting.SavesUnit)
                     {
                         // фиксируем единицу
@@ -155,8 +155,8 @@ namespace Diagnosis.Models
                                 break;
 
                             case "Unit":
-                                if (Unit != HealthRecordUnits.ByAge &&
-                                    Unit != HealthRecordUnits.NotSet)
+                                if (Unit != HealthRecordUnit.ByAge &&
+                                    Unit != HealthRecordUnit.NotSet)
                                 {
                                     // меняем Unit записи только если показываем давность записи
                                     Unit = _dateOffset.Unit.ToHealthRecordUnit();

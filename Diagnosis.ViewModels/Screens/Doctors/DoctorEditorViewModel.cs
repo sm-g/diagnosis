@@ -44,7 +44,7 @@ namespace Diagnosis.ViewModels.Screens
 
                     new Saver(Session).Save(doctor);
 
-                    this.Send(Events.DoctorSaved, doctor.AsParams(MessageKeys.Doctor));
+                    this.Send(Event.DoctorSaved, doctor.AsParams(MessageKeys.Doctor));
                     DialogResult = true;
                 }, () => CanSave());
             }

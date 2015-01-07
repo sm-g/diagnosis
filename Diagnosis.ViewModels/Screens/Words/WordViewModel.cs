@@ -74,7 +74,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                    {
-                       this.Send(Events.SendToSearch, word.ToEnumerable().AsParams(MessageKeys.HrItemObjects));
+                       this.Send(Event.SendToSearch, word.ToEnumerable().AsParams(MessageKeys.HrItemObjects));
                    });
             }
         }
@@ -85,7 +85,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Events.EditWord, word.AsParams(MessageKeys.Word));
+                    this.Send(Event.EditWord, word.AsParams(MessageKeys.Word));
                 });
             }
         }

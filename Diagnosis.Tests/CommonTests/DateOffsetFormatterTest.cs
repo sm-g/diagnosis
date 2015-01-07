@@ -19,7 +19,7 @@ namespace Tests
         [TestMethod]
         public void Unit()
         {
-            var str = DateOffsetFormatter.GetUnitString(1, DateUnits.Day);
+            var str = DateOffsetFormatter.GetUnitString(1, DateUnit.Day);
 
             Assert.AreEqual(Plurals.days[0], str);
         }
@@ -27,7 +27,7 @@ namespace Tests
         [TestMethod]
         public void OffsetNull()
         {
-            var str = DateOffsetFormatter.GetUnitString(null, DateUnits.Day);
+            var str = DateOffsetFormatter.GetUnitString(null, DateUnit.Day);
 
             Assert.AreEqual(Plurals.days[2], str);
         }

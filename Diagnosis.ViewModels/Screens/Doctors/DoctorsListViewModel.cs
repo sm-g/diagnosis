@@ -30,7 +30,7 @@ namespace Diagnosis.ViewModels.Screens
             Doctors.SyncWith(docs);
 
             emhManager = new EventMessageHandlersManager(new[] {
-                this.Subscribe(Events.DoctorSaved, (e) =>
+                this.Subscribe(Event.DoctorSaved, (e) =>
                 {
                     // выбираем нового доктора или изменившегося
                     var doc = e.GetValue<Doctor>(MessageKeys.Doctor);
@@ -81,7 +81,7 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     object newDoc = null;
-                    this.Send(Events.EditDoctor, newDoc.AsParams(MessageKeys.Doctor));
+                    this.Send(Event.EditDoctor, newDoc.AsParams(MessageKeys.Doctor));
                 });
             }
         }
@@ -92,7 +92,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Events.EditDoctor, SelectedDoctor.AsParams(MessageKeys.Doctor));
+                    this.Send(Event.EditDoctor, SelectedDoctor.AsParams(MessageKeys.Doctor));
                 }, () => SelectedDoctor != null);
             }
         }
