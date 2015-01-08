@@ -3,6 +3,7 @@ using Diagnosis.Models;
 using EventAggregator;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -11,17 +12,33 @@ namespace Diagnosis.ViewModels.Screens
     public class MenuBarViewModel : ViewModelBase
     {
         private ScreenSwitcher switcher;
-        private PanelViewModel searchAside;
+        private bool _visible;
 
-        public MenuBarViewModel(ScreenSwitcher switcher, PanelViewModel searchAside)
+        public MenuBarViewModel(ScreenSwitcher switcher, SearchViewModel sPanel)
         {
             this.switcher = switcher;
-            this.searchAside = searchAside;
 
+            SearchPanel = sPanel;
             AuthorityController.LoggedIn += (s, e) =>
             {
                 OnPropertyChanged(() => CurrentUser);
             };
+        }
+
+        public bool Visible
+        {
+            get
+            {
+                return _visible;
+            }
+            set
+            {
+                if (_visible != value)
+                {
+                    _visible = value;
+                    OnPropertyChanged(() => Visible);
+                }
+            }
         }
 
         public RelayCommand LogoutCommand
@@ -79,17 +96,11 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public PanelViewModel SearchAside
-        {
-            get
-            {
-                return searchAside;
-            }
-        }
-
         public IUser CurrentUser
         {
             get { return AuthorityController.CurrentUser; }
         }
+
+        public ToolViewModel SearchPanel { get; private set; }
     }
 }

@@ -5,24 +5,11 @@ using System.Text;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public abstract class ScreenBase : SessionVMBase
+    public abstract class ScreenBase : PaneViewModel
     {
-        private string _title;
-
-        public string Title
+        public ScreenBase()
         {
-            get
-            {
-                return _title;
-            }
-            set
-            {
-                if (_title != value)
-                {
-                    _title = value;
-                    OnPropertyChanged(() => Title);
-                }
-            }
+            ContentId = "Screen";
         }
     }
 }

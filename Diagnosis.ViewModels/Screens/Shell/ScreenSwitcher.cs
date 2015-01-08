@@ -15,6 +15,7 @@ namespace Diagnosis.ViewModels.Screens
 
     public class ScreenSwitcher : ViewModelBase
     {
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(ScreenSwitcher));
         private List<Screen> history = new List<Screen>();
         private Screen _curScreen;
         private ScreenBase _curView;
@@ -153,7 +154,11 @@ namespace Diagnosis.ViewModels.Screens
 
             this.Subscribe(Event.Shutdown, (e) =>
             {
-                CurrentView.Dispose();
+                if (CurrentView != null)
+                {
+                    CurrentView.Dispose();
+
+                }
             });
         }
 
@@ -167,8 +172,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (_curScreen != value)
                 {
-                    Debug.Print("Screen {0}", value);
                     history.Add(value);
+                    logger.DebugFormat("screen {0} -> {1}", _curScreen, value);
                     _curScreen = value;
                     OnPropertyChanged(() => Screen);
                 }

@@ -1,23 +1,53 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <DirectedGraph DataVirtualized="True" Layout="Sugiyama" ZoomLevel="-1" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
   <Nodes>
-    <Node Id="(@1 @2 Type=IDialog)" Category="CodeSchema_Interface" Bounds="205.873333333333,55,98.6233333333333,25" CodeSchemaProperty_IsPublic="True" CommonLabel="IDialog" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Interface" Label="IDialog" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Framework/IDialog.cs&quot; StartLineNumber=8 StartCharacterOffset=4 EndLineNumber=8 EndCharacterOffset=4)" />
-    <Node Id="@3" Category="CodeSchema_Class" Bounds="97.7866666666667,0,154.796666666667,25" CodeSchemaProperty_IsPublic="True" CommonLabel="DialogViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="DialogViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Framework/DialogViewModel.cs&quot; StartLineNumber=8 StartCharacterOffset=4 EndLineNumber=8 EndCharacterOffset=4)" />
-    <Node Id="@4" Category="CodeSchema_Class" Bounds="635.79,0,120.79,25" CodeSchemaProperty_IsAbstract="True" CodeSchemaProperty_IsPublic="True" CommonLabel="ScreenBase" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="ScreenBase" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Framework/ScreenBase.cs&quot; StartLineNumber=7 StartCharacterOffset=4 EndLineNumber=7 EndCharacterOffset=4)" />
-    <Node Id="@5" Category="CodeSchema_Class" Bounds="521.61,55,143.15,25" CodeSchemaProperty_IsPublic="True" CommonLabel="SessionVMBase" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="SessionVMBase" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Framework/SessionVMBase.cs&quot; StartLineNumber=5 StartCharacterOffset=4 EndLineNumber=5 EndCharacterOffset=4)" />
-    <Node Id="@6" Category="CodeSchema_Class" Bounds="520.823333333333,110,144.723333333333,25" CodeSchemaProperty_IsAbstract="True" CodeSchemaProperty_IsPublic="True" CommonLabel="ViewModelBase" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="ViewModelBase" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Framework/ViewModelBase.cs&quot; StartLineNumber=11 StartCharacterOffset=4 EndLineNumber=11 EndCharacterOffset=4)" />
+    <Node Id="(@1 @2 Type=IDialog)" Category="CodeSchema_Interface" Bounds="120.121210514649,117.444544444445,98.6233333333333,25" CodeSchemaProperty_IsPublic="True" CommonLabel="IDialog" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Interface" Label="IDialog" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Framework/IDialog.cs&quot; StartLineNumber=8 StartCharacterOffset=4 EndLineNumber=8 EndCharacterOffset=4)" />
+    <Node Id="@10" Category="CodeSchema_Class" Bounds="-75.103121233121,48.7222222222224,163.006666666667,25" CodeSchemaProperty_IsPublic="True" CommonLabel="SettingsViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="SettingsViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/SettingsViewModel.cs&quot; StartLineNumber=13 StartCharacterOffset=4 EndLineNumber=13 EndCharacterOffset=4)" UseManualLocation="True" />
+    <Node Id="@11" Category="CodeSchema_Class" Bounds="439.693745433546,7.44439444444474,143.62,25" CodeSchemaProperty_IsPublic="True" CommonLabel="ToolViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="ToolViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Shell/ToolViewModel.cs&quot; StartLineNumber=8 StartCharacterOffset=4 EndLineNumber=8 EndCharacterOffset=4)" />
+    <Node Id="@12" Category="CodeSchema_Class" Bounds="240.30314419783,172.444644444445,144.723333333333,25" CodeSchemaProperty_IsAbstract="True" CodeSchemaProperty_IsPublic="True" CommonLabel="ViewModelBase" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="ViewModelBase" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Framework/ViewModelBase.cs&quot; StartLineNumber=11 StartCharacterOffset=4 EndLineNumber=11 EndCharacterOffset=4)" />
+    <Node Id="@3" Category="CodeSchema_Class" Bounds="131.97202178427,62.4444444444448,154.796666666667,25" CodeSchemaProperty_IsPublic="True" CommonLabel="DialogViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="DialogViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Framework/DialogViewModel.cs&quot; StartLineNumber=8 StartCharacterOffset=4 EndLineNumber=8 EndCharacterOffset=4)" />
+    <Node Id="@5" Category="CodeSchema_Class" Bounds="249.086778766879,-206.277877777778,149.81,25" CodeSchemaProperty_IsPublic="True" CommonLabel="LoginViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="LoginViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/LoginViewModel.cs&quot; StartLineNumber=17 StartCharacterOffset=4 EndLineNumber=17 EndCharacterOffset=4)" UseManualLocation="True" />
+    <Node Id="@6" Category="CodeSchema_Class" Bounds="316.768788450937,62.4444944444448,146.26,25" CodeSchemaProperty_IsPublic="True" CommonLabel="PaneViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="PaneViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Shell/PaneViewModel.cs&quot; StartLineNumber=4 StartCharacterOffset=4 EndLineNumber=4 EndCharacterOffset=4)" />
+    <Node Id="@7" Category="CodeSchema_Class" Bounds="288.903645433546,7.44434444444478,120.79,25" CodeSchemaProperty_IsAbstract="True" CodeSchemaProperty_IsPublic="True" CommonLabel="ScreenBase" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="ScreenBase" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Framework/ScreenBase.cs&quot; StartLineNumber=7 StartCharacterOffset=4 EndLineNumber=7 EndCharacterOffset=4)" />
+    <Node Id="@8" Category="CodeSchema_Class" Bounds="585.527576136814,-86.5557555555553,155.63,25" CodeSchemaProperty_IsPublic="True" CommonLabel="SearchViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="SearchViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/SearchViewModel.cs&quot; StartLineNumber=15 StartCharacterOffset=4 EndLineNumber=15 EndCharacterOffset=4)" UseManualLocation="True" />
+    <Node Id="@9" Category="CodeSchema_Class" Bounds="248.744543847982,117.444544444445,143.15,25.0000000000001" CodeSchemaProperty_IsPublic="True" CommonLabel="SessionVMBase" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="SessionVMBase" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Framework/SessionVMBase.cs&quot; StartLineNumber=5 StartCharacterOffset=4 EndLineNumber=5 EndCharacterOffset=4)" />
   </Nodes>
   <Links>
-    <Link Source="@3" Target="(@1 @2 Type=IDialog)" Category="Implements" Bounds="193.366821289063,25,35.8079681396484,24.617977142334" Weight="1" />
-    <Link Source="@3" Target="@5" Category="InheritsFrom" Bounds="251.860877867548,22.5888904701173,260.693173446807,34.3017645316581" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="2">
+    <Link Source="@10" Target="@12" Category="CodeSchema_Calls" Bounds="20.5736446380615,73.7222213745117,212.568994522095,98.5234146118164" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="2" />
+    <Link Source="@10" Target="@3" Category="InheritsFrom" Bounds="87.9035454335456,66.7324260148858,34.5901131253593,2.33853714611277" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="2">
       <Category Ref="CodeSchema_Calls" />
     </Link>
-    <Link Source="@3" Target="@6" Category="CodeSchema_Calls" Bounds="175.184997558594,25,336.668914794922,90.7783813476563" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="4" />
-    <Link Source="@4" Target="@5" Category="InheritsFrom" Bounds="624.974182128906,25,47.8016967773438,25.5251884460449" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="2">
+    <Link Source="@10" Target="@9" Category="CodeSchema_Calls" Bounds="63.4994415784944,73.7222222222224,190.929079511291,41.7976479840047" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="1" />
+    <Link Source="@11" Target="@12" Category="CodeSchema_Calls" Bounds="349.974517822266,32.444393157959,152.741912841797,136.44202041626" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="1" />
+    <Link Source="@11" Target="@6" Category="InheritsFrom" Bounds="426.192065504858,32.4443944444447,57.674239955259,26.085194581475" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="3">
       <Category Ref="CodeSchema_Calls" />
     </Link>
-    <Link Source="@4" Target="@6" Category="CodeSchema_Calls" Bounds="624.533142089844,25,71.65185546875,80.7607040405273" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="1" />
-    <Link Source="@5" Target="@6" Category="InheritsFrom" Bounds="593.184997558594,80,0,20.5" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="2">
+    <Link Source="@3" Target="(@1 @2 Type=IDialog)" Category="Implements" Bounds="184.091467708641,87.4444444444448,16.2022043810479,22.3129478180788" Weight="1" />
+    <Link Source="@3" Target="@12" Category="CodeSchema_Calls" Bounds="214.078323364258,87.4444427490234,61.7392425537109,81.3959045410156" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="4" />
+    <Link Source="@3" Target="@9" Category="InheritsFrom" Bounds="234.586033982364,87.4444444444448,52.0062620796838,25.7807168104659" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="2">
+      <Category Ref="CodeSchema_Calls" />
+    </Link>
+    <Link Source="@5" Target="@12" Category="CodeSchema_Calls" Bounds="238.610366821289,-181.277877807617,82.9897613525391,350.093032836914" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="5" />
+    <Link Source="@5" Target="@6" Category="CodeSchema_Calls" Bounds="330.260894775391,-181.277877807617,83.7822265625,236.006942749023" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="1" />
+    <Link Source="@5" Target="@7" Category="InheritsFrom" Bounds="325.471904839143,-181.277877777778,21.229522790052,179.288129469758" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="2">
+      <Category Ref="CodeSchema_Calls" />
+    </Link>
+    <Link Source="@5" Target="@9" Category="CodeSchema_Calls" Bounds="286.677978515625,-181.277877807617,34.9221496582031,290.594772338867" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="3" />
+    <Link Source="@6" Target="@12" Category="CodeSchema_Calls" Bounds="355.640014648438,87.4444961547852,40.0286865234375,81.9353408813477" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="5" />
+    <Link Source="@6" Target="@9" Category="InheritsFrom" Bounds="343.585781048438,87.4444944444448,30.4995570958731,24.1088729092013" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="2">
+      <Category Ref="CodeSchema_Calls" />
+    </Link>
+    <Link Source="@7" Target="@12" Category="CodeSchema_Calls" Bounds="238.610366821289,32.4443435668945,99.8860626220703,136.370811462402" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="1" />
+    <Link Source="@7" Target="@6" Category="InheritsFrom" Bounds="358.525925499462,32.4443444444448,16.5035547972725,22.3570145798349" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="3">
+      <Category Ref="CodeSchema_Calls" />
+    </Link>
+    <Link Source="@8" Target="@11" Category="InheritsFrom" Bounds="539.772454473501,-61.5557555555553,103.37882001336,63.9996010445413" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="2">
+      <Category Ref="CodeSchema_Calls" />
+    </Link>
+    <Link Source="@8" Target="@12" Category="CodeSchema_Calls" Bounds="345.34521484375,-61.5557556152344,310.506591796875,229.930389404297" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="26" />
+    <Link Source="@8" Target="@6" Category="CodeSchema_Calls" Bounds="400.379058837891,-61.5557556152344,222.015594482422,115.985542297363" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="1" />
+    <Link Source="@8" Target="@9" Category="CodeSchema_Calls" Bounds="373.455261230469,-61.5557556152344,282.396545410156,176.564964294434" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="4" />
+    <Link Source="@9" Target="@12" Category="InheritsFrom" Bounds="315.714076165222,142.444544444445,2.86575880416603,20.5907928003569" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="2">
       <Category Ref="CodeSchema_Calls" />
     </Link>
   </Links>
@@ -55,6 +85,7 @@
     <Property Id="OutgoingActionLabel" Label="OutgoingActionLabel" Description="OutgoingActionLabel" DataType="System.String" />
     <Property Id="SourceLocation" Label="Start Line Number" DataType="Microsoft.VisualStudio.GraphModel.CodeSchema.SourceLocation" />
     <Property Id="TargetType" DataType="System.Type" />
+    <Property Id="UseManualLocation" DataType="System.Boolean" />
     <Property Id="Value" DataType="System.String" />
     <Property Id="ValueLabel" DataType="System.String" />
     <Property Id="Visibility" Label="Visibility" Description="Defines whether a node in the graph is visible or not" DataType="System.Windows.Visibility" />
@@ -70,9 +101,15 @@
     <Alias n="1" Uri="Assembly=$(2206a771-0a27-41f2-81e2-d131d95c6862.OutputPathUri)" />
     <Alias n="2" Id="Namespace=Diagnosis.ViewModels" />
     <Alias n="3" Id="(@1 @2 Type=DialogViewModel)" />
-    <Alias n="4" Id="(@1 Namespace=Diagnosis.ViewModels.Screens Type=ScreenBase)" />
-    <Alias n="5" Id="(@1 @2 Type=SessionVMBase)" />
-    <Alias n="6" Id="(@1 @2 Type=ViewModelBase)" />
+    <Alias n="4" Id="Namespace=Diagnosis.ViewModels.Screens" />
+    <Alias n="5" Id="(@1 @4 Type=LoginViewModel)" />
+    <Alias n="6" Id="(@1 @4 Type=PaneViewModel)" />
+    <Alias n="7" Id="(@1 @4 Type=ScreenBase)" />
+    <Alias n="8" Id="(@1 @4 Type=SearchViewModel)" />
+    <Alias n="9" Id="(@1 @2 Type=SessionVMBase)" />
+    <Alias n="10" Id="(@1 @4 Type=SettingsViewModel)" />
+    <Alias n="11" Id="(@1 @4 Type=ToolViewModel)" />
+    <Alias n="12" Id="(@1 @2 Type=ViewModelBase)" />
   </IdentifierAliases>
   <Styles>
     <Style TargetType="Node" GroupLabel="Results" ValueLabel="True">
@@ -231,6 +268,7 @@
     </Style>
   </Styles>
   <Paths>
-    <Path Id="2206a771-0a27-41f2-81e2-d131d95c6862.OutputPathUri" Value="file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/bin/InMemory/Diagnosis.ViewModels.dll" />
+    <Path Id="2206a771-0a27-41f2-81e2-d131d95c6862.OutputPath" Value="C:\Users\smg\Documents\Visual Studio 2012\Projects\Diagnosis\Diagnosis.ViewModels\bin\Debug\Diagnosis.ViewModels.dll" />
+    <Path Id="2206a771-0a27-41f2-81e2-d131d95c6862.OutputPathUri" Value="file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/bin/Debug/Diagnosis.ViewModels.dll" />
   </Paths>
 </DirectedGraph>

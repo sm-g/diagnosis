@@ -1,0 +1,180 @@
+﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:controls="clr-namespace:Diagnosis.App.Controls"
+        xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
+        xmlns:diag="http://schemas.smg.com/diagnosis"
+        xmlns:screen="clr-namespace:Diagnosis.App.Screens"
+        xmlns:shell="clr-namespace:Diagnosis.App.Windows.Shell"
+        x:Class="Diagnosis.App.Windows.Shell.MainWindow"
+        mc:Ignorable="d"
+        x:Name="root"
+        Title="{Binding CurrentView.Title}"
+        Height="{Binding Path=Default.MainWindowHeight, Mode=TwoWay, Source={StaticResource Settings}}"
+        Width="{Binding Path=Default.MainWindowWidth, Mode=TwoWay, Source={StaticResource Settings}}"
+        Top="{Binding Path=Default.MainWindowTop, Mode=TwoWay, Source={StaticResource Settings}}"
+        Left="{Binding Path=Default.MainWindowLeft, Mode=TwoWay, Source={StaticResource Settings}}"
+        WindowState="{Binding Path=Default.MainWindowState, Mode=TwoWay, Source={StaticResource Settings}}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/TabControl.xaml" />
+                <ResourceDictionary Source="../../Styles/EmptyToggle.xaml" />
+                <ResourceDictionary Source="../../Styles/AvalonDock.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate DataType="{x:Type diag:LoginViewModel}">
+                <screen:Login />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type diag:WordsListViewModel}">
+                <screen:Words />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type diag:CardViewModel}">
+                <screen:Card />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type diag:PatientsListViewModel}">
+                <screen:Patients />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type diag:DoctorsListViewModel}">
+                <screen:Doctors />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type diag:UndoOverlayViewModel}">
+                <controls:UndoOverlay />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type diag:SearchViewModel}">
+                <screen:Search />
+            </DataTemplate>
+            <!--<Style TargetType="{x:Type xcad:AnchorablePaneTitle}"
+                   BasedOn="{StaticResource AnchorablePaneTitleNoButtons}">
+            </Style>-->
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Window.InputBindings>
+        <KeyBinding Key="F"
+                    Modifiers="Control"
+                    Command="{Binding OpenSearchCommand}" />
+    </Window.InputBindings>
+    <Window.CommandBindings>
+        <CommandBinding Command="Cut"
+                        Executed="CommandBinding_Executed" />
+    </Window.CommandBindings>
+    <Grid Background="{DynamicResource mainWindowBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <shell:MenuBar DataContext="{Binding MenuBar}"
+                       Visibility="{Binding Visible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+        <xcad:DockingManager x:Name="dockManager"
+                             Grid.Row="1"
+                             AnchorablesSource="{Binding Panes}"
+                             beh:AvalonDockLayoutSerializer.VM="{Binding ADLayout}">
+            <xcad:DockingManager.Resources>
+            </xcad:DockingManager.Resources>
+            <xcad:DockingManager.Style>
+                <Style TargetType="xcad:DockingManager"
+                       BasedOn="{StaticResource {x:Type xcad:DockingManager}}">
+                    <Setter Property="AnchorableContextMenu"
+                            Value="{x:Null}" />
+                    <Setter Property="BorderThickness"
+                            Value="0" />
+                </Style>
+            </xcad:DockingManager.Style>
+            <xcad:DockingManager.LayoutItemContainerStyleSelector>
+                <shell:AvalonStyleSelector>
+                    <shell:AvalonStyleSelector.PanelStyle>
+                        <Style TargetType="{x:Type xcad:LayoutAnchorableItem}">
+                            <Setter Property="Title"
+                                    Value="{Binding Model.Title}" />
+                            <Setter Property="IconSource"
+                                    Value="{Binding Model.IconSource}" />
+                            <Setter Property="ContentId"
+                                    Value="{Binding Model.ContentId}" />
+                            <Setter Property="IsSelected"
+                                    Value="{Binding Model.IsSelected, Mode=TwoWay}" />
+                            <Setter Property="IsActive"
+                                    Value="{Binding Model.IsActive, Mode=TwoWay}" />
+                            <Setter Property="CanClose"
+                                    Value="False" />
+                            <Setter Property="Visibility"
+                                    Value="{Binding Model.IsVisible, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter={x:Static Visibility.Hidden}}" />
+                            <Setter Property="MaxWidth"
+                                    Value="300" />
+                            <Setter Property="MinWidth"
+                                    Value="100" />
+                        </Style>
+                    </shell:AvalonStyleSelector.PanelStyle>
+                    <shell:AvalonStyleSelector.ScreenStyle>
+                        <Style TargetType="{x:Type xcad:LayoutAnchorableItem}">
+                            <Setter Property="Title"
+                                    Value="{Binding Model.Title}" />
+                            <Setter Property="IconSource"
+                                    Value="{Binding Model.IconSource}" />
+                            <Setter Property="ContentId"
+                                    Value="{Binding Model.ContentId}" />
+                            <Setter Property="IsSelected"
+                                    Value="{Binding Model.IsSelected, Mode=TwoWay}" />
+                            <Setter Property="IsActive"
+                                    Value="{Binding Model.IsActive, Mode=TwoWay}" />
+                            <Setter Property="CanClose"
+                                    Value="False" />
+
+                            <Setter Property="CanFloat"
+                                    Value="False" />
+                            <Setter Property="CanHide"
+                                    Value="False" />
+                            <Setter Property="AutoHideCommand"
+                                    Value="{Binding Model.NoAutoHideCommand}" />
+                        </Style>
+                    </shell:AvalonStyleSelector.ScreenStyle>
+                </shell:AvalonStyleSelector>
+            </xcad:DockingManager.LayoutItemContainerStyleSelector>
+            <xcad:DockingManager.AnchorableHeaderTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Title}" />
+                    </StackPanel>
+                </DataTemplate>
+            </xcad:DockingManager.AnchorableHeaderTemplate>
+            <xcad:DockingManager.AnchorableTitleTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <!--<TextBlock Text="{Binding Title}" />-->
+                    </StackPanel>
+                </DataTemplate>
+            </xcad:DockingManager.AnchorableTitleTemplate>
+            <xcad:DockingManager.LayoutUpdateStrategy>
+                <shell:LayoutInitializer />
+            </xcad:DockingManager.LayoutUpdateStrategy>
+        </xcad:DockingManager>
+
+        <ItemsControl DataContext="{Binding OverlayService}"
+                      ItemsSource="{Binding Overlays}"
+                      HorizontalAlignment="Right"
+                      IsTabStop="False"
+                      Grid.Row="1">
+        </ItemsControl>
+        <Menu x:Name="debugMenu"
+              Grid.Row="2">
+            <MenuItem Header="_Save layout"
+                      x:Name="SaveLayout"
+                      Visibility="Collapsed"
+                      Command="{Binding ADLayout.SaveLayoutCommand}"
+                      CommandParameter="">
+            </MenuItem>
+            <MenuItem Header="_Load layout"
+                      x:Name="LoadLayout"
+                      Visibility="Collapsed"
+                      Command="{Binding ADLayout.LoadLayoutCommand}">
+            </MenuItem>
+        </Menu>
+    </Grid>
+</Window>

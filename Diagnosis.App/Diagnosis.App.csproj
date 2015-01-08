@@ -218,6 +218,7 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Behaviors\AvalonDockLayoutSerializer.cs" />
     <Compile Include="Behaviors\ClipboardBehavior.cs" />
     <Compile Include="Behaviors\EnumListExtension.cs" />
     <Compile Include="Behaviors\FocusBehavior.cs" />
@@ -312,6 +313,10 @@
     <Compile Include="Windows\Editors\MeasureEditorWindow.xaml.cs">
       <DependentUpon>MeasureEditorWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Shell\AvalonTemplateSelector.cs" />
+    <Compile Include="Windows\Shell\AvalonStyleSelector.cs" />
+    <Compile Include="Windows\Shell\LayoutInitializer.cs" />
+    <Compile Include="Windows\Shell\MyAvalonDockingManager.cs" />
     <Compile Include="Windows\Editors\WordEditorWindow.xaml.cs">
       <DependentUpon>WordEditorWindow.xaml</DependentUpon>
     </Compile>
@@ -476,6 +481,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Styles\AvalonDock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\Editors\DoctorEditorWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -560,7 +569,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\MainWindow.xaml">
+    <Page Include="Windows\Shell\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -568,7 +577,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Windows\MainWindow.xaml.cs">
+    <Compile Include="Windows\Shell\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -651,6 +660,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Resource Include="Resources\avalon-layout.config" />
     <Resource Include="Resources\Help.rtf" />
   </ItemGroup>
   <ItemGroup>

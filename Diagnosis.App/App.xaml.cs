@@ -1,4 +1,5 @@
 ﻿using Diagnosis.App.Windows;
+using Diagnosis.App.Windows.Shell;
 using Diagnosis.Common;
 using Diagnosis.Common.Util;
 using Diagnosis.Data;

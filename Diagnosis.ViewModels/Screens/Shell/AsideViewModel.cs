@@ -35,7 +35,7 @@ namespace Diagnosis.ViewModels.Screens
                 SearchPanel.Opened = true;
             });
 
-            SearchPanel = new PanelViewModel(new SearchViewModel()) { Title = "Поиск" };
+            SearchPanel = new PanelViewModel(new SearchViewModel() { Title = "Поиск" });
             Panels.Add(SearchPanel);
         }
         public ObservableCollection<PanelViewModel> Panels { get; private set; }

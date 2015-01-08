@@ -91,6 +91,19 @@ namespace Diagnosis.App.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;
+        ///&lt;LayoutRoot xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;
+        ///  &lt;RootPanel Orientation=&quot;Horizontal&quot;&gt;
+        ///    &lt;LayoutAnchorablePane Id=&quot;7896874a-62cd-4d5b-b5f5-01f3f3e0ad4e&quot; Name=&quot;Screen&quot; DocMinWidth=&quot;320&quot;&gt;
+        ///      &lt;LayoutAnchorable CanHide=&quot;False&quot; AutoHideMinWidth=&quot;100&quot; AutoHideMinHeight=&quot;100&quot; Title=&quot;Пациенты&quot; IsSelected=&quot;True&quot; ContentId=&quot;Screen&quot; CanClose=&quot;False&quot; CanFloat=&quot;False&quot; LastActivationTimeStamp=&quot;01/08/2015 21:13 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string avalon_layout {
+            get {
+                return ResourceManager.GetString("avalon_layout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap Close_16xLG {

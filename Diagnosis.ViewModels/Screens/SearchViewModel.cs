@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class SearchViewModel : SessionVMBase
+    public class SearchViewModel : ToolViewModel
     {
         #region Fields
 
@@ -38,6 +38,8 @@ namespace Diagnosis.ViewModels.Screens
         private EventMessageHandlersManager msgManager;
 
         #endregion Fields
+
+        public const string ToolContentId = "Search";
 
         public SearchViewModel()
         {
@@ -77,7 +79,9 @@ namespace Diagnosis.ViewModels.Screens
                     }
                     catch { }
                 })
+
             );
+            ContentId = ToolContentId;
         }
 
         #region Options bindings
@@ -291,7 +295,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-
         #endregion Options bindings
 
         public IList<HrCategoryViewModel> SelectedCategories
@@ -335,7 +338,6 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         public AutocompleteViewModel Autocomplete { get; private set; }
-
 
         public SearchResultViewModel Result
         {

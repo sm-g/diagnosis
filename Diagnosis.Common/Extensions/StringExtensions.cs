@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics.Contracts;
+using System.IO;
 
 namespace Diagnosis.Common
 {
@@ -61,6 +62,11 @@ namespace Diagnosis.Common
             }
 
             return one.CompareTo(two);
+        }
+
+        public static MemoryStream ToMemoryStream(this string str)
+        {
+            return new MemoryStream(UTF8Encoding.Default.GetBytes(str));
         }
     }
 }

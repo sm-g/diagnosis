@@ -2,87 +2,66 @@
 using System.Collections.ObjectModel;
 using EventAggregator;
 using Diagnosis.Common;
+using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        private bool _menuVisible;
-        private bool _searchVis;
-        private ScreenSwitcher switcher;
-
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(MainWindowViewModel));
+        public ScreenSwitcher switcher;
+        SearchViewModel searchPanel;
         public MainWindowViewModel()
         {
             switcher = new ScreenSwitcher();
-            RightAside = new AsideViewModel();
-            MenuBar = new MenuBarViewModel(switcher, RightAside.SearchPanel);
             OverlayService = new OverlayServiceViewModel();
 
             switcher.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "CurrentView")
                 {
-                    MenuVisible = switcher.Screen != Screen.Login;
-                    // TODO fix auto open tab when make tabcontrol visible
-                    SearchVisible =
+                    MenuBar.Visible = switcher.Screen != Screen.Login;
+
+                    var curScreen = Panes.FirstOrDefault(p => p.ContentId == "Screen");
+                    logger.DebugFormat("curScreen {0} -> {1}", curScreen != null ? curScreen.Title : "null", CurrentView.Title);
+
+                    var showSearch =
                         (switcher.Screen != Screen.Login) &&
                         (switcher.Screen != Screen.Doctors);
+                    searchPanel.IsVisible = showSearch;
 
-                    if ((switcher.Screen & (Screen.Login | Screen.Words)) == switcher.Screen)
-                    {
-                        RightAside.SearchPanel.Opened = false;
-                    }
+                    Panes.Add(CurrentView);
+                    Panes.Remove(curScreen);
+                    CurrentView.IsActive = true;
+
+
                     OnPropertyChanged("CurrentView");
                 }
             };
+
+            searchPanel = new SearchViewModel() { Title = "Поиск" };
+            Panes = new ObservableCollection<PaneViewModel>();
+            Panes.Add(searchPanel);
+
+            ADLayout = new AvalonDockLayoutViewModel(Panes);
+            MenuBar = new MenuBarViewModel(switcher, searchPanel);
 
             switcher.OpenScreen(Screen.Login, replace: true);
         }
 
         public ScreenBase CurrentView
         {
-            get
-            {
-                return switcher.CurrentView;
-            }
+            get { return switcher.CurrentView; }
         }
 
         public MenuBarViewModel MenuBar { get; private set; }
-
-        public AsideViewModel RightAside { get; private set; }
-
         public OverlayServiceViewModel OverlayService { get; private set; }
 
-        public bool MenuVisible
-        {
-            get
-            {
-                return _menuVisible;
-            }
-            set
-            {
-                if (_menuVisible != value)
-                {
-                    _menuVisible = value;
-                    OnPropertyChanged(() => MenuVisible);
-                }
-            }
-        }
-        public bool SearchVisible
-        {
-            get
-            {
-                return _searchVis;
-            }
-            set
-            {
-                if (_searchVis != value)
-                {
-                    _searchVis = value;
-                    OnPropertyChanged(() => SearchVisible);
-                }
-            }
-        }
+        public ObservableCollection<PaneViewModel> Panes { get; private set; }
+
+        public AvalonDockLayoutViewModel ADLayout { get; private set; }
+
+
 
         public RelayCommand OpenSearchCommand
         {
@@ -90,7 +69,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    RightAside.SearchPanel.Opened = true;
+                    searchPanel.IsVisible = true;
+                    searchPanel.IsActive = true;
                 });
             }
         }
