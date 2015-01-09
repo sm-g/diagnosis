@@ -64,9 +64,10 @@ namespace Diagnosis.Common
             return one.CompareTo(two);
         }
 
-        public static MemoryStream ToMemoryStream(this string str)
+        public static MemoryStream ToMemoryStream(this string str, Encoding encoding = null)
         {
-            return new MemoryStream(UTF8Encoding.Default.GetBytes(str));
+            var enc = encoding ?? Encoding.Unicode;
+            return new MemoryStream(enc.GetBytes(str));
         }
     }
 }
