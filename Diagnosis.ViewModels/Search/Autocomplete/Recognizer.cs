@@ -107,7 +107,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             Contract.Requires(!tag.Query.IsNullOrEmpty());
             Contract.Requires(tag.BlankType != toType);
             Contract.Requires(toType != BlankType.None && toType != BlankType.Query);
-            Contract.Ensures(tag.BlankType == toType);
+            Contract.Ensures(Contract.Result<bool>() == (tag.BlankType == toType));
 
             string query;
             if (tag.BlankType == BlankType.Measure)

@@ -135,6 +135,7 @@
                 <ContextMenu>
                     <ContextMenu.Resources>
                         <Style TargetType="MenuItem"
+                               BasedOn="{StaticResource {x:Type MenuItem}}"
                                x:Key="convert"
                                x:Shared="False">
                             <Setter Property="IsCheckable"
@@ -165,7 +166,7 @@
                     <MenuItem InputGestureText="F2"
                               Command="{Binding EditCommand}">
                         <MenuItem.Style>
-                            <Style TargetType="MenuItem">
+                            <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">   
                                 <Setter Property="Header"
                                         Value="Выделить" />
                                 <Style.Triggers>
