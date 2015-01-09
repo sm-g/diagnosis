@@ -200,9 +200,14 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (_categories == null)
                 {
-                    var catsVM = Session.QueryOver<HrCategory>().List()
-                        .Select(cat => new HrCategoryViewModel(cat)).ToList();
-                    catsVM.ForAll(cat => cat.PropertyChanged += (s, e) =>
+                    var cats = new List<HrCategory>(Session.QueryOver<HrCategory>().List());
+                    cats.Add(HrCategory.Null);
+
+                    _categories = cats
+                        .OrderBy(cat => cat.Ord)
+                        .Select(cat => new HrCategoryViewModel(cat))
+                        .ToList();
+                    _categories.ForAll(cat => cat.PropertyChanged += (s, e) =>
                     {
                         if (e.PropertyName == "IsChecked")
                         {
@@ -210,7 +215,6 @@ namespace Diagnosis.ViewModels.Screens
                             OnPropertyChanged("AllEmpty");
                         }
                     });
-                    _categories = new List<HrCategoryViewModel>(catsVM);
                 }
                 return _categories;
             }

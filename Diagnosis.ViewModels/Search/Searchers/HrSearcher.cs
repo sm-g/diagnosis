@@ -45,7 +45,7 @@ namespace Diagnosis.ViewModels.Search
             if (options.Categories.Count() > 0)
             {
                 hrs = hrs.Where(hr =>
-                    options.Categories.Any(cat => cat == hr.Category));
+                    options.Categories.Any(cat => cat.Equals(hr.Category)));
             }
 
             //if (options.Comment != null)
