@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Xceed.Wpf.AvalonDock.Layout;
+using Diagnosis.Common;
 
 namespace Diagnosis.App.Windows.Shell
 {
@@ -22,11 +23,17 @@ namespace Diagnosis.App.Windows.Shell
                 id = content.ContentId;
             else
                 id = anchorableToShow.ContentId;
-            var panes = layout.Descendents().OfType<LayoutAnchorablePane>().ToList();
-            var ahcs = layout.Descendents().OfType<LayoutAnchorable>().ToList();
+
+            var panes = layout.LayoutAnchorablePanes();
+            var ahcs = layout.LayoutAnchorables();
             var pane = panes.FirstOrDefault(d => d.Name == id);
             if (pane != null)
             {
+                content.IsAutoHiddenChanging += (s, e) => // leak subscription
+                {
+                    if (e.value != anchorableToShow.IsAutoHidden)
+                        anchorableToShow.ToggleAutoHide();
+                };
                 pane.Children.Add(anchorableToShow);
                 return true;
             }
@@ -40,7 +47,7 @@ namespace Diagnosis.App.Windows.Shell
             if (anchorableShown.Content != null)
             {
                 var pane = anchorableShown.Content as PaneViewModel;
-                if (pane != null && pane.HideOnInsert && !anchorableShown.IsAutoHidden)
+                if (pane != null && pane.HideAfterInsert && !anchorableShown.IsAutoHidden)
                 {
                     anchorableShown.ToggleAutoHide();
                 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Diagnosis.Common;
+using System;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -12,6 +13,8 @@ namespace Diagnosis.ViewModels.Screens
         private bool _isAutoHidden;
         private bool _isSelected = false;
         private string _title = null;
+        public event EventHandler<BoolEventArgs> IsAutoHiddenChanging;
+
 
         public string Title
         {
@@ -60,25 +63,10 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public bool IsAutoHidden
-        {
-            get
-            {
-                return _isAutoHidden;
-            }
-            set
-            {
-                if (_isAutoHidden != value)
-                {
-                    _isAutoHidden = value;
-                    logger.DebugFormat("{0} IsAutoHidden = {1}", this, value);
-
-                    OnPropertyChanged(() => IsAutoHidden);
-                }
-            }
-        }
-
-        public bool HideOnInsert
+        /// <summary>
+        /// Anchorable will be autohidden after insert.
+        /// </summary>
+        public bool HideAfterInsert
         {
             get
             {
@@ -89,7 +77,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (_hide != value)
                 {
                     _hide = value;
-                    OnPropertyChanged(() => HideOnInsert);
+                    OnPropertyChanged(() => HideAfterInsert);
                 }
             }
         }
@@ -108,6 +96,24 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        // public bool IsAutoHidden
+        //{
+        //    get
+        //    {
+        //        return _isAutoHidden;
+        //    }
+        //    set
+        //    {
+        //        if (_isAutoHidden != value)
+        //        {
+        //            _isAutoHidden = value;
+        //            logger.DebugFormat("{0} IsAutoHidden = {1}", this, value);
+
+        //            OnPropertyChanged(() => IsAutoHidden);
+        //        }
+        //    }
+        //}
+
         public RelayCommand NoAutoHideCommand
         {
             get
@@ -118,9 +124,28 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public void ShowAutoHidden()
+        {
+            OnIsAutoHiddenChanging(false);
+        }
+
+        public void AutoHide()
+        {
+            OnIsAutoHiddenChanging(true);
+        }
+
         public override string ToString()
         {
             return "pane " + Title;
+        }
+
+        protected virtual void OnIsAutoHiddenChanging(bool value)
+        {
+            var h = IsAutoHiddenChanging;
+            if (h != null)
+            {
+                h(this, new BoolEventArgs(value));
+            }
         }
     }
 }

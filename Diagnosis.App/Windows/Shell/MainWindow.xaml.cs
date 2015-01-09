@@ -3,6 +3,7 @@ using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Screens;
 using Diagnosis.ViewModels.Search.Autocomplete;
 using System.Windows;
+using System.Linq;
 using System.Windows.Input;
 using Xceed.Wpf.AvalonDock.Layout.Serialization;
 using Xceed.Wpf.AvalonDock.Controls;

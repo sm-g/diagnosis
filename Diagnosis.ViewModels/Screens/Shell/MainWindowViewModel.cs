@@ -39,7 +39,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             };
 
-            searchPanel = new SearchViewModel() { Title = "Поиск", HideOnInsert = true };
+            searchPanel = new SearchViewModel() { Title = "Поиск", HideAfterInsert = true };
             Panes = new ObservableCollection<PaneViewModel>();
             Panes.Add(searchPanel);
 
@@ -69,8 +69,11 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
+                    searchPanel.HideAfterInsert = false;
                     searchPanel.IsVisible = true;
                     searchPanel.IsActive = true;
+                    searchPanel.ControlsVisible = true;
+                    searchPanel.ShowAutoHidden();
                 });
             }
         }
