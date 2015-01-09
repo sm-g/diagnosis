@@ -37,7 +37,14 @@ namespace Diagnosis.App.Windows.Shell
 
         public void AfterInsertAnchorable(LayoutRoot layout, LayoutAnchorable anchorableShown)
         {
-
+            if (anchorableShown.Content != null)
+            {
+                var pane = anchorableShown.Content as PaneViewModel;
+                if (pane != null && pane.HideOnInsert && !anchorableShown.IsAutoHidden)
+                {
+                    anchorableShown.ToggleAutoHide();
+                }
+            }
         }
 
 

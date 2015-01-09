@@ -5,6 +5,8 @@ using Diagnosis.ViewModels.Search.Autocomplete;
 using System.Windows;
 using System.Windows.Input;
 using Xceed.Wpf.AvalonDock.Layout.Serialization;
+using Xceed.Wpf.AvalonDock.Controls;
+using Xceed.Wpf.AvalonDock.Layout;
 
 namespace Diagnosis.App.Windows.Shell
 {
@@ -13,8 +15,10 @@ namespace Diagnosis.App.Windows.Shell
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(MainWindow));
         public MainWindow()
         {
+
             InitializeComponent();
 
             this.Subscribe(Event.OpenDialog, (e) =>
@@ -60,6 +64,14 @@ namespace Diagnosis.App.Windows.Shell
 #if DEBUG
                 // debugMenu.Visibility = System.Windows.Visibility.Visible;
 #endif
+            };
+            dockManager.ActiveContentChanged += (s, e) =>
+            {
+                var pane = dockManager.ActiveContent as PaneViewModel;
+                if (pane != null)
+                {
+                    logger.DebugFormat("AD active = {0} ", pane);
+                }
             };
         }
 

@@ -8,6 +8,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private string _contentId = null;
         private bool _isActive = false;
+        private bool _hide;
         private bool _isAutoHidden;
         private bool _isSelected = false;
         private string _title = null;
@@ -77,6 +78,22 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public bool HideOnInsert
+        {
+            get
+            {
+                return _hide;
+            }
+            set
+            {
+                if (_hide != value)
+                {
+                    _hide = value;
+                    OnPropertyChanged(() => HideOnInsert);
+                }
+            }
+        }
+
         public bool IsSelected
         {
             get { return _isSelected; }
@@ -100,6 +117,7 @@ namespace Diagnosis.ViewModels.Screens
                 }, () => false);
             }
         }
+
         public override string ToString()
         {
             return "pane " + Title;

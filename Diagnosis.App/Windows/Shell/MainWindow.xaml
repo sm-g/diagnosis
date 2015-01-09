@@ -21,8 +21,6 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../../Styles/TabControl.xaml" />
-                <ResourceDictionary Source="../../Styles/EmptyToggle.xaml" />
                 <ResourceDictionary Source="../../Styles/AvalonDock.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
@@ -48,9 +46,6 @@
             <DataTemplate DataType="{x:Type diag:SearchViewModel}">
                 <screen:Search />
             </DataTemplate>
-            <!--<Style TargetType="{x:Type xcad:AnchorablePaneTitle}"
-                   BasedOn="{StaticResource AnchorablePaneTitleNoButtons}">
-            </Style>-->
         </ResourceDictionary>
     </Window.Resources>
 
@@ -74,10 +69,23 @@
                        Visibility="{Binding Visible, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
         <shell:MyDockingManager x:Name="dockManager"
-                             Grid.Row="1"
-                             AnchorablesSource="{Binding Panes}"
-                             beh:AvalonDockLayoutSerializer.VM="{Binding ADLayout}">
+                                Grid.Row="1"
+                                AnchorablesSource="{Binding Panes}"
+                                beh:AvalonDockLayoutSerializer.VM="{Binding ADLayout}">
+            <shell:MyDockingManager.Resources>
+                <Style x:Key="{x:Type xcad:LayoutAutoHideWindowControl}"
+                       TargetType="{x:Type xcad:LayoutAutoHideWindowControl}">
+                    <!--<Setter Property="Background"
+                            Value="{DynamicResource AvalonDock_ThemeMetro_Background}" />
+                    <Setter Property="AnchorableStyle"
+                            Value="{StaticResource AvalonDock_ThemeMetro_LayoutAnchorableControl}" />-->
+                </Style>
+                <!--<Style TargetType="{x:Type xcad:AnchorablePaneTitle}"
+                   BasedOn="{StaticResource AnchorablePaneTitleNoButtons}">
+            </Style>-->
+            </shell:MyDockingManager.Resources>
             <shell:MyDockingManager.Style>
+
                 <Style TargetType="xcad:DockingManager"
                        BasedOn="{StaticResource {x:Type xcad:DockingManager}}">
                     <Setter Property="AnchorableContextMenu"
@@ -102,8 +110,11 @@
                                     Value="{Binding Model.IsActive, Mode=TwoWay}" />
                             <Setter Property="CanClose"
                                     Value="False" />
+
                             <Setter Property="Visibility"
                                     Value="{Binding Model.IsVisible, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter={x:Static Visibility.Hidden}}" />
+                            <Setter Property="CanClose"
+                                    Value="False" />
                             <Setter Property="MaxWidth"
                                     Value="300" />
                             <Setter Property="MinWidth"

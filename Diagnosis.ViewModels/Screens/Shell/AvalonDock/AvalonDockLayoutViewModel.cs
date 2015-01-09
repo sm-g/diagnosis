@@ -105,6 +105,7 @@ namespace Diagnosis.ViewModels.Screens
             var layoutSerializer = new XmlLayoutSerializer(docManager);
             layoutSerializer.LayoutSerializationCallback += (s, args) =>
             {
+                logger.DebugFormat("deserialize {0}, content: {1}", args.Model.ContentId, args.Content);
                 // This can happen if the previous session was loading a file
                 // but was unable to initialize the view ...
                 if (args.Model.ContentId == null)
@@ -112,7 +113,6 @@ namespace Diagnosis.ViewModels.Screens
                     args.Cancel = true;
                     return;
                 }
-
                 // ReloadContentOnStartUp(args);
             };
 

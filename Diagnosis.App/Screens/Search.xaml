@@ -12,8 +12,8 @@
              x:Name="search"
              mc:Ignorable="d"
              d:DesignHeight="400"
-             MinWidth="300"
-             MaxWidth="300">
+             Background="White"
+             MinWidth="300">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -146,7 +146,7 @@
                                 Orientation="Horizontal" />
                     </Grid>
                 </DockPanel>
-                <DockPanel Style="{StaticResource line}">
+                <DockPanel Style="{StaticResource line}" HorizontalAlignment="Left">
                     <editors:CategoryChooser CategoryMultiSelection="{StaticResource True}" />
                 </DockPanel>
                 <!--<DockPanel>
