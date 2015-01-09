@@ -73,13 +73,11 @@
         <shell:MenuBar DataContext="{Binding MenuBar}"
                        Visibility="{Binding Visible, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-        <xcad:DockingManager x:Name="dockManager"
+        <shell:MyDockingManager x:Name="dockManager"
                              Grid.Row="1"
                              AnchorablesSource="{Binding Panes}"
                              beh:AvalonDockLayoutSerializer.VM="{Binding ADLayout}">
-            <xcad:DockingManager.Resources>
-            </xcad:DockingManager.Resources>
-            <xcad:DockingManager.Style>
+            <shell:MyDockingManager.Style>
                 <Style TargetType="xcad:DockingManager"
                        BasedOn="{StaticResource {x:Type xcad:DockingManager}}">
                     <Setter Property="AnchorableContextMenu"
@@ -87,8 +85,8 @@
                     <Setter Property="BorderThickness"
                             Value="0" />
                 </Style>
-            </xcad:DockingManager.Style>
-            <xcad:DockingManager.LayoutItemContainerStyleSelector>
+            </shell:MyDockingManager.Style>
+            <shell:MyDockingManager.LayoutItemContainerStyleSelector>
                 <shell:AvalonStyleSelector>
                     <shell:AvalonStyleSelector.PanelStyle>
                         <Style TargetType="{x:Type xcad:LayoutAnchorableItem}">
@@ -136,25 +134,25 @@
                         </Style>
                     </shell:AvalonStyleSelector.ScreenStyle>
                 </shell:AvalonStyleSelector>
-            </xcad:DockingManager.LayoutItemContainerStyleSelector>
-            <xcad:DockingManager.AnchorableHeaderTemplate>
+            </shell:MyDockingManager.LayoutItemContainerStyleSelector>
+            <shell:MyDockingManager.AnchorableHeaderTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding Title}" />
                     </StackPanel>
                 </DataTemplate>
-            </xcad:DockingManager.AnchorableHeaderTemplate>
-            <xcad:DockingManager.AnchorableTitleTemplate>
+            </shell:MyDockingManager.AnchorableHeaderTemplate>
+            <shell:MyDockingManager.AnchorableTitleTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <!--<TextBlock Text="{Binding Title}" />-->
                     </StackPanel>
                 </DataTemplate>
-            </xcad:DockingManager.AnchorableTitleTemplate>
-            <xcad:DockingManager.LayoutUpdateStrategy>
+            </shell:MyDockingManager.AnchorableTitleTemplate>
+            <shell:MyDockingManager.LayoutUpdateStrategy>
                 <shell:LayoutInitializer />
-            </xcad:DockingManager.LayoutUpdateStrategy>
-        </xcad:DockingManager>
+            </shell:MyDockingManager.LayoutUpdateStrategy>
+        </shell:MyDockingManager>
 
         <ItemsControl DataContext="{Binding OverlayService}"
                       ItemsSource="{Binding Overlays}"
@@ -163,16 +161,15 @@
                       Grid.Row="1">
         </ItemsControl>
         <Menu x:Name="debugMenu"
+              Visibility="Collapsed"
               Grid.Row="2">
             <MenuItem Header="_Save layout"
                       x:Name="SaveLayout"
-                      Visibility="Collapsed"
                       Command="{Binding ADLayout.SaveLayoutCommand}"
                       CommandParameter="">
             </MenuItem>
             <MenuItem Header="_Load layout"
                       x:Name="LoadLayout"
-                      Visibility="Collapsed"
                       Command="{Binding ADLayout.LoadLayoutCommand}">
             </MenuItem>
         </Menu>

@@ -316,7 +316,7 @@
     <Compile Include="Windows\Shell\AvalonTemplateSelector.cs" />
     <Compile Include="Windows\Shell\AvalonStyleSelector.cs" />
     <Compile Include="Windows\Shell\LayoutInitializer.cs" />
-    <Compile Include="Windows\Shell\MyAvalonDockingManager.cs" />
+    <Compile Include="Windows\Shell\MyDockingManager.cs" />
     <Compile Include="Windows\Editors\WordEditorWindow.xaml.cs">
       <DependentUpon>WordEditorWindow.xaml</DependentUpon>
     </Compile>

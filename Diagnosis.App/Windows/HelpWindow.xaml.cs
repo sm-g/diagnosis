@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Text;
 using System.Windows;
+using Diagnosis.Common;
 
 namespace Diagnosis.App.Windows
 {
@@ -14,7 +15,7 @@ namespace Diagnosis.App.Windows
             InitializeComponent();
             Loaded += (s, e) =>
             {
-                MemoryStream ms = new MemoryStream(UTF8Encoding.Default.GetBytes(Diagnosis.App.Properties.Resources.Help));
+                MemoryStream ms = Diagnosis.App.Properties.Resources.Help.ToMemoryStream();
                 rtb.Selection.Load(ms, DataFormats.Rtf);
             };
         }

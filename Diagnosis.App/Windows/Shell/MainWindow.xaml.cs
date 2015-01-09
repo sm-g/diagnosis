@@ -57,14 +57,9 @@ namespace Diagnosis.App.Windows.Shell
             DataContext = new MainWindowViewModel();
             Loaded += (s, e) =>
             {
-#if !DEBUG
-                debugMenu.Visibility = System.Windows.Visibility.Collapsed;
+#if DEBUG
+                // debugMenu.Visibility = System.Windows.Visibility.Visible;
 #endif
-            };
-            dockManager.Loaded += (s, e) =>
-            {
-                //((MainWindowViewModel)DataContext).switcher.OpenScreen(Screen.Login, replace: true);
-
             };
         }
 

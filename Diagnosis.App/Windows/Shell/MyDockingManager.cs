@@ -6,12 +6,11 @@ using Xceed.Wpf.AvalonDock;
 
 namespace Diagnosis.App.Windows.Shell
 {
-    public class MyAvalonDockingManager : DockingManager
+    public class MyDockingManager : DockingManager
     {
         protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
         {
-
-            base.OnPreviewKeyDown(e);
+            // don't Show NavigatorWindow
         }
     }
 }
