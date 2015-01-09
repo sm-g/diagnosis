@@ -1,4 +1,5 @@
-﻿using log4net;
+﻿using Diagnosis.Common.Util;
+using log4net;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
@@ -33,7 +34,7 @@ namespace Diagnosis.Common
 
         private DateSetting _dateSetting;
         private UnitSetting _unitSetting;
-        private bool inSetting;
+        private ReentrantFlag inSetting = new ReentrantFlag();
 
         /// <summary>
         /// Момент, с которого считается смещение.
@@ -63,10 +64,7 @@ namespace Diagnosis.Common
                 {
                     _year = value;
                     //   logger.DebugFormat("{0}, set year = {1}", this, value);
-                    if (!inSetting)
-                    {
-                        SetDate(value, Month, Day);
-                    }
+                    SetDate(value, Month, Day);
                     OnPropertyChanged("Year");
                     OnPropertyChanged("IsEmpty");
                 }
@@ -88,10 +86,7 @@ namespace Diagnosis.Common
                 {
                     _month = value;
                     //  logger.DebugFormat("{0}, set month = {1}", this, value);
-                    if (!inSetting)
-                    {
-                        SetDate(Year, value, Day);
-                    }
+                    SetDate(Year, value, Day);
                     OnPropertyChanged("Month");
                     OnPropertyChanged("IsEmpty");
                 }
@@ -113,10 +108,7 @@ namespace Diagnosis.Common
                 {
                     _day = value;
                     //   logger.DebugFormat("{0}, set day = {1}", this, value);
-                    if (!inSetting)
-                    {
-                        SetDate(Year, Month, value);
-                    }
+                    SetDate(Year, Month, value);
                     OnPropertyChanged("Day");
                     OnPropertyChanged("IsEmpty");
                 }
@@ -138,10 +130,7 @@ namespace Diagnosis.Common
                 {
                     _offset = value;
                     //   logger.DebugFormat("{0}, set offset = {1}", this, value);
-                    if (!inSetting)
-                    {
-                        SetOffset(value, Unit, true);
-                    }
+                    SetOffset(value, Unit, true);
                     OnPropertyChanged("Offset");
                 }
             }
@@ -162,17 +151,17 @@ namespace Diagnosis.Common
                 {
                     _unit = value;
                     //    logger.DebugFormat("{0}, set unit = {1}", this, value);
-                    if (!inSetting)
+                    if (inSetting.CanEnter)
                     {
                         UnitFixed = true;
-                        try
-                        {
-                            SetOffset(Offset, value);
-                        }
-                        catch (Exception e)
-                        {
-                            logger.DebugFormat("{0}", e.Message);
-                        }
+                    }
+                    try
+                    {
+                        SetOffset(Offset, value);
+                    }
+                    catch (Exception e)
+                    {
+                        logger.DebugFormat("{0}", e.Message);
                     }
                     OnPropertyChanged("Unit");
                 }
@@ -374,29 +363,31 @@ namespace Diagnosis.Common
         /// <param name="forceSetDateByOffsetUnit">Установка даты при задании только смещения или создании объекта.</param>
         private void SetOffset(int? offset, DateUnit unit, bool forceSetDateByOffsetUnit = false)
         {
-            inSetting = true;
-
-            Offset = offset;
-            Unit = unit;
-
-            if (forceSetDateByOffsetUnit)
+            if (inSetting.CanEnter)
             {
-                SetDateByOffsetUnit();
-                inSetting = false;
-                return;
-            }
+                using (inSetting.Enter())
+                {
+                    Offset = offset;
+                    Unit = unit;
 
-            switch (UnitSettingStrategy)
-            {
-                case UnitSetting.RoundsOffset:
-                    RoundOffset();
-                    break;
+                    if (forceSetDateByOffsetUnit)
+                    {
+                        SetDateByOffsetUnit();
+                        return;
+                    }
 
-                case UnitSetting.SetsDate:
-                    SetDateByOffsetUnit();
-                    break;
+                    switch (UnitSettingStrategy)
+                    {
+                        case UnitSetting.RoundsOffset:
+                            RoundOffset();
+                            break;
+
+                        case UnitSetting.SetsDate:
+                            SetDateByOffsetUnit();
+                            break;
+                    }
+                }
             }
-            inSetting = false;
         }
 
         /// <summary>
@@ -404,65 +395,66 @@ namespace Diagnosis.Common
         /// </summary>
         private void SetDate(int? year, int? month, int? day)
         {
-            // нулевые значения допустимы
-            var y = year != 0 ? year : null;
-            var m = month != 0 ? month : null;
-            var d = day != 0 ? day : null;
-
-            inSetting = true;
-            Year = y;
-            Month = m;
-            Day = d;
-
-            if (IsEmpty)
+            if (inSetting.CanEnter)
             {
-                Offset = null;
-                inSetting = false;
-                return;
-            }
-
-            // если нет года или года и месяца, считаем их из Now
-            bool yearWas = Year.HasValue;
-            if (!Year.HasValue)
-            {
-                Year = Now.Year;
-            }
-            if (!Month.HasValue)
-            {
-                if (yearWas)
+                using (inSetting.Enter())
                 {
-                    if (CutsDate)
+                    // нулевые значения допустимы
+                    var y = year != 0 ? year : null;
+                    var m = month != 0 ? month : null;
+                    var d = day != 0 ? day : null;
+                    Year = y;
+                    Month = m;
+                    Day = d;
+
+                    if (IsEmpty)
                     {
-                        Day = null;
+                        Offset = null;
+                        return;
+                    }
+
+                    // если нет года или года и месяца, считаем их из Now
+                    bool yearWas = Year.HasValue;
+                    if (!Year.HasValue)
+                    {
+                        Year = Now.Year;
+                    }
+                    if (!Month.HasValue)
+                    {
+                        if (yearWas)
+                        {
+                            if (CutsDate)
+                            {
+                                Day = null;
+                            }
+                        }
+                        else
+                        {
+                            Month = Now.Month;
+                        }
+                    }
+
+                    ValidateDate();
+
+                    switch (DateSettingStrategy)
+                    {
+                        case DateSetting.SetsUnitSilly:
+                            SetOffsetUnitByDateSilly(yearWas);
+                            break;
+
+                        case DateSetting.RoundsUnit:
+                            SetOffsetUnitByDateRound();
+                            break;
+
+                        case DateSetting.SavesUnit:
+                            if (UnitFixed)
+                                RoundOffset();
+                            else
+                                SetOffsetUnitByDateRound(); // from ctor
+                            break;
                     }
                 }
-                else
-                {
-                    Month = Now.Month;
-                }
             }
-
-            ValidateDate();
-
-            switch (DateSettingStrategy)
-            {
-                case DateSetting.SetsUnitSilly:
-                    SetOffsetUnitByDateSilly(yearWas);
-                    break;
-
-                case DateSetting.RoundsUnit:
-                    SetOffsetUnitByDateRound();
-                    break;
-
-                case DateSetting.SavesUnit:
-                    if (UnitFixed)
-                        RoundOffset();
-                    else
-                        SetOffsetUnitByDateRound(); // from ctor
-                    break;
-            }
-
-            inSetting = false;
         }
 
         /// <summary>

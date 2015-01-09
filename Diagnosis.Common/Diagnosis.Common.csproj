@@ -164,6 +164,7 @@
     <Compile Include="Util\LocalizableDescriptionAttribute.cs" />
     <Compile Include="Util\PasswordService.cs" />
     <Compile Include="Util\PerformanceTester.cs" />
+    <Compile Include="Util\ReentrantFlag.cs" />
     <Compile Include="Util\ReflectionHelper.cs" />
   </ItemGroup>
   <ItemGroup>
