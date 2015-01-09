@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Diagnosis.Common;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -148,19 +149,7 @@ namespace Diagnosis.ViewModels.Search
                 IsResultsVisible = true;
             };
 
-           // Filter.Clear(); // no results made here
-        }
-
-        [Serializable]
-        public class ObjectEventArgs : EventArgs
-        {
-            public readonly object arg;
-
-            [System.Diagnostics.DebuggerStepThrough]
-            public ObjectEventArgs(object arg)
-            {
-                this.arg = arg;
-            }
+            // Filter.Clear(); // no results made here
         }
     }
 

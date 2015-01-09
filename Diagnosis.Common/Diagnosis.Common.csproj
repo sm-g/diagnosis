@@ -174,7 +174,7 @@
     <Compile Include="Util\Comparers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Util\DebugOutput.cs" />
-    <Compile Include="Util\EventArgs\BoolEventArgs.cs" />
+    <Compile Include="Util\EventArgs.cs" />
     <Compile Include="Util\ExpressionHelper.cs" />
     <Compile Include="DateHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -586,17 +586,7 @@ namespace Diagnosis.ViewModels.Screens
 
     }
 
-    [Serializable]
-    public class ListEventArgs<T> : EventArgs
-    {
-        public readonly IList<T> list;
 
-        [System.Diagnostics.DebuggerStepThrough]
-        public ListEventArgs(IList<T> list)
-        {
-            this.list = list;
-        }
-    }
 
     [Serializable]
     public class HrData
