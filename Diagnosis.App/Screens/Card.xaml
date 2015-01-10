@@ -100,7 +100,7 @@
 
         <Border Grid.Row="2" Grid.Column="1"
                 BorderThickness="0,1,0,0"
-                SnapsToDevicePixels="True"
+                UseLayoutRounding="True"
                 Background="{StaticResource hrEditorBackgroundBrush}"
                 Visibility="{Binding HrEditor.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Border.BorderBrush>
