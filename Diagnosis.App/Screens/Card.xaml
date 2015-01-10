@@ -27,7 +27,7 @@
                     Command="{Binding HrList.AddHealthRecordCommand}" />
     </UserControl.InputBindings>
 
-    <Grid Margin="10">
+    <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"
                               MinWidth="150" />

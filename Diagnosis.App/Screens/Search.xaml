@@ -12,7 +12,6 @@
              x:Name="search"
              mc:Ignorable="d"
              d:DesignHeight="400"
-             Background="White"
              MinWidth="300">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -45,7 +44,7 @@
             </CollectionViewSource>-->
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
+    <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />

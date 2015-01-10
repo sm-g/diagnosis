@@ -9,11 +9,11 @@
              mc:Ignorable="d"
              x:Name="doctors"
              FocusManager.IsFocusScope="True"
+             Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
              d:DesignHeight="300"
              d:DesignWidth="400">
     <!--DoctorsListViewModel-->
     <UserControl.Resources>
-        
     </UserControl.Resources>
 
     <Grid HorizontalAlignment="Stretch"

@@ -23,7 +23,7 @@
                     Command="{Binding SelectedWord.EditCommand}" />
     </UserControl.InputBindings>
 
-    <Grid Margin="10">
+    <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />

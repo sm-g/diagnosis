@@ -15,7 +15,7 @@
                BasedOn="{StaticResource formLine}">
         </Style>
     </UserControl.Resources>
-    <Grid>
+    <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
         <StackPanel Width="300">
             <TextBlock Style="{StaticResource ScreenTitle}"
                        Padding="5,0,0,10">Вход</TextBlock>

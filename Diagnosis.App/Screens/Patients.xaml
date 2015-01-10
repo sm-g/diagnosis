@@ -9,6 +9,7 @@
              mc:Ignorable="d"
              x:Name="patients"
              FocusManager.IsFocusScope="True"
+             Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
              d:DesignHeight="300"
              d:DesignWidth="400">
     <!--PatientsListViewModel-->
