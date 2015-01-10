@@ -20,8 +20,9 @@ namespace Diagnosis.App.Controls
 
         protected override Size MeasureOverride(Size constraint)
         {
+            var width = double.IsPositiveInfinity(constraint.Width) ? 0 : constraint.Width;
+            Size panelSize = new Size(width, 0);
             Size curLineSize = new Size();
-            Size panelSize = new Size(constraint.Width, 0);
 
             UIElementCollection children = this.InternalChildren;
 
