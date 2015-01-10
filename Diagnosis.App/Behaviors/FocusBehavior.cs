@@ -31,14 +31,14 @@ namespace Diagnosis.App.Behaviors
         {
             control.SetValue(FocusFirstProperty, value);
         }
-        public static bool GetFocusablePanel(Control control)
+        public static bool GetFocusablePanel(Panel panel)
         {
-            return (bool)control.GetValue(FocusablePanelProperty);
+            return (bool)panel.GetValue(FocusablePanelProperty);
         }
 
-        public static void SetFocusablePanel(Control control, bool value)
+        public static void SetFocusablePanel(Panel panel, bool value)
         {
-            control.SetValue(FocusablePanelProperty, value);
+            panel.SetValue(FocusablePanelProperty, value);
         }
 
 
