@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using EventAggregator;
-using Diagnosis.Common;
 using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
@@ -10,7 +8,9 @@ namespace Diagnosis.ViewModels.Screens
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(MainWindowViewModel));
         public ScreenSwitcher switcher;
-        SearchViewModel searchPanel;
+        private SearchViewModel searchPanel;
+        private bool? searchVis = null;
+
         public MainWindowViewModel()
         {
             switcher = new ScreenSwitcher();
@@ -22,27 +22,30 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     MenuBar.Visible = switcher.Screen != Screen.Login;
 
-                    var curScreen = Panes.FirstOrDefault(p => p.ContentId == "Screen");
-                    logger.DebugFormat("curScreen {0} -> {1}", curScreen != null ? curScreen.Title : "null", CurrentView.Title);
+                    var prevScreen = Panes.FirstOrDefault(p => p.ContentId == "Screen");
+                    logger.DebugFormat("CurrentView '{0}' -> '{1}'", prevScreen, CurrentView);
 
-                    var showSearch =
-                        (switcher.Screen != Screen.Login) &&
-                        (switcher.Screen != Screen.Doctors);
-                    searchPanel.IsVisible = showSearch;
+                    // на первом экране поиск видно
+                    searchPanel.IsVisible = CanShowSearch && (searchVis.HasValue ? searchVis.Value : true);
 
                     Panes.Add(CurrentView);
-                    Panes.Remove(curScreen);
+                    Panes.Remove(prevScreen);
                     CurrentView.IsActive = true;
-
 
                     OnPropertyChanged("CurrentView");
                 }
             };
 
             searchPanel = new SearchViewModel() { Title = "Поиск", HideAfterInsert = true };
+            searchPanel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "IsVisible")
+                {
+                    if (CanShowSearch) searchVis = searchPanel.IsVisible;
+                }
+            };
             Panes = new ObservableCollection<PaneViewModel>();
             Panes.Add(searchPanel);
-
             ADLayout = new AvalonDockLayoutViewModel(Panes);
             MenuBar = new MenuBarViewModel(switcher, searchPanel);
 
@@ -55,13 +58,12 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         public MenuBarViewModel MenuBar { get; private set; }
+
         public OverlayServiceViewModel OverlayService { get; private set; }
 
         public ObservableCollection<PaneViewModel> Panes { get; private set; }
 
         public AvalonDockLayoutViewModel ADLayout { get; private set; }
-
-
 
         public RelayCommand OpenSearchCommand
         {
@@ -75,6 +77,15 @@ namespace Diagnosis.ViewModels.Screens
                     searchPanel.ControlsVisible = true;
                     searchPanel.ShowAutoHidden();
                 });
+            }
+        }
+
+        private bool CanShowSearch
+        {
+            get
+            {
+                return (switcher.Screen != Screen.Login) &&
+                      (switcher.Screen != Screen.Doctors);
             }
         }
     }
