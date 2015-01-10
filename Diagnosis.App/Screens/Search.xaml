@@ -51,8 +51,8 @@
             <RowDefinition />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <TextBlock Style="{StaticResource ScreenTitle}"
-                   Margin="5,0,0,0">Поиск</TextBlock>
+        <!--<TextBlock Style="{StaticResource ScreenTitle}"
+                   Margin="5,0,0,0">Поиск</TextBlock>-->
         <Expander x:Name="searchControls"
                   Style="{StaticResource SplitExpanderStyle}"
                   Grid.Row="1"

@@ -114,7 +114,7 @@ namespace Diagnosis.ViewModels.Screens
         //    }
         //}
 
-        public RelayCommand NoAutoHideCommand
+        public RelayCommand NothingCommand
         {
             get
             {

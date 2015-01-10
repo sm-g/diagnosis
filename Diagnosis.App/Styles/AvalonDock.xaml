@@ -20,13 +20,30 @@
                                                   ContentTemplate="{Binding Model.Root.Manager.AnchorableTitleTemplate, RelativeSource={RelativeSource TemplatedParent}}"
                                                   ContentTemplateSelector="{Binding Model.Root.Manager.AnchorableTitleTemplateSelector, RelativeSource={RelativeSource TemplatedParent}}" />
                             </xcad:DropDownControlArea>
-
-                          
                         </Grid>
                     </Border>
-                
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style x:Key="AnchorablePaneTitleEmpty"
+           TargetType="xcad:AnchorablePaneTitle"
+           BasedOn="{StaticResource {x:Type xcad:AnchorablePaneTitle}}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding ContentId}"
+                         Value="Screen">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <!--<Border Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}">                               
+                            </Border>-->
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 </ResourceDictionary>

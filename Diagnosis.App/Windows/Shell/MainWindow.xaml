@@ -22,6 +22,12 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../../Styles/AvalonDock.xaml" />
+                <!--<ResourceDictionary Source="/Xceed.Wpf.AvalonDock.Themes.Aero;Component/Theme.xaml" />
+                <ResourceDictionary Source="/Xceed.Wpf.AvalonDock.Themes.Metro;Component/Theme.xaml" />
+                <ResourceDictionary Source="/Xceed.Wpf.AvalonDock.Themes.VS2010;Component/Theme.xaml" />-->
+                <!--<ResourceDictionary Source="/Xceed.Wpf.AvalonDock.Themes.Expression;Component/Theme.xaml" />
+                <ResourceDictionary Source="/Xceed.Wpf.AvalonDock.Themes.Expression;Component/DarkTheme.xaml" />
+                <ResourceDictionary Source="/Xceed.Wpf.AvalonDock.Themes.Expression;Component/LightTheme.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate DataType="{x:Type diag:LoginViewModel}">
@@ -72,24 +78,19 @@
                                 Grid.Row="1"
                                 AnchorablesSource="{Binding Panes}"
                                 beh:AvalonDockLayoutSerializer.VM="{Binding ADLayout}">
+            <!--<shell:MyDockingManager.Theme>
+                <xcad:MetroTheme />
+            </shell:MyDockingManager.Theme>-->
             <shell:MyDockingManager.Resources>
-                <Style x:Key="{x:Type xcad:LayoutAutoHideWindowControl}"
-                       TargetType="{x:Type xcad:LayoutAutoHideWindowControl}">
-                    <!--<Setter Property="Background"
-                            Value="{DynamicResource AvalonDock_ThemeMetro_Background}" />
-                    <Setter Property="AnchorableStyle"
-                            Value="{StaticResource AvalonDock_ThemeMetro_LayoutAnchorableControl}" />-->
+                <Style TargetType="{x:Type xcad:AnchorablePaneTitle}"
+                       BasedOn="{StaticResource AnchorablePaneTitleEmpty}">
                 </Style>
-                <!--<Style TargetType="{x:Type xcad:AnchorablePaneTitle}"
-                   BasedOn="{StaticResource AnchorablePaneTitleNoButtons}">
-            </Style>-->
             </shell:MyDockingManager.Resources>
             <shell:MyDockingManager.Style>
-
                 <Style TargetType="xcad:DockingManager"
                        BasedOn="{StaticResource {x:Type xcad:DockingManager}}">
-                    <Setter Property="AnchorableContextMenu"
-                            Value="{x:Null}" />
+                    <!--<Setter Property="AnchorableContextMenu"
+                            Value="{x:Null}" />-->
                     <Setter Property="BorderThickness"
                             Value="0" />
                     <Setter Property="Background"
@@ -115,12 +116,8 @@
 
                             <Setter Property="Visibility"
                                     Value="{Binding Model.IsVisible, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter={x:Static Visibility.Hidden}}" />
-                            <Setter Property="CanClose"
-                                    Value="False" />
-                            <Setter Property="MaxWidth"
-                                    Value="300" />
-                            <Setter Property="MinWidth"
-                                    Value="100" />
+                            <Setter Property="DockAsDocumentCommand"
+                                    Value="{Binding Model.NothingCommand}" />
                         </Style>
                     </shell:AvalonStyleSelector.PanelStyle>
                     <shell:AvalonStyleSelector.ScreenStyle>
@@ -143,7 +140,7 @@
                             <Setter Property="CanHide"
                                     Value="False" />
                             <Setter Property="AutoHideCommand"
-                                    Value="{Binding Model.NoAutoHideCommand}" />
+                                    Value="{Binding Model.NothingCommand}" />
                         </Style>
                     </shell:AvalonStyleSelector.ScreenStyle>
                 </shell:AvalonStyleSelector>
@@ -155,13 +152,25 @@
                     </StackPanel>
                 </DataTemplate>
             </shell:MyDockingManager.AnchorableHeaderTemplate>
-            <shell:MyDockingManager.AnchorableTitleTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <!--<TextBlock Text="{Binding Title}" />-->
-                    </StackPanel>
-                </DataTemplate>
-            </shell:MyDockingManager.AnchorableTitleTemplate>
+            <shell:MyDockingManager.AnchorableTitleTemplateSelector>
+                <shell:AvalonTemplateSelector>
+                    <shell:AvalonTemplateSelector.PanelTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Title}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </shell:AvalonTemplateSelector.PanelTemplate>
+                    <shell:AvalonTemplateSelector.ScreenTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Title}"
+                                           Style="{StaticResource ScreenTitle}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </shell:AvalonTemplateSelector.ScreenTemplate>
+                </shell:AvalonTemplateSelector>
+            </shell:MyDockingManager.AnchorableTitleTemplateSelector>
             <shell:MyDockingManager.LayoutUpdateStrategy>
                 <shell:LayoutInitializer />
             </shell:MyDockingManager.LayoutUpdateStrategy>
