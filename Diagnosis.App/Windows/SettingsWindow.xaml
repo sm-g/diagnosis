@@ -5,8 +5,7 @@
         xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
         beh:DialogCloser.DialogResult="{Binding DialogResult}"
         Title="Настройки"
-        Height="150"
-        Width="300"
+        SizeToContent="WidthAndHeight"
         ShowInTaskbar="False"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner">

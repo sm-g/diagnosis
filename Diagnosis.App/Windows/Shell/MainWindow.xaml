@@ -12,6 +12,8 @@
         x:Class="Diagnosis.App.Windows.Shell.MainWindow"
         mc:Ignorable="d"
         x:Name="root"
+        MinWidth="200"
+        MinHeight="200"
         Title="{Binding CurrentView.Title}"
         Height="{Binding Path=Default.MainWindowHeight, Mode=TwoWay, Source={StaticResource Settings}}"
         Width="{Binding Path=Default.MainWindowWidth, Mode=TwoWay, Source={StaticResource Settings}}"

@@ -5,7 +5,7 @@
         xmlns:ex="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
         Title="{Binding Title}"
-        Height="170"
+        SizeToContent="Height"
         Width="300"
         MinWidth="200"
         beh:DialogCloser.DialogResult="{Binding DialogResult}"
