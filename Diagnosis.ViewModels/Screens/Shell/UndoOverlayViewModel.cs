@@ -13,10 +13,6 @@ namespace Diagnosis.ViewModels.Screens
     public class UndoOverlayViewModel : ViewModelBase
     {
         private const string messageTemplate = "Удален{0} {1} {2}";  // удалены 5 записей
-        private static string[] patients = new string[3] { "пациент", "пациента", "пациентов" };
-        private static string[] courses = new string[3] { "курс", "курса", "курсов" };
-        private static string[] apps = new string[3] { "осмотр", "осмотра", "осмотров" };
-        private static string[] hrs = new string[3] { "запись", "записи", "записей" };
         private readonly Action<UndoOverlayViewModel> onClose;
         private readonly List<Action> undos;
         private readonly List<Action> todos;
@@ -81,10 +77,10 @@ namespace Diagnosis.ViewModels.Screens
             int ending = Plurals.GetPluralEnding(count);
 
             var @switch = new Dictionary<Type, Func<string>> {
-                { typeof(Patient),() => patients[ending] },
-                { typeof(Course), () => courses[ending] },
-                { typeof(Appointment), () => apps[ending] },
-                { typeof(HealthRecord),() => hrs[ending] },
+                { typeof(Patient),() => Plurals.patients[ending] },
+                { typeof(Course), () => Plurals.courses[ending] },
+                { typeof(Appointment), () => Plurals.apps[ending] },
+                { typeof(HealthRecord),() => Plurals.hrs[ending] },
             };
             return @switch[type]();
         }
