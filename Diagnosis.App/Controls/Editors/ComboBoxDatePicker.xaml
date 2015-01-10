@@ -22,7 +22,7 @@
                   IsEditable="True"
                   SelectionChanged="comboYears_SelectionChanged"
                   LostFocus="comboYears_LostFocus"
-                  SelectedValue="{Binding Year, Mode=TwoWay, FallbackValue='', Converter={StaticResource IntToString}, ElementName=root}">
+                  SelectedValue="{Binding Year, FallbackValue='', Converter={StaticResource IntToString}, ElementName=root}">
             <controls:WatermarkService.Watermark>
                 <TextBlock Style="{StaticResource watermark}"
                            Margin="5,0,0,0">Год</TextBlock>
@@ -32,13 +32,15 @@
                   Style="{StaticResource comboRight}"
                   MinWidth="80"
                   SelectionChanged="comboMonths_SelectionChanged"
-                  SelectedValue="{Binding Month, Mode=TwoWay, FallbackValue='', Converter={StaticResource MonthToString}, ElementName=root}" />
+                  SelectedValue="{Binding Month, FallbackValue='', Converter={StaticResource MonthToString}, ElementName=root}" />
         <ComboBox x:Name="comboDays"
                   MinWidth="40"
                   IsEditable="True"
                   SelectionChanged="comboDays_SelectionChanged"
                   LostFocus="comboDays_LostFocus"
-                  SelectedValue="{Binding Day, Mode=TwoWay, FallbackValue='', Converter={StaticResource IntToString}, ElementName=root}">
+                  SelectedValue="{Binding Day, FallbackValue='', Converter={StaticResource IntToString}, ElementName=root}">
         </ComboBox>
+
+        <!--<Slider Value="{Binding YearsDepth, ElementName=root}" Minimum="-5" Maximum="10" Width="100"/>-->
     </StackPanel>
 </UserControl>

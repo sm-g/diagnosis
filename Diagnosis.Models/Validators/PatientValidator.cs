@@ -15,7 +15,7 @@ namespace Diagnosis.Models.Validators
             RuleFor(p => p.LastName).Length(0, 20);
             RuleFor(p => p.MiddleName).Length(0, 20);
             RuleFor(p => p.FirstName).Length(0, 20);
-            RuleFor(p => p.Age).InclusiveBetween(0, 120);
+            RuleFor(p => p.Age).GreaterThanOrEqualTo(0);
 
             Custom(p =>
             {
@@ -27,7 +27,7 @@ namespace Diagnosis.Models.Validators
                 }
                 catch (Exception)
                 {
-                    return new ValidationFailure("Date", "Неверная дата.");
+                    return new ValidationFailure("Date", "Неверная дата рождения.");
                 }
 
             });

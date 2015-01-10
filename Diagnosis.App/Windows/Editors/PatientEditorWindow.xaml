@@ -53,9 +53,9 @@
                     <Label Content="Дата рождения" />
                     <editors:ComboBoxDatePicker x:Name="comboDatePicker"
                                                 VerticalAlignment="Top"
-                                                Year="{Binding BirthYear, Mode=TwoWay}"
-                                                Month="{Binding BirthMonth, Mode=TwoWay}"
-                                                Day="{Binding BirthDay, Mode=TwoWay}">
+                                                Year="{Binding BirthYear}"
+                                                Month="{Binding BirthMonth}"
+                                                Day="{Binding BirthDay}">
                     </editors:ComboBoxDatePicker>
                 </DockPanel>
                 <DockPanel>

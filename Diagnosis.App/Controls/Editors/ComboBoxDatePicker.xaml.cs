@@ -2,6 +2,7 @@
 using log4net;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -29,7 +30,42 @@ namespace Diagnosis.App.Controls.Editors
         }
 
         public static readonly DependencyProperty YearProperty =
-            DependencyProperty.Register("Year", typeof(int?), typeof(ComboBoxDatePicker));
+            DependencyProperty.Register("Year", typeof(int?), typeof(ComboBoxDatePicker),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                    new PropertyChangedCallback(OnYearChanged)
+            // new CoerceValueCallback(CoerceYear)
+                    ));
+
+
+        private static void OnYearChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            logger.DebugFormat("year {0} -> {1}", e.OldValue, e.NewValue);
+
+            var cdp = (ComboBoxDatePicker)d;
+
+            //var coerced = CoerceYear(d, e.NewValue);
+            //if (coerced != e.NewValue)
+            //{
+            //    cdp.Year = (int?)coerced;
+            //}
+            // else
+            // смена года — было 29 февраля, меняем на 28
+            cdp.FillDaysCombo();
+        }
+
+        private static object CoerceYear(DependencyObject d, object baseValue)
+        {
+            var cdp = (ComboBoxDatePicker)d;
+            var newYear = (int?)baseValue;
+            if (newYear.HasValue && newYear.Value < cdp.MinYear)
+            {
+                logger.DebugFormat("coerce year {0}", baseValue);
+                // cdp.Year = cdp.MinYear;
+                return cdp.MinYear;
+            }
+            return baseValue;
+        }
 
         public int? Month
         {
@@ -38,7 +74,20 @@ namespace Diagnosis.App.Controls.Editors
         }
 
         public static readonly DependencyProperty MonthProperty =
-            DependencyProperty.Register("Month", typeof(int?), typeof(ComboBoxDatePicker), new PropertyMetadata(13));
+            DependencyProperty.Register("Month", typeof(int?), typeof(ComboBoxDatePicker),
+                new FrameworkPropertyMetadata(13,
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                    new PropertyChangedCallback(OnMonthChanged)));
+
+        private static void OnMonthChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            logger.DebugFormat("month {0} -> {1}", e.OldValue, e.NewValue);
+
+            var cdp = (ComboBoxDatePicker)d;
+            // смена месяца — другой набор дней, если был день 31, меням на 30
+            cdp.FillDaysCombo();
+
+        }
 
         public int? Day
         {
@@ -47,8 +96,15 @@ namespace Diagnosis.App.Controls.Editors
         }
 
         public static readonly DependencyProperty DayProperty =
-            DependencyProperty.Register("Day", typeof(int?), typeof(ComboBoxDatePicker));
+            DependencyProperty.Register("Day", typeof(int?), typeof(ComboBoxDatePicker),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault
+                    ));
 
+        /// <summary>
+        /// Глубина годов в списке, с сегодняшнего и ранее. По умолчанию 120.
+        /// Если сегодня 2015 и YearsDepth == 5, то можно выбирать год 5 лет назад, то есть 2010.
+        /// </summary>
         public int YearsDepth
         {
             get { return (int)GetValue(YearsDepthProperty); }
@@ -56,7 +112,33 @@ namespace Diagnosis.App.Controls.Editors
         }
 
         public static readonly DependencyProperty YearsDepthProperty =
-            DependencyProperty.Register("YearsDepth", typeof(int), typeof(ComboBoxDatePicker), new PropertyMetadata(120));
+            DependencyProperty.Register("YearsDepth", typeof(int), typeof(ComboBoxDatePicker),
+                new FrameworkPropertyMetadata(120,
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                    new PropertyChangedCallback(OnYearsDepthChanged),
+                    new CoerceValueCallback(CoerceYearsDepth)));
+
+        private static void OnYearsDepthChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var cdp = (ComboBoxDatePicker)d;
+
+            cdp.LoadYearsCombo();
+        }
+
+        private static object CoerceYearsDepth(DependencyObject d, object baseValue)
+        {
+            var newValue = (int)baseValue;
+            if (newValue < 0)
+            {
+                return 0;
+            }
+            return baseValue;
+        }
+
+        /// <summary>
+        /// Минимальный год для выбора.
+        /// </summary>
+        int MinYear { get { return DateTime.Now.Year - YearsDepth; } }
 
         public ComboBoxDatePicker()
         {
@@ -70,7 +152,8 @@ namespace Diagnosis.App.Controls.Editors
 
         private void LoadYearsCombo()
         {
-            var years = Enumerable.Range(DateTime.Now.Year - YearsDepth, YearsDepth + 1).Select(y => y.ToString()).ToList();
+            logger.DebugFormat("load years");
+            var years = Enumerable.Range(MinYear, YearsDepth + 1).Select(y => y.ToString()).ToList();
             years.Add("");
             years.Reverse();
             comboYears.ItemsSource = years;
@@ -109,7 +192,7 @@ namespace Diagnosis.App.Controls.Editors
         private string[] GetDaysComboItems()
         {
             var year = Year ?? DateTime.Today.Year;
-            var month = Month != 13 && Month != null ? Month.Value : DateTime.Today.Month;
+            var month = (Month != 13 && Month != null) ? Month.Value : DateTime.Today.Month;
             var daysInMonth = DateTime.DaysInMonth(year, month);
             string[] days = new string[daysInMonth + 1];
             days[0] = "";
@@ -122,18 +205,12 @@ namespace Diagnosis.App.Controls.Editors
 
         private void comboYears_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //logger.DebugFormat("year = {0}", Year);
-            e.Handled = true;
-            // смена года — было 29 февраля, меняем на 28
-            FillDaysCombo();
+
         }
 
         private void comboMonths_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //logger.DebugFormat("month = {0}", Month);
-            e.Handled = true;
-            // смена месяца — другой набор дней, если был день 31, меням на 30
-            FillDaysCombo();
+
         }
 
         private void comboDays_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -143,12 +220,14 @@ namespace Diagnosis.App.Controls.Editors
 
         private void comboYears_LostFocus(object sender, RoutedEventArgs e)
         {
+            // исправляем после потери фокуса, чтобы можно было стереть написанное
             if (Year == null)
                 comboYears.SelectedIndex = 0;
         }
 
         private void comboDays_LostFocus(object sender, RoutedEventArgs e)
         {
+            // исправляем после потери фокуса, чтобы можно было стереть написанное
             if (Day == null)
                 comboDays.SelectedIndex = 0;
         }
