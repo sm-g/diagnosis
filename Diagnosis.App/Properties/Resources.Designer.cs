@@ -134,6 +134,42 @@ namespace Diagnosis.App.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to в осмотре.
+        /// </summary>
+        public static string HealthRecordQueryAndScope_Appointment {
+            get {
+                return ResourceManager.GetString("HealthRecordQueryAndScope_Appointment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to в курсе.
+        /// </summary>
+        public static string HealthRecordQueryAndScope_Course {
+            get {
+                return ResourceManager.GetString("HealthRecordQueryAndScope_Course", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to в записи.
+        /// </summary>
+        public static string HealthRecordQueryAndScope_HealthRecord {
+            get {
+                return ResourceManager.GetString("HealthRecordQueryAndScope_HealthRecord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to у пациента.
+        /// </summary>
+        public static string HealthRecordQueryAndScope_Patient {
+            get {
+                return ResourceManager.GetString("HealthRecordQueryAndScope_Patient", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {\rtf1\adeflang1025\ansi\ansicpg1251\uc1\adeff0\deff0\stshfdbch0\stshfloch31506\stshfhich31506\stshfbi31506\deflang1049\deflangfe1049\themelang1049\themelangfe0\themelangcs0{\fonttbl{\f0\fbidi \froman\fcharset204\fprq2{\*\panose 02020603050405020304}Times New Roman;}
         ///{\f34\fbidi \froman\fcharset204\fprq2{\*\panose 02040503050406030204}Cambria Math;}{\f36\fbidi \fswiss\fcharset204\fprq2{\*\panose 020f0302020204030204}Calibri Light;}{\f37\fbidi \fswiss\fcharset204\fprq2{\*\panose 020f0502020204030204}Calibri [rest of string was truncated]&quot;;.
         /// </summary>

@@ -1,5 +1,4 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Search;
 using Diagnosis.ViewModels.Search.Autocomplete;
@@ -20,7 +19,7 @@ namespace Diagnosis.ViewModels.Screens
         private HrSearchOptions _options;
 
         private bool _all;
-        private int _allSCope;
+        private HealthRecordQueryAndScope _scope;
         private int? _appDayLower;
         private int? _appDayUpper;
         private int? _appMonthLower;
@@ -283,18 +282,19 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public int AndScope
+        public HealthRecordQueryAndScope QueryScope
         {
             get
             {
-                return _allSCope;
+                return _scope;
             }
             set
             {
-                if (_allSCope != value)
+                if (_scope != value)
                 {
-                    _allSCope = value;
-                    OnPropertyChanged(() => AndScope);
+                    _scope = value;
+                    AllWords = true;
+                    OnPropertyChanged(() => QueryScope);
                 }
             }
         }
@@ -412,7 +412,7 @@ namespace Diagnosis.ViewModels.Screens
             options.AppointmentDateGt = DateHelper.NullableDate(AppYearLower, AppMonthLower, AppDayLower);
             options.AppointmentDateLt = DateHelper.NullableDate(AppYearUpper, AppMonthUpper, AppDayUpper);
             options.AllWords = AllWords;
-            options.AndScope = (HealthRecordQuery.AndScope)AndScope;
+            options.QueryScope = QueryScope;
 
             var entities = Autocomplete.GetEntities().ToList();
             options.Words = entities.Where(x => x is Word).Cast<Word>().ToList();

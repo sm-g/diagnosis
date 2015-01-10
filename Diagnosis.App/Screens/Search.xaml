@@ -8,6 +8,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
              xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
              x:Name="search"
              mc:Ignorable="d"
@@ -125,27 +126,21 @@
                 <search:Autocomplete DataContext="{Binding Autocomplete}" />
                 <DockPanel Style="{StaticResource line}">
                     <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
                         <CheckBox IsChecked="{Binding AllWords}"
+                                  VerticalContentAlignment="Center"
                                   Margin="0,10,0,0">
                             <TextBlock>
-                            <Run>Все слова</Run> <Run Text="{Binding AndScope, Converter={StaticResource ScopeToLabel}}"></Run>
+                            <Run BaselineAlignment="Center">Все слова</Run>
+                                <ComboBox ItemsSource="{Binding Source={beh:EnumListExtension {x:Type diag:HealthRecordQueryAndScope}}}"
+                                          SelectedItem="{Binding QueryScope, Mode=TwoWay}"
+                                          ItemTemplate="{StaticResource EnumComboTemplate}"
+                                          VerticalContentAlignment="Bottom" />
                             </TextBlock>
                         </CheckBox>
-                        <Slider Grid.Column="2"
-                                Value="{Binding AndScope}"
-                                IsEnabled="{Binding AllWords}"
-                                Minimum="0"
-                                Maximum="3"
-                                TickFrequency="1"
-                                TickPlacement="Both"
-                                Orientation="Horizontal" />
                     </Grid>
                 </DockPanel>
-                <DockPanel Style="{StaticResource line}" HorizontalAlignment="Left">
+                <DockPanel Style="{StaticResource line}"
+                           HorizontalAlignment="Left">
                     <editors:CategoryChooser CategoryMultiSelection="{StaticResource True}" />
                 </DockPanel>
                 <!--<DockPanel>
@@ -221,9 +216,9 @@
             Не найдено подходящих записей.
         </TextBlock>
 
-        <StackPanel Grid.Row="3"
-                    Visibility="{Binding Result, Converter={StaticResource NullToVis}}"
-                    Background="{x:Static SystemColors.ControlBrush}">
+        <Grid Grid.Row="3"
+              Visibility="{Binding Result, Converter={StaticResource NullToVis}}"
+              Background="{x:Static SystemColors.ControlBrush}">
             <controls:WrapPanelLastChildFill  DataContext="{Binding Result}"
                                               Margin="5"
                                               Visibility="{Binding Statistic.Count, Converter={StaticResource MoreThanToVisibility}}">
@@ -254,6 +249,6 @@
                     </Button>
                 </StackPanel>
             </controls:WrapPanelLastChildFill>
-        </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>

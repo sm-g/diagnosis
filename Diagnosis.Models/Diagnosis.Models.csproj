@@ -133,6 +133,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -144,8 +145,9 @@
     <Compile Include="Entities\Passport.cs" />
     <Compile Include="Entities\HrItem.cs" />
     <Compile Include="Entities\Comment.cs" />
+    <Compile Include="Enums\HealthRecordQueryScope.cs" />
     <Compile Include="Helpers\DomainExtenstions.cs" />
-    <Compile Include="Enums\HealthRecordUnits.cs" />
+    <Compile Include="Enums\HealthRecordUnit.cs" />
     <Compile Include="Enums\DoctorSettings.cs" />
     <Compile Include="Entities\Measure.cs" />
     <Compile Include="Entities\Uom.cs" />

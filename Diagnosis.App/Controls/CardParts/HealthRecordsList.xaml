@@ -25,13 +25,7 @@
                            Command="{Binding EditCommand}" />
         </InputBindingCollection>
 
-        <DataTemplate x:Key="EnumComboTemplate">
-            <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource EnumToLabel}}"
-                       Height="Auto"
-                       Margin="0"
-                       VerticalAlignment="Center" />
 
-        </DataTemplate>
     </UserControl.Resources>
 
     <UserControl.InputBindings>

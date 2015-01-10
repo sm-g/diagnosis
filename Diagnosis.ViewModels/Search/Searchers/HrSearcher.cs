@@ -24,7 +24,7 @@ namespace Diagnosis.ViewModels.Search
             if (options.Words.Count() > 0)
                 if (options.AllWords)
                 {
-                    hrs = HealthRecordQuery.WithAllWords(session)(options.Words, options.AndScope);
+                    hrs = HealthRecordQuery.WithAllWords(session)(options.Words, options.QueryScope);
                 }
                 else
                 {

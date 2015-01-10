@@ -154,4 +154,16 @@
   <data name="avalon_layout" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\avalon-layout.config;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="HealthRecordQueryAndScope_Appointment" xml:space="preserve">
+    <value>в осмотре</value>
+  </data>
+  <data name="HealthRecordQueryAndScope_Course" xml:space="preserve">
+    <value>в курсе</value>
+  </data>
+  <data name="HealthRecordQueryAndScope_HealthRecord" xml:space="preserve">
+    <value>в записи</value>
+  </data>
+  <data name="HealthRecordQueryAndScope_Patient" xml:space="preserve">
+    <value>у пациента</value>
+  </data>
 </root>

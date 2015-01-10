@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Data;
 using System.Globalization;
 using Diagnosis.Data.Queries;
+using Diagnosis.Models;
 
 namespace Diagnosis.App.Converters
 {
@@ -16,16 +17,16 @@ namespace Diagnosis.App.Converters
             if (value == null)
                 return null;
 
-            var scope = (HealthRecordQuery.AndScope)value;
+            var scope = (HealthRecordQueryAndScope)value;
             switch (scope)
             {
-                case HealthRecordQuery.AndScope.HealthRecord:
+                case HealthRecordQueryAndScope.HealthRecord:
                     return "в записи";
-                case HealthRecordQuery.AndScope.Appointment:
+                case HealthRecordQueryAndScope.Appointment:
                     return "в осмотре";
-                case HealthRecordQuery.AndScope.Course:
+                case HealthRecordQueryAndScope.Course:
                     return "в курсе";
-                case HealthRecordQuery.AndScope.Patient:
+                case HealthRecordQueryAndScope.Patient:
                     return "у пациента";
                 default:
                     return null;

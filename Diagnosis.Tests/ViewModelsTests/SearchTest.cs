@@ -54,7 +54,7 @@ namespace Tests
         {
             s.Autocomplete.AddTag(w[1]);
             s.Autocomplete.AddTag(w[4]);
-            s.AndScope = (int)HealthRecordQuery.AndScope.Appointment;
+            s.QueryScope = HealthRecordQueryAndScope.Appointment;
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(1, s.Result.Statistic.Patients.Count);
@@ -75,7 +75,7 @@ namespace Tests
         {
             s.Autocomplete.AddTag(w[4]);
             s.Autocomplete.AddTag(w[22]);
-            s.AndScope = (int)HealthRecordQuery.AndScope.Course;
+            s.QueryScope = HealthRecordQueryAndScope.Course;
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(0, s.Result.Patients[0].FoundHealthRecords.Count); // найденные — только слова в области
@@ -89,7 +89,7 @@ namespace Tests
         {
             s.Autocomplete.AddTag(w[4]);
             s.Autocomplete.AddTag(w[22]);
-            s.AndScope = (int)HealthRecordQuery.AndScope.Course;
+            s.QueryScope = HealthRecordQueryAndScope.Course;
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(0, s.Result.Patients[0].FoundHealthRecords.Count);

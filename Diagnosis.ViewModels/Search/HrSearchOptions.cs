@@ -30,7 +30,7 @@ namespace Diagnosis.ViewModels.Search
         /// <summary>
         /// Область поиска всех слов.
         /// </summary>
-        public HealthRecordQuery.AndScope AndScope { get; set; }
+        public HealthRecordQueryAndScope QueryScope { get; set; }
 
         /// <summary>
         /// Категория. Если несколько, то любая их них.
