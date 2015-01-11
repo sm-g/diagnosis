@@ -18,7 +18,7 @@ namespace Diagnosis.ViewModels
 
         public DialogViewModel()
         {
-            CanOk = true;
+            _canOk = true;
         }
 
         public string Title
