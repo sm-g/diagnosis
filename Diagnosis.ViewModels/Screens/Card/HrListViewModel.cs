@@ -37,8 +37,59 @@ namespace Diagnosis.ViewModels.Screens
         private Action<HealthRecord, HrData.HrInfo> fillHr;
         private Action<List<IHrItemObject>> syncHios;
         private bool inSelectMany;
+        private bool _rectSelect;
+        private HrViewColumn _sort;
+        private HrViewColumn _group;
+        private bool _dragSource;
 
         public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;
+
+        public HrListViewModel(IHrsHolder holder, Action<HealthRecord, HrData.HrInfo> filler, Action<List<IHrItemObject>> syncer)
+        {
+            Contract.Requires(holder != null);
+            Contract.Requires(filler != null);
+            Contract.Requires(syncer != null);
+            this.holder = holder;
+            this.fillHr = filler;
+            this.syncHios = syncer;
+
+            HolderVm = new HolderViewModel(holder);
+
+            hrManager = new HealthRecordManager(holder, onHrVmPropChanged: (s, e) =>
+            {
+                if (e.PropertyName == "Category")
+                {
+                    var sel = SelectedHealthRecords;
+                    healthRecordsView.Refresh();
+                    sel.ForAll(vm => vm.IsSelected = true); // fix only one selected after Refresh
+                }
+                else if (e.PropertyName == "IsChecked")
+                {
+                    OnPropertyChanged(() => CheckedHrCount);
+                }
+            });
+            hrManager.Undeleted += (s, e) =>
+            {
+                OnSaveNeeded(new List<HealthRecord>() { e.entity as HealthRecord });
+            };
+
+            HealthRecords.CollectionChanged += (s, e) =>
+            {
+                HolderVm.UpdateIsEmpty();
+            };
+
+            healthRecordsView = (CollectionView)CollectionViewSource.GetDefaultView(HealthRecords);
+            Grouping = HrViewColumn.Category;
+            Sorting = HrViewColumn.None;
+
+            DropHandler = new DropTargetHandler(this);
+            DragHandler = new DragSourceHandler();
+
+            IsRectSelectEnabled = true;
+            IsDragSourceEnabled = true;
+
+            SelectHealthRecord(hrViewer.GetLastSelectedFor(holder));
+        }
 
         public HolderViewModel HolderVm { get; private set; }
 
@@ -166,8 +217,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public DragSourceHandler DragHandler { get; private set; }
 
-        private bool _rectSelect;
-        public bool RectSelect
+        public bool IsRectSelectEnabled
         {
             get
             {
@@ -178,11 +228,27 @@ namespace Diagnosis.ViewModels.Screens
                 if (_rectSelect != value)
                 {
                     _rectSelect = value;
-                    OnPropertyChanged(() => RectSelect);
+                    OnPropertyChanged(() => IsRectSelectEnabled);
                 }
             }
         }
-        private HrViewColumn _sort;
+
+
+        public bool IsDragSourceEnabled
+        {
+            get
+            {
+                return _dragSource;
+            }
+            set
+            {
+                if (_dragSource != value)
+                {
+                    _dragSource = value;
+                    OnPropertyChanged(() => IsDragSourceEnabled);
+                }
+            }
+        }
         public HrViewColumn Sorting
         {
             get
@@ -205,7 +271,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private HrViewColumn _group;
         public HrViewColumn Grouping
         {
             get
@@ -226,50 +291,6 @@ namespace Diagnosis.ViewModels.Screens
                     OnPropertyChanged(() => Grouping);
                 }
             }
-        }
-
-        public HrListViewModel(IHrsHolder holder, Action<HealthRecord, HrData.HrInfo> filler, Action<List<IHrItemObject>> syncer)
-        {
-            Contract.Requires(holder != null);
-            Contract.Requires(filler != null);
-            Contract.Requires(syncer != null);
-            this.holder = holder;
-            this.fillHr = filler;
-            this.syncHios = syncer;
-
-            HolderVm = new HolderViewModel(holder);
-
-            hrManager = new HealthRecordManager(holder, onHrVmPropChanged: (s, e) =>
-            {
-                if (e.PropertyName == "Category")
-                {
-                    var sel = SelectedHealthRecords;
-                    healthRecordsView.Refresh();
-                    sel.ForAll(vm => vm.IsSelected = true); // fix only one selected after Refresh
-                }
-                else if (e.PropertyName == "IsChecked")
-                {
-                    OnPropertyChanged(() => CheckedHrCount);
-                }
-            });
-            hrManager.Undeleted += (s, e) =>
-            {
-                OnSaveNeeded(new List<HealthRecord>() { e.entity as HealthRecord });
-            };
-
-            HealthRecords.CollectionChanged += (s, e) =>
-            {
-                HolderVm.UpdateIsEmpty();
-            };
-
-            healthRecordsView = (CollectionView)CollectionViewSource.GetDefaultView(HealthRecords);
-            Grouping = HrViewColumn.Category;
-            Sorting = HrViewColumn.None;
-
-            SelectHealthRecord(hrViewer.GetLastSelectedFor(holder));
-
-            DropHandler = new DropTargetHandler(this);
-            DragHandler = new DragSourceHandler();
         }
         public void Cut()
         {

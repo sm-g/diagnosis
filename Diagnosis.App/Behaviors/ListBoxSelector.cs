@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Diagnosis.App.Controls;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,6 +21,14 @@ namespace Diagnosis.App.Behaviors
         /// <summary>Identifies the IsEnabled attached property.</summary>
         public static readonly DependencyProperty EnabledProperty =
             DependencyProperty.RegisterAttached("Enabled", typeof(bool), typeof(ListBoxSelector), new UIPropertyMetadata(false, IsEnabledChangedCallback));
+
+
+        /// <summary>
+        /// Start selection rect from element (instead of select in common way).
+        /// </summary>
+        public static readonly DependencyProperty StartOnElementProperty =
+            DependencyProperty.RegisterAttached("StartOnElement", typeof(bool), typeof(ListBoxSelector), new PropertyMetadata(false));
+
 
         // This stores the ListBoxSelector for each ListBox so we can unregister it.
         private static readonly Dictionary<ListBox, ListBoxSelector> attachedControls = new Dictionary<ListBox, ListBoxSelector>();
@@ -50,28 +59,25 @@ namespace Diagnosis.App.Behaviors
             }
         }
 
-        /// <summary>
-        /// Gets the value of the IsEnabled attached property that indicates
-        /// whether a selection rectangle can be used to select items or not.
-        /// </summary>
-        /// <param name="obj">Object on which to get the property.</param>
-        /// <returns>
-        /// true if items can be selected by a selection rectangle; otherwise, false.
-        /// </returns>
         public static bool GetEnabled(DependencyObject obj)
         {
             return (bool)obj.GetValue(EnabledProperty);
         }
 
-        /// <summary>
-        /// Sets the value of the IsEnabled attached property that indicates
-        /// whether a selection rectangle can be used to select items or not.
-        /// </summary>
-        /// <param name="obj">Object on which to set the property.</param>
-        /// <param name="value">Value to set.</param>
         public static void SetEnabled(DependencyObject obj, bool value)
         {
             obj.SetValue(EnabledProperty, value);
+        }
+
+
+        public static bool GetStartOnElement(DependencyObject obj)
+        {
+            return (bool)obj.GetValue(StartOnElementProperty);
+        }
+
+        public static void SetStartOnElement(DependencyObject obj, bool value)
+        {
+            obj.SetValue(StartOnElementProperty, value);
         }
 
         private static void IsEnabledChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -207,9 +213,21 @@ namespace Diagnosis.App.Behaviors
                 return;
             }
 
+            Point mouse = e.GetPosition(this.scrollContent);
+            // Mouse on element check
+            if (!(GetStartOnElement(this.listBox)))
+            {
+                var fe = VisualTreeHelper.HitTest(this.listBox, mouse).VisualHit as FrameworkElement;
+                if (fe != null)
+                {
+                    var item = ParentFinder.FindAncestorOrSelf<ListBoxItem>(fe);
+                    if (item != null)
+                        return;
+                }
+            }
+
             // Check that the mouse is inside the scroll content (could be on the
             // scroll bars for example).
-            Point mouse = e.GetPosition(this.scrollContent);
             if ((mouse.X >= 0) && (mouse.X < this.scrollContent.ActualWidth) &&
                 (mouse.Y >= 0) && (mouse.Y < this.scrollContent.ActualHeight))
             {

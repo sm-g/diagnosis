@@ -212,9 +212,10 @@
                  SelectionChanged="records_SelectionChanged"
                  dd:DragDrop.IsDropTarget="True"
                  dd:DragDrop.DropHandler="{Binding DropHandler}"
-                 dd:DragDrop.IsDragSource="{Binding RectSelect, Converter={StaticResource NegateBoolean}}"
+                 dd:DragDrop.IsDragSource="{Binding IsDragSourceEnabled}"
                  dd:DragDrop.DragHandler="{Binding DragHandler}"
-                 beh:ListBoxSelector.Enabled="{Binding RectSelect}"
+                 dd:DragDrop.DragDirectlySelectedOnly="True"
+                 beh:ListBoxSelector.Enabled="{Binding IsRectSelectEnabled}"                 
                  d:IsHidden="True">
             <ListBox.GroupStyle>
                 <GroupStyle>
