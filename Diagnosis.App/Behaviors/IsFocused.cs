@@ -18,43 +18,23 @@ namespace Diagnosis.App.Behaviors
 
         public static bool? GetIsFocused(DependencyObject element)
         {
-            if (element == null)
-            {
-                throw new ArgumentNullException("element");
-            }
-
             return (bool?)element.GetValue(IsFocusedProperty);
         }
 
         public static void SetIsFocused(DependencyObject element, bool? value)
         {
-            if (element == null)
-            {
-                throw new ArgumentNullException("element");
-            }
-
             element.SetValue(IsFocusedProperty, value);
         }
+
         public static bool GetDirect(DependencyObject element)
         {
-            if (element == null)
-            {
-                throw new ArgumentNullException("element");
-            }
-
             return (bool)element.GetValue(DirectProperty);
         }
 
         public static void SetDirect(DependencyObject element, bool? value)
         {
-            if (element == null)
-            {
-                throw new ArgumentNullException("element");
-            }
-
             element.SetValue(DirectProperty, value);
         }
-
 
         private static void IsFocusedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

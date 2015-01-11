@@ -102,7 +102,7 @@
                 BorderThickness="0,1,0,0"
                 UseLayoutRounding="True"
                 Background="{StaticResource hrEditorBackgroundBrush}"
-                Visibility="{Binding HrEditor.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                Visibility="{Binding HrEditor.HasHealthRecord, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Border.BorderBrush>
                 <SolidColorBrush Color="Gray" />
             </Border.BorderBrush>

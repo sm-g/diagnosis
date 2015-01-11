@@ -54,7 +54,7 @@ namespace Diagnosis.ViewModels.Screens
                     _hr = value;
                     OnPropertyChanged("HealthRecord");
                     OnPropertyChanged("Category");
-                    OnPropertyChanged("IsActive");
+                    OnPropertyChanged(() => HasHealthRecord);
                 }
             }
         }
