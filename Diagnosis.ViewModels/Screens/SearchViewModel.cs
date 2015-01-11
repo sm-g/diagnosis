@@ -59,24 +59,31 @@ namespace Diagnosis.ViewModels.Screens
             msgManager = new EventMessageHandlersManager(
                 this.Subscribe(Event.SendToSearch, (e) =>
                 {
+                    IEnumerable<HealthRecord> hrs = null;
+                    IEnumerable<IHrItemObject> hios = null;
                     try
                     {
-                        var hrs = e.GetValue<IEnumerable<HealthRecord>>(MessageKeys.HealthRecords);
-                        if (hrs != null && hrs.Count() > 0)
-                        {
-                            RecieveHealthRecords(hrs);
-                        }
+                        hrs = e.GetValue<IEnumerable<HealthRecord>>(MessageKeys.HealthRecords);
                     }
                     catch { }
-                    try
+                    if (hrs != null && hrs.Count() > 0)
                     {
-                        var hios = e.GetValue<IEnumerable<IHrItemObject>>(MessageKeys.HrItemObjects);
+                        RecieveHealthRecords(hrs);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            hios = e.GetValue<IEnumerable<IHrItemObject>>(MessageKeys.HrItemObjects);
+                        }
+                        catch { }
                         if (hios != null && hios.Count() > 0)
                         {
                             RecieveHrItemObjects(hios);
                         }
                     }
-                    catch { }
+
+                    Activate();
                 })
 
             );
@@ -237,11 +244,6 @@ namespace Diagnosis.ViewModels.Screens
                     };
                 }
                 return _hrDateOffsetLower;
-            }
-            private set
-            {
-                _hrDateOffsetLower.Offset = value.Offset;
-                _hrDateOffsetLower.Unit = value.Unit;
             }
         }
 
@@ -455,9 +457,9 @@ namespace Diagnosis.ViewModels.Screens
                 });
             Categories.Where(cat => allCats.Contains(cat.category)).ForAll(cat => cat.IsChecked = true);
 
-            // комментарий и давность из последней записи
-            var lastHr = hrs.Last();
-            HrDateOffsetLower = new DateOffset(lastHr.FromYear, lastHr.FromMonth, lastHr.FromDay);
+            // давность из последней записи
+            //var lastHr = hrs.Last();
+            //HrDateOffsetLower = new DateOffset(lastHr.FromYear, lastHr.FromMonth, lastHr.FromDay);
 
             RecieveHrItemObjects(allWords);
         }

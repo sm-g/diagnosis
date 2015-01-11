@@ -26,6 +26,13 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public void Activate()
+        {
+            HideAfterInsert = false;
+            IsVisible = true;
+            IsActive = true;
+            ShowAutoHidden();
+        }
 
         public override string ToString()
         {

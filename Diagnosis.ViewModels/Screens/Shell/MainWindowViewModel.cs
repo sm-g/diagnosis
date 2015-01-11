@@ -71,11 +71,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    searchPanel.HideAfterInsert = false;
-                    searchPanel.IsVisible = true;
-                    searchPanel.IsActive = true;
                     searchPanel.ControlsVisible = true;
-                    searchPanel.ShowAutoHidden();
+                    searchPanel.Activate();
                 });
             }
         }
