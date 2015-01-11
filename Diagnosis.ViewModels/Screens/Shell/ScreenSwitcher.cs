@@ -108,9 +108,7 @@ namespace Diagnosis.ViewModels.Screens
 
             this.Subscribe(Event.OpenPatient, (e) =>
             {
-                // открываем экран карточки и последний осмотр пациента
                 var pat = e.GetValue<Patient>(MessageKeys.Patient);
-
                 OpenScreen(Screen.Card, pat);
             });
 
@@ -137,11 +135,23 @@ namespace Diagnosis.ViewModels.Screens
 
             this.Subscribe(Event.EditHealthRecord, (e) =>
             {
-                // открываем экран карточки, открываем запись и переключаем редактор
+                // открываем экран карточки, открываем запись
+                // переходим в редактор или переключаем видимость редактора
                 var hr = e.GetValue<HealthRecord>(MessageKeys.HealthRecord);
+                var goToEditor = e.GetValue<bool>(MessageKeys.Boolean);
+
+                if (goToEditor)
+                    logger.DebugFormat("goto editor for {0}", this);
+                else
+                    logger.DebugFormat("toggle editor for {0}", this);
 
                 OpenScreen(Screen.Card, hr);
-                (CurrentView as CardViewModel).ToogleHrEditor();
+
+                var card = (CurrentView as CardViewModel);
+                if (goToEditor)
+                    card.FocusHrEditor();
+                else
+                    card.ToogleHrEditor();
             });
 
             this.Subscribe(Event.OpenHolder, (e) =>
@@ -238,7 +248,7 @@ namespace Diagnosis.ViewModels.Screens
                         {
                             OpenScreen(Screen.Patients);
                         };
-                        cardVm.Open(parameter, true);
+                        cardVm.Open(parameter, lastAppOrCourse: true);
                         CurrentView = cardVm;
                         break;
 

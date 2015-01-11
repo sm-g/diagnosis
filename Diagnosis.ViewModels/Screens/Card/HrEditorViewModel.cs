@@ -21,11 +21,12 @@ namespace Diagnosis.ViewModels.Screens
 
         private HealthRecordViewModel _hr;
         private ISession session;
+        private bool _focused;
         private IEnumerable<HrCategory> _categories;
         private EventMessageHandler handler;
+        private Recognizer recognizer;
 
         public event EventHandler<DomainEntityEventArgs> Unloaded;
-        private Recognizer recognizer;
 
         public HrEditorViewModel(ISession session)
         {
@@ -86,11 +87,25 @@ namespace Diagnosis.ViewModels.Screens
 
         #endregion HealthRecord
 
-        public bool IsActive
+        public bool HasHealthRecord
+        {
+            get { return HealthRecord != null; }
+        }
+
+        public bool IsFocused
         {
             get
             {
-                return HealthRecord != null;
+                return _focused;
+            }
+            set
+            {
+                if (_focused != value)
+                {
+                    _focused = value;
+                    logger.DebugFormat("{0} {1}", "IsFocused", value);
+                    OnPropertyChanged(() => IsFocused);
+                }
             }
         }
 
@@ -103,7 +118,7 @@ namespace Diagnosis.ViewModels.Screens
                            (HealthRecord.healthRecord as IEditableObject).CancelEdit();
                            (HealthRecord.healthRecord as IEditableObject).BeginEdit();
                            CreateAutoComplete();
-                       }, () => IsActive && HealthRecord.healthRecord.IsDirty);
+                       }, () => HasHealthRecord && HealthRecord.healthRecord.IsDirty);
             }
         }
 
@@ -159,6 +174,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         #region AutoComplete
+
         public AutocompleteViewModel Autocomplete { get { return _autocomplete; } }
 
         public Word SyncTransientWord(Word w)
@@ -169,6 +185,7 @@ namespace Diagnosis.ViewModels.Screens
             }
             return w;
         }
+
         /// <summary>
         /// Создает автокомплит с начальными словами и комментами из редактируемой записи.
         /// </summary>

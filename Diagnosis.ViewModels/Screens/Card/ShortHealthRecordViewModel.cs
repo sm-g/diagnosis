@@ -162,12 +162,21 @@ namespace Diagnosis.ViewModels.Screens
             get
             {
                 return new RelayCommand(() =>
-                       {
-                           this.Send(Event.EditHealthRecord, healthRecord.AsParams(MessageKeys.HealthRecord));
-                       });
+                {
+                    this.Send(Event.EditHealthRecord, new object[] { healthRecord, true }.AsParams(MessageKeys.HealthRecord, MessageKeys.Boolean));
+                });
             }
         }
-
+        public RelayCommand OpenCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    this.Send(Event.EditHealthRecord, new object[] { healthRecord, false }.AsParams(MessageKeys.HealthRecord, MessageKeys.Boolean));
+                });
+            }
+        }
         public RelayCommand DeleteCommand
         {
             get

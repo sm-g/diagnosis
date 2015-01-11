@@ -167,28 +167,59 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public RelayCommand ToggleEditorCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    ToogleHrEditor();
+                }, () => HrList.SelectedHealthRecord != null);
+            }
+        }
+
         /// <summary>
-        /// Переключает редактор для открытой записи.
+        /// Открывает/закрывает редактор для выбранной в списке записи.
         /// </summary>
         public void ToogleHrEditor()
         {
-            if (HrEditor.IsActive && HrEditor.HealthRecord.healthRecord == HrList.SelectedHealthRecord.healthRecord)
+            Contract.Ensures(HrList.SelectedHealthRecord == null ||
+                HrEditor.HasHealthRecord != Contract.OldValue(HrEditor.HasHealthRecord));
+
+            if (HrList.SelectedHealthRecord == null)
+                return;
+
+            if (HrEditor.HasHealthRecord)
             {
+                Contract.Assume(HrEditor.HealthRecord.healthRecord == HrList.SelectedHealthRecord.healthRecord);
                 HrEditor.Unload();
-                // редактор записей после смены осмотра всегда закрыт
-                editorWasOpened = false;
             }
             else
             {
                 HrEditor.Load(HrList.SelectedHealthRecord.healthRecord);
             }
         }
+        /// <summary>
+        /// Открывает редактор для выбранной в списке записи и переводит фокус на него.
+        /// </summary>
+        public void FocusHrEditor()
+        {
+            if (HrList.SelectedHealthRecord == null)
+                return;
+
+            HrEditor.Load(HrList.SelectedHealthRecord.healthRecord);
+            HrEditor.IsFocused = true;
+        }
 
         public void ResetHistory()
         {
             viewer = new PatientViewer();
         }
-
+        /// <summary>
+        /// Открывает держателя или выделяет записи. 
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <param name="lastAppOrCourse"></param>
         internal void Open(object parameter, bool lastAppOrCourse = false)
         {
             Contract.Requires(parameter != null);
@@ -301,7 +332,7 @@ namespace Diagnosis.ViewModels.Screens
                         // сохраняем все записи кроме открытой в редакторе
                         saver.Save(HrList.HealthRecords
                             .Select(vm => vm.healthRecord)
-                            .Except(HrEditor.IsActive ? HrEditor.HealthRecord.healthRecord.ToEnumerable() : Enumerable.Empty<HealthRecord>())
+                            .Except(HrEditor.HasHealthRecord ? HrEditor.HealthRecord.healthRecord.ToEnumerable() : Enumerable.Empty<HealthRecord>())
                             .ToArray());
                     }
                     else
@@ -338,7 +369,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (HrList.SelectedHealthRecord != null)
                 {
-                    editorWasOpened = HrEditor.IsActive;
+                    editorWasOpened = HrEditor.HasHealthRecord;
                     if (editorWasOpened)
                     {
                         HrEditor.Load(HrList.SelectedHealthRecord.healthRecord);

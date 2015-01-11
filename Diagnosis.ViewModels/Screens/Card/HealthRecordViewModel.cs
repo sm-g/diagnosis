@@ -173,7 +173,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                        {
-                           this.Send(Event.EditHealthRecord, healthRecord.AsParams(MessageKeys.HealthRecord));
+                           this.Send(Event.EditHealthRecord, new object[] { healthRecord, true }.AsParams(MessageKeys.HealthRecord, MessageKeys.Boolean));
                        });
             }
         }

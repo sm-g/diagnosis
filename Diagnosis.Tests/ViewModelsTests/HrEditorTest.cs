@@ -34,7 +34,7 @@ namespace Tests.ViewModelsTests
         public void Load()
         {
             e.Load(hr);
-            Assert.IsTrue(e.IsActive);
+            Assert.IsTrue(e.HasHealthRecord);
             Assert.IsTrue(e.HealthRecord.healthRecord == hr);
         }
 
@@ -45,7 +45,7 @@ namespace Tests.ViewModelsTests
 
             e.Load(hr);
             e.Unload();
-            Assert.IsFalse(e.IsActive);
+            Assert.IsFalse(e.HasHealthRecord);
         }
 
         [TestMethod]
