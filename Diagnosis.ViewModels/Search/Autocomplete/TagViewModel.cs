@@ -119,7 +119,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         public event EventHandler Deleted;
         public event EventHandler<BlankTypeEventArgs> Converting;
-     
+
         /// <summary>
         /// Текстовое представление.
         /// </summary>
@@ -134,7 +134,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 if (_query != value)
                 {
-                    logger.DebugFormat("query = {0}", value);
+                    // logger.DebugFormat("query = {0}", value);
                     Contract.Assume(!IsDeleteOnly);
 
                     State = State.Typing;
@@ -183,7 +183,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 if (_blank != value)
                 {
-                    logger.DebugFormat("blank = {0} ({1})", value, GetBlankType(value));
+                    // logger.DebugFormat("blank = {0} ({1})", value, GetBlankType(value));
 
                     _blank = value;
                     OnPropertyChanged("Blank");
@@ -373,7 +373,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_focused != value)
                 {
                     _focused = value;
-                    logger.DebugFormat("{0} focusedTxt = {1}, focusedItem = {2}", this, value, _listItemFocused);
+                    //logger.DebugFormat("{0} focusedTxt = {1}, focusedItem = {2}", this, value, _listItemFocused);
                     OnPropertyChanged("IsTextBoxFocused");
                 }
             }
@@ -402,7 +402,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_listItemFocused != value)
                 {
                     _listItemFocused = value;
-                    logger.DebugFormat("{0} focusedItem = {1}, focusedTxt = {2}", this, value, _focused);
+                    //logger.DebugFormat("{0} focusedItem = {1}, focusedTxt = {2}", this, value, _focused);
 
                     OnPropertyChanged(() => IsListItemFocused);
                 }
@@ -419,7 +419,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
                 if (_selected != value)
                 {
                     _selected = value;
-                    logger.DebugFormat("{0} selected {1}", this, value);
+                    // logger.DebugFormat("{0} selected {1}", this, value);
                     OnPropertyChanged(() => IsSelected);
                 }
             }

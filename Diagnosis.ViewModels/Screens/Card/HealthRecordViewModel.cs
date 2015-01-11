@@ -7,6 +7,7 @@ namespace Diagnosis.ViewModels.Screens
 {
     public class HealthRecordViewModel : ViewModelBase
     {
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HealthRecordViewModel));
         internal readonly HealthRecord healthRecord;
 
         private readonly Patient patient;

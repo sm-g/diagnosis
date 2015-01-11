@@ -40,7 +40,7 @@ namespace Diagnosis.App.Controls.Editors
 
         private static void OnYearChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            logger.DebugFormat("year {0} -> {1}", e.OldValue, e.NewValue);
+            // logger.DebugFormat("year {0} -> {1}", e.OldValue, e.NewValue);
 
             var cdp = (ComboBoxDatePicker)d;
 
@@ -81,7 +81,7 @@ namespace Diagnosis.App.Controls.Editors
 
         private static void OnMonthChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            logger.DebugFormat("month {0} -> {1}", e.OldValue, e.NewValue);
+            // logger.DebugFormat("month {0} -> {1}", e.OldValue, e.NewValue);
 
             var cdp = (ComboBoxDatePicker)d;
             // смена месяца — другой набор дней, если был день 31, меням на 30
@@ -152,7 +152,7 @@ namespace Diagnosis.App.Controls.Editors
 
         private void LoadYearsCombo()
         {
-            logger.DebugFormat("load years");
+            // logger.DebugFormat("load years");
             var years = Enumerable.Range(MinYear, YearsDepth + 1).Select(y => y.ToString()).ToList();
             years.Add("");
             years.Reverse();

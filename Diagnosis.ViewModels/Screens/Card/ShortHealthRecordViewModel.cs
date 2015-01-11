@@ -9,6 +9,7 @@ namespace Diagnosis.ViewModels.Screens
 {
     public class ShortHealthRecordViewModel : CheckableBase
     {
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(ShortHealthRecordViewModel));
         internal readonly HealthRecord healthRecord;
         private readonly Patient patient;
 

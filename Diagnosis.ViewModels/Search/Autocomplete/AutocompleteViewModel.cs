@@ -47,7 +47,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
             {
                 if (inDispose) return;
 
-                logger.DebugFormat("{0} '{1}' '{2}'", e.Action, e.OldStartingIndex, e.NewStartingIndex);
+                // logger.DebugFormat("{0} '{1}' '{2}'", e.Action, e.OldStartingIndex, e.NewStartingIndex);
 
                 // кроме добавления пустого тега
                 if (!(e.Action == NotifyCollectionChangedAction.Add && ((TagViewModel)e.NewItems[0]).State == State.Init))
@@ -715,7 +715,7 @@ namespace Diagnosis.ViewModels.Search.Autocomplete
 
         protected virtual void OnEntitiesChanged()
         {
-            logger.DebugFormat("entities changed in {0}", this);
+            // logger.DebugFormat("entities changed in {0}", this);
             var h = EntitiesChanged;
             if (h != null)
             {

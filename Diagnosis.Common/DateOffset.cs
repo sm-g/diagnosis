@@ -161,7 +161,7 @@ namespace Diagnosis.Common
                     }
                     catch (Exception e)
                     {
-                        logger.DebugFormat("{0}", e.Message);
+                        logger.WarnFormat("{0}", e.Message);
                     }
                     OnPropertyChanged("Unit");
                 }
