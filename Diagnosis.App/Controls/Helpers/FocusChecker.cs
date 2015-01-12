@@ -9,7 +9,7 @@ namespace Diagnosis.App.Controls
     public class FocusChecker
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(FocusChecker));
-        public static bool IsFocusOutsideDepObject<T>(T obj) where T : DependencyObject
+        public static bool IsLogicFocusOutside<T>(T obj) where T : UIElement
         {
            // TraceLogicalTree(obj);
           //  TraceVisualTree(obj);
@@ -20,11 +20,14 @@ namespace Diagnosis.App.Controls
 
             var kbElement = Keyboard.FocusedElement;
             var logicElement = FocusManager.GetFocusedElement(win);
-            var logicFocusedOut = VisualTreeExtensions.FindVisualChildren(obj).FirstOrDefault(child => child == logicElement) == null;
-            var kbFocusedOut = obj.FindVisualChildren().FirstOrDefault(child => child == kbElement) == null;
+
+            var kbFocusedOut = !obj.IsKeyboardFocusWithin;
+            var logicFocusedOut = !(logicElement.IsChildOf(obj) || obj == logicElement);
+
             logger.DebugFormat("focused: kb {0} logic {1}", kbElement, logicElement);
             logger.DebugFormat("out? kb {0} logic {1}", kbFocusedOut, logicFocusedOut);
-            logger.DebugFormat("\n\n");
+            logger.DebugFormat("\n");
+
             return logicFocusedOut;
         }
 

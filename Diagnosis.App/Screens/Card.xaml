@@ -25,6 +25,8 @@
         <KeyBinding Modifiers="Control"
                     Key="Enter"
                     Command="{Binding HrList.AddHealthRecordCommand}" />
+        <KeyBinding Key="F2"
+                    Command="{Binding ToggleEditorCommand}" />
     </UserControl.InputBindings>
 
     <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">

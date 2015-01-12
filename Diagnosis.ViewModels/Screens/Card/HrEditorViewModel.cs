@@ -103,7 +103,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (_focused != value)
                 {
                     _focused = value;
-                    logger.DebugFormat("{0} {1}", "IsFocused", value);
+                    //logger.DebugFormat("hrEditor IsFocused {0}", value);
                     OnPropertyChanged(() => IsFocused);
                 }
             }

@@ -2,6 +2,7 @@
 using log4net;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Diagnosis.App.Controls.Search
@@ -15,6 +16,26 @@ namespace Diagnosis.App.Controls.Search
         public Autocomplete()
         {
             InitializeComponent();
+            Loaded += (s, e) =>
+            {
+#if DEBUG
+                // толстая рамка когда фокус на автокомплите
+                this.BorderThickness = new Thickness(0);
+                this.BorderBrush = SystemColors.HighlightBrush;
+                var setter = new Setter(Control.BorderThicknessProperty, new Thickness(4));
+                var isFocused = new Binding("IsFocused")
+                {
+                    RelativeSource = new RelativeSource(RelativeSourceMode.Self)
+                };
+                var trigger = new DataTrigger()
+                {
+                    Binding = isFocused,
+                    Value = true,
+                    Setters = { setter }
+                };
+                this.Style = new Style(typeof(UserControl)) { Triggers = { trigger } };
+#endif
+            };
         }
 
         private void input_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -61,11 +82,6 @@ namespace Diagnosis.App.Controls.Search
 
         #region focus stuff
 
-        private void UserControl_GotFocus(object sender, RoutedEventArgs e)
-        {
-            // logger.Debug("autocomplete got focus");
-        }
-
         /// <summary>
         /// Фокус ушел из автокомплита (из тега или попапа) - завершаем тег.
         /// </summary>
@@ -75,19 +91,23 @@ namespace Diagnosis.App.Controls.Search
             //logger.DebugFormat("autocomplete lost focus to {0}, out? {1}", GetFocusedInScope(), outs);
             if (outs)
             {
-                //logger.Debug("autocomplete lost focus");
                 // if (Vm != null && Vm.EditingTag != null)
                 //       Vm.CompleteOnLostFocus(Vm.EditingTag); // также в HrEditor.CloseCurrentHr()
             }
+
+        }
+        private void autocomplete_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (e.NewFocus == this)
+                Vm.LastTag.IsTextBoxFocused = true;
         }
 
         private void UserControl_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             var outs = IsFocusOutside();
-            // logger.DebugFormat("autocomplete lost kb focus to {0}, out? {1}", e.NewFocus, outs);
+            logger.DebugFormat("autocomplete lost kb focus to {0}, out? {1}", e.NewFocus, outs);
             if (outs)
             {
-                logger.Debug("autocomplete lost focus");
                 if (Vm != null && Vm.EditingTag != null)
                     Vm.CompleteOnLostFocus(Vm.EditingTag); // также в HrEditor.CloseCurrentHr()
             }
@@ -124,8 +144,8 @@ namespace Diagnosis.App.Controls.Search
         /// </summary>
         private void Tag_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            var toSugggsetions = InSuggsetions(e.NewFocus as DependencyObject);
-            logger.DebugFormat("tag lost focus, toPopup={0}", toSugggsetions);
+            var toSugggsetions = e.NewFocus.IsChildOf(suggestions) || e.NewFocus == suggestions;
+            //logger.DebugFormat("tag lost focus, toSugggsetions={0}", toSugggsetions);
             if (toSugggsetions)
             {
                 Vm.CanCompleteOnLostFocus = false;
@@ -143,14 +163,9 @@ namespace Diagnosis.App.Controls.Search
 
         // helpers
 
-        private bool InSuggsetions(DependencyObject dep)
-        {
-            return ParentFinder.FindAncestorOrSelf<ListBox>(dep) == suggestions;
-        }
-
         private bool IsFocusOutside()
         {
-            return FocusChecker.IsFocusOutsideDepObject(this) && FocusChecker.IsFocusOutsideDepObject(popup.Child);
+            return FocusChecker.IsLogicFocusOutside(this) && FocusChecker.IsLogicFocusOutside(popup.Child);
         }
 
         private IInputElement GetFocusedInScope()
@@ -159,5 +174,7 @@ namespace Diagnosis.App.Controls.Search
         }
 
         #endregion focus stuff
+
+
     }
 }

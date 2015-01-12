@@ -10,12 +10,9 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
              xmlns:diag="http://schemas.smg.com/diagnosis"
-             x:Name="editor"
-             AllowDrop="True"
-             Background="Transparent"
-             Drop="UserControl_Drop"
-             Tag="{Binding DataContext.HrList, RelativeSource={RelativeSource AncestorType=UserControl}}"
              mc:Ignorable="d"
+             x:Name="editor"
+             Tag="{Binding DataContext.HrList, RelativeSource={RelativeSource AncestorType=UserControl}}"
              d:DesignHeight="200"
              d:DesignWidth="600">
     <!--DataContext is HrEditorViewModel-->
@@ -35,7 +32,16 @@
                     Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}"
                     CommandParameter="{StaticResource False}" />
     </UserControl.InputBindings>
-    <Grid beh:FocusBehavior.FocusablePanel="True">
+    <Grid x:Name="grid"
+          AllowDrop="True"
+          Drop="grid_Drop"
+          GotKeyboardFocus="grid_GotKeyboardFocus"
+          GotFocus="grid_GotFocus"
+          LostFocus="grid_LostFocus"
+          beh:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
+          beh:FocusExtension.Direct="True"
+          KeyboardNavigation.IsTabStop="False"
+          beh:FocusBehavior.FocusablePanel="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition />
@@ -146,7 +152,7 @@
             <DockPanel>
                 <!--DataContext is HrEditorViewModel-->
                 <search:Autocomplete x:Name="autocomplete"
-                                        DataContext="{Binding DataContext.Autocomplete, ElementName=editor}" />
+                                     DataContext="{Binding DataContext.Autocomplete, ElementName=editor}" />
             </DockPanel>
             <DockPanel>
                 <!--DataContext is HrEditorViewModel-->

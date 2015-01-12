@@ -41,6 +41,7 @@ namespace Diagnosis.ViewModels.Screens
         private HrViewColumn _sort;
         private HrViewColumn _group;
         private bool _dragSource;
+        private bool _focused;
 
         public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;
 
@@ -249,6 +250,25 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
+        public bool IsFocused
+        {
+            get
+            {
+                return _focused;
+            }
+            set
+            {
+                if (_focused != value)
+                {
+                    _focused = value;
+                    //logger.DebugFormat("HrList focused {0} ", value);
+
+                    OnPropertyChanged(() => IsFocused);
+                }
+            }
+        }
+
         public HrViewColumn Sorting
         {
             get

@@ -55,6 +55,9 @@ namespace Diagnosis.ViewModels.Screens
                 // сохраняем запись при закрытии редактора
                 var hr = e.entity as HealthRecord;
                 saver.SaveHealthRecord(hr);
+
+                // переходим к спсику записей
+                HrList.IsFocused = true;
             };
 
             viewer.OpenedChanged += viewer_OpenedChanged;
@@ -189,6 +192,7 @@ namespace Diagnosis.ViewModels.Screens
             if (HrList.SelectedHealthRecord == null)
                 return;
 
+            // logger.DebugFormat("toggle hr editor from {0}", HrEditor.HasHealthRecord);
             if (HrEditor.HasHealthRecord)
             {
                 Contract.Assume(HrEditor.HealthRecord.healthRecord == HrList.SelectedHealthRecord.healthRecord);
@@ -204,6 +208,8 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         public void FocusHrEditor()
         {
+            //logger.DebugFormat("FocusHrEditor to {0}", HrList.SelectedHealthRecord);
+
             if (HrList.SelectedHealthRecord == null)
                 return;
 

@@ -20,12 +20,11 @@
                                 x:Key="HRInputBindings">
             <KeyBinding Key="Space"
                         Command="{Binding ToggleCommand}" />
-
+            <KeyBinding Key="Enter"
+                        Command="{Binding EditCommand}" />
             <MouseBinding  MouseAction="LeftDoubleClick"
                            Command="{Binding EditCommand}" />
         </InputBindingCollection>
-
-
     </UserControl.Resources>
 
     <UserControl.InputBindings>
@@ -34,8 +33,6 @@
                     Command="{Binding SendToSearchCommand}" />
         <KeyBinding Key="Delete"
                     Command="{Binding DeleteCommand}" />
-        <KeyBinding Key="F2"
-                    Command="{Binding SelectedHealthRecord.EditCommand}" />
     </UserControl.InputBindings>
 
     <Grid>
@@ -210,12 +207,15 @@
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  SelectionMode="Extended"
                  SelectionChanged="records_SelectionChanged"
+                 GotKeyboardFocus="records_GotKeyboardFocus"
+                 GotFocus="records_GotFocus"
+                 beh:FocusExtension.IsFocused="{Binding IsFocused}"
                  dd:DragDrop.IsDropTarget="True"
                  dd:DragDrop.DropHandler="{Binding DropHandler}"
                  dd:DragDrop.IsDragSource="{Binding IsDragSourceEnabled}"
                  dd:DragDrop.DragHandler="{Binding DragHandler}"
                  dd:DragDrop.DragDirectlySelectedOnly="True"
-                 beh:ListBoxSelector.Enabled="{Binding IsRectSelectEnabled}"                 
+                 beh:ListBoxSelector.Enabled="{Binding IsRectSelectEnabled}"
                  d:IsHidden="True">
             <ListBox.GroupStyle>
                 <GroupStyle>
@@ -273,8 +273,9 @@
                         <Setter.Value>
                             <ContextMenu>
                                 <!-- ShortHr -->
-                                <MenuItem Header="Редактировать"
-                                          Command="{Binding EditCommand}" />
+                                <MenuItem Header="Показать редактор"
+                                          InputGestureText="F2"
+                                          Command="{Binding OpenCommand}" />
                                 <!-- HrList -->
                                 <MenuItem Header="Искать"
                                           InputGestureText="Alt + F"

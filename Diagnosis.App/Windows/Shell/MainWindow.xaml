@@ -62,8 +62,8 @@
                     Modifiers="Control"
                     Command="{Binding OpenSearchCommand}" />
     </Window.InputBindings>
-    <Window.CommandBindings>
-        <CommandBinding Command="Cut"
+    <Window.CommandBindings>        
+        <CommandBinding Command="{x:Static ApplicationCommands.Undo}"
                         Executed="CommandBinding_Executed" />
     </Window.CommandBindings>
     <Grid Background="{DynamicResource mainWindowBackgroundBrush}">

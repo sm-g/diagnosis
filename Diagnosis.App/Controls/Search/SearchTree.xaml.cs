@@ -34,7 +34,7 @@ namespace Diagnosis.App.Controls.Search
 
         private void UserControl_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (FocusChecker.IsFocusOutsideDepObject(this)
+            if (FocusChecker.IsLogicFocusOutside(this)
                 // && FocusChecker.IsFocusOutsideDepObject(popup.Child)
                )
             {

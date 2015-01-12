@@ -8,7 +8,8 @@ namespace Diagnosis.App.Behaviors
     public static class FocusExtension
     {
         public static readonly DependencyProperty IsFocusedProperty =
-            DependencyProperty.RegisterAttached("IsFocused", typeof(bool?), typeof(FocusExtension), new FrameworkPropertyMetadata(IsFocusedChanged));
+            DependencyProperty.RegisterAttached("IsFocused", typeof(bool?), typeof(FocusExtension),
+                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, IsFocusedChanged));
 
         /// <summary>
         /// When element got logic focus, call Focus() only if it has keyboard focus.
@@ -46,10 +47,10 @@ namespace Diagnosis.App.Behaviors
                 fe.LostFocus += FrameworkElement_LostFocus;
             }
 
-            if (!fe.IsVisible)
-            {
-                fe.IsVisibleChanged += new DependencyPropertyChangedEventHandler(fe_IsVisibleChanged);
-            }
+            //if (!fe.IsVisible)
+            //{
+            //    fe.IsVisibleChanged += new DependencyPropertyChangedEventHandler(fe_IsVisibleChanged);
+            //}
 
             if (e.NewValue != null && (bool)e.NewValue)
             {
@@ -57,22 +58,23 @@ namespace Diagnosis.App.Behaviors
             }
         }
 
-        private static void fe_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            var fe = (FrameworkElement)sender;
-            var value = fe.GetValue(IsFocusedProperty);
-            if (value != null)
-                if (fe.IsVisible && (bool)fe.GetValue(IsFocusedProperty))
-                {
-                    fe.IsVisibleChanged -= fe_IsVisibleChanged;
-                    fe.Focus();
-                }
-        }
+        //private static void fe_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        //{
+        //    var fe = (FrameworkElement)sender;
+        //    var value = fe.GetValue(IsFocusedProperty);
+        //    if (value != null)
+        //        if (fe.IsVisible && (bool)fe.GetValue(IsFocusedProperty))
+        //        {
+        //            fe.IsVisibleChanged -= fe_IsVisibleChanged;
+        //            fe.Focus();
+        //        }
+        //}
 
         private static void FrameworkElement_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (!GetDirect(sender as DependencyObject) || Keyboard.FocusedElement == sender)
-                ((FrameworkElement)sender).SetValue(IsFocusedProperty, true);
+            if (e.Source == e.OriginalSource)
+                if (!GetDirect(sender as DependencyObject) || Keyboard.FocusedElement == sender)
+                    ((FrameworkElement)sender).SetValue(IsFocusedProperty, true);
         }
 
         private static void FrameworkElement_LostFocus(object sender, RoutedEventArgs e)
