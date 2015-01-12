@@ -33,11 +33,6 @@ namespace Diagnosis.ViewModels.Screens
             _navigator = new NavigatorViewModel(viewer);
             _hrEditor = new HrEditorViewModel(Session);
 
-            Navigator.Navigating += (s, e) =>
-            {
-                // сначала создаем HrList, чтобы hrManager подписался на добавление записей первым, иначе HrList.SelectHealthRecord нечего выделять
-                ShowHrsList(e.holder);
-            };
             Navigator.CurrentChanged += (s, e) =>
             {
                 // add to history
@@ -59,8 +54,6 @@ namespace Diagnosis.ViewModels.Screens
                 // переходим к спсику записей
                 HrList.IsFocused = true;
             };
-
-            viewer.OpenedChanged += viewer_OpenedChanged;
 
             handler = this.Subscribe(Event.DeleteHolder, (e) =>
             {
@@ -203,17 +196,17 @@ namespace Diagnosis.ViewModels.Screens
                 HrEditor.Load(HrList.SelectedHealthRecord.healthRecord);
             }
         }
+
         /// <summary>
-        /// Открывает редактор для выбранной в списке записи и переводит фокус на него.
+        /// Открывает редактор для записи и переводит фокус на него.
         /// </summary>
-        public void FocusHrEditor()
+        public void FocusHrEditor(HealthRecord hr)
         {
-            //logger.DebugFormat("FocusHrEditor to {0}", HrList.SelectedHealthRecord);
+            Contract.Requires(hr != null);
+            //logger.DebugFormat("FocusHrEditor to {0}", hr);
 
-            if (HrList.SelectedHealthRecord == null)
-                return;
-
-            HrEditor.Load(HrList.SelectedHealthRecord.healthRecord);
+            HrList.SelectHealthRecord(hr);
+            HrEditor.Load(hr);
             HrEditor.IsFocused = true;
         }
 
@@ -221,8 +214,9 @@ namespace Diagnosis.ViewModels.Screens
         {
             viewer = new PatientViewer();
         }
+
         /// <summary>
-        /// Открывает держателя или выделяет записи. 
+        /// Открывает держателя или выделяет записи.
         /// </summary>
         /// <param name="parameter"></param>
         /// <param name="lastAppOrCourse"></param>
@@ -298,7 +292,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (HrList.holder == holder)
                     return; // список может быть уже создан
 
-                HrList.Dispose(); // delete hrs here
+                CloseHrList();
             }
 
             if (holder != null)
@@ -320,6 +314,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     hios.Sync(Session, (w) => HrEditor.SyncTransientWord(w));
                 });
+
                 HrList.PropertyChanged += HrList_PropertyChanged;
                 HrList.SaveNeeded += (s, e) =>
                 {
@@ -350,7 +345,25 @@ namespace Diagnosis.ViewModels.Screens
                     }
                 };
                 HrList.HealthRecords.CollectionChanged += HrList_HealthRecords_CollectionChanged;
+
+                // сначала создаем HrList, чтобы hrManager подписался на добавление записей первым,
+                // иначе HrList.SelectHealthRecord нечего выделять при добавлении записи
+                holder.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
             }
+        }
+
+        private void CloseHrList()
+        {
+            if (HrList == null)
+                return;
+
+            var holder = HrList.holder;
+            HrList.Dispose(); // удаляются все записи
+
+            holder.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
+
+            // сохраняем пациента при закрытии чего-либо (ранее в viewer.OpenedCanged мог быть переход вверх без закрытия - не сохраняет)
+            saver.SaveAll(viewer.OpenedPatient, deleteEmptyHrs: true);
         }
 
         private void ShowHeader(IHrsHolder holder)
@@ -396,23 +409,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private void viewer_OpenedChanged(object sender, PatientViewer.OpeningEventArgs e)
-        {
-            var holder = e.entity as IHrsHolder;
-
-            if (e.action == PatientViewer.OpeningAction.Close)
-            {
-                holder.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
-
-                // сохраняем пациента при закрытии чего-либо (переход вверх без закрытия не сохраняет)
-                saver.SaveAll(viewer.OpenedPatient, deleteEmptyHrs: true);
-            }
-            else
-            {
-                holder.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
-            }
-        }
-
         private void HrsHolder_HealthRecordsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
@@ -421,8 +417,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     // редактируем добавленную запись
                     var hr = (HealthRecord)e.NewItems[0];
-                    HrList.SelectHealthRecord(hr);
-                    HrEditor.Load(hr);
+                    FocusHrEditor(hr);
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -449,11 +444,13 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     Header.Dispose();
                     HrEditor.Dispose();
-                    HrList.Dispose(); // удаляются все записи
 
-                    viewer.CloseAll(); // сохраняется пациент если открыт
-                    viewer.OpenedChanged -= viewer_OpenedChanged;
+                    CloseHrList();
+
+                    viewer.CloseAll();
+
                     Navigator.Dispose();
+
                     handler.Dispose();
                 }
             }
