@@ -6,7 +6,7 @@ namespace Diagnosis.App.Behaviors
 {
     /// <summary>
     /// Attached behavior for improved focus scope handling.
-    /// http://www.codeproject.com/Articles/38507
+    /// http://www.codeproject.com/Articles/38507/Using-the-WPF-FocusScope
     /// </summary>
     public static class EnhancedFocusScope
     {

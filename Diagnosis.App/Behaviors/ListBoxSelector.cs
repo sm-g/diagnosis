@@ -220,7 +220,7 @@ namespace Diagnosis.App.Behaviors
                 var fe = VisualTreeHelper.HitTest(this.listBox, mouse).VisualHit as FrameworkElement;
                 if (fe != null)
                 {
-                    var item = ParentFinder.FindAncestorOrSelf<ListBoxItem>(fe);
+                    var item = fe.FindAncestorOrSelf<ListBoxItem>();
                     if (item != null)
                         return;
                 }

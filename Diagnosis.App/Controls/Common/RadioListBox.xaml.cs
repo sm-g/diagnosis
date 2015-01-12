@@ -33,7 +33,7 @@ namespace Diagnosis.App.Controls
             var chkBox = sender as CheckBox;
             if (chkBox != null)
             {
-                var parent = ParentFinder.FindAncestorOrSelf<ListBoxItem>(chkBox);
+                var parent = chkBox.FindAncestorOrSelf<ListBoxItem>();
                 parent.IsSelected = chkBox.IsChecked.Value;
             }
         }
@@ -45,7 +45,7 @@ namespace Diagnosis.App.Controls
                 var item = sender as ListBoxItem;
                 if (item != null)
                 {
-                    var chkBox = ChildFinder.FindChild<CheckBox>(item, "chkbox");
+                    var chkBox = item.FindChild<CheckBox>("chkbox");
                     if (chkBox != null)
                         chkBox.IsChecked = !chkBox.IsChecked;
                 }

@@ -280,7 +280,6 @@
     <Compile Include="Controls\CardParts\HealthRecord.xaml.cs">
       <DependentUpon>HealthRecord.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Helpers\ParentFinder.cs" />
     <Compile Include="Controls\Search\Autocomplete.xaml.cs">
       <DependentUpon>Autocomplete.xaml</DependentUpon>
     </Compile>
@@ -371,7 +370,7 @@
     <Compile Include="Converters\MonthToString.cs" />
     <Compile Include="Converters\CountToVisibility.cs" />
     <Compile Include="Converters\TreeDepthToMargin.cs" />
-    <Compile Include="Controls\Helpers\ChildFinder.cs" />
+    <Compile Include="Controls\Helpers\VisualTreeExtensions.cs" />
     <Compile Include="Behaviors\EnhancedFocusScope.cs" />
     <Compile Include="Controls\Helpers\FocusChecker.cs" />
     <Compile Include="Controls\Helpers\TreeViewItemExtenstions.cs" />
