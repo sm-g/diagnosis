@@ -50,7 +50,7 @@ namespace Diagnosis.App.Controls
 
         private void item_Loaded(object sender, RoutedEventArgs e)
         {
-            var ch = (sender as DependencyObject).FindChild<ContentPresenter>("separator");
+            var ch = (sender as FrameworkElement).FindChild<ContentPresenter>("separator");
             if (ch != null)
                 ch.Content = Separator.XamlClone();
         }

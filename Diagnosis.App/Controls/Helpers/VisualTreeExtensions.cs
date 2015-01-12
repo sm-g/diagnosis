@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Linq;
 using System.Windows.Media;
 using System.Collections.Generic;
 
@@ -11,118 +12,75 @@ namespace Diagnosis.App.Controls
         /// </summary>
         /// <param name="parent">A direct parent of the queried item.</param>
         /// <typeparam name="T">The type of the queried item.</typeparam>
-        /// <param name="childName">x:Name or Name of child. </param>
+        /// <param name="childNameOrAny">x:Name or Name of child or return first child of given type. </param>
         /// <returns>The first parent item that matches the submitted type parameter.
         /// If not matching item can be found,
         /// a null parent is being returned.</returns>
-        public static T FindChild<T>(this DependencyObject parent, string childName)
-           where T : DependencyObject
+        public static T FindChild<T>(this FrameworkElement parent, string childNameOrAny = null)
+           where T : FrameworkElement
         {
-            // Confirm parent and childName are valid.
-            if (parent == null) return null;
+            if (!string.IsNullOrEmpty(childNameOrAny))
+                return FindVisualChildren<T>(parent, true)
+                    .FirstOrDefault(x => x.Name == childNameOrAny);
+            else
+                return FindVisualChildren<T>(parent, true).FirstOrDefault();
 
-            T foundChild = null;
-
-            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
-            for (int i = 0; i < childrenCount; i++)
-            {
-                var child = VisualTreeHelper.GetChild(parent, i);
-                // If the child is not of the request child type child
-                T childType = child as T;
-                if (childType == null)
-                {
-                    // recursively drill down the tree
-                    foundChild = FindChild<T>(child, childName);
-
-                    // If the child is found, break so we do not overwrite the found child.
-                    if (foundChild != null) break;
-                }
-                else if (!string.IsNullOrEmpty(childName))
-                {
-                    var frameworkElement = child as FrameworkElement;
-                    // If the child's name is set for search
-                    if (frameworkElement != null && frameworkElement.Name == childName)
-                    {
-                        // if the child's name is of the request name
-                        foundChild = (T)child;
-                        break;
-                    }
-                }
-                else
-                {
-                    // child element found.
-                    foundChild = (T)child;
-                    break;
-                }
-            }
-
-            return foundChild;
         }
-
         /// <summary>
         /// Return collection of all children of queried type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="depObj"></param>
+        /// <param name="parent"></param>
         /// <returns></returns>
-        public static IEnumerable<T> FindVisualChildren<T>(this DependencyObject depObj) where T : DependencyObject
+        public static IEnumerable<T> FindVisualChildren<T>(this DependencyObject parent, bool withInherited = true) where T : DependencyObject
         {
-            if (depObj != null)
+            if (parent != null)
             {
-                var childCount = VisualTreeHelper.GetChildrenCount(depObj);
+                var childCount = VisualTreeHelper.GetChildrenCount(parent);
 
                 for (int i = 0; i < childCount; i++)
                 {
-                    var child = VisualTreeHelper.GetChild(depObj, i);
+                    var child = VisualTreeHelper.GetChild(parent, i);
                     if (child != null && child is T)
                     {
                         yield return (T)child;
                     }
-
-                    foreach (T childOfChild in FindVisualChildren<T>(child))
-                    {
-                        yield return childOfChild;
-                    }
+                    if (withInherited)
+                        foreach (T childOfChild in FindVisualChildren<T>(child, withInherited))
+                        {
+                            yield return childOfChild;
+                        }
                 }
             }
             yield break;
         }
 
         /// <summary>
-        /// Return collection of all children of any type.
+        /// Return collection of children of any type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="depObj"></param>
+        /// <param name="parent"></param>
         /// <returns></returns>
-        public static IEnumerable<DependencyObject> FindVisualChildren(this DependencyObject depObj)
+        public static IEnumerable<DependencyObject> FindVisualChildren(this DependencyObject parent, bool withInherited = true)
         {
-            if (depObj != null)
-            {
-                var childCount = VisualTreeHelper.GetChildrenCount(depObj);
-
-                for (int i = 0; i < childCount; i++)
-                {
-                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-                    if (child != null)
-                    {
-                        yield return child;
-                    }
-
-                    foreach (var childOfChild in FindVisualChildren(child))
-                    {
-                        yield return childOfChild;
-                    }
-                }
-            }
-            yield break;
+            return FindVisualChildren<DependencyObject>(parent, withInherited);
         }
-
-        public static DependencyObject GetParent(this DependencyObject obj)
+        /// <summary>
+        /// This method is an alternative to WPF's
+        /// <see cref="VisualTreeHelper.GetParent"/> method, which also
+        /// supports content elements. Keep in mind that for content element,
+        /// this method falls back to the logical tree of the element!
+        /// </summary>
+        /// <param name="child">The item to be processed.</param>
+        /// <returns>The submitted item's parent, if available. Otherwise
+        /// null.</returns>
+        public static DependencyObject GetParent(this DependencyObject child)
         {
-            if (obj == null)
+            if (child == null)
                 return null;
 
-            ContentElement ce = obj as ContentElement;
+            //handle content elements separately
+            ContentElement ce = child as ContentElement;
             if (ce != null)
             {
                 DependencyObject parent = ContentOperations.GetParent(ce);
@@ -132,70 +90,59 @@ namespace Diagnosis.App.Controls
                 FrameworkContentElement fce = ce as FrameworkContentElement;
                 return fce != null ? fce.Parent : null;
             }
+            //also try searching for parent in framework elements (such as DockPanel, etc)
+            FrameworkElement frameworkElement = child as FrameworkElement;
+            if (frameworkElement != null)
+            {
+                DependencyObject parent = frameworkElement.Parent;
+                if (parent != null) return parent;
+            }
 
-            return VisualTreeHelper.GetParent(obj);
+            return VisualTreeHelper.GetParent(child);
         }
 
-        public static T FindAncestorOrSelf<T>(this DependencyObject obj) where T : DependencyObject
+        public static T FindAncestorOrSelf<T>(this DependencyObject child) where T : DependencyObject
         {
-            while (obj != null)
+            while (child != null)
             {
-                T objTest = obj as T;
+                T objTest = child as T;
                 if (objTest != null)
                     return objTest;
-                obj = GetParent(obj);
+                child = GetParent(child);
             }
 
             return null;
         }
 
-        public static T FindAncestor<T>(this DependencyObject obj) where T : DependencyObject
+        public static T FindAncestor<T>(this DependencyObject child) where T : DependencyObject
         {
-            obj = GetParent(obj);
-            while (obj != null)
-            {
-                T objTest = obj as T;
-                if (objTest != null)
-                    return objTest;
-                obj = GetParent(obj);
-            }
-
-            return null;
+            child = GetParent(child);
+            return FindAncestorOrSelf<T>(child);
         }
 
         /// <summary>
         /// Return true if one DependencyObject is visual child of other.
         /// </summary>
         /// <param name="dep"></param>
-        /// <param name="container"></param>
+        /// <param name="parent"></param>
         /// <returns></returns>
-        public static bool IsChildOf(this DependencyObject dep, DependencyObject container)
+        public static bool IsChildOf(this DependencyObject dep, DependencyObject parent)
         {
-            if (container == null)
+            if (parent == null)
                 return false;
 
             while (dep != null)
             {
                 dep = GetParent(dep);
-                if (dep == container)
+                if (dep == parent)
                     return true;
             }
             return false;
         }
 
-        public static bool IsChildOf(this IInputElement input, DependencyObject container)
+        public static bool IsChildOf(this IInputElement input, DependencyObject parent)
         {
-            if (container == null)
-                return false;
-
-            var dep = input as DependencyObject;
-            while (dep != null)
-            {
-                dep = GetParent(dep);
-                if (dep == container)
-                    return true;
-            }
-            return false;
+            return IsChildOf(input as DependencyObject, parent);
         }
     }
 }
