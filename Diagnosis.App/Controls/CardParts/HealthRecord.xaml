@@ -28,6 +28,19 @@
     </UserControl.Resources>
 
     <Grid>
+        <Grid.Style>
+            <Style TargetType="Grid">
+                <Setter Property="Background"
+                        Value="Transparent" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsDeleted}"
+                                 Value="True">
+                        <Setter Property="Background"
+                                Value="PaleVioletRed" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Style>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20" />
             <ColumnDefinition Width="*" />
@@ -92,7 +105,7 @@
                        BasedOn="{StaticResource buttonIcon}" />
                 <Style TargetType="Button">
                     <Setter Property="Height"
-                            Value="16" />
+                            Value="20" />
                 </Style>
             </StackPanel.Resources>
             <Button Command="{Binding SendToSearchCommand}"

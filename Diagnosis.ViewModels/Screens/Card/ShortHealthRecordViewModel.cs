@@ -117,6 +117,10 @@ namespace Diagnosis.ViewModels.Screens
             get { return healthRecord.Ord; }
         }
 
+        public bool IsDeleted
+        {
+            get { return healthRecord.IsDeleted; }
+        }
         #endregion Model
 
         public DateTime SortingDate
