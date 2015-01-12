@@ -9,6 +9,14 @@ namespace Diagnosis.ViewModels.Screens
     {
         internal readonly Doctor doctor;
 
+        public DoctorViewModel(Doctor d)
+        {
+            Contract.Requires(d != null);
+            doctor = d;
+            this.validatableEntity = d;
+            doctor.PropertyChanged += doctor_PropertyChanged;
+        }
+
         public string FirstName
         {
             get
@@ -82,15 +90,6 @@ namespace Diagnosis.ViewModels.Screens
                 doctor.Speciality = value;
             }
         }
-
-        public DoctorViewModel(Doctor d)
-        {
-            Contract.Requires(d != null);
-            doctor = d;
-            this.validatableEntity = d;
-            doctor.PropertyChanged += doctor_PropertyChanged;
-        }
-
         private void doctor_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             OnPropertyChanged(e.PropertyName);

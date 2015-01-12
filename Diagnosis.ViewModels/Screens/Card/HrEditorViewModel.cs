@@ -26,8 +26,6 @@ namespace Diagnosis.ViewModels.Screens
         private EventMessageHandler handler;
         private Recognizer recognizer;
 
-        public event EventHandler<DomainEntityEventArgs> Unloaded;
-
         public HrEditorViewModel(ISession session)
         {
             this.session = session;
@@ -39,6 +37,7 @@ namespace Diagnosis.ViewModels.Screens
              });
         }
 
+        public event EventHandler<DomainEntityEventArgs> Unloaded;
         #region HealthRecord
 
         public HealthRecordViewModel HealthRecord
@@ -259,6 +258,36 @@ namespace Diagnosis.ViewModels.Screens
             HealthRecord = null;
         }
 
+        public override string ToString()
+        {
+            return string.Format("editor {0}", HealthRecord);
+        }
+
+        protected virtual void OnUnloaded(HealthRecord hr)
+        {
+            var h = Unloaded;
+            if (h != null)
+            {
+                h(this, new DomainEntityEventArgs(hr));
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing)
+                {
+                    handler.Dispose();
+                    Unload();
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
+        }
+
         private void CloseCurrentHr()
         {
             if (HealthRecord != null)
@@ -289,36 +318,6 @@ namespace Diagnosis.ViewModels.Screens
             if (e.PropertyName == "Category")
             {
                 OnPropertyChanged(e.PropertyName);
-            }
-        }
-
-        protected virtual void OnUnloaded(HealthRecord hr)
-        {
-            var h = Unloaded;
-            if (h != null)
-            {
-                h(this, new DomainEntityEventArgs(hr));
-            }
-        }
-
-        public override string ToString()
-        {
-            return string.Format("editor {0}", HealthRecord);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            try
-            {
-                if (disposing)
-                {
-                    handler.Dispose();
-                    Unload();
-                }
-            }
-            finally
-            {
-                base.Dispose(disposing);
             }
         }
     }

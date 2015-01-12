@@ -13,17 +13,30 @@ namespace Diagnosis.ViewModels.Search
         where T : class
     {
         #region Fields
-        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(PopupSearchViewModel<>));
         internal readonly Func<string, IEnumerable<T>> searcher;
-
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(PopupSearchViewModel<>));
         private int _selectedIndex = -1;
         private bool _searchFocused;
         private bool _isResultsVisible;
 
         #endregion Fields
 
-        public event EventHandler<ObjectEventArgs> ResultItemSelected;
+        public PopupSearchViewModel(Func<string, IEnumerable<T>> searcher)
+        {
+            this.searcher = searcher;
+            Filter = new FilterViewModel<T>(searcher);
+            Filter.Filtered += (s, e) =>
+            {
+                logger.DebugFormat("filtered in popupsearch, results: {0}", Filter.Results.Count);
+                if (Filter.Results.Count > 0)
+                    SelectedIndex = 0;
+                IsResultsVisible = true;
+            };
 
+            // Filter.Clear(); // no results made here
+        }
+
+        public event EventHandler<ObjectEventArgs> ResultItemSelected;
         public FilterViewModel<T> Filter
         {
             get;
@@ -135,21 +148,6 @@ namespace Diagnosis.ViewModels.Search
 
             if (HideResultsAfterSelected)
                 IsResultsVisible = false;
-        }
-
-        public PopupSearchViewModel(Func<string, IEnumerable<T>> searcher)
-        {
-            this.searcher = searcher;
-            Filter = new FilterViewModel<T>(searcher);
-            Filter.Filtered += (s, e) =>
-            {
-                logger.DebugFormat("filtered in popupsearch, results: {0}", Filter.Results.Count);
-                if (Filter.Results.Count > 0)
-                    SelectedIndex = 0;
-                IsResultsVisible = true;
-            };
-
-            // Filter.Clear(); // no results made here
         }
     }
 

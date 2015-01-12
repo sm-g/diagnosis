@@ -12,6 +12,27 @@ namespace Diagnosis.ViewModels.Screens
         private readonly Patient patient;
         private PatientViewModel _vm;
 
+        /// <summary>
+        /// Начинает редактировать пациента.
+        /// </summary>
+        /// <param name="patient"></param>
+        public PatientEditorViewModel(Patient patient)
+        {
+            this.patient = patient;
+
+            Patient = new PatientViewModel(patient);
+            (patient as IEditableObject).BeginEdit();
+
+            Title = "Данные пациента";
+        }
+
+        /// <summary>
+        /// Начинает редактировать нового пациента.
+        /// </summary>
+        public PatientEditorViewModel()
+            : this(new Patient())
+        { }
+
         public PatientViewModel Patient
         {
             get
@@ -80,28 +101,6 @@ namespace Diagnosis.ViewModels.Screens
                 return patient.IsTransient;
             }
         }
-
-        /// <summary>
-        /// Начинает редактировать пациента.
-        /// </summary>
-        /// <param name="patient"></param>
-        public PatientEditorViewModel(Patient patient)
-        {
-            this.patient = patient;
-
-            Patient = new PatientViewModel(patient);
-            (patient as IEditableObject).BeginEdit();
-
-            Title = "Данные пациента";
-        }
-
-        /// <summary>
-        /// Начинает редактировать нового пациента.
-        /// </summary>
-        public PatientEditorViewModel()
-            : this(new Patient())
-        { }
-
         private bool CanSave()
         {
             return (patient.IsTransient || patient.IsDirty) && patient.IsValid(); // есть изменения или при создании пациента

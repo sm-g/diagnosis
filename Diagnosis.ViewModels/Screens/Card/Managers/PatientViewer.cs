@@ -28,14 +28,13 @@ namespace Diagnosis.ViewModels.Screens
         private Dictionary<Patient, Course> patCourseMap;
         private Dictionary<Course, Appointment> courseAppMap;
 
+        public event EventHandler<OpeningEventArgs> OpenedChanged;
+
         public PatientViewer()
         {
             patCourseMap = new Dictionary<Patient, Course>();
             courseAppMap = new Dictionary<Course, Appointment>();
         }
-
-        public event EventHandler<OpeningEventArgs> OpenedChanged;
-
         public Patient OpenedPatient
         {
             get

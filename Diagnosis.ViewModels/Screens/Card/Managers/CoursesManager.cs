@@ -13,8 +13,17 @@ namespace Diagnosis.ViewModels.Screens
         private readonly Patient patient;
         private ObservableCollection<ShortCourseViewModel> _courses;
 
-        public event EventHandler CoursesLoaded;
         private NotifyCollectionChangedEventHandler onCoursesChanged;
+
+        public event EventHandler CoursesLoaded;
+        public CoursesManager(Patient patient, NotifyCollectionChangedEventHandler onCoursesChanged)
+        {
+            this.patient = patient;
+            this.onCoursesChanged = onCoursesChanged;
+
+            patient.CoursesChanged += patient_CoursesChanged;
+            patient.CoursesChanged += onCoursesChanged;
+        }
 
         /// <summary>
         /// Курсы пацента, отсортированы по дате по убыванию (нулевой — самый поздний курс).
@@ -37,16 +46,6 @@ namespace Diagnosis.ViewModels.Screens
                 return _courses;
             }
         }
-
-        public CoursesManager(Patient patient, NotifyCollectionChangedEventHandler onCoursesChanged)
-        {
-            this.patient = patient;
-            this.onCoursesChanged = onCoursesChanged;
-
-            patient.CoursesChanged += patient_CoursesChanged;
-            patient.CoursesChanged += onCoursesChanged;
-        }
-
         private void patient_CoursesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)

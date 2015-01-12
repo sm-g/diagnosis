@@ -66,6 +66,17 @@ namespace Diagnosis.Models
         /// </summary>
         public virtual object Actual { get { return this; } }
 
+        bool IEntity.IsDirty
+        {
+            get { return IsDirty; }
+            set { IsDirty = value; }
+        }
+
+        object IEntity.Id
+        {
+            get { return Id; }
+        }
+
         protected internal virtual EditableObjectHelper EditHelper
         {
             get
@@ -82,6 +93,22 @@ namespace Diagnosis.Models
                 }
                 return _editHelper;
             }
+        }
+
+        // Maintain equality operator semantics for entities.
+        public static bool operator ==(EntityBase<TId> x, EntityBase<TId> y)
+        {
+            // By default, == and Equals compares references. In order to
+            // maintain these semantics with entities, we need to compare by
+            // identity value. The Equals(x, y) override is used to guard
+            // against null values; it then calls EntityEquals().
+            return Object.Equals(x, y);
+        }
+
+        // Maintain inequality operator semantics for entities.
+        public static bool operator !=(EntityBase<TId> x, EntityBase<TId> y)
+        {
+            return !(x == y);
         }
 
         void IEditableObject.BeginEdit()
@@ -173,34 +200,6 @@ namespace Diagnosis.Models
             storage = value;
             OnPropertyChanged(propertyExpression);
             return true;
-        }
-
-        // Maintain equality operator semantics for entities.
-        public static bool operator ==(EntityBase<TId> x, EntityBase<TId> y)
-        {
-            // By default, == and Equals compares references. In order to
-            // maintain these semantics with entities, we need to compare by
-            // identity value. The Equals(x, y) override is used to guard
-            // against null values; it then calls EntityEquals().
-            return Object.Equals(x, y);
-        }
-
-        // Maintain inequality operator semantics for entities.
-        public static bool operator !=(EntityBase<TId> x, EntityBase<TId> y)
-        {
-            return !(x == y);
-        }
-
-
-        bool IEntity.IsDirty
-        {
-            get { return IsDirty; }
-            set { IsDirty = value; }
-        }
-
-        object IEntity.Id
-        {
-            get { return Id; }
         }
     }
 }

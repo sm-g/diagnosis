@@ -15,6 +15,14 @@ namespace Diagnosis.ViewModels.Screens
     {
         internal readonly Course course;
 
+        public ShortCourseViewModel(Course course)
+        {
+            Contract.Requires(course != null);
+            this.course = course;
+
+
+        }
+
         public Doctor LeadDoctor
         {
             get
@@ -73,15 +81,6 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
-
-        public ShortCourseViewModel(Course course)
-        {
-            Contract.Requires(course != null);
-            this.course = course;
-
-
-        }
-
         public override string ToString()
         {
             return string.Format("{0} {1}", GetType().Name, course);

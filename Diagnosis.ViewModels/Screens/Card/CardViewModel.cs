@@ -260,6 +260,39 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        protected virtual void OnLastItemRemoved()
+        {
+            var h = LastItemRemoved;
+            if (h != null)
+            {
+                h(this, EventArgs.Empty);
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing)
+                {
+                    Header.Dispose();
+                    HrEditor.Dispose();
+
+                    CloseHrList();
+
+                    viewer.CloseAll();
+
+                    Navigator.Dispose();
+
+                    handler.Dispose();
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
+        }
+
         private string MakeTitle()
         {
             if (Navigator.Current == null)
@@ -424,39 +457,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 // удаляем записи в бд
                 saver.Delete(e.OldItems.Cast<HealthRecord>().ToArray());
-            }
-        }
-
-        protected virtual void OnLastItemRemoved()
-        {
-            var h = LastItemRemoved;
-            if (h != null)
-            {
-                h(this, EventArgs.Empty);
-            }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            try
-            {
-                if (disposing)
-                {
-                    Header.Dispose();
-                    HrEditor.Dispose();
-
-                    CloseHrList();
-
-                    viewer.CloseAll();
-
-                    Navigator.Dispose();
-
-                    handler.Dispose();
-                }
-            }
-            finally
-            {
-                base.Dispose(disposing);
             }
         }
     }

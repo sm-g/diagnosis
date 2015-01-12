@@ -86,6 +86,36 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0} {1}", this.GetType(), Holder);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing)
+                {
+                    if (Holder is Patient)
+                    {
+                        (Holder as Patient).CoursesChanged -= nested_IHrsHolders_Changed;
+                    }
+                    if (Holder is Course)
+                    {
+                        (Holder as Course).AppointmentsChanged -= nested_IHrsHolders_Changed;
+                    }
+                    (Holder as INotifyPropertyChanged).PropertyChanged -= holder_PropertyChanged;
+
+                    HolderVm.Dispose();
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
+        }
+
         /// <summary>
         /// Показываем время для осмотров, если есть осмотр той же даты в курсе.
         /// </summary>
@@ -133,36 +163,6 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (sender is Course || sender is Appointment)
                 Parent.Children.Sort(vm => vm.Holder);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            try
-            {
-                if (disposing)
-                {
-                    if (Holder is Patient)
-                    {
-                        (Holder as Patient).CoursesChanged -= nested_IHrsHolders_Changed;
-                    }
-                    if (Holder is Course)
-                    {
-                        (Holder as Course).AppointmentsChanged -= nested_IHrsHolders_Changed;
-                    }
-                    (Holder as INotifyPropertyChanged).PropertyChanged -= holder_PropertyChanged;
-
-                    HolderVm.Dispose();
-                }
-            }
-            finally
-            {
-                base.Dispose(disposing);
-            }
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0} {1}", this.GetType(), Holder);
         }
     }
 }

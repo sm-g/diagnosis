@@ -7,7 +7,7 @@ namespace Diagnosis.ViewModels.Screens
     public class MainWindowViewModel : ViewModelBase
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(MainWindowViewModel));
-        public ScreenSwitcher switcher;
+        private ScreenSwitcher switcher;
         private SearchViewModel searchPanel;
         private bool? searchVis = null;
 

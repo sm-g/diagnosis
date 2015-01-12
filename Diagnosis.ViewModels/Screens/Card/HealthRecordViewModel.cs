@@ -7,9 +7,8 @@ namespace Diagnosis.ViewModels.Screens
 {
     public class HealthRecordViewModel : ViewModelBase
     {
-        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HealthRecordViewModel));
         internal readonly HealthRecord healthRecord;
-
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HealthRecordViewModel));
         private readonly Patient patient;
         private bool _doRound;
 
@@ -179,6 +178,21 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0} {1}", GetType().Name, healthRecord);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                healthRecord.PropertyChanged -= healthRecord_PropertyChanged;
+                patient.PropertyChanged -= patient_PropertyChanged;
+            }
+            base.Dispose(disposing);
+        }
+
         private void healthRecord_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             OnPropertyChanged(e.PropertyName);
@@ -196,21 +210,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 OnPropertyChanged(() => CanShowAsAge);
             }
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0} {1}", GetType().Name, healthRecord);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                healthRecord.PropertyChanged -= healthRecord_PropertyChanged;
-                patient.PropertyChanged -= patient_PropertyChanged;
-            }
-            base.Dispose(disposing);
         }
     }
 }

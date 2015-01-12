@@ -112,6 +112,12 @@ namespace Diagnosis.Models
 
         IEnumerable<HealthRecord> IHrsHolder.HealthRecords { get { throw new NotImplementedException(); } }
 
+        bool IEntity.IsDirty { get { throw new NotImplementedException(); } set { throw new NotImplementedException(); } }
+
+        object IEntity.Id { get { throw new NotImplementedException(); } }
+
+        object IEntity.Actual { get { throw new NotImplementedException(); } }
+
         HealthRecord IHrsHolder.AddHealthRecord(Doctor author)
         {
             IHrsHolder test = this;
@@ -126,12 +132,6 @@ namespace Diagnosis.Models
             IHrsHolder test = this;
             Contract.Ensures(test.HealthRecords.Count() <= Contract.OldValue(test.HealthRecords.Count()));
         }
-
-        bool IEntity.IsDirty { get { throw new NotImplementedException(); } set { throw new NotImplementedException(); } }
-        object IEntity.Id { get { throw new NotImplementedException(); } }
-
-        object IEntity.Actual { get { throw new NotImplementedException(); } }
-
         int IComparable<IHrsHolder>.CompareTo(IHrsHolder other) { throw new NotImplementedException(); }
     }
 }

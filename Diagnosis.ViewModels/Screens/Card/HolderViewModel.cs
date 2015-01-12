@@ -153,19 +153,14 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private void holder_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        public override string ToString()
         {
-            UpdateIsEmpty();
+            return string.Format("{0}. empty = {1}", Holder, IsEmpty);
         }
 
         internal void UpdateIsEmpty()
         {
             OnPropertyChanged(() => IsEmpty);
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0}. empty = {1}", Holder, IsEmpty);
         }
 
         protected override void Dispose(bool disposing)
@@ -192,6 +187,11 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
             base.Dispose(disposing);
+        }
+
+        private void holder_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            UpdateIsEmpty();
         }
     }
 }

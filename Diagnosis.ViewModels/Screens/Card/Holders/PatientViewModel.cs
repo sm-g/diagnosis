@@ -17,6 +17,20 @@ namespace Diagnosis.ViewModels.Screens
         private ShortCourseViewModel _selectedCourse;
         private CoursesManager coursesManager;
 
+        public PatientViewModel(Patient p)
+        {
+            Contract.Requires(p != null);
+            this.patient = p;
+            this.validatableEntity = p;
+
+            patient.PropertyChanged += patient_PropertyChanged;
+
+            coursesManager = new CoursesManager(patient, onCoursesChanged: (s, e) =>
+            {
+                OnPropertyChanged("NoCourses");
+            });
+        }
+
         #region Model
         public string FirstName
         {
@@ -195,21 +209,6 @@ namespace Diagnosis.ViewModels.Screens
                 return patient.LastName == null && patient.MiddleName == null && patient.FirstName == null;
             }
         }
-
-        public PatientViewModel(Patient p)
-        {
-            Contract.Requires(p != null);
-            this.patient = p;
-            this.validatableEntity = p;
-
-            patient.PropertyChanged += patient_PropertyChanged;
-
-            coursesManager = new CoursesManager(patient, onCoursesChanged: (s, e) =>
-            {
-                OnPropertyChanged("NoCourses");
-            });
-        }
-
         public void SelectCourse(Course course)
         {
             SelectedCourse = Courses.FirstOrDefault(x => x.course == course);

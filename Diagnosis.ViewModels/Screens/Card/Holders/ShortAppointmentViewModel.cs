@@ -15,6 +15,13 @@ namespace Diagnosis.ViewModels.Screens
     {
         internal readonly Appointment appointment;
 
+        public ShortAppointmentViewModel(Appointment appointment)
+        {
+            Contract.Requires(appointment != null);
+            this.appointment = appointment;
+
+        }
+
         public Doctor Doctor
         {
             get { return appointment.Doctor; }
@@ -41,13 +48,6 @@ namespace Diagnosis.ViewModels.Screens
                     this.Send(Event.OpenAppointment, appointment.AsParams(MessageKeys.Appointment));
                 });
             }
-        }
-
-        public ShortAppointmentViewModel(Appointment appointment)
-        {
-            Contract.Requires(appointment != null);
-            this.appointment = appointment;
-
         }
         public override string ToString()
         {

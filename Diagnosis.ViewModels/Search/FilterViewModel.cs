@@ -14,6 +14,20 @@ namespace Diagnosis.ViewModels.Search
         private bool _isFocused;
         private bool _resultsOnQueryChanges;
 
+        public FilterViewModel(ISimpleSearcher<T> searcher)
+        {
+            this.searcher = searcher;
+            Results = new ObservableCollection<T>();
+            UpdateResultsOnQueryChanges = true;
+        }
+
+        public FilterViewModel(Func<string, IEnumerable<T>> finder)
+        {
+            this.finder = finder;
+            Results = new ObservableCollection<T>();
+            UpdateResultsOnQueryChanges = true;
+        }
+
         #region IFilter
 
         public event EventHandler Cleared;
@@ -135,21 +149,6 @@ namespace Diagnosis.ViewModels.Search
                 }
             }
         }
-
-        public FilterViewModel(ISimpleSearcher<T> searcher)
-        {
-            this.searcher = searcher;
-            Results = new ObservableCollection<T>();
-            UpdateResultsOnQueryChanges = true;
-        }
-
-        public FilterViewModel(Func<string, IEnumerable<T>> finder)
-        {
-            this.finder = finder;
-            Results = new ObservableCollection<T>();
-            UpdateResultsOnQueryChanges = true;
-        }
-
         protected void OnCleared()
         {
             var h = Cleared;

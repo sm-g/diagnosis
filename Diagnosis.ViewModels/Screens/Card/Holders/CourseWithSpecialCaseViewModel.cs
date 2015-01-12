@@ -14,6 +14,14 @@ namespace Diagnosis.ViewModels.Screens
         private SpecialCaseItem _selApp;
         private AppointmentsSpecialCaseManager appManager;
 
+        public CourseWithSpecialCaseViewModel(Course course)
+        {
+            Contract.Requires(course != null);
+            this.course = course;
+
+            appManager = new AppointmentsSpecialCaseManager(course);
+        }
+
         #region Model
 
         public Doctor LeadDoctor
@@ -116,15 +124,6 @@ namespace Diagnosis.ViewModels.Screens
                 return LeadDoctor == AuthorityController.CurrentDoctor;
             }
         }
-
-        public CourseWithSpecialCaseViewModel(Course course)
-        {
-            Contract.Requires(course != null);
-            this.course = course;
-
-            appManager = new AppointmentsSpecialCaseManager(course);
-        }
-
         /// <summary>
         /// Вызывается при смене открытого осмотра.
         /// </summary>

@@ -10,6 +10,12 @@ namespace Diagnosis.ViewModels.Screens
     {
         internal readonly Patient patient;
 
+        public ShortPatientViewModel(Patient p)
+        {
+            Contract.Requires(p != null);
+            this.patient = p;
+        }
+
         public string FirstName
         {
             get
@@ -81,13 +87,6 @@ namespace Diagnosis.ViewModels.Screens
                 return patient.LastName == null && patient.MiddleName == null && patient.FirstName == null;
             }
         }
-
-        public ShortPatientViewModel(Patient p)
-        {
-            Contract.Requires(p != null);
-            this.patient = p;
-        }
-
         public override string ToString()
         {
             return string.Format("{0} of {1}", this.GetType().Name, patient.ToString());
