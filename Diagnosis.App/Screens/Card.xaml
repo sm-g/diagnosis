@@ -11,6 +11,7 @@
              xmlns:diag="http://schemas.smg.com/diagnosis"
              x:Name="card"
              mc:Ignorable="d"
+             UseLayoutRounding="True"
              d:DataContext="{DynamicResource Context}"
              d:DesignHeight="300"
              d:DesignWidth="600">
@@ -102,7 +103,6 @@
 
         <Border Grid.Row="2" Grid.Column="1"
                 BorderThickness="0,1,0,0"
-                UseLayoutRounding="True"
                 Background="{StaticResource hrEditorBackgroundBrush}"
                 Visibility="{Binding HrEditor.HasHealthRecord, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Border.BorderBrush>
