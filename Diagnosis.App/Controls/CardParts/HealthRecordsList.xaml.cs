@@ -24,17 +24,27 @@ namespace Diagnosis.App.Controls.CardParts
         private void records_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // fix duplicates in SelectedItems http://stackoverflow.com/questions/27685460/wpf-listbox-extendedmode-move-selected-item-with-isselected-binding
-            if (e.AddedItems != null)
+
+            foreach (var item in e.AddedItems)
             {
-                foreach (var item in e.AddedItems)
+                if (records.SelectedItems.Cast<object>().Where(i => i == item).Count() > 1)
                 {
-                    if (records.SelectedItems.Cast<object>().Where(i => i == item).Count() > 1)
-                    {
-                        records.SelectedItems.Remove(item);
-                    }
+                    records.SelectedItems.Remove(item);
                 }
             }
 
+            // focus on selected item if listbox itself is focused
+            if (Keyboard.FocusedElement == records)
+            {
+                if (records.SelectedItems.Count > 0)
+                {
+                    var lastSelectedItem = records.ItemContainerGenerator.ContainerFromItem(records.SelectedItems[records.SelectedItems.Count - 1]) as ListBoxItem;
+                    if (lastSelectedItem != null)
+                        lastSelectedItem.Focus();
+                }
+            }
+
+            logger.DebugFormat("records selected {0}", records.SelectedItem);
             records.UpdateLayout();
             records.ScrollIntoView(records.SelectedItem);
         }
@@ -53,22 +63,21 @@ namespace Diagnosis.App.Controls.CardParts
             if (e.NewFocus != records)
                 return;
 
-            //logger.DebugFormat("records got focus");
-
             // список получил фокус - переводим его на выбранный элемент
-            var index = records.SelectedIndex;
-            if (index >= 0)
+            var item = records.SelectedItem;
+            // logger.DebugFormat("records got focus, selected {0}", item);
+            if (item != null)
             {
                 Action action = () =>
                 {
                     records.ScrollIntoView(records.SelectedItem);
 
-                    var item = records.ItemContainerGenerator.ContainerFromIndex(index) as ListBoxItem;
-                    if (item != null)
+                    var lbItem = records.ItemContainerGenerator.ContainerFromItem(item) as ListBoxItem;
+                    if (lbItem != null)
                     {
-                        var scope = FocusManager.GetFocusScope(this);
-                        FocusManager.SetFocusedElement(scope, item);
-                        // item.Focus();
+                        //var scope = FocusManager.GetFocusScope(this);
+                        //FocusManager.SetFocusedElement(scope, lbItem);
+                        lbItem.Focus();
                     }
                 };
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal, action);

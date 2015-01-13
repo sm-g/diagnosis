@@ -76,6 +76,49 @@ namespace Diagnosis.Common
                 i = 0;
             return collection.ElementAt(i);
         }
+        /// <summary>
+        /// Возвращает первый элемент, которого нет во втором списке, рядом с первым элементом,
+        /// равным <paramref name="startIndex"/>-му во втором списке. Если такого элемента нет,
+        /// возвращается просто первый элемент списка. Возвращает null, если все элементы есть во
+        /// втором списке.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="first">     </param>
+        /// <param name="second">    </param>
+        /// <param name="startIndex">Индекс, с которого начинается поиск.</param>
+        /// <param name="forward">   
+        /// Направление, с которого начинается поиск. По умолчанию вперед, к концу списка.
+        /// </param>
+        /// <returns></returns>
+        public static T FirstAfterAndNotIn<T>(this IList<T> first, IList<T> second, int startIndex = 0, bool forward = true) where T : class
+        {
+            if (second.Count == 0 || first.Count == 0 || second.Count - 1 < startIndex || startIndex < 0)
+                return first.FirstOrDefault();
+
+            int ind = first.IndexOf(second[startIndex]);
+            if (ind < 0)
+                return first.FirstOrDefault();
+
+            if (forward)
+            {
+                while (second.Contains(first[ind]) && ind < first.Count - 1)
+                    ind++;
+                while (second.Contains(first[ind]) && ind > 0)
+                    ind--;
+            }
+            else
+            {
+                while (second.Contains(first[ind]) && ind > 0)
+                    ind--;
+                while (second.Contains(first[ind]) && ind < first.Count - 1)
+                    ind++;
+            }
+            if (second.Contains(first[ind]))
+                return null;
+
+            return first.ElementAt(ind);
+        }
+
 
         /// <summary>
         /// Return {prev, current, next} triad where current mathces predicate.

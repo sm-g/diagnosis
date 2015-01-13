@@ -53,7 +53,8 @@ namespace Diagnosis.ViewModels.Screens
             };
             HrEditor.Closed += (s, e) =>
             {
-                // переходим к спсику записей
+                // переходим к списку записей
+                // logger.DebugFormat("hreditor closed, listfocused = {0}", HrList.IsFocused);
                 HrList.IsFocused = true;
             };
 
@@ -377,6 +378,10 @@ namespace Diagnosis.ViewModels.Screens
                         // изменение видимости (IsDeleted)
 
                         saver.Save(e.list.ToArray());
+                        if (!HrEditor.HasHealthRecord)
+                        {
+                            HrList.IsFocused = true;
+                        }
                     }
                 };
                 HrList.HealthRecords.CollectionChanged += HrList_HealthRecords_CollectionChanged;

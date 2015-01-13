@@ -42,5 +42,43 @@ namespace Tests
             Assert.AreEqual(2, coll.IndexOf(2));
 
         }
+
+        [TestMethod]
+        public void FirstAfterAndNotIn()
+        {
+            var list = new List<object> { 1, 2, 3, 4 };
+
+            var test = new List<object> { };
+            Assert.AreEqual(1, list.FirstAfterAndNotIn(test));
+
+            test = new List<object> { 5 };
+            Assert.AreEqual(1, list.FirstAfterAndNotIn(test));
+
+            test = new List<object> { 1, 3 };
+            Assert.AreEqual(2, list.FirstAfterAndNotIn(test));
+
+            test = new List<object> { 1, 3 };
+            Assert.AreEqual(4, list.FirstAfterAndNotIn(test, 1));
+
+            test = new List<object> { 1, 3 };
+            Assert.AreEqual(2, list.FirstAfterAndNotIn(test, 0, false));
+
+            test = new List<object> { 3, 1 };
+            Assert.AreEqual(4, list.FirstAfterAndNotIn(test));
+
+            test = new List<object> { 4, 3 };
+            Assert.AreEqual(2, list.FirstAfterAndNotIn(test));
+
+            test = new List<object> { 1, 2, 3, 4 };
+            Assert.AreEqual(null, list.FirstAfterAndNotIn(test));
+
+            object obj = 5;
+            list = new List<object> { obj, 1, obj, 2 };
+            test = new List<object> { obj };
+            Assert.AreEqual(1, list.FirstAfterAndNotIn(test));
+
+            test = new List<object> { 1, obj };
+            Assert.AreEqual(2, list.FirstAfterAndNotIn(test));
+        }
     }
 }

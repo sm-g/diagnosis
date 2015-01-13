@@ -30,7 +30,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public ObservableCollection<ShortHealthRecordViewModel> HealthRecords { get; private set; }
 
-        private ObservableCollection<ShortHealthRecordViewModel> DeletedHealthRecords { get; set; }
+        public ObservableCollection<ShortHealthRecordViewModel> DeletedHealthRecords { get; set; }
 
         private void holder_HealthRecordsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {

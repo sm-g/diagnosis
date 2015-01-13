@@ -36,7 +36,7 @@ namespace Diagnosis.ViewModels.Screens
         private ShortHealthRecordViewModel _selectedHealthRecord;
         private Action<HealthRecord, HrData.HrInfo> fillHr;
         private Action<List<IHrItemObject>> syncHios;
-        private bool inSelectMany;
+        private ReentrantFlag inSelectMany = new ReentrantFlag();
         private bool _rectSelect;
         private HrViewColumn _sort;
         private HrViewColumn _group;
@@ -71,7 +71,33 @@ namespace Diagnosis.ViewModels.Screens
             });
             hrManager.Undeleted += (s, e) =>
             {
-                OnSaveNeeded(new List<HealthRecord>() { e.entity as HealthRecord });
+            };
+            hrManager.DeletedHealthRecords.CollectionChanged += (s, e) =>
+            {
+                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+                {
+                    // удалены
+
+                    // выделяем первую после удаленной записи, чтобы она была выделена для фокуса на ней
+                    var del = e.NewItems.Cast<ShortHealthRecordViewModel>().ToList();
+                    logger.DebugFormat("deleted {0}", del);
+                    SelectedHealthRecord = HealthRecords.FirstAfterAndNotIn(del);
+
+                    foreach (ShortHealthRecordViewModel item in e.NewItems)
+                    {
+                        OnSaveNeeded(new List<HealthRecord>() { item.healthRecord as HealthRecord });
+
+                    }
+                }
+                else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+                {
+                    // восстановлены
+                    foreach (ShortHealthRecordViewModel item in e.OldItems)
+                    {
+                        OnSaveNeeded(new List<HealthRecord>() { item.healthRecord as HealthRecord });
+
+                    }
+                }
             };
 
             HealthRecords.CollectionChanged += (s, e) =>
@@ -104,7 +130,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (_selectedHealthRecord == value)
                     return;
 
-                if (_selectedHealthRecord != null && !inSelectMany) // снимаем выделение с прошлой выделенной
+                if (_selectedHealthRecord != null && inSelectMany.CanEnter) // снимаем выделение с прошлой выделенной
                 {
                     _selectedHealthRecord.IsSelected = false;
                 }
@@ -154,9 +180,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                     {
-                        var toSave = hrManager.GetSelectedHrs();
                         hrManager.DeleteCheckedHealthRecords();
-                        OnSaveNeeded(toSave);
                     }, () => CheckedHrCount > 0);
             }
         }
@@ -422,9 +446,11 @@ namespace Diagnosis.ViewModels.Screens
             HealthRecords.Where(vm => hrs.Contains(vm.healthRecord))
                 .ForAll(vm => vm.IsSelected = true);
 
-            inSelectMany = true;
-            SelectHealthRecord(hrs.LastOrDefault());
-            inSelectMany = false;
+            using (inSelectMany.Enter())
+            {
+                SelectHealthRecord(hrs.LastOrDefault());
+
+            }
         }
 
         private HealthRecord AddHr(bool fromCommand = false)
