@@ -2,12 +2,13 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Помощь"
-        SizeToContent="Width"
+        Width="500"
         Height="500">
     <Grid>
         <RichTextBox x:Name="rtb"
                      BorderThickness="0"
                      Margin="10"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
                      IsReadOnly="True"
                      IsReadOnlyCaretVisible="True"
                      HorizontalContentAlignment="Stretch">
