@@ -28,7 +28,7 @@
     </UserControl.Resources>
 
     <UserControl.InputBindings>
-        <KeyBinding Modifiers="Alt"
+        <KeyBinding Modifiers="Control"
                     Key="F"
                     Command="{Binding SendToSearchCommand}" />
         <KeyBinding Key="Delete"
@@ -63,7 +63,7 @@
                 </DockPanel>
             </Button>
             <Button Command="{Binding SendToSearchCommand}"
-                    ToolTip="Искать выбранные записи (Alt + F)">
+                    ToolTip="Искать выбранные записи (Ctrl + F)">
                 <DockPanel>
                     <Image Source="{StaticResource findImage}" />
                     <!--<TextBlock>
@@ -278,7 +278,7 @@
                                           Command="{Binding OpenCommand}" />
                                 <!-- HrList -->
                                 <MenuItem Header="Искать"
-                                          InputGestureText="Alt + F"
+                                          InputGestureText="Ctrl + F"
                                           Command="{Binding PlacementTarget.Tag.SendToSearchCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <MenuItem Header="Удалить"
                                           InputGestureText="Del"

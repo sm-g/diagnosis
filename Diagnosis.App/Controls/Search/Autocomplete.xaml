@@ -29,7 +29,7 @@
             <KeyBinding Key="Delete"
                         Command="{Binding DataContext.DeleteCommand,ElementName=autocomplete}" />
             <KeyBinding Key="F"
-                        Modifiers="Alt"
+                        Modifiers="Control"
                         Command="{Binding DataContext.SendToSearchCommand,ElementName=autocomplete}" />
         </InputBindingCollection>
         <InputBindingCollection x:Shared="False"
@@ -108,7 +108,7 @@
                                           InputGestureText="Del"
                                           Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <MenuItem Header="Искать"
-                                          InputGestureText="Alt + F"
+                                          InputGestureText="Ctrl + F"
                                           Command="{Binding PlacementTarget.Tag.SendToSearchCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <!--<MenuItem Command="{Binding ConvertCommand}">
                                     <MenuItem.Header>

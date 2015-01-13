@@ -110,7 +110,7 @@
             </StackPanel.Resources>
             <Button Command="{Binding SendToSearchCommand}"
                     Margin="10,0,0,0"
-                    ToolTip="Искать (Alt + F)">
+                    ToolTip="Искать (Ctrl + F)">
                 <Image Source="{StaticResource findImage}" />
             </Button>
         </StackPanel>
