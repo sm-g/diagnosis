@@ -16,24 +16,22 @@ namespace Diagnosis.ViewModels.Screens
     {
         #region Fields
 
-        private HrSearchOptions _options;
-
         private bool _all;
+        private bool _controlsVisible;
+        private DateOffset _hrDateOffsetLower;
+        private DateOffset _hrDateOffsetUpper;
         private HealthRecordQueryAndScope _scope;
+        private HrSearchOptions _options;
+        private IEnumerable<HrCategoryViewModel> _categories;
         private int? _appDayLower;
         private int? _appDayUpper;
         private int? _appMonthLower;
         private int? _appMonthUpper;
         private int? _appYearLower;
         private int? _appYearUpper;
-        private DateOffset _hrDateOffsetLower;
-        private DateOffset _hrDateOffsetUpper;
-        private bool _controlsVisible;
-
-        private IEnumerable<HrCategoryViewModel> _categories;
         private SearchResultViewModel _res;
-        private HrSearcher searcher = new HrSearcher();
 
+        private HrSearcher searcher = new HrSearcher();
         private EventMessageHandlersManager msgManager;
 
         #endregion Fields
@@ -42,6 +40,8 @@ namespace Diagnosis.ViewModels.Screens
 
         public SearchViewModel()
         {
+            ContentId = ToolContentId;
+
             Autocomplete = new AutocompleteViewModel(new Recognizer(Session) { OnlyWords = true }, false, false, false, null);
 
             ControlsVisible = true;
@@ -87,7 +87,6 @@ namespace Diagnosis.ViewModels.Screens
                 })
 
             );
-            ContentId = ToolContentId;
         }
 
         #region Options bindings
@@ -503,6 +502,12 @@ namespace Diagnosis.ViewModels.Screens
         {
             internal readonly HrCategory category;
 
+            public HrCategoryViewModel(HrCategory category)
+            {
+                Contract.Requires(category != null);
+                this.category = category;
+            }
+
             public string Name
             {
                 get
@@ -510,25 +515,13 @@ namespace Diagnosis.ViewModels.Screens
                     return category.Name;
                 }
             }
-
-            public HrCategoryViewModel(HrCategory category)
-            {
-                Contract.Requires(category != null);
-                this.category = category;
-            }
-
             public int CompareTo(object obj)
             {
-                if (obj == null)
+                var other = obj as HrCategoryViewModel;
+                if (other == null)
                     return -1;
 
-                HrCategoryViewModel other = obj as HrCategoryViewModel;
-                if (other != null)
-                {
-                    return this.category.Ord.CompareTo(other.category.Ord);
-                }
-                else
-                    throw new ArgumentException("Object is not a CategoryViewModel");
+                return this.category.CompareTo(other.category);
             }
 
             public override string ToString()

@@ -6,54 +6,42 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>ABAAAAAAEAGAAAACCAFgQAIABgAAAAAAAAAABAgAAAE=</HashCode>
+      <HashCode>ABAAAAAAEACAAACCCAFgQAIABgAAAAAAAAgAAAgAACE=</HashCode>
       <FileName>Search\Autocomplete\Recognizer.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diagnosis.ViewModels.Search.Autocomplete.Tag">
+  <Class Name="Diagnosis.ViewModels.Search.Autocomplete.TagViewModel">
     <Position X="3.25" Y="2.75" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
-    <NestedTypes>
-      <Enum Name="Diagnosis.ViewModels.Search.Autocomplete.Tag.BlankTypes" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Search\Autocomplete\Tag.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-      <Enum Name="Diagnosis.ViewModels.Search.Autocomplete.Tag.States" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Search\Autocomplete\Tag.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>iCRIAAEAAACCMDEvIgAAGAAAgAQgQAkASBEQBAAEQEA=</HashCode>
-      <FileName>Search\Autocomplete\Tag.cs</FileName>
+      <HashCode>mCRAACAAAAKCdDEvIgAAGAAAgAQgQIkASBAQBAAEQFA=</HashCode>
+      <FileName>Search\Autocomplete\TagViewModel.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Diagnosis.ViewModels.Search.Autocomplete.Autocomplete">
+  <Class Name="Diagnosis.ViewModels.Search.Autocomplete.AutocompleteViewModel">
     <Position X="0.5" Y="0.5" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <NestedTypes>
-      <Class Name="Diagnosis.ViewModels.Search.Autocomplete.Autocomplete.DropTargetHandler" Collapsed="true">
+      <Class Name="Diagnosis.ViewModels.Search.Autocomplete.AutocompleteViewModel.DropTargetHandler" Collapsed="true">
         <TypeIdentifier>
-          <NewMemberFileName>Search\Autocomplete\Autocomplete.cs</NewMemberFileName>
+          <NewMemberFileName>Search\Autocomplete\AutocompleteViewModel.cs</NewMemberFileName>
         </TypeIdentifier>
       </Class>
-      <Class Name="Diagnosis.ViewModels.Search.Autocomplete.Autocomplete.DragSourceHandler" Collapsed="true">
+      <Class Name="Diagnosis.ViewModels.Search.Autocomplete.AutocompleteViewModel.DragSourceHandler" Collapsed="true">
         <TypeIdentifier>
-          <NewMemberFileName>Search\Autocomplete\Autocomplete.cs</NewMemberFileName>
+          <NewMemberFileName>Search\Autocomplete\AutocompleteViewModel.cs</NewMemberFileName>
         </TypeIdentifier>
         <Lollipop Position="0.2" />
       </Class>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>YAYARSAAACCgQRHiQAGYIAEoAkCAAEAg4QQQCwQCSCQ=</HashCode>
-      <FileName>Search\Autocomplete\Autocomplete.cs</FileName>
+      <HashCode>IARARyAAgCCgRRHiQAGYIAEoAkCAAEAg4RQSCwQGSCQ=</HashCode>
+      <FileName>Search\Autocomplete\AutocompleteViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Field Name="recognizer" />
@@ -63,32 +51,12 @@
     <ShowAsCollectionAssociation>
       <Property Name="Tags" />
     </ShowAsCollectionAssociation>
-  </Class>
-  <Class Name="Diagnosis.ViewModels.Screens.IcdSelectorViewModel" Collapsed="true">
-    <Position X="9.5" Y="7" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AABBAAAAACAAAAACAAAAAQAwAAAACAEQAEAEAAAAAAA=</HashCode>
-      <FileName>Search\IcdSelectorViewModel.cs</FileName>
-    </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="DiagnosisSearch" />
-      <Property Name="SelectedIcd" />
-    </ShowAsAssociation>
-    <ShowAsCollectionAssociation>
-      <Property Name="Chapters" />
-    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.ViewModels.Search.PopupSearchViewModel&lt;T&gt;" Collapsed="true">
     <Position X="12.25" Y="7" Width="1.5" />
-    <NestedTypes>
-      <Class Name="Diagnosis.ViewModels.Search.PopupSearchViewModel&lt;T&gt;.ObjectEventArgs" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Search\Searchers\PopupSearchViewModel.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAAIAEAABAAACAAQgBABAABAAABAAAJAAgACAAAA=</HashCode>
+      <HashCode>AAAAAAIAEAABAAACAAQgBABAABAAABAAAJAAwACAAAA=</HashCode>
       <FileName>Search\PopupSearchViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -98,22 +66,70 @@
   <Class Name="Diagnosis.ViewModels.Search.FilterViewModel&lt;T&gt;" Collapsed="true">
     <Position X="14.75" Y="7" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AQAABAAACAAAACAgABQAAAAQKBAAAAgAAgAAAIBEAAA=</HashCode>
+      <HashCode>AQAABAAACAABACAgABQAAAgQKBAAAAgAAgAAAIBEAAA=</HashCode>
       <FileName>Search\FilterViewModel.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Diagnosis.ViewModels.DiagnosisViewModel" Collapsed="true">
-    <Position X="9.5" Y="8.5" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAwAAQAAAAAAAAAAAAABAAAQAA=</HashCode>
-      <FileName>Screens\DiagnosisViewModel.cs</FileName>
-    </TypeIdentifier>
   </Class>
   <Class Name="Diagnosis.Models.IcdDisease" Collapsed="true">
     <Position X="9.5" Y="5.5" Width="1.5" />
     <TypeIdentifier />
     <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Search.Autocomplete.IcdSelectorViewModel" Collapsed="true">
+    <Position X="6.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABBAAAAACAAAAACAAAAAQAwAAAACAEQAEAEAAAAAAA=</HashCode>
+      <FileName>Search\Autocomplete\IcdSelectorViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Search.Autocomplete.MeasureEditorViewModel" Collapsed="true">
+    <Position X="6.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAEAACAEICAAAAACCAgAAAAQAABEAQAAAAAgAAAAAAA=</HashCode>
+      <FileName>Search\Autocomplete\MeasureEditorViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Search.Autocomplete.DiagnosisViewModel" Collapsed="true">
+    <Position X="6.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAwAAQAAAAAAAAAAAAABAAAQAA=</HashCode>
+      <FileName>Search\Autocomplete\DiagnosisViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Search.Exporter" Collapsed="true">
+    <Position X="14.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAgAAAAAAAASAAAAAAAAAgAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Search\Exporter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Search.Statistic" Collapsed="true">
+    <Position X="17.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAYAAAAAAAACQAAAQQAAAAAAAAABQAACAAgAAA=</HashCode>
+      <FileName>Search\Statistic.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Search.HrHolderSearchResultViewModel" Collapsed="true">
+    <Position X="12.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACCAAJAAQEAAAAAAAAEAEADAAAAAAAAAAAAA=</HashCode>
+      <FileName>Search\HrHolderSearchResultViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Search.SearchResultViewModel" Collapsed="true">
+    <Position X="14.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAgAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Search\SearchResultViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Statistic" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Patients" />
+    </ShowAsCollectionAssociation>
   </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>
