@@ -189,7 +189,7 @@
     <Compile Include="Framework\IDialog.cs" />
     <Compile Include="Framework\Services\FileType.cs" />
     <Compile Include="Screens\Card\HolderViewModel.cs" />
-    <Compile Include="Search\Autocomplete\MeasureEditorViewModel.cs" />
+    <Compile Include="Autocomplete\MeasureEditorViewModel.cs" />
     <Compile Include="Screens\Doctors\DoctorsListViewModel.cs" />
     <Compile Include="Screens\Doctors\DoctorEditorViewModel.cs" />
     <Compile Include="Screens\Doctors\DoctorViewModel.cs" />
@@ -215,7 +215,7 @@
     <Compile Include="Screens\Shell\UndoOverlayViewModel.cs" />
     <Compile Include="Screens\Words\WordEditorViewModel.cs" />
     <Compile Include="Search\Exporter.cs" />
-    <Compile Include="Search\Autocomplete\IcdSelectorViewModel.cs" />
+    <Compile Include="Autocomplete\IcdSelectorViewModel.cs" />
     <Compile Include="Search\HrHolderSearchResultViewModel.cs" />
     <Compile Include="Search\SearchResultViewModel.cs" />
     <Compile Include="Search\Statistic.cs" />
@@ -224,7 +224,7 @@
     <Compile Include="Screens\Card\Holders\AppointmentViewModel.cs" />
     <Compile Include="Screens\Card\Managers\CoursesManager.cs" />
     <Compile Include="Screens\Card\Holders\CourseWithSpecialCaseViewModel.cs" />
-    <Compile Include="Search\Autocomplete\DiagnosisViewModel.cs" />
+    <Compile Include="Autocomplete\DiagnosisViewModel.cs" />
     <Compile Include="Screens\Card\Managers\HealthRecordManager.cs" />
     <Compile Include="Screens\Card\HealthRecordViewModel.cs" />
     <Compile Include="Screens\Words\WordViewModel.cs" />
@@ -248,9 +248,9 @@
     <Compile Include="Screens\SearchViewModel.cs" />
     <Compile Include="Screens\SettingsViewModel.cs" />
     <Compile Include="Screens\Words\WordsListViewModel.cs" />
-    <Compile Include="Search\Autocomplete\AutocompleteViewModel.cs" />
-    <Compile Include="Search\Autocomplete\Recognizer.cs" />
-    <Compile Include="Search\Autocomplete\TagViewModel.cs" />
+    <Compile Include="Autocomplete\AutocompleteViewModel.cs" />
+    <Compile Include="Autocomplete\Recognizer.cs" />
+    <Compile Include="Autocomplete\TagViewModel.cs" />
     <Compile Include="Search\FilterViewModel.cs" />
     <Compile Include="Search\HrSearchOptions.cs" />
     <Compile Include="Search\SpecSearchers\DiagnosisSearchers.cs" />
@@ -280,7 +280,7 @@
     <None Include="Framework\CodeMap1.dgml" />
     <None Include="packages.config" />
     <None Include="Screens\Card\Card.cd" />
-    <None Include="Search\Autocomplete\CodeMap1.dgml" />
+    <None Include="Autocomplete\CodeMap1.dgml" />
     <None Include="Search\SearchClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup />

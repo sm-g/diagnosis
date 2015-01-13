@@ -8,7 +8,7 @@ using Diagnosis.Common;
 using System.Windows;
 using GongSolutions.Wpf.DragDrop;
 
-namespace Diagnosis.ViewModels.Search.Autocomplete
+namespace Diagnosis.ViewModels.Autocomplete
 {
     [Flags]
     public enum Signalizations

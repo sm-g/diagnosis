@@ -1,6 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Search.Autocomplete;
+using Diagnosis.ViewModels.Autocomplete;
 using EventAggregator;
 using log4net;
 using NHibernate;

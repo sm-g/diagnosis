@@ -1,7 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Search;
-using Diagnosis.ViewModels.Search.Autocomplete;
+using Diagnosis.ViewModels.Autocomplete;
 using EventAggregator;
 using System;
 using System.Collections.Generic;

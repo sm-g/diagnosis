@@ -1,7 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Screens;
-using Diagnosis.ViewModels.Search.Autocomplete;
+using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.App.Controls;
 using System.Windows;
 using System.Linq;

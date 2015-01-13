@@ -9,7 +9,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
-namespace Diagnosis.ViewModels.Search.Autocomplete
+namespace Diagnosis.ViewModels.Autocomplete
 {
     /// <summary>
     /// Создает сущности из тегов, ищет предположения.

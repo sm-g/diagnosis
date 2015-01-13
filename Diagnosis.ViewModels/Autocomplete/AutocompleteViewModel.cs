@@ -11,7 +11,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows;
 
-namespace Diagnosis.ViewModels.Search.Autocomplete
+namespace Diagnosis.ViewModels.Autocomplete
 {
     public class AutocompleteViewModel : ViewModelBase, IClipboardTarget
     {

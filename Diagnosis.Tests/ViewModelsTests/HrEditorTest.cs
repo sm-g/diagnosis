@@ -1,7 +1,7 @@
 ﻿using Diagnosis.Models;
 using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Screens;
-using Diagnosis.ViewModels.Search.Autocomplete;
+using Diagnosis.ViewModels.Autocomplete;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 

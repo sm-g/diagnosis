@@ -1,4 +1,4 @@
-﻿using Diagnosis.ViewModels.Search.Autocomplete;
+﻿using Diagnosis.ViewModels.Autocomplete;
 using System.Collections.Generic;
 
 namespace Diagnosis.ViewModels.Search

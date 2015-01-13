@@ -38,6 +38,6 @@ using System.Windows.Markup;
 
 [assembly: XmlnsPrefix("http://schemas.smg.com/diagnosis", "diag")]
 [assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels.Screens")]
-[assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels.Search.Autocomplete")]
+[assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels.Autocomplete")]
 [assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels.Search")]
 [assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels")]

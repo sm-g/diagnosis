@@ -10,7 +10,7 @@ using GongSolutions.Wpf.DragDrop;
 using System.Windows.Input;
 using System.Windows;
 using System;
-using Diagnosis.ViewModels.Search.Autocomplete;
+using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.Common.Util;
 
 namespace Diagnosis.ViewModels.Screens

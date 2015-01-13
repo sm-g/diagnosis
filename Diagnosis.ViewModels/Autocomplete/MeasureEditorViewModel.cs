@@ -1,11 +1,11 @@
 ﻿using Diagnosis.Models;
-using Diagnosis.ViewModels.Search.Autocomplete;
+using Diagnosis.ViewModels.Autocomplete;
 using log4net;
 using NHibernate.Linq;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Diagnosis.ViewModels.Search.Autocomplete
+namespace Diagnosis.ViewModels.Autocomplete
 {
     public class MeasureEditorViewModel : DialogViewModel
     {
