@@ -230,7 +230,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public override string ToString()
         {
-            return string.Format("{0} {1}", GetType().Name, healthRecord);
+            return string.Format("short {0}", healthRecord);
         }
 
         protected override void Dispose(bool disposing)

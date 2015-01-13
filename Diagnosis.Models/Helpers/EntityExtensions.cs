@@ -1,4 +1,5 @@
-﻿namespace Diagnosis.Models
+﻿using System;
+namespace Diagnosis.Models
 {
     public static class EntityExtensions
     {
@@ -8,11 +9,19 @@
         /// <typeparam name="T"></typeparam>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static T As<T,TId>(this EntityBase<TId> entity)
+        public static T As<T, TId>(this EntityBase<TId> entity)
         {
             if (entity == null)
                 return default(T);
             return (T)entity.Actual;
+        }
+
+        public static string ShortId<TId>(this EntityBase<TId> entity)
+        {
+            if (entity.Id is Guid)
+                return string.Format("#{0}..", entity.Id.ToString().Substring(0, 3));
+            else
+                return string.Format("#{0}", entity.Id);
         }
     }
 }

@@ -217,7 +217,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return Id + " " + FullName;
+            return this.ShortId() + " " + FullName;
         }
 
         protected virtual void OnCoursesChanged(NotifyCollectionChangedEventArgs e)
