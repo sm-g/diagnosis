@@ -23,14 +23,15 @@
     </UserControl.Resources>
 
     <UserControl.InputBindings>
-        <KeyBinding Modifiers="Control"
-                    Key="Up"
+        <KeyBinding Gesture="Control+K"
                     Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}"
                     CommandParameter="{StaticResource True}" />
-        <KeyBinding Modifiers="Control"
-                    Key="Down"
+        <KeyBinding Gesture="Control+J"
                     Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}"
                     CommandParameter="{StaticResource False}" />
+        <KeyBinding Modifiers="Control"
+                    Key="S"
+                    Command="{Binding CloseCommand}" />
     </UserControl.InputBindings>
     <Grid x:Name="grid"
           AllowDrop="True"
@@ -51,12 +52,14 @@
             <ToolBar DockPanel.Dock="Left">
                 <Button Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}"
                         FontSize="16"
-                        CommandParameter="{StaticResource True}"
-                        ToolTip="Открыть предыдущую запись">↑</Button>
+                        CommandParameter="{StaticResource False}"
+                        Width="20"
+                        ToolTip="Открыть следующую запись (Ctrl + J)">↓</Button>
                 <Button Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}"
                         FontSize="16"
-                        CommandParameter="{StaticResource False}"
-                        ToolTip="Открыть следующую запись">↓</Button>
+                        Width="20"
+                        CommandParameter="{StaticResource True}"
+                        ToolTip="Открыть предыдущую запись (Ctrl + K)">↑</Button>
                 <Separator />
                 <!--<Button Command="{Binding DataContext.HrList.AddHealthRecordCommand,  RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}"
                     ToolTip="Добавить запись">
@@ -101,7 +104,7 @@
                     Height="16"
                     HorizontalAlignment="Right"
                     Width="16"
-                    ToolTip="Закрыть редактор, сохранив все изменения"
+                    ToolTip="Закрыть редактор, сохранив все изменения (Ctrl + S)"
                     Grid.Column="2">
                 <Path Data="{StaticResource CloseX}"
                       Stretch="Uniform"

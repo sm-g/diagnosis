@@ -47,10 +47,12 @@ namespace Diagnosis.ViewModels.Screens
 
             HrEditor.Unloaded += (s, e) =>
             {
-                // сохраняем запись при закрытии редактора
+                // сохраняем запись
                 var hr = e.entity as HealthRecord;
                 saver.SaveHealthRecord(hr);
-
+            };
+            HrEditor.Closed += (s, e) =>
+            {
                 // переходим к спсику записей
                 HrList.IsFocused = true;
             };

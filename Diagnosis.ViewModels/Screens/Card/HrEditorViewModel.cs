@@ -38,6 +38,8 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         public event EventHandler<DomainEntityEventArgs> Unloaded;
+        public event EventHandler<DomainEntityEventArgs> Closed;
+
         #region HealthRecord
 
         public HealthRecordViewModel HealthRecord
@@ -235,7 +237,7 @@ namespace Diagnosis.ViewModels.Screens
             if (HealthRecord != null && HealthRecord.healthRecord == hr)
                 return;
 
-            CloseCurrentHr();
+            FinishCurrentHr();
 
             HealthRecord = new HealthRecordViewModel(hr);
             hr.DateOffset.Settings = DateOffset.DateOffsetSettings.ExactSetting();
@@ -254,8 +256,13 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         public void Unload()
         {
-            CloseCurrentHr();
-            HealthRecord = null;
+            FinishCurrentHr();
+            if (HealthRecord != null)
+            {
+                var hr = HealthRecord.healthRecord;
+                HealthRecord = null;
+                OnClosed(hr);
+            }
         }
 
         public override string ToString()
@@ -266,6 +273,14 @@ namespace Diagnosis.ViewModels.Screens
         protected virtual void OnUnloaded(HealthRecord hr)
         {
             var h = Unloaded;
+            if (h != null)
+            {
+                h(this, new DomainEntityEventArgs(hr));
+            }
+        }
+        protected virtual void OnClosed(HealthRecord hr)
+        {
+            var h = Closed;
             if (h != null)
             {
                 h(this, new DomainEntityEventArgs(hr));
@@ -288,7 +303,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private void CloseCurrentHr()
+        private void FinishCurrentHr()
         {
             if (HealthRecord != null)
             {
@@ -305,11 +320,13 @@ namespace Diagnosis.ViewModels.Screens
                     session.SetReadOnly(hr, false);
                     session.Evict(hr);
                 }
-                OnUnloaded(hr);
 
                 Autocomplete.Dispose();
                 _autocomplete = null;
                 recognizer = null; // editor closed, created words persisted
+
+                OnUnloaded(hr);
+
             }
         }
 
