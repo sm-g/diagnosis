@@ -395,7 +395,7 @@ namespace Diagnosis.ViewModels.Screens
 
             holder.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
 
-            // сохраняем пациента при закрытии чего-либо (ранее в viewer.OpenedCanged мог быть переход вверх без закрытия - не сохраняет)
+            // сохраняем пациента и чистим записи при закрытии чего-либо (ранее в viewer.OpenedCanged мог быть переход вверх без закрытия - не сохраняет)
             saver.SaveAll(viewer.OpenedPatient, deleteEmptyHrs: true);
         }
 

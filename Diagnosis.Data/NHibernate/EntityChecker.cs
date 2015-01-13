@@ -5,16 +5,16 @@ using System;
 
 namespace Diagnosis.Data
 {
-    internal interface IEntityChecher
+    internal interface IEntityCrudTracker
     {
-        void Delete(IEntity entity);
+        void Load(IEntity entity);
         void Insert(IEntity entity);
         void Update(IEntity entity);
-        void Load(IEntity entity);
+        void Delete(IEntity entity);
     }
 
     [Serializable]
-    internal class EntityChecker : IEntityChecher
+    internal class EntityChecker : IEntityCrudTracker
     {
         public void Delete(IEntity entity)
         {
@@ -44,13 +44,13 @@ namespace Diagnosis.Data
     [Serializable]
     internal class PostEventListener : IPostInsertEventListener, IPostUpdateEventListener, IPostDeleteEventListener, IPostLoadEventListener
     {
-        private readonly IEntityChecher _checker;
+        private readonly IEntityCrudTracker _checker;
 
         public PostEventListener()
             : this(new EntityChecker())
         { }
 
-        public PostEventListener(IEntityChecher checker)
+        public PostEventListener(IEntityCrudTracker checker)
         {
             _checker = checker;
         }

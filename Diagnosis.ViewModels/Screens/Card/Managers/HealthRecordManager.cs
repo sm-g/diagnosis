@@ -21,7 +21,9 @@ namespace Diagnosis.ViewModels.Screens
             this.onHrVmPropChanged = onHrVmPropChanged;
             holder.HealthRecordsChanged += holder_HealthRecordsChanged;
 
-            var hrVMs = holder.HealthRecords.Select(hr => CreateViewModel(hr));
+            var hrVMs = holder.HealthRecords
+                .Where(hr => !hr.IsDeleted)
+                .Select(hr => CreateViewModel(hr));
             HealthRecords = new ObservableCollection<ShortHealthRecordViewModel>(hrVMs);
             DeletedHealthRecords = new ObservableCollection<ShortHealthRecordViewModel>();
         }

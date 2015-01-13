@@ -31,7 +31,7 @@ namespace Diagnosis.ViewModels.Screens
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HrListViewModel));
         private static HrViewer hrViewer = new HrViewer();
         internal readonly IHrsHolder holder;
-        private HealthRecordManager hrManager;
+        internal readonly HealthRecordManager hrManager;
         private ICollectionView healthRecordsView;
         private ShortHealthRecordViewModel _selectedHealthRecord;
         private Action<HealthRecord, HrData.HrInfo> fillHr;
@@ -425,11 +425,6 @@ namespace Diagnosis.ViewModels.Screens
             inSelectMany = true;
             SelectHealthRecord(hrs.LastOrDefault());
             inSelectMany = false;
-        }
-
-        internal void RemoveDeleted()
-        {
-            hrManager.MakeDeletions();
         }
 
         private HealthRecord AddHr(bool fromCommand = false)

@@ -41,6 +41,7 @@ namespace Diagnosis.Data
 
             savingPatient = patient;
 
+            // удаляем пустые и удаленные
             if (deleteEmptyHrs)
             {
                 patient.Courses.ForAll(x =>

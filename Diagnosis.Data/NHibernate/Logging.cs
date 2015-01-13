@@ -9,19 +9,8 @@ using log4net;
 
 namespace Diagnosis.Data
 {
-    internal interface IAuditLogger
-    {
-        void Delete(IEntity entity);
-
-        void Insert(IEntity entity);
-
-        void Update(IEntity entity);
-
-        void Load(IEntity entity);
-    }
-
     [Serializable]
-    internal class AuditLogger : IAuditLogger
+    internal class AuditLogger : IEntityCrudTracker
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(AuditLogger));
 
@@ -49,13 +38,13 @@ namespace Diagnosis.Data
     [Serializable]
     internal class PreEventListener : IPreInsertEventListener, IPreUpdateEventListener, IPreDeleteEventListener, IPreLoadEventListener
     {
-        private readonly IAuditLogger _logger;
+        private readonly IEntityCrudTracker _logger;
 
         public PreEventListener()
             : this(new AuditLogger())
         { }
 
-        public PreEventListener(IAuditLogger logger)
+        public PreEventListener(IEntityCrudTracker logger)
         {
             _logger = logger;
         }
@@ -80,6 +69,7 @@ namespace Diagnosis.Data
 
         public void OnPreLoad(PreLoadEvent e)
         {
+
             _logger.Load(e.Entity as IEntity);
         }
     }
