@@ -217,12 +217,16 @@ namespace Diagnosis.App.Behaviors
             // Mouse on element check
             if (!(GetStartOnElement(this.listBox)))
             {
-                var fe = VisualTreeHelper.HitTest(this.listBox, mouse).VisualHit as FrameworkElement;
-                if (fe != null)
+                var result = VisualTreeHelper.HitTest(this.listBox, mouse);
+                if (result != null)
                 {
-                    var item = fe.FindAncestorOrSelf<ListBoxItem>();
-                    if (item != null)
-                        return;
+                    var fe = result.VisualHit as FrameworkElement;
+                    if (fe != null)
+                    {
+                        var item = fe.FindAncestorOrSelf<ListBoxItem>();
+                        if (item != null)
+                            return;
+                    }
                 }
             }
 

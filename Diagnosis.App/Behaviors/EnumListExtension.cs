@@ -79,6 +79,7 @@ namespace Diagnosis.App.Behaviors
             get { return this._asString; }
             set { this._asString = value; }
         }
+
         #endregion //Properties
 
 
@@ -98,7 +99,6 @@ namespace Diagnosis.App.Behaviors
             Type actualEnumType = Nullable.GetUnderlyingType(this._enumType) ?? this._enumType;
             Array enumValues = Enum.GetValues(actualEnumType);
 
-
             // if the object itself is to be returned then just use GetValues
             //
             if (this._asString == false)
@@ -106,7 +106,7 @@ namespace Diagnosis.App.Behaviors
                 if (actualEnumType == this._enumType)
                     return enumValues;
 
-
+                // 0 is for null value
                 Array tempArray = Array.CreateInstance(actualEnumType, enumValues.Length + 1);
                 enumValues.CopyTo(tempArray, 1);
                 return tempArray;
