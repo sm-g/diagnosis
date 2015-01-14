@@ -9,8 +9,7 @@
         SizeToContent="Height"
         Width="400"
         MinWidth="200"
-        beh:DialogCloser.DialogResult="{Binding DialogResult}"
-        beh:FocusBehavior.FocusFirst="True"
+        beh:DialogCloser.DialogResult="{Binding DialogResult}"       
         ShowInTaskbar="False"
         WindowStyle="ToolWindow">
     <Grid Margin="0,0,10,10">

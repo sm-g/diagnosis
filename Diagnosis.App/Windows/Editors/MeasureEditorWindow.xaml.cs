@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 
 namespace Diagnosis.App.Windows
 {
@@ -7,6 +8,11 @@ namespace Diagnosis.App.Windows
         public MeasureEditorWindow()
         {
             InitializeComponent();
+            Loaded += (s, e) =>
+            {
+                autocomplete.Focus();
+
+            };
         }
     }
 }

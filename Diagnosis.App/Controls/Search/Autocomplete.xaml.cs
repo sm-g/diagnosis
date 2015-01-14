@@ -19,9 +19,9 @@ namespace Diagnosis.App.Controls.Search
             Loaded += (s, e) =>
             {
 #if DEBUG
+                var setterBorderThickness = new Setter(Control.BorderThicknessProperty, new Thickness(0));
+                var setterBorderBrush = new Setter(Control.BorderBrushProperty, SystemColors.HighlightBrush);
                 // толстая рамка когда фокус на автокомплите
-                this.BorderThickness = new Thickness(0);
-                this.BorderBrush = SystemColors.HighlightBrush;
                 var setter = new Setter(Control.BorderThicknessProperty, new Thickness(4));
                 var isFocused = new Binding("IsFocused")
                 {
@@ -33,7 +33,11 @@ namespace Diagnosis.App.Controls.Search
                     Value = true,
                     Setters = { setter }
                 };
-                this.Style = new Style(typeof(UserControl)) { Triggers = { trigger } };
+                this.Style = new Style(typeof(UserControl))
+                {
+                    Setters = { setterBorderThickness, setterBorderBrush },
+                    Triggers = { trigger }
+                };
 #endif
             };
         }
