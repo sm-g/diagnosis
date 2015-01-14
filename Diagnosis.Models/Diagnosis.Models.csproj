@@ -145,6 +145,7 @@
     <Compile Include="Entities\Passport.cs" />
     <Compile Include="Entities\HrItem.cs" />
     <Compile Include="Entities\Comment.cs" />
+    <Compile Include="Entities\Setting.cs" />
     <Compile Include="Enums\HealthRecordQueryScope.cs" />
     <Compile Include="Helpers\DomainExtenstions.cs" />
     <Compile Include="Enums\HealthRecordUnit.cs" />
@@ -165,6 +166,7 @@
     <Compile Include="Entities\HrCategory.cs" />
     <Compile Include="Entities\Speciality.cs" />
     <Compile Include="Helpers\EditableObjectHelper.cs" />
+    <Compile Include="Helpers\SettingsProvider.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="Entities\SpecialityIcdBlock.cs" />
     <Compile Include="Entities\Word.cs" />

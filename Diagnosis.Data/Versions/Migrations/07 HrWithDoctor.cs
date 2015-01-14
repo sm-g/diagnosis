@@ -7,6 +7,7 @@ using System;
 
 namespace Diagnosis.Data.Versions
 {
+    // this in initial-client.sql 
     //[Migration(201412191200)]
     //public class HrWithDoctor : Migration
     //{

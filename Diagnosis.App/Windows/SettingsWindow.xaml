@@ -17,14 +17,14 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <ListBox Margin="10,10,0,0">
-            <CheckBox IsChecked="{Binding ShowIcdDisease}">
+        <StackPanel Margin="10,10,0,0">
+            <!--<CheckBox IsChecked="{Binding ShowIcdDisease}">
                 <AccessText>Использовать _МКБ</AccessText>
-            </CheckBox>
+            </CheckBox>-->
             <CheckBox IsChecked="{Binding OnlyTopLevelIcdDisease}">
                 <AccessText>_Болезни МКБ только верхнего уровня</AccessText>
             </CheckBox>
-        </ListBox>
+        </StackPanel>
 
         <StackPanel Grid.Row="1"
                     Style="{StaticResource DialogButtonsPanel}">

@@ -13,25 +13,14 @@ namespace Diagnosis.Models
     {
         private Iesi.Collections.Generic.ISet<Appointment> appointments = new HashedSet<Appointment>();
         private Iesi.Collections.Generic.ISet<Course> courses = new HashedSet<Course>();
+        private Iesi.Collections.Generic.ISet<Setting> settingsSet = new HashedSet<Setting>();
         private string _fn;
         private string _ln;
         private string _mn;
-        private int _settings;
-        private DoctorSettings _docSettings;
         private bool _isMale;
         private Speciality _speciality;
         private Passport passport;
-
-        public virtual DoctorSettings DoctorSettings
-        {
-            get { return _docSettings; }
-            set
-            {
-                _docSettings = value;
-                _settings = (int)_docSettings;
-                SetProperty(ref _docSettings, value, () => DoctorSettings);
-            }
-        }
+        private SettingsProvider settingsProvider;
 
         public virtual string FirstName
         {
@@ -67,17 +56,9 @@ namespace Diagnosis.Models
             set { SetProperty(ref _isMale, value, () => IsMale); }
         }
 
-        public virtual int Settings
+        public virtual Iesi.Collections.Generic.ISet<Setting> SettingsSet
         {
-            get { return _settings; }
-            set
-            {
-                if (value >= 0)
-                {
-                    _settings = value;
-                    _docSettings = (DoctorSettings)value;
-                }
-            }
+            get { return settingsSet; }
         }
 
         public virtual Speciality Speciality
@@ -115,6 +96,10 @@ namespace Diagnosis.Models
             {
                 return LastName + " " + FirstName + " " + MiddleName;
             }
+        }
+        public virtual SettingsProvider Settings
+        {
+            get { return settingsProvider ?? (settingsProvider = new SettingsProvider(this)); }
         }
 
         public virtual Course StartCourse(Patient patient)

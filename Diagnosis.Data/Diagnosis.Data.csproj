@@ -158,6 +158,7 @@
   <ItemGroup>
     <Compile Include="Mappings\PassportMap.cs" />
     <Compile Include="Mappings\HrItemMap.cs" />
+    <Compile Include="Mappings\SettingMap.cs" />
     <Compile Include="Mappings\UomMap.cs" />
     <Compile Include="Mappings\AppointmentMap.cs" />
     <Compile Include="Mappings\HrCategoryMap.cs" />
@@ -171,6 +172,7 @@
     <Compile Include="Mappings\DoctorMap.cs" />
     <Compile Include="Mappings\CourseMap.cs" />
     <Compile Include="Mappings\PatientMap.cs" />
+    <Compile Include="Versions\Migrations\08 AddDoctorSettings.cs" />
     <Compile Include="Versions\Migrations\07 HrWithDoctor.cs" />
     <Compile Include="Versions\Migrations\06 AddPassportTable.cs" />
     <Compile Include="Versions\Migrations\05 InsertSpecialityIcdBlock.cs" />

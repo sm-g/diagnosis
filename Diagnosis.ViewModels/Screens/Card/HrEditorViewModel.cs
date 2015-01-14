@@ -23,18 +23,11 @@ namespace Diagnosis.ViewModels.Screens
         private ISession session;
         private bool _focused;
         private IEnumerable<HrCategory> _categories;
-        private EventMessageHandler handler;
         private Recognizer recognizer;
 
         public HrEditorViewModel(ISession session)
         {
             this.session = session;
-
-            handler = this.Subscribe(Event.SettingsSaved, (e) =>
-             {
-                 OnPropertyChanged(() => ShowIcdDiseaseSearch);
-                 // после смены настроек доктора может понадобиться поиск по диагнозам
-             });
         }
 
         public event EventHandler<DomainEntityEventArgs> Unloaded;
@@ -218,14 +211,6 @@ namespace Diagnosis.ViewModels.Screens
 
         #endregion AutoComplete
 
-        public bool ShowIcdDiseaseSearch
-        {
-            get
-            {
-                return AuthorityController.CurrentDoctor.DoctorSettings.HasFlag(DoctorSettings.ShowIcdDisease);
-            }
-        }
-
         /// <summary>
         /// Загружает запись в редактор.
         /// </summary>
@@ -293,7 +278,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (disposing)
                 {
-                    handler.Dispose();
                     Unload();
                 }
             }

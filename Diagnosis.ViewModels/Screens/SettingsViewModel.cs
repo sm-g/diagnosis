@@ -1,13 +1,10 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.Common;
+using Diagnosis.Data;
+using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Windows.Input;
-using EventAggregator;
-using Diagnosis.Common;
-using Diagnosis.Data.Specs;
-using Diagnosis.Data;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -16,7 +13,6 @@ namespace Diagnosis.ViewModels.Screens
         private readonly Doctor doctor;
         private Dictionary<DoctorSettings, Func<bool>> map;
 
-        private bool _onlyTopLevelIcdDisease;
         private bool _showIcdDisease;
 
         public SettingsViewModel(Doctor doctor)
@@ -27,8 +23,6 @@ namespace Diagnosis.ViewModels.Screens
             map = new Dictionary<DoctorSettings, Func<bool>>();
             map.Add(DoctorSettings.ShowIcdDisease, () => ShowIcdDisease);
             map.Add(DoctorSettings.OnlyTopLevelIcdDisease, () => OnlyTopLevelIcdDisease);
-
-            Load();
         }
 
         public bool ShowIcdDisease
@@ -51,66 +45,19 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return _onlyTopLevelIcdDisease;
+                return doctor.Settings.IcdTopLevelOnly;
             }
             set
             {
-                if (_onlyTopLevelIcdDisease != value)
-                {
-                    _onlyTopLevelIcdDisease = value;
-                    OnPropertyChanged(() => OnlyTopLevelIcdDisease);
-                }
+                doctor.Settings.IcdTopLevelOnly = value;
+                OnPropertyChanged(() => OnlyTopLevelIcdDisease);
             }
         }
 
         protected override void OnOk()
         {
-            Save();
-        }
-
-        private void SetFlag(DoctorSettings flag, bool value)
-        {
-            if (value)
-            {
-                doctor.DoctorSettings |= flag;
-            }
-            else
-            {
-                doctor.DoctorSettings &= ~flag;
-            }
-        }
-
-        private void Load()
-        {
-            ShowIcdDisease = doctor.DoctorSettings.HasFlag(DoctorSettings.ShowIcdDisease);
-            OnlyTopLevelIcdDisease = doctor.DoctorSettings.HasFlag(DoctorSettings.OnlyTopLevelIcdDisease);
-        }
-
-        private void Save()
-        {
-            var changed = ChangedFlags();
-            foreach (var flag in changed)
-            {
-                SetFlag(flag, map[flag]());
-            }
-
-            if (changed.Count > 0)
-            {
-                new Saver(Session).Save(doctor);
-            }
-
+            new Saver(Session).Save(doctor);
             this.Send(Event.SettingsSaved, doctor.AsParams(MessageKeys.Doctor));
-        }
-
-        private IList<DoctorSettings> ChangedFlags()
-        {
-            List<DoctorSettings> result = new List<DoctorSettings>();
-
-            result.AddRange(map
-                .Where(kvp => doctor.DoctorSettings.HasFlag(kvp.Key) != kvp.Value())
-                .Select(kvp => kvp.Key));
-
-            return result;
         }
     }
 }

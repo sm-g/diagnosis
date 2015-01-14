@@ -25,6 +25,7 @@ namespace Diagnosis.Data.Versions
         public static string SpecialityIcdBlockTbl = "SpecialityIcdBlocks";
 
         public static string PassportTbl = "Passport";
+        public static string SettingTbl = "Setting";
 
     }
 }

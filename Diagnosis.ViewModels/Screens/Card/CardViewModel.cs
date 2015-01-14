@@ -23,11 +23,14 @@ namespace Diagnosis.ViewModels.Screens
         private bool editorWasOpened;
         private Saver saver;
         private EventMessageHandler handler;
+        Doctor doctor;
 
         public CardViewModel(bool resetHistory = false)
         {
             if (resetHistory || viewer == null)
                 viewer = new PatientViewer();
+
+            doctor = AuthorityController.CurrentDoctor;
 
             saver = new Saver(Session);
             _navigator = new NavigatorViewModel(viewer);
@@ -288,6 +291,8 @@ namespace Diagnosis.ViewModels.Screens
                     Navigator.Dispose();
 
                     handler.Dispose();
+
+                    Session.Save(doctor);
                 }
             }
             finally
@@ -351,6 +356,13 @@ namespace Diagnosis.ViewModels.Screens
                     hios.Sync(Session, (w) => HrEditor.SyncTransientWord(w));
                 });
 
+                HrViewGroupingColumn gr;
+                if (Enum.TryParse<HrViewGroupingColumn>(doctor.Settings.HrListGrouping, true, out gr))
+                    HrList.Grouping = gr;
+                HrViewSortingColumn sort;
+                if (Enum.TryParse<HrViewSortingColumn>(doctor.Settings.HrListSorting, true, out sort))
+                    HrList.Sorting = sort;
+
                 HrList.PropertyChanged += HrList_PropertyChanged;
                 HrList.SaveNeeded += (s, e) =>
                 {
@@ -389,6 +401,7 @@ namespace Diagnosis.ViewModels.Screens
                 // сначала создаем HrList, чтобы hrManager подписался на добавление записей первым,
                 // иначе HrList.SelectHealthRecord нечего выделять при добавлении записи
                 holder.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
+
             }
         }
 
@@ -441,7 +454,11 @@ namespace Diagnosis.ViewModels.Screens
             }
             else if (e.PropertyName == "Sorting")
             {
-                // save
+                doctor.Settings.HrListSorting = HrList.Sorting.ToString();
+            }
+            else if (e.PropertyName == "Grouping")
+            {
+                doctor.Settings.HrListGrouping = HrList.Grouping.ToString();
             }
         }
 

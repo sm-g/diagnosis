@@ -17,9 +17,12 @@ namespace Diagnosis.ViewModels.Autocomplete
         private ObservableCollection<DiagnosisViewModel> _chapters;
         private IcdDisease _selected;
         private PopupSearchViewModel<IcdDisease> _diagnosisSearch;
+        Doctor doctor;
 
         private IcdSelectorViewModel(IcdDisease initial = null, string query = null)
         {
+            doctor = AuthorityController.CurrentDoctor;
+
             _chapters = new ObservableCollection<DiagnosisViewModel>();
             CreateDiagnosisSearch();
             SelectedIcd = initial;
@@ -31,6 +34,8 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
 
             Title = "Выбор диагноза МКБ";
+
+
         }
 
         public IcdSelectorViewModel(IcdDisease initial = null)
@@ -41,6 +46,19 @@ namespace Diagnosis.ViewModels.Autocomplete
         public IcdSelectorViewModel(string query)
             : this(null, query)
         {
+        }
+
+        public bool IcdTopLevelOnly
+        {
+            get
+            {
+                return doctor.Settings.IcdTopLevelOnly;
+            }
+            set
+            {
+                doctor.Settings.IcdTopLevelOnly = value;
+                OnPropertyChanged(() => IcdTopLevelOnly);
+            }
         }
 
         public IcdDisease SelectedIcd
@@ -88,16 +106,20 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
+        protected override void OnOk()
+        {
+            Session.Save(doctor);
+        }
+
         /// <summary>
         /// Обновляет VMs по найденным болезням
         /// </summary>
         /// <param name="results"></param>
         private void MakeVms(ObservableCollection<IcdDisease> results)
         {
-            var doctor = AuthorityController.CurrentDoctor;
 
             Func<IcdDisease, bool> diseaseClause = d => true;
-            if (doctor.DoctorSettings.HasFlag(DoctorSettings.OnlyTopLevelIcdDisease))
+            if (doctor.Settings.IcdTopLevelOnly)
             {
                 // без уточненных болезней
                 diseaseClause = d => d.Code.IndexOf('.') == -1;
