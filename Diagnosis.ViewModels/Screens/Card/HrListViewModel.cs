@@ -425,7 +425,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        HrViewSortingColumn Group2Sort(HrViewGroupingColumn col)
+        HrViewSortingColumn? Group2Sort(HrViewGroupingColumn col)
         {
             switch (col)
             {
@@ -435,7 +435,7 @@ namespace Diagnosis.ViewModels.Screens
                     return HrViewSortingColumn.CreatedAt;
                 case HrViewGroupingColumn.None:
                 default:
-                    return HrViewSortingColumn.None;
+                    return null;
             }
         }
         string Group2SortString(HrViewGroupingColumn col)
@@ -457,7 +457,7 @@ namespace Diagnosis.ViewModels.Screens
 
                 case HrViewSortingColumn.CreatedAt:
                     if (Grouping != HrViewGroupingColumn.GroupingCreatedAt)
-                        setter = (vm) => vm.SortingExtraInfo = vm.CreatedAt.ToString();
+                        setter = (vm) => vm.SortingExtraInfo = string.Format("{0} {1:H:mm}", DateFormatter.GetDateString(vm.CreatedAt), vm.CreatedAt);
                     break;
 
                 case HrViewSortingColumn.SortingDate:
