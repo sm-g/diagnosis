@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using Diagnosis.Models;
 using System.Linq;
 using System.Collections.Generic;
+using System.Windows;
 
 [assembly: InternalsVisibleTo("Tests")]
 
@@ -74,6 +75,20 @@ namespace Diagnosis.ViewModels
             }
         }
         #endregion
+
+        private static bool? _isInDesignMode;
+        public static bool IsInDesignMode
+        {
+            get
+            {
+                if (!_isInDesignMode.HasValue)
+                {
+                    _isInDesignMode = (bool)DesignerProperties.IsInDesignModeProperty.GetMetadata(typeof(DependencyObject)).DefaultValue;
+                }
+
+                return _isInDesignMode.GetValueOrDefault();
+            }
+        }
     }
 
     public class VmBaseEventArgs : EventArgs

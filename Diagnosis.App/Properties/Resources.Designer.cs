@@ -134,6 +134,16 @@ namespace Diagnosis.App.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap GroupBy {
+            get {
+                object obj = ResourceManager.GetObject("GroupBy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to в осмотре.
         /// </summary>
         public static string HealthRecordQueryAndScope_Appointment {
@@ -170,8 +180,9 @@ namespace Diagnosis.App.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {\rtf1\adeflang1025\ansi\ansicpg1251\uc1\adeff0\deff0\stshfdbch0\stshfloch31506\stshfhich31506\stshfbi31506\deflang1049\deflangfe1049\themelang1049\themelangfe0\themelangcs0{\fonttbl{\f0\fbidi \froman\fcharset204\fprq2{\*\panose 02020603050405020304}Times New Roman;}
-        ///{\f34\fbidi \froman\fcharset204\fprq2{\*\panose 02040503050406030204}Cambria Math;}{\f36\fbidi \fswiss\fcharset204\fprq2{\*\panose 020f0302020204030204}Calibri Light;}{\f37\fbidi \fswiss\fcharset204\fprq2{\*\panose 020f0502020204030204}Calibri [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to {\rtf1\adeflang1025\ansi\ansicpg1251\uc1\adeff0\deff0\stshfdbch12\stshfloch31506\stshfhich31506\stshfbi0\deflang1049\deflangfe1049\themelang1049\themelangfe0\themelangcs0{\fonttbl{\f0\fbidi \froman\fcharset204\fprq2{\*\panose 02020603050405020304}Times New Roman;}
+        ///{\f12\fbidi \froman\fcharset129\fprq2{\*\panose 02030600000101010101}Batang{\*\falt ??\&apos;ac\&apos;f0\&apos;a1\&apos;fe??\&apos;a1\&apos;fe\&apos;ac\&apos;e2?\&apos;a1\&apos;fe\&apos;ac\&apos;c1?\&apos;a1\&apos;fe\&apos;ac\&apos;e2|?\&apos;a1\&apos;fe\&apos;ac\&apos;e2?};}
+        ///{\f34\fbidi \froman\fcharset204\fprq2{\*\panose 02040503050406030204 [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Help {
             get {
@@ -190,6 +201,16 @@ namespace Diagnosis.App.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap SortAscending {
+            get {
+                object obj = ResourceManager.GetObject("SortAscending", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to По категории.
         /// </summary>
         public static string Sorting_Category {
@@ -199,11 +220,29 @@ namespace Diagnosis.App.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to По дате создания.
+        /// </summary>
+        public static string Sorting_CreatedAt {
+            get {
+                return ResourceManager.GetString("Sorting_CreatedAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to По дате.
         /// </summary>
         public static string Sorting_Date {
             get {
                 return ResourceManager.GetString("Sorting_Date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (нет).
+        /// </summary>
+        public static string Sorting_None {
+            get {
+                return ResourceManager.GetString("Sorting_None", resourceCulture);
             }
         }
         

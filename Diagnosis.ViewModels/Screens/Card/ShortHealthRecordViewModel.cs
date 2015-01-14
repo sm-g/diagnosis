@@ -12,6 +12,7 @@ namespace Diagnosis.ViewModels.Screens
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(ShortHealthRecordViewModel));
         internal readonly HealthRecord healthRecord;
         private readonly Patient patient;
+        private string _extra;
 
         public ShortHealthRecordViewModel(HealthRecord hr)
         {
@@ -23,6 +24,28 @@ namespace Diagnosis.ViewModels.Screens
 
             healthRecord.PropertyChanged += healthRecord_PropertyChanged;
             healthRecord.ItemsChanged += healthRecord_ItemsChanged;
+        }
+
+        /// <summary>
+        /// For XAML designer
+        /// </summary>
+        [Obsolete]
+        public ShortHealthRecordViewModel()
+        {
+            if (!IsInDesignMode) return;
+
+            var pat = new Patient();
+            var doc = new Doctor("Ivanov");
+            var holder = new Course(pat, doc);
+            var hr = new HealthRecord(holder, doc)
+            {
+                Category = new HrCategory() { Name = "жалоба" },
+                FromMonth = 5,
+            };
+            hr.AddItems(new IHrItemObject[] { new Word("анемия"), new Word("впервые"), new Comment("без осложнений") });
+
+            healthRecord = hr;
+            SortingExtraInfo = hr.Category.Name;
         }
 
         public string Name
@@ -121,13 +144,54 @@ namespace Diagnosis.ViewModels.Screens
         {
             get { return healthRecord.IsDeleted; }
         }
+
         #endregion Model
 
         public DateTime SortingDate
         {
+            get { return DateOffset.GetSortingDate(); }
+        }
+
+        public string GroupingDate
+        {
             get
             {
-                return DateOffset.GetSortingDate();
+                string res = "";
+                return res;
+            }
+        }
+        public string GroupingCreatedAt
+        {
+            get
+            {
+                string res;
+                var span = (DateTime.Today - CreatedAt).Days;
+                if (span < 1)
+                    res = "сегодня";
+                else if (span < 2)
+                    res = "вчера";
+                else if (span < 7)
+                    res = "за неделю";
+                else if (span < 30)
+                    res = "за последний месяц";
+                else
+                    res = "давно";
+                return res;
+            }
+        }
+        public string SortingExtraInfo
+        {
+            get
+            {
+                return _extra;
+            }
+            set
+            {
+                if (_extra != value)
+                {
+                    _extra = value;
+                    OnPropertyChanged(() => SortingExtraInfo);
+                }
             }
         }
 
@@ -144,12 +208,15 @@ namespace Diagnosis.ViewModels.Screens
                         var pat = healthRecord.GetPatient();
                         var age = DateHelper.GetAge(pat.BirthYear, pat.BirthMonth, pat.BirthDay, DateOffset.GetSortingDate());
                         var index = Plurals.GetPluralEnding(age.Value);
-                        return string.Format("{0} {1}", age, Plurals.years[index]);
+                        return string.Format("в {0} {1}", age, Plurals.years[index]);
+
                     default:
                         return DateOffsetFormatter.GetOffsetUnitString(DateOffset);
                 }
             }
         }
+
+        #region Commands
 
         public ICommand SendToSearchCommand
         {
@@ -172,6 +239,7 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
+
         public RelayCommand OpenCommand
         {
             get
@@ -182,6 +250,7 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
+
         public RelayCommand DeleteCommand
         {
             get
@@ -192,6 +261,9 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
+
+        #endregion Commands
+
         private void healthRecord_ItemsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged("Name");
@@ -210,11 +282,13 @@ namespace Diagnosis.ViewModels.Screens
                     OnPropertyChanged("SortingDate");
                     OnPropertyChanged("DateOffsetString");
                     break;
+
                 case "HrItems":
                     OnPropertyChanged("Name");
                     break;
             }
         }
+
         private void patient_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -226,7 +300,6 @@ namespace Diagnosis.ViewModels.Screens
                     break;
             }
         }
-
 
         public override string ToString()
         {

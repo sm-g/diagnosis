@@ -439,6 +439,10 @@ namespace Diagnosis.ViewModels.Screens
                     HrEditor.Unload();
                 }
             }
+            else if (e.PropertyName == "Sorting")
+            {
+                // save
+            }
         }
 
         private void HrList_HealthRecords_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

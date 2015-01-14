@@ -731,6 +731,12 @@
   <ItemGroup>
     <SplashScreen Include="Resources\Images\splash.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\GroupBy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\SortAscending.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

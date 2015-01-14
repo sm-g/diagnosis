@@ -54,7 +54,8 @@
             <Button Command="{Binding DeleteCommand}"
                     ToolTip="Удалить выбранные записи (Del)">
                 <DockPanel>
-                    <Image Source="{StaticResource deleteImage}" />
+                    <Image Source="{StaticResource deleteImage}"
+                           Style="{StaticResource buttonIcon}" />
                     <!--<TextBlock>
                         <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" >Удалить</Run>
                         <TextBlock Text="{Binding CheckedHrCount, StringFormat='{}({0})'}"
@@ -73,17 +74,31 @@
                     </TextBlock>-->
                 </DockPanel>
             </Button>
+            <Separator />
+
             <DockPanel x:Name="debug">
-                <CheckBox IsChecked="{Binding RectSelect}">select</CheckBox>
-                <Separator />
+                <!--<CheckBox IsChecked="{Binding RectSelect}">select</CheckBox>-->
                 <TextBlock Text="{Binding SelectedItems.Count, ElementName=records}"
                            Width="20" />
                 <Separator />
-                <ComboBox ItemsSource="{Binding Source={beh:EnumListExtension {x:Type diag:HrViewColumn}}}"
+            </DockPanel>
+            <DockPanel ToolTip="Сортировать">
+                <!--<TextBlock>Сортировать</TextBlock>-->
+                <Image Source="{StaticResource sortAscImage}"
+                       Style="{StaticResource buttonIcon}" />
+
+                <ComboBox ItemsSource="{Binding Source={beh:EnumListExtension {x:Type diag:HrViewSortingColumn}}}"
                           SelectedItem="{Binding Sorting, Mode=TwoWay}"
                           ItemTemplate="{StaticResource EnumComboTemplate}">
                 </ComboBox>
-                <ComboBox ItemsSource="{Binding Source={beh:EnumListExtension {x:Type diag:HrViewColumn}}}"
+            </DockPanel>
+            <DockPanel ToolTip="Группировать" Margin="5,0,0,0">
+
+                <!--<TextBlock>Группировать</TextBlock>-->
+                <Image Source="{StaticResource groupByImage}"
+                       Style="{StaticResource buttonIcon}" />
+
+                <ComboBox ItemsSource="{Binding Source={beh:EnumListExtension {x:Type diag:HrViewGroupingColumn}}}"
                           SelectedItem="{Binding Grouping, Mode=TwoWay}"
                           ItemTemplate="{StaticResource EnumComboTemplate}" />
             </DockPanel>

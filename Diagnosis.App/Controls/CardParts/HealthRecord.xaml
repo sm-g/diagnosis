@@ -5,14 +5,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
              xmlns:app="clr-namespace:Diagnosis.App"
              mc:Ignorable="d"
-             d:DesignHeight="300"
+             d:DesignHeight="30"
              d:DesignWidth="300"
+             d:DataContext="{DynamicResource Context}"
              Background="Transparent"
              Focusable="False">
     <!--DataContext is ShortHealthRecordViewModel-->
     <UserControl.Resources>
+        <diag:ShortHealthRecordViewModel x:Key="Context" />
+
         <Style TargetType="StackPanel"
                x:Key="hidingButtons">
             <Setter Property="Visibility"
@@ -32,6 +36,8 @@
             <Style TargetType="Grid">
                 <Setter Property="Background"
                         Value="Transparent" />
+                <Setter Property="MinHeight"
+                        Value="30" />
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding IsDeleted}"
                                  Value="True">
@@ -44,7 +50,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="25" />
         </Grid.ColumnDefinitions>
 
         <CheckBox IsChecked="{Binding IsChecked}"
@@ -76,7 +82,6 @@
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
-                <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -85,7 +90,8 @@
 
             <TextBlock Grid.ColumnSpan="2"
                        Text="{Binding Name, Mode=OneWay}"
-                       TextWrapping="Wrap" />
+                       TextWrapping="Wrap"
+                       FontSize="14" />
             <StackPanel Grid.Row="1"
                         Visibility="{Binding DateOffset.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
                 <TextBlock Grid.Row="1"
@@ -95,21 +101,27 @@
                        Grid.Row="1"
                        Grid.Column="1"
                        Text="{Binding Ord, Mode=OneWay}" />
+            <TextBlock x:Name="extra"
+                       Grid.Row="1"
+                       Grid.Column="1"
+                       Text="{Binding SortingExtraInfo, Mode=OneWay}"
+                       FontStyle="Italic"
+                       HorizontalAlignment="Right" />
         </Grid>
 
         <StackPanel x:Name="buttons"
                     Grid.Column="2"
                     Style="{StaticResource hidingButtons}">
             <StackPanel.Resources>
-                <Style TargetType="Image"
-                       BasedOn="{StaticResource buttonIcon}" />
-                <Style TargetType="Button">
+                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                     <Setter Property="Height"
+                            Value="20" />
+                    <Setter Property="Width"
                             Value="20" />
                 </Style>
             </StackPanel.Resources>
             <Button Command="{Binding SendToSearchCommand}"
-                    Margin="10,0,0,0"
+                    Margin="5,0,0,0"
                     ToolTip="Искать (Ctrl + F)">
                 <Image Source="{StaticResource findImage}" />
             </Button>

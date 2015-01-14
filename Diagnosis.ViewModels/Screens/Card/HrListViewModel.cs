@@ -1,29 +1,54 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Common.Util;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Autocomplete;
+using GongSolutions.Wpf.DragDrop;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Windows.Data;
-using GongSolutions.Wpf.DragDrop;
-using System.Windows.Input;
 using System.Windows;
-using System;
-using Diagnosis.ViewModels.Autocomplete;
-using Diagnosis.Common.Util;
+using System.Windows.Data;
+using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public enum HrViewColumn
+    public enum HrViewSortingColumn
     {
+#if DEBUG
+
+        [LocalizableDescription(@"Sorting_None")]
         None,
-        [LocalizableDescription(@"Sorting_Category")]
-        Category,
+
+#endif
+
         [LocalizableDescription(@"Sorting_Ord")]
         Ord,
+
+        [LocalizableDescription(@"Sorting_Category")]
+        Category,
+
         [LocalizableDescription(@"Sorting_Date")]
-        Date
+        SortingDate,
+
+        [LocalizableDescription(@"Sorting_CreatedAt")]
+        CreatedAt
+    }
+
+    public enum HrViewGroupingColumn
+    {
+        [LocalizableDescription(@"Sorting_None")]
+        None,
+
+        [LocalizableDescription(@"Sorting_Category")]
+        Category,
+
+        //[LocalizableDescription(@"Sorting_Date")]
+        //GroupingDate,
+        [LocalizableDescription(@"Sorting_CreatedAt")]
+        GroupingCreatedAt
     }
 
     public class HrListViewModel : ViewModelBase, IClipboardTarget
@@ -32,14 +57,14 @@ namespace Diagnosis.ViewModels.Screens
         private static HrViewer hrViewer = new HrViewer();
         internal readonly IHrsHolder holder;
         internal readonly HealthRecordManager hrManager;
-        private ICollectionView healthRecordsView;
+        private ListCollectionView view;
         private ShortHealthRecordViewModel _selectedHealthRecord;
         private Action<HealthRecord, HrData.HrInfo> fillHr;
         private Action<List<IHrItemObject>> syncHios;
         private ReentrantFlag inSelectMany = new ReentrantFlag();
         private bool _rectSelect;
-        private HrViewColumn _sort;
-        private HrViewColumn _group;
+        private HrViewSortingColumn _sort;
+        private HrViewGroupingColumn _group;
         private bool _dragSource;
         private bool _focused;
 
@@ -58,10 +83,13 @@ namespace Diagnosis.ViewModels.Screens
 
             hrManager = new HealthRecordManager(holder, onHrVmPropChanged: (s, e) =>
             {
-                if (e.PropertyName == "Category")
+
+                if (Enum.GetNames(typeof(HrViewGroupingColumn)).Contains(e.PropertyName) ||
+                   Enum.GetNames(typeof(HrViewSortingColumn)).Contains(e.PropertyName))
                 {
+                    // simulate liveshaping
                     var sel = SelectedHealthRecords;
-                    healthRecordsView.Refresh();
+                    view.Refresh();
                     sel.ForAll(vm => vm.IsSelected = true); // fix only one selected after Refresh
                 }
                 else if (e.PropertyName == "IsChecked")
@@ -86,7 +114,6 @@ namespace Diagnosis.ViewModels.Screens
                     foreach (ShortHealthRecordViewModel item in e.NewItems)
                     {
                         OnSaveNeeded(new List<HealthRecord>() { item.healthRecord as HealthRecord });
-
                     }
                 }
                 else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
@@ -95,7 +122,6 @@ namespace Diagnosis.ViewModels.Screens
                     foreach (ShortHealthRecordViewModel item in e.OldItems)
                     {
                         OnSaveNeeded(new List<HealthRecord>() { item.healthRecord as HealthRecord });
-
                     }
                 }
             };
@@ -105,9 +131,9 @@ namespace Diagnosis.ViewModels.Screens
                 HolderVm.UpdateIsEmpty();
             };
 
-            healthRecordsView = (CollectionView)CollectionViewSource.GetDefaultView(HealthRecords);
-            Grouping = HrViewColumn.Category;
-            Sorting = HrViewColumn.None;
+            view = (ListCollectionView)CollectionViewSource.GetDefaultView(HealthRecords);
+            Grouping = HrViewGroupingColumn.Category;
+            Sorting = HrViewSortingColumn.Ord;
 
             DropHandler = new DropTargetHandler(this);
             DragHandler = new DragSourceHandler();
@@ -151,6 +177,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         public bool AddingHrByCommnd { get; private set; }
+
         #region Commands
 
         public ICommand AddHealthRecordCommand
@@ -159,7 +186,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                     {
-
                         var lastHrVM = SelectedHealthRecord ?? HealthRecords.LastOrDefault();
                         var newHr = AddHr(true);
 
@@ -174,6 +200,7 @@ namespace Diagnosis.ViewModels.Screens
                     );
             }
         }
+
         public ICommand DeleteCommand
         {
             get
@@ -205,17 +232,17 @@ namespace Diagnosis.ViewModels.Screens
                         {
                             if (up)
                             {
-                                if (healthRecordsView.CurrentPosition != 0)
-                                    healthRecordsView.MoveCurrentToPrevious();
+                                if (view.CurrentPosition != 0)
+                                    view.MoveCurrentToPrevious();
                                 else
-                                    healthRecordsView.MoveCurrentToLast();
+                                    view.MoveCurrentToLast();
                             }
                             else
                             {
-                                if (healthRecordsView.CurrentPosition != HealthRecords.Count - 1)
-                                    healthRecordsView.MoveCurrentToNext();
+                                if (view.CurrentPosition != HealthRecords.Count - 1)
+                                    view.MoveCurrentToNext();
                                 else
-                                    healthRecordsView.MoveCurrentToFirst();
+                                    view.MoveCurrentToFirst();
                             }
                         });
             }
@@ -238,6 +265,7 @@ namespace Diagnosis.ViewModels.Screens
                 return !(holder is Appointment && !holder.IsEmpty()); // непустой осмотр - ничего дополнительного
             }
         }
+
         public DropTargetHandler DropHandler { get; private set; }
 
         public DragSourceHandler DragHandler { get; private set; }
@@ -257,7 +285,6 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-
 
         public bool IsDragSourceEnabled
         {
@@ -293,7 +320,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public HrViewColumn Sorting
+        public HrViewSortingColumn Sorting
         {
             get
             {
@@ -303,19 +330,44 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (_sort != value)
                 {
-                    _sort = value;
-                    healthRecordsView.SortDescriptions.Clear();
-                    if (value != HrViewColumn.None)
+#if DEBUG
+                    if (value == HrViewSortingColumn.None)
+                        view.SortDescriptions.Clear();
+                    else
+#endif
                     {
-                        var sort = new SortDescription(value.ToString(), ListSortDirection.Ascending);
-                        healthRecordsView.SortDescriptions.Add(sort);
+                        using (view.DeferRefresh())
+                        {
+                            view.SortDescriptions.Clear();
+
+                            // сначала сортируем по группам
+                            if (Grouping != HrViewGroupingColumn.None)
+                            {
+                                var groupingSd = new SortDescription(Group2SortString(Grouping), ListSortDirection.Ascending);
+                                view.SortDescriptions.Add(groupingSd);
+
+                            }
+
+                            // основная сортировка, если уже нет
+                            if (value != HrViewSortingColumn.Ord && Group2Sort(Grouping) != value)
+                            {
+                                var sort = new SortDescription(value.ToString(), ListSortDirection.Ascending);
+                                view.SortDescriptions.Add(sort);
+                            }
+
+                            // сортировка по порядку всегда есть
+                            var ord = new SortDescription(HrViewSortingColumn.Ord.ToString(), ListSortDirection.Ascending);
+                            view.SortDescriptions.Add(ord);
+                        }
                     }
+
+                    _sort = value;
+                    SetHrExtra();
                     OnPropertyChanged(() => Sorting);
                 }
             }
         }
-
-        public HrViewColumn Grouping
+        public HrViewGroupingColumn Grouping
         {
             get
             {
@@ -325,17 +377,100 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (_group != value)
                 {
-                    _group = value;
-                    healthRecordsView.GroupDescriptions.Clear();
-                    if (value != HrViewColumn.None)
+                    using (view.DeferRefresh())
                     {
-                        var grDesc = new PropertyGroupDescription(value.ToString());
-                        healthRecordsView.GroupDescriptions.Add(grDesc);
+                        // убрать сортировку по старой группировке, если Sorting не по ней
+                        var oldGroupingSd = new SortDescription(Group2SortString(_group), ListSortDirection.Ascending);
+                        var oldind = view.SortDescriptions.IndexOf(oldGroupingSd);
+                        if (Sorting != Group2Sort(_group) && oldind >= 0)
+                        {
+                            view.SortDescriptions.RemoveAt(oldind);
+                        }
+
+
+                        view.GroupDescriptions.Clear();
+                        if (value != HrViewGroupingColumn.None)
+                        {
+                            // сортировка по новой группировке первая
+                            var groupingSd = new SortDescription(Group2SortString(value), ListSortDirection.Ascending);
+                            var ind = view.SortDescriptions.IndexOf(groupingSd);
+                            if (ind > 0)
+                            {
+                                view.SortDescriptions.Remove(groupingSd);
+                            }
+                            view.SortDescriptions.Insert(0, groupingSd);
+
+                            var groupingGd = new PropertyGroupDescription(value.ToString());
+                            view.GroupDescriptions.Add(groupingGd);
+                        }
                     }
+                    _group = value;
+                    SetHrExtra();
                     OnPropertyChanged(() => Grouping);
                 }
             }
         }
+
+        HrViewGroupingColumn Sort2Group(HrViewSortingColumn col)
+        {
+            switch (col)
+            {
+                case HrViewSortingColumn.Category:
+                    return HrViewGroupingColumn.Category;
+                case HrViewSortingColumn.CreatedAt:
+                    return HrViewGroupingColumn.GroupingCreatedAt;
+                case HrViewSortingColumn.SortingDate:
+                default:
+                    return HrViewGroupingColumn.None;
+            }
+        }
+
+        HrViewSortingColumn Group2Sort(HrViewGroupingColumn col)
+        {
+            switch (col)
+            {
+                case HrViewGroupingColumn.Category:
+                    return HrViewSortingColumn.Category;
+                case HrViewGroupingColumn.GroupingCreatedAt:
+                    return HrViewSortingColumn.CreatedAt;
+                case HrViewGroupingColumn.None:
+                default:
+                    return HrViewSortingColumn.None;
+            }
+        }
+        string Group2SortString(HrViewGroupingColumn col)
+        {
+            return col.ToString();
+        }
+        private void SetHrExtra()
+        {
+            // Показываем то, по чему сортируем, если нет группировки по этому же полю.
+
+            Action<ShortHealthRecordViewModel> setter = (vm) => vm.SortingExtraInfo = "";
+
+            switch (Sorting)
+            {
+                case HrViewSortingColumn.Category:
+                    if (Grouping != HrViewGroupingColumn.Category)
+                        setter = (vm) => vm.SortingExtraInfo = vm.Category != null ? vm.Category.ToString() : "";
+                    break;
+
+                case HrViewSortingColumn.CreatedAt:
+                    if (Grouping != HrViewGroupingColumn.GroupingCreatedAt)
+                        setter = (vm) => vm.SortingExtraInfo = vm.CreatedAt.ToString();
+                    break;
+
+                case HrViewSortingColumn.SortingDate:
+                    // дата записи всегда видна
+                    break;
+
+                default: // Ord
+                    break;
+            }
+
+            HealthRecords.ForAll(setter);
+        }
+
         public void Cut()
         {
             logger.Debug("cut");
@@ -356,7 +491,6 @@ namespace Diagnosis.ViewModels.Screens
                 FromYear = hr.FromYear,
                 Unit = hr.Unit,
                 Hios = new List<IHrItemObject>(hr.HrItems.Select(x => x.Entity))
-
             }).ToList();
 
             var data = new HrData() { Hrs = hrInfos };
@@ -369,7 +503,6 @@ namespace Diagnosis.ViewModels.Screens
 
             LogHrs("copy", hrInfos);
         }
-
 
         public void Paste()
         {
@@ -390,7 +523,6 @@ namespace Diagnosis.ViewModels.Screens
                     // add hios to end of Selected Hrs
                     hrs.ForAll(hr => hr.AddItems(data.ItemObjects));
                     OnSaveNeeded(hrManager.GetSelectedHrs());
-
                 }
                 else
                 {
@@ -401,7 +533,6 @@ namespace Diagnosis.ViewModels.Screens
                 }
                 LogHrItemObjects("paste", data.ItemObjects);
             }
-
 
             HrData hrDat = null;
 
@@ -430,8 +561,8 @@ namespace Diagnosis.ViewModels.Screens
                 SelectHealthRecords(pasted);
                 LogHrs("paste", hrDat.Hrs);
             }
-
         }
+
         public override string ToString()
         {
             return "HrList for " + holder.ToString();
@@ -441,6 +572,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             SelectedHealthRecord = HealthRecords.FirstOrDefault(x => x.healthRecord == healthRecord);
         }
+
         internal void SelectHealthRecords(IEnumerable<HealthRecord> hrs)
         {
             HealthRecords.Where(vm => hrs.Contains(vm.healthRecord))
@@ -449,7 +581,6 @@ namespace Diagnosis.ViewModels.Screens
             using (inSelectMany.Enter())
             {
                 SelectHealthRecord(hrs.LastOrDefault());
-
             }
         }
 
@@ -465,6 +596,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             logger.DebugFormat("{0} hrs with hios: {1}", action, string.Join("\n", hrs.Select((hr, i) => string.Format("{0} {1}", i, hr.Hios.FlattenString()))));
         }
+
         private void LogHrItemObjects(string action, IEnumerable<IHrItemObject> hios)
         {
             logger.DebugFormat("{0} hios: {1}", action, hios.FlattenString());
@@ -478,6 +610,7 @@ namespace Diagnosis.ViewModels.Screens
                 h(this, new ListEventArgs<HealthRecord>(hrsToSave));
             }
         }
+
         protected override void Dispose(bool disposing)
         {
             try
@@ -583,7 +716,6 @@ namespace Diagnosis.ViewModels.Screens
                             hr.healthRecord.Category = dropInfo.TargetGroup.Name as HrCategory;
                     }
                     logger.DebugFormat("selected after dd {0} ", master.SelectedHealthRecords.Count());
-
                 }
                 else if (FromAutocomplete(dropInfo))
                 {
@@ -602,8 +734,6 @@ namespace Diagnosis.ViewModels.Screens
                 //}
                 master.OnSaveNeeded();
                 logger.DebugFormat("selected after save {0} ", master.SelectedHealthRecords.Count());
-
-
             }
         }
 
@@ -621,7 +751,6 @@ namespace Diagnosis.ViewModels.Screens
                 if (itemCount == 1)
                 {
                     dragInfo.Data = hrs.First();
-
                 }
                 else if (itemCount > 1)
                 {
@@ -645,31 +774,33 @@ namespace Diagnosis.ViewModels.Screens
             {
             }
         }
-
     }
-
-
 
     [Serializable]
     public class HrData
     {
         public static readonly DataFormat DataFormat = DataFormats.GetDataFormat("hr");
-        public List<HrInfo> Hrs { get; set; }
-        [Serializable]
 
+        public List<HrInfo> Hrs { get; set; }
+
+        [Serializable]
         public class HrInfo
         {
             public Guid HolderId { get; set; }
+
             public Guid DoctorId { get; set; }
+
             public int? CategoryId { get; set; }
+
             public int? FromDay { get; set; }
+
             public int? FromMonth { get; set; }
+
             public int? FromYear { get; set; }
+
             public HealthRecordUnit Unit { get; set; }
+
             public List<IHrItemObject> Hios { get; set; }
-
-
         }
-
     }
 }
