@@ -1,20 +1,23 @@
 ﻿<UserControl x:Class="Diagnosis.App.Controls.Headers.Patient"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Name="patient"
              d:DesignHeight="300"
-             d:DesignWidth="300">
-    <!--Patient-->
+             d:DesignWidth="300"
+             mc:Ignorable="d">
+    <!--  Patient or VM -->
     <DockPanel>
-        <TextBlock Text="{Binding Actual, Converter={StaticResource ManToShortName}}"
+        <TextBlock MinWidth="30"
                    VerticalAlignment="Center"
-                   MinWidth="30" />
-        <TextBlock Text="{Binding IsMale, Converter={StaticResource SexToSign}}"
+                   Text="{Binding Actual,
+                                  Converter={StaticResource ManToShortName}}" />
+        <TextBlock Margin="20,0,5,0"
+                   VerticalAlignment="Center"
                    FontSize="20"
-                   Margin="20,0,5,0"
-                   VerticalAlignment="Center" />
+                   Text="{Binding IsMale,
+                                  Converter={StaticResource SexToSign}}" />
         <TextBlock Margin="5,0,10,0"
                    VerticalAlignment="Center">
             <TextBlock Text="{Binding Age}" />

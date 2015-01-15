@@ -1,22 +1,23 @@
 ﻿<UserControl x:Class="Diagnosis.App.Controls.Headers.Course"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Name="course"
              d:DesignHeight="300"
-             d:DesignWidth="300">
-    <!-- Course-->
-    <StackPanel x:Name="description">
+             d:DesignWidth="300"
+             mc:Ignorable="d">
+    <!--  Course or VM  -->
+    <StackPanel>
         <TextBlock>
-                    <Run>
-                         <MultiBinding Converter="{StaticResource DateIntervalLabel}">
-                            <Binding Path="Start"
-                                     Mode="OneWay" />
-                            <Binding Path="End"
-                                     Mode="OneWay" />
-                        </MultiBinding>
-                    </Run>
+            <Run>
+                <MultiBinding Converter="{StaticResource DateIntervalLabel}">
+                    <Binding Mode="OneWay"
+                             Path="Start" />
+                    <Binding Mode="OneWay"
+                             Path="End" />
+                </MultiBinding>
+            </Run>
         </TextBlock>
     </StackPanel>
 </UserControl>
