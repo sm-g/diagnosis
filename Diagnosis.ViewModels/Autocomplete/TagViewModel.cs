@@ -271,7 +271,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 return new RelayCommand(() =>
                 {
-                    autocomplete.AddTag(this, true);
+                    autocomplete.AddAndEditTag(this, true);
                 }, () => !autocomplete.SingleTag);
             }
         }
@@ -281,7 +281,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 return new RelayCommand(() =>
                 {
-                    autocomplete.AddTag(this, false);
+                    autocomplete.AddAndEditTag(this, false);
                 }, () => !IsLast && !autocomplete.SingleTag);
             }
         }

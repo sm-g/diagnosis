@@ -9,7 +9,7 @@
         SizeToContent="Height"
         Width="400"
         MinWidth="200"
-        beh:DialogCloser.DialogResult="{Binding DialogResult}"       
+        beh:DialogCloser.DialogResult="{Binding DialogResult}"
         ShowInTaskbar="False"
         WindowStyle="ToolWindow">
     <Grid Margin="0,0,10,10">
@@ -42,8 +42,8 @@
                    HorizontalAlignment="Left"
                    VerticalAlignment="Top" />
             <search:Autocomplete x:Name="autocomplete"
-                                    DataContext="{Binding Autocomplete}"
-                                    Grid.Row="1" />
+                                 DataContext="{Binding Autocomplete}"
+                                 Grid.Row="1" />
 
             <Label Content="Сколько"
                    Grid.Column="2"
@@ -58,9 +58,11 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <TextBox Text="{Binding Value, Mode=TwoWay, ValidatesOnDataErrors=True}"
+                <TextBox x:Name="value"
+                         Text="{Binding Value, Mode=TwoWay, ValidatesOnDataErrors=True}"
                          VerticalContentAlignment="Top" />
-                <ComboBox SelectedItem="{Binding Uom, ValidatesOnDataErrors=True}"
+                <ComboBox x:Name="uom"
+                          SelectedItem="{Binding Uom, ValidatesOnDataErrors=True}"
                           IsEditable="True"
                           ItemsSource="{Binding Uoms}"
                           Grid.Column="2" />

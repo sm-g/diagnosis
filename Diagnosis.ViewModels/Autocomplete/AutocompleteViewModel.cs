@@ -476,7 +476,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// Добавляет пустой тег рядом с другим.
         /// </summary>
-        public void AddTag(TagViewModel from, bool left)
+        public void AddAndEditTag(TagViewModel from, bool left)
         {
             var tag = AddTag(index: Tags.IndexOf(from) + (left ? 0 : 1));
             StartEdit(tag);
@@ -609,15 +609,13 @@ namespace Diagnosis.ViewModels.Autocomplete
         private void CompleteCommon(TagViewModel tag, object suggestion, bool exactMatchRequired, bool inverse = false)
         {
             recognizer.SetBlank(tag, suggestion, exactMatchRequired, inverse);
+
+            CompleteEnding(tag);
+
             if (tag.Query == "")
             {
                 tag.DeleteCommand.Execute(null);
             }
-            else
-            {
-            }
-
-            CompleteEnding(tag);
         }
 
         private void CompleteOnConvert(TagViewModel tag, BlankType toType)
@@ -642,9 +640,16 @@ namespace Diagnosis.ViewModels.Autocomplete
             switch (tag.State)
             {
                 case State.Init:
-                    // Enter в пустом поле
-                    OnInputEnded();
-                    return;
+                    if (tag.IsLast)
+                    {
+                        OnInputEnded();
+                        return;
+                    }
+                    else
+                    {
+                        CompleteCommon(tag, SelectedSuggestion, false, false); // пустой не последний — удаляем
+                        break;
+                    }
 
                 case State.Typing:
                     CompleteCommon(tag, SelectedSuggestion, false, inverse);
@@ -654,9 +659,11 @@ namespace Diagnosis.ViewModels.Autocomplete
                     // тег не изменен
                     break;
             }
-
-            // переходим к вводу нового слова
-            StartEdit(LastTag);
+            if (SingleTag)
+                OnInputEnded();
+            else
+                // переходим к вводу нового слова
+                StartEdit(LastTag);
         }
 
         public void CompleteOnLostFocus(TagViewModel tag)

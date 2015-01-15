@@ -72,7 +72,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 }
                 else
                 {
-                    tag.Blank = null; // для поиска
+                    tag.Blank = null; // для поиска или ентер в пустом непоследнем
                     Debug.Assert(tag.BlankType == BlankType.None);
                 }
             }
@@ -93,6 +93,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
             else // inverse, no suggestion
             {
+                Contract.Assume(!tag.Query.IsNullOrEmpty());
                 tag.Blank = FirstMatchingOrNewWord(tag.Query);
                 Debug.Assert(tag.BlankType == BlankType.Word);
             }

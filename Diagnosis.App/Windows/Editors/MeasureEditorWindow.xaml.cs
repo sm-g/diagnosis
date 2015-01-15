@@ -1,5 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Input;
+﻿using Diagnosis.ViewModels.Autocomplete;
+using System;
+using System.Windows;
 
 namespace Diagnosis.App.Windows
 {
@@ -11,8 +12,17 @@ namespace Diagnosis.App.Windows
             Loaded += (s, e) =>
             {
                 autocomplete.Focus();
-
+                (DataContext as MeasureEditorViewModel).Autocomplete.InputEnded += Autocomplete_InputEnded;
             };
+            Unloaded += (s, e) =>
+            {
+                (DataContext as MeasureEditorViewModel).Autocomplete.InputEnded -= Autocomplete_InputEnded;
+            };
+        }
+
+        private void Autocomplete_InputEnded(object sender, EventArgs e)
+        {
+            value.Focus();
         }
     }
 }
