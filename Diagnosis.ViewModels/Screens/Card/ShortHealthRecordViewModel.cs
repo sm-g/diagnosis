@@ -24,6 +24,8 @@ namespace Diagnosis.ViewModels.Screens
 
             healthRecord.PropertyChanged += healthRecord_PropertyChanged;
             healthRecord.ItemsChanged += healthRecord_ItemsChanged;
+
+            SyncCheckedAndSelected = true;
         }
 
         /// <summary>
@@ -55,33 +57,6 @@ namespace Diagnosis.ViewModels.Screens
                 return string.Join(" ", healthRecord.GetOrderedEntities());// сущности давления надо форматировать
             }
         }
-
-        #region CheckableBase
-
-        private bool checkedBySelection;
-
-        protected override void OnSelectedChanged()
-        {
-            base.OnSelectedChanged();
-
-            // check hr when select it and uncheck when selection goes away
-            // except hr was checked by checkbox before
-            if (!IsChecked || checkedBySelection)
-            {
-                checkedBySelection = IsSelected;
-                IsChecked = IsSelected;
-            }
-        }
-
-        protected override void OnCheckedChanged()
-        {
-            base.OnCheckedChanged();
-
-            // убираем выделение при снятии флажка
-            IsSelected = IsChecked;
-        }
-
-        #endregion CheckableBase
 
         #region Model
 

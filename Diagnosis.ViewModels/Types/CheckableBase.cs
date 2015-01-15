@@ -7,7 +7,6 @@ namespace Diagnosis.ViewModels
     public abstract class CheckableBase : ViewModelBase
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(CheckableBase));
-        #region CheckableBase
 
         private bool _isNonCheckable;
         private bool _isChecked;
@@ -30,6 +29,10 @@ namespace Diagnosis.ViewModels
                     OnPropertyChanged("IsSelected");
                     // logger.DebugFormat("selected = {0}, {1}", value, this);
                     OnSelectedChanged();
+                    if (SyncCheckedAndSelected)
+                    {
+                        IsChecked = value;
+                    }
                 }
             }
         }
@@ -67,11 +70,15 @@ namespace Diagnosis.ViewModels
                     OnPropertyChanged("IsChecked");
                     //  logger.DebugFormat("checked = {0}, {1}", value, this);
                     OnCheckedChanged();
+                    if (SyncCheckedAndSelected)
+                    {
+                        IsSelected = value;
+                    }
                 }
             }
         }
 
-        public ICommand ToggleCommand
+        public ICommand ToggleCheckedCommand
         {
             get
             {
@@ -79,10 +86,11 @@ namespace Diagnosis.ViewModels
                         () =>
                         {
                             IsChecked = !IsChecked;
-                            IsSelected = true;
                         });
             }
         }
+
+        public bool SyncCheckedAndSelected { get; set; }
 
         protected virtual void OnCheckedChanged()
         {
@@ -101,8 +109,6 @@ namespace Diagnosis.ViewModels
                 h(this, new CheckableEventArgs(this));
             }
         }
-
-        #endregion CheckableBase
     }
 
     [Serializable]

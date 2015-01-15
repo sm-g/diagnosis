@@ -11,8 +11,8 @@ namespace Diagnosis.App.Controls
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(FocusChecker));
         public static bool IsLogicFocusOutside<T>(T obj) where T : UIElement
         {
-           // TraceLogicalTree(obj);
-          //  TraceVisualTree(obj);
+            // TraceLogicalTree(obj);
+            //  TraceVisualTree(obj);
             var win = Window.GetWindow(obj);
             //logger.DebugFormat("window {0}", win);
             if (win == null)
@@ -24,9 +24,9 @@ namespace Diagnosis.App.Controls
             var kbFocusedOut = !obj.IsKeyboardFocusWithin;
             var logicFocusedOut = !(logicElement.IsChildOf(obj) || obj == logicElement);
 
-            logger.DebugFormat("focused: kb {0} logic {1}", kbElement, logicElement);
-            logger.DebugFormat("out? kb {0} logic {1}", kbFocusedOut, logicFocusedOut);
-            logger.DebugFormat("\n");
+            //logger.DebugFormat("focused: kb {0} logic {1}", kbElement, logicElement);
+            //logger.DebugFormat("out? kb {0} logic {1}", kbFocusedOut, logicFocusedOut);
+            //logger.DebugFormat("\n");
 
             return logicFocusedOut;
         }
