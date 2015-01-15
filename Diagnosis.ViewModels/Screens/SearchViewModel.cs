@@ -49,7 +49,8 @@ namespace Diagnosis.ViewModels.Screens
 
             Autocomplete.InputEnded += (s, e) =>
             {
-                Search();
+                if (SearchCommand.CanExecute(null))
+                    SearchCommand.Execute(null);
             };
             Autocomplete.Tags.CollectionChanged += (s, e) =>
             {
