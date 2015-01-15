@@ -447,17 +447,23 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// Switch focus between textbox and listitem for SelectedTag
         /// </summary>
-        public void SwitchEdit()
+        public void ToggleEditState()
         {
+            Contract.Ensures(IsTextBoxFocused != Contract.OldValue(IsTextBoxFocused));
+            Contract.Ensures(IsTextBoxFocused != IsListItemFocused); // или выделен или редактируется
+
             if (IsTextBoxFocused)
             {
                 IsListItemFocused = true;
+                IsTextBoxFocused = false;
             }
             else
             {
                 IsTextBoxFocused = true;
+                IsListItemFocused = false;
             }
         }
+
         #endregion
 
         public void Validate(Func<TagViewModel, Signalizations> filter = null)

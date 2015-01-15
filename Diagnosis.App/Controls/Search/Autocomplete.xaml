@@ -60,6 +60,7 @@
                  dd:DragDrop.DragHandler="{Binding DragHandler}"
                  GotFocus="input_GotFocus"
                  LostFocus="input_LostFocus"
+                 GotKeyboardFocus="input_GotKeyboardFocus"
                  PreviewKeyDown="input_PreviewKeyDown"
                  PreviewKeyUp="input_PreviewKeyUp"
                  SelectionChanged="input_SelectionChanged">

@@ -1,5 +1,6 @@
 ﻿using Diagnosis.ViewModels.Autocomplete;
 using log4net;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -77,6 +78,7 @@ namespace Diagnosis.App.Controls.Search
 
         private void input_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // перемещаем popup
             if (e.AddedItems.Count > 0)
             {
                 var element = input.ItemContainerGenerator.ContainerFromItem(e.AddedItems[e.AddedItems.Count - 1]) as UIElement;
@@ -86,26 +88,24 @@ namespace Diagnosis.App.Controls.Search
 
         #region focus stuff
 
-        /// <summary>
-        /// Фокус ушел из автокомплита (из тега или попапа) - завершаем тег.
-        /// </summary>
         private void UserControl_LostFocus(object sender, RoutedEventArgs e)
         {
             var outs = IsFocusOutside();
             //logger.DebugFormat("autocomplete lost focus to {0}, out? {1}", GetFocusedInScope(), outs);
-            if (outs)
-            {
-                // if (Vm != null && Vm.EditingTag != null)
-                //       Vm.CompleteOnLostFocus(Vm.EditingTag); // также в HrEditor.CloseCurrentHr()
-            }
 
         }
+
         private void autocomplete_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            if (e.NewFocus == this)
-                Vm.LastTag.IsTextBoxFocused = true;
+            if (e.NewFocus == autocomplete)
+            {
+                Vm.StartEdit(Vm.LastTag);
+            }
         }
 
+        /// <summary>
+        /// Фокус ушел из автокомплита (из тега или попапа) - завершаем тег.
+        /// </summary>
         private void UserControl_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             var outs = IsFocusOutside();
@@ -120,6 +120,32 @@ namespace Diagnosis.App.Controls.Search
         private void input_GotFocus(object sender, RoutedEventArgs e)
         {
             // logger.Debug("input got focus");
+        }
+
+        private void input_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            // got focus after ctrl + j
+
+            if (e.NewFocus == input)
+            {
+                if (Vm.InDispose)
+                {
+                    // autocomplete in dispose
+                    // wait for new DataContext setted
+                    DependencyPropertyChangedEventHandler a = null;
+                    a = (s, args) =>
+                    {
+                        if (Vm != null)
+                            Vm.StartEdit(Vm.LastTag);
+                        this.DataContextChanged -= a;
+                    };
+                    this.DataContextChanged += a;
+                }
+                else if (Vm.EditingTag != null)
+                {
+                    Vm.StartEdit(Vm.EditingTag);
+                }
+            }
         }
 
         private void input_LostFocus(object sender, RoutedEventArgs e)
@@ -178,7 +204,5 @@ namespace Diagnosis.App.Controls.Search
         }
 
         #endregion focus stuff
-
-
     }
 }

@@ -31,6 +31,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private EventAggregator.EventMessageHandler hanlder;
         private bool inDispose;
 
+
         public AutocompleteViewModel(Recognizer recognizer, bool allowTagConvertion, bool allowSendToSearch, bool singleTag, IEnumerable<IHrItemObject> initItems)
         {
             Contract.Requires(recognizer != null);
@@ -195,7 +196,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                                 break;
 
                             default:
-                                SelectedTag.SwitchEdit();
+                                SelectedTag.ToggleEditState();
                                 break;
                         }
                     }
@@ -246,6 +247,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         }
 
         /// <summary>
+        /// Последний выбранный тег.
         /// При потере фокуса списком тегов SelectedTag будет null.
         /// </summary>
         public TagViewModel EditingTag
@@ -352,6 +354,11 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public DragSourceHandler DragHandler { get; private set; }
 
+        public bool InDispose
+        {
+            get { return inDispose; }
+        }
+
         /// <summary>
         /// Создает тег.
         /// </summary>
@@ -374,7 +381,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 Contract.Requires(!tag.IsLast);
                 Tags.Remove(tag);
-                LastTag.IsTextBoxFocused = true;
+                StartEdit(LastTag);
             };
             tag.Converting += (s, e) =>
             {
@@ -404,7 +411,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                         CanCompleteOnLostFocus = true;
 
                         SelectedTags.Except(tag.ToEnumerable()).ForAll(t => t.IsSelected = false);
-                        tag.IsSelected = true;
+                        SelectedTag = tag;
                     }
                     else
                     {
@@ -472,6 +479,12 @@ namespace Diagnosis.ViewModels.Autocomplete
         public void AddTag(TagViewModel from, bool left)
         {
             var tag = AddTag(index: Tags.IndexOf(from) + (left ? 0 : 1));
+            StartEdit(tag);
+        }
+
+        public void StartEdit(TagViewModel tag)
+        {
+            SelectedTag = tag;
             tag.IsTextBoxFocused = true;
         }
 
@@ -643,8 +656,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
 
             // переходим к вводу нового слова
-            SelectedTag = LastTag;
-            LastTag.IsTextBoxFocused = true;
+            StartEdit(LastTag);
         }
 
         public void CompleteOnLostFocus(TagViewModel tag)
