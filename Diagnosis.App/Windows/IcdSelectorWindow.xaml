@@ -21,7 +21,7 @@
 
         <StackPanel x:Name="icdPicker"
                     Margin="10,0,0,10">
-            <Label Content="Выбран диагноз:" />
+            <Label Content="Выбран диагноз" />
             <DockPanel Focusable="False">
                 <TextBox Text="{Binding SelectedIcd.Code, Mode=OneWay}"
                          IsReadOnly="True"

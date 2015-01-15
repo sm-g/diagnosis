@@ -33,7 +33,7 @@
                 <DatePicker Text="{Binding Course.End,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
             </DockPanel>
             <DockPanel Visibility="{Binding Course.IsEnded, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-                <Label Content="" />
+                <Label  />
                 <TextBlock><Hyperlink Command="{Binding FinishCommand}">Завершить</Hyperlink></TextBlock>
             </DockPanel>
         </StackPanel>

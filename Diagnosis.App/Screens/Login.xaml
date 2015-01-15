@@ -20,7 +20,7 @@
             <TextBlock Style="{StaticResource ScreenTitle}"
                        Padding="5,0,0,10">Вход</TextBlock>
             <DockPanel>
-                <Label>Доктор:</Label>
+                <Label Content="Доктор" />
                 <ComboBox x:Name="doctors"
                           SelectedItem="{Binding SelectedUser}"
                           ItemsSource="{Binding Users}">
@@ -33,7 +33,7 @@
             </DockPanel>
 
             <DockPanel Visibility="{Binding PasswordVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Label>Пароль:</Label>
+                <Label Content="Пароль" />
                 <Border DataContext="{Binding IsWrongPassword}">
                     <PasswordBox x:Name="password"
                                  VerticalContentAlignment="Center"
@@ -41,7 +41,7 @@
                 </Border>
             </DockPanel>
             <DockPanel Visibility="{Binding RememberVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Label> </Label>
+                <Label />
                 <CheckBox IsChecked="{Binding Remember, Mode=TwoWay}">Запомнить</CheckBox>
             </DockPanel>
             <Button x:Name="login"
