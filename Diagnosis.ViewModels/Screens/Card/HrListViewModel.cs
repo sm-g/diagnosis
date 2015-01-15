@@ -128,7 +128,14 @@ namespace Diagnosis.ViewModels.Screens
 
             HealthRecords.CollectionChanged += (s, e) =>
             {
+                // если запись IsDeleted
                 HolderVm.UpdateIsEmpty();
+
+                // новые в списке
+                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+                {
+                    SetHrExtra(e.NewItems.Cast<ShortHealthRecordViewModel>().ToList());
+                }
             };
 
             view = (ListCollectionView)CollectionViewSource.GetDefaultView(HealthRecords);
@@ -362,7 +369,8 @@ namespace Diagnosis.ViewModels.Screens
                     }
 
                     _sort = value;
-                    SetHrExtra();
+
+                    SetHrExtra(HealthRecords);
                     OnPropertyChanged(() => Sorting);
                 }
             }
@@ -405,7 +413,8 @@ namespace Diagnosis.ViewModels.Screens
                         }
                     }
                     _group = value;
-                    SetHrExtra();
+
+                    SetHrExtra(HealthRecords);
                     OnPropertyChanged(() => Grouping);
                 }
             }
@@ -442,7 +451,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             return col.ToString();
         }
-        private void SetHrExtra()
+        private void SetHrExtra(IList<ShortHealthRecordViewModel> vms)
         {
             // Показываем то, по чему сортируем, если нет группировки по этому же полю.
 
@@ -468,7 +477,7 @@ namespace Diagnosis.ViewModels.Screens
                     break;
             }
 
-            HealthRecords.ForAll(setter);
+            vms.ForAll(setter);
         }
 
         public void Cut()

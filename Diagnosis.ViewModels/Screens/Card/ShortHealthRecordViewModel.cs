@@ -160,6 +160,7 @@ namespace Diagnosis.ViewModels.Screens
                 return res;
             }
         }
+
         public string GroupingCreatedAt
         {
             get
@@ -179,6 +180,7 @@ namespace Diagnosis.ViewModels.Screens
                 return res;
             }
         }
+
         public string SortingExtraInfo
         {
             get
@@ -279,12 +281,17 @@ namespace Diagnosis.ViewModels.Screens
                 case "FromMonth":
                 case "FromYear":
                 case "Unit":
-                    OnPropertyChanged("SortingDate");
-                    OnPropertyChanged("DateOffsetString");
+                    OnPropertyChanged(() => SortingDate);
+                    OnPropertyChanged(() => GroupingDate);
+                    OnPropertyChanged(() => DateOffsetString);
                     break;
 
                 case "HrItems":
-                    OnPropertyChanged("Name");
+                    OnPropertyChanged(() => Name);
+                    break;
+
+                case "CreatedAt":
+                    OnPropertyChanged(() => GroupingCreatedAt);
                     break;
             }
         }
