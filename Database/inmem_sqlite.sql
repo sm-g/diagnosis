@@ -153,8 +153,8 @@ INSERT INTO [SpecialityIcdBlocks] ([ID], [SpecialityID], [IcdBlockID]) VALUES (1
 -- '00000001-1000-0000-0000-000000000001'
 INSERT INTO [Passport] ([ID]) VALUES ('00000001-1000-0000-0000-000000000001');
 INSERT INTO [Passport] ([ID],[Remember]) VALUES ('00000002-1000-0000-0000-000000000002',1);
-INSERT INTO [Doctor] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [SpecialityID], [Settings]) VALUES ('00000001-1000-0000-0000-000000000001', 'Смирнов', NULL, 'Василий', 1, 1, 0);
-INSERT INTO [Doctor] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [SpecialityID], [Settings]) VALUES ('00000002-1000-0000-0000-000000000002', 'Вахрушев', 'Константинович', 'Александр', 1, 1, 1);
+INSERT INTO [Doctor] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [SpecialityID]) VALUES ('00000001-1000-0000-0000-000000000001', 'Смирнов', NULL, 'Василий', 1, 1);
+INSERT INTO [Doctor] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [SpecialityID]) VALUES ('00000002-1000-0000-0000-000000000002', 'Вахрушев', 'Константинович', 'Александр', 1, 1);
 -- '00000001-2000-0000-0000-000000000001'
 INSERT INTO [Patient] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [BirthYear], [BirthMonth], [BirthDay]) VALUES ('00000001-2000-0000-0000-000000000001', 'Андреев', NULL, 'Иван', 1, 1982, 11, NULL);
 INSERT INTO [Patient] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [BirthYear], [BirthMonth], [BirthDay]) VALUES ('00000002-2000-0000-0000-000000000002', 'Петров', 'Иванович', 'Иван', 1, 1980, 2, 15);
