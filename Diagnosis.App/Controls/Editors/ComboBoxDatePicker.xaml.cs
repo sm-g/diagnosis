@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using log4net;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Globalization;
@@ -75,7 +76,7 @@ namespace Diagnosis.App.Controls.Editors
 
         public static readonly DependencyProperty MonthProperty =
             DependencyProperty.Register("Month", typeof(int?), typeof(ComboBoxDatePicker),
-                new FrameworkPropertyMetadata(13,
+                new FrameworkPropertyMetadata(null,
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
                     new PropertyChangedCallback(OnMonthChanged)));
 
@@ -162,8 +163,11 @@ namespace Diagnosis.App.Controls.Editors
         private void LoadMonthsCombo()
         {
             var monthNames = DateTimeFormatInfo.CurrentInfo.MonthNames.ToArray();
-            comboMonths.ItemsSource = monthNames;
-            comboMonths.SelectedValue = DateTimeFormatInfo.CurrentInfo.GetMonthName(Month ?? 13);
+            var none = string.Empty;
+            var names = new List<string> { none };
+            names.AddRange(monthNames.Take(12));
+            comboMonths.ItemsSource = names;
+            comboMonths.SelectedValue = Month != null ? DateTimeFormatInfo.CurrentInfo.GetMonthName(Month.Value) : none;
         }
 
         private void LoadDaysCombo()
@@ -192,7 +196,7 @@ namespace Diagnosis.App.Controls.Editors
         private string[] GetDaysComboItems()
         {
             var year = Year ?? DateTime.Today.Year;
-            var month = (Month != 13 && Month != null) ? Month.Value : DateTime.Today.Month;
+            var month = (Month != null && Month > 0 && Month < 13) ? Month.Value : DateTime.Today.Month;
             var daysInMonth = DateTime.DaysInMonth(year, month);
             string[] days = new string[daysInMonth + 1];
             days[0] = "";
