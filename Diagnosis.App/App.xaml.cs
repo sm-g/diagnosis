@@ -30,57 +30,69 @@ namespace Diagnosis.App
         public App()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+        }
 
-            Exit += (s, e) =>
+        protected override void OnExit(ExitEventArgs e)
+        {
+            inExit = true;
+            this.Send(Event.Shutdown);
+            Diagnosis.App.Properties.Settings.Default.Save();
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            bool aIsNewInstance = false;
+            var myMutex = new Mutex(true, "ac2ee38e-31c5-45f5-8fde-4a9a126df451", out aIsNewInstance);
+            if (!aIsNewInstance)
             {
-                inExit = true;
-                this.Send(Event.Shutdown);
-                Diagnosis.App.Properties.Settings.Default.Save();
-            };
+                MessageBox.Show("Приложение уже запущено.", "Diagnosis", MessageBoxButton.OK, MessageBoxImage.Information);
+                App.Current.Shutdown();
+                return;
+            }
 
-            Startup += (s, e) =>
+            // command line args
+            for (int i = 0; i != e.Args.Length; ++i)
             {
-                bool aIsNewInstance = false;
-                var myMutex = new Mutex(true, "ac2ee38e-31c5-45f5-8fde-4a9a126df451", out aIsNewInstance);
-                if (!aIsNewInstance)
+                if (e.Args[i] == "-inmemory")
                 {
-                    MessageBox.Show("Приложение уже запущено.", "Diagnosis", MessageBoxButton.OK, MessageBoxImage.Information);
-                    App.Current.Shutdown();
-                    return;
+                    NHibernateHelper.InMemory = true;
                 }
-
-                // command line args
-                for (int i = 0; i != e.Args.Length; ++i)
-                {
-                    if (e.Args[i] == "-inmemory")
-                    {
-                        NHibernateHelper.InMemory = true;
-                    }
-                }
-
-                // wpf culture
-                FrameworkElement.LanguageProperty.OverrideMetadata(
-                    typeof(FrameworkElement),
-                    new FrameworkPropertyMetadata(
-                    XmlLanguage.GetLanguage(
-                    CultureInfo.CurrentCulture.IetfLanguageTag)));
-                // enum localization
-                LocalizableDescriptionAttribute.ResourcesType = typeof(Diagnosis.App.Properties.Resources);
-
-                System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Error;
-#if DEBUG
-                new DebugOutput(0);
-                new DebugWindow().Show();
-                NHibernateHelper.ShowSql = !NHibernateHelper.InMemory;
-
+            }
+#if !DEBUG
+            var splash = new SplashScreen(@"Resources\Images\splash.png");
+            splash.Show(false);
 #endif
-                DbMaintenance();
 
-                var main = new MainWindow();
-                Application.Current.MainWindow = main;
-                Application.Current.ShutdownMode = System.Windows.ShutdownMode.OnMainWindowClose;
-                main.Show();
+            // wpf culture
+            FrameworkElement.LanguageProperty.OverrideMetadata(
+                typeof(FrameworkElement),
+                new FrameworkPropertyMetadata(
+                XmlLanguage.GetLanguage(
+                CultureInfo.CurrentCulture.IetfLanguageTag)));
+            // enum localization
+            LocalizableDescriptionAttribute.ResourcesType = typeof(Diagnosis.App.Properties.Resources);
+            System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Error;
+#if DEBUG
+            new DebugOutput(0);
+            new DebugWindow().Show();
+            NHibernateHelper.ShowSql = !NHibernateHelper.InMemory;
+#endif
+
+            DbMaintenance();
+
+            var main = new MainWindow();
+
+#if !DEBUG
+            main.Initialized += (s, e1) =>
+            {
+                splash.Close(TimeSpan.FromMilliseconds(100));
+                main.Focus();
             };
+#endif
+
+            Application.Current.MainWindow = main;
+            Application.Current.ShutdownMode = System.Windows.ShutdownMode.OnMainWindowClose;
+            main.Show();
         }
 
         [DebuggerStepThrough]

@@ -729,7 +729,7 @@
     <Resource Include="Resources\Images\Find_5650.png" />
   </ItemGroup>
   <ItemGroup>
-    <SplashScreen Include="Resources\Images\splash.png" />
+    <Resource Include="Resources\Images\splash.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\GroupBy.png" />
