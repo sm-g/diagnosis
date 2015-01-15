@@ -70,7 +70,7 @@
                                VerticalAlignment="Center"></TextBlock>
                 </DockPanel>
                 <DockPanel>
-                    <Label Content="Пол" />
+                    <Label Content="Пол" VerticalAlignment="Top" />
                     <editors:SexChooser HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         WithUnknown="True" />

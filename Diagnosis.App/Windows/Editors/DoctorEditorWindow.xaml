@@ -51,7 +51,7 @@
                     <TextBox Text="{Binding MiddleName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
                 </DockPanel>
                 <DockPanel>
-                    <Label Content="Пол" />
+                    <Label Content="Пол" VerticalAlignment="Top" />
                     <editors:SexChooser Width="100"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center" />
