@@ -226,5 +226,27 @@ namespace Tests
             card.ToogleHrEditor();
             Assert.IsTrue(!hr[21].IsDirty);
         }
+
+        [TestMethod]
+        public void DeleteHolderWithDeltedHr()
+        {
+            var card = new CardViewModel(a[5], true);
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            card.HrList.HealthRecords.Last().DeleteCommand.Execute(null);
+
+            Assert.IsTrue(card.Navigator.Current.HolderVm.DeleteCommand.CanExecute(null));
+            card.Navigator.Current.HolderVm.DeleteCommand.Execute(null);
+
+            Assert.AreEqual(c[4], card.Navigator.Current.Holder);
+
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            card.HrList.HealthRecords.Last().DeleteCommand.Execute(null);
+            card.Navigator.Current.HolderVm.DeleteCommand.Execute(null);
+            Assert.AreEqual(p[3], card.Navigator.Current.Holder);
+
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            card.HrList.HealthRecords.Last().DeleteCommand.Execute(null);
+            card.Navigator.Current.HolderVm.DeleteCommand.Execute(null);
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace Diagnosis.ViewModels.Screens
 
             this.Subscribe(Event.ShowUndoOverlay, (e) =>
             {
-                Action[] actions = e.GetValue<Action[]>(MessageKeys.UndoOverlay);
+                Action[] actions = e.GetValue<Action[]>(MessageKeys.UndoDoActions);
                 Type type = e.GetValue<Type>(MessageKeys.Type);
 
                 UndoOverlayViewModel existing = Overlays.SingleOrDefault(o => o.ObjectsType == type);

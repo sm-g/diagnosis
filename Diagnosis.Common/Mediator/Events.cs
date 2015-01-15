@@ -22,7 +22,7 @@ namespace Diagnosis.Common
         public const string Category = "category";
         public const string Boolean = "bool";
         public const string Settings = "settings";
-        public const string UndoOverlay = "undooverlay";
+        public const string UndoDoActions = "undooverlay";
         public const string Type = "type";
         public const string Holder = "holder";
         public const string Dialog = "dialog";

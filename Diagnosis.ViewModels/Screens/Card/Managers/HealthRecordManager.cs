@@ -13,8 +13,6 @@ namespace Diagnosis.ViewModels.Screens
         private readonly IHrsHolder holder;
         private readonly PropertyChangedEventHandler onHrVmPropChanged;
 
-        public event EventHandler<DomainEntityEventArgs> Undeleted;
-
         public HealthRecordManager(IHrsHolder holder, PropertyChangedEventHandler onHrVmPropChanged)
         {
             this.holder = holder;
@@ -87,14 +85,14 @@ namespace Diagnosis.ViewModels.Screens
                     var vm = HealthRecords.Where(x => x.healthRecord == hr).First();
                     DeletedHealthRecords.Add(vm);
                     HealthRecords.Remove(vm);
-                    var undoActions = new Action[] {
+                    var undoDoActions = new Action[] {
                         () => hr.IsDeleted = false,
                         () => {
                             holder.RemoveHealthRecord(hr);
                             DeletedHealthRecords.Remove(vm);
                         }
                     };
-                    this.Send(Event.ShowUndoOverlay, new object[] { undoActions, typeof(HealthRecord) }.AsParams(MessageKeys.UndoOverlay, MessageKeys.Type));
+                    this.Send(Event.ShowUndoOverlay, new object[] { undoDoActions, typeof(HealthRecord) }.AsParams(MessageKeys.UndoDoActions, MessageKeys.Type));
                 }
                 else
                 {
@@ -103,7 +101,6 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         DeletedHealthRecords.Remove(vm);
                         HealthRecords.Add(vm);
-                        OnUndeleted(vm.healthRecord);
                     }
                 }
             }
@@ -115,15 +112,6 @@ namespace Diagnosis.ViewModels.Screens
         internal void MakeDeletions()
         {
             this.Send(Event.HideOverlay, typeof(HealthRecord).AsParams(MessageKeys.Type));
-        }
-
-        protected virtual void OnUndeleted(HealthRecord hr)
-        {
-            var h = Undeleted;
-            if (h != null)
-            {
-                h(this, new DomainEntityEventArgs(hr));
-            }
         }
 
         protected override void Dispose(bool disposing)

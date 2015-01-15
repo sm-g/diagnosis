@@ -32,7 +32,7 @@ namespace Diagnosis.Data
         /// Сохраняет пациента, его курсы, осмотры и все записи.
         /// <param name="deleteEmptyHrs">Удалить все пустые записи.</param>
         /// </summary>
-        public void SaveAll(Patient patient, bool deleteEmptyHrs = false)
+        public void SaveWithCleanup(Patient patient, bool deleteEmptyHrs = true)
         {
             if (savingPatient == patient) return;
 

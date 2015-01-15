@@ -23,7 +23,7 @@ namespace Diagnosis.ViewModels.Screens
         private bool editorWasOpened;
         private Saver saver;
         private EventMessageHandler handler;
-        Doctor doctor;
+        private Doctor doctor;
 
         public CardViewModel(bool resetHistory = false)
         {
@@ -70,6 +70,8 @@ namespace Diagnosis.ViewModels.Screens
 
                 if (holder is Patient)
                 {
+                    saver.SaveWithCleanup(viewer.OpenedPatient);
+
                     Navigator.Remove(holder as Patient);
                     saver.Delete(holder);
                     if (Navigator.TopCardItems.Count == 0)
@@ -80,13 +82,13 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     var course = holder as Course;
                     course.Patient.RemoveCourse(course);
-                    saver.SaveAll(viewer.OpenedPatient); // сохраняем на случай, если удаление при открытом пациенте
+                    saver.SaveWithCleanup(viewer.OpenedPatient); // сохраняем на случай, если удаление при открытом пациенте — список записей не меняется
                 }
                 else if (holder is Appointment)
                 {
                     var app = holder as Appointment;
                     app.Course.RemoveAppointment(app);
-                    saver.SaveAll(viewer.OpenedPatient);
+                    saver.SaveWithCleanup(viewer.OpenedPatient);
                 }
             });
         }
@@ -401,7 +403,6 @@ namespace Diagnosis.ViewModels.Screens
                 // сначала создаем HrList, чтобы hrManager подписался на добавление записей первым,
                 // иначе HrList.SelectHealthRecord нечего выделять при добавлении записи
                 holder.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
-
             }
         }
 
@@ -416,7 +417,7 @@ namespace Diagnosis.ViewModels.Screens
             holder.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
 
             // сохраняем пациента и чистим записи при закрытии чего-либо (ранее в viewer.OpenedCanged мог быть переход вверх без закрытия - не сохраняет)
-            saver.SaveAll(viewer.OpenedPatient, deleteEmptyHrs: true);
+            saver.SaveWithCleanup(viewer.OpenedPatient);
         }
 
         private void ShowHeader(IHrsHolder holder)

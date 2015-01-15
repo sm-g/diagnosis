@@ -97,9 +97,6 @@ namespace Diagnosis.ViewModels.Screens
                     OnPropertyChanged(() => CheckedHrCount);
                 }
             });
-            hrManager.Undeleted += (s, e) =>
-            {
-            };
             hrManager.DeletedHealthRecords.CollectionChanged += (s, e) =>
             {
                 if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
@@ -111,18 +108,18 @@ namespace Diagnosis.ViewModels.Screens
                     logger.DebugFormat("deleted {0}", del);
                     SelectedHealthRecord = HealthRecords.FirstAfterAndNotIn(del);
 
-                    foreach (ShortHealthRecordViewModel item in e.NewItems)
-                    {
-                        OnSaveNeeded(new List<HealthRecord>() { item.healthRecord as HealthRecord });
-                    }
+                    OnSaveNeeded(del.Select(x => x.healthRecord).ToList());
                 }
                 else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
                 {
-                    // восстановлены
-                    foreach (ShortHealthRecordViewModel item in e.OldItems)
-                    {
-                        OnSaveNeeded(new List<HealthRecord>() { item.healthRecord as HealthRecord });
-                    }
+                    // восстановлены или убраны из держателя
+
+                    // сохраняем восстановленные
+                    var restored = e.OldItems.Cast<ShortHealthRecordViewModel>()
+                        .Where(x => holder.HealthRecords.Contains(x.healthRecord))
+                        .Select(x => x.healthRecord)
+                        .ToList();
+                    OnSaveNeeded(restored);
                 }
             };
 
