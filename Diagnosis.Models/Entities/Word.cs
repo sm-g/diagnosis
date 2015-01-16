@@ -79,7 +79,8 @@ namespace Diagnosis.Models
 
         public virtual int CompareTo(Word other)
         {
-            return this.Title.CompareTo(other.Title); // несохраненные могут быть с одним заголовком
+            // несохраненные могут быть с одним заголовком, !equals, but 0 == CompareTo()
+            return this.Title.CompareTo(other.Title);
         }
 
         public override ValidationResult SelfValidate()
