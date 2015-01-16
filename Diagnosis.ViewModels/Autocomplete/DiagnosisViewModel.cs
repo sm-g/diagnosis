@@ -5,8 +5,18 @@ namespace Diagnosis.ViewModels.Autocomplete
 {
     public class DiagnosisViewModel : HierarchicalBase<DiagnosisViewModel>
     {
-        internal readonly Diagnosis.Models.Diagnosis diagnosis;
         private readonly IIcdEntity _icd;
+
+        public DiagnosisViewModel(IIcdEntity icd)
+        {
+            Contract.Requires(icd != null);
+            _icd = icd;
+
+            ChildrenChanged += (s, e) =>
+            {
+                IsNonCheckable = !IsTerminal;
+            };
+        }
 
         public IIcdEntity Icd
         {
@@ -20,15 +30,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             get
             {
-                return diagnosis.Title;
-            }
-            set
-            {
-                if (diagnosis.Title != value)
-                {
-                    diagnosis.Title = value;
-                    OnPropertyChanged("Name");
-                }
+                return _icd.Title;
             }
         }
 
@@ -36,39 +38,13 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             get
             {
-                return diagnosis.Code;
-            }
-            set
-            {
-                if (diagnosis.Code != value)
-                {
-                    diagnosis.Code = value;
-                    OnPropertyChanged("Code");
-                }
+                return _icd.Code;
             }
         }
-
-        public DiagnosisViewModel(Diagnosis.Models.Diagnosis d)
-        {
-            Contract.Requires(d != null);
-            this.diagnosis = d;
-
-            ChildrenChanged += (s, e) =>
-            {
-                IsNonCheckable = !IsTerminal;
-            };
-        }
-
-        public DiagnosisViewModel(IIcdEntity icd)
-        {
-            Contract.Requires(icd != null);
-            _icd = icd;
-
-            ChildrenChanged += (s, e) =>
-            {
-                IsNonCheckable = !IsTerminal;
-            };
-        }
+        /// <summary>
+        /// Выбранное пользоваетелем <see cref="IsExpanded"/>
+        /// </summary>
+        public bool? UserExpaneded { get; set; }
 
         public override string ToString()
         {

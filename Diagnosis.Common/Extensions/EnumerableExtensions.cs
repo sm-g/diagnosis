@@ -46,9 +46,6 @@ namespace Diagnosis.Common
         /// <summary>
         /// Добавляет в коллекцию отсутствующие и удаляет пропавшие элементы.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="current"></param>
-        /// <param name="toBe"></param>
         public static void SyncWith<T>(this ObservableCollection<T> current, IEnumerable<T> toBe)
         {
             foreach (var item in current.Except(toBe).ToList())
@@ -59,6 +56,22 @@ namespace Diagnosis.Common
             {
                 current.Add(item);
             }
+        }
+        /// <summary>
+        /// Добавляет в коллекцию отсутствующие и удаляет пропавшие элементы c сохранением порядка.
+        /// </summary>
+        public static void SyncWith<T, TKey>(this ObservableCollection<T> current, IEnumerable<T> toBe, Func<T, TKey> keyExtractor)
+            where TKey : IComparable<TKey>
+        {
+            foreach (var item in current.Except(toBe).ToList())
+            {
+                current.Remove(item);
+            }
+            foreach (var item in toBe.Except(current).ToList())
+            {
+                current.Add(item);
+            }
+            current.Sort(keyExtractor);
         }
         /// <summary>
         /// Возвращает элемент по индексу или первый/последний, если индекс за пределами.
@@ -160,6 +173,7 @@ namespace Diagnosis.Common
         /// from http://codereview.stackexchange.com/questions/37208/sort-observablecollection-after-added-new-item
         /// </summary>
         public static void AddSorted<T, TKey>(this IList<T> list, T item, Func<T, TKey> keyExtractor, bool reverse = false, IComparer<TKey> comparer = null)
+            where TKey : IComparable<TKey>
         {
             comparer = comparer ?? Comparer<TKey>.Default;
 
@@ -178,6 +192,7 @@ namespace Diagnosis.Common
         /// from http://stackoverflow.com/a/16344936/3009578
         /// </summary>
         public static void Sort<T, TKey>(this ObservableCollection<T> collection, Func<T, TKey> keyExtractor, IComparer<TKey> comparer = null)
+            where TKey : IComparable<TKey>
         {
             comparer = comparer ?? Comparer<TKey>.Default;
 

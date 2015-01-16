@@ -13,11 +13,13 @@ namespace Diagnosis.ViewModels.Autocomplete
     public class IcdSelectorViewModel : DialogViewModel
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(IcdSelectorViewModel));
+        private static int MinQueryToExpandBlock = 3;
 
         private ObservableCollection<DiagnosisViewModel> _chapters;
         private IcdDisease _selected;
         private PopupSearchViewModel<IcdDisease> _diagnosisSearch;
-        Doctor doctor;
+        private Doctor doctor;
+        private bool inFiltered;
 
         private IcdSelectorViewModel(IcdDisease initial = null, string query = null)
         {
@@ -34,8 +36,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
 
             Title = "Выбор диагноза МКБ";
-
-
+            DiagnosisSearch.Filter.IsFocused = true;
         }
 
         public IcdSelectorViewModel(IcdDisease initial = null)
@@ -56,8 +57,23 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
             set
             {
-                doctor.Settings.IcdTopLevelOnly = value;
-                OnPropertyChanged(() => IcdTopLevelOnly);
+                if (doctor.Settings.IcdTopLevelOnly != value)
+                {
+                    doctor.Settings.IcdTopLevelOnly = value;
+
+                    IcdDisease toSelect = SelectedIcd;
+
+                    MakeVms(DiagnosisSearch.Filter.Results);
+                    if (value && toSelect != null)
+                    {
+                        // выбираем рубрику, если была подрубрика
+                        if (SelectedIcd.IsSubdivision)
+                            toSelect = DiagnosisSearch.Filter.Results.FirstOrDefault(x => x.Code == SelectedIcd.DivisionCode);
+                    }
+                    SelectedIcd = toSelect;
+
+                    OnPropertyChanged(() => IcdTopLevelOnly);
+                }
             }
         }
 
@@ -67,11 +83,19 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 return _selected;
             }
-            set
+            private set
             {
                 if (_selected != value)
                 {
                     _selected = value;
+                    if (value != null)
+                    {
+                        // выбираем соответствующую VM
+                        var vm = Chapters.First(x => x.Code == value.IcdBlock.IcdChapter.Code)
+                            .Children.First(x => x.Code == value.IcdBlock.Code)
+                            .Children.First(x => x.Code == value.Code);
+                        vm.IsSelected = true;
+                    }
                     OnPropertyChanged(() => SelectedIcd);
                 }
             }
@@ -117,12 +141,11 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <param name="results"></param>
         private void MakeVms(ObservableCollection<IcdDisease> results)
         {
-
             Func<IcdDisease, bool> diseaseClause = d => true;
-            if (doctor.Settings.IcdTopLevelOnly)
+            if (IcdTopLevelOnly)
             {
                 // без уточненных болезней
-                diseaseClause = d => d.Code.IndexOf('.') == -1;
+                diseaseClause = d => !d.IsSubdivision;
             }
             Func<IcdBlock, bool> blockClause = b => true;
             if (doctor.Speciality != null)
@@ -152,16 +175,39 @@ namespace Diagnosis.ViewModels.Autocomplete
             // для каждого класса, блока и болезни ищем существующую VM или создаем
             // разворачиваем
             // синхронизируем с детьми уровня выше
+            Func<DiagnosisViewModel, IIcdEntity> compareKey = (vm) => vm.Icd;
+            var inMaking = true;
             var chVms = dict.Keys.Select(ch =>
             {
-                var chVm = Chapters.Where(i => i.Icd as IcdChapter == ch)
-                    .FirstOrDefault() ?? new DiagnosisViewModel(ch);
+                var chVm = Chapters.Where(i => i.Icd as IcdChapter == ch).FirstOrDefault();
+                if (chVm == null)
+                {
+                    chVm = new DiagnosisViewModel(ch);
+                    chVm.PropertyChanged += (s, e) =>
+                    {
+                        // сохраняем выбор пользователя
+                        if (e.PropertyName == "IsExpanded" && !inMaking)
+                        {
+                            chVm.UserExpaneded = chVm.IsExpanded;
+                        }
+                    };
+                }
 
                 var bVms = dict[ch].Keys.Select(b =>
                 {
-                    var bVm = chVm.Children.Where(i => i.Icd as IcdBlock == b)
-                        .FirstOrDefault() ?? new DiagnosisViewModel(b);
-
+                    var bVm = chVm.Children.Where(i => i.Icd as IcdBlock == b).FirstOrDefault();
+                    if (bVm == null)
+                    {
+                        bVm = new DiagnosisViewModel(b);
+                        bVm.PropertyChanged += (s, e) =>
+                        {
+                            // сохраняем выбор пользователя
+                            if (e.PropertyName == "IsExpanded" && !inMaking)
+                            {
+                                bVm.UserExpaneded = bVm.IsExpanded;
+                            }
+                        };
+                    }
                     var dVms = dict[ch][b].Select(d =>
                     {
                         var dVm = bVm.Children.Where(i => i.Icd as IcdDisease == d)
@@ -170,20 +216,33 @@ namespace Diagnosis.ViewModels.Autocomplete
                         return dVm;
                     }).ToList();
 
-                    bVm.IsExpanded = bVm.IsExpanded || DiagnosisSearch.Filter.Query.Length > 2; // expand block if enough info
+                    // блоки остаются в состоянии, выбранном пользователем
+                    bVm.IsExpanded = (bVm.UserExpaneded ?? false) ? true : // был раскрыт пользователем
+                        (TypedEnough() && (bVm.UserExpaneded ?? true)); // или запрос достаточно точный и блок не был свернут
 
-                    bVm.Children.SyncWith(dVms); // TODO сохранить порядок
-                    //bVm.Children.Clear();
-                    //bVm.Add(dVms);
+                    bVm.Children.SyncWith(dVms, compareKey);
                     return bVm;
                 }).ToList();
 
-                chVm.IsExpanded = true;
-                chVm.Children.SyncWith(bVms);
+                // глава раскрыта, если не была свернута пользователем
+                chVm.IsExpanded = chVm.UserExpaneded ?? true;
+
+                chVm.Children.SyncWith(bVms, compareKey);
                 return chVm;
             }).ToList();
+            inMaking = false;
 
-            Chapters.SyncWith(chVms);
+            // всегда раскрыта глава и блок с выбранной болезнью (hieratchicalbase)
+
+            // TODO длинный запрос — vm удаляются, сохранять UserExpaneded для каждой
+
+            Chapters.SyncWith(chVms, compareKey);
+        }
+
+        private bool TypedEnough()
+        {
+            // запрос не после выбора и длинный
+            return inFiltered && DiagnosisSearch.Filter.Query.Length >= MinQueryToExpandBlock;
         }
 
         private void CreateDiagnosisSearch()
@@ -207,7 +266,9 @@ namespace Diagnosis.ViewModels.Autocomplete
             };
             DiagnosisSearch.Filter.Filtered += (s, e) =>
             {
+                inFiltered = true;
                 MakeVms(DiagnosisSearch.Filter.Results);
+                inFiltered = false;
             };
             DiagnosisSearch.IsResultsVisible = true;
         }
@@ -221,7 +282,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (d != null)
                     DiagnosisSearch.Filter.Query = d.Code;
                 else
-                    DiagnosisSearch.Filter.Query = "";
+                    DiagnosisSearch.Filter.Clear();
 
                 DiagnosisSearch.Filter.UpdateResultsOnQueryChanges = true;
             }

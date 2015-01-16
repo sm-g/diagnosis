@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
              d:DesignHeight="100"
@@ -15,9 +16,11 @@
         </Grid.ColumnDefinitions>
 
         <TextBox x:Name="input"
+                 beh:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
                  Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}">
             <controls:WatermarkService.Watermark>
-                <TextBlock Style="{StaticResource watermark}">Фильтр</TextBlock>
+                <TextBlock Style="{StaticResource watermark}"
+                           Text="{Binding WatermarkText, RelativeSource={RelativeSource Self}}" />
             </controls:WatermarkService.Watermark>
         </TextBox>
         <Button Grid.Column="1"

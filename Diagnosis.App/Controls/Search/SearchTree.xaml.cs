@@ -23,6 +23,13 @@ namespace Diagnosis.App.Controls.Search
         public SearchTree()
         {
             InitializeComponent();
+            results1.SelectedItemChanged += (s, e) =>
+            {
+                if (e.NewValue != null)
+                {
+                    RaiseSearchSelected(e.NewValue);
+                }
+            };
         }
 
         #region Focus stuff
@@ -93,18 +100,18 @@ namespace Diagnosis.App.Controls.Search
             ContentPresenter content = e.Source as ContentPresenter;
 
             // click on border or on content itself
-            var bd = e.Source as Border;
-            if (bd != null)
-            {
-                content = bd.FindName("PART_Header") as ContentPresenter;
-            }
+            //var bd = e.Source as Border;
+            //if (bd != null)
+            //{
+            //    content = bd.FindName("PART_Header") as ContentPresenter;
+            //}
 
-            if (content != null)
-            {
-                dynamic item = content.Content;
-                RaiseSearchSelected(item);
-                e.Handled = true;
-            }
+            //if (content != null)
+            //{
+            //    dynamic item = content.Content;
+            //    RaiseSearchSelected(item);
+            //    e.Handled = true;
+            //}
         }
 
         private void MoveSelection(bool down)

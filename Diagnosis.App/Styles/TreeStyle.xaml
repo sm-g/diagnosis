@@ -18,7 +18,7 @@
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
                 Value="Disabled" />
         <Setter Property="VirtualizingStackPanel.IsVirtualizing"
-                Value="True" />
+                Value="False" />
         <Setter Property="VirtualizingStackPanel.VirtualizationMode"
                 Value="Recycling" />
     </Style>
