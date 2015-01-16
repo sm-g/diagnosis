@@ -182,7 +182,7 @@
                     <MenuItem Header="Удалить"
                               Command="{Binding DeleteCommand}" />
                     <MenuItem Header="Искать"
-                              InputGestureText="Ctrl + F"
+                              InputGestureText="Ctrl+F"
                               Command="{Binding SendToSearchCommand}" />
                     <Separator />
 

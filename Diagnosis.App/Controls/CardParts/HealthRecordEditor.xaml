@@ -54,12 +54,12 @@
                         FontSize="16"
                         CommandParameter="{StaticResource False}"
                         Width="20"
-                        ToolTip="Открыть следующую запись (Ctrl + J)">↓</Button>
+                        ToolTip="Открыть следующую запись (Ctrl+J)">↓</Button>
                 <Button Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}"
                         FontSize="16"
                         Width="20"
                         CommandParameter="{StaticResource True}"
-                        ToolTip="Открыть предыдущую запись (Ctrl + K)">↑</Button>
+                        ToolTip="Открыть предыдущую запись (Ctrl+K)">↑</Button>
                 <Separator />
                 <!--<Button Command="{Binding DataContext.HrList.AddHealthRecordCommand,  RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}"
                     ToolTip="Добавить запись">
@@ -84,6 +84,8 @@
                         <!--<TextBlock Text="Удалить" />-->
                     </DockPanel>
                 </Button>
+                <Separator />
+
                 <Button Command="{Binding AddIcdCommand}"
                         ToolTip="Добавить МКБ">
                     <DockPanel>
@@ -104,7 +106,7 @@
                     Height="16"
                     HorizontalAlignment="Right"
                     Width="16"
-                    ToolTip="Закрыть редактор, сохранив все изменения (Ctrl + S)"
+                    ToolTip="Закрыть редактор, сохранив все изменения (Ctrl+S)"
                     Grid.Column="2">
                 <Path Data="{StaticResource CloseX}"
                       Stretch="Uniform"

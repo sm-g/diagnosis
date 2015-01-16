@@ -85,12 +85,12 @@
 
                 <!--WordsListViewModel-->
                 <!--<Button Command="{Binding DataContext.AddCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=3}}"
-                        CommandParameter="{Binding}" Margin="10,0,0,0" ToolTip="Добавить подчинённое слово (Ctrl + N)">
+                        CommandParameter="{Binding}" Margin="10,0,0,0" ToolTip="Добавить подчинённое слово (Ctrl+N)">
                     <Image Source="{StaticResource addImage}" />
                 </Button>-->
                 <Button Command="{Binding SendToSearchCommand}"
                         Margin="10,0,0,0"
-                        ToolTip="Искать (Ctrl + F)">
+                        ToolTip="Искать (Ctrl+F)">
                     <Image Source="{StaticResource findImage}" />
                 </Button>
             </StackPanel>

@@ -59,7 +59,7 @@
                           Visibility="{Binding ShowOpen, Converter={StaticResource BooleanToVisibilityConverter}}"
                           Command="{Binding OpenCommand}" />
                 <MenuItem Header="Удалить"
-                          InputGestureText="Del"
+                          InputGestureText="Delete"
                           Command="{Binding DeleteCommand}" />
             </ContextMenu>
         </ResourceDictionary>

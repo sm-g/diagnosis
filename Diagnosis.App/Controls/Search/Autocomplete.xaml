@@ -106,10 +106,10 @@
                                           InputGestureText="F2"
                                           Command="{Binding PlacementTarget.Tag.EditCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <MenuItem Header="Удалить"
-                                          InputGestureText="Del"
+                                          InputGestureText="Delete"
                                           Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <MenuItem Header="Искать"
-                                          InputGestureText="Ctrl + F"
+                                          InputGestureText="Ctrl+F"
                                           Command="{Binding PlacementTarget.Tag.SendToSearchCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <!--<MenuItem Command="{Binding ConvertCommand}">
                                     <MenuItem.Header>

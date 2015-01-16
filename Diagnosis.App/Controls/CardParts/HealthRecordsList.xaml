@@ -42,7 +42,7 @@
 
         <ToolBar>
             <Button Command="{Binding AddHealthRecordCommand}"
-                    ToolTip="Добавить запись (Ctrl + Enter)">
+                    ToolTip="Добавить запись (Ctrl+Enter)">
                 <DockPanel>
                     <Image Source="{StaticResource addImage}" />
                     <TextBlock Text="Добавить" />
@@ -50,7 +50,7 @@
             </Button>
             <Separator />
             <Button Command="{Binding DeleteCommand}"
-                    ToolTip="Удалить выбранные записи (Del)">
+                    ToolTip="Удалить выбранные записи (Delete)">
                 <DockPanel>
                     <Image Source="{StaticResource deleteImage}"
                            Style="{StaticResource buttonIcon}" />
@@ -62,7 +62,7 @@
                 </DockPanel>
             </Button>
             <Button Command="{Binding SendToSearchCommand}"
-                    ToolTip="Искать выбранные записи (Ctrl + F)">
+                    ToolTip="Искать выбранные записи (Ctrl+F)">
                 <DockPanel>
                     <Image Source="{StaticResource findImage}" />
                     <!--<TextBlock>
@@ -72,15 +72,8 @@
                     </TextBlock>-->
                 </DockPanel>
             </Button>
-            <Separator />
-
-            <DockPanel x:Name="debug">
-                <!--<CheckBox IsChecked="{Binding RectSelect}">select</CheckBox>-->
-                <TextBlock Text="{Binding SelectedItems.Count, ElementName=records}"
-                           Width="20" />
-                <Separator />
-            </DockPanel>
-            <DockPanel ToolTip="Сортировать">
+            <Separator />            
+            <DockPanel ToolTip="Сортировка">
                 <!--<TextBlock>Сортировать</TextBlock>-->
                 <Image Source="{StaticResource sortAscImage}"
                        Style="{StaticResource buttonIcon}" />
@@ -90,7 +83,7 @@
                           ItemTemplate="{StaticResource EnumComboTemplate}">
                 </ComboBox>
             </DockPanel>
-            <DockPanel ToolTip="Группировать" Margin="5,0,0,0">
+            <DockPanel ToolTip="Группировка" Margin="5,0,0,0">
 
                 <!--<TextBlock>Группировать</TextBlock>-->
                 <Image Source="{StaticResource groupByImage}"
@@ -99,6 +92,13 @@
                 <ComboBox ItemsSource="{Binding Source={beh:EnumListExtension {x:Type diag:HrViewGroupingColumn}}}"
                           SelectedItem="{Binding Grouping, Mode=TwoWay}"
                           ItemTemplate="{StaticResource EnumComboTemplate}" />
+            </DockPanel>
+
+            <DockPanel x:Name="debug" Margin="20,0,0,0">
+                <CheckBox IsChecked="{Binding IsRectSelectEnabled}">IsRectSelectEnabled</CheckBox>
+                <TextBlock Margin="15,0,0,0">Selected:</TextBlock>
+                <TextBlock Text="{Binding SelectedItems.Count, ElementName=records}"
+                           Width="20" />
             </DockPanel>
         </ToolBar>
 
@@ -291,14 +291,14 @@
                                           Command="{Binding OpenCommand}" />
                                 <!-- HrList -->
                                 <MenuItem Header="Искать"
-                                          InputGestureText="Ctrl + F"
+                                          InputGestureText="Ctrl+F"
                                           Command="{Binding PlacementTarget.Tag.SendToSearchCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <MenuItem Header="Удалить"
-                                          InputGestureText="Del"
+                                          InputGestureText="Delete"
                                           Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <Separator />
                                 <MenuItem Header="Добавить запись"
-                                          InputGestureText="Ctrl + Enter"
+                                          InputGestureText="Ctrl+Enter"
                                           Command="{Binding PlacementTarget.Tag.AddHealthRecordCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                             </ContextMenu>
                         </Setter.Value>
@@ -309,7 +309,7 @@
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Добавить запись"
-                              InputGestureText="Ctrl + Enter"
+                              InputGestureText="Ctrl+Enter"
                               Command="{Binding AddHealthRecordCommand}" />
                 </ContextMenu>
             </ListBox.ContextMenu>

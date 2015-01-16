@@ -32,7 +32,7 @@
 
         <ToolBar>
             <Button Command="{Binding AddCommand}"
-                    ToolTip="Редактировать новое слово (Ctrl + Enter)">
+                    ToolTip="Редактировать новое слово (Ctrl+Enter)">
                 <DockPanel>
                     <Image Source="{StaticResource addImage}" />
                     <TextBlock Text="Добавить слово" />
@@ -43,7 +43,7 @@
                     <Image Source="{StaticResource findImage}" />
                     <TextBlock>
                         <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}"
-                             ToolTip="Искать выбранные слова (Ctrl + F)">Искать</Run>
+                             ToolTip="Искать выбранные слова (Ctrl+F)">Искать</Run>
                     </TextBlock>
                 </DockPanel>
             </Button>
@@ -125,10 +125,10 @@
                                           Command="{Binding EditCommand}" />
                                 <!--WordsListViewModel-->
                                 <MenuItem Header="Искать"
-                                          InputGestureText="Ctrl + F"
+                                          InputGestureText="Ctrl+F"
                                           Command="{Binding PlacementTarget.Tag.SendToSearchCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <MenuItem Header="Удалить"
-                                          InputGestureText="Del"
+                                          InputGestureText="Delete"
                                           Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                             </ContextMenu>
                         </Setter.Value>
