@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using Iesi.Collections.Generic;
-using System;
+﻿using System;
 
 namespace Diagnosis.Models
 {
@@ -9,15 +6,35 @@ namespace Diagnosis.Models
     public class IcdDisease : EntityBase<int>, IDomainObject, IHrItemObject, IComparable<IcdDisease>, IIcdEntity
     {
         [NonSerialized]
-        IcdBlock _icdBlock;
+        private IcdBlock _icdBlock;
+
         [NonSerialized]
         private string _title;
 
+        protected IcdDisease()
+        {
+        }
+
         public virtual IcdBlock IcdBlock { get { return _icdBlock; } protected set { _icdBlock = value; } }
+
         public virtual string Title { get { return _title; } protected set { _title = value; } }
+
         public virtual string Code { get; protected set; }
 
-        protected IcdDisease() { }
+        /// <summary>
+        /// Болезнь из подрубрики, например A01.2
+        /// </summary>
+        public virtual bool IsSubdivision { get { return Code.IndexOf('.') > 0; } }
+
+        /// <summary>
+        /// Трехзначный код рубрики, А01
+        /// </summary>
+        public virtual string DivisionCode { get { return Code.Substring(0, 3); } }
+
+        IIcdEntity IIcdEntity.Parent
+        {
+            get { return IcdBlock; }
+        }
 
         public virtual int CompareTo(IHrItemObject hio)
         {
@@ -27,19 +44,26 @@ namespace Diagnosis.Models
 
             return -1; // 'smallest'
         }
+
         public virtual int CompareTo(IcdDisease other)
         {
+            if (other == null)
+                return -1;
             return this.Code.CompareTo(other.Code);
         }
 
-        IIcdEntity IIcdEntity.Parent
+        public virtual int CompareTo(IIcdEntity other)
         {
-            get { return IcdBlock; }
+            if (other == null)
+                return -1;
+            return this.Code.CompareTo(other.Code);
         }
 
         public override string ToString()
         {
             return Code;
         }
+
+
     }
 }

@@ -1,18 +1,20 @@
-﻿using System;
+﻿using Iesi.Collections.Generic;
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
-using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
     public class IcdChapter : EntityBase<int>, IDomainObject, IIcdEntity
     {
-        Iesi.Collections.Generic.ISet<IcdBlock> iclBlocks = new HashedSet<IcdBlock>();
+        private Iesi.Collections.Generic.ISet<IcdBlock> iclBlocks = new HashedSet<IcdBlock>();
+
+        protected IcdChapter()
+        {
+        }
 
         public virtual string Title { get; protected set; }
+
         public virtual string Code { get; protected set; }
 
         public virtual IEnumerable<IcdBlock> IclBlocks
@@ -22,10 +24,17 @@ namespace Diagnosis.Models
                 return iclBlocks;
             }
         }
+
         IIcdEntity IIcdEntity.Parent
         {
             get { return null; }
         }
-        protected IcdChapter() { }
+
+        public virtual int CompareTo(IIcdEntity other)
+        {
+            if (other == null)
+                return -1;
+            return this.Code.CompareTo(other.Code);
+        }
     }
 }

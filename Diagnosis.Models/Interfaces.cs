@@ -35,7 +35,8 @@ namespace Diagnosis.Models
     /// <summary>
     /// Сущность МКБ
     /// </summary>
-    public interface IIcdEntity
+    [ContractClass(typeof(ContractForIIcdEntity))]
+    public interface IIcdEntity : IComparable<IIcdEntity>
     {
         string Code { get; }
         string Title { get; }
@@ -133,5 +134,45 @@ namespace Diagnosis.Models
             Contract.Ensures(test.HealthRecords.Count() <= Contract.OldValue(test.HealthRecords.Count()));
         }
         int IComparable<IHrsHolder>.CompareTo(IHrsHolder other) { throw new NotImplementedException(); }
+    }
+
+    [ContractClassFor(typeof(IIcdEntity))]
+    abstract class ContractForIIcdEntity : IIcdEntity
+    {
+        string IIcdEntity.Code
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<string>() != null);
+                Contract.Ensures(Contract.Result<string>().Length > 0);
+                Contract.Ensures(Contract.Result<string>().Length <= 9); // block (A00-A05)
+                return "A00.1";
+            }
+        }
+
+        string IIcdEntity.Title
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<string>() != null);
+                Contract.Ensures(Contract.Result<string>().Length > 0);
+                return "0";
+            }
+        }
+
+        IIcdEntity IIcdEntity.Parent
+        {
+            get
+            {
+                IIcdEntity test = this;
+                Contract.Ensures(Contract.Result<IIcdEntity>() != null || (test as IcdChapter) != null);
+                return null;
+            }
+        }
+
+        int IComparable<IIcdEntity>.CompareTo(IIcdEntity other)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
