@@ -83,7 +83,7 @@ namespace Diagnosis.App
             var main = new MainWindow();
 
 #if !DEBUG
-            main.Initialized += (s, e1) =>
+            main.Loaded += (s, e1) =>
             {
                 splash.Close(TimeSpan.FromMilliseconds(100));
                 main.Focus();
