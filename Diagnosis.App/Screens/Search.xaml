@@ -36,13 +36,6 @@
                 <Setter Property="Margin"
                         Value="0,0,0,2" />
             </Style>
-
-            <!--<CollectionViewSource x:Key="resultsView"
-                                  Source="{Binding Results}">
-                <CollectionViewSource.GroupDescriptions>
-                    <PropertyGroupDescription PropertyName="Patient" />
-                </CollectionViewSource.GroupDescriptions>
-            </CollectionViewSource>-->
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">

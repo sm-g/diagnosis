@@ -1,5 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Diagnosis.App.Windows
 {
@@ -22,7 +24,12 @@ namespace Diagnosis.App.Windows
 
         private void Log_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            Log.ScrollToEnd();
+            Action action = () =>
+            {
+                Log.ScrollToEnd();
+
+            };
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, action);
         }
     }
 }
