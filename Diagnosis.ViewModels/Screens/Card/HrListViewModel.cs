@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows;
@@ -67,6 +68,7 @@ namespace Diagnosis.ViewModels.Screens
         private HrViewGroupingColumn _group;
         private bool _dragSource;
         private bool _focused;
+        ListActionWrapper<ShortHealthRecordViewModel> preserveSelected = new ListActionWrapper<ShortHealthRecordViewModel>(vm => vm.IsSelected = true);
 
         public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;
 
@@ -88,9 +90,16 @@ namespace Diagnosis.ViewModels.Screens
                    Enum.GetNames(typeof(HrViewSortingColumn)).Contains(e.PropertyName))
                 {
                     // simulate liveshaping
-                    var sel = SelectedHealthRecords;
-                    view.Refresh();
-                    sel.ForAll(vm => vm.IsSelected = true); // fix only one selected after Refresh
+                    using (preserveSelected.Enter(SelectedHealthRecords)) // fix only one selected after Refresh
+                    {
+                        var hrvm = s as ShortHealthRecordViewModel;
+                        if (hrvm != null)
+                        {
+                            SetHrExtra(hrvm.ToEnumerable().ToList());
+                            view.EditItem(hrvm);
+                            view.CommitEdit();
+                        }
+                    }
                 }
                 else if (e.PropertyName == "IsChecked")
                 {
@@ -558,9 +567,14 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     if (hr2 == null) continue;
 
-                    var newHR = AddHr();
-                    fillHr(newHR, hr2);
-                    pasted.Add(newHR);
+                    var newHr = AddHr();
+                    // vm уже добавлена
+                    var newVm = HealthRecords.FirstOrDefault(vm => vm.healthRecord == newHr);
+                    Debug.Assert(newVm != null);
+                    fillHr(newHr, hr2);
+                    // теперь запись заполнена
+
+                    pasted.Add(newHr);
                 }
                 OnSaveNeeded(); // save all
 

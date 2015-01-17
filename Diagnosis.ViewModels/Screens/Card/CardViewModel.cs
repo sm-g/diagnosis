@@ -340,19 +340,19 @@ namespace Diagnosis.ViewModels.Screens
 
             if (holder != null)
             {
-                HrList = new HrListViewModel(holder, (hr, hr2) =>
+                HrList = new HrListViewModel(holder, (hr, hrInfo) =>
                 {
-                    hr2.Hios.Sync(Session, (w) => HrEditor.SyncTransientWord(w));
+                    hrInfo.Hios.Sync(Session, (w) => HrEditor.SyncTransientWord(w));
 
-                    if (hr2.CategoryId != null)
+                    if (hrInfo.CategoryId != null)
                     {
-                        hr.Category = Session.Get<HrCategory>(hr2.CategoryId.Value);
+                        hr.Category = Session.Get<HrCategory>(hrInfo.CategoryId.Value);
                     }
-                    hr.FromYear = hr2.FromYear;
-                    hr.FromMonth = hr2.FromMonth;
-                    hr.FromDay = hr2.FromDay;
-                    hr.Unit = hr2.Unit;
-                    hr.SetItems(hr2.Hios);
+                    hr.FromYear = hrInfo.FromYear;
+                    hr.FromMonth = hrInfo.FromMonth;
+                    hr.FromDay = hrInfo.FromDay;
+                    hr.Unit = hrInfo.Unit;
+                    hr.SetItems(hrInfo.Hios);
                 }, (hios) =>
                 {
                     hios.Sync(Session, (w) => HrEditor.SyncTransientWord(w));
