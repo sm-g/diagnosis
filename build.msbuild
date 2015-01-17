@@ -1,0 +1,139 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Start">
+	<PropertyGroup>
+		<MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\.build</MSBuildCommunityTasksPath>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
+
+	<PropertyGroup>
+		<Major>1</Major>
+		<Minor>4</Minor>
+		<Patch>0</Patch>
+		<PreReleaseString/>
+
+		<VersionInfoString Condition="$(PreReleaseString) != ''">$(Major).$(Minor).$(Patch)-$(PreReleaseString)</VersionInfoString>
+		<VersionInfoString Condition="$(PreReleaseString) == ''">$(Major).$(Minor).$(Patch)</VersionInfoString>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Configuration>Release</Configuration>
+		<SourceDir>.\</SourceDir>
+		<SolutionFilePath>$(SourceDir)Diagnosis.sln</SolutionFilePath>
+
+		<OutDir>Diagnosis.App\bin\$(Configuration)</OutDir>
+		<ReleaseDir>$(SourceDir)$(Configuration)</ReleaseDir>
+
+		<VersionInfoPath>$(SourceDir)VersionInfo.cs</VersionInfoPath>
+
+		<DirWithVersion>diagnosis.$(VersionInfoString)</DirWithVersion>
+		<DirLast>$(ReleaseDir)\$(DirWithVersion)</DirLast>
+		<DirWorking>$(ReleaseDir)\diagnosis-working</DirWorking>
+		<ZipLastFilePath>$(ReleaseDir)\$(DirWithVersion).zip</ZipLastFilePath>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<BuildSolutionDependsOn>
+			<!-- UpdateVersion -->
+		</BuildSolutionDependsOn>
+
+		<UpdateVersionDependsOn>
+
+		</UpdateVersionDependsOn>
+
+		<CleanupAfterBuildDependsOn>
+			BuildSolution
+		</CleanupAfterBuildDependsOn>
+
+		<UnitTestDependsOn>
+			BuildSolution
+		</UnitTestDependsOn>
+
+		<ZipReleaseDependsOn>
+			BuildSolution
+		</ZipReleaseDependsOn>
+	</PropertyGroup>
+
+	<Target Name="BuildFull" DependsOnTargets="$(BuildFullDependsOn)">
+	</Target>
+
+	<!-- "Autostart" -->
+	<Target Name="Start">
+		<CallTarget Condition="$(BuildRelease) == '1'" Targets="Clean"/>
+		<CallTarget Condition="$(BuildRelease) == '1'" Targets="BuildSolution"/>
+		<CallTarget Condition="$(BuildRelease) == '1'" Targets="CleanupAfterBuild"/>
+		<CallTarget Condition="$(BuildRelease) == '1'" Targets="CopyRelease"/>
+		<!-- <CallTarget Condition="$(RunTests) == '1'" Targets="Test"/> -->
+		<CallTarget Condition="$(CopyWorking) == '1'" Targets="CopyWorking"/>
+		<CallTarget Condition="$(ZipRelease) == '1'" Targets="ZipRelease"/>
+	</Target>
+
+	<!-- clean output -->
+	<Target Name="Clean">
+		<MSBuild Projects="$(SolutionFilePath)" ContinueOnError="false" Properties="Configuration=$(Configuration)" Targets="Clean" />
+
+		<RemoveDir Directories="$(OutDir)" ContinueOnError="true"/>
+		<MakeDir Directories="$(OutDir)" ContinueOnError="true"/>
+	</Target>
+
+	<Target Name="BuildSolution" DependsOnTargets="$(BuildSolutionDependsOn)">
+		<MSBuild Projects="$(SolutionFilePath)" ContinueOnError="false"  Properties="Configuration=$(Configuration);BuildInParallel=True">
+			<Output ItemName="BuildOutput" TaskParameter="TargetOutputs"/>
+		</MSBuild>
+	</Target>
+
+	<Target Name="CleanupAfterBuild" DependsOnTargets="$(CleanupAfterBuildDependsOn)">
+		<!-- Delete code analysis files -->
+		<CreateItem Include="$(OutDir)\**\*CodeAnalysisLog.xml">
+			<Output TaskParameter="Include" ItemName="CodeAnalysisFiles" />
+		</CreateItem>
+		<CreateItem Include="$(OutDir)\**\*.lastcodeanalysissucceeded">
+			<Output TaskParameter="Include" ItemName="CodeAnalysisFiles" />
+		</CreateItem>
+
+		<Delete Files="%(CodeAnalysisFiles.FullPath)" ContinueOnError="false" />
+	</Target>
+
+	<!-- copy files to last-release folder -->
+	<Target Name="CopyRelease">
+		<ItemGroup>
+			<ReleaseFiles
+					Include="$(OutDir)\**\*.*"
+					Exclude="$(OutDir)\*.pdb">
+			</ReleaseFiles>
+		</ItemGroup>
+		<Copy SourceFiles="@(ReleaseFiles)" DestinationFiles="@(ReleaseFiles->'$(DirLast)\%(RecursiveDir)%(Filename)%(Extension)')"  SkipUnchangedFiles="true"/>
+	</Target>
+
+	<!-- copy files to working folder -->
+	<Target Name="CopyWorking">
+		<ItemGroup>
+			<ReleaseFiles
+					Include="$(OutDir)\**\*.*"
+					Exclude="$(OutDir)\*.pdb">
+			</ReleaseFiles>
+		</ItemGroup>
+		<Copy SourceFiles="@(ReleaseFiles)" DestinationFiles="@(ReleaseFiles->'$(DirWorking)\%(RecursiveDir)%(Filename)%(Extension)')"  SkipUnchangedFiles="true"/>
+	</Target>
+
+	<Target Name="UpdateVersion"
+			DependsOnTargets="$(UpdateVersionDependsOn)">
+
+		<Message Text="Version: $(VersionInfoString)"/>
+
+		<AssemblyInfo CodeLanguage="CS"
+				OutputFile="$(VersionInfoPath)"
+				AssemblyVersion="$(Major).$(Minor).$(Patch)"
+				AssemblyFileVersion="$(Major).$(Minor).$(Patch)"
+				AssemblyInformationalVersion="$(VersionInfoString)"/>
+	</Target>
+
+	<Target Name="ZipRelease"
+			DependsOnTargets="$(ZipReleaseDependsOn)">
+		<ItemGroup>
+			<ZipReleaseFiles Include="$(DirLast)\**\*.*" />
+		</ItemGroup>
+		
+		<MSBuild.Community.Tasks.Zip Files="@(ZipReleaseFiles)" ZipFileName="$(ZipLastFilePath)" WorkingDirectory="$(ReleaseDir)" />
+	</Target>
+
+</Project>

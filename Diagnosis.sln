@@ -30,6 +30,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.Models", "Diagnos
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.ViewModels", "Diagnosis.ViewModels\Diagnosis.ViewModels.csproj", "{2206A771-0A27-41F2-81E2-D131D95C6862}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{7C3E4F58-5233-4371-8E4E-72C27B598E2D}"
+	ProjectSection(SolutionItems) = preProject
+		Build.proj = Build.proj
+		.build\MSBuild.Community.Tasks.dll = .build\MSBuild.Community.Tasks.dll
+		.build\MSBuild.Community.Tasks.targets = .build\MSBuild.Community.Tasks.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
