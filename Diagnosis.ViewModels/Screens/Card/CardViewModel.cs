@@ -213,7 +213,7 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Requires(hr != null);
             //logger.DebugFormat("FocusHrEditor to {0}", hr);
 
-            HrList.SelectHealthRecord(hr);
+            HrList.SelectHealthRecord(hr, addToSelected: false); //  addToSelected: true - выделяется одна, после выхода из редактора снова можо вернуть веделение с шифтом
             HrEditor.Load(hr);
             HrEditor.IsFocused = true;
         }

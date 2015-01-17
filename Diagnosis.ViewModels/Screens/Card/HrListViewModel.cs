@@ -62,7 +62,7 @@ namespace Diagnosis.ViewModels.Screens
         private ShortHealthRecordViewModel _selectedHealthRecord;
         private Action<HealthRecord, HrData.HrInfo> fillHr;
         private Action<List<IHrItemObject>> syncHios;
-        private ReentrantFlag inSelectMany = new ReentrantFlag();
+        private ReentrantFlag noUnselectPrev = new ReentrantFlag();
         private bool _rectSelect;
         private HrViewSortingColumn _sort;
         private HrViewGroupingColumn _group;
@@ -85,19 +85,34 @@ namespace Diagnosis.ViewModels.Screens
 
             hrManager = new HealthRecordManager(holder, onHrVmPropChanged: (s, e) =>
             {
+                var hrvm = s as ShortHealthRecordViewModel;
+                if (e.PropertyName == "IsSelected")
+                {
+                    logger.DebugFormat("{0} {1}", hrvm.IsSelected, hrvm);
 
+                    // simulate IsSynchronizedWithCurrentItem
+                    //if (hrvm != null || hrvm.IsSelected)
+                    //{
+                    //    using (noUnselectPrev.Join())
+                    //    {
+                    //        SelectedHealthRecord = hrvm;
+                    //    }
+                    //}
+                }
                 if (Enum.GetNames(typeof(HrViewGroupingColumn)).Contains(e.PropertyName) ||
                    Enum.GetNames(typeof(HrViewSortingColumn)).Contains(e.PropertyName))
                 {
                     // simulate liveshaping
                     using (preserveSelected.Enter(SelectedHealthRecords)) // fix only one selected after Refresh
                     {
-                        var hrvm = s as ShortHealthRecordViewModel;
                         if (hrvm != null)
                         {
+                            logger.DebugFormat("edit {0}", hrvm);
                             SetHrExtra(hrvm.ToEnumerable().ToList());
                             view.EditItem(hrvm);
                             view.CommitEdit();
+                            logger.DebugFormat("commit {0}", hrvm);
+
                         }
                     }
                 }
@@ -169,7 +184,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (_selectedHealthRecord == value)
                     return;
 
-                if (_selectedHealthRecord != null && inSelectMany.CanEnter) // снимаем выделение с прошлой выделенной
+                if (_selectedHealthRecord != null && noUnselectPrev.CanEnter) // снимаем выделение с прошлой выделенной
                 {
                     _selectedHealthRecord.IsSelected = false;
                 }
@@ -243,19 +258,25 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand<bool>((up) =>
                         {
+                            Contract.Ensures(SelectedHealthRecords.Count() <= 1);
+                            Contract.Ensures(SelectedHealthRecord != Contract.OldValue(SelectedHealthRecord) || HealthRecords.Count <= 1);
+
+                            HealthRecords.Except(SelectedHealthRecord.ToEnumerable()).ToList().ForEach(vm => vm.IsSelected = false);
+                            var current = HealthRecords.IndexOf(SelectedHealthRecord);
                             if (up)
                             {
-                                if (view.CurrentPosition != 0)
-                                    view.MoveCurrentToPrevious();
+                                if (current > 0)
+                                    SelectedHealthRecord = HealthRecords[current - 1];
                                 else
-                                    view.MoveCurrentToLast();
+                                    SelectedHealthRecord = HealthRecords.Last(); // select last when Selected == null
                             }
                             else
                             {
-                                if (view.CurrentPosition != HealthRecords.Count - 1)
-                                    view.MoveCurrentToNext();
+                                if (current != HealthRecords.Count - 1)
+                                    SelectedHealthRecord = HealthRecords[current + 1]; // select fisrt when Selected == null
                                 else
-                                    view.MoveCurrentToFirst();
+                                    SelectedHealthRecord = HealthRecords.First();
+
                             }
                         });
             }
@@ -559,9 +580,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 // paste hrs TODO before first Selected
                 var index = HealthRecords.IndexOf(SelectedHealthRecord);
-
-                HealthRecords.ForAll(vm => vm.IsSelected = false);
-
                 var pasted = new List<HealthRecord>();
                 foreach (var hr2 in hrDat.Hrs)
                 {
@@ -587,21 +605,37 @@ namespace Diagnosis.ViewModels.Screens
         {
             return "HrList for " + holder.ToString();
         }
-
-        internal void SelectHealthRecord(HealthRecord healthRecord)
+        /// <summary>
+        /// Делает запись текущей выделенной.
+        /// </summary>
+        /// <param name="healthRecord"></param>
+        /// <param name="addToSelected">Не снимать выделение с других выделенных.</param>
+        internal void SelectHealthRecord(HealthRecord healthRecord, bool addToSelected = false)
         {
-            SelectedHealthRecord = HealthRecords.FirstOrDefault(x => x.healthRecord == healthRecord);
-        }
+            var toSelect = HealthRecords.FirstOrDefault(vm => vm.healthRecord == healthRecord);
+            if (!addToSelected)
+            {
+                HealthRecords.Except(toSelect.ToEnumerable()).ForAll(vm => vm.IsSelected = false);
+                SelectedHealthRecord = toSelect;
+            }
+            else
+                using (noUnselectPrev.Enter())
+                {
+                    SelectedHealthRecord = toSelect;
+                }
 
+        }
+        /// <summary>
+        /// Устанавливает выделение на записях, последняя — текущая выделенная.
+        /// </summary>
+        /// <param name="hrs"></param>
         internal void SelectHealthRecords(IEnumerable<HealthRecord> hrs)
         {
-            HealthRecords.Where(vm => hrs.Contains(vm.healthRecord))
-                .ForAll(vm => vm.IsSelected = true);
+            var toSelect = HealthRecords.Where(vm => hrs.Contains(vm.healthRecord)).ToList();
+            HealthRecords.Except(toSelect).ForAll(vm => vm.IsSelected = false);
+            toSelect.ForAll(vm => vm.IsSelected = true);
 
-            using (inSelectMany.Enter())
-            {
-                SelectHealthRecord(hrs.LastOrDefault());
-            }
+            SelectHealthRecord(hrs.LastOrDefault(), true);
         }
 
         private HealthRecord AddHr(bool fromCommand = false)

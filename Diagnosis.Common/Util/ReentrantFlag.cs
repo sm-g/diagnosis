@@ -6,34 +6,58 @@ namespace Diagnosis.Common.Util
 {
     public class ReentrantFlag
     {
-        public class _ReentrantFlagHandler : IDisposable
+        public class ReentrantFlagHandler : IDisposable
         {
-            private ReentrantFlag _owner;
+            private ReentrantFlag owner;
 
-            public _ReentrantFlagHandler(ReentrantFlag owner)
+            public ReentrantFlagHandler(ReentrantFlag owner)
             {
-                _owner = owner;
-                _owner._flag = true;
+                this.owner = owner;
+                owner.flag = true;
             }
 
             public void Dispose()
             {
-                _owner._flag = false;
+                owner.flag = false;
+                owner.handler = null;
             }
         }
 
-        private bool _flag = false;
+        private bool flag = false;
+        private ReentrantFlagHandler handler;
 
-        public _ReentrantFlagHandler Enter()
+        /// <summary>
+        /// Set flag, disallow reenter before dispose.
+        /// </summary>
+        /// <returns></returns>
+        public ReentrantFlagHandler Enter()
         {
-            if (_flag)
+            if (flag)
                 throw new InvalidOperationException();
-            return new _ReentrantFlagHandler(this);
+            handler = new ReentrantFlagHandler(this);
+            return handler;
+        }
+
+        /// <summary>
+        /// Same as Enter, but if called after Enter (or self), return fake handler.
+        /// This allows to check one flag many times, with only one reset at last dispose.
+        /// </summary>
+        /// <returns></returns>
+        public ReentrantFlagHandler Join()
+        {
+            ReentrantFlag f;
+
+            if (flag)
+                f = new ReentrantFlag();
+            else
+                f = this;
+
+            return new ReentrantFlagHandler(f);
         }
 
         public bool CanEnter
         {
-            get { return !_flag; }
+            get { return !flag; }
         }
     }
 }

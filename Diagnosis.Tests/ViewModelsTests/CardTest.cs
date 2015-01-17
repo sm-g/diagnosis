@@ -139,7 +139,6 @@ namespace Tests
             // открывается последний курс
             Assert.AreEqual(0, c[3].Appointments.Count());
             Assert.AreEqual(c[3], card.Navigator.Current.Holder);
-
         }
 
         [TestMethod]
@@ -170,6 +169,28 @@ namespace Tests
 
             card.HrList.AddHealthRecordCommand.Execute(null);
             Assert.AreEqual(p[1].HealthRecords.Last(), card.HrList.SelectedHealthRecord.healthRecord);
+        }
+
+        [TestMethod]
+        public void SelectManyShowEditor()
+        {
+            var card = new CardViewModel(a[2], true);
+            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
+            card.ToogleHrEditor();
+
+            Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(2, card.HrList.SelectedHealthRecords.Count());
+        }
+
+        [TestMethod]
+        public void SelectManyOpenEditor()
+        {
+            var card = new CardViewModel(a[2], true);
+            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
+            card.FocusHrEditor(hr[21]);
+
+            Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
         }
 
         [TestMethod]

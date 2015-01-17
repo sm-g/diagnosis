@@ -211,7 +211,7 @@
         <ListBox x:Name="records"
                  Grid.Row="1"
                  ItemsSource="{Binding HealthRecords}"
-                 IsSynchronizedWithCurrentItem="True"
+                 IsSynchronizedWithCurrentItem="False"
                  SelectedItem="{Binding SelectedHealthRecord}"
                  BorderThickness="0"
                  HorizontalContentAlignment="Stretch"

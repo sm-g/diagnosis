@@ -61,10 +61,54 @@ namespace Tests
         }
 
         [TestMethod]
-        public void SelectMany()
+        public void SelectManySelectedLast()
         {
             var card = new CardViewModel(a[2], true);
             card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
+
+            Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(2, card.HrList.SelectedHealthRecords.Count());
+        }
+
+        [TestMethod]
+        public void SelectOneThenMany()
+        {
+            var card = new CardViewModel(a[2], true);
+            card.HrList.SelectHealthRecord(hr[22]);
+            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
+
+            Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(2, card.HrList.SelectedHealthRecords.Count());
+        }
+
+        [TestMethod]
+        public void SelectManyThenOne()
+        {
+            var card = new CardViewModel(a[2], true);
+            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
+            card.HrList.SelectHealthRecord(hr[21]);
+
+            Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
+        }
+
+        [TestMethod]
+        public void SelectManyThenChangeSelected()
+        {
+            var card = new CardViewModel(a[2], true);
+            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
+            card.HrList.SelectHealthRecord(hr[20], true);
+
+            Assert.AreEqual(hr[20], card.HrList.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(2, card.HrList.SelectedHealthRecords.Count());
+        }
+
+        [TestMethod]
+        public void AddToSelected()
+        {
+            var card = new CardViewModel(a[2], true);
+            card.HrList.SelectHealthRecord(hr[20], true);
+            card.HrList.SelectHealthRecord(hr[21], true);
 
             Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
             Assert.AreEqual(2, card.HrList.SelectedHealthRecords.Count());
@@ -78,6 +122,39 @@ namespace Tests
             card.HrList.SelectHealthRecord(hr[21]);
 
             Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
+        }
+
+        [TestMethod]
+        public void MoveHrSelection()
+        {
+            var card = new CardViewModel(a[2], true);
+            card.HrList.SelectHealthRecord(hr[20]);
+            card.HrList.MoveHrSelectionCommand.Execute(true);
+
+            Assert.AreNotEqual(hr[20], card.HrList.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
+        }
+
+        [TestMethod]
+        public void MoveEmptyHrSelection()
+        {
+            var card = new CardViewModel(a[2], true);
+            Assert.AreEqual(null, card.HrList.SelectedHealthRecord);
+
+            card.HrList.MoveHrSelectionCommand.Execute(true);
+
+            Assert.AreNotEqual(null, card.HrList.SelectedHealthRecord);
+        }
+
+        [TestMethod]
+        public void MoveHrSelectionMany()
+        {
+            var card = new CardViewModel(a[2], true);
+            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
+            card.HrList.MoveHrSelectionCommand.Execute(true); // up to 20
+
+            Assert.AreEqual(hr[20], card.HrList.SelectedHealthRecord.healthRecord);
             Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
         }
 
@@ -117,8 +194,6 @@ namespace Tests
             // word recreated and saved with same title
             Assert.AreEqual(0, newWord.CompareTo(w));
             Assert.IsTrue(!newWord.IsTransient);
-
-
         }
 
         [TestMethod]
@@ -133,8 +208,6 @@ namespace Tests
 
             Assert.AreEqual(count, card.HrList.HealthRecords.Count);
             Assert.AreEqual(2, card.HrList.SelectedHealthRecords.Count());
-
-
         }
 
         [TestMethod]
@@ -146,7 +219,6 @@ namespace Tests
             card.HrList.SelectHealthRecord(hr[20]);
             card.HrList.Cut();
             card.HrList.Paste();
-
 
             var new20 = card.HrList.SelectedHealthRecords.First().healthRecord;
 
