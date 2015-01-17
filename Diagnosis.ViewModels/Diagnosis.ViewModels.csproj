@@ -183,10 +183,12 @@
   <ItemGroup>
     <Compile Include="AuthorityController.cs" />
     <Compile Include="Extensions\Extensions.cs" />
+    <Compile Include="Framework\WindowViewModel.cs" />
     <Compile Include="Framework\DialogViewModel.cs" />
+    <Compile Include="Framework\IWindowViewModel.cs" />
     <Compile Include="Framework\Services\FileDialogResult.cs" />
     <Compile Include="Framework\Services\FileDialogService.cs" />
-    <Compile Include="Framework\IDialog.cs" />
+    <Compile Include="Framework\IDialogViewModel.cs" />
     <Compile Include="Framework\Services\FileType.cs" />
     <Compile Include="Screens\Card\HolderViewModel.cs" />
     <Compile Include="Autocomplete\MeasureEditorViewModel.cs" />
@@ -209,6 +211,7 @@
     <Compile Include="Screens\Card\Managers\HrViewer.cs" />
     <Compile Include="Framework\ScreenBase.cs" />
     <Compile Include="Screens\Shell\AvalonDock\AvalonDockLayoutViewModel.cs" />
+    <Compile Include="Screens\Shell\HelpViewModel.cs" />
     <Compile Include="Screens\Shell\OverlayServiceViewModel.cs" />
     <Compile Include="Screens\Shell\AvalonDock\PaneViewModel.cs" />
     <Compile Include="Screens\Shell\AvalonDock\ToolViewModel.cs" />

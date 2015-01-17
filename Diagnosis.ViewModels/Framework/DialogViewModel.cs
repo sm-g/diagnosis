@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
-    public class DialogViewModel : SessionVMBase, IDialog
+    public class DialogViewModel : SessionVMBase, IDialogViewModel
     {
         private ICommand _okCommand;
         private ICommand _applyCommand;

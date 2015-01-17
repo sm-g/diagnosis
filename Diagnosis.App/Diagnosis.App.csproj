@@ -15,6 +15,10 @@
     <WarningLevel>4</WarningLevel>
     <ExpressionBlendVersion>5.0.40218.0</ExpressionBlendVersion>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -27,12 +31,8 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -223,6 +223,7 @@
     <Compile Include="Behaviors\ClipboardBehavior.cs" />
     <Compile Include="Behaviors\EnumListExtension.cs" />
     <Compile Include="Behaviors\FocusBehavior.cs" />
+    <Compile Include="Behaviors\IsActive.cs" />
     <Compile Include="Behaviors\ListBoxSelector.cs" />
     <Compile Include="Behaviors\MenuItemExtensions.cs" />
     <Compile Include="Behaviors\MultiSelectorBehaviours.cs" />
@@ -245,6 +246,7 @@
       <DependentUpon>Patient.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Common\HrsHolderDataTemplateSelector.cs" />
+    <Compile Include="Windows\Helpers\WindowHelper.cs" />
     <Compile Include="Controls\Helpers\XamlExtensions.cs" />
     <Compile Include="Controls\Search\HrSearchResult2.xaml.cs">
       <DependentUpon>HrSearchResult2.xaml</DependentUpon>

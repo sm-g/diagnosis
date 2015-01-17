@@ -32,8 +32,8 @@
                 <MenuItem Header="_Выйти"
                           Command="{Binding LogoutCommand}" />
             </MenuItem>
-            <MenuItem Header="_Помощь"
-                      Click="MenuItem_Click">
+            <MenuItem Command="{Binding OpenHelpCommand}" 
+                      Header="_Помощь">
             </MenuItem>
         </Menu>
     </Grid>

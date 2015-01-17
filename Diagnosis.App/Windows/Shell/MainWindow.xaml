@@ -64,6 +64,8 @@
         <KeyBinding Modifiers="Control"
                     Key="E"
                     Command="{Binding OpenSearchCommand}" />
+        <KeyBinding Key="F1"
+                    Command="{Binding MenuBar.OpenHelpCommand}" />
     </Window.InputBindings>
     <Window.CommandBindings>        
         <CommandBinding Command="{x:Static ApplicationCommands.Undo}"

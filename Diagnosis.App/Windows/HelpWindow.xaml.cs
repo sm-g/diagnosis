@@ -17,6 +17,9 @@ namespace Diagnosis.App.Windows
             {
                 MemoryStream ms = Diagnosis.App.Properties.Resources.Help.ToMemoryStream(Encoding.Default);
                 rtb.Selection.Load(ms, DataFormats.Rtf);
+
+                if (Left < 0)
+                    Left = 0;
             };
         }
     }

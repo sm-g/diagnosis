@@ -12,10 +12,5 @@ namespace Diagnosis.App.Windows.Shell
         {
             InitializeComponent();
         }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            new HelpWindow().Show();
-        }
     }
 }

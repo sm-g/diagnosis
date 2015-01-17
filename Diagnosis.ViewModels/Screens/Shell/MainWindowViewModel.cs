@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using EventAggregator;
+using Diagnosis.Common;
 
 namespace Diagnosis.ViewModels.Screens
 {

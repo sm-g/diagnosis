@@ -94,5 +94,53 @@ namespace Diagnosis.App.Properties {
                 this["LoginRememberedDoctorId"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double HelpWindowTop {
+            get {
+                return ((double)(this["HelpWindowTop"]));
+            }
+            set {
+                this["HelpWindowTop"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double HelpWindowLeft {
+            get {
+                return ((double)(this["HelpWindowLeft"]));
+            }
+            set {
+                this["HelpWindowLeft"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        public double HelpWindowHeight {
+            get {
+                return ((double)(this["HelpWindowHeight"]));
+            }
+            set {
+                this["HelpWindowHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        public double HelpWindowWidth {
+            get {
+                return ((double)(this["HelpWindowWidth"]));
+            }
+            set {
+                this["HelpWindowWidth"] = value;
+            }
+        }
     }
 }

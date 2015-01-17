@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
-    public interface IDialog
+    public interface IDialogViewModel
     {
         bool? DialogResult { get; }
         string Title { get; set; }

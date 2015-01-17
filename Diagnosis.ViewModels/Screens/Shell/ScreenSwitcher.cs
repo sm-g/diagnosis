@@ -26,7 +26,7 @@ namespace Diagnosis.ViewModels.Screens
 
             this.Subscribe(Event.OpenSettings, (e) =>
             {
-                IDialog vm;
+                IDialogViewModel vm;
                 var user = e.GetValue<IUser>(MessageKeys.User);
                 if (user is Doctor)
                     vm = new SettingsViewModel(user as Doctor);
@@ -38,7 +38,7 @@ namespace Diagnosis.ViewModels.Screens
             this.Subscribe(Event.EditDoctor, (e) =>
             {
                 var doc = e.GetValue<Doctor>(MessageKeys.Doctor);
-                IDialog vm;
+                IDialogViewModel vm;
                 if (doc != null)
                     vm = new DoctorEditorViewModel(doc);
                 else
@@ -49,7 +49,7 @@ namespace Diagnosis.ViewModels.Screens
             this.Subscribe(Event.EditPatient, (e) =>
             {
                 var pat = e.GetValue<Patient>(MessageKeys.Patient);
-                IDialog vm;
+                IDialogViewModel vm;
                 if (pat != null)
                     vm = new PatientEditorViewModel(pat);
                 else
@@ -60,13 +60,13 @@ namespace Diagnosis.ViewModels.Screens
             this.Subscribe(Event.EditWord, (e) =>
             {
                 var w = e.GetValue<Word>(MessageKeys.Word);
-                IDialog vm = new WordEditorViewModel(w);
+                IDialogViewModel vm = new WordEditorViewModel(w);
                 this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
             });
 
             this.Subscribe(Event.EditHolder, (e) =>
             {
-                IDialog vm;
+                IDialogViewModel vm;
                 var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
                 if (holder is Appointment)
                 {

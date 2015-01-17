@@ -27,6 +27,7 @@ namespace Diagnosis.Common
         public const string Holder = "holder";
         public const string Dialog = "dialog";
         public const string HrItemObjects = "entity";
+        public static string Window = "window";
     }
 
     public enum Event
@@ -47,6 +48,7 @@ namespace Diagnosis.Common
         EditWord,
         OpenSettings,
         OpenDialog,
+        OpenWindow,
 
         SettingsSaved,
 
