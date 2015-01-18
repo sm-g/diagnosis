@@ -11,6 +11,8 @@ using Xceed.Wpf.AvalonDock.Controls;
 using Xceed.Wpf.AvalonDock.Layout;
 using System.Collections.Generic;
 using System.Windows.Controls;
+using Diagnosis.App.Behaviors;
+using System.Windows.Data;
 
 namespace Diagnosis.App.Windows.Shell
 {
@@ -27,7 +29,7 @@ namespace Diagnosis.App.Windows.Shell
 
             this.Subscribe(Event.OpenDialog, (e) =>
             {
-                var dialogVM = e.GetValue<IDialog>(MessageKeys.Dialog);
+                var dialogVM = e.GetValue<IDialogViewModel>(MessageKeys.Dialog);
                 if (dialogVM is PatientEditorViewModel)
                 {
                     ShowDialog(dialogVM, new PatientEditorWindow());
@@ -61,6 +63,21 @@ namespace Diagnosis.App.Windows.Shell
                     ShowDialog(dialogVM, new MeasureEditorWindow());
                 }
             });
+            this.Subscribe(Event.OpenWindow, (e) =>
+            {
+                var windowVm = e.GetValue<IWindowViewModel>(MessageKeys.Window);
+                if (windowVm.IsClosed)
+                {
+                    windowVm.IsActive = true;
+                }
+                else
+                {
+                    if (windowVm is HelpViewModel)
+                    {
+                        ShowWindow(windowVm, new HelpWindow());
+                    }
+                }
+            });
 
             DataContext = new MainWindowViewModel();
             Loaded += (s, e) =>
@@ -80,7 +97,7 @@ namespace Diagnosis.App.Windows.Shell
             };
         }
 
-        private bool? ShowDialog(IDialog vm, Window w)
+        private bool? ShowDialog(IDialogViewModel vm, Window w)
         {
             w.Owner = this;
             w.Closing += (s, e) =>
@@ -94,6 +111,20 @@ namespace Diagnosis.App.Windows.Shell
             var result = w.ShowDialog();
             return result;
         }
+
+        private void ShowWindow(IWindowViewModel vm, Window w)
+        {
+            w.Owner = this;
+            w.DataContext = vm;
+            w.Closed += (s, e) =>
+            {
+                vm.IsClosed = true;
+            };
+            var path = new PropertyPath(typeof(IWindowViewModel).GetProperty("IsActive"));
+            w.SetBinding(ActivateBehavior.IsActiveProperty, new Binding() { Path = path });
+            w.Show();
+        }
+
         private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             if (e.Command == ApplicationCommands.Undo)
