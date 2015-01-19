@@ -17,8 +17,16 @@ namespace Diagnosis.App.Controls.CardParts
             {
 #if !DEBUG
                 debug.Visibility = System.Windows.Visibility.Collapsed;
+                recordsNone.Visibility = System.Windows.Visibility.Collapsed;
+                recordsOrder.Visibility = System.Windows.Visibility.Collapsed;
+                recordsGrid.ColumnDefinitions.RemoveAt(1);
+                recordsGrid.ColumnDefinitions.RemoveAt(1);
 #endif
+
+                records.SelectionChanged += records_SelectionChanged;
             };
+            records.GotKeyboardFocus += records_GotKeyboardFocus;
+            records.GotFocus += records_GotFocus;
         }
 
         private void records_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -44,7 +52,7 @@ namespace Diagnosis.App.Controls.CardParts
                 }
             }
 
-            logger.DebugFormat("records selected {0}", records.SelectedItem);
+            // logger.DebugFormat("records selected {0}", records.SelectedItem);
             records.UpdateLayout();
             records.ScrollIntoView(records.SelectedItem);
         }
@@ -86,7 +94,7 @@ namespace Diagnosis.App.Controls.CardParts
 
         private void records_GotFocus(object sender, System.Windows.RoutedEventArgs e)
         {
-            logger.DebugFormat("records got L focus");
+            //  logger.DebugFormat("records got L focus");
         }
     }
 }

@@ -60,5 +60,12 @@ namespace Diagnosis.Common
             }
         }
 
+        public static T ParseEnumOrDefault<T>(this string str) where T : struct
+        {
+            T val;
+            if (Enum.TryParse<T>(str, true, out val))
+                return val;
+            return default(T);
+        }
     }
 }

@@ -10,6 +10,7 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
              xmlns:diag="http://schemas.smg.com/diagnosis"
+             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d"
              beh:ClipboardBehavior.ClipboardTarget="True"
              d:DesignHeight="300"
@@ -23,6 +24,15 @@
             <MouseBinding  MouseAction="LeftDoubleClick"
                            Command="{Binding EditCommand}" />
         </InputBindingCollection>
+        <CollectionViewSource x:Key="ordView"
+                              Source="{Binding HealthRecords}">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Ord" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+        <CollectionViewSource x:Key="noneView"
+                              Source="{Binding HealthRecords}">
+        </CollectionViewSource>
     </UserControl.Resources>
 
     <UserControl.InputBindings>
@@ -72,7 +82,7 @@
                     </TextBlock>-->
                 </DockPanel>
             </Button>
-            <Separator />            
+            <Separator />
             <DockPanel ToolTip="Сортировка">
                 <!--<TextBlock>Сортировать</TextBlock>-->
                 <Image Source="{StaticResource sortAscImage}"
@@ -83,7 +93,8 @@
                           ItemTemplate="{StaticResource EnumComboTemplate}">
                 </ComboBox>
             </DockPanel>
-            <DockPanel ToolTip="Группировка" Margin="5,0,0,0">
+            <DockPanel ToolTip="Группировка"
+                       Margin="5,0,0,0">
 
                 <!--<TextBlock>Группировать</TextBlock>-->
                 <Image Source="{StaticResource groupByImage}"
@@ -94,7 +105,8 @@
                           ItemTemplate="{StaticResource EnumComboTemplate}" />
             </DockPanel>
 
-            <DockPanel x:Name="debug" Margin="20,0,0,0">
+            <DockPanel x:Name="debug"
+                       Margin="20,0,0,0">
                 <CheckBox IsChecked="{Binding IsRectSelectEnabled}">IsRectSelectEnabled</CheckBox>
                 <TextBlock Margin="15,0,0,0">Selected:</TextBlock>
                 <TextBlock Text="{Binding SelectedItems.Count, ElementName=records}"
@@ -104,7 +116,8 @@
 
         <Grid Grid.Row="1"
               beh:FocusBehavior.FocusablePanel="True"
-              Visibility="{Binding HealthRecords.Count, Converter={StaticResource LessThanToVisibility}}">
+              Visibility="{Binding HealthRecords.Count, Converter={StaticResource LessThanToVisibility}}"
+              d:IsHidden="True">
             <Grid.Resources>
                 <controls:HrsHolderDataTemplateSelector x:Key="canAlso">
                     <controls:HrsHolderDataTemplateSelector.PatientTemplate>
@@ -207,112 +220,139 @@
                                 ContentTemplateSelector="{StaticResource canAlso}" />
             </StackPanel>
         </Grid>
+        <Grid  x:Name="recordsGrid"   Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-        <ListBox x:Name="records"
-                 Grid.Row="1"
-                 ItemsSource="{Binding HealthRecords}"
-                 IsSynchronizedWithCurrentItem="False"
-                 SelectedItem="{Binding SelectedHealthRecord}"
-                 BorderThickness="0"
-                 HorizontalContentAlignment="Stretch"
-                 Visibility="{Binding HealthRecords.Count, Converter={StaticResource MoreThanToVisibility}}"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 SelectionMode="Extended"
-                 SelectionChanged="records_SelectionChanged"
-                 GotKeyboardFocus="records_GotKeyboardFocus"
-                 GotFocus="records_GotFocus"
-                 beh:FocusExtension.IsFocused="{Binding IsFocused}"
-                 dd:DragDrop.IsDropTarget="True"
-                 dd:DragDrop.DropHandler="{Binding DropHandler}"
-                 dd:DragDrop.IsDragSource="{Binding IsDragSourceEnabled}"
-                 dd:DragDrop.DragHandler="{Binding DragHandler}"
-                 dd:DragDrop.DragDirectlySelectedOnly="True"
-                 beh:ListBoxSelector.Enabled="{Binding IsRectSelectEnabled}"
-                 d:IsHidden="True">
-            <ListBox.GroupStyle>
-                <GroupStyle>
-                    <GroupStyle.ContainerStyle>
-                        <Style TargetType="GroupItem">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate>
-                                        <StackPanel Background="Transparent">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="auto" />
-                                                </Grid.ColumnDefinitions>
-                                                <Separator Foreground="Gray"
-                                                           VerticalAlignment="Center" />
-                                                <TextBlock Text="{Binding Name, Mode=OneWay}"
-                                                           Grid.Column="1"
-                                                           HorizontalAlignment="Right"
-                                                           Margin="10,0,5,0" />
-                                            </Grid>
-                                            <ItemsPresenter />
-                                        </StackPanel>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </GroupStyle.ContainerStyle>
-                </GroupStyle>
-            </ListBox.GroupStyle>
+            <ListBox x:Name="records"
+                     ItemsSource="{Binding HealthRecords}"
+                     IsSynchronizedWithCurrentItem="False"
+                     SelectedItem="{Binding SelectedHealthRecord}"
+                     BorderThickness="0"
+                     HorizontalContentAlignment="Stretch"
+                     Visibility="{Binding HealthRecords.Count, Converter={StaticResource MoreThanToVisibility}}"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     SelectionMode="Extended"                    
+                     beh:FocusExtension.IsFocused="{Binding IsFocused}"
+                     dd:DragDrop.IsDropTarget="{Binding IsDropTargetEnabled}"
+                     dd:DragDrop.DropHandler="{Binding DropHandler}"
+                     dd:DragDrop.IsDragSource="{Binding IsDragSourceEnabled}"
+                     dd:DragDrop.DragHandler="{Binding DragHandler}"
+                     dd:DragDrop.DragDirectlySelectedOnly="True"
+                     beh:ListBoxSelector.Enabled="{Binding IsRectSelectEnabled}"
+                     d:IsHidden="True">
+                <ListBox.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="GroupItem">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <StackPanel Background="Transparent">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition />
+                                                        <ColumnDefinition Width="auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Separator Foreground="Gray"
+                                                               VerticalAlignment="Center" />
+                                                    <TextBlock Text="{Binding Name, Mode=OneWay}"
+                                                               Grid.Column="1"
+                                                               HorizontalAlignment="Right"
+                                                               Margin="10,0,5,0" />
+                                                </Grid>
+                                                <ItemsPresenter />
+                                            </StackPanel>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                    </GroupStyle>
+                </ListBox.GroupStyle>
 
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <card:HealthRecord Margin="0,0,0,5" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <card:HealthRecord Margin="0,0,0,5" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
 
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}"
-                       BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                    <EventSetter Event="MouseLeftButtonDown"
-                                 Handler="item_MouseLeftButtonDown" />
-                    <Setter Property="Background"
-                            Value="Transparent" />
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}"
+                           BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                        <EventSetter Event="MouseLeftButtonDown"
+                                     Handler="item_MouseLeftButtonDown" />
+                        <Setter Property="Background"
+                                Value="Transparent" />
 
-                    <Setter Property="IsSelected"
-                            Value="{Binding IsSelected, Mode=TwoWay}" />
-                    <Setter Property="beh:Attached.InputBindings"
-                            Value="{StaticResource HRInputBindings}" />
+                        <Setter Property="IsSelected"
+                                Value="{Binding IsSelected, Mode=TwoWay}" />
+                        <Setter Property="beh:Attached.InputBindings"
+                                Value="{StaticResource HRInputBindings}" />
 
-                    <Setter Property="Tag"
-                            Value="{Binding DataContext, ElementName=hrList}" />
-                    <Setter Property="ContextMenu">
-                        <!-- here because HR is not focusable -->
-                        <Setter.Value>
-                            <ContextMenu>
-                                <!-- ShortHr -->
-                                <MenuItem Header="Показать редактор"
-                                          InputGestureText="F2"
-                                          Command="{Binding OpenCommand}" />
-                                <!-- HrList -->
-                                <MenuItem Header="Искать"
-                                          InputGestureText="Ctrl+F"
-                                          Command="{Binding PlacementTarget.Tag.SendToSearchCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                                <MenuItem Header="Удалить"
-                                          InputGestureText="Delete"
-                                          Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                                <Separator />
-                                <MenuItem Header="Добавить запись"
-                                          InputGestureText="Ctrl+Enter"
-                                          Command="{Binding PlacementTarget.Tag.AddHealthRecordCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                            </ContextMenu>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListBox.ItemContainerStyle>
+                        <Setter Property="Tag"
+                                Value="{Binding DataContext, ElementName=hrList}" />
+                        <Setter Property="ContextMenu">
+                            <!-- here because HR is not focusable -->
+                            <Setter.Value>
+                                <ContextMenu>
+                                    <!-- ShortHr -->
+                                    <MenuItem Header="Показать редактор"
+                                              InputGestureText="F2"
+                                              Command="{Binding OpenCommand}" />
+                                    <!-- HrList -->
+                                    <MenuItem Header="Искать"
+                                              InputGestureText="Ctrl+F"
+                                              Command="{Binding PlacementTarget.Tag.SendToSearchCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                    <MenuItem Header="Удалить"
+                                              InputGestureText="Delete"
+                                              Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                    <Separator />
+                                    <MenuItem Header="Добавить запись"
+                                              InputGestureText="Ctrl+Enter"
+                                              Command="{Binding PlacementTarget.Tag.AddHealthRecordCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                </ContextMenu>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
 
-            <ListBox.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Добавить запись"
-                              InputGestureText="Ctrl+Enter"
-                              Command="{Binding AddHealthRecordCommand}" />
-                </ContextMenu>
-            </ListBox.ContextMenu>
-        </ListBox>
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Добавить запись"
+                                  InputGestureText="Ctrl+Enter"
+                                  Command="{Binding AddHealthRecordCommand}" />
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
+            <ListBox x:Name="recordsOrder"
+                     ItemsSource="{Binding Source={StaticResource ordView}}"
+                     BorderThickness="0"
+                     HorizontalContentAlignment="Stretch"
+                     d:IsHidden="True"
+                     Grid.Column="1">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <card:HealthRecord Margin="0,0,0,5" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <ListBox x:Name="recordsNone"
+                     ItemsSource="{Binding Source={StaticResource noneView}}"
+                     BorderThickness="0"
+                     HorizontalContentAlignment="Stretch"
+                     d:IsHidden="True"
+                     Grid.Column="2">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <card:HealthRecord Margin="0,0,0,5" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
     </Grid>
 </UserControl>

@@ -113,6 +113,12 @@ namespace Diagnosis.ViewModels.Screens
         public int Ord
         {
             get { return healthRecord.Ord; }
+            set
+            {
+#if DEBUG
+                healthRecord.Ord = value;
+#endif
+            }
         }
 
         public bool IsDeleted

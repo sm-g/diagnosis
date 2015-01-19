@@ -2,6 +2,7 @@
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Screens;
 using GongSolutions.Wpf.DragDrop;
+using GongSolutions.Wpf.DragDrop.Utilities;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -776,7 +777,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 if (dropInfo.DragInfo == null || dropInfo.DragInfo.SourceCollection == null)
                     return false;
-                var sourceList = GetList(dropInfo.DragInfo.SourceCollection);
+                var sourceList = dropInfo.DragInfo.SourceCollection.ToList();
                 return sourceList == master.Tags;
             }
 
@@ -784,13 +785,13 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 if (dropInfo.DragInfo == null || dropInfo.DragInfo.SourceCollection == null)
                     return false;
-                var sourceList = GetList(dropInfo.DragInfo.SourceCollection);
+                var sourceList = dropInfo.DragInfo.SourceCollection.ToList();
                 return sourceList is IEnumerable<TagViewModel>;
             }
 
             public override void DragOver(IDropInfo dropInfo)
             {
-                var destinationList = GetList(dropInfo.TargetCollection);
+                var destinationList = dropInfo.TargetCollection.ToList();
                 if (FromSameAutocomplete(dropInfo))
                 {
                     dropInfo.Effects = DragDropEffects.Move;

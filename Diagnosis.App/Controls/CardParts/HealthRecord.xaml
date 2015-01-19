@@ -97,10 +97,10 @@
                 <TextBlock Grid.Row="1"
                            Text="{Binding DateOffsetString, Mode=OneWay}" />
             </StackPanel>
-            <TextBlock x:Name="order"
+            <TextBox x:Name="order"
                        Grid.Row="1"
                        Grid.Column="1"
-                       Text="{Binding Ord, Mode=OneWay}" />
+                       Text="{Binding Ord, Mode=TwoWay}" />
             <TextBlock x:Name="extra"
                        Grid.Row="1"
                        Grid.Column="1"

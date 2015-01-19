@@ -238,5 +238,49 @@ namespace Tests
             Assert.AreEqual(false, new20.IsDirty);
             Assert.AreNotEqual(hr[20].CreatedAt, new20.CreatedAt);
         }
+
+        [TestMethod]
+        public void Reorder()
+        {
+            var card = new CardViewModel(a[5], true);
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            var hr0 = card.HrList.HealthRecords.Last();
+            hr0.healthRecord.AddItems(new Comment("a").ToEnumerable());
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            var hr1 = card.HrList.HealthRecords.Last();
+            hr1.healthRecord.AddItems(new Comment("x").ToEnumerable());
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            var hr2 = card.HrList.HealthRecords.Last();
+            hr2.healthRecord.AddItems(new Comment("y").ToEnumerable());
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            var hr3 = card.HrList.HealthRecords.Last();
+            hr3.healthRecord.AddItems(new Comment("b").ToEnumerable());
+
+            // hrs -> a x y b
+            card.SaveHealthRecords(card.HrList, new ListEventArgs<HealthRecord>(null));
+
+            Assert.AreEqual(0, hr0.Ord);
+            Assert.AreEqual(1, hr1.Ord);
+            Assert.AreEqual(2, hr2.Ord);
+            Assert.AreEqual(3, hr3.Ord);
+
+            card.HrList.Sorting = HrViewSortingColumn.Ord;
+            card.HrList.Grouping = HrViewGroupingColumn.None;
+
+            Assert.IsTrue(card.HrList.CanReorder);
+            var vms = card.HrList.HealthRecords[0].ToEnumerable();
+            Assert.IsTrue(card.HrList.CanMove(vms, null));
+
+            card.HrList.HealthRecords.Move(0, 1);
+            // hrs -> x a y b
+
+            card.SaveHealthRecords(card.HrList, new ListEventArgs<HealthRecord>(null));
+
+            Assert.AreEqual(1, hr0.Ord);
+            Assert.AreEqual(0, hr1.Ord);
+            Assert.AreEqual(2, hr2.Ord);
+            Assert.AreEqual(3, hr3.Ord);
+
+        }
     }
 }

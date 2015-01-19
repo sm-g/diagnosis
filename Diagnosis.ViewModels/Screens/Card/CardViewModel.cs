@@ -366,43 +366,46 @@ namespace Diagnosis.ViewModels.Screens
                     HrList.Sorting = sort;
 
                 HrList.PropertyChanged += HrList_PropertyChanged;
-                HrList.SaveNeeded += (s, e) =>
-                {
-                    logger.DebugFormat("SaveNeeded for hrs: {0}", e.list == null ? "All" : e.list.Count.ToString());
-
-                    if (e.list == null)
-                    {
-                        // новые записи — вставка/дроп записей/тегов на список
-                        // смена порядка — дроп записей
-
-                        // ставим порядок
-                        for (int i = 0; i < HrList.HealthRecords.Count; i++)
-                        {
-                            HrList.HealthRecords[i].healthRecord.Ord = i;
-                        }
-                        // сохраняем все записи кроме открытой в редакторе
-                        saver.Save(HrList.HealthRecords
-                            .Select(vm => vm.healthRecord)
-                            .Except(HrEditor.HasHealthRecord ? HrEditor.HealthRecord.healthRecord.ToEnumerable() : Enumerable.Empty<HealthRecord>())
-                            .ToArray());
-                    }
-                    else
-                    {
-                        // вставка/дроп тегов в записи
-                        // изменение видимости (IsDeleted)
-
-                        saver.Save(e.list.ToArray());
-                        if (!HrEditor.HasHealthRecord)
-                        {
-                            HrList.IsFocused = true;
-                        }
-                    }
-                };
+                HrList.SaveNeeded += SaveHealthRecords;
                 HrList.HealthRecords.CollectionChanged += HrList_HealthRecords_CollectionChanged;
 
                 // сначала создаем HrList, чтобы hrManager подписался на добавление записей первым,
                 // иначе HrList.SelectHealthRecord нечего выделять при добавлении записи
                 holder.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
+            }
+        }
+
+        internal void SaveHealthRecords(object s, ListEventArgs<HealthRecord> e)
+        {
+            logger.DebugFormat("SaveNeeded for hrs: {0}", e.list == null ? "All" : e.list.Count.ToString());
+
+            if (e.list == null)
+            {
+                // новые записи — вставка/дроп записей/тегов на список
+                // смена порядка — дроп записей
+
+                var sorted = HrList.HealthRecords;
+                // ставим порядок
+                for (int i = 0; i < sorted.Count; i++)
+                {
+                    sorted[i].healthRecord.Ord = i;
+                }
+                // сохраняем все записи кроме открытой в редакторе
+                saver.Save(HrList.HealthRecords
+                    .Select(vm => vm.healthRecord)
+                    .Except(HrEditor.HasHealthRecord ? HrEditor.HealthRecord.healthRecord.ToEnumerable() : Enumerable.Empty<HealthRecord>())
+                    .ToArray());
+            }
+            else
+            {
+                // вставка/дроп тегов в записи
+                // изменение видимости (IsDeleted)
+
+                saver.Save(e.list.ToArray());
+                if (!HrEditor.HasHealthRecord)
+                {
+                    HrList.IsFocused = true;
+                }
             }
         }
 
