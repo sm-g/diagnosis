@@ -71,7 +71,7 @@ namespace Diagnosis.ViewModels.Screens
         private bool _dropTarget;
         private bool _focused;
         internal readonly FlagActionWrapper<IEnumerable<ShortHealthRecordViewModel>> preserveSelected;
-
+        bool inSetSelected;
         public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;
 
         public HrListViewModel(IHrsHolder holder, Action<HealthRecord, HrData.HrInfo> filler, Action<List<IHrItemObject>> syncer)
@@ -89,26 +89,27 @@ namespace Diagnosis.ViewModels.Screens
             hrManager = new HealthRecordManager(holder, onHrVmPropChanged: (s, e) =>
             {
                 var hrvm = s as ShortHealthRecordViewModel;
-                if (e.PropertyName == "IsSelected")
+                if (hrvm != null)
                 {
-                    logger.DebugFormat("{0} {1}", hrvm.IsSelected, hrvm);
-
-                    // simulate IsSynchronizedWithCurrentItem
-                    //if (hrvm != null || hrvm.IsSelected)
-                    //{
-                    //    using (noUnselectPrev.Join())
-                    //    {
-                    //        SelectedHealthRecord = hrvm;
-                    //    }
-                    //}
-                }
-                if (Enum.GetNames(typeof(HrViewGroupingColumn)).Contains(e.PropertyName) ||
-                   Enum.GetNames(typeof(HrViewSortingColumn)).Contains(e.PropertyName))
-                {
-                    // simulate liveshaping
-                    using (preserveSelected.Enter(SelectedHealthRecords)) // fix selection after CommitEdit when view grouping
+                    if (e.PropertyName == "IsSelected")
                     {
-                        if (hrvm != null)
+
+                        // simulate IsSynchronizedWithCurrentItem
+                        // SelectedHealthRecord points to new IsSelected without unselect prev
+                        if (hrvm.IsSelected)
+                        {
+                            // logger.DebugFormat("{0} {1}", hrvm.IsSelected, hrvm);
+                            using (noUnselectPrev.Join())
+                            {
+                                SelectedHealthRecord = hrvm;
+                            }
+                        }
+                    }
+                    if (Enum.GetNames(typeof(HrViewGroupingColumn)).Contains(e.PropertyName) ||
+                       Enum.GetNames(typeof(HrViewSortingColumn)).Contains(e.PropertyName))
+                    {
+                        // simulate liveshaping
+                        using (preserveSelected.Enter(SelectedHealthRecords)) // fix selection after CommitEdit when view grouping
                         {
                             logger.DebugFormat("edit {0} in {1}", e.PropertyName, hrvm);
                             SetHrExtra(hrvm.ToEnumerable().ToList());
@@ -117,11 +118,13 @@ namespace Diagnosis.ViewModels.Screens
                             //  logger.DebugFormat("commit {0}", hrvm);
                         }
                     }
+
+                    if (e.PropertyName == "IsChecked")
+                    {
+                        OnPropertyChanged(() => CheckedHrCount);
+                    }
                 }
-                else if (e.PropertyName == "IsChecked")
-                {
-                    OnPropertyChanged(() => CheckedHrCount);
-                }
+
             });
             hrManager.DeletedHealthRecords.CollectionChanged += (s, e) =>
             {
@@ -209,9 +212,18 @@ namespace Diagnosis.ViewModels.Screens
                 if (_selectedHealthRecord == value)
                     return;
 
+                if (value == null && inSetSelected)
+                    // list box sets value to null, skip if we are in setting new value
+                    return;
+
+                inSetSelected = true;
                 if (_selectedHealthRecord != null && noUnselectPrev.CanEnter) // снимаем выделение с прошлой выделенной
                 {
-                    _selectedHealthRecord.IsSelected = false;
+                    using (noUnselectPrev.Join())
+                    {
+                        _selectedHealthRecord.IsSelected = false;
+
+                    }
                 }
                 if (value != null)
                 {
@@ -221,6 +233,8 @@ namespace Diagnosis.ViewModels.Screens
                 logger.DebugFormat("hrList selected {0} -> {1}", _selectedHealthRecord, value);
                 _selectedHealthRecord = value;
                 OnPropertyChanged(() => SelectedHealthRecord);
+                inSetSelected = false;
+
             }
         }
 
@@ -736,11 +750,17 @@ namespace Diagnosis.ViewModels.Screens
                 HealthRecords.Except(toSelect.ToEnumerable()).ForAll(vm => vm.IsSelected = false);
                 SelectedHealthRecord = toSelect;
             }
-            else
+            else if (toSelect != null)
+            {
                 using (noUnselectPrev.Enter())
                 {
                     SelectedHealthRecord = toSelect;
                 }
+            }
+            else
+            {
+                // записи нет в списке, не меняем SelectedHealthRecord
+            }
         }
 
         /// <summary>

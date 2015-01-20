@@ -49,7 +49,17 @@ namespace Tests
                 Assert.AreEqual(hr[20], card.HrList.SelectedHealthRecord.healthRecord);
             }
         }
+        [TestMethod]
+        public void SelectNotInList()
+        {
+            using (var card = new CardViewModel(a[2], true))
+            {
+                card.HrList.SelectHealthRecord(hr[1]);
 
+                Assert.AreEqual(null, card.HrList.SelectedHealthRecord);
+                Assert.AreEqual(0, card.HrList.SelectedHealthRecords.Count());
+            }
+        }
         [TestMethod]
         public void DeselectHr()
         {
@@ -113,7 +123,16 @@ namespace Tests
             Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
             Assert.AreEqual(2, card.HrList.SelectedHealthRecords.Count());
         }
+        [TestMethod]
+        public void AddToSelectedNotInList()
+        {
+            var card = new CardViewModel(a[2], true);
+            card.HrList.SelectHealthRecord(hr[20], true);
+            card.HrList.SelectHealthRecord(hr[1], true);
 
+            Assert.AreEqual(hr[20], card.HrList.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
+        }
         [TestMethod]
         public void SelectOneByOne()
         {

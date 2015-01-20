@@ -48,11 +48,14 @@ namespace Diagnosis.App.Controls.CardParts
                 {
                     var lastSelectedItem = records.ItemContainerGenerator.ContainerFromItem(records.SelectedItems[records.SelectedItems.Count - 1]) as ListBoxItem;
                     if (lastSelectedItem != null)
+                    {
+                        // logger.DebugFormat("records focus on {0}", lastSelectedItem);
                         lastSelectedItem.Focus();
+                    }
                 }
             }
-
             // logger.DebugFormat("records selected {0}", records.SelectedItem);
+
             records.UpdateLayout();
             records.ScrollIntoView(records.SelectedItem);
         }
