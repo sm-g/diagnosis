@@ -135,8 +135,11 @@ namespace Diagnosis.App.Controls.Search
                     DependencyPropertyChangedEventHandler a = null;
                     a = (s, args) =>
                     {
-                        if (Vm != null)
+                        if (Vm != null && Keyboard.FocusedElement == input)
+                        {
+                            //logger.DebugFormat("StartEdit after DataContextChanged");
                             Vm.StartEdit(Vm.LastTag);
+                        }
                         this.DataContextChanged -= a;
                     };
                     this.DataContextChanged += a;
