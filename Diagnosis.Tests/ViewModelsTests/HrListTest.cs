@@ -15,6 +15,7 @@ namespace Tests
     {
         private Dictionary<int, Patient> p = new Dictionary<int, Patient>();
         private Dictionary<int, Course> c = new Dictionary<int, Course>();
+        private Dictionary<int, HrCategory> cat = new Dictionary<int, HrCategory>();
         private Dictionary<int, Appointment> a = new Dictionary<int, Appointment>();
         private Dictionary<int, HealthRecord> hr = new Dictionary<int, HealthRecord>();
 
@@ -22,6 +23,7 @@ namespace Tests
 
         private static int[] pIds = new[] { 1, 2, 3, 4, 5 };
         private static int[] cIds = new[] { 1, 2, 3, 4 };
+        private static int[] catIds = new[] { 1, 2, 3, 4, 5, 6 };
         private static int[] aIds = new[] { 1, 2, 3, 4, 5 };
         private static int[] hrIds = new[] { 1, 2, 20, 21, 22, 30, 31, 32, 40, 70, 71, 72, 73, 74 };
 
@@ -33,6 +35,7 @@ namespace Tests
 
             pIds.ForAll((id) => p[id] = session.Get<Patient>(IntToGuid<Patient>(id)));
             cIds.ForAll((id) => c[id] = session.Get<Course>(IntToGuid<Course>(id)));
+            cIds.ForAll((id) => cat[id] = session.Get<HrCategory>(id));
             aIds.ForAll((id) => a[id] = session.Get<Appointment>(IntToGuid<Appointment>(id)));
             hrIds.ForAll((id) => hr[id] = session.Get<HealthRecord>(IntToGuid<HealthRecord>(id)));
 
@@ -175,6 +178,35 @@ namespace Tests
 
             Assert.AreEqual(hr[20], card.HrList.SelectedHealthRecord.healthRecord);
             Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
+        }
+        [TestMethod]
+        public void MoveHrSelectionManySorted()
+        {
+            var card = new CardViewModel(a[5], true);
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            var hr0 = card.HrList.HealthRecords.Last();
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            var hr1 = card.HrList.HealthRecords.Last();
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            var hr2 = card.HrList.HealthRecords.Last();
+
+            card.HrList.Sorting = HrViewSortingColumn.CreatedAt;
+            card.HrList.Grouping = HrViewGroupingColumn.Category;
+
+            // 1 cat
+            // 0
+            // 2
+            // 2 cat
+            // 1
+
+            hr0.healthRecord.Category = cat[1];
+            hr1.healthRecord.Category = cat[2];
+            hr2.healthRecord.Category = cat[1];
+
+            card.HrList.SelectedHealthRecord = hr0;
+            card.HrList.MoveHrSelectionCommand.Execute(true); // up
+
+            Assert.AreEqual(hr1, card.HrList.SelectedHealthRecord);
         }
 
         [TestMethod]

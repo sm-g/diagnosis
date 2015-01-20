@@ -301,20 +301,22 @@ namespace Diagnosis.ViewModels.Screens
                             Contract.Ensures(SelectedHealthRecord != Contract.OldValue(SelectedHealthRecord) || HealthRecords.Count <= 1);
 
                             HealthRecords.Except(SelectedHealthRecord.ToEnumerable()).ToList().ForEach(vm => vm.IsSelected = false);
-                            var current = HealthRecords.IndexOf(SelectedHealthRecord);
+                            
+                            var sortedView = view.Cast<ShortHealthRecordViewModel>().ToList();
+                            var current = sortedView.IndexOf(SelectedHealthRecord);
                             if (up)
                             {
                                 if (current > 0)
-                                    SelectedHealthRecord = HealthRecords[current - 1];
+                                    SelectedHealthRecord = sortedView[current - 1];
                                 else
-                                    SelectedHealthRecord = HealthRecords.Last(); // select last when Selected == null
+                                    SelectedHealthRecord = sortedView.Last(); // select last when Selected == null
                             }
                             else
                             {
-                                if (current != HealthRecords.Count - 1)
-                                    SelectedHealthRecord = HealthRecords[current + 1]; // select fisrt when Selected == null
+                                if (current != sortedView.Count - 1)
+                                    SelectedHealthRecord = sortedView[current + 1]; // select fisrt when Selected == null
                                 else
-                                    SelectedHealthRecord = HealthRecords.First();
+                                    SelectedHealthRecord = sortedView.First();
                             }
                         });
             }
