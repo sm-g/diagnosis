@@ -5,24 +5,15 @@ using System.Linq;
 
 namespace Diagnosis.Common.Util
 {
-    public class ListActionWrapper<T>
+    public class FlagActionWrapper<T>
     {
         private bool flag = false;
 
-        private List<T> list;
+        private T list;
 
         private Action<T> act;
 
-        public ListActionWrapper(IEnumerable<T> list, Action<T> act)
-        {
-            Contract.Requires(list != null);
-            Contract.Requires(act != null);
-
-            this.list = list.ToList();
-            this.act = act;
-        }
-
-        public ListActionWrapper(Action<T> act)
+        public FlagActionWrapper(Action<T> act)
         {
             Contract.Requires(act != null);
 
@@ -34,30 +25,22 @@ namespace Diagnosis.Common.Util
             get { return !flag; }
         }
 
-        public ActionWrapperHandler Enter()
-        {
-            if (flag)
-                throw new InvalidOperationException();
-
-            return new ActionWrapperHandler(this);
-        }
-
-        public ActionWrapperHandler Enter(IEnumerable<T> list)
+        public ActionWrapperHandler Enter(T list)
         {
             Contract.Requires(list != null);
 
             if (flag)
                 throw new InvalidOperationException();
 
-            this.list = list.ToList();
+            this.list = list;
             return new ActionWrapperHandler(this);
         }
 
         public class ActionWrapperHandler : IDisposable
         {
-            private ListActionWrapper<T> owner;
+            private FlagActionWrapper<T> owner;
 
-            public ActionWrapperHandler(ListActionWrapper<T> owner)
+            public ActionWrapperHandler(FlagActionWrapper<T> owner)
             {
                 this.owner = owner;
                 owner.flag = true;
@@ -65,7 +48,7 @@ namespace Diagnosis.Common.Util
 
             public void Dispose()
             {
-                owner.list.ForEach(owner.act);
+                owner.act(owner.list);
                 owner.flag = false;
             }
         }

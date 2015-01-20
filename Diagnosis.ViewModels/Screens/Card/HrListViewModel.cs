@@ -70,7 +70,7 @@ namespace Diagnosis.ViewModels.Screens
         private bool _dragSource;
         private bool _dropTarget;
         private bool _focused;
-        private ListActionWrapper<ShortHealthRecordViewModel> preserveSelected = new ListActionWrapper<ShortHealthRecordViewModel>(vm => vm.IsSelected = true);
+        internal readonly FlagActionWrapper<IEnumerable<ShortHealthRecordViewModel>> preserveSelected;
 
         public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;
 
@@ -85,6 +85,7 @@ namespace Diagnosis.ViewModels.Screens
 
             HolderVm = new HolderViewModel(holder);
 
+            preserveSelected = new FlagActionWrapper<IEnumerable<ShortHealthRecordViewModel>>((hrs) => { hrs.ForEach(vm => vm.IsSelected = true); });
             hrManager = new HealthRecordManager(holder, onHrVmPropChanged: (s, e) =>
             {
                 var hrvm = s as ShortHealthRecordViewModel;
@@ -105,7 +106,7 @@ namespace Diagnosis.ViewModels.Screens
                    Enum.GetNames(typeof(HrViewSortingColumn)).Contains(e.PropertyName))
                 {
                     // simulate liveshaping
-                    using (preserveSelected.Enter(SelectedHealthRecords)) // fix only one selected after Refresh
+                    using (preserveSelected.Enter(SelectedHealthRecords)) // fix selection after CommitEdit when view grouping
                     {
                         if (hrvm != null)
                         {

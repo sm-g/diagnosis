@@ -451,7 +451,7 @@ namespace Diagnosis.ViewModels.Screens
                         HrEditor.Load(HrList.SelectedHealthRecord.healthRecord);
                     }
                 }
-                else
+                else if (HrList.preserveSelected.CanEnter)
                 {
                     HrEditor.Unload();
                 }
