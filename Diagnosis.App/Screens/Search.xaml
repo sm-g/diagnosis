@@ -128,6 +128,7 @@
                                           SelectedItem="{Binding QueryScope, Mode=TwoWay}"
                                           ItemTemplate="{StaticResource EnumComboTemplate}"
                                           VerticalContentAlignment="Bottom" />
+                                <!--TODO with metro-->
                             </TextBlock>
                         </CheckBox>
                     </Grid>

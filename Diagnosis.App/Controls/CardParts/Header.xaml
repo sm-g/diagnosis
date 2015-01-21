@@ -5,12 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:headers="clr-namespace:Diagnosis.App.Controls.Headers"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
              x:Name="header"
+             d:DataContext="{DynamicResource Context}"
              d:DesignHeight="300"
              d:DesignWidth="300">
     <!-- HeaderViewModel -->
     <UserControl.Resources>
+        <diag:HeaderViewModel x:Key="Context" />
+
         <Style x:Key="HeaderNavButton"
                TargetType="{x:Type Button}"
                BasedOn="{StaticResource {x:Type Button}}">
@@ -144,7 +148,7 @@
 
                         <Button Height="26"
                                 Width="26"
-                                Command="{Binding EditCommand}"
+                                Command="{Binding HolderVm.EditCommand}"
                                 ToolTip="Редактировать"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Top"
