@@ -12,7 +12,8 @@
     <!-- HeaderViewModel -->
     <UserControl.Resources>
         <Style x:Key="HeaderNavButton"
-               TargetType="{x:Type Button}">
+               TargetType="{x:Type Button}"
+               BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Width"
                     Value="30" />
             <Setter Property="Height"
