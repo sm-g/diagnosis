@@ -220,7 +220,8 @@
                                 ContentTemplateSelector="{StaticResource canAlso}" />
             </StackPanel>
         </Grid>
-        <Grid  x:Name="recordsGrid"   Grid.Row="1">
+        <Grid  x:Name="recordsGrid"
+               Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -236,7 +237,8 @@
                      Visibility="{Binding HealthRecords.Count, Converter={StaticResource MoreThanToVisibility}}"
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     SelectionMode="Extended"                    
+                     ScrollViewer.CanContentScroll="False"
+                     SelectionMode="Extended"
                      beh:FocusExtension.IsFocused="{Binding IsFocused}"
                      dd:DragDrop.IsDropTarget="{Binding IsDropTargetEnabled}"
                      dd:DragDrop.DropHandler="{Binding DropHandler}"
@@ -277,20 +279,42 @@
 
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <card:HealthRecord Margin="0,0,0,5" />
+                        <DockPanel>
+                            <Rectangle x:Name="marker"
+                                       Width="3"
+                                       Fill="LightCoral"
+                                       Visibility="Collapsed" />
+                            <card:HealthRecord Margin="0,0,0,5">
+                            </card:HealthRecord>
+                        </DockPanel>
+                        <!--Focus debug-->
+                        <!--<DataTemplate.Triggers>
+                            <DataTrigger Value="True">
+                                <DataTrigger.Binding>
+                                    <MultiBinding Converter="{StaticResource EqualAllToBool}">
+                                        <Binding />
+                                        <Binding Path="SelectedItem"
+                                                 RelativeSource="{RelativeSource AncestorType=ListBox}" />
+                                    </MultiBinding>
+                                </DataTrigger.Binding>
+                                <Setter Property="Visibility"
+                                        Value="Visible"
+                                        TargetName="marker" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>-->
                     </DataTemplate>
                 </ListBox.ItemTemplate>
 
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}"
                            BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                        <EventSetter Event="MouseLeftButtonDown"
-                                     Handler="item_MouseLeftButtonDown" />
                         <Setter Property="Background"
                                 Value="Transparent" />
 
                         <Setter Property="IsSelected"
                                 Value="{Binding IsSelected, Mode=TwoWay}" />
+                        <Setter Property="beh:FocusExtension.IsFocused"
+                                Value="{Binding IsFocused}" />
                         <Setter Property="beh:Attached.InputBindings"
                                 Value="{StaticResource HRInputBindings}" />
 
@@ -318,6 +342,15 @@
                                 </ContextMenu>
                             </Setter.Value>
                         </Setter>
+                        
+                        <!--Focus debug-->
+                        <!--<Style.Triggers>
+                            <DataTrigger Binding="{Binding IsFocused}"
+                                         Value="True">
+                                <Setter Property="FontWeight"
+                                        Value="Bold" />
+                            </DataTrigger>
+                        </Style.Triggers>-->
                     </Style>
                 </ListBox.ItemContainerStyle>
 

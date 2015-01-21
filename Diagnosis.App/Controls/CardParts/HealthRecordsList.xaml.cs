@@ -1,5 +1,7 @@
 ﻿using Diagnosis.ViewModels.Screens;
 using System;
+using System.Diagnostics;
+using System.Windows.Shapes;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,6 +12,8 @@ namespace Diagnosis.App.Controls.CardParts
     public partial class HealthRecordsList : UserControl
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HealthRecordsList));
+
+        HrListViewModel Vm { get { return DataContext as HrListViewModel; } }
         public HealthRecordsList()
         {
             InitializeComponent();
@@ -41,42 +45,50 @@ namespace Diagnosis.App.Controls.CardParts
                 }
             }
 
-            // focus on selected item if listbox itself is focused
-            if (Keyboard.FocusedElement == records)
+            if (records.SelectedItems.Count > 0)
             {
-                if (records.SelectedItems.Count > 0)
+                var lastSelectedItem = records.ItemContainerGenerator.ContainerFromItem(records.SelectedItems[records.SelectedItems.Count - 1]) as ListBoxItem;
+                var selectedItem = records.ItemContainerGenerator.ContainerFromItem(records.SelectedItem) as ListBoxItem;
+#if DEBUG
+                //var marker = lastSelectedItem.FindChild<Rectangle>("marker");
+                //if (marker != null)
+                //{
+                //    marker.Visibility = (lastSelectedItem == selectedItem ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed);
+                //}
+#endif
+
+                // focus on selected item if listbox itself is focused
+                if (Keyboard.FocusedElement == records)
                 {
-                    var lastSelectedItem = records.ItemContainerGenerator.ContainerFromItem(records.SelectedItems[records.SelectedItems.Count - 1]) as ListBoxItem;
                     if (lastSelectedItem != null)
                     {
-                        // logger.DebugFormat("records focus on {0}", lastSelectedItem);
+                        logger.DebugFormat("records, focus on last selected {0}", lastSelectedItem);
                         lastSelectedItem.Focus();
                     }
                 }
             }
-            // logger.DebugFormat("records selected {0}", records.SelectedItem);
+            logger.DebugFormat("records selected {0},\n add {1},\n remove {2}", 
+                records.SelectedItem, 
+                string.Join("\n", e.AddedItems.Cast<object>()), 
+                string.Join("\n", e.RemovedItems.Cast<object>()));
 
             records.UpdateLayout();
             records.ScrollIntoView(records.SelectedItem);
-        }
-
-        private void item_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ClickCount > 1)
-            {
-                // e.Handled = true;
-            }
-            ;
         }
 
         private void records_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             if (e.NewFocus != records)
                 return;
+            // список получил фокус - переводим его на выбранный элемент или первый (если элементов нет, список не виден)
 
-            // список получил фокус - переводим его на выбранный элемент
-            var item = records.SelectedItem;
-            // logger.DebugFormat("records got focus, selected {0}", item);
+            //records.UpdateLayout(); excep after dnd
+            //Vm.SelectedHealthRecord as object; 
+            var item = records.SelectedItem;//== null без синхронизации
+            item = item ?? (records.Items.Count > 0 ? records.Items.GetItemAt(0) : null);
+            Debug.Assert(item != null);
+
+            logger.DebugFormat("records got focus, focus on {0}", item);
             if (item != null)
             {
                 Action action = () =>
@@ -86,9 +98,9 @@ namespace Diagnosis.App.Controls.CardParts
                     var lbItem = records.ItemContainerGenerator.ContainerFromItem(item) as ListBoxItem;
                     if (lbItem != null)
                     {
-                        //var scope = FocusManager.GetFocusScope(this);
-                        //FocusManager.SetFocusedElement(scope, lbItem);
-                        lbItem.Focus();
+                        var scope = FocusManager.GetFocusScope(this);
+                        FocusManager.SetFocusedElement(scope, lbItem);
+                        //lbItem.Focus();
                     }
                 };
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal, action);

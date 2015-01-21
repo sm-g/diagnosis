@@ -72,7 +72,16 @@ namespace Tests
 
             Assert.AreEqual(null, card.HrList.SelectedHealthRecord);
         }
+        [TestMethod]
+        public void DeselectWhenManySelected()
+        {
+            var card = new CardViewModel(a[2], true);
+            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
+            card.HrList.SelectedHealthRecord = null;
 
+            Assert.AreEqual(null, card.HrList.SelectedHealthRecord);
+            Assert.AreEqual(0, card.HrList.SelectedHealthRecords.Count());
+        }
         [TestMethod]
         public void SelectManySelectedLast()
         {
@@ -333,5 +342,7 @@ namespace Tests
             Assert.AreEqual(3, hr3.Ord);
 
         }
+
+     
     }
 }

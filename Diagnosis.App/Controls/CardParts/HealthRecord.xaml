@@ -6,6 +6,7 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
              xmlns:diag="http://schemas.smg.com/diagnosis"
+             xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
              xmlns:app="clr-namespace:Diagnosis.App"
              mc:Ignorable="d"
              d:DesignHeight="30"
@@ -55,6 +56,7 @@
 
         <CheckBox IsChecked="{Binding IsChecked}"
                   Focusable="False"
+                  PreviewMouseUp="CheckBox_PreviewMouseUp"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"
                   VerticalContentAlignment="Top">

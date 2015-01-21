@@ -126,6 +126,24 @@ namespace Diagnosis.ViewModels.Screens
             get { return healthRecord.IsDeleted; }
         }
 
+
+        private bool _focused;
+        public bool IsFocused
+        {
+            get
+            {
+                return _focused;
+            }
+            set
+            {
+                if (_focused != value)
+                {
+                    logger.DebugFormat("focused {0} {1}", this, value);
+                    _focused = value;
+                    OnPropertyChanged(() => IsFocused);
+                }
+            }
+        }
         #endregion Model
 
         public DateTime SortingDate

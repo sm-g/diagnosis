@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using Diagnosis.ViewModels.Screens;
+using System.Windows.Controls;
 
 namespace Diagnosis.App.Controls.CardParts
 {
@@ -7,6 +8,8 @@ namespace Diagnosis.App.Controls.CardParts
     /// </summary>
     public partial class HealthRecord : UserControl
     {
+        ShortHealthRecordViewModel Vm { get { return DataContext as ShortHealthRecordViewModel; } }
+
         public HealthRecord()
         {
             InitializeComponent();
@@ -16,6 +19,13 @@ namespace Diagnosis.App.Controls.CardParts
                 order.Visibility = System.Windows.Visibility.Collapsed;
 #endif
             };
+        }
+
+        private void CheckBox_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // select by checkbox - focus on hr
+            if (!(sender as CheckBox).IsChecked.Value)
+                Vm.IsFocused = true;
         }
     }
 }

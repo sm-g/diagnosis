@@ -30,8 +30,20 @@ namespace Diagnosis.ViewModels.Screens
             this.session = session;
         }
 
+        /// <summary>
+        /// Запись выгружена.
+        /// </summary>
         public event EventHandler<DomainEntityEventArgs> Unloaded;
+        /// <summary>
+        /// Редактор закрыт. Перед этим выгружается запись.
+        /// </summary>
         public event EventHandler<DomainEntityEventArgs> Closed;
+
+        /// <summary>
+        /// Редактор закрывается по команде. Запись может быть null.
+        /// </summary>
+        public event EventHandler<DomainEntityEventArgs> Closing;
+
 
         #region HealthRecord
 
@@ -159,11 +171,18 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        /// <summary>
+        /// Закрывает редактор (даже без записи).
+        /// </summary>
         public RelayCommand CloseCommand
         {
             get
             {
-                return new RelayCommand(Unload);
+                return new RelayCommand(() =>
+                {
+                    OnClosing(HealthRecord != null ? HealthRecord.healthRecord : null);
+                    Unload();
+                });
             }
         }
 
@@ -237,7 +256,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         /// <summary>
-        /// Выгружает редактируемую запись.
+        /// Выгружает редактируемую запись. Редактор будет закрыт без Closing.
         /// </summary>
         public void Unload()
         {
@@ -263,6 +282,15 @@ namespace Diagnosis.ViewModels.Screens
                 h(this, new DomainEntityEventArgs(hr));
             }
         }
+        protected virtual void OnClosing(HealthRecord hr)
+        {
+            var h = Closing;
+            if (h != null)
+            {
+                h(this, new DomainEntityEventArgs(hr));
+            }
+        }
+
         protected virtual void OnClosed(HealthRecord hr)
         {
             var h = Closed;

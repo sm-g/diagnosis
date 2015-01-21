@@ -54,11 +54,16 @@ namespace Diagnosis.ViewModels.Screens
                 var hr = e.entity as HealthRecord;
                 saver.SaveHealthRecord(hr);
             };
-            HrEditor.Closed += (s, e) =>
+            HrEditor.Closing += (s, e) =>
             {
-                // переходим к списку записей
+                // закрыт по команде — переходим к списку записей
                 // logger.DebugFormat("hreditor closed, listfocused = {0}", HrList.IsFocused);
                 HrList.IsFocused = true;
+                // restore selected?
+            };
+
+            HrEditor.Closed += (s, e) =>
+            {
             };
 
             handler = this.Subscribe(Event.DeleteHolder, (e) =>
@@ -183,25 +188,25 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         /// <summary>
-        /// Открывает/закрывает редактор для выбранной в списке записи.
+        /// Открывает/закрывает редактор для последней выбранной в списке записи.
         /// </summary>
         public void ToogleHrEditor()
         {
-            Contract.Ensures(HrList.SelectedHealthRecord == null ||
+            Contract.Ensures(HrList.LastSelected == null ||
                 HrEditor.HasHealthRecord != Contract.OldValue(HrEditor.HasHealthRecord));
 
-            if (HrList.SelectedHealthRecord == null)
+            if (HrList.LastSelected == null)
                 return;
 
             // logger.DebugFormat("toggle hr editor from {0}", HrEditor.HasHealthRecord);
             if (HrEditor.HasHealthRecord)
             {
-                Contract.Assume(HrEditor.HealthRecord.healthRecord == HrList.SelectedHealthRecord.healthRecord);
+                Contract.Assume(HrEditor.HealthRecord.healthRecord == HrList.LastSelected.healthRecord);
                 HrEditor.Unload();
             }
             else
             {
-                HrEditor.Load(HrList.SelectedHealthRecord.healthRecord);
+                HrEditor.Load(HrList.LastSelected.healthRecord);
             }
         }
 
@@ -213,7 +218,7 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Requires(hr != null);
             //logger.DebugFormat("FocusHrEditor to {0}", hr);
 
-            HrList.SelectHealthRecord(hr, addToSelected: false); //  addToSelected: true - выделяется одна, после выхода из редактора снова можо вернуть веделение с шифтом
+            HrList.SelectHealthRecord(hr, addToSelected: true);
             HrEditor.Load(hr);
             HrEditor.IsFocused = true;
         }
@@ -441,14 +446,14 @@ namespace Diagnosis.ViewModels.Screens
 
         private void HrList_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "SelectedHealthRecord")
+            if (e.PropertyName == "LastSelected")
             {
-                if (HrList.SelectedHealthRecord != null)
+                if (HrList.LastSelected != null)
                 {
                     editorWasOpened = HrEditor.HasHealthRecord;
                     if (editorWasOpened)
                     {
-                        HrEditor.Load(HrList.SelectedHealthRecord.healthRecord);
+                        HrEditor.Load(HrList.LastSelected.healthRecord);
                     }
                 }
                 else if (HrList.preserveSelected.CanEnter)

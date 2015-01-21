@@ -192,7 +192,28 @@ namespace Tests
             Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
             Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
         }
+        [TestMethod]
+        public void SelectManyShowHideEditor()
+        {
+            var card = new CardViewModel(a[2], true);
+            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
+            card.ToogleHrEditor();
+            card.ToogleHrEditor();
 
+            Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(2, card.HrList.SelectedHealthRecords.Count());
+        }
+        [TestMethod]
+        public void SelectManyOpenCloseEditor()
+        {
+            var card = new CardViewModel(a[2], true);
+            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
+            card.FocusHrEditor(hr[21]);
+            card.HrEditor.CloseCommand.Execute(null);
+
+            Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
+        }
         [TestMethod]
         public void DeleteAppCoursePatient()
         {
