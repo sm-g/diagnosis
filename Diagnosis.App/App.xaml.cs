@@ -73,6 +73,10 @@ namespace Diagnosis.App
             // enum localization
             LocalizableDescriptionAttribute.ResourcesType = typeof(Diagnosis.App.Properties.Resources);
             System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Error;
+
+            // themes
+            MyThemeManager.Initialize();
+
 #if DEBUG
             new DebugOutput(0);
             new DebugWindow().Show();
@@ -80,14 +84,6 @@ namespace Diagnosis.App
 #endif
 
             DbMaintenance();
-
-            var t = new MyThemeManager();
-            this.Subscribe(Event.ChangeTheme, (e1) =>
-                        {
-                            var toMetro = e1.GetValue<bool>(MessageKeys.Boolean);
-                            t.Switch(toMetro);
-
-                        });
 
             var main = new MainWindow();
 #if !DEBUG

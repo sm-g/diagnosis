@@ -133,6 +133,6 @@
     <Style x:Key="ScreenTitle"
            TargetType="TextBlock">
         <Setter Property="FontSize"
-                Value="20" />
+                Value="{DynamicResource ScreenTitleFontSize}" />
     </Style>
 </ResourceDictionary>

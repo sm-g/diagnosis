@@ -260,6 +260,7 @@
       <DependentUpon>Patient.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Common\HrsHolderDataTemplateSelector.cs" />
+    <Compile Include="Resources\Themes\Helpers.cs" />
     <Compile Include="Resources\Themes\ThemeManager.cs" />
     <Compile Include="Windows\Helpers\WindowHelper.cs" />
     <Compile Include="Controls\Helpers\XamlExtensions.cs" />
@@ -491,6 +492,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Search\PopupSearch.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\BigFontResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\NormalFontResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -62,6 +62,25 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        private bool _big;
+        public bool IsBigFont
+        {
+            get
+            {
+                return _big;
+            }
+            set
+            {
+                if (_big != value)
+                {
+                    _big = value;
+                    this.Send(Event.ChangeFont, value.AsParams(MessageKeys.Boolean));
+
+                    OnPropertyChanged(() => IsBigFont);
+                }
+            }
+        }
+
         public RelayCommand LogoutCommand
         {
             get

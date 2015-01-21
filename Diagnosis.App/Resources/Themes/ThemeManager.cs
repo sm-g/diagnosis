@@ -1,20 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Diagnosis.Common;
 using MahApps.Metro;
+using System;
+using System.Collections.Generic;
+using System.IO.Packaging;
+using System.Linq;
 using System.Windows;
 
 namespace Diagnosis.App.Themes
 {
-    public class MyThemeManager
+    public static class MyThemeManager
     {
         private static IList<AppTheme> _mahThemes;
+        private static IList<AppTheme> _fontThemes;
+        private static IList<string> MahAppsComponents = new[] { "Controls", "Fonts", "Colors", "Accents/Blue", "Accents/BaseLight" };
+        private static IList<string> FontSizes = new[] { "Normal", "Big" };
+        private static string MahAppsAssemblyName = "MahApps.Metro";
+        private static bool initialized;
+        static int resoursesAfterThemes = 2;
 
-        private static AppTheme _mahControls = new AppTheme("MahControls", new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml"));
-        private static AppTheme _mahFonts = new AppTheme("MahFonts", new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml"));
-        private static AppTheme _mahColors = new AppTheme("MahColors", new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml"));
-        private static AppTheme _mahAcc = new AppTheme("MahAcc", new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml"));
         public static IEnumerable<AppTheme> MahThemes
         {
             get
@@ -22,47 +25,90 @@ namespace Diagnosis.App.Themes
                 if (_mahThemes != null)
                     return _mahThemes;
 
-                var themes = new[] { "BaseLight", "BaseDark" };
-
-                _mahThemes = new List<AppTheme>()
+                _mahThemes = new List<AppTheme>();
+                foreach (var item in MahAppsComponents)
                 {
-                    _mahControls,
-                    _mahFonts,
-                    _mahColors,
-                    _mahAcc
+                    var appTheme = new AppTheme(MahAppsAssemblyName + item, string.Format("Styles/{0}.xaml", item).GetPackUri(MahAppsAssemblyName));
+                    _mahThemes.Add(appTheme);
                 };
 
                 return _mahThemes;
             }
         }
 
-        public void Switch(bool toMetro)
+        public static IList<AppTheme> FontThemes
         {
-            var mahDicts = new[] { "MahControls", "MahFonts", "MahColors", "MahAcc" };
+            get
+            {
+                if (_fontThemes != null)
+                    return _fontThemes;
 
+                _fontThemes = new List<AppTheme>();
+                foreach (var size in FontSizes)
+                {
+                    var appTheme = new AppTheme(size, string.Format("Resources/{0}FontResources.xaml", size).GetPackUri());
+                    _fontThemes.Add(appTheme);
+                }
+
+                return _fontThemes;
+            }
+        }
+
+        public static void Initialize()
+        {
+            if (initialized)
+                return;
+
+            typeof(MyThemeManager).Subscribe(Event.ChangeTheme, (e1) =>
+            {
+                var toMetro = e1.GetValue<bool>(MessageKeys.Boolean);
+                SwitchMetro();
+            });
+            typeof(MyThemeManager).Subscribe(Event.ChangeFont, (e1) =>
+            {
+                var toBig = e1.GetValue<bool>(MessageKeys.Boolean);
+                SwitchFont(toBig ? "Big" : "Normal");
+            });
+            initialized = true;
+        }
+
+        public static void SwitchMetro()
+        {
             var resources = Application.Current.Resources;
-            var resBeforeThemes = 5;
-            var resAfterThemes = 2;
-            var insertTo = resources.MergedDictionaries.Count - resAfterThemes;
 
+
+            var insertTo = resources.MergedDictionaries.Count - resoursesAfterThemes;
 
             foreach (var th in MahThemes)
             {
-                var oldThemeResource = resources.MergedDictionaries.FirstOrDefault(d => d.Source == th.Resources.Source);
-                if (toMetro)
+                var oldThemeResource = resources.MergedDictionaries.FirstOrDefault(d =>
+                    PackUriHelper.ComparePackUri(d.Source, th.Resources.Source) == 0);
+                if (oldThemeResource == null)
                 {
                     resources.MergedDictionaries.Insert(insertTo, th.Resources);
-
                 }
                 else
-                    if (oldThemeResource != null)
-                    {
-                        {
-                            resources.MergedDictionaries.Remove(oldThemeResource);
-                        }
-
-                    }
+                {
+                    resources.MergedDictionaries.Remove(oldThemeResource);
+                }
             }
+        }
+
+        public static void SwitchFont(string newSizeName)
+        {
+            var resources = Application.Current.Resources;
+
+            int insertTo = resources.MergedDictionaries.Count - resoursesAfterThemes;
+            var newAppTheme = FontThemes.FirstOrDefault(x => x.Name == newSizeName);
+
+            var oldThemeResource = resources.MergedDictionaries.FirstOrDefault(d => FontThemes.Select(x => x.Resources).Contains(d));
+            if (oldThemeResource != null)
+            {
+                insertTo = resources.MergedDictionaries.IndexOf(oldThemeResource);
+                resources.MergedDictionaries.Remove(oldThemeResource);
+            }
+            if (newAppTheme != null)
+                resources.MergedDictionaries.Insert(insertTo, newAppTheme.Resources);
         }
     }
 }

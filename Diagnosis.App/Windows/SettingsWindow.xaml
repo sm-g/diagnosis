@@ -1,14 +1,14 @@
 ﻿<Window x:Class="Diagnosis.App.Windows.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:Diagnosis.App.Controls"
         xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
-        beh:DialogCloser.DialogResult="{Binding DialogResult}"
+        xmlns:controls="clr-namespace:Diagnosis.App.Controls"
         Title="Настройки"
-        SizeToContent="WidthAndHeight"
-        ShowInTaskbar="False"
         ResizeMode="NoResize"
-        WindowStartupLocation="CenterOwner">
+        ShowInTaskbar="False"
+        SizeToContent="WidthAndHeight"
+        WindowStartupLocation="CenterOwner"
+        beh:DialogCloser.DialogResult="{Binding DialogResult}">
     <Window.Resources>
     </Window.Resources>
     <Grid Margin="0,0,10,10">
@@ -18,22 +18,35 @@
         </Grid.RowDefinitions>
 
         <StackPanel Margin="10,10,0,0">
-            <!--<CheckBox IsChecked="{Binding ShowIcdDisease}">
+            <!--
+                <CheckBox IsChecked="{Binding ShowIcdDisease}">
                 <AccessText>Использовать _МКБ</AccessText>
-            </CheckBox>-->
+                </CheckBox>
+            -->
             <CheckBox IsChecked="{Binding OnlyTopLevelIcdDisease}">
                 <AccessText>_Болезни МКБ только верхнего уровня</AccessText>
             </CheckBox>
+            <Label Content="Шрифт" />
+            <RadioButton IsChecked="{Binding BigFont, Converter={StaticResource NegateBoolean}}">
+                <AccessText>_Обычный</AccessText>
+            </RadioButton>
+            <RadioButton IsChecked="{Binding BigFont}">
+                <AccessText>_Крупный</AccessText>
+            </RadioButton>
         </StackPanel>
 
         <StackPanel Grid.Row="1"
                     Style="{StaticResource DialogButtonsPanel}">
             <Button Name="saveButton"
-                    IsDefault="True"
-                    Command="{Binding OkCommand}">Сохранить</Button>
+                    Command="{Binding OkCommand}"
+                    IsDefault="True">
+                _Сохранить
+            </Button>
             <Button Name="cancelButton"
-                    IsCancel="True"
-                    Command="{Binding CancelCommand}">Отмена</Button>
+                    Command="{Binding CancelCommand}"
+                    IsCancel="True">
+                Отмена
+            </Button>
         </StackPanel>
     </Grid>
 </Window>

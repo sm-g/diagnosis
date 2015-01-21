@@ -80,8 +80,8 @@
         </Setter>
     </Style>
 
-    <Style x:Key="colonedLabel"
-        TargetType="Label" 
+    <Style x:Key="{x:Type Label}"
+           TargetType="Label" 
            BasedOn="{StaticResource {x:Type Label}}">
         <Setter Property="VerticalAlignment"
                 Value="Center" />
@@ -89,13 +89,13 @@
                 Value="{}{0}:" />
     </Style>
     <Style x:Key="label120"
-           BasedOn="{StaticResource colonedLabel}"
+           BasedOn="{StaticResource {x:Type Label}}"
            TargetType="Label">
         <Setter Property="Width"
                 Value="120" />
     </Style>
     <Style x:Key="label90"
-           BasedOn="{StaticResource colonedLabel}"
+           BasedOn="{StaticResource {x:Type Label}}"
            TargetType="Label">
         <Setter Property="Width"
                 Value="90" />

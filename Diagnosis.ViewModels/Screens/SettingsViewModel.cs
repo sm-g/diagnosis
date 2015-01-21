@@ -54,6 +54,27 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        private bool _bigFont;
+        public bool BigFont
+        {
+            get
+            {
+                return _bigFont;
+            }
+            set
+            {
+                if (_bigFont != value)
+                {
+                    _bigFont = value;
+
+                    // tobig
+                    this.Send(Event.ChangeFont, value.AsParams(MessageKeys.Boolean));
+
+                    OnPropertyChanged(() => BigFont);
+                }
+            }
+        }
+
         protected override void OnOk()
         {
             new Saver(Session).Save(doctor);

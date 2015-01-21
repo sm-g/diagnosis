@@ -16,6 +16,8 @@ namespace Diagnosis.App.Windows.Shell
 #if !DEBUG
                 metro.Visibility = System.Windows.Visibility.Collapsed;
                 metro.IsEnabled = false;
+                big.Visibility = System.Windows.Visibility.Collapsed;
+                big.IsEnabled = false;
 #endif
             };
         }
