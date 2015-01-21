@@ -1,4 +1,5 @@
-﻿using Diagnosis.App.Windows;
+﻿using Diagnosis.App.Themes;
+using Diagnosis.App.Windows;
 using Diagnosis.App.Windows.Shell;
 using Diagnosis.Common;
 using Diagnosis.Common.Util;
@@ -80,8 +81,15 @@ namespace Diagnosis.App
 
             DbMaintenance();
 
-            var main = new MainWindow();
+            var t = new MyThemeManager();
+            this.Subscribe(Event.ChangeTheme, (e1) =>
+                        {
+                            var toMetro = e1.GetValue<bool>(MessageKeys.Boolean);
+                            t.Switch(toMetro);
 
+                        });
+
+            var main = new MainWindow();
 #if !DEBUG
             main.Loaded += (s, e1) =>
             {

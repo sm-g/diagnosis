@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Windows;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -38,6 +39,25 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     _visible = value;
                     OnPropertyChanged(() => Visible);
+                }
+            }
+        }
+
+        private bool _metro = true;
+        public bool IsMetroTheme
+        {
+            get
+            {
+                return _metro;
+            }
+            set
+            {
+                if (_metro != value)
+                {
+                    _metro = value;
+                    this.Send(Event.ChangeTheme, value.AsParams(MessageKeys.Boolean));
+
+                    OnPropertyChanged(() => IsMetroTheme);
                 }
             }
         }

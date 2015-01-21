@@ -23,6 +23,9 @@
                           IsChecked="{Binding SearchPanel.IsVisible}"
                           Header="_Поиск" />
             </MenuItem>
+            <MenuItem x:Name="metro" IsCheckable="true"
+                      IsChecked="{Binding IsMetroTheme}"
+                      Header="_Metro" />
         </Menu>
 
         <Menu HorizontalAlignment="Right">
