@@ -10,7 +10,7 @@ namespace Diagnosis.ViewModels.Screens
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(ToolViewModel));
 
-
+        bool wasDeAutoHiddenBeforeHide;
         private bool _isVisible = true;
         public bool IsVisible
         {
@@ -25,13 +25,18 @@ namespace Diagnosis.ViewModels.Screens
                     if (value)
                     {
                         // AD call LayoutAnchorable.Show() after
+                        if (wasDeAutoHiddenBeforeHide)
+                            AutoHide();
                     }
                     else
                     {
                         // AD call LayoutAnchorable.Hide() after
                         // to prevent empty LayoutAnchorGroup, call ToggleAutoHide() for him
-                       
-                        //ShowAutoHidden();
+
+                        //  wasDeAutoHiddenBeforeHide = IsAutoHidden;
+
+                        // there is no callback before layout loaded
+                        // ShowAutoHidden();
                     }
 
                     OnPropertyChanged("IsVisible");

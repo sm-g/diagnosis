@@ -27,7 +27,7 @@ namespace Diagnosis.ViewModels.Screens
                     logger.DebugFormat("CurrentView '{0}' -> '{1}'", prevScreen, CurrentView);
 
                     // показываем поиск на первом экране, где он может быть
-                    searchPanel.IsVisible = CanShowSearch && (searchVisByUser ?? true);
+                    // searchPanel.IsVisible = CanShowSearch && (searchVisByUser ?? true);                    
 
                     Panes.Add(CurrentView);
                     Panes.Remove(prevScreen);

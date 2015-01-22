@@ -56,7 +56,7 @@ namespace Diagnosis.App.Windows.Shell
                 if (pane != null && pane.HideAfterInsert && !anchorableShown.IsAutoHidden)
                 {
                     logger.DebugFormat("HideAfterInsert {0}", anchorableShown.Content);
-                    anchorableShown.ToggleAutoHide();
+                    //anchorableShown.ToggleAutoHide();
                 }
             }
         }
