@@ -20,7 +20,20 @@ namespace Diagnosis.ViewModels.Screens
                 if (_isVisible != value)
                 {
                     _isVisible = value;
-                    // logger.DebugFormat("IsVisible {0} -> {1}", ContentId, value);
+                    logger.DebugFormat("IsVisible {0} -> {1}", ContentId, value);
+
+                    if (value)
+                    {
+                        // AD call LayoutAnchorable.Show() after
+                    }
+                    else
+                    {
+                        // AD call LayoutAnchorable.Hide() after
+                        // to prevent empty LayoutAnchorGroup, call ToggleAutoHide() for him
+                       
+                        //ShowAutoHidden();
+                    }
+
                     OnPropertyChanged("IsVisible");
                 }
             }
