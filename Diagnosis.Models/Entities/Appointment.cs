@@ -28,7 +28,7 @@ namespace Diagnosis.Models
         }
         public virtual IEnumerable<HealthRecord> HealthRecords
         {
-            get { return healthRecords; }
+            get { return healthRecords.OrderBy(x => x.Ord); }
         }
 
         public Appointment(Course course, Doctor doctor)

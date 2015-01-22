@@ -111,7 +111,14 @@ namespace Diagnosis.Models
             remove { throw new NotImplementedException(); }
         }
 
-        IEnumerable<HealthRecord> IHrsHolder.HealthRecords { get { throw new NotImplementedException(); } }
+        IEnumerable<HealthRecord> IHrsHolder.HealthRecords
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>().IsOrdered(x => x.Ord));
+                return null;
+            }
+        }
 
         bool IEntity.IsDirty { get { throw new NotImplementedException(); } set { throw new NotImplementedException(); } }
 
