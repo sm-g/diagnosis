@@ -24,7 +24,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     MenuBar.Visible = switcher.Screen != Screen.Login;
 
-                    var prevScreen = Panes.FirstOrDefault(p => p.ContentId == "Screen");
+                    var prevScreen = Panes.FirstOrDefault(p => p.ContentId == ScreenBaseViewModel.ScreenContentId);
                     logger.DebugFormat("CurrentView '{0}' -> '{1}'", prevScreen, CurrentView);
 
                     // на первом экране поиск видно
@@ -53,8 +53,7 @@ namespace Diagnosis.ViewModels.Screens
 
             switcher.OpenScreen(Screen.Login, replace: true);
         }
-
-        public ScreenBase CurrentView
+        public ScreenBaseViewModel CurrentView
         {
             get { return switcher.CurrentView; }
         }

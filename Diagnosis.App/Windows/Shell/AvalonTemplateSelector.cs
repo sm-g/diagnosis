@@ -19,7 +19,7 @@ namespace Diagnosis.App.Windows.Shell
         {
             @sw = new Dictionary<Type, DataTemplate> { 
                 { typeof(ToolViewModel), PanelTemplate},
-                { typeof(ScreenBase), ScreenTemplate}                                                
+                { typeof(ScreenBaseViewModel), ScreenTemplate}                                                
             };
         }
 
@@ -32,7 +32,7 @@ namespace Diagnosis.App.Windows.Shell
             if (lc != null)
             {
                 if (lc.Content is ToolViewModel) return PanelTemplate;
-                if (lc.Content is ScreenBase) return ScreenTemplate;
+                if (lc.Content is ScreenBaseViewModel) return ScreenTemplate;
             }
 
             return base.SelectTemplate(item, container);

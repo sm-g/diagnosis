@@ -18,7 +18,7 @@ namespace Diagnosis.ViewModels.Screens
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(ScreenSwitcher));
         private List<Screen> history = new List<Screen>();
         private Screen _curScreen;
-        private ScreenBase _curView;
+        private ScreenBaseViewModel _curView;
 
         public ScreenSwitcher()
         {
@@ -190,7 +190,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public ScreenBase CurrentView
+        public ScreenBaseViewModel CurrentView
         {
             get
             {

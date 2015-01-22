@@ -15,7 +15,7 @@ using System.Windows.Markup;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class LoginViewModel : ScreenBase
+    public class LoginViewModel : ScreenBaseViewModel
     {
         private IUser _selected;
         private bool _passVis;

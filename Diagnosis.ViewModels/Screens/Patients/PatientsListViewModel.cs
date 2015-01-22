@@ -16,7 +16,7 @@ using System.ComponentModel;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class PatientsListViewModel : ScreenBase
+    public class PatientsListViewModel : ScreenBaseViewModel
     {
         private Patient _current;
         private bool _noPatients;
