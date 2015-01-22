@@ -10,10 +10,10 @@ namespace Diagnosis.ViewModels.Screens
         private string _contentId = null;
         private bool _isActive = false;
         private bool _hide;
-        private bool _isAutoHidden;
+        //private bool _isAutoHidden;
         private bool _isSelected = false;
         private string _title = null;
-        public event EventHandler<BoolEventArgs> IsAutoHiddenChanging;
+        private Action<bool> OnIsAutoHiddenChanging;
 
 
         public string Title
@@ -126,26 +126,24 @@ namespace Diagnosis.ViewModels.Screens
 
         public void ShowAutoHidden()
         {
-            OnIsAutoHiddenChanging(false);
+            if (OnIsAutoHiddenChanging != null)
+                OnIsAutoHiddenChanging(false);
         }
 
         public void AutoHide()
         {
-            OnIsAutoHiddenChanging(true);
+            if (OnIsAutoHiddenChanging != null)
+                OnIsAutoHiddenChanging(true);
+        }
+
+        public void SetIsAutoHiddenChangingCallback(Action<bool> actToNewValue)
+        {
+            this.OnIsAutoHiddenChanging = actToNewValue;
         }
 
         public override string ToString()
         {
             return "pane " + Title;
-        }
-
-        protected virtual void OnIsAutoHiddenChanging(bool value)
-        {
-            var h = IsAutoHiddenChanging;
-            if (h != null)
-            {
-                h(this, new BoolEventArgs(value));
-            }
         }
     }
 }

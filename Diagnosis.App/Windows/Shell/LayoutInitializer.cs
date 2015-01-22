@@ -13,11 +13,13 @@ namespace Diagnosis.App.Windows.Shell
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(LayoutInitializer));
         public bool BeforeInsertAnchorable(LayoutRoot layout, LayoutAnchorable anchorableToShow, ILayoutContainer destinationContainer)
         {
-            // AD wants to add the anchorable into destinationContainer            
-            logger.DebugFormat("before insert {0} to {1}",
-                anchorableToShow.ContentId, destinationContainer == null ? "''" :
-                    string.Format("container with {0} childs", destinationContainer.ChildrenCount));
+            // AD wants to add the anchorable into destinationContainer      
             var content = anchorableToShow.Content as PaneViewModel;
+            logger.DebugFormat("before insert {0} to {1}",
+                anchorableToShow.Content,
+                destinationContainer == null ? "''" :
+                    string.Format("{0} with {1} childs", destinationContainer.GetType().Name, destinationContainer.ChildrenCount));
+
             string id = null;
             if (content != null)
                 id = content.ContentId;
@@ -29,11 +31,15 @@ namespace Diagnosis.App.Windows.Shell
             var pane = panes.FirstOrDefault(d => d.Name == id);
             if (pane != null)
             {
-                content.IsAutoHiddenChanging += (s, e) => // leak subscription
+                if (content != null)
                 {
-                    if (e.value != anchorableToShow.IsAutoHidden)
-                        anchorableToShow.ToggleAutoHide();
-                };
+                    // ToggleAutoHide when VM wants
+                    content.SetIsAutoHiddenChangingCallback((newValue) =>
+                    {
+                        if (anchorableToShow != null && newValue != anchorableToShow.IsAutoHidden)
+                            anchorableToShow.ToggleAutoHide();
+                    });
+                }
                 pane.Children.Add(anchorableToShow);
                 return true;
             }
@@ -49,6 +55,7 @@ namespace Diagnosis.App.Windows.Shell
                 var pane = anchorableShown.Content as PaneViewModel;
                 if (pane != null && pane.HideAfterInsert && !anchorableShown.IsAutoHidden)
                 {
+                    logger.DebugFormat("HideAfterInsert {0}", anchorableShown.Content);
                     anchorableShown.ToggleAutoHide();
                 }
             }

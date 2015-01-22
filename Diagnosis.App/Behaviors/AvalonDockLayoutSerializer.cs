@@ -41,7 +41,6 @@ namespace Diagnosis.App.Behaviors
     public static class AvalonDockLayoutSerializer
     {
         private const string LayoutFileName = "avalon-layout.config";
-        private const string DefLayoutFileName = "avalon-layout.config";
 
         private static readonly DependencyProperty LoadLayoutCommandProperty =
             DependencyProperty.RegisterAttached("LoadLayoutCommand",
