@@ -72,6 +72,9 @@ namespace Diagnosis.ViewModels.Screens
         private bool _dragSource;
         private bool _dropTarget;
         private bool _focused;
+        /// <summary>
+        /// When set, selection changes not meaningfull.
+        /// </summary>
         internal readonly FlagActionWrapper<IEnumerable<ShortHealthRecordViewModel>> preserveSelected;
         private bool inSetSelected;
 
@@ -96,8 +99,6 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     if (e.PropertyName == "IsSelected")
                     {
-                        logger.DebugFormat("{0} {1}", hrvm.IsSelected, hrvm);
-
                         // simulate IsSynchronizedWithCurrentItem for Extended mode
                         // SelectedHealthRecord points to last IsSelected without unselect prev
                         // select may be by IsSelected (rect), so need to set SelectedHealthRecord

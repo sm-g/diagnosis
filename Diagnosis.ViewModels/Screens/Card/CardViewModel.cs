@@ -448,9 +448,9 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (e.PropertyName == "LastSelected")
             {
+                // logger.DebugFormat("sel {0}\nlast {1}", HrList.SelectedHealthRecord, HrList.LastSelected);
                 if (HrList.LastSelected != null)
                 {
-                    editorWasOpened = HrEditor.HasHealthRecord;
                     if (editorWasOpened)
                     {
                         HrEditor.Load(HrList.LastSelected.healthRecord);
@@ -458,6 +458,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
                 else if (HrList.preserveSelected.CanEnter)
                 {
+                    editorWasOpened = HrEditor.HasHealthRecord;
                     HrEditor.Unload();
                 }
             }
