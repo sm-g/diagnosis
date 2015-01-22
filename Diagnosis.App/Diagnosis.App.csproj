@@ -246,6 +246,7 @@
       <DependentUpon>Patient.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Common\HrsHolderDataTemplateSelector.cs" />
+    <Compile Include="Windows\Helpers\AvalonExtensions.cs" />
     <Compile Include="Windows\Helpers\WindowHelper.cs" />
     <Compile Include="Controls\Helpers\XamlExtensions.cs" />
     <Compile Include="Controls\Search\HrSearchResult2.xaml.cs">
