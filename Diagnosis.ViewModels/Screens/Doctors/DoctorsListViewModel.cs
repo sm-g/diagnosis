@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class DoctorsListViewModel : ScreenBase
+    public class DoctorsListViewModel : ScreenBaseViewModel
     {
         private Doctor _current;
         private ObservableCollection<Doctor> _doctors;

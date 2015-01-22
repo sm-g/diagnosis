@@ -22,7 +22,7 @@ namespace Diagnosis.App.Windows.Shell
                 return PanelStyle;
             }
 
-            if (item is ScreenBase)
+            if (item is ScreenBaseViewModel)
             {
                 return ScreenStyle;
             }

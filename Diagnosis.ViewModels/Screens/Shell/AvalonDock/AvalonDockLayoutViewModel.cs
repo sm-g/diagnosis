@@ -1,12 +1,13 @@
-﻿using System.Collections.ObjectModel;
+﻿// using AvalonDock;
+// using AvalonDock.Layout.Serialization;
+using Diagnosis.Common;
+using System;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout.Serialization;
-using Xceed.Wpf.AvalonDock.Layout;
-using Diagnosis.Common;
 
 // from Edi http://www.codeproject.com/Articles/719143/AvalonDock-Tutorial-Part-Load-Save-Layout
 
@@ -22,12 +23,19 @@ namespace Diagnosis.ViewModels.Screens
     public class AvalonDockLayoutViewModel
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(AvalonDockLayoutViewModel));
-        private ObservableCollection<PaneViewModel> panes;
-        DockingManager docManager;
-        public AvalonDockLayoutViewModel(ObservableCollection<PaneViewModel> panes)
+        private DockingManager docManager;
+        private Action<LayoutSerializationCallbackEventArgs> reloadContent;
+
+        public AvalonDockLayoutViewModel(Action<LayoutSerializationCallbackEventArgs> reloadContentCallback)
         {
-            this.panes = panes;
+            this.reloadContent = reloadContentCallback;
         }
+
+        public event EventHandler LayoutLoaded;
+
+        public event EventHandler LayoutSaved;
+
+        public event EventHandler LayoutLoading;
 
         /// <summary>
         /// XML with layout. Starting with "LayoutRoot".
@@ -92,6 +100,39 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        protected virtual void OnLayoutLoaded(EventArgs e)
+        {
+            logger.DebugFormat("layout loaded");
+
+            var h = LayoutLoaded;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
+
+        protected virtual void OnLayoutSaved(EventArgs e)
+        {
+            logger.DebugFormat("layout saved");
+
+            var h = LayoutSaved;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
+
+        protected virtual void OnLayoutLoading(EventArgs e)
+        {
+            logger.DebugFormat("layout loading");
+
+            var h = LayoutLoading;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
+
         /// <summary>
         /// Loads the layout of a particular docking manager instance from persistence
         /// and checks whether a file should really be reloaded (some files may no longer
@@ -100,8 +141,9 @@ namespace Diagnosis.ViewModels.Screens
         /// <param name="docManager"></param>
         private void LoadDockingManagerLayout(DockingManager docManager)
         {
-            var fromFile = System.IO.File.Exists(LayoutFileName);
+            OnLayoutLoading(EventArgs.Empty);
 
+            var fromFile = System.IO.File.Exists(LayoutFileName);
             var layoutSerializer = new XmlLayoutSerializer(docManager);
             layoutSerializer.LayoutSerializationCallback += (s, args) =>
             {
@@ -113,7 +155,9 @@ namespace Diagnosis.ViewModels.Screens
                     args.Cancel = true;
                     return;
                 }
-                // ReloadContentOnStartUp(args);
+
+                if (reloadContent != null)
+                    reloadContent(args);
             };
 
             if (fromFile)
@@ -124,37 +168,7 @@ namespace Diagnosis.ViewModels.Screens
                     layoutSerializer.Deserialize(s);
                 }
 
-            logger.DebugFormat("layout loaded");
-        }
-
-        private void ReloadContentOnStartUp(LayoutSerializationCallbackEventArgs args)
-        {
-            string sId = args.Model.ContentId;
-
-            // Empty Ids are invalid but possible
-            if (string.IsNullOrWhiteSpace(sId) == true)
-            {
-                args.Cancel = true;
-                return;
-            }
-
-            var pane = panes.FirstOrDefault(p => p.ContentId == args.Model.ContentId);
-
-            if (pane != null)
-                args.Content = pane;
-            else
-            {
-                args.Content = ReloadDocument(args.Model.ContentId);
-                if (args.Content == null)
-                    args.Cancel = true;
-            }
-        }
-
-        private object ReloadDocument(string path)
-        {
-            object ret = null;
-
-            return ret;
+            OnLayoutLoaded(EventArgs.Empty);
         }
 
         private void SaveDockingManagerLayout(string xmlLayout)
@@ -163,6 +177,8 @@ namespace Diagnosis.ViewModels.Screens
                 return;
 
             File.WriteAllText(LayoutFileName, xmlLayout);
+
+            OnLayoutSaved(EventArgs.Empty);
         }
     }
 }

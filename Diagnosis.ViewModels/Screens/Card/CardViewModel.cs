@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public partial class CardViewModel : ScreenBase
+    public partial class CardViewModel : ScreenBaseViewModel
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(CardViewModel));
         private static PatientViewer viewer; // static to hold history

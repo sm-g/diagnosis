@@ -1,18 +1,19 @@
-﻿using Diagnosis.Common;
+﻿// using AvalonDock.Layout.Serialization;
+using Diagnosis.App.Behaviors;
+using Diagnosis.Common;
 using Diagnosis.ViewModels;
-using Diagnosis.ViewModels.Screens;
 using Diagnosis.ViewModels.Autocomplete;
-using Diagnosis.App.Controls;
-using System.Windows;
+using Diagnosis.ViewModels.Screens;
+using System.IO;
 using System.Linq;
+using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using Xceed.Wpf.AvalonDock.Layout.Serialization;
 using Xceed.Wpf.AvalonDock.Controls;
 using Xceed.Wpf.AvalonDock.Layout;
 using System.Collections.Generic;
 using System.Windows.Controls;
-using Diagnosis.App.Behaviors;
-using System.Windows.Data;
 
 namespace Diagnosis.App.Windows.Shell
 {
@@ -22,11 +23,18 @@ namespace Diagnosis.App.Windows.Shell
     public partial class MainWindow : Window
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(MainWindow));
+
         public MainWindow()
         {
-
             InitializeComponent();
-
+            dockManager.Layout.ElementAdded += (s, e) =>
+            {
+                logger.DebugFormat("added {0} {1}", e.Element.GetType().Name, "");
+            };
+            dockManager.Layout.ElementRemoved += (s, e) =>
+            {
+                logger.DebugFormat("removed {0} {1}", e.Element.GetType().Name, "");
+            };
             this.Subscribe(Event.OpenDialog, (e) =>
             {
                 var dialogVM = e.GetValue<IDialogViewModel>(MessageKeys.Dialog);
@@ -85,7 +93,6 @@ namespace Diagnosis.App.Windows.Shell
 #if DEBUG
                 // debugMenu.Visibility = System.Windows.Visibility.Visible;
 #endif
-
             };
             dockManager.ActiveContentChanged += (s, e) =>
             {
@@ -130,7 +137,8 @@ namespace Diagnosis.App.Windows.Shell
             if (e.Command == ApplicationCommands.Undo)
                 DumpLayout();
         }
-        void DumpLayout()
+
+        private void DumpLayout()
         {
             //List<DependencyObject> scopes = new List<DependencyObject>();
             //foreach (var item in this.FindVisualChildren())
@@ -150,6 +158,28 @@ namespace Diagnosis.App.Windows.Shell
             //logger.DebugFormat("rec Focused {0}", rec.IsFocused);
 
             dockManager.Layout.ConsoleDump(0);
+            var SaveLayoutCommand = AvalonDockLayoutSerializer.GetSaveLayoutCommand(dockManager);
+            if (SaveLayoutCommand != null)
+            {
+                string xmlLayoutString = "";
+
+                using (StringWriter fs = new StringWriter())
+                {
+                    var serializer = new XmlLayoutSerializer(dockManager);
+                    serializer.Serialize(fs);
+
+                    xmlLayoutString = fs.ToString();
+                }
+
+                if (SaveLayoutCommand is RoutedCommand)
+                {
+                    (SaveLayoutCommand as RoutedCommand).Execute(xmlLayoutString, dockManager);
+                }
+                else
+                {
+                    SaveLayoutCommand.Execute(xmlLayoutString);
+                }
+            }
         }
     }
 }

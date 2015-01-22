@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using EventAggregator;
-using Diagnosis.Common;
+using Xceed.Wpf.AvalonDock.Layout.Serialization;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -11,7 +10,7 @@ namespace Diagnosis.ViewModels.Screens
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(MainWindowViewModel));
         private ScreenSwitcher switcher;
         private SearchViewModel searchPanel;
-        private bool? searchVis = null;
+        private bool? searchVisByUser = null;
 
         public MainWindowViewModel()
         {
@@ -24,11 +23,11 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     MenuBar.Visible = switcher.Screen != Screen.Login;
 
-                    var prevScreen = Panes.FirstOrDefault(p => p.ContentId == "Screen");
+                    var prevScreen = Panes.FirstOrDefault(p => p.ContentId == ScreenBaseViewModel.ScreenContentId);
                     logger.DebugFormat("CurrentView '{0}' -> '{1}'", prevScreen, CurrentView);
 
-                    // на первом экране поиск видно
-                    searchPanel.IsVisible = CanShowSearch && (searchVis.HasValue ? searchVis.Value : true);
+                    // показываем поиск на первом экране, где он может быть
+                    searchPanel.IsVisible = CanShowSearch && (searchVisByUser ?? true);
 
                     Panes.Add(CurrentView);
                     Panes.Remove(prevScreen);
@@ -43,18 +42,61 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (e.PropertyName == "IsVisible")
                 {
-                    if (CanShowSearch) searchVis = searchPanel.IsVisible;
+                    if (CanShowSearch)
+                        // пользователь скрыл/показал поиск, сохраняем
+                        searchVisByUser = searchPanel.IsVisible;
                 }
             };
             Panes = new ObservableCollection<PaneViewModel>();
-            Panes.Add(searchPanel);
-            ADLayout = new AvalonDockLayoutViewModel(Panes);
-            MenuBar = new MenuBarViewModel(switcher, searchPanel);
+            //Panes.Add(searchPanel);
+            Panes.CollectionChanged += (s, e) =>
+            {
+                logger.DebugFormat("Panes {0}", e.Action);
+            };
 
-            switcher.OpenScreen(Screen.Login, replace: true);
+            ADLayout = new AvalonDockLayoutViewModel(ReloadContentOnStartUp);
+            MenuBar = new MenuBarViewModel(switcher, searchPanel);
+            ADLayout.LayoutLoading += (s, e) =>
+            {
+                // сначала открываем первый экран
+                switcher.OpenScreen(Screen.Login, replace: true);
+            };
+            ADLayout.LayoutLoaded += (s, e) =>
+            {
+            };
         }
 
-        public ScreenBase CurrentView
+        private void ReloadContentOnStartUp(LayoutSerializationCallbackEventArgs args)
+        {
+            string cId = args.Model.ContentId;
+            if (string.IsNullOrWhiteSpace(cId) == true)
+            {
+                args.Cancel = true;
+                return;
+            }
+
+            var pane = Panes.FirstOrDefault(p => p.ContentId == cId);
+
+            if (pane != null)
+                args.Content = pane;
+            else
+            {
+                if (cId == SearchViewModel.ToolContentId)
+                {
+                    args.Content = searchPanel;
+                }
+                else if (cId == ScreenBaseViewModel.ScreenContentId)
+                {
+                    args.Content = CurrentView;
+                }
+
+                //args.Content = ReloadDocument(args.Model.ContentId);
+                if (args.Content == null)
+                    args.Cancel = true;
+            }
+        }
+
+        public ScreenBaseViewModel CurrentView
         {
             get { return switcher.CurrentView; }
         }

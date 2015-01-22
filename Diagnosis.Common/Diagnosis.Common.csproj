@@ -158,7 +158,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Combination.cs" />
-    <Compile Include="Extensions\AvalonExtensions.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Formatters\DateFormatter.cs" />
     <Compile Include="DateOffset.cs" />
