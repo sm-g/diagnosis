@@ -375,7 +375,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("hr({0}) {1} {2} {3}", HrItems.FlattenString(), Category, DateOffset, this.ShortId());
+            return string.Format("hr({0}) {1} {2} {3} {4}", HrItems.FlattenString(), Ord, Category, DateOffset, this.ShortId());
         }
 
         protected virtual void OnItemsChanged(NotifyCollectionChangedEventArgs e)

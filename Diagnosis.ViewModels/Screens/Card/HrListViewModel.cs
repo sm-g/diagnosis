@@ -153,7 +153,7 @@ namespace Diagnosis.ViewModels.Screens
                     }
                 }
             });
-            hrManager.DeletedHealthRecords.CollectionChanged += (s, e) =>
+            hrManager.DeletedHealthRecords.CollectionChangedWrapper += (s, e) =>
             {
                 if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
                 {
@@ -179,7 +179,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             };
 
-            HealthRecords.CollectionChanged += (s, e) =>
+            HealthRecords.CollectionChangedWrapper += (s, e) =>
             {
                 // если запись IsDeleted
                 HolderVm.UpdateIsEmpty();
@@ -208,7 +208,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public HolderViewModel HolderVm { get; private set; }
 
-        public ObservableCollection<ShortHealthRecordViewModel> HealthRecords { get { return hrManager.HealthRecords; } }
+        public INCCReadOnlyObservableCollection<ShortHealthRecordViewModel> HealthRecords { get { return hrManager.HealthRecords; } }
 
         //public IList<ShortHealthRecordViewModel> HealthRecordsView
         //{
@@ -605,17 +605,24 @@ namespace Diagnosis.ViewModels.Screens
             return null;
         }
 
-        private void SetGroupObject(ShortHealthRecordViewModel vm, CollectionViewGroup group)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vm"></param>
+        /// <param name="group">CollectionViewGroup or CollectionViewGroup.Name.</param>
+        private void SetGroupObject(ShortHealthRecordViewModel vm, object group)
         {
             if (group == null)
                 return;
+            if (group is CollectionViewGroup)
+                group = ((CollectionViewGroup)group).Name;
 
             switch (Grouping)
             {
                 case HrViewGroupingColumn.Category:
                     // перенос в другую группу меняет категорию
-                    Contract.Assume(group.Name is HrCategory);
-                    vm.healthRecord.Category = group.Name as HrCategory;
+                    Contract.Assume(group is HrCategory);
+                    vm.healthRecord.Category = group as HrCategory;
                     break;
 
                 case HrViewGroupingColumn.GroupingCreatedAt:
@@ -652,6 +659,18 @@ namespace Diagnosis.ViewModels.Screens
         {
             return col.ToString();
         }
+
+        private void Reorder(IEnumerable<object> data, int insertView, object group)
+        {
+            Contract.Requires(data.All(o => o is ShortHealthRecordViewModel));
+
+            var hrs = data.Cast<ShortHealthRecordViewModel>().ToList();
+            // view even with sorting can update after moving
+            var viewCopy = view.Cast<ShortHealthRecordViewModel>().ToList();
+
+            hrManager.Reorder(hrs, viewCopy, insertView, group, GetGroupObject, SetGroupObject);
+        }
+
 
         private void SetHrExtra(IList<ShortHealthRecordViewModel> vms)
         {
@@ -923,77 +942,15 @@ namespace Diagnosis.ViewModels.Screens
                 //  logger.DebugFormat("ddrop {0} {1}", data.Count(), data.First().GetType());
 
                 var insertView = dropInfo.InsertIndex;
-                ShortHealthRecordViewModel hrView;
                 if (FromSameCollection(dropInfo))
                 {
                     // drop hrs from hrslist
-                    var hrs = data.Cast<ShortHealthRecordViewModel>().ToList();
-                    //var targetList = dropInfo.TargetCollection.ToList();
 
                     //  logger.DebugFormat("selected bef {0} ", master.SelectedHealthRecords.Count());
 
-                    // reorder hrs
+                    var group = dropInfo.TargetGroup != null ? dropInfo.TargetGroup.Name : null;
+                    master.Reorder(data, insertView, group);
 
-                    // view even with sorting can update after moving
-                    var view = master.view.Cast<ShortHealthRecordViewModel>().ToList();
-
-                    foreach (var hr in hrs)
-                    {
-                        var old = master.HealthRecords.IndexOf(hr);
-                        var oldView = view.IndexOf(hr);
-
-                        // insertView [0..view.Count]
-
-                        // insert above group border or at the end
-                        bool aboveBorderOrAtEnd = insertView == view.Count;
-                        if (0 < insertView && insertView < view.Count && dropInfo.TargetGroup != null)
-                        {
-                            // gong can show adoner in both groups, above and below border
-
-                            hrView = (ShortHealthRecordViewModel)view[insertView];
-                            var hrPrevView = (ShortHealthRecordViewModel)view[insertView - 1];
-
-                            // var groups = master.view.Groups;
-                            // разные группы и у верхнего элемента — целевая
-                            aboveBorderOrAtEnd = master.GetGroupObject(hrPrevView) != master.GetGroupObject(hrView)
-                                && dropInfo.TargetGroup.Name == master.GetGroupObject(hrPrevView);
-                        }
-
-                        // сравниваем с элементом ниже указателя или с тем, что над границей/над концом списка, если указатель прямо под ним
-                        var toCompareView = aboveBorderOrAtEnd ? insertView - 1 : insertView;
-                        var toCompareHr = (ShortHealthRecordViewModel)view[toCompareView];
-                        var toCompare = master.HealthRecords.IndexOf(toCompareHr);
-
-                        // in view: always move before next element, but after last in group
-
-                        // перемещаем на место элемента, с которым сравниваем,
-                        // если над границей - на место следующего
-                        int moveBeforeItemAt = aboveBorderOrAtEnd ? toCompare + 1 : toCompare;
-                        var down = old < moveBeforeItemAt; // move = remove + insert
-                        var dest = down ? moveBeforeItemAt - 1 : moveBeforeItemAt;
-
-                        //if (aboveBorderOrAtEnd)
-                        //    dest++;
-                        //if (old < dest)
-                        //    dest--;
-
-                        logger.DebugFormat("move {0}({1}) - {2}({3}) \n{4} compareTo {5}\n aboveBorderOrAtEnd = {6}\ndropInfo.TargetGroup {7}",
-                            old, oldView, dest, insertView,
-                            hr, toCompareHr,
-                            aboveBorderOrAtEnd,
-                            dropInfo.TargetGroup);
-                        if (old != dest)
-                        {
-                            master.HealthRecords.Move(old, dest);
-                        }
-                    }
-
-                    // view refreshed after this
-                    foreach (var hr in hrs)
-                    {
-                        if (dropInfo.TargetGroup != null)
-                            master.SetGroupObject(hr, dropInfo.TargetGroup);
-                    }
                     //  logger.DebugFormat("selected after dd {0} ", master.SelectedHealthRecords.Count());
                 }
                 else if (FromAutocomplete(dropInfo))
@@ -1008,8 +965,9 @@ namespace Diagnosis.ViewModels.Screens
                     newHR.SetItems(items);
                 }
                 master.OnSaveNeeded();
-                logger.DebugFormat("selected after save {0} ", master.SelectedHealthRecords.Count());
+                //logger.DebugFormat("selected after save {0} ", master.SelectedHealthRecords.Count());
             }
+
         }
 
         public class DragSourceHandler : IDragSource

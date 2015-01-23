@@ -217,5 +217,17 @@ namespace Diagnosis.Common
                 .All(x => !(keyExtractor(x.a).CompareTo(keyExtractor(x.b)) > 0));
 
         }
+
+        /// <summary>
+        /// True if items ordered by ascending key without equal keys (next > prev).
+        /// </summary>
+        [Pure]
+        public static bool IsStrongOrdered<T, TKey>(this IEnumerable<T> items, Func<T, TKey> keyExtractor)
+            where TKey : IComparable<TKey>
+        {
+            return items.Zip(items.Skip(1), (a, b) => new { a, b })
+                .All(x => keyExtractor(x.a).CompareTo(keyExtractor(x.b)) < 0);
+
+        }
     }
 }

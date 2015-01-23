@@ -372,7 +372,7 @@ namespace Diagnosis.ViewModels.Screens
 
                 HrList.PropertyChanged += HrList_PropertyChanged;
                 HrList.SaveNeeded += SaveHealthRecords;
-                HrList.HealthRecords.CollectionChanged += HrList_HealthRecords_CollectionChanged;
+                HrList.HealthRecords.CollectionChangedWrapper += HrList_HealthRecords_CollectionChanged;
 
                 // сначала создаем HrList, чтобы hrManager подписался на добавление записей первым,
                 // иначе HrList.SelectHealthRecord нечего выделять при добавлении записи
@@ -389,12 +389,8 @@ namespace Diagnosis.ViewModels.Screens
                 // новые записи — вставка/дроп записей/тегов на список
                 // смена порядка — дроп записей
 
-                var sorted = HrList.HealthRecords;
-                // ставим порядок
-                for (int i = 0; i < sorted.Count; i++)
-                {
-                    sorted[i].healthRecord.Ord = i;
-                }
+                Contract.Assume(HrList.HealthRecords.IsStrongOrdered(x => x.Ord));
+
                 // сохраняем все записи кроме открытой в редакторе
                 saver.Save(HrList.HealthRecords
                     .Select(vm => vm.healthRecord)
