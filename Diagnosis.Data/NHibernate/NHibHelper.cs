@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Data.Mappings;
+using Diagnosis.Data.NHibernate;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Cfg.MappingSchema;
@@ -9,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
-using Diagnosis.Data.NHibernate;
+
 namespace Diagnosis.Data
 {
     public static class NHibernateHelper

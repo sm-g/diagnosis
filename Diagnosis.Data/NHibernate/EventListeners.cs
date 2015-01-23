@@ -48,7 +48,7 @@ namespace Diagnosis.Data.NHibernate
     [Serializable]
     internal class PreEventListener : IPreInsertEventListener, IPreUpdateEventListener, IPreDeleteEventListener, IPreLoadEventListener
     {
-        private readonly IEntityCrudTracker _logger;
+        private readonly IEntityCrudTracker _logger = null;
 
         public PreEventListener()
             : this(new Logger())

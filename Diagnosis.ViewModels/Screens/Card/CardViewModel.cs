@@ -241,7 +241,7 @@ namespace Diagnosis.ViewModels.Screens
             IHrsHolder holder;
             if (parameter is IHrsHolder)
             {
-                holder = Session.Unproxy(parameter as IHrsHolder);
+                holder = (parameter as IEntity).Actual as IHrsHolder;
 
                 if (lastAppOrCourse)
                     viewer.AutoOpen = true;
@@ -255,7 +255,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 var hr = parameter as HealthRecord;
                 Navigator.Add(hr.GetPatient());
-                holder = Session.Unproxy(hr.Holder as IHrsHolder);
+                holder = hr.Holder.Actual as IHrsHolder;
                 Navigator.NavigateTo(holder);
                 HrList.SelectHealthRecord(hr);
             }
@@ -266,7 +266,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (first != null)
                 {
                     Navigator.Add(first.GetPatient());
-                    holder = Session.Unproxy(first.Holder as IHrsHolder);
+                    holder = first.Holder.Actual as IHrsHolder;
                     Navigator.NavigateTo(holder);
                     HrList.SelectHealthRecords(hrs);
                 }
