@@ -24,14 +24,21 @@ namespace Diagnosis.ViewModels.Screens
             this.onHrVmPropChanged = onHrVmPropChanged;
             holder.HealthRecordsChanged += holder_HealthRecordsChanged;
 
-            var hrVMs = holder.HealthRecords
+            var hrs = holder.HealthRecords
                 .OrderBy(hr => hr.Ord)
+                .ToList();
+
+            for (int i = 0; i < hrs.Count; i++)
+            {
+                hrs[i].Ord = i;
+            }
+            // all hrs with different order now
+
+            var hrVMs = hrs
                 .Select(hr => CreateViewModel(hr))
                 .ToList();
 
             inner = new ObservableCollection<ShortHealthRecordViewModel>(hrVMs);
-            SetOrder();
-            // all hrs with different order now
 
             healthRecords = new ObservableCollection<ShortHealthRecordViewModel>(hrVMs
                  .Where(hr => !hr.IsDeleted));
