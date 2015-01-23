@@ -8,6 +8,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Tests")]
+[assembly: InternalsVisibleTo("Diagnosis.Data")]
 
 namespace Diagnosis.Models
 {

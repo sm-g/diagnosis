@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Models;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
+using NHibernate.Type;
 
 namespace Diagnosis.Data.Mappings
 {
@@ -38,14 +39,18 @@ namespace Diagnosis.Data.Mappings
                 m.NotNullable(true);
                 m.Column(c =>
                 {
-                    if (NHibernateHelper.InMemory)
-                        c.Default("now"); // sqlite
-                    else
-                        c.Default("GETDATE()"); // sqlserver ce
+                    c.Default(Helper.SqlDateTimeNow);
                 });
             });
-
-            Property(x => x.Unit, m => m.Type<NHibernate.Type.EnumStringType<HealthRecordUnit>>());
+            Property(x => x.UpdatedAt, m =>
+            {
+                m.NotNullable(true);
+                m.Column(c =>
+                {
+                    c.Default(Helper.SqlDateTimeNow);
+                });
+            });
+            Property(x => x.Unit, m => m.Type<EnumStringType<HealthRecordUnit>>());
 
             Set(x => x.HrItems, s =>
             {

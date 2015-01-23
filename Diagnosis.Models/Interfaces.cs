@@ -63,6 +63,13 @@ namespace Diagnosis.Models
         void RemoveHealthRecord(HealthRecord hr);
     }
 
+    internal interface IHaveAuditInformation : IEntity
+    {
+        DateTime UpdatedAt { get; set; }
+        DateTime CreatedAt { get; set; }
+    }
+
+    #region EventArgs
 
     [Serializable]
     public class DomainEntityEventArgs : EventArgs
@@ -100,6 +107,7 @@ namespace Diagnosis.Models
             this.user = user;
         }
     }
+    #endregion
 
     [ContractClassFor(typeof(IHrsHolder))]
     abstract class ContractForIHrsHolder : IHrsHolder

@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class Patient : ValidatableEntity<Guid>, IDomainObject, IHrsHolder, IMan, IComparable<Patient>
+    public class Patient : ValidatableEntity<Guid>, IDomainObject, IHaveAuditInformation, IHrsHolder, IMan, IComparable<Patient>
     {
         private Iesi.Collections.Generic.ISet<Course> courses = new HashedSet<Course>();
         Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
@@ -26,6 +26,8 @@ namespace Diagnosis.Models
         private bool? _isMale;
 
         public virtual event NotifyCollectionChangedEventHandler CoursesChanged;
+        private DateTime _updatedAt;
+        private DateTime _createdAt;
 
         public virtual string FirstName
         {
@@ -109,6 +111,31 @@ namespace Diagnosis.Models
                     OnPropertyChanged("Age");
             }
         }
+        public virtual DateTime CreatedAt
+        {
+            get { return _createdAt; }
+        }
+
+        DateTime IHaveAuditInformation.CreatedAt
+        {
+            get { return _updatedAt; }
+            set
+            {
+                _createdAt = value;
+            }
+        }
+
+        DateTime IHaveAuditInformation.UpdatedAt
+        {
+            get { return _updatedAt; }
+            set { SetProperty(ref _updatedAt, value, () => UpdatedAt); }
+        }
+
+        public virtual DateTime UpdatedAt
+        {
+            get { return _updatedAt; }
+        }
+
         public virtual IEnumerable<Course> Courses
         {
             get { return courses; }
@@ -160,6 +187,7 @@ namespace Diagnosis.Models
             int? month = null,
             int? day = null,
             bool? isMale = null)
+            : this()
         {
             LastName = lastName;
             FirstName = firstName;
@@ -172,7 +200,8 @@ namespace Diagnosis.Models
 
         protected Patient()
         {
-
+            _createdAt = DateTime.Now;
+            _updatedAt = DateTime.Now;
         }
         public virtual HealthRecord AddHealthRecord(Doctor author)
         {

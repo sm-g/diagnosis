@@ -12,12 +12,14 @@ using Diagnosis.Models.Validators;
 
 namespace Diagnosis.Models
 {
-    public class Appointment : ValidatableEntity<Guid>, IDomainObject, IHrsHolder, IComparable<Appointment>
+    public class Appointment : ValidatableEntity<Guid>, IDomainObject, IHaveAuditInformation, IHrsHolder, IComparable<Appointment>
     {
         Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
         private DateTime _dateTime;
+        private DateTime _updatedAt;
 
         public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
+        private DateTime _createdAt;
 
         public virtual Course Course { get; protected set; }
         public virtual Doctor Doctor { get; set; }
@@ -26,12 +28,37 @@ namespace Diagnosis.Models
             get { return _dateTime; }
             set { SetProperty(ref _dateTime, value, "DateAndTime"); }
         }
+        public virtual DateTime CreatedAt
+        {
+            get { return _createdAt; }
+        }
+
+        DateTime IHaveAuditInformation.CreatedAt
+        {
+            get { return _updatedAt; }
+            set
+            {
+                _createdAt = value;
+            }
+        }
+        DateTime IHaveAuditInformation.UpdatedAt
+        {
+            get { return _updatedAt; }
+            set { SetProperty(ref _updatedAt, value, () => UpdatedAt); }
+        }
+
+        public virtual DateTime UpdatedAt
+        {
+            get { return _updatedAt; }
+        }
+
         public virtual IEnumerable<HealthRecord> HealthRecords
         {
             get { return healthRecords.OrderBy(x => x.Ord); }
         }
 
         public Appointment(Course course, Doctor doctor)
+            : this()
         {
             Contract.Requires(course != null);
             Contract.Requires(doctor != null);
@@ -41,7 +68,11 @@ namespace Diagnosis.Models
             DateAndTime = DateTime.Now;
         }
 
-        protected Appointment() { }
+        protected Appointment()
+        {
+            _createdAt = DateTime.Now;
+            _updatedAt = DateTime.Now;
+        }
 
         public virtual HealthRecord AddHealthRecord(Doctor author)
         {

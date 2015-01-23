@@ -1,8 +1,4 @@
-﻿#if DEBUG
-//#define LOG
-#endif
-
-using Diagnosis.Data.Mappings;
+﻿using Diagnosis.Data.Mappings;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Cfg.MappingSchema;
@@ -13,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
-
+using Diagnosis.Data.NHibernate;
 namespace Diagnosis.Data
 {
     public static class NHibernateHelper
@@ -116,13 +112,12 @@ namespace Diagnosis.Data
             else
                 cfg.Configure(ConfigFile);
 
-#if LOG
             var preListener = new PreEventListener();
             cfg.AppendListeners(ListenerType.PreUpdate, new IPreUpdateEventListener[] { preListener });
             cfg.AppendListeners(ListenerType.PreInsert, new IPreInsertEventListener[] { preListener });
             cfg.AppendListeners(ListenerType.PreDelete, new IPreDeleteEventListener[] { preListener });
             cfg.AppendListeners(ListenerType.PreLoad, new IPreLoadEventListener[] { preListener });
-#endif
+
             var postListener = new PostEventListener();
             cfg.AppendListeners(ListenerType.PostUpdate, new IPostUpdateEventListener[] { postListener });
             cfg.AppendListeners(ListenerType.PostInsert, new IPostInsertEventListener[] { postListener });

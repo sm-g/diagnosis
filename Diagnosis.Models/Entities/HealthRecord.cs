@@ -10,7 +10,7 @@ using Wintellect.PowerCollections;
 
 namespace Diagnosis.Models
 {
-    public class HealthRecord : EntityBase<Guid>, IDomainObject
+    public class HealthRecord : EntityBase<Guid>, IDomainObject, IHaveAuditInformation
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HealthRecord));
         private Iesi.Collections.Generic.ISet<HrItem> hrItems = new HashedSet<HrItem>();
@@ -22,9 +22,10 @@ namespace Diagnosis.Models
         private DateOffset _dateOffset;
         private HealthRecordUnit _unit;
         private DateTime _createdAt;
+        private DateTime _updatedAt;
+        private int _ord;
 
         public virtual event NotifyCollectionChangedEventHandler ItemsChanged;
-        private int _ord;
 
         public virtual Patient Patient { get; protected set; }
 
@@ -112,10 +113,26 @@ namespace Diagnosis.Models
         public virtual DateTime CreatedAt
         {
             get { return _createdAt; }
-            protected set
+        }
+
+        DateTime IHaveAuditInformation.CreatedAt
+        {
+            get { return _updatedAt; }
+            set
             {
                 _createdAt = value;
             }
+        }
+
+        DateTime IHaveAuditInformation.UpdatedAt
+        {
+            get { return _updatedAt; }
+            set { SetProperty(ref _updatedAt, value, () => UpdatedAt); }
+        }
+
+        public virtual DateTime UpdatedAt
+        {
+            get { return _updatedAt; }
         }
 
         public virtual DateOffset DateOffset
@@ -223,7 +240,8 @@ namespace Diagnosis.Models
 
         protected HealthRecord()
         {
-            CreatedAt = DateTime.Now;
+            _createdAt = DateTime.Now;
+            _updatedAt = DateTime.Now;
             this.PropertyChanged += (s, e) => // подписываемся в первую очередь
             {
                 try

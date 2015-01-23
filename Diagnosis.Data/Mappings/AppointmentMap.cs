@@ -17,6 +17,23 @@ namespace Diagnosis.Data.Mappings
             {
                 m.NotNullable(true);
             });
+            Property(x => x.CreatedAt, m =>
+            {
+                m.NotNullable(true);
+                m.Column(c =>
+                {
+                    c.Default(Helper.SqlDateTimeNow);
+                });
+            });
+            Property(x => x.UpdatedAt, m =>
+            {
+                m.NotNullable(true);
+                m.Column(c =>
+                {
+                    c.Default(Helper.SqlDateTimeNow);
+                });
+            });
+
             Set(x => x.HealthRecords, s =>
             {
                 s.Key(k =>

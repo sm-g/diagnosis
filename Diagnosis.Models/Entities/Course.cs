@@ -9,7 +9,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class Course : ValidatableEntity<Guid>, IDomainObject, IHrsHolder, IComparable<Course>
+    public class Course : ValidatableEntity<Guid>, IDomainObject, IHaveAuditInformation, IHrsHolder, IComparable<Course>
     {
         private Iesi.Collections.Generic.ISet<Appointment> appointments = new HashedSet<Appointment>();
         private Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
@@ -20,6 +20,8 @@ namespace Diagnosis.Models
 
         private DateTime _start;
         private DateTime? _end;
+        private DateTime _updatedAt;
+        private DateTime _createdAt;
 
         public virtual Patient Patient { get; protected set; }
 
@@ -50,6 +52,30 @@ namespace Diagnosis.Models
         }
 
         public virtual bool IsEnded { get { return End.HasValue; } }
+        public virtual DateTime CreatedAt
+        {
+            get { return _createdAt; }
+        }
+
+        DateTime IHaveAuditInformation.CreatedAt
+        {
+            get { return _updatedAt; }
+            set
+            {
+                _createdAt = value;
+            }
+        }
+
+        DateTime IHaveAuditInformation.UpdatedAt
+        {
+            get { return _updatedAt; }
+            set { SetProperty(ref _updatedAt, value, () => UpdatedAt); }
+        }
+
+        public virtual DateTime UpdatedAt
+        {
+            get { return _updatedAt; }
+        }
 
         public virtual IEnumerable<Appointment> Appointments
         {
@@ -62,6 +88,7 @@ namespace Diagnosis.Models
         }
 
         public Course(Patient patient, Doctor doctor)
+            : this()
         {
             Contract.Requires(patient != null);
             Contract.Requires(doctor != null);
@@ -73,6 +100,8 @@ namespace Diagnosis.Models
 
         protected internal Course()
         {
+            _createdAt = DateTime.Now;
+            _updatedAt = DateTime.Now;
         }
 
         /// <summary>
