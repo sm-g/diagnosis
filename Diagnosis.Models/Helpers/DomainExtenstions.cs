@@ -21,27 +21,29 @@ namespace Diagnosis.Models
 
     public static class IHrsHolderExtensions
     {
-        public static IEnumerable<Word> GetAllWords(this Patient patient)
+        /// <summary>
+        /// Все записи держателя и его вложенных держателей.
+        /// </summary>
+        public static IEnumerable<HealthRecord> GetAllHrs(this IHrsHolder holder)
         {
-            var pWords = patient.HealthRecords.SelectMany(hr => hr.Words);
-            var cWords = patient.Courses.SelectMany(c => c.GetAllWords());
-            return pWords.Union(cWords);
-        }
+            if (holder is Patient)
+            {
+                return (holder as Patient).GetAllHrs();
+            }
+            if (holder is Course)
+            {
+                return (holder as Course).GetAllHrs();
+            }
+            if (holder is Appointment)
+            {
+                return (holder as Appointment).HealthRecords;
+            }
 
-        public static IEnumerable<Word> GetAllWords(this Course course)
-        {
-            var cWords = course.HealthRecords.SelectMany(hr => hr.Words);
-            var appsWords = course.Appointments.SelectMany(app => app.GetAllWords());
-            return cWords.Union(appsWords);
-        }
-
-        public static IEnumerable<Word> GetAllWords(this Appointment app)
-        {
-            return app.HealthRecords.SelectMany(hr => hr.Words);
+            throw new ArgumentOutOfRangeException("holder");
         }
 
         /// <summary>
-        /// Все слова из записей держателя и его вложенных держателей.
+        /// Все слова из записей держателя и его вложенных держателей. С повторами.
         /// </summary>
         /// <param name="holder"></param>
         /// <returns></returns>
@@ -93,6 +95,35 @@ namespace Diagnosis.Models
             }
 
             throw new ArgumentOutOfRangeException("holder");
+        }
+
+        static IEnumerable<HealthRecord> GetAllHrs(this Patient pat)
+        {
+            var courseHrs = pat.Courses.SelectMany(x => x.GetAllHrs());
+            return pat.HealthRecords.Union(courseHrs);
+        }
+        static IEnumerable<HealthRecord> GetAllHrs(this Course course)
+        {
+            var appHrs = course.Appointments.SelectMany(x => x.HealthRecords);
+            return course.HealthRecords.Union(appHrs);
+        }
+        static IEnumerable<Word> GetAllWords(this Patient patient)
+        {
+            var pWords = patient.HealthRecords.SelectMany(hr => hr.Words);
+            var cWords = patient.Courses.SelectMany(c => c.GetAllWords());
+            return pWords.Union(cWords);
+        }
+
+        static IEnumerable<Word> GetAllWords(this Course course)
+        {
+            var cWords = course.HealthRecords.SelectMany(hr => hr.Words);
+            var appsWords = course.Appointments.SelectMany(app => app.GetAllWords());
+            return cWords.Union(appsWords);
+        }
+
+        static IEnumerable<Word> GetAllWords(this Appointment app)
+        {
+            return app.HealthRecords.SelectMany(hr => hr.Words);
         }
     }
 
