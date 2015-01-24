@@ -348,7 +348,7 @@
     <Compile Include="Converters\DateLabels.cs" />
     <Compile Include="Converters\IsLastItem.cs" />
     <Compile Include="Converters\EqualityToBool.cs" />
-    <Compile Include="Converters\ManToShortName.cs" />
+    <Compile Include="Converters\ManToName.cs" />
     <Compile Include="Converters\Summator.cs" />
     <Compile Include="Converters\BooleanConverter.cs" />
     <Compile Include="Converters\BoolToSexSign.cs" />

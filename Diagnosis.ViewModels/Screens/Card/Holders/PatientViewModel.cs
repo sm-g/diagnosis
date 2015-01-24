@@ -68,7 +68,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private string _myProperty;
         public string FullName
         {
             get

@@ -59,8 +59,9 @@
                     <TextBlock TextWrapping="Wrap"                               
                                Grid.Row="1"
                                Grid.Column="1">
-                        <Run>Если неизвестно, оставьте незаполненным, вместо имени будет показано время создания: </Run>
-                        <Run Text="{Binding CreatedAt, Mode=OneWay, StringFormat={}{0:dd.MM.yy hh:ss}.}" />
+                        <Run>Если неизвестно, оставьте пустым, вместо имени будет показано время создания: </Run>
+                        <Run  Text="{Binding CreatedAt, Mode=OneWay, StringFormat={}{0:dd.MM.yy hh:ss}.}"
+                              FontStyle="Italic" />
                     </TextBlock>
                 </Grid>
                 <!--<DockPanel>

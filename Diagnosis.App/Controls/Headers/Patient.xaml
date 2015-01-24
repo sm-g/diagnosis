@@ -11,8 +11,7 @@
     <DockPanel>
         <TextBlock MinWidth="30"
                    VerticalAlignment="Center"
-                   Text="{Binding Actual,
-                                  Converter={StaticResource ManToShortName}}" />
+                   Text="{Binding Converter={StaticResource ManToName}, ConverterParameter=True}" />
         <TextBlock Margin="20,0,5,0"
                    VerticalAlignment="Center"
                    FontSize="20"

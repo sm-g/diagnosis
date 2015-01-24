@@ -28,7 +28,7 @@
     <conv:EnumToLabel x:Key="EnumToLabel" />
 
     <conv:Summator x:Key="SummatorConverter" />
-    <conv:ManToShortName x:Key="ManToShortName" />
+    <conv:ManToName x:Key="ManToName" />
 
     <conv:EqualityToBoolConverter x:Key="EqualToBool" />
     <conv:EqualityToBoolMultiConverter x:Key="EqualAllToBool" />
