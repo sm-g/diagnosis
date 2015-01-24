@@ -37,18 +37,40 @@
                            BasedOn="{StaticResource label120}" />
                 </StackPanel.Resources>
                 <!-- PatientViewModel -->
-                <DockPanel>
-                    <Label Content="Фамилия" />
-                    <TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
-                </DockPanel>
-                <DockPanel>
+                <Grid Margin="0 0 0 10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Content="Имя"
+                           VerticalAlignment="Top" />
+                    <TextBox Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                             Grid.Column="1">
+                        <controls:WatermarkService.Watermark>
+                            <TextBlock Style="{StaticResource watermark}"
+                                       Margin="5,0,0,0">ФИО</TextBlock>
+                        </controls:WatermarkService.Watermark>
+                    </TextBox>
+                    <TextBlock TextWrapping="Wrap"                               
+                               Grid.Row="1"
+                               Grid.Column="1">
+                        <Run>Если неизвестно, оставьте незаполненным, вместо имени будет показано время создания: </Run>
+                        <Run Text="{Binding CreatedAt, Mode=OneWay, StringFormat={}{0:dd.MM.yy hh:ss}.}" />
+                    </TextBlock>
+                </Grid>
+                <!--<DockPanel>
                     <Label Content="Имя" />
                     <TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
                 </DockPanel>
                 <DockPanel>
                     <Label Content="Отчество" />
                     <TextBox Text="{Binding MiddleName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
-                </DockPanel>
+                </DockPanel>-->
                 <DockPanel>
                     <Label Content="Дата рождения" />
                     <editors:ComboBoxDatePicker x:Name="comboDatePicker"
@@ -70,7 +92,8 @@
                                VerticalAlignment="Center"></TextBlock>
                 </DockPanel>
                 <DockPanel>
-                    <Label Content="Пол" VerticalAlignment="Top" />
+                    <Label Content="Пол"
+                           VerticalAlignment="Top" />
                     <editors:SexChooser HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         WithUnknown="True" />

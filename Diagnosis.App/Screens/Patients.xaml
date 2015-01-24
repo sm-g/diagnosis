@@ -92,15 +92,9 @@
                   AutoGenerateColumns="False"
                   SelectedCellsChanged="dataGrid_SelectedCellsChanged">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Фамилия"
-                                    IsReadOnly="True"
-                                    Binding="{Binding LastName, Mode=OneWay}" />
                 <DataGridTextColumn Header="Имя"
                                     IsReadOnly="True"
-                                    Binding="{Binding FirstName, Mode=OneWay}" />
-                <DataGridTextColumn Header="Отчество"
-                                    IsReadOnly="True"
-                                    Binding="{Binding MiddleName, Mode=OneWay}" />
+                                    Binding="{Binding FullNameOrCreatedAt, Mode=OneWay}" />
                 <DataGridCheckBoxColumn Header="Пол"
                                         IsReadOnly="True"
                                         Binding="{Binding IsMale, Mode=OneWay}"

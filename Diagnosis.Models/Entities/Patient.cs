@@ -172,11 +172,24 @@ namespace Diagnosis.Models
                 }
             }
         }
+        /// <summary>
+        /// Полное имя.
+        /// </summary>
         public virtual string FullName
         {
             get
             {
-                return LastName + " " + FirstName + " " + MiddleName;
+                return NameFormatter.GetFullName(this);
+            }
+        }
+        /// <summary>
+        /// Полное имя или время создания.
+        /// </summary>
+        public virtual string FullNameOrCreatedAt
+        {
+            get
+            {
+                return NameFormatter.GetFullName(this) ?? CreatedAt.ToString("dd.MM.yy hh:mm");
             }
         }
         /// <summary>
