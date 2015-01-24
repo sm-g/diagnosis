@@ -7,6 +7,8 @@ namespace Diagnosis.Common
 {
     public class Plurals
     {
+        public static string[] minutes = new string[3] { "минута", "минуты", "минут" };
+        public static string[] hours = new string[3] { "час", "часа", "часов" };
         public static string[] days = new string[3] { "день", "дня", "дней" };
         public static string[] weeks = new string[3] { "неделя", "недели", "недель" };
         public static string[] months = new string[3] { "месяц", "месяца", "месяцев" };

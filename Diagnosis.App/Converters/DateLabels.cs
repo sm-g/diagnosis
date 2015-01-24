@@ -43,13 +43,12 @@ namespace Diagnosis.App.Converters
 
             DateTime from = (DateTime)value;
 
-            var prefix = parameter as string;
-            var str = DateFormatter.GetDateString(from);
+            var relativeEnding = parameter as string;
 
-            if (prefix == null)
-                return str;
+            if (relativeEnding == null)
+                return DateFormatter.GetDateString(from);
             else
-                return string.Format("{0} {1}", prefix, str);
+                return DateFormatter.GetRelativeDateString(from, relativeEnding);
         }
 
         public object ConvertBack(object value, Type targetType,

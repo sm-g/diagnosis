@@ -64,6 +64,59 @@ namespace Diagnosis.Common
             return date.ToString(formats.Item1);
         }
 
+        /// <summary>
+        /// Дата относительно сейчас.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public static string GetRelativeDateString(DateTime date, string ending = "назад")
+        {
+            TimeSpan s = DateTime.Now.Subtract(date);
+            int dayDiff = (int)s.TotalDays;
+            int secDiff = (int)s.TotalSeconds;
+
+            if (dayDiff < 0) // future
+            {
+                return date.ToString("dd.MM.yyyy hh:mm");
+            }
+
+            if (dayDiff == 0)
+            {
+                if (secDiff < 2 * 60)
+                {
+                    return "только что";
+                }
+                if (secDiff < 3600) // час
+                {
+                    var min = (int)Math.Floor((double)secDiff / 60);
+                    var minsPlural = Plurals.minutes[Plurals.GetPluralEnding(min)];
+                    return string.Format("{0} {1} {2}",
+                        min, minsPlural, ending);
+                }
+                if (secDiff < 7200) // 2 часа
+                {
+                    return string.Format("час {0}", ending);
+                }
+                if (secDiff < 86400) // сутки
+                {
+                    return string.Format("{0} ч. {1}",
+                        Math.Floor((double)secDiff / 3600), ending);
+                }
+            }
+
+            if (dayDiff == 1)
+            {
+                return "вчера";
+            }
+            if (dayDiff < 7)
+            {
+                var daysPlural = Plurals.days[Plurals.GetPluralEnding(dayDiff)];
+                return string.Format("{0} {1} {2}", dayDiff, daysPlural, ending);
+            }
+
+            return date.ToString("dd.MM.yyyy");
+        }
+
         public static Tuple<string, string> GetFormat(DateTime from, DateTime? to = null)
         {
             DateTime now = DateTime.Today;

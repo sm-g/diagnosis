@@ -179,7 +179,23 @@ namespace Diagnosis.Models
                 return LastName + " " + FirstName + " " + MiddleName;
             }
         }
+        /// <summary>
+        /// Дата последнего обновления записей внутри пациента.
+        /// Дата обновления пациента, если запсией нет.
+        /// </summary>
+        public virtual DateTime LastHrUpdatedAt
+        {
+            get
+            {
+                if (this.GetAllHrs().Any())
+                    return this.GetAllHrs()
+                        .OrderByDescending(x => x.UpdatedAt)
+                        .First().UpdatedAt;
+                else
+                    return this.UpdatedAt;
 
+            }
+        }
         public Patient(string lastName = null,
             string firstName = null,
             string middleName = null,

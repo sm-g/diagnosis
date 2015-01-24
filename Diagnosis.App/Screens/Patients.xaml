@@ -108,6 +108,9 @@
                 <DataGridTextColumn Header="Возраст"
                                     IsReadOnly="True"
                                     Binding="{Binding Age, Mode=OneWay}" />
+                <DataGridTextColumn Header="Изменено"
+                                    IsReadOnly="True"
+                                    Binding="{Binding LastHrUpdatedAt, Mode=OneWay, Converter={StaticResource DateLabel}, ConverterParameter='назад'}" />
             </DataGrid.Columns>
             <DataGrid.InputBindings>
                 <KeyBinding Key="Enter"

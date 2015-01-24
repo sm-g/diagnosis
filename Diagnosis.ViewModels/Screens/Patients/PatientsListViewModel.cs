@@ -63,9 +63,11 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     _patients = new ObservableCollection<Patient>();
                     var patientsView = (CollectionView)CollectionViewSource.GetDefaultView(_patients);
+                    SortDescription sort0 = new SortDescription("LastHrUpdatedAt", ListSortDirection.Descending);
                     SortDescription sort1 = new SortDescription("LastName", ListSortDirection.Ascending);
                     SortDescription sort2 = new SortDescription("FirstName", ListSortDirection.Ascending);
                     SortDescription sort3 = new SortDescription("MiddleName", ListSortDirection.Ascending);
+                    patientsView.SortDescriptions.Add(sort0);
                     patientsView.SortDescriptions.Add(sort1);
                     patientsView.SortDescriptions.Add(sort2);
                     patientsView.SortDescriptions.Add(sort3);
