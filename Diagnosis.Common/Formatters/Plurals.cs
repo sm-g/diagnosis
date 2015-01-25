@@ -26,6 +26,7 @@ namespace Diagnosis.Common
         public static int GetPluralEnding(int count)
         {
             int ending;
+            count = Math.Abs(count);
             if (count % 10 == 0 || count % 10 >= 5 || (count >= 11 && count <= 14))
             {
                 ending = 2;

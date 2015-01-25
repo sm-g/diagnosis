@@ -31,6 +31,13 @@ namespace Tests
 
             Assert.AreEqual(Plurals.days[2], str);
         }
+        [TestMethod]
+        public void UnitNegative()
+        {
+            var str = DateOffsetFormatter.GetUnitString(-1, DateUnit.Day);
+
+            Assert.AreEqual(Plurals.days[0], str);
+        }
 
         [TestMethod]
         public void Full()
