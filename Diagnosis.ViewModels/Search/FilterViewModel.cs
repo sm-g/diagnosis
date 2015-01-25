@@ -123,7 +123,6 @@ namespace Diagnosis.ViewModels.Search
 
             Results.SyncWith(res);
 
-            IsFocused = true;
             OnFiltered();
         }
 

@@ -81,6 +81,7 @@
                   ItemsSource="{Binding Patients}"
                   SelectedItem="{Binding SelectedPatient}"
                   beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedPatients}"
+                  beh:FocusExtension.IsFocused="{Binding IsFocused}"
                   Visibility="{Binding NoPatients, Converter={StaticResource NegBooleanToVisibilityConverter}}"
                   CellStyle="{StaticResource CellStyle}"
                   GridLinesVisibility="None"
@@ -90,6 +91,7 @@
                   SelectionUnit="FullRow"
                   SelectionMode="Extended"
                   AutoGenerateColumns="False"
+                  GotKeyboardFocus="dataGrid_GotKeyboardFocus"
                   SelectedCellsChanged="dataGrid_SelectedCellsChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Имя"
