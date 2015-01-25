@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows.Data;
 
 namespace Diagnosis.App.Converters
 {
-    public class MoreThanToVisibility : IValueConverter
+    public class MoreThanToVisibility : BaseValueConverter
     {
-        public object Convert(object value, Type targetType,
-            object parameter, CultureInfo culture)
+        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             int count = (int)value;
             int limit = 0;
@@ -21,18 +19,11 @@ namespace Diagnosis.App.Converters
             }
             return System.Windows.Visibility.Collapsed;
         }
-
-        public object ConvertBack(object value, Type targetType,
-            object parameter, CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
     }
 
-    public class LessThanToVisibility : IValueConverter
+    public class LessThanToVisibility : BaseValueConverter
     {
-        public object Convert(object value, Type targetType,
-            object parameter, CultureInfo culture)
+        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             int count = (int)value;
             int limit = 1;
@@ -45,12 +36,6 @@ namespace Diagnosis.App.Converters
                 return System.Windows.Visibility.Visible;
             }
             return System.Windows.Visibility.Collapsed;
-        }
-
-        public object ConvertBack(object value, Type targetType,
-            object parameter, CultureInfo culture)
-        {
-            throw new NotSupportedException();
         }
     }
 }

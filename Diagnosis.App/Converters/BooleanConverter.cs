@@ -5,7 +5,7 @@ using System.Windows.Data;
 
 namespace Diagnosis.App.Converters
 {
-    public class BooleanConverter<T> : IValueConverter
+    public class BooleanConverter<T> : BaseValueConverter
     {
         public BooleanConverter(T trueValue, T falseValue)
         {
@@ -16,12 +16,12 @@ namespace Diagnosis.App.Converters
         public T True { get; set; }
         public T False { get; set; }
 
-        public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return value is bool && ((bool)value) ? True : False;
         }
 
-        public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return value is T && EqualityComparer<T>.Default.Equals((T)value, True);
         }
@@ -33,7 +33,7 @@ namespace Diagnosis.App.Converters
             base(false, true) { }
     }
 
-    public class NullableBooleanConverter<T> : IValueConverter
+    public class NullableBooleanConverter<T> : BaseValueConverter
     {
         public NullableBooleanConverter(T trueValue, T falseValue, T nullValue)
         {
@@ -46,7 +46,7 @@ namespace Diagnosis.App.Converters
         public T False { get; set; }
         public T Null { get; set; }
 
-        public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var b = value as bool?;
             if (b == null)
@@ -54,7 +54,7 @@ namespace Diagnosis.App.Converters
             return b.Value ? True : False;
         }
 
-        public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is T)
             {
@@ -67,11 +67,11 @@ namespace Diagnosis.App.Converters
         }
     }
 
-    public class NullableBooleanConverter : IValueConverter
+    public class NullableBooleanConverter : BaseValueConverter
     {
         // http://stackoverflow.com/a/18451465/3009578
         // works if initial is null. if initial is false, cannot set to true (double OnPropertyChanged?)
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             var test = (bool?)value;
             var result = bool.Parse((string)parameter);
@@ -83,7 +83,7 @@ namespace Diagnosis.App.Converters
             return false;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public override object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             var result = bool.Parse((string)parameter);
             return result;

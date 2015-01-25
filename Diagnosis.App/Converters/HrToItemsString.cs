@@ -8,9 +8,9 @@ using Diagnosis.Models;
 
 namespace Diagnosis.App.Converters
 {
-    public class HrToItemsString : IValueConverter
+    public class HrToItemsString : BaseValueConverter
     {
-        public object Convert(object value, Type targetType,
+        public override object Convert(object value, Type targetType,
             object parameter, CultureInfo culture)
         {
             var hr = value as HealthRecord;
@@ -19,12 +19,6 @@ namespace Diagnosis.App.Converters
                 return string.Join(" ", hr.GetOrderedEntities());
             }
             return "";
-        }
-
-        public object ConvertBack(object value, Type targetType,
-            object parameter, CultureInfo culture)
-        {
-            throw new NotSupportedException();
         }
     }
 }

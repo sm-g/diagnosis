@@ -246,6 +246,7 @@
       <DependentUpon>Patient.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Common\HrsHolderDataTemplateSelector.cs" />
+    <Compile Include="Converters\BaseConverter.cs" />
     <Compile Include="Windows\Helpers\AvalonExtensions.cs" />
     <Compile Include="Windows\Helpers\WindowHelper.cs" />
     <Compile Include="Controls\Helpers\XamlExtensions.cs" />
@@ -254,7 +255,7 @@
     </Compile>
     <Compile Include="Converters\EnumToLabel.cs" />
     <Compile Include="Converters\ScopeToLabel.cs" />
-    <Compile Include="Converters\InList.cs" />
+    <Compile Include="Converters\ListConverters.cs" />
     <Compile Include="Converters\HrToItemsString.cs" />
     <Compile Include="Screens\Card.xaml.cs">
       <DependentUpon>Card.xaml</DependentUpon>
@@ -344,12 +345,10 @@
       <DependentUpon>Tag.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\NullToVis.cs" />
-    <Compile Include="Converters\LessThanConverter.cs" />
-    <Compile Include="Converters\DateLabels.cs" />
-    <Compile Include="Converters\IsLastItem.cs" />
+    <Compile Include="Converters\NumericConverters.cs" />
+    <Compile Include="Converters\DateTimeLabels.cs" />
     <Compile Include="Converters\EqualityToBool.cs" />
     <Compile Include="Converters\ManToName.cs" />
-    <Compile Include="Converters\Summator.cs" />
     <Compile Include="Converters\BooleanConverter.cs" />
     <Compile Include="Converters\BoolToSexSign.cs" />
     <Compile Include="Converters\IntToString.cs" />

@@ -20,14 +20,14 @@
 
     <conv:OffsetUnitToUnitLabel x:Key="OffsetUnitToUnitLabel" />
     <conv:DateOffsetToUnitLabel x:Key="DateOffsetToUnitLabel" />
-    <conv:DateOffsetToLabel x:Key="DateOffsetToLabel" />
+    <conv:DateOffsetToPartialDateLabel x:Key="DateOffsetToPartialDateLabel" />
     <conv:TimeSpanLabel x:Key="TimeSpanToLabel" />
     <conv:DateIntervalLabel x:Key="DateIntervalLabel" />
     <conv:DateLabel x:Key="DateLabel" />
     <conv:MonthToString x:Key="MonthToString" />
     <conv:EnumToLabel x:Key="EnumToLabel" />
 
-    <conv:Summator x:Key="SummatorConverter" />
+    <conv:SummatorConverter x:Key="SummatorConverter" />
     <conv:ManToName x:Key="ManToName" />
 
     <conv:EqualityToBoolConverter x:Key="EqualToBool" />
