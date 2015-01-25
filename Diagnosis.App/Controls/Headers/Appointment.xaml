@@ -13,7 +13,7 @@
         <TextBlock Text="{Binding DateAndTime,
                                   Converter={StaticResource DateLabel}}" />
         <TextBlock Visibility="{Binding TimeVisibility, RelativeSource={RelativeSource AncestorType=headers:Holder}}">
-            <Run Text="{Binding DateAndTime, StringFormat={}{0:H:mm}}" />
+            <Run Text="{Binding DateAndTime, StringFormat={} {0:H:mm}}" />
         </TextBlock>
     </StackPanel>
 </UserControl>
