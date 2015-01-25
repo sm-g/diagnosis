@@ -159,6 +159,7 @@
   <ItemGroup>
     <Compile Include="Combination.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Formatters\DateFormatter.cs" />
     <Compile Include="DateOffset.cs" />
     <Compile Include="Extensions\ConvertExtensions.cs" />
