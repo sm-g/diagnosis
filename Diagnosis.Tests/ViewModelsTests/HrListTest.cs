@@ -285,7 +285,6 @@ namespace Tests
             Assert.AreEqual(hr[20].Appointment, new20.Appointment);
             Assert.AreEqual(hr[20].Category, new20.Category);
             Assert.AreEqual(hr[20].Course, new20.Course);
-            Assert.AreEqual(hr[20].DateOffset, new20.DateOffset);
             Assert.AreEqual(hr[20].Doctor, new20.Doctor);
             Assert.AreEqual(hr[20].FromDay, new20.FromDay);
             Assert.AreEqual(hr[20].FromMonth, new20.FromMonth);
