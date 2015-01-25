@@ -213,12 +213,12 @@ namespace Diagnosis.ViewModels.Screens
         /// <summary>
         /// Открывает редактор для записи и переводит фокус на него.
         /// </summary>
-        public void FocusHrEditor(HealthRecord hr)
+        public void FocusHrEditor(HealthRecord hr, bool addToSelected = true)
         {
             Contract.Requires(hr != null);
             //logger.DebugFormat("FocusHrEditor to {0}", hr);
 
-            HrList.SelectHealthRecord(hr, addToSelected: true);
+            HrList.SelectHealthRecord(hr, addToSelected);
             HrEditor.Load(hr);
             HrEditor.IsFocused = true;
         }
@@ -484,7 +484,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     // редактируем добавленную запись
                     var hr = (HealthRecord)e.NewItems[0];
-                    FocusHrEditor(hr);
+                    FocusHrEditor(hr, false);
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)

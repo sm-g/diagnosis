@@ -165,9 +165,10 @@ namespace Tests
         {
             var card = new CardViewModel(p[1], true);
 
-            Assert.IsNull(card.HrList.SelectedHealthRecord);
-
+            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
             card.HrList.AddHealthRecordCommand.Execute(null);
+
+            Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
             Assert.AreEqual(p[1].HealthRecords.Last(), card.HrList.SelectedHealthRecord.healthRecord);
         }
 
