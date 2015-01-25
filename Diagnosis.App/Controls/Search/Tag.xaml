@@ -82,7 +82,7 @@
                             <Setter Property="Background"
                                     Value="#FFEFFFD8" />
                             <Setter Property="ToolTip"
-                                    Value="Новое слово" />
+                                    Value="Новое ключевое слово" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Signalization}"
                                      Value="{x:Static diag:Signalizations.Forbidden}">
@@ -186,7 +186,7 @@
                               Command="{Binding SendToSearchCommand}" />
                     <Separator />
 
-                    <MenuItem Header="Слово"
+                    <MenuItem Header="Ключевое слово"
                               CommandParameter="{x:Static diag:BlankType.Word}"
                               IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:BlankType.Word}}"
                               Style="{StaticResource convert}" />

@@ -32,10 +32,10 @@
 
         <ToolBar>
             <Button Command="{Binding AddCommand}"
-                    ToolTip="Редактировать новое слово (Ctrl+Enter)">
+                    ToolTip="Добавить ключевое слово (Ctrl+Enter)">
                 <DockPanel>
                     <Image Source="{StaticResource addImage}" />
-                    <TextBlock Text="Добавить слово" />
+                    <TextBlock Text="Добавить" />
                 </DockPanel>
             </Button>
             <Button Command="{Binding SendToSearchCommand}">
@@ -43,7 +43,7 @@
                     <Image Source="{StaticResource findImage}" />
                     <TextBlock>
                         <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}"
-                             ToolTip="Искать выбранные слова (Ctrl+F)">Искать</Run>
+                             ToolTip="Искать выбранные ключевые слова (Ctrl+F)">Искать</Run>
                     </TextBlock>
                 </DockPanel>
             </Button>
