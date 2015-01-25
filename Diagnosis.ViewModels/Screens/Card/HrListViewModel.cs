@@ -57,6 +57,11 @@ namespace Diagnosis.ViewModels.Screens
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HrListViewModel));
         private static HrViewer hrViewer = new HrViewer();
+        /// <summary>
+        /// When set, selection changes not meaningfull.
+        /// </summary>
+        internal readonly FlagActionWrapper<IEnumerable<ShortHealthRecordViewModel>> preserveSelected;
+
         internal readonly IHrsHolder holder;
         internal readonly HealthRecordManager hrManager;
         private readonly ListCollectionView view;
@@ -72,10 +77,6 @@ namespace Diagnosis.ViewModels.Screens
         private bool _dragSource;
         private bool _dropTarget;
         private bool _focused;
-        /// <summary>
-        /// When set, selection changes not meaningfull.
-        /// </summary>
-        internal readonly FlagActionWrapper<IEnumerable<ShortHealthRecordViewModel>> preserveSelected;
         private bool inSetSelected;
 
         public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;

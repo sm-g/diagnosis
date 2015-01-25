@@ -211,7 +211,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         /// <summary>
-        /// Открывает редактор для записи и переводит фокус на него.
+        /// Открывает редактор для записи и начинает редактирование слов.
         /// </summary>
         public void FocusHrEditor(HealthRecord hr, bool addToSelected = true)
         {
@@ -220,7 +220,7 @@ namespace Diagnosis.ViewModels.Screens
 
             HrList.SelectHealthRecord(hr, addToSelected);
             HrEditor.Load(hr);
-            HrEditor.IsFocused = true;
+            HrEditor.Autocomplete.StartEdit();
         }
 
         public void ResetHistory()

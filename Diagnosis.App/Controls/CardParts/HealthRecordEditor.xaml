@@ -42,7 +42,7 @@
           GotKeyboardFocus="grid_GotKeyboardFocus"
           GotFocus="grid_GotFocus"
           LostFocus="grid_LostFocus"
-          beh:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
+          beh:FocusExtension.IsFocused="{Binding IsFocused}"
           beh:FocusExtension.Direct="True"
           KeyboardNavigation.IsTabStop="False"
           beh:FocusBehavior.FocusablePanel="True">
