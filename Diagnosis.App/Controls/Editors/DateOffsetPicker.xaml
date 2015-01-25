@@ -31,7 +31,7 @@
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal">
         <TextBox x:Name="offset"
-                 Text="{Binding DateOffset.Offset, ElementName=root, Mode=TwoWay, TargetNullValue='', UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                 Text="{Binding Offset, Mode=TwoWay, TargetNullValue='', UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                  IsReadOnly="{Binding ReadOnlyOffset, ElementName=root}"
                  MinWidth="50"
                  Margin="0,0,5,0"
@@ -40,7 +40,7 @@
                   ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
                   MinWidth="50">
             <ComboBox.SelectedItem>
-                <Binding Path="DateOffset.Unit"
+                <Binding Path="DataContext.Unit"  
                          ElementName="root"
                          Mode="TwoWay" />
             </ComboBox.SelectedItem>
@@ -48,9 +48,11 @@
                 <DataTemplate>
                     <TextBlock>
                         <TextBlock.Text>
-                            <MultiBinding Converter="{StaticResource OffsetUnitToUnitLabel}">
+                            <MultiBinding Converter="{StaticResource UnitForOffsetToUnitLabel}">
+                                <!-- DateUnit-->
                                 <Binding />
-                                <Binding Path="DateOffset.Offset"
+                                <!-- for some Offset-->
+                                <Binding Path="DataContext.Offset"
                                          ElementName="root" />
                             </MultiBinding>
                         </TextBlock.Text>

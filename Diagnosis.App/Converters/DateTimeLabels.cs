@@ -26,7 +26,9 @@ namespace Diagnosis.App.Converters
             return DateFormatter.GetIntervalString(from, to, labels);
         }
     }
-
+    /// <summary>
+    /// Дата или дата-время относительно сейчас, если есть параметр.
+    /// </summary>
     public class DateLabel : BaseValueConverter
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -45,7 +47,9 @@ namespace Diagnosis.App.Converters
         }
 
     }
-
+    /// <summary>
+    /// Промежуток времени (использовать с параметром, 'через ' или ' ранее').
+    /// </summary>
     public class TimeSpanLabel : BaseValueConverter
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -73,72 +77,6 @@ namespace Diagnosis.App.Converters
                     return string.Format("{0} {1}", label, str);
                 else
                     return string.Format("{0} {1}", str, label);
-        }
-    }
-
-    /// <summary>
-    /// Показывает текст DateUnit для DateOffset. 
-    /// </summary>
-    public class DateOffsetToUnitLabel : BaseValueConverter
-    {
-        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var d = value as DateOffset;
-            if (d == null)
-                return null;
-
-            return DateOffsetFormatter.GetUnitString(d.Offset, d.Unit);
-        }
-    }
-
-    public class DateOffsetToPartialDateLabel : BaseValueConverter
-    {
-        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var d = value as DateOffset;
-            if (d == null)
-                return null;
-
-            return DateOffsetFormatter.GetPartialDateString(d);
-        }
-    }
-
-    /// <summary>
-    /// Показывает текст DateUnit для некоторого числа. 
-    /// Когда выбираем DateUnit для DateOffset.
-    /// </summary>
-    public class OffsetUnitToUnitLabel : BaseMultiValueConverter
-    {
-        public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (values.Length < 2 || !(values[0] is DateUnit) || !(values[1] is int?))
-                return null;
-
-            var unit = (DateUnit)values[0];
-            int? offset = (int?)values[1];
-
-            return DateOffsetFormatter.GetUnitString(offset, unit);
-        }
-
-        public override object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        {
-            return new object[] { value };
-        }
-    }
-
-    /// <summary>
-    /// Показывает текст DateUnit для некоторого числа. 
-    /// Когда выбираем DateUnit для DateOffset.
-    /// </summary>
-    public class HealUnitToUnitLabel : BaseValueConverter
-    {
-        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var d = value as DateOffset;
-            if (d == null)
-                return null;
-
-            return DateOffsetFormatter.GetPartialDateString(d);
         }
     }
 }

@@ -247,6 +247,7 @@
     </Compile>
     <Compile Include="Controls\Common\HrsHolderDataTemplateSelector.cs" />
     <Compile Include="Converters\BaseConverter.cs" />
+    <Compile Include="Converters\DateOffsetConverters.cs" />
     <Compile Include="Windows\Helpers\AvalonExtensions.cs" />
     <Compile Include="Windows\Helpers\WindowHelper.cs" />
     <Compile Include="Controls\Helpers\XamlExtensions.cs" />
