@@ -813,7 +813,7 @@ namespace Diagnosis.ViewModels.Screens
                     // теперь запись заполнена
                     pastedVms.Add(newVm);
                     pasted.Add(newHr);
-                }               
+                }
 
                 var viewCopy = view.Cast<ShortHealthRecordViewModel>().ToList();
                 hrManager.Reorder(pastedVms, viewCopy, index);
