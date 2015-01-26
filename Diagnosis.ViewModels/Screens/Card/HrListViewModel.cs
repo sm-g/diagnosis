@@ -105,6 +105,8 @@ namespace Diagnosis.ViewModels.Screens
                         // select may be by IsSelected (rect), so need to set SelectedHealthRecord
                         if (hrvm.IsSelected)
                         {
+                            selectedOrder.Add(hrvm);
+
                             using (unselectPrev.Join())
                             {
                                 if (SelectedHealthRecords.Count() > 1)
@@ -116,7 +118,6 @@ namespace Diagnosis.ViewModels.Screens
                                 else
                                     SelectedHealthRecord = hrvm;
                             }
-                            selectedOrder.Add(hrvm);
                             logger.DebugFormat("select {0}", hrvm);
                         }
                         else
@@ -185,10 +186,21 @@ namespace Diagnosis.ViewModels.Screens
                 // если запись IsDeleted
                 HolderVm.UpdateIsEmpty();
 
-                // новые в списке
                 if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
                 {
+                    // новые в списке
                     SetHrExtra(e.NewItems.Cast<ShortHealthRecordViewModel>().ToList());
+                }
+                else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+                {
+                    // убарнные не выделены
+                    var removed = e.OldItems.Cast<ShortHealthRecordViewModel>().ToList();
+                    if (removed.Contains(SelectedHealthRecord))
+                    {
+                        SelectedHealthRecord = null;
+                    }
+                    removed.ForAll(vm => vm.IsSelected = false);
+
                 }
             };
 
@@ -773,9 +785,15 @@ namespace Diagnosis.ViewModels.Screens
             }
             if (hrDat != null)
             {
-                // paste hrs TODO before first Selected
-                var index = HealthRecords.IndexOf(SelectedHealthRecord);
+                // paste hrs before Selected or to the end
+                int index;
+                if (SelectedHealthRecord == null)
+                    index = view.Count;
+                else
+                    index = view.IndexOf(SelectedHealthRecord);
+
                 var pasted = new List<HealthRecord>();
+                var pastedVms = new List<ShortHealthRecordViewModel>();
                 foreach (var hr2 in hrDat.Hrs)
                 {
                     if (hr2 == null) continue;
@@ -786,12 +804,16 @@ namespace Diagnosis.ViewModels.Screens
                     Debug.Assert(newVm != null);
                     fillHr(newHr, hr2);
                     // теперь запись заполнена
-
+                    pastedVms.Add(newVm);
                     pasted.Add(newHr);
-                }
-                OnSaveNeeded(); // save all
+                }               
+
+                var viewCopy = view.Cast<ShortHealthRecordViewModel>().ToList();
+                hrManager.Reorder(pastedVms, viewCopy, index);
 
                 SelectHealthRecords(pasted);
+                OnSaveNeeded(); // save all
+
                 LogHrs("paste", hrDat.Hrs);
             }
         }

@@ -196,7 +196,8 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     Contract.Assume(!item.IsDeleted);
                     var hrVM = CreateViewModel(item);
-                    item.Ord = inner.Count; // add to the end
+                    var last = inner.LastOrDefault();
+                    item.Ord = last != null ? last.Ord + 1 : 0; // add to the end
                     inner.Add(hrVM);
                 }
             }

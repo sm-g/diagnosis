@@ -255,6 +255,18 @@ namespace Tests
             Assert.AreEqual(0, newWord.CompareTo(w));
             Assert.IsTrue(!newWord.IsTransient);
         }
+        [TestMethod]
+        public void NoSelectedAfterCut()
+        {
+            var card = new CardViewModel(a[2], true);
+            var count = card.HrList.HealthRecords.Count;
+
+            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
+            card.HrList.Cut();
+
+            Assert.AreEqual(null, card.HrList.SelectedHealthRecord);
+            Assert.AreEqual(0, card.HrList.SelectedHealthRecords.Count());
+        }
 
         [TestMethod]
         public void CutPasteHrs()
