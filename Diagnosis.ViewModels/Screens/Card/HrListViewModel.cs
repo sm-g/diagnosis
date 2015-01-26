@@ -80,6 +80,7 @@ namespace Diagnosis.ViewModels.Screens
         private bool inSetSelected;
 
         public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;
+        private bool disposed;
 
         public HrListViewModel(IHrsHolder holder, Action<HealthRecord, HrData.HrInfo> filler, Action<List<IHrItemObject>> syncer)
         {
@@ -903,7 +904,7 @@ namespace Diagnosis.ViewModels.Screens
 
             // снимаем выделение: сначала менять SelectedHealthRecord, потом все остальные
             // добавляем выделение - наоборот
-            Contract.Invariant(LastSelected != null || SelectedHealthRecord == null);
+            Contract.Invariant(disposed || LastSelected != null || SelectedHealthRecord == null);
         }
 
 
@@ -925,6 +926,7 @@ namespace Diagnosis.ViewModels.Screens
                     hrManager.Dispose();
                     HolderVm.Dispose();
                     selectedOrder.Clear();
+                    disposed = true;
                 }
             }
             finally
