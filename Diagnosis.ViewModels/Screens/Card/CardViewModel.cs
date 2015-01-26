@@ -357,7 +357,13 @@ namespace Diagnosis.ViewModels.Screens
                     hr.FromYear = hrInfo.FromYear;
                     hr.FromMonth = hrInfo.FromMonth;
                     hr.FromDay = hrInfo.FromDay;
-                    hr.Unit = hrInfo.Unit;
+
+                    // вставляем к пацеинту без возраста
+                    var unit = hrInfo.Unit;
+                    if (hr.GetPatient().BirthYear == null && hrInfo.Unit == HealthRecordUnit.ByAge)
+                        unit = HealthRecordUnit.NotSet;
+
+                    hr.Unit = unit;
                     hr.SetItems(hrInfo.Hios);
                 }, (hios) =>
                 {
