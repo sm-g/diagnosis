@@ -28,7 +28,7 @@ namespace Diagnosis.ViewModels.Screens
         public CardViewModel(bool resetHistory = false)
         {
             if (resetHistory || viewer == null)
-                viewer = new PatientViewer();
+                ResetHistory();
 
             doctor = AuthorityController.CurrentDoctor;
 
@@ -211,21 +211,22 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         /// <summary>
-        /// Открывает редактор для записи и переводит фокус на него.
+        /// Открывает редактор для записи и начинает редактирование слов.
         /// </summary>
-        public void FocusHrEditor(HealthRecord hr)
+        public void FocusHrEditor(HealthRecord hr, bool addToSelected = true)
         {
             Contract.Requires(hr != null);
             //logger.DebugFormat("FocusHrEditor to {0}", hr);
 
-            HrList.SelectHealthRecord(hr, addToSelected: true);
+            HrList.SelectHealthRecord(hr, addToSelected);
             HrEditor.Load(hr);
-            HrEditor.IsFocused = true;
+            HrEditor.Autocomplete.StartEdit();
         }
 
         public void ResetHistory()
         {
             viewer = new PatientViewer();
+            HrListViewModel.ResetHistory();
         }
 
         /// <summary>
@@ -241,7 +242,7 @@ namespace Diagnosis.ViewModels.Screens
             IHrsHolder holder;
             if (parameter is IHrsHolder)
             {
-                holder = Session.Unproxy(parameter as IHrsHolder);
+                holder = (parameter as IEntity).Actual as IHrsHolder;
 
                 if (lastAppOrCourse)
                     viewer.AutoOpen = true;
@@ -255,7 +256,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 var hr = parameter as HealthRecord;
                 Navigator.Add(hr.GetPatient());
-                holder = Session.Unproxy(hr.Holder as IHrsHolder);
+                holder = hr.Holder.Actual as IHrsHolder;
                 Navigator.NavigateTo(holder);
                 HrList.SelectHealthRecord(hr);
             }
@@ -266,7 +267,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (first != null)
                 {
                     Navigator.Add(first.GetPatient());
-                    holder = Session.Unproxy(first.Holder as IHrsHolder);
+                    holder = first.Holder.Actual as IHrsHolder;
                     Navigator.NavigateTo(holder);
                     HrList.SelectHealthRecords(hrs);
                 }
@@ -372,7 +373,7 @@ namespace Diagnosis.ViewModels.Screens
 
                 HrList.PropertyChanged += HrList_PropertyChanged;
                 HrList.SaveNeeded += SaveHealthRecords;
-                HrList.HealthRecords.CollectionChanged += HrList_HealthRecords_CollectionChanged;
+                HrList.HealthRecords.CollectionChangedWrapper += HrList_HealthRecords_CollectionChanged;
 
                 // сначала создаем HrList, чтобы hrManager подписался на добавление записей первым,
                 // иначе HrList.SelectHealthRecord нечего выделять при добавлении записи
@@ -389,12 +390,8 @@ namespace Diagnosis.ViewModels.Screens
                 // новые записи — вставка/дроп записей/тегов на список
                 // смена порядка — дроп записей
 
-                var sorted = HrList.HealthRecords;
-                // ставим порядок
-                for (int i = 0; i < sorted.Count; i++)
-                {
-                    sorted[i].healthRecord.Ord = i;
-                }
+                Contract.Assume(HrList.HealthRecords.IsStrongOrdered(x => x.Ord));
+
                 // сохраняем все записи кроме открытой в редакторе
                 saver.Save(HrList.HealthRecords
                     .Select(vm => vm.healthRecord)
@@ -448,9 +445,9 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (e.PropertyName == "LastSelected")
             {
+                // logger.DebugFormat("sel {0}\nlast {1}", HrList.SelectedHealthRecord, HrList.LastSelected);
                 if (HrList.LastSelected != null)
                 {
-                    editorWasOpened = HrEditor.HasHealthRecord;
                     if (editorWasOpened)
                     {
                         HrEditor.Load(HrList.LastSelected.healthRecord);
@@ -458,6 +455,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
                 else if (HrList.preserveSelected.CanEnter)
                 {
+                    editorWasOpened = HrEditor.HasHealthRecord;
                     HrEditor.Unload();
                 }
             }
@@ -487,7 +485,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     // редактируем добавленную запись
                     var hr = (HealthRecord)e.NewItems[0];
-                    FocusHrEditor(hr);
+                    FocusHrEditor(hr, false);
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)

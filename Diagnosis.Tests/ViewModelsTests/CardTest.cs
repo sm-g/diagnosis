@@ -143,7 +143,7 @@ namespace Tests
 
         [TestMethod]
         [ExpectedException(typeof(AssertFailedException))]
-        public void CreateCourseWithFirstHr()
+        public void CreateCourseWithFirstHrFails()
         {
             var card = new CardViewModel(p[1], true);
             d1.StartCourse(p[1]);
@@ -165,9 +165,10 @@ namespace Tests
         {
             var card = new CardViewModel(p[1], true);
 
-            Assert.IsNull(card.HrList.SelectedHealthRecord);
-
+            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
             card.HrList.AddHealthRecordCommand.Execute(null);
+
+            Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
             Assert.AreEqual(p[1].HealthRecords.Last(), card.HrList.SelectedHealthRecord.healthRecord);
         }
 
@@ -187,7 +188,7 @@ namespace Tests
         {
             var card = new CardViewModel(a[2], true);
             card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
-            card.FocusHrEditor(hr[21]);
+            card.FocusHrEditor(hr[21], false);
 
             Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
             Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
@@ -208,7 +209,7 @@ namespace Tests
         {
             var card = new CardViewModel(a[2], true);
             card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
-            card.FocusHrEditor(hr[21]);
+            card.FocusHrEditor(hr[21], false);
             card.HrEditor.CloseCommand.Execute(null);
 
             Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);

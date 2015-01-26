@@ -29,6 +29,22 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.BirthYear);
             Property(x => x.BirthMonth);
             Property(x => x.BirthDay);
+            Property(x => x.CreatedAt, m =>
+            {
+                m.NotNullable(true);
+                m.Column(c =>
+                {
+                    c.Default(Helper.SqlDateTimeNow);
+                });
+            });
+            Property(x => x.UpdatedAt, m =>
+            {
+                m.NotNullable(true);
+                m.Column(c =>
+                {
+                    c.Default(Helper.SqlDateTimeNow);
+                });
+            });
 
             Set(x => x.Courses, s =>
             {

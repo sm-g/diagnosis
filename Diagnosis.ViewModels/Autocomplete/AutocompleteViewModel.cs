@@ -489,6 +489,12 @@ namespace Diagnosis.ViewModels.Autocomplete
             tag.IsTextBoxFocused = true;
         }
 
+        public void StartEdit()
+        {
+            SelectedTag = LastTag;
+            LastTag.IsTextBoxFocused = true;
+        }
+
         public void ReplaceTagsWith(IEnumerable<IHrItemObject> items)
         {
             Contract.Requires(items != null);

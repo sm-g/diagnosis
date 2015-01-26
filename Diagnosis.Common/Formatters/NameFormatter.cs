@@ -14,6 +14,7 @@ namespace Diagnosis.Common
         /// Иванов
         /// Иван И.
         /// Иван
+        /// null, если нет ни фамилии ни имени
         /// </summary>
         /// <param name="man"></param>
         /// <returns></returns>
@@ -29,7 +30,24 @@ namespace Diagnosis.Common
                 return ln + (fn.Length > 0 ? " " + fn[0] + "." + middle : "");
             else if (fn.Length > 0)
                 return fn + middle;
-            return "";
+            return null;
+        }
+        /// <summary>
+        /// полное имя человека в форматах:
+        /// Иванов Иван Ич
+        /// Иванов Ич
+        /// Иванов
+        /// Иван Ич
+        /// Иван
+        /// Ич
+        /// null, если имени нет
+        /// </summary>
+        /// <param name="man"></param>
+        /// <returns></returns>
+        public static string GetFullName(IMan man)
+        {
+            var res = string.Join(" ", new[] { man.LastName, man.FirstName, man.MiddleName }.Where(x => !x.IsNullOrEmpty()));
+            return res.Length > 0 ? res : null;
         }
     }
 }

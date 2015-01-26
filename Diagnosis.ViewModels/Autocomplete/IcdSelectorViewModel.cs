@@ -27,7 +27,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             _chapters = new ObservableCollection<DiagnosisViewModel>();
             CreateDiagnosisSearch();
-            SelectedIcd = initial;
+            SelectedIcd = initial; // TODO chapter пусты
             UpdateDiagnosisQueryCode(initial, true);
 
             if (query != null)
@@ -36,7 +36,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
 
             Title = "Выбор диагноза МКБ";
-            DiagnosisSearch.Filter.IsFocused = true;
+            DiagnosisSearch.Filter.IsFocused = true; // TODO фокус на список если выбранно
         }
 
         public IcdSelectorViewModel(IcdDisease initial = null)

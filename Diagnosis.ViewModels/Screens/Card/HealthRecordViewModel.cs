@@ -10,15 +10,19 @@ namespace Diagnosis.ViewModels.Screens
         internal readonly HealthRecord healthRecord;
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HealthRecordViewModel));
         private readonly Patient patient;
-        private bool _doRound;
+        private static bool _isExpanded;
+        private DateOffsetViewModel _do;
 
         public HealthRecordViewModel(HealthRecord hr)
         {
             Contract.Requires(hr != null);
             this.healthRecord = hr;
-            patient = hr.GetPatient();
+            this.patient = hr.GetPatient();
+
             patient.PropertyChanged += patient_PropertyChanged;
             healthRecord.PropertyChanged += healthRecord_PropertyChanged;
+            _do = DateOffsetViewModel.FromHr(healthRecord);
+            DateOffset.PropertyChanged += DateOffset_PropertyChanged;
         }
 
         #region Model
@@ -70,43 +74,39 @@ namespace Diagnosis.ViewModels.Screens
                 healthRecord.FromDay = value;
             }
         }
-
-        public DateOffset DateOffset
-        {
-            get
-            {
-                return healthRecord.DateOffset;
-            }
-        }
+        public HealthRecordUnit Unit { get; set; }
 
         #endregion Model
 
         /// <summary>
         /// Откруглять давность.
         /// </summary>
-        public bool DoRound
-        {
-            get
-            {
-                return _doRound;
-            }
-            set
-            {
-                if (_doRound != value)
-                {
-                    _doRound = value;
-                    if (value)
-                    {
-                        DateOffset.Settings = DateOffset.DateOffsetSettings.Rounding();
-                    }
-                    else
-                    {
-                        DateOffset.Settings = DateOffset.DateOffsetSettings.ExactSetting();
-                    }
-                    OnPropertyChanged(() => DoRound);
-                }
-            }
-        }
+        //public bool DoRound
+        //{
+        //    get
+        //    {
+        //        return _doRound;
+        //    }
+        //    set
+        //    {
+        //        if (_doRound != value)
+        //        {
+        //            _doRound = value;
+        //            if (value)
+        //            {
+        //                DateOffset.Settings = DateOffset.DateOffsetSettings.Rounding();
+        //            }
+        //            else
+        //            {
+        //                DateOffset.Settings = DateOffset.DateOffsetSettings.ExactSetting();
+        //            }
+        //            OnPropertyChanged(() => DoRound);
+        //        }
+        //    }
+        //}
+        #region DateEditor
+
+        public DateOffsetViewModel DateOffset { get { return _do; } }
 
         public bool ShowAsDate
         {
@@ -144,7 +144,7 @@ namespace Diagnosis.ViewModels.Screens
             set
             {
                 if (value)
-                    healthRecord.Unit = DateOffset.Unit.ToHealthRecordUnit();
+                    healthRecord.Unit = DateOffset.RoundedUnit.ToHealthRecordUnit();
             }
         }
 
@@ -152,9 +152,64 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return healthRecord.GetPatient().BirthYear.HasValue;
+                return patient.BirthYear.HasValue;
             }
         }
+
+        public string AtAgeString
+        {
+            get
+            {
+                var age = DateHelper.GetAge(patient.BirthYear, patient.BirthMonth, patient.BirthDay, DateOffset.GetSortingDate());
+                if (age == null)
+                    return null;
+                var index = Plurals.GetPluralEnding(age.Value);
+                return string.Format("в {0} {1}", age, Plurals.years[index]);
+            }
+        }
+
+        public int? AtAge
+        {
+            get
+            {
+                return CanShowAsAge && DateOffset.Year.HasValue
+                    ? DateOffset.Year.Value - patient.BirthYear.Value
+                    : (int?)null;
+            }
+            set
+            {
+                // установка возраста меняет только год
+                DateOffset.Year = patient.BirthYear.Value + value;
+                OnPropertyChanged(() => AtAge);
+            }
+        }
+
+        public bool IsDateEditorExpanded
+        {
+            get
+            {
+                return _isExpanded;
+            }
+            set
+            {
+                if (_isExpanded != value)
+                {
+                    _isExpanded = value;
+                    OnPropertyChanged(() => IsDateEditorExpanded);
+                }
+            }
+        }
+
+        void DateOffset_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "RoundedUnit" && ShowAsOffset)
+            {
+                healthRecord.Unit = DateOffset.RoundedUnit.ToHealthRecordUnit();
+            }
+        }
+        #endregion
+
+
 
         public ICommand SendToSearchCommand
         {
@@ -178,6 +233,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+
         public override string ToString()
         {
             return string.Format("{0} {1}", GetType().Name, healthRecord);
@@ -189,6 +245,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 healthRecord.PropertyChanged -= healthRecord_PropertyChanged;
                 patient.PropertyChanged -= patient_PropertyChanged;
+                DateOffset.PropertyChanged -= DateOffset_PropertyChanged;
             }
             base.Dispose(disposing);
         }
@@ -196,11 +253,23 @@ namespace Diagnosis.ViewModels.Screens
         private void healthRecord_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             OnPropertyChanged(e.PropertyName);
-            if (e.PropertyName == "Unit")
+
+            switch (e.PropertyName)
             {
-                OnPropertyChanged(() => ShowAsAge);
-                OnPropertyChanged(() => ShowAsOffset);
-                OnPropertyChanged(() => ShowAsDate);
+                //case "FromDay":
+                //case "FromMonth":
+
+                case "Unit":
+                    OnPropertyChanged(() => ShowAsAge);
+                    OnPropertyChanged(() => ShowAsOffset);
+                    OnPropertyChanged(() => ShowAsDate);
+                    break;
+
+                case "FromYear":
+                    OnPropertyChanged(() => AtAgeString);
+                    OnPropertyChanged(() => AtAge);
+                    break;
+
             }
         }
 
@@ -209,6 +278,8 @@ namespace Diagnosis.ViewModels.Screens
             if (e.PropertyName == "BirthYear")
             {
                 OnPropertyChanged(() => CanShowAsAge);
+                OnPropertyChanged(() => AtAgeString);
+                OnPropertyChanged(() => AtAge);
             }
         }
     }

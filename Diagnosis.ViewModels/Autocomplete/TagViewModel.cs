@@ -208,7 +208,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 return GetBlankType(Blank);
             }
-            set { } // for binding
         }
         #region AutocompleteRelated
 

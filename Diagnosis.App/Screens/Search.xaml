@@ -36,6 +36,9 @@
                 <Setter Property="Margin"
                         Value="0,0,0,2" />
             </Style>
+            
+            <Style TargetType="Label"
+                   BasedOn="{StaticResource colonedLabel}" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
@@ -115,7 +118,7 @@
                     <KeyBinding Key="Enter"
                                 Command="{Binding SearchCommand}" />
                 </StackPanel.InputBindings>
-
+                <Label>_Ключевые слова</Label>
                 <search:Autocomplete DataContext="{Binding Autocomplete}" />
                 <DockPanel Style="{StaticResource line}">
                     <Grid>

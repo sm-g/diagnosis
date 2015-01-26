@@ -23,7 +23,6 @@ namespace Diagnosis.Data
             if (hr.GetPatient() == savingPatient) return;
 
             logger.DebugFormat("saving hr {0}", hr);
-            Debug.Assert(session.IsOpen);
 
             Save(hr);
         }
@@ -37,7 +36,6 @@ namespace Diagnosis.Data
             if (savingPatient == patient) return;
 
             logger.DebugFormat("saving patient {0}", patient);
-            Debug.Assert(session.IsOpen);
 
             savingPatient = patient;
 
@@ -61,6 +59,7 @@ namespace Diagnosis.Data
         {
             if (domainObjects.Length == 0) return true;
             logger.DebugFormat("deleting {0} IDomainObject", domainObjects.Length);
+            Debug.Assert(session.IsOpen);
 
             using (var t = session.BeginTransaction())
             {
@@ -89,6 +88,7 @@ namespace Diagnosis.Data
         {
             if (entities.Length == 0) return true;
             logger.DebugFormat("saving {0} IEntity", entities.Length);
+            Debug.Assert(session.IsOpen);
 
             using (var t = session.BeginTransaction())
             {

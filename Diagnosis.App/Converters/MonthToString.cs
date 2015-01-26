@@ -7,12 +7,11 @@ using System.Globalization;
 
 namespace Diagnosis.App.Converters
 {
-    public class MonthToString : IValueConverter
+    public class MonthToString : BaseValueConverter
     {
         static string ThirteenMonth = DateTimeFormatInfo.CurrentInfo.MonthNames.ToArray().Last();
 
-        public object Convert(object value, Type targetType,
-            object parameter, CultureInfo culture)
+        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value != null)
             {
@@ -26,8 +25,7 @@ namespace Diagnosis.App.Converters
             return ThirteenMonth;
         }
 
-        public object ConvertBack(object value, Type targetType,
-            object parameter, CultureInfo culture)
+        public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             string name = (string)value;
             if (value == null || name == ThirteenMonth)

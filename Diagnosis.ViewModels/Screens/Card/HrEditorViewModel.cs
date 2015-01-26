@@ -29,7 +29,13 @@ namespace Diagnosis.ViewModels.Screens
         {
             this.session = session;
         }
-
+        /// <summary>
+        /// For Xaml
+        /// </summary>
+        [Obsolete]
+        public HrEditorViewModel()
+        {
+        }
         /// <summary>
         /// Запись выгружена.
         /// </summary>
@@ -69,7 +75,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                if (_categories == null)
+                if (_categories == null && session != null)
                 {
                     var cats = new List<HrCategory>(session.Query<HrCategory>().ToList());
                     cats.Add(HrCategory.Null);
@@ -244,7 +250,6 @@ namespace Diagnosis.ViewModels.Screens
             FinishCurrentHr();
 
             HealthRecord = new HealthRecordViewModel(hr);
-            hr.DateOffset.Settings = DateOffset.DateOffsetSettings.ExactSetting();
 
             hr.PropertyChanged += hr_PropertyChanged;
 

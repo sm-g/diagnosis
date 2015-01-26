@@ -183,6 +183,7 @@ namespace Tests
         {
             var card = new CardViewModel(a[2], true);
             card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
+            card.HrList.Grouping = HrViewGroupingColumn.None;
             card.HrList.MoveHrSelectionCommand.Execute(true); // up to 20
 
             Assert.AreEqual(hr[20], card.HrList.SelectedHealthRecord.healthRecord);
@@ -255,6 +256,18 @@ namespace Tests
             Assert.AreEqual(0, newWord.CompareTo(w));
             Assert.IsTrue(!newWord.IsTransient);
         }
+        [TestMethod]
+        public void NoSelectedAfterCut()
+        {
+            var card = new CardViewModel(a[2], true);
+            var count = card.HrList.HealthRecords.Count;
+
+            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
+            card.HrList.Cut();
+
+            Assert.AreEqual(null, card.HrList.SelectedHealthRecord);
+            Assert.AreEqual(0, card.HrList.SelectedHealthRecords.Count());
+        }
 
         [TestMethod]
         public void CutPasteHrs()
@@ -285,18 +298,20 @@ namespace Tests
             Assert.AreEqual(hr[20].Appointment, new20.Appointment);
             Assert.AreEqual(hr[20].Category, new20.Category);
             Assert.AreEqual(hr[20].Course, new20.Course);
-            Assert.AreEqual(hr[20].DateOffset, new20.DateOffset);
-            Assert.AreEqual(hr[20].Doctor, new20.Doctor);
             Assert.AreEqual(hr[20].FromDay, new20.FromDay);
             Assert.AreEqual(hr[20].FromMonth, new20.FromMonth);
             Assert.AreEqual(hr[20].FromYear, new20.FromYear);
-            // Assert.AreEqual(hr[20].Ord, new20.Ord);
             Assert.AreEqual(hr[20].Patient, new20.Patient);
             Assert.AreEqual(hr[20].Unit, new20.Unit);
 
+            // Assert.AreEqual(hr[20].Ord, new20.Ord); в любое место
+
             Assert.AreEqual(false, new20.IsDeleted);
             Assert.AreEqual(false, new20.IsDirty);
+
+            Assert.AreEqual(hr[20].Doctor, new20.Doctor); // или новый автор?
             Assert.AreNotEqual(hr[20].CreatedAt, new20.CreatedAt);
+           // Assert.AreNotEqual(hr[20].UpdatedAt, new20.UpdatedAt);
         }
 
         [TestMethod]
@@ -308,15 +323,15 @@ namespace Tests
             hr0.healthRecord.AddItems(new Comment("a").ToEnumerable());
             card.HrList.AddHealthRecordCommand.Execute(null);
             var hr1 = card.HrList.HealthRecords.Last();
-            hr1.healthRecord.AddItems(new Comment("x").ToEnumerable());
+            hr1.healthRecord.AddItems(new Comment("b").ToEnumerable());
             card.HrList.AddHealthRecordCommand.Execute(null);
             var hr2 = card.HrList.HealthRecords.Last();
-            hr2.healthRecord.AddItems(new Comment("y").ToEnumerable());
+            hr2.healthRecord.AddItems(new Comment("c").ToEnumerable());
             card.HrList.AddHealthRecordCommand.Execute(null);
             var hr3 = card.HrList.HealthRecords.Last();
-            hr3.healthRecord.AddItems(new Comment("b").ToEnumerable());
+            hr3.healthRecord.AddItems(new Comment("d").ToEnumerable());
 
-            // hrs -> a x y b
+            // hrs -> a b c d
             card.SaveHealthRecords(card.HrList, new ListEventArgs<HealthRecord>(null));
 
             Assert.AreEqual(0, hr0.Ord);
@@ -328,11 +343,11 @@ namespace Tests
             card.HrList.Grouping = HrViewGroupingColumn.None;
 
             Assert.IsTrue(card.HrList.CanReorder);
-            var vms = card.HrList.HealthRecords[0].ToEnumerable();
+            var vms = card.HrList.HealthRecords[1].ToEnumerable();
             Assert.IsTrue(card.HrList.CanMove(vms, null));
 
-            card.HrList.HealthRecords.Move(0, 1);
-            // hrs -> x a y b
+            card.HrList.hrManager.Reorder(vms, card.HrList.HealthRecords, 0);
+            // hrs -> b a c d
 
             card.SaveHealthRecords(card.HrList, new ListEventArgs<HealthRecord>(null));
 
@@ -342,7 +357,59 @@ namespace Tests
             Assert.AreEqual(3, hr3.Ord);
 
         }
+        [TestMethod]
+        public void ReorderDeleted()
+        {
+            var card = new CardViewModel(a[5], true);
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            var hr0 = card.HrList.HealthRecords.Last();
+            hr0.healthRecord.AddItems(new Comment("a").ToEnumerable());
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            var hr1 = card.HrList.HealthRecords.Last();
+            hr1.healthRecord.AddItems(new Comment("b").ToEnumerable());
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            var hr2 = card.HrList.HealthRecords.Last();
+            hr2.healthRecord.AddItems(new Comment("c").ToEnumerable());
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            var hr3 = card.HrList.HealthRecords.Last();
+            hr3.healthRecord.AddItems(new Comment("d").ToEnumerable());
 
-     
+            // hrs -> a b c d
+            card.SaveHealthRecords(card.HrList, new ListEventArgs<HealthRecord>(null));
+
+            Assert.AreEqual(0, hr0.Ord);
+            Assert.AreEqual(1, hr1.Ord);
+            Assert.AreEqual(2, hr2.Ord);
+            Assert.AreEqual(3, hr3.Ord);
+
+            hr2.healthRecord.IsDeleted = true;
+
+            // hrs -> a b (c) d
+
+            card.HrList.Sorting = HrViewSortingColumn.Ord;
+            card.HrList.Grouping = HrViewGroupingColumn.None;
+
+            Assert.IsTrue(card.HrList.CanReorder);
+            var vms = card.HrList.HealthRecords[1].ToEnumerable();
+            Assert.IsTrue(card.HrList.CanMove(vms, null));
+
+            card.HrList.hrManager.Reorder(vms, card.HrList.HealthRecords, 3);
+            // hrs -> a (c) d b
+
+            card.SaveHealthRecords(card.HrList, new ListEventArgs<HealthRecord>(null));
+
+            Assert.AreEqual(0, hr0.Ord);
+            Assert.AreEqual(3, hr1.Ord);
+            Assert.AreEqual(1, hr2.Ord);
+            Assert.AreEqual(2, hr3.Ord);
+
+            hr2.healthRecord.IsDeleted = false;
+            // hrs -> a c d b
+            Assert.AreEqual(0, card.HrList.HealthRecords[0].Ord);
+            Assert.AreEqual(1, card.HrList.HealthRecords[1].Ord);
+            Assert.AreEqual(2, card.HrList.HealthRecords[2].Ord);
+            Assert.AreEqual(3, card.HrList.HealthRecords[3].Ord);
+        }
+
     }
 }

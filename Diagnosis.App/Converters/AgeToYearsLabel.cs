@@ -5,28 +5,21 @@ using System.Text;
 using System.Windows.Data;
 using System.Globalization;
 using Diagnosis.Common;
+using System.Windows;
 
 namespace Diagnosis.App.Converters
 {
-    public class AgeToYearsLabel : IValueConverter
+    public class AgeToYearsLabel : BaseValueConverter
     {
-        public object Convert(object value, Type targetType,
-            object parameter, CultureInfo culture)
+        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null)
-                return null;
+            if (value == null || !(value is int))
+                return DependencyProperty.UnsetValue;
 
             int age = (int)value;
-
             var index = Plurals.GetPluralEnding(age);
 
             return Plurals.years[index];
-        }
-
-        public object ConvertBack(object value, Type targetType,
-            object parameter, CultureInfo culture)
-        {
-            throw new NotSupportedException();
         }
     }
 }

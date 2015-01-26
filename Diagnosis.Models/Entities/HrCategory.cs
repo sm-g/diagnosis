@@ -4,7 +4,7 @@ namespace Diagnosis.Models
 {
     public class HrCategory : EntityBase<int>, IDomainObject, IComparable, IEquatable<HrCategory>
     {
-        public static HrCategory Null = new HrCategory() { Name = "без категории", Ord = int.MaxValue };
+        public static HrCategory Null = new HrCategory() { Name = "Не задано", Ord = int.MaxValue }; // upper case to show in checkbox
 
         public virtual string Name { get; set; }
 

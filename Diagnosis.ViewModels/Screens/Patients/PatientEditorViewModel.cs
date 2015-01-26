@@ -2,6 +2,7 @@
 using Diagnosis.Data;
 using Diagnosis.Models;
 using log4net;
+using System.Linq;
 using System.ComponentModel;
 
 namespace Diagnosis.ViewModels.Screens
@@ -56,7 +57,15 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     (patient as IEditableObject).EndEdit();
-
+                    if (patient.BirthYear == null)
+                    {
+                        // нельзя рассчитать возраст
+                        // меняем Unit всех записей c ByAge на NotSet
+                        foreach (var hr in patient.GetAllHrs().Where(hr => hr.Unit == HealthRecordUnit.ByAge))
+                        {
+                            hr.Unit = HealthRecordUnit.NotSet;
+                        }
+                    }
                     new Saver(Session).Save(patient);
 
                     this.Send(Event.PatientSaved, patient.AsParams(MessageKeys.Patient));

@@ -232,6 +232,7 @@
     <Compile Include="Screens\Card\HealthRecordViewModel.cs" />
     <Compile Include="Screens\Words\WordViewModel.cs" />
     <Compile Include="Framework\SessionVMBase.cs" />
+    <Compile Include="Screens\Card\DateOffsetViewModel.cs" />
     <Compile Include="Types\HierarchicalBase.cs" />
     <Compile Include="Screens\Card\HrEditorViewModel.cs" />
     <Compile Include="Search\IFilter.cs" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
+using NHibernate;
 
 namespace Diagnosis.Common
 {
@@ -40,7 +41,14 @@ namespace Diagnosis.Common
 
         ~DisposableBase()
         {
-            Dispose(false);
+            try
+            {
+                Dispose(false);
+            }
+            catch (HibernateException)
+            {
+                // for tests
+            }
 #if DEBUG
             if (this.GetType().Name.StartsWith("DiagnosisViewModel")) return;
             string msg = string.Format("!!! Finalized {0} ({1}) ({2}) ", this.GetType().Name, this.ToString(), this.GetHashCode());

@@ -63,6 +63,13 @@ namespace Diagnosis.Models
         void RemoveHealthRecord(HealthRecord hr);
     }
 
+    internal interface IHaveAuditInformation : IEntity
+    {
+        DateTime UpdatedAt { get; set; }
+        DateTime CreatedAt { get; set; }
+    }
+
+    #region EventArgs
 
     [Serializable]
     public class DomainEntityEventArgs : EventArgs
@@ -100,6 +107,7 @@ namespace Diagnosis.Models
             this.user = user;
         }
     }
+    #endregion
 
     [ContractClassFor(typeof(IHrsHolder))]
     abstract class ContractForIHrsHolder : IHrsHolder
@@ -111,7 +119,14 @@ namespace Diagnosis.Models
             remove { throw new NotImplementedException(); }
         }
 
-        IEnumerable<HealthRecord> IHrsHolder.HealthRecords { get { throw new NotImplementedException(); } }
+        IEnumerable<HealthRecord> IHrsHolder.HealthRecords
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>().IsOrdered(x => x.Ord));
+                return null;
+            }
+        }
 
         bool IEntity.IsDirty { get { throw new NotImplementedException(); } set { throw new NotImplementedException(); } }
 

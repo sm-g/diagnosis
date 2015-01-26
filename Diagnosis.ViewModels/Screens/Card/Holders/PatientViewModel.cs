@@ -68,6 +68,32 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public string FullName
+        {
+            get
+            {
+                return NameFormatter.GetFullName(patient);
+            }
+            set
+            {
+                if (null != value)
+                {
+                    var names = value.Split(' ');
+                    LastName = names[0];
+                    FirstName = names.Length > 1 ? names[1] : null;
+                    MiddleName = names.Length > 2 ? names[2] : null;
+                    OnPropertyChanged(() => FullName);
+                }
+            }
+        }
+
+
+        public DateTime CreatedAt
+        {
+            get { return patient.CreatedAt; }
+        }
+
+
         public int? Age
         {
             get

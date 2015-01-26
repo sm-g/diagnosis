@@ -7,17 +7,20 @@
       <FileName>Screens\Card\Holders\AppointmentViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diagnosis.ViewModels.Screens.HealthRecordViewModel" Collapsed="true">
-    <Position X="5" Y="2.75" Width="1.5" />
+  <Class Name="Diagnosis.ViewModels.Screens.HealthRecordViewModel">
+    <Position X="4.75" Y="8" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AgAoASBAACBAQgAOIAEAAAAEAAAAgCAAABAAAAAACAA=</HashCode>
+      <HashCode>AgAogSBAAHBAQgIOIAAAAAAEAAIAgCAIABAAAAAACAA=</HashCode>
       <FileName>Screens\Card\HealthRecordViewModel.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="DateOffset" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="Diagnosis.ViewModels.Screens.HrEditorViewModel" Collapsed="true">
     <Position X="5" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>CQBAgAiEAWABQkEGAAEQAEAAAQAQEAAgAAiACgAAKAA=</HashCode>
+      <HashCode>CQBEgACEAGABQEEGAAEQgEgABQAQEAAgAAiACgCAKAA=</HashCode>
       <FileName>Screens\Card\HrEditorViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -27,7 +30,7 @@
   <Class Name="Diagnosis.ViewModels.Screens.PatientViewModel" Collapsed="true">
     <Position X="0.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>CAAIAGCAACCAQAAEAEAQEAAAAAAIgAAsADAACBAAAAg=</HashCode>
+      <HashCode>CAAIAGCAACCAQIAEAGAQEAAAAAAIgAAsADAACBAAAAg=</HashCode>
       <FileName>Screens\Card\Holders\PatientViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -42,7 +45,7 @@
   <Class Name="Diagnosis.ViewModels.Screens.HrListViewModel" Collapsed="true">
     <Position X="0.5" Y="6.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>CARABzEAEKABSAEGwBAAABBSAgEESAAJEIIwIggAAAA=</HashCode>
+      <HashCode>CARABzAAALAhagEGwBAAABBTAgEEaAQJIYIwoggIBiA=</HashCode>
       <FileName>Screens\Card\HrListViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -65,16 +68,19 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.Models.HealthRecord" Collapsed="true">
-    <Position X="10.5" Y="5.75" Width="1.5" />
+    <Position X="7.5" Y="8" Width="1.5" />
     <TypeIdentifier />
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Diagnosis.ViewModels.Screens.ShortHealthRecordViewModel" Collapsed="true">
+  <Class Name="Diagnosis.ViewModels.Screens.ShortHealthRecordViewModel">
     <Position X="2.5" Y="8" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAogCBAACBAQAEOAGAAAAQUiEAAgAQgIBAAAQAACAA=</HashCode>
+      <HashCode>AABoECBAACDBQAEOACAAAAQFiEAAgAQgIBAAAQQACAA=</HashCode>
       <FileName>Screens\Card\ShortHealthRecordViewModel.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="DateOffset" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="Diagnosis.ViewModels.Screens.ShortAppointmentViewModel" Collapsed="true">
     <Position X="2.25" Y="4.75" Width="1.5" />
@@ -112,7 +118,7 @@
   <Class Name="Diagnosis.ViewModels.Screens.CardViewModel" Collapsed="true">
     <Position X="6.75" Y="3.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BAQAAQgABCCCIEFCEAAAEQWCCAAIAAAYAANEAAgAAAA=</HashCode>
+      <HashCode>BAQAAQgABCCCIEFCEAAAEQWCDAAAAAAYAANEAAgBAAA=</HashCode>
       <FileName>Screens\Card\CardViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -156,7 +162,7 @@
   <Class Name="Diagnosis.ViewModels.Screens.HealthRecordManager" Collapsed="true">
     <Position X="0.5" Y="9.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAUAAECAAKAAAAAAAAAAAAAAEAAgQAAAQAgAAAJA=</HashCode>
+      <HashCode>EAAAAUAAECBAIAACAAAAAAQAAAAEAAAQAAAQAhAIAJA=</HashCode>
       <FileName>Screens\Card\Managers\HealthRecordManager.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -182,6 +188,31 @@
     <ShowAsCollectionAssociation>
       <Property Name="TopCardItems" />
     </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Diagnosis.Common.DateOffset">
+    <Position X="11.75" Y="10.25" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="Diagnosis.Common.DateOffset.UnitSetting" Collapsed="true">
+        <TypeIdentifier />
+      </Enum>
+      <Enum Name="Diagnosis.Common.DateOffset.DateSetting" Collapsed="true">
+        <TypeIdentifier />
+      </Enum>
+      <Class Name="Diagnosis.Common.DateOffset.DateOffsetSettings" Collapsed="true">
+        <TypeIdentifier />
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.DateOffsetViewModel">
+    <Position X="9.5" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIBCAAAAJCAAACACIgAAAAAAiCABwAAEAgIAAAAAgAA=</HashCode>
+      <FileName>Screens\Card\DateOffsetViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Do" />
+    </ShowAsAssociation>
   </Class>
   <Interface Name="Diagnosis.Models.IHrsHolder" Collapsed="true">
     <Position X="10.5" Y="6.75" Width="1.5" />

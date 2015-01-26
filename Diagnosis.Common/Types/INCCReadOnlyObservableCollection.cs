@@ -14,7 +14,7 @@ namespace Diagnosis.Common
         {
         }
 
-        public event NotifyCollectionChangedEventHandler CollectionChanged2
+        public event NotifyCollectionChangedEventHandler CollectionChangedWrapper
         {
             add { CollectionChanged += value; }
             remove { CollectionChanged -= value; }

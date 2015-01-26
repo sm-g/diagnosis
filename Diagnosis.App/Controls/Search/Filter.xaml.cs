@@ -9,6 +9,7 @@ namespace Diagnosis.App.Controls.Search
     /// </summary>
     public partial class Filter : UserControl
     {
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Filter));
         public static readonly DependencyProperty WatermarkTextProperty =
             DependencyProperty.Register("WatermarkText", typeof(string), typeof(Filter), new PropertyMetadata(null));
 
@@ -44,6 +45,12 @@ namespace Diagnosis.App.Controls.Search
         void input_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             OnPreviewInputKeyDown(e);
+        }
+
+        private void input_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            logger.DebugFormat("filter got kb focus, to input={0}", e.NewFocus == input);
+
         }
     }
 }

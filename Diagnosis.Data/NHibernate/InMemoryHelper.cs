@@ -7,7 +7,7 @@ using NHibernate.Driver;
 using NHibernate.Tool.hbm2ddl;
 using PasswordHash;
 
-namespace Diagnosis.Data
+namespace Diagnosis.Data.NHibernate
 {
     internal class InMemoryHelper
     {

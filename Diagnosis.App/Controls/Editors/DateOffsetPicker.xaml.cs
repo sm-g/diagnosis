@@ -6,14 +6,6 @@ namespace Diagnosis.App.Controls.Editors
 {
     public partial class DateOffsetPicker : UserControl
     {
-        public DateOffset DateOffset
-        {
-            get { return (DateOffset)GetValue(DateOffsetProperty); }
-            set { SetValue(DateOffsetProperty, value); }
-        }
-
-        public static readonly DependencyProperty DateOffsetProperty =
-            DependencyProperty.Register("DateOffset", typeof(DateOffset), typeof(DateOffsetPicker));
 
         public bool ReadOnlyOffset
         {

@@ -99,7 +99,7 @@ namespace Diagnosis.App.Controls.Search
         {
             if (e.NewFocus == autocomplete)
             {
-                Vm.StartEdit(Vm.LastTag);
+                Vm.StartEdit();
             }
         }
 

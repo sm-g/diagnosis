@@ -16,7 +16,7 @@
             </MenuItem>-->
             <!--<MenuItem Header="_Справочники">-->
             <MenuItem Command="{Binding OpenWordsCommand}"
-                      Header="_Слова" />
+                      Header="_Словарь" />
 
             <MenuItem Header="_Вид">
                 <MenuItem IsCheckable="true"
@@ -33,7 +33,7 @@
         </Menu>
 
         <Menu HorizontalAlignment="Right">
-            <MenuItem Header="{Binding CurrentUser, Converter={StaticResource ManToShortName}}">
+            <MenuItem Header="{Binding CurrentUser, Converter={StaticResource ManToName}}">
                 <MenuItem Header="_Настройки..."
                           Command="{Binding OpenSettingsCommand}" />
                 <MenuItem Header="_Выйти"

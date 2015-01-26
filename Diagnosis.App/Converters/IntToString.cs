@@ -3,24 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Data;
+using System.Windows;
 using System.Globalization;
 
 namespace Diagnosis.App.Converters
 {
-    public class IntToString : IValueConverter
+    public class IntToString : BaseValueConverter
     {
-        public object Convert(object value, Type targetType,
-            object parameter, CultureInfo culture)
+        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value != null)
+            if (value != null && value is int)
             {
                 return ((int)value).ToString();
             }
-            return "";
+            return DependencyProperty.UnsetValue;
         }
 
-        public object ConvertBack(object value, Type targetType,
-            object parameter, CultureInfo culture)
+        public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null || (string)value == "")
             {

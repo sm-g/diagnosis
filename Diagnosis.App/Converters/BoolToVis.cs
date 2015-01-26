@@ -8,9 +8,9 @@ namespace Diagnosis.App.Converters
     /// <summary>
     /// If Visibility.Hidden passed in parameters, use it for false value.
     /// </summary>
-    public class BooleanToVisibilityConverter : IValueConverter
+    public class BooleanToVisibilityConverter : BaseValueConverter
     {
-        public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is bool && targetType == typeof(Visibility))
             {
@@ -34,7 +34,7 @@ namespace Diagnosis.App.Converters
             return Visibility.Visible;
         }
 
-        public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is Visibility && targetType == typeof(bool))
             {
@@ -47,10 +47,12 @@ namespace Diagnosis.App.Converters
             throw new ArgumentException("Invalid argument/return type. Expected argument: Visibility and return type: bool");
         }
     }
-
-    public class NegBooleanToVisibilityConverter : IValueConverter
+    /// <summary>
+    /// If Visibility.Hidden passed in parameters, use it for false value.
+    /// </summary>
+    public class NegBooleanToVisibilityConverter : BaseValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value is bool && targetType == typeof(Visibility))
             {
@@ -65,7 +67,7 @@ namespace Diagnosis.App.Converters
             }
             throw new ArgumentException("Invalid argument/return type. Expected argument: bool and return type: Visibility");
         }
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public override object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value is Visibility && targetType == typeof(bool))
             {

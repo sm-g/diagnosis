@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class Patient : ValidatableEntity<Guid>, IDomainObject, IHrsHolder, IMan, IComparable<Patient>
+    public class Patient : ValidatableEntity<Guid>, IDomainObject, IHaveAuditInformation, IHrsHolder, IMan, IComparable<Patient>
     {
         private Iesi.Collections.Generic.ISet<Course> courses = new HashedSet<Course>();
         Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
@@ -26,6 +26,8 @@ namespace Diagnosis.Models
         private bool? _isMale;
 
         public virtual event NotifyCollectionChangedEventHandler CoursesChanged;
+        private DateTime _updatedAt;
+        private DateTime _createdAt;
 
         public virtual string FirstName
         {
@@ -72,19 +74,6 @@ namespace Diagnosis.Models
                 if (SetProperty(ref _year, value, () => BirthYear))
                 {
                     OnPropertyChanged("Age");
-                    if (value == null)
-                    {
-                        // нельзя рассчитать возраст
-                        // меняем Unit c ByAge на NotSet
-                        var allHrs = HealthRecords
-                            .Union(Courses.SelectMany(c => c.HealthRecords
-                            .Union(c.Appointments.SelectMany(a => a.HealthRecords))));
-
-                        foreach (var hr in allHrs.Where(hr => hr.Unit == HealthRecordUnit.ByAge))
-                        {
-                            hr.Unit = HealthRecordUnit.NotSet;
-                        }
-                    }
 
                 }
             }
@@ -109,6 +98,31 @@ namespace Diagnosis.Models
                     OnPropertyChanged("Age");
             }
         }
+        public virtual DateTime CreatedAt
+        {
+            get { return _createdAt; }
+        }
+
+        DateTime IHaveAuditInformation.CreatedAt
+        {
+            get { return _updatedAt; }
+            set
+            {
+                _createdAt = value;
+            }
+        }
+
+        DateTime IHaveAuditInformation.UpdatedAt
+        {
+            get { return _updatedAt; }
+            set { SetProperty(ref _updatedAt, value, () => UpdatedAt); }
+        }
+
+        public virtual DateTime UpdatedAt
+        {
+            get { return _updatedAt; }
+        }
+
         public virtual IEnumerable<Course> Courses
         {
             get { return courses; }
@@ -116,7 +130,7 @@ namespace Diagnosis.Models
 
         public virtual IEnumerable<HealthRecord> HealthRecords
         {
-            get { return healthRecords; }
+            get { return healthRecords.OrderBy(x => x.Ord); }
         }
 
         public virtual int? Age
@@ -145,14 +159,43 @@ namespace Diagnosis.Models
                 }
             }
         }
+        /// <summary>
+        /// Полное имя.
+        /// </summary>
         public virtual string FullName
         {
             get
             {
-                return LastName + " " + FirstName + " " + MiddleName;
+                return NameFormatter.GetFullName(this);
             }
         }
+        /// <summary>
+        /// Полное имя или время создания.
+        /// </summary>
+        public virtual string FullNameOrCreatedAt
+        {
+            get
+            {
+                return NameFormatter.GetFullName(this) ?? CreatedAt.ToString("dd.MM.yy hh:mm");
+            }
+        }
+        /// <summary>
+        /// Дата последнего обновления записей внутри пациента.
+        /// Дата обновления пациента, если запсией нет.
+        /// </summary>
+        public virtual DateTime LastHrUpdatedAt
+        {
+            get
+            {
+                if (this.GetAllHrs().Any())
+                    return this.GetAllHrs()
+                        .OrderByDescending(x => x.UpdatedAt)
+                        .First().UpdatedAt;
+                else
+                    return this.UpdatedAt;
 
+            }
+        }
         public Patient(string lastName = null,
             string firstName = null,
             string middleName = null,
@@ -160,6 +203,7 @@ namespace Diagnosis.Models
             int? month = null,
             int? day = null,
             bool? isMale = null)
+            : this()
         {
             LastName = lastName;
             FirstName = firstName;
@@ -172,7 +216,8 @@ namespace Diagnosis.Models
 
         protected Patient()
         {
-
+            _createdAt = DateTime.Now;
+            _updatedAt = DateTime.Now;
         }
         public virtual HealthRecord AddHealthRecord(Doctor author)
         {

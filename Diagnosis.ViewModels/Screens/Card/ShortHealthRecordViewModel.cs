@@ -26,7 +26,9 @@ namespace Diagnosis.ViewModels.Screens
             healthRecord.ItemsChanged += healthRecord_ItemsChanged;
 
             SyncCheckedAndSelected = true;
+            DateOffset = DateOffsetViewModel.FromHr(healthRecord);
         }
+
 
         /// <summary>
         /// For XAML designer
@@ -92,12 +94,10 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public DateOffset DateOffset
+        public DateOffsetViewModel DateOffset
         {
-            get
-            {
-                return healthRecord.DateOffset;
-            }
+            get;
+            private set;
         }
 
         public Doctor Doctor
@@ -203,16 +203,19 @@ namespace Diagnosis.ViewModels.Screens
                 switch (healthRecord.Unit)
                 {
                     case HealthRecordUnit.NotSet:
-                        return DateOffsetFormatter.GetPartialDateString(DateOffset);
+                        return DateOffsetFormatter.GetPartialDateString(DateOffset.Do);
 
                     case HealthRecordUnit.ByAge:
-                        var pat = healthRecord.GetPatient();
-                        var age = DateHelper.GetAge(pat.BirthYear, pat.BirthMonth, pat.BirthDay, DateOffset.GetSortingDate());
+                        var age = DateHelper.GetAge(patient.BirthYear, patient.BirthMonth, patient.BirthDay, DateOffset.GetSortingDate());
+                        if (age == null)
+                            return null;
                         var index = Plurals.GetPluralEnding(age.Value);
                         return string.Format("в {0} {1}", age, Plurals.years[index]);
 
                     default:
-                        return DateOffsetFormatter.GetOffsetUnitString(DateOffset);
+                        return string.Format("{0} {1}",
+                            DateOffset.RoundedOffset,
+                            DateOffsetFormatter.GetUnitString(DateOffset.RoundedOffset, DateOffset.RoundedUnit));
                 }
             }
         }
@@ -295,6 +298,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+    
         private void patient_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -302,7 +306,7 @@ namespace Diagnosis.ViewModels.Screens
                 case "BirthDay":
                 case "BirthMonth":
                 case "BirthYear":
-                    OnPropertyChanged("DateOffsetString");
+                    OnPropertyChanged(() => DateOffsetString);
                     break;
             }
         }

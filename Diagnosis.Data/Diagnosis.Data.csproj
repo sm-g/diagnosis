@@ -172,6 +172,10 @@
     <Compile Include="Mappings\DoctorMap.cs" />
     <Compile Include="Mappings\CourseMap.cs" />
     <Compile Include="Mappings\PatientMap.cs" />
+    <Compile Include="Mappings\_Helper.cs" />
+    <Compile Include="NHibernate\EventListeners.cs" />
+    <Compile Include="NHibernate\IEntityCrudTracker.cs" />
+    <Compile Include="Versions\Migrations\09 AddHolderHrUpdatedAt.cs" />
     <Compile Include="Versions\Migrations\08 AddDoctorSettings.cs" />
     <Compile Include="Versions\Migrations\07 HrWithDoctor.cs" />
     <Compile Include="Versions\Migrations\06 AddPassportTable.cs" />
@@ -185,7 +189,7 @@
     <Compile Include="NHibernate\EntityChecker.cs" />
     <Compile Include="NHibernate\Extensions.cs" />
     <Compile Include="NHibernate\InMemoryHelper.cs" />
-    <Compile Include="NHibernate\Logging.cs" />
+    <Compile Include="NHibernate\Logger.cs" />
     <Compile Include="NHibernate\NHibHelper.cs" />
     <Compile Include="NHibernate\Saver.cs" />
     <Compile Include="Queries\DiagnosisQuery.cs" />

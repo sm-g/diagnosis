@@ -18,17 +18,17 @@
     <conv:AgeToYearsLabel x:Key="AgeToLabel" />
     <conv:BoolToSexSign x:Key="SexToSign" />
 
-    <conv:OffsetUnitToUnitLabel x:Key="OffsetUnitToUnitLabel" />
+    <conv:UnitForOffsetToUnitLabel x:Key="UnitForOffsetToUnitLabel" />
     <conv:DateOffsetToUnitLabel x:Key="DateOffsetToUnitLabel" />
-    <conv:DateOffsetToLabel x:Key="DateOffsetToLabel" />
+    <conv:DateOffsetToPartialDateLabel x:Key="DateOffsetToPartialDateLabel" />
     <conv:TimeSpanLabel x:Key="TimeSpanToLabel" />
     <conv:DateIntervalLabel x:Key="DateIntervalLabel" />
     <conv:DateLabel x:Key="DateLabel" />
     <conv:MonthToString x:Key="MonthToString" />
     <conv:EnumToLabel x:Key="EnumToLabel" />
 
-    <conv:Summator x:Key="SummatorConverter" />
-    <conv:ManToShortName x:Key="ManToShortName" />
+    <conv:SummatorConverter x:Key="SummatorConverter" />
+    <conv:ManToName x:Key="ManToName" />
 
     <conv:EqualityToBoolConverter x:Key="EqualToBool" />
     <conv:EqualityToBoolMultiConverter x:Key="EqualAllToBool" />

@@ -13,11 +13,14 @@
              mc:Ignorable="d"
              x:Name="editor"
              Tag="{Binding DataContext.HrList, RelativeSource={RelativeSource AncestorType=UserControl}}"
-             d:DesignHeight="200"
+             d:DataContext="{DynamicResource Context}"
+             d:DesignHeight="250"
              d:DesignWidth="600">
     <!--DataContext is HrEditorViewModel-->
     <!--Tag is HrListViewModel-->
     <UserControl.Resources>
+        <diag:HrEditorViewModel x:Key="Context" />
+
         <Style TargetType="Label"
                BasedOn="{StaticResource label90}" />
     </UserControl.Resources>
@@ -39,7 +42,7 @@
           GotKeyboardFocus="grid_GotKeyboardFocus"
           GotFocus="grid_GotFocus"
           LostFocus="grid_LostFocus"
-          beh:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
+          beh:FocusExtension.IsFocused="{Binding IsFocused}"
           beh:FocusExtension.Direct="True"
           KeyboardNavigation.IsTabStop="False"
           beh:FocusBehavior.FocusablePanel="True">
@@ -166,46 +169,107 @@
             </DockPanel>
             <DockPanel>
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel>
-                        <DockPanel>
-                            <Label Content="Дата" />
-                            <editors:ComboBoxDatePicker Year="{Binding FromYear, Mode=TwoWay}"
-                                                        Month="{Binding FromMonth, Mode=TwoWay}"
-                                                        Day="{Binding FromDay, Mode=TwoWay}" />
-                        </DockPanel>
-                        <DockPanel>
-                            <Label Content="Давность" />
-                            <editors:DateOffsetPicker DateOffset="{Binding DateOffset}"
-                                                      ReadOnlyOffset="{Binding DateOffset.UnitFixed, Mode=OneWay}" />
-                        </DockPanel>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal"
-                                Grid.Column="1">
-                        <ToggleButton IsChecked="{Binding DoRound}"
-                                      Width="100"
-                                      Margin="10"
-                                      VerticalAlignment="Center">
-                            <TextBlock TextWrapping="Wrap"
-                                       TextAlignment="Center"
-                                       Text="Менять единицу давности" />
-                        </ToggleButton>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
 
-                        <GroupBox Header="Показывать">
-                            <StackPanel>
-                                <RadioButton IsChecked="{Binding ShowAsDate}"
-                                             Content="дату" />
-                                <RadioButton IsChecked="{Binding ShowAsOffset}"
-                                             Content="давность" />
-                                <RadioButton IsChecked="{Binding ShowAsAge}"
-                                             IsEnabled="{Binding CanShowAsAge}"
-                                             Content="возраст" />
-                            </StackPanel>
-                        </GroupBox>
+                    <StackPanel Grid.Row="0"
+                                Orientation="Horizontal"
+                                Visibility="{Binding DateOffset.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                        <Label>Это было</Label>
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center">
+                            <RadioButton IsChecked="{Binding ShowAsDate}"
+                                         Margin="0 0 10 0"
+                                         Content="{Binding DateOffset.Do, Converter={StaticResource DateOffsetToPartialDateLabel}}" />
+                            <RadioButton IsChecked="{Binding ShowAsOffset}"
+                                         Margin="0 0 10 0">
+                                <TextBlock>
+                                    <Run Text="{Binding DateOffset.RoundedOffset, Mode=OneWay}" />
+                                    <Hyperlink Command="{Binding DateOffset.SpinUnitCommand}">
+                                        <Run>
+                                            <Run.Text>
+                                                <MultiBinding Mode="OneWay"
+                                                              Converter="{StaticResource UnitForOffsetToUnitLabel}">
+                                                    <Binding Path="DateOffset.RoundedUnit" />
+                                                    <Binding Path="DateOffset.RoundedOffset" />
+                                                </MultiBinding>
+                                            </Run.Text>
+                                        </Run>
+                                    </Hyperlink>
+                                </TextBlock>
+                            </RadioButton>
+                            <RadioButton IsChecked="{Binding ShowAsAge}"
+                                         IsEnabled="{Binding CanShowAsAge}"
+                                         Visibility="{Binding CanShowAsAge, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                         Content="{Binding AtAgeString}" />
+                        </StackPanel>
                     </StackPanel>
+                    <Expander x:Name="dateEditor"
+                              Grid.Row="1"
+                              ExpandDirection="Down"
+                              FlowDirection="RightToLeft"
+                              IsExpanded="{Binding IsDateEditorExpanded}">
+                        <Expander.Header>
+                            <StackPanel HorizontalAlignment="Right"
+                                        Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Expander}},Path=ActualWidth}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label x:Name="header"
+                                           Grid.Column="1">
+                                        <Label.Style>
+                                            <Style TargetType="Label">
+                                                <Setter Property="Content"
+                                                        Value="Изменить дату" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding DateOffset.IsEmpty}"
+                                                                 Value="True">
+                                                        <Setter Property="Content"
+                                                                Value="Добавить дату" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsExpanded,RelativeSource={RelativeSource AncestorType=Expander}}"
+                                                                 Value="True">
+                                                        <Setter Property="Content"
+                                                                Value="Скрыть редактор" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Label.Style>
+                                    </Label>
+                                    <Separator Grid.Column="0"
+                                               Width="auto" />
+                                </Grid>
+                            </StackPanel>
+                        </Expander.Header>
+                        <StackPanel FlowDirection="LeftToRight">
+                            <DockPanel>
+                                <Label Content="Дата" />
+                                <editors:ComboBoxDatePicker Year="{Binding DateOffset.Year, Mode=TwoWay}"
+                                                            Month="{Binding DateOffset.Month, Mode=TwoWay}"
+                                                            Day="{Binding DateOffset.Day, Mode=TwoWay}" />
+                            </DockPanel>
+                            <DockPanel>
+                                <Label Content="Давность" />
+                                <editors:DateOffsetPicker DataContext="{Binding DateOffset}" />
+                            </DockPanel>
+                            <DockPanel IsEnabled="{Binding CanShowAsAge}">
+                                <Label Content="Возраст" />
+                                <TextBox Text="{Binding AtAge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                                         Width="50"
+                                         HorizontalContentAlignment="Right">
+                                </TextBox>
+
+                                <TextBlock Text="{Binding AtAge, Converter={StaticResource AgeToLabel}}"
+                                           Margin="3,0,0,0"
+                                           VerticalAlignment="Center"></TextBlock>
+                            </DockPanel>
+                        </StackPanel>
+                    </Expander>
                 </Grid>
             </DockPanel>
 

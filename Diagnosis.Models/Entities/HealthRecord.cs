@@ -10,7 +10,7 @@ using Wintellect.PowerCollections;
 
 namespace Diagnosis.Models
 {
-    public class HealthRecord : EntityBase<Guid>, IDomainObject
+    public class HealthRecord : EntityBase<Guid>, IDomainObject, IHaveAuditInformation
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HealthRecord));
         private Iesi.Collections.Generic.ISet<HrItem> hrItems = new HashedSet<HrItem>();
@@ -19,12 +19,12 @@ namespace Diagnosis.Models
         private int? _day;
         private bool _isDeleted;
         private HrCategory _category;
-        private DateOffset _dateOffset;
         private HealthRecordUnit _unit;
         private DateTime _createdAt;
+        private DateTime _updatedAt;
+        private int _ord;
 
         public virtual event NotifyCollectionChangedEventHandler ItemsChanged;
-        private int _ord;
 
         public virtual Patient Patient { get; protected set; }
 
@@ -112,63 +112,26 @@ namespace Diagnosis.Models
         public virtual DateTime CreatedAt
         {
             get { return _createdAt; }
-            protected set
+        }
+
+        DateTime IHaveAuditInformation.CreatedAt
+        {
+            get { return _updatedAt; }
+            set
             {
                 _createdAt = value;
             }
         }
 
-        public virtual DateOffset DateOffset
+        DateTime IHaveAuditInformation.UpdatedAt
         {
-            get
-            {
-                if (_dateOffset == null)
-                {
-                    Debug.Assert(CreatedAt != DateTime.MinValue);
+            get { return _updatedAt; }
+            set { SetProperty(ref _updatedAt, value, () => UpdatedAt); }
+        }
 
-                    _dateOffset = new DateOffset(FromYear, FromMonth, FromDay,
-                        () => CreatedAt,
-                        DateOffset.DateOffsetSettings.OnLoading());
-
-                    if (Unit != HealthRecordUnit.NotSet &&
-                        Unit != HealthRecordUnit.ByAge
-                        || _dateOffset.DateSettingStrategy == DateOffset.DateSetting.SavesUnit)
-                    {
-                        // фиксируем единицу
-                        _dateOffset.Unit = Unit.ToDateOffsetUnit().Value;
-                    }
-
-                    _dateOffset.PropertyChanged += (s, e) =>
-                    {
-                        switch (e.PropertyName)
-                        {
-                            case "Year":
-                                FromYear = _dateOffset.Year;
-                                break;
-
-                            case "Month":
-                                FromMonth = _dateOffset.Month;
-                                break;
-
-                            case "Day":
-                                FromDay = _dateOffset.Day;
-                                break;
-
-                            case "Unit":
-                                if (Unit != HealthRecordUnit.ByAge &&
-                                    Unit != HealthRecordUnit.NotSet)
-                                {
-                                    // меняем Unit записи только если показываем давность записи
-                                    Unit = _dateOffset.Unit.ToHealthRecordUnit();
-                                }
-                                break;
-                        }
-                        OnPropertyChanged(() => DateOffset);
-                    };
-
-                }
-                return _dateOffset;
-            }
+        public virtual DateTime UpdatedAt
+        {
+            get { return _updatedAt; }
         }
 
         public virtual Iesi.Collections.Generic.ISet<HrItem> HrItems
@@ -223,36 +186,8 @@ namespace Diagnosis.Models
 
         protected HealthRecord()
         {
-            CreatedAt = DateTime.Now;
-            this.PropertyChanged += (s, e) => // подписываемся в первую очередь
-            {
-                try
-                {
-                    switch (e.PropertyName)
-                    {
-                        case "FromDay":
-                            DateOffset.Day = FromDay;
-                            break;
-
-                        case "FromMonth":
-                            DateOffset.Month = FromMonth;
-                            break;
-
-                        case "FromYear":
-                            DateOffset.Year = FromYear;
-                            break;
-
-                        case "Unit":
-                            var doUnit = Unit.ToDateOffsetUnit();
-                            DateOffset.Unit = doUnit ?? DateOffset.Unit; // меняем Unit на конкретную часть даты
-                            break;
-                    }
-                }
-                catch
-                {
-                    // не меняем DateOffset, компоненты даты поменяются потом
-                }
-            };
+            _createdAt = DateTime.Now;
+            _updatedAt = DateTime.Now;
         }
 
         void AddItem(HrItem item)
@@ -375,7 +310,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("hr({0}) {1} {2} {3}", HrItems.FlattenString(), Category, DateOffset, this.ShortId());
+            return string.Format("hr({0}) {1} {2} {3}.{4}.{5} {6}", HrItems.FlattenString(), Ord, Category, FromYear, FromMonth, FromDay, this.ShortId());
         }
 
         protected virtual void OnItemsChanged(NotifyCollectionChangedEventArgs e)

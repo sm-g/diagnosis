@@ -22,8 +22,10 @@ namespace Diagnosis.ViewModels.Screens
         private bool _noPatients;
         EventMessageHandlersManager emhManager;
         private FilterViewModel<Patient> _filter;
+        private bool _focused;
         private ObservableCollection<Patient> _patients;
         private Saver saver;
+        private ListCollectionView view;
 
         public PatientsListViewModel()
         {
@@ -36,12 +38,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 Patients.SyncWith(Filter.Results);
             };
-            Filter.Clear(); // показываем всех
-
-            SelectLastPatient();
 
             Title = "Пациенты";
-
             NoPatients = !Session.Query<Patient>().Any();
 
             emhManager = new EventMessageHandlersManager(new[] {
@@ -53,6 +51,9 @@ namespace Diagnosis.ViewModels.Screens
                     NoPatients = false;
                 })
             });
+
+            Filter.Clear(); // показываем всех
+            SelectLastPatient();
         }
 
         public ObservableCollection<Patient> Patients
@@ -62,13 +63,15 @@ namespace Diagnosis.ViewModels.Screens
                 if (_patients == null)
                 {
                     _patients = new ObservableCollection<Patient>();
-                    var patientsView = (CollectionView)CollectionViewSource.GetDefaultView(_patients);
+                    view = (ListCollectionView)CollectionViewSource.GetDefaultView(_patients);
+                    SortDescription sort0 = new SortDescription("LastHrUpdatedAt", ListSortDirection.Descending);
                     SortDescription sort1 = new SortDescription("LastName", ListSortDirection.Ascending);
                     SortDescription sort2 = new SortDescription("FirstName", ListSortDirection.Ascending);
                     SortDescription sort3 = new SortDescription("MiddleName", ListSortDirection.Ascending);
-                    patientsView.SortDescriptions.Add(sort1);
-                    patientsView.SortDescriptions.Add(sort2);
-                    patientsView.SortDescriptions.Add(sort3);
+                    view.SortDescriptions.Add(sort0);
+                    view.SortDescriptions.Add(sort1);
+                    view.SortDescriptions.Add(sort2);
+                    view.SortDescriptions.Add(sort3);
                 }
                 return _patients;
             }
@@ -166,11 +169,27 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
+        public bool IsFocused
+        {
+            get
+            {
+                return _focused;
+            }
+            set
+            {
+                if (_focused != value)
+                {
+                    _focused = value;
+                    OnPropertyChanged(() => IsFocused);
+                }
+            }
+        }
         public void SelectLastPatient()
         {
             if (Patients.Count > 0)
             {
-                SelectedPatient = Patients[0];
+                SelectedPatient = (Patient)view.GetItemAt(0);
             }
         }
         protected override void Dispose(bool disposing)

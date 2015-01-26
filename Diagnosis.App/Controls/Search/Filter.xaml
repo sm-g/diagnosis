@@ -6,7 +6,7 @@
              xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
-             d:DesignHeight="100"
+             d:DesignHeight="30"
              d:DesignWidth="300">
     <!-- FilterViewModel -->
     <Grid>
@@ -16,6 +16,7 @@
         </Grid.ColumnDefinitions>
 
         <TextBox x:Name="input"
+                 GotKeyboardFocus="input_GotKeyboardFocus"
                  beh:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
                  Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}">
             <controls:WatermarkService.Watermark>
