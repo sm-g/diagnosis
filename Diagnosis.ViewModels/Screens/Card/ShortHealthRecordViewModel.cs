@@ -27,6 +27,10 @@ namespace Diagnosis.ViewModels.Screens
 
             SyncCheckedAndSelected = true;
             DateOffset = DateOffsetViewModel.FromHr(healthRecord);
+            DateOffset.PropertyChanged += (s, e) =>
+            {
+                OnPropertyChanged(() => DateOffsetString);
+            };
         }
 
 
@@ -298,7 +302,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-    
+
         private void patient_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)

@@ -610,15 +610,8 @@ namespace Diagnosis.Common
                     {
                         // y m d
                         Offset = (Now - (DateTime)this).Days;
-                        if (Offset % 7 == 0 && Math.Abs(Offset.Value) > 1)
-                        {
-                            Offset /= 7;
-                            Unit = DateUnit.Week;
-                        }
-                        else
-                        {
-                            Unit = DateUnit.Day;
-                        }
+                        Unit = DateUnit.Day;
+                        // не ставим недели, чтобы не менять давность при изменении дня
                     }
                     else
                     {
