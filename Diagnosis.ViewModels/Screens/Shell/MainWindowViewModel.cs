@@ -121,6 +121,23 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        private string _sexes;
+        public string Sexes
+        {
+            get
+            {
+                return _sexes;
+            }
+            set
+            {
+                if (_sexes != value)
+                {
+                    _sexes = value;
+                    OnPropertyChanged(() => Sexes);
+                }
+            }
+        }
+
         private bool CanShowSearch
         {
             get

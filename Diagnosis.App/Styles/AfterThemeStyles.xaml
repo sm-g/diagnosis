@@ -2,9 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!--This styles overwrites theme styles-->
 
-
     <!--  base control styles  -->
-    
+
     <Style BasedOn="{StaticResource {x:Type DatePicker}}"
            TargetType="DatePicker">
         <Setter Property="FirstDayOfWeek"
@@ -36,7 +35,7 @@
            TargetType="Button">
         <Setter Property="Width"
                 Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
-    </Style>   
+    </Style>
 
     <!--toolbar-->
     <Style TargetType="ToolBar">
@@ -81,7 +80,7 @@
     </Style>
 
     <Style x:Key="colonedLabel"
-        TargetType="Label" 
+           TargetType="Label"
            BasedOn="{StaticResource {x:Type Label}}">
         <Setter Property="VerticalAlignment"
                 Value="Center" />
@@ -99,5 +98,24 @@
            TargetType="Label">
         <Setter Property="Width"
                 Value="90" />
+    </Style>
+
+    <!-- ToolTips -->
+    <Style x:Key="SexTooltip"
+           TargetType="TextBlock">
+        <Setter Property="ToolTip"
+                Value="Пол не указан" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMale}"
+                         Value="True">
+                <Setter Property="ToolTip"
+                        Value="Мужчина" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsMale}"
+                         Value="False">
+                <Setter Property="ToolTip"
+                        Value="Женщина" />
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 </ResourceDictionary>

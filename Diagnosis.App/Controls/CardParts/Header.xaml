@@ -14,7 +14,7 @@
     <!-- HeaderViewModel -->
     <UserControl.Resources>
         <diag:HeaderViewModel x:Key="Context" />
-
+      
         <Style x:Key="HeaderNavButton"
                TargetType="{x:Type Button}"
                BasedOn="{StaticResource {x:Type Button}}">
@@ -132,13 +132,18 @@
                                 </TextBlock.Text>
                             </TextBlock>
                         </DockPanel>
-
                         <DockPanel Grid.Row="1"
                                    DataContext="{Binding Holder}">
-                            <TextBlock Text="{Binding IsMale, Converter={StaticResource SexToSign}}"
-                                       FontSize="20"
-                                       Margin="20,0,5,0"
-                                       VerticalAlignment="Center" />
+                            <TextBlock Margin="20,0,5,0"
+                                       Style="{StaticResource SexTooltip}"
+                                       VerticalAlignment="Center">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource SexToSign}">
+                                        <Binding Path="IsMale" />
+                                        <Binding Path="DataContext.Sexes"  RelativeSource="{RelativeSource AncestorType=Window}" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                             <TextBlock Margin="5,0,10,0"
                                        VerticalAlignment="Center">
                                     <TextBlock Text="{Binding Age}" />
