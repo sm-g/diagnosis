@@ -28,7 +28,7 @@ namespace Diagnosis.ViewModels.Screens
         public CardViewModel(bool resetHistory = false)
         {
             if (resetHistory || viewer == null)
-                viewer = new PatientViewer();
+                ResetHistory();
 
             doctor = AuthorityController.CurrentDoctor;
 
@@ -226,6 +226,7 @@ namespace Diagnosis.ViewModels.Screens
         public void ResetHistory()
         {
             viewer = new PatientViewer();
+            HrListViewModel.ResetHistory();
         }
 
         /// <summary>

@@ -263,12 +263,18 @@ namespace Diagnosis.ViewModels.Screens
                 if (_selectedHealthRecord == value)
                     return;
 
-                if (value == null && inSetSelected)
-                {
-                    // list box sets value to null, skip if we are in setting new value
-                    logger.DebugFormat("set null inSetSelected");
-                    return;
-                }
+                if (value == null)
+                    if (inSetSelected)
+                    {
+                        // list box sets value to null, skip if we are in setting new value
+                        logger.DebugFormat("set null inSetSelected");
+                        return;
+                    }
+                    else
+                    {
+                        // nothing selected
+                        HealthRecords.ForAll(vm => vm.IsSelected = false);
+                    }
 
                 inSetSelected = true;
                 if (_selectedHealthRecord != null && unselectPrev.CanEnter)
@@ -865,6 +871,11 @@ namespace Diagnosis.ViewModels.Screens
             SelectHealthRecord(hrs.LastOrDefault(), true);
         }
 
+        internal static void ResetHistory()
+        {
+            hrViewer = new HrViewer();
+        }
+
         private HealthRecord AddHr(bool fromCommand = false)
         {
             AddingHrByCommnd = fromCommand;
@@ -882,6 +893,19 @@ namespace Diagnosis.ViewModels.Screens
         {
             logger.DebugFormat("{0} hios: {1}", action, hios.FlattenString());
         }
+
+        [ContractInvariantMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+        private void ObjectInvariant()
+        {
+            // может: LastSelected - есть, но ничего не выбрано
+            // не может: что-то выбрано, а LastSelected нет
+
+            // снимаем выделение: сначала менять SelectedHealthRecord, потом все остальные
+            // добавляем выделение - наоборот
+            Contract.Invariant(LastSelected != null || SelectedHealthRecord == null);
+        }
+
 
         protected virtual void OnSaveNeeded(List<HealthRecord> hrsToSave = null)
         {

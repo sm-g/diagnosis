@@ -183,6 +183,7 @@ namespace Tests
         {
             var card = new CardViewModel(a[2], true);
             card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
+            card.HrList.Grouping = HrViewGroupingColumn.None;
             card.HrList.MoveHrSelectionCommand.Execute(true); // up to 20
 
             Assert.AreEqual(hr[20], card.HrList.SelectedHealthRecord.healthRecord);
@@ -297,17 +298,20 @@ namespace Tests
             Assert.AreEqual(hr[20].Appointment, new20.Appointment);
             Assert.AreEqual(hr[20].Category, new20.Category);
             Assert.AreEqual(hr[20].Course, new20.Course);
-            Assert.AreEqual(hr[20].Doctor, new20.Doctor);
             Assert.AreEqual(hr[20].FromDay, new20.FromDay);
             Assert.AreEqual(hr[20].FromMonth, new20.FromMonth);
             Assert.AreEqual(hr[20].FromYear, new20.FromYear);
-            // Assert.AreEqual(hr[20].Ord, new20.Ord);
             Assert.AreEqual(hr[20].Patient, new20.Patient);
             Assert.AreEqual(hr[20].Unit, new20.Unit);
 
+            // Assert.AreEqual(hr[20].Ord, new20.Ord); в любое место
+
             Assert.AreEqual(false, new20.IsDeleted);
             Assert.AreEqual(false, new20.IsDirty);
+
+            Assert.AreEqual(hr[20].Doctor, new20.Doctor); // или новый автор?
             Assert.AreNotEqual(hr[20].CreatedAt, new20.CreatedAt);
+           // Assert.AreNotEqual(hr[20].UpdatedAt, new20.UpdatedAt);
         }
 
         [TestMethod]
