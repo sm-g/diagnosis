@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Data;
 using System.Globalization;
+using System.Windows;
 
 namespace Diagnosis.App.Converters
 {
@@ -13,10 +14,11 @@ namespace Diagnosis.App.Converters
         public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (values.Length < 2)
-                return false;
+                return DependencyProperty.UnsetValue;
+
             var col = values[1] as IList;
             if (col == null)
-                return false;
+                return DependencyProperty.UnsetValue;
 
             return col.Contains(values[0]);
         }
@@ -26,12 +28,13 @@ namespace Diagnosis.App.Converters
         public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (values.Length < 2)
-                return false;
+                return DependencyProperty.UnsetValue;
             var list = values[1] as IList;
             if (list == null)
-                return false;
+                return DependencyProperty.UnsetValue;
             if (list.Count <= 1)
                 return true;
+
             return object.Equals(values[0], list[list.Count - 1]);
         }
     }

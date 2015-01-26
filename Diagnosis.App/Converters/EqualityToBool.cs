@@ -21,12 +21,5 @@ namespace Diagnosis.App.Converters
         {
             return value.Equals(parameter);
         }
-
-        public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (parameter.GetType() == targetType)
-                return parameter;
-            throw new NotSupportedException();
-        }
     }
 }

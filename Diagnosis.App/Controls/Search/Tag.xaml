@@ -188,19 +188,19 @@
 
                     <MenuItem Header="Ключевое слово"
                               CommandParameter="{x:Static diag:BlankType.Word}"
-                              IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:BlankType.Word}}"
+                              IsChecked="{Binding BlankType, Mode=OneWay, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:BlankType.Word}}"
                               Style="{StaticResource convert}" />
                     <MenuItem Header="Комментарий"
                               CommandParameter="{x:Static diag:BlankType.Comment}"
-                              IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:BlankType.Comment}}"
+                              IsChecked="{Binding BlankType, Mode=OneWay, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:BlankType.Comment}}"
                               Style="{StaticResource convert}" />
                     <MenuItem Header="МКБ"
                               CommandParameter="{x:Static diag:BlankType.Icd}"
-                              IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:BlankType.Icd}}"
+                              IsChecked="{Binding BlankType, Mode=OneWay, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:BlankType.Icd}}"
                               Style="{StaticResource convert}" />
                     <MenuItem Header="Измерение"
                               CommandParameter="{x:Static diag:BlankType.Measure}"
-                              IsChecked="{Binding BlankType, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:BlankType.Measure}}"
+                              IsChecked="{Binding BlankType, Mode=OneWay, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:BlankType.Measure}}"
                               Style="{StaticResource convert}" />
 
                     <!--<Separator />-->
