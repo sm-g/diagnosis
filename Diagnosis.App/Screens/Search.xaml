@@ -36,9 +36,6 @@
                 <Setter Property="Margin"
                         Value="0,0,0,2" />
             </Style>
-            
-            <Style TargetType="Label"
-                   BasedOn="{StaticResource colonedLabel}" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
