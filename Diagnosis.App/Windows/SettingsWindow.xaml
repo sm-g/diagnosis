@@ -24,6 +24,13 @@
             <CheckBox IsChecked="{Binding OnlyTopLevelIcdDisease}">
                 <AccessText>_Болезни МКБ только верхнего уровня</AccessText>
             </CheckBox>
+            
+            <Label Content="Обозначения пола" />
+            <controls:RadioListBox ItemsSource="{Binding Sexes}"
+                                   Focusable="False"
+                                   SelectedItem="{Binding SelectedSex}"
+                                   MultiSelection="False">
+            </controls:RadioListBox>
         </StackPanel>
 
         <StackPanel Grid.Row="1"

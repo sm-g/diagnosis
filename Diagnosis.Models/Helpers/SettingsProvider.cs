@@ -12,6 +12,7 @@ namespace Diagnosis.Models
         private static string HrListSortingSetting = "HrListSorting";
 
         private static string HrListGroupingSetting = "HrListGrouping";
+        private static string SexSignsSetting = "SexSigns";
 
         public SettingsProvider(Doctor doc)
         {
@@ -34,18 +35,26 @@ namespace Diagnosis.Models
             get { return Get(HrListGroupingSetting); }
             set { Set(HrListGroupingSetting, value.ToString()); }
         }
+
         public string HrListSorting
         {
             get { return Get(HrListSortingSetting); }
             set { Set(HrListSortingSetting, value.ToString()); }
         }
-        string Get(string setting)
+
+        public string SexSigns
+        {
+            get { return Get(SexSignsSetting); }
+            set { Set(SexSignsSetting, value); }
+        }
+
+        private string Get(string setting)
         {
             var set = doctor.SettingsSet.FirstOrDefault(s => s.Title.Equals(setting, StringComparison.InvariantCultureIgnoreCase));
             return set != null ? set.Value : null;
         }
 
-        void Set(string setting, string value)
+        private void Set(string setting, string value)
         {
             var set = doctor.SettingsSet.FirstOrDefault(s => s.Title.Equals(setting, StringComparison.InvariantCultureIgnoreCase));
             if (set == null)

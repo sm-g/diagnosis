@@ -2,6 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using Xceed.Wpf.AvalonDock.Layout.Serialization;
+using EventAggregator;
+using Diagnosis.Common;
+using Diagnosis.Models;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -11,6 +14,7 @@ namespace Diagnosis.ViewModels.Screens
         private ScreenSwitcher switcher;
         private SearchViewModel searchPanel;
         private bool? searchVisByUser = null;
+        private string _sexes;
 
         public MainWindowViewModel()
         {
@@ -64,6 +68,22 @@ namespace Diagnosis.ViewModels.Screens
             ADLayout.LayoutLoaded += (s, e) =>
             {
             };
+
+            AuthorityController.LoggedIn += (s, e) =>
+            {
+                if (e.user is Doctor)
+                {
+                    var doc = (Doctor)e.user;
+                    Sexes = doc.Settings.SexSigns;
+                }
+
+            };
+            this.Subscribe(Event.SettingsSaved, (e) =>
+            {
+                var doc = e.GetValue<Doctor>(MessageKeys.Doctor);
+                Sexes = doc.Settings.SexSigns;
+
+            });
         }
 
         private void ReloadContentOnStartUp(LayoutSerializationCallbackEventArgs args)
@@ -120,8 +140,6 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
-
-        private string _sexes;
         public string Sexes
         {
             get
