@@ -37,6 +37,7 @@ namespace Tests
 
             // p[3] c[4] a[5] are empty, for deletions
         }
+        #region Opening
 
         [TestMethod]
         public void OpenPatient()
@@ -140,6 +141,7 @@ namespace Tests
             Assert.AreEqual(0, c[3].Appointments.Count());
             Assert.AreEqual(c[3], card.Navigator.Current.Holder);
         }
+        #endregion
 
         [TestMethod]
         [ExpectedException(typeof(AssertFailedException))]
@@ -159,6 +161,8 @@ namespace Tests
 
             Assert.AreEqual(newHr, card.HrEditor.HealthRecord.healthRecord);
         }
+
+        #region Selection
 
         [TestMethod]
         public void SelectNewHr()
@@ -215,8 +219,13 @@ namespace Tests
             Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
             Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
         }
+
+        #endregion
+
+        #region Saving
+
         [TestMethod]
-        public void DeleteAppCoursePatient()
+        public void DeleteEmptyAppCoursePatient()
         {
             var card = new CardViewModel(a[5], true);
             IHrsHolder holder = null;
@@ -257,7 +266,7 @@ namespace Tests
             hr[21].FromYear = 2010;
 
             // завершили удаление
-            OverlayService.Overlays[0].CloseCommand.Execute(null);
+            OverlayService.Overlays[0].CloseCommand.Execute(true);
 
             // не сохраненяем открытую запись
             Assert.IsTrue(!hr[20].IsDirty);
@@ -275,7 +284,12 @@ namespace Tests
         {
             var card = new CardViewModel(a[5], true);
             card.HrList.AddHealthRecordCommand.Execute(null);
-            card.HrList.HealthRecords.Last().DeleteCommand.Execute(null);
+            a[5].HealthRecords.Last().AddItems(new Comment("1").ToEnumerable());
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            a[5].HealthRecords.Last().AddItems(new Comment("2").ToEnumerable());
+            card.HrEditor.CloseCommand.Execute(null);
+
+            card.HrList.HealthRecords.ForEach(x => x.DeleteCommand.Execute(null));
 
             Assert.IsTrue(card.Navigator.Current.HolderVm.DeleteCommand.CanExecute(null));
             card.Navigator.Current.HolderVm.DeleteCommand.Execute(null);
@@ -283,13 +297,38 @@ namespace Tests
             Assert.AreEqual(c[4], card.Navigator.Current.Holder);
 
             card.HrList.AddHealthRecordCommand.Execute(null);
-            card.HrList.HealthRecords.Last().DeleteCommand.Execute(null);
+            c[4].HealthRecords.Last().AddItems(new Comment("1").ToEnumerable());
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            c[4].HealthRecords.Last().AddItems(new Comment("2").ToEnumerable());
+            card.HrEditor.CloseCommand.Execute(null);
+            card.HrList.HealthRecords.ForEach(x => x.DeleteCommand.Execute(null));
+
             card.Navigator.Current.HolderVm.DeleteCommand.Execute(null);
             Assert.AreEqual(p[3], card.Navigator.Current.Holder);
 
             card.HrList.AddHealthRecordCommand.Execute(null);
-            card.HrList.HealthRecords.Last().DeleteCommand.Execute(null);
+            p[3].HealthRecords.Last().AddItems(new Comment("1").ToEnumerable());
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            p[3].HealthRecords.Last().AddItems(new Comment("2").ToEnumerable());
+            card.HrEditor.CloseCommand.Execute(null);
+            card.HrList.HealthRecords.ForEach(x => x.DeleteCommand.Execute(null));
+
             card.Navigator.Current.HolderVm.DeleteCommand.Execute(null);
         }
+
+        [TestMethod]
+        public void ChangeAppWithDeletedHrs()
+        {
+            var card = new CardViewModel(a[2], true);
+
+            card.HrList.SelectHealthRecords(a[2].HealthRecords);
+            card.HrList.HealthRecords.ForEach(x => x.DeleteCommand.Execute(null));
+
+            card.Navigator.NavigateTo(a[1]); // sibling
+
+            Assert.AreEqual(0, a[2].HealthRecords.Count());
+        }
+        #endregion
+
     }
 }

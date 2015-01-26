@@ -42,6 +42,8 @@ namespace Tests
             // a[2] with hrs 20,21,22
         }
 
+        #region Selection
+
         [TestMethod]
         public void SelectHr()
         {
@@ -219,6 +221,8 @@ namespace Tests
             Assert.AreEqual(hr1, card.HrList.SelectedHealthRecord);
         }
 
+        #endregion
+
         [TestMethod]
         public void CopyPasteHr()
         {
@@ -311,7 +315,7 @@ namespace Tests
 
             Assert.AreEqual(hr[20].Doctor, new20.Doctor); // или новый автор?
             Assert.AreNotEqual(hr[20].CreatedAt, new20.CreatedAt);
-           // Assert.AreNotEqual(hr[20].UpdatedAt, new20.UpdatedAt);
+            // Assert.AreNotEqual(hr[20].UpdatedAt, new20.UpdatedAt);
         }
 
         [TestMethod]
