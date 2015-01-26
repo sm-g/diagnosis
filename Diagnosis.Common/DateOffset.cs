@@ -60,11 +60,12 @@ namespace Diagnosis.Common
             }
             set
             {
+                Contract.Ensures(_year == value);
                 if (_year != value)
                 {
-                    _year = value;
                     //   logger.DebugFormat("{0}, set year = {1}", this, value);
                     SetDate(value, Month, Day);
+                    _year = value;
                     OnPropertyChanged("Year");
                     OnPropertyChanged("IsEmpty");
                 }
@@ -82,11 +83,12 @@ namespace Diagnosis.Common
             }
             set
             {
+                Contract.Ensures(_month == value);
                 if (_month != value)
                 {
-                    _month = value;
                     //  logger.DebugFormat("{0}, set month = {1}", this, value);
                     SetDate(Year, value, Day);
+                    _month = value;
                     OnPropertyChanged("Month");
                     OnPropertyChanged("IsEmpty");
                 }
@@ -104,11 +106,12 @@ namespace Diagnosis.Common
             }
             set
             {
+                Contract.Ensures(_day == value);
                 if (_day != value)
                 {
-                    _day = value;
                     //   logger.DebugFormat("{0}, set day = {1}", this, value);
                     SetDate(Year, Month, value);
+                    _day = value;
                     OnPropertyChanged("Day");
                     OnPropertyChanged("IsEmpty");
                 }
@@ -207,9 +210,11 @@ namespace Diagnosis.Common
         }
 
         /// <summary>
-        /// Убирать несущественные части даты (Unit = Month -> day = null).
+        /// Убирать несущественные части даты.
         /// По умолчанию true.
-        /// (5 дней - дата с точностью до дня - меняем на 5 лет - день и месяц пропадают)
+        ///
+        /// Unit = Month -> day = null.
+        /// Month = null -> day = null.
         /// </summary>
         public bool CutsDate
         {
@@ -334,11 +339,17 @@ namespace Diagnosis.Common
                 case DateUnit.Day:
                     dt = new DateTime(Year.Value, Month.Value, Day.Value).AddDays(value);
                     SetDate(dt.Year, dt.Month, dt.Day);
+                    //Year = dt.Year;
+                    //Month = dt.Month;
+                    //Day = dt.Day;
                     break;
 
                 case DateUnit.Week:
                     dt = new DateTime(Year.Value, Month.Value, Day.Value).AddDays(value * 7);
                     SetDate(dt.Year, dt.Month, dt.Day);
+                    // Year = dt.Year;
+                    //Month = dt.Month;
+                    //Day = dt.Day;
                     break;
 
                 case DateUnit.Month:
@@ -399,13 +410,47 @@ namespace Diagnosis.Common
             {
                 using (inSetting.Enter())
                 {
+                    var yearWas = _year.HasValue;
+                    var monthWas = _month.HasValue;
+
                     // нулевые значения допустимы
                     var y = year != 0 ? year : null;
                     var m = month != 0 ? month : null;
                     var d = day != 0 ? day : null;
-                    Year = y;
-                    Month = m;
-                    Day = d;
+                    _year = y;
+                    _month = m;
+                    _day = d;
+
+                    // убираем остаток даты
+                    if (CutsDate && yearWas)
+                    {
+                        if (y == null) // clear year
+                        {
+                            Month = null;
+                            Day = null;
+                        }
+                        else if (monthWas && m == null) // clear month
+                        {
+                            Day = null;
+                        }
+                    }
+
+                    // если нет года или года и месяца, считаем их из Now
+                    if (d != null && m == null && y == null)
+                    {
+                        Month = Now.Month; // set day
+                        Year = Now.Year;
+                    }
+                    if (m != null && !monthWas && y == null)
+                    {
+                        Year = Now.Year; // set month
+                    }
+                    if (CutsDate && _year != null && _month == null)
+                    {
+                        Day = null;
+                    }
+
+                    ValidateDate();
 
                     if (IsEmpty)
                     {
@@ -413,33 +458,10 @@ namespace Diagnosis.Common
                         return;
                     }
 
-                    // если нет года или года и месяца, считаем их из Now
-                    bool yearWas = Year.HasValue;
-                    if (!Year.HasValue)
-                    {
-                        Year = Now.Year;
-                    }
-                    if (!Month.HasValue)
-                    {
-                        if (yearWas)
-                        {
-                            if (CutsDate)
-                            {
-                                Day = null;
-                            }
-                        }
-                        else
-                        {
-                            Month = Now.Month;
-                        }
-                    }
-
-                    ValidateDate();
-
                     switch (DateSettingStrategy)
                     {
                         case DateSetting.SetsUnitSilly:
-                            SetOffsetUnitByDateSilly(yearWas);
+                            SetOffsetUnitByDateSilly(_year.HasValue);
                             break;
 
                         case DateSetting.RoundsUnit:
@@ -577,48 +599,46 @@ namespace Diagnosis.Common
         /// </summary>
         private void SetOffsetUnitByDateSilly(bool yearWas)
         {
-            Contract.Requires(Year != null);
             Contract.Ensures(Contract.OldValue(_year) == Contract.ValueAtReturn(out _year));
             Contract.Ensures(Contract.OldValue(_month) == Contract.ValueAtReturn(out _month));
             Contract.Ensures(Contract.OldValue(_day) == Contract.ValueAtReturn(out _day));
-
-            if (Month.HasValue)
+            if (Year.HasValue)
             {
-                if (Day.HasValue)
+                if (Month.HasValue)
                 {
-                    // ? m d
-                    Offset = (Now - (DateTime)this).Days;
-                    if (Offset % 7 == 0 && Math.Abs(Offset.Value) > 1)
+                    if (Day.HasValue)
                     {
-                        Offset /= 7;
-                        Unit = DateUnit.Week;
+                        // y m d
+                        Offset = (Now - (DateTime)this).Days;
+                        if (Offset % 7 == 0 && Math.Abs(Offset.Value) > 1)
+                        {
+                            Offset /= 7;
+                            Unit = DateUnit.Week;
+                        }
+                        else
+                        {
+                            Unit = DateUnit.Day;
+                        }
                     }
                     else
                     {
-                        Unit = DateUnit.Day;
+                        // y m _
+                        Offset = DateHelper.GetTotalMonthsBetween(Now, Year.Value, Month.Value);
+                        Unit = DateUnit.Month;
                     }
                 }
                 else
-                {
-                    // ? m _
-                    Offset = DateHelper.GetTotalMonthsBetween(Now, Year.Value, Month.Value);
-                    Unit = DateUnit.Month;
-                }
-            }
-            else
-            {
-                if (yearWas)
                 {
                     // y _ ? - день игнорируем
                     Offset = Now.Year - Year.Value;
                     Unit = DateUnit.Year;
                 }
-                else
-                {
-                    // _ _ d
-                    Offset = Now.Day - Day.Value;
-                    Unit = DateUnit.Day;
-                }
+            }
+            else if (!Month.HasValue)
+            {
+                // _ _ d
+                Offset = Now.Day - Day.Value;
+                Unit = DateUnit.Day;
             }
         }
 
@@ -632,12 +652,12 @@ namespace Diagnosis.Common
             Contract.Ensures(Contract.OldValue(_month) == Contract.ValueAtReturn(out _month));
             Contract.Ensures(Contract.OldValue(_day) == Contract.ValueAtReturn(out _day));
 
-            if (Month == null && (Day == null || !CutsDate)) // _ _ y (или d _ y без автообрезания)
+            if (Month == null) // _ _ y (или d _ y без автообрезания)
             {
                 Offset = Now.Year - Year.Value;
                 Unit = DateUnit.Year;
             }
-            else if (Day == null && Month != null) // _ m y
+            else if (Day == null) // _ m y
             {
                 var months = DateHelper.GetTotalMonthsBetween(Now, Year.Value, Month.Value);
                 if (months < 12)

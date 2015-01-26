@@ -188,6 +188,7 @@ namespace Diagnosis.ViewModels
                 return Year == null && Month == null && Day == null;
             }
         }
+
         public RelayCommand SpinUnitCommand
         {
             get
@@ -265,12 +266,12 @@ namespace Diagnosis.ViewModels
         {
             Contract.Requires(Year != null);
 
-            if (Month == null && (Day == null))//|| !CutsDate)) // _ _ y (или d _ y без автообрезания)
+            if (Month == null) // _ _ y (или d _ y без автообрезания)
             {
                 RoundedOffset = Now.Year - Year.Value;
                 RoundedUnit = DateUnit.Year;
             }
-            else if (Day == null && Month != null) // _ m y
+            else if (Day == null) // _ m y
             {
                 var months = DateHelper.GetTotalMonthsBetween(Now, Year.Value, Month.Value);
                 if (months < 12)
@@ -322,7 +323,7 @@ namespace Diagnosis.ViewModels
         {
             if (IsEmpty)
             {
-                Offset = null;
+                RoundedOffset = null;
                 return;
             }
             switch (unit)
@@ -347,12 +348,21 @@ namespace Diagnosis.ViewModels
                     break;
 
                 case DateUnit.Year:
-                    RoundedOffset = Now.Year - Year.Value;
-                    break;
-
-                default:
+                    if (Year.HasValue)
+                    {
+                        RoundedOffset = Now.Year - Year.Value;
+                    }
+                    else
+                    {
+                        RoundedOffset = null;
+                    }
                     break;
             }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} {1}", "doVm", d);
         }
     }
 }
