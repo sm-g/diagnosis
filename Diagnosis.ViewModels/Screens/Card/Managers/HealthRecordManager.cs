@@ -248,20 +248,15 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        /// <summary>
-        /// Реальное удаление удаленных записей.
-        /// </summary>
-        internal void MakeDeletions()
-        {
-            this.Send(Event.HideOverlay, typeof(HealthRecord).AsParams(MessageKeys.Type));
-        }
-
         protected override void Dispose(bool disposing)
         {
             try
             {
                 if (disposing)
                 {
+                    // just close without execute OnDo
+                    this.Send(Event.HideOverlay, new object[] { typeof(HealthRecord), true }.AsParams(MessageKeys.Type, MessageKeys.Boolean));
+
                     holder.HealthRecordsChanged -= holder_HealthRecordsChanged;
                     foreach (var shortHrVm in HealthRecords)
                     {
@@ -275,8 +270,6 @@ namespace Diagnosis.ViewModels.Screens
                         shortHrVm.healthRecord.PropertyChanged -= hr_PropertyChanged;
                         shortHrVm.Dispose();
                     }
-
-                    MakeDeletions();
                 }
             }
             finally

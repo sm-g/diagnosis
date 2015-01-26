@@ -40,13 +40,14 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public RelayCommand CloseCommand
+        public RelayCommand<bool> CloseCommand
         {
             get
             {
-                return new RelayCommand(() =>
+                return new RelayCommand<bool>((executeOnDo) =>
                 {
-                    todos.ForEach((onDo) => onDo());
+                    if (executeOnDo)
+                        todos.ForEach((onDo) => onDo());
                     onClose(this);
                 });
             }

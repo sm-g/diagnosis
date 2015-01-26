@@ -35,10 +35,11 @@ namespace Diagnosis.ViewModels.Screens
             this.Subscribe(Event.HideOverlay, (e) =>
             {
                 var type = e.GetValue<Type>(MessageKeys.Type);
+                var withOnDo = !e.GetValue<bool>(MessageKeys.Boolean);
 
                 UndoOverlayViewModel existing = Overlays.SingleOrDefault(o => o.ObjectsType == type);
                 if (existing != null)
-                    existing.CloseCommand.Execute(null);
+                    existing.CloseCommand.Execute(withOnDo);
             });
         }
 

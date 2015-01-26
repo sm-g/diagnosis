@@ -417,7 +417,7 @@ namespace Diagnosis.ViewModels.Screens
                 return;
 
             var holder = HrList.holder;
-            HrList.Dispose(); // удаляются все записи
+            HrList.Dispose();
 
             holder.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
 
@@ -491,6 +491,7 @@ namespace Diagnosis.ViewModels.Screens
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 // удаляем записи в бд
+
                 saver.Delete(e.OldItems.Cast<HealthRecord>().ToArray());
             }
         }

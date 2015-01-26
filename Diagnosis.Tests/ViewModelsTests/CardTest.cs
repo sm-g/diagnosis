@@ -257,7 +257,7 @@ namespace Tests
             hr[21].FromYear = 2010;
 
             // завершили удаление
-            card.HrList.hrManager.MakeDeletions();
+            OverlayService.Overlays[0].CloseCommand.Execute(null);
 
             // не сохраненяем открытую запись
             Assert.IsTrue(!hr[20].IsDirty);
