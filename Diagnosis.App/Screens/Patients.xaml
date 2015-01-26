@@ -125,6 +125,7 @@
                                         Binding="{Binding IsMale, Mode=OneWay}"
                                         ElementStyle="{StaticResource SexCheckbox}" />-->
                 <DataGridTemplateColumn Header="Пол"
+                                        SortMemberPath="IsMale"
                                         IsReadOnly="True"
                                         CellTemplate="{StaticResource SexTemplate}" />
                 <DataGridTextColumn Header="Возраст"
