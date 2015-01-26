@@ -164,6 +164,7 @@
             </DockPanel>
             <DockPanel>
                 <!--DataContext is HrEditorViewModel-->
+                <Label VerticalAlignment="Top">_Категория</Label>
                 <editors:CategoryChooser HorizontalAlignment="Left"
                                          DataContext="{Binding DataContext, ElementName=editor}" />
             </DockPanel>
