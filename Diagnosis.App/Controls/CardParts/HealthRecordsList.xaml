@@ -108,6 +108,7 @@
             <DockPanel x:Name="debug"
                        Margin="20,0,0,0">
                 <CheckBox IsChecked="{Binding IsRectSelectEnabled}">IsRectSelectEnabled</CheckBox>
+                <CheckBox x:Name="debugFocus">debugFocus</CheckBox>
                 <TextBlock Margin="15,0,0,0">Selected:</TextBlock>
                 <TextBlock Text="{Binding SelectedItems.Count, ElementName=records}"
                            Width="20" />
@@ -280,18 +281,24 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <DockPanel>
-                            <Rectangle x:Name="marker"
+                            <Rectangle x:Name="lbSelectedMarker"
                                        Width="3"
                                        Fill="LightCoral"
+                                       Visibility="Collapsed" />
+                            <Rectangle x:Name="vmSelectedMarker"
+                                       Width="3"
+                                       Fill="LightGreen"
                                        Visibility="Collapsed" />
                             <card:HealthRecord Margin="0,0,0,5">
                             </card:HealthRecord>
                         </DockPanel>
                         <!--Focus debug-->
-                        <!--<DataTemplate.Triggers>
+                        <DataTemplate.Triggers>
                             <DataTrigger Value="True">
                                 <DataTrigger.Binding>
-                                    <MultiBinding Converter="{StaticResource EqualAllToBool}">
+                                    <MultiBinding Converter="{StaticResource BoolAndEqualAllToBool}">
+                                        <Binding Path="IsChecked"
+                                                 ElementName="debugFocus" />
                                         <Binding />
                                         <Binding Path="SelectedItem"
                                                  RelativeSource="{RelativeSource AncestorType=ListBox}" />
@@ -299,9 +306,24 @@
                                 </DataTrigger.Binding>
                                 <Setter Property="Visibility"
                                         Value="Visible"
-                                        TargetName="marker" />
+                                        TargetName="lbSelectedMarker" />
                             </DataTrigger>
-                        </DataTemplate.Triggers>-->
+
+                            <DataTrigger Value="True">
+                                <DataTrigger.Binding>
+                                    <MultiBinding Converter="{StaticResource BoolAndEqualAllToBool}">
+                                        <Binding Path="IsChecked"
+                                                 ElementName="debugFocus" />
+                                        <Binding />
+                                        <Binding Path="DataContext.SelectedHealthRecord"
+                                                 RelativeSource="{RelativeSource AncestorType=ListBox}" />
+                                    </MultiBinding>
+                                </DataTrigger.Binding>
+                                <Setter Property="Visibility"
+                                        Value="Visible"
+                                        TargetName="vmSelectedMarker" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
 
@@ -342,15 +364,21 @@
                                 </ContextMenu>
                             </Setter.Value>
                         </Setter>
-                        
+
                         <!--Focus debug-->
-                        <!--<Style.Triggers>
-                            <DataTrigger Binding="{Binding IsFocused}"
-                                         Value="True">
+                        <Style.Triggers>
+                            <DataTrigger Value="True">
+                                <DataTrigger.Binding>
+                                    <MultiBinding Converter="{StaticResource AndBoolean}">
+                                        <Binding Path="IsChecked"
+                                                 ElementName="debugFocus" />
+                                        <Binding Path="IsFocused" />
+                                    </MultiBinding>
+                                </DataTrigger.Binding>
                                 <Setter Property="FontWeight"
                                         Value="Bold" />
                             </DataTrigger>
-                        </Style.Triggers>-->
+                        </Style.Triggers>
                     </Style>
                 </ListBox.ItemContainerStyle>
 
