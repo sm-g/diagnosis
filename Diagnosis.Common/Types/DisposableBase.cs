@@ -1,4 +1,8 @@
-﻿using System;
+﻿#if DEBUG
+//#define LOGDISPOSE
+#endif
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,9 +34,8 @@ namespace Diagnosis.Common
                 // Free your own state (unmanaged objects).
                 // Set large fields to null.
                 disposed = true;
-#if DEBUG
+#if DEBUG && LOGDISPOSE
                 if (this.GetType().Name.StartsWith("DiagnosisViewModel")) return;
-
                 string msg = string.Format("    Disposed {0} ({1}) ({2}) ", this.GetType().Name, this.ToString(), this.GetHashCode());
                 Debug.Print(msg);
 #endif
@@ -49,7 +52,7 @@ namespace Diagnosis.Common
             {
                 // for tests
             }
-#if DEBUG
+#if DEBUG && LOGDISPOSE
             if (this.GetType().Name.StartsWith("DiagnosisViewModel")) return;
             string msg = string.Format("!!! Finalized {0} ({1}) ({2}) ", this.GetType().Name, this.ToString(), this.GetHashCode());
             Debug.Print(msg);
