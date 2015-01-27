@@ -58,11 +58,6 @@ namespace Diagnosis.ViewModels.Screens
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HrListViewModel));
         private static HrViewer hrViewer = new HrViewer();
 
-        /// <summary>
-        /// When set, selection changes not meaningfull.
-        /// </summary>
-        internal readonly FlagActionWrapper<IEnumerable<ShortHealthRecordViewModel>> preserveSelected;
-
         internal readonly IHrsHolder holder;
         internal readonly HealthRecordManager hrManager;
         private readonly ListCollectionView view;
@@ -83,6 +78,19 @@ namespace Diagnosis.ViewModels.Screens
         private bool disposed;
 
         public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;
+        /// <summary>
+        /// When fixing duplicates in List.SelectedItems
+        /// </summary>
+        public bool inRemoveDup;
+        /// <summary>
+        /// When set focus from VM, do not focus 
+        /// </summary>
+        public bool inManualFocusSetting;
+        /// <summary>
+        /// If set, selection changes not meaningfull.
+        /// </summary>
+        internal readonly FlagActionWrapper<IEnumerable<ShortHealthRecordViewModel>> preserveSelected;
+
         public HrListViewModel(IHrsHolder holder, Action<HealthRecord, HrData.HrInfo> filler, Action<List<IHrItemObject>> syncer)
         {
             Contract.Requires(holder != null);
@@ -821,6 +829,11 @@ namespace Diagnosis.ViewModels.Screens
 
                 SelectHealthRecords(pasted);
                 OnSaveNeeded(); // save all
+
+                Contract.Assume(SelectedHealthRecord.healthRecord == pasted.Last());
+                inManualFocusSetting = true;
+                SelectedHealthRecord.IsFocused = true;
+                //inManualFocusSettng = false;
 
                 LogHrs("paste", hrDat.Hrs);
             }
