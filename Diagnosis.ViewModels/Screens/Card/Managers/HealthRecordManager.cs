@@ -78,6 +78,21 @@ namespace Diagnosis.ViewModels.Screens
                                 .Select(vm => vm.healthRecord).ToList();
         }
 
+        public void UnselectAll()
+        {
+            inner.ForAll(x => x.IsSelected = false);
+        }
+
+        public void UnselectExcept(ShortHealthRecordViewModel vm)
+        {
+            UnselectExcept(vm.ToEnumerable());
+        }
+
+        public void UnselectExcept(IEnumerable<ShortHealthRecordViewModel> vms)
+        {
+            inner.Except(vms).ForAll(x => x.IsSelected = false);
+        }
+
         public void DeleteCheckedHealthRecords(bool withCancel = true)
         {
             GetSelectedHrs().ForAll(hr =>

@@ -6,7 +6,6 @@ using GongSolutions.Wpf.DragDrop;
 using GongSolutions.Wpf.DragDrop.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
@@ -57,6 +56,7 @@ namespace Diagnosis.ViewModels.Screens
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HrListViewModel));
         private static HrViewer hrViewer = new HrViewer();
+
         /// <summary>
         /// When set, selection changes not meaningfull.
         /// </summary>
@@ -80,6 +80,7 @@ namespace Diagnosis.ViewModels.Screens
         private bool inSetSelected;
 
         public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;
+
         private bool disposed;
 
         public HrListViewModel(IHrsHolder holder, Action<HealthRecord, HrData.HrInfo> filler, Action<List<IHrItemObject>> syncer)
@@ -194,14 +195,13 @@ namespace Diagnosis.ViewModels.Screens
                 }
                 else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
                 {
-                    // убарнные не выделены
+                    // убранные не выделены
                     var removed = e.OldItems.Cast<ShortHealthRecordViewModel>().ToList();
                     if (removed.Contains(SelectedHealthRecord))
                     {
                         SelectedHealthRecord = null;
                     }
                     removed.ForAll(vm => vm.IsSelected = false);
-
                 }
             };
 
@@ -274,7 +274,7 @@ namespace Diagnosis.ViewModels.Screens
                     else
                     {
                         // nothing selected
-                        HealthRecords.ForAll(vm => vm.IsSelected = false);
+                        hrManager.UnselectAll();
                     }
 
                 inSetSelected = true;
@@ -362,7 +362,7 @@ namespace Diagnosis.ViewModels.Screens
                             Contract.Ensures(SelectedHealthRecords.Count() <= 1);
                             Contract.Ensures(SelectedHealthRecord != Contract.OldValue(SelectedHealthRecord) || HealthRecords.Count <= 1);
 
-                            HealthRecords.Except(SelectedHealthRecord.ToEnumerable()).ToList().ForEach(vm => vm.IsSelected = false);
+                            hrManager.UnselectExcept(SelectedHealthRecord);
 
                             var sortedView = view.Cast<ShortHealthRecordViewModel>().ToList();
                             var current = sortedView.IndexOf(SelectedHealthRecord);
@@ -626,7 +626,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="vm"></param>
         /// <param name="group">CollectionViewGroup or CollectionViewGroup.Name.</param>
@@ -690,7 +690,6 @@ namespace Diagnosis.ViewModels.Screens
 
             hrManager.Reorder(hrs, viewCopy, insertView, group, GetGroupObject, SetGroupObject);
         }
-
 
         private void SetHrExtra(IList<ShortHealthRecordViewModel> vms)
         {
@@ -840,7 +839,7 @@ namespace Diagnosis.ViewModels.Screens
             var toSelect = HealthRecords.FirstOrDefault(vm => vm.healthRecord == healthRecord);
             if (!addToSelected) // смена выделенного
             {
-                HealthRecords.Except(toSelect.ToEnumerable()).ForAll(vm => vm.IsSelected = false);
+                hrManager.UnselectExcept(toSelect);
                 SelectedHealthRecord = toSelect;
             }
             else if (toSelect != null) // добавление к выделенным, выделяем последнюю
@@ -866,7 +865,7 @@ namespace Diagnosis.ViewModels.Screens
         internal void SelectHealthRecords(IEnumerable<HealthRecord> hrs)
         {
             var toSelect = HealthRecords.Where(vm => hrs.Contains(vm.healthRecord)).ToList();
-            HealthRecords.Except(toSelect).ForAll(vm => vm.IsSelected = false);
+            hrManager.UnselectExcept(toSelect);
             toSelect.ForAll(vm => vm.IsSelected = true);
 
             SelectHealthRecord(hrs.LastOrDefault(), true);
@@ -906,7 +905,6 @@ namespace Diagnosis.ViewModels.Screens
             // добавляем выделение - наоборот
             Contract.Invariant(disposed || LastSelected != null || SelectedHealthRecord == null);
         }
-
 
         protected virtual void OnSaveNeeded(List<HealthRecord> hrsToSave = null)
         {
@@ -1016,7 +1014,6 @@ namespace Diagnosis.ViewModels.Screens
                 master.OnSaveNeeded();
                 //logger.DebugFormat("selected after save {0} ", master.SelectedHealthRecords.Count());
             }
-
         }
 
         public class DragSourceHandler : IDragSource
