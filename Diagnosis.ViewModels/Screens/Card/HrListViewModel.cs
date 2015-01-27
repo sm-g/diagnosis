@@ -128,7 +128,7 @@ namespace Diagnosis.ViewModels.Screens
                             }
                             logger.DebugFormat("select {0}", hrvm);
                         }
-                        else
+                        else if (!inRemoveDup)
                         {
                             selectedOrder.Remove(hrvm);
                             logger.DebugFormat("unselect {0}", hrvm);
@@ -295,6 +295,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     hrViewer.Select(value.healthRecord, holder);
                     value.IsSelected = true;
+                    Contract.Assume(selectedOrder.Contains(value));
                 }
 
                 if (doNotNotifySelectedChanged.CanEnter)
