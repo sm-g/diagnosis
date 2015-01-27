@@ -273,13 +273,7 @@ namespace Diagnosis.ViewModels.Screens
                     this.Send(Event.HideOverlay, new object[] { typeof(HealthRecord), true }.AsParams(MessageKeys.Type, MessageKeys.Boolean));
 
                     holder.HealthRecordsChanged -= holder_HealthRecordsChanged;
-                    foreach (var shortHrVm in HealthRecords)
-                    {
-                        shortHrVm.PropertyChanged -= onHrVmPropChanged;
-                        shortHrVm.healthRecord.PropertyChanged -= hr_PropertyChanged;
-                        shortHrVm.Dispose();
-                    }
-                    foreach (var shortHrVm in DeletedHealthRecords)
+                    foreach (var shortHrVm in inner)
                     {
                         shortHrVm.PropertyChanged -= onHrVmPropChanged;
                         shortHrVm.healthRecord.PropertyChanged -= hr_PropertyChanged;

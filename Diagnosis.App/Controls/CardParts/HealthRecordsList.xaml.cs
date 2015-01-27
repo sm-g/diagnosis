@@ -18,12 +18,14 @@ namespace Diagnosis.App.Controls.CardParts
             InitializeComponent();
             Loaded += (s, e) =>
             {
+                debugFocus.IsChecked = true;
 #if !DEBUG
+                debugFocus.IsChecked = false;
                 debug.Visibility = System.Windows.Visibility.Collapsed;
-                recordsNone.Visibility = System.Windows.Visibility.Collapsed;
-                recordsOrder.Visibility = System.Windows.Visibility.Collapsed;
-                recordsGrid.ColumnDefinitions.RemoveAt(1);
-                recordsGrid.ColumnDefinitions.RemoveAt(1);
+                //recordsNone.Visibility = System.Windows.Visibility.Collapsed;
+                //recordsOrder.Visibility = System.Windows.Visibility.Collapsed;
+                //recordsGrid.ColumnDefinitions.RemoveAt(1);
+                //recordsGrid.ColumnDefinitions.RemoveAt(1);
 #endif
                 records.SelectionChanged += records_SelectionChanged;
             };
