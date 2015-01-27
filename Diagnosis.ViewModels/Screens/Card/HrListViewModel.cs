@@ -6,6 +6,7 @@ using GongSolutions.Wpf.DragDrop;
 using GongSolutions.Wpf.DragDrop.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
@@ -174,7 +175,7 @@ namespace Diagnosis.ViewModels.Screens
                     // выделяем первую после удаленной записи, чтобы она была выделена для фокуса на ней
                     var del = e.NewItems.Cast<ShortHealthRecordViewModel>().ToList();
                     logger.DebugFormat("deleted {0}", del);
-                    SelectedHealthRecord = HealthRecords.FirstAfterAndNotIn(del);
+                    SelectedHealthRecord = HealthRecordsView.FirstAfterAndNotIn(del);
 
                     OnSaveNeeded(del.Select(x => x.healthRecord).ToList());
                 }
@@ -235,26 +236,14 @@ namespace Diagnosis.ViewModels.Screens
 
         public INCCReadOnlyObservableCollection<ShortHealthRecordViewModel> HealthRecords { get { return hrManager.HealthRecords; } }
 
-        //public IList<ShortHealthRecordViewModel> HealthRecordsView
-        //{
-        //    get
-        //    {
-        //        var view = new ListCollectionView(HealthRecords);
-
-        //        // основная сортировка, если уже нет
-        //        if (Sorting != HrViewSortingColumn.Ord)
-        //        {
-        //            var sort = new SortDescription(Sorting.ToString(), ListSortDirection.Ascending);
-        //            view.SortDescriptions.Add(sort);
-        //        }
-
-        //        // сортировка по порядку всегда есть
-        //        //var ord = new SortDescription(HrViewSortingColumn.Ord.ToString(), ListSortDirection.Ascending);
-        //        // view.SortDescriptions.Add(ord);
-
-        //        return view.Cast<ShortHealthRecordViewModel>().ToList();
-        //    }
-        //}
+        /// <summary>
+        /// Visible HealthRecords in right order (with sorting, grouping, filtering).
+        /// </summary>
+        public ReadOnlyCollection<ShortHealthRecordViewModel> HealthRecordsView
+        {
+            // View even with sorting can update after moving?
+            get { return view.Cast<ShortHealthRecordViewModel>().ToList().AsReadOnly(); }
+        }
 
         /// <summary>
         /// To toggle editor for last selected item, not first in listbox selection.
@@ -379,21 +368,21 @@ namespace Diagnosis.ViewModels.Screens
                             {
                                 hrManager.UnselectExcept(SelectedHealthRecord);
                             }
-                            var sortedView = view.Cast<ShortHealthRecordViewModel>().ToList();
-                            var current = sortedView.IndexOf(SelectedHealthRecord);
+
+                            var current = HealthRecordsView.IndexOf(SelectedHealthRecord);
                             if (up)
                             {
                                 if (current > 0)
-                                    SelectedHealthRecord = sortedView[current - 1];
+                                    SelectedHealthRecord = HealthRecordsView[current - 1];
                                 else
-                                    SelectedHealthRecord = sortedView.Last(); // select last when Selected == null
+                                    SelectedHealthRecord = HealthRecordsView.Last(); // select last when Selected == null
                             }
                             else
                             {
-                                if (current != sortedView.Count - 1)
-                                    SelectedHealthRecord = sortedView[current + 1]; // select fisrt when Selected == null
+                                if (current != HealthRecordsView.Count - 1)
+                                    SelectedHealthRecord = HealthRecordsView[current + 1]; // select fisrt when Selected == null
                                 else
-                                    SelectedHealthRecord = sortedView.First();
+                                    SelectedHealthRecord = HealthRecordsView.First();
                             }
                         });
             }
@@ -700,10 +689,8 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Requires(data.All(o => o is ShortHealthRecordViewModel));
 
             var hrs = data.Cast<ShortHealthRecordViewModel>().ToList();
-            // view even with sorting can update after moving
-            var viewCopy = view.Cast<ShortHealthRecordViewModel>().ToList();
 
-            hrManager.Reorder(hrs, viewCopy, insertView, group, GetGroupObject, SetGroupObject);
+            hrManager.Reorder(hrs, HealthRecordsView, insertView, group, GetGroupObject, SetGroupObject);
         }
 
         private void SetHrExtra(IList<ShortHealthRecordViewModel> vms)
@@ -829,8 +816,7 @@ namespace Diagnosis.ViewModels.Screens
                     pasted.Add(newHr);
                 }
 
-                var viewCopy = view.Cast<ShortHealthRecordViewModel>().ToList();
-                hrManager.Reorder(pastedVms, viewCopy, index);
+                hrManager.Reorder(pastedVms, HealthRecordsView, index);
 
                 SelectHealthRecords(pasted);
                 OnSaveNeeded(); // save all
