@@ -318,6 +318,9 @@
     <Compile Include="Windows\Editors\MeasureEditorWindow.xaml.cs">
       <DependentUpon>MeasureEditorWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\AdminSettingsWindow.xaml.cs">
+      <DependentUpon>AdminSettingsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Shell\AvalonTemplateSelector.cs" />
     <Compile Include="Windows\Shell\AvalonStyleSelector.cs" />
     <Compile Include="Windows\Shell\LayoutInitializer.cs" />
@@ -579,6 +582,10 @@
     <Page Include="Windows\DebugWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\AdminSettingsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\Shell\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

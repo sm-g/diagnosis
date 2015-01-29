@@ -31,7 +31,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (user is Doctor)
                     vm = new SettingsViewModel(user as Doctor);
                 else
-                    vm = null; // настройка админа
+                    vm = new AdminSettingsViewModel(user as Admin);
                 this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
             });
 

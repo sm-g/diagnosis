@@ -80,8 +80,9 @@ namespace Diagnosis.ViewModels.Screens
             };
             this.Subscribe(Event.SettingsSaved, (e) =>
             {
-                var doc = e.GetValue<Doctor>(MessageKeys.Doctor);
-                Sexes = doc.Settings.SexSigns;
+                var doc = e.GetValue<IUser>(MessageKeys.User) as Doctor;
+                if (doc != null)
+                    Sexes = doc.Settings.SexSigns;
 
             });
         }

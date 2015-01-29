@@ -79,7 +79,7 @@ namespace Diagnosis.ViewModels.Screens
         protected override void OnOk()
         {
             new Saver(Session).Save(doctor);
-            this.Send(Event.SettingsSaved, doctor.AsParams(MessageKeys.Doctor));
+            this.Send(Event.SettingsSaved, doctor.AsParams(MessageKeys.User));
         }
     }
 }
