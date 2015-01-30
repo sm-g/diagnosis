@@ -78,6 +78,21 @@ namespace Diagnosis.ViewModels.Screens
                                 .Select(vm => vm.healthRecord).ToList();
         }
 
+        public void UnselectAll()
+        {
+            inner.ForAll(x => x.IsSelected = false);
+        }
+
+        public void UnselectExcept(ShortHealthRecordViewModel vm)
+        {
+            UnselectExcept(vm.ToEnumerable());
+        }
+
+        public void UnselectExcept(IEnumerable<ShortHealthRecordViewModel> vms)
+        {
+            inner.Except(vms).ForAll(x => x.IsSelected = false);
+        }
+
         public void DeleteCheckedHealthRecords(bool withCancel = true)
         {
             GetSelectedHrs().ForAll(hr =>
@@ -248,35 +263,22 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        /// <summary>
-        /// Реальное удаление удаленных записей.
-        /// </summary>
-        internal void MakeDeletions()
-        {
-            this.Send(Event.HideOverlay, typeof(HealthRecord).AsParams(MessageKeys.Type));
-        }
-
         protected override void Dispose(bool disposing)
         {
             try
             {
                 if (disposing)
                 {
-                    holder.HealthRecordsChanged -= holder_HealthRecordsChanged;
-                    foreach (var shortHrVm in HealthRecords)
-                    {
-                        shortHrVm.PropertyChanged -= onHrVmPropChanged;
-                        shortHrVm.healthRecord.PropertyChanged -= hr_PropertyChanged;
-                        shortHrVm.Dispose();
-                    }
-                    foreach (var shortHrVm in DeletedHealthRecords)
-                    {
-                        shortHrVm.PropertyChanged -= onHrVmPropChanged;
-                        shortHrVm.healthRecord.PropertyChanged -= hr_PropertyChanged;
-                        shortHrVm.Dispose();
-                    }
+                    // just close without execute OnDo
+                    this.Send(Event.HideOverlay, new object[] { typeof(HealthRecord), true }.AsParams(MessageKeys.Type, MessageKeys.Boolean));
 
-                    MakeDeletions();
+                    holder.HealthRecordsChanged -= holder_HealthRecordsChanged;
+                    foreach (var shortHrVm in inner)
+                    {
+                        shortHrVm.PropertyChanged -= onHrVmPropChanged;
+                        shortHrVm.healthRecord.PropertyChanged -= hr_PropertyChanged;
+                        shortHrVm.Dispose();
+                    }
                 }
             }
             finally

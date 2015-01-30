@@ -17,7 +17,7 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel Margin="10,10,0,0">
+        <StackPanel Margin="10,10,0,0">            
             <!--
                 <CheckBox IsChecked="{Binding ShowIcdDisease}">
                 <AccessText>Использовать _МКБ</AccessText>
@@ -33,6 +33,13 @@
             <RadioButton IsChecked="{Binding BigFont}">
                 <AccessText>_Крупный</AccessText>
             </RadioButton>
+            
+            <Label Content="Обозначения пола" />
+            <controls:RadioListBox ItemsSource="{Binding Sexes}"
+                                   Focusable="False"
+                                   SelectedItem="{Binding SelectedSex}"
+                                   MultiSelection="False">
+            </controls:RadioListBox>
         </StackPanel>
 
         <StackPanel Grid.Row="1"

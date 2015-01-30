@@ -357,7 +357,13 @@ namespace Diagnosis.ViewModels.Screens
                     hr.FromYear = hrInfo.FromYear;
                     hr.FromMonth = hrInfo.FromMonth;
                     hr.FromDay = hrInfo.FromDay;
-                    hr.Unit = hrInfo.Unit;
+
+                    // вставляем к пацеинту без возраста
+                    var unit = hrInfo.Unit;
+                    if (hr.GetPatient().BirthYear == null && hrInfo.Unit == HealthRecordUnit.ByAge)
+                        unit = HealthRecordUnit.NotSet;
+
+                    hr.Unit = unit;
                     hr.SetItems(hrInfo.Hios);
                 }, (hios) =>
                 {
@@ -417,7 +423,7 @@ namespace Diagnosis.ViewModels.Screens
                 return;
 
             var holder = HrList.holder;
-            HrList.Dispose(); // удаляются все записи
+            HrList.Dispose();
 
             holder.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
 
@@ -491,6 +497,7 @@ namespace Diagnosis.ViewModels.Screens
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 // удаляем записи в бд
+
                 saver.Delete(e.OldItems.Cast<HealthRecord>().ToArray());
             }
         }

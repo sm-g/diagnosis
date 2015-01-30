@@ -232,7 +232,7 @@ namespace Diagnosis.Common
         /// </summary>
         public static string GetPartialDateString(DateOffset d)
         {
-            if (d == null || d.IsEmpty)
+            if (d == null || d.IsEmpty || d.Year == null)
                 return string.Empty;
             if (!d.Month.HasValue) // year
                 return d.Year.ToString();

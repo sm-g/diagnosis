@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Data;
@@ -87,6 +88,22 @@ namespace Diagnosis.App.Converters
         {
             var result = bool.Parse((string)parameter);
             return result;
+        }
+    }
+
+    public class AndMultiConverter : BaseMultiValueConverter
+    {
+        public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            return values.All(x => (x as bool?) ?? false);
+        }
+    }
+
+    public class OrMultiConverter : BaseMultiValueConverter
+    {
+        public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            return values.Any(x => (x as bool?) ?? false);
         }
     }
 }

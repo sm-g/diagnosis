@@ -7,6 +7,8 @@
 
     <conv:NegateConverter x:Key="NegateBoolean" />
     <conv:NullableBooleanConverter x:Key="NullableBoolean" />
+    <conv:AndMultiConverter x:Key="AndBoolean" />
+    <conv:OrMultiConverter x:Key="OrBoolean" />
 
     <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <conv:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />
@@ -32,6 +34,7 @@
 
     <conv:EqualityToBoolConverter x:Key="EqualToBool" />
     <conv:EqualityToBoolMultiConverter x:Key="EqualAllToBool" />
+    <conv:EqualityAndToBoolMultiConverter x:Key="BoolAndEqualAllToBool" />
 
     <conv:IsLastItem x:Key="IsLastItem" />
     <conv:LessThanConverter x:Key="LessThan" />

@@ -54,6 +54,10 @@ namespace Diagnosis.App.Windows.Shell
                 {
                     ShowDialog(dialogVM, new SettingsWindow());
                 }
+                else if (dialogVM is AdminSettingsViewModel)
+                {
+                    ShowDialog(dialogVM, new AdminSettingsWindow());
+                }
                 else if (dialogVM is WordEditorViewModel)
                 {
                     ShowDialog(dialogVM, new WordEditorWindow());

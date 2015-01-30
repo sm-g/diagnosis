@@ -12,6 +12,7 @@ namespace Diagnosis.ViewModels.Screens
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(ShortHealthRecordViewModel));
         internal readonly HealthRecord healthRecord;
         private readonly Patient patient;
+        private bool _focused;
         private string _extra;
 
         public ShortHealthRecordViewModel(HealthRecord hr)
@@ -27,6 +28,10 @@ namespace Diagnosis.ViewModels.Screens
 
             SyncCheckedAndSelected = true;
             DateOffset = DateOffsetViewModel.FromHr(healthRecord);
+            DateOffset.PropertyChanged += (s, e) =>
+            {
+                OnPropertyChanged(() => DateOffsetString);
+            };
         }
 
 
@@ -125,9 +130,6 @@ namespace Diagnosis.ViewModels.Screens
         {
             get { return healthRecord.IsDeleted; }
         }
-
-
-        private bool _focused;
         public bool IsFocused
         {
             get
@@ -298,7 +300,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-    
+
         private void patient_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)

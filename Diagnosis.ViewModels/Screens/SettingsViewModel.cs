@@ -3,6 +3,7 @@ using Diagnosis.Data;
 using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -23,6 +24,12 @@ namespace Diagnosis.ViewModels.Screens
             map = new Dictionary<DoctorSettings, Func<bool>>();
             map.Add(DoctorSettings.ShowIcdDisease, () => ShowIcdDisease);
             map.Add(DoctorSettings.OnlyTopLevelIcdDisease, () => OnlyTopLevelIcdDisease);
+
+            Sexes = new ObservableCollection<string>() {
+                "М Ж ?",
+                "Муж Жен ?",
+                "1 2 ?"
+            };
         }
 
         public bool ShowIcdDisease
@@ -69,6 +76,21 @@ namespace Diagnosis.ViewModels.Screens
 
                     // tobig
                     this.Send(Event.ChangeFont, value.AsParams(MessageKeys.Boolean));
+        public ObservableCollection<string> Sexes { get; private set; }
+
+        public string SelectedSex
+        {
+            get
+            {
+                return doctor.Settings.SexSigns ?? Sexes[0];
+            }
+            set
+            {
+                doctor.Settings.SexSigns = value;
+                OnPropertyChanged(() => SelectedSex);
+            }
+        }
+
 
                     OnPropertyChanged(() => BigFont);
                 }
@@ -78,7 +100,7 @@ namespace Diagnosis.ViewModels.Screens
         protected override void OnOk()
         {
             new Saver(Session).Save(doctor);
-            this.Send(Event.SettingsSaved, doctor.AsParams(MessageKeys.Doctor));
+            this.Send(Event.SettingsSaved, doctor.AsParams(MessageKeys.User));
         }
     }
 }

@@ -17,6 +17,7 @@
                 <Hyperlink Command="{Binding UndoCommand}">Отменить?</Hyperlink>
             </TextBlock>
             <Button Command="{Binding CloseCommand}"
+                    CommandParameter="{StaticResource True}"
                     Width="16"
                     Height="16"
                     HorizontalAlignment="Right"

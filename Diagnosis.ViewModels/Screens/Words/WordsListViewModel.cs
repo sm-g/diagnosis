@@ -54,7 +54,7 @@ namespace Diagnosis.ViewModels.Screens
             });
 
             Title = "Словарь";
-            NoWords = !Session.Query<Patient>().Any();
+            NoWords = !Session.Query<Word>().Any();
         }
 
         public FilterViewModel<Word> Filter

@@ -316,8 +316,102 @@ namespace Tests
             Assert.AreEqual(2014, d.Year);
             Assert.AreEqual(10, d.Offset);
         }
+        [TestMethod]
+        public void CutsYearNull()
+        {
+            var date = new DateOffset(2014, 3, 31, getNow);
+            date.CutsDate = true;
+            date.Year = null;
+            Assert.IsTrue(date.IsEmpty);
 
+            var date2 = new DateOffset(2014, 3, null, getNow);
+            date2.CutsDate = true;
+            date2.Year = null;
+            Assert.IsTrue(date2.IsEmpty);
+        }
+        [TestMethod]
+        public void CutsMonthNull()
+        {
+            var date = new DateOffset(2014, 3, 31, getNow);
+            date.CutsDate = true;
+            date.Month = null;
+            Assert.IsTrue(date.Year == 2014);
+            Assert.IsTrue(date.Month == null);
+            Assert.IsTrue(date.Day == null);
+        }
+        [TestMethod]
+        public void NoCutsYearNull()
+        {
+            var date = new DateOffset(2014, 3, 31, getNow);
+            date.CutsDate = false;
+            date.Year = null;
+            Assert.IsTrue(date.Year == null);
+            Assert.IsTrue(date.Month == 3);
+            Assert.IsTrue(date.Day == 31);
+
+            var date2 = new DateOffset(2014, 3, null, getNow);
+            date2.CutsDate = false;
+            date2.Year = null;
+            Assert.IsTrue(date2.Year == null);
+            Assert.IsTrue(date2.Month == 3);
+            Assert.IsTrue(date2.Day == null);
+        }
+        [TestMethod]
+        public void NoCutsMonthNull()
+        {
+            var date = new DateOffset(2014, 3, 31, getNow);
+            date.CutsDate = false;
+            date.Month = null;
+            Assert.IsTrue(date.Year == 2014);
+            Assert.IsTrue(date.Month == null);
+            Assert.IsTrue(date.Day == 31);
+        }
         #endregion Setters
+
+
+        #region Fill Empty
+        // начинаем заполнять
+
+        [TestMethod]
+        public void FillDayByNow()
+        {
+            var date = new DateOffset(null, null, null, getNow);
+            date.Day = 5;
+
+            Assert.AreEqual(5, date.Day);
+            Assert.AreEqual(getNow().Month, date.Month);
+            Assert.AreEqual(getNow().Year, date.Year);
+        }
+        [TestMethod]
+        public void FillMonthByNow()
+        {
+            var date = new DateOffset(null, null, null, getNow);
+            date.Month = 5;
+
+            Assert.AreEqual(null, date.Day);
+            Assert.AreEqual(5, date.Month);
+            Assert.AreEqual(getNow().Year, date.Year);
+        }
+        [TestMethod]
+        public void FillYear()
+        {
+            var date = new DateOffset(null, null, null, getNow);
+            date.Year = 2014;
+
+            Assert.AreEqual(null, date.Day);
+            Assert.AreEqual(null, date.Month);
+            Assert.AreEqual(2014, date.Year);
+        }
+        [TestMethod]
+        public void FillOffset()
+        {
+            var date = new DateOffset(null, null, null, getNow);
+            date.Offset = 5;
+
+            Assert.AreEqual(5, date.Offset);
+            Assert.AreEqual(DateUnit.Day, date.Unit);
+        }
+        #endregion
 
         #region compare
 
@@ -543,17 +637,6 @@ namespace Tests
             Assert.IsTrue(date.Year == 2013);
             Assert.IsTrue(date.Month == null);
             Assert.IsTrue(date.Day == null);
-        }
-
-        [TestMethod]
-        public void NoCutsDate()
-        {
-            var date = new DateOffset(2014, 3, 31, getNow);
-            date.CutsDate = false;
-            date.Month = null;
-            Assert.IsTrue(date.Year == 2014);
-            Assert.IsTrue(date.Month == null);
-            Assert.IsTrue(date.Day == 31);
         }
 
         [TestMethod]

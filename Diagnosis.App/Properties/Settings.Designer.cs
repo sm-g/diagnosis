@@ -142,5 +142,53 @@ namespace Diagnosis.App.Properties {
                 this["HelpWindowWidth"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double DebugWindowLeft {
+            get {
+                return ((double)(this["DebugWindowLeft"]));
+            }
+            set {
+                this["DebugWindowLeft"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("450")]
+        public double DebugWindowWidth {
+            get {
+                return ((double)(this["DebugWindowWidth"]));
+            }
+            set {
+                this["DebugWindowWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DebugFilter {
+            get {
+                return ((string)(this["DebugFilter"]));
+            }
+            set {
+                this["DebugFilter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DebugFilterOn {
+            get {
+                return ((bool)(this["DebugFilterOn"]));
+            }
+            set {
+                this["DebugFilterOn"] = value;
+            }
+        }
     }
 }

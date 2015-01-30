@@ -55,6 +55,27 @@ namespace Diagnosis.ViewModels
             OnLoggedOut();
         }
 
+        /// <summary>
+        /// Меняет пароль пользователю.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="password"></param>
+        /// <returns>False, если пароль совпадает с текущим.</returns>
+        public static bool ChangePassword(IUser user, SecureString password)
+        {
+            if (PasswordHashManager.ValidatePassword(password.GetString(), user.Passport.HashAndSalt))
+                return false;
+
+            var hash = PasswordHashManager.CreateHash(password.GetString());
+            user.Passport.HashAndSalt = hash;
+            return true;
+        }
+
+        public static bool IsStrong(SecureString password)
+        {
+            return password.Length > 3;
+        }
+
         [Pure]
         public static bool CurrentUserCanOpen(Screens.Screen screen)
         {
