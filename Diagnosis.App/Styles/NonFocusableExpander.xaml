@@ -271,6 +271,10 @@
                                   VerticalAlignment="Center"
                                   SnapsToDevicePixels="false"
                                   Data="M 1,1.5 L 4.5,5 L 8,1.5" />
+                            <!--ContentTemplate="{TemplateBinding ContentTemplate}"
+                            Content="{TemplateBinding Content}"
+                            ContentStringFormat="{TemplateBinding ContentStringFormat}"-->
+
                             <ContentPresenter HorizontalAlignment="Left"
                                               Margin="4,0,0,0"
                                               VerticalAlignment="Center"
@@ -280,6 +284,7 @@
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
+                        <!--Property="Fill"-->
                         <Trigger Property="IsChecked"
                                  Value="true">
                             <Setter Property="Data"
@@ -312,8 +317,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-    <Style x:Key="ExpanderStyleFixed"
+    <Style x:Key="NonFocusableExpander"
            TargetType="{x:Type Expander}">
         <Setter Property="Foreground"
                 Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />

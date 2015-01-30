@@ -19,10 +19,15 @@
     <!--DataContext is HrEditorViewModel-->
     <!--Tag is HrListViewModel-->
     <UserControl.Resources>
-        <diag:HrEditorViewModel x:Key="Context" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/DefaultExpander.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <diag:HrEditorViewModel x:Key="Context" />
 
-        <Style TargetType="Label"
-               BasedOn="{StaticResource label90}" />
+            <Style TargetType="Label"
+                   BasedOn="{StaticResource label90}" />
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <UserControl.InputBindings>
@@ -209,8 +214,11 @@
                     </StackPanel>
                     <Expander x:Name="dateEditor"
                               Grid.Row="1"
+                              BorderBrush="{x:Null}"
                               ExpandDirection="Down"
                               FlowDirection="RightToLeft"
+                              Style="{StaticResource DefaultExpander}"
+                              Cursor="Hand"
                               IsExpanded="{Binding IsDateEditorExpanded}">
                         <Expander.Header>
                             <StackPanel HorizontalAlignment="Right"
@@ -247,7 +255,9 @@
                                 </Grid>
                             </StackPanel>
                         </Expander.Header>
-                        <StackPanel FlowDirection="LeftToRight">
+                        <StackPanel FlowDirection="LeftToRight"
+                                    Background="Transparent"
+                                    Cursor="Arrow">
                             <DockPanel>
                                 <Label Content="Дата" />
                                 <editors:ComboBoxDatePicker Year="{Binding DateOffset.Year, Mode=TwoWay}"
