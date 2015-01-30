@@ -62,6 +62,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         private bool _bigFont;
+
         public bool BigFont
         {
             get
@@ -76,6 +77,12 @@ namespace Diagnosis.ViewModels.Screens
 
                     // tobig
                     this.Send(Event.ChangeFont, value.AsParams(MessageKeys.Boolean));
+
+                    OnPropertyChanged(() => BigFont);
+                }
+            }
+        }
+
         public ObservableCollection<string> Sexes { get; private set; }
 
         public string SelectedSex
@@ -88,12 +95,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 doctor.Settings.SexSigns = value;
                 OnPropertyChanged(() => SelectedSex);
-            }
-        }
-
-
-                    OnPropertyChanged(() => BigFont);
-                }
             }
         }
 
