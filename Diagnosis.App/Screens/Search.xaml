@@ -19,16 +19,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Styles/SplitExpander.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <s:Double x:Key="lineMargin">10</s:Double>
-
-            <Style x:Key="line"
-                   TargetType="FrameworkElement">
-                <Setter Property="Margin">
-                    <Setter.Value>
-                        <Thickness Bottom="{StaticResource lineMargin}" />
-                    </Setter.Value>
-                </Setter>
-            </Style>
+           
             <Style x:Key="lineHeader"
                    TargetType="FrameworkElement">
                 <Setter Property="DockPanel.Dock"
@@ -117,7 +108,7 @@
                 </StackPanel.InputBindings>
                 <Label>Ключевые _слова</Label>
                 <search:Autocomplete DataContext="{Binding Autocomplete}" />
-                <DockPanel Style="{StaticResource line}">
+                <DockPanel Style="{StaticResource formLine}">
                     <Grid>
                         <CheckBox IsChecked="{Binding AllWords}"
                                   VerticalContentAlignment="Center"
@@ -134,7 +125,7 @@
                     </Grid>
                 </DockPanel>
                 <Label>_Категории</Label>
-                <DockPanel Style="{StaticResource line}"
+                <DockPanel Style="{StaticResource formLine}"
                            HorizontalAlignment="Left">
                     <editors:CategoryChooser CategoryMultiSelection="{StaticResource True}" />
                 </DockPanel>
@@ -177,10 +168,8 @@
                 </DockPanel>-->
 
                 <Button Command="{Binding SearchCommand}"
-                        Height="25"
-                        Width="150"
-                        HorizontalAlignment="Left"
-                        Style="{StaticResource line}">Найти</Button>
+                        Margin="10,0,10,10"
+                        HorizontalAlignment="Stretch">Найти</Button>
             </StackPanel>
         </Expander>
 

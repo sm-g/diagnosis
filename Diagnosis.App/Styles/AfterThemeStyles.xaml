@@ -73,8 +73,7 @@
            TargetType="DockPanel">
         <Setter Property="Margin">
             <Setter.Value>
-                <Thickness Bottom="10">
-                </Thickness>
+                <Thickness Bottom="10" />
             </Setter.Value>
         </Setter>
     </Style>
