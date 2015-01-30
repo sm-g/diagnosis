@@ -18,15 +18,6 @@
            TargetType="TextBox">
         <Setter Property="Height"
                 Value="23" />
-        <Setter Property="VerticalContentAlignment"
-                Value="Center" />
-        <Style.Triggers>
-            <Trigger Property="IsReadOnly"
-                     Value="True">
-                <Setter Property="Background"
-                        Value="LightGray" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
     
     <Style BasedOn="{StaticResource ErrorToolTip}"

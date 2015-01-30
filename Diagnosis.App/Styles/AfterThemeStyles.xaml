@@ -10,6 +10,19 @@
                 Value="Monday" />
     </Style>
 
+    <Style BasedOn="{StaticResource {x:Type TextBox}}"
+           TargetType="TextBox">
+        <Setter Property="VerticalContentAlignment"
+                Value="Center" />
+        <Style.Triggers>
+            <Trigger Property="IsReadOnly"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <!--  buttons  -->
     <Style x:Key="DialogButtonsPanel"
            TargetType="{x:Type StackPanel}">
