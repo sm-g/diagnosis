@@ -31,6 +31,8 @@
             <KeyBinding Key="F"
                         Modifiers="Control"
                         Command="{Binding DataContext.SendToSearchCommand,ElementName=autocomplete}" />
+            <MouseBinding MouseAction="LeftDoubleClick"
+                          Command="{Binding EditCommand}" />
         </InputBindingCollection>
         <InputBindingCollection x:Shared="False"
                                 x:Key="SuggestionInputBindings">

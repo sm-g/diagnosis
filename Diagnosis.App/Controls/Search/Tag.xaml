@@ -77,6 +77,12 @@
                             Value="{x:Null}" />
 
                     <Style.Triggers>
+                        <Trigger Property="Focusable"
+                                 Value="False">
+                            <Setter Property="Cursor"
+                                    Value="Arrow" />
+                        </Trigger>
+                        
                         <DataTrigger Binding="{Binding Signalization}"
                                      Value="{x:Static diag:Signalizations.NewWord}">
                             <Setter Property="Background"
