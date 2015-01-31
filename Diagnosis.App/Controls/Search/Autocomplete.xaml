@@ -50,7 +50,6 @@
     <StackPanel>
         <ListBox x:Name="input"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 HorizontalContentAlignment="Stretch"
                  ItemsSource="{Binding Tags}"
                  SelectedItem="{Binding SelectedTag}"
                  SelectionMode="Extended"
@@ -64,6 +63,18 @@
                  PreviewKeyDown="input_PreviewKeyDown"
                  PreviewKeyUp="input_PreviewKeyUp"
                  SelectionChanged="input_SelectionChanged">
+            <ListBox.Style>
+                <Style TargetType="ListBox">
+                    <Setter Property="BorderThickness"
+                            Value="1" />
+                    <Setter Property="Padding"
+                            Value="1" />
+                    <Setter Property="HorizontalContentAlignment"
+                            Value="Stretch" />
+                    <Setter Property="SnapsToDevicePixels"
+                            Value="True" />
+                </Style>
+            </ListBox.Style>
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <controls:WrapPanelLastChildFill />
@@ -86,8 +97,16 @@
                     <Setter Property="HorizontalContentAlignment"
                             Value="Stretch" />
                     <Setter Property="Padding"
-                            Value="2" />
-
+                            Value="0" />
+                    <Setter Property="Margin"
+                            Value="0" />
+                    <Setter Property="BorderThickness"
+                            Value="1" />
+                    <Setter Property="BorderBrush"
+                            Value="White" />
+                    <Setter Property="SnapsToDevicePixels"
+                            Value="True" />
+                    
                     <Setter Property="IsSelected"
                             Value="{Binding IsSelected, Mode=TwoWay}" />
                     <Setter Property="beh:FocusExtension.Direct"
@@ -146,6 +165,23 @@
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>
+                    
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected"
+                                 Value="True">
+                            <Setter Property="Padding"
+                                    Value="1" />
+                            <Setter Property="BorderThickness"
+                                    Value="0" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter Property="Padding"
+                                    Value="1" />
+                            <Setter Property="BorderThickness"
+                                    Value="0" />
+                        </Trigger>
+                    </Style.Triggers>
                 </Style>
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>

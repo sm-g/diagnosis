@@ -73,8 +73,10 @@
                             Value="14" />
                     <Setter Property="FontStyle"
                             Value="Italic" />
+                    <!--border on focused /hover only-->
                     <Setter Property="BorderBrush"
                             Value="{x:Null}" />
+                    
 
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Signalization}"
