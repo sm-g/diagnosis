@@ -15,7 +15,6 @@
         beh:FocusBehavior.FocusFirst="True"
         ShowInTaskbar="False"
         ResizeMode="NoResize"
-        WindowStyle="ToolWindow"
         mc:Ignorable="d"
         d:DataContext="{DynamicResource vm}">
     <!--DoctorEditorViewModel-->
