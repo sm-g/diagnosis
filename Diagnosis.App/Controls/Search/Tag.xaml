@@ -8,8 +8,12 @@
              xmlns:diag="http://schemas.smg.com/diagnosis"
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              mc:Ignorable="d"
+             d:DataContext="{DynamicResource Context}"
              d:DesignHeight="25"
              d:DesignWidth="300">
+    <UserControl.Resources>
+        <diag:TagViewModel x:Key="Context" />
+    </UserControl.Resources>
 
     <DockPanel>
         <DockPanel.Style>
@@ -82,7 +86,7 @@
                             <Setter Property="Cursor"
                                     Value="Arrow" />
                         </Trigger>
-                        
+
                         <DataTrigger Binding="{Binding Signalization}"
                                      Value="{x:Static diag:Signalizations.NewWord}">
                             <Setter Property="Background"
@@ -150,29 +154,32 @@
                                     Value="{Binding Hash}" />
                             <Setter Property="Command"
                                     Value="{Binding ConvertToCommand}" />
+                            <Setter Property="Visibility"
+                                    Value="{Binding ConvertToCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                            <!--<Setter Property="IsChecked"
+                            <Setter Property="IsChecked"
                                     Value="False" />
 
                             <Style.Triggers>
-
                                 <DataTrigger Value="True">
                                     <DataTrigger.Binding>
                                         <MultiBinding Converter="{StaticResource EqualAllToBool}">
                                             <Binding Path="BlankType" />
-                                            <Binding Path="CommandParameter" RelativeSource="{RelativeSource Self}" />
+                                            <Binding Path="CommandParameter"
+                                                     RelativeSource="{RelativeSource Self}" />
                                         </MultiBinding>
                                     </DataTrigger.Binding>
                                     <Setter Property="IsChecked"
                                             Value="True" />
                                 </DataTrigger>
-                            </Style.Triggers>-->
+                            </Style.Triggers>
                         </Style>
                     </ContextMenu.Resources>
                     <MenuItem InputGestureText="F2"
                               Command="{Binding EditCommand}">
                         <MenuItem.Style>
-                            <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">   
+                            <Style TargetType="MenuItem"
+                                   BasedOn="{StaticResource {x:Type MenuItem}}">
                                 <Setter Property="Header"
                                         Value="Выделить" />
                                 <Style.Triggers>
@@ -188,46 +195,25 @@
                     <MenuItem Header="Удалить"
                               Command="{Binding DeleteCommand}" />
                     <MenuItem Header="Искать"
+                              Visibility="{Binding SendToSearchCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                               InputGestureText="Ctrl+F"
                               Command="{Binding SendToSearchCommand}" />
-                    <Separator />
-
+                    
+                    <Separator Visibility="{Binding ConvertToCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <MenuItem Header="Ключевое слово"
                               CommandParameter="{x:Static diag:BlankType.Word}"
-                              IsChecked="{Binding BlankType, Mode=OneWay, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:BlankType.Word}}"
                               Style="{StaticResource convert}" />
                     <MenuItem Header="Комментарий"
                               CommandParameter="{x:Static diag:BlankType.Comment}"
-                              IsChecked="{Binding BlankType, Mode=OneWay, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:BlankType.Comment}}"
                               Style="{StaticResource convert}" />
                     <MenuItem Header="МКБ"
+                              Visibility="{Binding CanConvertToIcd, Converter={StaticResource BooleanToVisibilityConverter}}"
                               CommandParameter="{x:Static diag:BlankType.Icd}"
-                              IsChecked="{Binding BlankType, Mode=OneWay, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:BlankType.Icd}}"
                               Style="{StaticResource convert}" />
                     <MenuItem Header="Измерение"
                               CommandParameter="{x:Static diag:BlankType.Measure}"
-                              IsChecked="{Binding BlankType, Mode=OneWay, Converter={StaticResource EqualToBool}, ConverterParameter={x:Static diag:BlankType.Measure}}"
                               Style="{StaticResource convert}" />
 
-                    <!--<Separator />-->
-                    <!--<MenuItem Command="{Binding ConvertCommand}">
-                        <MenuItem.Header>
-                            <TextBlock>
-                                <Run>
-                                    <Run.Style>
-                                        <Style TargetType="Run">
-                                            <Setter Property="Text" Value="Создать слово" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding BlankType}" Value="{x:Static diag:BlankType.Word}">
-                                                    <Setter Property="Text" Value="Убрать слово" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Run.Style>
-                                </Run> «<Run Text="{Binding Query, TargetNullValue=' — '}" />»
-                            </TextBlock>
-                        </MenuItem.Header>
-                    </MenuItem>-->
                     <Separator />
                     <MenuItem Header="Добавить слева"
                               Command="{Binding AddLeftCommand}" />

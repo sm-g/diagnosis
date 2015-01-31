@@ -89,6 +89,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// Возникает, когда меняется набор сущностей в тегах. (Завершение редактирования, конвертация, удаление, cut, paste.)
         /// </summary>
         public event EventHandler EntitiesChanged;
+        private VisibleRelayCommand<TagViewModel> sendToSearch;
 
         public RelayCommand<TagViewModel> EnterCommand
         {
@@ -220,11 +221,11 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-        public RelayCommand<TagViewModel> SendToSearchCommand
+        public VisibleRelayCommand<TagViewModel> SendToSearchCommand
         {
             get
             {
-                return new RelayCommand<TagViewModel>((t) =>
+                return sendToSearch ?? (sendToSearch = new VisibleRelayCommand<TagViewModel>((t) =>
                 {
                     IEnumerable<IHrItemObject> entities;
                     if (t != null)
@@ -232,7 +233,10 @@ namespace Diagnosis.ViewModels.Autocomplete
                     else
                         entities = GetEntitiesOfSelected();
                     this.Send(Event.SendToSearch, entities.AsParams(MessageKeys.HrItemObjects));
-                }, (t) => WithSendToSearch);
+                }, (t) => WithSendToSearch)
+                {
+                    IsVisible = WithSendToSearch
+                });
             }
         }
 

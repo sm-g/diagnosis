@@ -55,11 +55,13 @@
                           InputGestureText="F2"
                           Command="{Binding EditCommand}" />
                 <MenuItem Header="Добавить курс"
+                          Visibility="{Binding StartCourseCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                           Command="{Binding StartCourseCommand}" />
                 <MenuItem Header="Добавить осмотр"
+                          Visibility="{Binding AddAppointmentCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                           Command="{Binding AddAppointmentCommand}" />
                 <MenuItem Header="Открыть"
-                          Visibility="{Binding ShowOpen, Converter={StaticResource BooleanToVisibilityConverter}}"
+                          Visibility="{Binding OpenCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                           Command="{Binding OpenCommand}" />
                 <MenuItem Header="Удалить"
                           InputGestureText="Delete"
