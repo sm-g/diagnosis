@@ -78,14 +78,17 @@ namespace Diagnosis.ViewModels.Screens
         private bool disposed;
 
         public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;
+
         /// <summary>
         /// When fixing duplicates in List.SelectedItems
         /// </summary>
         public bool inRemoveDup;
+
         /// <summary>
-        /// When set focus from VM, do not focus 
+        /// When set focus from VM, do not focus
         /// </summary>
         public bool inManualFocusSetting;
+
         /// <summary>
         /// If set, selection changes not meaningfull.
         /// </summary>
@@ -121,7 +124,10 @@ namespace Diagnosis.ViewModels.Screens
                         // select may be by IsSelected (rect), so need to set SelectedHealthRecord
                         if (hrvm.IsSelected)
                         {
-                            selectedOrder.Add(hrvm);
+                            if (!selectedOrder.Contains(hrvm))
+                                selectedOrder.Add(hrvm);
+                            else
+                                logger.DebugFormat("selectedOrder contains {0}", hrvm);
 
                             using (unselectPrev.Join())
                             {
@@ -394,6 +400,57 @@ namespace Diagnosis.ViewModels.Screens
                                     SelectedHealthRecord = HealthRecordsView.First();
                             }
                         });
+            }
+        }
+
+        public RelayCommand<bool> MoveHrCommand
+        {
+            get
+            {
+                return new RelayCommand<bool>((up) =>
+                {
+                    if (SelectedHealthRecord == null)
+                    {
+                        return;
+                    }
+                    logger.DebugFormat("begin move hrs, up={0}", up);
+
+                    var hrs = SelectedHealthRecords;
+                    var selectedInd = hrs.Select(v => HealthRecordsView.IndexOf(v));
+                    var allNear = selectedInd.OrderBy(x => x).IsSequential();
+
+                    int current;
+                    if (allNear)
+                        current = up ? selectedInd.Min() : selectedInd.Max();
+                    else
+                        current = HealthRecordsView.IndexOf(SelectedHealthRecord);
+
+                    int newIndex = current;
+                    if (up)
+                    {
+                        if (current > 0)
+                            newIndex = current - 1;
+                    }
+                    else
+                    {
+                        if (current < HealthRecordsView.Count - 1)
+                            newIndex = current + 1;
+                    }
+
+                    // разные группы
+                    var border = GetGroupObject(HealthRecordsView[newIndex]) != GetGroupObject(SelectedHealthRecord);
+                    var group = GetGroupObject(HealthRecordsView[newIndex]);
+
+                    if (up && border)
+                        newIndex = current;
+                    // вниз — через 2, если не над границей группы и не в конце
+                    if (!up && !border)
+                        newIndex++;
+
+                    Reorder(hrs, newIndex, group);
+
+                    logger.DebugFormat("end move hrs");
+                });
             }
         }
 
@@ -696,6 +753,8 @@ namespace Diagnosis.ViewModels.Screens
         private void Reorder(IEnumerable<object> data, int insertView, object group)
         {
             Contract.Requires(data.All(o => o is ShortHealthRecordViewModel));
+            // don't change selection
+            Contract.Ensures(Contract.OldValue<IEnumerable<ShortHealthRecordViewModel>>(SelectedHealthRecords).ScrambledEquals(SelectedHealthRecords));
 
             var hrs = data.Cast<ShortHealthRecordViewModel>().ToList();
 
@@ -922,6 +981,9 @@ namespace Diagnosis.ViewModels.Screens
             // снимаем выделение: сначала менять SelectedHealthRecord, потом все остальные
             // добавляем выделение - наоборот
             Contract.Invariant(disposed || LastSelected != null || SelectedHealthRecord == null);
+
+            // без повторов
+            Contract.Invariant(selectedOrder.Distinct().Count() == selectedOrder.Count());
         }
 
         protected virtual void OnSaveNeeded(List<HealthRecord> hrsToSave = null)

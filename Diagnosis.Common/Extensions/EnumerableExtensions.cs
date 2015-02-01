@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics.Contracts;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.Common
 {
@@ -22,6 +21,7 @@ namespace Diagnosis.Common
                 action(item);
             }
         }
+
         public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
         {
             foreach (var item in collection.ToList())
@@ -57,6 +57,7 @@ namespace Diagnosis.Common
                 current.Add(item);
             }
         }
+
         /// <summary>
         /// Добавляет в коллекцию отсутствующие и удаляет пропавшие элементы c сохранением порядка.
         /// </summary>
@@ -73,6 +74,7 @@ namespace Diagnosis.Common
             }
             current.Sort(keyExtractor);
         }
+
         /// <summary>
         /// Возвращает элемент по индексу или первый/последний, если индекс за пределами.
         /// Если коллекция пуста, возарщает null.
@@ -89,6 +91,7 @@ namespace Diagnosis.Common
                 i = 0;
             return collection.ElementAt(i);
         }
+
         /// <summary>
         /// Возвращает первый элемент, которого нет во втором списке, рядом с первым элементом,
         /// равным <paramref name="startIndex"/>-му во втором списке. Если такого элемента нет,
@@ -99,7 +102,7 @@ namespace Diagnosis.Common
         /// <param name="first">     </param>
         /// <param name="second">    </param>
         /// <param name="startIndex">Индекс, с которого начинается поиск.</param>
-        /// <param name="forward">   
+        /// <param name="forward">
         /// Направление, с которого начинается поиск. По умолчанию вперед, к концу списка.
         /// </param>
         /// <returns></returns>
@@ -131,7 +134,6 @@ namespace Diagnosis.Common
 
             return first.ElementAt(ind);
         }
-
 
         /// <summary>
         /// Return {prev, current, next} triad where current mathces predicate.
@@ -215,7 +217,6 @@ namespace Diagnosis.Common
         {
             return items.Zip(items.Skip(1), (a, b) => new { a, b })
                 .All(x => !(keyExtractor(x.a).CompareTo(keyExtractor(x.b)) > 0));
-
         }
 
         /// <summary>
@@ -227,7 +228,47 @@ namespace Diagnosis.Common
         {
             return items.Zip(items.Skip(1), (a, b) => new { a, b })
                 .All(x => keyExtractor(x.a).CompareTo(keyExtractor(x.b)) < 0);
+        }
 
+        [Pure]
+        public static bool IsSequential(this IEnumerable<int> numbers)
+        {
+            return numbers.Zip(numbers.Skip(1), (a, b) => (a + 1) == b).All(x => x);
+        }
+
+        /// <summary>
+        /// from http://stackoverflow.com/questions/3669970/compare-two-listt-objects-for-equality-ignoring-order
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list1"></param>
+        /// <param name="list2"></param>
+        /// <returns></returns>
+        public static bool ScrambledEquals<T>(this IEnumerable<T> list1, IEnumerable<T> list2)
+        {
+            var cnt = new Dictionary<T, int>();
+            foreach (T s in list1)
+            {
+                if (cnt.ContainsKey(s))
+                {
+                    cnt[s]++;
+                }
+                else
+                {
+                    cnt.Add(s, 1);
+                }
+            }
+            foreach (T s in list2)
+            {
+                if (cnt.ContainsKey(s))
+                {
+                    cnt[s]--;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return cnt.Values.All(c => c == 0);
         }
     }
 }

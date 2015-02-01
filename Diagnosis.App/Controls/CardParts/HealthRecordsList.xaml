@@ -41,6 +41,12 @@
                     Command="{Binding SendToSearchCommand}" />
         <KeyBinding Key="Delete"
                     Command="{Binding DeleteCommand}" />
+        <KeyBinding Gesture="Alt+Shift+Up"
+                    Command="{Binding MoveHrCommand}"
+                    CommandParameter="{StaticResource True}" />
+        <KeyBinding Gesture="Alt+Shift+Down"
+                    Command="{Binding MoveHrCommand}"
+                    CommandParameter="{StaticResource False}" />
     </UserControl.InputBindings>
 
     <Grid>
