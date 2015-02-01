@@ -10,7 +10,7 @@ using Wintellect.PowerCollections;
 
 namespace Diagnosis.Models
 {
-    public class HealthRecord : EntityBase<Guid>, IDomainObject, IHaveAuditInformation
+    public class HealthRecord : EntityBase<Guid>, IDomainObject, IHaveAuditInformation, IComparable<HealthRecord>
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HealthRecord));
         private Iesi.Collections.Generic.ISet<HrItem> hrItems = new HashedSet<HrItem>();
@@ -320,6 +320,26 @@ namespace Diagnosis.Models
             {
                 h(this, e);
             }
+        }
+
+        public virtual int CompareTo(HealthRecord other)
+        {
+            // не сравниваем содержимое записи
+            if (other == null)
+                return -1;
+
+            int res = Holder.CompareTo(other.Holder);
+            if (res != 0) return res;
+
+
+            res = Ord.CompareTo(other.Ord);
+            if (res != 0) return res;
+
+            res = UpdatedAt.CompareTo(other.UpdatedAt);
+            if (res != 0) return res;
+
+            res = Doctor.CompareTo(other.Doctor);
+            return res;
         }
     }
 }
