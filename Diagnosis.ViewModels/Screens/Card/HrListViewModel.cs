@@ -62,6 +62,7 @@ namespace Diagnosis.ViewModels.Screens
         internal readonly HealthRecordManager hrManager;
         private readonly ListCollectionView view;
         private ShortHealthRecordViewModel _selectedHealthRecord;
+        private ShortHealthRecordViewModel _selectedCopy;
         private List<ShortHealthRecordViewModel> selectedOrder = new List<ShortHealthRecordViewModel>();
         private Action<HealthRecord, HrData.HrInfo> fillHr;
         private Action<List<IHrItemObject>> syncHios;
@@ -78,14 +79,17 @@ namespace Diagnosis.ViewModels.Screens
         private bool disposed;
 
         public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;
+
         /// <summary>
         /// When fixing duplicates in List.SelectedItems
         /// </summary>
         public bool inRemoveDup;
+
         /// <summary>
-        /// When set focus from VM, do not focus 
+        /// When set focus from VM, do not focus
         /// </summary>
         public bool inManualFocusSetting;
+
         /// <summary>
         /// If set, selection changes not meaningfull.
         /// </summary>
@@ -121,7 +125,10 @@ namespace Diagnosis.ViewModels.Screens
                         // select may be by IsSelected (rect), so need to set SelectedHealthRecord
                         if (hrvm.IsSelected)
                         {
-                            selectedOrder.Add(hrvm);
+                            if (!selectedOrder.Contains(hrvm))
+                                selectedOrder.Add(hrvm);
+                            else
+                                logger.DebugFormat("selectedOrder contains {0}", hrvm);
 
                             using (unselectPrev.Join())
                             {
@@ -141,12 +148,14 @@ namespace Diagnosis.ViewModels.Screens
                             selectedOrder.Remove(hrvm);
                             logger.DebugFormat("unselect {0}", hrvm);
 
-                            // TODO сняли выделение, фокус остался — enter будет открывать этот элемент, а выделен другой
-                            // если менять фокус на выбранный — нельзя снимать выделение пробелом, фокус все время уходит к последнему выбранному
-                            //if (hrvm.IsFocused && LastSelected != null)
-                            //{
-                            //    LastSelected.IsFocused = true;
-                            //}
+                            // Сняли выделение, фокус остался — enter будет открывать этот элемент, а выделен другой. Это ок.
+                            // Выбранным становится последний.
+
+                            if (SelectedHealthRecord == hrvm)
+                                using (doNotNotifySelectedChanged.Join())
+                                {
+                                    SelectedHealthRecord = LastSelected;
+                                }
                         }
                         if (doNotNotifyLastSelectedChanged.CanEnter)
                         {
@@ -299,6 +308,9 @@ namespace Diagnosis.ViewModels.Screens
                 }
                 logger.DebugFormat("hrList selected {0} -> {1}", _selectedHealthRecord, value);
                 _selectedHealthRecord = value;
+#if DEBUG
+                SelectedCopy = value;
+#endif
                 if (value != null)
                 {
                     hrViewer.Select(value.healthRecord, holder);
@@ -311,6 +323,29 @@ namespace Diagnosis.ViewModels.Screens
                 inSetSelected = false;
             }
         }
+
+#if DEBUG
+
+        /// <summary>
+        /// When doNotNotifySelectedChanged, use for debug.
+        /// </summary>
+        public ShortHealthRecordViewModel SelectedCopy
+        {
+            get
+            {
+                return _selectedCopy;
+            }
+            set
+            {
+                if (_selectedCopy != value)
+                {
+                    _selectedCopy = value;
+                    OnPropertyChanged(() => SelectedCopy);
+                }
+            }
+        }
+
+#endif
 
         public IEnumerable<ShortHealthRecordViewModel> SelectedHealthRecords
         {
@@ -373,10 +408,6 @@ namespace Diagnosis.ViewModels.Screens
                         {
                             Contract.Ensures(SelectedHealthRecords.Count() <= 1);
                             Contract.Ensures(SelectedHealthRecord != Contract.OldValue(SelectedHealthRecord) || HealthRecords.Count <= 1);
-                            using (doNotNotifyLastSelectedChanged.Enter())
-                            {
-                                hrManager.UnselectExcept(SelectedHealthRecord);
-                            }
 
                             var current = HealthRecordsView.IndexOf(SelectedHealthRecord);
                             if (up)
@@ -393,7 +424,66 @@ namespace Diagnosis.ViewModels.Screens
                                 else
                                     SelectedHealthRecord = HealthRecordsView.First();
                             }
+
+                            using (doNotNotifyLastSelectedChanged.Enter())
+                            {
+                                hrManager.UnselectExcept(SelectedHealthRecord);
+                            }
+
+                            if (HealthRecordsView.Any(x => x.IsFocused))
+                                SelectedHealthRecord.IsFocused = true;
                         });
+            }
+        }
+
+        public RelayCommand<bool> MoveHrCommand
+        {
+            get
+            {
+                return new RelayCommand<bool>((up) =>
+                {
+                    if (SelectedHealthRecord == null)
+                    {
+                        return;
+                    }
+                    logger.DebugFormat("begin move hrs, up={0}", up);
+
+                    var hrs = SelectedHealthRecords;
+                    var selectedInd = hrs.Select(v => HealthRecordsView.IndexOf(v));
+                    var allNear = selectedInd.OrderBy(x => x).IsSequential();
+
+                    int current;
+                    if (allNear)
+                        current = up ? selectedInd.Min() : selectedInd.Max();
+                    else
+                        current = HealthRecordsView.IndexOf(SelectedHealthRecord);
+
+                    int newIndex = current;
+                    if (up)
+                    {
+                        if (current > 0)
+                            newIndex = current - 1;
+                    }
+                    else
+                    {
+                        if (current < HealthRecordsView.Count - 1)
+                            newIndex = current + 1;
+                    }
+
+                    // разные группы
+                    var border = GetGroupObject(HealthRecordsView[newIndex]) != GetGroupObject(SelectedHealthRecord);
+                    var group = GetGroupObject(HealthRecordsView[newIndex]);
+
+                    if (up && border)
+                        newIndex = current;
+                    // вниз — через 2, если не над границей группы и не в конце
+                    if (!up && !border)
+                        newIndex++;
+
+                    Reorder(hrs, newIndex, group);
+
+                    logger.DebugFormat("end move hrs");
+                });
             }
         }
 
@@ -696,10 +786,27 @@ namespace Diagnosis.ViewModels.Screens
         private void Reorder(IEnumerable<object> data, int insertView, object group)
         {
             Contract.Requires(data.All(o => o is ShortHealthRecordViewModel));
+            // don't change selection
+            Contract.Ensures(Contract.OldValue<IEnumerable<ShortHealthRecordViewModel>>(SelectedHealthRecords).ScrambledEquals(SelectedHealthRecords));
 
             var hrs = data.Cast<ShortHealthRecordViewModel>().ToList();
 
-            hrManager.Reorder(hrs, HealthRecordsView, insertView, group, GetGroupObject, SetGroupObject);
+            // insertView [0..view.Count]
+            bool aboveBorder = false;
+            if (0 < insertView && insertView < view.Count && group != null)
+            {
+                // gong can show adoner in both groups, above and below border
+
+                var hrView = HealthRecordsView[insertView];
+                var hrPrevView = HealthRecordsView[insertView - 1];
+
+                // var groups = view.Groups;
+                // разные группы и у верхнего элемента — целевая
+                aboveBorder = GetGroupObject(hrPrevView) != GetGroupObject(hrView)
+                    && group == GetGroupObject(hrPrevView);
+            }
+
+            hrManager.Reorder(hrs, HealthRecordsView, insertView, group, aboveBorder, SetGroupObject);
         }
 
         private void SetHrExtra(IList<ShortHealthRecordViewModel> vms)
@@ -922,6 +1029,11 @@ namespace Diagnosis.ViewModels.Screens
             // снимаем выделение: сначала менять SelectedHealthRecord, потом все остальные
             // добавляем выделение - наоборот
             Contract.Invariant(disposed || LastSelected != null || SelectedHealthRecord == null);
+
+            // без повторов
+            Contract.Invariant(selectedOrder.Distinct().Count() == selectedOrder.Count());
+
+            //Contract.Invariant(disposed || SelectedHealthRecord == null || SelectedHealthRecord.IsSelected);
         }
 
         protected virtual void OnSaveNeeded(List<HealthRecord> hrsToSave = null)

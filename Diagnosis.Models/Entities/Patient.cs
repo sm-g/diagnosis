@@ -298,7 +298,7 @@ namespace Diagnosis.Models
 
         public virtual int CompareTo(Patient other)
         {
-            // по ФИО
+            // по ФИО и дате обновления
             var byLast = this.LastName.CompareToNullSafe(other.LastName);
             if (byLast == 0)
             {
@@ -306,6 +306,9 @@ namespace Diagnosis.Models
                 if (byFirst == 0)
                 {
                     var byMiddle = this.MiddleName.CompareToNullSafe(other.MiddleName);
+                    if (byMiddle == 0)
+                        return this.UpdatedAt.CompareTo(other.UpdatedAt);
+
                     return byMiddle;
                 }
                 return byFirst;

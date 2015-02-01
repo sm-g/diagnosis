@@ -31,6 +31,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private bool _showALt;
         private EventAggregator.EventMessageHandler hanlder;
         private bool inDispose;
+        private VisibleRelayCommand<TagViewModel> sendToSearch;
 
 
         public AutocompleteViewModel(Recognizer recognizer, bool allowTagConvertion, bool allowSendToSearch, bool singleTag, IEnumerable<IHrItemObject> initItems)
@@ -220,11 +221,11 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-        public RelayCommand<TagViewModel> SendToSearchCommand
+        public VisibleRelayCommand<TagViewModel> SendToSearchCommand
         {
             get
             {
-                return new RelayCommand<TagViewModel>((t) =>
+                return sendToSearch ?? (sendToSearch = new VisibleRelayCommand<TagViewModel>((t) =>
                 {
                     IEnumerable<IHrItemObject> entities;
                     if (t != null)
@@ -232,7 +233,10 @@ namespace Diagnosis.ViewModels.Autocomplete
                     else
                         entities = GetEntitiesOfSelected();
                     this.Send(Event.SendToSearch, entities.AsParams(MessageKeys.HrItemObjects));
-                }, (t) => WithSendToSearch);
+                }, (t) => WithSendToSearch)
+                {
+                    IsVisible = WithSendToSearch
+                });
             }
         }
 
@@ -359,7 +363,6 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             get { return inDispose; }
         }
-
         /// <summary>
         /// Создает тег.
         /// </summary>
@@ -386,8 +389,14 @@ namespace Diagnosis.ViewModels.Autocomplete
             };
             tag.Converting += (s, e) =>
             {
-                CompleteOnConvert(tag, e.type);
-                OnEntitiesChanged();
+                var last = tag.IsLast;
+                if (CompleteOnConvert(tag, e.type))
+                {
+                    OnEntitiesChanged();
+                    if (last)
+                        // convert from Last - continue typing
+                        StartEdit();
+                }
             };
             tag.PropertyChanged += (s, e) =>
             {
@@ -442,6 +451,28 @@ namespace Diagnosis.ViewModels.Autocomplete
                 }
             };
             return tag;
+        }
+
+        public void AddFromEditor(BlankType type, int index = -1)
+        {
+            if (type == BlankType.Measure)
+            {
+                var vm = new MeasureEditorViewModel();
+                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+                if (vm.DialogResult == true)
+                {
+                    AddTag(vm.Measure, index);
+                }
+            }
+            else if (type == BlankType.Icd)
+            {
+                var vm = new IcdSelectorViewModel();
+                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+                if (vm.DialogResult == true)
+                {
+                    AddTag(vm.SelectedIcd, index);
+                }
+            }
         }
 
         /// <summary>
@@ -625,21 +656,23 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-        private void CompleteOnConvert(TagViewModel tag, BlankType toType)
+        private bool CompleteOnConvert(TagViewModel tag, BlankType toType)
         {
-            Contract.Requires(!tag.Query.IsNullOrEmpty());
-
             var measure = (tag.Blank as Measure);
             var converted = recognizer.ConvertBlank(tag, toType);
 
-            if (converted && measure != null && toType != BlankType.Comment)
+            if (converted)
             {
-                // отдельный комментарий из числа измерения
-                var comment = new Comment(string.Format("{0} {1}", measure.Value, measure.Uom).Trim());
-                AddTag(comment, Tags.IndexOf(tag) + 1);
-            }
+                if (measure != null && toType != BlankType.Comment)
+                {
+                    // отдельный комментарий из числа измерения
+                    var comment = new Comment(string.Format("{0} {1}", measure.Value, measure.Uom).Trim());
+                    AddTag(comment, Tags.IndexOf(tag) + 1);
+                }
 
-            CompleteEnding(tag);
+                CompleteEnding(tag);
+            }
+            return converted;
         }
 
         public void CompleteOnEnter(TagViewModel tag, bool inverse = false)

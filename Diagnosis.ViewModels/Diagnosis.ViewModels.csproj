@@ -183,6 +183,8 @@
   <ItemGroup>
     <Compile Include="AuthorityController.cs" />
     <Compile Include="Extensions\Extensions.cs" />
+    <Compile Include="Framework\MenuItem.cs" />
+    <Compile Include="Framework\VisibleRelayCommand.cs" />
     <Compile Include="Framework\WindowViewModel.cs" />
     <Compile Include="Framework\DialogViewModel.cs" />
     <Compile Include="Framework\IWindowViewModel.cs" />

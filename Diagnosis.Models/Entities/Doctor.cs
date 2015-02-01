@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class Doctor : ValidatableEntity<Guid>, IDomainObject, IMan, IUser
+    public class Doctor : ValidatableEntity<Guid>, IDomainObject, IMan, IUser, IComparable<Doctor>
     {
         private Iesi.Collections.Generic.ISet<Appointment> appointments = new HashedSet<Appointment>();
         private Iesi.Collections.Generic.ISet<Course> courses = new HashedSet<Course>();
@@ -139,5 +139,22 @@ namespace Diagnosis.Models
         }
 
 
+
+        public virtual int CompareTo(Doctor other)
+        {
+            // по ФИО 
+            var byLast = this.LastName.CompareToNullSafe(other.LastName);
+            if (byLast == 0)
+            {
+                var byFirst = this.FirstName.CompareToNullSafe(other.FirstName);
+                if (byFirst == 0)
+                {
+                    var byMiddle = this.MiddleName.CompareToNullSafe(other.MiddleName);
+                    return byMiddle;
+                }
+                return byFirst;
+            }
+            return byLast;        
+        }
     }
 }

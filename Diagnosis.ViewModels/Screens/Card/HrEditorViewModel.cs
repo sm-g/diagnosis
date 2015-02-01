@@ -151,12 +151,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    var vm = new IcdSelectorViewModel();
-                    this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
-                    if (vm.DialogResult == true)
-                    {
-                        Autocomplete.AddTag(vm.SelectedIcd);
-                    }
+                    Autocomplete.AddFromEditor(BlankType.Icd);
                 });
             }
         }
@@ -167,12 +162,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    var vm = new MeasureEditorViewModel();
-                    this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
-                    if (vm.DialogResult == true)
-                    {
-                        Autocomplete.AddTag(vm.Measure);
-                    }
+                    Autocomplete.AddFromEditor(BlankType.Measure);
                 });
             }
         }

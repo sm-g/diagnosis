@@ -76,6 +76,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private bool _selected;
         private bool _draggable;
         private Signalizations? _signal;
+        private bool _canToIcd;
 
         /// <summary>
         /// Создает пустой тег.
@@ -87,6 +88,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             this.autocomplete = parent;
             Reset();
+            CanConvertToIcd = autocomplete.WithConvert;
         }
 
         /// <summary>
@@ -99,6 +101,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             this.autocomplete = parent;
             Query = query;
+            CanConvertToIcd = autocomplete.WithConvert;
         }
 
 
@@ -115,10 +118,21 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             Blank = item;
             Entity = item;
+            CanConvertToIcd = autocomplete.WithConvert;
+        }
+        [Obsolete]
+        /// <summary>
+        /// For XAML
+        /// </summary>
+        public TagViewModel()
+        {
+            Blank = new Comment("query");
         }
 
         public event EventHandler Deleted;
         public event EventHandler<BlankTypeEventArgs> Converting;
+        private VisibleRelayCommand sendToSearch;
+        private VisibleRelayCommand<Autocomplete.BlankType> convertTo;
 
         /// <summary>
         /// Текстовое представление.
@@ -208,6 +222,11 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 return GetBlankType(Blank);
             }
+            set
+            { 
+                // to correct IsChecked binding must be TwoWay
+                // replace ConvertTo with 4 bools?
+            }
         }
         #region AutocompleteRelated
 
@@ -241,26 +260,48 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-        public RelayCommand SendToSearchCommand
+        public VisibleRelayCommand SendToSearchCommand
         {
             get
             {
-                return new RelayCommand(() =>
+                return sendToSearch ?? (sendToSearch = new VisibleRelayCommand(() =>
                 {
                     autocomplete.SendToSearchCommand.Execute(this);
                 },
-                () => autocomplete.WithSendToSearch);
+                () => autocomplete.WithSendToSearch)
+                {
+                    IsVisible = autocomplete.WithSendToSearch
+                });
             }
         }
-        public RelayCommand<BlankType> ConvertToCommand
+        public VisibleRelayCommand<BlankType> ConvertToCommand
         {
             get
             {
-                return new RelayCommand<BlankType>((t) =>
+                return convertTo ?? (convertTo = new VisibleRelayCommand<BlankType>((t) =>
                 {
                     OnConverting(t);
+                    OnPropertyChanged(() => BlankType);
                 },
-                (t) => autocomplete.WithConvert && t != BlankType && State != State.Init && !Query.IsNullOrEmpty() && !IsDeleteOnly);
+                (t) => autocomplete.WithConvert && t != BlankType && !IsDeleteOnly)
+                {
+                    IsVisible = autocomplete.WithConvert
+                });
+            }
+        }
+        public bool CanConvertToIcd
+        {
+            get
+            {
+                return _canToIcd;
+            }
+            set
+            {
+                if (_canToIcd != value)
+                {
+                    _canToIcd = value;
+                    OnPropertyChanged(() => CanConvertToIcd);
+                }
             }
         }
 
@@ -478,7 +519,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (word.IsTransient)
                     Signalization = Signalizations.NewWord;
             }
-
+            // если можно только слова
             if (filter != null)
             {
                 Signalization |= filter(this);
@@ -535,6 +576,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             Signalization = null;
             _blank = null;
             OnPropertyChanged("Blank");
+            OnPropertyChanged("BlankType");
         }
 
         [ContractInvariantMethod]

@@ -105,20 +105,42 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// </summary>
         public bool ConvertBlank(TagViewModel tag, BlankType toType)
         {
-            Contract.Requires(!tag.Query.IsNullOrEmpty());
             Contract.Requires(tag.BlankType != toType);
             Contract.Requires(toType != BlankType.None && toType != BlankType.Query);
             Contract.Ensures(Contract.Result<bool>() == (tag.BlankType == toType));
 
+            if (tag.Query.IsNullOrEmpty())
+            {
+                // initial or after clear query
+                if (toType == BlankType.Measure)
+                {
+                    var vm = new MeasureEditorViewModel();
+                    this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+                    if (vm.DialogResult == true)
+                    {
+                        tag.Blank = vm.Measure;
+                        return true;
+                    }
+                }
+                else if (toType == BlankType.Icd)
+                {
+                    var vm = new IcdSelectorViewModel();
+                    this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+                    if (vm.DialogResult == true)
+                    {
+                        tag.Blank = vm.SelectedIcd;
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
             string query;
             if (tag.BlankType == BlankType.Measure)
-            {
                 query = (tag.Blank as Measure).Word.Title;
-            }
             else
-            {
                 query = tag.Query;
-            }
 
             switch (toType)
             {

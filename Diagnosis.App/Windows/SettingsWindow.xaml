@@ -6,6 +6,7 @@
         Title="Настройки"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
+        UseLayoutRounding="True"
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterOwner"
         beh:DialogCloser.DialogResult="{Binding DialogResult}">

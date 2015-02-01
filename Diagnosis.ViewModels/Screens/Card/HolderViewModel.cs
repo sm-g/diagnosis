@@ -9,9 +9,11 @@ namespace Diagnosis.ViewModels.Screens
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HolderViewModel));
         private readonly IHrsHolder holder;
-        private bool _showOpen;
+        private VisibleRelayCommand startCourse;
+        private VisibleRelayCommand open;
+        private VisibleRelayCommand addAppointment;
 
-        public HolderViewModel(IHrsHolder holder)
+        public HolderViewModel(IHrsHolder holder, bool showOpen = false)
         {
             Contract.Requires(holder != null);
             this.holder = holder;
@@ -26,13 +28,16 @@ namespace Diagnosis.ViewModels.Screens
                 var course = holder as Course;
                 course.AppointmentsChanged += holder_CollectionChanged;
                 course.HealthRecordsChanged += holder_CollectionChanged;
-
             }
             else if (holder is Appointment)
             {
                 var app = holder as Appointment;
                 app.HealthRecordsChanged += holder_CollectionChanged;
             }
+
+            StartCourseCommand.IsVisible = holder is Patient;
+            AddAppointmentCommand.IsVisible = holder is Course;
+            OpenCommand.IsVisible = showOpen;
         }
 
         public IHrsHolder Holder
@@ -45,54 +50,38 @@ namespace Diagnosis.ViewModels.Screens
             get { return holder.IsEmpty(); }
         }
 
-        public bool ShowOpen
+        public VisibleRelayCommand OpenCommand
         {
             get
             {
-                return _showOpen;
-            }
-            set
-            {
-                if (_showOpen != value)
-                {
-                    _showOpen = value;
-                    OnPropertyChanged(() => ShowOpen);
-                }
-            }
-        }
-
-        public RelayCommand OpenCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
+                return open ?? (open = new VisibleRelayCommand(() =>
                 {
                     this.Send(Event.OpenHolder, Holder.AsParams(MessageKeys.Holder));
-                });
+                }));
             }
         }
 
-        public RelayCommand StartCourseCommand
+        public VisibleRelayCommand StartCourseCommand
         {
             get
             {
-                return new RelayCommand(() =>
+                return startCourse ?? (startCourse = new VisibleRelayCommand(() =>
                 {
                     AuthorityController.CurrentDoctor.StartCourse(Holder as Patient);
                 },
-                () => Holder is Patient);
+                () => Holder is Patient));
             }
         }
 
-        public RelayCommand AddAppointmentCommand
+        public VisibleRelayCommand AddAppointmentCommand
         {
             get
             {
-                return new RelayCommand(() =>
+                return addAppointment ?? (addAppointment = new VisibleRelayCommand(() =>
                 {
                     (Holder as Course).AddAppointment(AuthorityController.CurrentDoctor);
                 },
-                () => Holder is Course && !(Holder as Course).IsEnded);
+                () => Holder is Course && !(Holder as Course).IsEnded));
             }
         }
 
@@ -178,7 +167,6 @@ namespace Diagnosis.ViewModels.Screens
                     var course = holder as Course;
                     course.AppointmentsChanged -= holder_CollectionChanged;
                     course.HealthRecordsChanged -= holder_CollectionChanged;
-
                 }
                 else if (holder is Appointment)
                 {

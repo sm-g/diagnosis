@@ -47,16 +47,26 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             Title = "Редактирование измерения";
         }
+        /// <summary>
+        /// Edit
+        /// </summary>
+        /// <param name="measure"></param>
         public MeasureEditorViewModel(Measure measure)
             : this(measure, null)
         {
 
         }
-
+        /// <summary>
+        /// Convert
+        /// </summary>
+        /// <param name="word"></param>
         public MeasureEditorViewModel(Word word)
             : this(null, word)
         {
         }
+        /// <summary>
+        /// Create
+        /// </summary>
         public MeasureEditorViewModel()
             : this(null, null)
         {
