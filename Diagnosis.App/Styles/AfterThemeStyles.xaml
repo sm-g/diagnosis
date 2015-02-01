@@ -32,6 +32,38 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    
+    <!--Tree-->
+    
+    <Style BasedOn="{StaticResource {x:Type TreeView}}"
+           TargetType="TreeView">
+        <Setter Property="BorderThickness"
+                Value="0" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Stretch" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
+                Value="Disabled" />
+        <Setter Property="VirtualizingStackPanel.IsVirtualizing"
+                Value="False" />
+        <Setter Property="VirtualizingStackPanel.VirtualizationMode"
+                Value="Recycling" />
+    </Style>
+    
+    <Style BasedOn="{StaticResource {x:Type TreeViewItem}}"
+           TargetType="{x:Type TreeViewItem}">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Stretch" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Center" />
+      
+        <!-- Hier Vm -->
+        <Setter Property="IsSelected"
+                Value="{Binding IsSelected}" />
+        <Setter Property="IsExpanded"
+                Value="{Binding IsExpanded, Mode=TwoWay}" />
+    </Style>
 
     <!--  buttons  -->
     <Style x:Key="DialogButtonsPanel"

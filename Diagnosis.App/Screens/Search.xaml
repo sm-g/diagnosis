@@ -19,7 +19,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Styles/SplitExpander.xaml" />
             </ResourceDictionary.MergedDictionaries>
-           
+
             <Style x:Key="lineHeader"
                    TargetType="FrameworkElement">
                 <Setter Property="DockPanel.Dock"
@@ -173,25 +173,24 @@
             </StackPanel>
         </Expander>
 
-        <controls:FullTree ItemsSource="{Binding Result.Patients}"
-                           Grid.Row="2"
-                           Margin="5"
-                           Visibility="{Binding Result, Converter={StaticResource NullToVis}}">
-            <controls:FullTree.ItemContainerStyle>
+        <TreeView ItemsSource="{Binding Result.Patients}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  Grid.Row="2"
+                  Margin="5"
+                  Visibility="{Binding Result, Converter={StaticResource NullToVis}}">
+            <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem"
-                       BasedOn="{StaticResource TreeViewItemStyle}">
-                    <Setter Property="Template"
-                            Value="{StaticResource TreeViewItemRightToggleControl}" />
+                       BasedOn="{StaticResource {x:Type TreeViewItem}}">
                     <Setter Property="beh:Attached.InputBindings"
                             Value="{StaticResource SearchResultInputBindings}" />
                 </Style>
-            </controls:FullTree.ItemContainerStyle>
-            <controls:FullTree.ItemTemplate>
-                <DataTemplate>
+            </TreeView.ItemContainerStyle>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                     <search:HrSearchResult2 />
-                </DataTemplate>
-            </controls:FullTree.ItemTemplate>
-        </controls:FullTree>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
 
         <TextBlock Grid.Row="2"
                    HorizontalAlignment="Center"
