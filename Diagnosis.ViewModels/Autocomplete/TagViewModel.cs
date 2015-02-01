@@ -222,6 +222,11 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 return GetBlankType(Blank);
             }
+            set
+            { 
+                // to correct IsChecked binding must be TwoWay
+                // replace ConvertTo with 4 bools?
+            }
         }
         #region AutocompleteRelated
 
@@ -276,8 +281,9 @@ namespace Diagnosis.ViewModels.Autocomplete
                 return convertTo ?? (convertTo = new VisibleRelayCommand<BlankType>((t) =>
                 {
                     OnConverting(t);
+                    OnPropertyChanged(() => BlankType);
                 },
-                (t) => autocomplete.WithConvert && t != BlankType && State != State.Init && !Query.IsNullOrEmpty() && !IsDeleteOnly)
+                (t) => autocomplete.WithConvert && t != BlankType && !IsDeleteOnly)
                 {
                     IsVisible = autocomplete.WithConvert
                 });
@@ -513,7 +519,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (word.IsTransient)
                     Signalization = Signalizations.NewWord;
             }
-
+            // если можно только слова
             if (filter != null)
             {
                 Signalization |= filter(this);
@@ -570,6 +576,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             Signalization = null;
             _blank = null;
             OnPropertyChanged("Blank");
+            OnPropertyChanged("BlankType");
         }
 
         [ContractInvariantMethod]

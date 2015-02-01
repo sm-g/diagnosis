@@ -38,12 +38,19 @@ namespace Diagnosis.ViewModels.Autocomplete
             Title = "Выбор диагноза МКБ";
             DiagnosisSearch.Filter.IsFocused = true; // TODO фокус на список если выбранно
         }
-
+        /// <summary>
+        /// Create, edit
+        /// </summary>
+        /// <param name="initial"></param>
         public IcdSelectorViewModel(IcdDisease initial = null)
             : this(initial, null)
         {
         }
 
+        /// <summary>
+        /// Convert
+        /// </summary>
+        /// <param name="query"></param>
         public IcdSelectorViewModel(string query)
             : this(null, query)
         {

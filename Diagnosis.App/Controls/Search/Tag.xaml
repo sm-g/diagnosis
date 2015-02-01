@@ -157,22 +157,16 @@
                             <Setter Property="Visibility"
                                     Value="{Binding ConvertToCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                            <Setter Property="IsChecked"
-                                    Value="False" />
-
-                            <Style.Triggers>
-                                <DataTrigger Value="True">
-                                    <DataTrigger.Binding>
-                                        <MultiBinding Converter="{StaticResource EqualAllToBool}">
-                                            <Binding Path="BlankType" />
-                                            <Binding Path="CommandParameter"
-                                                     RelativeSource="{RelativeSource Self}" />
-                                        </MultiBinding>
-                                    </DataTrigger.Binding>
-                                    <Setter Property="IsChecked"
-                                            Value="True" />
-                                </DataTrigger>
-                            </Style.Triggers>
+                            <Setter Property="IsChecked">
+                                <Setter.Value>
+                                    <MultiBinding Mode="TwoWay"
+                                                  Converter="{StaticResource EqualAllToBool}">
+                                        <Binding Path="BlankType" />
+                                        <Binding Path="CommandParameter"
+                                                 RelativeSource="{RelativeSource Self}" />
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </ContextMenu.Resources>
                     <MenuItem InputGestureText="F2"
@@ -201,6 +195,7 @@
                     
                     <Separator Visibility="{Binding ConvertToCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <MenuItem Header="Ключевое слово"
+                              
                               CommandParameter="{x:Static diag:BlankType.Word}"
                               Style="{StaticResource convert}" />
                     <MenuItem Header="Комментарий"
