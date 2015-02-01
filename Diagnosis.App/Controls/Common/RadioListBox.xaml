@@ -6,7 +6,8 @@
 
     <ListBox.Resources>
         <Style x:Key="selfStyle"
-               TargetType="ListBox">
+               TargetType="ListBox"
+               BasedOn="{StaticResource {x:Type ListBox}}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding MultiSelection, RelativeSource={RelativeSource Self}}"
                              Value="{StaticResource True}">

@@ -220,8 +220,7 @@
                     Возраст от <Run Text="{Binding Statistic.MinAge, Mode=OneWay}" /> до <Run Text="{Binding Statistic.MaxAge, Mode=OneWay}" />
                 </TextBlock>
 
-                <StackPanel Style="{StaticResource DialogButtonsPanel}"
-                            HorizontalAlignment="Right">
+                <StackPanel HorizontalAlignment="Right">
                     <Button Command="{Binding ExportCommand}"
                             Style="{StaticResource squareButton}"
                             ToolTip="Экспорт в xlsx">
