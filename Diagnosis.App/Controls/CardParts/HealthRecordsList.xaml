@@ -47,6 +47,12 @@
         <KeyBinding Gesture="Alt+Shift+Down"
                     Command="{Binding MoveHrCommand}"
                     CommandParameter="{StaticResource False}" />
+        <KeyBinding Gesture="Control+K"
+                    Command="{Binding MoveHrSelectionCommand}"
+                    CommandParameter="{StaticResource True}" />
+        <KeyBinding Gesture="Control+J"
+                    Command="{Binding MoveHrSelectionCommand}"
+                    CommandParameter="{StaticResource False}" />
     </UserControl.InputBindings>
 
     <Grid>
@@ -290,10 +296,17 @@
                             <Rectangle x:Name="lbSelectedMarker"
                                        Width="3"
                                        Fill="LightCoral"
+                                       ToolTip="lb Selected"
                                        Visibility="Collapsed" />
                             <Rectangle x:Name="vmSelectedMarker"
                                        Width="3"
+                                       ToolTip="VM Selected"
                                        Fill="LightGreen"
+                                       Visibility="Collapsed" />
+                            <Rectangle x:Name="LastMarker"
+                                       Width="3"
+                                       ToolTip="LastMarker"
+                                       Fill="LightBlue"
                                        Visibility="Collapsed" />
                             <card:HealthRecord Margin="0,0,0,5">
                             </card:HealthRecord>
@@ -321,13 +334,27 @@
                                         <Binding Path="IsChecked"
                                                  ElementName="debugFocus" />
                                         <Binding />
-                                        <Binding Path="DataContext.SelectedHealthRecord"
+                                        <Binding Path="DataContext.SelectedCopy"
                                                  RelativeSource="{RelativeSource AncestorType=ListBox}" />
                                     </MultiBinding>
                                 </DataTrigger.Binding>
                                 <Setter Property="Visibility"
                                         Value="Visible"
                                         TargetName="vmSelectedMarker" />
+                            </DataTrigger>
+                            <DataTrigger Value="True">
+                                <DataTrigger.Binding>
+                                    <MultiBinding Converter="{StaticResource BoolAndEqualAllToBool}">
+                                        <Binding Path="IsChecked"
+                                                 ElementName="debugFocus" />
+                                        <Binding />
+                                        <Binding Path="DataContext.LastSelected"
+                                                 RelativeSource="{RelativeSource AncestorType=ListBox}" />
+                                    </MultiBinding>
+                                </DataTrigger.Binding>
+                                <Setter Property="Visibility"
+                                        Value="Visible"
+                                        TargetName="LastMarker" />
                             </DataTrigger>
                         </DataTemplate.Triggers>
                     </DataTemplate>
