@@ -23,6 +23,27 @@ namespace Diagnosis.App.Controls
         public static readonly DependencyProperty MultiSelectionProperty =
             DependencyProperty.Register("MultiSelection", typeof(bool), typeof(RadioListBox));
 
+        public Thickness ItemMargin
+        {
+            get { return (Thickness)GetValue(ItemMarginProperty); }
+            set { SetValue(ItemMarginProperty, value); }
+        }
+
+        public static readonly DependencyProperty ItemMarginProperty =
+            DependencyProperty.Register("ItemMargin", typeof(Thickness), typeof(RadioListBox), new PropertyMetadata(new Thickness(0)));
+
+
+
+        public Thickness ItemPadding
+        {
+            get { return (Thickness)GetValue(ItemPaddingProperty); }
+            set { SetValue(ItemPaddingProperty, value); }
+        }
+
+        public static readonly DependencyProperty ItemPaddingProperty =
+            DependencyProperty.Register("ItemPadding", typeof(Thickness), typeof(RadioListBox), new PropertyMetadata(new Thickness(0)));
+
+
         /// <summary>
         /// Changes IsSelected for parent ListBoxItem.
         /// </summary>
@@ -50,7 +71,6 @@ namespace Diagnosis.App.Controls
                         chkBox.IsChecked = !chkBox.IsChecked;
                 }
             }
-
         }
     }
 }

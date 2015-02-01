@@ -14,6 +14,7 @@
                                Focusable="False"
                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                SelectedItem="{Binding Category, FallbackValue=null}"
+                               ItemMargin="0,0,0,3"
                                MultiSelection="{Binding CategoryMultiSelection, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:CategoryChooser}}}">
 
             <Controls:RadioListBox.ItemsPanel>
@@ -27,6 +28,7 @@
                     <TextBlock Text="{Binding Name}" />
                 </DataTemplate>
             </Controls:RadioListBox.ItemTemplate>
+
         </Controls:RadioListBox>
     </Grid>
 </UserControl>
