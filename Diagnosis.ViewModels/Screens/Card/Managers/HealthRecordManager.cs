@@ -105,14 +105,12 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         public void Reorder(IEnumerable<ShortHealthRecordViewModel> moved, IList<ShortHealthRecordViewModel> view, int insertView, object group,
-            Func<ShortHealthRecordViewModel, object> GetGroupObject, Action<ShortHealthRecordViewModel, object> SetGroupObject)
+               bool aboveBorder, Action<ShortHealthRecordViewModel, object> SetGroupObject)
         {
             Contract.Requires(insertView >= 0);
             Contract.Requires(moved != null);
             Contract.Requires(view != null);
             Contract.Assume(inner.IsOrdered(x => x.Ord));
-
-            ShortHealthRecordViewModel hrView;
 
             // move hrs
             foreach (var hr in moved)
@@ -120,22 +118,8 @@ namespace Diagnosis.ViewModels.Screens
                 var old = inner.IndexOf(hr);
                 var oldView = view.IndexOf(hr);
 
-                // insertView [0..view.Count]
-
                 // insert above group border or at the end
-                bool aboveBorderOrAtEnd = insertView == view.Count;
-                if (0 < insertView && insertView < view.Count && group != null)
-                {
-                    // gong can show adoner in both groups, above and below border
-
-                    hrView = (ShortHealthRecordViewModel)view[insertView];
-                    var hrPrevView = (ShortHealthRecordViewModel)view[insertView - 1];
-
-                    // var groups = view.Groups;
-                    // разные группы и у верхнего элемента — целевая
-                    aboveBorderOrAtEnd = GetGroupObject(hrPrevView) != GetGroupObject(hrView)
-                        && group == GetGroupObject(hrPrevView);
-                }
+                var aboveBorderOrAtEnd = aboveBorder || insertView == view.Count;
 
                 // сравниваем с элементом ниже указателя или с тем, что над границей/над концом списка, если указатель прямо под ним
                 var toCompareView = aboveBorderOrAtEnd ? insertView - 1 : insertView;
@@ -183,7 +167,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public void Reorder(IEnumerable<ShortHealthRecordViewModel> moved, IList<ShortHealthRecordViewModel> view, int insertView)
         {
-            Reorder(moved, view, insertView, null, null, null);
+            Reorder(moved, view, insertView, null, false, null);
         }
 
         private void SetOrder()

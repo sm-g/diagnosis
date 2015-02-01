@@ -325,6 +325,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
 #if DEBUG
+
         /// <summary>
         /// When doNotNotifySelectedChanged, use for debug.
         /// </summary>
@@ -343,6 +344,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
 #endif
 
         public IEnumerable<ShortHealthRecordViewModel> SelectedHealthRecords
@@ -789,7 +791,22 @@ namespace Diagnosis.ViewModels.Screens
 
             var hrs = data.Cast<ShortHealthRecordViewModel>().ToList();
 
-            hrManager.Reorder(hrs, HealthRecordsView, insertView, group, GetGroupObject, SetGroupObject);
+            // insertView [0..view.Count]
+            bool aboveBorder = false;
+            if (0 < insertView && insertView < view.Count && group != null)
+            {
+                // gong can show adoner in both groups, above and below border
+
+                var hrView = HealthRecordsView[insertView];
+                var hrPrevView = HealthRecordsView[insertView - 1];
+
+                // var groups = view.Groups;
+                // разные группы и у верхнего элемента — целевая
+                aboveBorder = GetGroupObject(hrPrevView) != GetGroupObject(hrView)
+                    && group == GetGroupObject(hrPrevView);
+            }
+
+            hrManager.Reorder(hrs, HealthRecordsView, insertView, group, aboveBorder, SetGroupObject);
         }
 
         private void SetHrExtra(IList<ShortHealthRecordViewModel> vms)
