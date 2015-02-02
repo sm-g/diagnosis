@@ -105,16 +105,10 @@
                   beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedPatients}"
                   beh:FocusExtension.IsFocused="{Binding IsFocused}"
                   Visibility="{Binding NoPatients, Converter={StaticResource NegBooleanToVisibilityConverter}}"
-                  CellStyle="{StaticResource CellStyle}"
-                  GridLinesVisibility="None"
-                  Margin="0,10,0,0"
-                  FontSize="{DynamicResource GridRowFontSize}"
-                  IsReadOnly="True"
-                  SelectionUnit="FullRow"
-                  SelectionMode="Extended"
-                  AutoGenerateColumns="False"
+                  Margin="0,10,0,0"                
                   GotKeyboardFocus="dataGrid_GotKeyboardFocus"
-                  SelectedCellsChanged="dataGrid_SelectedCellsChanged">
+                  SelectedCellsChanged="dataGrid_SelectedCellsChanged"
+                  Style="{DynamicResource MyDataGridStyle}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Имя"
                                     IsReadOnly="True"
@@ -129,6 +123,7 @@
                                         CellTemplate="{StaticResource SexTemplate}" />
                 <DataGridTextColumn Header="Возраст"
                                     IsReadOnly="True"
+                                    ElementStyle="{StaticResource RightCellTextBlock}"
                                     Binding="{Binding Age, Mode=OneWay}" />
                 <DataGridTextColumn Header="Изменено"
                                     IsReadOnly="True"

@@ -4,24 +4,24 @@
         <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Styles/MahAppsFix.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Styles/DefaultExpander.xaml" />
     </ResourceDictionary.MergedDictionaries>
-    
+
     <!--This styles overwrites theme styles-->
-    
-    <Style TargetType="ListBoxItem"
+
+    <Style TargetType="{x:Type ListBoxItem}"
            BasedOn="{StaticResource MetroListBoxItemFixed}" />
-    <Style TargetType="Expander"
+    <Style TargetType="{x:Type Expander}"
            BasedOn="{StaticResource DefaultExpander}" />
-    
+
     <!--  base control styles  -->
 
     <Style BasedOn="{StaticResource {x:Type DatePicker}}"
-           TargetType="DatePicker">
+           TargetType="{x:Type DatePicker}">
         <Setter Property="FirstDayOfWeek"
                 Value="Monday" />
     </Style>
 
     <Style BasedOn="{StaticResource {x:Type TextBox}}"
-           TargetType="TextBox">
+           TargetType="{x:Type TextBox}">
         <Setter Property="VerticalContentAlignment"
                 Value="Center" />
         <Style.Triggers>
@@ -32,11 +32,29 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
+
+    <!--textblock-->
+    <Style TargetType="{x:Type TextBlock}"
+           BasedOn="{StaticResource {x:Type TextBlock}}">
+        <!--<Setter Property="FontSize"
+                Value="{DynamicResource ContentFontSize}" />-->
+        <Style.Triggers>
+            <Trigger Property="IsEnabled"
+                     Value="False">
+                <Setter Property="Foreground"
+                        Value="{StaticResource {x:Static SystemColors.GrayTextBrushKey}}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!--<Style TargetType="AccessText">
+        <Setter Property="FontSize"
+                Value="{DynamicResource LabelFontSize}" />
+    </Style>-->
+
     <!--Tree-->
-    
+
     <Style BasedOn="{StaticResource {x:Type TreeView}}"
-           TargetType="TreeView">
+           TargetType="{x:Type TreeView}">
         <Setter Property="BorderThickness"
                 Value="0" />
         <Setter Property="HorizontalContentAlignment"
@@ -48,7 +66,7 @@
         <Setter Property="VirtualizingStackPanel.VirtualizationMode"
                 Value="Recycling" />
     </Style>
-    
+
     <Style BasedOn="{StaticResource {x:Type TreeViewItem}}"
            TargetType="{x:Type TreeViewItem}">
         <Setter Property="Background"
@@ -57,7 +75,7 @@
                 Value="Stretch" />
         <Setter Property="VerticalContentAlignment"
                 Value="Center" />
-      
+
         <!-- Hier Vm -->
         <Setter Property="IsSelected"
                 Value="{Binding IsSelected}" />
@@ -68,12 +86,8 @@
     <!--  buttons  -->
     <Style x:Key="DialogButtonsPanel"
            TargetType="{x:Type StackPanel}">
-        <Setter Property="Orientation"
-                Value="Horizontal" />
-        <Setter Property="HorizontalAlignment"
-                Value="Right" />
         <Style.Resources>
-            <Style TargetType="Button"
+            <Style TargetType="{x:Type Button}"
                    BasedOn="{StaticResource {x:Type Button}}">
                 <Setter Property="MinWidth"
                         Value="75" />
@@ -83,17 +97,21 @@
                         Value="10,10,0,0" />
             </Style>
         </Style.Resources>
+        <Setter Property="Orientation"
+                Value="Horizontal" />
+        <Setter Property="HorizontalAlignment"
+                Value="Right" />
     </Style>
 
     <Style x:Key="squareButton"
            BasedOn="{StaticResource {x:Type Button}}"
-           TargetType="Button">
+           TargetType="{x:Type Button}">
         <Setter Property="Width"
                 Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
     </Style>
 
     <!--toolbar-->
-    <Style TargetType="ToolBar">
+    <Style TargetType="{x:Type ToolBar}">
         <Setter Property="ToolBarTray.IsLocked"
                 Value="True" />
     </Style>
@@ -101,7 +119,8 @@
     <!--  DataGrid  -->
 
     <Style x:Key="CellStyle"
-           TargetType="DataGridCell">
+           TargetType="{x:Type DataGridCell}"
+           BasedOn="{StaticResource {x:Type DataGridCell}}">
         <Setter Property="BorderThickness"
                 Value="0" />
         <Setter Property="FocusVisualStyle"
@@ -121,11 +140,46 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    
+    <Style x:Key="RightCellTextBlock"
+           TargetType="{x:Type TextBlock}"
+           BasedOn="{StaticResource {x:Type TextBlock}}">
+        <Setter Property="HorizontalAlignment"
+                Value="Right" />
+        <Setter Property="Margin"
+                Value="0,0,5,0" />
+    </Style>
+    
+    <Style x:Key="MyDataGridStyle"
+           TargetType="{x:Type DataGrid}"
+           BasedOn="{StaticResource {x:Type DataGrid}}">
+        <Setter Property="AutoGenerateColumns"
+                Value="False" />
+        <Setter Property="IsReadOnly"
+                Value="True" />
+        <Setter Property="SelectionUnit"
+                Value="FullRow" />
+        <Setter Property="SelectionMode"
+                Value="Extended" />
+        <Setter Property="FontSize"
+                Value="{DynamicResource GridRowFontSize}" />
 
+        <Setter Property="GridLinesVisibility"
+                Value="None" />
+        <Setter Property="BorderThickness"
+                Value="0" />
+        <Setter Property="CellStyle"
+                Value="{StaticResource CellStyle}" />
+
+        <Setter Property="VirtualizingStackPanel.VirtualizationMode"
+                Value="Standard" />
+
+    </Style>
+    
     <!--  forms  -->
 
     <Style x:Key="formLine"
-           TargetType="DockPanel">
+           TargetType="{x:Type DockPanel}">
         <Setter Property="Margin">
             <Setter.Value>
                 <Thickness Bottom="10" />
@@ -134,8 +188,10 @@
     </Style>
 
     <Style x:Key="{x:Type Label}"
-           TargetType="Label" 
+           TargetType="{x:Type Label}"
            BasedOn="{StaticResource {x:Type Label}}">
+        <Setter Property="FontSize"
+                Value="{DynamicResource LabelFontSize}" />
         <Setter Property="VerticalAlignment"
                 Value="Center" />
         <Setter Property="ContentStringFormat"
@@ -143,20 +199,20 @@
     </Style>
     <Style x:Key="label120"
            BasedOn="{StaticResource {x:Type Label}}"
-           TargetType="Label">
+           TargetType="{x:Type Label}">
         <Setter Property="Width"
                 Value="120" />
     </Style>
     <Style x:Key="label90"
            BasedOn="{StaticResource {x:Type Label}}"
-           TargetType="Label">
+           TargetType="{x:Type Label}">
         <Setter Property="Width"
                 Value="90" />
     </Style>
 
     <!-- ToolTips -->
     <Style x:Key="SexTooltip"
-           TargetType="TextBlock">
+           TargetType="{x:Type TextBlock}">
         <Setter Property="ToolTip"
                 Value="Пол не указан" />
         <Style.Triggers>
@@ -172,4 +228,5 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+   
 </ResourceDictionary>

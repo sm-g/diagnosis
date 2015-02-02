@@ -45,14 +45,8 @@
                   Grid.Row="3"
                   ItemsSource="{Binding Doctors}"
                   SelectedItem="{Binding SelectedDoctor}"
-                  CellStyle="{StaticResource CellStyle}"
-                  GridLinesVisibility="None"
                   Margin="0,10,0,0"
-                  FontSize="15"
-                  IsReadOnly="True"
-                  SelectionUnit="FullRow"
-                  SelectionMode="Extended"
-                  AutoGenerateColumns="False">
+                  Style="{DynamicResource MyDataGridStyle}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Фамилия"
                                     Binding="{Binding LastName, Mode=OneWay}" />

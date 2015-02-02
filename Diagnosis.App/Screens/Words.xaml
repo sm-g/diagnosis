@@ -59,15 +59,8 @@
                   SelectedItem="{Binding SelectedWord}"
                   beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedWords}"
                   Visibility="{Binding NoWords, Converter={StaticResource NegBooleanToVisibilityConverter}}"
-                  CellStyle="{StaticResource CellStyle}"
-                  GridLinesVisibility="None"
                   Margin="0,10,0,0"
-                  FontSize="15"
-                  IsReadOnly="True"
-                  SelectionUnit="FullRow"
-                  SelectionMode="Extended"
-                  AutoGenerateColumns="False"
-                  VirtualizingStackPanel.VirtualizationMode="Standard"
+                  Style="{DynamicResource MyDataGridStyle}"
                   SelectedCellsChanged="dataGrid_SelectedCellsChanged">
             <DataGrid.Resources>
                 <Style x:Key="Checkbox"
@@ -76,12 +69,7 @@
                     <Setter Property="Focusable"
                             Value="False" />
                 </Style>
-                <Style x:Key="RightTextBlock"
-                       TargetType="{x:Type TextBlock}"
-                       BasedOn="{StaticResource {x:Type TextBlock}}">
-                    <Setter Property="HorizontalAlignment"
-                            Value="Right" />
-                </Style>
+                
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn Header=""
@@ -93,7 +81,7 @@
                                     Binding="{Binding Title, Mode=OneWay}" />
                 <DataGridTextColumn Header="Использовано"
                                     IsReadOnly="True"
-                                    ElementStyle="{StaticResource RightTextBlock}"
+                                    ElementStyle="{StaticResource RightCellTextBlock}"
                                     Binding="{Binding Usage, Mode=OneWay}" />
                 <DataGridTextColumn Header="Категория"
                                     IsReadOnly="True"
