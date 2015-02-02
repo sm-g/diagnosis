@@ -164,6 +164,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Combination.cs" />
+    <Compile Include="Debug\DebugWindow.xaml.cs">
+      <DependentUpon>DebugWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Debug\LogTraceListener.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Formatters\DateFormatter.cs" />
@@ -180,7 +184,7 @@
     <Compile Include="Util\ActionWrapper.cs" />
     <Compile Include="Util\Comparers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Util\DebugOutput.cs" />
+    <Compile Include="Debug\DebugOutput.cs" />
     <Compile Include="Util\EventArgs.cs" />
     <Compile Include="Util\ExpressionHelper.cs" />
     <Compile Include="DateHelper.cs" />
@@ -198,6 +202,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Debug\DebugWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

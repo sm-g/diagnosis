@@ -1,7 +1,7 @@
-﻿<Window x:Class="Diagnosis.App.Windows.DebugWindow"
+﻿<Window x:Class="Diagnosis.Common.DebugTools.DebugWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:win="clr-namespace:Diagnosis.App.Windows"
+        xmlns:local="clr-namespace:Diagnosis.Common.DebugTools"
         WindowStartupLocation="Manual"
         ShowInTaskbar="True"
         ShowActivated="False"
@@ -15,6 +15,8 @@
                        Mode=TwoWay,
                        Source={StaticResource Settings}}">
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
         <Style TargetType="ListBox"
                x:Key="LogViewerStyle">
             <Setter Property="Template">
@@ -36,7 +38,7 @@
             </Setter>
         </Style>
 
-        <DataTemplate DataType="{x:Type win:LogEntry}">
+        <DataTemplate DataType="{x:Type local:LogEntry}">
             <Grid IsSharedSizeScope="True">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition SharedSizeGroup="Index"
@@ -63,18 +65,6 @@
             </Grid>
         </DataTemplate>
     </Window.Resources>
-
-    <!--<Grid>
-        <TextBox ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 x:Name="Log"
-                 Grid.Row="1"
-                 IsReadOnly="True"
-                 AcceptsReturn="True"
-                 TextChanged="Log_TextChanged"
-                 Height="Auto"
-                 Margin="0,10,0,0"
-                 VerticalContentAlignment="Stretch" />
-    </Grid>-->
 
     <DockPanel>
         <DockPanel DockPanel.Dock="Bottom">

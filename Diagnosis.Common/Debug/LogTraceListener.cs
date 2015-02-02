@@ -1,78 +1,17 @@
-﻿using Diagnosis.Common;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows;
-using System.Windows.Threading;
+using System.Text;
 
-namespace Diagnosis.App.Windows
+namespace Diagnosis.Common.DebugTools
 {
-    /// <summary>
-    /// Interaction logic for DebugWindow.xaml
-    /// </summary>
-    public partial class DebugWindow : Window
-    {
-        public DebugWindow()
-        {
-            InitializeComponent();
-
-            //  TraceListener debugListener = new TextBoxTraceListener(Log);
-
-            var debugListener = new LogTraceListener();
-            debugListener.LogEntries.CollectionChanged += (s, e) =>
-            {
-                if (e.NewItems != null)
-                {
-                    // scroll to new
-                    Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() =>
-                    { items.ScrollIntoView(e.NewItems[0]); }));
-                }
-            };
-            debugListener.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == "FilterOn")
-                {
-                    // scroll to selected
-                    if (items.SelectedItem != null)
-                        Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() =>
-                        { items.ScrollIntoView(items.SelectedItem); }));
-                }
-            };
-
-            DataContext = debugListener;
-            Debug.Listeners.Add(debugListener);
-
-            Loaded += (s, e) =>
-            {
-                if (this.Left == 0)
-                    this.Left = SystemParameters.PrimaryScreenWidth - this.Width;
-            };
-            Closing += (s, e) =>
-            {
-                Diagnosis.App.Properties.Settings.Default.DebugFilterOn = debugListener.FilterOn;
-
-            };
-
-            this.Height = SystemParameters.MaximizedPrimaryScreenHeight;
-            this.Top = 0;
-        }
-
-        //private void Log_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        //{
-        //    Action action = () =>
-        //    {
-        //         Log.ScrollToEnd();
-        //    };
-        //    Dispatcher.BeginInvoke(DispatcherPriority.Background, action);
-        //}
-    }
-
     public class LogTraceListener : TraceListener, INotifyPropertyChanged
     {
-        private string _filter = Diagnosis.App.Properties.Settings.Default.DebugFilter ?? "";
-        private bool _filterOn = Diagnosis.App.Properties.Settings.Default.DebugFilterOn;
+        private string _filterContains;
+        private bool _filterOn;
         private int index = 0;
 
         public LogTraceListener()
@@ -89,15 +28,14 @@ namespace Diagnosis.App.Windows
         {
             get
             {
-                return _filter;
+                return _filterContains;
             }
             set
             {
-                if (_filter != value)
+                if (_filterContains != value)
                 {
-                    _filter = value;
+                    _filterContains = value;
 
-                    Diagnosis.App.Properties.Settings.Default.DebugFilter = value;
                     ApplyFilter(FilterOn);
                     OnPropertyChanged("FilterContains");
                 }
