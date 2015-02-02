@@ -6,7 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Diagnosis.App.Converters
+namespace Diagnosis.Common.Converters
 {
     public abstract class BaseValueConverter : IValueConverter
     {

@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Diagnosis.App.Converters
+namespace Diagnosis.Common.Converters
 {
     public sealed class BoolToCenterAligmentConverter : BooleanConverter<HorizontalAlignment>
     {

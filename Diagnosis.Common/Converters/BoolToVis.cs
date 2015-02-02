@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Diagnosis.App.Converters
+namespace Diagnosis.Common.Converters
 {
     /// <summary>
     /// If Visibility.Hidden passed in parameters, use it for false value.

@@ -1,8 +1,11 @@
 ﻿<ResourceDictionary x:Class="Diagnosis.App.Styles.TreeStyle"
                     x:ClassModifier="public"
                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:conv="clr-namespace:Diagnosis.App.Converters"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-
+    <conv:TreeDepthToMargin Length="19"
+                            x:Key="lengthConverter" />
+    
     <SolidColorBrush x:Key="GlyphBrush"
                      Color="#444" />
     <SolidColorBrush x:Key="itemSelectedNotActiveBrush"

@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 
-namespace Diagnosis.App.Converters
+namespace Diagnosis.Common.Converters
 {
     public class LessThanConverter : BaseValueConverter
     {

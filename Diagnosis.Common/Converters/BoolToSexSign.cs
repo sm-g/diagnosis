@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Windows;
 
-namespace Diagnosis.App.Converters
+namespace Diagnosis.Common.Converters
 {
     /// <summary>
     /// IsMale? to string from 2-space separated string. 

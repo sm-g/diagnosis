@@ -239,17 +239,13 @@
       <DependentUpon>Patient.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Common\HrsHolderDataTemplateSelector.cs" />
-    <Compile Include="Converters\BaseConverter.cs" />
-    <Compile Include="Converters\DateOffsetConverters.cs" />
     <Compile Include="Windows\Helpers\AvalonExtensions.cs" />
     <Compile Include="Windows\Helpers\WindowHelper.cs" />
     <Compile Include="Controls\Helpers\XamlExtensions.cs" />
     <Compile Include="Controls\Search\HrSearchResult2.xaml.cs">
       <DependentUpon>HrSearchResult2.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converters\EnumToLabel.cs" />
     <Compile Include="Converters\ScopeToLabel.cs" />
-    <Compile Include="Converters\ListConverters.cs" />
     <Compile Include="Converters\HrToItemsString.cs" />
     <Compile Include="Screens\Card.xaml.cs">
       <DependentUpon>Card.xaml</DependentUpon>
@@ -338,14 +334,7 @@
     <Compile Include="Controls\Search\Tag.xaml.cs">
       <DependentUpon>Tag.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converters\NullToVis.cs" />
-    <Compile Include="Converters\NumericConverters.cs" />
-    <Compile Include="Converters\DateTimeLabels.cs" />
-    <Compile Include="Converters\EqualityToBool.cs" />
     <Compile Include="Converters\ManToName.cs" />
-    <Compile Include="Converters\BooleanConverter.cs" />
-    <Compile Include="Converters\BoolToSexSign.cs" />
-    <Compile Include="Converters\IntToString.cs" />
     <Compile Include="Screens\Patients.xaml.cs">
       <DependentUpon>Patients.xaml</DependentUpon>
     </Compile>
@@ -360,11 +349,6 @@
     </Compile>
     <Compile Include="Controls\Helpers\WatermarkAdorner.cs" />
     <Compile Include="Controls\Helpers\WatermarkService.cs" />
-    <Compile Include="Converters\AgeToYearsLabel.cs" />
-    <Compile Include="Converters\BoolToVis.cs" />
-    <Compile Include="Converters\BoolToAligment.cs" />
-    <Compile Include="Converters\MonthToString.cs" />
-    <Compile Include="Converters\CountToVisibility.cs" />
     <Compile Include="Converters\TreeDepthToMargin.cs" />
     <Compile Include="Controls\Helpers\VisualTreeExtensions.cs" />
     <Compile Include="Controls\Helpers\FocusChecker.cs" />

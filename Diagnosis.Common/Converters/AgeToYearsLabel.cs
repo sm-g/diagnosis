@@ -7,7 +7,7 @@ using System.Globalization;
 using Diagnosis.Common;
 using System.Windows;
 
-namespace Diagnosis.App.Converters
+namespace Diagnosis.Common.Converters
 {
     public class AgeToYearsLabel : BaseValueConverter
     {

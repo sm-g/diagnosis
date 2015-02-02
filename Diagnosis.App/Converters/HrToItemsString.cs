@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Data;
 using System.Globalization;
 using Diagnosis.Models;
+using Diagnosis.Common.Converters;
 
 namespace Diagnosis.App.Converters
 {

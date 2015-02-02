@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 
-namespace Diagnosis.App.Converters
+namespace Diagnosis.Common.Converters
 {
     /// <summary>
     /// Показывает текст DateUnit для DateOffset. 

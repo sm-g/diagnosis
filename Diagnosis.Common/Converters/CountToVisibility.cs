@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Diagnosis.App.Converters
+namespace Diagnosis.Common.Converters
 {
     public class MoreThanToVisibility : BaseValueConverter
     {

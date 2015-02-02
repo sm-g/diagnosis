@@ -1,4 +1,5 @@
 ﻿using Diagnosis.App.Controls;
+using Diagnosis.Common.Converters;
 using System;
 using System.Globalization;
 using System.Windows;

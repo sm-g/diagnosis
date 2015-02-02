@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Data;
 
-namespace Diagnosis.App.Converters
+namespace Diagnosis.Common.Converters
 {
     /// <summary>
     /// This class simply takes an enum and uses some reflection to obtain

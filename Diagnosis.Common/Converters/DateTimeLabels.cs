@@ -1,5 +1,4 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -7,7 +6,7 @@ using System.Linq;
 using System.Windows.Data;
 using System.Windows;
 
-namespace Diagnosis.App.Converters
+namespace Diagnosis.Common.Converters
 {
     public class DateIntervalLabel : BaseMultiValueConverter
     {
