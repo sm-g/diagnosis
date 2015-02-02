@@ -183,7 +183,7 @@
                     <StackPanel Grid.Row="0"
                                 Orientation="Horizontal"
                                 Visibility="{Binding DateOffset.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-                        <Label>Это было</Label>
+                        <Label Content="Это было"/>
                         <StackPanel Orientation="Horizontal"
                                     VerticalAlignment="Center">
                             <RadioButton IsChecked="{Binding ShowAsDate}"
@@ -235,6 +235,9 @@
                                             <Style TargetType="Label">
                                                 <Setter Property="Content"
                                                         Value="Изменить дату" />
+                                                <Setter Property="FontSize"
+                                                        Value="{DynamicResource LabelFontSize}" />
+                                                
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding DateOffset.IsEmpty}"
                                                                  Value="True">

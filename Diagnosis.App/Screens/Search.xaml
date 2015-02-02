@@ -47,6 +47,13 @@
                 <!--Описание запроса, к которому относятся результаты-->
                 <StackPanel x:Name="searchDescription"
                             Margin="5,0,0,0">
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontSize"
+                                    Value="{DynamicResource HelpFontSize}" />
+                        </Style>
+                    </StackPanel.Resources>
+                    
                     <StackPanel DataContext="{Binding Options}"
                                 Visibility="{Binding DataContext.Result, ElementName=search, Converter={StaticResource NullToVis}}">
                         <StackPanel Orientation="Horizontal"
@@ -106,7 +113,7 @@
                     <KeyBinding Key="Enter"
                                 Command="{Binding SearchCommand}" />
                 </StackPanel.InputBindings>
-                <Label>Ключевые _слова</Label>
+                <Label Content="Ключевые _слова" />
                 <search:Autocomplete DataContext="{Binding Autocomplete}" />
                 <DockPanel Style="{StaticResource formLine}">
                     <Grid>
@@ -124,7 +131,7 @@
                         </CheckBox>
                     </Grid>
                 </DockPanel>
-                <Label>_Категории</Label>
+                <Label Content="_Категории" />
                 <DockPanel Style="{StaticResource formLine}"
                            HorizontalAlignment="Left">
                     <editors:CategoryChooser CategoryMultiSelection="{StaticResource True}" />

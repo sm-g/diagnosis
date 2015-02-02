@@ -11,6 +11,13 @@
             BorderThickness="3"
             CornerRadius="10">
         <DockPanel Margin="5">
+            <DockPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontSize"
+                            Value="{DynamicResource HelpFontSize}" />
+                </Style>
+            </DockPanel.Resources>
+            
             <TextBlock TextWrapping="Wrap"
                        Margin="0,0,30,0">
                 <Run Text="{Binding Message, Mode=OneWay}" />.
@@ -20,6 +27,8 @@
                     CommandParameter="{StaticResource True}"
                     Width="16"
                     Height="16"
+                    MinHeight="16"
+                    Padding="0"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top">
                 <Path Data="{StaticResource CloseX}"

@@ -76,6 +76,9 @@
         <Setter Property="VerticalContentAlignment"
                 Value="Center" />
 
+        <Setter Property="FontSize"
+                Value="{DynamicResource ContentFontSize }" />
+
         <!-- Hier Vm -->
         <Setter Property="IsSelected"
                 Value="{Binding IsSelected}" />

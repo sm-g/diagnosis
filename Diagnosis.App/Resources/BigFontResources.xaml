@@ -4,11 +4,16 @@
     <System:Double x:Key="HeaderFontSize">40</System:Double>
     <System:Double x:Key="SubHeaderFontSize">29.333</System:Double>
     <System:Double x:Key="WindowTitleFontSize">16</System:Double>
+    
+    <!--notused-->
     <System:Double x:Key="NormalFontSize">14</System:Double>
-    <System:Double x:Key="ContentFontSize">12</System:Double>
+    
+    <System:Double x:Key="ContentFontSize">14</System:Double>
+    <System:Double x:Key="LabelFontSize">14</System:Double>
+    
     <System:Double x:Key="FlatButtonFontSize">14</System:Double>
     <System:Double x:Key="TabItemFontSize">26.67</System:Double>
-    <System:Double x:Key="UpperCaseContentFontSize">10</System:Double>
+    <System:Double x:Key="UpperCaseContentFontSize">11</System:Double>
     <System:Double x:Key="FloatingWatermarkFontSize">10</System:Double>
 
     <System:Double x:Key="MenuFontSize">14</System:Double>
@@ -21,7 +26,11 @@
 
     <System:Double x:Key="FlyoutHeaderFontSize">20</System:Double>
 
-    <System:Double x:Key="ScreenTitleFontSize">23</System:Double>
+    <System:Double x:Key="ScreenTitleFontSize">22</System:Double>
     <System:Double x:Key="GridRowFontSize">16</System:Double>
     <System:Double x:Key="HrFontSize">16</System:Double>
+    <System:Double x:Key="TagFontSize">15</System:Double>
+
+    <System:Double x:Key="HelpFontSize">14</System:Double>
+
 </ResourceDictionary>

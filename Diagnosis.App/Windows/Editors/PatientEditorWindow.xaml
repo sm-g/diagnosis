@@ -104,20 +104,17 @@
 
         <StackPanel Grid.Row="1"
                     Style="{StaticResource DialogButtonsPanel}">
-            <!--<Button Name="saveAddButton" Command="{Binding SaveAndCreateCommand}" ToolTip="Сохранить и добавить нового пациента">
-                <AccessText Text="_Добавить нового" />
-            </Button>-->
             <Button Name="saveOpenAppButton"
                     Command="{Binding SaveAndOpenAppCommand}"
+                    Content="_Добавить осмотр"
                     Visibility="{Binding IsUnsaved, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <AccessText Text="_Добавить осмотр" />
             </Button>
             <Separator Width="60"
                        Height="0" />
             <Button Name="saveButton"
                     IsDefault="True"
                     Command="{Binding SaveCommand}"
-                    Content="Сохранить" />
+                    Content="_Сохранить" />
             <Button Name="cancelButton"
                     IsCancel="True"
                     Command="{Binding CancelCommand}"

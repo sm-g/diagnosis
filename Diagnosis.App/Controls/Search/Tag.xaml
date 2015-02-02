@@ -74,7 +74,7 @@
                     <Setter Property="Background"
                             Value="White" />
                     <Setter Property="FontSize"
-                            Value="14" />
+                            Value="{DynamicResource TagFontSize}" />
                     <Setter Property="FontStyle"
                             Value="Italic" />
                     <!--border on focused /hover only-->
