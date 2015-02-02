@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
-             xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              mc:Ignorable="d"
@@ -62,7 +61,7 @@
                               Margin="2,0,0,0" />
         </StackPanel>
         <TextBox x:Name="query"
-                 beh:FocusExtension.IsFocused="{Binding IsTextBoxFocused, Mode=TwoWay}"
+                 diag:FocusExtension.IsFocused="{Binding IsTextBoxFocused, Mode=TwoWay}"
                  dd:DragDrop.IsDropTarget="True"
                  dd:DragDrop.DropHandler="{Binding}"
                  Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
@@ -150,7 +149,7 @@
                                x:Shared="False">
                             <Setter Property="IsCheckable"
                                     Value="True" />
-                            <Setter Property="beh:MenuItemExtensions.GroupName"
+                            <Setter Property="diag:MenuItemExtensions.GroupName"
                                     Value="{Binding Hash}" />
                             <Setter Property="Command"
                                     Value="{Binding ConvertToCommand}" />

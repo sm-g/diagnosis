@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 
-namespace Diagnosis.App.Behaviors
+namespace Diagnosis.Common.Behaviors
 {
     public class ClipboardBehavior
     {

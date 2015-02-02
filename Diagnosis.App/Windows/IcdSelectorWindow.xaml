@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:Diagnosis.App.Controls"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
         xmlns:diag="http://schemas.smg.com/diagnosis"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
@@ -12,8 +11,8 @@
         Width="500"       
         mc:Ignorable="d"
         d:DataContext="{DynamicResource Context}"
-        beh:DialogCloser.DialogResult="{Binding DialogResult}"
-        beh:FocusBehavior.FocusFirst="True"
+        diag:DialogCloser.DialogResult="{Binding DialogResult}"
+        diag:FocusBehavior.FocusFirst="True"
 >
     <Window.Resources>
         <diag:IcdSelectorViewModel x:Key="Context" />

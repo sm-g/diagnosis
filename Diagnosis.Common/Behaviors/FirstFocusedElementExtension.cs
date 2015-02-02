@@ -8,7 +8,7 @@ using System.Windows.Media;
 using System.ComponentModel;
 using System.Windows.Input;
 
-namespace Diagnosis.App.Behaviors
+namespace Diagnosis.Common.Behaviors
 {
     /// <summary>
     /// This markup extension locates the first focusable child and returns it.

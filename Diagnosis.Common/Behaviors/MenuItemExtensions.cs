@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Diagnosis.App.Behaviors
+namespace Diagnosis.Common.Behaviors
 {
     public class MenuItemExtensions : DependencyObject
     {

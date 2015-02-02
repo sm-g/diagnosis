@@ -47,7 +47,7 @@
             <controls:FullTree.ItemContainerStyle>
                 <Style TargetType="TreeViewItem"
                        BasedOn="{StaticResource TreeViewItemStyle}">
-                    <Setter Property="beh:Attached.InputBindings"
+                    <Setter Property="diag:Attached.InputBindings"
                             Value="{StaticResource CardElementsInputBindings}" />
                     <Setter Property="FontWeight"
                             Value="Normal" />

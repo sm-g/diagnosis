@@ -9,7 +9,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:diag="http://schemas.smg.com/diagnosis"
-             xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
              x:Name="search"
              mc:Ignorable="d"
              d:DesignHeight="400"
@@ -127,7 +126,7 @@
                                   Margin="0,10,0,0">
                             <TextBlock>
                             <Run BaselineAlignment="Center">Все слова</Run>
-                                <ComboBox ItemsSource="{Binding Source={beh:EnumListExtension {x:Type diag:HealthRecordQueryAndScope}}}"
+                                <ComboBox ItemsSource="{Binding Source={diag:EnumListExtension {x:Type diag:HealthRecordQueryAndScope}}}"
                                           SelectedItem="{Binding QueryScope, Mode=TwoWay}"
                                           ItemTemplate="{StaticResource EnumComboTemplate}"
                                           VerticalContentAlignment="Bottom" />
@@ -196,7 +195,7 @@
                        BasedOn="{StaticResource TreeViewItemStyle}">
                     <Setter Property="Template"
                             Value="{StaticResource TreeViewItemRightToggleControl}" />
-                    <Setter Property="beh:Attached.InputBindings"
+                    <Setter Property="diag:Attached.InputBindings"
                             Value="{StaticResource SearchResultInputBindings}" />
                 </Style>
             </controls:FullTree.ItemContainerStyle>

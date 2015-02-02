@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Markup;
 
-namespace Diagnosis.App.Behaviors
+namespace Diagnosis.Common.Behaviors
 {
     /// <summary>
     /// Markup extension that provides a list of the members of a given enum.

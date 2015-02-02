@@ -220,15 +220,8 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Compile Include="Behaviors\AvalonDockLayoutSerializer.cs" />
-    <Compile Include="Behaviors\ClipboardBehavior.cs" />
-    <Compile Include="Behaviors\EnumListExtension.cs" />
-    <Compile Include="Behaviors\FocusBehavior.cs" />
     <Compile Include="Behaviors\IsActive.cs" />
     <Compile Include="Behaviors\ListBoxSelector.cs" />
-    <Compile Include="Behaviors\MenuItemExtensions.cs" />
-    <Compile Include="Behaviors\MultiSelectorBehaviours.cs" />
-    <Compile Include="Behaviors\RowDblClick.cs" />
-    <Compile Include="Behaviors\TwoListSynchronizer.cs" />
     <Compile Include="Controls\CardParts\Header.xaml.cs">
       <DependentUpon>Header.xaml</DependentUpon>
     </Compile>
@@ -268,7 +261,6 @@
       <DependentUpon>UndoOverlay.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Helpers\DataGridHelper.cs" />
-    <Compile Include="Behaviors\FirstFocusedElementExtension.cs" />
     <Compile Include="Controls\Search\Filter.xaml.cs">
       <DependentUpon>Filter.xaml</DependentUpon>
     </Compile>
@@ -337,8 +329,6 @@
     <Compile Include="Controls\Editors\SexChooser.xaml.cs">
       <DependentUpon>SexChooser.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Behaviors\Attached.cs" />
-    <Compile Include="Behaviors\IsFocused.cs" />
     <Compile Include="Controls\Common\RadioListBox.xaml.cs">
       <DependentUpon>RadioListBox.xaml</DependentUpon>
     </Compile>
@@ -377,7 +367,6 @@
     <Compile Include="Converters\CountToVisibility.cs" />
     <Compile Include="Converters\TreeDepthToMargin.cs" />
     <Compile Include="Controls\Helpers\VisualTreeExtensions.cs" />
-    <Compile Include="Behaviors\EnhancedFocusScope.cs" />
     <Compile Include="Controls\Helpers\FocusChecker.cs" />
     <Compile Include="Controls\Helpers\TreeViewItemExtenstions.cs" />
     <Compile Include="Controls\Directory\WordTreeItem.xaml.cs">
@@ -393,7 +382,6 @@
     <Compile Include="Windows\Editors\CourseEditorWindow.xaml.cs">
       <DependentUpon>CourseEditorWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Behaviors\DialogCloser.cs" />
     <Compile Include="Windows\Helpers\TraceListener.cs" />
     <Compile Include="Windows\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>

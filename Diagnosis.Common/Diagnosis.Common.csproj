@@ -163,6 +163,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviors\Attached.cs" />
+    <Compile Include="Behaviors\ClipboardBehavior.cs" />
+    <Compile Include="Behaviors\DialogCloser.cs" />
+    <Compile Include="Behaviors\EnhancedFocusScope.cs" />
+    <Compile Include="Behaviors\EnumListExtension.cs" />
+    <Compile Include="Behaviors\FirstFocusedElementExtension.cs" />
+    <Compile Include="Behaviors\FocusBehavior.cs" />
+    <Compile Include="Behaviors\IsFocused.cs" />
+    <Compile Include="Behaviors\MenuItemExtensions.cs" />
+    <Compile Include="Behaviors\MultiSelectorBehaviours.cs" />
+    <Compile Include="Behaviors\RowDblClick.cs" />
+    <Compile Include="Behaviors\TwoListSynchronizer.cs" />
     <Compile Include="Combination.cs" />
     <Compile Include="Debug\DebugWindow.xaml.cs">
       <DependentUpon>DebugWindow.xaml</DependentUpon>

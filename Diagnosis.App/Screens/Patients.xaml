@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
-             xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
              x:Name="patients"
              Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
@@ -103,8 +103,8 @@
                   Grid.Row="3"
                   ItemsSource="{Binding Patients}"
                   SelectedItem="{Binding SelectedPatient}"
-                  beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedPatients}"
-                  beh:FocusExtension.IsFocused="{Binding IsFocused}"
+                  diag:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedPatients}"
+                  diag:FocusExtension.IsFocused="{Binding IsFocused}"
                   Visibility="{Binding NoPatients, Converter={StaticResource NegBooleanToVisibilityConverter}}"
                   CellStyle="{StaticResource CellStyle}"
                   GridLinesVisibility="None"
@@ -145,7 +145,7 @@
             </DataGrid.InputBindings>
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
-                    <Setter Property="beh:RowDblClick.DoubleClickCommand"
+                    <Setter Property="diag:RowDblClick.DoubleClickCommand"
                             Value="{Binding ElementName=dataGrid, Path=DataContext.OpenCommand}" />
                     <Setter Property="Tag"
                             Value="{Binding DataContext, ElementName=dataGrid}" />

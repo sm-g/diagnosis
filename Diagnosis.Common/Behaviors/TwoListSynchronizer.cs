@@ -6,7 +6,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 
-namespace Diagnosis.App.Behaviors
+namespace Diagnosis.Common.Behaviors
 {
     /// <summary>
     /// Keeps two lists synchronized. 

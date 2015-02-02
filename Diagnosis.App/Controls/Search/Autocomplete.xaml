@@ -3,16 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
              GotKeyboardFocus="autocomplete_GotKeyboardFocus"
              LostFocus="UserControl_LostFocus"
              LostKeyboardFocus="UserControl_LostKeyboardFocus"
              Focusable="True"
              x:Name="autocomplete"
-             beh:ClipboardBehavior.ClipboardTarget="True"
+             diag:ClipboardBehavior.ClipboardTarget="True"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300">    
@@ -83,7 +83,7 @@
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}"
                        BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                    <Setter Property="beh:Attached.InputBindings"
+                    <Setter Property="diag:Attached.InputBindings"
                             Value="{StaticResource TagInputBindings}" />
                     <Setter Property="HorizontalContentAlignment"
                             Value="Stretch" />
@@ -92,9 +92,9 @@
 
                     <Setter Property="IsSelected"
                             Value="{Binding IsSelected, Mode=TwoWay}" />
-                    <Setter Property="beh:FocusExtension.Direct"
+                    <Setter Property="diag:FocusExtension.Direct"
                             Value="True" />
-                    <Setter Property="beh:FocusExtension.IsFocused"
+                    <Setter Property="diag:FocusExtension.IsFocused"
                             Value="{Binding IsListItemFocused, Mode=TwoWay}" />
 
                     <Setter Property="Tag"
@@ -186,7 +186,7 @@
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}"
                            BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                        <Setter Property="beh:Attached.InputBindings"
+                        <Setter Property="diag:Attached.InputBindings"
                                 Value="{StaticResource SuggestionInputBindings}" />
                     </Style>
                 </ListBox.ItemContainerStyle>

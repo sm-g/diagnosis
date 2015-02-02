@@ -3,14 +3,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
-             xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
              x:Class="Diagnosis.App.Controls.Search.PopupSearch"
              mc:Ignorable="d"
              d:DesignHeight="100"
              d:DesignWidth="300"
              x:Name="floatSearch"
              GotFocus="UserControl_GotFocus"
-             beh:EnhancedFocusScope.IsEnhancedFocusScope="True">
+             diag:EnhancedFocusScope.IsEnhancedFocusScope="True">
     <!--PopupSearch<,>-->
     <Grid MaxHeight="100">
         <Grid.RowDefinitions>
@@ -26,7 +26,7 @@
                      Text="{Binding Filter.Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      PreviewKeyDown="input_PreviewKeyDown"
                      GotMouseCapture="input_GotMouseCapture"
-                     beh:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
+                     diag:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
                      LostFocus="input_LostFocus">
                 <controls:WatermarkService.Watermark>
                     <TextBlock Style="{StaticResource watermark}">Поиск</TextBlock>
