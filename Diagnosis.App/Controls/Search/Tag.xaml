@@ -80,7 +80,6 @@
                     <!--border on focused /hover only-->
                     <Setter Property="BorderBrush"
                             Value="{x:Null}" />
-                    
 
                     <Style.Triggers>
                         <Trigger Property="Focusable"
@@ -148,12 +147,10 @@
                     <ContextMenu.Resources>
                         <Style TargetType="MenuItem"
                                BasedOn="{StaticResource {x:Type MenuItem}}"
-                               x:Key="convert"
-                               x:Shared="False">
+                               x:Key="convert">
                             <Setter Property="IsCheckable"
                                     Value="True" />
-                            <Setter Property="beh:MenuItemExtensions.GroupName"
-                                    Value="{Binding Hash}" />
+
                             <Setter Property="Command"
                                     Value="{Binding ConvertToCommand}" />
                             <Setter Property="Visibility"
@@ -169,6 +166,9 @@
                                     </MultiBinding>
                                 </Setter.Value>
                             </Setter>
+
+                            <Setter Property="beh:MenuItemExtensions.GroupName"
+                                    Value="{Binding Hash}" />
                         </Style>
                     </ContextMenu.Resources>
                     <MenuItem InputGestureText="F2"
@@ -194,10 +194,9 @@
                               Visibility="{Binding SendToSearchCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                               InputGestureText="Ctrl+F"
                               Command="{Binding SendToSearchCommand}" />
-                    
+
                     <Separator Visibility="{Binding ConvertToCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <MenuItem Header="Ключевое слово"
-                              
                               CommandParameter="{x:Static diag:BlankType.Word}"
                               Style="{StaticResource convert}" />
                     <MenuItem Header="Комментарий"
