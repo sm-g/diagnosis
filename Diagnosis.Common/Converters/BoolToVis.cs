@@ -48,7 +48,7 @@ namespace Diagnosis.Common.Converters
         }
     }
     /// <summary>
-    /// If Visibility.Hidden passed in parameters, use it for false value.
+    /// If Visibility.Hidden passed in parameters, use it for true value.
     /// </summary>
     public class NegBooleanToVisibilityConverter : BaseValueConverter
     {

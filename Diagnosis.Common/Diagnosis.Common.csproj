@@ -190,8 +190,8 @@
     <Compile Include="Converters\IntToString.cs" />
     <Compile Include="Converters\ListConverters.cs" />
     <Compile Include="Converters\MonthToString.cs" />
-    <Compile Include="Converters\NullToVis.cs" />
     <Compile Include="Converters\NumericConverters.cs" />
+    <Compile Include="Converters\ValueConverterGroup.cs" />
     <Compile Include="Debug\DebugWindow.xaml.cs">
       <DependentUpon>DebugWindow.xaml</DependentUpon>
     </Compile>
