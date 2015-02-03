@@ -214,6 +214,7 @@
     <Compile Include="Converters\ListConverters.cs" />
     <Compile Include="Converters\MonthToString.cs" />
     <Compile Include="Converters\NumericConverters.cs" />
+    <Compile Include="Converters\TreeDepthToMargin.cs" />
     <Compile Include="Converters\ValueConverterGroup.cs" />
     <Compile Include="Debug\DebugWindow.xaml.cs">
       <DependentUpon>DebugWindow.xaml</DependentUpon>
@@ -229,6 +230,7 @@
     <Compile Include="Formatters\Plurals.cs" />
     <Compile Include="Interfaces\IClipboardTarget.cs" />
     <Compile Include="Interfaces\IMan.cs" />
+    <Compile Include="Styles\TreeStyle.cs" />
     <Compile Include="Types\DisposableBase.cs" />
     <Compile Include="Types\INCCReadOnlyObservableCollection.cs" />
     <Compile Include="Mediator\Events.cs" />
@@ -276,6 +278,38 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Resources\ConverterResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\AfterThemeStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\BeforeThemeStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\EmptyToggle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\ExpanderFixed.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\ListBoxItemAero2Style.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\ListViewItemAero2Style.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\SplitExpander.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\TreeStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

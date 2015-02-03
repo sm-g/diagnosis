@@ -10,11 +10,11 @@
                 <ResourceDictionary Source="Resources/ImageResources.xaml" />
                 <ResourceDictionary Source="Resources/ColorResources.xaml" />
 
-                <ResourceDictionary Source="Styles/BeforeThemeStyles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/BeforeThemeStyles.xaml" />
 
-                <ResourceDictionary Source="Styles/AfterThemeStyles.xaml" />
-                <ResourceDictionary Source="Styles/TreeStyle.xaml" />
-                <ResourceDictionary Source="Styles/ListBoxItemAero2Style.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/AfterThemeStyles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/TreeStyle.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/ListBoxItemAero2Style.xaml" />
                 
                 <ResourceDictionary Source="Templates/Controls.xaml" />
 
