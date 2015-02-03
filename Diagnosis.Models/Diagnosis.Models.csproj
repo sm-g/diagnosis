@@ -175,6 +175,7 @@
     <Compile Include="Validators\AppointmentValidator.cs" />
     <Compile Include="Validators\CourseValidator.cs" />
     <Compile Include="Validators\DoctorValidator.cs" />
+    <Compile Include="Validators\SpecialityValidator.cs" />
     <Compile Include="Validators\WordValidator.cs" />
     <Compile Include="Validators\PatientValidator.cs" />
   </ItemGroup>

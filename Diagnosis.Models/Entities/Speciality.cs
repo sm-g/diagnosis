@@ -3,32 +3,41 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using Iesi.Collections.Generic;
+using FluentValidation.Results;
+using Diagnosis.Models.Validators;
+using System.Collections.Specialized;
+using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class Speciality : EntityBase<int>, IDomainObject
+    public class Speciality : ValidatableEntity<int>, IDomainObject
     {
         public static Speciality Null = new Speciality("—");  // для врача без специальности
 
         IList<IcdBlock> icdBlocks = new List<IcdBlock>(); // many-2-many bag
         Iesi.Collections.Generic.ISet<Doctor> doctors = new HashedSet<Doctor>();
         Iesi.Collections.Generic.ISet<SpecialityIcdBlocks> specialityIcdBlocks = new HashedSet<SpecialityIcdBlocks>();
+        private string _title;
+
+        public virtual event NotifyCollectionChangedEventHandler BlocksChanged;
 
 
-        public virtual string Title { get; protected set; }
+        public virtual string Title
+        {
+            get { return _title; }
+            set
+            {
+                var filtered = value.Replace(Environment.NewLine, " ").Replace('\t', ' ').Trim();
+                SetProperty(ref _title, filtered, () => Title);
+            }
+        }
         public virtual IEnumerable<IcdBlock> IcdBlocks
         {
-            get
-            {
-                return icdBlocks;
-            }
+            get { return icdBlocks.OrderBy(x => x.Code); }
         }
         public virtual IEnumerable<Doctor> Doctors
         {
-            get
-            {
-                return doctors;
-            }
+            get { return doctors; }
         }
 
         public virtual IEnumerable<SpecialityIcdBlocks> SpecialityIcdBlocks
@@ -38,16 +47,42 @@ namespace Diagnosis.Models
 
         public Speciality(string title)
         {
-            Contract.Requires(!String.IsNullOrEmpty(title));
+            Contract.Requires(title != null);
 
             Title = title;
         }
 
         protected Speciality() { }
 
+        public virtual IcdBlock AddBlock(IcdBlock block)
+        {
+            icdBlocks.Add(block);
+            OnBlocksChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, block));
+
+            return block;
+        }
+
+        public virtual void RemoveBlock(IcdBlock block)
+        {
+            if (icdBlocks.Remove(block))
+                OnBlocksChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, block));
+        }
         public override string ToString()
         {
             return Title;
+        }
+
+        public override ValidationResult SelfValidate()
+        {
+            return new SpecialityValidator().Validate(this);
+        }
+        protected virtual void OnBlocksChanged(NotifyCollectionChangedEventArgs e)
+        {
+            var h = BlocksChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
         }
     }
 
