@@ -1,9 +1,9 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.Common.Controls
 {
-    internal static class ItemCollectionExtensions
+    public static class ItemCollectionExtensions
     {
         /// <summary>
         /// Returns index of selected visible item in container.

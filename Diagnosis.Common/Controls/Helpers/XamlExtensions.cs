@@ -3,9 +3,9 @@ using System.Text;
 using System.Windows.Markup;
 using System.Xml;
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.Common.Controls
 {
-    internal static class XamlExtensions
+    public static class XamlExtensions
     {
         /// <summary>
         /// Clones xaml object preserving bindings

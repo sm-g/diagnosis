@@ -176,6 +176,14 @@
     <Compile Include="Behaviors\RowDblClick.cs" />
     <Compile Include="Behaviors\TwoListSynchronizer.cs" />
     <Compile Include="Combination.cs" />
+    <Compile Include="Controls\Helpers\DataGridHelper.cs" />
+    <Compile Include="Controls\Helpers\FocusChecker.cs" />
+    <Compile Include="Controls\Helpers\ItemCollectionExtensions.cs" />
+    <Compile Include="Controls\Helpers\TreeViewItemExtenstions.cs" />
+    <Compile Include="Controls\Helpers\VisualTreeExtensions.cs" />
+    <Compile Include="Controls\Helpers\WatermarkAdorner.cs" />
+    <Compile Include="Controls\Helpers\WatermarkService.cs" />
+    <Compile Include="Controls\Helpers\XamlExtensions.cs" />
     <Compile Include="Converters\AgeToYearsLabel.cs" />
     <Compile Include="Converters\BaseConverter.cs" />
     <Compile Include="Converters\BooleanConverter.cs" />

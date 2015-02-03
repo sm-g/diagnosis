@@ -241,7 +241,6 @@
     <Compile Include="Controls\Common\HrsHolderDataTemplateSelector.cs" />
     <Compile Include="Windows\Helpers\AvalonExtensions.cs" />
     <Compile Include="Windows\Helpers\WindowHelper.cs" />
-    <Compile Include="Controls\Helpers\XamlExtensions.cs" />
     <Compile Include="Controls\Search\HrSearchResult2.xaml.cs">
       <DependentUpon>HrSearchResult2.xaml</DependentUpon>
     </Compile>
@@ -256,7 +255,6 @@
     <Compile Include="Controls\Common\UndoOverlay.xaml.cs">
       <DependentUpon>UndoOverlay.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Helpers\DataGridHelper.cs" />
     <Compile Include="Controls\Search\Filter.xaml.cs">
       <DependentUpon>Filter.xaml</DependentUpon>
     </Compile>
@@ -266,7 +264,6 @@
     <Compile Include="Controls\CardParts\HealthRecordEditor.xaml.cs">
       <DependentUpon>HealthRecordEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Helpers\ItemCollectionExtensions.cs" />
     <Compile Include="Controls\CardParts\HealthRecordsList.xaml.cs">
       <DependentUpon>HealthRecordsList.xaml</DependentUpon>
     </Compile>
@@ -347,12 +344,7 @@
     <Compile Include="Screens\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Helpers\WatermarkAdorner.cs" />
-    <Compile Include="Controls\Helpers\WatermarkService.cs" />
     <Compile Include="Converters\TreeDepthToMargin.cs" />
-    <Compile Include="Controls\Helpers\VisualTreeExtensions.cs" />
-    <Compile Include="Controls\Helpers\FocusChecker.cs" />
-    <Compile Include="Controls\Helpers\TreeViewItemExtenstions.cs" />
     <Compile Include="Controls\Directory\WordTreeItem.xaml.cs">
       <DependentUpon>WordTreeItem.xaml</DependentUpon>
     </Compile>

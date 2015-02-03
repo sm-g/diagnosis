@@ -50,10 +50,10 @@
                            VerticalAlignment="Top" />
                     <TextBox Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                              Grid.Column="1">
-                        <controls:WatermarkService.Watermark>
+                        <diag:WatermarkService.Watermark>
                             <TextBlock Style="{StaticResource watermark}"
                                        Margin="5,0,0,0">ФИО</TextBlock>
-                        </controls:WatermarkService.Watermark>
+                        </diag:WatermarkService.Watermark>
                     </TextBox>
                     <TextBlock TextWrapping="Wrap"                               
                                Grid.Row="1"

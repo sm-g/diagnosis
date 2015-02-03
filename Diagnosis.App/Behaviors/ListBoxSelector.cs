@@ -1,4 +1,5 @@
 ﻿using Diagnosis.App.Controls;
+using Diagnosis.Common.Controls;
 using System;
 using System.Collections.Generic;
 using System.Windows;

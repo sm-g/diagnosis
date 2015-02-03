@@ -4,6 +4,7 @@ using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using Diagnosis.Common.Controls;
 using System.Windows.Data;
 
 

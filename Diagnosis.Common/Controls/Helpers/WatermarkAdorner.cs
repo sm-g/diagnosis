@@ -4,12 +4,12 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.Common.Controls
 {
     /// <summary>
     /// Adorner for the watermark
     /// </summary>
-    internal class WatermarkAdorner : Adorner
+    public class WatermarkAdorner : Adorner
     {
         #region Private Fields
 

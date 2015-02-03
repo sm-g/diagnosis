@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Windows.Controls;
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.Common.Controls
 {
-    static class DataGridHelper
+    public static class DataGridHelper
     {
         public static DataGridCell GetDataGridCell(DataGridCellInfo cellInfo)
         {

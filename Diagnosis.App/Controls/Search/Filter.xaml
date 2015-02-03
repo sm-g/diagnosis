@@ -19,10 +19,10 @@
                  GotKeyboardFocus="input_GotKeyboardFocus"
                  diag:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
                  Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}">
-            <controls:WatermarkService.Watermark>
+            <diag:WatermarkService.Watermark>
                 <TextBlock Style="{StaticResource watermark}"
                            Text="{Binding WatermarkText, RelativeSource={RelativeSource Self}}" />
-            </controls:WatermarkService.Watermark>
+            </diag:WatermarkService.Watermark>
         </TextBox>
         <Button Grid.Column="1"
                 Content="×"

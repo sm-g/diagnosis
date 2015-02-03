@@ -3,9 +3,9 @@ using System.Linq;
 using System.Windows.Media;
 using System.Collections.Generic;
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.Common.Controls
 {
-    internal static class VisualTreeExtensions
+    public static class VisualTreeExtensions
     {
         /// <summary>
         /// Finds a Child of a given item in the visual tree.

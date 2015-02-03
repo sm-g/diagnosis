@@ -1,4 +1,5 @@
-﻿using Diagnosis.ViewModels.Autocomplete;
+﻿using Diagnosis.Common.Controls;
+using Diagnosis.ViewModels.Autocomplete;
 using log4net;
 using System;
 using System.Windows;

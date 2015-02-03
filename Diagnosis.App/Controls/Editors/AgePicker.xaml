@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              x:Name="agePicker"
@@ -39,10 +40,10 @@
                      Width="50"
                      HorizontalContentAlignment="Right"
                      IsTabStop="False">
-                <controls:WatermarkService.Watermark>
+                <diag:WatermarkService.Watermark>
                     <TextBlock Style="{StaticResource watermark}"
                                Margin="5,0,0,0">Возраст</TextBlock>
-                </controls:WatermarkService.Watermark>
+                </diag:WatermarkService.Watermark>
             </TextBox>
 
             <TextBlock Text="{Binding Age, Converter={StaticResource AgeToLabel}}"

@@ -40,3 +40,4 @@ using System.Windows.Markup;
 [assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.Common")]
 [assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.Common.Behaviors")]
 [assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.Common.Converters")]
+[assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.Common.Controls")]

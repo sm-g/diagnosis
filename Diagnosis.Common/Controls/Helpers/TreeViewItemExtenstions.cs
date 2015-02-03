@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.Common.Controls
 {
     public static class TreeViewItemExtensions
     {

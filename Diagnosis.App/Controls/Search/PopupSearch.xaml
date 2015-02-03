@@ -28,9 +28,9 @@
                      GotMouseCapture="input_GotMouseCapture"
                      diag:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
                      LostFocus="input_LostFocus">
-                <controls:WatermarkService.Watermark>
+                <diag:WatermarkService.Watermark>
                     <TextBlock Style="{StaticResource watermark}">Поиск</TextBlock>
-                </controls:WatermarkService.Watermark>
+                </diag:WatermarkService.Watermark>
             </TextBox>
             <Button Grid.Column="1"
                     Content="×"
