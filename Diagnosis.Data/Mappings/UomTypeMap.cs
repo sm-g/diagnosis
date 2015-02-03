@@ -4,25 +4,23 @@ using NHibernate.Mapping.ByCode.Conformist;
 
 namespace Diagnosis.Data.Mappings
 {
-    public class UomMap : ClassMapping<Uom>
+    public class UomTypeMap : ClassMapping<UomType>
     {
-        public UomMap()
+        public UomTypeMap()
         {
             Id(x => x.Id, m =>
             {
                 m.Generator(Generators.Native);
             });
 
-            Property(x => x.Abbr, m =>
+            Property(x => x.Title, m =>
             {
                 m.NotNullable(true);
-                m.Length(10);
+                m.Length(20);
             });
-            Property(x => x.Description, m => m.Length(100));
-            Property(x => x.Factor, m => m.NotNullable(true));
-            ManyToOne(x => x.Type, m =>
+            Property(x => x.Ord, m =>
             {
-                m.Column("UomTypeID");
+                m.NotNullable(true);
             });
         }
     }

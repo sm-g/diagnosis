@@ -16,7 +16,7 @@ namespace Diagnosis.Models
 
     public class Uom : ValidatableEntity<int>, IDomainObject
     {
-        public static Uom Null = new Uom("—", 1, -1);  // для измерения без единицы
+        public static Uom Null = new Uom("—", 1, new UomType(""));  // для измерения без единицы
         private string _description;
         private string _abbr;
         private double _factor;
@@ -52,11 +52,13 @@ namespace Diagnosis.Models
                 SetProperty(ref _factor, value, () => Factor);
             }
         }
-        public virtual int Type { get; set; }
+        public virtual UomType Type { get; set; }
 
-        public Uom(string abbr, double factor, int type)
+        public virtual bool IsBase { get { return Factor == 0; } }
+
+        public Uom(string abbr, double factor, UomType type)
         {
-            Contract.Requires(!string.IsNullOrWhiteSpace(abbr));
+            Contract.Requires(abbr != null);
 
             this.Abbr = abbr;
             this.Factor = factor;

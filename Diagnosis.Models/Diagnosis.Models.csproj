@@ -146,6 +146,7 @@
     <Compile Include="Entities\HrItem.cs" />
     <Compile Include="Entities\Comment.cs" />
     <Compile Include="Entities\Setting.cs" />
+    <Compile Include="Entities\UomType.cs" />
     <Compile Include="Enums\HealthRecordQueryScope.cs" />
     <Compile Include="Helpers\DomainExtenstions.cs" />
     <Compile Include="Enums\HealthRecordUnit.cs" />

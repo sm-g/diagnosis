@@ -26,6 +26,7 @@ namespace Diagnosis.Data.Versions
 
         public static string PassportTbl = "Passport";
         public static string SettingTbl = "Setting";
+        public static string UomTypeTbl = "UomType";
 
     }
 }

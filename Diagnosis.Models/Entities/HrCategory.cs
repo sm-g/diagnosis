@@ -7,7 +7,9 @@ namespace Diagnosis.Models
         public static HrCategory Null = new HrCategory() { Name = "Не задано", Ord = int.MaxValue }; // upper case to show in checkbox
 
         public virtual string Name { get; set; }
-
+        /// <summary>
+        /// Порядок, уникальный.
+        /// </summary>
         public virtual int Ord { get; set; }
 
         public override string ToString()
