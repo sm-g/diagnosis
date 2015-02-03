@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using Diagnosis.Common.Controls;
 using System.Windows.Input;
 
-namespace Diagnosis.App.Controls.Search
+namespace Diagnosis.Common.Controls.Search
 {
     public partial class SearchTree : UserControl
     {

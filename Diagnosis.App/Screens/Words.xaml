@@ -49,7 +49,7 @@
             </Button>
         </ToolBar>
 
-        <search:Filter DataContext="{Binding Filter}"
+        <diag:Filter DataContext="{Binding Filter}"
                        Grid.Row="1" />
 
         <!-- Set VirtualizationMode for IsSelected binding -->

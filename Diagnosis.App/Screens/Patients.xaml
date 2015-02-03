@@ -78,7 +78,7 @@
                     Command="{Binding AddPatientCommand}" />
         </Grid>
 
-        <search:Filter  x:Name="filter"
+        <diag:Filter  x:Name="filter"
                         DataContext="{Binding Filter}"
                         Visibility="{Binding DataContext.NoPatients, ElementName=patients, Converter={StaticResource NegBooleanToVisibilityConverter}}"
                         Grid.Row="1" />

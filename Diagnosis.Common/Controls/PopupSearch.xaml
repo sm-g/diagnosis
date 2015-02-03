@@ -2,15 +2,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:diag="http://schemas.smg.com/diagnosis"
-             x:Class="Diagnosis.App.Controls.Search.PopupSearch"
+             x:Class="Diagnosis.Common.Controls.Search.PopupSearch"
+             xmlns:beh="clr-namespace:Diagnosis.Common.Behaviors"
+             xmlns:controls="clr-namespace:Diagnosis.Common.Controls"
              mc:Ignorable="d"
              d:DesignHeight="100"
              d:DesignWidth="300"
              x:Name="floatSearch"
              GotFocus="UserControl_GotFocus"
-             diag:EnhancedFocusScope.IsEnhancedFocusScope="True">
+             beh:EnhancedFocusScope.IsEnhancedFocusScope="True">
     <!--PopupSearch<,>-->
     <Grid MaxHeight="100">
         <Grid.RowDefinitions>
@@ -26,15 +27,15 @@
                      Text="{Binding Filter.Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      PreviewKeyDown="input_PreviewKeyDown"
                      GotMouseCapture="input_GotMouseCapture"
-                     diag:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
+                     beh:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
                      LostFocus="input_LostFocus">
-                <diag:WatermarkService.Watermark>
-                    <TextBlock Style="{StaticResource watermark}">Поиск</TextBlock>
-                </diag:WatermarkService.Watermark>
+                <controls:WatermarkService.Watermark>
+                    <TextBlock Style="{DynamicResource watermark}">Поиск</TextBlock>
+                </controls:WatermarkService.Watermark>
             </TextBox>
             <Button Grid.Column="1"
                     Content="×"
-                    Style="{StaticResource squareButton}"
+                    Style="{DynamicResource squareButton}"
                     Command="{Binding Filter.ClearCommand}" />
         </Grid>
         <Popup x:Name="popup"

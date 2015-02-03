@@ -191,6 +191,9 @@
     </Compile>
     <Compile Include="Controls\Common\UniformGridWithOrientation.cs" />
     <Compile Include="Controls\Common\WrapPanelLastChildFill.cs" />
+    <Compile Include="Controls\Filter.xaml.cs">
+      <DependentUpon>Filter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Helpers\DataGridHelper.cs" />
     <Compile Include="Controls\Helpers\FocusChecker.cs" />
     <Compile Include="Controls\Helpers\ItemCollectionExtensions.cs" />
@@ -199,6 +202,12 @@
     <Compile Include="Controls\Helpers\WatermarkAdorner.cs" />
     <Compile Include="Controls\Helpers\WatermarkService.cs" />
     <Compile Include="Controls\Helpers\XamlExtensions.cs" />
+    <Compile Include="Controls\PopupSearch.xaml.cs">
+      <DependentUpon>PopupSearch.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SearchTree.xaml.cs">
+      <DependentUpon>SearchTree.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\AgeToYearsLabel.cs" />
     <Compile Include="Converters\BaseConverter.cs" />
     <Compile Include="Converters\BooleanConverter.cs" />
@@ -270,6 +279,18 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\Common\UndoOverlay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Filter.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\PopupSearch.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SearchTree.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

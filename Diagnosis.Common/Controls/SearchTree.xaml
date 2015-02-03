@@ -2,9 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="clr-namespace:Diagnosis.App.Controls"
-             xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
-             x:Class="Diagnosis.App.Controls.Search.SearchTree"
+             xmlns:search="clr-namespace:Diagnosis.Common.Controls.Search"
+             x:Class="Diagnosis.Common.Controls.Search.SearchTree"
              mc:Ignorable="d"
              d:DesignHeight="200"
              d:DesignWidth="300"
@@ -57,13 +56,13 @@
                 </controls:FullTree.ItemTemplate>
             </controls:FullTree>-->
             <TreeView x:Name="results1"
-                      Style="{StaticResource TreeViewStyle}"
+                      Style="{DynamicResource TreeViewStyle}"
                       ScrollViewer.IsDeferredScrollingEnabled="True"
                       FocusManager.IsFocusScope="True"
                       ItemsSource="{Binding Collection, ElementName=searchTree}">
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="TreeViewItem"
-                           BasedOn="{StaticResource TreeViewItemStyle}">
+                           BasedOn="{DynamicResource TreeViewItemStyle}">
                         <EventSetter Event="KeyDown"
                                      Handler="item_KeyDown" />
                         <EventSetter Event="MouseUp"

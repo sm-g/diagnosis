@@ -39,7 +39,7 @@
             </DockPanel>
         </StackPanel>
 
-        <search:SearchTree DataContext="{Binding DiagnosisSearch}"
+        <diag:SearchTree DataContext="{Binding DiagnosisSearch}"
                            Collection="{Binding DataContext.Chapters, ElementName=icdPicker}"
                            Margin="10,0,0,0"
                            Grid.Row="1" />

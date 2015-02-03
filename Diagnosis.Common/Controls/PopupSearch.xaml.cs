@@ -1,11 +1,10 @@
-﻿using Diagnosis.App.Behaviors;
-using Diagnosis.Common.Behaviors;
+﻿using Diagnosis.Common.Behaviors;
 using Diagnosis.Common.Controls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Diagnosis.App.Controls.Search
+namespace Diagnosis.Common.Controls.Search
 {
     /// <summary>
     /// Interaction logic for PopupSearch.xaml
