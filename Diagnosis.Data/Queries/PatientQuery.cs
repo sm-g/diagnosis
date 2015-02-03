@@ -32,7 +32,7 @@ namespace Diagnosis.Data.Queries
 
                         q = q.Where(disjunction);
                     }
-                    return q.List().OrderBy(p => p.FullName, new EmptyStringsAreLast());
+                    return q.List().OrderBy(p => p.FullName, new EmptyStringsAreLast()).ToList();
                 }
             };
         }
