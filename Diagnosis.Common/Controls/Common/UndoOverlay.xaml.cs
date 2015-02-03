@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.Common.Controls
 {
     /// <summary>
     /// Interaction logic for UndoOverlay.xaml

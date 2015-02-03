@@ -1,4 +1,4 @@
-﻿<ListBox x:Class="Diagnosis.App.Controls.RadioListBox"
+﻿<ListBox x:Class="Diagnosis.Common.Controls.RadioListBox"
          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
          xmlns:s="clr-namespace:System;assembly=mscorlib"

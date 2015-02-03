@@ -1,9 +1,8 @@
 ﻿using System.Collections;
 using System.Windows;
-using Diagnosis.Common.Controls;
 using System.Windows.Controls;
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.Common.Controls
 {
     /// <summary>
     /// Interaction logic for CommaList.xaml

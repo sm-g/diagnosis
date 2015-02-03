@@ -68,7 +68,7 @@
                  SelectionChanged="input_SelectionChanged">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <controls:WrapPanelLastChildFill />
+                    <diag:WrapPanelLastChildFill />
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.InputBindings>

@@ -1,9 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Diagnosis.Common.Controls;
 using System.Windows.Input;
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.Common.Controls
 {
     /// <summary>
     /// Interaction logic for RadioListBox.xaml

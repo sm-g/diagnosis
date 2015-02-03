@@ -67,12 +67,12 @@
                             <TextBlock Visibility="{Binding AllWords, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Run>все слова</Run> <Run Text="{Binding AndScope, StringFormat='{}{0}: ', Converter={StaticResource ScopeToLabel}}" />
                             </TextBlock>
-                            <controls:CommaList ItemsSource="{Binding Words}" />
+                            <diag:CommaList ItemsSource="{Binding Words}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal"
                                     Visibility="{Binding Categories.Count, Converter={StaticResource MoreThanToVisibility}}">
                             <TextBlock Text="категории: "></TextBlock>
-                            <controls:CommaList ItemsSource="{Binding Categories}" />
+                            <diag:CommaList ItemsSource="{Binding Categories}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal"
                                     Visibility="{Binding AppDateVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -216,7 +216,7 @@
         <Grid Grid.Row="3"
               Visibility="{Binding Result, Converter={StaticResource NullToVis}}"
               Background="{x:Static SystemColors.ControlBrush}">
-            <controls:WrapPanelLastChildFill  DataContext="{Binding Result}"
+            <diag:WrapPanelLastChildFill  DataContext="{Binding Result}"
                                               Margin="5"
                                               Visibility="{Binding Statistic.Count, Converter={StaticResource MoreThanToVisibility}}">
                 <TextBlock>
@@ -245,7 +245,7 @@
                         </DockPanel>
                     </Button>
                 </StackPanel>
-            </controls:WrapPanelLastChildFill>
+            </diag:WrapPanelLastChildFill>
         </Grid>
     </Grid>
 </UserControl>

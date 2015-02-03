@@ -48,7 +48,7 @@
                 <screen:Doctors />
             </DataTemplate>
             <DataTemplate DataType="{x:Type diag:UndoOverlayViewModel}">
-                <controls:UndoOverlay />
+                <diag:UndoOverlay />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type diag:SearchViewModel}">
