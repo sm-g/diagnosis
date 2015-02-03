@@ -4,6 +4,7 @@ using log4net;
 using NHibernate.Linq;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Data;
 
 namespace Diagnosis.ViewModels.Autocomplete
 {
@@ -19,6 +20,10 @@ namespace Diagnosis.ViewModels.Autocomplete
             _uoms = new List<Uom> { Uom.Null };
             _uoms.AddRange(Session.Query<Uom>()
                 .OrderBy(s => s.Abbr));
+
+            var view = (ListCollectionView)CollectionViewSource.GetDefaultView(_uoms);
+            view.GroupDescriptions.Add(new PropertyGroupDescription("Type"));
+
 
             if (measure == null)
             {
