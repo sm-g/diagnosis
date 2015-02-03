@@ -212,6 +212,9 @@
     <Compile Include="Screens\Card\Holders\PatientViewModel.cs" />
     <Compile Include="Screens\Card\Managers\HrViewer.cs" />
     <Compile Include="Screens\AdminSettingsViewModel.cs" />
+    <Compile Include="Screens\Server\SpecialityListViewModel.cs" />
+    <Compile Include="Screens\Server\SpecialityEditorViewModel.cs" />
+    <Compile Include="Screens\Server\SpecialityViewModel.cs" />
     <Compile Include="Screens\Shell\AvalonDock\ScreenBaseViewModel.cs" />
     <Compile Include="Screens\Shell\AvalonDock\AvalonDockLayoutViewModel.cs" />
     <Compile Include="Screens\Shell\HelpViewModel.cs" />
