@@ -5,7 +5,7 @@ INSERT INTO [HrCategory] ([ID], [Title], [Ord]) VALUES (4, 'Обследован
 INSERT INTO [HrCategory] ([ID], [Title], [Ord]) VALUES (5, 'Диагноз', 5);
 INSERT INTO [HrCategory] ([ID], [Title], [Ord]) VALUES (6, 'Лечение', 6);
 
-INSERT INTO [UomType] ([ID], [Title], [Ord]) VALUES (1, 'Масса', 1);
+INSERT INTO [UomType] ([ID], [Title], [Ord]) VALUES (1, 'Объем', 1);
 INSERT INTO [UomType] ([ID], [Title], [Ord]) VALUES (2, 'Время', 2);
 
 INSERT INTO [Uom] ([ID],[Abbr],[Factor],[UomTypeID],[Description]) VALUES (1,'л',3,1,'литр');

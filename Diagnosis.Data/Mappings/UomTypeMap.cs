@@ -22,6 +22,19 @@ namespace Diagnosis.Data.Mappings
             {
                 m.NotNullable(true);
             });
+            Set(x => x.Uoms, s =>
+            {
+                s.Key(k =>
+                {
+                    k.Column("UomTypeID");
+                });
+                s.Inverse(true);
+                s.Cascade(Cascade.All);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.OneToMany();
+            });
         }
     }
 }

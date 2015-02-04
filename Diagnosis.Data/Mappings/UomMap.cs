@@ -18,11 +18,16 @@ namespace Diagnosis.Data.Mappings
                 m.NotNullable(true);
                 m.Length(10);
             });
-            Property(x => x.Description, m => m.Length(100));
+            Property(x => x.Description, m =>
+            {
+                m.NotNullable(true);
+                m.Length(100);
+            });
             Property(x => x.Factor, m => m.NotNullable(true));
             ManyToOne(x => x.Type, m =>
             {
                 m.Column("UomTypeID");
+                m.NotNullable(true);
             });
         }
     }

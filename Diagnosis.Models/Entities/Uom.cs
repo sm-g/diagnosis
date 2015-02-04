@@ -35,7 +35,7 @@ namespace Diagnosis.Models
             get { return _description; }
             set
             {
-                var filtered = value.Trim();
+                var filtered = (value ?? "").Trim();
                 SetProperty(ref _description, filtered, () => Description);
             }
         }
@@ -69,7 +69,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("{0}", Abbr);
+            return string.Format("{0} f{1}", Abbr, Factor);
         }
 
 
