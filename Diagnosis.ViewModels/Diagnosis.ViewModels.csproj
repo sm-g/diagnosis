@@ -258,7 +258,6 @@
     <Compile Include="Screens\Shell\MenuBarViewModel.cs" />
     <Compile Include="Screens\Shell\PanelViewModel.cs" />
     <Compile Include="Screens\Shell\ScreenSwitcher.cs" />
-    <Compile Include="Screens\Patients\ShortPatientViewModel.cs" />
     <Compile Include="Screens\SearchViewModel.cs" />
     <Compile Include="Screens\SettingsViewModel.cs" />
     <Compile Include="Screens\Words\WordsListViewModel.cs" />

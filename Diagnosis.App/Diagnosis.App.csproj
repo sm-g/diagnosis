@@ -332,7 +332,6 @@
     <Compile Include="Windows\Editors\CourseEditorWindow.xaml.cs">
       <DependentUpon>CourseEditorWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Helpers\TraceListener.cs" />
     <Compile Include="Windows\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
