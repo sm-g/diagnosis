@@ -8,12 +8,11 @@
         xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
         Title="{Binding Title}"
         Height="400"
-        Width="500"       
+        Width="500"
         mc:Ignorable="d"
         d:DataContext="{DynamicResource Context}"
         diag:DialogCloser.DialogResult="{Binding DialogResult}"
-        diag:FocusBehavior.FocusFirst="True"
->
+        diag:FocusBehavior.FocusFirst="True">
     <Window.Resources>
         <diag:IcdSelectorViewModel x:Key="Context" />
     </Window.Resources>
@@ -40,9 +39,17 @@
         </StackPanel>
 
         <diag:SearchTree DataContext="{Binding DiagnosisSearch}"
-                           Collection="{Binding DataContext.Chapters, ElementName=icdPicker}"
-                           Margin="10,0,0,0"
-                           Grid.Row="1" />
+                         Collection="{Binding DataContext.Chapters, ElementName=icdPicker}"
+                         Margin="10,0,0,0"
+                         Grid.Row="1">
+            <diag:SearchTree.AfterFilterPanel>
+                <DockPanel>
+                    <ToggleButton Content="Полный список"
+                                  ToolTip="Список с подрубриками (например, А01.5)"
+                                  IsChecked="{Binding DataContext.IcdTopLevelOnly, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource NegateBoolean}}" />
+                </DockPanel>
+            </diag:SearchTree.AfterFilterPanel>
+        </diag:SearchTree>
 
         <StackPanel Grid.Row="2"
                     Style="{StaticResource DialogButtonsPanel}">

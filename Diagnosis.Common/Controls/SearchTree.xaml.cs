@@ -1,25 +1,31 @@
 ﻿using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
-using Diagnosis.Common.Controls;
 using System.Windows.Input;
 
 namespace Diagnosis.Common.Controls.Search
 {
     public partial class SearchTree : UserControl
     {
-        private int selectedIndex = -1;
-        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(SearchTree));
-        private dynamic selectedItem; // IHierarchicalCheckable
-
-        public IEnumerable Collection
-        {
-            get { return (IEnumerable)GetValue(CollectionProperty); }
-            set { SetValue(CollectionProperty, value); }
-        }
-
         public static readonly DependencyProperty CollectionProperty =
             DependencyProperty.Register("Collection", typeof(IEnumerable), typeof(SearchTree));
+
+
+
+        public Panel AfterFilterPanel
+        {
+            get { return (Panel)GetValue(AfterFilterPanelProperty); }
+            set { SetValue(AfterFilterPanelProperty, value); }
+        }
+
+        public static readonly DependencyProperty AfterFilterPanelProperty =
+            DependencyProperty.Register("AfterFilterPanel", typeof(Panel), typeof(SearchTree), new PropertyMetadata(null));
+
+
+
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(SearchTree));
+        private int selectedIndex = -1;
+        private dynamic selectedItem; // IHierarchicalCheckable
 
         public SearchTree()
         {
@@ -33,6 +39,11 @@ namespace Diagnosis.Common.Controls.Search
             };
         }
 
+        public IEnumerable Collection
+        {
+            get { return (IEnumerable)GetValue(CollectionProperty); }
+            set { SetValue(CollectionProperty, value); }
+        }
         #region Focus stuff
 
         private void UserControl_GotFocus(object sender, RoutedEventArgs e)

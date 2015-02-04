@@ -59,7 +59,8 @@
             </StackPanel>
         </Grid>
 
-        <Grid DataContext="{Binding Editor}"
+        <Grid x:Name="specEditor"
+            DataContext="{Binding Editor}"
               d:DataContext="{DynamicResource EditorContext}"
               Visibility="{Binding DataContext.Editor,
                                                Converter={StaticResource NullToVis}, ElementName=specialities}">
@@ -102,40 +103,11 @@
                 <Button Command="{Binding RemoveBlocksCommand}"
                         Content="→" />
             </StackPanel>
-            <TreeView x:Name="icdTree"
-                      ScrollViewer.IsDeferredScrollingEnabled="True"
-                      FocusManager.IsFocusScope="True"
-                      ItemsSource="{Binding Chapters}"
-                      Grid.Column="3"
-                      Grid.Row="2">
-                <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                        <TextBlock Text="{Binding}" />
-                    </HierarchicalDataTemplate>
-                </TreeView.ItemTemplate>
-                <TreeView.ItemContainerStyle>
-                    <Style TargetType="{x:Type TreeViewItem}">
-                        <Setter Property="Background"
-                                Value="Transparent" />
-                        <Setter Property="HorizontalContentAlignment"
-                                Value="Stretch" />
-                        <Setter Property="VerticalContentAlignment"
-                                Value="Center" />
-                        <Setter Property="Padding"
-                                Value="1,0,0,0" />
-                        <Setter Property="Foreground"
-                                Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
-                        <Setter Property="KeyboardNavigation.AcceptsReturn"
-                                Value="True" />
-
-                        <!-- Hier Vm -->
-                        <Setter Property="IsSelected"
-                                Value="{Binding IsSelected}" />
-                        <Setter Property="IsExpanded"
-                                Value="{Binding IsExpanded, Mode=TwoWay}" />
-                    </Style>
-                </TreeView.ItemContainerStyle>
-            </TreeView>
+            
+            <diag:SearchTree DataContext="{Binding DiagnosisSearch}"
+                             Collection="{Binding DataContext.Chapters, ElementName=specEditor}"
+                             Grid.Column="3"
+                             Grid.Row="2" />
 
             <StackPanel Grid.Row="3"
                         Grid.ColumnSpan="4">

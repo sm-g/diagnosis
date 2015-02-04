@@ -20,12 +20,11 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <DockPanel>
-            <ToggleButton Content="Полный список"
-                          ToolTip="Список с подрубриками (например, А01.5)"
-                          IsChecked="{Binding DataContext.IcdTopLevelOnly, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource NegateBoolean}}" />
+            <ContentPresenter Content="{Binding AfterFilterPanel, ElementName=searchTree}"
+                              DockPanel.Dock="Right"
+                              Margin="10,0,0,0"
+                              Visibility="{Binding AfterFilterPanel, ElementName=searchTree, Converter={StaticResource NullToVis}}" />
             <search:Filter x:Name="input"
-                           Grid.Column="1"
-                           Margin="10,0,0,0"
                            DataContext="{Binding Filter}"
                            WatermarkText="Код или описание"
                            PreviewInputKeyDown="input_PreviewKeyDown" />
@@ -56,13 +55,13 @@
                 </controls:FullTree.ItemTemplate>
             </controls:FullTree>-->
             <TreeView x:Name="results1"
-                      Style="{DynamicResource TreeViewStyle}"
+                      Style="{StaticResource TreeViewStyle}"
                       ScrollViewer.IsDeferredScrollingEnabled="True"
                       FocusManager.IsFocusScope="True"
                       ItemsSource="{Binding Collection, ElementName=searchTree}">
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="TreeViewItem"
-                           BasedOn="{DynamicResource TreeViewItemStyle}">
+                           BasedOn="{StaticResource TreeViewItemStyle}">
                         <EventSetter Event="KeyDown"
                                      Handler="item_KeyDown" />
                         <EventSetter Event="MouseUp"
