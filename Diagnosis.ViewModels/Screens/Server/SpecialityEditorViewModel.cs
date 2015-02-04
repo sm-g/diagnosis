@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Autocomplete;
@@ -122,8 +123,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             (spec as IEditableObject).EndEdit();
 
-            Session.Save(spec);
-            this.Send(Event.DoctorSaved, spec.AsParams(MessageKeys.Doctor));
+            new Saver(Session).Save(spec);
         }
 
         protected override void OnCancel()

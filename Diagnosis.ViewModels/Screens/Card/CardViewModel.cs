@@ -300,7 +300,7 @@ namespace Diagnosis.ViewModels.Screens
 
                     handler.Dispose();
 
-                    Session.Save(doctor);
+                    saver.Save(doctor);
                 }
             }
             finally

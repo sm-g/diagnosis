@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Search;
@@ -139,7 +140,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         protected override void OnOk()
         {
-            Session.Save(doctor);
+            new Saver(Session).Save(doctor);
         }
 
         /// <summary>
