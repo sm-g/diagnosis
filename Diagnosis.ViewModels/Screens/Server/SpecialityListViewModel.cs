@@ -70,6 +70,7 @@ namespace Diagnosis.ViewModels.Screens
                     var title = "";
                     if (SelectedSpeciality != null)
                         title = SelectedSpeciality.Title;
+
                     Editor = new SpecialityEditorViewModel(new Speciality(title));
 
                     Editor.PropertyChanged += (s, e) =>

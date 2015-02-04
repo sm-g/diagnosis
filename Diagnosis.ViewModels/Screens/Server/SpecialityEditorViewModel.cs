@@ -94,7 +94,7 @@ namespace Diagnosis.ViewModels.Screens
                     selecetedBlocks.ForEach(vm =>
                         spec.AddBlock(vm.Icd as IcdBlock));
                 },
-                () => Chapters.Any(ch => ch.Children.Any(b => b.IsSelected)));
+                () => Chapters != null && Chapters.Any(ch => ch.Children.Any(b => b.IsSelected)));
             }
         }
 
@@ -107,7 +107,7 @@ namespace Diagnosis.ViewModels.Screens
                     Speciality.SelectedBlocks.ToList().ForAll(vm =>
                         spec.RemoveBlock(vm.Icd as IcdBlock));
                 },
-                () => Speciality.SelectedBlocks.Count > 0);
+                () => Speciality != null && Speciality.SelectedBlocks.Count > 0);
             }
         }
 

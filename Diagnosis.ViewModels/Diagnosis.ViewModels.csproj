@@ -194,6 +194,8 @@
     <Compile Include="Framework\Services\FileType.cs" />
     <Compile Include="Screens\Card\HolderViewModel.cs" />
     <Compile Include="Autocomplete\MeasureEditorViewModel.cs" />
+    <Compile Include="Screens\Shell\ServerMainWindowViewModel.cs" />
+    <Compile Include="Screens\Uoms\UomEditorViewModel.cs" />
     <Compile Include="Screens\Doctors\DoctorsListViewModel.cs" />
     <Compile Include="Screens\Doctors\DoctorEditorViewModel.cs" />
     <Compile Include="Screens\Doctors\DoctorViewModel.cs" />
@@ -222,6 +224,8 @@
     <Compile Include="Screens\Shell\AvalonDock\PaneViewModel.cs" />
     <Compile Include="Screens\Shell\AvalonDock\ToolViewModel.cs" />
     <Compile Include="Screens\Shell\UndoOverlayViewModel.cs" />
+    <Compile Include="Screens\Uoms\UomsListViewModel.cs" />
+    <Compile Include="Screens\Uoms\UomViewModel.cs" />
     <Compile Include="Screens\Words\WordEditorViewModel.cs" />
     <Compile Include="Search\Exporter.cs" />
     <Compile Include="Autocomplete\IcdSelectorViewModel.cs" />

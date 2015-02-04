@@ -47,6 +47,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     // выбираем нового пациента или изменившегося с учетом фильтра
                     Filter.Filter();
+                    // TODO filter
                     SelectedPatient = e.GetValue<Patient>(MessageKeys.Patient);
                     NoPatients = false;
                 })

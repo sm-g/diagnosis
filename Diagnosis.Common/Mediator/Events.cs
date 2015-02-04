@@ -28,6 +28,7 @@ namespace Diagnosis.Common
         public const string Dialog = "dialog";
         public const string HrItemObjects = "entity";
         public static string Window = "window";
+        public static string Uom = "uom";
     }
 
     public enum Event
@@ -46,6 +47,7 @@ namespace Diagnosis.Common
         EditPatient,
         EditHolder,
         EditWord,
+        EditUom,
         OpenSettings,
         OpenDialog,
         OpenWindow,
@@ -64,6 +66,7 @@ namespace Diagnosis.Common
         WordSaved,
         PatientSaved,
         DoctorSaved,
+        UomSaved,
     }
 
     public static class EventAggragatorExtensions

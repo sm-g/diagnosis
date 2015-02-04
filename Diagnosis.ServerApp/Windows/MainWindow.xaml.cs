@@ -15,6 +15,7 @@ using Diagnosis.ViewModels.Screens;
 using EventAggregator;
 using Diagnosis.Common;
 using Diagnosis.ViewModels;
+using Diagnosis.ServerApp.Windows;
 
 namespace Diagnosis.ServerApp
 {
@@ -29,13 +30,13 @@ namespace Diagnosis.ServerApp
             this.Subscribe(Event.OpenDialog, (e) =>
             {
                 var dialogVM = e.GetValue<IDialogViewModel>(MessageKeys.Dialog);
-                if (dialogVM is SpecialityListViewModel)
+                if (dialogVM is UomEditorViewModel)
                 {
-
+                    ShowDialog(dialogVM, new UomEditorWindow());
                 }
             });
 
-            DataContext = new SpecialityListViewModel();
+            DataContext = new ServerMainWindowViewModel();
         }
 
         private bool? ShowDialog(IDialogViewModel vm, Window w)
