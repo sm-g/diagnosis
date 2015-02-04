@@ -36,6 +36,7 @@ namespace Diagnosis.ViewModels.Screens
         public HrEditorViewModel()
         {
         }
+
         /// <summary>
         /// Запись выгружена.
         /// </summary>

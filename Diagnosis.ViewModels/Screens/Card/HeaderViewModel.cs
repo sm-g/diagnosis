@@ -44,16 +44,6 @@ namespace Diagnosis.ViewModels.Screens
             ((INotifyPropertyChanged)holder).PropertyChanged += Holder_PropertyChanged;
         }
 
-        [Obsolete]
-        /// <summary>
-        /// For XAML
-        /// </summary>
-        public HeaderViewModel()
-            : this(new Patient("Иванов", "Иван", year: 2000))
-        {
-
-        }
-
         public IHrsHolder Holder
         {
             get { return holder; }

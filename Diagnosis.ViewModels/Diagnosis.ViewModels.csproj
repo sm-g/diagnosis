@@ -182,6 +182,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthorityController.cs" />
+    <Compile Include="Autocomplete\IAutocompleteViewModel.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Framework\MenuItem.cs" />
     <Compile Include="Framework\VisibleRelayCommand.cs" />
@@ -192,6 +193,7 @@
     <Compile Include="Framework\Services\FileDialogService.cs" />
     <Compile Include="Framework\IDialogViewModel.cs" />
     <Compile Include="Framework\Services\FileType.cs" />
+    <Compile Include="SampleViewModels.cs" />
     <Compile Include="Screens\Card\HolderViewModel.cs" />
     <Compile Include="Autocomplete\MeasureEditorViewModel.cs" />
     <Compile Include="Screens\Shell\ServerMainWindowViewModel.cs" />

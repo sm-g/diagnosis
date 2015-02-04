@@ -14,12 +14,9 @@
         diag:FocusBehavior.FocusFirst="True"
         ShowInTaskbar="False"
         ResizeMode="NoResize"
-
         mc:Ignorable="d"
-        d:DataContext="{DynamicResource vm}">
-    <!--PatientViewModel-->
+        d:DataContext="{d:DesignInstance diag:PatientEditorViewModel, IsDesignTimeCreatable=False}">
     <Window.Resources>
-        <diag:PatientEditorViewModel x:Key="vm" />
     </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>

@@ -15,10 +15,8 @@
         ShowInTaskbar="False"
         ResizeMode="NoResize"
         mc:Ignorable="d"
-        d:DataContext="{DynamicResource vm}">
-    <!--DoctorEditorViewModel-->
+        d:DataContext="{d:DesignInstance diag:DoctorEditorViewModel, IsDesignTimeCreatable=False}">
     <Window.Resources>
-        <diag:DoctorEditorViewModel x:Key="vm" />
     </Window.Resources>
     <Grid Margin="10"
           x:Name="editor">

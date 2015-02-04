@@ -12,14 +12,11 @@
              mc:Ignorable="d"
              x:Name="editor"
              Tag="{Binding DataContext.HrList, RelativeSource={RelativeSource AncestorType=UserControl}}"
-             d:DataContext="{DynamicResource Context}"
-             d:DesignHeight="250"
+             d:DataContext="{d:DesignInstance diag:SampleHrEditorViewModel, IsDesignTimeCreatable=True}"
+             d:DesignHeight="300"
              d:DesignWidth="600">
-    <!--DataContext is HrEditorViewModel-->
     <!--Tag is HrListViewModel-->
     <UserControl.Resources>
-        <diag:HrEditorViewModel x:Key="Context" />
-
         <Style TargetType="Label"
                BasedOn="{StaticResource label90}" />
     </UserControl.Resources>

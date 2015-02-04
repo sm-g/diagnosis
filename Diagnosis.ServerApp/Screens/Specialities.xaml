@@ -5,14 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
-             d:DataContext="{DynamicResource Context}"
+             d:DataContext="{d:DesignInstance diag:SpecialityListViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="300"
              d:DesignWidth="300">
     <UserControl.Resources>
-        <ResourceDictionary>
-            <diag:SpecialityListViewModel x:Key="Context" />
-            <diag:SpecialityEditorViewModel x:Key="EditorContext" />
-        </ResourceDictionary>
+
     </UserControl.Resources>
     
     <DockPanel x:Name="specialities">
@@ -61,7 +58,7 @@
 
         <Grid x:Name="specEditor"
             DataContext="{Binding Editor}"
-              d:DataContext="{DynamicResource EditorContext}"
+              d:DataContext="{d:DesignInstance diag:SpecialityEditorViewModel, IsDesignTimeCreatable=False}"
               Visibility="{Binding DataContext.Editor,
                                                Converter={StaticResource NullToVis}, ElementName=specialities}">
             <Grid.RowDefinitions>

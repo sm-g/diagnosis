@@ -24,8 +24,6 @@ namespace Diagnosis.ViewModels.Screens
 
         public UomsListViewModel()
         {
-            if (IsInDesignMode) return;
-
             _filter = new FilterViewModel<Uom>(UomQuery.Contains(Session));
             saver = new Saver(Session);
             SelectedUoms = new ObservableCollection<UomViewModel>();
@@ -192,7 +190,7 @@ namespace Diagnosis.ViewModels.Screens
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && !IsInDesignMode)
+            if (disposing)
             {
                 emhManager.Dispose();
             }

@@ -7,11 +7,10 @@
              xmlns:diag="http://schemas.smg.com/diagnosis"
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              mc:Ignorable="d"
-             d:DataContext="{DynamicResource Context}"
+             d:DataContext="{d:DesignInstance diag:SampleTagViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="25"
              d:DesignWidth="300">
     <UserControl.Resources>
-        <diag:TagViewModel x:Key="Context" />
     </UserControl.Resources>
 
     <DockPanel>

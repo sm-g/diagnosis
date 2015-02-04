@@ -53,12 +53,6 @@ namespace Diagnosis.ViewModels.Screens
             Title = "Редактор специальности";
         }
 
-        [Obsolete]
-        public SpecialityEditorViewModel()
-        {
-            spec = new Speciality("кардиолог");
-        }
-
         /// <summary>
         /// Корневые элементы дерева.
         /// </summary>

@@ -21,8 +21,6 @@ namespace Diagnosis.ViewModels.Screens
         {
             Title = "Специальности";
 
-            if (IsInDesignMode) return;
-
             saver = new Saver(Session);
 
             var specs = Session.QueryOver<Speciality>().List();

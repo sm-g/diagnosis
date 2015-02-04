@@ -35,27 +35,6 @@ namespace Diagnosis.ViewModels.Screens
         }
 
 
-        /// <summary>
-        /// For XAML designer
-        /// </summary>
-        [Obsolete]
-        public ShortHealthRecordViewModel()
-        {
-            if (!IsInDesignMode) return;
-
-            var pat = new Patient();
-            var doc = new Doctor("Ivanov");
-            var holder = new Course(pat, doc);
-            var hr = new HealthRecord(holder, doc)
-            {
-                Category = new HrCategory() { Name = "жалоба" },
-                FromMonth = 5,
-            };
-            hr.AddItems(new IHrItemObject[] { new Word("анемия"), new Word("впервые"), new Comment("без осложнений") });
-
-            healthRecord = hr;
-            SortingExtraInfo = hr.Category.Name;
-        }
 
         public string Name
         {

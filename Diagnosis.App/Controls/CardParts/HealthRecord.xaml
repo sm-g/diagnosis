@@ -10,13 +10,10 @@
              mc:Ignorable="d"
              d:DesignHeight="30"
              d:DesignWidth="300"
-             d:DataContext="{DynamicResource Context}"
+             d:DataContext="{d:DesignInstance diag:SampleShortHealthRecordViewModel, IsDesignTimeCreatable=True}"
              Background="Transparent"
              Focusable="False">
-    <!--DataContext is ShortHealthRecordViewModel-->
     <UserControl.Resources>
-        <diag:ShortHealthRecordViewModel x:Key="Context" />
-
         <Style TargetType="StackPanel"
                x:Key="hidingButtons">
             <Setter Property="Visibility"
