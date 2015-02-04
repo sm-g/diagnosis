@@ -13,7 +13,6 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.Foreign<Passport>(x => x.Doctor));
             });
 
-
             Property(x => x.HashAndSalt, m =>
             {
                 m.Length(PasswordHash.PasswordHashManager.HASH_LENGTH);

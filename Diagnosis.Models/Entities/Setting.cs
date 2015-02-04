@@ -1,19 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
     public class Setting : EntityBase<Guid>
     {
-        public virtual string Title { get; protected set; }
-        public virtual string Value { get; set; }
-
-        public virtual Doctor Doctor { get; protected set; }
-
-
         public Setting(Doctor doctor, string title)
         {
             Contract.Requires(doctor != null);
@@ -22,12 +13,19 @@ namespace Diagnosis.Models
             Title = title;
             Doctor = doctor;
         }
-        protected Setting() { }
 
+        protected Setting()
+        {
+        }
+
+        public virtual string Title { get; protected set; }
+
+        public virtual string Value { get; set; }
+
+        public virtual Doctor Doctor { get; protected set; }
         public override string ToString()
         {
             return Title;
         }
     }
-
 }

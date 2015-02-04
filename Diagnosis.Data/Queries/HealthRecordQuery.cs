@@ -1,19 +1,15 @@
-﻿using Diagnosis.Data.Specs;
+﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using NHibernate;
-using NHibernate.Criterion;
 using NHibernate.Transform;
-using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
-using Diagnosis.Common;
 using System.Linq;
 
 namespace Diagnosis.Data.Queries
 {
     public static class HealthRecordQuery
     {
-
         /// <summary>
         /// Возвращает записи с любым из слов.
         /// </summary>
@@ -38,6 +34,7 @@ namespace Diagnosis.Data.Queries
                 }
             };
         }
+
         /// <summary>
         /// Возвращает записи со всеми словами в области поиска.
         /// </summary>
@@ -50,10 +47,13 @@ namespace Diagnosis.Data.Queries
                 {
                     case HealthRecordQueryAndScope.Appointment:
                         return GetHrsInScope(words, withAny, (hr) => hr.Appointment);
+
                     case HealthRecordQueryAndScope.Course:
                         return GetHrsInScope(words, withAny, (hr) => hr.GetCourse());
+
                     case HealthRecordQueryAndScope.Patient:
                         return GetHrsInScope(words, withAny, (hr) => hr.GetPatient());
+
                     default:
                     case HealthRecordQueryAndScope.HealthRecord:
                         return withAny.Where(hr => words.IsSubsetOf(hr.Words));

@@ -1,8 +1,6 @@
 ﻿using Diagnosis.Common;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Diagnosis.Models
 {
@@ -11,9 +9,9 @@ namespace Diagnosis.Models
     /// </summary>
     public class Admin : EntityBase<Guid>, IMan, IUser
     {
-        private const string DefaultLastName = "Администратор";
-        public static Guid DefaultId = Guid.Parse("3B817ABA-9110-45EF-B81E-A5B975A720DF");
         public const string DefaultPassword = "123";
+        public static Guid DefaultId = Guid.Parse("3B817ABA-9110-45EF-B81E-A5B975A720DF");
+        private const string DefaultLastName = "Администратор";
 
         public Admin(Passport passport)
             : this()

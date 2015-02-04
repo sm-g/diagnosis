@@ -2,10 +2,10 @@
 using FluentValidation.Results;
 using Iesi.Collections.Generic;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.Models
 {
@@ -14,15 +14,31 @@ namespace Diagnosis.Models
         private Iesi.Collections.Generic.ISet<Appointment> appointments = new HashedSet<Appointment>();
         private Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
 
-        public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
-
-        public virtual event NotifyCollectionChangedEventHandler AppointmentsChanged;
-
         private DateTime _start;
         private DateTime? _end;
         private DateTime _updatedAt;
         private DateTime _createdAt;
 
+        public Course(Patient patient, Doctor doctor)
+            : this()
+        {
+            Contract.Requires(patient != null);
+            Contract.Requires(doctor != null);
+
+            Patient = patient;
+            LeadDoctor = doctor;
+            Start = DateTime.Today;
+        }
+
+        protected internal Course()
+        {
+            _createdAt = DateTime.Now;
+            _updatedAt = DateTime.Now;
+        }
+
+        public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
+
+        public virtual event NotifyCollectionChangedEventHandler AppointmentsChanged;
         public virtual Patient Patient { get; protected set; }
 
         public virtual Doctor LeadDoctor { get; protected set; }
@@ -52,6 +68,7 @@ namespace Diagnosis.Models
         }
 
         public virtual bool IsEnded { get { return End.HasValue; } }
+
         public virtual DateTime CreatedAt
         {
             get { return _createdAt; }
@@ -86,24 +103,6 @@ namespace Diagnosis.Models
         {
             get { return healthRecords.OrderBy(x => x.Ord); }
         }
-
-        public Course(Patient patient, Doctor doctor)
-            : this()
-        {
-            Contract.Requires(patient != null);
-            Contract.Requires(doctor != null);
-
-            Patient = patient;
-            LeadDoctor = doctor;
-            Start = DateTime.Today;
-        }
-
-        protected internal Course()
-        {
-            _createdAt = DateTime.Now;
-            _updatedAt = DateTime.Now;
-        }
-
         /// <summary>
         ///
         /// </summary>
@@ -160,24 +159,6 @@ namespace Diagnosis.Models
             return string.Format("course {0:d}, {1} {2}", Start, Patient, LeadDoctor);
         }
 
-        protected virtual void OnAppointmentsChanged(NotifyCollectionChangedEventArgs e)
-        {
-            var h = AppointmentsChanged;
-            if (h != null)
-            {
-                h(this, e);
-            }
-        }
-
-        protected virtual void OnHealthRecordsChanged(NotifyCollectionChangedEventArgs e)
-        {
-            var h = HealthRecordsChanged;
-            if (h != null)
-            {
-                h(this, e);
-            }
-        }
-
         public override ValidationResult SelfValidate()
         {
             return new CourseValidator().Validate(this);
@@ -203,6 +184,24 @@ namespace Diagnosis.Models
 
             return new CourseEarlierFirst().Compare(this, other);
         }
+
+        protected virtual void OnAppointmentsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            var h = AppointmentsChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
+
+        protected virtual void OnHealthRecordsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            var h = HealthRecordsChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
     }
 
     internal class CourseEarlierFirst : Comparer<Course>
@@ -212,7 +211,7 @@ namespace Diagnosis.Models
             if (x.IsEnded && y.IsEnded)
             {
                 // оба курса закончились — больше тот, что кончился позже
-                // закончились в один день — больше тот, что начался позже 
+                // закончились в один день — больше тот, что начался позже
                 var end = x.End.Value.CompareTo(y.End.Value);
                 if (end == 0)
                 {

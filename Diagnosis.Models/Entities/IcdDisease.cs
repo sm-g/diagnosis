@@ -63,7 +63,5 @@ namespace Diagnosis.Models
         {
             return Code;
         }
-
-
     }
 }

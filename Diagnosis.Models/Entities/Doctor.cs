@@ -22,6 +22,22 @@ namespace Diagnosis.Models
         private Passport passport;
         private SettingsProvider settingsProvider;
 
+        public Doctor(string lastName, string firstName = null, string middleName = null, Speciality speciality = null)
+        {
+            Contract.Requires(!lastName.IsNullOrEmpty());
+
+            LastName = lastName;
+            FirstName = firstName;
+            MiddleName = middleName;
+            Speciality = speciality;
+            IsMale = true;
+            Passport = new Passport(this);
+        }
+
+        protected Doctor()
+        {
+        }
+
         public virtual string FirstName
         {
             get { return _fn; }
@@ -97,6 +113,7 @@ namespace Diagnosis.Models
                 return LastName + " " + FirstName + " " + MiddleName;
             }
         }
+
         public virtual SettingsProvider Settings
         {
             get { return settingsProvider ?? (settingsProvider = new SettingsProvider(this)); }
@@ -111,23 +128,6 @@ namespace Diagnosis.Models
             patient.AddCourse(course);
             return course;
         }
-
-        public Doctor(string lastName, string firstName = null, string middleName = null, Speciality speciality = null)
-        {
-            Contract.Requires(!lastName.IsNullOrEmpty());
-
-            LastName = lastName;
-            FirstName = firstName;
-            MiddleName = middleName;
-            Speciality = speciality;
-            IsMale = true;
-            Passport = new Passport(this);
-        }
-
-        protected Doctor()
-        {
-        }
-
         public override string ToString()
         {
             return FullName;
@@ -138,11 +138,9 @@ namespace Diagnosis.Models
             return new DoctorValidator().Validate(this);
         }
 
-
-
         public virtual int CompareTo(Doctor other)
         {
-            // по ФИО 
+            // по ФИО
             var byLast = this.LastName.CompareToNullSafe(other.LastName);
             if (byLast == 0)
             {
@@ -154,7 +152,7 @@ namespace Diagnosis.Models
                 }
                 return byFirst;
             }
-            return byLast;        
+            return byLast;
         }
     }
 }

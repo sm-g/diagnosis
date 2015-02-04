@@ -1,17 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
     public class Diagnosis : IDomainObject
     {
-        public virtual string Title { get; set; }
-        public virtual string Code { get; set; }
-        public virtual IcdDisease Disease { get; set; }
-        public virtual Diagnosis Parent { get; set; }
-
-
         public Diagnosis(string code, string title, Diagnosis parent = null, IcdDisease disease = null)
         {
             Contract.Requires(!string.IsNullOrEmpty(title));
@@ -24,6 +16,13 @@ namespace Diagnosis.Models
             Disease = disease;
         }
 
+        public virtual string Title { get; set; }
+
+        public virtual string Code { get; set; }
+
+        public virtual IcdDisease Disease { get; set; }
+
+        public virtual Diagnosis Parent { get; set; }
         public override string ToString()
         {
             return Code + ' ' + Title;

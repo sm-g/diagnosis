@@ -1,61 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Collections.Specialized;
-using Iesi.Collections.Generic;
+﻿using Diagnosis.Models.Validators;
 using FluentValidation.Results;
-using Diagnosis.Models.Validators;
+using Iesi.Collections.Generic;
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.Models
 {
     public class Appointment : ValidatableEntity<Guid>, IDomainObject, IHaveAuditInformation, IHrsHolder, IComparable<Appointment>
     {
-        Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
+        private Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
         private DateTime _dateTime;
         private DateTime _updatedAt;
-
-        public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
         private DateTime _createdAt;
-
-        public virtual Course Course { get; protected set; }
-        public virtual Doctor Doctor { get; set; }
-        public virtual DateTime DateAndTime
-        {
-            get { return _dateTime; }
-            set { SetProperty(ref _dateTime, value, "DateAndTime"); }
-        }
-        public virtual DateTime CreatedAt
-        {
-            get { return _createdAt; }
-        }
-
-        DateTime IHaveAuditInformation.CreatedAt
-        {
-            get { return _updatedAt; }
-            set
-            {
-                _createdAt = value;
-            }
-        }
-        DateTime IHaveAuditInformation.UpdatedAt
-        {
-            get { return _updatedAt; }
-            set { SetProperty(ref _updatedAt, value, () => UpdatedAt); }
-        }
-
-        public virtual DateTime UpdatedAt
-        {
-            get { return _updatedAt; }
-        }
-
-        public virtual IEnumerable<HealthRecord> HealthRecords
-        {
-            get { return healthRecords.OrderBy(x => x.Ord); }
-        }
 
         public Appointment(Course course, Doctor doctor)
             : this()
@@ -74,6 +33,46 @@ namespace Diagnosis.Models
             _updatedAt = DateTime.Now;
         }
 
+        public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
+        public virtual Course Course { get; protected set; }
+
+        public virtual Doctor Doctor { get; set; }
+
+        public virtual DateTime DateAndTime
+        {
+            get { return _dateTime; }
+            set { SetProperty(ref _dateTime, value, "DateAndTime"); }
+        }
+
+        public virtual DateTime CreatedAt
+        {
+            get { return _createdAt; }
+        }
+
+        DateTime IHaveAuditInformation.CreatedAt
+        {
+            get { return _updatedAt; }
+            set
+            {
+                _createdAt = value;
+            }
+        }
+
+        DateTime IHaveAuditInformation.UpdatedAt
+        {
+            get { return _updatedAt; }
+            set { SetProperty(ref _updatedAt, value, () => UpdatedAt); }
+        }
+
+        public virtual DateTime UpdatedAt
+        {
+            get { return _updatedAt; }
+        }
+
+        public virtual IEnumerable<HealthRecord> HealthRecords
+        {
+            get { return healthRecords.OrderBy(x => x.Ord); }
+        }
         public virtual HealthRecord AddHealthRecord(Doctor author)
         {
             var hr = new HealthRecord(this, author);
@@ -94,14 +93,6 @@ namespace Diagnosis.Models
             return string.Format("app {0:d} {1}", DateAndTime, Doctor);
         }
 
-        protected virtual void OnHealthRecordsChanged(NotifyCollectionChangedEventArgs e)
-        {
-            var h = HealthRecordsChanged;
-            if (h != null)
-            {
-                h(this, e);
-            }
-        }
         public override ValidationResult SelfValidate()
         {
             return new AppointmentValidator().Validate(this);
@@ -122,6 +113,15 @@ namespace Diagnosis.Models
                 return this.Course.CompareTo(other.Course);
 
             return this.DateAndTime.CompareTo(other.DateAndTime);
+        }
+
+        protected virtual void OnHealthRecordsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            var h = HealthRecordsChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
         }
     }
 }

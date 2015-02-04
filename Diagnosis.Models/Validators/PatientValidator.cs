@@ -1,10 +1,8 @@
-﻿using FluentValidation;
+﻿using Diagnosis.Common;
+using FluentValidation;
 using FluentValidation.Results;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Diagnosis.Common;
 
 namespace Diagnosis.Models.Validators
 {
@@ -29,7 +27,6 @@ namespace Diagnosis.Models.Validators
                 {
                     return new ValidationFailure("Date", "Неверная дата рождения.");
                 }
-
             });
         }
     }

@@ -1,11 +1,10 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.Common;
+using Diagnosis.Models;
 using NHibernate;
+using NHibernate.Criterion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Diagnosis.Common;
-using NHibernate.Criterion;
 
 namespace Diagnosis.Data.Queries
 {

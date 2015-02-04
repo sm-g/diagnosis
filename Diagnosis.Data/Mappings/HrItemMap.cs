@@ -20,7 +20,6 @@ namespace Diagnosis.Data.Mappings
                     c.Default(0);
                 });
                 m.NotNullable(true);
-
             });
             Property(x => x.TextRepr, m =>
             {

@@ -55,6 +55,21 @@ namespace Diagnosis.ViewModels.Screens
 
     public class HrListViewModel : ViewModelBase, IClipboardTarget
     {
+        /// <summary>
+        /// When fixing duplicates in List.SelectedItems
+        /// </summary>
+        public bool inRemoveDup;
+
+        /// <summary>
+        /// When set focus from VM, do not focus
+        /// </summary>
+        public bool inManualFocusSetting;
+
+        /// <summary>
+        /// If set, selection changes not meaningfull.
+        /// </summary>
+        internal readonly FlagActionWrapper<IEnumerable<ShortHealthRecordViewModel>> preserveSelected;
+
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HrListViewModel));
         private static HrViewer hrViewer = new HrViewer();
 
@@ -77,23 +92,6 @@ namespace Diagnosis.ViewModels.Screens
         private bool _focused;
         private bool inSetSelected;
         private bool disposed;
-
-        public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;
-
-        /// <summary>
-        /// When fixing duplicates in List.SelectedItems
-        /// </summary>
-        public bool inRemoveDup;
-
-        /// <summary>
-        /// When set focus from VM, do not focus
-        /// </summary>
-        public bool inManualFocusSetting;
-
-        /// <summary>
-        /// If set, selection changes not meaningfull.
-        /// </summary>
-        internal readonly FlagActionWrapper<IEnumerable<ShortHealthRecordViewModel>> preserveSelected;
 
         public HrListViewModel(IHrsHolder holder, Action<HealthRecord, HrData.HrInfo> filler, Action<List<IHrItemObject>> syncer)
         {
@@ -248,6 +246,8 @@ namespace Diagnosis.ViewModels.Screens
 
             SelectHealthRecord(hrViewer.GetLastSelectedFor(holder));
         }
+
+        public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;
 
         public HolderViewModel HolderVm { get; private set; }
 

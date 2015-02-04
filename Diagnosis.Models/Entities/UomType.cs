@@ -1,30 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Collections.Specialized;
+﻿using Diagnosis.Common;
 using Iesi.Collections.Generic;
-using FluentValidation.Results;
-using Diagnosis.Models.Validators;
-using Diagnosis.Common;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.Models
 {
     [Serializable]
-
     public class UomType : EntityBase<int>, IDomainObject, IComparable<UomType>
     {
         private Iesi.Collections.Generic.ISet<Uom> uoms = new HashedSet<Uom>();
+
         public UomType(string title)
         {
             Contract.Requires(title != null);
             Title = title;
         }
 
-        protected UomType() { }
+        protected UomType()
+        {
+        }
 
         /// <summary>
         /// Порядок, уникальный.
@@ -34,10 +30,12 @@ namespace Diagnosis.Models
         public virtual string Title { get; set; }
 
         public virtual Uom Base { get { return uoms.SingleOrDefault(x => x.IsBase); } }
+
         /// <summary>
         /// Единицы типа по увеличению фактора.
         /// </summary>
         public virtual IEnumerable<Uom> Uoms { get { return uoms.OrderBy(x => x.Factor); } }
+
         /// <summary>
         /// Меняет базу для всех единиц типа.
         /// мл -3 -> мл 0
@@ -53,11 +51,11 @@ namespace Diagnosis.Models
             uoms.ForAll(u => u.Factor -= factor);
             return true;
         }
+
         public override string ToString()
         {
             return string.Format("{0}", Title);
         }
-
 
         public virtual int CompareTo(UomType other)
         {

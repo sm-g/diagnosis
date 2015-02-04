@@ -3,7 +3,6 @@ using FluentValidation.Results;
 using Iesi.Collections.Generic;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
@@ -13,14 +12,28 @@ namespace Diagnosis.Models
     {
         [NonSerialized]
         private Iesi.Collections.Generic.ISet<Word> children = new HashedSet<Word>();
+
         [NonSerialized]
-        IList<HealthRecord> healthRecords = new List<HealthRecord>(); // many-2-many bag
+        private IList<HealthRecord> healthRecords = new List<HealthRecord>(); // many-2-many bag
+
         [NonSerialized]
         private Word _parent;
+
         [NonSerialized]
         private HrCategory _defCat;
 
         private string _title;
+
+        public Word(string title)
+        {
+            Contract.Requires(title != null); // empty when adding new
+
+            Title = title;
+        }
+
+        protected Word()
+        {
+        }
 
         public virtual string Title
         {
@@ -48,21 +61,11 @@ namespace Diagnosis.Models
         {
             get { return children; }
         }
+
         public virtual IEnumerable<HealthRecord> HealthRecords
         {
             get { return healthRecords; }
         }
-        public Word(string title)
-        {
-            Contract.Requires(title != null); // empty when adding new
-
-            Title = title;
-        }
-
-        protected Word()
-        {
-        }
-
         public override string ToString()
         {
             return Title;

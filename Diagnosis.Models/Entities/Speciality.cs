@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
-using Iesi.Collections.Generic;
+﻿using Diagnosis.Models.Validators;
 using FluentValidation.Results;
-using Diagnosis.Models.Validators;
+using Iesi.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Diagnosis.Models
@@ -14,13 +13,23 @@ namespace Diagnosis.Models
     {
         public static Speciality Null = new Speciality("—");  // для врача без специальности
 
-        IList<IcdBlock> icdBlocks = new List<IcdBlock>(); // many-2-many bag
-        Iesi.Collections.Generic.ISet<Doctor> doctors = new HashedSet<Doctor>();
-        Iesi.Collections.Generic.ISet<SpecialityIcdBlocks> specialityIcdBlocks = new HashedSet<SpecialityIcdBlocks>();
+        private IList<IcdBlock> icdBlocks = new List<IcdBlock>(); // many-2-many bag
+        private Iesi.Collections.Generic.ISet<Doctor> doctors = new HashedSet<Doctor>();
+        private Iesi.Collections.Generic.ISet<SpecialityIcdBlocks> specialityIcdBlocks = new HashedSet<SpecialityIcdBlocks>();
         private string _title;
 
-        public virtual event NotifyCollectionChangedEventHandler BlocksChanged;
+        public Speciality(string title)
+        {
+            Contract.Requires(title != null);
 
+            Title = title;
+        }
+
+        protected Speciality()
+        {
+        }
+
+        public virtual event NotifyCollectionChangedEventHandler BlocksChanged;
 
         public virtual string Title
         {
@@ -31,10 +40,12 @@ namespace Diagnosis.Models
                 SetProperty(ref _title, filtered, () => Title);
             }
         }
+
         public virtual IEnumerable<IcdBlock> IcdBlocks
         {
             get { return icdBlocks.OrderBy(x => x.Code); }
         }
+
         public virtual IEnumerable<Doctor> Doctors
         {
             get { return doctors; }
@@ -44,16 +55,6 @@ namespace Diagnosis.Models
         {
             get { return specialityIcdBlocks; }
         }
-
-        public Speciality(string title)
-        {
-            Contract.Requires(title != null);
-
-            Title = title;
-        }
-
-        protected Speciality() { }
-
         public virtual IcdBlock AddBlock(IcdBlock block)
         {
             icdBlocks.Add(block);
@@ -67,6 +68,7 @@ namespace Diagnosis.Models
             if (icdBlocks.Remove(block))
                 OnBlocksChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, block));
         }
+
         public override string ToString()
         {
             return Title;
@@ -76,6 +78,7 @@ namespace Diagnosis.Models
         {
             return new SpecialityValidator().Validate(this);
         }
+
         protected virtual void OnBlocksChanged(NotifyCollectionChangedEventArgs e)
         {
             var h = BlocksChanged;
@@ -85,5 +88,4 @@ namespace Diagnosis.Models
             }
         }
     }
-
 }

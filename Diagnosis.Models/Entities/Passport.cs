@@ -1,19 +1,18 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Models.Validators;
-using FluentValidation.Results;
-using Iesi.Collections.Generic;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+
+using System;
+
 using System.Linq;
 
 namespace Diagnosis.Models
 {
     public class Passport : EntityBase<Guid>, IDomainObject
     {
-        string _hashSalt;
-        bool _rem;
-        Doctor _doctor;
+        private string _hashSalt;
+        private bool _rem;
+        private Doctor _doctor;
+
         public Passport(Doctor doc)
         {
             Doctor = doc;
@@ -22,6 +21,7 @@ namespace Diagnosis.Models
         protected Passport()
         {
         }
+
         /// <summary>
         /// For 1-1 mapping
         /// </summary>
@@ -33,6 +33,7 @@ namespace Diagnosis.Models
                 SetProperty(ref _doctor, value, () => Doctor);
             }
         }
+
         public virtual string HashAndSalt
         {
             get { return _hashSalt; }
@@ -41,6 +42,7 @@ namespace Diagnosis.Models
                 SetProperty(ref _hashSalt, value, () => HashAndSalt);
             }
         }
+
         public virtual bool Remember
         {
             get { return _rem; }

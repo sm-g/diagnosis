@@ -1,25 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Collections.Specialized;
-using Iesi.Collections.Generic;
+﻿using Diagnosis.Models.Validators;
 using FluentValidation.Results;
-using Diagnosis.Models.Validators;
+using System;
+using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.Models
 {
     [Serializable]
-
     public class Uom : ValidatableEntity<int>, IDomainObject
     {
         public static Uom Null = new Uom("—", 1, new UomType(""));  // для измерения без единицы
         private string _description;
         private string _abbr;
         private double _factor;
+
+        public Uom(string abbr, double factor, UomType type)
+        {
+            Contract.Requires(abbr != null);
+
+            this.Abbr = abbr;
+            this.Factor = factor;
+            this.Type = type;
+        }
+
+        protected Uom()
+        {
+        }
 
         public virtual string Abbr
         {
@@ -30,6 +36,7 @@ namespace Diagnosis.Models
                 SetProperty(ref _abbr, filtered, () => Abbr);
             }
         }
+
         public virtual string Description
         {
             get { return _description; }
@@ -39,6 +46,7 @@ namespace Diagnosis.Models
                 SetProperty(ref _description, filtered, () => Description);
             }
         }
+
         /// <summary>
         /// Показатель степени множителя по основанию 10 относительно
         /// базовой единицы этого типа (единицы объема: -3 для мкл, 0 для мл).
@@ -52,26 +60,14 @@ namespace Diagnosis.Models
                 SetProperty(ref _factor, value, () => Factor);
             }
         }
+
         public virtual UomType Type { get; set; }
 
         public virtual bool IsBase { get { return Factor == 0; } }
-
-        public Uom(string abbr, double factor, UomType type)
-        {
-            Contract.Requires(abbr != null);
-
-            this.Abbr = abbr;
-            this.Factor = factor;
-            this.Type = type;
-        }
-
-        protected Uom() { }
-
         public override string ToString()
         {
             return string.Format("{0} f{1}", Abbr, Factor);
         }
-
 
         public override ValidationResult SelfValidate()
         {
