@@ -35,8 +35,6 @@ namespace Diagnosis.Data.Versions
 
         public override void Down()
         {
-            // TODO sqlce sync deprovis
-
             Delete.Column(UpdatedAt)
                .FromTable(Names.AppointmentTbl);
             Delete.Column(UpdatedAt)

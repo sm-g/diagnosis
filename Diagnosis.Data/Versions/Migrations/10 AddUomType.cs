@@ -40,8 +40,6 @@ namespace Diagnosis.Data.Versions
 
         public override void Down()
         {
-            // TODO sqlce sync deprovis
-
             Delete.ForeignKey(FK_Uom_UomType).OnTable(Names.UomTbl);
             Delete.Table(Names.UomTypeTbl);
 

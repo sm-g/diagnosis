@@ -1,8 +1,5 @@
 ﻿using Diagnosis.Common;
 using System;
-
-using System;
-
 using System.Linq;
 
 namespace Diagnosis.Models

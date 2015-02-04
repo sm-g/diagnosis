@@ -57,7 +57,6 @@ namespace Diagnosis.ViewModels.Screens
                     var appVM = new ShortAppointmentViewModel(item);
                     var wrapper = new SpecialCaseItem(appVM);
 
-                    // TODO start course from card bug
                     Appointments.Insert(Appointments.Count - 1, wrapper);
                 }
             }

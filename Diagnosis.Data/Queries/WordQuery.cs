@@ -55,7 +55,6 @@ namespace Diagnosis.Data.Queries
         ///
         /// Ищем «с», возвращаются «сидя, образование».
         ///
-        /// TODO withnoncheckable = true
         /// </summary>
         public static Func<string, IEnumerable<Word>> TopParentStartingWith(ISession session)
         {
