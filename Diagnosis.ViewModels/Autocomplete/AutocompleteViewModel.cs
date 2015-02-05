@@ -14,7 +14,7 @@ using System.Windows;
 
 namespace Diagnosis.ViewModels.Autocomplete
 {
-    public class AutocompleteViewModel : ViewModelBase, IClipboardTarget, Diagnosis.ViewModels.Autocomplete.IAutocompleteViewModel
+    public partial class AutocompleteViewModel : ViewModelBase, IClipboardTarget, Diagnosis.ViewModels.Autocomplete.IAutocompleteViewModel
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(AutocompleteViewModel));
         private readonly Recognizer recognizer;
@@ -43,8 +43,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             this.allowSendToSearch = allowSendToSearch;
             this.singleTag = singleTag;
 
-            DropHandler = new AutocompleteViewModel.DropTargetHandler(this);
-            DragHandler = new AutocompleteViewModel.DragSourceHandler();
+
             Tags = new ObservableCollection<TagViewModel>();
             Tags.CollectionChanged += (s, e) =>
             {
@@ -74,6 +73,11 @@ namespace Diagnosis.ViewModels.Autocomplete
                 }
             }
             Suggestions = new ObservableCollection<object>();
+
+            DropHandler = new AutocompleteViewModel.DropTargetHandler(this);
+            DragHandler = new AutocompleteViewModel.DragSourceHandler();
+            IsDropTargetEnabled = true;
+            IsDragSourceEnabled = true;
         }
 
         /// <summary>
@@ -354,10 +358,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                 return allowTagConvertion;
             }
         }
-
-        public DropTargetHandler DropHandler { get; private set; }
-
-        public DragSourceHandler DragHandler { get; private set; }
 
         public bool InDispose
         {
@@ -803,153 +803,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             base.Dispose(disposing);
         }
 
-        public class DropTargetHandler : DefaultDropHandler
-        {
-            private readonly AutocompleteViewModel master;
-
-            public DropTargetHandler(AutocompleteViewModel master)
-            {
-                this.master = master;
-            }
-
-            public bool FromSameAutocomplete(IDropInfo dropInfo)
-            {
-                if (dropInfo.DragInfo == null || dropInfo.DragInfo.SourceCollection == null)
-                    return false;
-                var sourceList = dropInfo.DragInfo.SourceCollection.ToList();
-                return sourceList == master.Tags;
-            }
-
-            public bool FromOtherAutocomplete(IDropInfo dropInfo)
-            {
-                if (dropInfo.DragInfo == null || dropInfo.DragInfo.SourceCollection == null)
-                    return false;
-                var sourceList = dropInfo.DragInfo.SourceCollection.ToList();
-                return sourceList is IEnumerable<TagViewModel>;
-            }
-
-            public override void DragOver(IDropInfo dropInfo)
-            {
-                var destinationList = dropInfo.TargetCollection.ToList();
-                if (FromSameAutocomplete(dropInfo))
-                {
-                    dropInfo.Effects = DragDropEffects.Move;
-                }
-                else if (FromOtherAutocomplete(dropInfo))
-                {
-                    dropInfo.Effects = DragDropEffects.Copy;
-                }
-                else
-                {
-                    dropInfo.Effects = DragDropEffects.Scroll;
-                }
-                dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
-            }
-
-            public override void Drop(IDropInfo dropInfo)
-            {
-                var data = ExtractData(dropInfo.Data).Cast<object>();
-                if (data.Count() == 0)
-                    return;
-
-                logger.DebugFormat("ddrop {0} {1}", data.Count(), data.First().GetType());
-
-                var insertIndex = dropInfo.InsertIndex;
-                if (data.First() is TagViewModel)
-                {
-                    // drop tags from autocomplete
-                    var tags = data.Cast<TagViewModel>();
-
-                    if (FromSameAutocomplete(dropInfo))
-                    {
-                        // reorder tags
-
-                        foreach (var tag in tags)
-                        {
-                            var old = master.Tags.IndexOf(tag);
-                            //master.Tags.RemoveAt(old);
-                            //if (old < insertIndex)
-                            //{
-                            //    --insertIndex;
-                            //}
-                            var n = old < insertIndex ? insertIndex - 1 : insertIndex;
-
-                            // not after last
-                            if (n == master.Tags.IndexOf(master.LastTag))
-                                n--;
-
-                            n = Math.Max(n, 0); // when single n == -1
-
-                            if (old != n) // prevent deselecting
-                                master.Tags.Move(old, n);
-                        }
-                        //foreach (var tag in tags)
-                        //{
-                        //    master.Tags.Insert(insertIndex, tag);
-                        //}
-                    }
-                    else if (FromOtherAutocomplete(dropInfo))
-                    {
-                        // copy tags' HrItemObjects or query
-
-                        foreach (var tag in tags)
-                        {
-                            if (tag.BlankType == BlankType.None)
-                            {
-                                master.AddTag(tag.Query).Validate(master.Validator);
-                            }
-                            else
-                            {
-                                var item = master.recognizer.EntityOf(tag);
-                                master.AddTag(item).Validate(master.Validator);
-                            }
-                        }
-                    }
-
-                    master.LastTag.IsSelected = false;
-                }
-            }
-        }
-
-        public class DragSourceHandler : IDragSource
-        {
-            /// <summary>
-            /// Data is tags without Last tag.
-            /// </summary>
-            /// <param name="dragInfo"></param>
-            public void StartDrag(IDragInfo dragInfo)
-            {
-                var tags = dragInfo.SourceItems.Cast<TagViewModel>().Where(t => !t.IsLast);
-                var itemCount = tags.Count();
-
-                if (itemCount == 1)
-                {
-                    dragInfo.Data = tags.First();
-                }
-                else if (itemCount > 1)
-                {
-                    dragInfo.Data = GongSolutions.Wpf.DragDrop.Utilities.TypeUtilities.CreateDynamicallyTypedList(tags);
-                }
-
-                dragInfo.Effects = (dragInfo.Data != null) ?
-                                     DragDropEffects.Copy | DragDropEffects.Move :
-                                     DragDropEffects.None;
-            }
-
-            public bool CanStartDrag(IDragInfo dragInfo)
-            {
-                var tags = dragInfo.SourceItems.Cast<TagViewModel>().Where(t => !t.IsLast);
-                return tags.Count() > 0;
-            }
-
-            public void DragCancelled()
-            {
-            }
-
-            public void Dropped(IDropInfo dropInfo)
-            {
-            }
-        }
 
         public void OnDrop(DragEventArgs e)
         {
@@ -984,7 +837,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 }
             }
         }
-               
+
 
         System.Windows.Input.ICommand IAutocompleteViewModel.EditCommand
         {
@@ -995,11 +848,6 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             get { return SendToSearchCommand; }
         }
-
-        IDropTarget IAutocompleteViewModel.DropHandler
-        {
-            get { return DropHandler; }
-        }    
     }
 
 }

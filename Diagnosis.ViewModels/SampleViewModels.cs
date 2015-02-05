@@ -55,11 +55,6 @@ namespace Diagnosis.ViewModels
                 get { throw new NotImplementedException(); }
             }
 
-            public GongSolutions.Wpf.DragDrop.IDropTarget DropHandler
-            {
-                get { throw new NotImplementedException(); }
-            }
-
             public void AddAndEditTag(TagViewModel tag, bool up)
             {
                 throw new NotImplementedException();

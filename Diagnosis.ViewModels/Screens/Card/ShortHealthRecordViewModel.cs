@@ -1,13 +1,18 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Autocomplete;
+using GongSolutions.Wpf.DragDrop;
+using GongSolutions.Wpf.DragDrop.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class ShortHealthRecordViewModel : CheckableBase
+    public partial class ShortHealthRecordViewModel : CheckableBase
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(ShortHealthRecordViewModel));
         internal readonly HealthRecord healthRecord;
@@ -32,8 +37,9 @@ namespace Diagnosis.ViewModels.Screens
             {
                 OnPropertyChanged(() => DateOffsetString);
             };
+            DropHandler = new DropTargetHandler(this);
+            IsDropTargetEnabled = true;
         }
-
 
 
         public string Name
@@ -307,5 +313,7 @@ namespace Diagnosis.ViewModels.Screens
             }
             base.Dispose(disposing);
         }
+
     }
+
 }

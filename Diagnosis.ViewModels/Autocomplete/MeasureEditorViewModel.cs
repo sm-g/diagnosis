@@ -43,7 +43,11 @@ namespace Diagnosis.ViewModels.Autocomplete
                 false,
                 false,
                 true,
-                Word == null ? null : new[] { Word });
+                Word == null ? null : new[] { Word })
+                {
+                    IsDragSourceEnabled = false,
+                    IsDropTargetEnabled = false
+                };
             Autocomplete.EntitiesChanged += (s, e) =>
             {
                 var entities = Autocomplete.GetEntities().ToList();

@@ -5,12 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
+             xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              xmlns:app="clr-namespace:Diagnosis.App"
              mc:Ignorable="d"
              d:DesignHeight="30"
              d:DesignWidth="300"
              d:DataContext="{d:DesignInstance diag:SampleShortHealthRecordViewModel, IsDesignTimeCreatable=True}"
+             dd:DragDrop.IsDropTarget="{Binding IsDropTargetEnabled}"
+             dd:DragDrop.DropHandler="{Binding DropHandler}"
              Background="Transparent"
              Focusable="False">
     <UserControl.Resources>

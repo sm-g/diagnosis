@@ -62,7 +62,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         Completed
     }
 
-    public class TagViewModel : ViewModelBase, IDropTarget
+    public class TagViewModel : ViewModelBase
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(TagViewModel));
         readonly IAutocompleteViewModel autocomplete;
@@ -77,6 +77,8 @@ namespace Diagnosis.ViewModels.Autocomplete
         private bool _draggable;
         private Signalizations? _signal;
         private bool _canToIcd;
+        private VisibleRelayCommand sendToSearch;
+        private VisibleRelayCommand<BlankType> convertTo;
 
         /// <summary>
         /// Создает пустой тег.
@@ -124,8 +126,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public event EventHandler Deleted;
         public event EventHandler<BlankTypeEventArgs> Converting;
-        private VisibleRelayCommand sendToSearch;
-        private VisibleRelayCommand<Autocomplete.BlankType> convertTo;
+
 
         /// <summary>
         /// Текстовое представление.
@@ -362,16 +363,10 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-        void IDropTarget.DragOver(IDropInfo dropInfo)
+        public void OnDrop(DragEventArgs e)
         {
-            autocomplete.DropHandler.DragOver(dropInfo);
+            autocomplete.OnDrop(e);
         }
-
-        void IDropTarget.Drop(IDropInfo dropInfo)
-        {
-            autocomplete.DropHandler.Drop(dropInfo);
-        }
-
         #endregion
 
 
@@ -406,7 +401,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (_focused != value)
                 {
                     _focused = value;
-                    //logger.DebugFormat("{0} focusedTxt = {1}, focusedItem = {2}", this, value, _listItemFocused);
+                    logger.DebugFormat("{0} focusedTxt = {1}, focusedItem = {2}", this, value, _listItemFocused);
                     OnPropertyChanged("IsTextBoxFocused");
                 }
             }
@@ -582,10 +577,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             // при редактировании нет сущностей
         }
 
-        public void OnDrop(DragEventArgs e)
-        {
-            autocomplete.OnDrop(e);
-        }
     }
 
     [Serializable]

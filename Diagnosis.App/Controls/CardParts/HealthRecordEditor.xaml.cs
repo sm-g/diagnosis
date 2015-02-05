@@ -21,7 +21,7 @@ namespace Diagnosis.App.Controls.CardParts
 
         private void grid_Drop(object sender, DragEventArgs e)
         {
-            (autocomplete.DataContext as AutocompleteViewModel).OnDrop(e);
+            (autocomplete.DataContext as AutocompleteViewModel).OnDrop(e);            
         }
 
         private void grid_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)

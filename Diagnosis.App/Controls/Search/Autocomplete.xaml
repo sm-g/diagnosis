@@ -14,6 +14,7 @@
              x:Name="autocomplete"
              diag:ClipboardBehavior.ClipboardTarget="True"
              mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance diag:AutocompleteViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="300"
              d:DesignWidth="300">    
     <UserControl.InputBindings>
@@ -55,8 +56,8 @@
                  ItemsSource="{Binding Tags}"
                  SelectedItem="{Binding SelectedTag}"
                  SelectionMode="Extended"
-                 dd:DragDrop.IsDragSource="True"
-                 dd:DragDrop.IsDropTarget="True"
+                 dd:DragDrop.IsDragSource="{Binding IsDragSourceEnabled}"
+                 dd:DragDrop.IsDropTarget="{Binding IsDropTargetEnabled}"
                  dd:DragDrop.DropHandler="{Binding DropHandler}"
                  dd:DragDrop.DragHandler="{Binding DragHandler}"
                  GotFocus="input_GotFocus"

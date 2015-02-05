@@ -19,7 +19,6 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         ICommand SendToSearchCommand { get; }
 
-        IDropTarget DropHandler { get; }
 
         void AddAndEditTag(TagViewModel tag, bool up);
         void OnDrop(DragEventArgs e);

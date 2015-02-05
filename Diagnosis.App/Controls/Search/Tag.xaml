@@ -59,10 +59,11 @@
             <ContentPresenter Content="{StaticResource line}"
                               Margin="2,0,0,0" />
         </StackPanel>
+        
         <TextBox x:Name="query"
                  diag:FocusExtension.IsFocused="{Binding IsTextBoxFocused, Mode=TwoWay}"
-                 dd:DragDrop.IsDropTarget="True"
-                 dd:DragDrop.DropHandler="{Binding}"
+                 dd:DragDrop.IsDropTarget="{Binding DataContext.IsDropTargetEnabled, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2} }"
+                 dd:DragDrop.DropHandler="{Binding DataContext.DropHandler, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2} }"
                  Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
                  Focusable="{Binding Focusable}"
                  IsReadOnly="{Binding IsDeleteOnly}">

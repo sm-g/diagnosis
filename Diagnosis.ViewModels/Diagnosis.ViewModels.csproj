@@ -182,7 +182,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthorityController.cs" />
+    <Compile Include="Autocomplete\AutocompleteViewModel - DragDrop.cs" />
     <Compile Include="Autocomplete\IAutocompleteViewModel.cs" />
+    <Compile Include="Screens\Card\DragDrop\Helper.cs" />
+    <Compile Include="Screens\Card\DragDrop\Interfaces.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Framework\MenuItem.cs" />
     <Compile Include="Framework\VisibleRelayCommand.cs" />
@@ -196,6 +199,8 @@
     <Compile Include="SampleViewModels.cs" />
     <Compile Include="Screens\Card\HolderViewModel.cs" />
     <Compile Include="Autocomplete\MeasureEditorViewModel.cs" />
+    <Compile Include="Screens\Card\HrListViewModel - DragDrop.cs" />
+    <Compile Include="Screens\Card\ShortHealthRecordViewModel - DragDrop.cs" />
     <Compile Include="Screens\Shell\ServerMainWindowViewModel.cs" />
     <Compile Include="Screens\Uoms\UomEditorViewModel.cs" />
     <Compile Include="Screens\Doctors\DoctorsListViewModel.cs" />

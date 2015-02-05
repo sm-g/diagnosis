@@ -53,7 +53,7 @@ namespace Diagnosis.ViewModels.Screens
         GroupingCreatedAt
     }
 
-    public class HrListViewModel : ViewModelBase, IClipboardTarget
+    public partial class HrListViewModel : ViewModelBase, IClipboardTarget
     {
         /// <summary>
         /// When fixing duplicates in List.SelectedItems
@@ -87,8 +87,6 @@ namespace Diagnosis.ViewModels.Screens
         private HrViewSortingColumn _sort = HrViewSortingColumn.SortingDate; // to change in ctor
         private HrViewGroupingColumn _group = HrViewGroupingColumn.GroupingCreatedAt;
         private bool _rectSelect;
-        private bool _dragSource;
-        private bool _dropTarget;
         private bool _focused;
         private bool inSetSelected;
         private bool disposed;
@@ -240,9 +238,9 @@ namespace Diagnosis.ViewModels.Screens
             DropHandler = new DropTargetHandler(this);
             DragHandler = new DragSourceHandler();
 
-            IsRectSelectEnabled = true;
             IsDragSourceEnabled = true;
             IsDropTargetEnabled = true;
+            IsRectSelectEnabled = true;
 
             SelectHealthRecord(hrViewer.GetLastSelectedFor(holder));
         }
@@ -505,10 +503,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public DropTargetHandler DropHandler { get; private set; }
-
-        public DragSourceHandler DragHandler { get; private set; }
-
         public bool IsRectSelectEnabled
         {
             get
@@ -525,37 +519,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public bool IsDragSourceEnabled
-        {
-            get
-            {
-                return _dragSource;
-            }
-            set
-            {
-                if (_dragSource != value)
-                {
-                    _dragSource = value;
-                    OnPropertyChanged(() => IsDragSourceEnabled);
-                }
-            }
-        }
 
-        public bool IsDropTargetEnabled
-        {
-            get
-            {
-                return _dropTarget;
-            }
-            set
-            {
-                if (_dropTarget != value)
-                {
-                    _dropTarget = value;
-                    OnPropertyChanged(() => IsDropTargetEnabled);
-                }
-            }
-        }
 
         public bool CanReorder
         {
@@ -1063,126 +1027,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public class DropTargetHandler : DefaultDropHandler
-        {
-            private readonly HrListViewModel master;
 
-            public DropTargetHandler(HrListViewModel master)
-            {
-                this.master = master;
-            }
-
-            public bool FromSameCollection(IDropInfo dropInfo)
-            {
-                var sourceList = dropInfo.DragInfo.SourceCollection.ToList();
-                var targetList = dropInfo.TargetCollection.ToList();
-                return Equals(sourceList, targetList);
-            }
-
-            public bool FromAutocomplete(IDropInfo dropInfo)
-            {
-                var sourceList = dropInfo.DragInfo.SourceCollection.ToList();
-                return sourceList is IEnumerable<TagViewModel>;
-            }
-
-            public override void DragOver(IDropInfo dropInfo)
-            {
-                var data = ExtractData(dropInfo.Data).Cast<object>();
-                if (dropInfo.DragInfo == null || dropInfo.DragInfo.SourceCollection == null || data.Count() == 0)
-                {
-                    dropInfo.Effects = DragDropEffects.None;
-                }
-                else if (FromSameCollection(dropInfo))
-                {
-                    var vms = ExtractData(dropInfo.Data).Cast<ShortHealthRecordViewModel>();
-                    if (master.CanMove(vms, dropInfo.TargetGroup))
-                    {
-                        dropInfo.Effects = DragDropEffects.Move;
-                        dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
-                    }
-                }
-                else if (FromAutocomplete(dropInfo))
-                {
-                    dropInfo.Effects = DragDropEffects.Copy;
-                    dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
-                }
-                else
-                {
-                    dropInfo.Effects = DragDropEffects.Scroll;
-                }
-            }
-
-            public override void Drop(IDropInfo dropInfo)
-            {
-                var data = ExtractData(dropInfo.Data).Cast<object>();
-
-                //  logger.DebugFormat("ddrop {0} {1}", data.Count(), data.First().GetType());
-
-                var insertView = dropInfo.InsertIndex;
-                if (FromSameCollection(dropInfo))
-                {
-                    // drop hrs from hrslist
-
-                    //  logger.DebugFormat("selected bef {0} ", master.SelectedHealthRecords.Count());
-
-                    var group = dropInfo.TargetGroup != null ? dropInfo.TargetGroup.Name : null;
-                    master.Reorder(data, insertView, group);
-
-                    //  logger.DebugFormat("selected after dd {0} ", master.SelectedHealthRecords.Count());
-                }
-                else if (FromAutocomplete(dropInfo))
-                {
-                    // drop tags from autocomplete
-
-                    var tags = data.Cast<TagViewModel>();
-
-                    // new hr from tags
-                    var newHR = master.AddHr();
-                    var items = tags.Select(t => t.Entity).ToList();
-                    newHR.SetItems(items);
-                }
-                master.OnSaveNeeded();
-                //logger.DebugFormat("selected after save {0} ", master.SelectedHealthRecords.Count());
-            }
-        }
-
-        public class DragSourceHandler : IDragSource
-        {
-            /// <summary>
-            /// Data is hrs vm.
-            /// </summary>
-            /// <param name="dragInfo"></param>
-            public void StartDrag(IDragInfo dragInfo)
-            {
-                var hrs = dragInfo.SourceItems.Cast<ShortHealthRecordViewModel>();
-                var itemCount = hrs.Count();
-
-                if (itemCount == 1)
-                {
-                    dragInfo.Data = hrs.First();
-                }
-                else if (itemCount > 1)
-                {
-                    dragInfo.Data = GongSolutions.Wpf.DragDrop.Utilities.TypeUtilities.CreateDynamicallyTypedList(hrs);
-                }
-                dragInfo.Effects = (dragInfo.Data != null) ?
-                                     DragDropEffects.Copy | DragDropEffects.Move :
-                                     DragDropEffects.None;
-            }
-
-            public bool CanStartDrag(IDragInfo dragInfo)
-            {
-                return dragInfo.SourceItems.Cast<ShortHealthRecordViewModel>().Count() > 0;
-            }
-
-            public void DragCancelled()
-            {
-            }
-
-            public void Dropped(IDropInfo dropInfo)
-            {
-            }
-        }
     }
 
     [Serializable]

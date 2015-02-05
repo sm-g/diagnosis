@@ -144,7 +144,7 @@ namespace Diagnosis.App.Controls.Search
                     };
                     this.DataContextChanged += a;
                 }
-                else if (Vm.EditingTag != null)
+                else if (Vm.EditingTag != null && !Vm.InDragDrop)
                 {
                     Vm.StartEdit(Vm.EditingTag);
                 }
