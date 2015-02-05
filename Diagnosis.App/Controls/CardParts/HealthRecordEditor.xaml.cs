@@ -1,8 +1,8 @@
-﻿using Diagnosis.ViewModels.Autocomplete;
+﻿using Diagnosis.Common.Presentation.Controls;
+using Diagnosis.ViewModels.Autocomplete;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Diagnosis.Common.Controls;
 using System.Windows.Input;
 
 namespace Diagnosis.App.Controls.CardParts

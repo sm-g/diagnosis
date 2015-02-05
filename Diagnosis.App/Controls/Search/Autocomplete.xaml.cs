@@ -1,4 +1,4 @@
-﻿using Diagnosis.Common.Controls;
+﻿using Diagnosis.Common.Presentation.Controls;
 using Diagnosis.ViewModels.Autocomplete;
 using log4net;
 using System;
@@ -93,7 +93,6 @@ namespace Diagnosis.App.Controls.Search
         {
             var outs = IsFocusOutside();
             //logger.DebugFormat("autocomplete lost focus to {0}, out? {1}", GetFocusedInScope(), outs);
-
         }
 
         private void autocomplete_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)

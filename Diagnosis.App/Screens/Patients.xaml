@@ -24,8 +24,9 @@
                                    Style="{StaticResource SexTooltip}"
                                    HorizontalAlignment="Center">
                             <TextBlock.Text>
-                                <MultiBinding Converter="{StaticResource SexToSign}" Mode="OneWay">
-                                    <Binding Path="IsChecked" 
+                                <MultiBinding Converter="{StaticResource SexToSign}"
+                                              Mode="OneWay">
+                                    <Binding Path="IsChecked"
                                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type CheckBox}}" />
                                     <Binding Path="DataContext.Sexes"
                                              RelativeSource="{RelativeSource AncestorType=Window}" />
@@ -50,7 +51,6 @@
                 </TextBlock.Text>
             </TextBlock>
         </DataTemplate>
-
     </UserControl.Resources>
 
     <Grid HorizontalAlignment="Stretch"
@@ -78,9 +78,9 @@
         </Grid>
 
         <diag:Filter  x:Name="filter"
-                        DataContext="{Binding Filter}"
-                        Visibility="{Binding DataContext.NoPatients, ElementName=patients, Converter={StaticResource NegBooleanToVisibilityConverter}}"
-                        Grid.Row="1" />
+                      DataContext="{Binding Filter}"
+                      Visibility="{Binding DataContext.NoPatients, ElementName=patients, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                      Grid.Row="1" />
 
         <DockPanel Grid.Row="3">
             <DockPanel.Resources>
@@ -111,7 +111,7 @@
                   diag:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedPatients}"
                   diag:FocusExtension.IsFocused="{Binding IsFocused}"
                   Visibility="{Binding NoPatients, Converter={StaticResource NegBooleanToVisibilityConverter}}"
-                  Margin="0,10,0,0"                
+                  Margin="0,10,0,0"
                   GotKeyboardFocus="dataGrid_GotKeyboardFocus"
                   SelectedCellsChanged="dataGrid_SelectedCellsChanged"
                   Style="{DynamicResource MyDataGridStyle}"

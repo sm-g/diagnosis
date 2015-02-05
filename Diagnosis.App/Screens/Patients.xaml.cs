@@ -1,5 +1,4 @@
-﻿using Diagnosis.Common.Controls;
-using Diagnosis.App.Controls;
+﻿using Diagnosis.Common.Presentation.Controls;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -11,6 +10,7 @@ namespace Diagnosis.App.Screens
     public partial class Patients : UserControl
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Patients));
+
         public Patients()
         {
             InitializeComponent();

@@ -1,4 +1,4 @@
-﻿using Diagnosis.Common.DebugTools;
+﻿using Diagnosis.Common.Presentation.DebugTools;
 using Diagnosis.Common.Util;
 using Diagnosis.Data;
 using log4net;
@@ -91,7 +91,7 @@ namespace Diagnosis.ServerApp
             NHibernateHelper.ShowSql = !NHibernateHelper.InMemory;
 #endif
 
-           // DbMaintenance();
+            // DbMaintenance();
 
             var main = new MainWindow();
 

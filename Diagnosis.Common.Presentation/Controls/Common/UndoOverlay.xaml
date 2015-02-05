@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="Diagnosis.Common.Presentation.Controls.UndoOverlay"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             MinWidth="200"
+             MaxWidth="300">
+    <Border Background="{StaticResource overlayBackgroundBrush}"
+            BorderBrush="{StaticResource overlayBorderBrush}"
+            BorderThickness="3"
+            CornerRadius="10">
+        <DockPanel Margin="5">
+            <DockPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontSize"
+                            Value="{DynamicResource HelpFontSize}" />
+                </Style>
+            </DockPanel.Resources>
+            <TextBlock TextWrapping="Wrap"
+                       Margin="0,0,30,0">
+                <Run Text="{Binding Message, Mode=OneWay}" />.
+                <Hyperlink Command="{Binding UndoCommand}">Отменить?</Hyperlink>
+            </TextBlock>
+            <Button Command="{Binding CloseCommand}"
+                    CommandParameter="{StaticResource True}"
+                    Width="16"
+                    Height="16"
+                    MinHeight="16"
+                    Padding="0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top">
+                <Path Data="{StaticResource CloseX}"
+                      Stretch="Uniform"
+                      Stroke="Black"
+                      Margin="1" />
+            </Button>
+        </DockPanel>
+    </Border>
+</UserControl>

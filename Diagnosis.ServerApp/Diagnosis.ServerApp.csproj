@@ -183,6 +183,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Diagnosis.Common.Presentation\Diagnosis.Common.Presentation.csproj">
+      <Project>{25357875-228B-46A5-9FB8-1D03677416AF}</Project>
+      <Name>Diagnosis.Common.Presentation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Diagnosis.Common\Diagnosis.Common.csproj">
       <Project>{a91ad3b7-cb0f-426c-a539-1cffc13df0ee}</Project>
       <Name>Diagnosis.Common</Name>

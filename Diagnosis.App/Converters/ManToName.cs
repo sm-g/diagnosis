@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Data;
-using System.Globalization;
-using Diagnosis.Common;
+﻿using Diagnosis.Common;
+using Diagnosis.Common.Presentation.Converters;
 using Diagnosis.Models;
-using Diagnosis.Common.Converters;
+using System;
+using System.Globalization;
+using System.Linq;
 
 namespace Diagnosis.App.Converters
 {

@@ -1,7 +1,7 @@
-﻿using System.Windows.Controls;
-using System.Windows.Input;
-using Diagnosis.Common.Controls;
+﻿using Diagnosis.Common.Presentation.Controls;
 using Diagnosis.ViewModels.Screens;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Diagnosis.ServerApp.Screens
 {
@@ -11,7 +11,6 @@ namespace Diagnosis.ServerApp.Screens
         {
             InitializeComponent();
             DataContext = new UomsListViewModel();
-
         }
 
         private void dataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)

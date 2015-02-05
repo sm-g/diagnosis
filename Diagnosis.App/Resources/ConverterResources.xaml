@@ -3,7 +3,7 @@
                     xmlns:conv="clr-namespace:Diagnosis.App.Converters">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Resources/ConverterResources.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Resources/ConverterResources.xaml" />
     </ResourceDictionary.MergedDictionaries>
     
     <conv:HrToItemsString x:Key="hrItems" />

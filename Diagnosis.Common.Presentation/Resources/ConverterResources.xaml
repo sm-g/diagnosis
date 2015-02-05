@@ -1,0 +1,48 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:conv="clr-namespace:Diagnosis.Common.Presentation.Converters">
+
+    <conv:NegateConverter x:Key="NegateBoolean" />
+    <conv:NullableBooleanConverter x:Key="NullableBoolean" />
+    <conv:AndMultiConverter x:Key="AndBoolean" />
+    <conv:OrMultiConverter x:Key="OrBoolean" />
+    <conv:IsNullToBooleanConverter x:Key="IsNullToBoolean" />
+
+    <conv:ValueConverterGroup x:Key="NotNullToBoolean">
+        <conv:IsNullToBooleanConverter />
+        <conv:NegateConverter />
+    </conv:ValueConverterGroup>
+
+    <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <conv:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />
+    <conv:MoreThanToVisibility x:Key="MoreThanToVisibility" />
+    <conv:LessThanToVisibility x:Key="LessThanToVisibility" />
+    <conv:ValueConverterGroup x:Key="NullToVis">
+        <conv:IsNullToBooleanConverter />
+        <conv:NegateConverter />
+        <conv:BooleanToVisibilityConverter />
+    </conv:ValueConverterGroup>
+
+    <conv:IntToString x:Key="IntToString" />
+    <conv:AgeToYearsLabel x:Key="AgeToLabel" />
+    <conv:BoolToSexSign x:Key="SexToSign" />
+
+    <conv:UnitForOffsetToUnitLabel x:Key="UnitForOffsetToUnitLabel" />
+    <conv:DateOffsetToUnitLabel x:Key="DateOffsetToUnitLabel" />
+    <conv:DateOffsetToPartialDateLabel x:Key="DateOffsetToPartialDateLabel" />
+    <conv:TimeSpanLabel x:Key="TimeSpanToLabel" />
+    <conv:DateIntervalLabel x:Key="DateIntervalLabel" />
+    <conv:DateLabel x:Key="DateLabel" />
+    <conv:MonthToString x:Key="MonthToString" />
+    <conv:EnumToLabel x:Key="EnumToLabel" />
+
+    <conv:SummatorConverter x:Key="SummatorConverter" />
+
+    <conv:EqualityToBoolConverter x:Key="EqualToBool" />
+    <conv:EqualityToBoolMultiConverter x:Key="EqualAllToBool" />
+    <conv:EqualityAndToBoolMultiConverter x:Key="BoolAndEqualAllToBool" />
+
+    <conv:IsLastItem x:Key="IsLastItem" />
+    <conv:LessThanConverter x:Key="LessThan" />
+    <conv:InListConverter x:Key="inList" />
+</ResourceDictionary>

@@ -1,5 +1,4 @@
-﻿using Diagnosis.App.Controls;
-using Diagnosis.Common.Controls;
+﻿using Diagnosis.Common.Presentation.Controls;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -23,13 +22,11 @@ namespace Diagnosis.App.Behaviors
         public static readonly DependencyProperty EnabledProperty =
             DependencyProperty.RegisterAttached("Enabled", typeof(bool), typeof(ListBoxSelector), new UIPropertyMetadata(false, IsEnabledChangedCallback));
 
-
         /// <summary>
         /// Start selection rect from element (instead of select in common way).
         /// </summary>
         public static readonly DependencyProperty StartOnElementProperty =
             DependencyProperty.RegisterAttached("StartOnElement", typeof(bool), typeof(ListBoxSelector), new PropertyMetadata(false));
-
 
         // This stores the ListBoxSelector for each ListBox so we can unregister it.
         private static readonly Dictionary<ListBox, ListBoxSelector> attachedControls = new Dictionary<ListBox, ListBoxSelector>();
@@ -69,7 +66,6 @@ namespace Diagnosis.App.Behaviors
         {
             obj.SetValue(EnabledProperty, value);
         }
-
 
         public static bool GetStartOnElement(DependencyObject obj)
         {

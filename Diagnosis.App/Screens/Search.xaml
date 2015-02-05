@@ -16,7 +16,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/SplitExpander.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Styles/SplitExpander.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="lineHeader"

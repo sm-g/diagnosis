@@ -2,7 +2,7 @@
 using Diagnosis.App.Windows;
 using Diagnosis.App.Windows.Shell;
 using Diagnosis.Common;
-using Diagnosis.Common.DebugTools;
+using Diagnosis.Common.Presentation.DebugTools;
 using Diagnosis.Common.Util;
 using Diagnosis.Data;
 using Diagnosis.Data.Versions;

@@ -7,11 +7,12 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/ConverterResources.xaml" />
+                
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Resources/ImageResources.xaml" />
 
-                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/BeforeThemeStyles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Styles/BeforeThemeStyles.xaml" />
 
-                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/AfterThemeStyles.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/TreeStyle.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Styles/AfterThemeStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <s:Boolean x:Key="True">True</s:Boolean>
