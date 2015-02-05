@@ -14,7 +14,6 @@
 
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/BeforeThemeStyles.xaml" />
 
-                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/AfterThemeStyles.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/TreeStyle.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/ListBoxItemAero2Style.xaml" />
                 
@@ -26,12 +25,20 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
 
 
-                <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Styles/AfterThemeStyles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Styles/DefaultExpander.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Styles/MahAppsFix.xaml" />
+                
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/AfterThemeStyles.xaml" />
 
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Templates/Controls.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
-
+            
+            <Style TargetType="{x:Type ListBoxItem}"
+                   BasedOn="{StaticResource MetroListBoxItemFixed}" />
+            <Style TargetType="{x:Type Expander}"
+                   BasedOn="{StaticResource DefaultExpander}" />
+            
             <s:Boolean x:Key="True">True</s:Boolean>
             <s:Boolean x:Key="False">False</s:Boolean>
 

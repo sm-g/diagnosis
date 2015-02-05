@@ -208,7 +208,6 @@
                               BorderBrush="{x:Null}"
                               ExpandDirection="Down"
                               FlowDirection="RightToLeft"
-                              Style="{StaticResource DefaultExpander}"
                               Cursor="Hand"
                               IsExpanded="{Binding IsDateEditorExpanded}">
                         <Expander.Header>

@@ -2,12 +2,67 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!--This styles overwrites theme styles-->
 
+    
     <!--  base control styles  -->
 
     <Style BasedOn="{StaticResource {x:Type DatePicker}}"
            TargetType="DatePicker">
         <Setter Property="FirstDayOfWeek"
                 Value="Monday" />
+    </Style>
+
+    <!--textblock-->
+    <Style TargetType="{x:Type TextBlock}"
+           BasedOn="{StaticResource {x:Type TextBlock}}">
+        <!--<Setter Property="FontSize"
+                Value="{DynamicResource ContentFontSize}" />-->
+        <Style.Triggers>
+            <Trigger Property="IsEnabled"
+                     Value="False">
+                <Setter Property="Foreground"
+                        Value="{StaticResource {x:Static SystemColors.GrayTextBrushKey}}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!--<Style TargetType="AccessText">
+        <Setter Property="FontSize"
+                Value="{DynamicResource LabelFontSize}" />
+    </Style>-->
+    
+    <!--Tree-->
+
+    <Style BasedOn="{StaticResource {x:Type TreeView}}"
+           TargetType="TreeView">
+        <Setter Property="BorderThickness"
+                Value="0" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Stretch" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
+                Value="Disabled" />
+        <Setter Property="VirtualizingStackPanel.IsVirtualizing"
+                Value="False" />
+        <Setter Property="VirtualizingStackPanel.VirtualizationMode"
+                Value="Recycling" />
+    </Style>
+
+    <Style BasedOn="{StaticResource {x:Type TreeViewItem}}"
+           TargetType="{x:Type TreeViewItem}">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Stretch" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Center" />
+
+        <Setter Property="FontSize"
+                Value="{DynamicResource ContentFontSize }" />
+            
+            <!-- Hier Vm -->
+
+        <Setter Property="IsSelected"
+                Value="{Binding IsSelected}" />
+        <Setter Property="IsExpanded"
+                Value="{Binding IsExpanded, Mode=TwoWay}" />
     </Style>
 
     <!--  buttons  -->
@@ -46,7 +101,8 @@
     <!--  DataGrid  -->
 
     <Style x:Key="CellStyle"
-           TargetType="DataGridCell">
+           TargetType="DataGridCell"
+           BasedOn="{StaticResource {x:Type DataGridCell}}">
         <Setter Property="BorderThickness"
                 Value="0" />
         <Setter Property="FocusVisualStyle"
@@ -67,6 +123,40 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="RightCellTextBlock"
+           TargetType="{x:Type TextBlock}"
+           BasedOn="{StaticResource {x:Type TextBlock}}">
+        <Setter Property="HorizontalAlignment"
+                Value="Right" />
+        <Setter Property="Margin"
+                Value="0,0,5,0" />
+    </Style>
+
+    <Style x:Key="MyDataGridStyle"
+           TargetType="{x:Type DataGrid}"
+           BasedOn="{StaticResource {x:Type DataGrid}}">
+        <Setter Property="AutoGenerateColumns"
+                Value="False" />
+        <Setter Property="IsReadOnly"
+                Value="True" />
+        <Setter Property="SelectionUnit"
+                Value="FullRow" />
+        <Setter Property="SelectionMode"
+                Value="Extended" />
+        <Setter Property="FontSize"
+                Value="{DynamicResource GridRowFontSize}" />
+
+        <Setter Property="GridLinesVisibility"
+                Value="None" />
+        <Setter Property="BorderThickness"
+                Value="0" />
+        <Setter Property="CellStyle"
+                Value="{StaticResource CellStyle}" />
+
+        <Setter Property="VirtualizingStackPanel.VirtualizationMode"
+                Value="Standard" />
+
+    </Style>
     <!--  forms  -->
 
     <Style x:Key="formLine"
@@ -79,22 +169,24 @@
         </Setter>
     </Style>
 
-    <Style x:Key="colonedLabel"
+    <Style x:Key="{x:Type Label}"
            TargetType="Label"
            BasedOn="{StaticResource {x:Type Label}}">
         <Setter Property="VerticalAlignment"
                 Value="Center" />
         <Setter Property="ContentStringFormat"
                 Value="{}{0}:" />
+        <Setter Property="FontSize"
+                Value="{DynamicResource LabelFontSize}" />
     </Style>
     <Style x:Key="label120"
-           BasedOn="{StaticResource colonedLabel}"
+           BasedOn="{StaticResource {x:Type Label}}"
            TargetType="Label">
         <Setter Property="Width"
                 Value="120" />
     </Style>
     <Style x:Key="label90"
-           BasedOn="{StaticResource colonedLabel}"
+           BasedOn="{StaticResource {x:Type Label}}"
            TargetType="Label">
         <Setter Property="Width"
                 Value="90" />
@@ -117,5 +209,12 @@
                         Value="Женщина" />
             </DataTrigger>
         </Style.Triggers>
+    </Style>
+
+    <!--  misc  -->
+    <Style x:Key="ScreenTitle"
+           TargetType="TextBlock">
+        <Setter Property="FontSize"
+                Value="{DynamicResource ScreenTitleFontSize}" />
     </Style>
 </ResourceDictionary>

@@ -7,7 +7,6 @@
         SizeToContent="WidthAndHeight"
         ShowInTaskbar="False"
         ResizeMode="NoResize"
-        ShowInTaskbar="False"
         UseLayoutRounding="True"
         WindowStartupLocation="CenterOwner">
     <Window.Resources>

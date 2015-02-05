@@ -92,30 +92,6 @@
         </Style.Resources>
     </Style>
 
-    <!--  DataGrid  -->
-
-    <Style x:Key="CellStyle"
-           TargetType="DataGridCell">
-        <Setter Property="BorderThickness"
-                Value="0" />
-        <Setter Property="FocusVisualStyle"
-                Value="{x:Null}" />
-        <Setter Property="KeyboardNavigation.IsTabStop"
-                Value="False" />
-    </Style>
-
-    <Style x:Key="SelectableCellStyle"
-           BasedOn="{StaticResource CellStyle}"
-           TargetType="{x:Type DataGridCell}">
-        <Style.Triggers>
-            <Trigger Property="IsSelected"
-                     Value="True">
-                <Setter Property="KeyboardNavigation.IsTabStop"
-                        Value="True" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
     <!--  forms  -->
 
     <Style x:Key="watermark"
@@ -129,10 +105,5 @@
         </Setter>
     </Style>
 
-    <!--  misc  -->
-    <Style x:Key="ScreenTitle"
-           TargetType="TextBlock">
-        <Setter Property="FontSize"
-                Value="20" />
-    </Style>
+
 </ResourceDictionary>

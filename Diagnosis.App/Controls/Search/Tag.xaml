@@ -148,8 +148,7 @@
                                x:Key="convert">
                             <Setter Property="IsCheckable"
                                     Value="True" />
-                            <Setter Property="diag:MenuItemExtensions.GroupName"
-                                    Value="{Binding Hash}" />
+
                             <Setter Property="Command"
                                     Value="{Binding ConvertToCommand}" />
                             <Setter Property="Visibility"
@@ -166,7 +165,7 @@
                                 </Setter.Value>
                             </Setter>
 
-                            <Setter Property="beh:MenuItemExtensions.GroupName"
+                            <Setter Property="diag:MenuItemExtensions.GroupName"
                                     Value="{Binding Hash}" />
                         </Style>
                     </ContextMenu.Resources>
