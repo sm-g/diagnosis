@@ -58,7 +58,7 @@
                 Value="{DynamicResource ContentFontSize }" />
             
             <!-- Hier Vm -->
-
+        
         <Setter Property="IsSelected"
                 Value="{Binding IsSelected}" />
         <Setter Property="IsExpanded"

@@ -1,6 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!--This styles will be overwritten with theme styles (if they exist)-->
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/TreeStyle.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+    
+    
+    <!--This styles will be overwritten with theme styles (if they exist)-->    
     
     <!--  base control styles  -->
     <Style x:Key="ErrorToolTip"
@@ -42,6 +47,23 @@
                         Value="{StaticResource {x:Static SystemColors.GrayTextBrushKey}}" />
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <!-- Tree -->
+    <Style BasedOn="{StaticResource TreeViewStyle}"
+           TargetType="TreeView" />
+    <Style BasedOn="{StaticResource TreeViewItemStyle}"
+           TargetType="TreeViewItem">
+        
+        <Setter Property="Template"
+                Value="{StaticResource TreeViewItemFullWidthControl}" />
+
+
+        <!-- Hier Vm -->
+        <Setter Property="IsSelected"
+                Value="{Binding IsSelected}" />
+        <Setter Property="IsExpanded"
+                Value="{Binding IsExpanded, Mode=TwoWay}" />
     </Style>
 
     <!--  buttons  -->

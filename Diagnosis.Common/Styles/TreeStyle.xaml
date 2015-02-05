@@ -172,8 +172,6 @@
                 Value="Stretch" />
         <Setter Property="VerticalContentAlignment"
                 Value="Center" />
-        <Setter Property="Padding"
-                Value="1,0,0,0" />
         <Setter Property="Foreground"
                 Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
         <Setter Property="FocusVisualStyle"
@@ -181,14 +179,9 @@
         <Setter Property="KeyboardNavigation.AcceptsReturn"
                 Value="True" />
 
+        
         <EventSetter Event="Selected"
                      Handler="item_selected" />
-
-        <!-- Hier Vm -->
-        <Setter Property="IsSelected"
-                Value="{Binding IsSelected}" />
-        <Setter Property="IsExpanded"
-                Value="{Binding IsExpanded, Mode=TwoWay}" />
     </Style>
 
     <!-- Border with toggle inside -->
