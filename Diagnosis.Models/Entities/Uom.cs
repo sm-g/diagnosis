@@ -2,10 +2,12 @@
 using FluentValidation.Results;
 using System;
 using System.Diagnostics.Contracts;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Diagnosis.Models
 {
+    [DebuggerDisplay("uom {Abbr} {Type} f{Factor}")]
     [Serializable]
     public class Uom : ValidatableEntity<int>, IDomainObject
     {
@@ -66,7 +68,7 @@ namespace Diagnosis.Models
         public virtual bool IsBase { get { return Factor == 0; } }
         public override string ToString()
         {
-            return string.Format("{0} f{1}", Abbr, Factor);
+            return string.Format("{0} ({1})", Description, Abbr);
         }
 
         public override ValidationResult SelfValidate()

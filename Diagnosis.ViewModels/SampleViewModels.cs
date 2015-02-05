@@ -109,6 +109,13 @@ namespace Diagnosis.ViewModels
             this.doctor = new Doctor("Петров", "Иван", "Иванович");
         }
     }
+    public class SampleMeasureEditorViewModel : MeasureEditorViewModel
+    {
+        public SampleMeasureEditorViewModel()
+            : base(new Measure(36, new Uom("C", 0, new UomType("температура"))) { Word = new Word("температура") })
+        {
+        }
+    }
 
     public class SampleIcdSelectorViewModel : IcdSelectorViewModel
     {
