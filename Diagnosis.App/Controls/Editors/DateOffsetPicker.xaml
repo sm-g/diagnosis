@@ -27,7 +27,7 @@
                  TextAlignment="Right" />
         <ComboBox x:Name="units"
                   ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
-                  MinWidth="50">
+                  MinWidth="70">
             <ComboBox.SelectedItem>
                 <Binding Path="DataContext.Unit"  
                          ElementName="root"

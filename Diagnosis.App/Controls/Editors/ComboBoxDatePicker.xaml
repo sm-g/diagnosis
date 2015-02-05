@@ -19,7 +19,7 @@
         </StackPanel.Resources>
         <ComboBox x:Name="comboYears"
                   Style="{StaticResource comboRight}"
-                  MinWidth="50"
+                  MinWidth="70"
                   IsEditable="True"
                   SelectionChanged="comboYears_SelectionChanged"
                   LostFocus="comboYears_LostFocus"

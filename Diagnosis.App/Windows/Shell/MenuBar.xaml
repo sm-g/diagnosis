@@ -18,7 +18,8 @@
             <MenuItem Command="{Binding OpenWordsCommand}"
                       Header="_Словарь" />
 
-            <MenuItem Header="_Вид">
+            <MenuItem x:Name="view"
+                      Header="_Вид">
                 <MenuItem IsCheckable="true"
                           IsChecked="{Binding SearchPanel.IsVisible}"
                           Header="_Поиск" />
