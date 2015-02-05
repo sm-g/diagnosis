@@ -644,9 +644,6 @@
     <Resource Include="Resources\Images\Arrow_UndoRevertRestore_16xLG.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\Delete_black_32x32.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\126_Edit_24x24_72.png" />
   </ItemGroup>
   <ItemGroup>
@@ -663,6 +660,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DesignData\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\DeleteHS.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

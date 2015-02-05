@@ -74,31 +74,19 @@
             <Button Command="{Binding DeleteCommand}"
                     ToolTip="Удалить выбранные записи (Delete)">
                 <DockPanel>
-                    <Image Source="{StaticResource deleteImage}"
-                           Style="{StaticResource buttonIcon}" />
-                    <!--<TextBlock>
-                        <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" >Удалить</Run>
-                        <TextBlock Text="{Binding CheckedHrCount, StringFormat='{}({0})'}"
-                                   Visibility="{Binding CheckedHrCount, Converter={StaticResource MoreThanToVisibility}, ConverterParameter=1}" />
-                    </TextBlock>-->
+                    <Image Source="{StaticResource deleteImage}" />
                 </DockPanel>
             </Button>
             <Button Command="{Binding SendToSearchCommand}"
                     ToolTip="Искать выбранные записи (Ctrl+F)">
                 <DockPanel>
                     <Image Source="{StaticResource findImage}" />
-                    <!--<TextBlock>
-                        <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}">Искать</Run>
-                        <TextBlock Text="{Binding CheckedHrCount, StringFormat='{}({0})'}"
-                                   Visibility="{Binding CheckedHrCount, Converter={StaticResource MoreThanToVisibility}, ConverterParameter=1}" />
-                    </TextBlock>-->
                 </DockPanel>
             </Button>
             <Separator />
             <DockPanel ToolTip="Сортировка">
                 <!--<TextBlock>Сортировать</TextBlock>-->
-                <Image Source="{StaticResource sortAscImage}"
-                       Style="{StaticResource buttonIcon}" />
+                <Image Source="{StaticResource sortAscImage}" />
 
                 <ComboBox ItemsSource="{Binding Source={diag:EnumListExtension {x:Type diag:HrViewSortingColumn}}}"
                           SelectedItem="{Binding Sorting, Mode=TwoWay}"
@@ -109,8 +97,7 @@
                        Margin="5,0,0,0">
 
                 <!--<TextBlock>Группировать</TextBlock>-->
-                <Image Source="{StaticResource groupByImage}"
-                       Style="{StaticResource buttonIcon}" />
+                <Image Source="{StaticResource groupByImage}" />
 
                 <ComboBox ItemsSource="{Binding Source={diag:EnumListExtension {x:Type diag:HrViewGroupingColumn}}}"
                           SelectedItem="{Binding Grouping, Mode=TwoWay}"
@@ -229,7 +216,7 @@
                         HorizontalAlignment="Center">
                 <TextBlock Visibility="{Binding ShowCanAlso, Converter={StaticResource BooleanToVisibilityConverter}}">Тaкже можно</TextBlock>
 
-                <ContentControl Content="{Binding HolderVm}"                                
+                <ContentControl Content="{Binding HolderVm}"
                                 ContentTemplateSelector="{StaticResource canAlso}" />
             </StackPanel>
         </Grid>
