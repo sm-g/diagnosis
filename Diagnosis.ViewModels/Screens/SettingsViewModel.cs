@@ -12,25 +12,28 @@ namespace Diagnosis.ViewModels.Screens
     public class SettingsViewModel : DialogViewModel
     {
         private readonly Doctor doctor;
-        private Dictionary<DoctorSettings, Func<bool>> map;
-
         private bool _showIcdDisease;
+        private bool _onlyTopLevelIcdDisease;
+        private string _selSex;
+        private bool _bigFont;
 
         public SettingsViewModel(Doctor doctor)
         {
             Contract.Requires(doctor != null);
             this.doctor = doctor;
 
-            map = new Dictionary<DoctorSettings, Func<bool>>();
-            map.Add(DoctorSettings.ShowIcdDisease, () => ShowIcdDisease);
-            map.Add(DoctorSettings.OnlyTopLevelIcdDisease, () => OnlyTopLevelIcdDisease);
-
             Sexes = new ObservableCollection<string>() {
                 "М Ж ?",
                 "Муж Жен ?",
                 "1 2 ?"
             };
+
+            BigFont = doctor.Settings.BigFontSize;
+            OnlyTopLevelIcdDisease = doctor.Settings.IcdTopLevelOnly;
+            SelectedSex = doctor.Settings.SexSigns ?? Sexes[0];
         }
+
+        public ObservableCollection<string> Sexes { get; private set; }
 
         public bool ShowIcdDisease
         {
@@ -52,16 +55,14 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return doctor.Settings.IcdTopLevelOnly;
+                return _onlyTopLevelIcdDisease;
             }
             set
             {
-                doctor.Settings.IcdTopLevelOnly = value;
+                _onlyTopLevelIcdDisease = value;
                 OnPropertyChanged(() => OnlyTopLevelIcdDisease);
             }
         }
-
-        private bool _bigFont;
 
         public bool BigFont
         {
@@ -71,37 +72,40 @@ namespace Diagnosis.ViewModels.Screens
             }
             set
             {
-                if (_bigFont != value)
-                {
-                    _bigFont = value;
+                _bigFont = value;
 
-                    // tobig
-                    this.Send(Event.ChangeFont, value.AsParams(MessageKeys.Boolean));
-
-                    OnPropertyChanged(() => BigFont);
-                }
+                // live preview
+                this.Send(Event.ChangeFont, value.AsParams(MessageKeys.Boolean));
+                OnPropertyChanged(() => BigFont);
             }
         }
-
-        public ObservableCollection<string> Sexes { get; private set; }
-
         public string SelectedSex
         {
             get
             {
-                return doctor.Settings.SexSigns ?? Sexes[0];
+                return _selSex;
             }
             set
             {
-                doctor.Settings.SexSigns = value;
+                _selSex = value;
                 OnPropertyChanged(() => SelectedSex);
             }
         }
 
         protected override void OnOk()
         {
+            doctor.Settings.BigFontSize = BigFont;
+            doctor.Settings.IcdTopLevelOnly = OnlyTopLevelIcdDisease;
+            doctor.Settings.SexSigns = SelectedSex;
+
             new Saver(Session).Save(doctor);
             this.Send(Event.SettingsSaved, doctor.AsParams(MessageKeys.User));
+        }
+
+        protected override void OnCancel()
+        {
+            // restore font size
+            this.Send(Event.ChangeFont, doctor.Settings.BigFontSize.AsParams(MessageKeys.Boolean));
         }
     }
 }

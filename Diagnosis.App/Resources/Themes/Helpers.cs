@@ -21,8 +21,6 @@ namespace Diagnosis.App.Themes
         public static Uri GetPackUri(this string resourcePath, Assembly resourceAssembly)
         {
             return GetPackUri(resourcePath, Application.ResourceAssembly.GetName().Name);
-
-            return new Uri("pack://application:,,,/" + resourceAssembly.GetName().Name + ";Component/" + resourcePath);
         }
         /// <summary>
         /// Gets the pack URI from a local resource path.
@@ -38,7 +36,7 @@ namespace Diagnosis.App.Themes
         /// </summary>
         public static Uri GetPackUri(this string resourcePath, string resourceAssemblyName)
         {
-            return new Uri("pack://application:,,,/" + resourceAssemblyName + ";Component/" + resourcePath);
+            return new Uri("pack://application:,,,/" + resourceAssemblyName + ";component/" + resourcePath);
         }
     }
 }

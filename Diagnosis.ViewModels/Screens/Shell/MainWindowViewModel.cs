@@ -75,6 +75,8 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     var doc = (Doctor)e.user;
                     Sexes = doc.Settings.SexSigns;
+
+                    this.Send(Event.ChangeFont, doc.Settings.BigFontSize.AsParams(MessageKeys.Boolean));
                 }
 
             };

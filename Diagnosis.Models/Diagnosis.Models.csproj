@@ -150,7 +150,6 @@
     <Compile Include="Enums\HealthRecordQueryScope.cs" />
     <Compile Include="Helpers\DomainExtenstions.cs" />
     <Compile Include="Enums\HealthRecordUnit.cs" />
-    <Compile Include="Enums\DoctorSettings.cs" />
     <Compile Include="Entities\Measure.cs" />
     <Compile Include="Entities\Uom.cs" />
     <Compile Include="Entities\Appointment.cs" />

@@ -98,10 +98,13 @@ namespace Diagnosis.App.Themes
         {
             var resources = Application.Current.Resources;
 
-            int insertTo = resources.MergedDictionaries.Count - resoursesAfterThemes;
+            int insertTo = 0; // in case no FontResources in App.xaml
             var newAppTheme = FontThemes.FirstOrDefault(x => x.Name == newSizeName);
 
-            var oldThemeResource = resources.MergedDictionaries.FirstOrDefault(d => FontThemes.Select(x => x.Resources).Contains(d));
+            // first font res
+            var oldThemeResource = resources.MergedDictionaries.FirstOrDefault(d =>
+                FontThemes.Any(x => PackUriHelper.ComparePackUri(d.Source, x.Resources.Source) == 0));
+
             if (oldThemeResource != null)
             {
                 insertTo = resources.MergedDictionaries.IndexOf(oldThemeResource);

@@ -8,11 +8,10 @@ namespace Diagnosis.Models
         public readonly Doctor doctor;
 
         private static string IcdTopLevelOnlySetting = "IcdTopLevelOnly";
-
         private static string HrListSortingSetting = "HrListSorting";
-
         private static string HrListGroupingSetting = "HrListGrouping";
         private static string SexSignsSetting = "SexSigns";
+        private static string FontSizesSetting = "FontSizes";
 
         public SettingsProvider(Doctor doc)
         {
@@ -46,6 +45,17 @@ namespace Diagnosis.Models
         {
             get { return Get(SexSignsSetting); }
             set { Set(SexSignsSetting, value); }
+        }
+
+        public bool BigFontSize
+        {
+            get
+            {
+                bool res = false;
+                bool.TryParse(Get(FontSizesSetting), out res);
+                return res;
+            }
+            set { Set(FontSizesSetting, value.ToString()); }
         }
 
         private string Get(string setting)
