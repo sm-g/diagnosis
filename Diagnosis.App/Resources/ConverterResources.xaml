@@ -2,44 +2,12 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:conv="clr-namespace:Diagnosis.App.Converters">
 
-    <conv:TreeDepthToMargin Length="19"
-                            x:Key="lengthConverter" />
-
-    <conv:NegateConverter x:Key="NegateBoolean" />
-    <conv:NullableBooleanConverter x:Key="NullableBoolean" />
-    <conv:AndMultiConverter x:Key="AndBoolean" />
-    <conv:OrMultiConverter x:Key="OrBoolean" />
-
-    <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-    <conv:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />
-    <conv:MoreThanToVisibility x:Key="MoreThanToVisibility" />
-    <conv:LessThanToVisibility x:Key="LessThanToVisibility" />
-    <conv:NullToVisibilityConverter x:Key="NullToVis" />
-
-    <conv:IntToString x:Key="IntToString" />
-    <conv:AgeToYearsLabel x:Key="AgeToLabel" />
-    <conv:BoolToSexSign x:Key="SexToSign" />
-
-    <conv:UnitForOffsetToUnitLabel x:Key="UnitForOffsetToUnitLabel" />
-    <conv:DateOffsetToUnitLabel x:Key="DateOffsetToUnitLabel" />
-    <conv:DateOffsetToPartialDateLabel x:Key="DateOffsetToPartialDateLabel" />
-    <conv:TimeSpanLabel x:Key="TimeSpanToLabel" />
-    <conv:DateIntervalLabel x:Key="DateIntervalLabel" />
-    <conv:DateLabel x:Key="DateLabel" />
-    <conv:MonthToString x:Key="MonthToString" />
-    <conv:EnumToLabel x:Key="EnumToLabel" />
-
-    <conv:SummatorConverter x:Key="SummatorConverter" />
-    <conv:ManToName x:Key="ManToName" />
-
-    <conv:EqualityToBoolConverter x:Key="EqualToBool" />
-    <conv:EqualityToBoolMultiConverter x:Key="EqualAllToBool" />
-    <conv:EqualityAndToBoolMultiConverter x:Key="BoolAndEqualAllToBool" />
-
-    <conv:IsLastItem x:Key="IsLastItem" />
-    <conv:LessThanConverter x:Key="LessThan" />
-    <conv:InListConverter x:Key="inList" />
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Resources/ConverterResources.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+    
     <conv:HrToItemsString x:Key="hrItems" />
     <conv:ScopeToLabel x:Key="ScopeToLabel" />
+    <conv:ManToName x:Key="ManToName" />
 
 </ResourceDictionary>

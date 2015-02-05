@@ -163,7 +163,72 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviors\Attached.cs" />
+    <Compile Include="Behaviors\ClipboardBehavior.cs" />
+    <Compile Include="Behaviors\DialogCloser.cs" />
+    <Compile Include="Behaviors\EnhancedFocusScope.cs" />
+    <Compile Include="Behaviors\EnumListExtension.cs" />
+    <Compile Include="Behaviors\FirstFocusedElementExtension.cs" />
+    <Compile Include="Behaviors\FocusBehavior.cs" />
+    <Compile Include="Behaviors\IsFocused.cs" />
+    <Compile Include="Behaviors\MenuItemExtensions.cs" />
+    <Compile Include="Behaviors\MultiSelectorBehaviours.cs" />
+    <Compile Include="Behaviors\RowDblClick.cs" />
+    <Compile Include="Behaviors\TwoListSynchronizer.cs" />
     <Compile Include="Combination.cs" />
+    <Compile Include="Controls\Common\AlignableWrapPanel.cs" />
+    <Compile Include="Controls\Common\CommaList.xaml.cs">
+      <DependentUpon>CommaList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Common\RadioListBox.xaml.cs">
+      <DependentUpon>RadioListBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Common\TextBoxInfo.xaml.cs">
+      <DependentUpon>TextBoxInfo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Common\UndoOverlay.xaml.cs">
+      <DependentUpon>UndoOverlay.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Common\UniformGridWithOrientation.cs" />
+    <Compile Include="Controls\Common\WrapPanelLastChildFill.cs" />
+    <Compile Include="Controls\Filter.xaml.cs">
+      <DependentUpon>Filter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Helpers\DataGridHelper.cs" />
+    <Compile Include="Controls\Helpers\FocusChecker.cs" />
+    <Compile Include="Controls\Helpers\ItemCollectionExtensions.cs" />
+    <Compile Include="Controls\Helpers\TreeViewItemExtenstions.cs" />
+    <Compile Include="Controls\Helpers\VisualTreeExtensions.cs" />
+    <Compile Include="Controls\Helpers\WatermarkAdorner.cs" />
+    <Compile Include="Controls\Helpers\WatermarkService.cs" />
+    <Compile Include="Controls\Helpers\XamlExtensions.cs" />
+    <Compile Include="Controls\PopupSearch.xaml.cs">
+      <DependentUpon>PopupSearch.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SearchTree.xaml.cs">
+      <DependentUpon>SearchTree.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\AgeToYearsLabel.cs" />
+    <Compile Include="Converters\BaseConverter.cs" />
+    <Compile Include="Converters\BooleanConverter.cs" />
+    <Compile Include="Converters\BoolToAligment.cs" />
+    <Compile Include="Converters\BoolToSexSign.cs" />
+    <Compile Include="Converters\BoolToVis.cs" />
+    <Compile Include="Converters\CountToVisibility.cs" />
+    <Compile Include="Converters\DateOffsetConverters.cs" />
+    <Compile Include="Converters\DateTimeLabels.cs" />
+    <Compile Include="Converters\EnumToLabel.cs" />
+    <Compile Include="Converters\EqualityToBool.cs" />
+    <Compile Include="Converters\IntToString.cs" />
+    <Compile Include="Converters\ListConverters.cs" />
+    <Compile Include="Converters\MonthToString.cs" />
+    <Compile Include="Converters\NumericConverters.cs" />
+    <Compile Include="Converters\TreeDepthToMargin.cs" />
+    <Compile Include="Converters\ValueConverterGroup.cs" />
+    <Compile Include="Debug\DebugWindow.xaml.cs">
+      <DependentUpon>DebugWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Debug\LogTraceListener.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Formatters\DateFormatter.cs" />
@@ -174,13 +239,14 @@
     <Compile Include="Formatters\Plurals.cs" />
     <Compile Include="Interfaces\IClipboardTarget.cs" />
     <Compile Include="Interfaces\IMan.cs" />
+    <Compile Include="Styles\TreeStyle.cs" />
     <Compile Include="Types\DisposableBase.cs" />
     <Compile Include="Types\INCCReadOnlyObservableCollection.cs" />
     <Compile Include="Mediator\Events.cs" />
     <Compile Include="Util\ActionWrapper.cs" />
     <Compile Include="Util\Comparers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Util\DebugOutput.cs" />
+    <Compile Include="Debug\DebugOutput.cs" />
     <Compile Include="Util\EventArgs.cs" />
     <Compile Include="Util\ExpressionHelper.cs" />
     <Compile Include="DateHelper.cs" />
@@ -198,6 +264,76 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls\Common\CommaList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Common\RadioListBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Common\TextBoxInfo.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Common\UndoOverlay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Filter.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\PopupSearch.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SearchTree.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Debug\DebugWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\ConverterResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\AfterThemeStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\BeforeThemeStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\EmptyToggle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\ExpanderFixed.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\ListBoxItemAero2Style.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\ListViewItemAero2Style.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\SplitExpander.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\TreeStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

@@ -25,7 +25,7 @@ namespace Diagnosis.ViewModels.Search
         }
     }
 
-    // TODO withnoncheckable = true
+    // добавить withnoncheckable = true
     public class NewWordTopParentSearcher : ISimpleSearcher<Word>
     {
         readonly NHibernateRepository<Word> repo;

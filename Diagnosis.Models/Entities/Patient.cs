@@ -13,9 +13,7 @@ namespace Diagnosis.Models
     public class Patient : ValidatableEntity<Guid>, IDomainObject, IHaveAuditInformation, IHrsHolder, IMan, IComparable<Patient>
     {
         private Iesi.Collections.Generic.ISet<Course> courses = new HashedSet<Course>();
-        Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
-
-        public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
+        private Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
 
         private int? _year;
         private int? _month;
@@ -24,11 +22,35 @@ namespace Diagnosis.Models
         private string _ln;
         private string _mn;
         private bool? _isMale;
-
-        public virtual event NotifyCollectionChangedEventHandler CoursesChanged;
         private DateTime _updatedAt;
         private DateTime _createdAt;
 
+        public Patient(string lastName = null,
+            string firstName = null,
+            string middleName = null,
+            int? year = null,
+            int? month = null,
+            int? day = null,
+            bool? isMale = null)
+            : this()
+        {
+            LastName = lastName;
+            FirstName = firstName;
+            MiddleName = middleName;
+            BirthYear = year;
+            BirthMonth = month;
+            BirthDay = day;
+            IsMale = isMale;
+        }
+
+        protected Patient()
+        {
+            _createdAt = DateTime.Now;
+            _updatedAt = DateTime.Now;
+        }
+
+        public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
+        public virtual event NotifyCollectionChangedEventHandler CoursesChanged;
         public virtual string FirstName
         {
             get { return _fn; }
@@ -47,7 +69,6 @@ namespace Diagnosis.Models
                 if (SetProperty(ref _mn, value.TrimedOrNull(), () => MiddleName))
                     OnPropertyChanged(() => Actual);
             }
-
         }
 
         public virtual string LastName
@@ -74,7 +95,6 @@ namespace Diagnosis.Models
                 if (SetProperty(ref _year, value, () => BirthYear))
                 {
                     OnPropertyChanged("Age");
-
                 }
             }
         }
@@ -98,6 +118,7 @@ namespace Diagnosis.Models
                     OnPropertyChanged("Age");
             }
         }
+
         public virtual DateTime CreatedAt
         {
             get { return _createdAt; }
@@ -159,6 +180,7 @@ namespace Diagnosis.Models
                 }
             }
         }
+
         /// <summary>
         /// Полное имя.
         /// </summary>
@@ -169,6 +191,7 @@ namespace Diagnosis.Models
                 return NameFormatter.GetFullName(this);
             }
         }
+
         /// <summary>
         /// Полное имя или время создания.
         /// </summary>
@@ -179,6 +202,7 @@ namespace Diagnosis.Models
                 return NameFormatter.GetFullName(this) ?? CreatedAt.ToString("dd.MM.yy hh:mm");
             }
         }
+
         /// <summary>
         /// Дата последнего обновления записей внутри пациента.
         /// Дата обновления пациента, если запсией нет.
@@ -193,31 +217,7 @@ namespace Diagnosis.Models
                         .First().UpdatedAt;
                 else
                     return this.UpdatedAt;
-
             }
-        }
-        public Patient(string lastName = null,
-            string firstName = null,
-            string middleName = null,
-            int? year = null,
-            int? month = null,
-            int? day = null,
-            bool? isMale = null)
-            : this()
-        {
-            LastName = lastName;
-            FirstName = firstName;
-            MiddleName = middleName;
-            BirthYear = year;
-            BirthMonth = month;
-            BirthDay = day;
-            IsMale = isMale;
-        }
-
-        protected Patient()
-        {
-            _createdAt = DateTime.Now;
-            _updatedAt = DateTime.Now;
         }
         public virtual HealthRecord AddHealthRecord(Doctor author)
         {
@@ -234,15 +234,6 @@ namespace Diagnosis.Models
                 OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, hr));
         }
 
-        protected internal virtual void AddCourse(Course course)
-        {
-            if (!courses.Contains(course))
-            {
-                courses.Add(course);
-                OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, course));
-            }
-        }
-
         public virtual void RemoveCourse(Course course)
         {
             Contract.Requires(course.IsEmpty());
@@ -252,6 +243,7 @@ namespace Diagnosis.Models
                 OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, course));
             }
         }
+
         /// <summary>
         /// Курсы, отсорированные по дате. Первый — самый ранний курс.
         /// </summary>
@@ -263,23 +255,6 @@ namespace Diagnosis.Models
         public override string ToString()
         {
             return this.ShortId() + " " + FullName;
-        }
-
-        protected virtual void OnCoursesChanged(NotifyCollectionChangedEventArgs e)
-        {
-            var h = CoursesChanged;
-            if (h != null)
-            {
-                h(this, e);
-            }
-        }
-        protected virtual void OnHealthRecordsChanged(NotifyCollectionChangedEventArgs e)
-        {
-            var h = HealthRecordsChanged;
-            if (h != null)
-            {
-                h(this, e);
-            }
         }
 
         public override ValidationResult SelfValidate()
@@ -314,6 +289,32 @@ namespace Diagnosis.Models
                 return byFirst;
             }
             return byLast;
+        }
+
+        protected internal virtual void AddCourse(Course course)
+        {
+            if (!courses.Contains(course))
+            {
+                courses.Add(course);
+                OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, course));
+            }
+        }
+        protected virtual void OnCoursesChanged(NotifyCollectionChangedEventArgs e)
+        {
+            var h = CoursesChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
+
+        protected virtual void OnHealthRecordsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            var h = HealthRecordsChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
         }
     }
 }

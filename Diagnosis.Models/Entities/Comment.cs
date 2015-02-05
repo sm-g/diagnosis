@@ -1,20 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Collections.Specialized;
-using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
     [Serializable]
     public class Comment : IHrItemObject, IComparable<Comment>
     {
-        public virtual string String { get; set; }
-
         public Comment(string text)
         {
             Contract.Requires(text != null);
@@ -22,12 +14,16 @@ namespace Diagnosis.Models
             String = text;
         }
 
-        protected Comment() { }
+        protected Comment()
+        {
+        }
 
+        public virtual string String { get; set; }
         public override string ToString()
         {
             return String;
         }
+
         public virtual int CompareTo(IHrItemObject hio)
         {
             var comment = hio as Comment;

@@ -5,13 +5,16 @@ INSERT INTO [HrCategory] ([ID], [Title], [Ord]) VALUES (4, 'Обследован
 INSERT INTO [HrCategory] ([ID], [Title], [Ord]) VALUES (5, 'Диагноз', 5);
 INSERT INTO [HrCategory] ([ID], [Title], [Ord]) VALUES (6, 'Лечение', 6);
 
-INSERT INTO [Uom] ([ID],[Abbr],[Factor],[UomType],[Description]) VALUES (1,'л',3,1,'литр');
-INSERT INTO [Uom] ([ID],[Abbr],[Factor],[UomType],[Description]) VALUES (2,'мл',0,1,'милилитр');
-INSERT INTO [Uom] ([ID],[Abbr],[Factor],[UomType],[Description]) VALUES (3,'мкл',-3,1,'микролитр');
-INSERT INTO [Uom] ([ID],[Abbr],[Factor],[UomType],[Description]) VALUES (4,'сут',0,2,'сутки');
-INSERT INTO [Uom] ([ID],[Abbr],[Factor],[UomType],[Description]) VALUES (5,'нед',0.8451,2,'неделя');
-INSERT INTO [Uom] ([ID],[Abbr],[Factor],[UomType],[Description]) VALUES (6,'мес',1.4771,2,'месяц');
-INSERT INTO [Uom] ([ID],[Abbr],[Factor],[UomType],[Description]) VALUES (7,'г',2.5623,2,'год');
+INSERT INTO [UomType] ([ID], [Title], [Ord]) VALUES (1, 'Объем', 1);
+INSERT INTO [UomType] ([ID], [Title], [Ord]) VALUES (2, 'Время', 2);
+
+INSERT INTO [Uom] ([ID],[Abbr],[Factor],[UomTypeID],[Description]) VALUES (1,'л',3,1,'литр');
+INSERT INTO [Uom] ([ID],[Abbr],[Factor],[UomTypeID],[Description]) VALUES (2,'мл',0,1,'милилитр');
+INSERT INTO [Uom] ([ID],[Abbr],[Factor],[UomTypeID],[Description]) VALUES (3,'мкл',-3,1,'микролитр');
+INSERT INTO [Uom] ([ID],[Abbr],[Factor],[UomTypeID],[Description]) VALUES (4,'сут',0,2,'сутки');
+INSERT INTO [Uom] ([ID],[Abbr],[Factor],[UomTypeID],[Description]) VALUES (5,'нед',0.8451,2,'неделя');
+INSERT INTO [Uom] ([ID],[Abbr],[Factor],[UomTypeID],[Description]) VALUES (6,'мес',1.4771,2,'месяц');
+INSERT INTO [Uom] ([ID],[Abbr],[Factor],[UomTypeID],[Description]) VALUES (7,'г',2.5623,2,'год');
 
 INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (1, 'I', 'Некоторые инфекционные и паразитарные болезни');
 INSERT INTO [IcdChapter] ([ID], [Code], [Title]) VALUES (5, 'IX', 'Болезни системы кровообращения');

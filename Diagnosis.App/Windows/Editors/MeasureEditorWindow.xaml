@@ -4,12 +4,12 @@
         xmlns:controls="clr-namespace:Diagnosis.App.Controls"
         xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
         xmlns:ex="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
-        xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
+        xmlns:diag="http://schemas.smg.com/diagnosis"
         Title="{Binding Title}"
         SizeToContent="Height"
         Width="400"
         MinWidth="200"
-        beh:DialogCloser.DialogResult="{Binding DialogResult}"
+        diag:DialogCloser.DialogResult="{Binding DialogResult}"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         UseLayoutRounding="True">
@@ -66,7 +66,17 @@
                           SelectedItem="{Binding Uom, ValidatesOnDataErrors=True}"
                           IsEditable="True"
                           ItemsSource="{Binding Uoms}"
-                          Grid.Column="2" />
+                          Grid.Column="2">
+                    <ComboBox.GroupStyle>
+                        <GroupStyle>
+                            <GroupStyle.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" />
+                                </DataTemplate>
+                            </GroupStyle.HeaderTemplate>
+                        </GroupStyle>
+                    </ComboBox.GroupStyle>
+                </ComboBox>
             </Grid>
         </Grid>
 

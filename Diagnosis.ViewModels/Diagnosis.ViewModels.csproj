@@ -182,6 +182,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthorityController.cs" />
+    <Compile Include="Autocomplete\IAutocompleteViewModel.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Framework\MenuItem.cs" />
     <Compile Include="Framework\VisibleRelayCommand.cs" />
@@ -192,8 +193,11 @@
     <Compile Include="Framework\Services\FileDialogService.cs" />
     <Compile Include="Framework\IDialogViewModel.cs" />
     <Compile Include="Framework\Services\FileType.cs" />
+    <Compile Include="SampleViewModels.cs" />
     <Compile Include="Screens\Card\HolderViewModel.cs" />
     <Compile Include="Autocomplete\MeasureEditorViewModel.cs" />
+    <Compile Include="Screens\Shell\ServerMainWindowViewModel.cs" />
+    <Compile Include="Screens\Uoms\UomEditorViewModel.cs" />
     <Compile Include="Screens\Doctors\DoctorsListViewModel.cs" />
     <Compile Include="Screens\Doctors\DoctorEditorViewModel.cs" />
     <Compile Include="Screens\Doctors\DoctorViewModel.cs" />
@@ -212,6 +216,9 @@
     <Compile Include="Screens\Card\Holders\PatientViewModel.cs" />
     <Compile Include="Screens\Card\Managers\HrViewer.cs" />
     <Compile Include="Screens\AdminSettingsViewModel.cs" />
+    <Compile Include="Screens\Specialities\SpecialityListViewModel.cs" />
+    <Compile Include="Screens\Specialities\SpecialityEditorViewModel.cs" />
+    <Compile Include="Screens\Specialities\SpecialityViewModel.cs" />
     <Compile Include="Screens\Shell\AvalonDock\ScreenBaseViewModel.cs" />
     <Compile Include="Screens\Shell\AvalonDock\AvalonDockLayoutViewModel.cs" />
     <Compile Include="Screens\Shell\HelpViewModel.cs" />
@@ -219,6 +226,8 @@
     <Compile Include="Screens\Shell\AvalonDock\PaneViewModel.cs" />
     <Compile Include="Screens\Shell\AvalonDock\ToolViewModel.cs" />
     <Compile Include="Screens\Shell\UndoOverlayViewModel.cs" />
+    <Compile Include="Screens\Uoms\UomsListViewModel.cs" />
+    <Compile Include="Screens\Uoms\UomViewModel.cs" />
     <Compile Include="Screens\Words\WordEditorViewModel.cs" />
     <Compile Include="Search\Exporter.cs" />
     <Compile Include="Autocomplete\IcdSelectorViewModel.cs" />
@@ -251,7 +260,6 @@
     <Compile Include="Screens\Shell\MenuBarViewModel.cs" />
     <Compile Include="Screens\Shell\PanelViewModel.cs" />
     <Compile Include="Screens\Shell\ScreenSwitcher.cs" />
-    <Compile Include="Screens\Patients\ShortPatientViewModel.cs" />
     <Compile Include="Screens\SearchViewModel.cs" />
     <Compile Include="Screens\SettingsViewModel.cs" />
     <Compile Include="Screens\Words\WordsListViewModel.cs" />

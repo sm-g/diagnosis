@@ -6,6 +6,7 @@ using System.Windows.Data;
 using System.Globalization;
 using Diagnosis.Common;
 using Diagnosis.Models;
+using Diagnosis.Common.Converters;
 
 namespace Diagnosis.App.Converters
 {

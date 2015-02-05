@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300">
@@ -49,7 +49,7 @@
             </Button>
         </ToolBar>
 
-        <search:Filter DataContext="{Binding Filter}"
+        <diag:Filter DataContext="{Binding Filter}"
                        Grid.Row="1" />
 
         <!-- Set VirtualizationMode for IsSelected binding -->
@@ -57,7 +57,7 @@
                   Grid.Row="2"
                   ItemsSource="{Binding Words}"
                   SelectedItem="{Binding SelectedWord}"
-                  beh:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedWords}"
+                  diag:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedWords}"
                   Visibility="{Binding NoWords, Converter={StaticResource NegBooleanToVisibilityConverter}}"
                   Margin="0,10,0,0"
                   Style="{DynamicResource MyDataGridStyle}"
@@ -100,7 +100,7 @@
                 <Style TargetType="DataGridRow">
                     <Setter Property="IsSelected"
                             Value="{Binding IsSelected, Mode=TwoWay}" />
-                    <Setter Property="beh:RowDblClick.DoubleClickCommand"
+                    <Setter Property="diag:RowDblClick.DoubleClickCommand"
                             Value="{Binding ElementName=dataGrid, Path=DataContext.EditCommand}" />
                     <Setter Property="Tag"
                             Value="{Binding DataContext, ElementName=dataGrid}" />

@@ -1,46 +1,77 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using Diagnosis.Models.Validators;
+using FluentValidation.Results;
+using System;
 using System.Diagnostics.Contracts;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Collections.Specialized;
-using Iesi.Collections.Generic;
 
 namespace Diagnosis.Models
 {
     [Serializable]
-
-    public class Uom : EntityBase<int>, IDomainObject
+    public class Uom : ValidatableEntity<int>, IDomainObject
     {
-        public static Uom Null = new Uom("—", 1, -1);  // для измерения без единицы
+        public static Uom Null = new Uom("—", 1, new UomType(""));  // для измерения без единицы
+        private string _description;
+        private string _abbr;
+        private double _factor;
 
-        public virtual string Abbr { get; protected set; }
-        public virtual string Description { get; set; }
-        /// <summary>
-        /// Показатель степени множителя по основанию 10 относительно
-        /// базовой единицы этого типа (единицы объема: -3 для мкл, 0 для мл).
-        /// При сохранении в БД Measure.Value = Value * 10^Factor.
-        /// </summary>
-        public virtual double Factor { get; set; }
-        public virtual int Type { get; set; }
-
-        public Uom(string abbr, double factor, int type)
+        public Uom(string abbr, double factor, UomType type)
         {
-            Contract.Requires(!string.IsNullOrWhiteSpace(abbr));
+            Contract.Requires(abbr != null);
 
             this.Abbr = abbr;
             this.Factor = factor;
             this.Type = type;
         }
 
-        protected Uom() { }
-
-        public override string ToString()
+        protected Uom()
         {
-            return string.Format("{0}", Abbr);
         }
 
+        public virtual string Abbr
+        {
+            get { return _abbr; }
+            set
+            {
+                var filtered = value.Trim();
+                SetProperty(ref _abbr, filtered, () => Abbr);
+            }
+        }
+
+        public virtual string Description
+        {
+            get { return _description; }
+            set
+            {
+                var filtered = (value ?? "").Trim();
+                SetProperty(ref _description, filtered, () => Description);
+            }
+        }
+
+        /// <summary>
+        /// Показатель степени множителя по основанию 10 относительно
+        /// базовой единицы этого типа (единицы объема: -3 для мкл, 0 для мл).
+        /// При сохранении в БД Measure.Value = Value * 10^Factor.
+        /// </summary>
+        public virtual double Factor
+        {
+            get { return _factor; }
+            set
+            {
+                SetProperty(ref _factor, value, () => Factor);
+            }
+        }
+
+        public virtual UomType Type { get; set; }
+
+        public virtual bool IsBase { get { return Factor == 0; } }
+        public override string ToString()
+        {
+            return string.Format("{0} f{1}", Abbr, Factor);
+        }
+
+        public override ValidationResult SelfValidate()
+        {
+            return new UomValidator().Validate(this);
+        }
     }
 }

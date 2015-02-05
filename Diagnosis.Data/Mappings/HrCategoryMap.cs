@@ -17,6 +17,7 @@ namespace Diagnosis.Data.Mappings
             {
                 m.Column("Title");
                 m.NotNullable(true);
+                m.Length(20);
             });
             Property(x => x.Ord, m =>
             {

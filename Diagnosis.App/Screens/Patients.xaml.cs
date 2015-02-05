@@ -1,4 +1,5 @@
-﻿using Diagnosis.App.Controls;
+﻿using Diagnosis.Common.Controls;
+using Diagnosis.App.Controls;
 using System.Windows.Controls;
 using System.Windows.Input;
 

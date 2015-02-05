@@ -8,13 +8,10 @@
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
              x:Name="header"
-             d:DataContext="{DynamicResource Context}"
+             d:DataContext="{d:DesignInstance diag:SampleHeaderViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="300"
              d:DesignWidth="300">
-    <!-- HeaderViewModel -->
-    <UserControl.Resources>
-        <diag:HeaderViewModel x:Key="Context" />
-      
+    <UserControl.Resources>      
         <Style x:Key="HeaderNavButton"
                TargetType="{x:Type Button}"
                BasedOn="{StaticResource {x:Type Button}}">

@@ -8,7 +8,23 @@ namespace Diagnosis.Models
 
         public virtual string Name { get; set; }
 
+        /// <summary>
+        /// Порядок, уникальный.
+        /// </summary>
         public virtual int Ord { get; set; }
+
+        public static bool operator ==(HrCategory x, HrCategory y)
+        {
+            if (object.ReferenceEquals(x, null) || object.ReferenceEquals(y, null))
+                return object.ReferenceEquals(x, y);
+
+            return x.Equals(y);
+        }
+
+        public static bool operator !=(HrCategory x, HrCategory y)
+        {
+            return !(x == y);
+        }
 
         public override string ToString()
         {
@@ -26,20 +42,6 @@ namespace Diagnosis.Models
             else
                 throw new ArgumentException("Object is not a HrCategory");
         }
-
-        public static bool operator ==(HrCategory x, HrCategory y)
-        {
-            if (object.ReferenceEquals(x, null) || object.ReferenceEquals(y, null))
-                return object.ReferenceEquals(x, y);
-
-            return x.Equals(y);
-        }
-
-        public static bool operator !=(HrCategory x, HrCategory y)
-        {
-            return !(x == y);
-        }
-
         public override bool Equals(object obj)
         {
             // Null-value равен null

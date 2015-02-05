@@ -3,20 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:Diagnosis.App.Controls"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
         xmlns:diag="http://schemas.smg.com/diagnosis"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
         Title="{Binding Title}"
         Height="400"
-        Width="500"       
+        Width="500"
         mc:Ignorable="d"
-        d:DataContext="{DynamicResource Context}"
-        beh:DialogCloser.DialogResult="{Binding DialogResult}"
-        beh:FocusBehavior.FocusFirst="True"
->
+        d:DataContext="{d:DesignInstance diag:SampleIcdSelectorViewModel, IsDesignTimeCreatable=True}"
+        diag:DialogCloser.DialogResult="{Binding DialogResult}"
+        diag:FocusBehavior.FocusFirst="True">
     <Window.Resources>
-        <diag:IcdSelectorViewModel x:Key="Context" />
     </Window.Resources>
     <Grid Margin="0,0,10,10">
         <Grid.RowDefinitions>
@@ -40,10 +37,18 @@
             </DockPanel>
         </StackPanel>
 
-        <search:SearchTree DataContext="{Binding DiagnosisSearch}"
-                           Collection="{Binding DataContext.Chapters, ElementName=icdPicker}"
-                           Margin="10,0,0,0"
-                           Grid.Row="1" />
+        <diag:SearchTree DataContext="{Binding DiagnosisSearch}"
+                         Collection="{Binding DataContext.Chapters, ElementName=icdPicker}"
+                         Margin="10,0,0,0"
+                         Grid.Row="1">
+            <diag:SearchTree.AfterFilterPanel>
+                <DockPanel>
+                    <ToggleButton Content="Полный список"
+                                  ToolTip="Список с подрубриками (например, А01.5)"
+                                  IsChecked="{Binding DataContext.IcdTopLevelOnly, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource NegateBoolean}}" />
+                </DockPanel>
+            </diag:SearchTree.AfterFilterPanel>
+        </diag:SearchTree>
 
         <StackPanel Grid.Row="2"
                     Style="{StaticResource DialogButtonsPanel}">

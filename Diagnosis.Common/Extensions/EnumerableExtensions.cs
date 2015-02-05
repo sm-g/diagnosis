@@ -243,6 +243,7 @@ namespace Diagnosis.Common
         /// <param name="list1"></param>
         /// <param name="list2"></param>
         /// <returns></returns>
+        [Pure]
         public static bool ScrambledEquals<T>(this IEnumerable<T> list1, IEnumerable<T> list2)
         {
             var cnt = new Dictionary<T, int>();

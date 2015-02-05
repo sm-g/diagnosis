@@ -3,9 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="clr-namespace:Diagnosis.App.Controls"
-             xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
-             xmlns:card="clr-namespace:Diagnosis.App.Controls.CardParts"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
              xmlns:headers="clr-namespace:Diagnosis.App.Controls.Headers"
              mc:Ignorable="d"
              x:Name="searchResult"
@@ -23,10 +21,10 @@
         </Grid.RowDefinitions>
 
         <headers:Holder DataContext="{Binding Holder}" />
-        <controls:CommaList ItemsSource="{Binding HealthRecords}"
+        <diag:CommaList ItemsSource="{Binding HealthRecords}"
                             Visibility="{Binding HealthRecords.Count, Converter={StaticResource MoreThanToVisibility}}"
                             Grid.Row="2">
-            <controls:CommaList.ItemTemplate>
+            <diag:CommaList.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Converter={StaticResource hrItems}}"
                                TextWrapping="Wrap">
@@ -51,10 +49,10 @@
                         </TextBlock.Style>
                     </TextBlock>
                 </DataTemplate>
-            </controls:CommaList.ItemTemplate>
-            <controls:CommaList.Separator>
+            </diag:CommaList.ItemTemplate>
+            <diag:CommaList.Separator>
                 <TextBlock Text="; " />
-            </controls:CommaList.Separator>
-        </controls:CommaList>
+            </diag:CommaList.Separator>
+        </diag:CommaList>
     </Grid>
 </UserControl>

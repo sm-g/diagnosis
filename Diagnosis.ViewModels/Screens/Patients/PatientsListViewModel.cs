@@ -47,7 +47,11 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     // выбираем нового пациента или изменившегося с учетом фильтра
                     Filter.Filter();
-                    SelectedPatient = e.GetValue<Patient>(MessageKeys.Patient);
+                    var saved = e.GetValue<Patient>(MessageKeys.Patient);
+                    var visible = Patients.Where(x => x == saved).FirstOrDefault();
+                    if (visible != null)
+                        SelectedPatient = saved;
+
                     NoPatients = false;
                 })
             });

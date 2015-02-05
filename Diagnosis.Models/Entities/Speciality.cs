@@ -1,54 +1,91 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
+﻿using Diagnosis.Models.Validators;
+using FluentValidation.Results;
 using Iesi.Collections.Generic;
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class Speciality : EntityBase<int>, IDomainObject
+    public class Speciality : ValidatableEntity<int>, IDomainObject
     {
         public static Speciality Null = new Speciality("—");  // для врача без специальности
 
-        IList<IcdBlock> icdBlocks = new List<IcdBlock>(); // many-2-many bag
-        Iesi.Collections.Generic.ISet<Doctor> doctors = new HashedSet<Doctor>();
-        Iesi.Collections.Generic.ISet<SpecialityIcdBlocks> specialityIcdBlocks = new HashedSet<SpecialityIcdBlocks>();
+        private IList<IcdBlock> icdBlocks = new List<IcdBlock>(); // many-2-many bag
+        private Iesi.Collections.Generic.ISet<Doctor> doctors = new HashedSet<Doctor>();
+        private Iesi.Collections.Generic.ISet<SpecialityIcdBlocks> specialityIcdBlocks = new HashedSet<SpecialityIcdBlocks>();
+        private string _title;
 
-
-        public virtual string Title { get; protected set; }
-        public virtual IEnumerable<IcdBlock> IcdBlocks
+        public Speciality(string title)
         {
-            get
+            Contract.Requires(title != null);
+
+            Title = title;
+        }
+
+        protected Speciality()
+        {
+        }
+
+        public virtual event NotifyCollectionChangedEventHandler BlocksChanged;
+
+        public virtual string Title
+        {
+            get { return _title; }
+            set
             {
-                return icdBlocks;
+                var filtered = value.Replace(Environment.NewLine, " ").Replace('\t', ' ').Trim();
+                SetProperty(ref _title, filtered, () => Title);
             }
         }
+
+        public virtual IEnumerable<IcdBlock> IcdBlocks
+        {
+            get { return icdBlocks.OrderBy(x => x.Code); }
+        }
+
         public virtual IEnumerable<Doctor> Doctors
         {
-            get
-            {
-                return doctors;
-            }
+            get { return doctors; }
         }
 
         public virtual IEnumerable<SpecialityIcdBlocks> SpecialityIcdBlocks
         {
             get { return specialityIcdBlocks; }
         }
-
-        public Speciality(string title)
+        public virtual IcdBlock AddBlock(IcdBlock block)
         {
-            Contract.Requires(!String.IsNullOrEmpty(title));
+            icdBlocks.Add(block);
+            OnBlocksChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, block));
 
-            Title = title;
+            return block;
         }
 
-        protected Speciality() { }
+        public virtual void RemoveBlock(IcdBlock block)
+        {
+            if (icdBlocks.Remove(block))
+                OnBlocksChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, block));
+        }
 
         public override string ToString()
         {
             return Title;
         }
-    }
 
+        public override ValidationResult SelfValidate()
+        {
+            return new SpecialityValidator().Validate(this);
+        }
+
+        protected virtual void OnBlocksChanged(NotifyCollectionChangedEventArgs e)
+        {
+            var h = BlocksChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
+    }
 }

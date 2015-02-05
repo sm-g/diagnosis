@@ -25,8 +25,6 @@ namespace Diagnosis.Data.Mappings
             {
                 m.Column("DoctorID");
             });
-
-
         }
     }
 }

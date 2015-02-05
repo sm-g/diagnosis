@@ -12,10 +12,11 @@
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Resources/ColorResources.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Resources/NormalFontResources.xaml" />
 
-                <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Styles/BeforeThemeStyles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/BeforeThemeStyles.xaml" />
 
-                <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Styles/ListBoxItemAero2Style.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Styles/TreeStyle.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/AfterThemeStyles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/TreeStyle.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/ListBoxItemAero2Style.xaml" />
                 
 <!-- Mahapps -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />

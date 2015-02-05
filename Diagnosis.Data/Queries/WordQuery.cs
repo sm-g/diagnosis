@@ -1,5 +1,4 @@
-﻿using Diagnosis.Data.Specs;
-using Diagnosis.Models;
+﻿using Diagnosis.Models;
 using NHibernate;
 using NHibernate.Criterion;
 using System;
@@ -45,18 +44,17 @@ namespace Diagnosis.Data.Queries
         }
 
         /// <summary>
-        /// Возвращает все слова, которые начинаются на строку. 
+        /// Возвращает все слова, которые начинаются на строку.
         /// Если у слова есть родитель, вместо этого слова возвращается самый верхний предок слова.
-        /// 
+        ///
         /// Например, слова:
         /// сидя
         /// образование
         ///     высшее
         ///     среднее
-        ///     
+        ///
         /// Ищем «с», возвращаются «сидя, образование».
-        /// 
-        /// TODO withnoncheckable = true
+        ///
         /// </summary>
         public static Func<string, IEnumerable<Word>> TopParentStartingWith(ISession session)
         {
@@ -76,6 +74,7 @@ namespace Diagnosis.Data.Queries
                 return result;
             };
         }
+
         /// <summary>
         /// Возвращает все слова, которые начинаются на строку.
         /// Сначала слова - дети родителя, потом остальные.

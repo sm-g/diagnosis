@@ -1,6 +1,6 @@
-﻿using NHibernate.Mapping.ByCode;
+﻿using Diagnosis.Models;
+using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
-using Diagnosis.Models;
 
 namespace Diagnosis.Data.Mappings
 {

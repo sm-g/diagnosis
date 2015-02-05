@@ -2,6 +2,7 @@
 using Diagnosis.App.Windows;
 using Diagnosis.App.Windows.Shell;
 using Diagnosis.Common;
+using Diagnosis.Common.DebugTools;
 using Diagnosis.Common.Util;
 using Diagnosis.Data;
 using Diagnosis.Data.Versions;
@@ -79,7 +80,29 @@ namespace Diagnosis.App
 
 #if DEBUG
             new DebugOutput(0);
-            new DebugWindow().Show();
+
+            var debugVm = new LogTraceListener()
+            {
+                FilterContains = Diagnosis.App.Properties.Settings.Default.DebugFilter ?? "",
+                FilterOn = Diagnosis.App.Properties.Settings.Default.DebugFilterOn
+            };
+            debugVm.PropertyChanged += (s, e1) =>
+            {
+                switch (e1.PropertyName)
+                {
+                    case "FilterContains":
+                        Diagnosis.App.Properties.Settings.Default.DebugFilter = debugVm.FilterContains;
+                        break;
+                }
+            };
+            var debWin = new DebugWindow(debugVm);
+            debWin.Closing += (s, e1) =>
+            {
+                Diagnosis.App.Properties.Settings.Default.DebugFilterOn = debugVm.FilterOn;
+
+            };
+            debWin.Show();
+
             NHibernateHelper.ShowSql = !NHibernateHelper.InMemory;
 #endif
 

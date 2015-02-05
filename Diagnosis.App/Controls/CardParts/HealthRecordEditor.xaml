@@ -8,26 +8,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
              x:Name="editor"
              Tag="{Binding DataContext.HrList, RelativeSource={RelativeSource AncestorType=UserControl}}"
-             d:DataContext="{DynamicResource Context}"
-             d:DesignHeight="250"
+             d:DataContext="{d:DesignInstance diag:SampleHrEditorViewModel, IsDesignTimeCreatable=True}"
+             d:DesignHeight="300"
              d:DesignWidth="600">
-    <!--DataContext is HrEditorViewModel-->
     <!--Tag is HrListViewModel-->
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../../Styles/DefaultExpander.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-            <diag:HrEditorViewModel x:Key="Context" />
-
-            <Style TargetType="Label"
-                   BasedOn="{StaticResource label90}" />
-        </ResourceDictionary>
+        <Style TargetType="Label"
+               BasedOn="{StaticResource label90}" />
     </UserControl.Resources>
 
     <UserControl.InputBindings>
@@ -47,10 +38,10 @@
           GotKeyboardFocus="grid_GotKeyboardFocus"
           GotFocus="grid_GotFocus"
           LostFocus="grid_LostFocus"
-          beh:FocusExtension.IsFocused="{Binding IsFocused}"
-          beh:FocusExtension.Direct="True"
+          diag:FocusExtension.IsFocused="{Binding IsFocused}"
+          diag:FocusExtension.Direct="True"
           KeyboardNavigation.IsTabStop="False"
-          beh:FocusBehavior.FocusablePanel="True">
+          diag:FocusBehavior.FocusablePanel="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition />

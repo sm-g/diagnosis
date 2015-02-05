@@ -13,12 +13,20 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.Native);
             });
 
-            Property(x => x.Abbr, m => m.NotNullable(true));
-            Property(x => x.Description);
-            Property(x => x.Factor, m => m.NotNullable(true));
-            Property(x => x.Type, m =>
+            Property(x => x.Abbr, m =>
             {
-                m.Column("UomType");
+                m.NotNullable(true);
+                m.Length(10);
+            });
+            Property(x => x.Description, m =>
+            {
+                m.NotNullable(true);
+                m.Length(100);
+            });
+            Property(x => x.Factor, m => m.NotNullable(true));
+            ManyToOne(x => x.Type, m =>
+            {
+                m.Column("UomTypeID");
                 m.NotNullable(true);
             });
         }

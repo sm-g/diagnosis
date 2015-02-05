@@ -12,14 +12,11 @@
              x:Name="card"
              mc:Ignorable="d"
              UseLayoutRounding="True"
-             d:DataContext="{DynamicResource Context}"
-             d:DesignHeight="300"
+             d:DataContext="{d:DesignInstance diag:CardViewModel, IsDesignTimeCreatable=False}"
+             d:DesignHeight="400"
              d:DesignWidth="600">
-    <!-- CardViewModel -->
     <UserControl.Resources>
-        <ResourceDictionary>
-            <diag:CardViewModel x:Key="Context" />
-        </ResourceDictionary>
+      
     </UserControl.Resources>
 
     <UserControl.InputBindings>
@@ -47,7 +44,7 @@
             <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem"
                        BasedOn="{StaticResource {x:Type TreeViewItem}}">
-                    <Setter Property="beh:Attached.InputBindings"
+                    <Setter Property="diag:Attached.InputBindings"
                             Value="{StaticResource CardElementsInputBindings}" />
                     <Setter Property="FontWeight"
                             Value="Normal" />
@@ -97,6 +94,7 @@
                      Grid.Column="1"
                      Margin="0,0,0,10" />
         <card:HealthRecordsList DataContext="{Binding HrList}"
+                                d:DataContext="{x:Null}"
                                 Grid.Column="1"
                                 Grid.Row="1" />
 

@@ -1,8 +1,5 @@
 ﻿using Diagnosis.Common;
-using Iesi.Collections.Generic;
 using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
@@ -43,8 +40,8 @@ namespace Diagnosis.Models
         }
 
         public virtual HealthRecord HealthRecord { get; protected set; }
-        public virtual string TextRepr { get; protected set; }
 
+        public virtual string TextRepr { get; protected set; }
 
         public virtual IcdDisease Disease
         {
@@ -58,6 +55,7 @@ namespace Diagnosis.Models
                 OnPropertyChanged("Disease");
             }
         }
+
         public virtual Word Word
         {
             get
@@ -115,6 +113,5 @@ namespace Diagnosis.Models
         {
             return string.Format("{0} {1} {2}", this.ShortId(), Ord, Entity);
         }
-
     }
 }

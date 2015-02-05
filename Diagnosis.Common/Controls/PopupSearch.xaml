@@ -1,0 +1,50 @@
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
+             x:Class="Diagnosis.Common.Controls.Search.PopupSearch"
+             xmlns:beh="clr-namespace:Diagnosis.Common.Behaviors"
+             xmlns:controls="clr-namespace:Diagnosis.Common.Controls"
+             xmlns:search="clr-namespace:Diagnosis.Common.Controls.Search"
+             mc:Ignorable="d"
+             d:DesignHeight="100"
+             d:DesignWidth="300"
+             x:Name="floatSearch"
+             GotFocus="UserControl_GotFocus"
+             beh:EnhancedFocusScope.IsEnhancedFocusScope="True">
+    <!--PopupSearch<,>-->
+    <Grid MaxHeight="100">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        
+        <search:Filter DataContext="{Binding Filter}"
+                       PreviewInputKeyDown="input_PreviewKeyDown"
+                       GotMouseCapture="input_GotMouseCapture"
+                       LostFocus="input_LostFocus" />
+        
+        <Popup x:Name="popup"
+               IsOpen="{Binding IsResultsVisible, Mode=TwoWay}"
+               PlacementTarget="{Binding ElementName=input, Mode=OneWay}">
+            <ListBox x:Name="results"
+                     MaxHeight="100"
+                     ItemsSource="{Binding Filter.Results}"
+                     SelectionChanged="results_SelectionChanged"
+                     MouseUp="results_MouseUp"
+                     SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
+                     IsTabStop="True"
+                     Visibility="{Binding Filter.Results.Count, Converter={StaticResource MoreThanToVisibility}, Mode=OneWay}"
+                     Grid.Row="1">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel>
+                            <TextBlock Text="{Binding }" />
+                        </DockPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Popup>
+    </Grid>
+</UserControl>

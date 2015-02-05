@@ -5,22 +5,18 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:editors="clr-namespace:Diagnosis.App.Controls.Editors"
         xmlns:controls="clr-namespace:Diagnosis.App.Controls"
-        xmlns:beh="clr-namespace:Diagnosis.App.Behaviors"
         xmlns:card="clr-namespace:Diagnosis.App.Controls.CardParts"
         xmlns:diag="http://schemas.smg.com/diagnosis"
         Title="{Binding Title}"
         Height="350"
         Width="500"
-        beh:DialogCloser.DialogResult="{Binding DialogResult}"
-        beh:FocusBehavior.FocusFirst="True"
+        diag:DialogCloser.DialogResult="{Binding DialogResult}"
+        diag:FocusBehavior.FocusFirst="True"
         ShowInTaskbar="False"
         ResizeMode="NoResize"
-
         mc:Ignorable="d"
-        d:DataContext="{DynamicResource vm}">
-    <!--PatientViewModel-->
+        d:DataContext="{d:DesignInstance diag:PatientEditorViewModel, IsDesignTimeCreatable=False}">
     <Window.Resources>
-        <diag:PatientEditorViewModel x:Key="vm" />
     </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -51,10 +47,10 @@
                            VerticalAlignment="Top" />
                     <TextBox Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                              Grid.Column="1">
-                        <controls:WatermarkService.Watermark>
+                        <diag:WatermarkService.Watermark>
                             <TextBlock Style="{StaticResource watermark}"
                                        Margin="5,0,0,0">ФИО</TextBlock>
-                        </controls:WatermarkService.Watermark>
+                        </diag:WatermarkService.Watermark>
                     </TextBox>
                     <TextBlock TextWrapping="Wrap"                               
                                Grid.Row="1"

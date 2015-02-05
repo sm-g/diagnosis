@@ -14,7 +14,7 @@ using System.Windows;
 
 namespace Diagnosis.ViewModels.Autocomplete
 {
-    public class AutocompleteViewModel : ViewModelBase, IClipboardTarget
+    public class AutocompleteViewModel : ViewModelBase, IClipboardTarget, Diagnosis.ViewModels.Autocomplete.IAutocompleteViewModel
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(AutocompleteViewModel));
         private readonly Recognizer recognizer;
@@ -984,5 +984,22 @@ namespace Diagnosis.ViewModels.Autocomplete
                 }
             }
         }
+               
+
+        System.Windows.Input.ICommand IAutocompleteViewModel.EditCommand
+        {
+            get { return EditCommand; }
+        }
+
+        System.Windows.Input.ICommand IAutocompleteViewModel.SendToSearchCommand
+        {
+            get { return SendToSearchCommand; }
+        }
+
+        IDropTarget IAutocompleteViewModel.DropHandler
+        {
+            get { return DropHandler; }
+        }    
     }
+
 }

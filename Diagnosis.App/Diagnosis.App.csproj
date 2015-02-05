@@ -234,19 +234,11 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Compile Include="Behaviors\AvalonDockLayoutSerializer.cs" />
-    <Compile Include="Behaviors\ClipboardBehavior.cs" />
-    <Compile Include="Behaviors\EnumListExtension.cs" />
-    <Compile Include="Behaviors\FocusBehavior.cs" />
     <Compile Include="Behaviors\IsActive.cs" />
     <Compile Include="Behaviors\ListBoxSelector.cs" />
-    <Compile Include="Behaviors\MenuItemExtensions.cs" />
-    <Compile Include="Behaviors\MultiSelectorBehaviours.cs" />
-    <Compile Include="Behaviors\RowDblClick.cs" />
-    <Compile Include="Behaviors\TwoListSynchronizer.cs" />
     <Compile Include="Controls\CardParts\Header.xaml.cs">
       <DependentUpon>Header.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Common\UniformGridWithOrientation.cs" />
     <Compile Include="Controls\Headers\Appointment.xaml.cs">
       <DependentUpon>Appointment.xaml</DependentUpon>
     </Compile>
@@ -261,40 +253,21 @@
     </Compile>
     <Compile Include="Controls\Common\HrsHolderDataTemplateSelector.cs" />
     <Compile Include="Resources\Themes\Helpers.cs" />
-    <Compile Include="Converters\BaseConverter.cs" />
-    <Compile Include="Converters\DateOffsetConverters.cs" />
     <Compile Include="Windows\Helpers\AvalonExtensions.cs" />
     <Compile Include="Resources\Themes\ThemeManager.cs" />
     <Compile Include="Windows\Helpers\WindowHelper.cs" />
-    <Compile Include="Controls\Helpers\XamlExtensions.cs" />
     <Compile Include="Controls\Search\HrSearchResult2.xaml.cs">
       <DependentUpon>HrSearchResult2.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converters\EnumToLabel.cs" />
     <Compile Include="Converters\ScopeToLabel.cs" />
-    <Compile Include="Converters\ListConverters.cs" />
     <Compile Include="Converters\HrToItemsString.cs" />
     <Compile Include="Screens\Card.xaml.cs">
       <DependentUpon>Card.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Common\AlignableWrapPanel.cs" />
-    <Compile Include="Controls\Common\WrapPanelLastChildFill.cs" />
     <Compile Include="Controls\Common\SpecialCaseDataTemplateSelector.cs" />
-    <Compile Include="Controls\Common\UndoOverlay.xaml.cs">
-      <DependentUpon>UndoOverlay.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Helpers\DataGridHelper.cs" />
-    <Compile Include="Behaviors\FirstFocusedElementExtension.cs" />
-    <Compile Include="Controls\Search\Filter.xaml.cs">
-      <DependentUpon>Filter.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Common\CommaList.xaml.cs">
-      <DependentUpon>CommaList.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\CardParts\HealthRecordEditor.xaml.cs">
       <DependentUpon>HealthRecordEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Helpers\ItemCollectionExtensions.cs" />
     <Compile Include="Controls\CardParts\HealthRecordsList.xaml.cs">
       <DependentUpon>HealthRecordsList.xaml</DependentUpon>
     </Compile>
@@ -303,9 +276,6 @@
     </Compile>
     <Compile Include="Controls\Search\Autocomplete.xaml.cs">
       <DependentUpon>Autocomplete.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Search\SearchTree.xaml.cs">
-      <DependentUpon>SearchTree.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Editors\AgePicker.xaml.cs">
       <DependentUpon>AgePicker.xaml</DependentUpon>
@@ -318,9 +288,6 @@
     </Compile>
     <Compile Include="Controls\Editors\ComboBoxDatePicker.xaml.cs">
       <DependentUpon>ComboBoxDatePicker.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Search\PopupSearch.xaml.cs">
-      <DependentUpon>PopupSearch.xaml</DependentUpon>
     </Compile>
     <Compile Include="Screens\Doctors.xaml.cs">
       <DependentUpon>Doctors.xaml</DependentUpon>
@@ -353,25 +320,10 @@
     <Compile Include="Controls\Editors\SexChooser.xaml.cs">
       <DependentUpon>SexChooser.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Behaviors\Attached.cs" />
-    <Compile Include="Behaviors\IsFocused.cs" />
-    <Compile Include="Controls\Common\RadioListBox.xaml.cs">
-      <DependentUpon>RadioListBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Common\TextBoxInfo.xaml.cs">
-      <DependentUpon>TextBoxInfo.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Search\Tag.xaml.cs">
       <DependentUpon>Tag.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converters\NullToVis.cs" />
-    <Compile Include="Converters\NumericConverters.cs" />
-    <Compile Include="Converters\DateTimeLabels.cs" />
-    <Compile Include="Converters\EqualityToBool.cs" />
     <Compile Include="Converters\ManToName.cs" />
-    <Compile Include="Converters\BooleanConverter.cs" />
-    <Compile Include="Converters\BoolToSexSign.cs" />
-    <Compile Include="Converters\IntToString.cs" />
     <Compile Include="Screens\Patients.xaml.cs">
       <DependentUpon>Patients.xaml</DependentUpon>
     </Compile>
@@ -384,22 +336,9 @@
     <Compile Include="Screens\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Helpers\WatermarkAdorner.cs" />
-    <Compile Include="Controls\Helpers\WatermarkService.cs" />
-    <Compile Include="Converters\AgeToYearsLabel.cs" />
-    <Compile Include="Converters\BoolToVis.cs" />
-    <Compile Include="Converters\BoolToAligment.cs" />
-    <Compile Include="Converters\MonthToString.cs" />
-    <Compile Include="Converters\CountToVisibility.cs" />
-    <Compile Include="Converters\TreeDepthToMargin.cs" />
-    <Compile Include="Controls\Helpers\VisualTreeExtensions.cs" />
-    <Compile Include="Behaviors\EnhancedFocusScope.cs" />
-    <Compile Include="Controls\Helpers\FocusChecker.cs" />
-    <Compile Include="Controls\Helpers\TreeViewItemExtenstions.cs" />
     <Compile Include="Controls\Directory\WordTreeItem.xaml.cs">
       <DependentUpon>WordTreeItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Styles\TreeStyle.cs" />
     <Compile Include="Controls\Common\FullTree.xaml.cs">
       <DependentUpon>FullTree.xaml</DependentUpon>
     </Compile>
@@ -409,11 +348,6 @@
     <Compile Include="Windows\Editors\CourseEditorWindow.xaml.cs">
       <DependentUpon>CourseEditorWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\DebugWindow.xaml.cs">
-      <DependentUpon>DebugWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Behaviors\DialogCloser.cs" />
-    <Compile Include="Windows\Helpers\TraceListener.cs" />
     <Compile Include="Windows\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
@@ -424,10 +358,6 @@
       <DependentUpon>MenuBar.xaml</DependentUpon>
     </Compile>
     <Page Include="Controls\CardParts\Header.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\Common\UndoOverlay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -447,17 +377,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Search\Filter.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\Search\HrSearchResult2.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\Common\CommaList.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\CardParts\HealthRecordEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -475,10 +397,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Search\SearchTree.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Controls\Editors\AgePicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -495,10 +413,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Search\PopupSearch.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Resources\BigFontResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -512,10 +426,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Styles\AvalonDock.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="Styles\BeforeThemeStyles.xaml">
+    <Page Include="Styles\TabControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -559,14 +473,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Common\RadioListBox.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\Common\TextBoxInfo.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\Search\Tag.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -591,27 +497,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\ListBoxItemAero2Style.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Styles\ListViewItemAero2Style.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\AfterThemeStyles.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Windows\Editors\AppointmentEditorWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\Editors\CourseEditorWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\DebugWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -652,17 +542,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Styles\NonFocusableExpander.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\TabControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\TreeStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\Directory\WordTreeItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -782,6 +661,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\SortAscending.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DesignData\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

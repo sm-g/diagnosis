@@ -65,7 +65,7 @@ namespace Diagnosis.ViewModels.Autocomplete
     public class TagViewModel : ViewModelBase, IDropTarget
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(TagViewModel));
-        readonly AutocompleteViewModel autocomplete;
+        readonly IAutocompleteViewModel autocomplete;
         private object _blank;
         private bool _focused;
         private string _query;
@@ -81,7 +81,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// Создает пустой тег.
         /// </summary>
-        public TagViewModel(AutocompleteViewModel parent)
+        public TagViewModel(IAutocompleteViewModel parent)
         {
             Contract.Requires(parent != null);
             Contract.Ensures(State == State.Init);
@@ -94,7 +94,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// Создает тег с запросом.
         /// </summary>
-        public TagViewModel(AutocompleteViewModel parent, string query)
+        public TagViewModel(IAutocompleteViewModel parent, string query)
         {
             Contract.Requires(parent != null);
             Contract.Ensures(State == State.Typing);
@@ -108,7 +108,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// Создает тег с сущностями.
         /// </summary>
-        public TagViewModel(AutocompleteViewModel parent, IHrItemObject item)
+        public TagViewModel(IAutocompleteViewModel parent, IHrItemObject item)
         {
             Contract.Requires(parent != null);
             Contract.Requires(item != null);
@@ -120,14 +120,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             Entity = item;
             CanConvertToIcd = autocomplete.WithConvert;
         }
-        [Obsolete]
-        /// <summary>
-        /// For XAML
-        /// </summary>
-        public TagViewModel()
-        {
-            Blank = new Comment("query");
-        }
+
 
         public event EventHandler Deleted;
         public event EventHandler<BlankTypeEventArgs> Converting;
@@ -223,7 +216,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 return GetBlankType(Blank);
             }
             set
-            { 
+            {
                 // to correct IsChecked binding must be TwoWay
                 // replace ConvertTo with 4 bools?
             }

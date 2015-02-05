@@ -12,7 +12,7 @@ namespace Diagnosis.ViewModels.Screens
     public class DoctorEditorViewModel : DialogViewModel
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(DoctorEditorViewModel));
-        private readonly Doctor doctor;
+        protected Doctor doctor;
         private List<Speciality> _specialities;
         private DoctorViewModel _vm;
 

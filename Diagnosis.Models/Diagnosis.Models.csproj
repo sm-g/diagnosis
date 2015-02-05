@@ -146,6 +146,7 @@
     <Compile Include="Entities\HrItem.cs" />
     <Compile Include="Entities\Comment.cs" />
     <Compile Include="Entities\Setting.cs" />
+    <Compile Include="Entities\UomType.cs" />
     <Compile Include="Enums\HealthRecordQueryScope.cs" />
     <Compile Include="Helpers\DomainExtenstions.cs" />
     <Compile Include="Enums\HealthRecordUnit.cs" />
@@ -175,6 +176,8 @@
     <Compile Include="Validators\AppointmentValidator.cs" />
     <Compile Include="Validators\CourseValidator.cs" />
     <Compile Include="Validators\DoctorValidator.cs" />
+    <Compile Include="Validators\SpecialityValidator.cs" />
+    <Compile Include="Validators\UomValidator.cs" />
     <Compile Include="Validators\WordValidator.cs" />
     <Compile Include="Validators\PatientValidator.cs" />
   </ItemGroup>

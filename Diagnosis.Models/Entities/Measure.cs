@@ -10,6 +10,16 @@ namespace Diagnosis.Models
 
         private Uom _uom;
 
+        public Measure(double value, Uom uom = null)
+        {
+            Uom = uom;
+            Value = value;
+        }
+
+        protected Measure()
+        {
+        }
+
         public virtual Word Word { get; set; }
 
         public virtual Uom Uom
@@ -45,15 +55,14 @@ namespace Diagnosis.Models
                 DbValue = value * (Uom != null ? (double)Math.Pow(10, Uom.Factor) : 1);
             }
         }
-
-        public Measure(double value, Uom uom = null)
+        public static bool operator ==(Measure x, Measure y)
         {
-            Uom = uom;
-            Value = value;
+            return Object.Equals(x, y);
         }
 
-        protected Measure()
+        public static bool operator !=(Measure x, Measure y)
         {
+            return !(x == y);
         }
 
         public override string ToString()
@@ -113,16 +122,6 @@ namespace Diagnosis.Models
         public override int GetHashCode()
         {
             return base.GetHashCode(); // TODO
-        }
-
-        public static bool operator ==(Measure x, Measure y)
-        {
-            return Object.Equals(x, y);
-        }
-
-        public static bool operator !=(Measure x, Measure y)
-        {
-            return !(x == y);
         }
     }
 }

@@ -24,6 +24,42 @@ namespace Diagnosis.Models
         private DateTime _updatedAt;
         private int _ord;
 
+        public HealthRecord(Appointment appointment, Doctor author)
+            : this()
+        {
+            Contract.Requires(appointment != null);
+            Contract.Requires(author != null);
+
+            Appointment = appointment;
+            Doctor = author;
+        }
+
+        public HealthRecord(Course course, Doctor author)
+            : this()
+        {
+            Contract.Requires(course != null);
+            Contract.Requires(author != null);
+
+            Course = course;
+            Doctor = author;
+        }
+
+        public HealthRecord(Patient patient, Doctor author)
+            : this()
+        {
+            Contract.Requires(patient != null);
+            Contract.Requires(author != null);
+
+            Patient = patient;
+            Doctor = author;
+        }
+
+        protected HealthRecord()
+        {
+            _createdAt = DateTime.Now;
+            _updatedAt = DateTime.Now;
+        }
+
         public virtual event NotifyCollectionChangedEventHandler ItemsChanged;
 
         public virtual Patient Patient { get; protected set; }
@@ -153,78 +189,6 @@ namespace Diagnosis.Models
         {
             get { return hrItems.Where(x => x.Word != null).Select(x => x.Word); }
         }
-
-        public HealthRecord(Appointment appointment, Doctor author)
-            : this()
-        {
-            Contract.Requires(appointment != null);
-            Contract.Requires(author != null);
-
-            Appointment = appointment;
-            Doctor = author;
-        }
-
-        public HealthRecord(Course course, Doctor author)
-            : this()
-        {
-            Contract.Requires(course != null);
-            Contract.Requires(author != null);
-
-            Course = course;
-            Doctor = author;
-        }
-
-        public HealthRecord(Patient patient, Doctor author)
-            : this()
-        {
-            Contract.Requires(patient != null);
-            Contract.Requires(author != null);
-
-            Patient = patient;
-            Doctor = author;
-        }
-
-        protected HealthRecord()
-        {
-            _createdAt = DateTime.Now;
-            _updatedAt = DateTime.Now;
-        }
-
-        void AddItem(HrItem item)
-        {
-            Contract.Requires(item != null);
-            Contract.Ensures(hrItems.Contains(item));
-
-            var hrItemsCopy = new HashedSet<HrItem>(hrItems);
-            if (hrItems.Add(item))
-            {
-                EditHelper.Edit("HrItems", hrItemsCopy);
-                if (InEdit)
-                {
-                    IsDirty = true;
-                }
-                OnItemsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
-                // order устанавливается в редакторе записи
-            }
-        }
-
-        void RemoveItem(HrItem item)
-        {
-            Contract.Requires(item != null);
-            Contract.Ensures(!hrItems.Contains(item));
-
-            var hrItemsCopy = new HashedSet<HrItem>(hrItems);
-            if (hrItems.Remove(item))
-            {
-                EditHelper.Edit("HrItems", hrItemsCopy);
-                if (InEdit)
-                {
-                    IsDirty = true;
-                }
-                OnItemsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
-            }
-        }
-
         public virtual void AddItems(IEnumerable<IHrItemObject> items)
         {
             SetItems(HrItems.Select(hri => hri.Entity).Concat(items).ToList());
@@ -313,15 +277,6 @@ namespace Diagnosis.Models
             return string.Format("hr({0}) {1} {2} {3}.{4}.{5} {6}", HrItems.FlattenString(), Ord, Category, FromYear, FromMonth, FromDay, this.ShortId());
         }
 
-        protected virtual void OnItemsChanged(NotifyCollectionChangedEventArgs e)
-        {
-            var h = ItemsChanged;
-            if (h != null)
-            {
-                h(this, e);
-            }
-        }
-
         public virtual int CompareTo(HealthRecord other)
         {
             // не сравниваем содержимое записи
@@ -331,7 +286,6 @@ namespace Diagnosis.Models
             int res = Holder.CompareTo(other.Holder);
             if (res != 0) return res;
 
-
             res = Ord.CompareTo(other.Ord);
             if (res != 0) return res;
 
@@ -340,6 +294,50 @@ namespace Diagnosis.Models
 
             res = Doctor.CompareTo(other.Doctor);
             return res;
+        }
+
+        protected virtual void OnItemsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            var h = ItemsChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
+
+        private void AddItem(HrItem item)
+        {
+            Contract.Requires(item != null);
+            Contract.Ensures(hrItems.Contains(item));
+
+            var hrItemsCopy = new HashedSet<HrItem>(hrItems);
+            if (hrItems.Add(item))
+            {
+                EditHelper.Edit("HrItems", hrItemsCopy);
+                if (InEdit)
+                {
+                    IsDirty = true;
+                }
+                OnItemsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
+                // order устанавливается в редакторе записи
+            }
+        }
+
+        private void RemoveItem(HrItem item)
+        {
+            Contract.Requires(item != null);
+            Contract.Ensures(!hrItems.Contains(item));
+
+            var hrItemsCopy = new HashedSet<HrItem>(hrItems);
+            if (hrItems.Remove(item))
+            {
+                EditHelper.Edit("HrItems", hrItemsCopy);
+                if (InEdit)
+                {
+                    IsDirty = true;
+                }
+                OnItemsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
+            }
         }
     }
 }

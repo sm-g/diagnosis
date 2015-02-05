@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="Diagnosis.Common.Controls.CommaList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             x:Name="commaList"
+             d:DesignHeight="20"
+             d:DesignWidth="300">
+    <ItemsControl ItemsSource="{Binding ItemsSource, ElementName=commaList}"
+                  Focusable="False">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <WrapPanel />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <StackPanel Orientation="Horizontal"
+                            Loaded="item_Loaded"
+                            x:Name="item">
+                    <ContentPresenter Content="{Binding}"
+                                      ContentTemplate="{Binding ItemTemplate, ElementName=commaList}" />
+                    <!-- Clone Separator FrameworkElement in code -->
+                    <ContentPresenter x:Name="separator"
+                                      Content="" />
+                </StackPanel>
+                <DataTemplate.Triggers>
+                    <DataTrigger Value="True">
+                        <DataTrigger.Binding>
+                            <MultiBinding Converter="{StaticResource IsLastItem}">
+                                <Binding />
+                                <Binding Path="ItemsSource"
+                                         ElementName="commaList" />
+                            </MultiBinding>
+                        </DataTrigger.Binding>
+                        <Setter TargetName="separator"
+                                Property="Visibility"
+                                Value="Collapsed" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</UserControl>

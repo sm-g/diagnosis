@@ -156,6 +156,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mappings\UomTypeMap.cs" />
     <Compile Include="Mappings\PassportMap.cs" />
     <Compile Include="Mappings\HrItemMap.cs" />
     <Compile Include="Mappings\SettingMap.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="NHibernate\EventListeners.cs" />
     <Compile Include="NHibernate\IEntityCrudTracker.cs" />
     <Compile Include="Versions\Migrations\09 AddHolderHrUpdatedAt.cs" />
+    <Compile Include="Versions\Migrations\10 AddUomType.cs" />
     <Compile Include="Versions\Migrations\08 AddDoctorSettings.cs" />
     <Compile Include="Versions\Migrations\07 HrWithDoctor.cs" />
     <Compile Include="Versions\Migrations\06 AddPassportTable.cs" />
@@ -234,7 +236,11 @@
   <ItemGroup>
     <EmbeddedResource Include="Versions\Sql\insert_Uom_HrCat_Speciality.sql" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="NHibernate\nhibernate-server.cfg.xml">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
