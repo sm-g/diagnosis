@@ -256,11 +256,12 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         public void Unload()
         {
-            FinishCurrentHr();
             if (HealthRecord != null)
             {
                 var hr = HealthRecord.healthRecord;
+                FinishCurrentHr();
                 HealthRecord = null;
+
                 OnClosed(hr);
             }
         }
@@ -321,6 +322,8 @@ namespace Diagnosis.ViewModels.Screens
                     Autocomplete.CompleteOnLostFocus(tag);
 
                 var hr = HealthRecord.healthRecord;
+                HealthRecord.Dispose();
+
                 hr.PropertyChanged -= hr_PropertyChanged;
                 (hr as IEditableObject).EndEdit();
                 if (!hr.IsTransient)

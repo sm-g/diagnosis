@@ -173,10 +173,16 @@ namespace Diagnosis.App.Controls.Editors
         private void LoadDaysCombo()
         {
             comboDays.ItemsSource = Days;
+            FillDaysCombo();
         }
 
         private void FillDaysCombo()
         {
+            // комбобокс остается, после DateOffset = null месяц = null, биндинг успевает сработать для дня 
+            var hrvm = (DataContext as Diagnosis.ViewModels.Screens.HealthRecordViewModel);
+            if (hrvm != null && hrvm.DateOffset == null)
+                return;
+
             var days = GetDaysComboItems();
             var daysInMonth = days.Count() - 1;
 
@@ -195,7 +201,12 @@ namespace Diagnosis.App.Controls.Editors
         /// <returns></returns>
         private string[] GetDaysComboItems()
         {
-            var year = Year ?? DateTime.Today.Year;
+            int year = DateTime.Today.Year;
+            if (Year.HasValue && Year.Value > 0 && Year.Value < 10000)
+            {
+                year = Year.Value;
+            }
+
             var month = (Month != null && Month > 0 && Month < 13) ? Month.Value : DateTime.Today.Month;
             var daysInMonth = DateTime.DaysInMonth(year, month);
             string[] days = new string[daysInMonth + 1];

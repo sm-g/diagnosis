@@ -21,7 +21,8 @@ namespace Diagnosis.ViewModels.Screens
 
             patient.PropertyChanged += patient_PropertyChanged;
             healthRecord.PropertyChanged += healthRecord_PropertyChanged;
-            _do = DateOffsetViewModel.FromHr(healthRecord);
+
+            DateOffset = DateOffsetViewModel.FromHr(healthRecord);
             DateOffset.PropertyChanged += DateOffset_PropertyChanged;
         }
 
@@ -106,7 +107,22 @@ namespace Diagnosis.ViewModels.Screens
         //}
         #region DateEditor
 
-        public DateOffsetViewModel DateOffset { get { return _do; } }
+
+        public DateOffsetViewModel DateOffset
+        {
+            get
+            {
+                return _do;
+            }
+            set
+            {
+                if (_do != value)
+                {
+                    _do = value;
+                    OnPropertyChanged(() => DateOffset);
+                }
+            }
+        }
 
         public bool ShowAsDate
         {
@@ -246,6 +262,7 @@ namespace Diagnosis.ViewModels.Screens
                 healthRecord.PropertyChanged -= healthRecord_PropertyChanged;
                 patient.PropertyChanged -= patient_PropertyChanged;
                 DateOffset.PropertyChanged -= DateOffset_PropertyChanged;
+                DateOffset = null; // unbind DataContext;
             }
             base.Dispose(disposing);
         }

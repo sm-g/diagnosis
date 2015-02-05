@@ -2,12 +2,14 @@
 using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
+    [DebuggerDisplay("doVm {Do}")]
     public class DateOffsetViewModel : ViewModelBase
     {
         private static readonly Dictionary<HealthRecord, DateOffsetViewModel> dict = new Dictionary<HealthRecord, DateOffsetViewModel>();
@@ -16,6 +18,19 @@ namespace Diagnosis.ViewModels
         private DateUnit _roundUnit;
 
         private int? _roundOffset;
+
+        static DateOffsetViewModel()
+        {
+            typeof(DateOffsetViewModel).Subscribe(Event.DeleteHolder, (e) =>
+            {
+                var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
+                holder.HealthRecordsChanged -= Holder_HealthRecordsChanged;
+                foreach (var item in holder.HealthRecords)
+                {
+                    OnHrRemoved(item);
+                }
+            });
+        }
 
         private DateOffsetViewModel(DateOffset d, HealthRecord hr)
         {
@@ -206,9 +221,15 @@ namespace Diagnosis.ViewModels
             if (!dict.TryGetValue(healthRecord, out res))
             {
                 Debug.Assert(healthRecord.CreatedAt != DateTime.MinValue);
+
                 var d = new DateOffset(healthRecord.FromYear, healthRecord.FromMonth, healthRecord.FromDay, () => healthRecord.CreatedAt);
                 d.UnitSettingStrategy = Common.DateOffset.UnitSetting.SetsDate;
                 d.DateSettingStrategy = Common.DateOffset.DateSetting.SetsUnitSilly;
+
+                // один раз подписываемся на удаление записи у держателя
+                if (!dict.Keys.Any(hr => hr.Holder == healthRecord.Holder))
+                    healthRecord.Holder.HealthRecordsChanged += Holder_HealthRecordsChanged;
+
                 res = new DateOffsetViewModel(d, healthRecord);
                 dict[healthRecord] = res;
             }
@@ -235,6 +256,26 @@ namespace Diagnosis.ViewModels
             base.Dispose(disposing);
         }
 
+        private static void Holder_HealthRecordsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (HealthRecord item in e.OldItems)
+                {
+                    OnHrRemoved(item);
+                }
+            }
+        }
+
+        private static void OnHrRemoved(HealthRecord item)
+        {
+            DateOffsetViewModel res;
+            if (dict.TryGetValue(item, out res))
+            {
+                dict.Remove(item);
+                res.Dispose();
+            }
+        }
         private void healthRecord_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             var hr = sender as HealthRecord;
@@ -321,7 +362,7 @@ namespace Diagnosis.ViewModels
         /// </summary>
         private void RoundOffsetFor(DateUnit unit)
         {
-            if (IsEmpty)
+            if (!Year.HasValue)
             {
                 RoundedOffset = null;
                 return;
@@ -348,21 +389,9 @@ namespace Diagnosis.ViewModels
                     break;
 
                 case DateUnit.Year:
-                    if (Year.HasValue)
-                    {
-                        RoundedOffset = Now.Year - Year.Value;
-                    }
-                    else
-                    {
-                        RoundedOffset = null;
-                    }
+                    RoundedOffset = Now.Year - Year.Value;
                     break;
             }
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0} {1}", "doVm", d);
         }
     }
 }

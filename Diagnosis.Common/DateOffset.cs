@@ -436,6 +436,7 @@ namespace Diagnosis.Common
                     }
 
                     // если нет года или года и месяца, считаем их из Now
+                    // только год - не считаем месяц из Now
                     if (d != null && m == null && y == null)
                     {
                         Month = Now.Month; // set day
@@ -445,6 +446,8 @@ namespace Diagnosis.Common
                     {
                         Year = Now.Year; // set month
                     }
+
+                    // не может быть день без месяца
                     if (CutsDate && _year != null && _month == null)
                     {
                         Day = null;

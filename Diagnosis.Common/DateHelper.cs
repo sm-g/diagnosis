@@ -62,7 +62,7 @@ namespace Diagnosis.Common
             if (month.HasValue && day.HasValue)
             {
                 int y = DateTime.Today.Year;
-                if (year.HasValue)
+                if (year.HasValue && year.Value > 0 && year.Value < 10000)
                 {
                     y = year.Value;
                 }
