@@ -226,6 +226,12 @@
                                 Value="{StaticResource SuggestionInputBindings}" />
                     </Style>
                 </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}"
+                                   FontSize="{DynamicResource ContentFontSize}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
             </ListBox>
         </Popup>
     </StackPanel>

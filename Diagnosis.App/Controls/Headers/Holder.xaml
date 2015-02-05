@@ -29,5 +29,6 @@
         </controls:HrsHolderDataTemplateSelector>
     </UserControl.Resources>
     <ContentPresenter Content="{Binding}"
+                      TextBlock.FontSize="{DynamicResource ContentFontSize}"
                       ContentTemplateSelector="{StaticResource selector}" />
 </UserControl>
