@@ -30,7 +30,7 @@ namespace Diagnosis.Common.Controls.Search
         public SearchTree()
         {
             InitializeComponent();
-            results1.SelectedItemChanged += (s, e) =>
+            results2.SelectedItemChanged += (s, e) =>
             {
                 if (e.NewValue != null)
                 {
@@ -128,7 +128,7 @@ namespace Diagnosis.Common.Controls.Search
 
         private void MoveSelection(bool down)
         {
-            var tree = results1; // results.TreeView;
+            var tree = results2; // results.TreeView;
             int currentSelected = tree.SelectedIndex();
             logger.DebugFormat("search tree current: {0}", currentSelected);
 

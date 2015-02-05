@@ -39,23 +39,21 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <controls:FullTree ItemsSource="{Binding Navigator.TopCardItems}"
-                           Grid.RowSpan="3">
-            <controls:FullTree.ItemContainerStyle>
+        <TreeView ItemsSource="{Binding Navigator.TopCardItems}"
+                  Grid.RowSpan="3">
+            <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem"
-                       BasedOn="{StaticResource TreeViewItemStyle}">
+                       BasedOn="{StaticResource {x:Type TreeViewItem}}">
                     <Setter Property="diag:Attached.InputBindings"
                             Value="{StaticResource CardElementsInputBindings}" />
                     <Setter Property="FontWeight"
                             Value="Normal" />
-                    
+
                     <Setter Property="Tag"
                             Value="{Binding HolderVm}" />
                     <Setter Property="ContextMenu"
                             Value="{StaticResource HolderContextMenu}" />
-                    <Setter Property="Template"
-                            Value="{StaticResource TreeViewItemFullWidthControl}" />
-                    
+
                     <Style.Triggers>
                         <DataTrigger Value="True">
                             <DataTrigger.Binding>
@@ -75,22 +73,23 @@
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </controls:FullTree.ItemContainerStyle>
-            <controls:FullTree.ItemTemplate>
-                <DataTemplate>
+            </TreeView.ItemContainerStyle>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                     <headers:Holder DataContext="{Binding Holder}"
                                     TimeVisibility="{Binding DataContext.ShowAppTime, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" />
-                </DataTemplate>
-            </controls:FullTree.ItemTemplate>
-            <controls:FullTree.ContextMenu>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+            <TreeView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Добавить курс"
                               Command="{Binding StartCourseCommand}" />
                     <MenuItem Header="Добавить осмотр"
                               Command="{Binding AddAppointmentCommand}" />
                 </ContextMenu>
-            </controls:FullTree.ContextMenu>
-        </controls:FullTree>
+            </TreeView.ContextMenu>
+        </TreeView>
+
         <card:Header DataContext="{Binding Header}"
                      Grid.Column="1"
                      Margin="0,0,0,10" />
@@ -99,7 +98,8 @@
                                 Grid.Column="1"
                                 Grid.Row="1" />
 
-        <Border Grid.Row="2" Grid.Column="1"
+        <Border Grid.Row="2"
+                Grid.Column="1"
                 BorderThickness="0,1,0,0"
                 Background="{StaticResource hrEditorBackgroundBrush}"
                 Visibility="{Binding HrEditor.HasHealthRecord, Converter={StaticResource BooleanToVisibilityConverter}}">

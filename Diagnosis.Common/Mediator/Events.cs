@@ -66,7 +66,9 @@ namespace Diagnosis.Common
         WordSaved,
         PatientSaved,
         DoctorSaved,
+        ChangeTheme,
         UomSaved,
+        ChangeFont,
     }
 
     public static class EventAggragatorExtensions

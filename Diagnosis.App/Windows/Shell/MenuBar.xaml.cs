@@ -11,6 +11,15 @@ namespace Diagnosis.App.Windows.Shell
         public MenuBar()
         {
             InitializeComponent();
+            Loaded += (s, e) =>
+            {
+#if !DEBUG
+                metro.Visibility = System.Windows.Visibility.Collapsed;
+                metro.IsEnabled = false;
+                big.Visibility = System.Windows.Visibility.Collapsed;
+                big.IsEnabled = false;
+#endif
+            };
         }
     }
 }

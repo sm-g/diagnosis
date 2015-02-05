@@ -18,16 +18,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/SplitExpander.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <s:Double x:Key="lineMargin">10</s:Double>
 
-            <Style x:Key="line"
-                   TargetType="FrameworkElement">
-                <Setter Property="Margin">
-                    <Setter.Value>
-                        <Thickness Bottom="{StaticResource lineMargin}" />
-                    </Setter.Value>
-                </Setter>
-            </Style>
             <Style x:Key="lineHeader"
                    TargetType="FrameworkElement">
                 <Setter Property="DockPanel.Dock"
@@ -35,9 +26,6 @@
                 <Setter Property="Margin"
                         Value="0,0,0,2" />
             </Style>
-            
-            <Style TargetType="Label"
-                   BasedOn="{StaticResource colonedLabel}" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
@@ -58,6 +46,13 @@
                 <!--Описание запроса, к которому относятся результаты-->
                 <StackPanel x:Name="searchDescription"
                             Margin="5,0,0,0">
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontSize"
+                                    Value="{DynamicResource HelpFontSize}" />
+                        </Style>
+                    </StackPanel.Resources>
+                    
                     <StackPanel DataContext="{Binding Options}"
                                 Visibility="{Binding DataContext.Result, ElementName=search, Converter={StaticResource NullToVis}}">
                         <StackPanel Orientation="Horizontal"
@@ -117,9 +112,9 @@
                     <KeyBinding Key="Enter"
                                 Command="{Binding SearchCommand}" />
                 </StackPanel.InputBindings>
-                <Label>Ключевые _слова</Label>
+                <Label Content="Ключевые _слова" />
                 <search:Autocomplete DataContext="{Binding Autocomplete}" />
-                <DockPanel Style="{StaticResource line}">
+                <DockPanel Style="{StaticResource formLine}">
                     <Grid>
                         <CheckBox IsChecked="{Binding AllWords}"
                                   VerticalContentAlignment="Center"
@@ -135,8 +130,8 @@
                         </CheckBox>
                     </Grid>
                 </DockPanel>
-                <Label>_Категории</Label>
-                <DockPanel Style="{StaticResource line}"
+                <Label Content="_Категории" />
+                <DockPanel Style="{StaticResource formLine}"
                            HorizontalAlignment="Left">
                     <editors:CategoryChooser CategoryMultiSelection="{StaticResource True}" />
                 </DockPanel>
@@ -179,32 +174,29 @@
                 </DockPanel>-->
 
                 <Button Command="{Binding SearchCommand}"
-                        Height="25"
-                        Width="150"
-                        HorizontalAlignment="Left"
-                        Style="{StaticResource line}">Найти</Button>
+                        Margin="10,0,10,10"
+                        HorizontalAlignment="Stretch">Найти</Button>
             </StackPanel>
         </Expander>
 
-        <controls:FullTree ItemsSource="{Binding Result.Patients}"
-                           Grid.Row="2"
-                           Margin="5"
-                           Visibility="{Binding Result, Converter={StaticResource NullToVis}}">
-            <controls:FullTree.ItemContainerStyle>
+        <TreeView ItemsSource="{Binding Result.Patients}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  Grid.Row="2"
+                  Margin="5"
+                  Visibility="{Binding Result, Converter={StaticResource NullToVis}}">
+            <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem"
-                       BasedOn="{StaticResource TreeViewItemStyle}">
-                    <Setter Property="Template"
-                            Value="{StaticResource TreeViewItemRightToggleControl}" />
+                       BasedOn="{StaticResource {x:Type TreeViewItem}}">
                     <Setter Property="diag:Attached.InputBindings"
                             Value="{StaticResource SearchResultInputBindings}" />
                 </Style>
-            </controls:FullTree.ItemContainerStyle>
-            <controls:FullTree.ItemTemplate>
-                <DataTemplate>
+            </TreeView.ItemContainerStyle>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                     <search:HrSearchResult2 />
-                </DataTemplate>
-            </controls:FullTree.ItemTemplate>
-        </controls:FullTree>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
 
         <TextBlock Grid.Row="2"
                    HorizontalAlignment="Center"
@@ -234,8 +226,7 @@
                     Возраст от <Run Text="{Binding Statistic.MinAge, Mode=OneWay}" /> до <Run Text="{Binding Statistic.MaxAge, Mode=OneWay}" />
                 </TextBlock>
 
-                <StackPanel Style="{StaticResource DialogButtonsPanel}"
-                            HorizontalAlignment="Right">
+                <StackPanel HorizontalAlignment="Right">
                     <Button Command="{Binding ExportCommand}"
                             Style="{StaticResource squareButton}"
                             ToolTip="Экспорт в xlsx">

@@ -174,7 +174,7 @@
                     <StackPanel Grid.Row="0"
                                 Orientation="Horizontal"
                                 Visibility="{Binding DateOffset.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-                        <Label>Это было</Label>
+                        <Label Content="Это было"/>
                         <StackPanel Orientation="Horizontal"
                                     VerticalAlignment="Center">
                             <RadioButton IsChecked="{Binding ShowAsDate}"
@@ -205,8 +205,10 @@
                     </StackPanel>
                     <Expander x:Name="dateEditor"
                               Grid.Row="1"
+                              BorderBrush="{x:Null}"
                               ExpandDirection="Down"
                               FlowDirection="RightToLeft"
+                              Cursor="Hand"
                               IsExpanded="{Binding IsDateEditorExpanded}">
                         <Expander.Header>
                             <StackPanel HorizontalAlignment="Right"
@@ -223,6 +225,9 @@
                                             <Style TargetType="Label">
                                                 <Setter Property="Content"
                                                         Value="Изменить дату" />
+                                                <Setter Property="FontSize"
+                                                        Value="{DynamicResource LabelFontSize}" />
+                                                
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding DateOffset.IsEmpty}"
                                                                  Value="True">
@@ -243,7 +248,9 @@
                                 </Grid>
                             </StackPanel>
                         </Expander.Header>
-                        <StackPanel FlowDirection="LeftToRight">
+                        <StackPanel FlowDirection="LeftToRight"
+                                    Background="Transparent"
+                                    Cursor="Arrow">
                             <DockPanel>
                                 <Label Content="Дата" />
                                 <editors:ComboBoxDatePicker Year="{Binding DateOffset.Year, Mode=TwoWay}"

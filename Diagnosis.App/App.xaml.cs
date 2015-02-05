@@ -1,4 +1,5 @@
-﻿using Diagnosis.App.Windows;
+﻿using Diagnosis.App.Themes;
+using Diagnosis.App.Windows;
 using Diagnosis.App.Windows.Shell;
 using Diagnosis.Common;
 using Diagnosis.Common.DebugTools;
@@ -73,6 +74,10 @@ namespace Diagnosis.App
             // enum localization
             LocalizableDescriptionAttribute.ResourcesType = typeof(Diagnosis.App.Properties.Resources);
             System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Error;
+
+            // themes
+            MyThemeManager.Initialize();
+
 #if DEBUG
             new DebugOutput(0);
 
@@ -104,7 +109,6 @@ namespace Diagnosis.App
             DbMaintenance();
 
             var main = new MainWindow();
-
 #if !DEBUG
             main.Loaded += (s, e1) =>
             {

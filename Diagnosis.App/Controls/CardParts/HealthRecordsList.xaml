@@ -129,9 +129,13 @@
 
         <Grid Grid.Row="1"
               diag:FocusBehavior.FocusablePanel="True"
-              Visibility="{Binding HealthRecords.Count, Converter={StaticResource LessThanToVisibility}}"
-              d:IsHidden="True">
+              Visibility="{Binding HealthRecords.Count, Converter={StaticResource LessThanToVisibility}}">
             <Grid.Resources>
+                <Style TargetType="TextBlock" >
+                    <Setter Property="FontSize"
+                            Value="{DynamicResource HelpFontSize}" />
+                </Style>
+
                 <controls:HrsHolderDataTemplateSelector x:Key="canAlso">
                     <controls:HrsHolderDataTemplateSelector.PatientTemplate>
                         <DataTemplate>
@@ -235,7 +239,8 @@
         </Grid>
         <Grid  x:Name="recordsGrid"
                Visibility="{Binding HealthRecords.Count, Converter={StaticResource MoreThanToVisibility}}"
-               Grid.Row="1">
+               Grid.Row="1"
+               d:IsHidden="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />

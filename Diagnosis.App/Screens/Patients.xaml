@@ -58,8 +58,7 @@
           MinWidth="300">
         <Grid.RowDefinitions>
             <RowDefinition Height="36" />
-            <RowDefinition Height="auto"
-                           MinHeight="30" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -84,6 +83,12 @@
                         Grid.Row="1" />
 
         <DockPanel Grid.Row="3">
+            <DockPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontSize"
+                            Value="{DynamicResource HelpFontSize}" />
+                </Style>
+            </DockPanel.Resources>
             <TextBlock TextWrapping="Wrap"
                        Margin="10"
                        HorizontalAlignment="Center"
@@ -106,16 +111,11 @@
                   diag:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedPatients}"
                   diag:FocusExtension.IsFocused="{Binding IsFocused}"
                   Visibility="{Binding NoPatients, Converter={StaticResource NegBooleanToVisibilityConverter}}"
-                  CellStyle="{StaticResource CellStyle}"
-                  GridLinesVisibility="None"
-                  Margin="0,10,0,0"
-                  FontSize="15"
-                  IsReadOnly="True"
-                  SelectionUnit="FullRow"
-                  SelectionMode="Extended"
-                  AutoGenerateColumns="False"
+                  Margin="0,10,0,0"                
                   GotKeyboardFocus="dataGrid_GotKeyboardFocus"
-                  SelectedCellsChanged="dataGrid_SelectedCellsChanged">
+                  SelectedCellsChanged="dataGrid_SelectedCellsChanged"
+                  Style="{DynamicResource MyDataGridStyle}"
+                  d:IsHidden="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Имя"
                                     IsReadOnly="True"
@@ -130,6 +130,7 @@
                                         CellTemplate="{StaticResource SexTemplate}" />
                 <DataGridTextColumn Header="Возраст"
                                     IsReadOnly="True"
+                                    ElementStyle="{StaticResource RightCellTextBlock}"
                                     Binding="{Binding Age, Mode=OneWay}" />
                 <DataGridTextColumn Header="Изменено"
                                     IsReadOnly="True"

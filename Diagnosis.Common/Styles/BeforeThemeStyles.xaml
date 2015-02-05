@@ -1,6 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!--This styles will be overwritten with theme styles (if they exist)-->
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/TreeStyle.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+    
+    
+    <!--This styles will be overwritten with theme styles (if they exist)-->    
     
     <!--  base control styles  -->
     <Style x:Key="ErrorToolTip"
@@ -42,6 +47,23 @@
                         Value="{StaticResource {x:Static SystemColors.GrayTextBrushKey}}" />
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <!-- Tree -->
+    <Style BasedOn="{StaticResource TreeViewStyle}"
+           TargetType="TreeView" />
+    <Style BasedOn="{StaticResource TreeViewItemStyle}"
+           TargetType="TreeViewItem">
+        
+        <Setter Property="Template"
+                Value="{StaticResource TreeViewItemFullWidthControl}" />
+
+
+        <!-- Hier Vm -->
+        <Setter Property="IsSelected"
+                Value="{Binding IsSelected}" />
+        <Setter Property="IsExpanded"
+                Value="{Binding IsExpanded, Mode=TwoWay}" />
     </Style>
 
     <!--  buttons  -->
@@ -92,30 +114,6 @@
         </Style.Resources>
     </Style>
 
-    <!--  DataGrid  -->
-
-    <Style x:Key="CellStyle"
-           TargetType="DataGridCell">
-        <Setter Property="BorderThickness"
-                Value="0" />
-        <Setter Property="FocusVisualStyle"
-                Value="{x:Null}" />
-        <Setter Property="KeyboardNavigation.IsTabStop"
-                Value="False" />
-    </Style>
-
-    <Style x:Key="SelectableCellStyle"
-           BasedOn="{StaticResource CellStyle}"
-           TargetType="{x:Type DataGridCell}">
-        <Style.Triggers>
-            <Trigger Property="IsSelected"
-                     Value="True">
-                <Setter Property="KeyboardNavigation.IsTabStop"
-                        Value="True" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
     <!--  forms  -->
 
     <Style x:Key="watermark"
@@ -129,10 +127,5 @@
         </Setter>
     </Style>
 
-    <!--  misc  -->
-    <Style x:Key="ScreenTitle"
-           TargetType="TextBlock">
-        <Setter Property="FontSize"
-                Value="20" />
-    </Style>
+
 </ResourceDictionary>

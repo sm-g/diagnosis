@@ -23,6 +23,13 @@
                           IsChecked="{Binding SearchPanel.IsVisible}"
                           Header="_Поиск" />
             </MenuItem>
+            <MenuItem x:Name="metro" IsCheckable="true"
+                      IsChecked="{Binding IsMetroTheme}"
+                      Header="_Metro" />
+            <MenuItem x:Name="big"
+                      IsCheckable="true"
+                      IsChecked="{Binding IsBigFont}"
+                      Header="Big" />
         </Menu>
 
         <Menu HorizontalAlignment="Right">

@@ -6,20 +6,39 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/ConverterResources.xaml" />
-                <ResourceDictionary Source="Resources/ImageResources.xaml" />
-                <ResourceDictionary Source="Resources/ColorResources.xaml" />
+                <!--absolute Uri to easy compare-->
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Resources/ConverterResources.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Resources/ImageResources.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Resources/ColorResources.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Resources/NormalFontResources.xaml" />
 
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/BeforeThemeStyles.xaml" />
 
-                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/AfterThemeStyles.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/TreeStyle.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/ListBoxItemAero2Style.xaml" />
                 
-                <ResourceDictionary Source="Templates/Controls.xaml" />
+<!-- Mahapps -->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <!--<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />-->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+
+
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Styles/DefaultExpander.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Styles/MahAppsFix.xaml" />
+                
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common;component/Styles/AfterThemeStyles.xaml" />
+
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Templates/Controls.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
-
+            
+            <Style TargetType="{x:Type ListBoxItem}"
+                   BasedOn="{StaticResource MetroListBoxItemFixed}" />
+            <Style TargetType="{x:Type Expander}"
+                   BasedOn="{StaticResource DefaultExpander}" />
+            
             <s:Boolean x:Key="True">True</s:Boolean>
             <s:Boolean x:Key="False">False</s:Boolean>
 

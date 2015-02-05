@@ -14,8 +14,8 @@ namespace Diagnosis.App.Controls.CardParts
         public HealthRecordEditor()
         {
             InitializeComponent();
-#if !DEBUG
             offsetSettings.Visibility = System.Windows.Visibility.Collapsed;
+#if !DEBUG
 #endif
         }
 

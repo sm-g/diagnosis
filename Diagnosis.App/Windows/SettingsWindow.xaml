@@ -18,12 +18,21 @@
         </Grid.RowDefinitions>
 
         <StackPanel Margin="10,10,0,0">            
-            <!--<CheckBox IsChecked="{Binding ShowIcdDisease}">
+            <!--
+                <CheckBox IsChecked="{Binding ShowIcdDisease}">
                 <AccessText>Использовать _МКБ</AccessText>
-            </CheckBox>-->
+                </CheckBox>
+            -->
             <CheckBox IsChecked="{Binding OnlyTopLevelIcdDisease}">
                 <AccessText>_Болезни МКБ только верхнего уровня</AccessText>
             </CheckBox>
+            <Label Content="Шрифт" />
+            <RadioButton IsChecked="{Binding BigFont, Converter={StaticResource NegateBoolean}}">
+                <AccessText>_Обычный</AccessText>
+            </RadioButton>
+            <RadioButton IsChecked="{Binding BigFont}">
+                <AccessText>_Крупный</AccessText>
+            </RadioButton>
             
             <Label Content="Обозначения пола" />
             <diag:RadioListBox ItemsSource="{Binding Sexes}"
@@ -36,11 +45,15 @@
         <StackPanel Grid.Row="1"
                     Style="{StaticResource DialogButtonsPanel}">
             <Button Name="saveButton"
-                    IsDefault="True"
-                    Command="{Binding OkCommand}">Сохранить</Button>
+                    Command="{Binding OkCommand}"
+                    IsDefault="True">
+                _Сохранить
+            </Button>
             <Button Name="cancelButton"
-                    IsCancel="True"
-                    Command="{Binding CancelCommand}">Отмена</Button>
+                    Command="{Binding CancelCommand}"
+                    IsCancel="True">
+                Отмена
+            </Button>
         </StackPanel>
     </Grid>
 </Window>

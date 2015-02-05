@@ -54,7 +54,7 @@
                     </DataTemplate>
                 </controls:FullTree.ItemTemplate>
             </controls:FullTree>-->
-            <TreeView x:Name="results1"
+            <!--<TreeView x:Name="results1"
                       Style="{StaticResource TreeViewStyle}"
                       ScrollViewer.IsDeferredScrollingEnabled="True"
                       FocusManager.IsFocusScope="True"
@@ -66,6 +66,27 @@
                                      Handler="item_KeyDown" />
                         <EventSetter Event="MouseUp"
                                      Handler="item_MouseUp" />
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                        <TextBlock Text="{Binding}" />
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>-->
+
+            <TreeView x:Name="results2"
+                      ScrollViewer.IsDeferredScrollingEnabled="True"
+                      FocusManager.IsFocusScope="True"
+                      ItemsSource="{Binding Collection, ElementName=searchTree}">
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="TreeViewItem"
+                           BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                        <EventSetter Event="KeyDown"
+                                     Handler="item_KeyDown" />
+                        <EventSetter Event="MouseUp"
+                                     Handler="item_MouseUp" />
+
                     </Style>
                 </TreeView.ItemContainerStyle>
                 <TreeView.ItemTemplate>

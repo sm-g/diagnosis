@@ -1,5 +1,4 @@
-﻿using Diagnosis.App.Properties;
-using Diagnosis.Common;
+﻿using Diagnosis.Common;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -78,7 +77,7 @@ namespace Diagnosis.App.Behaviors
             if (vm != null)
             {
                 vm.LayoutFileName = LayoutFileName;
-                vm.DefaultLayout = Resources.avalon_layout;
+                vm.DefaultLayout = Diagnosis.App.Properties.Resources.avalon_layout;
                 SetLoadLayoutCommand(d, vm.LoadLayoutCommand);
                 SetSaveLayoutCommand(d, vm.SaveLayoutCommand);
             }

@@ -89,7 +89,7 @@
             <TextBlock Grid.ColumnSpan="2"
                        Text="{Binding Name, Mode=OneWay}"
                        TextWrapping="Wrap"
-                       FontSize="14" />
+                       FontSize="{DynamicResource HrFontSize}" />
             <StackPanel Grid.Row="1"
                         Visibility="{Binding DateOffset.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
                 <TextBlock Grid.Row="1"

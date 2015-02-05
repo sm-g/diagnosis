@@ -6,7 +6,8 @@
 
     <ListBox.Resources>
         <Style x:Key="selfStyle"
-               TargetType="ListBox">
+               TargetType="ListBox"
+               BasedOn="{StaticResource {x:Type ListBox}}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding MultiSelection, RelativeSource={RelativeSource Self}}"
                              Value="{StaticResource True}">
@@ -31,6 +32,10 @@
                     Value="true" />
             <EventSetter Event="KeyDown"
                          Handler="ListBoxItem_KeyDown" />
+            <Setter Property="Margin"
+                    Value="{Binding ItemMargin, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}" />
+            <Setter Property="Padding"
+                    Value="{Binding ItemPadding, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}" />
 
             <Setter Property="Template">
                 <Setter.Value>
