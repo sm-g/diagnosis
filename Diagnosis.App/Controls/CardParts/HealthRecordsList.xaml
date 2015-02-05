@@ -129,13 +129,9 @@
 
         <Grid Grid.Row="1"
               diag:FocusBehavior.FocusablePanel="True"
+              TextElement.FontSize="{DynamicResource HelpFontSize}"
               Visibility="{Binding HealthRecords.Count, Converter={StaticResource LessThanToVisibility}}">
             <Grid.Resources>
-                <Style TargetType="TextBlock" >
-                    <Setter Property="FontSize"
-                            Value="{DynamicResource HelpFontSize}" />
-                </Style>
-
                 <controls:HrsHolderDataTemplateSelector x:Key="canAlso">
                     <controls:HrsHolderDataTemplateSelector.PatientTemplate>
                         <DataTemplate>
@@ -233,7 +229,7 @@
                         HorizontalAlignment="Center">
                 <TextBlock Visibility="{Binding ShowCanAlso, Converter={StaticResource BooleanToVisibilityConverter}}">Тaкже можно</TextBlock>
 
-                <ContentControl Content="{Binding HolderVm}"
+                <ContentControl Content="{Binding HolderVm}"                                
                                 ContentTemplateSelector="{StaticResource canAlso}" />
             </StackPanel>
         </Grid>
