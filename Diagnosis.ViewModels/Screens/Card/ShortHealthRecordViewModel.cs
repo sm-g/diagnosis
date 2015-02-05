@@ -56,7 +56,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return healthRecord.Category;
+                return healthRecord.Category ?? HrCategory.Null;
             }
         }
 
