@@ -4,66 +4,17 @@ using Diagnosis.ViewModels.Screens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Moq;
 
 namespace Diagnosis.ViewModels
 {
     public class SampleTagViewModel : TagViewModel
     {
         public SampleTagViewModel()
-            : base(new MockAutocomplete())
+            : base(new Mock<IAutocompleteViewModel>().Object)
         {
             Blank = new Comment("query");
             IsDraggable = true;
-        }
-
-        private class MockAutocomplete : IAutocompleteViewModel
-        {
-            public TagViewModel SelectedTag
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-                set
-                {
-                    throw new NotImplementedException();
-                }
-            }
-
-            public bool SingleTag
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public bool WithConvert
-            {
-                get { return true; }
-            }
-
-            public bool WithSendToSearch
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public System.Windows.Input.ICommand EditCommand
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public System.Windows.Input.ICommand SendToSearchCommand
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public void AddAndEditTag(TagViewModel tag, bool up)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void OnDrop(System.Windows.DragEventArgs e)
-            {
-                throw new NotImplementedException();
-            }
         }
     }
 
@@ -120,6 +71,7 @@ namespace Diagnosis.ViewModels
     public class SampleIcdSelectorViewModel : IcdSelectorViewModel
     {
         public SampleIcdSelectorViewModel()
+            : base("перикардит")
         {
         }
     }
@@ -166,6 +118,8 @@ namespace Diagnosis.ViewModels
         new HrCategory() { Name = "Лечение" },
         new HrCategory() { Name = "Не указано" },
         };
+
+
 
         public static HealthRecord hr = new HealthRecord(holder, doc)
           {

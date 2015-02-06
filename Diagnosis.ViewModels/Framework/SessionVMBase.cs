@@ -8,6 +8,16 @@ namespace Diagnosis.ViewModels
         // private ISession session;
         private IStatelessSession statelessSession;
 
+        static SessionVMBase()
+        {
+            if (IsInDesignMode)
+            {
+                NHibernateHelper.InMemory = true;
+                NHibernateHelper.ShowSql = false;
+                NHibernateHelper.FromTest = false;
+            }
+        }
+
         protected IStatelessSession StatelessSession
         {
             get
