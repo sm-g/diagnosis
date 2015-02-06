@@ -21,14 +21,18 @@ namespace Diagnosis.ViewModels.Autocomplete
         private PopupSearchViewModel<IcdDisease> _diagnosisSearch;
         private Doctor doctor;
         private bool inFiltered;
+        private bool _icdTopLevelOnly;
 
         private IcdSelectorViewModel(IcdDisease initial = null, string query = null)
         {
             doctor = AuthorityController.CurrentDoctor;
 
+            _icdTopLevelOnly = doctor != null ? doctor.Settings.IcdTopLevelOnly : false;
+
             _chapters = new ObservableCollection<DiagnosisViewModel>();
             CreateDiagnosisSearch();
             SelectedIcd = initial; // TODO chapter пусты
+
             UpdateDiagnosisQueryCode(initial, true);
 
             if (query != null)
@@ -39,6 +43,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             Title = "Выбор диагноза МКБ";
             DiagnosisSearch.Filter.IsFocused = true; // TODO фокус на список если выбранно
         }
+
         /// <summary>
         /// Create, edit
         /// </summary>
@@ -61,13 +66,13 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             get
             {
-                return doctor.Settings.IcdTopLevelOnly;
+                return _icdTopLevelOnly;
             }
             set
             {
-                if (doctor.Settings.IcdTopLevelOnly != value)
+                if (_icdTopLevelOnly != value)
                 {
-                    doctor.Settings.IcdTopLevelOnly = value;
+                    _icdTopLevelOnly = value;
 
                     IcdDisease toSelect = SelectedIcd;
 
@@ -140,6 +145,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         protected override void OnOk()
         {
+            doctor.Settings.IcdTopLevelOnly = IcdTopLevelOnly;
             new Saver(Session).Save(doctor);
         }
 
@@ -156,7 +162,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 diseaseClause = d => !d.IsSubdivision;
             }
             Func<IcdBlock, bool> blockClause = b => true;
-            if (doctor.Speciality != null)
+            if (doctor != null && doctor.Speciality != null)
             {
                 // блоки для специальности доктора
                 blockClause = b => doctor.Speciality.IcdBlocks.Contains(b);
