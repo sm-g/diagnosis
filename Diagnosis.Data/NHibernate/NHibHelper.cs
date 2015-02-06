@@ -131,7 +131,7 @@ namespace Diagnosis.Data
 
         private static Configuration LoadConfiguration()
         {
-            if (IsConfigurationFileValid == false || InMemory)
+            if (InMemory || IsConfigurationFileValid == false)
                 return null;
             try
             {

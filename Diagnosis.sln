@@ -19,7 +19,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{B4
 		Database\diagnosis.dgml = Database\diagnosis.dgml
 		Database\diagnosis.sdf = Database\diagnosis.sdf
 		Database\diagnosis.sqlite = Database\diagnosis.sqlite
-		Database\inmem_sqlite.sql = Database\inmem_sqlite.sql
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.Tests", "Diagnosis.Tests\Diagnosis.Tests.csproj", "{EC5E581D-F591-4A34-B390-0607BA8EE6FA}"

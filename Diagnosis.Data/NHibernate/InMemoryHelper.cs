@@ -6,6 +6,8 @@ using NHibernate.Dialect;
 using NHibernate.Driver;
 using NHibernate.Tool.hbm2ddl;
 using PasswordHash;
+using System.IO;
+using System.Reflection;
 
 namespace Diagnosis.Data.NHibernate
 {
@@ -24,7 +26,11 @@ namespace Diagnosis.Data.NHibernate
         {
             new SchemaExport(cfg).Execute(false, true, false, session.Connection, null);
 
-            using (var s = System.IO.File.OpenText(@"..\..\..\Database\inmem_sqlite.sql"))
+            var assembly = Assembly.GetAssembly(typeof(InMemoryHelper));
+            var resourceName = "Diagnosis.Data.Versions.Sql.inmem_sqlite.sql";
+
+            using (var stream = assembly.GetManifestResourceStream(resourceName))
+            using (var s = new StreamReader(stream))
             {
                 var sql = s.ReadToEnd();
 
