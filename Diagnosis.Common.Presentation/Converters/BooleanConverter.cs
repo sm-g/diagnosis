@@ -76,6 +76,9 @@ namespace Diagnosis.Common.Presentation.Converters
         }
     }
 
+    /// <summary>
+    /// For Radio button
+    /// </summary>
     public class NullableBooleanConverter : BaseValueConverter
     {
         // http://stackoverflow.com/a/18451465/3009578

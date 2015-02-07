@@ -36,13 +36,10 @@
     <conv:MonthToString x:Key="MonthToString" />
     <conv:EnumToLabel x:Key="EnumToLabel" />
 
-    <conv:SummatorConverter x:Key="SummatorConverter" />
-
     <conv:EqualityToBoolConverter x:Key="EqualToBool" />
     <conv:EqualityToBoolMultiConverter x:Key="EqualAllToBool" />
     <conv:EqualityAndToBoolMultiConverter x:Key="BoolAndEqualAllToBool" />
 
     <conv:IsLastItem x:Key="IsLastItem" />
-    <conv:LessThanConverter x:Key="LessThan" />
     <conv:InListConverter x:Key="inList" />
 </ResourceDictionary>

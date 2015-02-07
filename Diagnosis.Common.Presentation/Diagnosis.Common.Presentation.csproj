@@ -160,7 +160,6 @@
     <Compile Include="Converters\AgeToYearsLabel.cs" />
     <Compile Include="Converters\BaseConverter.cs" />
     <Compile Include="Converters\BooleanConverter.cs" />
-    <Compile Include="Converters\BoolToAligment.cs" />
     <Compile Include="Converters\BoolToSexSign.cs" />
     <Compile Include="Converters\BoolToVis.cs" />
     <Compile Include="Converters\CountToVisibility.cs" />
@@ -171,7 +170,6 @@
     <Compile Include="Converters\IntToString.cs" />
     <Compile Include="Converters\ListConverters.cs" />
     <Compile Include="Converters\MonthToString.cs" />
-    <Compile Include="Converters\NumericConverters.cs" />
     <Compile Include="Converters\TreeDepthToMargin.cs" />
     <Compile Include="Converters\ValueConverterGroup.cs" />
     <Compile Include="Debug\DebugOutput.cs" />

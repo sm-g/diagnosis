@@ -105,9 +105,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NHibernate.3.3.3.4001\lib\Net35\NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="NHibernate.JetDriver">
-      <HintPath>..\packages\NHibernate.JetDriver.2.0.0.1001\lib\net35\NHibernate.JetDriver.dll</HintPath>
-    </Reference>
     <Reference Include="PowerCollections, Version=1.0.5428.35854, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\PowerCollections.dll</HintPath>

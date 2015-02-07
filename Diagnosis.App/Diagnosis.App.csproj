@@ -175,10 +175,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NHibernate.3.3.3.4001\lib\Net35\NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="NHibernate.JetDriver, Version=2.0.0.1001, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NHibernate.JetDriver.2.0.0.1001\lib\net35\NHibernate.JetDriver.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationUI, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="ReachFramework" />
     <Reference Include="System" />
@@ -279,9 +275,6 @@
     </Compile>
     <Compile Include="Controls\Search\Autocomplete.xaml.cs">
       <DependentUpon>Autocomplete.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Editors\AgePicker.xaml.cs">
-      <DependentUpon>AgePicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Editors\CategoryChooser.xaml.cs">
       <DependentUpon>CategoryChooser.xaml</DependentUpon>
@@ -397,10 +390,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\Search\Autocomplete.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\Editors\AgePicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

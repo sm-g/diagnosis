@@ -3,6 +3,8 @@
          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+         UseLayoutRounding="True"
+         MaxHeight="26"
          mc:Ignorable="d"
          d:DesignWidth="300">
     <TextBox.Resources>
@@ -22,15 +24,14 @@
                         <Border  x:Name="Bd"
                                  Background="{TemplateBinding Panel.Background}"
                                  BorderBrush="{TemplateBinding Border.BorderBrush}"
-                                 BorderThickness="{TemplateBinding Border.BorderThickness}"
-                                 SnapsToDevicePixels="True">
+                                 BorderThickness="{TemplateBinding Border.BorderThickness}">
                             <DockPanel>
                                 <Grid x:Name="Info"
                                       DockPanel.Dock="Right"
-                                      Width="{Binding ActualHeight, ElementName=Bd, ConverterParameter=-5, Converter={StaticResource SummatorConverter}}"
-                                      Height="{Binding ActualWidth, ElementName=Info}"
+                                      VerticalAlignment="Stretch"
+                                      Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
                                       ToolTip="{Binding InfoText, RelativeSource={RelativeSource TemplatedParent}}"
-                                      Margin="0,0,2,0">
+                                      Margin="2">
 
                                     <Ellipse Stroke="#FFB9B9B9"
                                              Fill="White" />
