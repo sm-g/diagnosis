@@ -1,0 +1,1 @@
+To query sqlite in memory db with NHibernate for design time, put SQLite.Interop.dll to \Common7\IDE.

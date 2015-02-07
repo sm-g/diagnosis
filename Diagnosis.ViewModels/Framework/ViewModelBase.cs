@@ -8,6 +8,8 @@ using Diagnosis.Models;
 using System.Linq;
 using System.Collections.Generic;
 using System.Windows;
+using System.Reflection;
+using System.IO;
 
 [assembly: InternalsVisibleTo("Tests")]
 
@@ -87,6 +89,27 @@ namespace Diagnosis.ViewModels
                 }
 
                 return _isInDesignMode.GetValueOrDefault();
+            }
+        }
+
+        static ViewModelBase()
+        {
+            if (IsInDesignMode)
+            {
+                var vshost = Process.GetProcesses().First(_process => _process.ProcessName.Contains("Diagnosis")).Modules[0].FileName;
+                var solutionDir = new FileInfo(vshost).Directory.Parent.Parent.Parent;
+                var libsDir = Path.Combine(solutionDir.FullName, "libs");
+
+                AppDomain.CurrentDomain.AssemblyResolve += (s0, e) =>
+                {
+                    // File.AppendAllText("P:\\test.txt", e.RequestingAssembly.GetName().Name + '\n');
+                    switch (e.RequestingAssembly.GetName().Name)
+                    {
+                        case "EventAggregator":
+                            return Assembly.LoadFrom(Path.Combine(libsDir, "EventAggregator.dll"));
+                    }
+                    return null;
+                };
             }
         }
     }
