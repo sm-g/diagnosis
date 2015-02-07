@@ -24,6 +24,10 @@ namespace Diagnosis.ViewModels.Screens
             AuthorityController.LoggedIn += (s, e) =>
             {
                 OnPropertyChanged(() => CurrentUser);
+                OpenSyncCommand.IsVisible = CurrentUser is Admin;
+#if DEBUG
+                OpenSyncCommand.IsVisible = true;
+#endif
             };
         }
 
@@ -114,6 +118,19 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     switcher.OpenScreen(Screen.Patients);
                 }, () => switcher.Screen != Screen.Patients && AuthorityController.CurrentUserCanOpen(Screen.Patients));
+            }
+        }
+        VisibleRelayCommand _openSyncCommand;
+        public VisibleRelayCommand OpenSyncCommand
+        {
+            get
+            {
+                return _openSyncCommand ?? (_openSyncCommand = new VisibleRelayCommand(() =>
+                {
+                    switcher.OpenScreen(Screen.Sync);
+
+                },
+                () => switcher.Screen != Screen.Sync && AuthorityController.CurrentUserCanOpen(Screen.Sync)));
             }
         }
 

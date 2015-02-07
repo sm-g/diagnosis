@@ -39,4 +39,16 @@ namespace Diagnosis.Common
             this.list = list;
         }
     }
+
+    [Serializable]
+    public class StringEventArgs : EventArgs
+    {
+        public readonly string str;
+
+        [System.Diagnostics.DebuggerStepThrough]
+        public StringEventArgs(string arg)
+        {
+            this.str = arg;
+        }
+    }
 }

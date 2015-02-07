@@ -253,6 +253,9 @@
     </Compile>
     <Compile Include="Controls\Common\HrsHolderDataTemplateSelector.cs" />
     <Compile Include="Resources\Themes\Helpers.cs" />
+    <Compile Include="Screens\Sync.xaml.cs">
+      <DependentUpon>Sync.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Helpers\AvalonExtensions.cs" />
     <Compile Include="Resources\Themes\ThemeManager.cs" />
     <Compile Include="Windows\Helpers\WindowHelper.cs" />
@@ -420,6 +423,10 @@
     <Page Include="Resources\NormalFontResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Screens\Sync.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Screens\Doctors.xaml">
       <Generator>MSBuild:Compile</Generator>

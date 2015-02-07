@@ -1,3 +1,5 @@
+-- 2014 12 08, then updated by fluentmigrator
+
 -- creates client's db
 
 -- use DEFAULT NEWID() since SqlServer CE don't support NEWSEQUENTIALID()

@@ -11,6 +11,9 @@
         xmlns:shell="clr-namespace:Diagnosis.App.Windows.Shell"
         x:Class="Diagnosis.App.Windows.Shell.MainWindow"
         mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance diag:MainWindowViewModel}"
+        d:DesignHeight="100"
+        d:DesignWidth="500"
         x:Name="root"
         MinWidth="200"
         MinHeight="200"
@@ -46,6 +49,9 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type diag:DoctorsListViewModel}">
                 <screen:Doctors />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type diag:SyncViewModel}">
+                <screen:Sync />
             </DataTemplate>
             <DataTemplate DataType="{x:Type diag:UndoOverlayViewModel}">
                 <diag:UndoOverlay />

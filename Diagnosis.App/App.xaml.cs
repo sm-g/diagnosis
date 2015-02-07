@@ -134,7 +134,7 @@ namespace Diagnosis.App
                 return;
 
             // create db
-            var constr = NHibernateHelper.Configuration.GetProperty(NHibernate.Cfg.Environment.ConnectionString);
+            var constr = NHibernateHelper.ConnectionString;
             var builder = new SqlCeConnectionStringBuilder(constr);
             var sdfPath = builder.DataSource;
             if (!System.IO.File.Exists(sdfPath))

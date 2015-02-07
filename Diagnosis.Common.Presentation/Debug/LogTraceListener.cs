@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace Diagnosis.Common.Presentation.DebugTools
 {
@@ -62,13 +64,18 @@ namespace Diagnosis.Common.Presentation.DebugTools
 
         public override void Write(string message)
         {
-            LogEntries.Add(new LogEntry()
+            Action action = () =>
             {
-                DateTime = DateTime.Now,
-                Index = index++,
-                Message = message,
-                IsVisible = !FilterOn || FilterContains == "" || message.Contains(FilterContains)
-            });
+                LogEntries.Add(new LogEntry()
+                {
+                    DateTime = DateTime.Now,
+                    Index = index++,
+                    Message = message,
+                    IsVisible = !FilterOn || FilterContains == "" || message.Contains(FilterContains)
+                });
+            };
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, action);
+
         }
 
         public override void WriteLine(string message)

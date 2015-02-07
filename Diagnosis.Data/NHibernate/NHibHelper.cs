@@ -44,6 +44,10 @@ namespace Diagnosis.Data
                 return _cfg;
             }
         }
+        public static string ConnectionString
+        {
+            get { return Configuration.GetProperty(Environment.ConnectionString); }
+        }
 
         private static HbmMapping Mapping
         {

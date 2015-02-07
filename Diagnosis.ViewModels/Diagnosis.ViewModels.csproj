@@ -204,6 +204,7 @@
     <Compile Include="Autocomplete\MeasureEditorViewModel.cs" />
     <Compile Include="Screens\Card\HrListViewModel - DragDrop.cs" />
     <Compile Include="Screens\Card\ShortHealthRecordViewModel - DragDrop.cs" />
+    <Compile Include="Screens\SyncViewModel.cs" />
     <Compile Include="Screens\Shell\ServerMainWindowViewModel.cs" />
     <Compile Include="Screens\Uoms\UomEditorViewModel.cs" />
     <Compile Include="Screens\Doctors\DoctorsListViewModel.cs" />
