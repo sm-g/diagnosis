@@ -50,9 +50,9 @@ namespace EventAggregator
 
         public void Dispose()
         {
-            for (int i = 0; i < list.Count; i++)
+            while (list.Count > 0)
             {
-                Dispose(list[i]);
+                Dispose(list[0]);
             }
         }
     }

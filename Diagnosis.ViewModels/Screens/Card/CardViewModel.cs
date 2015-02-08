@@ -106,7 +106,7 @@ namespace Diagnosis.ViewModels.Screens
                     AddHr(h, startEdit);
                     })
                 }
-);
+            );
         }
 
         public CardViewModel(object entity, bool resetHistory = false)
@@ -452,11 +452,9 @@ namespace Diagnosis.ViewModels.Screens
                 Header = new HeaderViewModel(holder);
             }
         }
-        public bool AddingHrByCommnd { get; private set; }
 
         private HealthRecord AddHr(IHrsHolder holder, bool fromCommand = false)
         {
-            AddingHrByCommnd = fromCommand;
             if (HrList.holder != holder)
                 Open(holder); // open holder list first
 
@@ -484,7 +482,6 @@ namespace Diagnosis.ViewModels.Screens
                 // редактируем добавленную командой запись
                 FocusHrEditor(hr, false);
             }
-            AddingHrByCommnd = false;
             return hr;
         }
 
@@ -528,15 +525,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                if (AddingHrByCommnd)
-                {
-
-
-                }
-                else
-                {
-                    // добавление записей вставкой/дропом
-                }
+               
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
