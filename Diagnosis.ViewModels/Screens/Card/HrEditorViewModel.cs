@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Data;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Autocomplete;
 using EventAggregator;
@@ -238,16 +239,25 @@ namespace Diagnosis.ViewModels.Screens
             if (HealthRecord != null && HealthRecord.healthRecord == hr)
                 return;
 
+            // ensure hr is not transient
+            new Saver(session).Save(hr);
+
             FinishCurrentHr();
 
-            HealthRecord = new HealthRecordViewModel(hr);
-
             hr.PropertyChanged += hr_PropertyChanged;
-
             (hr as IEditableObject).BeginEdit();
-            if (!hr.IsTransient)
-                session.SetReadOnly(hr, true);
 
+            try
+            {
+                // prevent saving hr during edit
+                session.SetReadOnly(hr, true);
+            }
+            catch (TransientObjectException)
+            {
+                logger.WarnFormat("{0} still transient after save", hr);
+            }
+
+            HealthRecord = new HealthRecordViewModel(hr);
             CreateAutoComplete();
         }
 
@@ -314,6 +324,8 @@ namespace Diagnosis.ViewModels.Screens
 
         private void FinishCurrentHr()
         {
+            Contract.Requires(HealthRecord == null || !HealthRecord.healthRecord.IsTransient);
+
             if (HealthRecord != null)
             {
                 // завершаем теги
@@ -326,11 +338,9 @@ namespace Diagnosis.ViewModels.Screens
 
                 hr.PropertyChanged -= hr_PropertyChanged;
                 (hr as IEditableObject).EndEdit();
-                if (!hr.IsTransient)
-                {
-                    session.SetReadOnly(hr, false);
-                    session.Evict(hr);
-                }
+
+                session.SetReadOnly(hr, false);
+                session.Evict(hr);
 
                 Autocomplete.Dispose();
                 _autocomplete = null;
