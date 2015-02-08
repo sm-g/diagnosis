@@ -20,8 +20,7 @@
     </UserControl.Resources>
 
     <UserControl.InputBindings>
-        <KeyBinding Modifiers="Control"
-                    Key="Enter"
+        <KeyBinding Gesture="Control+Enter"
                     Command="{Binding HrList.AddHealthRecordCommand}" />
         <KeyBinding Key="F2"
                     Command="{Binding ToggleEditorCommand}" />

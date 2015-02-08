@@ -154,9 +154,9 @@
                         <Setter.Value>
                             <ContextMenu>
                                 <MenuItem Header="Открыть"
-                                          InputGestureText="Enter"
+                                          TextElement.FontWeight="Bold"
                                           Command="{Binding PlacementTarget.Tag.OpenCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                                <MenuItem Header="Редактировать"
+                                <MenuItem Header="Изменить"
                                           InputGestureText="F2"
                                           Command="{Binding PlacementTarget.Tag.EditCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <MenuItem Header="Удалить"

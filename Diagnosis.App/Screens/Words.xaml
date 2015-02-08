@@ -108,7 +108,7 @@
                         <Setter.Value>
                             <ContextMenu>
                                 <!--WordsViewModel-->
-                                <MenuItem Header="Редактировать"
+                                <MenuItem Header="Изменить"
                                           InputGestureText="F2"
                                           Command="{Binding EditCommand}" />
                                 <!--WordsListViewModel-->

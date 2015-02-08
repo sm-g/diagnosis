@@ -72,7 +72,7 @@
             <!-- Tag is HolderVm -->
             <ContextMenu x:Key="HolderContextMenu" 
                          DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
-                <MenuItem Header="Редактировать"
+                <MenuItem Header="Изменить"
                           InputGestureText="F2"
                           Command="{Binding EditCommand}" />
                 <MenuItem Header="Добавить курс"
@@ -87,6 +87,7 @@
                           InputGestureText="Ctrl+Enter"
                           Command="{Binding AddHealthRecordCommand}" />
                 <MenuItem Header="Открыть"
+                          TextElement.FontWeight="Bold"
                           Visibility="{Binding OpenCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                           Command="{Binding OpenCommand}" />
                 <MenuItem Header="Удалить"

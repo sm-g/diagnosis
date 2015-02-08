@@ -79,7 +79,7 @@
                         Orientation="Horizontal">
                 <!--открыть редактор, добавить слово, искать-->
                 <Button Command="{Binding EditCommand}"
-                        ToolTip="Редактировать (F2)">
+                        ToolTip="Изменить (F2)">
                     <Image Source="{StaticResource editImage}" />
                 </Button>
 

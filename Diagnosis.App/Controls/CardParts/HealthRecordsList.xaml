@@ -368,6 +368,9 @@
                             <Setter.Value>
                                 <ContextMenu>
                                     <!-- ShortHr -->
+                                    <MenuItem Header="Изменить"
+                                              TextElement.FontWeight="Bold"
+                                              Command="{Binding EditCommand}" />
                                     <MenuItem Header="Показать редактор"
                                               InputGestureText="F2"
                                               Command="{Binding OpenCommand}" />
