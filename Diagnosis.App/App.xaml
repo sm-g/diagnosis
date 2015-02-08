@@ -49,8 +49,12 @@
                             Command="{Binding HolderVm.OpenCommand}" />
                 <KeyBinding Key="F2"
                             Command="{Binding HolderVm.EditCommand}" />
+                <KeyBinding Key="Insert"
+                            Command="{Binding HolderVm.InsertHolderCommand}" />
                 <KeyBinding Key="Del"
                             Command="{Binding HolderVm.DeleteCommand}" />
+                <KeyBinding Gesture="Control+Enter"
+                            Command="{Binding HolderVm.AddHealthRecordCommand}" />
                 <MouseBinding  MouseAction="LeftDoubleClick"
                                Command="{Binding HolderVm.OpenCommand}" />
             </InputBindingCollection>
@@ -72,11 +76,16 @@
                           InputGestureText="F2"
                           Command="{Binding EditCommand}" />
                 <MenuItem Header="Добавить курс"
+                          InputGestureText="Insert"
                           Visibility="{Binding StartCourseCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                           Command="{Binding StartCourseCommand}" />
                 <MenuItem Header="Добавить осмотр"
+                          InputGestureText="Insert"
                           Visibility="{Binding AddAppointmentCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                           Command="{Binding AddAppointmentCommand}" />
+                <MenuItem Header="Добавить запись"
+                          InputGestureText="Ctrl+Enter"
+                          Command="{Binding AddHealthRecordCommand}" />
                 <MenuItem Header="Открыть"
                           Visibility="{Binding OpenCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                           Command="{Binding OpenCommand}" />

@@ -136,7 +136,7 @@ namespace Diagnosis.ViewModels.Screens
                     var tags = data.Cast<TagViewModel>();
 
                     // new hr from tags
-                    var newHR = master.AddHr();
+                    var newHR = master.holder.AddHealthRecord(AuthorityController.CurrentDoctor);
                     var items = tags.Select(t => t.Entity).ToList();
                     newHR.SetItems(items);
                 }

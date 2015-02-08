@@ -22,7 +22,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private bool editorWasOpened;
         private Saver saver;
-        private EventMessageHandler handler;
+        private EventMessageHandlersManager handlers;
         private Doctor doctor;
 
         public CardViewModel(bool resetHistory = false)
@@ -67,36 +67,46 @@ namespace Diagnosis.ViewModels.Screens
             {
             };
 
-            handler = this.Subscribe(Event.DeleteHolder, (e) =>
-            {
-                var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
-
-                // убрать из результатов поиска (или проверять при открытии, удален ли)
-                viewer.RemoveFromHistory(holder);
-
-                if (holder is Patient)
+            handlers = new EventMessageHandlersManager(new EventMessageHandler[] { 
+                this.Subscribe(Event.DeleteHolder, (e) =>
                 {
-                    saver.SaveWithCleanup(viewer.OpenedPatient);
+                    var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
 
-                    Navigator.Remove(holder as Patient);
-                    saver.Delete(holder);
-                    if (Navigator.TopCardItems.Count == 0)
-                        OnLastItemRemoved();
-                    return;
+                    // убрать из результатов поиска (или проверять при открытии, удален ли)
+                    viewer.RemoveFromHistory(holder);
+
+                    if (holder is Patient)
+                    {
+                        saver.SaveWithCleanup(viewer.OpenedPatient);
+
+                        Navigator.Remove(holder as Patient);
+                        saver.Delete(holder);
+                        if (Navigator.TopCardItems.Count == 0)
+                            OnLastItemRemoved();
+                        return;
+                    }
+                    else if (holder is Course)
+                    {
+                        var course = holder as Course;
+                        course.Patient.RemoveCourse(course);
+                        saver.SaveWithCleanup(viewer.OpenedPatient); // сохраняем на случай, если удаление при открытом пациенте — список записей не меняется
+                    }
+                    else if (holder is Appointment)
+                    {
+                        var app = holder as Appointment;
+                        app.Course.RemoveAppointment(app);
+                        saver.SaveWithCleanup(viewer.OpenedPatient);
+                    }
+                }), 
+                this.Subscribe(Event.AddHr, (e) =>
+                    {
+                    var h= e.GetValue<IHrsHolder>(MessageKeys.Holder);
+                    var startEdit= e.GetValue<bool>(MessageKeys.Boolean);
+
+                    AddHr(h, startEdit);
+                    })
                 }
-                else if (holder is Course)
-                {
-                    var course = holder as Course;
-                    course.Patient.RemoveCourse(course);
-                    saver.SaveWithCleanup(viewer.OpenedPatient); // сохраняем на случай, если удаление при открытом пациенте — список записей не меняется
-                }
-                else if (holder is Appointment)
-                {
-                    var app = holder as Appointment;
-                    app.Course.RemoveAppointment(app);
-                    saver.SaveWithCleanup(viewer.OpenedPatient);
-                }
-            });
+);
         }
 
         public CardViewModel(object entity, bool resetHistory = false)
@@ -206,13 +216,14 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         /// <summary>
-        /// Открывает редактор для записи и начинает редактирование слов.
+        /// Открывает запись и редактор для записи и начинает редактирование слов.
         /// </summary>
         public void FocusHrEditor(HealthRecord hr, bool addToSelected = true)
         {
             Contract.Requires(hr != null);
-            //logger.DebugFormat("FocusHrEditor to {0}", hr);
+            Contract.Requires(hr.Holder == HrList.HolderVm.Holder);
 
+            //logger.DebugFormat("FocusHrEditor to {0}", hr);
             HrList.SelectHealthRecord(hr, addToSelected);
             HrEditor.Load(hr);
             HrEditor.Autocomplete.StartEdit();
@@ -293,7 +304,7 @@ namespace Diagnosis.ViewModels.Screens
 
                     Navigator.Dispose();
 
-                    handler.Dispose();
+                    handlers.Dispose();
 
                     saver.Save(doctor);
                 }
@@ -441,6 +452,41 @@ namespace Diagnosis.ViewModels.Screens
                 Header = new HeaderViewModel(holder);
             }
         }
+        public bool AddingHrByCommnd { get; private set; }
+
+        private HealthRecord AddHr(IHrsHolder holder, bool fromCommand = false)
+        {
+            AddingHrByCommnd = fromCommand;
+            if (HrList.holder != holder)
+                Open(holder); // open holder list first
+
+            HealthRecord hr;
+
+            var lastHrVM = HrList.SelectedHealthRecord;
+            if (HrList.SelectedHealthRecord != null && HrList.SelectedHealthRecord.healthRecord.IsEmpty())
+            {
+                // уже есть выбранная пустая запись
+                hr = HrList.SelectedHealthRecord.healthRecord;
+            }
+            else
+            {
+                hr = holder.AddHealthRecord(AuthorityController.CurrentDoctor);
+            }
+
+            if (HrList.SelectedHealthRecord != null)
+            {
+                // копируем категории из выбранной записи
+                hr.Category = lastHrVM.healthRecord.Category;
+            }
+
+            if (fromCommand)
+            {
+                // редактируем добавленную командой запись
+                FocusHrEditor(hr, false);
+            }
+            AddingHrByCommnd = false;
+            return hr;
+        }
 
         private void HrList_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -482,11 +528,14 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                if (HrList.AddingHrByCommnd)
+                if (AddingHrByCommnd)
                 {
-                    // редактируем добавленную запись
-                    var hr = (HealthRecord)e.NewItems[0];
-                    FocusHrEditor(hr, false);
+
+
+                }
+                else
+                {
+                    // добавление записей вставкой/дропом
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)

@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace EventAggregator
 {
     /// <summary>
     /// Tracks list of EventAggragator EventMessageHandler's. Call Dispose to unsubscribe from all events.
     /// </summary>
-    public class EventMessageHandlersManager
+    public class EventMessageHandlersManager : IDisposable
     {
         private List<EventMessageHandler> list = new List<EventMessageHandler>();
 

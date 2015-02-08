@@ -69,6 +69,7 @@ namespace Diagnosis.Common
         ChangeTheme,
         UomSaved,
         ChangeFont,
+        AddHr,
     }
 
     public static class EventAggragatorExtensions

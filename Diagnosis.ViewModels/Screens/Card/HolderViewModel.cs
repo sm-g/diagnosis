@@ -85,6 +85,14 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public VisibleRelayCommand InsertHolderCommand
+        {
+            get
+            {
+                return Holder is Patient ? StartCourseCommand : AddAppointmentCommand;
+            }
+        }
+
         public RelayCommand AddFirstAppointmentCommand
         {
             get
@@ -139,6 +147,18 @@ namespace Diagnosis.ViewModels.Screens
                             this.Send(Event.OpenAppointment, app.AsParams(MessageKeys.Appointment));
                     }
                 }, () => !(holder.IsEmpty() || (holder is Appointment)));
+            }
+        }
+
+        public RelayCommand AddHealthRecordCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    var stratEdit = true;
+                    this.Send(Event.AddHr, new object[] { holder, stratEdit }.AsParams(MessageKeys.Holder, MessageKeys.Boolean));
+                });
             }
         }
 

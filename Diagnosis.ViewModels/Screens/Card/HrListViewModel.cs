@@ -350,7 +350,6 @@ namespace Diagnosis.ViewModels.Screens
             get { return HealthRecords.Where(vm => vm.IsSelected).ToList(); }
         }
 
-        public bool AddingHrByCommnd { get; private set; }
 
         #region Commands
 
@@ -360,18 +359,12 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                     {
-                        var lastHrVM = SelectedHealthRecord ?? HealthRecords.LastOrDefault();
-                        var newHr = AddHr(true);
 
-                        if (lastHrVM != null)
-                        {
-                            // копируем категории из последней записи
-                            newHr.Category = lastHrVM.healthRecord.Category;
-                        }
-                    },
-                    // нельзя добавлять новую запись, пока выбранная пуста
-                    () => SelectedHealthRecord == null || !SelectedHealthRecord.healthRecord.IsEmpty()
-                    );
+                        var stratEdit = true;
+                        this.Send(Event.AddHr, new object[] { holder, stratEdit }.AsParams(MessageKeys.Holder, MessageKeys.Boolean));
+
+                        // async?                       
+                    });
             }
         }
 
@@ -858,7 +851,7 @@ namespace Diagnosis.ViewModels.Screens
                 else
                 {
                     // new hr with pasted hios
-                    var newHR = AddHr();
+                    var newHR = holder.AddHealthRecord(AuthorityController.CurrentDoctor);
                     newHR.AddItems(data.ItemObjects);
                     OnSaveNeeded(); // save all
                 }
@@ -886,7 +879,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     if (hr2 == null) continue;
 
-                    var newHr = AddHr();
+                    var newHr = holder.AddHealthRecord(AuthorityController.CurrentDoctor);
                     // vm уже добавлена
                     var newVm = HealthRecords.FirstOrDefault(vm => vm.healthRecord == newHr);
                     Debug.Assert(newVm != null);
@@ -963,14 +956,6 @@ namespace Diagnosis.ViewModels.Screens
         internal static void ResetHistory()
         {
             hrViewer = new HrViewer();
-        }
-
-        private HealthRecord AddHr(bool fromCommand = false)
-        {
-            AddingHrByCommnd = fromCommand;
-            var newHr = holder.AddHealthRecord(AuthorityController.CurrentDoctor);
-            AddingHrByCommnd = false;
-            return newHr;
         }
 
         private void LogHrs(string action, IEnumerable<HrData.HrInfo> hrs)
