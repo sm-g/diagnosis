@@ -94,7 +94,11 @@ namespace Diagnosis.Common.Presentation.Behaviors
 
         private static void PasteCommandCanExecute(object target, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = true;
+            var vm = (target as FrameworkElement).DataContext as IClipboardTarget;
+            if (vm != null)
+            {
+                e.CanExecute = vm.CanPaste();
+            }
         }
     }
 }

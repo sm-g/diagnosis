@@ -185,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthorityController.cs" />
+    <Compile Include="Autocomplete\AutocompleteViewModel - ClipboardTarget.cs" />
     <Compile Include="Autocomplete\AutocompleteViewModel - DragDrop.cs" />
     <Compile Include="Autocomplete\IAutocompleteViewModel.cs" />
     <Compile Include="Screens\Card\DragDrop\Helper.cs" />
@@ -202,6 +203,7 @@
     <Compile Include="SampleViewModels.cs" />
     <Compile Include="Screens\Card\HolderViewModel.cs" />
     <Compile Include="Autocomplete\MeasureEditorViewModel.cs" />
+    <Compile Include="Screens\Card\HrListViewModel - ClipboardTarget.cs" />
     <Compile Include="Screens\Card\HrListViewModel - DragDrop.cs" />
     <Compile Include="Screens\Card\ShortHealthRecordViewModel - DragDrop.cs" />
     <Compile Include="Screens\SyncViewModel.cs" />

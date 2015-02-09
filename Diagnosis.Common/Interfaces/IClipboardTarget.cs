@@ -10,5 +10,7 @@ namespace Diagnosis.Common
         void Cut();
         void Copy();
         void Paste();
+
+        bool CanPaste();
     }
 }

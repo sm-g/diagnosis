@@ -18,17 +18,12 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public partial class HrListViewModel : ViewModelBase, IClipboardTarget
+    public partial class HrListViewModel : ViewModelBase
     {
         /// <summary>
         /// When fixing duplicates in List.SelectedItems
         /// </summary>
         public bool inRemoveDup;
-
-        /// <summary>
-        /// When set focus from VM, do not focus
-        /// </summary>
-        public bool inManualFocusSetting;
 
         /// <summary>
         /// If set, selection changes not meaningfull.
@@ -44,8 +39,6 @@ namespace Diagnosis.ViewModels.Screens
         private ShortHealthRecordViewModel _selectedHealthRecord;
         private ShortHealthRecordViewModel _selectedCopy;
         private List<ShortHealthRecordViewModel> selectedOrder = new List<ShortHealthRecordViewModel>();
-        private Action<HealthRecord, HrData.HrInfo> fillHr;
-        private Action<List<IHrItemObject>> syncHios;
         private ReentrantFlag unselectPrev = new ReentrantFlag();
         private ReentrantFlag doNotNotifySelectedChanged = new ReentrantFlag();
         private FlagActionWrapper doNotNotifyLastSelectedChanged;
@@ -760,113 +753,7 @@ namespace Diagnosis.ViewModels.Screens
             vms.ForAll(setter);
         }
 
-        public void Cut()
-        {
-            logger.Debug("cut");
-            Copy();
-            hrManager.DeleteCheckedHealthRecords(withCancel: false);
-        }
 
-        public void Copy()
-        {
-            var hrs = hrManager.GetSelectedHrs();
-            var hrInfos = hrs.Select(hr => new HrData.HrInfo()
-            {
-                HolderId = (Guid)hr.Holder.Id,
-                DoctorId = hr.Doctor.Id,
-                CategoryId = hr.Category != null ? (int?)hr.Category.Id : null,
-                FromDay = hr.FromDay,
-                FromMonth = hr.FromMonth,
-                FromYear = hr.FromYear,
-                Unit = hr.Unit,
-                Hios = new List<IHrItemObject>(hr.HrItems.Select(x => x.Entity))
-            }).ToList();
-
-            var data = new HrData() { Hrs = hrInfos };
-
-            var strings = string.Join(".\n", hrs.Select(hr => string.Join(", ", hr.GetOrderedEntities()))) + ".";
-
-            IDataObject dataObj = new DataObject(HrData.DataFormat.Name, data);
-            dataObj.SetData(System.Windows.DataFormats.UnicodeText, strings);
-            Clipboard.SetDataObject(dataObj, false);
-
-            LogHrs("copy", hrInfos);
-        }
-
-        public void Paste()
-        {
-            TagData data = null;
-            var ido = Clipboard.GetDataObject();
-
-            if (ido.GetDataPresent(TagData.DataFormat.Name))
-            {
-                data = (TagData)ido.GetData(TagData.DataFormat.Name);
-            }
-            if (data != null)
-            {
-                syncHios(data.ItemObjects);
-
-                var hrs = hrManager.GetSelectedHrs();
-                if (hrs.Count > 0)
-                {
-                    // add hios to end of Selected Hrs
-                    hrs.ForAll(hr => hr.AddItems(data.ItemObjects));
-                    OnSaveNeeded(hrManager.GetSelectedHrs());
-                }
-                else
-                {
-                    // new hr with pasted hios
-                    var newHR = holder.AddHealthRecord(AuthorityController.CurrentDoctor);
-                    newHR.AddItems(data.ItemObjects);
-                    OnSaveNeeded(); // save all
-                }
-                LogHrItemObjects("paste", data.ItemObjects);
-            }
-
-            HrData hrDat = null;
-
-            if (ido.GetDataPresent(HrData.DataFormat.Name))
-            {
-                hrDat = (HrData)ido.GetData(HrData.DataFormat.Name);
-            }
-            if (hrDat != null)
-            {
-                // paste hrs before Selected or to the end
-                int index;
-                if (SelectedHealthRecord == null)
-                    index = view.Count;
-                else
-                    index = view.IndexOf(SelectedHealthRecord);
-
-                var pasted = new List<HealthRecord>();
-                var pastedVms = new List<ShortHealthRecordViewModel>();
-                foreach (var hr2 in hrDat.Hrs)
-                {
-                    if (hr2 == null) continue;
-
-                    var newHr = holder.AddHealthRecord(AuthorityController.CurrentDoctor);
-                    // vm уже добавлена
-                    var newVm = HealthRecords.FirstOrDefault(vm => vm.healthRecord == newHr);
-                    Debug.Assert(newVm != null);
-                    fillHr(newHr, hr2);
-                    // теперь запись заполнена
-                    pastedVms.Add(newVm);
-                    pasted.Add(newHr);
-                }
-
-                hrManager.Reorder(pastedVms, HealthRecordsView, index);
-
-                SelectHealthRecords(pasted);
-                OnSaveNeeded(); // save all
-
-                Contract.Assume(SelectedHealthRecord.healthRecord == pasted.Last());
-                inManualFocusSetting = true;
-                SelectedHealthRecord.IsFocused = true;
-                //inManualFocusSettng = false;
-
-                LogHrs("paste", hrDat.Hrs);
-            }
-        }
 
         public override string ToString()
         {
@@ -921,16 +808,6 @@ namespace Diagnosis.ViewModels.Screens
         internal static void ResetHistory()
         {
             hrViewer = new HrViewer();
-        }
-
-        private void LogHrs(string action, IEnumerable<HrData.HrInfo> hrs)
-        {
-            logger.DebugFormat("{0} hrs with hios: {1}", action, string.Join("\n", hrs.Select((hr, i) => string.Format("{0} {1}", i, hr.Hios.FlattenString()))));
-        }
-
-        private void LogHrItemObjects(string action, IEnumerable<IHrItemObject> hios)
-        {
-            logger.DebugFormat("{0} hios: {1}", action, hios.FlattenString());
         }
 
         [ContractInvariantMethod]
