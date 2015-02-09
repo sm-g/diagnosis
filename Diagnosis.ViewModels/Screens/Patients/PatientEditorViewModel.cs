@@ -74,19 +74,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public RelayCommand SaveAndCreateCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    SaveCommand.Execute(null);
-
-                    this.Send(Event.CreatePatient);
-                }, () => CanSaveAndCreate());
-            }
-        }
-
         public RelayCommand SaveAndOpenAppCommand
         {
             get

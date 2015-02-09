@@ -43,7 +43,6 @@ namespace Diagnosis.Common
 
         // windows
         EditDoctor,
-        CreatePatient,
         EditPatient,
         EditHolder,
         EditWord,
@@ -52,23 +51,24 @@ namespace Diagnosis.Common
         OpenDialog,
         OpenWindow,
 
-        SettingsSaved,
-
-        // for Search
-
         SendToSearch,
 
         ShowUndoOverlay,
         HideOverlay,
         Shutdown,
         DeleteHolder,
+
         WordPersisted,
         WordSaved,
         PatientSaved,
         DoctorSaved,
-        ChangeTheme,
         UomSaved,
+
+        SettingsSaved,
+
+        ChangeTheme,
         ChangeFont,
+
         AddHr,
     }
 

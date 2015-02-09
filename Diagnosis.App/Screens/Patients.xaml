@@ -181,7 +181,7 @@
                 <ContextMenu>
                     <MenuItem Header="Новый..."
                               InputGestureText="Ctrl+Enter"
-                              Command="{Binding AddHealthRecordCommand}" />
+                              Command="{Binding AddCommand}" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>

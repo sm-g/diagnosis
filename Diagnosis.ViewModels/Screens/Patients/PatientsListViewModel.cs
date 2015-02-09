@@ -107,7 +107,21 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Event.CreatePatient);
+                    Patient pat;
+                    if (SelectedPatient != null)
+                    {
+                        // copy patient
+                        pat = new Patient(
+                            SelectedPatient.LastName,
+                            SelectedPatient.FirstName,
+                            SelectedPatient.MiddleName);
+                    }
+                    else
+                    {
+                        pat = new Patient(Filter.Query);
+                    }
+
+                    this.Send(Event.EditPatient, pat.AsParams(MessageKeys.Patient));
                 });
             }
         }

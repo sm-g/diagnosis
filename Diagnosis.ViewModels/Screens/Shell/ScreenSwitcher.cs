@@ -83,12 +83,6 @@ namespace Diagnosis.ViewModels.Screens
                 this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
             });
 
-            this.Subscribe(Event.CreatePatient, (e) =>
-            {
-                var vm = new PatientEditorViewModel();
-                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
-            });
-
             // экраны
 
             AuthorityController.LoggedIn += (s, e) =>
