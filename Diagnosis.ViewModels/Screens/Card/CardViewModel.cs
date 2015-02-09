@@ -207,7 +207,7 @@ namespace Diagnosis.ViewModels.Screens
             // logger.DebugFormat("toggle hr editor from {0}", HrEditor.HasHealthRecord);
             if (HrEditor.HasHealthRecord)
             {
-                Contract.Assume(HrEditor.HealthRecord.healthRecord == HrList.LastSelected.healthRecord);
+                // TODO Contract.Assume(HrEditor.HealthRecord.healthRecord == HrList.LastSelected.healthRecord);
                 HrEditor.Unload();
             }
             else

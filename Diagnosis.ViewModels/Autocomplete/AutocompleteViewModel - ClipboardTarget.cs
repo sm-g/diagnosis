@@ -36,7 +36,9 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             var strings = string.Join(", ", hios);
 
-            IDataObject dataObj = new DataObject(TagData.DataFormat.Name, data);
+            IDataObject dataObj = new DataObject();
+
+            dataObj.SetData(TagData.DataFormat.Name, data);
             dataObj.SetData(System.Windows.DataFormats.UnicodeText, strings);
             Clipboard.SetDataObject(dataObj, false);
 
