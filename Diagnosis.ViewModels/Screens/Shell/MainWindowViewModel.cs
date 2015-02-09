@@ -5,6 +5,7 @@ using Xceed.Wpf.AvalonDock.Layout.Serialization;
 using EventAggregator;
 using Diagnosis.Common;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Search;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -143,6 +144,25 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
+
+        public RelayCommand FocusOnFilterCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    if (CurrentView is IFilterableList)
+                    {
+                        (CurrentView as dynamic).Filter.IsFocused = true;
+                    }
+                    else
+                    {
+                        OpenSearchCommand.Execute(null);
+                    }
+                });
+            }
+        }
+
         public string Sexes
         {
             get

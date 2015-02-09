@@ -12,7 +12,7 @@
             <MenuItem Command="{Binding OpenPatientsCommand}"
                       Header="_Все пациенты" />
             <!--<MenuItem Header="_Пациенты">
-                <MenuItem Command="{Binding AddPatientCommand}" Header="_Новый..." />
+                <MenuItem Command="{Binding AddCommand}" Header="_Новый..." />
             </MenuItem>-->
             <!--<MenuItem Header="_Справочники">-->
             <MenuItem Command="{Binding OpenWordsCommand}"

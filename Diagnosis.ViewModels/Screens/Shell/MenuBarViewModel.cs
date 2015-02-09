@@ -134,11 +134,11 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public RelayCommand AddPatientCommand
+        public RelayCommand AddCommand
         {
             get
             {
-                return null;// patProducer.AddPatientCommand;
+                return null;// patProducer.AddCommand;
             }
         }
 

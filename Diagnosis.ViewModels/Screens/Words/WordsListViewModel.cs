@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class WordsListViewModel : ScreenBaseViewModel
+    public class WordsListViewModel : ScreenBaseViewModel, IFilterableList
     {
         private FilterViewModel<Word> _filter;
         private ObservableCollection<WordViewModel> _words;

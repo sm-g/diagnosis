@@ -7,16 +7,14 @@
              xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance diag:WordsListViewModel}"
              d:DesignHeight="300"
              d:DesignWidth="300">
-    <!--WordsListViewModel-->
     <UserControl.InputBindings>
-        <KeyBinding Modifiers="Control"
-                    Key="Enter"
+        <KeyBinding Gesture="Control+Enter"
                     Command="{Binding AddCommand}" />
-        <KeyBinding Modifiers="Alt"
-                    Key="F"
-                    Command="{Binding SendToSearchCommand}" />
+        <KeyBinding Gesture="Control+F"
+                    Command="{Binding SendToSearchCommand}" />       
         <KeyBinding Key="Delete"
                     Command="{Binding DeleteCommand}" />
         <KeyBinding Key="F2"
@@ -92,8 +90,7 @@
                             Command="{Binding EditCommand}" />
                 <KeyBinding Key="Delete"
                             Command="{Binding DeleteCommand}" />
-                <KeyBinding Key="Enter"
-                            Modifiers="Control"
+                <KeyBinding Gesture="Control+Enter"
                             Command="{Binding AddCommand}" />
             </DataGrid.InputBindings>
             <DataGrid.RowStyle>
@@ -108,7 +105,7 @@
                         <Setter.Value>
                             <ContextMenu>
                                 <!--WordsViewModel-->
-                                <MenuItem Header="Изменить"
+                                <MenuItem Header="Изменить..."
                                           InputGestureText="F2"
                                           Command="{Binding EditCommand}" />
                                 <!--WordsListViewModel-->
@@ -118,11 +115,22 @@
                                 <MenuItem Header="Удалить"
                                           InputGestureText="Delete"
                                           Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                <Separator />
+                                <MenuItem Header="Добавить..."
+                                          InputGestureText="Ctrl+Enter"
+                                          Command="{Binding PlacementTarget.Tag.AddCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>
                 </Style>
             </DataGrid.RowStyle>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Добавить..."
+                              InputGestureText="Ctrl+Enter"
+                              Command="{Binding AddCommand}" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
         </DataGrid>
     </Grid>
 </UserControl>

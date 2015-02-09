@@ -42,37 +42,10 @@
 
             <properties:Settings x:Key="Settings" />
 
-            <InputBindingCollection x:Shared="False"
-                                    x:Key="CardElementsInputBindings">
-                <!--<KeyBinding Key="Space" Command="{Binding HolderVm.OpenCommand}" />-->
-                <KeyBinding Key="Enter"
-                            Command="{Binding HolderVm.OpenCommand}" />
-                <KeyBinding Key="F2"
-                            Command="{Binding HolderVm.EditCommand}" />
-                <KeyBinding Key="Insert"
-                            Command="{Binding HolderVm.InsertHolderCommand}" />
-                <KeyBinding Key="Del"
-                            Command="{Binding HolderVm.DeleteCommand}" />
-                <KeyBinding Gesture="Control+Enter"
-                            Command="{Binding HolderVm.AddHealthRecordCommand}" />
-                <MouseBinding  MouseAction="LeftDoubleClick"
-                               Command="{Binding HolderVm.OpenCommand}" />
-            </InputBindingCollection>
-
-            <InputBindingCollection x:Shared="False"
-                                    x:Key="SearchResultInputBindings">
-                <KeyBinding Key="Space"
-                            Command="{Binding OpenCommand}" />
-                <KeyBinding Key="Enter"
-                            Command="{Binding OpenCommand}" />
-                <MouseBinding  MouseAction="LeftDoubleClick"
-                               Command="{Binding OpenCommand}" />
-            </InputBindingCollection>           
-
             <!-- Tag is HolderVm -->
             <ContextMenu x:Key="HolderContextMenu" 
                          DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
-                <MenuItem Header="Изменить"
+                <MenuItem Header="Изменить..."
                           InputGestureText="F2"
                           Command="{Binding EditCommand}" />
                 <MenuItem Header="Добавить курс"
@@ -86,6 +59,7 @@
                 <MenuItem Header="Добавить запись"
                           InputGestureText="Ctrl+Enter"
                           Command="{Binding AddHealthRecordCommand}" />
+                <Separator />
                 <MenuItem Header="Открыть"
                           TextElement.FontWeight="Bold"
                           Visibility="{Binding OpenCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"

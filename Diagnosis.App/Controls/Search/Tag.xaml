@@ -201,11 +201,11 @@
                     <MenuItem Header="Комментарий"
                               CommandParameter="{x:Static diag:BlankType.Comment}"
                               Style="{StaticResource convert}" />
-                    <MenuItem Header="МКБ"
+                    <MenuItem Header="МКБ..."
                               Visibility="{Binding CanConvertToIcd, Converter={StaticResource BooleanToVisibilityConverter}}"
                               CommandParameter="{x:Static diag:BlankType.Icd}"
                               Style="{StaticResource convert}" />
-                    <MenuItem Header="Измерение"
+                    <MenuItem Header="Измерение..."
                               CommandParameter="{x:Static diag:BlankType.Measure}"
                               Style="{StaticResource convert}" />
 

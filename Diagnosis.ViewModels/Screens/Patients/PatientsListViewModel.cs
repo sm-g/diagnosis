@@ -16,7 +16,7 @@ using System.ComponentModel;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class PatientsListViewModel : ScreenBaseViewModel
+    public class PatientsListViewModel : ScreenBaseViewModel, IFilterableList
     {
         private Patient _current;
         private bool _noPatients;
@@ -101,7 +101,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public ObservableCollection<Patient> SelectedPatients { get; private set; }
 
-        public ICommand AddPatientCommand
+        public ICommand AddCommand
         {
             get
             {

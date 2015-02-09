@@ -71,15 +71,15 @@
                                 VerticalAlignment="Top"
                                 Grid.RowSpan="2">
                             <Button.Style>
-                                <Style>
-                                    <Setter Property="Button.Visibility"
-                                            Value="Collapsed"></Setter>
+                                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                    <Setter Property="Visibility"
+                                            Value="Collapsed" />
 
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, Path=IsMouseOver}"
                                                      Value="true">
-                                            <Setter Property="Button.Visibility"
-                                                    Value="Visible"></Setter>
+                                            <Setter Property="Visibility"
+                                                    Value="Visible" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

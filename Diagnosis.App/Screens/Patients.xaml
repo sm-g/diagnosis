@@ -9,9 +9,13 @@
              mc:Ignorable="d"
              x:Name="patients"
              Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+             d:DataContext="{d:DesignInstance diag:PatientsListViewModel}"
              d:DesignHeight="300"
              d:DesignWidth="400">
-    <!--PatientsListViewModel-->
+    <UserControl.InputBindings>
+        <KeyBinding Gesture="Control+Enter"
+                    Command="{Binding AddCommand}" />
+    </UserControl.InputBindings>
     <UserControl.Resources>
         <Style x:Key="SexCheckbox"
                TargetType="{x:Type CheckBox}">
@@ -74,7 +78,7 @@
                     Height="23"
                     Width="70"
                     HorizontalAlignment="Right"
-                    Command="{Binding AddPatientCommand}" />
+                    Command="{Binding AddCommand}" />
         </Grid>
 
         <diag:Filter  x:Name="filter"
@@ -94,7 +98,7 @@
                        HorizontalAlignment="Center"
                        VerticalAlignment="Top"
                        Visibility="{Binding NoPatients, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Run Text="Сначала " /><Hyperlink Command="{Binding AddPatientCommand}">
+                <Run Text="Сначала " /><Hyperlink Command="{Binding AddCommand}">
                     <Hyperlink.Style>
                         <Style TargetType="Hyperlink">
                             <Setter Property="Focusable"
@@ -139,6 +143,8 @@
             <DataGrid.InputBindings>
                 <KeyBinding Key="Enter"
                             Command="{Binding OpenCommand}" />
+                <KeyBinding Gesture="Control+Enter"
+                            Command="{Binding AddCommand}" />
                 <KeyBinding Key="F2"
                             Command="{Binding EditCommand}" />
                 <KeyBinding Key="Delete"
@@ -156,17 +162,28 @@
                                 <MenuItem Header="Открыть"
                                           TextElement.FontWeight="Bold"
                                           Command="{Binding PlacementTarget.Tag.OpenCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                                <MenuItem Header="Изменить"
+                                <MenuItem Header="Изменить..."
                                           InputGestureText="F2"
                                           Command="{Binding PlacementTarget.Tag.EditCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <MenuItem Header="Удалить"
                                           InputGestureText="Delete"
                                           Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                <Separator />
+                                <MenuItem Header="Новый..."
+                                          InputGestureText="Ctrl+Enter"
+                                          Command="{Binding PlacementTarget.Tag.AddCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>
                 </Style>
             </DataGrid.RowStyle>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Новый..."
+                              InputGestureText="Ctrl+Enter"
+                              Command="{Binding AddHealthRecordCommand}" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
         </DataGrid>
     </Grid>
 </UserControl>

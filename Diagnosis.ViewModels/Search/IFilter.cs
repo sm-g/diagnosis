@@ -22,4 +22,9 @@ namespace Diagnosis.ViewModels.Search
         void Clear();
         void Filter();
     }
+
+    interface IFilterableList
+    {
+        //  FilterViewModel<T> Filter { get; }
+    }
 }

@@ -69,7 +69,7 @@
                     Command="{Binding OpenSearchCommand}" />
         <KeyBinding Modifiers="Control"
                     Key="E"
-                    Command="{Binding OpenSearchCommand}" />
+                    Command="{Binding FocusOnFilterCommand}" />
         <KeyBinding Key="F1"
                     Command="{Binding MenuBar.OpenHelpCommand}" />
     </Window.InputBindings>

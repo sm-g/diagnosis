@@ -9,9 +9,13 @@
              mc:Ignorable="d"
              x:Name="doctors"
              Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+             d:DataContext="{d:DesignInstance diag:DoctorsListViewModel}"
              d:DesignHeight="300"
              d:DesignWidth="400">
-    <!--DoctorsListViewModel-->
+    <UserControl.InputBindings>
+        <KeyBinding Gesture="Control+Enter"
+                    Command="{Binding AddCommand}" />
+    </UserControl.InputBindings>
     <UserControl.Resources>
     </UserControl.Resources>
 
@@ -37,8 +41,7 @@
                     Height="23"
                     Width="70"
                     HorizontalAlignment="Right"
-                    Command="{Binding AddCommand}"
-                    Margin="0,2,0,11" />
+                    Command="{Binding AddCommand}" />
         </Grid>
 
         <DataGrid x:Name="dataGrid"
@@ -63,6 +66,8 @@
             <DataGrid.InputBindings>
                 <KeyBinding Key="Enter"
                             Command="{Binding EditCommand}" />
+                <KeyBinding Gesture="Control+Enter"
+                            Command="{Binding AddCommand}" />
                 <KeyBinding Key="F2"
                             Command="{Binding EditCommand}" />
                 <KeyBinding Key="Delete"
@@ -77,17 +82,28 @@
                     <Setter Property="ContextMenu">
                         <Setter.Value>
                             <ContextMenu>
-                                <MenuItem Header="Изменить"
+                                <MenuItem Header="Изменить..."
                                           InputGestureText="F2"
                                           Command="{Binding PlacementTarget.Tag.EditCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <MenuItem Header="Удалить"
                                           InputGestureText="Delete"
                                           Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                <Separator />
+                                <MenuItem Header="Новый..."
+                                          InputGestureText="Ctrl+Enter"
+                                          Command="{Binding PlacementTarget.Tag.AddCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>
                 </Style>
             </DataGrid.RowStyle>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Новый..."
+                              InputGestureText="Ctrl+Enter"
+                              Command="{Binding AddCommand}" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
         </DataGrid>
     </Grid>
 </UserControl>

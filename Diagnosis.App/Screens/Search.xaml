@@ -26,8 +26,19 @@
                 <Setter Property="Margin"
                         Value="0,0,0,2" />
             </Style>
+
+            <InputBindingCollection x:Shared="False"
+                                    x:Key="SearchResultInputBindings">
+                <KeyBinding Key="Space"
+                            Command="{Binding OpenCommand}" />
+                <KeyBinding Key="Enter"
+                            Command="{Binding OpenCommand}" />
+                <MouseBinding  MouseAction="LeftDoubleClick"
+                               Command="{Binding OpenCommand}" />
+            </InputBindingCollection>
         </ResourceDictionary>
-    </UserControl.Resources>
+    </UserControl.Resources>    
+    
     <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />

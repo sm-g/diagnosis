@@ -7,9 +7,9 @@
              xmlns:controls="clr-namespace:Diagnosis.Common.Presentation.Controls"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance diag:Filter}"
              d:DesignHeight="30"
              d:DesignWidth="300">
-    <!-- FilterViewModel -->
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />

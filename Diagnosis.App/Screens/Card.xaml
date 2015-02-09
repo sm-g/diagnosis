@@ -15,16 +15,31 @@
              d:DataContext="{d:DesignInstance diag:CardViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="400"
              d:DesignWidth="600">
-    <UserControl.Resources>
-      
-    </UserControl.Resources>
-
     <UserControl.InputBindings>
         <KeyBinding Gesture="Control+Enter"
                     Command="{Binding HrList.AddHealthRecordCommand}" />
         <KeyBinding Key="F2"
                     Command="{Binding ToggleEditorCommand}" />
     </UserControl.InputBindings>
+    
+    <UserControl.Resources>
+        <InputBindingCollection x:Shared="False"
+                                x:Key="CardElementsInputBindings">
+            <!--<KeyBinding Key="Space" Command="{Binding HolderVm.OpenCommand}" />-->
+            <KeyBinding Key="Enter"
+                        Command="{Binding HolderVm.OpenCommand}" />
+            <KeyBinding Key="F2"
+                        Command="{Binding HolderVm.EditCommand}" />
+            <KeyBinding Key="Insert"
+                        Command="{Binding HolderVm.InsertHolderCommand}" />
+            <KeyBinding Key="Del"
+                        Command="{Binding HolderVm.DeleteCommand}" />
+            <KeyBinding Gesture="Control+Enter"
+                        Command="{Binding HolderVm.AddHealthRecordCommand}" />
+            <MouseBinding  MouseAction="LeftDoubleClick"
+                           Command="{Binding HolderVm.OpenCommand}" />
+        </InputBindingCollection>
+    </UserControl.Resources>
 
     <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
         <Grid.ColumnDefinitions>

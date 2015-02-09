@@ -30,7 +30,6 @@
                        VerticalAlignment="Top" />
                 <TextBox Text="{Binding Word.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                          ScrollViewer.VerticalScrollBarVisibility="Auto"
-                         AcceptsReturn="True"
                          TextWrapping="Wrap"
                          Height="60"
                          VerticalContentAlignment="Top" />
