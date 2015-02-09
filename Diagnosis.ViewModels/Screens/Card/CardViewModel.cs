@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
 using Diagnosis.Models;
+using Diagnosis.Models.Enums;
 using EventAggregator;
 using log4net;
 using System;
@@ -525,7 +526,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-               
+
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
