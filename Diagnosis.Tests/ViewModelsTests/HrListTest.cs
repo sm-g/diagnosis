@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
 using Diagnosis.Models;
+using Diagnosis.Models.Enums;
 using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
