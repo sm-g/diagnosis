@@ -374,6 +374,7 @@
                                     <MenuItem Header="Показать редактор"
                                               InputGestureText="F2"
                                               Command="{Binding OpenCommand}" />
+                                   
                                     <!-- HrList -->
                                     <MenuItem Header="Искать"
                                               InputGestureText="Ctrl+F"
@@ -381,6 +382,10 @@
                                     <MenuItem Header="Удалить"
                                               InputGestureText="Delete"
                                               Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                    <Separator />
+                                    <MenuItem Command="{x:Static ApplicationCommands.Copy}" />
+                                    <MenuItem Command="{x:Static ApplicationCommands.Cut}" />
+                                    <MenuItem Command="{x:Static ApplicationCommands.Paste}" />
                                     <Separator />
                                     <MenuItem Header="Добавить запись"
                                               InputGestureText="Ctrl+Enter"
@@ -408,6 +413,8 @@
 
                 <ListBox.ContextMenu>
                     <ContextMenu>
+                        <MenuItem Command="{x:Static ApplicationCommands.Paste}" />
+                        <Separator />
                         <MenuItem Header="Добавить запись"
                                   InputGestureText="Ctrl+Enter"
                                   Command="{Binding AddHealthRecordCommand}" />
