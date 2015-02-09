@@ -24,7 +24,8 @@ namespace Diagnosis.ViewModels.Autocomplete
             logger.Debug("cut");
             Copy();
 
-            var completed = SelectedTags.Where(t => t.State == State.Completed); // do not remove init tags
+            // do not remove init tags
+            var completed = SelectedTags.Where(t => t.State == State.Completed);
             completed.ForAll(t => t.DeleteCommand.Execute(null));
         }
 
@@ -32,13 +33,14 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             var hios = GetEntitiesOfSelected();
             var data = new TagData() { ItemObjects = hios };
+
             var strings = string.Join(", ", hios);
 
             IDataObject dataObj = new DataObject(TagData.DataFormat.Name, data);
             dataObj.SetData(System.Windows.DataFormats.UnicodeText, strings);
             Clipboard.SetDataObject(dataObj, false);
 
-            LogHrItemObjects("copy", hios);
+            logger.LogHrItemObjects("copy", hios);
         }
 
         public void Paste()
@@ -60,11 +62,16 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         #endregion IClipboardTarget
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
         private void PasteTags(TagData data)
         {
             Contract.Ensures(Tags.Count >= Contract.OldValue(Tags).Count);
 
-            var index = Tags.IndexOf(SelectedTag); // paste before first SelectedTag
+            // paste before first SelectedTag
+            var index = Tags.IndexOf(SelectedTag);
             SelectedTags.ForEach(t => t.IsSelected = false);
 
             recognizer.Sync(data.ItemObjects);
@@ -78,15 +85,9 @@ namespace Diagnosis.ViewModels.Autocomplete
 
                 tag.Validate(Validator);
             }
-            LogHrItemObjects("paste", data.ItemObjects);
+            logger.LogHrItemObjects("paste", data.ItemObjects);
         }
 
-        /// <summary>
-        /// Формат {[id] ToString()[,] ...}
-        /// </summary>
-        private void LogHrItemObjects(string action, IEnumerable<IHrItemObject> hios)
-        {
-            logger.DebugFormat("{0} hios: {1}", action, hios.FlattenString());
-        }
+
     }
 }

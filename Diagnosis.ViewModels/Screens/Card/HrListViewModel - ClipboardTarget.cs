@@ -53,11 +53,12 @@ namespace Diagnosis.ViewModels.Screens
 
             var strings = string.Join(".\n", hrs.Select(hr => string.Join(", ", hr.GetOrderedEntities()))) + ".";
 
-            IDataObject dataObj = new DataObject(HrData.DataFormat.Name, data);
+            IDataObject dataObj = new DataObject();
+            dataObj.SetData(HrData.DataFormat.Name, data);
             dataObj.SetData(System.Windows.DataFormats.UnicodeText, strings);
             Clipboard.SetDataObject(dataObj, false);
 
-            LogHrs("copy", hrInfos);
+            logger.LogHrs("copy", hrInfos);
         }
 
         public void Paste()
@@ -126,7 +127,7 @@ namespace Diagnosis.ViewModels.Screens
             SelectedHealthRecord.IsFocused = true;
             //inManualFocusSettng = false;
 
-            LogHrs("paste", hrData.Hrs);
+            logger.LogHrs("paste", hrData.Hrs);
         }
         /// <summary>
         /// Add HrItems to selected HealthRecords or create new HealthRecords with them.
@@ -151,17 +152,9 @@ namespace Diagnosis.ViewModels.Screens
                 newHR.AddItems(data.ItemObjects);
                 OnSaveNeeded(); // save all
             }
-            LogHrItemObjects("paste", data.ItemObjects);
+            logger.LogHrItemObjects("paste", data.ItemObjects);
         }
 
-        private void LogHrs(string action, IEnumerable<HrData.HrInfo> hrs)
-        {
-            logger.DebugFormat("{0} hrs with hios: {1}", action, string.Join("\n", hrs.Select((hr, i) => string.Format("{0} {1}", i, hr.Hios.FlattenString()))));
-        }
 
-        private void LogHrItemObjects(string action, IEnumerable<IHrItemObject> hios)
-        {
-            logger.DebugFormat("{0} hios: {1}", action, hios.FlattenString());
-        }
     }
 }

@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace Diagnosis.ViewModels.DragDrop
 {
-    public static class Helper
+    public static class DragDropHelper
     {
         public static bool FromSameCollection(this IDropInfo dropInfo)
         {

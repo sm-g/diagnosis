@@ -188,8 +188,9 @@
     <Compile Include="Autocomplete\AutocompleteViewModel - ClipboardTarget.cs" />
     <Compile Include="Autocomplete\AutocompleteViewModel - DragDrop.cs" />
     <Compile Include="Autocomplete\IAutocompleteViewModel.cs" />
-    <Compile Include="Screens\Card\DragDrop\Helper.cs" />
-    <Compile Include="Screens\Card\DragDrop\Interfaces.cs" />
+    <Compile Include="DataTransfer\ClipboardHelper.cs" />
+    <Compile Include="DataTransfer\DragDropHelper.cs" />
+    <Compile Include="DataTransfer\DragDropInterfaces.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Framework\MenuItem.cs" />
     <Compile Include="Framework\VisibleRelayCommand.cs" />
