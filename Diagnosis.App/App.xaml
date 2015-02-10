@@ -7,6 +7,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!--absolute Uri to easy compare-->
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Resources/MarginResources.xaml" />
+                
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Resources/ConverterResources.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Resources/ImageResources.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Resources/ColorResources.xaml" />
@@ -39,7 +41,7 @@
             
             <s:Boolean x:Key="True">True</s:Boolean>
             <s:Boolean x:Key="False">False</s:Boolean>
-
+          
             <properties:Settings x:Key="Settings" />
 
             <!-- Tag is HolderVm -->

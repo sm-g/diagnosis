@@ -7,6 +7,8 @@
              xmlns:search="clr-namespace:Diagnosis.App.Controls.Search"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
+             Padding="{StaticResource SreenPadding}"
+             Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
              d:DataContext="{d:DesignInstance diag:WordsListViewModel}"
              d:DesignHeight="300"
              d:DesignWidth="300">
@@ -21,7 +23,7 @@
                     Command="{Binding SelectedWord.EditCommand}" />
     </UserControl.InputBindings>
 
-    <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />

@@ -3,10 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
+             Padding="10"
+             Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+             d:DataContext="{d:DesignInstance diag:LoginViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="300"
-             d:DesignWidth="300">
-    <!--LoginViewModel-->
+             d:DesignWidth="350">
     <UserControl.Resources>
         <Style TargetType="Label"
                BasedOn="{StaticResource label90}" />
@@ -15,7 +18,7 @@
                BasedOn="{StaticResource formLine}">
         </Style>
     </UserControl.Resources>
-    <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+    <Grid>
         <StackPanel Width="300">
             <TextBlock Style="{StaticResource ScreenTitle}"
                        Padding="5,0,0,10">Вход</TextBlock>

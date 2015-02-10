@@ -8,6 +8,7 @@
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
              x:Name="patients"
+             Padding="{StaticResource SreenPadding}"
              Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
              d:DataContext="{d:DesignInstance diag:PatientsListViewModel}"
              d:DesignHeight="300"
@@ -57,9 +58,7 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <Grid HorizontalAlignment="Stretch"
-          MaxWidth="500"
-          MinWidth="300">
+    <Grid MaxWidth="{StaticResource DataGridSreenMaxWidth}">
         <Grid.RowDefinitions>
             <RowDefinition Height="36" />
             <RowDefinition Height="auto" />
