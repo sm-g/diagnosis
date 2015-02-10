@@ -110,7 +110,7 @@ namespace Diagnosis.Data.Sync
                     }
                     else
                     {
-                        PostMessage("Невозможно поключиться к {0}", conn);
+                        CanNotConnect(conn);
                     }
                 }
             });
@@ -127,7 +127,7 @@ namespace Diagnosis.Data.Sync
             {
                 if (!clientConn.IsAvailable())
                 {
-                    PostMessage("Невозможно поключиться к {0}", clientConn);
+                    CanNotConnect(clientConn);
                     return;
                 }
 
@@ -223,12 +223,12 @@ namespace Diagnosis.Data.Sync
             {
                 if (!serverConn.IsAvailable())
                 {
-                    PostMessage("Невозможно поключиться к {0}", serverConn);
+                    CanNotConnect(serverConn);
                     return;
                 }
                 if (!clientConn.IsAvailable())
                 {
-                    PostMessage("Невозможно поключиться к {0}", clientConn);
+                    CanNotConnect(clientConn);
                     return;
                 }
 
@@ -277,6 +277,11 @@ namespace Diagnosis.Data.Sync
                     PostMessage(ex);
                 }
             }
+        }
+
+        private static void CanNotConnect(DbConnection con)
+        {
+            PostMessage("Невозможно поключиться к {0}", con.ConnectionString);
         }
 
         private void Provision(DbConnection con, Scope scope)

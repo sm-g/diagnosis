@@ -44,7 +44,7 @@ namespace Diagnosis.ViewModels.Screens
                 ProviderName = server.ProviderName;
             }
 #if DEBUG
-            ConnectionString = "Data Source=diagnosis2.sdf";
+            ConnectionString = "Data Source=uoms.sdf";
             ProviderName = sqlCeProvider;
 #endif
         }
@@ -186,7 +186,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private void syncer_MessagePosted(object sender, StringEventArgs e)
         {
-            Log += e.str + '\n';
+            Log += string.Format("[{0:mm:ss:fff}] {1}\n", DateTime.Now, e.str);
         }
 
         private void syncer_SyncEnded(object sender, TimeSpanEventArgs e)
