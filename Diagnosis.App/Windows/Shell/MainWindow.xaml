@@ -33,12 +33,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!--<ResourceDictionary Source="/Xceed.Wpf.AvalonDock.Themes.Aero;Component/Theme.xaml" />
                 <ResourceDictionary Source="/Xceed.Wpf.AvalonDock.Themes.Metro;Component/Theme.xaml" />
-                <ResourceDictionary Source="/Xceed.Wpf.AvalonDock.Themes.VS2010;Component/Theme.xaml" />-->
-                <!--<ResourceDictionary Source="/Xceed.Wpf.AvalonDock.Themes.Expression;Component/Theme.xaml" />
-                <ResourceDictionary Source="/Xceed.Wpf.AvalonDock.Themes.Expression;Component/DarkTheme.xaml" />
-                <ResourceDictionary Source="/Xceed.Wpf.AvalonDock.Themes.Expression;Component/LightTheme.xaml" />-->
                 <ResourceDictionary Source="../../Styles/AvalonDock.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
@@ -91,19 +86,21 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <shell:MenuBar DataContext="{Binding MenuBar}"
-                       Visibility="{Binding Visible, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
         <shell:MyDockingManager x:Name="dockManager"
                                 Grid.Row="1"
+                                Margin="-4 -3 -4 -4"
                                 AnchorablesSource="{Binding Panes}"
                                 beh:AvalonDockLayoutSerializer.VM="{Binding ADLayout}">
-            <!--<shell:MyDockingManager.Theme>
+            <!-- margin fixes avalon theme -->
+            <shell:MyDockingManager.Theme>
                 <xcad:MetroTheme />
-            </shell:MyDockingManager.Theme>-->
+            </shell:MyDockingManager.Theme>
             <shell:MyDockingManager.Resources>
                 <Style TargetType="{x:Type xcad:AnchorablePaneTitle}"
                        BasedOn="{StaticResource AnchorablePaneTitleEmpty}">
+                </Style>
+                <Style TargetType="xcad:LayoutGridResizerControl"
+                       BasedOn="{StaticResource LayoutGridResizerControlForMetro}">
                 </Style>
             </shell:MyDockingManager.Resources>
             <shell:MyDockingManager.Style>
@@ -195,6 +192,9 @@
                 <shell:LayoutInitializer />
             </shell:MyDockingManager.LayoutUpdateStrategy>
         </shell:MyDockingManager>
+
+        <shell:MenuBar DataContext="{Binding MenuBar}"
+                       Visibility="{Binding Visible, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
         <ItemsControl DataContext="{Binding OverlayService}"
                       ItemsSource="{Binding Overlays}"

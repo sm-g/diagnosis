@@ -46,4 +46,19 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+
+    <Style x:Key="LayoutGridResizerControlForMetro"
+           TargetType="xcad:LayoutGridResizerControl">
+        <Setter Property="Background"
+                Value="{DynamicResource SystemColors.ControlBrushKey}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type xcad:LayoutGridResizerControl}">
+                    <Border Background="{TemplateBinding Background}"
+                            Width="5">
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>
