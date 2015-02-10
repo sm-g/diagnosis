@@ -1,5 +1,9 @@
-﻿using System;
+﻿using Diagnosis.ViewModels.Screens;
+using Microsoft.Data.ConnectionUI;
+using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Interop;
 using System.Windows.Threading;
 
 namespace Diagnosis.App.Screens
@@ -11,6 +15,8 @@ namespace Diagnosis.App.Screens
             InitializeComponent();
             Loaded += (s, e) =>
             {
+                log.ScrollToEnd();
+
                 log.TextChanged += (s1, e1) =>
                 {
                     Action action = () =>
@@ -20,6 +26,23 @@ namespace Diagnosis.App.Screens
                     Dispatcher.BeginInvoke(DispatcherPriority.Background, action);
                 };
             };
+
+        }
+
+        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var d = new DataConnectionDialog();
+            DataSource.AddStandardDataSources(d);
+            if (DataConnectionDialog.Show(d) == System.Windows.Forms.DialogResult.OK)
+            {
+                var vm = DataContext as SyncViewModel;
+                if (vm != null)
+                {
+                    connectionString.Text = d.ConnectionString;
+                    vm.ProviderName = d.SelectedDataProvider.Name;
+                }
+            }
+
         }
     }
 }

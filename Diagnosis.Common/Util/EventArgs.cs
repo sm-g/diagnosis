@@ -51,4 +51,16 @@ namespace Diagnosis.Common
             this.str = arg;
         }
     }
+
+    [Serializable]
+    public class TimeSpanEventArgs : EventArgs
+    {
+        public readonly TimeSpan ts;
+
+        [System.Diagnostics.DebuggerStepThrough]
+        public TimeSpanEventArgs(TimeSpan ts)
+        {
+            this.ts = ts;
+        }
+    }
 }

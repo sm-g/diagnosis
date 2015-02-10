@@ -43,5 +43,6 @@ namespace Diagnosis.ViewModels.Framework
         public string FileExtension { get { return fileExtension; } }
 
         public static FileType Xlsx { get { return new FileType("Таблица Excel", ".xlsx"); } }
+        public static FileType Sdf { get { return new FileType("SQL CE database", ".sdf"); } }
     }
 }

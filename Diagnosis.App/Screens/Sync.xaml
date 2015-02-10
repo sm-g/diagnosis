@@ -9,30 +9,70 @@
              mc:Ignorable="d"
              x:Name="doctors"
              Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-             d:DataContext="{d:DesignInstance diag:SyncViewModel, IsDesignTimeCreatable=False}"
+             d:DataContext="{d:DesignInstance diag:SyncViewModel,
+                                              IsDesignTimeCreatable=False}"
              d:DesignHeight="300"
              d:DesignWidth="400">
     <UserControl.Resources>
+        <Style TargetType="DockPanel"
+               BasedOn="{StaticResource formLine}" />
     </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal">
-            <Button Content="Выгрузить"
+        <Grid Margin="0 0 0 10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Label Content="Источник"
+                   VerticalAlignment="Top" />
+            <TextBox x:Name="connectionString"
+                     Text="{Binding ConnectionString,
+                                    UpdateSourceTrigger=PropertyChanged,
+                                    ValidatesOnDataErrors=True}"
+                     Grid.Column="1" />
+            <StackPanel Orientation="Horizontal"
+                        Margin="0,5,0,0"
+                        Grid.Row="1"
+                        Grid.Column="1">
+
+                <Button Command="{Binding OpenSdfCommand}"
+                        Content="Выбрать файл..." />
+                <TextBlock Text="или"
+                           Margin="10 0 10 0"
+                           VerticalAlignment="Center" />
+                <Button Content="Выбрать сервер..."
+                        Click="Button_Click" />
+            </StackPanel>
+        </Grid>
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Grid.Row="1">
+            <Button Content="Отправить"
                     Command="{Binding UploadCommand}" />
             <Button Content="Загрузить"
                     Command="{Binding DownloadCommand}" />
-            <Button Content="DeprovisClientCommand"
+            <Separator Width="20"
+                       Height="0" />
+            <Button Content="DeprovisClient"
                     Command="{Binding DeprovisClientCommand}" />
-            <Button Content="DeprovisServerCommand"
+            <Button Content="DeprovisServer"
                     Command="{Binding DeprovisServerCommand}" />
         </StackPanel>
 
-        <DockPanel Grid.Row="1">
+        <DockPanel Grid.Row="2">
+
             <Label Content="Лог"
                    DockPanel.Dock="Top" />
             <TextBox x:Name="log"

@@ -1,7 +1,10 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Data;
 using Diagnosis.Data.Sync;
+using Diagnosis.ViewModels.Framework;
 using EventAggregator;
 using System;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,13 +15,88 @@ namespace Diagnosis.ViewModels.Screens
 {
     public class SyncViewModel : ScreenBaseViewModel
     {
-        private string _log;
+        private static readonly string serverConStrName = "server";
+        private const string sqlCeProvider = "System.Data.SqlServerCE.4.0";
+        private const string sqlServerProvider = "System.Data.SqlClient";
+
+        private static string _log;
+
+        private string _conStr;
+        private string _provider;
+        private string clientConStr;
+        private Syncer syncer;
 
         public SyncViewModel()
         {
             Title = "Синхронизация";
-            Syncer.MessagePosted += Syncer_MessagePosted;
-            Syncer.SyncEnded += Syncer_SyncEnded;
+
+            clientConStr = NHibernateHelper.ConnectionString;
+            Syncer.MessagePosted += syncer_MessagePosted;
+            Syncer.SyncEnded += syncer_SyncEnded;
+
+            var server = ConfigurationManager.ConnectionStrings[serverConStrName];
+            if (server != null)
+            {
+                ConnectionString = server.ConnectionString;
+                ProviderName = server.ProviderName;
+            }
+        }
+
+        public string ConnectionString
+        {
+            get
+            {
+                return _conStr;
+            }
+            set
+            {
+                if (_conStr != value)
+                {
+                    if (!value.StartsWith("Data Source="))
+                    {
+                        value = "Data Source=" + value;
+                    }
+
+                    _conStr = value;
+                    OnPropertyChanged(() => ConnectionString);
+                }
+            }
+        }
+
+        public string ProviderName
+        {
+            get
+            {
+                return _provider;
+            }
+            set
+            {
+                if (_provider != value)
+                {
+                    _provider = value;
+                    OnPropertyChanged(() => ProviderName);
+                }
+            }
+        }
+
+        public RelayCommand OpenSdfCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    var result = new FileDialogService().ShowOpenFileDialog(null,
+                         FileType.Sdf.ToEnumerable(),
+                         FileType.Sdf,
+                         "diagnosis");
+
+                    if (result.IsValid)
+                    {
+                        ConnectionString = result.FileName;
+                        ProviderName = sqlCeProvider;
+                    }
+                });
+            }
         }
 
         public RelayCommand DownloadCommand
@@ -27,9 +105,10 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    DoWithCursor(Syncer.SendFrom(Db.Server), Cursors.AppStarting);
+                    syncer = new Syncer(ConnectionString, clientConStr, ProviderName);
+                    DoWithCursor(syncer.SendFrom(Db.Server), Cursors.AppStarting);
                 },
-                () => !Syncer.InSync);
+                () => CanSync());
             }
         }
 
@@ -39,9 +118,10 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    DoWithCursor(Syncer.SendFrom(Db.Client), Cursors.AppStarting);
+                    syncer = new Syncer(ConnectionString, clientConStr, ProviderName);
+                    DoWithCursor(syncer.SendFrom(Db.Client), Cursors.AppStarting);
                 },
-                () => !Syncer.InSync);
+                () => CanSync());
             }
         }
 
@@ -51,9 +131,10 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    DoWithCursor(Syncer.Deprovision(Db.Client), Cursors.AppStarting);
+                    syncer = new Syncer(ConnectionString, clientConStr, ProviderName);
+                    DoWithCursor(syncer.Deprovision(Db.Client), Cursors.AppStarting);
                 },
-                () => !Syncer.InSync);
+                () => CanSync());
             }
         }
 
@@ -63,9 +144,10 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    DoWithCursor(Syncer.Deprovision(Db.Server), Cursors.AppStarting);
+                    syncer = new Syncer(ConnectionString, clientConStr, ProviderName);
+                    DoWithCursor(syncer.Deprovision(Db.Server), Cursors.AppStarting);
                 },
-                () => !Syncer.InSync);
+                () => CanSync());
             }
         }
 
@@ -85,26 +167,23 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        protected override void Dispose(bool disposing)
+        private bool CanSync()
         {
-            if (disposing)
-            {
-                Syncer.SyncEnded -= Syncer_SyncEnded;
-                Syncer.MessagePosted -= Syncer_MessagePosted;
-            }
-            base.Dispose(disposing);
+            return !Syncer.InSync && !ConnectionString.IsNullOrEmpty() &&
+                (ProviderName == sqlCeProvider ||
+                 ProviderName == sqlServerProvider);
         }
-
-        private void Syncer_MessagePosted(object sender, StringEventArgs e)
+        private void syncer_MessagePosted(object sender, StringEventArgs e)
         {
             Log += e.str + '\n';
         }
 
-        private void Syncer_SyncEnded(object sender, System.EventArgs e)
+        private void syncer_SyncEnded(object sender, TimeSpanEventArgs e)
         {
-            Log += "\nsync ended";
+            Log += "\n=== " + e.ts.ToString() + "\n";
             CommandManager.InvalidateRequerySuggested();
         }
+
         private void DoWithCursor(Task act, Cursor cursor)
         {
             Mouse.OverrideCursor = cursor;
@@ -113,6 +192,26 @@ namespace Diagnosis.ViewModels.Screens
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                     Mouse.OverrideCursor = null));
             });
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Syncer.SyncEnded -= syncer_SyncEnded;
+                Syncer.MessagePosted -= syncer_MessagePosted;
+
+                // http://stackoverflow.com/questions/502411/change-connection-string-reload-app-config-at-run-time
+                // clear all connection strings and save new
+                var settings = new ConnectionStringSettings(serverConStrName, ConnectionString, ProviderName);
+                var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                var connectionStringsSection = (ConnectionStringsSection)config.GetSection("connectionStrings");
+                connectionStringsSection.ConnectionStrings.Clear();
+                connectionStringsSection.ConnectionStrings.Add(settings);
+                config.Save();
+                ConfigurationManager.RefreshSection("connectionStrings");
+            }
+            base.Dispose(disposing);
         }
     }
 }

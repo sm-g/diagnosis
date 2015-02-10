@@ -25,14 +25,15 @@
         </Grid.RowDefinitions>
 
         <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <StackPanel  DataContext="{Binding Patient}">
+            <StackPanel  DataContext="{Binding Patient}"
+                         d:DataContext="{d:DesignInstance diag:PatientViewModel}"
+                         >
                 <StackPanel.Resources>
                     <Style TargetType="DockPanel"
                            BasedOn="{StaticResource formLine}" />
                     <Style TargetType="Label"
                            BasedOn="{StaticResource label120}" />
                 </StackPanel.Resources>
-                <!-- PatientViewModel -->
                 <Grid Margin="0 0 0 10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
