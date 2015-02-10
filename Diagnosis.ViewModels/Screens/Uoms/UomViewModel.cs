@@ -43,7 +43,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                if (uom.Type == null)
+                if (uom.Type == null || uom.Type.Base == null)
                     return "";
                 return uom.Type.Base.Abbr;
             }
@@ -68,6 +68,7 @@ namespace Diagnosis.ViewModels.Screens
         /// Единица - базовая в типе. 
         /// Т.к. единица не редактируется, нужно только пересчитать единицы типа на новую базу 
         /// и не надо выбирать новую базу, если снимается этот флаг.
+        /// М.б. несколько единиц с фактором 0 (отличаются только названием), но только одна базовая.
         /// </summary>
         public bool IsBase
         {
@@ -163,6 +164,11 @@ namespace Diagnosis.ViewModels.Screens
         private void uom_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             OnPropertyChanged(e.PropertyName);
+
+            // validate linked fields
+            if (UomValidator.TestExistingFor.Contains(e.PropertyName))
+                OnPropertyChanged(UomValidator.TestExistingFor);
+
         }
     }
 }

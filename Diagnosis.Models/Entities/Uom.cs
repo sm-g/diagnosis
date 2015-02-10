@@ -15,6 +15,7 @@ namespace Diagnosis.Models
         private string _description;
         private string _abbr;
         private double _factor;
+        private UomType _type;
 
         public Uom(string abbr, double factor, UomType type)
         {
@@ -63,7 +64,14 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual UomType Type { get; set; }
+        public virtual UomType Type
+        {
+            get { return _type; }
+            set
+            {
+                SetProperty(ref _type, value, () => Type);
+            }
+        }
 
         public virtual bool IsBase { get { return Factor == 0; } }
         public override string ToString()

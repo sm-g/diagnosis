@@ -7,7 +7,7 @@ namespace Diagnosis.Models.Validators
 {
     public class UomValidator : AbstractValidator<Uom>
     {
-        public static string[] TestExistingFor = { "Description", "Abbr" };
+        public static string[] TestExistingFor = { "Description", "Abbr", "Type" };
 
         public UomValidator()
         {

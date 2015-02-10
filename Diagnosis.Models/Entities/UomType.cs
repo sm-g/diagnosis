@@ -2,11 +2,13 @@
 using Iesi.Collections.Generic;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Diagnosis.Models
 {
+    [DebuggerDisplay("uomtype {Title} {Ord}")]
     [Serializable]
     public class UomType : EntityBase<int>, IDomainObject, IComparable<UomType>
     {
@@ -55,7 +57,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("{0}", Title);
+            return string.Format("{0} ({1})", Title, Base == null ? "базовая не указана" : Base.Abbr);
         }
 
         public virtual int CompareTo(UomType other)

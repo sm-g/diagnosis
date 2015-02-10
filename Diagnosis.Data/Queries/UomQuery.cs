@@ -24,7 +24,7 @@ namespace Diagnosis.Data.Queries
                     if (!str.IsNullOrEmpty())
                     {
                         var disjunction = new Disjunction();
-                        disjunction.Add(Restrictions.On<Uom>(w => w.Abbr).IsInsensitiveLike(str, MatchMode.Anywhere)); // do not work with sqlite
+                        disjunction.Add(Restrictions.On<Uom>(w => w.Abbr).IsLike(str, MatchMode.Anywhere)); // do not work with sqlite
                         disjunction.Add(Restrictions.On<Uom>(w => w.Description).IsInsensitiveLike(str, MatchMode.Anywhere));
 
                         q = q.Where(disjunction);

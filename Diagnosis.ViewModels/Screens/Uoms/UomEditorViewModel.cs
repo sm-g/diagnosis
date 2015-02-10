@@ -41,6 +41,7 @@ namespace Diagnosis.ViewModels.Screens
 
             Types = new List<UomType>(Session.QueryOver<UomType>().List());
 
+            Uom.IsBase = false; // не делать новые единицы базовыми по умолчанию
             Title = "Единица";
         }
 
@@ -76,12 +77,12 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
         /// <summary>
-        /// Нельзя добавить единицу с таким же описанием / обозначением.
+        /// Нельзя добавить единицу с таким же описанием или обозначением в группе.
         /// </summary>
         private void TestExisting(UomViewModel vm, IEnumerable<Uom> uoms)
         {
             vm.HasExistingDescrAbbr = uoms.Any(x =>
-                (x.Description == uom.Description || x.Abbr == uom.Abbr) && x != uom);
+                (x.Description == uom.Description || x.Abbr == uom.Abbr) && x.Type == uom.Type && x != uom);
         }
         protected override void OnOk()
         {

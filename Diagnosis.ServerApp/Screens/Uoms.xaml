@@ -85,7 +85,7 @@
                                                       Mode=OneWay}" />
                 <DataGridTextColumn Header="Тип"
                                     IsReadOnly="True"
-                                    SortMemberPath="Ord"
+                                    SortMemberPath="Type.Ord"
                                     Binding="{Binding Type,
                                                       Mode=OneWay}" />
                 <DataGridCheckBoxColumn Header="Базовая"
