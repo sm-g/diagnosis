@@ -9,7 +9,7 @@ CREATE TABLE [Uom] (
   [Id] int IDENTITY (1,1) NOT NULL
 , [Abbr] nvarchar(10) NOT NULL
 , [Description] nvarchar(100) NULL
-, [Factor] float NOT NULL
+, [Factor] numeric(18,6) NOT NULL
 , [UomType] int NOT NULL
 );
 GO
