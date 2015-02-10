@@ -49,6 +49,7 @@ namespace Diagnosis.Models
 
             var factor = newBase.Factor;
             uoms.ForAll(u => u.Factor -= factor);
+            newBase.Factor = 0;
             return true;
         }
 

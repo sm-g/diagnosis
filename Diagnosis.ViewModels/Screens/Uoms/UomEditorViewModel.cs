@@ -86,8 +86,6 @@ namespace Diagnosis.ViewModels.Screens
         protected override void OnOk()
         {
             uom.Factor = Math.Log10(Uom.ValueInBase); // 1 мл = 1000 л, фактор 3
-            if (Uom.ValueInBase == 1)
-                Uom.IsBase = true;
 
             (uom as IEditableObject).EndEdit();
 
@@ -96,7 +94,7 @@ namespace Diagnosis.ViewModels.Screens
             if (Uom.IsBase)
             {
                 if (uom.Type.Rebase(uom))
-                    toSave = new List<Uom>(uom.Type.Uoms);
+                    toSave.AddRange(uom.Type.Uoms);
             }
 
             new Saver(Session).Save(toSave.ToArray());
