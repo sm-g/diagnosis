@@ -14,13 +14,14 @@ using Xceed.Wpf.AvalonDock.Controls;
 using Xceed.Wpf.AvalonDock.Layout;
 using System.Collections.Generic;
 using System.Windows.Controls;
+using MahApps.Metro.Controls;
 
 namespace Diagnosis.App.Windows.Shell
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(MainWindow));
 
