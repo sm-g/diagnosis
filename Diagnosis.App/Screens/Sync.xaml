@@ -13,12 +13,7 @@
              d:DataContext="{d:DesignInstance diag:SyncViewModel,
                                               IsDesignTimeCreatable=False}"
              d:DesignHeight="300"
-             d:DesignWidth="400">
-    <UserControl.Resources>
-        <Style TargetType="DockPanel"
-               BasedOn="{StaticResource formLine}" />
-    </UserControl.Resources>
-
+             d:DesignWidth="500">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -60,26 +55,30 @@
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Center"
                     Grid.Row="1">
-            <Button Content="Отправить"
+            <Button Content="Отправить"                    
                     Command="{Binding UploadCommand}" />
+            <Separator Width="10"
+                       Height="0" />
             <Button Content="Загрузить"
                     Command="{Binding DownloadCommand}" />
-            <Separator Width="20"
+            <Separator Width="50"
                        Height="0" />
-            <Button Content="DeprovisClient"
+            <Button Content="Deprovision Client"
                     Command="{Binding DeprovisClientCommand}" />
-            <Button Content="DeprovisServer"
+            <Separator Width="10"
+                       Height="0" />
+            <Button Content="Deprovision Server"
                     Command="{Binding DeprovisServerCommand}" />
         </StackPanel>
 
         <DockPanel Grid.Row="2">
-
             <Label Content="Лог"
                    DockPanel.Dock="Top" />
             <TextBox x:Name="log"
                      Text="{Binding Log}"
                      IsReadOnly="True"
                      IsReadOnlyCaretVisible="True"
+                     TextWrapping="Wrap"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      ScrollViewer.VerticalScrollBarVisibility="Auto" />
         </DockPanel>

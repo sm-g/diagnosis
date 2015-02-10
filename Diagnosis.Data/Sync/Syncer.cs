@@ -43,6 +43,8 @@ namespace Diagnosis.Data.Sync
             this.serverConStr = serverConStr;
             this.clientConStr = clientConStr;
             this.serverProviderName = serverProviderName;
+
+
         }
 
         public static event EventHandler<StringEventArgs> MessagePosted;
@@ -329,7 +331,7 @@ namespace Diagnosis.Data.Sync
                 else if (con is SqlConnection)
                     DeprovisionSqlServer(con as SqlConnection, scope.ToScopeString());
 
-                PostMessage(string.Format("Deprovisioned scope '{0}' in '{1}'", scope.ToScopeString(), con.ConnectionString));
+                PostMessage(string.Format("Deprovisioned '{0}' in '{1}'", scope.ToScopeString(), con.ConnectionString));
             }
             catch (Exception ex)
             {
@@ -391,23 +393,18 @@ namespace Diagnosis.Data.Sync
 
                 to.ApplyChangeFailed += (s, e) =>
                 {
-                    PostMessage(string.Format("ApplyChangeFailed\n {0}\n LocalChange.Rows\n", e.Error));
-                    //foreach (DataRow row in e.Conflict.LocalChange.Rows)
-                    //{
-                    //    PostMessage("{0}", row.ItemArray);
+                    if (to.ScopeName == Scope.Icd.ToScopeString())
+                        return;
 
-                    //}
-                    //PostMessage(" LocalChange.Rows\n");
+                    if (e.Conflict.Type == DbConflictType.ErrorsOccurred)
+                        PostMessage(string.Format("ApplyChangeFailed. Error: {0}", e.Error));
+                    else
+                        PostMessage(string.Format("ApplyChangeFailed. ConflictType: {0}", e.Conflict.Type));
 
-                    //foreach (DataRow row in e.Conflict.RemoteChange.Rows)
-                    //{
-                    //    PostMessage("{0}\n", row.ItemArray);
-
-                    //}
                 };
                 to.DbConnectionFailure += (s, e) =>
                 {
-                    PostMessage(string.Format("DbConnectionFailure\n {0}", e.FailureException.Message));
+                    PostMessage(string.Format("DbConnectionFailure: {0}", e.FailureException.Message));
                 };
             }
         }

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
-             Padding="10"
+             Padding="{StaticResource SreenPadding}"
              Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
              d:DataContext="{d:DesignInstance diag:LoginViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="300"

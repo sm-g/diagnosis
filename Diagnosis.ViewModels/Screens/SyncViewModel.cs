@@ -4,6 +4,9 @@ using Diagnosis.Data.Sync;
 using Diagnosis.ViewModels.Framework;
 using EventAggregator;
 using System;
+
+using System;
+
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,6 +43,10 @@ namespace Diagnosis.ViewModels.Screens
                 ConnectionString = server.ConnectionString;
                 ProviderName = server.ProviderName;
             }
+#if DEBUG
+            ConnectionString = "Data Source=diagnosis2.sdf";
+            ProviderName = sqlCeProvider;
+#endif
         }
 
         public string ConnectionString
@@ -108,7 +115,7 @@ namespace Diagnosis.ViewModels.Screens
                     syncer = new Syncer(ConnectionString, clientConStr, ProviderName);
                     DoWithCursor(syncer.SendFrom(Db.Server), Cursors.AppStarting);
                 },
-                () => CanSync());
+                () => CanSync);
             }
         }
 
@@ -121,7 +128,7 @@ namespace Diagnosis.ViewModels.Screens
                     syncer = new Syncer(ConnectionString, clientConStr, ProviderName);
                     DoWithCursor(syncer.SendFrom(Db.Client), Cursors.AppStarting);
                 },
-                () => CanSync());
+                () => CanSync);
             }
         }
 
@@ -134,7 +141,7 @@ namespace Diagnosis.ViewModels.Screens
                     syncer = new Syncer(ConnectionString, clientConStr, ProviderName);
                     DoWithCursor(syncer.Deprovision(Db.Client), Cursors.AppStarting);
                 },
-                () => CanSync());
+                () => CanSync);
             }
         }
 
@@ -147,7 +154,7 @@ namespace Diagnosis.ViewModels.Screens
                     syncer = new Syncer(ConnectionString, clientConStr, ProviderName);
                     DoWithCursor(syncer.Deprovision(Db.Server), Cursors.AppStarting);
                 },
-                () => CanSync());
+                () => CanSync);
             }
         }
 
@@ -167,12 +174,16 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private bool CanSync()
+        public bool CanSync
         {
-            return !Syncer.InSync && !ConnectionString.IsNullOrEmpty() &&
+            get
+            {
+                return !Syncer.InSync && !ConnectionString.IsNullOrEmpty() &&
                 (ProviderName == sqlCeProvider ||
                  ProviderName == sqlServerProvider);
+            }
         }
+
         private void syncer_MessagePosted(object sender, StringEventArgs e)
         {
             Log += e.str + '\n';
@@ -181,7 +192,8 @@ namespace Diagnosis.ViewModels.Screens
         private void syncer_SyncEnded(object sender, TimeSpanEventArgs e)
         {
             Log += "\n=== " + e.ts.ToString() + "\n";
-            CommandManager.InvalidateRequerySuggested();
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+                CommandManager.InvalidateRequerySuggested()));
         }
 
         private void DoWithCursor(Task act, Cursor cursor)
