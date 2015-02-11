@@ -140,10 +140,19 @@ namespace Diagnosis.Models
                 OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, hr));
         }
 
+        /// <summary>
+        /// Завершает курс с датой сегодня или датой последнего осмотра, если он после сегодня.
+        /// </summary>
         public virtual void Finish()
         {
             Contract.Requires(!IsEnded);
-            End = DateTime.Now;
+            var last = Appointments.OrderBy(x => x.DateAndTime).LastOrDefault();
+            var end = last != null ? last.DateAndTime : DateTime.Now;
+            End = end > DateTime.Now ? end : DateTime.Now;
+        }
+        public virtual void Open()
+        {
+            End = null;
         }
 
         /// <summary>

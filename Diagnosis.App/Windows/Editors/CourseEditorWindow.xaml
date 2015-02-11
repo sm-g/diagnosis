@@ -4,13 +4,14 @@
         xmlns:controls="clr-namespace:Diagnosis.App.Controls"
         xmlns:diag="http://schemas.smg.com/diagnosis"
         Title="{Binding Title}"
-        Height="170"
         Width="250"
+        Height="180"
+        SizeToContent="WidthAndHeight"
+        UseLayoutRounding="True"
         diag:DialogCloser.DialogResult="{Binding DialogResult}"
         diag:FocusBehavior.FocusFirst="True"
         ShowInTaskbar="False"
-        ResizeMode="NoResize"
->
+        ResizeMode="NoResize">
     <Grid Margin="0,0,10,10">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -30,11 +31,29 @@
             </DockPanel>
             <DockPanel Visibility="{Binding Course.IsEnded, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Label Content="Конец" />
-                <DatePicker Text="{Binding Course.End,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                <DatePicker Text="{Binding Course.End, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
             </DockPanel>
-            <DockPanel Visibility="{Binding Course.IsEnded, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-                <Label  />
-                <TextBlock><Hyperlink Command="{Binding FinishCommand}">Завершить</Hyperlink></TextBlock>
+            <DockPanel>
+                <Label />
+                <TextBlock TextElement.FontSize="{DynamicResource ContentFontSize}">
+                    <Hyperlink Command="{Binding ToggleIsEndedCommand}">
+                        <Run>
+                            <Run.Style>
+                                <Style TargetType="Run">
+                                    <Setter Property="Text" Value="Завершить" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Course.IsEnded}"
+                                                     Value="True">
+                                            <Setter Property="Text" Value="Продолжить" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Run.Style>
+                        </Run>
+
+                    </Hyperlink>
+                </TextBlock>
+
             </DockPanel>
         </StackPanel>
 
@@ -42,10 +61,14 @@
                     Style="{StaticResource DialogButtonsPanel}">
             <Button Name="saveButton"
                     IsDefault="True"
-                    Command="{Binding OkCommand}">Сохранить</Button>
+                    Command="{Binding OkCommand}">
+                Сохранить
+            </Button>
             <Button Name="cancelButton"
                     IsCancel="True"
-                    Command="{Binding CancelCommand}">Отмена</Button>
+                    Command="{Binding CancelCommand}">
+                Отмена
+            </Button>
         </StackPanel>
     </Grid>
 </Window>

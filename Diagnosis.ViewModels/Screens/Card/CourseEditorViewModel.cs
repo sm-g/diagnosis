@@ -37,12 +37,17 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public RelayCommand FinishCommand
+        public RelayCommand ToggleIsEndedCommand
         {
             get
             {
-                return new RelayCommand(course.Finish,
-                () => course.End == null);
+                return new RelayCommand(() =>
+                {
+                    if (course.IsEnded)
+                        course.Open();
+                    else
+                        course.Finish();
+                });
             }
         }
 
