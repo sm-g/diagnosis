@@ -11,7 +11,7 @@
     <DockPanel>
         <TextBlock MinWidth="30"
                    VerticalAlignment="Center"
-                   Text="{Binding Converter={StaticResource ManToName}, ConverterParameter=True}" />
+                   Text="{Binding FullNameOrCreatedAt}" />
         <TextBlock Margin="20,0,5,0"
                    VerticalAlignment="Center"
                    Style="{StaticResource SexTooltip}">

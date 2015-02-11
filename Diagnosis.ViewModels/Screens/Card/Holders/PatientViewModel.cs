@@ -86,7 +86,13 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-
+        public string FullNameOrCreatedAt
+        {
+            get
+            {
+                return patient.FullNameOrCreatedAt;
+            }
+        }
 
         public DateTime CreatedAt
         {

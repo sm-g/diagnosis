@@ -18,7 +18,7 @@ namespace Diagnosis.App.Converters
                 if (full)
                 {
                     var name = NameFormatter.GetFullName(value as IMan);
-                    return name ?? ((value is Patient) ? (value as Patient).CreatedAt.ToString("dd.MM.yy hh:mm") : "");
+                    return name ?? ((value is Patient) ? (value as Patient).FullNameOrCreatedAt : "");
                 }
                 else
                     return NameFormatter.GetShortName(value as IMan);
