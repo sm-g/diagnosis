@@ -374,7 +374,7 @@
                                     <MenuItem Header="Показать редактор"
                                               InputGestureText="F2"
                                               Command="{Binding OpenCommand}" />
-                                   
+
                                     <!-- HrList -->
                                     <MenuItem Header="Искать"
                                               InputGestureText="Ctrl+F"
@@ -382,6 +382,19 @@
                                     <MenuItem Header="Удалить"
                                               InputGestureText="Delete"
                                               Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                    <Separator Visibility="{Binding PlacementTarget.Tag.MoveHrCommand.IsVisible, 
+                                               Converter={StaticResource BooleanToVisibilityConverter}, 
+                                               RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                    <MenuItem DataContext="{Binding PlacementTarget.Tag,  RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                              Command="{Binding MoveHrCommand}"
+                                              Visibility="{Binding MoveHrCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                              CommandParameter="{StaticResource True}"
+                                              Header="Вверх" />
+                                    <MenuItem DataContext="{Binding PlacementTarget.Tag,  RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                              Command="{Binding MoveHrCommand}"
+                                              Visibility="{Binding MoveHrCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                              CommandParameter="{StaticResource False}"
+                                              Header="Вниз" />
                                     <Separator />
                                     <MenuItem Command="{x:Static ApplicationCommands.Copy}" />
                                     <MenuItem Command="{x:Static ApplicationCommands.Cut}" />

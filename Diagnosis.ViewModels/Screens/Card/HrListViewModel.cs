@@ -45,6 +45,7 @@ namespace Diagnosis.ViewModels.Screens
         private HrViewSortingColumn _sort = HrViewSortingColumn.SortingDate; // to change in ctor
         private HrViewGroupingColumn _group = HrViewGroupingColumn.GroupingCreatedAt;
         private bool _rectSelect;
+        private bool _canReorder;
         private bool _focused;
         private bool inSetSelected;
         private bool disposed;
@@ -204,6 +205,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;
+        private VisibleRelayCommand<bool> _moveHr;
 
         public HolderViewModel HolderVm { get; private set; }
 
@@ -385,16 +387,15 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public RelayCommand<bool> MoveHrCommand
+        public VisibleRelayCommand<bool> MoveHrCommand
         {
             get
             {
-                return new RelayCommand<bool>((up) =>
+                return _moveHr ?? (_moveHr = new VisibleRelayCommand<bool>((up) =>
                 {
-                    if (SelectedHealthRecord == null)
-                    {
+                    if (SelectedHealthRecord == null || !CanReorder)
                         return;
-                    }
+
                     logger.DebugFormat("begin move hrs, up={0}", up);
 
                     var hrs = SelectedHealthRecords;
@@ -432,7 +433,26 @@ namespace Diagnosis.ViewModels.Screens
                     Reorder(hrs, newIndex, group);
 
                     logger.DebugFormat("end move hrs");
-                });
+                }, (up) =>
+                {
+                    if (SelectedHealthRecord == null || !CanReorder)
+                        return false;
+
+                    var selectedInd = SelectedHealthRecords.Select(v => HealthRecordsView.IndexOf(v));
+                    var allNear = selectedInd.OrderBy(x => x).IsSequential();
+
+                    int current;
+                    if (allNear)
+                        current = up ? selectedInd.Min() : selectedInd.Max();
+                    else
+                        current = HealthRecordsView.IndexOf(SelectedHealthRecord);
+
+                    int newIndex = current;
+                    if (up)
+                        return current > 0;
+                    else
+                        return current < HealthRecordsView.Count - 1;
+                }));
             }
         }
 
@@ -470,17 +490,21 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-
-
         public bool CanReorder
         {
             get
             {
-                return (Sorting == HrViewSortingColumn.Ord
-#if DEBUG
- || Sorting == HrViewSortingColumn.None
-#endif
-);
+                return _canReorder;
+            }
+            set
+            {
+                if (_canReorder != value)
+                {
+                    _canReorder = value;
+
+                    MoveHrCommand.IsVisible = value;
+                    OnPropertyChanged(() => CanReorder);
+                }
             }
         }
 
@@ -546,7 +570,11 @@ namespace Diagnosis.ViewModels.Screens
 
                     SetHrExtra(HealthRecords);
                     OnPropertyChanged(() => Sorting);
-                    OnPropertyChanged(() => CanReorder);
+                    CanReorder = (Sorting == HrViewSortingColumn.Ord
+#if DEBUG
+ || Sorting == HrViewSortingColumn.None
+#endif
+);
                 }
             }
         }
