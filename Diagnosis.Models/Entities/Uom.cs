@@ -60,7 +60,10 @@ namespace Diagnosis.Models
             get { return _factor; }
             set
             {
-                SetProperty(ref _factor, value, () => Factor);
+                if (SetProperty(ref _factor, value, () => Factor))
+                {
+                    OnPropertyChanged(() => IsBase);
+                }
             }
         }
 
@@ -74,6 +77,7 @@ namespace Diagnosis.Models
         }
 
         public virtual bool IsBase { get { return Factor == 0; } }
+
         public override string ToString()
         {
             return string.Format("{0} ({1})", Description, Abbr);

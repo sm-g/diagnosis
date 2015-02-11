@@ -4,7 +4,6 @@ using Diagnosis.Models.Validators;
 using System;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -17,6 +16,9 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Requires(u != null);
             uom = u;
             uom.PropertyChanged += uom_PropertyChanged;
+            if (uom.Type != null)
+                uom.Type.PropertyChanged += Type_PropertyChanged;
+
             IsBase = uom.IsBase;
             ValueInBase = Math.Round(Math.Pow(10, -uom.Factor), Measure.Scale);
         }
@@ -33,12 +35,12 @@ namespace Diagnosis.ViewModels.Screens
             set { uom.Description = value; }
         }
 
-
         public string Abbr
         {
             get { return uom.Abbr; }
             set { uom.Abbr = value; }
         }
+
         public string BaseSymbol
         {
             get
@@ -48,6 +50,7 @@ namespace Diagnosis.ViewModels.Screens
                 return uom.Type.Base.Abbr;
             }
         }
+
         public double ValueInBase
         {
             get
@@ -64,11 +67,11 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         /// <summary>
-        /// Единица - базовая в типе. 
-        /// Т.к. единица не редактируется, нужно только пересчитать единицы типа на новую базу 
+        /// Единица - базовая в типе.
+        /// Т.к. единица не редактируется, нужно только пересчитать единицы типа на новую базу
         /// и не надо выбирать новую базу, если снимается этот флаг.
-        /// М.б. несколько единиц с фактором 0 (отличаются только названием), но только одна базовая.
         /// </summary>
         public bool IsBase
         {
@@ -86,12 +89,10 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-
         public double Factor
         {
             get { return uom.Factor; }
         }
-
 
         public UomType Type
         {
@@ -105,9 +106,12 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-
         #endregion Model
 
+        public string TypeString
+        {
+            get { return uom.Type.ToString(); }
+        }
 
         public bool Unsaved
         {
@@ -118,6 +122,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         public bool HasExistingDescrAbbr { get; set; }
+
         public bool WasEdited { get; set; }
 
         public override string this[string columnName]
@@ -157,6 +162,8 @@ namespace Diagnosis.ViewModels.Screens
             if (disposing)
             {
                 uom.PropertyChanged -= uom_PropertyChanged;
+                if (uom.Type != null)
+                    uom.Type.PropertyChanged -= Type_PropertyChanged;
             }
             base.Dispose(disposing);
         }
@@ -168,7 +175,15 @@ namespace Diagnosis.ViewModels.Screens
             // validate linked fields
             if (UomValidator.TestExistingFor.Contains(e.PropertyName))
                 OnPropertyChanged(UomValidator.TestExistingFor);
+        }
 
+        private void Type_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Base")
+            {
+                OnPropertyChanged(() => TypeString);
+                OnPropertyChanged(() => IsBase);
+            }
         }
     }
 }

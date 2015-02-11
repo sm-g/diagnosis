@@ -86,7 +86,7 @@
                 <DataGridTextColumn Header="Тип"
                                     IsReadOnly="True"
                                     SortMemberPath="Type.Ord"
-                                    Binding="{Binding Type,
+                                    Binding="{Binding TypeString,
                                                       Mode=OneWay}" />
                 <DataGridCheckBoxColumn Header="Базовая"
                                         IsReadOnly="True"

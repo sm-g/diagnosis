@@ -39,12 +39,10 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     // новое или изменившееся с учетом фильтра
                     Filter.Filter();
+
                     var saved = e.GetValue<Uom>(MessageKeys.Uom);
-
-                    // сохраненная единица с таким текстом
-                    var persisted = UomQuery.Contains(Session)(saved.Abbr).SingleOrDefault();
-
-                    var vm = Uoms.Where(x => x.uom == persisted).FirstOrDefault();
+                    
+                    var vm = Uoms.Where(x => x.uom == saved).FirstOrDefault();
                     if (vm != null)
                         vm.IsSelected = true;
 

@@ -39,5 +39,13 @@ namespace Diagnosis.Common
 
         #endregion
 
+        public virtual void RaiseOnPropertyChanged(string name)
+        {
+            OnPropertyChanged(name);
+        }
+        public virtual void RaiseOnPropertyChanged<T>(Expression<Func<T>> propertyExpression)
+        {
+            OnPropertyChanged(propertyExpression);
+        }
     }
 }

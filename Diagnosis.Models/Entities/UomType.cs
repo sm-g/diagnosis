@@ -13,6 +13,7 @@ namespace Diagnosis.Models
     public class UomType : EntityBase<int>, IDomainObject, IComparable<UomType>
     {
         private Iesi.Collections.Generic.ISet<Uom> uoms = new HashedSet<Uom>();
+        string _title;
 
         public UomType(string title)
         {
@@ -29,9 +30,20 @@ namespace Diagnosis.Models
         /// </summary>
         public virtual int Ord { get; set; }
 
-        public virtual string Title { get; set; }
+        public virtual string Title
+        {
+            get { return _title; }
+            set
+            {
+                SetProperty(ref _title, value, () => Title);
+            }
+        }
 
-        public virtual Uom Base { get { return uoms.SingleOrDefault(x => x.IsBase); } }
+        /// <summary>
+        /// Базовая единица типа (фактор = 0).
+        /// Если несколько единиц с фактором 0 (отличаются только названием), базовая первая.
+        /// </summary>
+        public virtual Uom Base { get { return uoms.FirstOrDefault(x => x.IsBase); } }
 
         /// <summary>
         /// Единицы типа по увеличению фактора.
@@ -52,6 +64,7 @@ namespace Diagnosis.Models
             var factor = newBase.Factor;
             uoms.ForAll(u => u.Factor -= factor);
             newBase.Factor = 0;
+            OnPropertyChanged(() => Base);
             return true;
         }
 

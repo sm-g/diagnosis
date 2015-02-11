@@ -99,6 +99,11 @@ namespace Diagnosis.ViewModels.Screens
             }
 
             new Saver(Session).Save(toSave.ToArray());
+
+            // force updating uoms colection in type
+            Session.Refresh(uom.Type);
+            uom.Type.RaiseOnPropertyChanged("Base");
+
             this.Send(Event.UomSaved, uom.AsParams(MessageKeys.Uom));
         }
         protected override void OnCancel()
