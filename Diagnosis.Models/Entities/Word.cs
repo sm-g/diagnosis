@@ -19,9 +19,6 @@ namespace Diagnosis.Models
         [NonSerialized]
         private Word _parent;
 
-        [NonSerialized]
-        private HrCategory _defCat;
-
         private string _title;
 
         public Word(string title)
@@ -43,12 +40,6 @@ namespace Diagnosis.Models
                 var filtered = value.Replace(Environment.NewLine, " ").Replace('\t', ' ').Trim();
                 SetProperty(ref _title, filtered, () => Title);
             }
-        }
-
-        public virtual HrCategory DefaultCategory
-        {
-            get { return _defCat; }
-            set { SetProperty(ref _defCat, value, () => DefaultCategory); }
         }
 
         public virtual Word Parent

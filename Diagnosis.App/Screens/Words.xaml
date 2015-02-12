@@ -83,9 +83,6 @@
                                     IsReadOnly="True"
                                     ElementStyle="{StaticResource RightCellTextBlock}"
                                     Binding="{Binding Usage, Mode=OneWay}" />
-                <DataGridTextColumn Header="Категория"
-                                    IsReadOnly="True"
-                                    Binding="{Binding DefaultCategory, Mode=OneWay}" />
             </DataGrid.Columns>
             <DataGrid.InputBindings>
                 <KeyBinding Key="Enter"

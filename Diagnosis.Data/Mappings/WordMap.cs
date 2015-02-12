@@ -20,10 +20,6 @@ namespace Diagnosis.Data.Mappings
                 m.UniqueKey("WordTitle");
             });
 
-            ManyToOne(x => x.DefaultCategory, m =>
-            {
-                m.Column("DefHrCategoryID");
-            });
             ManyToOne(x => x.Parent, m =>
             {
                 m.Column("ParentID");

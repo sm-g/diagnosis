@@ -25,12 +25,6 @@ namespace Diagnosis.ViewModels.Screens
             set { word.Title = value; }
         }
 
-        public HrCategory DefaultCategory
-        {
-            get { return word.DefaultCategory; }
-            set { word.DefaultCategory = value; }
-        }
-
         public int Usage
         {
             get
