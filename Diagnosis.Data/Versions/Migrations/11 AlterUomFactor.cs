@@ -12,7 +12,7 @@ namespace Diagnosis.Data.Versions
             // Fix
             // 'The conversion is not supported. [ Type to convert from (if known) = varbinary, Type to convert to (if known) = float ]'
             // in syncronization
-            Execute.Sql("alter table Uom alter column Factor numeric(18,6))");
+            Execute.Sql("alter table Uom alter column Factor numeric(18,6)");
         }
 
         public override void Down()
