@@ -1,5 +1,4 @@
-﻿using Diagnosis.Data.Sync;
-using FluentMigrator;
+﻿using FluentMigrator;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlServerCe;
@@ -8,10 +7,34 @@ using System.Linq;
 namespace Diagnosis.Data.Versions
 {
     [Migration(201502121200)]
-    public class UomHrCatSpecialityGuidAndRemoveDefCat : Migration
+    public class UomHrCatSpecialityGuidAndRemoveDefCat : SyncronizedMigration
     {
+        public UomHrCatSpecialityGuidAndRemoveDefCat()
+        {
+            Provider = SqlCeProvider;
+        }
+
+        public override string[] UpTables
+        {
+            get
+            {
+                return new[] {
+                    Names.WordTbl,
+                    Names.UomTypeTbl,
+                    Names.UomTbl,
+                    Names.SpecialityTbl,
+                    Names.SpecialityIcdBlockTbl,
+                    Names.HrCategoryTbl,
+                    Names.HrItemTbl,
+                    Names.HealthRecordTbl,
+                    Names.DoctorTbl };
+            }
+        }
+
         public override void Up()
         {
+            BeforeUp();
+
             // delete Word.DefHrCategoryID
             using (var conn = new SqlCeConnection(ConnectionString))
             {
@@ -51,6 +74,7 @@ namespace Diagnosis.Data.Versions
         public override void Down()
         {
             // sorry, no way back
+            throw new NotImplementedException();
         }
 
         private static void ExecuteNonQuery(SqlCeCommand cmd, string format, params object[] args)

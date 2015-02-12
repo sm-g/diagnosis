@@ -205,6 +205,7 @@
     <Compile Include="Versions\Migrations\06 AddPassportTable.cs" />
     <Compile Include="Versions\Migrations\05 InsertSpecialityIcdBlock.cs" />
     <Compile Include="Versions\Migrations\12 UomHrCatSpecialityGuidAndRemoveDefCat.cs" />
+    <Compile Include="Versions\Migrations\SyncronizedMigration.cs" />
     <Compile Include="Versions\Migrator.cs" />
     <Compile Include="Versions\Names.cs" />
     <Compile Include="Versions\Migrations\03 InsertFirstWordSet.cs" />

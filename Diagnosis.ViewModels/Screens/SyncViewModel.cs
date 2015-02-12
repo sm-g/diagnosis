@@ -19,8 +19,6 @@ namespace Diagnosis.ViewModels.Screens
     public class SyncViewModel : ScreenBaseViewModel
     {
         private static readonly string serverConStrName = "server";
-        private const string sqlCeProvider = "System.Data.SqlServerCE.4.0";
-        private const string sqlServerProvider = "System.Data.SqlClient";
 
         private static string _log;
 
@@ -45,7 +43,7 @@ namespace Diagnosis.ViewModels.Screens
             }
 #if DEBUG
             ConnectionString = "Data Source=uoms.sdf";
-            ProviderName = sqlCeProvider;
+            ProviderName = Syncer.SqlCeProvider;
 #endif
         }
 
@@ -100,7 +98,7 @@ namespace Diagnosis.ViewModels.Screens
                     if (result.IsValid)
                     {
                         ConnectionString = result.FileName;
-                        ProviderName = sqlCeProvider;
+                        ProviderName = Syncer.SqlCeProvider;
                     }
                 });
             }
@@ -179,8 +177,8 @@ namespace Diagnosis.ViewModels.Screens
             get
             {
                 return !Syncer.InSync && !ConnectionString.IsNullOrEmpty() &&
-                (ProviderName == sqlCeProvider ||
-                 ProviderName == sqlServerProvider);
+                (ProviderName == Syncer.SqlCeProvider ||
+                 ProviderName == Syncer.SqlServerProvider);
             }
         }
 

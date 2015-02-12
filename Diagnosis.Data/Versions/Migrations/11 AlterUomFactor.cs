@@ -5,8 +5,21 @@ using System.Linq;
 namespace Diagnosis.Data.Versions
 {
     [Migration(201502091200)]
-    public class AlterUomFactor : Migration
+    public class AlterUomFactor : SyncronizedMigration
     {
+        public AlterUomFactor()
+        {
+            Provider = SqlCeProvider;
+        }
+
+        public override string[] UpTables
+        {
+            get
+            {
+                return new[] { Names.UomTbl };
+            }
+        }
+
         public override void Up()
         {
             // Fix
@@ -17,7 +30,6 @@ namespace Diagnosis.Data.Versions
 
         public override void Down()
         {
-
         }
     }
 }
