@@ -1,5 +1,4 @@
 ﻿using Diagnosis.App.Themes;
-using Diagnosis.App.Windows;
 using Diagnosis.App.Windows.Shell;
 using Diagnosis.Common;
 using Diagnosis.Common.Presentation.DebugTools;
@@ -99,7 +98,6 @@ namespace Diagnosis.App
             debWin.Closing += (s, e1) =>
             {
                 Diagnosis.App.Properties.Settings.Default.DebugFilterOn = debugVm.FilterOn;
-
             };
             debWin.Show();
 
@@ -157,6 +155,7 @@ namespace Diagnosis.App
             migrateUp = true;
 #endif
             if (migrateUp.HasValue)
+            {
                 if (migrateUp.Value)
                 {
                     new Migrator(constr, BackupFolder).MigrateToLatest();
@@ -165,6 +164,7 @@ namespace Diagnosis.App
                 {
                     new Migrator(constr, BackupFolder).Rollback();
                 }
+            }
         }
 
         public class MyLock : log4net.Appender.FileAppender.MinimalLock

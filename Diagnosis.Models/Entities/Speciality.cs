@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class Speciality : ValidatableEntity<int>, IDomainObject
+    public class Speciality : ValidatableEntity<Guid>, IDomainObject
     {
         public static Speciality Null = new Speciality("—");  // для врача без специальности
 

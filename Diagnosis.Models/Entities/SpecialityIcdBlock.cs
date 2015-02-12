@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class SpecialityIcdBlocks : EntityBase<int>
+    public class SpecialityIcdBlocks : EntityBase<Guid>
     {
         protected SpecialityIcdBlocks()
         {

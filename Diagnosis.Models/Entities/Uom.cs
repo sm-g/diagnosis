@@ -9,7 +9,7 @@ namespace Diagnosis.Models
 {
     [DebuggerDisplay("uom {Abbr} {Type} f{Factor}")]
     [Serializable]
-    public class Uom : ValidatableEntity<int>, IDomainObject
+    public class Uom : ValidatableEntity<Guid>, IDomainObject
     {
         public static Uom Null = new Uom("—", 1, new UomType(""));  // для измерения без единицы
         private string _description;

@@ -10,7 +10,7 @@ namespace Diagnosis.Data.Mappings
         {
             Id(x => x.Id, m =>
             {
-                m.Generator(Generators.Native);
+                m.Generator(Generators.GuidComb);
             });
 
             Property(x => x.Name, m =>

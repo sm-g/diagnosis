@@ -10,7 +10,7 @@ namespace Diagnosis.Models
 {
     [DebuggerDisplay("uomtype {Title} {Ord}")]
     [Serializable]
-    public class UomType : EntityBase<int>, IDomainObject, IComparable<UomType>
+    public class UomType : EntityBase<Guid>, IDomainObject, IComparable<UomType>
     {
         private Iesi.Collections.Generic.ISet<Uom> uoms = new HashedSet<Uom>();
         string _title;

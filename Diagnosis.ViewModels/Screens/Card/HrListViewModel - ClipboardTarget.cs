@@ -41,7 +41,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 HolderId = (Guid)hr.Holder.Id,
                 DoctorId = hr.Doctor.Id,
-                CategoryId = hr.Category != null ? (int?)hr.Category.Id : null,
+                CategoryId = hr.Category != null ? (Guid?)hr.Category.Id : null,
                 FromDay = hr.FromDay,
                 FromMonth = hr.FromMonth,
                 FromYear = hr.FromYear,

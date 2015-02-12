@@ -36,7 +36,7 @@ namespace Tests
 
             pIds.ForAll((id) => p[id] = session.Get<Patient>(IntToGuid<Patient>(id)));
             cIds.ForAll((id) => c[id] = session.Get<Course>(IntToGuid<Course>(id)));
-            cIds.ForAll((id) => cat[id] = session.Get<HrCategory>(id));
+            cIds.ForAll((id) => cat[id] = session.Get<HrCategory>(IntToGuid<HrCategory>(id)));
             aIds.ForAll((id) => a[id] = session.Get<Appointment>(IntToGuid<Appointment>(id)));
             hrIds.ForAll((id) => hr[id] = session.Get<HealthRecord>(IntToGuid<HealthRecord>(id)));
 

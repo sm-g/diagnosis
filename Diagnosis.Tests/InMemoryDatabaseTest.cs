@@ -60,6 +60,26 @@ namespace Tests
             {
                 return Guid.Parse(string.Format("00000{0:000}-6000-0000-0000-000000000{0:000}", id));
             }
+            else if (typeof(T) == typeof(HrCategory))
+            {
+                return Guid.Parse(string.Format("00000{0:000}-7000-0000-0000-000000000{0:000}", id));
+            }
+            else if (typeof(T) == typeof(UomType))
+            {
+                return Guid.Parse(string.Format("00000{0:000}-8000-0000-0000-000000000{0:000}", id));
+            }
+            else if (typeof(T) == typeof(Uom))
+            {
+                return Guid.Parse(string.Format("00000{0:000}-9000-0000-0000-000000000{0:000}", id));
+            }
+            else if (typeof(T) == typeof(Speciality))
+            {
+                return Guid.Parse(string.Format("00000{0:000}-1000-0000-0000-000000000{0:000}", id));
+            }
+            else if (typeof(T) == typeof(SpecialityIcdBlocks))
+            {
+                return Guid.Parse(string.Format("00000{0:000}-1100-0000-0000-000000000{0:000}", id));
+            }
             throw new ArgumentOutOfRangeException();
         }
     }
