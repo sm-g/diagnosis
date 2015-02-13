@@ -23,5 +23,14 @@ namespace Diagnosis.App.Windows.Shell
 #endif
             };
         }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var version = System.Reflection.Assembly.GetExecutingAssembly()
+                                          .GetName()
+                                          .Version
+                                          .ToString();
+            MessageBox.Show(version, "Версия", MessageBoxButton.OK);
+        }
     }
 }

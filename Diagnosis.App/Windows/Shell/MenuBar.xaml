@@ -40,6 +40,8 @@
             <MenuItem Header="{Binding CurrentUser, Converter={StaticResource ManToName}}">
                 <MenuItem Header="_Настройки..."
                           Command="{Binding OpenSettingsCommand}" />
+                <MenuItem Header="Версия"
+                          Click="MenuItem_Click"/>
                 <MenuItem Header="_Выйти"
                           Command="{Binding LogoutCommand}" />
             </MenuItem>
