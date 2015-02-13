@@ -60,7 +60,7 @@
             DataContext="{Binding Editor}"
               d:DataContext="{d:DesignInstance diag:SpecialityEditorViewModel, IsDesignTimeCreatable=False}"
               Visibility="{Binding DataContext.Editor,
-                                               Converter={StaticResource NullToVis}, ElementName=specialities}">
+                                               Converter={StaticResource NotNullToVis}, ElementName=specialities}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />

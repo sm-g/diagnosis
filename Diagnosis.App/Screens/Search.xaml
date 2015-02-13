@@ -65,7 +65,7 @@
                     </StackPanel.Resources>
                     
                     <StackPanel DataContext="{Binding Options}"
-                                Visibility="{Binding DataContext.Result, ElementName=search, Converter={StaticResource NullToVis}}">
+                                Visibility="{Binding DataContext.Result, ElementName=search, Converter={StaticResource NotNullToVis}}">
                         <StackPanel Orientation="Horizontal"
                                     Visibility="{Binding Words.Count, Converter={StaticResource MoreThanToVisibility}}">
                             <TextBlock Text="любое из слов: "
@@ -194,7 +194,7 @@
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   Grid.Row="2"
                   Margin="5"
-                  Visibility="{Binding Result, Converter={StaticResource NullToVis}}">
+                  Visibility="{Binding Result, Converter={StaticResource NotNullToVis}}">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem"
                        BasedOn="{StaticResource {x:Type TreeViewItem}}">
@@ -217,7 +217,7 @@
         </TextBlock>
 
         <Grid Grid.Row="3"
-              Visibility="{Binding Result, Converter={StaticResource NullToVis}}"
+              Visibility="{Binding Result, Converter={StaticResource NotNullToVis}}"
               Background="{x:Static SystemColors.ControlBrush}">
             <diag:WrapPanelLastChildFill  DataContext="{Binding Result}"
                                               Margin="5"

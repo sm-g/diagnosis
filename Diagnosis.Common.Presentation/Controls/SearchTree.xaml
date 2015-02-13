@@ -23,7 +23,7 @@
             <ContentPresenter Content="{Binding AfterFilterPanel, ElementName=searchTree}"
                               DockPanel.Dock="Right"
                               Margin="10,0,0,0"
-                              Visibility="{Binding AfterFilterPanel, ElementName=searchTree, Converter={StaticResource NullToVis}}" />
+                              Visibility="{Binding AfterFilterPanel, ElementName=searchTree, Converter={StaticResource NotNullToVis}}" />
             <search:Filter x:Name="input"
                            DataContext="{Binding Filter}"
                            WatermarkText="Код или описание"

@@ -17,12 +17,12 @@
     <conv:NegBooleanToVisibilityConverter x:Key="NegBooleanToVisibilityConverter" />
     <conv:MoreThanToVisibility x:Key="MoreThanToVisibility" />
     <conv:LessThanToVisibility x:Key="LessThanToVisibility" />
-    <conv:ValueConverterGroup x:Key="NullToVis">
+    <conv:ValueConverterGroup x:Key="NotNullToVis">
         <conv:IsNullToBooleanConverter />
         <conv:NegateConverter />
         <conv:BooleanToVisibilityConverter />
     </conv:ValueConverterGroup>
-    <conv:ValueConverterGroup x:Key="NotNullToVis">
+    <conv:ValueConverterGroup x:Key="IsNullToVis">
         <conv:IsNullToBooleanConverter />
         <conv:BooleanToVisibilityConverter />
     </conv:ValueConverterGroup>

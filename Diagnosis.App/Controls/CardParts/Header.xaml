@@ -35,11 +35,11 @@
                         <DockPanel DataContext="{Binding Holder}">
                             <TextBlock Style="{StaticResource ScreenTitle}"
                                        TextWrapping="Wrap"
-                                       Visibility="{Binding FullName, Converter={StaticResource NullToVis}}"
+                                       Visibility="{Binding FullName, Converter={StaticResource NotNullToVis}}"
                                        Text="{Binding FullName, Mode=OneWay}" />
                             <TextBlock Style="{StaticResource ScreenTitle}"
                                        TextWrapping="Wrap"
-                                       Visibility="{Binding FullName, Converter={StaticResource NotNullToVis}}">
+                                       Visibility="{Binding FullName, Converter={StaticResource IsNullToVis}}">
                                 <TextBlock Text="Пациент" />
                                 <TextBlock FontStyle="Italic">(<Run Text="{Binding CreatedAt, StringFormat={}{0:dd.MM.yy hh:mm}, Mode=OneWay}" />)</TextBlock>
                             </TextBlock>
@@ -59,7 +59,7 @@
                             </TextBlock>
                             <Separator Height="0"
                                        Width="10"
-                                       Visibility="{Binding IsMale, Converter={StaticResource NullToVis}}" />
+                                       Visibility="{Binding IsMale, Converter={StaticResource NotNullToVis}}" />
                             <TextBlock VerticalAlignment="Center">
                                     <TextBlock Text="{Binding Age}" />
                                     <TextBlock Text="{Binding Age, Converter={StaticResource AgeToLabel}}" />
@@ -139,7 +139,7 @@
 
         <!-- prev -->
         <DockPanel DockPanel.Dock="Left"
-                   Visibility="{Binding PrevHolder, Converter={StaticResource NullToVis}}">
+                   Visibility="{Binding PrevHolder, Converter={StaticResource NotNullToVis}}">
             <Button DockPanel.Dock="Left"
                     Command="{Binding OpenPrevCommand}"
                     Style="{StaticResource HeaderNavButton}">
@@ -155,7 +155,7 @@
         <!-- next-->
         <DockPanel DockPanel.Dock="Right"
                    HorizontalAlignment="Right"
-                   Visibility="{Binding NextHolder, Converter={StaticResource NullToVis}}">
+                   Visibility="{Binding NextHolder, Converter={StaticResource NotNullToVis}}">
             <Button DockPanel.Dock="Right"
                     Command="{Binding OpenNextCommand}"
                     Style="{StaticResource HeaderNavButton}">
