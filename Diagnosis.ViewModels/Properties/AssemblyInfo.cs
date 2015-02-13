@@ -23,6 +23,8 @@ using System.Windows.Markup;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("6d694dfc-b839-4ccd-bd84-9e3b14b961d2")]
 
+[assembly: InternalsVisibleTo("Tests")]
+
 [assembly: XmlnsPrefix("http://schemas.smg.com/diagnosis", "diag")]
 [assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels.Screens")]
 [assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels.Autocomplete")]

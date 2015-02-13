@@ -11,8 +11,6 @@ using System.Windows;
 using System.Reflection;
 using System.IO;
 
-[assembly: InternalsVisibleTo("Tests")]
-
 namespace Diagnosis.ViewModels
 {
     public abstract class ViewModelBase : DisposableBase, INotifyPropertyChanged, IDataErrorInfo
