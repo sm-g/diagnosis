@@ -62,6 +62,30 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public string CurrentTitle
+        {
+            get
+            {
+                if (Current == null)
+                    return "";
+                string delim = " \\ ";
+                string result = NameFormatter.GetFullName(viewer.OpenedPatient) ?? string.Format("Пациент ({0:dd.MM.yy hh:mm})", viewer.OpenedPatient.CreatedAt);
+
+                var holder = Current.Holder;
+
+                if (holder is Course)
+                {
+                    result += delim + "курс " + DateFormatter.GetIntervalString(viewer.OpenedCourse.Start, viewer.OpenedCourse.End);
+                }
+                else if (holder is Appointment)
+                {
+                    result += delim + "курс " + DateFormatter.GetIntervalString(viewer.OpenedCourse.Start, viewer.OpenedCourse.End);
+                    result += delim + "осмотр " + DateFormatter.GetDateString(viewer.OpenedAppointment.DateAndTime);
+                }
+                return result;
+            }
+        }
+
         /// <summary>
         /// Пациенты в корне дерева.
         /// </summary>
@@ -131,6 +155,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 viewer.OpenedAppointment = null;
             }
+
+            OnPropertyChanged(() => CurrentTitle);
         }
 
         private void HightlightLastOpenedFor(CardItemViewModel vm)
@@ -186,6 +212,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
 
                 lastOpened = holder;
+                holder.PropertyChanged += holder_PropertyChanged;
             }
             else
             {
@@ -197,7 +224,13 @@ namespace Diagnosis.ViewModels.Screens
                         item.AppointmentsChanged -= course_AppointmentsChanged;
                     }
                 }
+                holder.PropertyChanged -= holder_PropertyChanged;
             }
+        }
+
+        private void holder_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(() => CurrentTitle);
         }
 
         private void patient_CoursesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

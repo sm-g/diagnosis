@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace Diagnosis.Models
     /// <summary>
     /// Сущность БД.
     /// </summary>
-    public interface IEntity
+    public interface IEntity : INotifyPropertyChanged
     {
         bool IsDirty { get; set; }
         object Id { get; }
@@ -151,6 +152,8 @@ namespace Diagnosis.Models
             Contract.Ensures(!test.HealthRecords.Contains(hr));
         }
         int IComparable<IHrsHolder>.CompareTo(IHrsHolder other) { throw new NotImplementedException(); }
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
     }
 
     [ContractClassFor(typeof(IIcdEntity))]

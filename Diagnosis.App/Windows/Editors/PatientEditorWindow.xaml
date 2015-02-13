@@ -57,7 +57,7 @@
                                Grid.Row="1"
                                Grid.Column="1">
                         <Run>Если неизвестно, оставьте пустым, вместо имени будет показано время создания: </Run>
-                        <Run  Text="{Binding CreatedAt, Mode=OneWay, StringFormat={}{0:dd.MM.yy hh:ss}.}"
+                        <Run  Text="{Binding CreatedAt, Mode=OneWay, StringFormat={}{0:dd.MM.yy hh:mm}.}"
                               FontStyle="Italic" />
                     </TextBlock>
                 </Grid>

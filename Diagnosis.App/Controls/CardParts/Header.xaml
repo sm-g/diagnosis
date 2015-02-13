@@ -11,7 +11,7 @@
              d:DataContext="{d:DesignInstance diag:SampleHeaderViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="300"
              d:DesignWidth="300">
-    <UserControl.Resources>      
+    <UserControl.Resources>
         <Style x:Key="HeaderNavButton"
                TargetType="{x:Type Button}"
                BasedOn="{StaticResource {x:Type Button}}">
@@ -34,30 +34,33 @@
 
                         <DockPanel DataContext="{Binding Holder}">
                             <TextBlock Style="{StaticResource ScreenTitle}"
-                                       TextWrapping="Wrap">
-                                <TextBlock.Text>
-                                    <MultiBinding StringFormat='{}{0} {1} {2}'>
-                                        <Binding Path="LastName" />
-                                        <Binding Path="FirstName" />
-                                        <Binding Path="MiddleName" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
+                                       TextWrapping="Wrap"
+                                       Visibility="{Binding FullName, Converter={StaticResource NullToVis}}"
+                                       Text="{Binding FullName, Mode=OneWay}" />
+                            <TextBlock Style="{StaticResource ScreenTitle}"
+                                       TextWrapping="Wrap"
+                                       Visibility="{Binding FullName, Converter={StaticResource NotNullToVis}}">
+                                <TextBlock Text="Пациент" />
+                                <TextBlock FontStyle="Italic">(<Run Text="{Binding CreatedAt, StringFormat={}{0:dd.MM.yy hh:mm}, Mode=OneWay}" />)</TextBlock>
                             </TextBlock>
                         </DockPanel>
                         <DockPanel Grid.Row="1"
+                                   TextElement.FontSize="{DynamicResource ContentFontSize}"
                                    DataContext="{Binding Holder}">
-                            <TextBlock Margin="20,0,5,0"
-                                       Style="{StaticResource SexTooltip}"
+                            <TextBlock Style="{StaticResource SexTooltip}"
                                        VerticalAlignment="Center">
                                 <TextBlock.Text>
                                     <MultiBinding Converter="{StaticResource SexToSign}">
                                         <Binding Path="IsMale" />
-                                        <Binding Path="DataContext.Sexes"  RelativeSource="{RelativeSource AncestorType=Window}" />
+                                        <Binding Path="DataContext.Sexes"
+                                                 RelativeSource="{RelativeSource AncestorType=Window}" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
-                            <TextBlock Margin="5,0,10,0"
-                                       VerticalAlignment="Center">
+                            <Separator Height="0"
+                                       Width="10"
+                                       Visibility="{Binding IsMale, Converter={StaticResource NullToVis}}" />
+                            <TextBlock VerticalAlignment="Center">
                                     <TextBlock Text="{Binding Age}" />
                                     <TextBlock Text="{Binding Age, Converter={StaticResource AgeToLabel}}" />
                                 </TextBlock>
@@ -71,7 +74,8 @@
                                 VerticalAlignment="Top"
                                 Grid.RowSpan="2">
                             <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                <Style TargetType="Button"
+                                       BasedOn="{StaticResource {x:Type Button}}">
                                     <Setter Property="Visibility"
                                             Value="Collapsed" />
 
@@ -130,7 +134,6 @@
                               Tag="{Binding HolderVm}"
                               ContextMenu="{StaticResource HolderContextMenu}"
                               ContentTemplateSelector="{StaticResource selector}">
-               
             </ContentPresenter>
         </DockPanel>
 

@@ -22,7 +22,11 @@
         <conv:NegateConverter />
         <conv:BooleanToVisibilityConverter />
     </conv:ValueConverterGroup>
-
+    <conv:ValueConverterGroup x:Key="NotNullToVis">
+        <conv:IsNullToBooleanConverter />
+        <conv:BooleanToVisibilityConverter />
+    </conv:ValueConverterGroup>
+    
     <conv:IntToString x:Key="IntToString" />
     <conv:AgeToYearsLabel x:Key="AgeToLabel" />
     <conv:BoolToSexSign x:Key="SexToSign" />

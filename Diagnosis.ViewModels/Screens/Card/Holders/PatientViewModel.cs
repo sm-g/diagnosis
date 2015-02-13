@@ -82,7 +82,6 @@ namespace Diagnosis.ViewModels.Screens
                     LastName = names[0];
                     FirstName = names.Length > 1 ? names[1] : null;
                     MiddleName = names.Length > 2 ? names[2] : null;
-                    OnPropertyChanged(() => FullName);
                 }
             }
         }
@@ -234,13 +233,7 @@ namespace Diagnosis.ViewModels.Screens
                 return Courses.Count == 0;
             }
         }
-        public bool NoName
-        {
-            get
-            {
-                return patient.LastName == null && patient.MiddleName == null && patient.FirstName == null;
-            }
-        }
+
         public void SelectCourse(Course course)
         {
             SelectedCourse = Courses.FirstOrDefault(x => x.course == course);
@@ -249,17 +242,6 @@ namespace Diagnosis.ViewModels.Screens
         private void patient_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             OnPropertyChanged(e.PropertyName);
-            switch (e.PropertyName)
-            {
-                case "FirstName":
-                case "LastName":
-                case "MiddleName":
-                    OnPropertyChanged("NoName");
-                    break;
-
-                default:
-                    break;
-            }
         }
 
         public override string ToString()

@@ -47,7 +47,13 @@ namespace Diagnosis.ViewModels.Screens
 
                 ShowHrsList(holder);
                 ShowHeader(holder);
-                Title = MakeTitle();
+            };
+            Navigator.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "CurrentTitle")
+                {
+                    Title = Navigator.CurrentTitle;
+                }
             };
 
             HrEditor.Unloaded += (s, e) =>
@@ -314,27 +320,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 base.Dispose(disposing);
             }
-        }
-
-        private string MakeTitle()
-        {
-            if (Navigator.Current == null)
-                return "";
-            string delim = " — ";
-            string result = string.Format("{0}", NameFormatter.GetShortName(viewer.OpenedPatient));
-
-            var holder = Navigator.Current.Holder;
-
-            if (holder is Course)
-            {
-                result += delim + "курс " + DateFormatter.GetIntervalString(viewer.OpenedCourse.Start, viewer.OpenedCourse.End);
-            }
-            else if (holder is Appointment)
-            {
-                result += delim + "курс " + DateFormatter.GetIntervalString(viewer.OpenedCourse.Start, viewer.OpenedCourse.End);
-                result += delim + "осмотр " + DateFormatter.GetDateString(viewer.OpenedAppointment.DateAndTime);
-            }
-            return result;
         }
 
         /// <summary>

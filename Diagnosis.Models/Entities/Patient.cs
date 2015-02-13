@@ -58,8 +58,8 @@ namespace Diagnosis.Models
             {
                 if (SetProperty(ref _fn, value.TrimedOrNull(), () => FirstName))
                 {
-                    OnPropertyChanged(FullName);
-                    OnPropertyChanged(FullNameOrCreatedAt);
+                    OnPropertyChanged(() => FullName);
+                    OnPropertyChanged(() => FullNameOrCreatedAt);
                 }
             }
         }
@@ -71,8 +71,8 @@ namespace Diagnosis.Models
             {
                 if (SetProperty(ref _mn, value.TrimedOrNull(), () => MiddleName))
                 {
-                    OnPropertyChanged(FullName);
-                    OnPropertyChanged(FullNameOrCreatedAt);
+                    OnPropertyChanged(() => FullName);
+                    OnPropertyChanged(() => FullNameOrCreatedAt);
                 }
             }
         }
@@ -84,8 +84,8 @@ namespace Diagnosis.Models
             {
                 if (SetProperty(ref _ln, value.TrimedOrNull(), () => LastName))
                 {
-                    OnPropertyChanged(FullName);
-                    OnPropertyChanged(FullNameOrCreatedAt);
+                    OnPropertyChanged(() => FullName);
+                    OnPropertyChanged(() => FullNameOrCreatedAt);
                 }
             }
         }
