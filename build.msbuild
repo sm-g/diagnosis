@@ -33,7 +33,7 @@
 
 	<PropertyGroup>
 		<BuildSolutionDependsOn>
-			<!-- UpdateVersion -->
+			UpdateVersion
 		</BuildSolutionDependsOn>
 
 		<UpdateVersionDependsOn>

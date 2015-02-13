@@ -31,9 +31,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.ViewModels", "Dia
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{7C3E4F58-5233-4371-8E4E-72C27B598E2D}"
 	ProjectSection(SolutionItems) = preProject
-		Build.proj = Build.proj
+		build.msbuild = build.msbuild
 		.build\MSBuild.Community.Tasks.dll = .build\MSBuild.Community.Tasks.dll
 		.build\MSBuild.Community.Tasks.targets = .build\MSBuild.Community.Tasks.targets
+		VersionInfo.cs = VersionInfo.cs
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.ServerApp", "Diagnosis.ServerApp\Diagnosis.ServerApp.csproj", "{FFD11AAF-2C02-4035-B5E7-E2BA72670435}"
