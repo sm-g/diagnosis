@@ -197,6 +197,7 @@ namespace Diagnosis.ViewModels.Screens
             if (disposing)
             {
                 emhManager.Dispose();
+                _filter.Dispose();
             }
             base.Dispose(disposing);
         }

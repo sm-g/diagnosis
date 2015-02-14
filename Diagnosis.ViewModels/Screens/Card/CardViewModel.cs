@@ -302,14 +302,14 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (disposing)
                 {
-                    Header.Dispose();
-                    HrEditor.Dispose();
+                    _header.Dispose();
+                    _hrEditor.Dispose();
 
                     CloseHrList();
 
                     viewer.CloseAll();
 
-                    Navigator.Dispose();
+                    _navigator.Dispose();
 
                     handlers.Dispose();
 

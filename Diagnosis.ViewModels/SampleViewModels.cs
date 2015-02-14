@@ -17,8 +17,10 @@ namespace Diagnosis.ViewModels
             IsDraggable = true;
         }
     }
-
+#pragma warning disable 0618
+    // ctor for xaml
     public class SampleHrEditorViewModel : HrEditorViewModel
+#pragma warning restore 0618
     {
         public new IEnumerable<HrCategory> Categories
         {

@@ -314,17 +314,7 @@ namespace Diagnosis.ViewModels
             }
             else if (Day == null) // _ m y
             {
-                var months = DateHelper.GetTotalMonthsBetween(Now, Year.Value, Month.Value);
-                if (months < 12)
-                {
-                    RoundedOffset = months;
-                    RoundedUnit = DateUnit.Month;
-                }
-                else
-                {
-                    RoundedOffset = Now.Year - Year.Value;
-                    RoundedUnit = DateUnit.Year;
-                }
+                SetRoundedOffsetUnitMonthOrYear();
             }
             else // d m y
             {
@@ -341,18 +331,22 @@ namespace Diagnosis.ViewModels
                 }
                 else
                 {
-                    var months = DateHelper.GetTotalMonthsBetween(Now, Year.Value, Month.Value);
-                    if (months < 12) // меньше года - месяцы
-                    {
-                        RoundedOffset = months;
-                        RoundedUnit = DateUnit.Month;
-                    }
-                    else
-                    {
-                        RoundedOffset = Now.Year - Year.Value;
-                        RoundedUnit = DateUnit.Year;
-                    }
+                    SetRoundedOffsetUnitMonthOrYear();
                 }
+            }
+        }
+        private void SetRoundedOffsetUnitMonthOrYear()
+        {
+            var months = DateHelper.GetTotalMonthsBetween(Now, Year.Value, Month.Value);
+            if (months < 12) // меньше года - месяцы
+            {
+                RoundedOffset = months;
+                RoundedUnit = DateUnit.Month;
+            }
+            else
+            {
+                RoundedOffset = Now.Year - Year.Value;
+                RoundedUnit = DateUnit.Year;
             }
         }
 

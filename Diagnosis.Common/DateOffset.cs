@@ -655,17 +655,7 @@ namespace Diagnosis.Common
             }
             else if (Day == null) // _ m y
             {
-                var months = DateHelper.GetTotalMonthsBetween(Now, Year.Value, Month.Value);
-                if (months < 12)
-                {
-                    Offset = months;
-                    Unit = DateUnit.Month;
-                }
-                else
-                {
-                    Offset = Now.Year - Year.Value;
-                    Unit = DateUnit.Year;
-                }
+                SetOffsetUnitMonthOrYear();
             }
             else // d m y
             {
@@ -682,18 +672,24 @@ namespace Diagnosis.Common
                 }
                 else
                 {
-                    var months = DateHelper.GetTotalMonthsBetween(Now, Year.Value, Month.Value);
-                    if (months < 12) // меньше года - месяцы
-                    {
-                        Offset = months;
-                        Unit = DateUnit.Month;
-                    }
-                    else
-                    {
-                        Offset = Now.Year - Year.Value;
-                        Unit = DateUnit.Year;
-                    }
+                    SetOffsetUnitMonthOrYear();
+
                 }
+            }
+        }
+
+        private void SetOffsetUnitMonthOrYear()
+        {
+            var months = DateHelper.GetTotalMonthsBetween(Now, Year.Value, Month.Value);
+            if (months < 12)
+            {
+                Offset = months;
+                Unit = DateUnit.Month;
+            }
+            else
+            {
+                Offset = Now.Year - Year.Value;
+                Unit = DateUnit.Year;
             }
         }
 

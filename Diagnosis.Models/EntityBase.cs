@@ -64,12 +64,6 @@ namespace Diagnosis.Models
         /// </summary>
         public virtual object Actual { get { return this; } }
 
-        bool IEntity.IsDirty
-        {
-            get { return IsDirty; }
-            set { IsDirty = value; }
-        }
-
         object IEntity.Id
         {
             get { return Id; }

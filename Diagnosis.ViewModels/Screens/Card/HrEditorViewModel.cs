@@ -314,6 +314,8 @@ namespace Diagnosis.ViewModels.Screens
                 if (disposing)
                 {
                     Unload();
+                    if (_autocomplete != null)
+                        _autocomplete.Dispose();
                 }
             }
             finally

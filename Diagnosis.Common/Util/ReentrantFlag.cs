@@ -6,7 +6,7 @@ namespace Diagnosis.Common.Util
 {
     public class ReentrantFlag
     {
-        public class ReentrantFlagHandler : IDisposable
+        public sealed class ReentrantFlagHandler : IDisposable
         {
             private ReentrantFlag owner;
 

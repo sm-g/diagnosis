@@ -4,9 +4,6 @@ using Diagnosis.Data.Sync;
 using Diagnosis.ViewModels.Framework;
 using EventAggregator;
 using System;
-
-using System;
-
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;

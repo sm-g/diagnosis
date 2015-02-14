@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Diagnosis.Common.Util
 {
-    public class FlagActionWrapper<T>
+    public sealed class FlagActionWrapper<T>
     {
         private bool flag = false;
 
@@ -52,7 +52,7 @@ namespace Diagnosis.Common.Util
             return new ActionWrapperHandler(f);
         }
 
-        public class ActionWrapperHandler : IDisposable
+        public sealed class ActionWrapperHandler : IDisposable
         {
             private FlagActionWrapper<T> owner;
 
@@ -113,7 +113,7 @@ namespace Diagnosis.Common.Util
             return new ActionWrapperHandler(f);
         }
 
-        public class ActionWrapperHandler : IDisposable
+        public sealed class ActionWrapperHandler : IDisposable
         {
             private FlagActionWrapper owner;
 

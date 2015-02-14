@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace Diagnosis.Common
 {
-    public class PerformanceTester : IDisposable
+    public sealed class PerformanceTester : IDisposable
     {
         private Stopwatch _stopwatch = new Stopwatch();
         private Action<TimeSpan> _callback;

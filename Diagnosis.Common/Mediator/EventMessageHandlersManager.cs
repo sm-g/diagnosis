@@ -6,7 +6,7 @@ namespace EventAggregator
     /// <summary>
     /// Tracks list of EventAggragator EventMessageHandler's. Call Dispose to unsubscribe from all events.
     /// </summary>
-    public class EventMessageHandlersManager : IDisposable
+    public sealed class EventMessageHandlersManager : IDisposable
     {
         private List<EventMessageHandler> list = new List<EventMessageHandler>();
 

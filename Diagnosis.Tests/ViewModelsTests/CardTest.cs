@@ -315,39 +315,32 @@ namespace Tests
         {
             using (var card = new CardViewModel(a[5], true))
             {
-                card.HrList.AddHealthRecordCommand.Execute(null);
-                a[5].HealthRecords.Last().AddItems(new Comment("1").ToEnumerable());
-                card.HrList.AddHealthRecordCommand.Execute(null);
-                a[5].HealthRecords.Last().AddItems(new Comment("2").ToEnumerable());
-                card.HrEditor.CloseCommand.Execute(null);
+                Action<CardViewModel, IHrsHolder> AddTwoCommentsAndDelete = (_card, holder) =>
+                    {
+                        _card.HrList.AddHealthRecordCommand.Execute(null);
+                        holder.HealthRecords.Last().AddItems(new Comment("1").ToEnumerable());
+                        _card.HrList.AddHealthRecordCommand.Execute(null);
+                        holder.HealthRecords.Last().AddItems(new Comment("2").ToEnumerable());
+                        _card.HrEditor.CloseCommand.Execute(null);
 
-                card.HrList.HealthRecords.ForEach(x => x.DeleteCommand.Execute(null));
+                        _card.HrList.HealthRecords.ForEach(x => x.DeleteCommand.Execute(null));
+                    };
 
+                AddTwoCommentsAndDelete(card, a[5]);
                 Assert.IsTrue(card.Navigator.Current.HolderVm.DeleteCommand.CanExecute(null));
-                card.Navigator.Current.HolderVm.DeleteCommand.Execute(null);
 
+                card.Navigator.Current.HolderVm.DeleteCommand.Execute(null);
                 Assert.AreEqual(c[4], card.Navigator.Current.Holder);
 
-                card.HrList.AddHealthRecordCommand.Execute(null);
-                c[4].HealthRecords.Last().AddItems(new Comment("1").ToEnumerable());
-                card.HrList.AddHealthRecordCommand.Execute(null);
-                c[4].HealthRecords.Last().AddItems(new Comment("2").ToEnumerable());
-                card.HrEditor.CloseCommand.Execute(null);
-                card.HrList.HealthRecords.ForEach(x => x.DeleteCommand.Execute(null));
-
+                AddTwoCommentsAndDelete(card, c[4]);
                 card.Navigator.Current.HolderVm.DeleteCommand.Execute(null);
                 Assert.AreEqual(p[3], card.Navigator.Current.Holder);
 
-                card.HrList.AddHealthRecordCommand.Execute(null);
-                p[3].HealthRecords.Last().AddItems(new Comment("1").ToEnumerable());
-                card.HrList.AddHealthRecordCommand.Execute(null);
-                p[3].HealthRecords.Last().AddItems(new Comment("2").ToEnumerable());
-                card.HrEditor.CloseCommand.Execute(null);
-                card.HrList.HealthRecords.ForEach(x => x.DeleteCommand.Execute(null));
-
+                AddTwoCommentsAndDelete(card, p[3]);
                 card.Navigator.Current.HolderVm.DeleteCommand.Execute(null);
             }
         }
+
 
         [TestMethod]
         public void ChangeAppWithDeletedHrs()
