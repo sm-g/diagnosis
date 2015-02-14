@@ -118,14 +118,16 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FluentValidation">
+    <Reference Include="FluentValidation, Version=5.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\FluentValidation.5.4.0.0\lib\Net40\FluentValidation.dll</HintPath>
     </Reference>
-    <Reference Include="Iesi.Collections">
+    <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Iesi.Collections.3.3.3.4001\lib\Net35\Iesi.Collections.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="log4net">
+    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="PowerCollections">
