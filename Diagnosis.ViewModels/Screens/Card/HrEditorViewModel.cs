@@ -30,10 +30,8 @@ namespace Diagnosis.ViewModels.Screens
         {
             this.session = session;
         }
-        /// <summary>
-        /// For Xaml
-        /// </summary>
-        [Obsolete]
+
+        [Obsolete("For xaml only.")]
         public HrEditorViewModel()
         {
         }

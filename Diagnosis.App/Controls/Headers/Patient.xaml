@@ -13,7 +13,7 @@
                    Text="{Binding FullNameOrCreatedAt}" />
         <Separator Height="0"
                    Width="10"
-                   Visibility="{Binding IsMale, Converter={StaticResource NullToVis}}" />
+                   Visibility="{Binding IsMale, Converter={StaticResource NotNullToVis}}" />
         <TextBlock VerticalAlignment="Center"
                    Style="{StaticResource SexTooltip}">
             <TextBlock.Text>
