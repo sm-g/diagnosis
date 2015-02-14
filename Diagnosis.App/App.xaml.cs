@@ -132,19 +132,11 @@ namespace Diagnosis.App
                 return;
 
             // create db
-            var constr = NHibernateHelper.ConnectionString;
-            var builder = new SqlCeConnectionStringBuilder(constr);
-            var sdfPath = builder.DataSource;
-            if (!System.IO.File.Exists(sdfPath))
-            {
-                using (var engine = new SqlCeEngine(constr))
-                {
-                    engine.CreateDatabase();
-                }
-            }
+            SqlCeHelper.CreateSqlCeByConStr(NHibernateHelper.ConnectionString);
 
             // backup
 #if !DEBUG
+            var sdfPath = new SqlCeConnectionStringBuilder(NHibernateHelper.ConnectionString).DataSource;
             FileHelper.Backup(sdfPath, BackupFolder, 5, 7);
 #endif
 
@@ -158,11 +150,11 @@ namespace Diagnosis.App
             {
                 if (migrateUp.Value)
                 {
-                    new Migrator(constr, BackupFolder).MigrateToLatest();
+                    new Migrator(NHibernateHelper.ConnectionString, BackupFolder).MigrateToLatest();
                 }
                 else
                 {
-                    new Migrator(constr, BackupFolder).Rollback();
+                    new Migrator(NHibernateHelper.ConnectionString, BackupFolder).Rollback();
                 }
             }
         }
