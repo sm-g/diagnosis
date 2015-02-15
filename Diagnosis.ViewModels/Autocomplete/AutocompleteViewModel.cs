@@ -635,7 +635,10 @@ namespace Diagnosis.ViewModels.Autocomplete
                     break;
 
                 case State.Completed:
-                    // тег не изменен
+                    // тег не изменен, но выбрано новое
+                    if (SelectedSuggestion != null && 
+                        SelectedSuggestion != tag.Blank)
+                        CompleteCommon(tag, SelectedSuggestion, false, false);
                     break;
             }
             if (SingleTag)
