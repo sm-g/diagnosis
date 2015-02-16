@@ -24,7 +24,6 @@ namespace Diagnosis.ViewModels.Screens
             saver = new Saver(Session);
 
             var specs = Session.QueryOver<Speciality>().List();
-
             Specialities.SyncWith(specs);
         }
 

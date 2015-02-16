@@ -173,7 +173,7 @@
            TargetType="Label"
            BasedOn="{StaticResource {x:Type Label}}">
         <Setter Property="VerticalAlignment"
-                Value="Center" />
+                Value="Top" />
         <Setter Property="ContentStringFormat"
                 Value="{}{0}:" />
         <Setter Property="FontSize"

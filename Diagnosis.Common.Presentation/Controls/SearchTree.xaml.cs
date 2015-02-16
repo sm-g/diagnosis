@@ -23,6 +23,16 @@ namespace Diagnosis.Common.Presentation.Controls.Search
 
 
 
+        public Thickness TreeBorderThickness
+        {
+            get { return (Thickness)GetValue(TreeBorderThicknessProperty); }
+            set { SetValue(TreeBorderThicknessProperty, value); }
+        }
+
+        public static readonly DependencyProperty TreeBorderThicknessProperty =
+            DependencyProperty.Register("TreeBorderThickness", typeof(Thickness), typeof(SearchTree), new PropertyMetadata(new Thickness(0)));
+
+
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(SearchTree));
         private int selectedIndex = -1;
         private dynamic selectedItem; // IHierarchicalCheckable

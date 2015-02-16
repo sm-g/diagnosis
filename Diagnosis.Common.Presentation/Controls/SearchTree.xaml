@@ -78,6 +78,7 @@
             <TreeView x:Name="results2"
                       ScrollViewer.IsDeferredScrollingEnabled="True"
                       FocusManager.IsFocusScope="True"
+                      BorderThickness="{Binding TreeBorderThickness, RelativeSource={RelativeSource AncestorType=UserControl}}"
                       ItemsSource="{Binding Collection, ElementName=searchTree}">
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="TreeViewItem"

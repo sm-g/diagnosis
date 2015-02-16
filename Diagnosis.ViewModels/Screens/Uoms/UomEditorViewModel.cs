@@ -24,11 +24,15 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Requires(uom != null);
             this.uom = uom;
 
+            Title = "Единица";
+            Types = new List<UomType>(Session.QueryOver<UomType>().List());
+
             (uom as IEditableObject).BeginEdit();
+            Uom = new UomViewModel(uom);
+            Uom.IsBase = false; // не делать новые единицы базовыми по умолчанию
 
             var uoms = Session.Query<Uom>()
                .ToList();
-            Uom = new UomViewModel(uom);
             Uom.PropertyChanged += (s, e) =>
             {
                 if (UomValidator.TestExistingFor.Contains(e.PropertyName))
@@ -37,12 +41,8 @@ namespace Diagnosis.ViewModels.Screens
                 }
                 Uom.WasEdited = true;
             };
+
             TestExisting(Uom, uoms);
-
-            Types = new List<UomType>(Session.QueryOver<UomType>().List());
-
-            Uom.IsBase = false; // не делать новые единицы базовыми по умолчанию
-            Title = "Единица";
         }
 
         [Obsolete]
