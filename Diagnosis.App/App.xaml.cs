@@ -15,8 +15,6 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Markup;
 
-[assembly: log4net.Config.XmlConfigurator(Watch = true)]
-
 namespace Diagnosis.App
 {
     /// <summary>
