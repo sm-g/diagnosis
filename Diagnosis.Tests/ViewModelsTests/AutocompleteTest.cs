@@ -26,7 +26,7 @@ namespace Tests
         [TestInitialize]
         public void AutocompleteTestInit()
         {
-            r = new Recognizer(session);
+            r = new Recognizer(session, true);
             a = new AutocompleteViewModel(r, true, true, false, null);
             word = session.Get<Word>(IntToGuid<Word>(1));
             icd = session.Get<IcdDisease>(1);
@@ -80,6 +80,31 @@ namespace Tests
             Assert.IsFalse(a.IsPopupOpen);
         }
 
+        [TestMethod]
+        public void QueryNotExistingCreated()
+        {
+            a.SelectedTag.Query = notExistQ;
+            a.InverseEnterCommand.Execute(a.SelectedTag);
+
+            a.SelectedTag.Query = notExistQ;
+
+            Assert.AreEqual(1, a.Suggestions.Count);
+            Assert.IsTrue(a.IsPopupOpen);
+        }
+        [TestMethod]
+        public void QueryNotExistingCreatedInOtherAutocomplete()
+        {
+            a.SelectedTag.Query = notExistQ;
+            a.InverseEnterCommand.Execute(a.SelectedTag);
+
+            var r = new Recognizer(session);
+            var other = new AutocompleteViewModel(r, true, true, false, null);
+            other.StartEdit();
+            other.SelectedTag.Query = notExistQ;
+
+            Assert.AreEqual(1, other.Suggestions.Count);
+            Assert.IsTrue(other.IsPopupOpen);
+        }
         /// <summary>
         /// Можно вводить такое же слово.
         /// </summary>
@@ -88,6 +113,8 @@ namespace Tests
         {
             a.SelectedTag.Query = qFull;
             a.EnterCommand.Execute(a.SelectedTag);
+
+            a.LastTag.AddRightCommand.Execute(null);// ensure selected is new tag
 
             a.SelectedTag.Query = qFull;
             Assert.IsTrue(a.Suggestions.Count > 0);
@@ -203,7 +230,19 @@ namespace Tests
             Assert.AreEqual(word, a.LastTag.Blank);
             Assert.IsTrue(a.Tags.Count == 1);
         }
+        [TestMethod]
+        public void AddMeasureWhenTyping()
+        {
+            var hre = new Diagnosis.ViewModels.Screens.HrEditorViewModel(session);
+            hre.Load(session.Get<HealthRecord>(IntToGuid<HealthRecord>(1)));
+            var a = hre.Autocomplete;
 
+            a.StartEdit(a.Tags.First());
+            a.SelectedTag.Query = "123";
+
+            // from measureEditor
+            a.AddTag(new Measure(5));
+        }
         [TestMethod]
         public void CopyPasteWord()
         {

@@ -499,6 +499,10 @@ namespace Diagnosis.ViewModels.Autocomplete
             if (isLast)
                 index = Tags.Count;
 
+            // complete editing tags before add new
+            Tags.Where(t => t.State == State.Typing)
+                .ForEach(t => CompleteOnLostFocus(t));
+
             if (SingleTag && Tags.Count > 0)
                 Tags[0] = tag;
             else
@@ -636,7 +640,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
                 case State.Completed:
                     // тег не изменен, но выбрано новое
-                    if (SelectedSuggestion != null && 
+                    if (SelectedSuggestion != null &&
                         SelectedSuggestion != tag.Blank)
                         CompleteCommon(tag, SelectedSuggestion, false, false);
                     break;

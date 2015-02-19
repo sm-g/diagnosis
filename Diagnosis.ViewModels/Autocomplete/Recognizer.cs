@@ -19,8 +19,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Recognizer));
         private readonly ISession session;
 
-        private List<Word> created = new List<Word>(); // not static (или удалять после WordPersisted)
-
+        private static List<Word> created = new List<Word>();
         /// <summary>
         ///
         /// </summary>
@@ -42,14 +41,33 @@ namespace Diagnosis.ViewModels.Autocomplete
         public bool AddQueryToSuggestions { get; set; }
 
         /// <summary>
+        /// Добавлять созданное несохраненное слово в список предположений. Default is true.
+        /// </summary>
+        public bool AddNotPersistedToSuggestions { get; set; }
+
+        static Recognizer()
+        {
+            typeof(Recognizer).Subscribe(Event.WordPersisted, (e) =>
+            {
+                // now word can be retrieved from storage
+                var word = e.GetValue<Word>(MessageKeys.Word);
+                created.Remove(word);
+            });
+        }
+
+        /// <summary>
         ///
         /// </summary>
         /// <param name="session"></param>
-        public Recognizer(ISession session)
+        public Recognizer(ISession session, bool clearCreated = false)
         {
             Contract.Requires(session != null);
 
             this.session = session;
+            if (clearCreated)
+                created.Clear();
+
+            AddNotPersistedToSuggestions = true;
         }
 
         private bool CanMakeEntityFrom(string query)
@@ -311,7 +329,9 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             Word parent = prev as Word;
 
-            var unsaved = created.Where(w => w.Title.StartsWith(query, StringComparison.InvariantCultureIgnoreCase));
+            var unsaved = AddNotPersistedToSuggestions ?
+                created.Where(w => w.Title.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)) :
+                Enumerable.Empty<Word>();
 
             if (ShowChildrenFirst)
                 return WordQuery.StartingWithChildrenFirst(session)(parent, query).Union(unsaved);
