@@ -168,9 +168,6 @@
     <Reference Include="MahApps.Metro">
       <HintPath>..\packages\MahApps.Metro.1.0.0.0\lib\net40\MahApps.Metro.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro">
-      <HintPath>..\packages\MahApps.Metro.1.0.0.0\lib\net40\MahApps.Metro.dll</HintPath>
-    </Reference>
     <Reference Include="MahApps.Metro, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MahApps.Metro.1.0.0.0\lib\net40\MahApps.Metro.dll</HintPath>
@@ -604,7 +601,6 @@
     </None>
     <AppDesigner Include="Properties\" />
     <Resource Include="Resources\avalon-layout.config" />
-    <Resource Include="Resources\Help.rtf" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
@@ -683,6 +679,11 @@
   <ItemGroup>
     <Resource Include="Resources\Images\DeleteHS.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Help\Hotkeys.html" />
+    <None Include="Resources\Help\Index.html" />
+    <None Include="Resources\Help\main.css" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -695,6 +696,10 @@
     <PostBuildEvent>REM copy nhibernate config
 
 echo f | xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate.cfg.xml" "$(TargetDir)NHibernate\nhibernate.cfg.xml" /d /y
+
+REM copy help
+
+echo d | xcopy "$(SolutionDir)Diagnosis.App\Resources\Help" "$(TargetDir)Help" /d /y
 
 REM copy sqlite.dll
 xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)" /i /d /y

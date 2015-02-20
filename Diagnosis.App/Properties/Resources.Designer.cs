@@ -180,17 +180,6 @@ namespace Diagnosis.App.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {\rtf1\adeflang1025\ansi\ansicpg1251\uc1\adeff0\deff0\stshfdbch12\stshfloch31506\stshfhich31506\stshfbi0\deflang1049\deflangfe1049\themelang1049\themelangfe0\themelangcs0{\fonttbl{\f0\fbidi \froman\fcharset204\fprq2{\*\panose 02020603050405020304}Times New Roman;}
-        ///{\f12\fbidi \froman\fcharset129\fprq2{\*\panose 02030600000101010101}Batang{\*\falt ?????\&apos;ac\&apos;f0\&apos;a1\&apos;fe\&apos;ac\&apos;d3?\&apos;a1\&apos;fe\&apos;ac\&apos;e2?\&apos;ac\&apos;f0\&apos;a1\&apos;fe\&apos;a5\&apos;ec??\&apos;a1\&apos;fe\&apos;ac\&apos;e2?\&apos;ac\&apos;f0\&apos;a1\&apos;fe\&apos;ac\&apos;b5??\&apos;ac\&apos;f0\&apos;a1\&apos;fe\&apos;ac\&apos;d3?\&apos;a1\&apos;fe\&apos;ac\&apos;e2};}
-        /// [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string Help {
-            get {
-                return ResourceManager.GetString("Help", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap save_16xLG {

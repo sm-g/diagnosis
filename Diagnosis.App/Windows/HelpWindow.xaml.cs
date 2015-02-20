@@ -15,8 +15,9 @@ namespace Diagnosis.App.Windows
             InitializeComponent();
             Loaded += (s, e) =>
             {
-                MemoryStream ms = Diagnosis.App.Properties.Resources.Help.ToMemoryStream(Encoding.Default);
-                rtb.Selection.Load(ms, DataFormats.Rtf);
+                var filename = "Help\\index.html";
+                var path = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, filename);
+                webBrowser.Navigate(path);
 
                 if (Left < 0)
                     Left = 0;

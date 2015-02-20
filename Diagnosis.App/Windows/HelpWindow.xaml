@@ -7,13 +7,6 @@
         Top="{Binding Path=Default.HelpWindowTop, Mode=TwoWay, Source={StaticResource Settings}}"
         Left="{Binding Path=Default.HelpWindowLeft, Mode=TwoWay, Source={StaticResource Settings}}">
     <Grid>
-        <RichTextBox x:Name="rtb"
-                     BorderThickness="0"
-                     Margin="10"
-                     ScrollViewer.VerticalScrollBarVisibility="Auto"
-                     IsReadOnly="True"
-                     IsReadOnlyCaretVisible="True"
-                     HorizontalContentAlignment="Stretch">
-        </RichTextBox>
+        <WebBrowser Name="webBrowser" />
     </Grid>
 </Window>
