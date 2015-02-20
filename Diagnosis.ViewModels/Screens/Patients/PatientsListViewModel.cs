@@ -1,19 +1,17 @@
-﻿using System.Linq;
-using Diagnosis.Common;
+﻿using Diagnosis.Common;
+using Diagnosis.Data;
+using Diagnosis.Data.Queries;
+using Diagnosis.Models;
+using Diagnosis.Models.Enums;
+using Diagnosis.ViewModels.Search;
 using EventAggregator;
+using NHibernate.Linq;
 using System;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
-using Diagnosis.Data.Specs;
-using Diagnosis.Models;
-using Diagnosis.Data;
-using Diagnosis.ViewModels.Search;
-using NHibernate;
-using NHibernate.Linq;
-using Diagnosis.Data.Queries;
-using System.Windows.Data;
 using System.ComponentModel;
-using Diagnosis.Models.Enums;
+using System.Linq;
+using System.Windows.Data;
+using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -21,7 +19,7 @@ namespace Diagnosis.ViewModels.Screens
     {
         private Patient _current;
         private bool _noPatients;
-        EventMessageHandlersManager emhManager;
+        private EventMessageHandlersManager emhManager;
         private FilterViewModel<Patient> _filter;
         private bool _focused;
         private ObservableCollection<Patient> _patients;
@@ -75,7 +73,6 @@ namespace Diagnosis.ViewModels.Screens
 
             Filter.Clear(); // показываем всех
             SelectLastPatient();
-
         }
 
         public ObservableCollection<Patient> Patients
@@ -136,9 +133,9 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         var old = view.SortDescriptions.FirstOrDefault();
                         view.SortDescriptions.Clear();
-                        
-                            var sort = new SortDescription(old.PropertyName ?? PatientsViewSortingColumn.LastHrUpdatedAt.ToString(), value);
-                            view.SortDescriptions.Add(sort);                        
+
+                        var sort = new SortDescription(old.PropertyName ?? PatientsViewSortingColumn.LastHrUpdatedAt.ToString(), value);
+                        view.SortDescriptions.Add(sort);
                     }
 
                     _direction = value;
@@ -212,6 +209,7 @@ namespace Diagnosis.ViewModels.Screens
                 }, () => SelectedPatients.Any(p => p.IsEmpty()));
             }
         }
+
         public ICommand OpenCommand
         {
             get
@@ -222,6 +220,7 @@ namespace Diagnosis.ViewModels.Screens
                         }, () => SelectedPatient != null);
             }
         }
+
         public ICommand EditCommand
         {
             get
@@ -267,6 +266,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         public void SelectLastPatient()
         {
             if (Patients.Count > 0)
@@ -274,6 +274,7 @@ namespace Diagnosis.ViewModels.Screens
                 SelectedPatient = (Patient)view.GetItemAt(0);
             }
         }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
