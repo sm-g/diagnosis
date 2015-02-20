@@ -1,4 +1,6 @@
 ﻿using Diagnosis.Common.Presentation.Controls;
+using Diagnosis.ViewModels.Screens;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -17,7 +19,33 @@ namespace Diagnosis.App.Screens
             Loaded += (s, e) =>
             {
                 patients.Focus();
+                Vm.PropertyChanged += Vm_PropertyChanged;
+
+                ShowSortArrow();
             };
+            Unloaded += (s, e) =>
+            {
+                Vm.PropertyChanged -= Vm_PropertyChanged;
+            };
+        }
+
+        private PatientsListViewModel Vm { get { return DataContext as PatientsListViewModel; } }
+
+        private void Vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Sorting" || e.PropertyName == "SortDirection")
+            {
+                ShowSortArrow();
+            }
+        }
+
+        private void ShowSortArrow()
+        {
+            var col = dataGrid.Columns.Where(x => x.SortMemberPath == Vm.Sorting.ToString()).FirstOrDefault();
+            if (col != null)
+            {
+                col.SortDirection = Vm.SortDirection;
+            }
         }
 
         private void dataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
