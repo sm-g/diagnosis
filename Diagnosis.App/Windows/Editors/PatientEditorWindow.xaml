@@ -26,8 +26,7 @@
 
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel  DataContext="{Binding Patient}"
-                         d:DataContext="{d:DesignInstance diag:PatientViewModel}"
-                         >
+                         d:DataContext="{d:DesignInstance diag:PatientViewModel}">
                 <StackPanel.Resources>
                     <Style TargetType="DockPanel"
                            BasedOn="{StaticResource formLine}" />
@@ -53,7 +52,7 @@
                                        Margin="5,0,0,0">ФИО</TextBlock>
                         </diag:WatermarkService.Watermark>
                     </TextBox>
-                    <TextBlock TextWrapping="Wrap"                               
+                    <TextBlock TextWrapping="Wrap"
                                Grid.Row="1"
                                Grid.Column="1">
                         <Run>Если неизвестно, оставьте пустым, вместо имени будет показано время создания: </Run>
@@ -102,15 +101,17 @@
         <StackPanel Grid.Row="1"
                     Style="{StaticResource DialogButtonsPanel}">
             <Button Name="saveOpenAppButton"
-                    Command="{Binding SaveAndOpenAppCommand}"
-                    Content="_Добавить осмотр"
-                    Visibility="{Binding IsUnsaved, Converter={StaticResource BooleanToVisibilityConverter}}">
-            </Button>
-            <Separator Width="60"
-                       Height="0" />
-            <Button Name="saveButton"
+                    Command="{Binding SaveAndOpenAppCommand}"                    
                     IsDefault="True"
+                    IsEnabled="{Binding IsUnsaved}"
+                    Visibility="{Binding IsUnsaved, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Content="_Добавить">
+            </Button>
+            <Button Name="saveButton"
                     Command="{Binding SaveCommand}"
+                    IsDefault="True"
+                    IsEnabled="{Binding IsUnsaved, Converter={StaticResource NegateBoolean}}"
+                    Visibility="{Binding IsUnsaved, Converter={StaticResource NegBooleanToVisibilityConverter}}"
                     Content="_Сохранить" />
             <Button Name="cancelButton"
                     IsCancel="True"

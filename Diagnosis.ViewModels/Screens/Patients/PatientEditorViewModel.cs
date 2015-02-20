@@ -86,7 +86,7 @@ namespace Diagnosis.ViewModels.Screens
                     var app = course.AddAppointment(AuthorityController.CurrentDoctor);
 
                     this.Send(Event.OpenAppointment, app.AsParams(MessageKeys.Appointment));
-                }, () => CanSaveAndOpenApp());
+                }, () => CanSaveNewPatient());
             }
         }
 
@@ -97,9 +97,13 @@ namespace Diagnosis.ViewModels.Screens
                 return patient.IsTransient;
             }
         }
+        /// <summary>
+        /// Есть изменения или при создании пациента
+        /// </summary>
+        /// <returns></returns>
         private bool CanSave()
         {
-            return (patient.IsTransient || patient.IsDirty) && patient.IsValid(); // есть изменения или при создании пациента
+            return (patient.IsTransient || patient.IsDirty) && patient.IsValid();
         }
 
         private bool CanSaveAndCreate()
@@ -107,9 +111,12 @@ namespace Diagnosis.ViewModels.Screens
             return patient.IsValid();
         }
 
-        private bool CanSaveAndOpenApp()
+        /// <summary>
+        /// Только при создании пациента
+        /// </summary>
+        private bool CanSaveNewPatient()
         {
-            return patient.IsTransient && patient.IsValid(); // только при создании пациента
+            return patient.IsTransient && patient.IsValid();
         }
 
         protected override void OnCancel()
