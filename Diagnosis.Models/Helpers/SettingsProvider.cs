@@ -12,6 +12,8 @@ namespace Diagnosis.Models
         private static string HrListGroupingSetting = "HrListGrouping";
         private static string SexSignsSetting = "SexSigns";
         private static string FontSizesSetting = "FontSizes";
+        private static string PatientsListSortingSetting = "PatientsListSorting";
+        private static string PatientsListSortingDirectionSetting = "PatientsListSortingDirection";
 
         public SettingsProvider(Doctor doc)
         {
@@ -39,6 +41,18 @@ namespace Diagnosis.Models
         {
             get { return Get(HrListSortingSetting); }
             set { Set(HrListSortingSetting, value.ToString()); }
+        }
+
+        public string PatientsListSorting
+        {
+            get { return Get(PatientsListSortingSetting); }
+            set { Set(PatientsListSortingSetting, value.ToString()); }
+        }
+
+        public string PatientsListSortingDirection
+        {
+            get { return Get(PatientsListSortingDirectionSetting); }
+            set { Set(PatientsListSortingDirectionSetting, value.ToString()); }
         }
 
         public string SexSigns

@@ -13,6 +13,7 @@ using NHibernate.Linq;
 using Diagnosis.Data.Queries;
 using System.Windows.Data;
 using System.ComponentModel;
+using Diagnosis.Models.Enums;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -24,11 +25,15 @@ namespace Diagnosis.ViewModels.Screens
         private FilterViewModel<Patient> _filter;
         private bool _focused;
         private ObservableCollection<Patient> _patients;
+        private PatientsViewSortingColumn _sorting;
+        private ListSortDirection _direction;
         private Saver saver;
         private ListCollectionView view;
+        private Doctor doctor;
 
         public PatientsListViewModel()
         {
+            doctor = AuthorityController.CurrentDoctor;
 
             _filter = new FilterViewModel<Patient>(PatientQuery.StartingWith(Session));
             saver = new Saver(Session);
@@ -56,8 +61,21 @@ namespace Diagnosis.ViewModels.Screens
                 })
             });
 
+            PatientsViewSortingColumn sort;
+            if (Enum.TryParse<PatientsViewSortingColumn>(doctor.Settings.PatientsListSorting, true, out sort))
+                Sorting = sort;
+            else
+                Sorting = PatientsViewSortingColumn.LastHrUpdatedAt;
+
+            ListSortDirection dir;
+            if (Enum.TryParse<ListSortDirection>(doctor.Settings.PatientsListSortingDirection, true, out dir))
+                SortDirection = dir;
+            else
+                SortDirection = ListSortDirection.Descending;
+
             Filter.Clear(); // показываем всех
             SelectLastPatient();
+
         }
 
         public ObservableCollection<Patient> Patients
@@ -68,20 +86,66 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     _patients = new ObservableCollection<Patient>();
                     view = (ListCollectionView)CollectionViewSource.GetDefaultView(_patients);
-                    SortDescription sort0 = new SortDescription("LastHrUpdatedAt", ListSortDirection.Descending);
-                    SortDescription sort1 = new SortDescription("LastName", ListSortDirection.Ascending);
-                    SortDescription sort2 = new SortDescription("FirstName", ListSortDirection.Ascending);
-                    SortDescription sort3 = new SortDescription("MiddleName", ListSortDirection.Ascending);
-                    view.SortDescriptions.Add(sort0);
-                    view.SortDescriptions.Add(sort1);
-                    view.SortDescriptions.Add(sort2);
-                    view.SortDescriptions.Add(sort3);
                 }
                 return _patients;
             }
         }
 
         public FilterViewModel<Patient> Filter { get { return _filter; } }
+
+        public PatientsViewSortingColumn Sorting
+        {
+            get
+            {
+                return _sorting;
+            }
+            set
+            {
+                if (_sorting != value)
+                {
+                    var view = (ListCollectionView)CollectionViewSource.GetDefaultView(Patients);
+                    using (view.DeferRefresh())
+                    {
+                        var old = view.SortDescriptions.FirstOrDefault();
+                        view.SortDescriptions.Clear();
+                        if (value != PatientsViewSortingColumn.None)
+                        {
+                            var sort = new SortDescription(value.ToString(), old.Direction);
+                            view.SortDescriptions.Add(sort);
+                        }
+                    }
+
+                    _sorting = value;
+                    OnPropertyChanged(() => Sorting);
+                }
+            }
+        }
+
+        public ListSortDirection SortDirection
+        {
+            get
+            {
+                return _direction;
+            }
+            set
+            {
+                if (_direction != value)
+                {
+                    var view = (ListCollectionView)CollectionViewSource.GetDefaultView(Patients);
+                    using (view.DeferRefresh())
+                    {
+                        var old = view.SortDescriptions.FirstOrDefault();
+                        view.SortDescriptions.Clear();
+                        
+                            var sort = new SortDescription(old.PropertyName ?? PatientsViewSortingColumn.LastHrUpdatedAt.ToString(), value);
+                            view.SortDescriptions.Add(sort);                        
+                    }
+
+                    _direction = value;
+                    OnPropertyChanged(() => SortDirection);
+                }
+            }
+        }
 
         public Patient SelectedPatient
         {
@@ -216,6 +280,19 @@ namespace Diagnosis.ViewModels.Screens
             {
                 emhManager.Dispose();
                 _filter.Dispose();
+
+                if (view.SortDescriptions.Count > 0)
+                {
+                    var sort = view.SortDescriptions.FirstOrDefault();
+                    doctor.Settings.PatientsListSorting = sort.PropertyName;
+                    doctor.Settings.PatientsListSortingDirection = sort.Direction.ToString();
+                }
+                else
+                {
+                    // no sort applied
+                    // sort cannot be removed, no need to remove setting
+                }
+                new Saver(Session).Save(doctor);
             }
             base.Dispose(disposing);
         }
