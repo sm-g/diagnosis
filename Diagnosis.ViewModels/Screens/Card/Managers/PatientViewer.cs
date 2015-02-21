@@ -9,7 +9,7 @@ using System.Linq;
 namespace Diagnosis.ViewModels.Screens
 {
     /// <summary>
-    /// Хранит последние загруженные курс, осмотр для пациента, курса.
+    /// Хранит последние загруженные пациента и курс, осмотр для пациента, курса.
     ///
     /// AutoOpen:
     /// Если пациент, курс открыты повторно, открывает последний открытый курс, осмотр соответственно.
@@ -27,6 +27,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private Dictionary<Patient, Course> patCourseMap;
         private Dictionary<Course, Appointment> courseAppMap;
+        private static List<Patient> patientsOpenOrder = new List<Patient>();
 
         public event EventHandler<OpeningEventArgs> OpenedChanged;
 
@@ -34,7 +35,9 @@ namespace Diagnosis.ViewModels.Screens
         {
             patCourseMap = new Dictionary<Patient, Course>();
             courseAppMap = new Dictionary<Course, Appointment>();
+            patientsOpenOrder = new List<Patient>(); // reset
         }
+
         public Patient OpenedPatient
         {
             get
@@ -55,6 +58,7 @@ namespace Diagnosis.ViewModels.Screens
                     if (value != null)
                     {
                         OnPatientOpened(value);
+                        OnPropertyChanged(() => LastOpenedPatient);
                     }
                 }
             }
@@ -116,6 +120,8 @@ namespace Diagnosis.ViewModels.Screens
         /// Открывать последний открытый курс/осмотр при открытии карточки.
         /// </summary>
         public bool AutoOpen { get; set; }
+
+        public static Patient LastOpenedPatient { get { return patientsOpenOrder.LastOrDefault(); } }
 
         public Appointment GetLastOpenedFor(Course course)
         {
@@ -201,7 +207,7 @@ namespace Diagnosis.ViewModels.Screens
         /// Открывает последний осмотр в последнем курсе.
         /// Создает новый, если такого нет, в последнем курсе.
         /// Создает курс, если нет ни одного курса.
-        /// 
+        ///
         /// Имеет смысл только при создании пациента. Иначе каждый раз при открытии создается осмотр.
         /// </summary>
         /// <param name="patient"></param>
@@ -235,6 +241,7 @@ namespace Diagnosis.ViewModels.Screens
             if (holder is Patient)
             {
                 patCourseMap.Remove(holder as Patient);
+                patientsOpenOrder.RemoveAll(x => x == holder as Patient);
             }
             else if (holder is Course)
             {
@@ -255,6 +262,8 @@ namespace Diagnosis.ViewModels.Screens
         {
             var e = new OpeningEventArgs(patient, OpeningAction.Open);
             OnOpenedChanged(e);
+
+            patientsOpenOrder.Add(patient);
 
             if (AutoOpen)
             {
