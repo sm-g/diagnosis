@@ -18,8 +18,8 @@ namespace Diagnosis.App.Windows
             InitializeComponent();
             Loaded += (s, e) =>
             {
-                var url = GetUrl(Vm.Topic);
-                webBrowser.Navigate(url);
+                var uri = MakeUri(Vm.Topic);
+                webBrowser.Navigate(uri);
 
                 if (Left < 0)
                     Left = 0;
@@ -58,26 +58,26 @@ namespace Diagnosis.App.Windows
             }
         }
 
-        private static string GetUrl(string topic)
+        private static Uri MakeUri(string topic)
         {
             var helpPath = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Help\\");
 
             if (topic.IsNullOrEmpty())
-                return string.Format("{0}index.html", helpPath);
+                return new Uri(string.Format("{0}index.html", helpPath));
             if (topic.Contains("key"))
 
-                return string.Format("{0}hotkeys.html#{1}", helpPath, topic);
+                return new Uri( string.Format("{0}hotkeys.html#{1}", helpPath, topic));
 
-            return string.Format("{0}index.html#{1}", helpPath, topic);
+            return new Uri(string.Format("{0}index.html#{1}", helpPath, topic));
         }
 
         private void Vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "Topic" && !inNavigated)
             {
-                var url = GetUrl(Vm.Topic);
+                var uri = MakeUri(Vm.Topic);
                 Dispatcher.Invoke((Action)(() =>
-                    webBrowser.Navigate(url)));
+                    webBrowser.Navigate(uri)));
             }
         }
     }
