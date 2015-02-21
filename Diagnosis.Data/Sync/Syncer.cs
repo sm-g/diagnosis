@@ -14,7 +14,11 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Data.Sync
 {
-    public enum Db
+    /// <summary>
+    /// Логическая сторона.
+    /// Опеределяет, какие области синхронизируются по умолчанию.
+    /// </summary>
+    public enum Side
     {
         Client, Server
     }
@@ -38,14 +42,14 @@ namespace Diagnosis.Data.Sync
         private string clientConStr;
 
         private string serverProviderName;
+        private string clientProviderName;
 
-        public Syncer(string serverConStr, string clientConStr, string serverProviderName)
+        public Syncer(string serverConStr, string clientConStr, string serverProviderName, string clientProviderName = SqlCeProvider)
         {
             this.serverConStr = serverConStr;
             this.clientConStr = clientConStr;
             this.serverProviderName = serverProviderName;
-
-
+            this.clientProviderName = clientProviderName;
         }
 
         public static event EventHandler<StringEventArgs> MessagePosted;
@@ -71,7 +75,25 @@ namespace Diagnosis.Data.Sync
             }
         }
 
-        public Task SendFrom(Db from)
+        /// <summary>
+        /// Sync scopes determined by <paramref name="from"/>. Specify conncetions in correct order in ctor.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <returns></returns>
+        public Task SendFrom(Side from)
+        {
+            return SendFrom(from, from.GetOrderedScopes(), false);
+        }
+
+        /// <summary>
+        /// Sync specified scopes.
+        /// We can reverse both <paramref name="from"/> and connections in ctor to get same result.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="scopes"></param>
+        /// <param name="createSdf">When sync from Server, we can create new sdf.</param>
+        /// <returns></returns>
+        public Task SendFrom(Side from, IEnumerable<Scope> scopes, bool createSdf)
         {
             if (InSync)
                 return GetEndedTask();
@@ -80,9 +102,11 @@ namespace Diagnosis.Data.Sync
 
             var t = new Task(() =>
             {
-                foreach (var scope in from.GetOrderedScopes())
+                foreach (var scope in scopes)
                 {
-                    Sync(from, scope);
+                    var toContinue = Sync(from, scope, createSdf);
+                    if (!toContinue)
+                        break;
                 }
             });
 
@@ -91,7 +115,16 @@ namespace Diagnosis.Data.Sync
             return t;
         }
 
-        public Task Deprovision(Db db)
+        public Task Deprovision(Side side, IEnumerable<Scope> scopesToDeprovision = null)
+        {
+            if (side == Side.Client)
+            {
+                return Deprovision(clientConStr, clientProviderName, scopesToDeprovision);
+            }
+            return Deprovision(serverConStr, serverProviderName, scopesToDeprovision);
+        }
+
+        public static Task Deprovision(string connstr, string provider, IEnumerable<Scope> scopesToDeprovision = null)
         {
             if (InSync)
                 return GetEndedTask();
@@ -100,11 +133,12 @@ namespace Diagnosis.Data.Sync
 
             var t = new Task(() =>
             {
-                using (var conn = CreateConnection(db))
+                using (var conn = CreateConnection(connstr, provider))
                 {
                     if (conn.IsAvailable())
                     {
-                        foreach (Scope scope in Scopes.GetOrderedScopes())
+                        var scopes = scopesToDeprovision ?? Scopes.GetOrderedScopes();
+                        foreach (Scope scope in scopes)
                         {
                             Deprovision(conn, scope);
                         }
@@ -150,36 +184,6 @@ namespace Diagnosis.Data.Sync
             }
         }
 
-        private static void PostMessage(string str)
-        {
-            logger.DebugFormat(str);
-            var h = MessagePosted;
-            if (h != null)
-            {
-                h(typeof(Syncer), new StringEventArgs(str));
-            }
-        }
-
-        private static void PostMessage(string str, params object[] p)
-        {
-            logger.DebugFormat(string.Format(str, p));
-            var h = MessagePosted;
-            if (h != null)
-            {
-                h(typeof(Syncer), new StringEventArgs(string.Format(str, p)));
-            }
-        }
-
-        private static void PostMessage(Exception ex)
-        {
-            logger.DebugFormat(ex.ToString());
-            var h = MessagePosted;
-            if (h != null)
-            {
-                h(typeof(Syncer), new StringEventArgs(ex.Message));
-            }
-        }
-
         private static void OnSyncEnded(TimeSpan time)
         {
             var h = SyncEnded;
@@ -189,35 +193,18 @@ namespace Diagnosis.Data.Sync
             }
         }
 
-        private DbConnection CreateConnection(Db db)
+        private DbConnection CreateConnection(Side db)
         {
-            try
+            if (db == Side.Client)
             {
-                if (db == Db.Client)
-                {
-                    return new SqlCeConnection(clientConStr);
-                }
-                else
-                {
-                    switch (serverProviderName)
-                    {
-                        case SqlCeProvider:
-                            return new SqlCeConnection(serverConStr);
-
-                        case SqlServerProvider:
-                            return new SqlConnection(serverConStr);
-
-                        default:
-                            throw new NotSupportedException();
-                    }
-                }
+                return CreateConnection(clientConStr, clientProviderName);
             }
-            catch (Exception ex)
+            else
             {
-                PostMessage(ex);
-                throw;
+                return CreateConnection(serverConStr, serverProviderName);
             }
         }
+
         private static DbConnection CreateConnection(string connstr, string provider)
         {
             try
@@ -236,110 +223,154 @@ namespace Diagnosis.Data.Sync
             }
             catch (Exception ex)
             {
-                PostMessage(ex);
+                Poster.PostMessage(ex);
                 throw;
             }
         }
-        private void Sync(Db from, Scope scope)
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="scope"></param>
+        /// <param name="createSdf"></param>
+        /// <returns>Could connect</returns>
+        private bool Sync(Side from, Scope scope, bool createSdf)
         {
-            PostMessage("Sync '{0}' from {1}", scope, from);
-            using (var serverConn = CreateConnection(Db.Server))
-            using (var clientConn = (SqlCeConnection)CreateConnection(Db.Client))
+            Poster.PostMessage("Begin sync scope '{0}' from {1}", scope, from);
+            using (var serverConn = CreateConnection(Side.Server))
+            using (var clientConn = CreateConnection(Side.Client))
             {
+                if (createSdf && clientProviderName == SqlCeProvider)
+                    SqlCeHelper.CreateSqlCeByConStr(clientConStr);
+
                 if (!serverConn.IsAvailable())
                 {
                     CanNotConnect(serverConn);
-                    return;
+                    return false;
                 }
                 if (!clientConn.IsAvailable())
                 {
                     CanNotConnect(clientConn);
-                    return;
+                    return false;
                 }
 
-                Provision(serverConn, scope);
-                Provision(clientConn, scope);
-
-                DownloadSyncOrchestrator syncOrchestrator;
-                SyncOperationStatistics syncStats;
+                Provision(serverConn, scope, null);
+                Provision(clientConn, scope, serverConn);
 
                 var scopeName = scope.ToScopeString();
-                RelationalSyncProvider clientProvider = new SqlCeSyncProvider(scopeName, clientConn, prefix);
-                RelationalSyncProvider serverProvider;
+                var clientProvider = CreateProvider(clientConn, scopeName);
+                var serverProvider = CreateProvider(serverConn, scopeName);
 
-                if (serverConn is SqlCeConnection)
-                    serverProvider = new SqlCeSyncProvider(scopeName, serverConn as SqlCeConnection, prefix);
-                else if (serverConn is SqlConnection)
-                    serverProvider = new SqlSyncProvider(scopeName, serverConn as SqlConnection, prefix);
-                else throw new ArgumentOutOfRangeException();
-
+                DownloadSyncOrchestrator syncOrchestrator;
                 switch (from)
                 {
-                    case Db.Client:
+                    case Side.Client:
                         syncOrchestrator = new DownloadSyncOrchestrator(
                             clientProvider,
                             serverProvider);
                         break;
 
-                    case Db.Server:
+                    default:
+                    case Side.Server:
                         syncOrchestrator = new DownloadSyncOrchestrator(
                             serverProvider,
                             clientProvider);
                         break;
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
                 }
 
                 try
                 {
-                    syncStats = syncOrchestrator.Synchronize();
+                    Poster.PostMessage("Synchronize...");
 
-                    PostMessage("ChangesApplied: {0}, ChangesFailed: {1}", syncStats.DownloadChangesApplied, syncStats.DownloadChangesFailed);
+                    var syncStats = syncOrchestrator.Synchronize();
+
+                    var conflicts = syncOrchestrator.ConflictsCounter.Keys.Where(k => syncOrchestrator.ConflictsCounter[k] > 0).ToList();
+                    if (conflicts.Count > 0)
+                    {
+                        Poster.PostMessage("Conflicts:");
+                        conflicts.ForAll((conflict) =>
+                        {
+                            Poster.PostMessage("{0} = {1}", conflict, syncOrchestrator.ConflictsCounter[conflict]);
+                        });
+                    }
+
+                    Poster.PostMessage("ChangesApplied: {0}, ChangesFailed: {1}\n", syncStats.DownloadChangesApplied, syncStats.DownloadChangesFailed);
                 }
                 catch (Exception ex)
                 {
-                    PostMessage(ex);
+                    Poster.PostMessage(ex);
                 }
+                return true;
             }
         }
 
-        private static void CanNotConnect(DbConnection con)
+        private static RelationalSyncProvider CreateProvider(DbConnection conn, string scopeName)
         {
-            PostMessage("Невозможно поключиться к {0}", con.ConnectionString);
-        }
+            RelationalSyncProvider serverProvider;
+            if (conn is SqlCeConnection)
+                serverProvider = new SqlCeSyncProvider(scopeName, conn as SqlCeConnection, prefix);
+            else if (conn is SqlConnection)
+                serverProvider = new SqlSyncProvider(scopeName, conn as SqlConnection, prefix);
+            else throw new ArgumentOutOfRangeException();
 
-        private static void Provision(DbConnection con, Scope scope)
+            return serverProvider;
+        }
+        private static void Provision(DbConnection con, Scope scope, DbConnection conToGetScopeDescr)
         {
             var scopeDescr = new DbSyncScopeDescription(scope.ToScopeString());
-            AddTablesToScopeDescr(scope.ToTableNames(), scopeDescr, con);
+
+            var failedTables = AddTablesToScopeDescr(scope.ToTableNames(), scopeDescr, con);
+
             try
             {
+                var applied = false;
                 if (con is SqlCeConnection)
-                    ProvisionSqlCe(con as SqlCeConnection, scopeDescr);
+                {
+                    var fromScope = false;
+                    if (failedTables.Count > 0 && conToGetScopeDescr != null)
+                    {
+                        Poster.PostMessage("Retrieve description for scope '{0}' from '{1}'", scope.ToScopeString(), con.ConnectionString);
+                        scopeDescr = GetScopeDescription(scope, conToGetScopeDescr);
+                        fromScope = true;
+                    }
+
+                    applied = ProvisionSqlCe(con as SqlCeConnection, scopeDescr, fromScope);
+                }
                 else if (con is SqlConnection)
-                    ProvisionSqlServer(con as SqlConnection, scopeDescr);
+                {
+                    applied = ProvisionSqlServer(con as SqlConnection, scopeDescr);
+                }
+                if (applied)
+                    Poster.PostMessage("Provisioned scope '{0}' in '{1}'\n", scope.ToScopeString(), con.ConnectionString);
+                else
+                    Poster.PostMessage("Scope '{0}' exists in '{1}'\n", scope.ToScopeString(), con.ConnectionString);
             }
             catch (Exception ex)
             {
-                PostMessage(ex);
+                Poster.PostMessage(ex);
             }
         }
 
-        private static void ProvisionSqlCe(SqlCeConnection con, DbSyncScopeDescription scope)
+        private static bool ProvisionSqlCe(SqlCeConnection con, DbSyncScopeDescription scope, bool populateFromScope)
         {
             var sqlceProv = new SqlCeSyncScopeProvisioning(con, scope);
             sqlceProv.ObjectPrefix = prefix;
 
             if (!sqlceProv.ScopeExists(scope.ScopeName))
             {
+                if (populateFromScope)
+                    //use scope description from server to intitialize the client
+                    sqlceProv.PopulateFromScopeDescription(scope);
+
                 sqlceProv.SetCreateTableDefault(DbSyncCreationOption.CreateOrUseExisting);
                 sqlceProv.Apply();
-                PostMessage("Provisioned {0}", con.ConnectionString);
+                return true;
             }
+            return false;
         }
 
-        private static void ProvisionSqlServer(SqlConnection con, DbSyncScopeDescription scope)
+        private static bool ProvisionSqlServer(SqlConnection con, DbSyncScopeDescription scope)
         {
             var sqlProv = new SqlSyncScopeProvisioning(con, scope);
             sqlProv.ObjectSchema = prefix;
@@ -348,8 +379,21 @@ namespace Diagnosis.Data.Sync
             {
                 sqlProv.SetCreateTableDefault(DbSyncCreationOption.CreateOrUseExisting);
                 sqlProv.Apply();
-                PostMessage("Provisioned {0}", con.ConnectionString);
+                return true;
             }
+            return false;
+
+        }
+
+        private static DbSyncScopeDescription GetScopeDescription(Scope scope, DbConnection conn)
+        {
+            DbSyncScopeDescription scopeDesc = null;
+            if (conn is SqlCeConnection)
+                scopeDesc = SqlCeSyncDescriptionBuilder.GetDescriptionForScope(scope.ToScopeString(), prefix, (SqlCeConnection)conn);
+            else if (conn is SqlConnection)
+                scopeDesc = SqlSyncDescriptionBuilder.GetDescriptionForScope(scope.ToScopeString(), prefix, (SqlConnection)conn);
+
+            return scopeDesc;
         }
 
         private static void Deprovision(DbConnection con, Scope scope)
@@ -361,11 +405,11 @@ namespace Diagnosis.Data.Sync
                 else if (con is SqlConnection)
                     DeprovisionSqlServer(con as SqlConnection, scope.ToScopeString());
 
-                PostMessage("Deprovisioned '{0}' in '{1}'", scope.ToScopeString(), con.ConnectionString);
+                Poster.PostMessage("Deprovisioned '{0}' in '{1}'\n", scope.ToScopeString(), con.ConnectionString);
             }
             catch (Exception ex)
             {
-                PostMessage(ex);
+                Poster.PostMessage(ex);
             }
         }
 
@@ -383,8 +427,11 @@ namespace Diagnosis.Data.Sync
             scopeDeprovisioning.DeprovisionScope(scopeName);
         }
 
-        private static void AddTablesToScopeDescr(string[] tableNames, DbSyncScopeDescription scope, DbConnection connection)
+        private static IList<string> AddTablesToScopeDescr(string[] tableNames, DbSyncScopeDescription scope, DbConnection connection)
         {
+            var failed = new List<string>();
+            Poster.PostMessage("Adding tables to scope '{0}' in '{1}'...", scope.ScopeName, connection.ConnectionString);
+
             foreach (var name in tableNames)
             {
                 try
@@ -398,12 +445,20 @@ namespace Diagnosis.Data.Sync
 
                     desc.GlobalName = name;
                     scope.Tables.Add(desc);
+                    Poster.PostMessage("Table '{0}' added", name);
                 }
                 catch (Exception ex)
                 {
-                    PostMessage(ex);
+                    Poster.PostMessage(ex);
+                    failed.Add(name);
                 }
             }
+            return failed;
+        }
+
+        private static void CanNotConnect(DbConnection con)
+        {
+            Poster.PostMessage("Невозможно поключиться к {0}", con.ConnectionString);
         }
 
         private static Task GetEndedTask()
@@ -413,30 +468,73 @@ namespace Diagnosis.Data.Sync
             return t;
         }
 
+        private static class Poster
+        {
+            public static void PostMessage(string str)
+            {
+                logger.DebugFormat(str);
+                var h = MessagePosted;
+                if (h != null)
+                {
+                    h(typeof(Syncer), new StringEventArgs(str));
+                }
+            }
+
+            public static void PostMessage(string str, params object[] p)
+            {
+                logger.DebugFormat(string.Format(str, p));
+                var h = MessagePosted;
+                if (h != null)
+                {
+                    h(typeof(Syncer), new StringEventArgs(string.Format(str, p)));
+                }
+            }
+
+            public static void PostMessage(Exception ex)
+            {
+                logger.DebugFormat(ex.ToString());
+                var h = MessagePosted;
+                if (h != null)
+                {
+                    h(typeof(Syncer), new StringEventArgs(ex.Message));
+                }
+            }
+        }
+
         public class DownloadSyncOrchestrator : SyncOrchestrator
         {
             public DownloadSyncOrchestrator(RelationalSyncProvider from, RelationalSyncProvider to)
             {
+                ConflictsCounter = new Dictionary<DbConflictType, int>();
+
                 this.RemoteProvider = from;
                 this.LocalProvider = to;
                 this.Direction = SyncDirectionOrder.Download;
 
                 to.ApplyChangeFailed += (s, e) =>
                 {
+#if DEBUG
                     if (to.ScopeName == Scope.Icd.ToScopeString())
                         return;
-
+#endif
                     if (e.Conflict.Type == DbConflictType.ErrorsOccurred)
-                        PostMessage("ApplyChangeFailed. Error: {0}", e.Error);
-                    else
-                        PostMessage("ApplyChangeFailed. ConflictType: {0}", e.Conflict.Type);
+                        Poster.PostMessage("ApplyChangeFailed. Error: {0}", e.Error);
+                    //else
+                    //    Poster.PostMessage("ApplyChangeFailed. ConflictType: {0}", e.Conflict.Type);
 
+                    if (!ConflictsCounter.Keys.Contains(e.Conflict.Type))
+                        ConflictsCounter[e.Conflict.Type] = 0;
+
+                    ConflictsCounter[e.Conflict.Type]++;
+                    e.Action = ApplyAction.RetryWithForceWrite;
                 };
                 to.DbConnectionFailure += (s, e) =>
                 {
-                    PostMessage("DbConnectionFailure: {0}", e.FailureException.Message);
+                    Poster.PostMessage("DbConnectionFailure: {0}", e.FailureException.Message);
                 };
             }
+
+            public Dictionary<DbConflictType, int> ConflictsCounter { get; set; }
         }
     }
 }

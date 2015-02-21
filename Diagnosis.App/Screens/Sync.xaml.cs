@@ -38,8 +38,8 @@ namespace Diagnosis.App.Screens
                 var vm = DataContext as SyncViewModel;
                 if (vm != null)
                 {
-                    connectionString.Text = d.ConnectionString;
-                    vm.ProviderName = d.SelectedDataProvider.Name;
+                    vm.RemoteConnectionString = d.ConnectionString;
+                    vm.RemoteProviderName = d.SelectedDataProvider.Name;
                 }
             }
 

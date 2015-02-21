@@ -4,8 +4,11 @@ using Diagnosis.Data.Sync;
 using Diagnosis.ViewModels.Framework;
 using EventAggregator;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -19,64 +22,101 @@ namespace Diagnosis.ViewModels.Screens
 
         private static string _log;
 
-        private string _conStr;
-        private string _provider;
-        private string clientConStr;
+        private string _remoteConStr;
+        private string _remoteProvider;
+        private string _localConStr;
+        private string _localProvider;
         private Syncer syncer;
 
         public SyncViewModel()
         {
             Title = "Синхронизация";
 
-            clientConStr = NHibernateHelper.ConnectionString;
+            LocalConnectionString = NHibernateHelper.ConnectionString;
+            // TODO get LocalProviderName 
+            LocalProviderName = LocalConnectionString.Contains(".sdf") ? Syncer.SqlCeProvider : Syncer.SqlServerProvider;
+
             Syncer.MessagePosted += syncer_MessagePosted;
             Syncer.SyncEnded += syncer_SyncEnded;
 
             var server = ConfigurationManager.ConnectionStrings[serverConStrName];
             if (server != null)
             {
-                ConnectionString = server.ConnectionString;
-                ProviderName = server.ProviderName;
+                RemoteConnectionString = server.ConnectionString;
+                RemoteProviderName = server.ProviderName;
             }
 #if DEBUG
-            ConnectionString = "Data Source=uoms.sdf";
-            ProviderName = Syncer.SqlCeProvider;
+        //    RemoteConnectionString = "Data Source=remote.sdf";
+            RemoteProviderName = Syncer.SqlCeProvider;
 #endif
         }
 
-        public string ConnectionString
+        /// <summary>
+        /// Remote, server or middle on Client.exe, middle on Server.exe
+        /// </summary>
+        public string RemoteConnectionString
         {
             get
             {
-                return _conStr;
+                return _remoteConStr;
             }
             set
             {
-                if (_conStr != value)
+                if (_remoteConStr != value)
                 {
                     if (!value.StartsWith("Data Source="))
                     {
                         value = "Data Source=" + value;
                     }
 
-                    _conStr = value;
-                    OnPropertyChanged(() => ConnectionString);
+                    _remoteConStr = value;
+                    OnPropertyChanged(() => RemoteConnectionString);
+                }
+            }
+        }
+        public string LocalConnectionString
+        {
+            get
+            {
+                return _localConStr;
+            }
+            set
+            {
+                if (_localConStr != value)
+                {
+                    _localConStr = value;
+                    OnPropertyChanged(() => LocalConnectionString);
                 }
             }
         }
 
-        public string ProviderName
+        public string RemoteProviderName
         {
             get
             {
-                return _provider;
+                return _remoteProvider;
             }
             set
             {
-                if (_provider != value)
+                if (_remoteProvider != value)
                 {
-                    _provider = value;
-                    OnPropertyChanged(() => ProviderName);
+                    _remoteProvider = value;
+                    OnPropertyChanged(() => RemoteProviderName);
+                }
+            }
+        }
+        public string LocalProviderName
+        {
+            get
+            {
+                return _localProvider;
+            }
+            set
+            {
+                if (_localProvider != value)
+                {
+                    _localProvider = value;
+                    OnPropertyChanged(() => LocalProviderName);
                 }
             }
         }
@@ -94,8 +134,8 @@ namespace Diagnosis.ViewModels.Screens
 
                     if (result.IsValid)
                     {
-                        ConnectionString = result.FileName;
-                        ProviderName = Syncer.SqlCeProvider;
+                        RemoteConnectionString = result.FileName;
+                        RemoteProviderName = Syncer.SqlCeProvider;
                     }
                 });
             }
@@ -107,10 +147,49 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    syncer = new Syncer(ConnectionString, clientConStr, ProviderName);
-                    DoWithCursor(syncer.SendFrom(Db.Server), Cursors.AppStarting);
+                    syncer = new Syncer(
+                        serverConStr: RemoteConnectionString,
+                        clientConStr: LocalConnectionString,
+                        serverProviderName: RemoteProviderName);
+
+                    DoWithCursor(syncer.SendFrom(Side.Server), Cursors.AppStarting);
                 },
-                () => CanSync);
+                () => CanSync(true, true));
+            }
+        }
+        public RelayCommand SaveCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    var result = new FileDialogService().ShowSaveFileDialog(null,
+                         FileType.Sdf.ToEnumerable(),
+                         FileType.Sdf,
+                         "diagnosis-ref");
+
+                    if (result.IsValid)
+                    {
+                        var sdfPath = result.FileName;
+                        var remoteConstr = "Data Source=" + sdfPath;
+
+                        syncer = new Syncer(
+                            serverConStr: LocalConnectionString,
+                            clientConStr: remoteConstr,
+                            serverProviderName: LocalProviderName);
+
+                        IEnumerable<Scope> scopes;
+                        if (InServerApp())
+                            scopes = Scope.Reference.ToEnumerable();
+                        else
+                            scopes = Scopes.GetOrderedUploadScopes();
+
+                        DoWithCursor(
+                            syncer.SendFrom(Side.Server, scopes, true).ContinueWith((t) =>
+                            Syncer.Deprovision(remoteConstr, Syncer.SqlCeProvider, scopes)), Cursors.AppStarting);
+                    }
+                },
+                () => CanSync(true, false));
             }
         }
 
@@ -120,36 +199,47 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    syncer = new Syncer(ConnectionString, clientConStr, ProviderName);
-                    DoWithCursor(syncer.SendFrom(Db.Client), Cursors.AppStarting);
+                    Syncer syncer;
+                    if (InServerApp())
+                    {
+                        syncer = new Syncer(
+                            serverConStr: LocalConnectionString,
+                            clientConStr: RemoteConnectionString,
+                            serverProviderName: LocalProviderName);
+                    }
+                    else
+                    {
+                        syncer = new Syncer(
+                            serverConStr: RemoteConnectionString,
+                            clientConStr: LocalConnectionString,
+                            serverProviderName: RemoteProviderName);
+                    }
+                    DoWithCursor(syncer.SendFrom(Side.Client), Cursors.AppStarting);
                 },
-                () => CanSync);
+                () => CanSync(true, true));
             }
         }
 
-        public RelayCommand DeprovisClientCommand
+        public RelayCommand DeprovisRemoteCommand
         {
             get
             {
                 return new RelayCommand(() =>
                 {
-                    syncer = new Syncer(ConnectionString, clientConStr, ProviderName);
-                    DoWithCursor(syncer.Deprovision(Db.Client), Cursors.AppStarting);
+                    DoWithCursor(Syncer.Deprovision(RemoteConnectionString, RemoteProviderName), Cursors.AppStarting);
                 },
-                () => CanSync);
+                () => CanSync(false, true));
             }
         }
-
-        public RelayCommand DeprovisServerCommand
+        public RelayCommand DeprovisLocalCommand
         {
             get
             {
                 return new RelayCommand(() =>
                 {
-                    syncer = new Syncer(ConnectionString, clientConStr, ProviderName);
-                    DoWithCursor(syncer.Deprovision(Db.Server), Cursors.AppStarting);
+                    DoWithCursor(Syncer.Deprovision(LocalConnectionString, LocalProviderName), Cursors.AppStarting);
                 },
-                () => CanSync);
+                () => CanSync(true, false));
             }
         }
 
@@ -169,14 +259,28 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public bool CanSync
+        public bool CanSync(bool local, bool remote)
         {
-            get
+            bool result = !Syncer.InSync;
+            if (local)
             {
-                return !Syncer.InSync && !ConnectionString.IsNullOrEmpty() &&
-                (ProviderName == Syncer.SqlCeProvider ||
-                 ProviderName == Syncer.SqlServerProvider);
+                result &= !LocalConnectionString.IsNullOrEmpty() &&
+                        (LocalProviderName == Syncer.SqlCeProvider ||
+                         LocalProviderName == Syncer.SqlServerProvider);
             }
+            if (remote)
+            {
+                result &= !RemoteConnectionString.IsNullOrEmpty() &&
+                        (RemoteProviderName == Syncer.SqlCeProvider ||
+                         RemoteProviderName == Syncer.SqlServerProvider);
+
+            }
+            return result;
+        }
+
+        bool InServerApp()
+        {
+            return AppDomain.CurrentDomain.FriendlyName.Contains("Server");
         }
 
         private void syncer_MessagePosted(object sender, StringEventArgs e)
@@ -210,7 +314,7 @@ namespace Diagnosis.ViewModels.Screens
 
                 // http://stackoverflow.com/questions/502411/change-connection-string-reload-app-config-at-run-time
                 // clear all connection strings and save new
-                var settings = new ConnectionStringSettings(serverConStrName, ConnectionString, ProviderName);
+                var settings = new ConnectionStringSettings(serverConStrName, RemoteConnectionString, RemoteProviderName);
                 var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 var connectionStringsSection = (ConnectionStringsSection)config.GetSection("connectionStrings");
                 connectionStringsSection.ConnectionStrings.Clear();

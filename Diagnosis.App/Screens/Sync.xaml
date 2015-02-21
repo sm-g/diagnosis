@@ -8,6 +8,7 @@
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              mc:Ignorable="d"
              x:Name="doctors"
+             diag:FocusBehavior.FocusFirst="True"
              Padding="{StaticResource SreenPadding}"
              Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
              d:DataContext="{d:DesignInstance diag:SyncViewModel,
@@ -34,7 +35,8 @@
             <Label Content="Источник"
                    VerticalAlignment="Top" />
             <TextBox x:Name="connectionString"
-                     Text="{Binding ConnectionString,
+                     IsReadOnly="True"
+                     Text="{Binding RemoteConnectionString,
                                     UpdateSourceTrigger=PropertyChanged,
                                     ValidatesOnDataErrors=True}"
                      Grid.Column="1" />
@@ -55,20 +57,24 @@
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Center"
                     Grid.Row="1">
-            <Button Content="Отправить"                    
+            <Button Content="Отправить в источник"                    
                     Command="{Binding UploadCommand}" />
             <Separator Width="10"
                        Height="0" />
-            <Button Content="Загрузить"
+            <Button Content="Отправить в файл..."
+                    Command="{Binding SaveCommand}" />
+            <Separator Width="10"
+                       Height="0" />
+            <Button Content="Загрузить справочники"
                     Command="{Binding DownloadCommand}" />
             <Separator Width="50"
                        Height="0" />
             <Button Content="Deprovision Client"
-                    Command="{Binding DeprovisClientCommand}" />
+                    Command="{Binding DeprovisLocalCommand}" />
             <Separator Width="10"
                        Height="0" />
             <Button Content="Deprovision Server"
-                    Command="{Binding DeprovisServerCommand}" />
+                    Command="{Binding DeprovisRemoteCommand}" />
         </StackPanel>
 
         <DockPanel Grid.Row="2">

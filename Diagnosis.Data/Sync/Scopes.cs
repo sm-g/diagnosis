@@ -8,7 +8,7 @@ namespace Diagnosis.Data.Sync
     /// <summary>
     /// In order
     /// </summary>
-    internal enum Scope
+    public enum Scope
     {
         Icd,
         Reference,
@@ -17,7 +17,7 @@ namespace Diagnosis.Data.Sync
         Hr,
     }
 
-    internal static class Scopes
+    public static class Scopes
     {
         public static string syncPrefix = "sync";
 
@@ -58,9 +58,9 @@ namespace Diagnosis.Data.Sync
             };
 
         private static string[] hrTableNames = new[] {
+                Names.WordTbl,
                 Names.HealthRecordTbl,
                 Names.HrItemTbl,
-                Names.WordTbl,
             };
         private static Dictionary<Scope, string> scopeNames = new Dictionary<Scope, string>
         {
@@ -93,17 +93,17 @@ namespace Diagnosis.Data.Sync
         {
             return new List<Scope>()
             {
-                Scope.Icd,
+                //Scope.Icd,
                 Scope.Reference,
             };
         }
-        public static IList<Scope> GetOrderedScopes(this Db from)
+        public static IList<Scope> GetOrderedScopes(this Side from)
         {
             switch (from)
             {
-                case Db.Client:
+                case Side.Client:
                     return GetOrderedUploadScopes();
-                case Db.Server:
+                case Side.Server:
                     return GetOrderedDownloadScopes();
                 default:
                     throw new ArgumentOutOfRangeException();

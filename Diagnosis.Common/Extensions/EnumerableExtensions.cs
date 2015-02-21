@@ -30,7 +30,7 @@ namespace Diagnosis.Common
             }
         }
 
-        public static IEnumerable<T> ToEnumerable<T>(this T item) where T : class
+        public static IEnumerable<T> ToEnumerable<T>(this T item)
         {
             return new[] { item };
         }
