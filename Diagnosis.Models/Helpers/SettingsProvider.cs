@@ -14,6 +14,7 @@ namespace Diagnosis.Models
         private static string FontSizesSetting = "FontSizes";
         private static string PatientsListSortingSetting = "PatientsListSorting";
         private static string PatientsListSortingDirectionSetting = "PatientsListSortingDirection";
+        private static string PatientsListVisibleColumnsSetting = "PatientsListVisibleColumns";
 
         public SettingsProvider(Doctor doc)
         {
@@ -53,6 +54,12 @@ namespace Diagnosis.Models
         {
             get { return Get(PatientsListSortingDirectionSetting); }
             set { Set(PatientsListSortingDirectionSetting, value.ToString()); }
+        }
+
+        public string PatientsListVisibleColumns
+        {
+            get { return Get(PatientsListVisibleColumnsSetting); }
+            set { Set(PatientsListVisibleColumnsSetting, value.ToString()); }
         }
 
         public string SexSigns
