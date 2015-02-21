@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Windows.Controls;
 using MahApps.Metro.Controls;
 using System.Threading;
+using System;
 
 namespace Diagnosis.App.Windows.Shell
 {
@@ -100,7 +101,14 @@ namespace Diagnosis.App.Windows.Shell
                         var window = new HelpWindow();
                         ShowWindow(help, window, false);
 
-                        window.Closed += (sender2, e2) => window.Dispatcher.InvokeShutdown();
+                        this.Closed += (s, e1) =>
+                        {
+                            window.Dispatcher.Invoke((Action)(() =>
+                            {
+                                window.Close();
+                            }));
+                        };
+                        window.Closed += (s, e2) => window.Dispatcher.InvokeShutdown();
                         System.Windows.Threading.Dispatcher.Run();
                     });
 
