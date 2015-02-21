@@ -119,6 +119,10 @@
                   SelectedCellsChanged="dataGrid_SelectedCellsChanged"
                   Style="{DynamicResource MyDataGridStyle}"
                   d:IsHidden="True">
+            <DataGrid.Resources>
+                <diag:BindingProxy x:Key="proxy"
+                                      Data="{Binding}" />
+            </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Имя"
                                     IsReadOnly="True"
@@ -130,13 +134,16 @@
                 <DataGridTemplateColumn Header="Пол"
                                         SortMemberPath="IsMale"
                                         IsReadOnly="True"
+                                        Visibility="{Binding Data.IsMaleColumnVisible, Source={StaticResource proxy}, Converter={StaticResource BooleanToVisibilityConverter}}"
                                         CellTemplate="{StaticResource SexTemplate}" />
                 <DataGridTextColumn Header="Возраст"
                                     IsReadOnly="True"
+                                    Visibility="{Binding Data.IsAgeColumnVisible, Source={StaticResource proxy}, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     ElementStyle="{StaticResource RightCellTextBlock}"
                                     Binding="{Binding Age, Mode=OneWay}" />
                 <DataGridTextColumn Header="Изменено"
                                     IsReadOnly="True"
+                                    Visibility="{Binding Data.IsLastHrUpdatedAtColumnVisible, Source={StaticResource proxy}, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Binding="{Binding LastHrUpdatedAt, Mode=OneWay, Converter={StaticResource DateLabel}, ConverterParameter='назад'}" />
             </DataGrid.Columns>
             <DataGrid.InputBindings>
@@ -178,6 +185,18 @@
             </DataGrid.RowStyle>
             <DataGrid.ContextMenu>
                 <ContextMenu>
+                    <MenuItem Header="Столбцы">
+                        <MenuItem Header="Пол"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding IsMaleColumnVisible, Mode=TwoWay}" />
+                        <MenuItem Header="Возраст"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding IsAgeColumnVisible, Mode=TwoWay}" />
+                        <MenuItem Header="Изменено"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding IsLastHrUpdatedAtColumnVisible, Mode=TwoWay}" />
+                    </MenuItem>
+                    <Separator />
                     <MenuItem Header="Новый..."
                               InputGestureText="Ctrl+Enter"
                               Command="{Binding AddCommand}" />

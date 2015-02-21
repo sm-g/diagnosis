@@ -25,6 +25,9 @@ namespace Diagnosis.ViewModels.Screens
         private ObservableCollection<Patient> _patients;
         private PatientsViewSortingColumn _sorting;
         private ListSortDirection _direction;
+        private bool _ageVis;
+        private bool _isMaleVis;
+        private bool _isLastUpdatedVis;
         private Saver saver;
         private ListCollectionView view;
         private Doctor doctor;
@@ -70,6 +73,20 @@ namespace Diagnosis.ViewModels.Screens
                 SortDirection = dir;
             else
                 SortDirection = ListSortDirection.Descending;
+
+            PatientsViewSortingColumn visCols;
+            if (Enum.TryParse<PatientsViewSortingColumn>(doctor.Settings.PatientsListVisibleColumns, true, out visCols))
+            {
+                IsAgeColumnVisible = visCols.HasFlag(PatientsViewSortingColumn.Age);
+                IsMaleColumnVisible = visCols.HasFlag(PatientsViewSortingColumn.IsMale);
+                IsLastHrUpdatedAtColumnVisible = visCols.HasFlag(PatientsViewSortingColumn.LastHrUpdatedAt);
+            }
+            else
+            {
+                IsAgeColumnVisible = true;
+                IsMaleColumnVisible = true;
+                IsLastHrUpdatedAtColumnVisible = true;
+            }
 
             Filter.Clear(); // показываем всех
             SelectLastPatient();
@@ -140,6 +157,54 @@ namespace Diagnosis.ViewModels.Screens
 
                     _direction = value;
                     OnPropertyChanged(() => SortDirection);
+                }
+            }
+        }
+
+        public bool IsAgeColumnVisible
+        {
+            get
+            {
+                return _ageVis;
+            }
+            set
+            {
+                if (_ageVis != value)
+                {
+                    _ageVis = value;
+                    OnPropertyChanged(() => IsAgeColumnVisible);
+                }
+            }
+        }
+
+        public bool IsMaleColumnVisible
+        {
+            get
+            {
+                return _isMaleVis;
+            }
+            set
+            {
+                if (_isMaleVis != value)
+                {
+                    _isMaleVis = value;
+                    OnPropertyChanged(() => IsMaleColumnVisible);
+                }
+            }
+        }
+
+        public bool IsLastHrUpdatedAtColumnVisible
+        {
+            get
+            {
+                return _isLastUpdatedVis;
+            }
+            set
+            {
+                if (_isLastUpdatedVis != value)
+                {
+                    _isLastUpdatedVis = value;
+                    OnPropertyChanged(() => IsLastHrUpdatedAtColumnVisible);
                 }
             }
         }
@@ -275,12 +340,20 @@ namespace Diagnosis.ViewModels.Screens
                     var sort = view.SortDescriptions.FirstOrDefault();
                     doctor.Settings.PatientsListSorting = sort.PropertyName;
                     doctor.Settings.PatientsListSortingDirection = sort.Direction.ToString();
+
                 }
                 else
                 {
                     // no sort applied
                     // sort cannot be removed, no need to remove setting
                 }
+                var visCols = PatientsViewSortingColumn.FullNameOrCreatedAt;
+                if (IsAgeColumnVisible) visCols |= PatientsViewSortingColumn.Age;
+                if (IsMaleColumnVisible) visCols |= PatientsViewSortingColumn.IsMale;
+                if (IsLastHrUpdatedAtColumnVisible) visCols |= PatientsViewSortingColumn.LastHrUpdatedAt;
+
+                doctor.Settings.PatientsListVisibleColumns = visCols.ToString();
+
                 new Saver(Session).Save(doctor);
             }
             base.Dispose(disposing);

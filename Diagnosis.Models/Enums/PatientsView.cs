@@ -6,12 +6,13 @@ using System.Text;
 
 namespace Diagnosis.Models.Enums
 {
+    [Flags]
     public enum PatientsViewSortingColumn
     {
-        None,
-        Age,
-        IsMale,
-        FullNameOrCreatedAt,
-        LastHrUpdatedAt
+        None = 0,
+        FullNameOrCreatedAt = 1,
+        IsMale = 2,
+        Age = 4,
+        LastHrUpdatedAt = 8,
     }
 }

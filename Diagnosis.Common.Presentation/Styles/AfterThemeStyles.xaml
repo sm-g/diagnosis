@@ -139,6 +139,8 @@
                 Value="False" />
         <Setter Property="IsReadOnly"
                 Value="True" />
+        <Setter Property="CanUserReorderColumns"
+                Value="False" />
         <Setter Property="SelectionUnit"
                 Value="FullRow" />
         <Setter Property="SelectionMode"
