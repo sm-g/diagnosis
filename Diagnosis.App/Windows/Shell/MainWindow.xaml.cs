@@ -15,6 +15,7 @@ using Xceed.Wpf.AvalonDock.Layout;
 using System.Collections.Generic;
 using System.Windows.Controls;
 using MahApps.Metro.Controls;
+using System.Threading;
 
 namespace Diagnosis.App.Windows.Shell
 {
@@ -24,6 +25,7 @@ namespace Diagnosis.App.Windows.Shell
     public partial class MainWindow : MetroWindow
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(MainWindow));
+        private HelpViewModel help;
 
         public MainWindow()
         {
@@ -76,20 +78,41 @@ namespace Diagnosis.App.Windows.Shell
                     ShowDialog(dialogVM, new MeasureEditorWindow());
                 }
             });
-            this.Subscribe(Event.OpenWindow, (e) =>
+
+            this.Subscribe(Event.ShowHelp, (e) =>
             {
-                var windowVm = e.GetValue<IWindowViewModel>(MessageKeys.Window);
-                if (windowVm.IsClosed)
+                var topic = e.GetValue<string>(MessageKeys.String);
+                // create new window or show it on top
+                if (help == null)
                 {
-                    windowVm.IsActive = true;
+                    help = new HelpViewModel(topic);
+                    help.PropertyChanged += (s, e1) =>
+                    {
+                        if (e1.PropertyName == "IsClosed")
+                        {
+                            help = null;
+                        }
+                    };
+                    // to access help form modal dialog
+                    // https://eprystupa.wordpress.com/2008/07/28/running-wpf-application-with-multiple-ui-threads/
+                    var thread = new Thread(() =>
+                    {
+                        var window = new HelpWindow();
+                        ShowWindow(help, window, false);
+
+                        window.Closed += (sender2, e2) => window.Dispatcher.InvokeShutdown();
+                        System.Windows.Threading.Dispatcher.Run();
+                    });
+
+                    thread.SetApartmentState(ApartmentState.STA);
+                    thread.Start();
                 }
                 else
                 {
-                    if (windowVm is HelpViewModel)
-                    {
-                        ShowWindow(windowVm, new HelpWindow());
-                    }
+                    help.Topic = topic;
+                    help.IsActive = true;
                 }
+
             });
 
             DataContext = new MainWindowViewModel();
@@ -124,9 +147,11 @@ namespace Diagnosis.App.Windows.Shell
             return result;
         }
 
-        private void ShowWindow(IWindowViewModel vm, Window w)
+        private void ShowWindow(IWindowViewModel vm, Window w, bool setOwner)
         {
-            w.Owner = this;
+            if (setOwner)
+                w.Owner = this;
+
             w.DataContext = vm;
             w.Closed += (s, e) =>
             {

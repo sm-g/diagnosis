@@ -14,7 +14,6 @@ namespace Diagnosis.ViewModels.Screens
     {
         private ScreenSwitcher switcher;
         private bool _visible;
-        HelpViewModel help;
 
         public MenuBarViewModel(ScreenSwitcher switcher, SearchViewModel sPanel)
         {
@@ -158,24 +157,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    // create new window or show it on top
-                    if (help == null)
-                    {
-                        help = new HelpViewModel();
-                        help.PropertyChanged += (s, e) =>
-                        {
-                            if (e.PropertyName == "IsClosed")
-                            {
-                                help = null;
-                            }
-                        };
-
-                        this.Send(Event.OpenWindow, help.AsParams(MessageKeys.Window));
-                    }
-                    else
-                    {
-                        help.IsActive = true;
-                    }
+                    this.Send(Event.ShowHelp, "".AsParams(MessageKeys.String));
                 });
             }
         }

@@ -120,6 +120,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviors\HelpProvider.cs" />
     <Compile Include="Behaviors\Attached.cs" />
     <Compile Include="Behaviors\ClipboardBehavior.cs" />
     <Compile Include="Behaviors\DialogCloser.cs" />

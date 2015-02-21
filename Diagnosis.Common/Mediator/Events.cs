@@ -29,6 +29,7 @@ namespace Diagnosis.Common
         public const string HrItemObjects = "entity";
         public static string Window = "window";
         public static string Uom = "uom";
+        public static string String = "string";
     }
 
     public enum Event
@@ -70,6 +71,7 @@ namespace Diagnosis.Common
         ChangeFont,
 
         AddHr,
+        ShowHelp,
     }
 
     public static class EventAggragatorExtensions

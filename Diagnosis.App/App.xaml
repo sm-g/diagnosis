@@ -11,6 +11,7 @@
                 
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Resources/ConverterResources.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Resources/ImageResources.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Resources/Icons.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Resources/ColorResources.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.App;component/Resources/NormalFontResources.xaml" />
 
