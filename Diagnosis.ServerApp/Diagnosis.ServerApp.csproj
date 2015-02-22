@@ -123,6 +123,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Screens\Sync.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -133,6 +137,9 @@
     </Compile>
     <Compile Include="Screens\Specialities.xaml.cs">
       <DependentUpon>Specialities.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Sync.xaml.cs">
+      <DependentUpon>Sync.xaml</DependentUpon>
     </Compile>
     <Compile Include="Screens\Uoms.xaml.cs">
       <DependentUpon>Uoms.xaml</DependentUpon>
