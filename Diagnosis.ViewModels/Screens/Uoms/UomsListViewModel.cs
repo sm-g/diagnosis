@@ -116,10 +116,11 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     var abbr = SelectedUom.Abbr;
+                    var descr = SelectedUom.Description;
                     var factor = SelectedUom.Factor;
                     var type = SelectedUom.Type;
 
-                    var uom = new Uom(abbr, factor, type);
+                    var uom = new Uom(abbr, factor, type) { Description = descr };
                     this.Send(Event.EditUom, uom.AsParams(MessageKeys.Uom));
                 }, () => SelectedUom != null);
             }
