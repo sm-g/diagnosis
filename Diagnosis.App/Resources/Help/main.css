@@ -8,7 +8,8 @@
 p, h1, h2, h3, h4 {
     font-family: 'Segoe UI', Verdana, Arial, Helvetica, sans-serif;
     font-weight: normal;
-    font-size: 10.5pt;
+    font-size: 11pt;
+	margin: 0 0 1em;
 }
 
 h1 {
@@ -19,10 +20,12 @@ h1 {
 
 h2 {
     font-size: 16pt;
+	margin: 1em 0 0.5em;
 }
 
 h3 {
     font-size: 14pt;
+	margin: 1em 0 0.5em;
 }
 
 h4 {
@@ -70,13 +73,17 @@ ul li {
 }
 
 #mainbody a {
-    text-decoration: none;
+    text-decoration: underline;
     color: #000080;
 }
 
     #mainbody a:hover {
         text-decoration: underline;
     }
+	
+#contents a {
+    text-decoration: none;
+}
 
 #footer {
     border-top: 1px solid #bbbbbb;
@@ -87,8 +94,11 @@ ul li {
 }
 
 .hint-box {
-    background-color: #DDD;
-    padding: 4px 26px;
+    /* background-color: #DDD; */
+	padding: 4px 10px;
+	margin-left: 20px;
+	border-left: #DDD 10px solid;
+	font-size: 10.5pt;
 }
 
 table {
