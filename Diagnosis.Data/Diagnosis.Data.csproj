@@ -238,9 +238,10 @@
     <Compile Include="Specs\WordSpecifications.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="NHibernate\nhibernate.cfg.xml">
+    <Content Include="NHibernate\nhibernate.cfg.xml">
       <SubType>Designer</SubType>
-    </None>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

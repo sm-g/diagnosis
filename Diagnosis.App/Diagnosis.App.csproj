@@ -182,7 +182,7 @@
     <Reference Include="ReachFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.SQLite">
+    <Reference Include="System.Data.SQLite" Condition=" '$(Configuration)'!='Release' ">
       <HintPath>..\libs\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
@@ -698,22 +698,21 @@
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>REM copy nhibernate config
+    <PostBuildEvent>
+      REM copy nhibernate config
 
-echo f | xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate.cfg.xml" "$(TargetDir)NHibernate\nhibernate.cfg.xml" /d /y
+      REM echo f | xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate.cfg.xml" "$(TargetDir)NHibernate\nhibernate.cfg.xml" /d /y
 
-REM copy help
+      REM copy help
 
-echo d | xcopy "$(SolutionDir)Diagnosis.App\Resources\Help" "$(TargetDir)Help" /d /y
+      echo d | xcopy "$(SolutionDir)Diagnosis.App\Resources\Help" "$(TargetDir)Help" /d /y
 
-REM copy sqlite.dll
-xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)" /i /d /y
+      REM copy sqlite.dll
+      if $(Configuration)'=='InMemory' xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)" /i /d /y
 
-REM copy sql server ce
-    if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
-    xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(TargetDir)x86"
-    if not exist "$(TargetDir)amd64" md "$(TargetDir)amd64"
-    xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\amd64\*.*" "$(TargetDir)amd64"</PostBuildEvent>
+      REM copy sql server ce
+      if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
+      xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(TargetDir)x86"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
