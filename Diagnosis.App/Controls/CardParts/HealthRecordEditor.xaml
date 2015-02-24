@@ -8,11 +8,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:design="clr-namespace:Diagnosis.App.DesignData"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
              x:Name="editor"
              Tag="{Binding DataContext.HrList, RelativeSource={RelativeSource AncestorType=UserControl}}"
-             d:DataContext="{d:DesignInstance diag:SampleHrEditorViewModel, IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance design:SampleHrEditorViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="300"
              d:DesignWidth="600">
     <!--Tag is HrListViewModel-->
