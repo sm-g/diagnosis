@@ -12,6 +12,7 @@
              x:Name="card"
              mc:Ignorable="d"
              UseLayoutRounding="True"
+             diag:HelpProvider.Topic="card"
              d:DataContext="{d:DesignInstance diag:CardViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="400"
              d:DesignWidth="600">
@@ -52,6 +53,10 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
+
+        <Button Grid.Column="1"
+                Style="{StaticResource HelpButton}"
+                diag:HelpProvider.Topic="card" />
 
         <TreeView ItemsSource="{Binding Navigator.TopCardItems}"
                   Grid.RowSpan="3">

@@ -10,13 +10,23 @@
         UseLayoutRounding="True"
         diag:DialogCloser.DialogResult="{Binding DialogResult}"
         diag:FocusBehavior.FocusFirst="True"
+        diag:HelpProvider.Topic="editholder"
         ShowInTaskbar="False"
         ResizeMode="NoResize">
-    <Grid Margin="0,0,10,10">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
+
+        <Button Grid.Column="1"
+                Style="{StaticResource HelpButton}"
+                diag:HelpProvider.Topic="editholder" />
 
         <StackPanel Margin="10,10,0,0">
             <StackPanel.Resources>
@@ -40,25 +50,27 @@
                         <Run>
                             <Run.Style>
                                 <Style TargetType="Run">
-                                    <Setter Property="Text" Value="Завершить" />
+                                    <Setter Property="Text"
+                                            Value="Завершить" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Course.IsEnded}"
                                                      Value="True">
-                                            <Setter Property="Text" Value="Продолжить" />
+                                            <Setter Property="Text"
+                                                    Value="Продолжить" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </Run.Style>
                         </Run>
-
                     </Hyperlink>
                 </TextBlock>
-
             </DockPanel>
         </StackPanel>
 
         <StackPanel Grid.Row="1"
-                    Style="{StaticResource DialogButtonsPanel}">
+                    Margin="0,0,10,10"
+                    Style="{StaticResource DialogButtonsPanel}"
+                    Grid.ColumnSpan="2">
             <Button Name="saveButton"
                     IsDefault="True"
                     Command="{Binding OkCommand}">

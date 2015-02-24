@@ -11,6 +11,7 @@
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
              x:Name="editor"
+             diag:HelpProvider.Topic="hreditor"
              Tag="{Binding DataContext.HrList, RelativeSource={RelativeSource AncestorType=UserControl}}"
              d:DataContext="{d:DesignInstance diag:SampleHrEditorViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="300"
@@ -98,11 +99,13 @@
                     </DockPanel>
                 </Button>
             </ToolBar>
+            
             <Button x:Name="closeButton"
                     Command="{Binding CloseCommand}"
                     ToolBar.OverflowMode="Never"
                     VerticalAlignment="Top"
                     Height="16"
+                    DockPanel.Dock="Right"
                     HorizontalAlignment="Right"
                     Width="16"
                     ToolTip="Закрыть редактор, сохранив все изменения (Ctrl+S)"
@@ -143,6 +146,9 @@
                     </Style>
                 </Button.Style>
             </Button>
+            <Button DockPanel.Dock="Right"
+                    Style="{StaticResource HelpButton}"
+                    diag:HelpProvider.Topic="hreditor" />
         </DockPanel>
 
         <!--DataContext is editing HealthRecordViewModel -->
@@ -172,6 +178,7 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0"
+                                diag:HelpProvider.Topic="hrdate"
                                 Orientation="Horizontal"
                                 Visibility="{Binding DateOffset.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
                         <Label Content="Это было" />
@@ -205,6 +212,7 @@
                     </StackPanel>
                     <Expander x:Name="dateEditor"
                               Grid.Row="1"
+                              diag:HelpProvider.Topic="hrdate"
                               BorderBrush="{x:Null}"
                               ExpandDirection="Down"
                               FlowDirection="RightToLeft"

@@ -13,6 +13,7 @@
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d"
              diag:ClipboardBehavior.ClipboardTarget="True"
+             diag:HelpProvider.Topic="hrselect"
              d:DesignHeight="300"
              d:DesignWidth="600"
              x:Name="hrList">

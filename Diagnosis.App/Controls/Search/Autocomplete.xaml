@@ -13,6 +13,7 @@
              Focusable="True"
              x:Name="autocomplete"
              diag:ClipboardBehavior.ClipboardTarget="True"
+             diag:HelpProvider.Topic="autocompleteenter"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance diag:AutocompleteViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="300"

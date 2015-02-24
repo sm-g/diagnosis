@@ -9,13 +9,22 @@
         Width="250"
         diag:DialogCloser.DialogResult="{Binding DialogResult}"
         diag:FocusBehavior.FocusFirst="True"
+        diag:HelpProvider.Topic="editholder"
         ShowInTaskbar="False"
         ResizeMode="NoResize">
-    <Grid Margin="0,0,10,10">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
+
+        <Button Grid.Column="1"
+                Style="{StaticResource HelpButton}"
+                diag:HelpProvider.Topic="editholder" />
 
         <StackPanel Margin="10,10,0,0">
             <StackPanel.Resources>
@@ -39,6 +48,8 @@
         </StackPanel>
 
         <StackPanel Grid.Row="1"
+                    Margin="0,0,10,10"
+                    Grid.ColumnSpan="2"
                     Style="{StaticResource DialogButtonsPanel}">
             <Button Name="saveButton"
                     IsDefault="True"

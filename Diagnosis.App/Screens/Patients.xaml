@@ -8,8 +8,8 @@
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
              x:Name="patients"
-             Padding="{StaticResource SreenPadding}"
              Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+             diag:HelpProvider.Topic="common"
              d:DataContext="{d:DesignInstance diag:PatientsListViewModel}"
              d:DesignHeight="300"
              d:DesignWidth="400">
@@ -58,45 +58,51 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <Grid MaxWidth="{StaticResource DataGridSreenMaxWidth}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="36" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <DockPanel>
+        <Button Style="{StaticResource HelpButton}"
+                diag:HelpProvider.Topic="common"
+                DockPanel.Dock="Right" />
+        <Grid MaxWidth="{StaticResource DataGridSreenMaxWidth}"
+              Margin="{StaticResource SreenPadding}">
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="150" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="36" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-            <TextBlock Style="{StaticResource ScreenTitle}">Пациенты</TextBlock>
-            <Button Content="Новый..."
-                    Grid.Column="1"
-                    Height="23"
-                    Width="70"
-                    HorizontalAlignment="Right"
-                    Command="{Binding AddCommand}" />
-        </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
 
-        <diag:Filter  x:Name="filter"
-                      DataContext="{Binding Filter}"
-                      Visibility="{Binding DataContext.NoPatients, ElementName=patients, Converter={StaticResource NegBooleanToVisibilityConverter}}"
-                      Grid.Row="1" />
+                <TextBlock Style="{StaticResource ScreenTitle}">Пациенты</TextBlock>
+                <Button Content="Новый..."
+                        Grid.Column="1"
+                        Height="23"
+                        Width="70"
+                        HorizontalAlignment="Right"
+                        Command="{Binding AddCommand}" />
+            </Grid>
 
-        <DockPanel Grid.Row="3">
-            <DockPanel.Resources>
-                <Style TargetType="TextBlock">
-                    <Setter Property="FontSize"
-                            Value="{DynamicResource HelpFontSize}" />
-                </Style>
-            </DockPanel.Resources>
-            <TextBlock TextWrapping="Wrap"
-                       Margin="10"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Top"
-                       Visibility="{Binding NoPatients, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <diag:Filter  x:Name="filter"
+                          DataContext="{Binding Filter}"
+                          Visibility="{Binding DataContext.NoPatients, ElementName=patients, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                          Grid.Row="1" />
+
+            <DockPanel Grid.Row="2">
+                <DockPanel.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="FontSize"
+                                Value="{DynamicResource HelpFontSize}" />
+                    </Style>
+                </DockPanel.Resources>
+                <TextBlock TextWrapping="Wrap"
+                           Margin="10"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Top"
+                           Visibility="{Binding NoPatients, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Run Text="Сначала " /><Hyperlink Command="{Binding AddCommand}">
                     <Hyperlink.Style>
                         <Style TargetType="Hyperlink">
@@ -104,104 +110,105 @@
                                     Value="{Binding NoPatients}" />
                         </Style>
                     </Hyperlink.Style>добавьте нового пациента</Hyperlink><Run>.</Run>
-            </TextBlock>
-        </DockPanel>
+                </TextBlock>
+            </DockPanel>
 
-        <DataGrid x:Name="dataGrid"
-                  Grid.Row="3"
-                  ItemsSource="{Binding Patients}"
-                  SelectedItem="{Binding SelectedPatient}"
-                  diag:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedPatients}"
-                  diag:FocusExtension.IsFocused="{Binding IsFocused}"
-                  Visibility="{Binding NoPatients, Converter={StaticResource NegBooleanToVisibilityConverter}}"
-                  Margin="0,10,0,0"
-                  GotKeyboardFocus="dataGrid_GotKeyboardFocus"
-                  SelectedCellsChanged="dataGrid_SelectedCellsChanged"
-                  Style="{DynamicResource MyDataGridStyle}"
-                  d:IsHidden="True">
-            <DataGrid.Resources>
-                <diag:BindingProxy x:Key="proxy"
-                                      Data="{Binding}" />
-            </DataGrid.Resources>
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Имя"
-                                    IsReadOnly="True"
-                                    Binding="{Binding FullNameOrCreatedAt, Mode=OneWay}" />
-                <!--<DataGridCheckBoxColumn Header="Пол"
+            <DataGrid x:Name="dataGrid"
+                      Grid.Row="2"
+                      ItemsSource="{Binding Patients}"
+                      SelectedItem="{Binding SelectedPatient}"
+                      diag:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedPatients}"
+                      diag:FocusExtension.IsFocused="{Binding IsFocused}"
+                      Visibility="{Binding NoPatients, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                      Margin="0,10,0,0"
+                      GotKeyboardFocus="dataGrid_GotKeyboardFocus"
+                      SelectedCellsChanged="dataGrid_SelectedCellsChanged"
+                      Style="{DynamicResource MyDataGridStyle}"
+                      d:IsHidden="True">
+                <DataGrid.Resources>
+                    <diag:BindingProxy x:Key="proxy"
+                                       Data="{Binding}" />
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Имя"
+                                        IsReadOnly="True"
+                                        Binding="{Binding FullNameOrCreatedAt, Mode=OneWay}" />
+                    <!--<DataGridCheckBoxColumn Header="Пол"
                                         IsReadOnly="True"
                                         Binding="{Binding IsMale, Mode=OneWay}"
                                         ElementStyle="{StaticResource SexCheckbox}" />-->
-                <DataGridTemplateColumn Header="Пол"
-                                        SortMemberPath="IsMale"
+                    <DataGridTemplateColumn Header="Пол"
+                                            SortMemberPath="IsMale"
+                                            IsReadOnly="True"
+                                            Visibility="{Binding Data.IsMaleColumnVisible, Source={StaticResource proxy}, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                            CellTemplate="{StaticResource SexTemplate}" />
+                    <DataGridTextColumn Header="Возраст"
                                         IsReadOnly="True"
-                                        Visibility="{Binding Data.IsMaleColumnVisible, Source={StaticResource proxy}, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                        CellTemplate="{StaticResource SexTemplate}" />
-                <DataGridTextColumn Header="Возраст"
-                                    IsReadOnly="True"
-                                    Visibility="{Binding Data.IsAgeColumnVisible, Source={StaticResource proxy}, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                    ElementStyle="{StaticResource RightCellTextBlock}"
-                                    Binding="{Binding Age, Mode=OneWay}" />
-                <DataGridTextColumn Header="Изменено"
-                                    IsReadOnly="True"
-                                    Visibility="{Binding Data.IsLastHrUpdatedAtColumnVisible, Source={StaticResource proxy}, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                    Binding="{Binding LastHrUpdatedAt, Mode=OneWay, Converter={StaticResource DateLabel}, ConverterParameter='назад'}" />
-            </DataGrid.Columns>
-            <DataGrid.InputBindings>
-                <KeyBinding Key="Enter"
-                            Command="{Binding OpenCommand}" />
-                <KeyBinding Gesture="Control+Enter"
-                            Command="{Binding AddCommand}" />
-                <KeyBinding Key="F2"
-                            Command="{Binding EditCommand}" />
-                <KeyBinding Key="Delete"
-                            Command="{Binding DeleteCommand}" />
-            </DataGrid.InputBindings>
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    <Setter Property="diag:RowDblClick.DoubleClickCommand"
-                            Value="{Binding ElementName=dataGrid, Path=DataContext.OpenCommand}" />
-                    <Setter Property="Tag"
-                            Value="{Binding DataContext, ElementName=dataGrid}" />
-                    <Setter Property="ContextMenu">
-                        <Setter.Value>
-                            <ContextMenu>
-                                <MenuItem Header="Открыть"
-                                          TextElement.FontWeight="Bold"
-                                          Command="{Binding PlacementTarget.Tag.OpenCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                                <MenuItem Header="Изменить..."
-                                          InputGestureText="F2"
-                                          Command="{Binding PlacementTarget.Tag.EditCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                                <MenuItem Header="Удалить"
-                                          InputGestureText="Delete"
-                                          Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                                <Separator />
-                                <MenuItem Header="Новый..."
-                                          InputGestureText="Ctrl+Enter"
-                                          Command="{Binding PlacementTarget.Tag.AddCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                            </ContextMenu>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </DataGrid.RowStyle>
-            <DataGrid.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Столбцы">
-                        <MenuItem Header="Пол"
-                                  IsCheckable="True"
-                                  IsChecked="{Binding IsMaleColumnVisible, Mode=TwoWay}" />
-                        <MenuItem Header="Возраст"
-                                  IsCheckable="True"
-                                  IsChecked="{Binding IsAgeColumnVisible, Mode=TwoWay}" />
-                        <MenuItem Header="Изменено"
-                                  IsCheckable="True"
-                                  IsChecked="{Binding IsLastHrUpdatedAtColumnVisible, Mode=TwoWay}" />
-                    </MenuItem>
-                    <Separator />
-                    <MenuItem Header="Новый..."
-                              InputGestureText="Ctrl+Enter"
-                              Command="{Binding AddCommand}" />
-                </ContextMenu>
-            </DataGrid.ContextMenu>
-        </DataGrid>
-    </Grid>
+                                        Visibility="{Binding Data.IsAgeColumnVisible, Source={StaticResource proxy}, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        ElementStyle="{StaticResource RightCellTextBlock}"
+                                        Binding="{Binding Age, Mode=OneWay}" />
+                    <DataGridTextColumn Header="Изменено"
+                                        IsReadOnly="True"
+                                        Visibility="{Binding Data.IsLastHrUpdatedAtColumnVisible, Source={StaticResource proxy}, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Binding="{Binding LastHrUpdatedAt, Mode=OneWay, Converter={StaticResource DateLabel}, ConverterParameter='назад'}" />
+                </DataGrid.Columns>
+                <DataGrid.InputBindings>
+                    <KeyBinding Key="Enter"
+                                Command="{Binding OpenCommand}" />
+                    <KeyBinding Gesture="Control+Enter"
+                                Command="{Binding AddCommand}" />
+                    <KeyBinding Key="F2"
+                                Command="{Binding EditCommand}" />
+                    <KeyBinding Key="Delete"
+                                Command="{Binding DeleteCommand}" />
+                </DataGrid.InputBindings>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="diag:RowDblClick.DoubleClickCommand"
+                                Value="{Binding ElementName=dataGrid, Path=DataContext.OpenCommand}" />
+                        <Setter Property="Tag"
+                                Value="{Binding DataContext, ElementName=dataGrid}" />
+                        <Setter Property="ContextMenu">
+                            <Setter.Value>
+                                <ContextMenu>
+                                    <MenuItem Header="Открыть"
+                                              TextElement.FontWeight="Bold"
+                                              Command="{Binding PlacementTarget.Tag.OpenCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                    <MenuItem Header="Изменить..."
+                                              InputGestureText="F2"
+                                              Command="{Binding PlacementTarget.Tag.EditCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                    <MenuItem Header="Удалить"
+                                              InputGestureText="Delete"
+                                              Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                    <Separator />
+                                    <MenuItem Header="Новый..."
+                                              InputGestureText="Ctrl+Enter"
+                                              Command="{Binding PlacementTarget.Tag.AddCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                </ContextMenu>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Столбцы">
+                            <MenuItem Header="Пол"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding IsMaleColumnVisible, Mode=TwoWay}" />
+                            <MenuItem Header="Возраст"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding IsAgeColumnVisible, Mode=TwoWay}" />
+                            <MenuItem Header="Изменено"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding IsLastHrUpdatedAtColumnVisible, Mode=TwoWay}" />
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="Новый..."
+                                  InputGestureText="Ctrl+Enter"
+                                  Command="{Binding AddCommand}" />
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+            </DataGrid>
+        </Grid>
+    </DockPanel>
 </UserControl>
