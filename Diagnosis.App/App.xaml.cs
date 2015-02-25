@@ -99,7 +99,7 @@ namespace Diagnosis.App
             };
             debWin.Show();
 
-            NHibernateHelper.ShowSql = !NHibernateHelper.InMemory;
+            // NHibernateHelper.ShowSql = !NHibernateHelper.InMemory;
 #endif
 
             DbMaintenance();

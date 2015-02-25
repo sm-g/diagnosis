@@ -230,10 +230,6 @@
   </Target>
   <PropertyGroup>
     <PostBuildEvent>
-      REM copy nhibernate config
-
-      echo f | xcopy "$(SolutionDir)Diagnosis.Data\NHibernate\nhibernate-server.cfg.xml" "$(TargetDir)NHibernate\nhibernate.cfg.xml" /d /y
-
       REM copy sqlite.dll
       if $(Configuration)'=='InMemory' xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)" /i /d /y
 

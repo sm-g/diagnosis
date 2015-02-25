@@ -238,10 +238,6 @@
     <Compile Include="Specs\WordSpecifications.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="NHibernate\nhibernate.cfg.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -266,11 +262,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Versions\Sql\insert_Uom_HrCat_Speciality.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="NHibernate\nhibernate-server.cfg.xml">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Versions\Sql\inmem_sqlite.sql" />

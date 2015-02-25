@@ -3,6 +3,9 @@ using Diagnosis.Data.NHibernate;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Cfg.MappingSchema;
+using NHibernate.Connection;
+using NHibernate.Dialect;
+using NHibernate.Driver;
 using NHibernate.Event;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Tool.hbm2ddl;
@@ -15,8 +18,7 @@ namespace Diagnosis.Data
 {
     public static class NHibernateHelper
     {
-        private const string SerializedConfig = "NHibernate\\Configuration.serialized";
-        private const string ConfigFile = "NHibernate\\nhibernate.cfg.xml";
+        private const string SerializedConfig = "Configuration.serialized";
         private static Configuration _cfg;
         private static HbmMapping _mapping;
         private static ISession _session;
@@ -115,7 +117,7 @@ namespace Diagnosis.Data
             if (InMemory)
                 InMemoryHelper.Configure(cfg, ShowSql);
             else
-                cfg.Configure(ConfigFile);
+                ConfigureSqlCe(cfg, ShowSql);
 
             var preListener = new PreEventListener();
             cfg.AppendListeners(ListenerType.PreUpdate, new IPreUpdateEventListener[] { preListener });
@@ -131,6 +133,16 @@ namespace Diagnosis.Data
 
             cfg.AddMapping(Mapping);
             return cfg;
+        }
+
+        static void ConfigureSqlCe(Configuration cfg, bool showSql)
+        {
+            cfg.SetProperty(Environment.ReleaseConnections, "on_close")
+               .SetProperty(Environment.Dialect, typeof(MsSqlCe40Dialect).AssemblyQualifiedName)
+               .SetProperty(Environment.ConnectionDriver, typeof(SqlServerCeDriver).AssemblyQualifiedName)
+               .SetProperty(Environment.ConnectionProvider, typeof(DriverConnectionProvider).AssemblyQualifiedName)
+               .SetProperty(Environment.ConnectionString, "Data Source=diagnosis.sdf;Persist Security Info=False;")
+               .SetProperty(Environment.ShowSql, showSql ? "true" : "false");
         }
 
         private static Configuration LoadConfiguration()
@@ -177,11 +189,15 @@ namespace Diagnosis.Data
                 var ass = Assembly.GetCallingAssembly();
                 if (ass.Location == null)
                     return false;
-                var configInfo = new FileInfo(SerializedConfig);
-                var configFileInfo = new FileInfo(ConfigFile);
+
+                var serializedConfigInfo = new FileInfo(SerializedConfig);
+
+                var appConfigFile = System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+                var configFileInfo = new FileInfo(appConfigFile); // may be other connection string
                 var assInfo = new FileInfo(ass.Location);
-                if (configInfo.LastWriteTime < assInfo.LastWriteTime ||
-                    configInfo.LastWriteTime < configFileInfo.LastWriteTime)
+
+                if (serializedConfigInfo.LastWriteTime < assInfo.LastWriteTime ||
+                    serializedConfigInfo.LastWriteTime < configFileInfo.LastWriteTime)
                     return false;
                 return true;
             }
