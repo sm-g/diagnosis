@@ -150,6 +150,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\EventAggregator.dll</HintPath>
     </Reference>
+    <Reference Include="FluentValidation.resources">
+      <HintPath>..\packages\FluentValidation.5.4.0.0\lib\Net40\ru\FluentValidation.resources.dll</HintPath>
+    </Reference>
     <Reference Include="GongSolutions.Wpf.DragDrop, Version=0.1.4.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\GongSolutions.Wpf.DragDrop.dll</HintPath>
@@ -217,6 +220,9 @@
     <Reference Include="Xceed.Wpf.AvalonDock, Version=2.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Extended.Wpf.Toolkit.2.3\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.resources">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.3\lib\net40\ru\Xceed.Wpf.AvalonDock.resources.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=2.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
