@@ -1,8 +1,8 @@
 ﻿using Diagnosis.Common;
-//using Microsoft.Synchronization;
-//using Microsoft.Synchronization.Data;
-//using Microsoft.Synchronization.Data.SqlServer;
-//using Microsoft.Synchronization.Data.SqlServerCe;
+using Microsoft.Synchronization;
+using Microsoft.Synchronization.Data;
+using Microsoft.Synchronization.Data.SqlServer;
+using Microsoft.Synchronization.Data.SqlServerCe;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -237,165 +237,164 @@ namespace Diagnosis.Data.Sync
         /// <returns>Could connect</returns>
         private bool Sync(Side from, Scope scope, bool createSdf)
         {
-            return false;
-            //Poster.PostMessage("Begin sync scope '{0}' from {1}", scope, from);
-            //using (var serverConn = CreateConnection(Side.Server))
-            //using (var clientConn = CreateConnection(Side.Client))
-            //{
-            //    if (createSdf && clientProviderName == SqlCeProvider)
-            //        SqlCeHelper.CreateSqlCeByConStr(clientConStr);
+            Poster.PostMessage("Begin sync scope '{0}' from {1}", scope, from);
+            using (var serverConn = CreateConnection(Side.Server))
+            using (var clientConn = CreateConnection(Side.Client))
+            {
+                if (createSdf && clientProviderName == SqlCeProvider)
+                    SqlCeHelper.CreateSqlCeByConStr(clientConStr);
 
-            //    if (!serverConn.IsAvailable())
-            //    {
-            //        CanNotConnect(serverConn);
-            //        return false;
-            //    }
-            //    if (!clientConn.IsAvailable())
-            //    {
-            //        CanNotConnect(clientConn);
-            //        return false;
-            //    }
+                if (!serverConn.IsAvailable())
+                {
+                    CanNotConnect(serverConn);
+                    return false;
+                }
+                if (!clientConn.IsAvailable())
+                {
+                    CanNotConnect(clientConn);
+                    return false;
+                }
 
-            //    Provision(serverConn, scope, null);
-            //    Provision(clientConn, scope, serverConn);
+                Provision(serverConn, scope, null);
+                Provision(clientConn, scope, serverConn);
 
-            //    var scopeName = scope.ToScopeString();
-            //    var clientProvider = CreateProvider(clientConn, scopeName);
-            //    var serverProvider = CreateProvider(serverConn, scopeName);
+                var scopeName = scope.ToScopeString();
+                var clientProvider = CreateProvider(clientConn, scopeName);
+                var serverProvider = CreateProvider(serverConn, scopeName);
 
-            //    DownloadSyncOrchestrator syncOrchestrator;
-            //    switch (from)
-            //    {
-            //        case Side.Client:
-            //            syncOrchestrator = new DownloadSyncOrchestrator(
-            //                clientProvider,
-            //                serverProvider);
-            //            break;
+                DownloadSyncOrchestrator syncOrchestrator;
+                switch (from)
+                {
+                    case Side.Client:
+                        syncOrchestrator = new DownloadSyncOrchestrator(
+                            clientProvider,
+                            serverProvider);
+                        break;
 
-            //        default:
-            //        case Side.Server:
-            //            syncOrchestrator = new DownloadSyncOrchestrator(
-            //                serverProvider,
-            //                clientProvider);
-            //            break;
-            //    }
+                    default:
+                    case Side.Server:
+                        syncOrchestrator = new DownloadSyncOrchestrator(
+                            serverProvider,
+                            clientProvider);
+                        break;
+                }
 
-            //    try
-            //    {
-            //        Poster.PostMessage("Synchronize...");
+                try
+                {
+                    Poster.PostMessage("Synchronize...");
 
-            //        var syncStats = syncOrchestrator.Synchronize();
+                    var syncStats = syncOrchestrator.Synchronize();
 
-            //        var conflicts = syncOrchestrator.ConflictsCounter.Keys.Where(k => syncOrchestrator.ConflictsCounter[k] > 0).ToList();
-            //        if (conflicts.Count > 0)
-            //        {
-            //            Poster.PostMessage("Conflicts:");
-            //            conflicts.ForAll((conflict) =>
-            //            {
-            //                Poster.PostMessage("{0} = {1}", conflict, syncOrchestrator.ConflictsCounter[conflict]);
-            //            });
-            //        }
+                    var conflicts = syncOrchestrator.ConflictsCounter.Keys.Where(k => syncOrchestrator.ConflictsCounter[k] > 0).ToList();
+                    if (conflicts.Count > 0)
+                    {
+                        Poster.PostMessage("Conflicts:");
+                        conflicts.ForAll((conflict) =>
+                        {
+                            Poster.PostMessage("{0} = {1}", conflict, syncOrchestrator.ConflictsCounter[conflict]);
+                        });
+                    }
 
-            //        Poster.PostMessage("ChangesApplied: {0}, ChangesFailed: {1}\n", syncStats.DownloadChangesApplied, syncStats.DownloadChangesFailed);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Poster.PostMessage(ex);
-            //    }
-            //    return true;
-            //}
+                    Poster.PostMessage("ChangesApplied: {0}, ChangesFailed: {1}\n", syncStats.DownloadChangesApplied, syncStats.DownloadChangesFailed);
+                }
+                catch (Exception ex)
+                {
+                    Poster.PostMessage(ex);
+                }
+                return true;
+            }
         }
 
-        //private static RelationalSyncProvider CreateProvider(DbConnection conn, string scopeName)
-        //{
-        //    RelationalSyncProvider serverProvider;
-        //    if (conn is SqlCeConnection)
-        //        serverProvider = new SqlCeSyncProvider(scopeName, conn as SqlCeConnection, prefix);
-        //    else if (conn is SqlConnection)
-        //        serverProvider = new SqlSyncProvider(scopeName, conn as SqlConnection, prefix);
-        //    else throw new ArgumentOutOfRangeException();
+        private static RelationalSyncProvider CreateProvider(DbConnection conn, string scopeName)
+        {
+            RelationalSyncProvider serverProvider;
+            if (conn is SqlCeConnection)
+                serverProvider = new SqlCeSyncProvider(scopeName, conn as SqlCeConnection, prefix);
+            else if (conn is SqlConnection)
+                serverProvider = new SqlSyncProvider(scopeName, conn as SqlConnection, prefix);
+            else throw new ArgumentOutOfRangeException();
 
-        //    return serverProvider;
-        //}
-        //private static void Provision(DbConnection con, Scope scope, DbConnection conToGetScopeDescr)
-        //{
-        //    var scopeDescr = new DbSyncScopeDescription(scope.ToScopeString());
+            return serverProvider;
+        }
+        private static void Provision(DbConnection con, Scope scope, DbConnection conToGetScopeDescr)
+        {
+            var scopeDescr = new DbSyncScopeDescription(scope.ToScopeString());
 
-        //    var failedTables = AddTablesToScopeDescr(scope.ToTableNames(), scopeDescr, con);
+            var failedTables = AddTablesToScopeDescr(scope.ToTableNames(), scopeDescr, con);
 
-        //    try
-        //    {
-        //        var applied = false;
-        //        if (con is SqlCeConnection)
-        //        {
-        //            var fromScope = false;
-        //            if (failedTables.Count > 0 && conToGetScopeDescr != null)
-        //            {
-        //                Poster.PostMessage("Retrieve description for scope '{0}' from '{1}'", scope.ToScopeString(), con.ConnectionString);
-        //                scopeDescr = GetScopeDescription(scope, conToGetScopeDescr);
-        //                fromScope = true;
-        //            }
+            try
+            {
+                var applied = false;
+                if (con is SqlCeConnection)
+                {
+                    var fromScope = false;
+                    if (failedTables.Count > 0 && conToGetScopeDescr != null)
+                    {
+                        Poster.PostMessage("Retrieve description for scope '{0}' from '{1}'", scope.ToScopeString(), con.ConnectionString);
+                        scopeDescr = GetScopeDescription(scope, conToGetScopeDescr);
+                        fromScope = true;
+                    }
 
-        //            applied = ProvisionSqlCe(con as SqlCeConnection, scopeDescr, fromScope);
-        //        }
-        //        else if (con is SqlConnection)
-        //        {
-        //            applied = ProvisionSqlServer(con as SqlConnection, scopeDescr);
-        //        }
-        //        if (applied)
-        //            Poster.PostMessage("Provisioned scope '{0}' in '{1}'\n", scope.ToScopeString(), con.ConnectionString);
-        //        else
-        //            Poster.PostMessage("Scope '{0}' exists in '{1}'\n", scope.ToScopeString(), con.ConnectionString);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Poster.PostMessage(ex);
-        //    }
-        //}
+                    applied = ProvisionSqlCe(con as SqlCeConnection, scopeDescr, fromScope);
+                }
+                else if (con is SqlConnection)
+                {
+                    applied = ProvisionSqlServer(con as SqlConnection, scopeDescr);
+                }
+                if (applied)
+                    Poster.PostMessage("Provisioned scope '{0}' in '{1}'\n", scope.ToScopeString(), con.ConnectionString);
+                else
+                    Poster.PostMessage("Scope '{0}' exists in '{1}'\n", scope.ToScopeString(), con.ConnectionString);
+            }
+            catch (Exception ex)
+            {
+                Poster.PostMessage(ex);
+            }
+        }
 
-        //private static bool ProvisionSqlCe(SqlCeConnection con, DbSyncScopeDescription scope, bool populateFromScope)
-        //{
-        //    var sqlceProv = new SqlCeSyncScopeProvisioning(con, scope);
-        //    sqlceProv.ObjectPrefix = prefix;
+        private static bool ProvisionSqlCe(SqlCeConnection con, DbSyncScopeDescription scope, bool populateFromScope)
+        {
+            var sqlceProv = new SqlCeSyncScopeProvisioning(con, scope);
+            sqlceProv.ObjectPrefix = prefix;
 
-        //    if (!sqlceProv.ScopeExists(scope.ScopeName))
-        //    {
-        //        if (populateFromScope)
-        //            //use scope description from server to intitialize the client
-        //            sqlceProv.PopulateFromScopeDescription(scope);
+            if (!sqlceProv.ScopeExists(scope.ScopeName))
+            {
+                if (populateFromScope)
+                    //use scope description from server to intitialize the client
+                    sqlceProv.PopulateFromScopeDescription(scope);
 
-        //        sqlceProv.SetCreateTableDefault(DbSyncCreationOption.CreateOrUseExisting);
-        //        sqlceProv.Apply();
-        //        return true;
-        //    }
-        //    return false;
-        //}
+                sqlceProv.SetCreateTableDefault(DbSyncCreationOption.CreateOrUseExisting);
+                sqlceProv.Apply();
+                return true;
+            }
+            return false;
+        }
 
-        //private static bool ProvisionSqlServer(SqlConnection con, DbSyncScopeDescription scope)
-        //{
-        //    var sqlProv = new SqlSyncScopeProvisioning(con, scope);
-        //    sqlProv.ObjectSchema = prefix;
+        private static bool ProvisionSqlServer(SqlConnection con, DbSyncScopeDescription scope)
+        {
+            var sqlProv = new SqlSyncScopeProvisioning(con, scope);
+            sqlProv.ObjectSchema = prefix;
 
-        //    if (!sqlProv.ScopeExists(scope.ScopeName))
-        //    {
-        //        sqlProv.SetCreateTableDefault(DbSyncCreationOption.CreateOrUseExisting);
-        //        sqlProv.Apply();
-        //        return true;
-        //    }
-        //    return false;
+            if (!sqlProv.ScopeExists(scope.ScopeName))
+            {
+                sqlProv.SetCreateTableDefault(DbSyncCreationOption.CreateOrUseExisting);
+                sqlProv.Apply();
+                return true;
+            }
+            return false;
 
-        //}
+        }
 
-        //private static DbSyncScopeDescription GetScopeDescription(Scope scope, DbConnection conn)
-        //{
-        //    DbSyncScopeDescription scopeDesc = null;
-        //    if (conn is SqlCeConnection)
-        //        scopeDesc = SqlCeSyncDescriptionBuilder.GetDescriptionForScope(scope.ToScopeString(), prefix, (SqlCeConnection)conn);
-        //    else if (conn is SqlConnection)
-        //        scopeDesc = SqlSyncDescriptionBuilder.GetDescriptionForScope(scope.ToScopeString(), prefix, (SqlConnection)conn);
+        private static DbSyncScopeDescription GetScopeDescription(Scope scope, DbConnection conn)
+        {
+            DbSyncScopeDescription scopeDesc = null;
+            if (conn is SqlCeConnection)
+                scopeDesc = SqlCeSyncDescriptionBuilder.GetDescriptionForScope(scope.ToScopeString(), prefix, (SqlCeConnection)conn);
+            else if (conn is SqlConnection)
+                scopeDesc = SqlSyncDescriptionBuilder.GetDescriptionForScope(scope.ToScopeString(), prefix, (SqlConnection)conn);
 
-        //    return scopeDesc;
-        //}
+            return scopeDesc;
+        }
 
         private static void Deprovision(DbConnection con, Scope scope)
         {
@@ -416,46 +415,46 @@ namespace Diagnosis.Data.Sync
 
         private static void DeprovisionSqlCe(SqlCeConnection con, string scopeName)
         {
-            //var scopeDeprovisioning = new SqlCeSyncScopeDeprovisioning(con);
-            //scopeDeprovisioning.ObjectPrefix = prefix;
-            //scopeDeprovisioning.DeprovisionScope(scopeName);
+            var scopeDeprovisioning = new SqlCeSyncScopeDeprovisioning(con);
+            scopeDeprovisioning.ObjectPrefix = prefix;
+            scopeDeprovisioning.DeprovisionScope(scopeName);
         }
 
         private static void DeprovisionSqlServer(SqlConnection con, string scopeName)
         {
-            //var scopeDeprovisioning = new SqlSyncScopeDeprovisioning(con);
-            //scopeDeprovisioning.ObjectSchema = prefix;
-            //scopeDeprovisioning.DeprovisionScope(scopeName);
+            var scopeDeprovisioning = new SqlSyncScopeDeprovisioning(con);
+            scopeDeprovisioning.ObjectSchema = prefix;
+            scopeDeprovisioning.DeprovisionScope(scopeName);
         }
 
-        //private static IList<string> AddTablesToScopeDescr(string[] tableNames, DbSyncScopeDescription scope, DbConnection connection)
-        //{
-        //    var failed = new List<string>();
-        //    Poster.PostMessage("Adding tables to scope '{0}' in '{1}'...", scope.ScopeName, connection.ConnectionString);
+        private static IList<string> AddTablesToScopeDescr(string[] tableNames, DbSyncScopeDescription scope, DbConnection connection)
+        {
+            var failed = new List<string>();
+            Poster.PostMessage("Adding tables to scope '{0}' in '{1}'...", scope.ScopeName, connection.ConnectionString);
 
-        //    foreach (var name in tableNames)
-        //    {
-        //        try
-        //        {
-        //            DbSyncTableDescription desc;
-        //            if (connection is SqlCeConnection)
-        //                desc = SqlCeSyncDescriptionBuilder.GetDescriptionForTable(name, connection as SqlCeConnection);
-        //            else if (connection is SqlConnection)
-        //                desc = SqlSyncDescriptionBuilder.GetDescriptionForTable(name.ToSchema() + '.' + name, connection as SqlConnection);
-        //            else throw new ArgumentOutOfRangeException();
+            foreach (var name in tableNames)
+            {
+                try
+                {
+                    DbSyncTableDescription desc;
+                    if (connection is SqlCeConnection)
+                        desc = SqlCeSyncDescriptionBuilder.GetDescriptionForTable(name, connection as SqlCeConnection);
+                    else if (connection is SqlConnection)
+                        desc = SqlSyncDescriptionBuilder.GetDescriptionForTable(name.ToSchema() + '.' + name, connection as SqlConnection);
+                    else throw new ArgumentOutOfRangeException();
 
-        //            desc.GlobalName = name;
-        //            scope.Tables.Add(desc);
-        //            Poster.PostMessage("Table '{0}' added", name);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Poster.PostMessage(ex);
-        //            failed.Add(name);
-        //        }
-        //    }
-        //    return failed;
-        //}
+                    desc.GlobalName = name;
+                    scope.Tables.Add(desc);
+                    Poster.PostMessage("Table '{0}' added", name);
+                }
+                catch (Exception ex)
+                {
+                    Poster.PostMessage(ex);
+                    failed.Add(name);
+                }
+            }
+            return failed;
+        }
 
         private static void CanNotConnect(DbConnection con)
         {
@@ -502,40 +501,40 @@ namespace Diagnosis.Data.Sync
             }
         }
 
-        //        public class DownloadSyncOrchestrator : SyncOrchestrator
-        //        {
-        //            public DownloadSyncOrchestrator(RelationalSyncProvider from, RelationalSyncProvider to)
-        //            {
-        //                ConflictsCounter = new Dictionary<DbConflictType, int>();
+        public class DownloadSyncOrchestrator : SyncOrchestrator
+        {
+            public DownloadSyncOrchestrator(RelationalSyncProvider from, RelationalSyncProvider to)
+            {
+                ConflictsCounter = new Dictionary<DbConflictType, int>();
 
-        //                this.RemoteProvider = from;
-        //                this.LocalProvider = to;
-        //                this.Direction = SyncDirectionOrder.Download;
+                this.RemoteProvider = from;
+                this.LocalProvider = to;
+                this.Direction = SyncDirectionOrder.Download;
 
-        //                to.ApplyChangeFailed += (s, e) =>
-        //                {
-        //#if DEBUG
-        //                    if (to.ScopeName == Scope.Icd.ToScopeString())
-        //                        return;
-        //#endif
-        //                    if (e.Conflict.Type == DbConflictType.ErrorsOccurred)
-        //                        Poster.PostMessage("ApplyChangeFailed. Error: {0}", e.Error);
-        //                    //else
-        //                    //    Poster.PostMessage("ApplyChangeFailed. ConflictType: {0}", e.Conflict.Type);
+                to.ApplyChangeFailed += (s, e) =>
+                {
+#if DEBUG
+                    if (to.ScopeName == Scope.Icd.ToScopeString())
+                        return;
+#endif
+                    if (e.Conflict.Type == DbConflictType.ErrorsOccurred)
+                        Poster.PostMessage("ApplyChangeFailed. Error: {0}", e.Error);
+                    //else
+                    //    Poster.PostMessage("ApplyChangeFailed. ConflictType: {0}", e.Conflict.Type);
 
-        //                    if (!ConflictsCounter.Keys.Contains(e.Conflict.Type))
-        //                        ConflictsCounter[e.Conflict.Type] = 0;
+                    if (!ConflictsCounter.Keys.Contains(e.Conflict.Type))
+                        ConflictsCounter[e.Conflict.Type] = 0;
 
-        //                    ConflictsCounter[e.Conflict.Type]++;
-        //                    e.Action = ApplyAction.RetryWithForceWrite;
-        //                };
-        //                to.DbConnectionFailure += (s, e) =>
-        //                {
-        //                    Poster.PostMessage("DbConnectionFailure: {0}", e.FailureException.Message);
-        //                };
-        //            }
+                    ConflictsCounter[e.Conflict.Type]++;
+                    e.Action = ApplyAction.RetryWithForceWrite;
+                };
+                to.DbConnectionFailure += (s, e) =>
+                {
+                    Poster.PostMessage("DbConnectionFailure: {0}", e.FailureException.Message);
+                };
+            }
 
-        //            public Dictionary<DbConflictType, int> ConflictsCounter { get; set; }
-        //        }
+            public Dictionary<DbConflictType, int> ConflictsCounter { get; set; }
+        }
     }
 }

@@ -31,12 +31,12 @@
         <ToolBar>
             <Button Command="{Binding AddCommand}">
                 <DockPanel>
-                    <TextBlock Text="Создать" />
+                    <AccessText Text="_Создать" />
                 </DockPanel>
             </Button>
             <Button Command="{Binding CopyCommand}">
                 <DockPanel>
-                    <TextBlock Text="Сделать копию" />
+                    <AccessText Text="Сделать _копию" />
                 </DockPanel>
             </Button>
         </ToolBar>

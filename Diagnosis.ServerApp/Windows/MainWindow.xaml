@@ -28,6 +28,9 @@
     </Window.Resources>
     <Grid>
         <TabControl>
+            <TabItem Header="Синхронизация">
+                <screens:Sync />
+            </TabItem>
             <TabItem Header="Единицы">
                 <screens:Uoms />
             </TabItem>

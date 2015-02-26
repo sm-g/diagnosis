@@ -11,6 +11,7 @@
         ResizeMode="NoResize"
         UseLayoutRounding="True"
         x:Name="uomEditor"
+        diag:FocusBehavior.FocusFirst="True"
         diag:DialogCloser.DialogResult="{Binding DialogResult}"
         d:DataContext="{d:DesignInstance diag:UomEditorViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d">

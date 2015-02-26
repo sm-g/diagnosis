@@ -5,10 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:headers="clr-namespace:Diagnosis.App.Controls.Headers"
+             xmlns:design="clr-namespace:Diagnosis.App.DesignData"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
              x:Name="header"
-             d:DataContext="{d:DesignInstance diag:SampleHeaderViewModel, IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance design:SampleHeaderViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="300"
              d:DesignWidth="300">
     <UserControl.Resources>

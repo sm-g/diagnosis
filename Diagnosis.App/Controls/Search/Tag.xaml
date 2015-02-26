@@ -5,9 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.App.Controls"
              xmlns:diag="http://schemas.smg.com/diagnosis"
+             xmlns:design="clr-namespace:Diagnosis.App.DesignData"
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance diag:SampleTagViewModel, IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance design:SampleTagViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="25"
              d:DesignWidth="300">
     <UserControl.Resources>
