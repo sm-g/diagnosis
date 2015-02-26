@@ -708,7 +708,7 @@
   <PropertyGroup>
     <PostBuildEvent>REM copy help
 
-      echo d | xcopy "$(SolutionDir)Diagnosis.App\Resources\Help" "$(TargetDir)Help" /d /y
+      echo d | xcopy "$(SolutionDir)Diagnosis.Client.App\Resources\Help" "$(TargetDir)Help" /d /y
 
       REM copy sqlite.dll
       if $(Configuration)'=='InMemory' xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)" /i /d /y
