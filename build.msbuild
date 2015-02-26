@@ -1,139 +1,193 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Start">
-	<PropertyGroup>
-		<MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\.build</MSBuildCommunityTasksPath>
-	</PropertyGroup>
+  <PropertyGroup>
+    <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\.build</MSBuildCommunityTasksPath>
+  </PropertyGroup>
 
-	<Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
 
-	<PropertyGroup>
-		<Major>1</Major>
-		<Minor>5</Minor>
-		<Patch>1</Patch>
-		<PreReleaseString/>
+  <PropertyGroup>
+    <Major>1</Major>
+    <Minor>5</Minor>
+    <Patch>1</Patch>
+    <PreReleaseString />
 
-		<VersionInfoString Condition="$(PreReleaseString) != ''">$(Major).$(Minor).$(Patch)-$(PreReleaseString)</VersionInfoString>
-		<VersionInfoString Condition="$(PreReleaseString) == ''">$(Major).$(Minor).$(Patch)</VersionInfoString>
-	</PropertyGroup>
+    <VersionInfoString Condition="$(PreReleaseString) != ''">$(Major).$(Minor).$(Patch)-$(PreReleaseString)</VersionInfoString>
+    <VersionInfoString Condition="$(PreReleaseString) == ''">$(Major).$(Minor).$(Patch)</VersionInfoString>
+  </PropertyGroup>
 
-	<PropertyGroup>
-		<Configuration>Release</Configuration>
-		<SourceDir>.\</SourceDir>
-		<SolutionFilePath>$(SourceDir)Diagnosis.sln</SolutionFilePath>
+  <PropertyGroup>
+    <Configuration>Release</Configuration>
+    <DirSource>$([System.IO.Path]::GetFullPath($(MSBuildProjectDirectory)))</DirSource>
+    <SolutionFilePath>$(DirSource)\Diagnosis.sln</SolutionFilePath>
+    <VersionInfoPath>$(DirSource)\VersionInfo.cs</VersionInfoPath>
 
-		<OutDir>Diagnosis.App\bin\$(Configuration)</OutDir>
-		<ReleaseDir>$(SourceDir)$(Configuration)</ReleaseDir>
+    <DirMainOutput>$(DirSource)\$(Configuration)</DirMainOutput>
+  </PropertyGroup>
 
-		<VersionInfoPath>$(SourceDir)VersionInfo.cs</VersionInfoPath>
+  <PropertyGroup>
+    <BuildSolutionDependsOn>
+      UpdateVersion
+    </BuildSolutionDependsOn>
 
-		<DirWithVersion>diagnosis.$(VersionInfoString)</DirWithVersion>
-		<DirLast>$(ReleaseDir)\$(DirWithVersion)</DirLast>
-		<DirWorking>$(ReleaseDir)\diagnosis-working</DirWorking>
-		<ZipLastFilePath>$(ReleaseDir)\$(DirWithVersion).zip</ZipLastFilePath>
-	</PropertyGroup>
+    <UpdateVersionDependsOn>
+    </UpdateVersionDependsOn>
 
-	<PropertyGroup>
-		<BuildSolutionDependsOn>
-			UpdateVersion
-		</BuildSolutionDependsOn>
+    <CleanupAfterBuildDependsOn>
+      BuildSolution
+    </CleanupAfterBuildDependsOn>
 
-		<UpdateVersionDependsOn>
+    <UnitTestDependsOn>
+      BuildSolution
+    </UnitTestDependsOn>
 
-		</UpdateVersionDependsOn>
+    <BuildSetupDependsOn>
+      BuildSolution
+    </BuildSetupDependsOn>
 
-		<CleanupAfterBuildDependsOn>
-			BuildSolution
-		</CleanupAfterBuildDependsOn>
+    <ZipSetupDependsOn>
+      BuildSetup
+    </ZipSetupDependsOn>
+  </PropertyGroup>
 
-		<UnitTestDependsOn>
-			BuildSolution
-		</UnitTestDependsOn>
+  <Target Name="BuildFull" DependsOnTargets="$(BuildFullDependsOn)">
+  </Target>
 
-		<ZipReleaseDependsOn>
-			BuildSolution
-		</ZipReleaseDependsOn>
-	</PropertyGroup>
+  <!-- "Autostart" -->
+  <Target Name="Start">
+    <CallTarget Condition="$(App) == 'client'" Targets="SetupClient" />
+    <CallTarget Condition="$(App) == 'server'" Targets="SetupServer" />
+    <CallTarget Condition="$(BuildRelease) == '1'" Targets="Clean" />
+    <CallTarget Condition="$(BuildRelease) == '1'" Targets="BuildSolution" />
+    <CallTarget Condition="$(BuildRelease) == '1'" Targets="CleanupAfterBuild" />
+    <CallTarget Condition="$(BuildRelease) == '1'" Targets="CopyRelease" />
+    <!-- <CallTarget Condition="$(RunTests) == '1'" Targets="Test" /> -->
+    <CallTarget Condition="$(CopyWorking) == '1'" Targets="CopyWorking" />
+    <CallTarget Condition="$(BuildAndZipSetup) == '1'" Targets="ZipSetup" />
+  </Target>
 
-	<Target Name="BuildFull" DependsOnTargets="$(BuildFullDependsOn)">
-	</Target>
+  <Target Name="SetupClient">
+    <PropertyGroup>
+      <DirAppOutput>$(DirSource)\Diagnosis.App\bin\$(Configuration)</DirAppOutput>
+      <AppWithVersionName>diagnosis.client.$(VersionInfoString)</AppWithVersionName>
+      <AppProject>$(DirSource)\Diagnosis.App\Diagnosis.App.csproj</AppProject>
 
-	<!-- "Autostart" -->
-	<Target Name="Start">
-		<CallTarget Condition="$(BuildRelease) == '1'" Targets="Clean"/>
-		<CallTarget Condition="$(BuildRelease) == '1'" Targets="BuildSolution"/>
-		<CallTarget Condition="$(BuildRelease) == '1'" Targets="CleanupAfterBuild"/>
-		<CallTarget Condition="$(BuildRelease) == '1'" Targets="CopyRelease"/>
-		<!-- <CallTarget Condition="$(RunTests) == '1'" Targets="Test"/> -->
-		<CallTarget Condition="$(CopyWorking) == '1'" Targets="CopyWorking"/>
-		<CallTarget Condition="$(ZipRelease) == '1'" Targets="ZipRelease"/>
-	</Target>
+      <DirLast>$(DirMainOutput)\$(AppWithVersionName)</DirLast>
+      <DirWorking>$(DirMainOutput)\diagnosis-working-client</DirWorking>
 
-	<!-- clean output -->
-	<Target Name="Clean">
-		<MSBuild Projects="$(SolutionFilePath)" ContinueOnError="false" Properties="Configuration=$(Configuration)" Targets="Clean" />
+      <DirSetup>$(DirSource)\Diagnosis.Setup</DirSetup>
+      <DirSetupOutput>$(DirSetup)\$(Configuration)</DirSetupOutput>
+      <ZipSetupPath>$(DirMainOutput)\$(AppWithVersionName).zip</ZipSetupPath>
+      <MsiFileName>diagnosis-client.msi</MsiFileName>
+      <SetupExeFileNameStart>setup-client</SetupExeFileNameStart>
+      <PostBuild>echo d | xcopy "$(DirSource)\Diagnosis.App\Resources\Help" "$(DirAppOutput)\Help" /d /y &amp; if not exist "$(DirAppOutput)\x86" md "$(DirAppOutput)\x86" &amp; xcopy /s /y "$(DirSource)\packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(DirAppOutput)\x86"</PostBuild>
+    </PropertyGroup>
+  </Target>
 
-		<RemoveDir Directories="$(OutDir)" ContinueOnError="true"/>
-		<MakeDir Directories="$(OutDir)" ContinueOnError="true"/>
-	</Target>
+  <Target Name="SetupServer">
+    <PropertyGroup>
+      <DirAppOutput>$(DirSource)\Diagnosis.ServerApp\bin\$(Configuration)</DirAppOutput>
+      <AppWithVersionName>diagnosis.server.$(VersionInfoString)</AppWithVersionName>
+      <AppProject>$(DirSource)\Diagnosis.ServerApp\Diagnosis.ServerApp.csproj</AppProject>
 
-	<Target Name="BuildSolution" DependsOnTargets="$(BuildSolutionDependsOn)">
-		<MSBuild Projects="$(SolutionFilePath)" ContinueOnError="false"  Properties="Configuration=$(Configuration);BuildInParallel=True">
-			<Output ItemName="BuildOutput" TaskParameter="TargetOutputs"/>
-		</MSBuild>
-	</Target>
+      <DirLast>$(DirMainOutput)\$(AppWithVersionName)</DirLast>
+      <DirWorking>$(DirMainOutput)\diagnosis-working-server</DirWorking>
 
-	<Target Name="CleanupAfterBuild" DependsOnTargets="$(CleanupAfterBuildDependsOn)">
-		<!-- Delete code analysis files -->
-		<CreateItem Include="$(OutDir)\**\*CodeAnalysisLog.xml">
-			<Output TaskParameter="Include" ItemName="CodeAnalysisFiles" />
-		</CreateItem>
-		<CreateItem Include="$(OutDir)\**\*.lastcodeanalysissucceeded">
-			<Output TaskParameter="Include" ItemName="CodeAnalysisFiles" />
-		</CreateItem>
+      <DirSetup>$(DirSource)\Diagnosis.Setup</DirSetup>
+      <DirSetupOutput>$(DirSetup)\$(Configuration)</DirSetupOutput>
+      <ZipSetupPath>$(DirMainOutput)\$(AppWithVersionName).zip</ZipSetupPath>
+      <MsiFileName>diagnosis-server.msi</MsiFileName>
+      <SetupExeFileNameStart>setup-server</SetupExeFileNameStart>
+	  <PostBuild>if not exist "$(DirAppOutput)\x86" md "$(DirAppOutput)\x86" &amp; xcopy /s /y "$(DirSource)\packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(DirAppOutput)\x86"</PostBuild>
+    </PropertyGroup>
+  </Target>
 
-		<Delete Files="%(CodeAnalysisFiles.FullPath)" ContinueOnError="false" />
-	</Target>
+  <!-- clean output -->
+  <Target Name="Clean">
+    <MSBuild Projects="$(AppProject)" ContinueOnError="false" Properties="Configuration=$(Configuration)" Targets="Clean" />
 
-	<!-- copy files to last-release folder -->
-	<Target Name="CopyRelease">
-		<ItemGroup>
-			<ReleaseFiles
-					Include="$(OutDir)\**\*.*"
-					Exclude="$(OutDir)\*.pdb">
-			</ReleaseFiles>
-		</ItemGroup>
-		<Copy SourceFiles="@(ReleaseFiles)" DestinationFiles="@(ReleaseFiles->'$(DirLast)\%(RecursiveDir)%(Filename)%(Extension)')"  SkipUnchangedFiles="true"/>
-	</Target>
+    <RemoveDir Directories="$(DirAppOutput)" ContinueOnError="true" />
+    <MakeDir Directories="$(DirAppOutput)" ContinueOnError="true" />
+  </Target>
+  
+  <!-- build porjects -->
+  <Target Name="BuildSolution" DependsOnTargets="$(BuildSolutionDependsOn)">
+    <MSBuild Projects="$(AppProject)" ContinueOnError="false"  Properties="Configuration=$(Configuration);BuildInParallel=True;PostBuildEvent=">
+      <Output ItemName="BuildOutput" TaskParameter="TargetOutputs" />
+    </MSBuild>
+	<Exec Command="$(PostBuild)" />
+  </Target>
 
-	<!-- copy files to working folder -->
-	<Target Name="CopyWorking">
-		<ItemGroup>
-			<ReleaseFiles
-					Include="$(OutDir)\**\*.*"
-					Exclude="$(OutDir)\*.pdb">
-			</ReleaseFiles>
-		</ItemGroup>
-		<Copy SourceFiles="@(ReleaseFiles)" DestinationFiles="@(ReleaseFiles->'$(DirWorking)\%(RecursiveDir)%(Filename)%(Extension)')"  SkipUnchangedFiles="true"/>
-	</Target>
+  <Target Name="CleanupAfterBuild" DependsOnTargets="$(CleanupAfterBuildDependsOn)">
+    <!-- Delete code analysis files -->
+    <CreateItem Include="$(DirAppOutput)\**\*CodeAnalysisLog.xml">
+      <Output TaskParameter="Include" ItemName="CodeAnalysisFiles" />
+    </CreateItem>
+    <CreateItem Include="$(DirAppOutput)\**\*.lastcodeanalysissucceeded">
+      <Output TaskParameter="Include" ItemName="CodeAnalysisFiles" />
+    </CreateItem>
 
-	<Target Name="UpdateVersion"
-			DependsOnTargets="$(UpdateVersionDependsOn)">
+    <Delete Files="%(CodeAnalysisFiles.FullPath)" ContinueOnError="false" />
+  </Target>
 
-		<Message Text="Version: $(VersionInfoString)"/>
+  <!-- copy files to last-release folder -->
+  <Target Name="CopyRelease">
+    <ItemGroup>
+      <ReleaseFiles
+          Include="$(DirAppOutput)\**\*.*"
+          Exclude="$(DirAppOutput)\*.pdb">
+      </ReleaseFiles>
+    </ItemGroup>
+    <Copy SourceFiles="@(ReleaseFiles)" DestinationFiles="@(ReleaseFiles->'$(DirLast)\%(RecursiveDir)%(Filename)%(Extension)')"  SkipUnchangedFiles="true" />
+  </Target>
 
-		<AssemblyInfo CodeLanguage="CS"
-				OutputFile="$(VersionInfoPath)"
-				AssemblyVersion="$(Major).$(Minor).$(Patch)"
-				AssemblyFileVersion="$(Major).$(Minor).$(Patch)"
-				AssemblyInformationalVersion="$(VersionInfoString)"/>
-	</Target>
+  <!-- copy files to working folder -->
+  <Target Name="CopyWorking">
+    <ItemGroup>
+      <ReleaseFiles
+          Include="$(DirAppOutput)\**\*.*"
+          Exclude="$(DirAppOutput)\*.pdb">
+      </ReleaseFiles>
+    </ItemGroup>
+    <Copy SourceFiles="@(ReleaseFiles)" DestinationFiles="@(ReleaseFiles->'$(DirWorking)\%(RecursiveDir)%(Filename)%(Extension)')"  SkipUnchangedFiles="true" />
+  </Target>
 
-	<Target Name="ZipRelease"
-			DependsOnTargets="$(ZipReleaseDependsOn)">
-		<ItemGroup>
-			<ZipReleaseFiles Include="$(DirLast)\**\*.*" />
-		</ItemGroup>
-		
-		<MSBuild.Community.Tasks.Zip Files="@(ZipReleaseFiles)" ZipFileName="$(ZipLastFilePath)" WorkingDirectory="$(ReleaseDir)" />
-	</Target>
+  <Target Name="UpdateVersion"
+      DependsOnTargets="$(UpdateVersionDependsOn)">
 
+    <Message Text="Version: $(VersionInfoString)" />
+
+    <AssemblyInfo CodeLanguage="CS"
+        OutputFile="$(VersionInfoPath)"
+        AssemblyVersion="$(Major).$(Minor).$(Patch)"
+        AssemblyFileVersion="$(Major).$(Minor).$(Patch)"
+        AssemblyInformationalVersion="$(VersionInfoString)" />
+  </Target>
+
+  <!-- build setup porject -->
+  <Target Name="BuildSetup"
+      DependsOnTargets="$(BuildSetupDependsOn)">
+    <Exec Command="&quot;$(ProgramFiles)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.com&quot; &quot;$(DirSetup)\Setup.vdproj&quot; /build &quot;$(Configuration)|x86&quot;" />
+  </Target>
+
+  <!-- zip installer with correct filename -->
+  <Target Name="ZipSetup"
+  DependsOnTargets="$(ZipSetupDependsOn)">
+    <!-- http://stackoverflow.com/questions/3359974/how-to-include-version-number-in-vs-setup-project-output-filename/9891044#9891044 -->
+    <Exec Command="
+    findstr /v PostBuildEvent &quot;$(DirSetup)\Setup.vdproj&quot; | findstr ProductVersion &gt; &quot;$(DirSetup)\temp.txt&quot;
+    set /p var=&lt;&quot;$(DirSetup)\temp.txt&quot;
+    set var=%var:&quot;=%
+    set var=%var: =%
+    set var=%var:.=-%
+    for /f &quot;tokens=1,2 delims=:&quot; %%i in (&quot;%var%&quot;) do @echo %%j &gt;&quot;$(DirSetup)\temp.txt&quot;
+    set /p version=&lt;&quot;$(DirSetup)\temp.txt&quot;
+    del &quot;$(DirSetup)\temp.txt&quot;
+    rem msi filename must be in vdproj for setup.exe working 
+	rem rename &quot;$(DirSetup)\$(Configuration)\Setup.msi&quot; &quot;$(MsiFileName)&quot;
+    rename &quot;$(DirSetup)\$(Configuration)\setup.exe&quot; &quot;$(SetupExeFileNameStart)-%version%.exe&quot;" />
+    <ItemGroup>
+      <SetupFiles Include="$(DirSetupOutput)\**\*.*" />
+    </ItemGroup>
+    <MSBuild.Community.Tasks.Zip Files="@(SetupFiles)" ZipFileName="$(ZipSetupPath)" WorkingDirectory="$(DirSetupOutput)" />
+  </Target>
 </Project>

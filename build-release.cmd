@@ -1,3 +1,4 @@
 @echo off
-rem build, zip, CopyWorking
-build.cmd 1 1 0
+rem app, build, zip, CopyWorking
+build.cmd server 1 0 0
+build.cmd client 1 0 0
