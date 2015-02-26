@@ -162,7 +162,7 @@
     <Compile Include="ViewModelsTests\SearchTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Diagnosis.App\Diagnosis.App.csproj">
+    <ProjectReference Include="..\Diagnosis.Client.App\Diagnosis.Client.App.csproj">
       <Project>{d7949590-a383-4e34-9c06-a2568db5cdb6}</Project>
       <Name>Diagnosis.App</Name>
     </ProjectReference>

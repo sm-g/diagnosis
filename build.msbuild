@@ -41,7 +41,7 @@
     </UnitTestDependsOn>
 
     <BuildSetupDependsOn>
-      BuildSolution
+      <!-- BuildSolution -->
     </BuildSetupDependsOn>
 
     <ZipSetupDependsOn>
@@ -67,32 +67,34 @@
 
   <Target Name="SetupClient">
     <PropertyGroup>
-      <DirAppOutput>$(DirSource)\Diagnosis.App\bin\$(Configuration)</DirAppOutput>
+      <DirAppOutput>$(DirSource)\Diagnosis.Client.App\bin\$(Configuration)</DirAppOutput>
       <AppWithVersionName>diagnosis.client.$(VersionInfoString)</AppWithVersionName>
-      <AppProject>$(DirSource)\Diagnosis.App\Diagnosis.App.csproj</AppProject>
+      <AppProject>$(DirSource)\Diagnosis.Client.App\Diagnosis.Client.App.csproj</AppProject>
 
       <DirLast>$(DirMainOutput)\$(AppWithVersionName)</DirLast>
       <DirWorking>$(DirMainOutput)\diagnosis-working-client</DirWorking>
-
-      <DirSetup>$(DirSource)\Diagnosis.Setup</DirSetup>
+	  
+	  <SetupProject>Diagnosis.Client.Setup</SetupProject>
+      <DirSetup>$(DirSource)\$(SetupProject)</DirSetup>
       <DirSetupOutput>$(DirSetup)\$(Configuration)</DirSetupOutput>
       <ZipSetupPath>$(DirMainOutput)\$(AppWithVersionName).zip</ZipSetupPath>
       <MsiFileName>diagnosis-client.msi</MsiFileName>
       <SetupExeFileNameStart>setup-client</SetupExeFileNameStart>
-      <PostBuild>echo d | xcopy "$(DirSource)\Diagnosis.App\Resources\Help" "$(DirAppOutput)\Help" /d /y &amp; if not exist "$(DirAppOutput)\x86" md "$(DirAppOutput)\x86" &amp; xcopy /s /y "$(DirSource)\packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(DirAppOutput)\x86"</PostBuild>
+      <PostBuild>echo d | xcopy "$(DirSource)\Diagnosis.Client.App\Resources\Help" "$(DirAppOutput)\Help" /d /y &amp; if not exist "$(DirAppOutput)\x86" md "$(DirAppOutput)\x86" &amp; xcopy /s /y "$(DirSource)\packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(DirAppOutput)\x86"</PostBuild>
     </PropertyGroup>
   </Target>
 
   <Target Name="SetupServer">
     <PropertyGroup>
-      <DirAppOutput>$(DirSource)\Diagnosis.ServerApp\bin\$(Configuration)</DirAppOutput>
+      <DirAppOutput>$(DirSource)\Diagnosis.Server.App\bin\$(Configuration)</DirAppOutput>
       <AppWithVersionName>diagnosis.server.$(VersionInfoString)</AppWithVersionName>
-      <AppProject>$(DirSource)\Diagnosis.ServerApp\Diagnosis.ServerApp.csproj</AppProject>
+      <AppProject>$(DirSource)\Diagnosis.Server.App\Diagnosis.Server.App.csproj</AppProject>
 
       <DirLast>$(DirMainOutput)\$(AppWithVersionName)</DirLast>
       <DirWorking>$(DirMainOutput)\diagnosis-working-server</DirWorking>
 
-      <DirSetup>$(DirSource)\Diagnosis.Setup</DirSetup>
+	  <SetupProject>Diagnosis.Server.Setup</SetupProject>
+      <DirSetup>$(DirSource)\$(SetupProject)</DirSetup>
       <DirSetupOutput>$(DirSetup)\$(Configuration)</DirSetupOutput>
       <ZipSetupPath>$(DirMainOutput)\$(AppWithVersionName).zip</ZipSetupPath>
       <MsiFileName>diagnosis-server.msi</MsiFileName>
@@ -166,7 +168,7 @@
   <!-- build setup porject -->
   <Target Name="BuildSetup"
       DependsOnTargets="$(BuildSetupDependsOn)">
-    <Exec Command="&quot;$(ProgramFiles)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.com&quot; &quot;$(DirSetup)\Setup.vdproj&quot; /build &quot;$(Configuration)|x86&quot;" />
+    <Exec Command="&quot;$(ProgramFiles)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.com&quot; &quot;$(DirSetup)\$(SetupProject).vdproj&quot; /build &quot;$(Configuration)|x86&quot;" />
   </Target>
 
   <!-- zip installer with correct filename -->
@@ -174,7 +176,7 @@
   DependsOnTargets="$(ZipSetupDependsOn)">
     <!-- http://stackoverflow.com/questions/3359974/how-to-include-version-number-in-vs-setup-project-output-filename/9891044#9891044 -->
     <Exec Command="
-    findstr /v PostBuildEvent &quot;$(DirSetup)\Setup.vdproj&quot; | findstr ProductVersion &gt; &quot;$(DirSetup)\temp.txt&quot;
+    findstr /v PostBuildEvent &quot;$(DirSetup)\$(SetupProject).vdproj&quot; | findstr ProductVersion &gt; &quot;$(DirSetup)\temp.txt&quot;
     set /p var=&lt;&quot;$(DirSetup)\temp.txt&quot;
     set var=%var:&quot;=%
     set var=%var: =%
