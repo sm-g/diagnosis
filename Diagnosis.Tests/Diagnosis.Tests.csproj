@@ -143,7 +143,6 @@
     <Compile Include="ViewModelsTests\AutocompleteTest.cs" />
     <Compile Include="ViewModelsTests\HrListTest.cs" />
     <Compile Include="ViewModelsTests\CardTest.cs" />
-    <Compile Include="CommonTests\SequencePartitionTest.cs" />
     <Compile Include="CommonTests\DateFormatterTest.cs" />
     <Compile Include="CommonTests\DateOffsetTest.cs" />
     <Compile Include="DataTests\PersistTest.cs" />
@@ -153,7 +152,6 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="CommonTests\QuerySeparatorTest.cs" />
     <Compile Include="DataTests\HrQueryTest.cs" />
     <Compile Include="DataTests\StartsWithTest.cs" />
     <Compile Include="CommonTests\StringExtensionTest.cs" />
