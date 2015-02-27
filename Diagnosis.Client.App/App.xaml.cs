@@ -1,6 +1,7 @@
 ﻿using Diagnosis.App.Themes;
 using Diagnosis.App.Windows.Shell;
 using Diagnosis.Common;
+using Diagnosis.Common.Presentation;
 using Diagnosis.Common.Presentation.DebugTools;
 using Diagnosis.Common.Util;
 using Diagnosis.Data;
@@ -9,11 +10,8 @@ using log4net;
 using System;
 using System.Data.SqlServerCe;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
-using System.Threading;
 using System.Windows;
-using System.Windows.Markup;
 
 namespace Diagnosis.App
 {
@@ -25,6 +23,8 @@ namespace Diagnosis.App
         private static readonly ILog logger = LogManager.GetLogger(typeof(App));
         private static bool inExit = false;
         private const string BackupFolder = "Backup\\";
+        private const string appGuid = "ac2ee38e-31c5-45f5-8fde-4a9a126df451";
+        private SplashScreen splash;
 
         public App()
         {
@@ -40,14 +40,7 @@ namespace Diagnosis.App
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            bool aIsNewInstance = false;
-            var myMutex = new Mutex(true, "ac2ee38e-31c5-45f5-8fde-4a9a126df451", out aIsNewInstance);
-            if (!aIsNewInstance)
-            {
-                MessageBox.Show("Приложение уже запущено.", "Diagnosis", MessageBoxButton.OK, MessageBoxImage.Information);
-                App.Current.Shutdown();
-                return;
-            }
+            Startuper.CheckSingleInstance(new Guid(appGuid), App.Current, "Diagnosis");
 
             // command line args
             for (int i = 0; i != e.Args.Length; ++i)
@@ -57,71 +50,42 @@ namespace Diagnosis.App
                     NHibernateHelper.InMemory = true;
                 }
             }
+
 #if !DEBUG
-            var splash = new SplashScreen(@"Resources\Images\splash.png");
+            splash = new SplashScreen(@"Resources\Images\splash.png");
             splash.Show(false);
 #endif
+            Startuper.SetWpfCulture();
 
-            // wpf culture
-            FrameworkElement.LanguageProperty.OverrideMetadata(
-                typeof(FrameworkElement),
-                new FrameworkPropertyMetadata(
-                XmlLanguage.GetLanguage(
-                CultureInfo.CurrentCulture.IetfLanguageTag)));
             // enum localization
             LocalizableDescriptionAttribute.ResourcesType = typeof(Diagnosis.App.Properties.Resources);
-            System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Error;
 
             // themes
             MyThemeManager.Initialize();
 
 #if DEBUG
-            new DebugOutput(0);
-
-            var debugVm = new LogTraceListener()
-            {
-                FilterContains = Diagnosis.App.Properties.Settings.Default.DebugFilter ?? "",
-                FilterOn = Diagnosis.App.Properties.Settings.Default.DebugFilterOn
-            };
-            debugVm.PropertyChanged += (s, e1) =>
-            {
-                switch (e1.PropertyName)
-                {
-                    case "FilterContains":
-                        Diagnosis.App.Properties.Settings.Default.DebugFilter = debugVm.FilterContains;
-                        break;
-                }
-            };
-            var debWin = new DebugWindow(debugVm);
-            debWin.Closing += (s, e1) =>
-            {
-                Diagnosis.App.Properties.Settings.Default.DebugFilterOn = debugVm.FilterOn;
-            };
-            debWin.Show();
-
-            // NHibernateHelper.ShowSql = !NHibernateHelper.InMemory;
+            StartDebugTools();
 #endif
 
             DbMaintenance();
 
+            StartMainWindow();
+        }
+
+        private void StartMainWindow()
+        {
             var main = new MainWindow();
-#if !DEBUG
-            main.Loaded += (s, e1) =>
-            {
-                splash.Close(TimeSpan.FromMilliseconds(100));
-                main.Focus();
-            };
-#endif
+
+            if (splash != null)
+                main.Loaded += (s, e1) =>
+                {
+                    splash.Close(TimeSpan.FromMilliseconds(100));
+                    main.Focus();
+                };
 
             Application.Current.MainWindow = main;
             Application.Current.ShutdownMode = System.Windows.ShutdownMode.OnMainWindowClose;
             main.Show();
-        }
-
-        [DebuggerStepThrough]
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            logger.ErrorFormat("Unhandled: {0}", e.ExceptionObject as Exception);
         }
 
         private static void DbMaintenance()
@@ -155,6 +119,40 @@ namespace Diagnosis.App
                     new Migrator(NHibernateHelper.ConnectionString, BackupFolder).Rollback();
                 }
             }
+        }
+
+        private static void StartDebugTools()
+        {
+            new DebugOutput(0);
+
+            var debugVm = new LogTraceListener()
+            {
+                FilterContains = Diagnosis.App.Properties.Settings.Default.DebugFilter ?? "",
+                FilterOn = Diagnosis.App.Properties.Settings.Default.DebugFilterOn
+            };
+            debugVm.PropertyChanged += (s, e1) =>
+            {
+                switch (e1.PropertyName)
+                {
+                    case "FilterContains":
+                        Diagnosis.App.Properties.Settings.Default.DebugFilter = debugVm.FilterContains;
+                        break;
+                }
+            };
+            var debWin = new DebugWindow(debugVm);
+            debWin.Closing += (s, e1) =>
+            {
+                Diagnosis.App.Properties.Settings.Default.DebugFilterOn = debugVm.FilterOn;
+            };
+            debWin.Show();
+
+            // NHibernateHelper.ShowSql = !NHibernateHelper.InMemory;
+        }
+
+        [DebuggerStepThrough]
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            logger.ErrorFormat("Unhandled: {0}", e.ExceptionObject as Exception);
         }
 
         public class MyLock : log4net.Appender.FileAppender.MinimalLock
