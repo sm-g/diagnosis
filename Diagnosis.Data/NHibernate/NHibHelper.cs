@@ -1,4 +1,5 @@
-﻿using Diagnosis.Data.Mappings;
+﻿using Diagnosis.Common;
+using Diagnosis.Data.Mappings;
 using Diagnosis.Data.NHibernate;
 using NHibernate;
 using NHibernate.Cfg;
@@ -18,11 +19,11 @@ namespace Diagnosis.Data
 {
     public static class NHibernateHelper
     {
-        private const string SerializedConfig = "Configuration.serialized";
         private static Configuration _cfg;
         private static HbmMapping _mapping;
         private static ISession _session;
         private static ISessionFactory _sessionFactory;
+        private static System.Configuration.ConnectionStringSettings connection;
 
         public static bool InMemory { get; set; }
 
@@ -46,6 +47,7 @@ namespace Diagnosis.Data
                 return _cfg;
             }
         }
+
         public static string ConnectionString
         {
             get { return Configuration.GetProperty(Environment.ConnectionString); }
@@ -67,13 +69,37 @@ namespace Diagnosis.Data
             }
         }
 
-        private static HbmMapping CreateMapping()
+        private static bool IsConfigurationFileValid
         {
-            var mapper = new ModelMapper();
-            var assemblyContainingMapping = Assembly.GetAssembly(typeof(WordMap));
-            var types = assemblyContainingMapping.GetExportedTypes().Where(t => t.Namespace == "Diagnosis.Data.Mappings");
-            mapper.AddMappings(types);
-            return mapper.CompileMappingForAllExplicitlyAddedEntities();
+            get
+            {
+                // cfg.xml changing not updates assInfo.LastWriteTime
+                var ass = Assembly.GetCallingAssembly();
+                if (ass.Location == null)
+                    return false;
+
+                var serializedConfigInfo = new FileInfo(Constants.SerializedConfig);
+
+                var appConfigFile = System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+                var configFileInfo = new FileInfo(appConfigFile); // may be other connection string
+                var assInfo = new FileInfo(ass.Location);
+
+                if (serializedConfigInfo.LastWriteTime < assInfo.LastWriteTime ||
+                    serializedConfigInfo.LastWriteTime < configFileInfo.LastWriteTime)
+                    return false;
+                return true;
+            }
+        }
+
+        public static void Init(System.Configuration.ConnectionStringSettings conn)
+        {
+            if (conn == null)
+            {
+                InMemory = true;
+                return;
+            }
+
+            connection = conn;
         }
 
         public static ISession GetSession()
@@ -110,14 +136,37 @@ namespace Diagnosis.Data
             return s;
         }
 
+        private static HbmMapping CreateMapping()
+        {
+            var mapper = new ModelMapper();
+            var assemblyContainingMapping = Assembly.GetAssembly(typeof(WordMap));
+            var types = assemblyContainingMapping.GetExportedTypes().Where(t => t.Namespace == "Diagnosis.Data.Mappings");
+            mapper.AddMappings(types);
+            return mapper.CompileMappingForAllExplicitlyAddedEntities();
+        }
+
         private static Configuration CreateConfiguration()
         {
             var cfg = new Configuration();
 
             if (InMemory)
                 InMemoryHelper.Configure(cfg, ShowSql);
+            else if (connection != null)
+                switch (connection.ProviderName)
+                {
+                    case Constants.SqlCeProvider:
+                        ConfigureSqlCe(cfg, connection.ConnectionString, ShowSql);
+                        break;
+
+                    case Constants.SqlServerProvider:
+                        ConfigureSqlServer(cfg, connection.ConnectionString, ShowSql);
+                        break;
+
+                    default:
+                        throw new System.NotSupportedException("ProviderName");
+                }
             else
-                ConfigureSqlCe(cfg, ShowSql);
+                throw new System.InvalidOperationException("First initialize with right connection.");
 
             var preListener = new PreEventListener();
             cfg.AppendListeners(ListenerType.PreUpdate, new IPreUpdateEventListener[] { preListener });
@@ -135,13 +184,22 @@ namespace Diagnosis.Data
             return cfg;
         }
 
-        static void ConfigureSqlCe(Configuration cfg, bool showSql)
+        private static void ConfigureSqlServer(Configuration cfg, string constr, bool showSql)
+        {
+            cfg.SetProperty(Environment.Dialect, typeof(MsSql2012Dialect).AssemblyQualifiedName)
+                .SetProperty(Environment.ConnectionDriver, typeof(SqlClientDriver).AssemblyQualifiedName)
+                .SetProperty(Environment.ConnectionProvider, typeof(DriverConnectionProvider).AssemblyQualifiedName)
+                .SetProperty(Environment.ConnectionString, constr)
+                .SetProperty(Environment.ShowSql, showSql ? "true" : "false");
+        }
+
+        private static void ConfigureSqlCe(Configuration cfg, string constr, bool showSql)
         {
             cfg.SetProperty(Environment.ReleaseConnections, "on_close")
                .SetProperty(Environment.Dialect, typeof(MsSqlCe40Dialect).AssemblyQualifiedName)
                .SetProperty(Environment.ConnectionDriver, typeof(SqlServerCeDriver).AssemblyQualifiedName)
                .SetProperty(Environment.ConnectionProvider, typeof(DriverConnectionProvider).AssemblyQualifiedName)
-               .SetProperty(Environment.ConnectionString, "Data Source=diagnosis.sdf;Persist Security Info=False;")
+               .SetProperty(Environment.ConnectionString, constr)
                .SetProperty(Environment.ShowSql, showSql ? "true" : "false");
         }
 
@@ -151,7 +209,7 @@ namespace Diagnosis.Data
                 return null;
             try
             {
-                using (Stream stream = File.OpenRead(SerializedConfig))
+                using (Stream stream = File.OpenRead(Constants.SerializedConfig))
                 {
                     var serializer = new BinaryFormatter();
                     return serializer.Deserialize(stream) as Configuration;
@@ -170,7 +228,7 @@ namespace Diagnosis.Data
 
             try
             {
-                using (Stream stream = File.OpenWrite(SerializedConfig))
+                using (Stream stream = File.OpenWrite(Constants.SerializedConfig))
                 {
                     var serializer = new BinaryFormatter();
                     serializer.Serialize(stream, cfg);
@@ -178,28 +236,6 @@ namespace Diagnosis.Data
             }
             catch
             {
-            }
-        }
-
-        private static bool IsConfigurationFileValid
-        {
-            get
-            {
-                // cfg.xml changing not updates assInfo.LastWriteTime
-                var ass = Assembly.GetCallingAssembly();
-                if (ass.Location == null)
-                    return false;
-
-                var serializedConfigInfo = new FileInfo(SerializedConfig);
-
-                var appConfigFile = System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
-                var configFileInfo = new FileInfo(appConfigFile); // may be other connection string
-                var assInfo = new FileInfo(ass.Location);
-
-                if (serializedConfigInfo.LastWriteTime < assInfo.LastWriteTime ||
-                    serializedConfigInfo.LastWriteTime < configFileInfo.LastWriteTime)
-                    return false;
-                return true;
             }
         }
 

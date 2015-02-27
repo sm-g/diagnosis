@@ -7,8 +7,6 @@ namespace Diagnosis.Data.Versions
 {
     public abstract class SyncronizedMigration : Migration
     {
-        protected string SqlCeProvider = Syncer.SqlCeProvider;
-        protected string SqlServerProvider = Syncer.SqlServerProvider;
         protected string Provider;
 
         public virtual string[] UpTables { get { return new string[] { }; } }

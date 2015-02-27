@@ -149,6 +149,7 @@
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Formatters\DateFormatter.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Types\DateOffset.cs" />
     <Compile Include="Extensions\ConvertExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />

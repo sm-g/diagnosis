@@ -188,6 +188,7 @@
     <Reference Include="PresentationUI, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="ReachFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite" Condition=" '$(Configuration)'!='Release' ">
       <HintPath>..\libs\System.Data.SQLite.dll</HintPath>

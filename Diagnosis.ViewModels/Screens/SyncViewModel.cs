@@ -18,8 +18,6 @@ namespace Diagnosis.ViewModels.Screens
 {
     public class SyncViewModel : ScreenBaseViewModel
     {
-        private static readonly string serverConStrName = "server";
-
         private static string _log;
 
         private string _remoteConStr;
@@ -34,20 +32,20 @@ namespace Diagnosis.ViewModels.Screens
 
             LocalConnectionString = NHibernateHelper.ConnectionString;
             // TODO get LocalProviderName 
-            LocalProviderName = LocalConnectionString.Contains(".sdf") ? Syncer.SqlCeProvider : Syncer.SqlServerProvider;
+            LocalProviderName = LocalConnectionString.Contains(".sdf") ? Constants.SqlCeProvider : Constants.SqlServerProvider;
 
             Syncer.MessagePosted += syncer_MessagePosted;
             Syncer.SyncEnded += syncer_SyncEnded;
 
-            var server = ConfigurationManager.ConnectionStrings[serverConStrName];
+            var server = ConfigurationManager.ConnectionStrings[Constants.serverConStrName];
             if (server != null)
             {
                 RemoteConnectionString = server.ConnectionString;
                 RemoteProviderName = server.ProviderName;
             }
 #if DEBUG
-        //    RemoteConnectionString = "Data Source=remote.sdf";
-            RemoteProviderName = Syncer.SqlCeProvider;
+            //    RemoteConnectionString = "Data Source=remote.sdf";
+            RemoteProviderName = Constants.SqlCeProvider;
 #endif
         }
 
@@ -135,7 +133,7 @@ namespace Diagnosis.ViewModels.Screens
                     if (result.IsValid)
                     {
                         RemoteConnectionString = result.FileName;
-                        RemoteProviderName = Syncer.SqlCeProvider;
+                        RemoteProviderName = Constants.SqlCeProvider;
                     }
                 });
             }
@@ -186,7 +184,7 @@ namespace Diagnosis.ViewModels.Screens
 
                         DoWithCursor(
                             syncer.SendFrom(Side.Server, scopes, true).ContinueWith((t) =>
-                            Syncer.Deprovision(remoteConstr, Syncer.SqlCeProvider, scopes)), Cursors.AppStarting);
+                            Syncer.Deprovision(remoteConstr, Constants.SqlCeProvider, scopes)), Cursors.AppStarting);
                     }
                 },
                 () => CanSync(true, false));
@@ -265,14 +263,14 @@ namespace Diagnosis.ViewModels.Screens
             if (local)
             {
                 result &= !LocalConnectionString.IsNullOrEmpty() &&
-                        (LocalProviderName == Syncer.SqlCeProvider ||
-                         LocalProviderName == Syncer.SqlServerProvider);
+                        (LocalProviderName == Constants.SqlCeProvider ||
+                         LocalProviderName == Constants.SqlServerProvider);
             }
             if (remote)
             {
                 result &= !RemoteConnectionString.IsNullOrEmpty() &&
-                        (RemoteProviderName == Syncer.SqlCeProvider ||
-                         RemoteProviderName == Syncer.SqlServerProvider);
+                        (RemoteProviderName == Constants.SqlCeProvider ||
+                         RemoteProviderName == Constants.SqlServerProvider);
 
             }
             return result;
@@ -314,7 +312,7 @@ namespace Diagnosis.ViewModels.Screens
 
                 // http://stackoverflow.com/questions/502411/change-connection-string-reload-app-config-at-run-time
                 // clear all connection strings and save new
-                var settings = new ConnectionStringSettings(serverConStrName, RemoteConnectionString, RemoteProviderName);
+                var settings = new ConnectionStringSettings(Constants.serverConStrName, RemoteConnectionString, RemoteProviderName);
                 var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 var connectionStringsSection = (ConnectionStringsSection)config.GetSection("connectionStrings");
                 connectionStringsSection.ConnectionStrings.Clear();

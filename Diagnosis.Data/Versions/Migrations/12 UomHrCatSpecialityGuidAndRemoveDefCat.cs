@@ -1,4 +1,5 @@
-﻿using FluentMigrator;
+﻿using Diagnosis.Common;
+using FluentMigrator;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlServerCe;
@@ -11,7 +12,7 @@ namespace Diagnosis.Data.Versions
     {
         public UomHrCatSpecialityGuidAndRemoveDefCat()
         {
-            Provider = SqlCeProvider;
+            Provider = Constants.SqlCeProvider;
         }
 
         public override string[] UpTables

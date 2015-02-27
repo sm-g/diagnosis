@@ -25,8 +25,6 @@ namespace Diagnosis.Data.Sync
 
     public class Syncer
     {
-        public const string SqlCeProvider = "System.Data.SqlServerCE.4.0";
-        public const string SqlServerProvider = "System.Data.SqlClient";
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Syncer));
 
         private static Stopwatch sw = new Stopwatch();
@@ -44,7 +42,7 @@ namespace Diagnosis.Data.Sync
         private string serverProviderName;
         private string clientProviderName;
 
-        public Syncer(string serverConStr, string clientConStr, string serverProviderName, string clientProviderName = SqlCeProvider)
+        public Syncer(string serverConStr, string clientConStr, string serverProviderName, string clientProviderName = Constants.SqlCeProvider)
         {
             this.serverConStr = serverConStr;
             this.clientConStr = clientConStr;
@@ -211,10 +209,10 @@ namespace Diagnosis.Data.Sync
             {
                 switch (provider)
                 {
-                    case SqlCeProvider:
+                    case Constants.SqlCeProvider:
                         return new SqlCeConnection(connstr);
 
-                    case SqlServerProvider:
+                    case Constants.SqlServerProvider:
                         return new SqlConnection(connstr);
 
                     default:
@@ -241,7 +239,7 @@ namespace Diagnosis.Data.Sync
             using (var serverConn = CreateConnection(Side.Server))
             using (var clientConn = CreateConnection(Side.Client))
             {
-                if (createSdf && clientProviderName == SqlCeProvider)
+                if (createSdf && clientProviderName == Constants.SqlCeProvider)
                     SqlCeHelper.CreateSqlCeByConStr(clientConStr);
 
                 if (!serverConn.IsAvailable())

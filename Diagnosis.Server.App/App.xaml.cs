@@ -1,9 +1,11 @@
 ﻿using Diagnosis.Common.Presentation;
+using Diagnosis.Common;
 using Diagnosis.Common.Presentation.DebugTools;
 using Diagnosis.Data;
 using Diagnosis.Data.Versions;
 using log4net;
 using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -63,6 +65,9 @@ namespace Diagnosis.ServerApp
         {
             if (NHibernateHelper.InMemory)
                 return;
+
+            var con = ConfigurationManager.ConnectionStrings[Constants.serverConStrName];
+            NHibernateHelper.Init(con);
 
             // create db
             // SqlCeHelper.CreateSqlCeByConStr(NHibernateHelper.ConnectionString);

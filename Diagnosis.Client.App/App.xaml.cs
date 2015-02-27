@@ -8,6 +8,7 @@ using Diagnosis.Data;
 using Diagnosis.Data.Versions;
 using log4net;
 using System;
+using System.Configuration;
 using System.Data.SqlServerCe;
 using System.Diagnostics;
 using System.IO;
@@ -24,7 +25,7 @@ namespace Diagnosis.App
         private static bool inExit = false;
         private const string BackupFolder = "Backup\\";
         private const string appGuid = "ac2ee38e-31c5-45f5-8fde-4a9a126df451";
-        private SplashScreen splash;
+        private SplashScreen splash = null;
 
         public App()
         {
@@ -92,6 +93,9 @@ namespace Diagnosis.App
         {
             if (NHibernateHelper.InMemory)
                 return;
+
+            var con = ConfigurationManager.ConnectionStrings[Constants.clientConStrName];
+            NHibernateHelper.Init(con);
 
             // create db
             SqlCeHelper.CreateSqlCeByConStr(NHibernateHelper.ConnectionString);
