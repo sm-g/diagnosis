@@ -711,7 +711,7 @@
       echo d | xcopy "$(SolutionDir)Diagnosis.Client.App\Resources\Help" "$(TargetDir)Help" /d /y
 
       REM copy sqlite.dll
-      if $(Configuration)'=='InMemory' xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)" /i /d /y
+      if $(ConfigurationName) == InMemory xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)" /i /d /y
 
       REM copy sql server ce
       if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
