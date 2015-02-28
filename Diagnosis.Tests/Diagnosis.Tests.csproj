@@ -132,6 +132,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="..\GeneralAssemblyInfo.cs">
+      <Link>Properties\GeneralAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="CommonTests\DateHelperTest.cs" />
     <Compile Include="CommonTests\DateOffsetFormatterTest.cs" />
     <Compile Include="CommonTests\TimeSpanFormatterTest.cs" />
