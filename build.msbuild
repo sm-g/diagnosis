@@ -168,7 +168,7 @@
   <!-- build setup porject -->
   <Target Name="BuildSetup"
       DependsOnTargets="$(BuildSetupDependsOn)">
-    <Exec Command="&quot;$(ProgramFiles)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.com&quot; &quot;$(DirSetup)\$(SetupProject).vdproj&quot; /build &quot;$(Configuration)|x86&quot;" />
+    <Exec Command="&quot;$(ProgramFiles)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.com&quot; &quot;$(SolutionFilePath)&quot; /project &quot;$(DirSetup)\$(SetupProject).vdproj&quot; /rebuild &quot;$(Configuration)|x86&quot;" />
   </Target>
 
   <!-- zip installer with correct filename -->
