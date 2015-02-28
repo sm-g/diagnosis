@@ -39,8 +39,6 @@ namespace Diagnosis.App.Behaviors
     /// </summary>
     public static class AvalonDockLayoutSerializer
     {
-        private const string LayoutFileName = "avalon-layout.config";
-
         private static readonly DependencyProperty LoadLayoutCommandProperty =
             DependencyProperty.RegisterAttached("LoadLayoutCommand",
             typeof(ICommand),
@@ -76,7 +74,7 @@ namespace Diagnosis.App.Behaviors
             var vm = e.NewValue as ViewModels.Screens.AvalonDockLayoutViewModel;
             if (vm != null)
             {
-                vm.LayoutFileName = LayoutFileName;
+                vm.LayoutFileName = Constants.LayoutFileName;
                 vm.DefaultLayout = Diagnosis.App.Properties.Resources.avalon_layout;
                 SetLoadLayoutCommand(d, vm.LoadLayoutCommand);
                 SetSaveLayoutCommand(d, vm.SaveLayoutCommand);

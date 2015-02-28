@@ -104,5 +104,12 @@ namespace Diagnosis.Common
                 File.Copy(file.FullName, backupFile.FullName, true);
             }
         }
+
+        public static void CreateDirectoryForPath(string path)
+        {
+            string directory = Path.GetDirectoryName(path);
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
+        }
     }
 }

@@ -91,11 +91,11 @@ namespace Diagnosis.App
 
         private static void DbMaintenance()
         {
-            if (NHibernateHelper.InMemory)
-                return;
-
             var con = ConfigurationManager.ConnectionStrings[Constants.clientConStrName];
             NHibernateHelper.Init(con);
+
+            if (NHibernateHelper.InMemory)
+                return;
 
             // create db
             SqlCeHelper.CreateSqlCeByConStr(NHibernateHelper.ConnectionString);

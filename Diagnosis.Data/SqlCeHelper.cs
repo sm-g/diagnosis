@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Diagnosis.Common;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlServerCe;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -14,6 +16,8 @@ namespace Diagnosis.Data
             var sdfPath = builder.DataSource;
             if (!System.IO.File.Exists(sdfPath))
             {
+                FileHelper.CreateDirectoryForPath(sdfPath);
+
                 using (var engine = new SqlCeEngine(constr))
                 {
                     engine.CreateDatabase();
@@ -25,6 +29,8 @@ namespace Diagnosis.Data
         {
             if (!System.IO.File.Exists(sdfPath))
             {
+                FileHelper.CreateDirectoryForPath(sdfPath);
+
                 using (var engine = new SqlCeEngine("Data Source=" + sdfPath))
                 {
                     engine.CreateDatabase();

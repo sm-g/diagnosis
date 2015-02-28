@@ -63,12 +63,11 @@ namespace Diagnosis.ServerApp
 
         private static void DbMaintenance()
         {
-            if (NHibernateHelper.InMemory)
-                return;
-
             var con = ConfigurationManager.ConnectionStrings[Constants.serverConStrName];
             NHibernateHelper.Init(con);
 
+            if (NHibernateHelper.InMemory)
+                return;
             // create db
             // SqlCeHelper.CreateSqlCeByConStr(NHibernateHelper.ConnectionString);
 

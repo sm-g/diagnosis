@@ -74,7 +74,7 @@ namespace Diagnosis.Data
             get
             {
                 // cfg.xml changing not updates assInfo.LastWriteTime
-                var ass = Assembly.GetCallingAssembly();
+                var ass = Assembly.GetEntryAssembly();
                 if (ass.Location == null)
                     return false;
 
@@ -99,7 +99,8 @@ namespace Diagnosis.Data
                 return;
             }
 
-            connection = conn;
+            connection = new System.Configuration.ConnectionStringSettings(conn.Name, conn.ConnectionString.Replace("%APPDATA%",
+                System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData)), conn.ProviderName);
         }
 
         public static ISession GetSession()
