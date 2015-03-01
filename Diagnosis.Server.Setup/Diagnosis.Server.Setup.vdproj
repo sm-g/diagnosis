@@ -1107,7 +1107,7 @@
             "SourcePath" = "8:System.Data.SqlServerCe.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
-            "Folder" = "8:_9E3BC97FC8264BF1A2B628D0C372E79C"
+            "Folder" = "8:_E89BA4D5041540B2A85348D79A869A0B"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1118,7 +1118,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:TRUE"
+            "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -1435,7 +1435,7 @@
             "SourcePath" = "8:System.Data.SqlServerCe.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
-            "Folder" = "8:_E89BA4D5041540B2A85348D79A869A0B"
+            "Folder" = "8:_9E3BC97FC8264BF1A2B628D0C372E79C"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1446,7 +1446,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -2276,7 +2276,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A77578104E894FA980DA231FB6398F2D"
             {
-            "SourcePath" = "8:..\\Diagnosis.Server.App\\obj\\Release\\Diagnosis.ServerApp.exe"
+            "SourcePath" = "8:..\\Diagnosis.Server.App\\obj\\Release\\Diagnosis.Server.App.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_9E3BC97FC8264BF1A2B628D0C372E79C"
