@@ -23,7 +23,6 @@ namespace Diagnosis.App
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(App));
         private static bool inExit = false;
-        private const string BackupFolder = "Backup\\";
         private const string appGuid = "ac2ee38e-31c5-45f5-8fde-4a9a126df451";
         private SplashScreen splash = null;
 
@@ -103,7 +102,7 @@ namespace Diagnosis.App
             // backup
 #if !DEBUG
             var sdfPath = new SqlCeConnectionStringBuilder(NHibernateHelper.ConnectionString).DataSource;
-            FileHelper.Backup(sdfPath, BackupFolder, 5, 7);
+            FileHelper.Backup(sdfPath, Constants.BackupDir, 5, 7);
 #endif
 
             bool? migrateUp = null;
@@ -116,11 +115,11 @@ namespace Diagnosis.App
             {
                 if (migrateUp.Value)
                 {
-                    new Migrator(NHibernateHelper.ConnectionString, BackupFolder).MigrateToLatest();
+                    new Migrator(NHibernateHelper.ConnectionString, Constants.BackupDir).MigrateToLatest();
                 }
                 else
                 {
-                    new Migrator(NHibernateHelper.ConnectionString, BackupFolder).Rollback();
+                    new Migrator(NHibernateHelper.ConnectionString, Constants.BackupDir).Rollback();
                 }
             }
         }

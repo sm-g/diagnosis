@@ -9,6 +9,7 @@ namespace Diagnosis.Common
         public static string clientConStrName = "client";
         public static string SerializedConfig = AppDataDir + "Configuration.serialized";
         public static string LayoutFileName = AppDataDir + "avalon-layout.config";
+        public static string BackupDir = AppDataDir + "Backup\\";
 
         public static bool IsClient { get { return System.Reflection.Assembly.GetEntryAssembly().FullName.Contains("Client"); } }
 
