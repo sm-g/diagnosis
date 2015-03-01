@@ -115,7 +115,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.SQLite" Condition=" '$(Configuration)'!='Release' ">
+    <Reference Include="System.Data.SQLite">
       <HintPath>..\libs\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
@@ -252,11 +252,12 @@
   </Target>
   <PropertyGroup>
     <PostBuildEvent>
+      REM copy sql server ce
+      if not exist "$(TargetDir)bin" md "$(TargetDir)bin"
+      xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(TargetDir)bin"
+      
       REM copy sqlite.dll
-      if $(ConfigurationName) == InMemory xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)" /i /d /y
-
-      if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
-      xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(TargetDir)x86"</PostBuildEvent>
+      xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)bin" /i /d /y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

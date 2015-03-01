@@ -73,14 +73,21 @@
 
       <DirLast>$(DirMainOutput)\$(AppWithVersionName)</DirLast>
       <DirWorking>$(DirMainOutput)\diagnosis-working-client</DirWorking>
-	  
-	  <SetupProject>Diagnosis.Client.Setup</SetupProject>
+
+      <SetupProject>Diagnosis.Client.Setup</SetupProject>
       <DirSetup>$(DirSource)\$(SetupProject)</DirSetup>
       <DirSetupOutput>$(DirSetup)\$(Configuration)</DirSetupOutput>
       <ZipSetupPath>$(DirMainOutput)\$(AppWithVersionName).zip</ZipSetupPath>
       <MsiFileName>diagnosis-client.msi</MsiFileName>
       <SetupExeFileNameStart>setup-client</SetupExeFileNameStart>
-      <PostBuild>echo d | xcopy "$(DirSource)\Diagnosis.Client.App\Resources\Help" "$(DirAppOutput)\Help" /d /y &amp; if not exist "$(DirAppOutput)\x86" md "$(DirAppOutput)\x86" &amp; xcopy /s /y "$(DirSource)\packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(DirAppOutput)\x86"</PostBuild>
+
+      <!-- copy Help -->
+      <PostBuild>echo d | xcopy "$(DirSource)\Diagnosis.Client.App\Resources\Help" "$(DirAppOutput)\Help" /d /y</PostBuild>
+
+      <!-- copy sql server ce and sqlite.dll -->
+      <CommonPostBuild>
+        xcopy /s /y "$(DirSource)\packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(DirAppOutput)\bin" &amp; xcopy "$(DirSource)\libs\SQLite.Interop.dll" "$(DirAppOutput)\bin" /i /d /y
+      </CommonPostBuild>
     </PropertyGroup>
   </Target>
 
@@ -93,13 +100,18 @@
       <DirLast>$(DirMainOutput)\$(AppWithVersionName)</DirLast>
       <DirWorking>$(DirMainOutput)\diagnosis-working-server</DirWorking>
 
-	  <SetupProject>Diagnosis.Server.Setup</SetupProject>
+      <SetupProject>Diagnosis.Server.Setup</SetupProject>
       <DirSetup>$(DirSource)\$(SetupProject)</DirSetup>
       <DirSetupOutput>$(DirSetup)\$(Configuration)</DirSetupOutput>
       <ZipSetupPath>$(DirMainOutput)\$(AppWithVersionName).zip</ZipSetupPath>
       <MsiFileName>diagnosis-server.msi</MsiFileName>
       <SetupExeFileNameStart>setup-server</SetupExeFileNameStart>
-	  <PostBuild>if not exist "$(DirAppOutput)\x86" md "$(DirAppOutput)\x86" &amp; xcopy /s /y "$(DirSource)\packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(DirAppOutput)\x86"</PostBuild>
+      <PostBuild></PostBuild>
+
+      <!-- copy sql server ce and sqlite.dll -->
+      <CommonPostBuild>
+        xcopy /s /y "$(DirSource)\packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(DirAppOutput)\bin" &amp; xcopy "$(DirSource)\libs\SQLite.Interop.dll" "$(DirAppOutput)\bin" /i /d /y
+      </CommonPostBuild>
     </PropertyGroup>
   </Target>
 
@@ -110,13 +122,14 @@
     <RemoveDir Directories="$(DirAppOutput)" ContinueOnError="true" />
     <MakeDir Directories="$(DirAppOutput)" ContinueOnError="true" />
   </Target>
-  
+
   <!-- build porjects -->
   <Target Name="BuildSolution" DependsOnTargets="$(BuildSolutionDependsOn)">
     <MSBuild Projects="$(AppProject)" ContinueOnError="false"  Properties="Configuration=$(Configuration);BuildInParallel=True;PostBuildEvent=">
       <Output ItemName="BuildOutput" TaskParameter="TargetOutputs" />
     </MSBuild>
-	<Exec Command="$(PostBuild)" />
+    <Exec Command="$(CommonPostBuild)" />
+    <Exec Condition="$(PostBuild) != ''" Command="$(PostBuild)" />
   </Target>
 
   <Target Name="CleanupAfterBuild" DependsOnTargets="$(CleanupAfterBuildDependsOn)">
@@ -184,8 +197,8 @@
     for /f &quot;tokens=1,2 delims=:&quot; %%i in (&quot;%var%&quot;) do @echo %%j &gt;&quot;$(DirSetup)\temp.txt&quot;
     set /p version=&lt;&quot;$(DirSetup)\temp.txt&quot;
     del &quot;$(DirSetup)\temp.txt&quot;
-    rem msi filename must be in vdproj for setup.exe working 
-	rem rename &quot;$(DirSetup)\$(Configuration)\Setup.msi&quot; &quot;$(MsiFileName)&quot;
+    rem msi filename must be in vdproj for setup.exe working
+  rem rename &quot;$(DirSetup)\$(Configuration)\Setup.msi&quot; &quot;$(MsiFileName)&quot;
     rename &quot;$(DirSetup)\$(Configuration)\setup.exe&quot; &quot;$(SetupExeFileNameStart)-%version%.exe&quot;" />
     <ItemGroup>
       <SetupFiles Include="$(DirSetupOutput)\**\*.*" />
