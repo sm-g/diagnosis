@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Moq;
 
-namespace Diagnosis.App.DesignData
+namespace Diagnosis.Client.App.DesignData
 {
     public class SampleTagViewModel : TagViewModel
     {

@@ -1,7 +1,7 @@
 ﻿using Diagnosis.ViewModels.Screens;
 using System.Windows;
 
-namespace Diagnosis.App.Windows
+namespace Diagnosis.Client.App.Windows
 {
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml

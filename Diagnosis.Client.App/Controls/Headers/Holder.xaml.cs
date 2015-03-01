@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Diagnosis.App.Controls.Headers
+namespace Diagnosis.Client.App.Controls.Headers
 {
     /// <summary>
     /// Interaction logic for Holder.xaml

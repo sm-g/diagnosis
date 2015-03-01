@@ -9,7 +9,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Diagnosis.App.Controls.Editors
+namespace Diagnosis.Client.App.Controls.Editors
 {
     /// <summary>
     /// Interaction logic for ComboBoxDatePicker.xaml

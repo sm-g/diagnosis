@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Diagnosis.App.Screens
+namespace Diagnosis.Client.App.Screens
 {
     /// <summary>
     /// Interaction logic for Patients.xaml

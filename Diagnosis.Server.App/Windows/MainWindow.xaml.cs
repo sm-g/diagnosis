@@ -15,9 +15,9 @@ using Diagnosis.ViewModels.Screens;
 using EventAggregator;
 using Diagnosis.Common;
 using Diagnosis.ViewModels;
-using Diagnosis.ServerApp.Windows;
+using Diagnosis.Server.App.Windows;
 
-namespace Diagnosis.ServerApp
+namespace Diagnosis.Server.App
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

@@ -2,7 +2,7 @@
 using System;
 using System.Windows;
 
-namespace Diagnosis.ServerApp.Windows
+namespace Diagnosis.Server.App.Windows
 {
     public partial class UomEditorWindow : Window
     {

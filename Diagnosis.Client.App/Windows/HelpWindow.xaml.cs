@@ -4,7 +4,7 @@ using System;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace Diagnosis.App.Windows
+namespace Diagnosis.Client.App.Windows
 {
     /// <summary>
     /// Interaction logic for HelpWindow.xaml

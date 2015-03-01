@@ -11,7 +11,7 @@ using System.Windows.Threading;
 
 // from https://code.google.com/p/wpf-testbed/source/browse/trunk/wpf-testbed/DiagramDesigner/ListBoxSelector.cs
 
-namespace Diagnosis.App.Behaviors
+namespace Diagnosis.Client.App.Behaviors
 {
     /// <summary>
     /// Enables the selection inside of a ListBox using a seleciton rectangle.

@@ -1,8 +1,8 @@
-﻿using Diagnosis.App.Windows;
+﻿using Diagnosis.Client.App.Windows;
 using System;
 using System.Windows;
 
-namespace Diagnosis.App.Behaviors
+namespace Diagnosis.Client.App.Behaviors
 {
     /// <summary>
     /// from http://stackoverflow.com/a/12254217/3009578

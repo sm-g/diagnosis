@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace Diagnosis.App.Controls.CardParts
+namespace Diagnosis.Client.App.Controls.CardParts
 {
     public partial class HealthRecordsList : UserControl
     {

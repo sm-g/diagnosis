@@ -11,7 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 
-namespace Diagnosis.ServerApp
+namespace Diagnosis.Server.App
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -30,7 +30,7 @@ namespace Diagnosis.ServerApp
         protected override void OnExit(ExitEventArgs e)
         {
             inExit = true;
-            Diagnosis.ServerApp.Properties.Settings.Default.Save();
+            Diagnosis.Server.App.Properties.Settings.Default.Save();
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -101,22 +101,22 @@ namespace Diagnosis.ServerApp
 
             var debugVm = new LogTraceListener()
             {
-                FilterContains = Diagnosis.ServerApp.Properties.Settings.Default.DebugFilter ?? "",
-                FilterOn = Diagnosis.ServerApp.Properties.Settings.Default.DebugFilterOn
+                FilterContains = Diagnosis.Server.App.Properties.Settings.Default.DebugFilter ?? "",
+                FilterOn = Diagnosis.Server.App.Properties.Settings.Default.DebugFilterOn
             };
             debugVm.PropertyChanged += (s, e1) =>
             {
                 switch (e1.PropertyName)
                 {
                     case "FilterContains":
-                        Diagnosis.ServerApp.Properties.Settings.Default.DebugFilter = debugVm.FilterContains;
+                        Diagnosis.Server.App.Properties.Settings.Default.DebugFilter = debugVm.FilterContains;
                         break;
                 }
             };
             var debWin = new DebugWindow(debugVm);
             debWin.Closing += (s, e1) =>
             {
-                Diagnosis.ServerApp.Properties.Settings.Default.DebugFilterOn = debugVm.FilterOn;
+                Diagnosis.Server.App.Properties.Settings.Default.DebugFilterOn = debugVm.FilterOn;
             };
             debWin.Show();
 

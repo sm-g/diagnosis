@@ -6,7 +6,7 @@ using System.Text;
 using Xceed.Wpf.AvalonDock.Layout;
 using Diagnosis.Common;
 
-namespace Diagnosis.App.Windows.Shell
+namespace Diagnosis.Client.App.Windows.Shell
 {
     class LayoutInitializer : ILayoutUpdateStrategy
     {

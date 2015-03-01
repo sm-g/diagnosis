@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Diagnosis.App.Screens
+namespace Diagnosis.Client.App.Screens
 {
     public partial class Words : UserControl
     {

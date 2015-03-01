@@ -8,7 +8,7 @@ using Diagnosis.Models;
 using System.Diagnostics;
 using Diagnosis.ViewModels.Screens;
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.Client.App.Controls
 {
     public class HrsHolderDataTemplateSelector : DataTemplateSelector
     {

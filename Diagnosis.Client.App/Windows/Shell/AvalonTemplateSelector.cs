@@ -9,7 +9,7 @@ using System.Diagnostics;
 using Xceed.Wpf.AvalonDock.Layout;
 using Diagnosis.ViewModels.Screens;
 
-namespace Diagnosis.App.Windows.Shell
+namespace Diagnosis.Client.App.Windows.Shell
 {
     public class AvalonTemplateSelector : DataTemplateSelector
     {

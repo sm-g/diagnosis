@@ -1,4 +1,4 @@
-﻿using Diagnosis.App;
+﻿using Diagnosis.Client.App;
 using Diagnosis.Common;
 using Diagnosis.Data;
 using Diagnosis.Data.Mappings;

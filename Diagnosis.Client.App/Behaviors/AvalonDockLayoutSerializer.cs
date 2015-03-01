@@ -7,7 +7,7 @@ using Xceed.Wpf.AvalonDock.Layout.Serialization;
 
 // from Edi
 
-namespace Diagnosis.App.Behaviors
+namespace Diagnosis.Client.App.Behaviors
 {
     /// <summary>
     /// Class implements an attached behavior to load/save a layout for AvalonDock manager.
@@ -75,7 +75,7 @@ namespace Diagnosis.App.Behaviors
             if (vm != null)
             {
                 vm.LayoutFileName = Constants.LayoutFileName;
-                vm.DefaultLayout = Diagnosis.App.Properties.Resources.avalon_layout;
+                vm.DefaultLayout = Diagnosis.Client.App.Properties.Resources.avalon_layout;
                 SetLoadLayoutCommand(d, vm.LoadLayoutCommand);
                 SetSaveLayoutCommand(d, vm.SaveLayoutCommand);
             }

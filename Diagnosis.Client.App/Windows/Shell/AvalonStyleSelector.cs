@@ -8,7 +8,7 @@ using Diagnosis.Models;
 using System.Diagnostics;
 using Diagnosis.ViewModels.Screens;
 
-namespace Diagnosis.App.Windows.Shell
+namespace Diagnosis.Client.App.Windows.Shell
 {
     public class AvalonStyleSelector : StyleSelector
     {

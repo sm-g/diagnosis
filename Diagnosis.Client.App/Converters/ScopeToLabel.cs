@@ -4,7 +4,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 
-namespace Diagnosis.App.Converters
+namespace Diagnosis.Client.App.Converters
 {
     public class ScopeToLabel : BaseValueConverter
     {

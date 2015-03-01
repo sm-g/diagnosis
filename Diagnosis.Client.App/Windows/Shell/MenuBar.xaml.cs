@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Diagnosis.App.Windows.Shell
+namespace Diagnosis.Client.App.Windows.Shell
 {
     /// <summary>
     /// Interaction logic for MenuBar.xaml

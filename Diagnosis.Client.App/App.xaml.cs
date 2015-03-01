@@ -1,5 +1,5 @@
-﻿using Diagnosis.App.Themes;
-using Diagnosis.App.Windows.Shell;
+﻿using Diagnosis.Client.App.Themes;
+using Diagnosis.Client.App.Windows.Shell;
 using Diagnosis.Common;
 using Diagnosis.Common.Presentation;
 using Diagnosis.Common.Presentation.DebugTools;
@@ -14,7 +14,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 
-namespace Diagnosis.App
+namespace Diagnosis.Client.App
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -35,7 +35,7 @@ namespace Diagnosis.App
         {
             inExit = true;
             this.Send(Event.Shutdown);
-            Diagnosis.App.Properties.Settings.Default.Save();
+            Diagnosis.Client.App.Properties.Settings.Default.Save();
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -58,7 +58,7 @@ namespace Diagnosis.App
             Startuper.SetWpfCulture();
 
             // enum localization
-            LocalizableDescriptionAttribute.ResourcesType = typeof(Diagnosis.App.Properties.Resources);
+            LocalizableDescriptionAttribute.ResourcesType = typeof(Diagnosis.Client.App.Properties.Resources);
 
             // themes
             MyThemeManager.Initialize();
@@ -130,22 +130,22 @@ namespace Diagnosis.App
 
             var debugVm = new LogTraceListener()
             {
-                FilterContains = Diagnosis.App.Properties.Settings.Default.DebugFilter ?? "",
-                FilterOn = Diagnosis.App.Properties.Settings.Default.DebugFilterOn
+                FilterContains = Diagnosis.Client.App.Properties.Settings.Default.DebugFilter ?? "",
+                FilterOn = Diagnosis.Client.App.Properties.Settings.Default.DebugFilterOn
             };
             debugVm.PropertyChanged += (s, e1) =>
             {
                 switch (e1.PropertyName)
                 {
                     case "FilterContains":
-                        Diagnosis.App.Properties.Settings.Default.DebugFilter = debugVm.FilterContains;
+                        Diagnosis.Client.App.Properties.Settings.Default.DebugFilter = debugVm.FilterContains;
                         break;
                 }
             };
             var debWin = new DebugWindow(debugVm);
             debWin.Closing += (s, e1) =>
             {
-                Diagnosis.App.Properties.Settings.Default.DebugFilterOn = debugVm.FilterOn;
+                Diagnosis.Client.App.Properties.Settings.Default.DebugFilterOn = debugVm.FilterOn;
             };
             debWin.Show();
 

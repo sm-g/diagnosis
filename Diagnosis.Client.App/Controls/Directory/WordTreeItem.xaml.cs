@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Diagnosis.App.Controls
+namespace Diagnosis.Client.App.Controls
 {
     /// <summary>
     /// Interaction logic for TreeItem.xaml

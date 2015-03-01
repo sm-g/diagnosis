@@ -3,7 +3,7 @@ using Diagnosis.ViewModels.Screens;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Diagnosis.ServerApp.Screens
+namespace Diagnosis.Server.App.Screens
 {
     public partial class Uoms : UserControl
     {

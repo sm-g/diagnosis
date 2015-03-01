@@ -1,5 +1,5 @@
 ﻿// using AvalonDock.Layout.Serialization;
-using Diagnosis.App.Behaviors;
+using Diagnosis.Client.App.Behaviors;
 using Diagnosis.Common;
 using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Autocomplete;
@@ -18,7 +18,7 @@ using MahApps.Metro.Controls;
 using System.Threading;
 using System;
 
-namespace Diagnosis.App.Windows.Shell
+namespace Diagnosis.Client.App.Windows.Shell
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows;
 
-namespace Diagnosis.App.Themes
+namespace Diagnosis.Client.App.Themes
 {
     /// <summary>
     /// Provides helper methods to manage resources in WPF.

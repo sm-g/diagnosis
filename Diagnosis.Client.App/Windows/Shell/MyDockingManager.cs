@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Xceed.Wpf.AvalonDock;
 
-namespace Diagnosis.App.Windows.Shell
+namespace Diagnosis.Client.App.Windows.Shell
 {
     public class MyDockingManager : DockingManager
     {

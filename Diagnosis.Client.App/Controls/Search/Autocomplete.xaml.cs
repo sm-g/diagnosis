@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 
-namespace Diagnosis.App.Controls.Search
+namespace Diagnosis.Client.App.Controls.Search
 {
     public partial class Autocomplete : UserControl
     {

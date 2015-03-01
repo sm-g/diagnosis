@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Diagnosis.App.Windows
+namespace Diagnosis.Client.App.Windows
 {
     public partial class AppointmentEditorWindow : Window
     {

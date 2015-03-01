@@ -6,7 +6,7 @@ using System.IO.Packaging;
 using System.Linq;
 using System.Windows;
 
-namespace Diagnosis.App.Themes
+namespace Diagnosis.Client.App.Themes
 {
     public static class MyThemeManager
     {

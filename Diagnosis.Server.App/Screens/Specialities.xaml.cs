@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Diagnosis.ServerApp.Screens
+namespace Diagnosis.Server.App.Screens
 {
     /// <summary>
     /// Interaction logic for Specialities.xaml

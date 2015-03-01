@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Diagnosis.App.Windows
+namespace Diagnosis.Client.App.Windows
 {
     /// <summary>
     /// Interaction logic for CourseEditorWindow.xaml

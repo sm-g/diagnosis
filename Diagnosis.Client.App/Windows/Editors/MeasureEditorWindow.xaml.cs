@@ -2,7 +2,7 @@
 using System;
 using System.Windows;
 
-namespace Diagnosis.App.Windows
+namespace Diagnosis.Client.App.Windows
 {
     public partial class MeasureEditorWindow : Window
     {

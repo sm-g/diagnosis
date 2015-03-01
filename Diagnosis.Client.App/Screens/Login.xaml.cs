@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Diagnosis.App.Screens
+namespace Diagnosis.Client.App.Screens
 {
     /// <summary>
     /// Interaction logic for Login.xaml

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Xceed.Wpf.AvalonDock.Layout;
 
-namespace Diagnosis.App.Windows
+namespace Diagnosis.Client.App.Windows
 {
     public static class AvalonExtensions
     {

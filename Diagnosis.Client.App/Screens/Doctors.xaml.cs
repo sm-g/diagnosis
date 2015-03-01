@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Diagnosis.App.Screens
+namespace Diagnosis.Client.App.Screens
 {
     public partial class Doctors : UserControl
     {

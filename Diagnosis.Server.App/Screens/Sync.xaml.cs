@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Threading;
 
-namespace Diagnosis.ServerApp.Screens
+namespace Diagnosis.Server.App.Screens
 {
     public partial class Sync : UserControl
     {

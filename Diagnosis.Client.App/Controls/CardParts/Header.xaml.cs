@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Diagnosis.App.Controls.CardParts
+namespace Diagnosis.Client.App.Controls.CardParts
 {
     /// <summary>
     /// Interaction logic for Header.xaml
