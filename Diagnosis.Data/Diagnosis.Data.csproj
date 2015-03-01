@@ -139,10 +139,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Iesi.Collections.3.3.3.4001\lib\Net35\Iesi.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="LinqSpecs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\LinqSpecs.1.0\lib\LinqSpecs.dll</HintPath>
-    </Reference>
     <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
@@ -232,14 +228,10 @@
     <Compile Include="Queries\HealthRecordQuery.cs" />
     <Compile Include="Queries\UomQuery.cs" />
     <Compile Include="Queries\WordQuery.cs" />
-    <Compile Include="Specs\NHibernateRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="Specs\DiagnosisSpecifications.cs" />
-    <Compile Include="Specs\PatientSpecifications.cs" />
-    <Compile Include="Specs\WordSpecifications.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
