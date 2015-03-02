@@ -67,10 +67,10 @@
 
         <ToolBar>
             <Button Command="{Binding AddHealthRecordCommand}"
-                    ToolTip="Добавить запись (Ctrl+Enter)">
+                    ToolTip="Добавить новую запись (Ctrl+Enter)">
                 <DockPanel>
                     <Image Source="{StaticResource addImage}" />
-                    <TextBlock Text="Добавить" />
+                    <TextBlock Text="Добавить запись" />
                 </DockPanel>
             </Button>
             <Separator />

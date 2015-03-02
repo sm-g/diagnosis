@@ -100,52 +100,22 @@
                     </DockPanel>
                 </Button>
             </ToolBar>
-            
-            <Button x:Name="closeButton"
+          
+            <Button DockPanel.Dock="Right"
+                    x:Name="closeButton"
                     Command="{Binding CloseCommand}"
-                    ToolBar.OverflowMode="Never"
                     VerticalAlignment="Top"
-                    Height="16"
-                    DockPanel.Dock="Right"
                     HorizontalAlignment="Right"
-                    Width="16"
                     ToolTip="Закрыть редактор, сохранив все изменения (Ctrl+S)"
-                    Grid.Column="2">
-                <Path Data="{StaticResource CloseX}"
-                      Stretch="Uniform"
-                      Stroke="Black"
-                      Margin="1" />
-                <Button.Style>
-                    <Style>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Panel}}"
-                                         Value="True">
-                                <DataTrigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Duration="0:0:0.3"
-                                                             To="25"
-                                                             Storyboard.TargetProperty="Width" />
-                                            <DoubleAnimation Duration="0:0:0.3"
-                                                             To="25"
-                                                             Storyboard.TargetProperty="Height" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </DataTrigger.EnterActions>
-                                <DataTrigger.ExitActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Duration="0:0:0.5"
-                                                             Storyboard.TargetProperty="Width" />
-                                            <DoubleAnimation Duration="0:0:0.5"
-                                                             Storyboard.TargetProperty="Height" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </DataTrigger.ExitActions>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
+                    Style="{StaticResource metroCircleButton}">
+                <Rectangle Width="12"
+                           Height="12"
+                           Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Uniform"
+                                     Visual="{DynamicResource appbar_close}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
             </Button>
             <Button DockPanel.Dock="Right"
                     Style="{StaticResource HelpButton}"

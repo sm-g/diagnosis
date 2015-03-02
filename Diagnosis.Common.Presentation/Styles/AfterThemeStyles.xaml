@@ -2,7 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!--This styles overwrites theme styles-->
 
-    
     <!--  base control styles  -->
 
     <Style BasedOn="{StaticResource {x:Type DatePicker}}"
@@ -28,7 +27,7 @@
         <Setter Property="FontSize"
                 Value="{DynamicResource LabelFontSize}" />
     </Style>-->
-    
+
     <!--Tree-->
 
     <Style BasedOn="{StaticResource {x:Type TreeView}}"
@@ -56,9 +55,9 @@
 
         <Setter Property="FontSize"
                 Value="{DynamicResource ContentFontSize }" />
-            
-            <!-- Hier Vm -->
-        
+
+        <!-- Hier Vm -->
+
         <Setter Property="IsSelected"
                 Value="{Binding IsSelected}" />
         <Setter Property="IsExpanded"
@@ -92,26 +91,31 @@
                 Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
     </Style>
 
-    <Style x:Key="HelpButton"
-           x:Shared="False"
-           TargetType="Button"           
-           BasedOn="{StaticResource MetroCircleButtonStyle}">
-        <Setter Property="ToolTip"
-                Value="Помощь (F1)" />
+    <Style x:Key="metroCircleButton"
+           BasedOn="{StaticResource MetroCircleButtonStyle}"
+           TargetType="Button">
         <Setter Property="Width"
                 Value="30" />
         <Setter Property="Height"
                 Value="30" />
+        <Setter Property="Foreground"
+                Value="Gray" />
+        <Setter Property="BorderThickness"
+                Value="1" />
+    </Style>
+
+    <Style x:Key="HelpButton"
+           x:Shared="False"
+           BasedOn="{StaticResource metroCircleButton}"
+           TargetType="Button">
+        <Setter Property="ToolTip"
+                Value="Помощь (F1)" />
         <Setter Property="VerticalAlignment"
                 Value="Top" />
         <Setter Property="HorizontalAlignment"
                 Value="Right" />
         <Setter Property="Margin"
                 Value="10 0 0 10" />
-        <Setter Property="Foreground"
-                Value="Gray" />
-        <Setter Property="BorderThickness"
-                Value="1" />
         <Setter Property="Focusable"
                 Value="False" />
         <Setter Property="Command"
@@ -119,7 +123,7 @@
         <Setter Property="Content">
             <Setter.Value>
                 <Rectangle Width="12"
-                           Height="12"                           
+                           Height="12"
                            Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                     <Rectangle.OpacityMask>
                         <VisualBrush Stretch="Uniform"
@@ -128,7 +132,6 @@
                 </Rectangle>
             </Setter.Value>
         </Setter>
-
     </Style>
 
     <!--toolbar-->
@@ -196,7 +199,6 @@
 
         <Setter Property="VirtualizingStackPanel.VirtualizationMode"
                 Value="Standard" />
-
     </Style>
     <!--  forms  -->
 
