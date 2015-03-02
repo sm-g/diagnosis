@@ -14,15 +14,6 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Data.Sync
 {
-    /// <summary>
-    /// Логическая сторона.
-    /// Опеределяет, какие области синхронизируются по умолчанию.
-    /// </summary>
-    public enum Side
-    {
-        Client, Server
-    }
-
     public class Syncer
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Syncer));
@@ -207,17 +198,7 @@ namespace Diagnosis.Data.Sync
         {
             try
             {
-                switch (provider)
-                {
-                    case Constants.SqlCeProvider:
-                        return new SqlCeConnection(connstr);
-
-                    case Constants.SqlServerProvider:
-                        return new SqlConnection(connstr);
-
-                    default:
-                        throw new NotSupportedException();
-                }
+                return SqlHelper.CreateConnection(connstr, provider);
             }
             catch (Exception ex)
             {
@@ -240,7 +221,7 @@ namespace Diagnosis.Data.Sync
             using (var clientConn = CreateConnection(Side.Client))
             {
                 if (createSdf && clientProviderName == Constants.SqlCeProvider)
-                    SqlCeHelper.CreateSqlCeByConStr(clientConStr);
+                    SqlHelper.CreateSqlCeByConStr(clientConStr);
 
                 if (!serverConn.IsAvailable())
                 {

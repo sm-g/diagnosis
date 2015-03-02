@@ -91,9 +91,41 @@ namespace Diagnosis.Data
             }
         }
 
-        public static void Init(System.Configuration.ConnectionStringSettings conn)
+        /// <summary>
+        /// Initialize connection, set InMemory if any error occured.
+        /// </summary>
+        /// <param name="conn"></param>
+        /// <param name="side"></param>
+        public static void Init(System.Configuration.ConnectionStringSettings conn, Side side)
         {
             if (conn == null)
+            {
+                InMemory = true;
+                return;
+            }
+
+            var fail = false;
+
+            // create db for client side
+            if (side == Side.Client)
+            {
+                fail = conn.ProviderName != Constants.SqlCeProvider;
+
+                if (!fail)
+                    try
+                    {
+                        SqlHelper.CreateSqlCeByConStr(conn.ConnectionString);
+                    }
+                    catch (System.Exception)
+                    {
+                        fail = true;
+                    }
+
+            }
+
+            fail |= !conn.IsAvailable();
+
+            if (fail)
             {
                 InMemory = true;
                 return;

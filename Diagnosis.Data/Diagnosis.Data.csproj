@@ -198,8 +198,8 @@
     <Compile Include="Mappings\_Helper.cs" />
     <Compile Include="NHibernate\EventListeners.cs" />
     <Compile Include="NHibernate\IEntityCrudTracker.cs" />
-    <Compile Include="SqlCeHelper.cs" />
-    <Compile Include="Sync\Extensions.cs" />
+    <Compile Include="Side.cs" />
+    <Compile Include="SqlHelper.cs" />
     <Compile Include="Sync\Syncer.cs" />
     <Compile Include="Sync\Scopes.cs" />
     <Compile Include="Versions\Migrations\09 AddHolderHrUpdatedAt.cs" />
