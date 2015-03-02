@@ -24,7 +24,10 @@ namespace Diagnosis.ViewModels.Screens
             Patient = new PatientViewModel(patient);
             (patient as IEditableObject).BeginEdit();
 
-            Title = "Данные пациента";
+            if (IsUnsaved)
+                Title = "Добавление пациента";
+            else
+                Title = "Паспортные данные пациента";
         }
 
         /// <summary>

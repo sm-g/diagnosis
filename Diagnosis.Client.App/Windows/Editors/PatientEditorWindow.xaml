@@ -116,7 +116,7 @@
                     IsDefault="True"
                     IsEnabled="{Binding IsUnsaved}"
                     Visibility="{Binding IsUnsaved, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Content="_Добавить">
+                    Content="_Далее">
             </Button>
             <Button Name="saveButton"
                     Command="{Binding SaveCommand}"
