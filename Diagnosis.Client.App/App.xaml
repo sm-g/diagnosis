@@ -1,0 +1,76 @@
+﻿<Application x:Class="Diagnosis.Client.App.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:properties="clr-namespace:Diagnosis.Client.App.Properties"
+             xmlns:s="clr-namespace:System;assembly=mscorlib">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--absolute Uri to easy compare-->
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Resources/MarginResources.xaml" />
+                
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Resources/ConverterResources.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Resources/ImageResources.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Resources/Icons.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Resources/ColorResources.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Resources/NormalFontResources.xaml" />
+
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Styles/BeforeThemeStyles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Styles/ListBoxItemAero2Style.xaml" />
+                
+<!-- Mahapps -->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <!--<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />-->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+
+
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Styles/DefaultExpander.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Styles/MahAppsFix.xaml" />
+                
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Styles/AfterThemeStyles.xaml" />
+
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Templates/Controls.xaml" />
+
+            </ResourceDictionary.MergedDictionaries>
+            
+            <Style TargetType="{x:Type ListBoxItem}"
+                   BasedOn="{StaticResource MetroListBoxItemFixed}" />
+            <Style TargetType="{x:Type Expander}"
+                   BasedOn="{StaticResource DefaultExpander}" />
+            
+            <s:Boolean x:Key="True">True</s:Boolean>
+            <s:Boolean x:Key="False">False</s:Boolean>
+          
+            <properties:Settings x:Key="Settings" />
+
+            <!-- Tag is HolderVm -->
+            <ContextMenu x:Key="HolderContextMenu" 
+                         DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                <MenuItem Header="Изменить..."
+                          InputGestureText="F2"
+                          Command="{Binding EditCommand}" />
+                <MenuItem Header="Добавить курс"
+                          InputGestureText="Insert"
+                          Visibility="{Binding StartCourseCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                          Command="{Binding StartCourseCommand}" />
+                <MenuItem Header="Добавить осмотр"
+                          InputGestureText="Insert"
+                          Visibility="{Binding AddAppointmentCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                          Command="{Binding AddAppointmentCommand}" />
+                <MenuItem Header="Добавить запись"
+                          InputGestureText="Ctrl+Enter"
+                          Command="{Binding AddHealthRecordCommand}" />
+                <Separator />
+                <MenuItem Header="Открыть"
+                          TextElement.FontWeight="Bold"
+                          Visibility="{Binding OpenCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                          Command="{Binding OpenCommand}" />
+                <MenuItem Header="Удалить"
+                          InputGestureText="Delete"
+                          Command="{Binding DeleteCommand}" />
+            </ContextMenu>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

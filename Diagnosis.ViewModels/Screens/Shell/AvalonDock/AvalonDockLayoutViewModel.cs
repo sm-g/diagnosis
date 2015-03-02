@@ -176,9 +176,16 @@ namespace Diagnosis.ViewModels.Screens
             if (xmlLayout == null)
                 return;
 
-            File.WriteAllText(LayoutFileName, xmlLayout);
+            try
+            {
+                File.WriteAllText(LayoutFileName, xmlLayout);
 
-            OnLayoutSaved(EventArgs.Empty);
+                OnLayoutSaved(EventArgs.Empty);
+            }
+            catch (Exception e)
+            {
+                logger.ErrorFormat("{0}", e);
+            }
         }
     }
 }

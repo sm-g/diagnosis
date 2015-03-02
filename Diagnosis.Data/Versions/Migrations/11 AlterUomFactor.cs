@@ -1,4 +1,5 @@
-﻿using FluentMigrator;
+﻿using Diagnosis.Common;
+using FluentMigrator;
 using System;
 using System.Linq;
 
@@ -9,7 +10,7 @@ namespace Diagnosis.Data.Versions
     {
         public AlterUomFactor()
         {
-            Provider = SqlCeProvider;
+            Provider = Constants.SqlCeProvider;
         }
 
         public override string[] UpTables

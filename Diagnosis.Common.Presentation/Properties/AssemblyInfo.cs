@@ -8,11 +8,6 @@ using System.Windows.Markup;
 // associated with an assembly.
 [assembly: AssemblyTitle("Diagnosis.Common.Presentation")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Diagnosis.Common.Presentation")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
-[assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

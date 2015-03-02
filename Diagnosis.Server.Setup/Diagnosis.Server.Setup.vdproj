@@ -1107,7 +1107,7 @@
             "SourcePath" = "8:System.Data.SqlServerCe.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
-            "Folder" = "8:_9E3BC97FC8264BF1A2B628D0C372E79C"
+            "Folder" = "8:_E89BA4D5041540B2A85348D79A869A0B"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1446,7 +1446,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -1755,7 +1755,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Diagnosis on server"
         "ProductCode" = "8:{C0007466-B9CF-464F-B588-309D3AB48421}"
-        "PackageCode" = "8:{5F6029F3-7AD6-49C2-98A4-3434760DFED8}"
+        "PackageCode" = "8:{C65F56EC-E223-4CE8-927B-4426AFD61B4F}"
         "UpgradeCode" = "8:{2E347AC0-A176-4DF7-A848-0CD5659B788C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -2276,7 +2276,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A77578104E894FA980DA231FB6398F2D"
             {
-            "SourcePath" = "8:..\\Diagnosis.ServerApp\\obj\\Release\\Diagnosis.ServerApp.exe"
+            "SourcePath" = "8:..\\Diagnosis.Server.App\\obj\\Release\\Diagnosis.Server.App.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_9E3BC97FC8264BF1A2B628D0C372E79C"

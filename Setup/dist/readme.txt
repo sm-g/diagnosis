@@ -1,0 +1,1 @@
+To use with VS prerequisites, put these in 'Microsoft SDKs\Windows\v8.1A\Bootstrapper\Packages'

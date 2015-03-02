@@ -1,0 +1,12 @@
+﻿<Window x:Class="Diagnosis.Client.App.Windows.HelpWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding Title}"
+        Height="{Binding Path=Default.HelpWindowHeight, Mode=TwoWay, Source={StaticResource Settings}}"
+        Width="{Binding Path=Default.HelpWindowWidth, Mode=TwoWay, Source={StaticResource Settings}}"
+        Top="{Binding Path=Default.HelpWindowTop, Mode=TwoWay, Source={StaticResource Settings}}"
+        Left="{Binding Path=Default.HelpWindowLeft, Mode=TwoWay, Source={StaticResource Settings}}">
+    <Grid>
+        <WebBrowser Name="webBrowser" />
+    </Grid>
+</Window>

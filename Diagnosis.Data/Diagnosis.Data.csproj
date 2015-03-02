@@ -139,10 +139,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Iesi.Collections.3.3.3.4001\lib\Net35\Iesi.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="LinqSpecs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\LinqSpecs.1.0\lib\LinqSpecs.dll</HintPath>
-    </Reference>
     <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
@@ -167,6 +163,7 @@
       <HintPath>..\packages\NHibernate.3.3.3.4001\lib\Net35\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Services" />
     <Reference Include="System.Data.Services.Client" />
@@ -178,6 +175,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\GeneralAssemblyInfo.cs">
+      <Link>Properties\GeneralAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Mappings\UomTypeMap.cs" />
     <Compile Include="Mappings\PassportMap.cs" />
     <Compile Include="Mappings\HrItemMap.cs" />
@@ -198,8 +198,8 @@
     <Compile Include="Mappings\_Helper.cs" />
     <Compile Include="NHibernate\EventListeners.cs" />
     <Compile Include="NHibernate\IEntityCrudTracker.cs" />
-    <Compile Include="SqlCeHelper.cs" />
-    <Compile Include="Sync\Extensions.cs" />
+    <Compile Include="Side.cs" />
+    <Compile Include="SqlHelper.cs" />
     <Compile Include="Sync\Syncer.cs" />
     <Compile Include="Sync\Scopes.cs" />
     <Compile Include="Versions\Migrations\09 AddHolderHrUpdatedAt.cs" />
@@ -228,14 +228,10 @@
     <Compile Include="Queries\HealthRecordQuery.cs" />
     <Compile Include="Queries\UomQuery.cs" />
     <Compile Include="Queries\WordQuery.cs" />
-    <Compile Include="Specs\NHibernateRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="Specs\DiagnosisSpecifications.cs" />
-    <Compile Include="Specs\PatientSpecifications.cs" />
-    <Compile Include="Specs\WordSpecifications.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

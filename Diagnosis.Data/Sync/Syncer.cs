@@ -14,19 +14,8 @@ using System.Threading.Tasks;
 
 namespace Diagnosis.Data.Sync
 {
-    /// <summary>
-    /// Логическая сторона.
-    /// Опеределяет, какие области синхронизируются по умолчанию.
-    /// </summary>
-    public enum Side
-    {
-        Client, Server
-    }
-
     public class Syncer
     {
-        public const string SqlCeProvider = "System.Data.SqlServerCE.4.0";
-        public const string SqlServerProvider = "System.Data.SqlClient";
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Syncer));
 
         private static Stopwatch sw = new Stopwatch();
@@ -44,7 +33,7 @@ namespace Diagnosis.Data.Sync
         private string serverProviderName;
         private string clientProviderName;
 
-        public Syncer(string serverConStr, string clientConStr, string serverProviderName, string clientProviderName = SqlCeProvider)
+        public Syncer(string serverConStr, string clientConStr, string serverProviderName, string clientProviderName = Constants.SqlCeProvider)
         {
             this.serverConStr = serverConStr;
             this.clientConStr = clientConStr;
@@ -209,17 +198,7 @@ namespace Diagnosis.Data.Sync
         {
             try
             {
-                switch (provider)
-                {
-                    case SqlCeProvider:
-                        return new SqlCeConnection(connstr);
-
-                    case SqlServerProvider:
-                        return new SqlConnection(connstr);
-
-                    default:
-                        throw new NotSupportedException();
-                }
+                return SqlHelper.CreateConnection(connstr, provider);
             }
             catch (Exception ex)
             {
@@ -241,8 +220,8 @@ namespace Diagnosis.Data.Sync
             using (var serverConn = CreateConnection(Side.Server))
             using (var clientConn = CreateConnection(Side.Client))
             {
-                if (createSdf && clientProviderName == SqlCeProvider)
-                    SqlCeHelper.CreateSqlCeByConStr(clientConStr);
+                if (createSdf && clientProviderName == Constants.SqlCeProvider)
+                    SqlHelper.CreateSqlCeByConStr(clientConStr);
 
                 if (!serverConn.IsAvailable())
                 {

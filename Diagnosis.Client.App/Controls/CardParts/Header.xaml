@@ -1,0 +1,174 @@
+﻿<UserControl x:Class="Diagnosis.Client.App.Controls.CardParts.Header"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:Diagnosis.Client.App.Controls"
+             xmlns:headers="clr-namespace:Diagnosis.Client.App.Controls.Headers"
+             xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
+             mc:Ignorable="d"
+             x:Name="header"
+             d:DataContext="{d:DesignInstance design:SampleHeaderViewModel, IsDesignTimeCreatable=True}"
+             d:DesignHeight="300"
+             d:DesignWidth="300">
+    <UserControl.Resources>
+        <Style x:Key="HeaderNavButton"
+               TargetType="{x:Type Button}"
+               BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Width"
+                    Value="30" />
+            <Setter Property="Height"
+                    Value="30" />
+            <Setter Property="Margin"
+                    Value="5" />
+        </Style>
+
+        <controls:HrsHolderDataTemplateSelector x:Key="selector">
+            <controls:HrsHolderDataTemplateSelector.PatientTemplate>
+                <DataTemplate>
+                    <Grid Background="Transparent">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <DockPanel DataContext="{Binding Holder}">
+                            <TextBlock Style="{StaticResource ScreenTitle}"
+                                       TextWrapping="Wrap"
+                                       Visibility="{Binding FullName, Converter={StaticResource NotNullToVis}}"
+                                       Text="{Binding FullName, Mode=OneWay}" />
+                            <TextBlock Style="{StaticResource ScreenTitle}"
+                                       TextWrapping="Wrap"
+                                       Visibility="{Binding FullName, Converter={StaticResource IsNullToVis}}">
+                                <TextBlock Text="Пациент" />
+                                <TextBlock FontStyle="Italic">(<Run Text="{Binding CreatedAt, StringFormat={}{0:dd.MM.yy hh:mm}, Mode=OneWay}" />)</TextBlock>
+                            </TextBlock>
+                        </DockPanel>
+                        <DockPanel Grid.Row="1"
+                                   TextElement.FontSize="{DynamicResource ContentFontSize}"
+                                   DataContext="{Binding Holder}">
+                            <TextBlock Style="{StaticResource SexTooltip}"
+                                       VerticalAlignment="Center">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource SexToSign}">
+                                        <Binding Path="IsMale" />
+                                        <Binding Path="DataContext.Sexes"
+                                                 RelativeSource="{RelativeSource AncestorType=Window}" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            <Separator Height="0"
+                                       Width="10"
+                                       Visibility="{Binding IsMale, Converter={StaticResource NotNullToVis}}" />
+                            <TextBlock VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Age}" />
+                                    <TextBlock Text="{Binding Age, Converter={StaticResource AgeToLabel}}" />
+                                </TextBlock>
+                        </DockPanel>
+
+                        <Button Height="26"
+                                Width="26"
+                                Command="{Binding HolderVm.EditCommand}"
+                                ToolTip="Изменить"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Grid.RowSpan="2">
+                            <Button.Style>
+                                <Style TargetType="Button"
+                                       BasedOn="{StaticResource {x:Type Button}}">
+                                    <Setter Property="Visibility"
+                                            Value="Collapsed" />
+
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, Path=IsMouseOver}"
+                                                     Value="true">
+                                            <Setter Property="Visibility"
+                                                    Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <DockPanel>
+                                <Image Source="{StaticResource editImage}"
+                                       Height="16" />
+                            </DockPanel>
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </controls:HrsHolderDataTemplateSelector.PatientTemplate>
+            <controls:HrsHolderDataTemplateSelector.CourseTemplate>
+                <DataTemplate>
+                    <TextBlock Style="{StaticResource ScreenTitle}">
+                            <Run Text="Курс" />
+                            <Run DataContext="{Binding Holder}">
+                                <MultiBinding Converter="{StaticResource DateIntervalLabel}">
+                                    <Binding Path="Start"
+                                             Mode="OneWay" />
+                                    <Binding Path="End"
+                                             Mode="OneWay" />
+                                </MultiBinding>
+                            </Run>
+                    </TextBlock>
+                </DataTemplate>
+            </controls:HrsHolderDataTemplateSelector.CourseTemplate>
+            <controls:HrsHolderDataTemplateSelector.AppointmentTemplate>
+                <DataTemplate>
+                    <Border BorderBrush="{x:Null}">
+                        <TextBlock Style="{StaticResource ScreenTitle}">
+                            <Run Text="Осмотр" />
+                            <Run Text="{Binding Holder.DateAndTime, Converter={StaticResource DateLabel}}" />
+                            <Run Text="{Binding Holder.DateAndTime, StringFormat={}{0:H:mm}}" />
+                        </TextBlock>
+                    </Border>
+                </DataTemplate>
+            </controls:HrsHolderDataTemplateSelector.AppointmentTemplate>
+        </controls:HrsHolderDataTemplateSelector>
+    </UserControl.Resources>
+    <DockPanel>
+        <!-- current -->
+        <DockPanel DockPanel.Dock="Top"
+                   Background="Transparent"
+                   Margin="5,0,5,5">
+
+            <ContentPresenter Content="{Binding}"
+                              Tag="{Binding HolderVm}"
+                              ContextMenu="{StaticResource HolderContextMenu}"
+                              ContentTemplateSelector="{StaticResource selector}">
+            </ContentPresenter>
+        </DockPanel>
+
+        <!-- prev -->
+        <DockPanel DockPanel.Dock="Left"
+                   Visibility="{Binding PrevHolder, Converter={StaticResource NotNullToVis}}">
+            <Button DockPanel.Dock="Left"
+                    Command="{Binding OpenPrevCommand}"
+                    Style="{StaticResource HeaderNavButton}">
+                «
+            </Button>
+            <headers:Holder DockPanel.Dock="Top"
+                            DataContext="{Binding PrevHolder}"
+                            TimeVisibility="Visible" />
+
+            <TextBlock Text="{Binding PrevSpan, Converter={StaticResource TimeSpanToLabel}, ConverterParameter=' ранее'}" />
+        </DockPanel>
+
+        <!-- next-->
+        <DockPanel DockPanel.Dock="Right"
+                   HorizontalAlignment="Right"
+                   Visibility="{Binding NextHolder, Converter={StaticResource NotNullToVis}}">
+            <Button DockPanel.Dock="Right"
+                    Command="{Binding OpenNextCommand}"
+                    Style="{StaticResource HeaderNavButton}">
+                »
+            </Button>
+            <headers:Holder HorizontalAlignment="Right"
+                            DockPanel.Dock="Top"
+                            DataContext="{Binding NextHolder}"
+                            TimeVisibility="Visible" />
+
+            <TextBlock HorizontalAlignment="Right"
+                       Text="{Binding NextSpan, Converter={StaticResource TimeSpanToLabel}, ConverterParameter='через '}" />
+        </DockPanel>
+    </DockPanel>
+</UserControl>

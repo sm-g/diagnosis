@@ -1,0 +1,325 @@
+﻿<UserControl xmlns:editors="clr-namespace:Diagnosis.Client.App.Controls.Editors"
+             xmlns:controls="clr-namespace:Diagnosis.Client.App.Controls"
+             xmlns:search="clr-namespace:Diagnosis.Client.App.Controls.Search"
+             xmlns:screens="clr-namespace:Diagnosis.Client.App.Screens"
+             x:Class="Diagnosis.Client.App.Controls.CardParts.HealthRecordEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
+             mc:Ignorable="d"
+             x:Name="editor"
+             diag:HelpProvider.Topic="hreditor"
+             Tag="{Binding DataContext.HrList, RelativeSource={RelativeSource AncestorType=UserControl}}"
+             d:DataContext="{d:DesignInstance design:SampleHrEditorViewModel, IsDesignTimeCreatable=True}"
+             d:DesignHeight="300"
+             d:DesignWidth="600">
+    <!--Tag is HrListViewModel-->
+    <UserControl.Resources>
+        <Style TargetType="Label"
+               BasedOn="{StaticResource label90}" />
+    </UserControl.Resources>
+
+    <UserControl.InputBindings>
+        <KeyBinding Gesture="Control+K"
+                    Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}"
+                    CommandParameter="{StaticResource True}" />
+        <KeyBinding Gesture="Control+J"
+                    Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}"
+                    CommandParameter="{StaticResource False}" />
+        <KeyBinding Modifiers="Control"
+                    Key="S"
+                    Command="{Binding CloseCommand}" />
+    </UserControl.InputBindings>
+    <Grid x:Name="grid"
+          AllowDrop="True"
+          Drop="grid_Drop"
+          GotKeyboardFocus="grid_GotKeyboardFocus"
+          GotFocus="grid_GotFocus"
+          LostFocus="grid_LostFocus"
+          diag:FocusExtension.IsFocused="{Binding IsFocused}"
+          diag:FocusExtension.Direct="True"
+          KeyboardNavigation.IsTabStop="False"
+          diag:FocusBehavior.FocusablePanel="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <DockPanel>
+            <ToolBar DockPanel.Dock="Left">
+                <Button Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}"
+                        FontSize="16"
+                        CommandParameter="{StaticResource False}"
+                        Width="20"
+                        ToolTip="Открыть следующую запись (Ctrl+J)">↓</Button>
+                <Button Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}"
+                        FontSize="16"
+                        Width="20"
+                        CommandParameter="{StaticResource True}"
+                        ToolTip="Открыть предыдущую запись (Ctrl+K)">↑</Button>
+                <Separator />
+                <!--<Button Command="{Binding DataContext.HrList.AddHealthRecordCommand,  RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}"
+                    ToolTip="Добавить запись">
+                    <DockPanel>
+                        <Image Source="{StaticResource addImage}" />
+                        <TextBlock Text="Добавить" />
+                    </DockPanel>
+                </Button>-->
+                <!--<Button Command="{Binding RevertCommand}" ToolTip="Отменить изменения">
+                    <DockPanel>
+                        <Image Source="{StaticResource undoImage}" />
+                        -->
+                <!--<TextBlock Text="Отменить" />-->
+                <!--
+                    </DockPanel>
+                </Button>-->
+                <Button Command="{Binding DeleteCommand}"
+                        ToolTip="Удалить запись">
+                    <DockPanel>
+                        <Image Source="{StaticResource deleteImage}"
+                               Width="16" />
+                        <!--<TextBlock Text="Удалить" />-->
+                    </DockPanel>
+                </Button>
+                <Separator />
+
+                <Button Command="{Binding AddIcdCommand}"
+                        ToolTip="Добавить МКБ">
+                    <DockPanel>
+                        <TextBlock Text="МКБ" />
+                    </DockPanel>
+                </Button>
+                <Button Command="{Binding AddMeasureCommand}"
+                        ToolTip="Добавить измерение">
+                    <DockPanel>
+                        <TextBlock Text="измерение" />
+                    </DockPanel>
+                </Button>
+            </ToolBar>
+            
+            <Button x:Name="closeButton"
+                    Command="{Binding CloseCommand}"
+                    ToolBar.OverflowMode="Never"
+                    VerticalAlignment="Top"
+                    Height="16"
+                    DockPanel.Dock="Right"
+                    HorizontalAlignment="Right"
+                    Width="16"
+                    ToolTip="Закрыть редактор, сохранив все изменения (Ctrl+S)"
+                    Grid.Column="2">
+                <Path Data="{StaticResource CloseX}"
+                      Stretch="Uniform"
+                      Stroke="Black"
+                      Margin="1" />
+                <Button.Style>
+                    <Style>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Panel}}"
+                                         Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Duration="0:0:0.3"
+                                                             To="25"
+                                                             Storyboard.TargetProperty="Width" />
+                                            <DoubleAnimation Duration="0:0:0.3"
+                                                             To="25"
+                                                             Storyboard.TargetProperty="Height" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Duration="0:0:0.5"
+                                                             Storyboard.TargetProperty="Width" />
+                                            <DoubleAnimation Duration="0:0:0.5"
+                                                             Storyboard.TargetProperty="Height" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button DockPanel.Dock="Right"
+                    Style="{StaticResource HelpButton}"
+                    diag:HelpProvider.Topic="hreditor" />
+        </DockPanel>
+
+        <!--DataContext is editing HealthRecordViewModel -->
+        <StackPanel Grid.Row="1"
+                    DataContext="{Binding HealthRecord}"
+                    Margin="0,10,0,0">
+            <StackPanel.Resources>
+                <Style TargetType="DockPanel"
+                       BasedOn="{StaticResource formLine}" />
+            </StackPanel.Resources>
+            <DockPanel>
+                <!--DataContext is HrEditorViewModel-->
+                <search:Autocomplete x:Name="autocomplete"
+                                     DataContext="{Binding DataContext.Autocomplete, ElementName=editor}" />
+            </DockPanel>
+            <DockPanel>
+                <!--DataContext is HrEditorViewModel-->
+                <Label VerticalAlignment="Top">_Категория</Label>
+                <editors:CategoryChooser HorizontalAlignment="Left"
+                                         DataContext="{Binding DataContext, ElementName=editor}" />
+            </DockPanel>
+            <DockPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0"
+                                diag:HelpProvider.Topic="hrdate"
+                                Orientation="Horizontal"
+                                Visibility="{Binding DateOffset.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                        <Label Content="Это было" />
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center">
+                            <RadioButton IsChecked="{Binding ShowAsDate}"
+                                         Margin="0 0 10 0"
+                                         Content="{Binding DateOffset.Do, Converter={StaticResource DateOffsetToPartialDateLabel}}" />
+                            <RadioButton IsChecked="{Binding ShowAsOffset}"
+                                         Margin="0 0 10 0">
+                                <TextBlock>
+                                    <Run Text="{Binding DateOffset.RoundedOffset, Mode=OneWay}" />
+                                    <Hyperlink Command="{Binding DateOffset.SpinUnitCommand}">
+                                        <Run>
+                                            <Run.Text>
+                                                <MultiBinding Mode="OneWay"
+                                                              Converter="{StaticResource UnitForOffsetToUnitLabel}">
+                                                    <Binding Path="DateOffset.RoundedUnit" />
+                                                    <Binding Path="DateOffset.RoundedOffset" />
+                                                </MultiBinding>
+                                            </Run.Text>
+                                        </Run>
+                                    </Hyperlink>
+                                </TextBlock>
+                            </RadioButton>
+                            <RadioButton IsChecked="{Binding ShowAsAge}"
+                                         IsEnabled="{Binding CanShowAsAge}"
+                                         Visibility="{Binding CanShowAsAge, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                         Content="{Binding AtAgeString}" />
+                        </StackPanel>
+                    </StackPanel>
+                    <Expander x:Name="dateEditor"
+                              Grid.Row="1"
+                              diag:HelpProvider.Topic="hrdate"
+                              BorderBrush="{x:Null}"
+                              ExpandDirection="Down"
+                              FlowDirection="RightToLeft"
+                              Cursor="Hand"
+                              IsExpanded="{Binding IsDateEditorExpanded}">
+                        <Expander.Header>
+                            <StackPanel HorizontalAlignment="Right"
+                                        Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Expander}},Path=ActualWidth}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label x:Name="header"
+                                           Grid.Column="1">
+                                        <Label.Style>
+                                            <Style TargetType="Label">
+                                                <Setter Property="Content"
+                                                        Value="Изменить дату" />
+                                                <Setter Property="FontSize"
+                                                        Value="{DynamicResource LabelFontSize}" />
+
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding DateOffset.IsEmpty}"
+                                                                 Value="True">
+                                                        <Setter Property="Content"
+                                                                Value="Добавить дату" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsExpanded,RelativeSource={RelativeSource AncestorType=Expander}}"
+                                                                 Value="True">
+                                                        <Setter Property="Content"
+                                                                Value="Скрыть редактор" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Label.Style>
+                                    </Label>
+                                    <Separator Grid.Column="0"
+                                               Width="auto" />
+                                </Grid>
+                            </StackPanel>
+                        </Expander.Header>
+                        <StackPanel FlowDirection="LeftToRight"
+                                    Background="Transparent"
+                                    Cursor="Arrow">
+                            <DockPanel>
+                                <Label Content="Дата" />
+                                <editors:ComboBoxDatePicker Year="{Binding DateOffset.Year, Mode=TwoWay}"
+                                                            Month="{Binding DateOffset.Month, Mode=TwoWay}"
+                                                            Day="{Binding DateOffset.Day, Mode=TwoWay}" />
+                            </DockPanel>
+                            <DockPanel>
+                                <Label Content="Давность" />
+                                <editors:DateOffsetPicker DataContext="{Binding DateOffset}" />
+                            </DockPanel>
+                            <DockPanel IsEnabled="{Binding CanShowAsAge}">
+                                <Label Content="Возраст" />
+                                <TextBox Text="{Binding AtAge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                                         Width="50"
+                                         HorizontalContentAlignment="Right">
+                                </TextBox>
+
+                                <TextBlock Text="{Binding AtAge, Converter={StaticResource AgeToLabel}}"
+                                           Margin="3,0,0,0"
+                                           VerticalAlignment="Center"></TextBlock>
+                            </DockPanel>
+                        </StackPanel>
+                    </Expander>
+                </Grid>
+            </DockPanel>
+
+            <DockPanel x:Name="offsetSettings">
+                <DockPanel.Resources>
+                    <ObjectDataProvider x:Key="dateSetting"
+                                        MethodName="GetValues"
+                                        ObjectType="{x:Type sys:Enum}">
+                        <ObjectDataProvider.MethodParameters>
+                            <x:Type TypeName="diag:DateOffset+DateSetting" />
+                        </ObjectDataProvider.MethodParameters>
+                    </ObjectDataProvider>
+                    <ObjectDataProvider x:Key="unitSetting"
+                                        MethodName="GetValues"
+                                        ObjectType="{x:Type sys:Enum}">
+                        <ObjectDataProvider.MethodParameters>
+                            <x:Type TypeName="diag:DateOffset+UnitSetting" />
+                        </ObjectDataProvider.MethodParameters>
+                    </ObjectDataProvider>
+                </DockPanel.Resources>
+                <Label Content="DateSetting" />
+                <ComboBox ItemsSource="{Binding Source={StaticResource dateSetting}}"
+                          Width="150">
+                    <ComboBox.SelectedItem>
+                        <Binding Path="DateOffset.DateSettingStrategy"
+                                 Mode="TwoWay" />
+                    </ComboBox.SelectedItem>
+                </ComboBox>
+                <Label Content="UnitSetting"
+                       Margin="10,0,0,0" />
+                <ComboBox ItemsSource="{Binding Source={StaticResource unitSetting}}">
+                    <ComboBox.SelectedItem>
+                        <Binding Path="DateOffset.UnitSettingStrategy"
+                                 Mode="TwoWay" />
+                    </ComboBox.SelectedItem>
+                </ComboBox>
+            </DockPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

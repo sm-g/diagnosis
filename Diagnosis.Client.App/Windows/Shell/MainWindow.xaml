@@ -1,0 +1,219 @@
+﻿<mahapps:MetroWindow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:mahapps="http://metro.mahapps.com/winfx/xaml/controls"
+                     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                     xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+                     xmlns:beh="clr-namespace:Diagnosis.Client.App.Behaviors"
+                     xmlns:controls="clr-namespace:Diagnosis.Client.App.Controls"
+                     xmlns:diag="http://schemas.smg.com/diagnosis"
+                     xmlns:screen="clr-namespace:Diagnosis.Client.App.Screens"
+                     xmlns:shell="clr-namespace:Diagnosis.Client.App.Windows.Shell"
+                     x:Class="Diagnosis.Client.App.Windows.Shell.MainWindow"
+                     x:Name="root"
+                     mc:Ignorable="d"
+                     d:DataContext="{d:DesignInstance diag:MainWindowViewModel}"
+                     d:DesignHeight="100"
+                     d:DesignWidth="500"
+                     MinWidth="200"
+                     MinHeight="200"
+                     Title="{Binding CurrentView.Title}"
+                     TitleCaps="False"
+                     GlowBrush="{DynamicResource AccentColorBrush}"
+                     NonActiveGlowBrush="Gray"
+                     ShowIconOnTitleBar="True"
+                     ShowTitleBar="True"
+                     RightWindowCommandsOverlayBehavior="HiddenTitleBar"
+                     Height="{Binding Path=Default.MainWindowHeight, Mode=TwoWay, Source={StaticResource Settings}}"
+                     Width="{Binding Path=Default.MainWindowWidth, Mode=TwoWay, Source={StaticResource Settings}}"
+                     Top="{Binding Path=Default.MainWindowTop, Mode=TwoWay, Source={StaticResource Settings}}"
+                     Left="{Binding Path=Default.MainWindowLeft, Mode=TwoWay, Source={StaticResource Settings}}"
+                     WindowState="{Binding Path=Default.MainWindowState, Mode=TwoWay, Source={StaticResource Settings}}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Xceed.Wpf.AvalonDock.Themes.Metro;Component/Theme.xaml" />
+                <ResourceDictionary Source="../../Styles/AvalonDock.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate DataType="{x:Type diag:LoginViewModel}">
+                <screen:Login />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type diag:WordsListViewModel}">
+                <screen:Words />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type diag:CardViewModel}">
+                <screen:Card />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type diag:PatientsListViewModel}">
+                <screen:Patients />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type diag:DoctorsListViewModel}">
+                <screen:Doctors />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type diag:SyncViewModel}">
+                <screen:Sync />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type diag:UndoOverlayViewModel}">
+                <diag:UndoOverlay />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type diag:SearchViewModel}">
+                <screen:Search />
+            </DataTemplate>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Window.InputBindings>
+        <KeyBinding Modifiers="Control"
+                    Key="F"
+                    Command="{Binding OpenSearchCommand}" />
+        <KeyBinding Modifiers="Control"
+                    Key="E"
+                    Command="{Binding FocusOnFilterCommand}" />
+        <KeyBinding Key="F1"
+                    Command="{Binding MenuBar.OpenHelpCommand}" />
+    </Window.InputBindings>
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static ApplicationCommands.Undo}"
+                        Executed="CommandBinding_Executed" />
+    </Window.CommandBindings>
+    <Grid Background="{DynamicResource mainWindowBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <shell:MyDockingManager x:Name="dockManager"
+                                Grid.Row="1"
+                                Margin="-4 -3 -4 -4"
+                                AnchorablesSource="{Binding Panes}"
+                                beh:AvalonDockLayoutSerializer.VM="{Binding ADLayout}">
+            <!-- margin fixes avalon theme -->
+            <shell:MyDockingManager.Theme>
+                <xcad:MetroTheme />
+            </shell:MyDockingManager.Theme>
+            <shell:MyDockingManager.Resources>
+                <Style TargetType="{x:Type xcad:AnchorablePaneTitle}"
+                       BasedOn="{StaticResource AnchorablePaneTitleEmpty}">
+                </Style>
+                <Style TargetType="xcad:LayoutGridResizerControl"
+                       BasedOn="{StaticResource LayoutGridResizerControlForMetro}">
+                </Style>
+            </shell:MyDockingManager.Resources>
+            <shell:MyDockingManager.Style>
+                <Style TargetType="xcad:DockingManager"
+                       BasedOn="{StaticResource {x:Type xcad:DockingManager}}">
+                    <!--<Setter Property="AnchorableContextMenu"
+                            Value="{x:Null}" />-->
+                    <Setter Property="BorderThickness"
+                            Value="0" />
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+                </Style>
+            </shell:MyDockingManager.Style>
+            <shell:MyDockingManager.LayoutItemContainerStyleSelector>
+                <shell:AvalonStyleSelector>
+                    <shell:AvalonStyleSelector.PanelStyle>
+                        <Style TargetType="{x:Type xcad:LayoutAnchorableItem}">
+                            <Setter Property="Title"
+                                    Value="{Binding Model.Title}" />
+                            <Setter Property="IconSource"
+                                    Value="{Binding Model.IconSource}" />
+                            <Setter Property="ContentId"
+                                    Value="{Binding Model.ContentId}" />
+                            <Setter Property="IsSelected"
+                                    Value="{Binding Model.IsSelected, Mode=TwoWay}" />
+                            <Setter Property="IsActive"
+                                    Value="{Binding Model.IsActive, Mode=TwoWay}" />
+                            <Setter Property="CanClose"
+                                    Value="False" />
+
+                            <Setter Property="Visibility"
+                                    Value="{Binding Model.IsVisible, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter={x:Static Visibility.Hidden}}" />
+                            <Setter Property="DockAsDocumentCommand"
+                                    Value="{Binding Model.NothingCommand}" />
+                        </Style>
+                    </shell:AvalonStyleSelector.PanelStyle>
+                    <shell:AvalonStyleSelector.ScreenStyle>
+                        <Style TargetType="{x:Type xcad:LayoutAnchorableItem}">
+                            <Setter Property="Title"
+                                    Value="{Binding Model.Title}" />
+                            <Setter Property="IconSource"
+                                    Value="{Binding Model.IconSource}" />
+                            <Setter Property="ContentId"
+                                    Value="{Binding Model.ContentId}" />
+                            <Setter Property="IsSelected"
+                                    Value="{Binding Model.IsSelected, Mode=TwoWay}" />
+                            <Setter Property="IsActive"
+                                    Value="{Binding Model.IsActive, Mode=TwoWay}" />
+                            <Setter Property="CanClose"
+                                    Value="False" />
+
+                            <Setter Property="CanFloat"
+                                    Value="False" />
+                            <Setter Property="CanHide"
+                                    Value="False" />
+                            <Setter Property="AutoHideCommand"
+                                    Value="{Binding Model.NothingCommand}" />
+                        </Style>
+                    </shell:AvalonStyleSelector.ScreenStyle>
+                </shell:AvalonStyleSelector>
+            </shell:MyDockingManager.LayoutItemContainerStyleSelector>
+            <shell:MyDockingManager.AnchorableHeaderTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Title}" />
+                    </StackPanel>
+                </DataTemplate>
+            </shell:MyDockingManager.AnchorableHeaderTemplate>
+            <shell:MyDockingManager.AnchorableTitleTemplateSelector>
+                <shell:AvalonTemplateSelector>
+                    <shell:AvalonTemplateSelector.PanelTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Title}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </shell:AvalonTemplateSelector.PanelTemplate>
+                    <shell:AvalonTemplateSelector.ScreenTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Title}"
+                                           Style="{StaticResource ScreenTitle}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </shell:AvalonTemplateSelector.ScreenTemplate>
+                </shell:AvalonTemplateSelector>
+            </shell:MyDockingManager.AnchorableTitleTemplateSelector>
+            <shell:MyDockingManager.LayoutUpdateStrategy>
+                <shell:LayoutInitializer />
+            </shell:MyDockingManager.LayoutUpdateStrategy>
+        </shell:MyDockingManager>
+
+        <shell:MenuBar DataContext="{Binding MenuBar}"
+                       Visibility="{Binding Visible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+        <ItemsControl DataContext="{Binding OverlayService}"
+                      ItemsSource="{Binding Overlays}"
+                      HorizontalAlignment="Right"
+                      IsTabStop="False"
+                      Grid.Row="1">
+        </ItemsControl>
+        <Menu x:Name="debugMenu"
+              Visibility="Collapsed"
+              Grid.Row="2">
+            <MenuItem Header="_Save layout"
+                      x:Name="SaveLayout"
+                      Command="{Binding ADLayout.SaveLayoutCommand}"
+                      CommandParameter="">
+            </MenuItem>
+            <MenuItem Header="_Load layout"
+                      x:Name="LoadLayout"
+                      Command="{Binding ADLayout.LoadLayoutCommand}">
+            </MenuItem>
+        </Menu>
+    </Grid>
+</mahapps:MetroWindow>

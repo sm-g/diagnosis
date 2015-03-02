@@ -1,0 +1,133 @@
+﻿<Window x:Class="Diagnosis.Client.App.Windows.PatientEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:editors="clr-namespace:Diagnosis.Client.App.Controls.Editors"
+        xmlns:controls="clr-namespace:Diagnosis.Client.App.Controls"
+        xmlns:card="clr-namespace:Diagnosis.Client.App.Controls.CardParts"
+        xmlns:diag="http://schemas.smg.com/diagnosis"
+        Title="{Binding Title}"
+        Width="500"
+        SizeToContent="Height"
+        diag:DialogCloser.DialogResult="{Binding DialogResult}"
+        diag:FocusBehavior.FocusFirst="True"
+        diag:HelpProvider.Topic="addpat"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance diag:PatientEditorViewModel, IsDesignTimeCreatable=False}">
+    <Window.Resources>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <Button  Grid.Column="1"
+                 Style="{StaticResource HelpButton}"
+                 diag:HelpProvider.Topic="addpat" />
+
+        <StackPanel  DataContext="{Binding Patient}"
+                     Margin="10,10,0,0"
+                     d:DataContext="{d:DesignInstance diag:PatientViewModel}">
+            <StackPanel.Resources>
+                <Style TargetType="DockPanel"
+                       BasedOn="{StaticResource formLine}" />
+                <Style TargetType="Label"
+                       BasedOn="{StaticResource label120}" />
+            </StackPanel.Resources>
+            <Grid Margin="0 0 0 10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Label Content="Имя"
+                       VerticalAlignment="Top" />
+                <TextBox Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         Grid.Column="1">
+                    <diag:WatermarkService.Watermark>
+                        <TextBlock Style="{StaticResource watermark}"
+                                   Margin="5,0,0,0">ФИО</TextBlock>
+                    </diag:WatermarkService.Watermark>
+                </TextBox>
+                <TextBlock TextWrapping="Wrap"
+                           Grid.Row="1"
+                           Grid.Column="1">
+                        <Run>Если неизвестно, оставьте пустым, вместо имени будет показано время создания: </Run>
+                        <Run  Text="{Binding CreatedAt, Mode=OneWay, StringFormat={}{0:dd.MM.yy hh:mm}.}"
+                              FontStyle="Italic" />
+                </TextBlock>
+            </Grid>
+            <!--<DockPanel>
+                    <Label Content="Имя" />
+                    <TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                </DockPanel>
+                <DockPanel>
+                    <Label Content="Отчество" />
+                    <TextBox Text="{Binding MiddleName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                </DockPanel>-->
+            <DockPanel>
+                <Label Content="Дата рождения" />
+                <editors:ComboBoxDatePicker x:Name="comboDatePicker"
+                                            VerticalAlignment="Top"
+                                            Year="{Binding BirthYear}"
+                                            Month="{Binding BirthMonth}"
+                                            Day="{Binding BirthDay}">
+                </editors:ComboBoxDatePicker>
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Возраст" />
+                <TextBox Text="{Binding Age, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                         Width="50"
+                         HorizontalContentAlignment="Right">
+                </TextBox>
+
+                <TextBlock Text="{Binding Age, Converter={StaticResource AgeToLabel}}"
+                           Margin="3,0,0,0"
+                           VerticalAlignment="Center"></TextBlock>
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Пол"
+                       VerticalAlignment="Top" />
+                <editors:SexChooser HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    WithUnknown="True" />
+            </DockPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1"
+                    Margin="0,0,10,10"
+                    Style="{StaticResource DialogButtonsPanel}"
+                    Grid.ColumnSpan="2">
+            <Button Name="saveOpenAppButton"
+                    Command="{Binding SaveAndOpenAppCommand}"
+                    IsDefault="True"
+                    IsEnabled="{Binding IsUnsaved}"
+                    Visibility="{Binding IsUnsaved, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Content="_Добавить">
+            </Button>
+            <Button Name="saveButton"
+                    Command="{Binding SaveCommand}"
+                    IsDefault="True"
+                    IsEnabled="{Binding IsUnsaved, Converter={StaticResource NegateBoolean}}"
+                    Visibility="{Binding IsUnsaved, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                    Content="_Сохранить" />
+            <Button Name="cancelButton"
+                    IsCancel="True"
+                    Command="{Binding CancelCommand}"
+                    Content="Отмена" />
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,0 +1,253 @@
+﻿<UserControl x:Class="Diagnosis.Client.App.Screens.Search"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:controls="clr-namespace:Diagnosis.Client.App.Controls"
+             xmlns:search="clr-namespace:Diagnosis.Client.App.Controls.Search"
+             xmlns:editors="clr-namespace:Diagnosis.Client.App.Controls.Editors"
+             xmlns:card="clr-namespace:Diagnosis.Client.App.Controls.CardParts"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
+             x:Name="search"
+             mc:Ignorable="d"
+             d:DesignHeight="400"
+             MinWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Styles/SplitExpander.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="lineHeader"
+                   TargetType="FrameworkElement">
+                <Setter Property="DockPanel.Dock"
+                        Value="Top" />
+                <Setter Property="Margin"
+                        Value="0,0,0,2" />
+            </Style>
+
+            <InputBindingCollection x:Shared="False"
+                                    x:Key="SearchResultInputBindings">
+                <KeyBinding Key="Space"
+                            Command="{Binding OpenCommand}" />
+                <KeyBinding Key="Enter"
+                            Command="{Binding OpenCommand}" />
+                <MouseBinding  MouseAction="LeftDoubleClick"
+                               Command="{Binding OpenCommand}" />
+            </InputBindingCollection>
+        </ResourceDictionary>
+    </UserControl.Resources>    
+    
+    <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <!--<TextBlock Style="{StaticResource ScreenTitle}"
+                   Margin="5,0,0,0">Поиск</TextBlock>-->
+        <Expander x:Name="searchControls"
+                  Style="{StaticResource SplitExpanderStyle}"
+                  Grid.Row="1"
+                  IsExpanded="{Binding ControlsVisible}"
+                  ExpandDirection="Up">
+            <Expander.Header>
+                <!--Описание запроса, к которому относятся результаты-->
+                <StackPanel x:Name="searchDescription"
+                            Margin="5,0,0,0">
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontSize"
+                                    Value="{DynamicResource HelpFontSize}" />
+                        </Style>
+                    </StackPanel.Resources>
+                    
+                    <StackPanel DataContext="{Binding Options}"
+                                Visibility="{Binding DataContext.Result, ElementName=search, Converter={StaticResource NotNullToVis}}">
+                        <StackPanel Orientation="Horizontal"
+                                    Visibility="{Binding Words.Count, Converter={StaticResource MoreThanToVisibility}}">
+                            <TextBlock Text="любое из слов: "
+                                       Visibility="{Binding AllWords, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
+                            <TextBlock Visibility="{Binding AllWords, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Run>все слова</Run> <Run Text="{Binding AndScope, StringFormat='{}{0}: ', Converter={StaticResource ScopeToLabel}}" />
+                            </TextBlock>
+                            <diag:CommaList ItemsSource="{Binding Words}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Visibility="{Binding Categories.Count, Converter={StaticResource MoreThanToVisibility}}">
+                            <TextBlock Text="категории: "></TextBlock>
+                            <diag:CommaList ItemsSource="{Binding Categories}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Visibility="{Binding AppDateVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="дата осмотра "></TextBlock>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource DateIntervalLabel}">
+                                        <Binding Path="AppointmentDateGt"
+                                                 Mode="OneWay" />
+                                        <Binding Path="AppointmentDateLt"
+                                                 Mode="OneWay" />
+                                        <MultiBinding.ConverterParameter>
+                                            <x:ArrayExtension Type="s:String">
+                                                <s:String>от</s:String>
+                                                <s:String>до</s:String>
+                                            </x:ArrayExtension>
+                                        </MultiBinding.ConverterParameter>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Visibility="{Binding HrDateVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="давность признака"></TextBlock>
+                            <TextBlock>
+                            <Run Text="{Binding HealthRecordOffsetGt.Offset, StringFormat='{} от {0}', TargetNullValue=''}" />
+                            <Run Text="{Binding HealthRecordOffsetGt, Mode=OneWay, Converter={StaticResource DateOffsetToUnitLabel}}" />
+                            </TextBlock>
+                            <TextBlock>
+                            <Run Text="{Binding HealthRecordOffsetLt.Offset, StringFormat='{} до {0}', TargetNullValue=''}" />
+                            <Run Text="{Binding HealthRecordOffsetLt, Mode=OneWay, Converter={StaticResource DateOffsetToUnitLabel}}" />
+                            </TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                    <TextBlock Text="Не заданы условия поиска."
+                               Visibility="{Binding AllEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                </StackPanel>
+            </Expander.Header>
+
+            <StackPanel Margin="5,10,5,0">
+                <StackPanel.InputBindings>
+                    <KeyBinding Key="Enter"
+                                Command="{Binding SearchCommand}" />
+                </StackPanel.InputBindings>
+                <Label Content="Ключевые _слова" />
+                <search:Autocomplete DataContext="{Binding Autocomplete}" />
+                <DockPanel Style="{StaticResource formLine}">
+                    <Grid>
+                        <CheckBox IsChecked="{Binding AllWords}"
+                                  VerticalContentAlignment="Center"
+                                  Margin="0,10,0,0">
+                            <TextBlock>
+                            <Run BaselineAlignment="Center">Все слова</Run>
+                                <ComboBox ItemsSource="{Binding Source={diag:EnumListExtension {x:Type diag:HealthRecordQueryAndScope}}}"
+                                          SelectedItem="{Binding QueryScope, Mode=TwoWay}"
+                                          ItemTemplate="{StaticResource EnumComboTemplate}"
+                                          VerticalContentAlignment="Bottom" />
+                                <!--TODO with metro-->
+                            </TextBlock>
+                        </CheckBox>
+                    </Grid>
+                </DockPanel>
+                <Label Content="_Категории" />
+                <DockPanel Style="{StaticResource formLine}"
+                           HorizontalAlignment="Left">
+                    <editors:CategoryChooser CategoryMultiSelection="{StaticResource True}" />
+                </DockPanel>
+                <!--<DockPanel>
+                    <TextBlock Style="{StaticResource lineHeader}">Дата осмотра</TextBlock>
+                    <WrapPanel>
+                        <DockPanel>
+                            <DockPanel.Style>
+                                <Style TargetType="DockPanel">
+                                    <Setter Property="Margin">
+                                        <Setter.Value>
+                                            <Thickness Bottom="{StaticResource lineMargin}"
+                                                       Right="5" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </DockPanel.Style>
+                            <TextBlock Width="18">от</TextBlock>
+                            <editors:ComboBoxDatePicker
+                                          Year="{Binding AppYearLower, Mode=TwoWay}"
+                                          Month="{Binding AppMonthLower, Mode=TwoWay}"
+                                          Day="{Binding AppDayLower, Mode=TwoWay}" />
+                        </DockPanel>
+                        <DockPanel Style="{StaticResource line}">
+                            <TextBlock Margin="-5,0,5,0" Padding="5,0,0,0" Width="18">до</TextBlock>
+                            <editors:ComboBoxDatePicker
+                                          Year="{Binding AppYearUpper, Mode=TwoWay}"
+                                          Month="{Binding AppMonthUpper, Mode=TwoWay}"
+                                          Day="{Binding AppDayUpper, Mode=TwoWay}" />
+                        </DockPanel>
+                    </WrapPanel>
+                </DockPanel>
+                <DockPanel Style="{StaticResource line}">
+                    <TextBlock Style="{StaticResource lineHeader}">Давность между</TextBlock>
+                    <DockPanel>
+                        <editors:DateOffsetPicker DateOffset="{Binding HrDateOffsetLower}" />
+                        <TextBlock Margin="5,0,5,0">и</TextBlock>
+                        <editors:DateOffsetPicker DateOffset="{Binding HrDateOffsetUpper}" />
+                    </DockPanel>
+                </DockPanel>-->
+
+                <Button Command="{Binding SearchCommand}"
+                        Margin="10,0,10,10"
+                        HorizontalAlignment="Stretch">Найти</Button>
+            </StackPanel>
+        </Expander>
+
+        <TreeView ItemsSource="{Binding Result.Patients}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  Grid.Row="2"
+                  Margin="5"
+                  Visibility="{Binding Result, Converter={StaticResource NotNullToVis}}">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem"
+                       BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                    <Setter Property="diag:Attached.InputBindings"
+                            Value="{StaticResource SearchResultInputBindings}" />
+                </Style>
+            </TreeView.ItemContainerStyle>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                    <search:HrSearchResult2 />
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+
+        <TextBlock Grid.Row="2"
+                   HorizontalAlignment="Center"
+                   Margin="10"
+                   Visibility="{Binding NothingFound, Converter={StaticResource BooleanToVisibilityConverter}}">
+            Не найдено подходящих записей.
+        </TextBlock>
+
+        <Grid Grid.Row="3"
+              Visibility="{Binding Result, Converter={StaticResource NotNullToVis}}"
+              Background="{x:Static SystemColors.ControlBrush}">
+            <diag:WrapPanelLastChildFill  DataContext="{Binding Result}"
+                                              Margin="5"
+                                              Visibility="{Binding Statistic.Count, Converter={StaticResource MoreThanToVisibility}}">
+                <TextBlock>
+                    Пациентов: <Run Text="{Binding Statistic.Count, Mode=OneWay}" />,
+                    М: <Run Text="{Binding Statistic.Males, Mode=OneWay}" />
+                    Ж: <Run Text="{Binding Statistic.Females, Mode=OneWay}" />
+                    ?: <Run Text="{Binding Statistic.UnknownSex, Mode=OneWay}" />
+                </TextBlock>
+                <Rectangle VerticalAlignment="Stretch"
+                           HorizontalAlignment="Left"
+                           Width="1"
+                           Margin="5,0"
+                           Stroke="{x:Static SystemColors.ActiveBorderBrush}" />
+                <TextBlock Grid.Column="2">
+                    Возраст от <Run Text="{Binding Statistic.MinAge, Mode=OneWay}" /> до <Run Text="{Binding Statistic.MaxAge, Mode=OneWay}" />
+                </TextBlock>
+
+                <StackPanel HorizontalAlignment="Right">
+                    <Button Command="{Binding ExportCommand}"
+                            Style="{StaticResource squareButton}"
+                            ToolTip="Экспорт в xlsx">
+                        <DockPanel>
+                            <Image Source="{StaticResource saveImage}"
+                                   Width="16" />
+                        </DockPanel>
+                    </Button>
+                </StackPanel>
+            </diag:WrapPanelLastChildFill>
+        </Grid>
+    </Grid>
+</UserControl>

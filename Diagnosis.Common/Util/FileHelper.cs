@@ -99,10 +99,17 @@ namespace Diagnosis.Common
                 }
 
                 // new backup
-                var backupFile = new FileInfo(Path.Combine(dir.Name,
+                var backupFile = new FileInfo(Path.Combine(dir.FullName,
                                     String.Format("{0}-{1:00}-{2}", today, newSequence, file.Name)));
                 File.Copy(file.FullName, backupFile.FullName, true);
             }
+        }
+
+        public static void CreateDirectoryForPath(string path)
+        {
+            string directory = Path.GetDirectoryName(path);
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
         }
     }
 }

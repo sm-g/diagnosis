@@ -41,7 +41,6 @@
     </UnitTestDependsOn>
 
     <BuildSetupDependsOn>
-      BuildSolution
     </BuildSetupDependsOn>
 
     <ZipSetupDependsOn>
@@ -62,42 +61,59 @@
     <CallTarget Condition="$(BuildRelease) == '1'" Targets="CopyRelease" />
     <!-- <CallTarget Condition="$(RunTests) == '1'" Targets="Test" /> -->
     <CallTarget Condition="$(CopyWorking) == '1'" Targets="CopyWorking" />
-    <CallTarget Condition="$(BuildAndZipSetup) == '1'" Targets="ZipSetup" />
+    <CallTarget Condition="$(BuildAndZipSetup) == '1'" Targets="BuildInnoSetup" />
   </Target>
 
   <Target Name="SetupClient">
     <PropertyGroup>
-      <DirAppOutput>$(DirSource)\Diagnosis.App\bin\$(Configuration)</DirAppOutput>
+      <DirAppOutput>$(DirSource)\Diagnosis.Client.App\bin\$(Configuration)</DirAppOutput>
       <AppWithVersionName>diagnosis.client.$(VersionInfoString)</AppWithVersionName>
-      <AppProject>$(DirSource)\Diagnosis.App\Diagnosis.App.csproj</AppProject>
+      <AppProject>$(DirSource)\Diagnosis.Client.App\Diagnosis.Client.App.csproj</AppProject>
 
       <DirLast>$(DirMainOutput)\$(AppWithVersionName)</DirLast>
       <DirWorking>$(DirMainOutput)\diagnosis-working-client</DirWorking>
 
-      <DirSetup>$(DirSource)\Diagnosis.Setup</DirSetup>
+      <SetupProject>Diagnosis.Client.Setup</SetupProject>
+      <DirSetup>$(DirSource)\$(SetupProject)</DirSetup>
       <DirSetupOutput>$(DirSetup)\$(Configuration)</DirSetupOutput>
       <ZipSetupPath>$(DirMainOutput)\$(AppWithVersionName).zip</ZipSetupPath>
       <MsiFileName>diagnosis-client.msi</MsiFileName>
+      <IssFileName>setup-client.iss</IssFileName>
       <SetupExeFileNameStart>setup-client</SetupExeFileNameStart>
-      <PostBuild>echo d | xcopy "$(DirSource)\Diagnosis.App\Resources\Help" "$(DirAppOutput)\Help" /d /y &amp; if not exist "$(DirAppOutput)\x86" md "$(DirAppOutput)\x86" &amp; xcopy /s /y "$(DirSource)\packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(DirAppOutput)\x86"</PostBuild>
+
+      <!-- copy Help -->
+      <PostBuild>echo d | xcopy "$(DirSource)\Diagnosis.Client.App\Resources\Help" "$(DirAppOutput)\Help" /d /y</PostBuild>
+
+      <!-- copy sql server ce and sqlite.dll -->
+      <CommonPostBuild>
+        xcopy /s /y "$(DirSource)\packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(DirAppOutput)\bin" &amp; xcopy "$(DirSource)\libs\SQLite.Interop.dll" "$(DirAppOutput)\bin" /i /d /y
+      </CommonPostBuild>
     </PropertyGroup>
   </Target>
 
   <Target Name="SetupServer">
     <PropertyGroup>
-      <DirAppOutput>$(DirSource)\Diagnosis.ServerApp\bin\$(Configuration)</DirAppOutput>
+      <DirAppOutput>$(DirSource)\Diagnosis.Server.App\bin\$(Configuration)</DirAppOutput>
       <AppWithVersionName>diagnosis.server.$(VersionInfoString)</AppWithVersionName>
-      <AppProject>$(DirSource)\Diagnosis.ServerApp\Diagnosis.ServerApp.csproj</AppProject>
+      <AppProject>$(DirSource)\Diagnosis.Server.App\Diagnosis.Server.App.csproj</AppProject>
 
       <DirLast>$(DirMainOutput)\$(AppWithVersionName)</DirLast>
       <DirWorking>$(DirMainOutput)\diagnosis-working-server</DirWorking>
 
-      <DirSetup>$(DirSource)\Diagnosis.Setup</DirSetup>
+      <SetupProject>Diagnosis.Server.Setup</SetupProject>
+      <DirSetup>$(DirSource)\$(SetupProject)</DirSetup>
       <DirSetupOutput>$(DirSetup)\$(Configuration)</DirSetupOutput>
       <ZipSetupPath>$(DirMainOutput)\$(AppWithVersionName).zip</ZipSetupPath>
       <MsiFileName>diagnosis-server.msi</MsiFileName>
+      <IssFileName>setup-server.iss</IssFileName>
       <SetupExeFileNameStart>setup-server</SetupExeFileNameStart>
-	  <PostBuild>if not exist "$(DirAppOutput)\x86" md "$(DirAppOutput)\x86" &amp; xcopy /s /y "$(DirSource)\packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(DirAppOutput)\x86"</PostBuild>
+
+      <PostBuild></PostBuild>
+
+      <!-- copy sql server ce and sqlite.dll -->
+      <CommonPostBuild>
+        xcopy /s /y "$(DirSource)\packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(DirAppOutput)\bin" &amp; xcopy "$(DirSource)\libs\SQLite.Interop.dll" "$(DirAppOutput)\bin" /i /d /y
+      </CommonPostBuild>
     </PropertyGroup>
   </Target>
 
@@ -108,13 +124,14 @@
     <RemoveDir Directories="$(DirAppOutput)" ContinueOnError="true" />
     <MakeDir Directories="$(DirAppOutput)" ContinueOnError="true" />
   </Target>
-  
+
   <!-- build porjects -->
   <Target Name="BuildSolution" DependsOnTargets="$(BuildSolutionDependsOn)">
     <MSBuild Projects="$(AppProject)" ContinueOnError="false"  Properties="Configuration=$(Configuration);BuildInParallel=True;PostBuildEvent=">
       <Output ItemName="BuildOutput" TaskParameter="TargetOutputs" />
     </MSBuild>
-	<Exec Command="$(PostBuild)" />
+    <Exec Command="$(CommonPostBuild)" />
+    <Exec Condition="$(PostBuild) != ''" Command="$(PostBuild)" />
   </Target>
 
   <Target Name="CleanupAfterBuild" DependsOnTargets="$(CleanupAfterBuildDependsOn)">
@@ -163,18 +180,28 @@
         AssemblyInformationalVersion="$(VersionInfoString)" />
   </Target>
 
+  <!-- build inno setup porject -->
+  <Target Name="BuildInnoSetup"
+  DependsOnTargets="$(BuildSetupDependsOn)">
+
+    <InnoSetup ScriptFile="$(DirSource)\Setup\$(IssFileName)"
+    Quiet="True" />
+    <!--   OutputFileName="MySetup.exe"
+  OutputPath="C:\SetupDir" -->
+  </Target>
+
   <!-- build setup porject -->
   <Target Name="BuildSetup"
       DependsOnTargets="$(BuildSetupDependsOn)">
-    <Exec Command="&quot;$(ProgramFiles)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.com&quot; &quot;$(DirSetup)\Setup.vdproj&quot; /build &quot;$(Configuration)|x86&quot;" />
+    <Exec Command="&quot;$(ProgramFiles)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.com&quot; &quot;$(SolutionFilePath)&quot; /project &quot;$(DirSetup)\$(SetupProject).vdproj&quot; /rebuild &quot;$(Configuration)|x86&quot;" />
   </Target>
 
-  <!-- zip installer with correct filename -->
+  <!-- zip setup project installer with correct filename -->
   <Target Name="ZipSetup"
   DependsOnTargets="$(ZipSetupDependsOn)">
     <!-- http://stackoverflow.com/questions/3359974/how-to-include-version-number-in-vs-setup-project-output-filename/9891044#9891044 -->
     <Exec Command="
-    findstr /v PostBuildEvent &quot;$(DirSetup)\Setup.vdproj&quot; | findstr ProductVersion &gt; &quot;$(DirSetup)\temp.txt&quot;
+    findstr /v PostBuildEvent &quot;$(DirSetup)\$(SetupProject).vdproj&quot; | findstr ProductVersion &gt; &quot;$(DirSetup)\temp.txt&quot;
     set /p var=&lt;&quot;$(DirSetup)\temp.txt&quot;
     set var=%var:&quot;=%
     set var=%var: =%
@@ -182,8 +209,8 @@
     for /f &quot;tokens=1,2 delims=:&quot; %%i in (&quot;%var%&quot;) do @echo %%j &gt;&quot;$(DirSetup)\temp.txt&quot;
     set /p version=&lt;&quot;$(DirSetup)\temp.txt&quot;
     del &quot;$(DirSetup)\temp.txt&quot;
-    rem msi filename must be in vdproj for setup.exe working 
-	rem rename &quot;$(DirSetup)\$(Configuration)\Setup.msi&quot; &quot;$(MsiFileName)&quot;
+    rem msi filename must be in vdproj for setup.exe working
+    rem rename &quot;$(DirSetup)\$(Configuration)\Setup.msi&quot; &quot;$(MsiFileName)&quot;
     rename &quot;$(DirSetup)\$(Configuration)\setup.exe&quot; &quot;$(SetupExeFileNameStart)-%version%.exe&quot;" />
     <ItemGroup>
       <SetupFiles Include="$(DirSetupOutput)\**\*.*" />

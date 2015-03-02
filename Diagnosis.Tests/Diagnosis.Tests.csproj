@@ -132,6 +132,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="..\GeneralAssemblyInfo.cs">
+      <Link>Properties\GeneralAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="CommonTests\DateHelperTest.cs" />
     <Compile Include="CommonTests\DateOffsetFormatterTest.cs" />
     <Compile Include="CommonTests\TimeSpanFormatterTest.cs" />
@@ -143,7 +146,6 @@
     <Compile Include="ViewModelsTests\AutocompleteTest.cs" />
     <Compile Include="ViewModelsTests\HrListTest.cs" />
     <Compile Include="ViewModelsTests\CardTest.cs" />
-    <Compile Include="CommonTests\SequencePartitionTest.cs" />
     <Compile Include="CommonTests\DateFormatterTest.cs" />
     <Compile Include="CommonTests\DateOffsetTest.cs" />
     <Compile Include="DataTests\PersistTest.cs" />
@@ -153,7 +155,6 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="CommonTests\QuerySeparatorTest.cs" />
     <Compile Include="DataTests\HrQueryTest.cs" />
     <Compile Include="DataTests\StartsWithTest.cs" />
     <Compile Include="CommonTests\StringExtensionTest.cs" />
@@ -162,7 +163,7 @@
     <Compile Include="ViewModelsTests\SearchTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Diagnosis.App\Diagnosis.App.csproj">
+    <ProjectReference Include="..\Diagnosis.Client.App\Diagnosis.Client.App.csproj">
       <Project>{d7949590-a383-4e34-9c06-a2568db5cdb6}</Project>
       <Name>Diagnosis.App</Name>
     </ProjectReference>

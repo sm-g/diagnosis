@@ -143,6 +143,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\GeneralAssemblyInfo.cs">
+      <Link>Properties\GeneralAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Entities\Admin.cs" />
     <Compile Include="Entities\Passport.cs" />
     <Compile Include="Entities\HrItem.cs" />

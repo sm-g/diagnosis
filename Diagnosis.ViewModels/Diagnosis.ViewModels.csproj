@@ -136,10 +136,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Iesi.Collections.3.3.3.4001\lib\Net35\Iesi.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="LinqSpecs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\LinqSpecs.1.0\lib\LinqSpecs.dll</HintPath>
-    </Reference>
     <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
@@ -190,6 +186,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\GeneralAssemblyInfo.cs">
+      <Link>Properties\GeneralAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="AuthorityController.cs" />
     <Compile Include="Autocomplete\AutocompleteViewModel - ClipboardTarget.cs" />
     <Compile Include="Autocomplete\AutocompleteViewModel - DragDrop.cs" />
@@ -288,8 +287,6 @@
     <Compile Include="Autocomplete\TagViewModel.cs" />
     <Compile Include="Search\FilterViewModel.cs" />
     <Compile Include="Search\HrSearchOptions.cs" />
-    <Compile Include="Search\SpecSearchers\DiagnosisSearchers.cs" />
-    <Compile Include="Search\SpecSearchers\WordSearchers.cs" />
     <Compile Include="Search\PopupSearchViewModel.cs" />
     <Compile Include="Search\Searchers\DiagnosisFiltratingSearcher.cs" />
     <Compile Include="Search\Searchers\DiagnosisSearcher.cs" />

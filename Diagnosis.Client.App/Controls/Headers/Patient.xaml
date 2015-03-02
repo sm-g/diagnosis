@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="Diagnosis.Client.App.Controls.Headers.Patient"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Name="patient"
+             d:DesignHeight="300"
+             d:DesignWidth="300"
+             mc:Ignorable="d">
+    <!--  Patient or VM -->
+    <DockPanel>
+        <TextBlock VerticalAlignment="Center"
+                   Text="{Binding FullNameOrCreatedAt}" />
+        <Separator Height="0"
+                   Width="10"
+                   Visibility="{Binding IsMale, Converter={StaticResource NotNullToVis}}" />
+        <TextBlock VerticalAlignment="Center"
+                   Style="{StaticResource SexTooltip}">
+            <TextBlock.Text>
+                <MultiBinding Converter="{StaticResource SexToSign}">
+                    <Binding Path="IsMale" />
+                    <Binding Path="DataContext.Sexes"
+                             RelativeSource="{RelativeSource AncestorType=Window}" />
+                </MultiBinding>
+            </TextBlock.Text>
+        </TextBlock>
+        <TextBlock Margin="10,0,0,0"
+                   VerticalAlignment="Center">
+            <TextBlock Text="{Binding Age}" />
+            <TextBlock Text="{Binding Age, Converter={StaticResource AgeToLabel}}" />
+        </TextBlock>
+    </DockPanel>
+</UserControl>

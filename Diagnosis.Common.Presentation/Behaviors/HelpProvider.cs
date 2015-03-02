@@ -8,6 +8,11 @@ namespace Diagnosis.Common.Presentation.Behaviors
     /// </summary>
     public class HelpProvider
     {
+        private static CommandBinding cb = new CommandBinding(
+                            ApplicationCommands.Help,
+                            new ExecutedRoutedEventHandler(Executed),
+                            new CanExecuteRoutedEventHandler(CanExecute));
+
         public static readonly DependencyProperty TopicProperty =
             DependencyProperty.RegisterAttached("Topic", typeof(string), typeof(HelpProvider),
             new FrameworkPropertyMetadata(null,
@@ -18,12 +23,11 @@ namespace Diagnosis.Common.Presentation.Behaviors
 
                 if (e.OldValue == null && e.NewValue != null)
                 {
-                    CommandManager.RegisterClassCommandBinding(
-                        typeof(FrameworkElement),
-                        new CommandBinding(
-                            ApplicationCommands.Help,
-                            new ExecutedRoutedEventHandler(Executed),
-                            new CanExecuteRoutedEventHandler(CanExecute)));
+                    element.CommandBindings.Add(cb);
+                }
+                else if (e.NewValue == null)
+                {
+                    element.CommandBindings.Remove(cb);
                 }
             }));
 

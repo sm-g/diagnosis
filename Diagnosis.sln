@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.App", "Diagnosis.App\Diagnosis.App.csproj", "{D7949590-A383-4E34-9C06-A2568DB5CDB6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.Client.App", "Diagnosis.Client.App\Diagnosis.Client.App.csproj", "{D7949590-A383-4E34-9C06-A2568DB5CDB6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.Data", "Diagnosis.Data\Diagnosis.Data.csproj", "{3EC8D3DF-AA44-4CB8-8847-D4B4872E9DAD}"
 EndProject
@@ -32,16 +32,17 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{7C3E4F58-5233-4371-8E4E-72C27B598E2D}"
 	ProjectSection(SolutionItems) = preProject
 		build.msbuild = build.msbuild
+		GeneralAssemblyInfo.cs = GeneralAssemblyInfo.cs
 		.build\MSBuild.Community.Tasks.dll = .build\MSBuild.Community.Tasks.dll
 		.build\MSBuild.Community.Tasks.targets = .build\MSBuild.Community.Tasks.targets
 		VersionInfo.cs = VersionInfo.cs
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.ServerApp", "Diagnosis.ServerApp\Diagnosis.ServerApp.csproj", "{FFD11AAF-2C02-4035-B5E7-E2BA72670435}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.Server.App", "Diagnosis.Server.App\Diagnosis.Server.App.csproj", "{FFD11AAF-2C02-4035-B5E7-E2BA72670435}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.Common.Presentation", "Diagnosis.Common.Presentation\Diagnosis.Common.Presentation.csproj", "{25357875-228B-46A5-9FB8-1D03677416AF}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Diagnosis.Setup", "Diagnosis.Setup\Setup.vdproj", "{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Diagnosis.Client.Setup", "Diagnosis.Client.Setup\Diagnosis.Client.Setup.vdproj", "{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Diagnosis.Server.Setup", "Diagnosis.Server.Setup\Diagnosis.Server.Setup.vdproj", "{9773EE62-03AD-4B68-9453-BCB8CA20BE40}"
 EndProject
@@ -155,8 +156,8 @@ Global
 		{FFD11AAF-2C02-4035-B5E7-E2BA72670435}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{FFD11AAF-2C02-4035-B5E7-E2BA72670435}.InMemory|Any CPU.ActiveCfg = Release|Any CPU
 		{FFD11AAF-2C02-4035-B5E7-E2BA72670435}.InMemory|Any CPU.Build.0 = Release|Any CPU
-		{FFD11AAF-2C02-4035-B5E7-E2BA72670435}.InMemory|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{FFD11AAF-2C02-4035-B5E7-E2BA72670435}.InMemory|Mixed Platforms.Build.0 = Release|Any CPU
+		{FFD11AAF-2C02-4035-B5E7-E2BA72670435}.InMemory|Mixed Platforms.ActiveCfg = InMemory|Any CPU
+		{FFD11AAF-2C02-4035-B5E7-E2BA72670435}.InMemory|Mixed Platforms.Build.0 = InMemory|Any CPU
 		{FFD11AAF-2C02-4035-B5E7-E2BA72670435}.InMemory|x86.ActiveCfg = Release|Any CPU
 		{FFD11AAF-2C02-4035-B5E7-E2BA72670435}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFD11AAF-2C02-4035-B5E7-E2BA72670435}.Release|Any CPU.Build.0 = Release|Any CPU
@@ -170,8 +171,8 @@ Global
 		{25357875-228B-46A5-9FB8-1D03677416AF}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{25357875-228B-46A5-9FB8-1D03677416AF}.InMemory|Any CPU.ActiveCfg = Release|Any CPU
 		{25357875-228B-46A5-9FB8-1D03677416AF}.InMemory|Any CPU.Build.0 = Release|Any CPU
-		{25357875-228B-46A5-9FB8-1D03677416AF}.InMemory|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{25357875-228B-46A5-9FB8-1D03677416AF}.InMemory|Mixed Platforms.Build.0 = Release|Any CPU
+		{25357875-228B-46A5-9FB8-1D03677416AF}.InMemory|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{25357875-228B-46A5-9FB8-1D03677416AF}.InMemory|Mixed Platforms.Build.0 = Debug|Any CPU
 		{25357875-228B-46A5-9FB8-1D03677416AF}.InMemory|x86.ActiveCfg = Release|Any CPU
 		{25357875-228B-46A5-9FB8-1D03677416AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25357875-228B-46A5-9FB8-1D03677416AF}.Release|Any CPU.Build.0 = Release|Any CPU
@@ -181,30 +182,27 @@ Global
 		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Debug|Any CPU.ActiveCfg = Debug
 		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Debug|Any CPU.Build.0 = Debug
 		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Debug|Mixed Platforms.ActiveCfg = Debug
-		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Debug|Mixed Platforms.Build.0 = Debug
 		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Debug|x86.ActiveCfg = Debug
 		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Debug|x86.Build.0 = Debug
 		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.InMemory|Any CPU.ActiveCfg = Release
-		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.InMemory|Any CPU.Build.0 = Release
 		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.InMemory|Mixed Platforms.ActiveCfg = Release
-		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.InMemory|Mixed Platforms.Build.0 = Release
 		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.InMemory|x86.ActiveCfg = Release
-		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.InMemory|x86.Build.0 = Release
 		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Release|Any CPU.ActiveCfg = Release
-		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Release|Any CPU.Build.0 = Release
 		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Release|Mixed Platforms.ActiveCfg = Release
-		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Release|Mixed Platforms.Build.0 = Release
 		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Release|x86.ActiveCfg = Release
 		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Release|x86.Build.0 = Release
 		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.Debug|Any CPU.ActiveCfg = Debug
+		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.Debug|Any CPU.Build.0 = Debug
 		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.Debug|Mixed Platforms.ActiveCfg = Debug
 		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.Debug|x86.ActiveCfg = Debug
+		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.Debug|x86.Build.0 = Debug
 		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.InMemory|Any CPU.ActiveCfg = Release
 		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.InMemory|Mixed Platforms.ActiveCfg = Release
 		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.InMemory|x86.ActiveCfg = Release
 		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.Release|Any CPU.ActiveCfg = Release
 		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.Release|Mixed Platforms.ActiveCfg = Release
 		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.Release|x86.ActiveCfg = Release
+		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.Release|x86.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

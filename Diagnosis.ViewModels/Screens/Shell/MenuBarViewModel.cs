@@ -4,6 +4,7 @@ using EventAggregator;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -96,7 +97,16 @@ namespace Diagnosis.ViewModels.Screens
                     }, () => switcher.Screen != Screen.Login && AuthorityController.CurrentUserCanOpen(Screen.Login));
             }
         }
-
+        public RelayCommand OpenDBFolderCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Process.Start(Constants.AppDataDir);
+                });
+            }
+        }
         public RelayCommand OpenWordsCommand
         {
             get

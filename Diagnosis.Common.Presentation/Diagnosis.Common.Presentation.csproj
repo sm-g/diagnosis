@@ -121,6 +121,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\GeneralAssemblyInfo.cs">
+      <Link>Properties\GeneralAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Behaviors\HelpProvider.cs" />
     <Compile Include="Behaviors\Attached.cs" />
     <Compile Include="Behaviors\ClipboardBehavior.cs" />
@@ -190,6 +193,7 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Startuper.cs" />
     <Compile Include="Styles\TreeStyle.cs" />
   </ItemGroup>
   <ItemGroup>
