@@ -2,12 +2,8 @@
 using Diagnosis.Models;
 using EventAggregator;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Windows;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -15,6 +11,10 @@ namespace Diagnosis.ViewModels.Screens
     {
         private ScreenSwitcher switcher;
         private bool _visible;
+        private VisibleRelayCommand _openSyncCommand;
+        private VisibleRelayCommand _openDoctorsCommand;
+        private VisibleRelayCommand _openPatientsCommand;
+        private VisibleRelayCommand _openWordsCommand;
 
         public MenuBarViewModel(ScreenSwitcher switcher, SearchViewModel sPanel)
         {
@@ -24,7 +24,10 @@ namespace Diagnosis.ViewModels.Screens
             AuthorityController.LoggedIn += (s, e) =>
             {
                 OnPropertyChanged(() => CurrentUser);
-                OpenSyncCommand.IsVisible = CurrentUser is Admin;
+                OpenSyncCommand.IsVisible = AuthorityController.CurrentUserCanOpen(Screen.Sync);
+                OpenDoctorsCommand.IsVisible = AuthorityController.CurrentUserCanOpen(Screen.Doctors);
+                OpenPatientsCommand.IsVisible = AuthorityController.CurrentUserCanOpen(Screen.Patients);
+                OpenWordsCommand.IsVisible = AuthorityController.CurrentUserCanOpen(Screen.Words);
 #if DEBUG
                 OpenSyncCommand.IsVisible = true;
 #endif
@@ -48,6 +51,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         private bool _metro = true;
+
         public bool IsMetroTheme
         {
             get
@@ -67,6 +71,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         private bool _big;
+
         public bool IsBigFont
         {
             get
@@ -97,6 +102,7 @@ namespace Diagnosis.ViewModels.Screens
                     }, () => switcher.Screen != Screen.Login && AuthorityController.CurrentUserCanOpen(Screen.Login));
             }
         }
+
         public RelayCommand OpenDBFolderCommand
         {
             get
@@ -107,29 +113,43 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
-        public RelayCommand OpenWordsCommand
+
+        public VisibleRelayCommand OpenWordsCommand
         {
             get
             {
-                return new RelayCommand(
+                return _openWordsCommand ?? (_openWordsCommand = new VisibleRelayCommand(
                     () =>
                     {
                         switcher.OpenScreen(Screen.Words);
-                    }, () => switcher.Screen != Screen.Words && AuthorityController.CurrentUserCanOpen(Screen.Words));
+                    }, () => switcher.Screen != Screen.Words && AuthorityController.CurrentUserCanOpen(Screen.Words)));
             }
         }
 
-        public RelayCommand OpenPatientsCommand
+        public VisibleRelayCommand OpenPatientsCommand
         {
             get
             {
-                return new RelayCommand(() =>
+                return _openPatientsCommand ?? (_openPatientsCommand = new VisibleRelayCommand(() =>
                 {
                     switcher.OpenScreen(Screen.Patients);
-                }, () => switcher.Screen != Screen.Patients && AuthorityController.CurrentUserCanOpen(Screen.Patients));
+                }, () => switcher.Screen != Screen.Patients && AuthorityController.CurrentUserCanOpen(Screen.Patients)));
             }
         }
-        VisibleRelayCommand _openSyncCommand;
+
+        public VisibleRelayCommand OpenDoctorsCommand
+        {
+            get
+            {
+                return _openDoctorsCommand ?? (_openDoctorsCommand = new VisibleRelayCommand(() =>
+                {
+                    switcher.OpenScreen(Screen.Doctors);
+                }, () => switcher.Screen != Screen.Doctors && AuthorityController.CurrentUserCanOpen(Screen.Doctors)));
+            }
+        }
+
+
+
         public VisibleRelayCommand OpenSyncCommand
         {
             get
@@ -137,17 +157,7 @@ namespace Diagnosis.ViewModels.Screens
                 return _openSyncCommand ?? (_openSyncCommand = new VisibleRelayCommand(() =>
                 {
                     switcher.OpenScreen(Screen.Sync);
-
-                },
-                () => switcher.Screen != Screen.Sync && AuthorityController.CurrentUserCanOpen(Screen.Sync)));
-            }
-        }
-
-        public RelayCommand AddCommand
-        {
-            get
-            {
-                return null;// patProducer.AddCommand;
+                }, () => switcher.Screen != Screen.Sync && AuthorityController.CurrentUserCanOpen(Screen.Sync)));
             }
         }
 
@@ -161,6 +171,7 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
+
         public RelayCommand OpenHelpCommand
         {
             get

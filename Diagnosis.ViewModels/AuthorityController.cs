@@ -8,6 +8,7 @@ using System.Text;
 using Diagnosis.Common;
 using PasswordHash;
 using System.Diagnostics.Contracts;
+using Diagnosis.ViewModels.Screens;
 
 namespace Diagnosis.ViewModels
 {
@@ -15,6 +16,9 @@ namespace Diagnosis.ViewModels
     {
         public static event EventHandler<UserEventArgs> LoggedIn;
         public static event EventHandler LoggedOut;
+        static List<Screen> doctorScreens = new List<Screen> { Screen.Login, Screen.Card, Screen.Patients, Screen.Words };
+        static List<Screen> adminScreens = new List<Screen> { Screen.Login, Screen.Doctors, Screen.Sync };
+
         static AuthorityController()
         {
             AutoLogon = true;
@@ -77,20 +81,18 @@ namespace Diagnosis.ViewModels
         }
 
         [Pure]
-        public static bool CurrentUserCanOpen(Screens.Screen screen)
+        public static bool CurrentUserCanOpen(Screen screen)
         {
-            if (screen == Screens.Screen.Login)
-                return true;
-
             if (CurrentUser is Admin)
             {
-                return screen == Screens.Screen.Doctors;
+                return adminScreens.Contains(screen);
             }
             if (CurrentUser is Doctor)
             {
-                return screen != Screens.Screen.Doctors;
+                return doctorScreens.Contains(screen);
             }
-            return false;
+            // nobody can login
+            return screen == Screen.Login;
         }
 
         private static void OnLoggedIn(IUser user)

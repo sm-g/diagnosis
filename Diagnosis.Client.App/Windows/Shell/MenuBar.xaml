@@ -12,16 +12,20 @@
     <Grid Background="{StaticResource mainMenuBackgroundBrush}">
         <Menu>
             <MenuItem Command="{Binding OpenPatientsCommand}"
+                      Visibility="{Binding OpenPatientsCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                       Header="_Все пациенты" />
+            <MenuItem Command="{Binding OpenDoctorsCommand}"
+                      Visibility="{Binding OpenDoctorsCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      Header="_Врачи" />
             <!--<MenuItem Header="_Пациенты">
                 <MenuItem Command="{Binding AddCommand}" Header="_Новый..." />
             </MenuItem>-->
-            <!--<MenuItem Header="_Справочники">-->
             <MenuItem Command="{Binding OpenWordsCommand}"
+                      Visibility="{Binding OpenWordsCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                       Header="_Словарь" />
             <MenuItem Command="{Binding OpenSyncCommand}"
                       Visibility="{Binding OpenSyncCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                      Header="С_инхронизация" />
+                      Header="_Синхронизация" />
             
             <MenuItem x:Name="view"
                       Header="_Вид">
