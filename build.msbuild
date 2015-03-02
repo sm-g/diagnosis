@@ -41,7 +41,6 @@
     </UnitTestDependsOn>
 
     <BuildSetupDependsOn>
-      <!-- BuildSolution -->
     </BuildSetupDependsOn>
 
     <ZipSetupDependsOn>
@@ -62,7 +61,7 @@
     <CallTarget Condition="$(BuildRelease) == '1'" Targets="CopyRelease" />
     <!-- <CallTarget Condition="$(RunTests) == '1'" Targets="Test" /> -->
     <CallTarget Condition="$(CopyWorking) == '1'" Targets="CopyWorking" />
-    <CallTarget Condition="$(BuildAndZipSetup) == '1'" Targets="ZipSetup" />
+    <CallTarget Condition="$(BuildAndZipSetup) == '1'" Targets="BuildInnoSetup" />
   </Target>
 
   <Target Name="SetupClient">
@@ -79,6 +78,7 @@
       <DirSetupOutput>$(DirSetup)\$(Configuration)</DirSetupOutput>
       <ZipSetupPath>$(DirMainOutput)\$(AppWithVersionName).zip</ZipSetupPath>
       <MsiFileName>diagnosis-client.msi</MsiFileName>
+      <IssFileName>setup-client.iss</IssFileName>
       <SetupExeFileNameStart>setup-client</SetupExeFileNameStart>
 
       <!-- copy Help -->
@@ -105,7 +105,9 @@
       <DirSetupOutput>$(DirSetup)\$(Configuration)</DirSetupOutput>
       <ZipSetupPath>$(DirMainOutput)\$(AppWithVersionName).zip</ZipSetupPath>
       <MsiFileName>diagnosis-server.msi</MsiFileName>
+      <IssFileName>setup-server.iss</IssFileName>
       <SetupExeFileNameStart>setup-server</SetupExeFileNameStart>
+
       <PostBuild></PostBuild>
 
       <!-- copy sql server ce and sqlite.dll -->
@@ -178,13 +180,23 @@
         AssemblyInformationalVersion="$(VersionInfoString)" />
   </Target>
 
+  <!-- build inno setup porject -->
+  <Target Name="BuildInnoSetup"
+  DependsOnTargets="$(BuildSetupDependsOn)">
+
+    <InnoSetup ScriptFile="$(DirSource)\Setup\$(IssFileName)"
+    Quiet="True" />
+    <!--   OutputFileName="MySetup.exe"
+  OutputPath="C:\SetupDir" -->
+  </Target>
+
   <!-- build setup porject -->
   <Target Name="BuildSetup"
       DependsOnTargets="$(BuildSetupDependsOn)">
     <Exec Command="&quot;$(ProgramFiles)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.com&quot; &quot;$(SolutionFilePath)&quot; /project &quot;$(DirSetup)\$(SetupProject).vdproj&quot; /rebuild &quot;$(Configuration)|x86&quot;" />
   </Target>
 
-  <!-- zip installer with correct filename -->
+  <!-- zip setup project installer with correct filename -->
   <Target Name="ZipSetup"
   DependsOnTargets="$(ZipSetupDependsOn)">
     <!-- http://stackoverflow.com/questions/3359974/how-to-include-version-number-in-vs-setup-project-output-filename/9891044#9891044 -->
@@ -198,7 +210,7 @@
     set /p version=&lt;&quot;$(DirSetup)\temp.txt&quot;
     del &quot;$(DirSetup)\temp.txt&quot;
     rem msi filename must be in vdproj for setup.exe working
-  rem rename &quot;$(DirSetup)\$(Configuration)\Setup.msi&quot; &quot;$(MsiFileName)&quot;
+    rem rename &quot;$(DirSetup)\$(Configuration)\Setup.msi&quot; &quot;$(MsiFileName)&quot;
     rename &quot;$(DirSetup)\$(Configuration)\setup.exe&quot; &quot;$(SetupExeFileNameStart)-%version%.exe&quot;" />
     <ItemGroup>
       <SetupFiles Include="$(DirSetupOutput)\**\*.*" />
