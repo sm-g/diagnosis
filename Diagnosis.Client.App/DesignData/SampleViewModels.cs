@@ -54,7 +54,13 @@ namespace Diagnosis.Client.App.DesignData
         {
         }
     }
-
+    public class SampleHrListViewModel : HrListViewModel
+    {
+        public SampleHrListViewModel() :
+            base(Mocks.holder, (hr, info) => { }, (hios) => { })
+        {
+        }
+    }
     public class SampleDoctorEditorViewModel : DoctorEditorViewModel
     {
         public SampleDoctorEditorViewModel()
@@ -124,10 +130,10 @@ namespace Diagnosis.Client.App.DesignData
 
 
         public static HealthRecord hr = new HealthRecord(holder, doc)
-          {
-              Category = cats[0],
-              FromMonth = 5,
-          };
+        {
+            Category = cats[0],
+            FromMonth = 5,
+        };
 
         static Mocks()
         {

@@ -9,6 +9,7 @@
              xmlns:controls="clr-namespace:Diagnosis.Client.App.Controls"
              xmlns:editors="clr-namespace:Diagnosis.Client.App.Controls.Editors"
              xmlns:beh="clr-namespace:Diagnosis.Client.App.Behaviors"
+             xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d"
@@ -16,6 +17,7 @@
              diag:HelpProvider.Topic="hrselect"
              d:DesignHeight="300"
              d:DesignWidth="600"
+             d:DataContext="{d:DesignInstance design:SampleHrListViewModel, IsDesignTimeCreatable=True}"
              x:Name="hrList">
     <UserControl.Resources>
         <InputBindingCollection x:Shared="False"
@@ -223,8 +225,7 @@
         </Grid>
         <Grid  x:Name="recordsGrid"
                Visibility="{Binding HealthRecords.Count, Converter={StaticResource MoreThanToVisibility}}"
-               Grid.Row="1"
-               d:IsHidden="True">
+               Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
@@ -247,8 +248,7 @@
                      dd:DragDrop.IsDragSource="{Binding IsDragSourceEnabled}"
                      dd:DragDrop.DragHandler="{Binding DragHandler}"
                      dd:DragDrop.DragDirectlySelectedOnly="True"
-                     beh:ListBoxSelector.Enabled="{Binding IsRectSelectEnabled}"
-                     d:IsHidden="True">
+                     beh:ListBoxSelector.Enabled="{Binding IsRectSelectEnabled}">
                 <ListBox.GroupStyle>
                     <GroupStyle>
                         <GroupStyle.ContainerStyle>
@@ -259,15 +259,14 @@
                                             <StackPanel Background="Transparent">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition />
                                                         <ColumnDefinition Width="auto" />
+                                                        <ColumnDefinition />
                                                     </Grid.ColumnDefinitions>
-                                                    <Separator Foreground="Gray"
-                                                               VerticalAlignment="Center" />
                                                     <TextBlock Text="{Binding Name, Mode=OneWay}"
+                                                               Margin="3,0,10,0" />
+                                                    <Separator Foreground="Gray"
                                                                Grid.Column="1"
-                                                               HorizontalAlignment="Right"
-                                                               Margin="10,0,5,0" />
+                                                               VerticalAlignment="Center" />
                                                 </Grid>
                                                 <ItemsPresenter />
                                             </StackPanel>
