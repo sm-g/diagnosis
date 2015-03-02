@@ -30,6 +30,7 @@ Source: "{#ServerBuildOutputFolder}\{#ServerAppExeName}.config"; DestDir: "{app}
 
 [Icons]
 Name: "{group}\{#ServerAppName}"; Filename: "{app}\{#ServerAppExeName}"
+Name: "{group}\Логи"; Filename: "{localappdata}\{#LogsSubFolder}"; Flags: uninsneveruninstall
 Name: "{commondesktop}\{#ServerAppName}"; Filename: "{app}\{#ServerAppExeName}"; Tasks: desktopicon
 
 [Run]
@@ -48,3 +49,4 @@ Name: "{app}\bin"
 ; Name: "custom"; Description: "Выборочная установка"; Flags: iscustom
 
 #include "code.iss"
+

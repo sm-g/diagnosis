@@ -91,3 +91,20 @@ begin
     success := RegQueryStringValue(HKLM, key, 'ThisVersionInstalled', install);
     result := success and (install = 'Y');
 end;
+
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+var 
+	allRemoved: boolean;
+	item: String;
+begin
+	if CurUninstallStep = usPostUninstall then
+		begin
+		allRemoved := not FileExists(ExpandConstant('{app}\{#ServerAppExeName}')) and not FileExists(ExpandConstant('{app}\{#ClientAppExeName}'))
+		if allRemoved then 
+			begin
+			item := ExpandConstant('{group}\{#LogsFolderName}.lnk');
+			DeleteFile(item);
+			RemoveDir(ExpandConstant('{group}'));
+          end;
+		end;
+end;

@@ -35,6 +35,7 @@ Source: "{#ClientBuildOutputFolder}\bin\Xceed.Wpf.DataGrid.dll"; DestDir: "{app}
 Source: "{#ClientBuildOutputFolder}\bin\Xceed.Wpf.Toolkit.dll"; DestDir: "{app}\bin\"
 Source: "{#ClientBuildOutputFolder}\bin\EPPlus.dll"; DestDir: "{app}\bin"
 Source: "{#ClientBuildOutputFolder}\bin\MahApps.Metro.dll"; DestDir: "{app}\bin\"
+Source: "{#ClientBuildOutputFolder}\bin\System.Windows.Interactivity.dll"; DestDir: "{app}\bin\"
 Source: "{#ClientBuildOutputFolder}\bin\Microsoft.Data.ConnectionUI.Dialog.dll"; DestDir: "{app}\bin\"
 Source: "{#ClientBuildOutputFolder}\bin\Microsoft.Data.ConnectionUI.dll"; DestDir: "{app}\bin\"
 ; client help
@@ -44,6 +45,8 @@ Source: "{#ClientBuildOutputFolder}\Help\main.css"; DestDir: "{app}\Help\"
 
 [Icons]
 Name: "{group}\{#ClientAppName}"; Filename: "{app}\{#ClientAppExeName}"
+Name: "{group}\Логи"; Filename: "{localappdata}\{#LogsSubFolder}" ; Flags: uninsneveruninstall
+Name: "{group}\База данных"; Filename: "{userappdata}\Diagnosis\Client"
 Name: "{commondesktop}\{#ClientAppName}"; Filename: "{app}\{#ClientAppExeName}"; Tasks: desktopicon
 
 [Run]
@@ -53,5 +56,7 @@ Filename: "{app}\{#ClientAppExeName}"; Flags: nowait postinstall skipifsilent un
 [Dirs]
 Name: "{app}\Help"
 Name: "{app}\bin"
+Name: "{localappdata}\{#LogsSubFolder}"; Flags: uninsneveruninstall
+Name: "{userappdata}\Diagnosis\Client"; Flags: uninsneveruninstall
 
 #include "code.iss"
