@@ -105,6 +105,8 @@ namespace Diagnosis.Data
             }
 
             var fail = false;
+            var constr = conn.ConnectionString.Replace("%APPDATA%",
+                System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData));
 
             // create db for client side
             if (side == Side.Client)
@@ -114,7 +116,7 @@ namespace Diagnosis.Data
                 if (!fail)
                     try
                     {
-                        SqlHelper.CreateSqlCeByConStr(conn.ConnectionString);
+                        SqlHelper.CreateSqlCeByConStr(constr);
                     }
                     catch (System.Exception)
                     {
@@ -123,7 +125,8 @@ namespace Diagnosis.Data
 
             }
 
-            fail |= !conn.IsAvailable();
+            connection = new System.Configuration.ConnectionStringSettings(conn.Name, constr, conn.ProviderName);
+            fail |= !connection.IsAvailable();
 
             if (fail)
             {
@@ -131,8 +134,6 @@ namespace Diagnosis.Data
                 return;
             }
 
-            connection = new System.Configuration.ConnectionStringSettings(conn.Name, conn.ConnectionString.Replace("%APPDATA%",
-                System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData)), conn.ProviderName);
         }
 
         public static ISession GetSession()
