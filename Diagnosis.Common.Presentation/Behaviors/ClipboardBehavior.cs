@@ -30,6 +30,20 @@ namespace Diagnosis.Common.Presentation.Behaviors
             element.SetValue(ClipboardTargetProperty, value);
         }
 
+        public static readonly DependencyProperty OnlySelfProperty =
+           DependencyProperty.RegisterAttached("OnlySelf", typeof(bool), typeof(ClipboardBehavior),
+               new PropertyMetadata(false));
+
+        public static bool GetOnlySelf(DependencyObject obj)
+        {
+            return (bool)obj.GetValue(OnlySelfProperty);
+        }
+
+        public static void SetOnlySelf(DependencyObject obj, bool value)
+        {
+            obj.SetValue(OnlySelfProperty, value);
+        }
+
         protected static void OnAttached(FrameworkElement element)
         {
             CommandBinding CopyCommandBinding = new CommandBinding(
@@ -53,7 +67,7 @@ namespace Diagnosis.Common.Presentation.Behaviors
 
         private static void CopyCommandExecuted(object target, ExecutedRoutedEventArgs e)
         {
-            var vm = (target as FrameworkElement).DataContext as IClipboardTarget;
+            var vm = GetTargetVm(target, e);
             if (vm != null)
             {
                 vm.Copy();
@@ -68,8 +82,7 @@ namespace Diagnosis.Common.Presentation.Behaviors
 
         private static void CutCommandExecuted(object target, ExecutedRoutedEventArgs e)
         {
-            var vm = (target as FrameworkElement).DataContext as IClipboardTarget;
-
+            var vm = GetTargetVm(target, e);
             if (vm != null)
             {
                 vm.Cut();
@@ -84,7 +97,7 @@ namespace Diagnosis.Common.Presentation.Behaviors
 
         private static void PasteCommandExecuted(object target, ExecutedRoutedEventArgs e)
         {
-            var vm = (target as FrameworkElement).DataContext as IClipboardTarget;
+            var vm = GetTargetVm(target, e);
             if (vm != null)
             {
                 vm.Paste();
@@ -94,11 +107,20 @@ namespace Diagnosis.Common.Presentation.Behaviors
 
         private static void PasteCommandCanExecute(object target, CanExecuteRoutedEventArgs e)
         {
-            var vm = (target as FrameworkElement).DataContext as IClipboardTarget;
+            var vm = GetTargetVm(target, e);
             if (vm != null)
             {
                 e.CanExecute = vm.CanPaste();
             }
+        }
+
+        private static IClipboardTarget GetTargetVm(object target, RoutedEventArgs e)
+        {
+            var fe = target as FrameworkElement;
+            var vm = fe.DataContext as IClipboardTarget;
+            if (GetOnlySelf(fe) && e.Source != target)
+                return null;
+            return vm;
         }
     }
 }

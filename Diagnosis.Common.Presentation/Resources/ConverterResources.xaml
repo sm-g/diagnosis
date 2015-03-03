@@ -6,7 +6,7 @@
     <conv:NullableBooleanConverter x:Key="NullableBoolean" />
     <conv:AndMultiConverter x:Key="AndBoolean" />
     <conv:OrMultiConverter x:Key="OrBoolean" />
-    <conv:IsNullToBooleanConverter x:Key="IsNullToBoolean" />
+    <conv:IsNullToBooleanConverter x:Key="IsNullToBoolean" />   
 
     <conv:ValueConverterGroup x:Key="NotNullToBoolean">
         <conv:IsNullToBooleanConverter />
@@ -26,6 +26,9 @@
         <conv:IsNullToBooleanConverter />
         <conv:BooleanToVisibilityConverter />
     </conv:ValueConverterGroup>
+    
+    <conv:ToUpperConverter x:Key="ToUpper" />
+    <conv:ToLowerConverter x:Key="ToLower" />
     
     <conv:IntToString x:Key="IntToString" />
     <conv:AgeToYearsLabel x:Key="AgeToLabel" />

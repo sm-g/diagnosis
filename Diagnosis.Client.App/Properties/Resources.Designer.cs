@@ -180,6 +180,24 @@ namespace Diagnosis.Client.App.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Разделы.
+        /// </summary>
+        public static string HrCategories {
+            get {
+                return ResourceManager.GetString("HrCategories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Раздел.
+        /// </summary>
+        public static string HrCategory {
+            get {
+                return ResourceManager.GetString("HrCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap save_16xLG {
@@ -200,7 +218,7 @@ namespace Diagnosis.Client.App.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to По категории.
+        ///   Looks up a localized string similar to По разделу.
         /// </summary>
         public static string Sorting_Category {
             get {

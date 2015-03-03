@@ -182,6 +182,7 @@
     <Compile Include="Converters\IntToString.cs" />
     <Compile Include="Converters\ListConverters.cs" />
     <Compile Include="Converters\MonthToString.cs" />
+    <Compile Include="Converters\StringCase.cs" />
     <Compile Include="Converters\TreeDepthToMargin.cs" />
     <Compile Include="Converters\ValueConverterGroup.cs" />
     <Compile Include="Debug\DebugOutput.cs" />

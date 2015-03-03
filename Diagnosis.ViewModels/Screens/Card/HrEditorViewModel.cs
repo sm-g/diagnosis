@@ -14,7 +14,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class HrEditorViewModel : ViewModelBase
+    public class HrEditorViewModel : ViewModelBase, IClipboardTarget
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(HrEditorViewModel));
 
@@ -40,6 +40,7 @@ namespace Diagnosis.ViewModels.Screens
         /// Запись выгружена.
         /// </summary>
         public event EventHandler<DomainEntityEventArgs> Unloaded;
+
         /// <summary>
         /// Редактор закрыт. Перед этим выгружается запись.
         /// </summary>
@@ -49,7 +50,6 @@ namespace Diagnosis.ViewModels.Screens
         /// Редактор закрывается по команде. Запись может быть null.
         /// </summary>
         public event EventHandler<DomainEntityEventArgs> Closing;
-
 
         #region HealthRecord
 
@@ -120,28 +120,93 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+        #region Commands
 
         public RelayCommand RevertCommand
         {
             get
             {
                 return new RelayCommand(() =>
-                       {
-                           (HealthRecord.healthRecord as IEditableObject).CancelEdit();
-                           (HealthRecord.healthRecord as IEditableObject).BeginEdit();
-                           CreateAutoComplete();
-                       }, () => HasHealthRecord && HealthRecord.healthRecord.IsDirty);
+                {
+                    (HealthRecord.healthRecord as IEditableObject).CancelEdit();
+                    (HealthRecord.healthRecord as IEditableObject).BeginEdit();
+                    CreateAutoComplete();
+                }, () => HasHealthRecord && HealthRecord.healthRecord.IsDirty);
             }
         }
 
-        public RelayCommand DeleteCommand
+        public RelayCommand DeleteHrCommand
         {
             get
             {
                 return new RelayCommand(() =>
-                       {
-                           HealthRecord.healthRecord.IsDeleted = true;
-                       });
+                {
+                    HealthRecord.healthRecord.IsDeleted = true;
+                });
+            }
+        }
+
+        public RelayCommand DeleteItemsCommand
+        {
+            get { return Autocomplete != null ? Autocomplete.DeleteCommand : null; }
+        }
+
+        public VisibleRelayCommand<TagViewModel> SendToSearchCommand
+        {
+            get { return Autocomplete != null ? Autocomplete.SendToSearchCommand : null; }
+        }
+
+
+        public void Cut()
+        {
+            Autocomplete.Cut();
+        }
+
+        public void Copy()
+        {
+            Autocomplete.Copy();
+        }
+
+        public void Paste()
+        {
+            Autocomplete.Paste();
+        }
+
+        public bool CanPaste()
+        {
+            return Autocomplete.CanPaste();
+        }
+
+        public RelayCommand CutCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Autocomplete.Cut();
+                });
+            }
+        }
+
+        public RelayCommand CopyCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Autocomplete.Copy();
+                });
+            }
+        }
+
+        public RelayCommand PasteCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Autocomplete.Paste();
+                }, () => Autocomplete != null && Autocomplete.CanPaste());
             }
         }
 
@@ -181,10 +246,22 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
+        #endregion
 
         #region AutoComplete
 
-        public AutocompleteViewModel Autocomplete { get { return _autocomplete; } }
+        public AutocompleteViewModel Autocomplete
+        {
+            get { return _autocomplete; }
+            private set
+            {
+                _autocomplete = value;
+                OnPropertyChanged("Autocomplete");
+                OnPropertyChanged(() => SendToSearchCommand);
+                OnPropertyChanged(() => DeleteItemsCommand);
+
+            }
+        }
 
         public Word SyncTransientWord(Word w)
         {
@@ -207,21 +284,21 @@ namespace Diagnosis.ViewModels.Screens
 
             var initials = HealthRecord.healthRecord.GetOrderedEntities();
             recognizer = new Recognizer(session) { ShowChildrenFirst = true };
-            _autocomplete = new AutocompleteViewModel(
+
+            Autocomplete = new AutocompleteViewModel(
                 recognizer,
                 true,
                 true,
                 false,
                 initials);
 
-            _autocomplete.EntitiesChanged += (s, e) =>
+            Autocomplete.EntitiesChanged += (s, e) =>
             {
                 // меняем элементы записи
                 var items = _autocomplete.GetEntities().ToList();
                 HealthRecord.healthRecord.SetItems(items);
             };
 
-            OnPropertyChanged("Autocomplete");
         }
 
         #endregion AutoComplete
@@ -287,6 +364,7 @@ namespace Diagnosis.ViewModels.Screens
                 h(this, new DomainEntityEventArgs(hr));
             }
         }
+
         protected virtual void OnClosing(HealthRecord hr)
         {
             var h = Closing;
@@ -347,7 +425,6 @@ namespace Diagnosis.ViewModels.Screens
                 recognizer = null; // editor closed, created words persisted
 
                 OnUnloaded(hr);
-
             }
         }
 
@@ -358,5 +435,6 @@ namespace Diagnosis.ViewModels.Screens
                 OnPropertyChanged(e.PropertyName);
             }
         }
+
     }
 }

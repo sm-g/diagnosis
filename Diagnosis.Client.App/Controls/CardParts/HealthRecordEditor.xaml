@@ -13,6 +13,8 @@
              mc:Ignorable="d"
              x:Name="editor"
              diag:HelpProvider.Topic="hreditor"
+             diag:ClipboardBehavior.ClipboardTarget="True"
+             diag:ClipboardBehavior.OnlySelf="True"
              Tag="{Binding DataContext.HrList, RelativeSource={RelativeSource AncestorType=UserControl}}"
              d:DataContext="{d:DesignInstance design:SampleHrEditorViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="300"
@@ -77,17 +79,61 @@
                 <!--
                     </DockPanel>
                 </Button>-->
-                <Button Command="{Binding DeleteCommand}"
+                <!--<Button Command="{Binding DeleteCommand}"
                         ToolTip="Удалить запись">
                     <DockPanel>
                         <Image Source="{StaticResource deleteImage}"
                                Width="16" />
-                        <!--<TextBlock Text="Удалить" />-->
+                        -->
+                <!--<TextBlock Text="Удалить" />-->
+                <!--
+                    </DockPanel>
+                </Button>-->
+                <DockPanel>
+                    <Label Content="{Binding HrCategory, Source={StaticResource Resources}}"
+                           Width="auto"
+                           VerticalAlignment="Center" />
+                    <ComboBox ItemsSource="{Binding Categories}"
+                              SelectedItem="{Binding Category}">
+                    </ComboBox>
+                </DockPanel>
+                <Separator />
+                <Button Command="{Binding CutCommand}"
+                        ToolTip="Вырезать выбранные элементы (Ctrl+X)">
+                    <DockPanel>
+                        <Image Source="{StaticResource cutImage}" />
                     </DockPanel>
                 </Button>
-                <Separator />
 
-                <Button Command="{Binding AddIcdCommand}"
+                <Button Command="{Binding CopyCommand}"
+                        ToolTip="Копировать выбранные элементы (Ctrl+C)">
+                    <DockPanel>
+                        <Image Source="{StaticResource copyImage}" />
+                    </DockPanel>
+                </Button>
+
+                <Button Command="{Binding PasteCommand}"
+                        ToolTip="Вставить элементы (Ctrl+V)">
+                    <DockPanel>
+                        <Image Source="{StaticResource pasteImage}" />
+                    </DockPanel>
+                </Button>
+
+                <Button Command="{Binding SendToSearchCommand}"
+                        ToolTip="Искать выбранные элементы (Ctrl+F)">
+                    <DockPanel>
+                        <Image Source="{StaticResource findImage}" />
+                    </DockPanel>
+                </Button>
+
+                <Button Command="{Binding DeleteItemsCommand}"
+                        ToolTip="Удалить выбранные элементы (Delete)">
+                    <DockPanel>
+                        <Image Source="{StaticResource deleteImage}" />
+                    </DockPanel>
+                </Button>
+               
+                <!--<Button Command="{Binding AddIcdCommand}"
                         ToolTip="Добавить МКБ">
                     <DockPanel>
                         <TextBlock Text="МКБ" />
@@ -98,9 +144,9 @@
                     <DockPanel>
                         <TextBlock Text="измерение" />
                     </DockPanel>
-                </Button>
+                </Button>-->
             </ToolBar>
-          
+
             <Button DockPanel.Dock="Right"
                     x:Name="closeButton"
                     Command="{Binding CloseCommand}"
@@ -119,6 +165,7 @@
             </Button>
             <Button DockPanel.Dock="Right"
                     Style="{StaticResource HelpButton}"
+                    Margin="0"
                     diag:HelpProvider.Topic="hreditor" />
         </DockPanel>
 
@@ -135,12 +182,12 @@
                 <search:Autocomplete x:Name="autocomplete"
                                      DataContext="{Binding DataContext.Autocomplete, ElementName=editor}" />
             </DockPanel>
-            <DockPanel>
-                <!--DataContext is HrEditorViewModel-->
-                <Label VerticalAlignment="Top">_Категория</Label>
+            <!--<DockPanel>
+                --><!--DataContext is HrEditorViewModel--><!--
+                <Label VerticalAlignment="Top">_Раздел ИБ</Label>
                 <editors:CategoryChooser HorizontalAlignment="Left"
                                          DataContext="{Binding DataContext, ElementName=editor}" />
-            </DockPanel>
+            </DockPanel>-->
             <DockPanel>
                 <Grid>
                     <Grid.RowDefinitions>

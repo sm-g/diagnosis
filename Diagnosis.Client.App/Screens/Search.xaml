@@ -71,13 +71,13 @@
                             <TextBlock Text="любое из слов: "
                                        Visibility="{Binding AllWords, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
                             <TextBlock Visibility="{Binding AllWords, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Run>все слова</Run> <Run Text="{Binding AndScope, StringFormat='{}{0}: ', Converter={StaticResource ScopeToLabel}}" />
+                                <Run Text="все слова: " /><Run Text="{Binding AndScope, StringFormat='{}{0}: ', Converter={StaticResource ScopeToLabel}}" />
                             </TextBlock>
                             <diag:CommaList ItemsSource="{Binding Words}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal"
                                     Visibility="{Binding Categories.Count, Converter={StaticResource MoreThanToVisibility}}">
-                            <TextBlock Text="категории: "></TextBlock>
+                            <TextBlock Text="{Binding HrCategories, Source={StaticResource Resources}, Converter={StaticResource ToLower}, StringFormat={}{0}: }"></TextBlock>
                             <diag:CommaList ItemsSource="{Binding Categories}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal"
@@ -141,7 +141,7 @@
                         </CheckBox>
                     </Grid>
                 </DockPanel>
-                <Label Content="_Категории" />
+                <Label Content="{Binding HrCategories, Source={StaticResource Resources}}" />
                 <DockPanel Style="{StaticResource formLine}"
                            HorizontalAlignment="Left">
                     <editors:CategoryChooser CategoryMultiSelection="{StaticResource True}" />

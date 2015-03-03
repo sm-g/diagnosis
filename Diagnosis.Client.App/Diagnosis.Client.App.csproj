@@ -684,6 +684,12 @@
     <Resource Include="Resources\Images\DeleteHS.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Images\Copy_6524.png" />
+    <Resource Include="Resources\Images\Cut_6523.png" />
+    <Resource Include="Resources\Images\Paste_6520.png" />
+    <Resource Include="Resources\Images\Tag_7213.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Resources\Entypo.ttf" />
     <None Include="Resources\Help\Hotkeys.html" />
     <None Include="Resources\Help\Index.html" />
@@ -704,15 +710,17 @@
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>REM copy help
+    <PostBuildEvent>
+      REM copy help
       echo d | xcopy "$(SolutionDir)Diagnosis.Client.App\Resources\Help" "$(TargetDir)Help" /d /y
 
       REM copy sql server ce
       if not exist "$(TargetDir)bin" md "$(TargetDir)bin"
       xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(TargetDir)bin"
-      
+
       REM copy sqlite.dll
-      xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)bin" /i /d /y</PostBuildEvent>
+      xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)bin" /i /d /y
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
