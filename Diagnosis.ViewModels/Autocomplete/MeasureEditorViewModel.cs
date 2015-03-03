@@ -1,4 +1,5 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.Data.Queries;
+using Diagnosis.Models;
 using Diagnosis.ViewModels.Autocomplete;
 using log4net;
 using NHibernate.Linq;
@@ -18,8 +19,8 @@ namespace Diagnosis.ViewModels.Autocomplete
         MeasureEditorViewModel(Measure measure, Word w)
         {
             _uoms = new List<Uom> { Uom.Null };
-            _uoms.AddRange(Session.Query<Uom>()
-                .OrderBy(s => s.Abbr));
+            var allUoms = UomQuery.Contains(Session)("");
+            _uoms.AddRange(allUoms);
 
             var view = (ListCollectionView)CollectionViewSource.GetDefaultView(_uoms);
             view.GroupDescriptions.Add(new PropertyGroupDescription("Type"));

@@ -29,7 +29,11 @@ namespace Diagnosis.Data.Queries
 
                         q = q.Where(disjunction);
                     }
-                    return q.List().OrderBy(p => p.Type).ToList();
+                    return q.List()
+                            .OrderBy(s => s.Type.Ord)
+                            .ThenBy(s => s.Factor)
+                            .ThenBy(s => s.Abbr)
+                            .ToList();
                 }
             };
         }

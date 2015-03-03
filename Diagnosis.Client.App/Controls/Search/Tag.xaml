@@ -112,8 +112,8 @@
 
                         <DataTrigger Binding="{Binding BlankType}"
                                      Value="{x:Static diag:BlankType.Query}">
-                            <Setter Property="Foreground"
-                                    Value="Red" />
+                            <!--<Setter Property="Foreground"
+                                    Value="Red" />-->
                         </DataTrigger>
                         <DataTrigger Binding="{Binding BlankType}"
                                      Value="{x:Static diag:BlankType.Comment}">
