@@ -189,10 +189,12 @@
                         </MenuItem.Style>
                     </MenuItem>
                     <MenuItem Header="Удалить"
+                              Style="{StaticResource deleteMenuItem}"
+                              InputGestureText=""
                               Command="{Binding DeleteCommand}" />
                     <MenuItem Header="Искать"
                               Visibility="{Binding SendToSearchCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                              InputGestureText="Ctrl+F"
+                              Style="{StaticResource searchMenuItem}"
                               Command="{Binding SendToSearchCommand}" />
 
                     <Separator Visibility="{Binding ConvertToCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />

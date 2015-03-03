@@ -109,10 +109,10 @@
                                           Command="{Binding EditCommand}" />
                                 <!--WordsListViewModel-->
                                 <MenuItem Header="Искать"
-                                          InputGestureText="Ctrl+F"
+                                          Style="{StaticResource searchMenuItem}"
                                           Command="{Binding PlacementTarget.Tag.SendToSearchCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <MenuItem Header="Удалить"
-                                          InputGestureText="Delete"
+                                          Style="{StaticResource deleteMenuItem}"
                                           Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <Separator />
                                 <MenuItem Header="Добавить..."
