@@ -27,6 +27,24 @@
         <Setter Property="FontSize"
                 Value="{DynamicResource LabelFontSize}" />
     </Style>-->
+    
+    <!--image-->
+    <Style x:Key="EnableDisableImageStyle"
+           TargetType="{x:Type Image}">
+        <Style.Triggers>
+            <Trigger Property="IsEnabled"
+                     Value="False">
+                <Setter Property="Opacity"
+                        Value="0.75" />
+                <Setter Property="BitmapEffect">
+                    <Setter.Value>
+                        <BlurBitmapEffect Radius="2.0"
+                                          KernelType="Gaussian" />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
     <!--Tree-->
 

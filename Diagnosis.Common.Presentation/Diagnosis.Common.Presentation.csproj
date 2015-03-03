@@ -138,6 +138,7 @@
     <Compile Include="Behaviors\RowDblClick.cs" />
     <Compile Include="Behaviors\TwoListSynchronizer.cs" />
     <Compile Include="Controls\Common\AlignableWrapPanel.cs" />
+    <Compile Include="Controls\Common\AutoGreyableImage.cs" />
     <Compile Include="Controls\Common\CommaList.xaml.cs">
       <DependentUpon>CommaList.xaml</DependentUpon>
     </Compile>

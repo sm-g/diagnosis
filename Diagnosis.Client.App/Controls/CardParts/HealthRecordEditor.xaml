@@ -101,35 +101,35 @@
                 <Button Command="{Binding CutCommand}"
                         ToolTip="Вырезать выбранные элементы (Ctrl+X)">
                     <DockPanel>
-                        <Image Source="{StaticResource cutImage}" />
+                        <diag:AutoGreyableImage Source="{StaticResource cutImage}" />
                     </DockPanel>
                 </Button>
 
                 <Button Command="{Binding CopyCommand}"
                         ToolTip="Копировать выбранные элементы (Ctrl+C)">
                     <DockPanel>
-                        <Image Source="{StaticResource copyImage}" />
+                        <diag:AutoGreyableImage Source="{StaticResource copyImage}" />
                     </DockPanel>
                 </Button>
 
                 <Button Command="{Binding PasteCommand}"
                         ToolTip="Вставить элементы (Ctrl+V)">
                     <DockPanel>
-                        <Image Source="{StaticResource pasteImage}" />
+                        <diag:AutoGreyableImage Source="{StaticResource pasteImage}" />
                     </DockPanel>
                 </Button>
 
                 <Button Command="{Binding SendToSearchCommand}"
                         ToolTip="Искать выбранные элементы (Ctrl+F)">
                     <DockPanel>
-                        <Image Source="{StaticResource findImage}" />
+                        <diag:AutoGreyableImage Source="{StaticResource findImage}" />
                     </DockPanel>
                 </Button>
 
                 <Button Command="{Binding DeleteItemsCommand}"
                         ToolTip="Удалить выбранные элементы (Delete)">
                     <DockPanel>
-                        <Image Source="{StaticResource deleteImage}" />
+                        <diag:AutoGreyableImage Source="{StaticResource deleteImage}" />
                     </DockPanel>
                 </Button>
                

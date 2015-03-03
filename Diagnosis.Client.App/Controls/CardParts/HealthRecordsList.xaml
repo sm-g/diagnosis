@@ -69,7 +69,7 @@
             <Button Command="{Binding AddHealthRecordCommand}"
                     ToolTip="Добавить новую запись (Ctrl+Enter)">
                 <DockPanel>
-                    <Image Source="{StaticResource addImage}" />
+                    <diag:AutoGreyableImage Source="{StaticResource addImage}" />
                     <TextBlock Text="{Binding AddHr_ToList, Source={StaticResource Resources}}" />
                 </DockPanel>
             </Button>
@@ -77,13 +77,13 @@
             <Button Command="{Binding SendToSearchCommand}"
                     ToolTip="Искать выбранные записи (Ctrl+F)">
                 <DockPanel>
-                    <Image Source="{StaticResource findImage}" />
+                    <diag:AutoGreyableImage Source="{StaticResource findImage}" />
                 </DockPanel>
             </Button>
             <Button Command="{Binding DeleteCommand}"
                     ToolTip="Удалить выбранные записи (Delete)">
                 <DockPanel>
-                    <Image Source="{StaticResource deleteImage}" />
+                    <diag:AutoGreyableImage Source="{StaticResource deleteImage}" />
                 </DockPanel>
             </Button>
             <Separator />

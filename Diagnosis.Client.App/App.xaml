@@ -8,124 +8,48 @@
             <ResourceDictionary.MergedDictionaries>
                 <!--absolute Uri to easy compare-->
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Resources/MarginResources.xaml" />
-                
+
+                <!--resources-->
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Resources/ConverterResources.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Resources/ImageResources.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Resources/Icons.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Resources/ColorResources.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Resources/NormalFontResources.xaml" />
 
+                <!--styles-->
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Styles/BeforeThemeStyles.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Styles/ListBoxItemAero2Style.xaml" />
-                
-<!-- Mahapps -->
+                <!--<ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Styles/ListBoxItemAero2Style.xaml" />-->
+
+                <!-- Mahapps -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <!--<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />-->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
 
-
+                <!--custom-->
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Styles/DefaultExpander.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Styles/MahAppsFix.xaml" />
-                
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Styles/MenuItems.xaml" />
+
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Styles/AfterThemeStyles.xaml" />
-
+                <!--templates-->
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Templates/Controls.xaml" />
-
             </ResourceDictionary.MergedDictionaries>
-            
+
             <Style TargetType="{x:Type ListBoxItem}"
                    BasedOn="{StaticResource MetroListBoxItemFixed}" />
             <Style TargetType="{x:Type Expander}"
                    BasedOn="{StaticResource DefaultExpander}" />
-            
+
             <s:Boolean x:Key="True">True</s:Boolean>
             <s:Boolean x:Key="False">False</s:Boolean>
 
             <properties:Settings x:Key="Settings" />
             <properties:Resources x:Key="Resources" />
 
-            <Style x:Key="EnableDisableImageStyle"
-                   TargetType="{x:Type Image}">
-                <Style.Triggers>
-                    <Trigger Property="IsEnabled"
-                             Value="False">
-                        <Setter Property="Opacity"
-                                Value="0.75" />
-                        <Setter Property="BitmapEffect">
-                            <Setter.Value>
-                                <BlurBitmapEffect Radius="2.0"
-                                                  KernelType="Gaussian" />
-                            </Setter.Value>
-                        </Setter>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-            
-            <Style x:Key="cutMenuItem"
-                   x:Shared="False"
-                   TargetType="MenuItem"
-                   BasedOn="{StaticResource {x:Type MenuItem}}">
-                <Setter Property="Command"
-                        Value="{x:Static ApplicationCommands.Cut}" />
-                <Setter Property="Icon">
-                    <Setter.Value>
-                        <Image Source="{StaticResource cutImage}"/>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="copyMenuItem"
-                   x:Shared="False"
-                   TargetType="MenuItem"
-                   BasedOn="{StaticResource {x:Type MenuItem}}">
-                <Setter Property="Command"
-                        Value="{x:Static ApplicationCommands.Copy}" />
-                <Setter Property="Icon">
-                    <Setter.Value>
-                        <Image Source="{StaticResource copyImage}" />
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="pasteMenuItem"
-                   x:Shared="False"
-                   TargetType="MenuItem"
-                   BasedOn="{StaticResource {x:Type MenuItem}}">
-                <Setter Property="Command"
-                        Value="{x:Static ApplicationCommands.Paste}" />
-                <Setter Property="Icon">
-                    <Setter.Value>
-                        <Image Source="{StaticResource pasteImage}" />
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <Style x:Key="deleteMenuItem"
-                   x:Shared="False"
-                   TargetType="MenuItem"
-                   BasedOn="{StaticResource {x:Type MenuItem}}">
-                <Setter Property="InputGestureText"
-                        Value="Delete" />
-                <Setter Property="Icon">
-                    <Setter.Value>
-                        <Image Source="{StaticResource deleteImage}" />
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="searchMenuItem"
-                   x:Shared="False"
-                   TargetType="MenuItem"
-                   BasedOn="{StaticResource {x:Type MenuItem}}">
-                <Setter Property="InputGestureText"
-                        Value="Ctrl+F" />
-                <Setter Property="Icon">
-                    <Setter.Value>
-                        <Image Source="{StaticResource findImage}" />
-                    </Setter.Value>
-                </Setter>
-            </Style>
             <!-- Tag is HolderVm -->
-            <ContextMenu x:Key="HolderContextMenu" 
+            <ContextMenu x:Key="HolderContextMenu"
                          DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
                 <MenuItem Header="Изменить..."
                           InputGestureText="F2"
@@ -150,8 +74,6 @@
                           Style="{StaticResource deleteMenuItem}"
                           Command="{Binding DeleteCommand}" />
             </ContextMenu>
-
-            
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -1,0 +1,65 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:diag="http://schemas.smg.com/diagnosis"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style x:Key="cutMenuItem"
+           x:Shared="False"
+           TargetType="MenuItem"
+           BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Setter Property="Command"
+                Value="{x:Static ApplicationCommands.Cut}" />
+        <Setter Property="Icon">
+            <Setter.Value>
+                <diag:AutoGreyableImage Source="{StaticResource cutImage}" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="copyMenuItem"
+           x:Shared="False"
+           TargetType="MenuItem"
+           BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Setter Property="Command"
+                Value="{x:Static ApplicationCommands.Copy}" />
+        <Setter Property="Icon">
+            <Setter.Value>
+                <diag:AutoGreyableImage Source="{StaticResource copyImage}" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="pasteMenuItem"
+           x:Shared="False"
+           TargetType="MenuItem"
+           BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Setter Property="Command"
+                Value="{x:Static ApplicationCommands.Paste}" />
+        <Setter Property="Icon">
+            <Setter.Value>
+                <diag:AutoGreyableImage Source="{StaticResource pasteImage}" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="deleteMenuItem"
+           x:Shared="False"
+           TargetType="MenuItem"
+           BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Setter Property="InputGestureText"
+                Value="Delete" />
+        <Setter Property="Icon">
+            <Setter.Value>
+                <diag:AutoGreyableImage Source="{StaticResource deleteImage}" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="searchMenuItem"
+           x:Shared="False"
+           TargetType="MenuItem"
+           BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Setter Property="InputGestureText"
+                Value="Ctrl+F" />
+        <Setter Property="Icon">
+            <Setter.Value>
+                <diag:AutoGreyableImage Source="{StaticResource findImage}" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

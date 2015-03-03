@@ -34,13 +34,13 @@
             <Button Command="{Binding AddCommand}"
                     ToolTip="Добавить ключевое слово (Ctrl+Enter)">
                 <DockPanel>
-                    <Image Source="{StaticResource addImage}" />
+                    <diag:AutoGreyableImage Source="{StaticResource addImage}" />
                     <TextBlock Text="Добавить" />
                 </DockPanel>
             </Button>
             <Button Command="{Binding SendToSearchCommand}">
                 <DockPanel>
-                    <Image Source="{StaticResource findImage}" />
+                    <diag:AutoGreyableImage Source="{StaticResource findImage}" />
                     <TextBlock>
                         <Run IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}"
                              ToolTip="Искать выбранные ключевые слова (Ctrl+F)">Искать</Run>
