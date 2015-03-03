@@ -6,6 +6,7 @@ using Diagnosis.Common.Presentation.DebugTools;
 using Diagnosis.Common.Util;
 using Diagnosis.Data;
 using Diagnosis.Data.Versions;
+using Diagnosis.ViewModels.Screens;
 using log4net;
 using System;
 using System.Configuration;
@@ -25,6 +26,7 @@ namespace Diagnosis.Client.App
         private static bool inExit = false;
         private const string appGuid = "ac2ee38e-31c5-45f5-8fde-4a9a126df451";
         private SplashScreen splash = null;
+        private bool demoMode;
 
         public App()
         {
@@ -74,7 +76,7 @@ namespace Diagnosis.Client.App
 
         private void StartMainWindow()
         {
-            var main = new MainWindow();
+            var main = new MainWindow(demoMode);
 
             if (splash != null)
                 main.Loaded += (s, e1) =>
@@ -85,13 +87,17 @@ namespace Diagnosis.Client.App
 
             Application.Current.MainWindow = main;
             Application.Current.ShutdownMode = System.Windows.ShutdownMode.OnMainWindowClose;
+            main.DataContext = new MainWindowViewModel(demoMode);
             main.Show();
         }
 
-        private static void DbMaintenance()
+        private void DbMaintenance()
         {
             var con = ConfigurationManager.ConnectionStrings[Constants.clientConStrName];
-            NHibernateHelper.Init(con, Side.Client);
+            if (!NHibernateHelper.Init(con, Side.Client))
+            {
+                demoMode = true;
+            }
 
             if (NHibernateHelper.InMemory)
                 return;

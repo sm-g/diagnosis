@@ -16,9 +16,15 @@ namespace Diagnosis.ViewModels.Screens
         private SearchViewModel searchPanel;
         private bool? searchVisByUser = null;
         private string _sexes;
+        string titlePrefix;
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(bool demoMode = false)
         {
+            if (demoMode)
+            {
+                titlePrefix = "Демо :: ";
+            }
+
             switcher = new ScreenSwitcher();
             OverlayService = new OverlayServiceViewModel();
 
@@ -37,6 +43,8 @@ namespace Diagnosis.ViewModels.Screens
                     Panes.Add(CurrentView);
                     Panes.Remove(prevScreen);
                     CurrentView.IsActive = true;
+
+                    Title = titlePrefix + CurrentView.Title;
 
                     OnPropertyChanged("CurrentView");
                 }
@@ -123,6 +131,23 @@ namespace Diagnosis.ViewModels.Screens
         public ScreenBaseViewModel CurrentView
         {
             get { return switcher.CurrentView; }
+        }
+
+        private string _title;
+        public string Title
+        {
+            get
+            {
+                return _title;
+            }
+            set
+            {
+                if (_title != value)
+                {
+                    _title = value;
+                    OnPropertyChanged(() => Title);
+                }
+            }
         }
 
         public MenuBarViewModel MenuBar { get; private set; }

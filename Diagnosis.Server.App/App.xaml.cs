@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using Diagnosis.ViewModels.Screens;
 
 namespace Diagnosis.Server.App
 {
@@ -21,6 +22,7 @@ namespace Diagnosis.Server.App
         private static readonly ILog logger = LogManager.GetLogger(typeof(App));
         private static bool inExit = false;
         private const string appGuid = "2c2ee38e-31c5-45f5-8fde-4a9a126df452";
+        private bool demoMode;
 
         public App()
         {
@@ -54,16 +56,21 @@ namespace Diagnosis.Server.App
 
             DbMaintenance();
 
-            var main = new MainWindow();
+            var main = new MainWindow(demoMode);
+            main.DataContext = new ServerMainWindowViewModel(demoMode);
+
             Application.Current.MainWindow = main;
             Application.Current.ShutdownMode = System.Windows.ShutdownMode.OnMainWindowClose;
             main.Show();
         }
 
-        private static void DbMaintenance()
+        private void DbMaintenance()
         {
             var con = ConfigurationManager.ConnectionStrings[Constants.serverConStrName];
-            NHibernateHelper.Init(con, Side.Server);
+            if (!NHibernateHelper.Init(con, Side.Server))
+            {
+                demoMode = true;
+            }
 
             if (NHibernateHelper.InMemory)
                 return;

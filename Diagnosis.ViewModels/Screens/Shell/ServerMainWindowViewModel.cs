@@ -10,7 +10,7 @@ namespace Diagnosis.ViewModels.Screens
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(ServerMainWindowViewModel));
 
-        public ServerMainWindowViewModel()
+        public ServerMainWindowViewModel(bool demoMode = false)
         {
             this.Subscribe(Event.EditUom, (e) =>
                         {
@@ -18,6 +18,25 @@ namespace Diagnosis.ViewModels.Screens
                             IDialogViewModel vm = new UomEditorViewModel(uom);
                             this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
                         });
+            var prefix = demoMode ? "Демо :: " : "";
+            Title = prefix + "Diagnosis on server";
+        }
+
+        private string _title;
+        public string Title
+        {
+            get
+            {
+                return _title;
+            }
+            set
+            {
+                if (_title != value)
+                {
+                    _title = value;
+                    OnPropertyChanged(() => Title);
+                }
+            }
         }
     }
 }

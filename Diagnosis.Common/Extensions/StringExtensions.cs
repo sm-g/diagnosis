@@ -69,5 +69,10 @@ namespace Diagnosis.Common
             var enc = encoding ?? Encoding.Unicode;
             return new MemoryStream(enc.GetBytes(str));
         }
+
+        public static string FormatStr(this string str, params object[] args)
+        {
+            return string.Format(str, args);
+        }
     }
 }

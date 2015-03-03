@@ -24,7 +24,7 @@ namespace Diagnosis.Server.App
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public MainWindow(bool demoMode = false)
         {
             InitializeComponent();
             this.Subscribe(Event.OpenDialog, (e) =>
@@ -36,7 +36,22 @@ namespace Diagnosis.Server.App
                 }
             });
 
-            DataContext = new ServerMainWindowViewModel();
+            Loaded += (s, e) =>
+            {
+                if (demoMode)
+                {
+#if !DEBUG
+                new Thread(new ThreadStart(delegate
+                {
+                    MessageBox.Show(
+                        "Проверьте строку подключения в файле '{0}'".FormatStr(Constants.ServerConfigFilePath),
+                        "Демонстрационный режим",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                })).Start();
+#endif
+                }
+            };
         }
 
         private bool? ShowDialog(IDialogViewModel vm, Window w)

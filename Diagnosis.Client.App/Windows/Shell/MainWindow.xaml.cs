@@ -28,7 +28,7 @@ namespace Diagnosis.Client.App.Windows.Shell
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(MainWindow));
         private HelpViewModel help;
 
-        public MainWindow()
+        public MainWindow(bool demoMode)
         {
             InitializeComponent();
             dockManager.Layout.ElementAdded += (s, e) =>
@@ -123,12 +123,25 @@ namespace Diagnosis.Client.App.Windows.Shell
 
             });
 
-            DataContext = new MainWindowViewModel();
             Loaded += (s, e) =>
             {
 #if DEBUG
                 // debugMenu.Visibility = System.Windows.Visibility.Visible;
 #endif
+
+                if (demoMode)
+                {
+#if !DEBUG
+                new Thread(new ThreadStart(delegate
+                {
+                    MessageBox.Show(
+                        "Проверьте строку подключения в файле '{0}'".FormatStr(Constants.ClientConfigFilePath),
+                        "Демонстрационный режим",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                })).Start();
+#endif
+                }
             };
             dockManager.ActiveContentChanged += (s, e) =>
             {
@@ -139,6 +152,8 @@ namespace Diagnosis.Client.App.Windows.Shell
                 }
             };
         }
+
+        MainWindowViewModel Vm { get { return DataContext as MainWindowViewModel; } }
 
         private bool? ShowDialog(IDialogViewModel vm, Window w)
         {

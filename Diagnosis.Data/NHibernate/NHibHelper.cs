@@ -96,12 +96,13 @@ namespace Diagnosis.Data
         /// </summary>
         /// <param name="conn"></param>
         /// <param name="side"></param>
-        public static void Init(System.Configuration.ConnectionStringSettings conn, Side side)
+        /// <returns>Connection success</returns>
+        public static bool Init(System.Configuration.ConnectionStringSettings conn, Side side)
         {
             if (conn == null)
             {
                 InMemory = true;
-                return;
+                return false;
             }
 
             var fail = false;
@@ -131,9 +132,9 @@ namespace Diagnosis.Data
             if (fail)
             {
                 InMemory = true;
-                return;
+                return false;
             }
-
+            return true;
         }
 
         public static ISession GetSession()
