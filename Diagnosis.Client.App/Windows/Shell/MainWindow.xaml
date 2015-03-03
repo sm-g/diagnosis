@@ -318,7 +318,7 @@
                       ItemsSource="{Binding Overlays}"
                       HorizontalAlignment="Right"
                       IsTabStop="False"
-                      Grid.Row="1">
+                      Grid.RowSpan="2">
         </ItemsControl>
         <Menu x:Name="debugMenu"
               Visibility="Collapsed"

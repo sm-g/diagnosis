@@ -16,6 +16,7 @@ using EventAggregator;
 using Diagnosis.Common;
 using Diagnosis.ViewModels;
 using Diagnosis.Server.App.Windows;
+using System.Threading;
 
 namespace Diagnosis.Server.App
 {
@@ -41,14 +42,14 @@ namespace Diagnosis.Server.App
                 if (demoMode)
                 {
 #if !DEBUG
-                new Thread(new ThreadStart(delegate
-                {
-                    MessageBox.Show(
-                        "Проверьте строку подключения в файле '{0}'".FormatStr(Constants.ServerConfigFilePath),
-                        "Демонстрационный режим",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-                })).Start();
+                    new Thread(new ThreadStart(delegate
+                    {
+                        MessageBox.Show(
+                            "Проверьте строку подключения в файле '{0}'".FormatStr(Constants.ServerConfigFilePath),
+                            "Демонстрационный режим",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Warning);
+                    })).Start();
 #endif
                 }
             };
