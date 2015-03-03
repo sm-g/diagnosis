@@ -81,6 +81,24 @@ namespace Diagnosis.Client.App.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Добавить запись.
+        /// </summary>
+        public static string AddHr_ToHolder {
+            get {
+                return ResourceManager.GetString("AddHr_ToHolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Новая запись.
+        /// </summary>
+        public static string AddHr_ToList {
+            get {
+                return ResourceManager.GetString("AddHr_ToList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap Arrow_UndoRevertRestore_16xLG {

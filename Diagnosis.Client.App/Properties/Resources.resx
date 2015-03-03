@@ -181,4 +181,10 @@
   <data name="HrCategory" xml:space="preserve">
     <value>Раздел</value>
   </data>
+  <data name="AddHr_ToHolder" xml:space="preserve">
+    <value>Добавить запись</value>
+  </data>
+  <data name="AddHr_ToList" xml:space="preserve">
+    <value>Новая запись</value>
+  </data>
 </root>

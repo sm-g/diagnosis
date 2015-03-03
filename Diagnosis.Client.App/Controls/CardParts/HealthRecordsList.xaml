@@ -70,20 +70,20 @@
                     ToolTip="Добавить новую запись (Ctrl+Enter)">
                 <DockPanel>
                     <Image Source="{StaticResource addImage}" />
-                    <TextBlock Text="Добавить запись" />
+                    <TextBlock Text="{Binding AddHr_ToList, Source={StaticResource Resources}}" />
                 </DockPanel>
             </Button>
             <Separator />
-            <Button Command="{Binding DeleteCommand}"
-                    ToolTip="Удалить выбранные записи (Delete)">
-                <DockPanel>
-                    <Image Source="{StaticResource deleteImage}" />
-                </DockPanel>
-            </Button>
             <Button Command="{Binding SendToSearchCommand}"
                     ToolTip="Искать выбранные записи (Ctrl+F)">
                 <DockPanel>
                     <Image Source="{StaticResource findImage}" />
+                </DockPanel>
+            </Button>
+            <Button Command="{Binding DeleteCommand}"
+                    ToolTip="Удалить выбранные записи (Delete)">
+                <DockPanel>
+                    <Image Source="{StaticResource deleteImage}" />
                 </DockPanel>
             </Button>
             <Separator />
@@ -400,7 +400,7 @@
                                     <MenuItem Style="{StaticResource copyMenuItem}" />
                                     <MenuItem Style="{StaticResource pasteMenuItem}" />
                                     <Separator />
-                                    <MenuItem Header="Добавить запись"
+                                    <MenuItem Header="{Binding AddHr_ToHolder, Source={StaticResource Resources}}"
                                               InputGestureText="Ctrl+Enter"
                                               Command="{Binding PlacementTarget.Tag.AddHealthRecordCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 </ContextMenu>
@@ -428,7 +428,7 @@
                     <ContextMenu>
                         <MenuItem Style="{StaticResource pasteMenuItem}" />
                         <Separator />
-                        <MenuItem Header="Добавить запись"
+                        <MenuItem Header="{Binding AddHr_ToHolder, Source={StaticResource Resources}}"
                                   InputGestureText="Ctrl+Enter"
                                   Command="{Binding AddHealthRecordCommand}" />
                     </ContextMenu>

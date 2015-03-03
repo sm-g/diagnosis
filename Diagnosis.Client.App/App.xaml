@@ -60,7 +60,7 @@
                           InputGestureText="Insert"
                           Visibility="{Binding AddAppointmentCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                           Command="{Binding AddAppointmentCommand}" />
-                <MenuItem Header="Добавить запись"
+                <MenuItem Header="{Binding AddHr_ToHolder, Source={StaticResource Resources}}"
                           InputGestureText="Ctrl+Enter"
                           Command="{Binding AddHealthRecordCommand}" />
                 <Separator />
