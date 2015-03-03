@@ -72,6 +72,40 @@
                           InputGestureText="Delete"
                           Command="{Binding DeleteCommand}" />
             </ContextMenu>
+
+            <Style x:Key="cutMenuItem"
+                   TargetType="MenuItem"
+                   BasedOn="{StaticResource {x:Type MenuItem}}"                   >
+                <Setter Property="Command"
+                        Value="{x:Static ApplicationCommands.Cut}" />
+                <Setter Property="Icon">
+                    <Setter.Value>
+                        <Image Source="{StaticResource cutImage}" />                        
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="copyMenuItem"
+                   TargetType="MenuItem"                   
+                   BasedOn="{StaticResource {x:Type MenuItem}}">
+                <Setter Property="Command"
+                        Value="{x:Static ApplicationCommands.Copy}" />
+                <Setter Property="Icon">
+                    <Setter.Value>
+                        <Image Source="{StaticResource copyImage}" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="pasteMenuItem"
+                   TargetType="MenuItem"
+                   BasedOn="{StaticResource {x:Type MenuItem}}">
+                <Setter Property="Command"
+                        Value="{x:Static ApplicationCommands.Paste}" />
+                <Setter Property="Icon">
+                    <Setter.Value>
+                        <Image Source="{StaticResource pasteImage}" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

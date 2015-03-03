@@ -396,9 +396,9 @@
                                               CommandParameter="{StaticResource False}"
                                               Header="Вниз" />
                                     <Separator />
-                                    <MenuItem Command="{x:Static ApplicationCommands.Copy}" />
-                                    <MenuItem Command="{x:Static ApplicationCommands.Cut}" />
-                                    <MenuItem Command="{x:Static ApplicationCommands.Paste}" />
+                                    <MenuItem Style="{StaticResource cutMenuItem}" />
+                                    <MenuItem Style="{StaticResource copyMenuItem}" />
+                                    <MenuItem Style="{StaticResource pasteMenuItem}" />
                                     <Separator />
                                     <MenuItem Header="Добавить запись"
                                               InputGestureText="Ctrl+Enter"
@@ -426,7 +426,7 @@
 
                 <ListBox.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Command="{x:Static ApplicationCommands.Paste}" />
+                        <MenuItem Style="{StaticResource pasteMenuItem}" />
                         <Separator />
                         <MenuItem Header="Добавить запись"
                                   InputGestureText="Ctrl+Enter"

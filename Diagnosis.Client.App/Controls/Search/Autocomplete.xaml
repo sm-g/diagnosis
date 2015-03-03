@@ -163,9 +163,9 @@
                                           Command="{Binding AddRightCommand}" />
                                 <Separator />
                                 <!-- для выделенных -->
-                                <MenuItem Command="{x:Static ApplicationCommands.Cut}" />
-                                <MenuItem Command="{x:Static ApplicationCommands.Copy}" />
-                                <MenuItem Command="{x:Static ApplicationCommands.Paste}" />
+                                <MenuItem Style="{StaticResource cutMenuItem}" />
+                                <MenuItem Style="{StaticResource copyMenuItem}" />
+                                <MenuItem Style="{StaticResource pasteMenuItem}" />
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>
