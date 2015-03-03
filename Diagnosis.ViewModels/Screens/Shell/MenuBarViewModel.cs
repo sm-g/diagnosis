@@ -29,6 +29,11 @@ namespace Diagnosis.ViewModels.Screens
                 OpenSyncCommand.IsVisible = true;
 #endif
             };
+
+            AuthorityController.LoggedOut += (s, e) =>
+            {
+                OnPropertyChanged(() => CurrentUser);
+            };
         }
 
         public bool Visible
@@ -157,8 +162,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Event.OpenSettings, AuthorityController.CurrentUser.AsParams(MessageKeys.User));
-                });
+                    this.Send(Event.OpenSettings, CurrentUser.AsParams(MessageKeys.User));
+                }, () => CurrentUser != null);
             }
         }
         public RelayCommand OpenHelpCommand

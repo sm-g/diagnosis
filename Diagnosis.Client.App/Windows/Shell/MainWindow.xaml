@@ -79,6 +79,116 @@
         <CommandBinding Command="{x:Static ApplicationCommands.Undo}"
                         Executed="CommandBinding_Executed" />
     </Window.CommandBindings>
+
+    <mahapps:MetroWindow.RightWindowCommands>
+        <mahapps:WindowCommands>
+            <mahapps:WindowCommands.Resources>
+                <Style TargetType="MenuItem"
+                       x:Key="topMenuItem"
+                       BasedOn="{StaticResource {x:Type MenuItem}}">
+                    <Setter Property="Background"
+                            Value="{DynamicResource TransparentWhiteBrush}" />
+                    <Setter Property="Foreground"
+                            Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}" />
+                    <Setter Property="HorizontalContentAlignment"
+                            Value="Center" />
+                    <Setter Property="VerticalContentAlignment"
+                            Value="Center" />
+                    <Setter Property="Height"
+                            Value="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=mahapps:WindowCommands}}" />
+
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter Property="Opacity"
+                                    Value="1" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver"
+                                 Value="False">
+                            <Setter Property="Opacity"
+                                    Value=".5" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </mahapps:WindowCommands.Resources>
+
+            <TextBlock Text="{Binding MenuBar.CurrentUser, Converter={StaticResource ManToName}}"
+                       VerticalAlignment="Center"
+                       Margin="0,0,5,0" />
+
+            <Menu HorizontalAlignment="Right"
+                  Background="Transparent">
+                <MenuItem Style="{StaticResource topMenuItem}">
+                    <MenuItem.Header>
+                        <Rectangle Width="16"
+                                   Height="16"
+                                   Fill="{Binding Foreground, ElementName=helpButton}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Uniform"
+                                             Visual="{DynamicResource appbar_settings}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </MenuItem.Header>
+
+                    <MenuItem Header="_Настройка..."
+                              Command="{Binding MenuBar.OpenSettingsCommand}"
+                              Visibility="{Binding MenuBar.OpenSettingsCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <MenuItem.Icon>
+                            <Rectangle Width="16"
+                                       Height="16"
+                                       Fill="{DynamicResource AccentColorBrush}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Uniform"
+                                                 Visual="{DynamicResource appbar_settings}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <MenuItem Header="Открыть папку с _базой данных"
+                              Command="{Binding MenuBar.OpenDBFolderCommand}">
+                        <MenuItem.Icon>
+                            <Rectangle Width="16"
+                                       Height="16"
+                                       Fill="{DynamicResource AccentColorBrush}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Uniform"
+                                                 Visual="{DynamicResource appbar_database}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <MenuItem Header="_О программе"
+                              Click="MenuItem_Click" />
+
+                    <Separator Visibility="{Binding MenuBar.LogoutCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                    <MenuItem Header="_Выйти"
+                              Command="{Binding MenuBar.LogoutCommand}"
+                              Visibility="{Binding MenuBar.LogoutCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    </MenuItem>
+                </MenuItem>
+            </Menu>
+
+            <Button Command="{Binding MenuBar.OpenHelpCommand}"
+                    x:Name="helpButton"
+                    Style="{StaticResource MetroBaseWindowButtonStyle}"
+                    Width="34"
+                    ToolTip="Помощь (F1)">
+                <Rectangle Width="16"
+                           Height="16"
+                           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Uniform"
+                                     Visual="{DynamicResource appbar_question}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+            <Button Width="10" />
+        </mahapps:WindowCommands>
+    </mahapps:MetroWindow.RightWindowCommands>
+
     <Grid Background="{DynamicResource mainWindowBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -88,10 +198,8 @@
 
         <shell:MyDockingManager x:Name="dockManager"
                                 Grid.Row="1"
-                                Margin="-4 -3 -4 -4"
                                 AnchorablesSource="{Binding Panes}"
                                 beh:AvalonDockLayoutSerializer.VM="{Binding ADLayout}">
-            <!-- margin fixes avalon theme -->
             <shell:MyDockingManager.Theme>
                 <xcad:MetroTheme />
             </shell:MyDockingManager.Theme>
@@ -112,6 +220,16 @@
                             Value="0" />
                     <Setter Property="Background"
                             Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+                    <!-- margin fixes avalon theme -->
+                    <Setter Property="Margin"
+                            Value="0" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding MenuBar.Visible}"
+                                     Value="True">
+                            <Setter Property="Margin"
+                                    Value="-4 -3 -4 -4" />
+                        </DataTrigger>
+                    </Style.Triggers>
                 </Style>
             </shell:MyDockingManager.Style>
             <shell:MyDockingManager.LayoutItemContainerStyleSelector>

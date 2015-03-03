@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace Diagnosis.Client.App.Windows.Shell
 {
@@ -22,15 +21,6 @@ namespace Diagnosis.Client.App.Windows.Shell
                 big.IsEnabled = false;
 #endif
             };
-        }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var version = System.Reflection.Assembly.GetExecutingAssembly()
-                                          .GetName()
-                                          .Version
-                                          .ToString();
-            MessageBox.Show(version, "Версия", MessageBoxButton.OK);
         }
     }
 }
