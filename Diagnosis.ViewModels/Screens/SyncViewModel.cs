@@ -177,10 +177,10 @@ namespace Diagnosis.ViewModels.Screens
                             serverProviderName: LocalProviderName);
 
                         IEnumerable<Scope> scopes;
-                        if (InServerApp())
-                            scopes = Scope.Reference.ToEnumerable();
-                        else
+                        if (Constants.IsClient)
                             scopes = Scopes.GetOrderedUploadScopes();
+                        else
+                            scopes = Scope.Reference.ToEnumerable();
 
                         DoWithCursor(
                             syncer.SendFrom(Side.Server, scopes, true).ContinueWith((t) =>
@@ -198,19 +198,19 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     Syncer syncer;
-                    if (InServerApp())
-                    {
-                        syncer = new Syncer(
-                            serverConStr: LocalConnectionString,
-                            clientConStr: RemoteConnectionString,
-                            serverProviderName: LocalProviderName);
-                    }
-                    else
+                    if (Constants.IsClient)
                     {
                         syncer = new Syncer(
                             serverConStr: RemoteConnectionString,
                             clientConStr: LocalConnectionString,
                             serverProviderName: RemoteProviderName);
+                    }
+                    else
+                    {
+                        syncer = new Syncer(
+                            serverConStr: LocalConnectionString,
+                            clientConStr: RemoteConnectionString,
+                            serverProviderName: LocalProviderName);
                     }
                     DoWithCursor(syncer.SendFrom(Side.Client), Cursors.AppStarting);
                 },
@@ -274,11 +274,6 @@ namespace Diagnosis.ViewModels.Screens
 
             }
             return result;
-        }
-
-        bool InServerApp()
-        {
-            return AppDomain.CurrentDomain.FriendlyName.Contains("Server");
         }
 
         private void syncer_MessagePosted(object sender, StringEventArgs e)

@@ -505,7 +505,9 @@ namespace Diagnosis.Data.Sync
                         ConflictsCounter[e.Conflict.Type] = 0;
 
                     ConflictsCounter[e.Conflict.Type]++;
-                    e.Action = ApplyAction.RetryWithForceWrite;
+
+                    if (e.Conflict.Type != DbConflictType.ErrorsOccurred)
+                        e.Action = ApplyAction.RetryWithForceWrite;
                 };
                 to.DbConnectionFailure += (s, e) =>
                 {

@@ -60,13 +60,13 @@ namespace Diagnosis.Client.App.Windows
 
         private static Uri MakeUri(string topic)
         {
-            var helpPath = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Help\\");
+            var helpPath = Constants.HelpDir;
 
             if (topic.IsNullOrEmpty())
                 return new Uri(string.Format("{0}index.html", helpPath));
             if (topic.Contains("key"))
 
-                return new Uri( string.Format("{0}hotkeys.html#{1}", helpPath, topic));
+                return new Uri(string.Format("{0}hotkeys.html#{1}", helpPath, topic));
 
             return new Uri(string.Format("{0}index.html#{1}", helpPath, topic));
         }
