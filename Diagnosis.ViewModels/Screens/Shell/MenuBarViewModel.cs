@@ -10,11 +10,14 @@ namespace Diagnosis.ViewModels.Screens
     public class MenuBarViewModel : ViewModelBase
     {
         private ScreenSwitcher switcher;
+        private IUser _curUser;
         private bool _visible;
         private VisibleRelayCommand _openSyncCommand;
         private VisibleRelayCommand _openDoctorsCommand;
         private VisibleRelayCommand _openPatientsCommand;
         private VisibleRelayCommand _openWordsCommand;
+        private VisibleRelayCommand _openSettingsCommand;
+        private VisibleRelayCommand _logoutCommand;
 
         public MenuBarViewModel(ScreenSwitcher switcher, SearchViewModel sPanel)
         {
@@ -23,7 +26,8 @@ namespace Diagnosis.ViewModels.Screens
             SearchPanel = sPanel;
             AuthorityController.LoggedIn += (s, e) =>
             {
-                OnPropertyChanged(() => CurrentUser);
+                CurrentUser = AuthorityController.CurrentUser;
+
                 OpenSyncCommand.IsVisible = AuthorityController.CurrentUserCanOpen(Screen.Sync);
                 OpenDoctorsCommand.IsVisible = AuthorityController.CurrentUserCanOpen(Screen.Doctors);
                 OpenPatientsCommand.IsVisible = AuthorityController.CurrentUserCanOpen(Screen.Patients);
@@ -35,7 +39,7 @@ namespace Diagnosis.ViewModels.Screens
 
             AuthorityController.LoggedOut += (s, e) =>
             {
-                OnPropertyChanged(() => CurrentUser);
+                CurrentUser = AuthorityController.CurrentUser;
             };
         }
 
@@ -77,6 +81,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private bool _big;
 
+
         public bool IsBigFont
         {
             get
@@ -95,16 +100,16 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public RelayCommand LogoutCommand
+        public VisibleRelayCommand LogoutCommand
         {
             get
             {
-                return new RelayCommand(
+                return _logoutCommand ?? (_logoutCommand = new VisibleRelayCommand(
                     () =>
                     {
                         // viewer.clearhistory()
                         AuthorityController.LogOut();
-                    }, () => switcher.Screen != Screen.Login && AuthorityController.CurrentUserCanOpen(Screen.Login));
+                    }, () => switcher.Screen != Screen.Login && AuthorityController.CurrentUserCanOpen(Screen.Login)));
             }
         }
 
@@ -166,14 +171,14 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public RelayCommand OpenSettingsCommand
+        public VisibleRelayCommand OpenSettingsCommand
         {
             get
             {
-                return new RelayCommand(() =>
+                return _openSettingsCommand ?? (_openSettingsCommand = new VisibleRelayCommand(() =>
                 {
                     this.Send(Event.OpenSettings, CurrentUser.AsParams(MessageKeys.User));
-                }, () => CurrentUser != null);
+                }, () => CurrentUser != null));
             }
         }
 
@@ -190,7 +195,20 @@ namespace Diagnosis.ViewModels.Screens
 
         public IUser CurrentUser
         {
-            get { return AuthorityController.CurrentUser; }
+            get
+            {
+                return _curUser;
+            }
+            set
+            {
+                if (_curUser != value)
+                {
+                    _curUser = value;
+                    OpenSettingsCommand.IsVisible = CurrentUser != null;
+                    LogoutCommand.IsVisible = CurrentUser != null;
+                    OnPropertyChanged(() => CurrentUser);
+                }
+            }
         }
 
         public ToolViewModel SearchPanel { get; private set; }
