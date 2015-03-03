@@ -13,8 +13,5 @@
 #define ClientMutex "ac2ee38e-31c5-45f5-8fde-4a9a126df451"
 #define ServerMutex "2c2ee38e-31c5-45f5-8fde-4a9a126df452"
 
-[Languages]
-Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
-
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"

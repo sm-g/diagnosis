@@ -102,7 +102,7 @@ begin
 		allRemoved := not FileExists(ExpandConstant('{app}\{#ServerAppExeName}')) and not FileExists(ExpandConstant('{app}\{#ClientAppExeName}'))
 		if allRemoved then 
 			begin
-			item := ExpandConstant('{group}\{#LogsFolderName}.lnk');
+			item := ExpandConstant('{group}\{cm:Logs}.lnk');
 			DeleteFile(item);
 			RemoveDir(ExpandConstant('{group}'));
           end;

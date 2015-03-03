@@ -20,6 +20,8 @@ AllowNoIcons=yes
 Compression=lzma2
 OutputDir={#MyOutputFolder}
 
+#include "messages.iss"
+
 [Files]
 ; exe
 Source: "{#ClientBuildOutputFolder}\Diagnosis.Client.App.exe"; DestDir: "{app}"
@@ -45,8 +47,8 @@ Source: "{#ClientBuildOutputFolder}\Help\main.css"; DestDir: "{app}\Help\"
 
 [Icons]
 Name: "{group}\{#ClientAppName}"; Filename: "{app}\{#ClientAppExeName}"
-Name: "{group}\Логи"; Filename: "{localappdata}\{#LogsSubFolder}" ; Flags: uninsneveruninstall
-Name: "{group}\База данных"; Filename: "{userappdata}\Diagnosis\Client"
+Name: "{group}\{cm:Logs}"; Filename: "{localappdata}\{#LogsSubFolder}" ; Flags: uninsneveruninstall
+Name: "{group}\{cm:Db}"; Filename: "{userappdata}\Diagnosis\Client"
 Name: "{commondesktop}\{#ClientAppName}"; Filename: "{app}\{#ClientAppExeName}"; Tasks: desktopicon
 
 [Run]

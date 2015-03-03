@@ -21,6 +21,8 @@ AllowNoIcons=yes
 Compression=lzma2
 OutputDir={#MyOutputFolder}
 
+#include "messages.iss"
+
 [Files]
 ; exe
 Source: "{#ServerBuildOutputFolder}\{#ServerAppExeName}"; DestDir: "{app}"
@@ -30,7 +32,7 @@ Source: "{#ServerBuildOutputFolder}\{#ServerAppExeName}.config"; DestDir: "{app}
 
 [Icons]
 Name: "{group}\{#ServerAppName}"; Filename: "{app}\{#ServerAppExeName}"
-Name: "{group}\Логи"; Filename: "{localappdata}\{#LogsSubFolder}"; Flags: uninsneveruninstall
+Name: "{group}\{cm:Logs}"; Filename: "{localappdata}\{#LogsSubFolder}"; Flags: uninsneveruninstall
 Name: "{commondesktop}\{#ServerAppName}"; Filename: "{app}\{#ServerAppExeName}"; Tasks: desktopicon
 
 [Run]
