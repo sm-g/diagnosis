@@ -269,7 +269,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (!existsSame && !query.IsNullOrEmpty())
                 {
                     var w = FirstMatchingOrNewWord(query);
-                    results.Add(w);
+                    results.Insert(0, w); // добавленное слово для редактора измерений дожлно быть первым
                 }
             }
 
