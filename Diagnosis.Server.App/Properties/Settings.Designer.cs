@@ -73,7 +73,7 @@ namespace Diagnosis.Server.App.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        [global::System.Configuration.DefaultSettingValueAttribute("600")]
         public double MainWindowWidth {
             get {
                 return ((double)(this["MainWindowWidth"]));

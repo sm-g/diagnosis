@@ -7,7 +7,7 @@
         xmlns:diag="http://schemas.smg.com/diagnosis"
         mc:Ignorable="d"
         d:DesignHeight="200"
-        d:DesignWidth="500"
+        d:DesignWidth="600"
         Title="{Binding Title}"
         Height="{Binding Path=Default.MainWindowHeight,
                          Mode=TwoWay,

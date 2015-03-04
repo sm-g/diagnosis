@@ -26,6 +26,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" />
@@ -40,9 +41,16 @@
                                     UpdateSourceTrigger=PropertyChanged,
                                     ValidatesOnDataErrors=True}"
                      Grid.Column="1" />
+
+            <TextBlock x:Name="providerName"
+                       ToolTip="Провайдер"
+                       Grid.Row="1"
+                       Text="{Binding RemoteProviderName}"
+                       Grid.Column="1" />
+
             <StackPanel Orientation="Horizontal"
                         Margin="0,5,0,0"
-                        Grid.Row="1"
+                        Grid.Row="2"
                         Grid.Column="1">
 
                 <Button Command="{Binding OpenSdfCommand}"
@@ -57,7 +65,7 @@
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Center"
                     Grid.Row="1">
-            <Button Content="Отправить в источник"                    
+            <Button Content="Отправить в источник"
                     Command="{Binding UploadCommand}" />
             <Separator Width="10"
                        Height="0" />
