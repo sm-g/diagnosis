@@ -48,7 +48,7 @@ Source: "{#ClientBuildOutputFolder}\Help\main.css"; DestDir: "{app}\Help\"
 [Icons]
 Name: "{group}\{#ClientAppName}"; Filename: "{app}\{#ClientAppExeName}"
 Name: "{group}\{cm:Logs}"; Filename: "{localappdata}\{#LogsSubFolder}" ; Flags: uninsneveruninstall
-Name: "{group}\{cm:Db}"; Filename: "{userappdata}\Diagnosis\Client"
+Name: "{group}\{cm:Db}"; Filename: "{localappdata}\{#ClientDbSubFolder}"
 Name: "{commondesktop}\{#ClientAppName}"; Filename: "{app}\{#ClientAppExeName}"; Tasks: desktopicon
 
 [Run]
@@ -59,6 +59,6 @@ Filename: "{app}\{#ClientAppExeName}"; Flags: nowait postinstall skipifsilent un
 Name: "{app}\Help"
 Name: "{app}\bin"
 Name: "{localappdata}\{#LogsSubFolder}"; Flags: uninsneveruninstall
-Name: "{userappdata}\Diagnosis\Client"; Flags: uninsneveruninstall
+Name: "{localappdata}\{#ClientDbSubFolder}"; Flags: uninsneveruninstall
 
 #include "code.iss"
