@@ -85,18 +85,6 @@ namespace Diagnosis.Client.App.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string LoginRememberedDoctorId {
-            get {
-                return ((string)(this["LoginRememberedDoctorId"]));
-            }
-            set {
-                this["LoginRememberedDoctorId"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public double HelpWindowTop {
             get {
@@ -188,6 +176,42 @@ namespace Diagnosis.Client.App.Properties {
             }
             set {
                 this["DebugFilterOn"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Upgraded {
+            get {
+                return ((bool)(this["Upgraded"]));
+            }
+            set {
+                this["Upgraded"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SyncServerConstr {
+            get {
+                return ((string)(this["SyncServerConstr"]));
+            }
+            set {
+                this["SyncServerConstr"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SyncServerProviderName {
+            get {
+                return ((string)(this["SyncServerProviderName"]));
+            }
+            set {
+                this["SyncServerProviderName"] = value;
             }
         }
     }

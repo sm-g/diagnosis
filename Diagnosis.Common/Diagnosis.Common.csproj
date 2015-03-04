@@ -153,6 +153,7 @@
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Formatters\DateFormatter.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Types\ConnectionInfo.cs" />
     <Compile Include="Types\DateOffset.cs" />
     <Compile Include="Extensions\ConvertExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
@@ -164,6 +165,7 @@
     <Compile Include="Types\INCCReadOnlyObservableCollection.cs" />
     <Compile Include="Mediator\Events.cs" />
     <Compile Include="Util\ActionWrapper.cs" />
+    <Compile Include="Util\AssemblyHelper.cs" />
     <Compile Include="Util\Comparers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Util\EventArgs.cs" />

@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Common.Types;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -40,7 +41,18 @@ namespace Diagnosis.Data
                 return false;
             }
         }
-
+        public static bool IsAvailable(this ConnectionInfo connection)
+        {
+            try
+            {
+                var dbConn = CreateConnection(connection.ConnectionString, connection.ProviderName);
+                return dbConn.IsAvailable();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         public static DbConnection CreateConnection(string connstr, string provider)
         {
             switch (provider)

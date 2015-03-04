@@ -1,8 +1,10 @@
-﻿using Diagnosis.Client.App.Themes;
+﻿using Diagnosis.Client.App.Properties;
+using Diagnosis.Client.App.Themes;
 using Diagnosis.Client.App.Windows.Shell;
 using Diagnosis.Common;
 using Diagnosis.Common.Presentation;
 using Diagnosis.Common.Presentation.DebugTools;
+using Diagnosis.Common.Types;
 using Diagnosis.Common.Util;
 using Diagnosis.Data;
 using Diagnosis.Data.Versions;
@@ -13,6 +15,7 @@ using System.Configuration;
 using System.Data.SqlServerCe;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 
 namespace Diagnosis.Client.App
@@ -57,6 +60,8 @@ namespace Diagnosis.Client.App
             splash = new SplashScreen(@"Resources\Images\splash.png");
             splash.Show(false);
 #endif
+            SettingsMaintenance();
+
             Startuper.SetWpfCulture();
 
             // enum localization
@@ -72,6 +77,47 @@ namespace Diagnosis.Client.App
             DbMaintenance();
 
             StartMainWindow();
+        }
+
+        private void SettingsMaintenance()
+        {
+            if (!Settings.Default.Upgraded)
+            {
+                Settings.Default.Upgrade();
+                Settings.Default.Upgraded = true;
+            }
+
+            ConnectionInfo syncServerConection;
+            this.Subscribe(Event.PushToSettings, (e) =>
+            {
+                var name = e.GetValue<string>(MessageKeys.Name);
+                var value = e.GetValue<object>(MessageKeys.Value);
+
+                var settingProp = Settings.Default.Properties.Cast<SettingsProperty>().FirstOrDefault(s => s.Name == name);
+                if (settingProp != null)
+                {
+                    Settings.Default[name] = value;
+                }
+
+                // обновляем
+                if (name == Constants.SyncServerConstrSettingName)
+                {
+                    syncServerConection = new ConnectionInfo(value as string, Settings.Default.SyncServerProviderName);
+                    Constants.ServerConnectionInfo = syncServerConection;
+
+                }
+                else if (name == Constants.SyncServerProviderSettingName)
+                {
+                    syncServerConection = new ConnectionInfo(Settings.Default.SyncServerConstr, value as string);
+                    Constants.ServerConnectionInfo = syncServerConection;
+                }
+            });
+
+            syncServerConection = new ConnectionInfo(Settings.Default.SyncServerConstr, Settings.Default.SyncServerProviderName);
+            Constants.ServerConnectionInfo = syncServerConection;
+
+            Constants.SyncServerConstrSettingName = "SyncServerConstr";
+            Constants.SyncServerProviderSettingName = "SyncServerProviderName";
         }
 
         private void StartMainWindow()
@@ -93,8 +139,12 @@ namespace Diagnosis.Client.App
 
         private void DbMaintenance()
         {
-            var con = ConfigurationManager.ConnectionStrings[Constants.clientConStrName];
-            if (!NHibernateHelper.Init(con, Side.Client))
+            ConnectionInfo conInfo = null;
+            var constrsettings = ConfigurationManager.ConnectionStrings[Constants.clientConStrName];
+            if (constrsettings != null)
+                conInfo = new ConnectionInfo(constrsettings.ConnectionString.ExpandVariables(), constrsettings.ProviderName);
+
+            if (!NHibernateHelper.Init(conInfo, Side.Client))
             {
                 demoMode = true;
             }

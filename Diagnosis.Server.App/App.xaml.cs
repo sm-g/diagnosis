@@ -11,6 +11,8 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using Diagnosis.ViewModels.Screens;
+using Diagnosis.Common.Types;
+using Diagnosis.Server.App.Properties;
 
 namespace Diagnosis.Server.App
 {
@@ -48,6 +50,8 @@ namespace Diagnosis.Server.App
                 }
             }
 
+            SettingsMaintenance();
+
             Startuper.SetWpfCulture();
 
 #if DEBUG
@@ -64,10 +68,35 @@ namespace Diagnosis.Server.App
             main.Show();
         }
 
+        private void SettingsMaintenance()
+        {
+            if (!Settings.Default.Upgraded)
+            {
+                Settings.Default.Upgrade();
+                Settings.Default.Upgraded = true;
+            }
+
+            this.Subscribe(Event.PushToSettings, (e) =>
+            {
+                var name = e.GetValue<string>(MessageKeys.Name);
+                var value = e.GetValue<object>(MessageKeys.Value);
+
+                var settingProp = Settings.Default.Properties.Cast<SettingsProperty>().FirstOrDefault(s => s.Name == name);
+                if (settingProp != null)
+                {
+                    Settings.Default[name] = value;
+                }
+            });
+        }
+
         private void DbMaintenance()
         {
-            var con = ConfigurationManager.ConnectionStrings[Constants.serverConStrName];
-            if (!NHibernateHelper.Init(con, Side.Server))
+            ConnectionInfo conInfo = null;
+            var constrsettings = ConfigurationManager.ConnectionStrings[Constants.serverConStrName];
+            if (constrsettings != null)
+                conInfo = new ConnectionInfo(constrsettings.ConnectionString.ExpandVariables(), constrsettings.ProviderName);
+
+            if (!NHibernateHelper.Init(conInfo, Side.Server))
             {
                 demoMode = true;
             }

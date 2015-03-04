@@ -121,7 +121,7 @@ namespace Diagnosis.Models
 
         public override int GetHashCode()
         {
-            return base.GetHashCode(); // TODO
+            return base.GetHashCode(); // TODO GetHashCode
         }
     }
 }

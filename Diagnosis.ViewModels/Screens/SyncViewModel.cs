@@ -37,7 +37,7 @@ namespace Diagnosis.ViewModels.Screens
             Syncer.MessagePosted += syncer_MessagePosted;
             Syncer.SyncEnded += syncer_SyncEnded;
 
-            var server = ConfigurationManager.ConnectionStrings[Constants.serverConStrName];
+            var server = Constants.ServerConnectionInfo; // из Settings
             if (server != null)
             {
                 RemoteConnectionString = server.ConnectionString;
@@ -305,15 +305,8 @@ namespace Diagnosis.ViewModels.Screens
                 Syncer.SyncEnded -= syncer_SyncEnded;
                 Syncer.MessagePosted -= syncer_MessagePosted;
 
-                // http://stackoverflow.com/questions/502411/change-connection-string-reload-app-config-at-run-time
-                // clear all connection strings and save new
-                var settings = new ConnectionStringSettings(Constants.serverConStrName, RemoteConnectionString, RemoteProviderName);
-                var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                var connectionStringsSection = (ConnectionStringsSection)config.GetSection("connectionStrings");
-                connectionStringsSection.ConnectionStrings.Clear();
-                connectionStringsSection.ConnectionStrings.Add(settings);
-                config.Save();
-                ConfigurationManager.RefreshSection("connectionStrings");
+                this.Send(Event.PushToSettings, new object[] { Constants.SyncServerConstrSettingName, RemoteConnectionString }.AsParams(MessageKeys.Name, MessageKeys.Value));
+                this.Send(Event.PushToSettings, new object[] { Constants.SyncServerProviderSettingName, RemoteProviderName }.AsParams(MessageKeys.Name, MessageKeys.Value));
             }
             base.Dispose(disposing);
         }

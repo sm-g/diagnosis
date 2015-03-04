@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Common.Types;
 using Diagnosis.Data.Mappings;
 using Diagnosis.Data.NHibernate;
 using NHibernate;
@@ -23,7 +24,7 @@ namespace Diagnosis.Data
         private static HbmMapping _mapping;
         private static ISession _session;
         private static ISessionFactory _sessionFactory;
-        private static System.Configuration.ConnectionStringSettings connection;
+        private static ConnectionInfo connection;
 
         public static bool InMemory { get; set; }
 
@@ -97,7 +98,7 @@ namespace Diagnosis.Data
         /// <param name="conn"></param>
         /// <param name="side"></param>
         /// <returns>Connection success</returns>
-        public static bool Init(System.Configuration.ConnectionStringSettings conn, Side side)
+        public static bool Init(ConnectionInfo conn, Side side)
         {
             if (conn == null)
             {
@@ -106,8 +107,6 @@ namespace Diagnosis.Data
             }
 
             var fail = false;
-            var constr = conn.ConnectionString.Replace("%APPDATA%",
-                System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData));
 
             // create db for client side
             if (side == Side.Client)
@@ -117,23 +116,23 @@ namespace Diagnosis.Data
                 if (!fail)
                     try
                     {
-                        SqlHelper.CreateSqlCeByConStr(constr);
+                        SqlHelper.CreateSqlCeByConStr(conn.ConnectionString);
                     }
                     catch (System.Exception)
                     {
                         fail = true;
                     }
-
             }
 
-            connection = new System.Configuration.ConnectionStringSettings(conn.Name, constr, conn.ProviderName);
-            fail |= !connection.IsAvailable();
+            fail |= !conn.IsAvailable();
 
             if (fail)
             {
                 InMemory = true;
+                connection = null;
                 return false;
             }
+            connection = new ConnectionInfo(conn.ConnectionString, conn.ProviderName);
             return true;
         }
 
@@ -174,8 +173,9 @@ namespace Diagnosis.Data
         private static HbmMapping CreateMapping()
         {
             var mapper = new ModelMapper();
-            var assemblyContainingMapping = Assembly.GetAssembly(typeof(WordMap));
-            var types = assemblyContainingMapping.GetExportedTypes().Where(t => t.Namespace == "Diagnosis.Data.Mappings");
+            var mapType = typeof(WordMap);
+            var assemblyContainingMapping = Assembly.GetAssembly(mapType);
+            var types = assemblyContainingMapping.GetExportedTypes().Where(t => t.Namespace == mapType.Namespace);
             mapper.AddMappings(types);
             return mapper.CompileMappingForAllExplicitlyAddedEntities();
         }

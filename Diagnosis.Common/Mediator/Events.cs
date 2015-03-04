@@ -27,9 +27,11 @@ namespace Diagnosis.Common
         public const string Holder = "holder";
         public const string Dialog = "dialog";
         public const string HrItemObjects = "entity";
-        public static string Window = "window";
-        public static string Uom = "uom";
-        public static string String = "string";
+        public const string Window = "window";
+        public const string Uom = "uom";
+        public const string String = "string";
+        public const string Name = "name";
+        public const string Value = "value";
     }
 
     public enum Event
@@ -52,26 +54,30 @@ namespace Diagnosis.Common
         OpenDialog,
         OpenWindow,
 
+        // card logic
         SendToSearch,
-
         ShowUndoOverlay,
         HideOverlay,
-        Shutdown,
         DeleteHolder,
+        AddHr,
 
+        // nhibernate
         WordPersisted,
         WordSaved,
         PatientSaved,
         DoctorSaved,
         UomSaved,
-
         SettingsSaved,
 
+        // other
         ChangeTheme,
         ChangeFont,
 
-        AddHr,
         ShowHelp,
+
+        // app
+        PushToSettings,
+        Shutdown,
     }
 
     public static class EventAggragatorExtensions
