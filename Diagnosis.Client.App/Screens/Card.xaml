@@ -54,10 +54,6 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <Button Grid.Column="1"
-                Style="{StaticResource HelpButton}"
-                diag:HelpProvider.Topic="card" />
-
         <TreeView ItemsSource="{Binding Navigator.TopCardItems}"
                   Grid.RowSpan="3">
             <TreeView.ItemContainerStyle>
@@ -112,11 +108,16 @@
         <card:Header DataContext="{Binding Header}"
                      Grid.Column="1"
                      Margin="0,0,0,10" />
+        
         <card:HealthRecordsList DataContext="{Binding HrList}"
                                 d:DataContext="{x:Null}"
                                 Grid.Column="1"
                                 Grid.Row="1" />
 
+        <Button Grid.Column="1"
+                Style="{StaticResource HelpButton}"
+                diag:HelpProvider.Topic="card" />
+        
         <Border Grid.Row="2"
                 Grid.Column="1"
                 BorderThickness="0,1,0,0"
