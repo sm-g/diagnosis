@@ -24,10 +24,10 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         private TagViewModel _selTag;
         private bool _popupOpened;
-        private object prevSelectedSuggestion;
+        private SuggestionViewModel prevSelectedSuggestion;
         private TagViewModel _editingTag;
         private bool _supressCompletion;
-        private object _selectedSuggestion;
+        private SuggestionViewModel _selectedSuggestion;
         private bool _showALt;
         private EventAggregator.EventMessageHandler hanlder;
         private bool inDispose;
@@ -72,7 +72,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                     AddTag(item);
                 }
             }
-            Suggestions = new ObservableCollection<object>();
+            Suggestions = new ObservableCollection<SuggestionViewModel>();
 
             DropHandler = new AutocompleteViewModel.DropTargetHandler(this);
             DragHandler = new AutocompleteViewModel.DragSourceHandler();
@@ -115,13 +115,13 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-        public ObservableCollection<object> Suggestions
+        public ObservableCollection<SuggestionViewModel> Suggestions
         {
             get;
             private set;
         }
 
-        public object SelectedSuggestion
+        public SuggestionViewModel SelectedSuggestion
         {
             get
             {
@@ -330,6 +330,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (_showALt != value)
                 {
                     _showALt = value;
+                    Suggestions.ForEach(x => x.IsAlter = value);
                     OnPropertyChanged(() => ShowAltSuggestion);
                 }
             }
@@ -589,7 +590,17 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
         private void CompleteCommon(TagViewModel tag, object suggestion, bool exactMatchRequired, bool inverse = false)
         {
+            var vm = suggestion as SuggestionViewModel;
+            if (vm != null)
+            {
+                suggestion = vm.Hio;
+            }
             recognizer.SetBlank(tag, suggestion, exactMatchRequired, inverse);
+
+            //if (vm != null && vm.IsAbsent)
+            //    tag.Confidence = Confidence.Absent;
+            //else
+            //    tag.Confidence = Confidence.Present;
 
             CompleteEnding(tag);
 
@@ -688,7 +699,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             Suggestions.Clear();
             foreach (var item in results)
             {
-                Suggestions.Add(item);
+                Suggestions.Add(new SuggestionViewModel(item, ShowAltSuggestion, item.IsTransient));
             }
 
             SelectedSuggestion = Suggestions.FirstOrDefault();

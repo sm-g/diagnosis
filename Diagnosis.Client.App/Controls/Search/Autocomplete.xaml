@@ -230,8 +230,12 @@
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding}"
-                                   FontSize="{DynamicResource ContentFontSize}" />
+                        <StackPanel Orientation="Horizontal">
+                            <!--<TextBlock Visibility="{Binding IsAlter, Converter={StaticResource BooleanToVisibilityConverter}}" Text="НЕ "/>-->
+
+                            <TextBlock Text="{Binding}"
+                                       FontSize="{DynamicResource ContentFontSize}" />
+                        </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

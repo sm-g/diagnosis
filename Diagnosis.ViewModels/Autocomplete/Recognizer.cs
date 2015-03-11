@@ -80,6 +80,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         public void SetBlank(TagViewModel tag, object suggestion, bool exactMatchRequired, bool inverse)
         {
             Contract.Requires(tag != null);
+            Contract.Requires(suggestion == null || suggestion is IHrItemObject || suggestion is string);
 
             if (suggestion == null ^ inverse) // direct no suggestion or inverse with suggestion
             {
@@ -213,25 +214,25 @@ namespace Diagnosis.ViewModels.Autocomplete
                 case BlankType.Query: // нераспознаный запрос
                     var c = new Comment(tag.Blank as string);
                     tag.Entity = c;
-                    return c;
+                    break;
 
                 case BlankType.Word:
                     tag.Entity = tag.Blank as Word;
-                    return tag.Blank as Word;
+                    break;
 
                 case BlankType.Comment:
                     tag.Entity = tag.Blank as Comment;
-                    return tag.Blank as Comment;
+                    break;
 
                 case BlankType.Icd:
                     tag.Entity = tag.Blank as IcdDisease;
-                    return tag.Blank as IcdDisease;
+                    break;
 
                 case BlankType.Measure:
                     tag.Entity = tag.Blank as Measure;
-                    return tag.Blank as Measure;
+                    break;
             }
-            return null;
+            return tag.Entity;
         }
 
         /// <summary>
@@ -240,14 +241,13 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <param name="query"></param>
         /// <param name="prevEntityBlank">Предыдущая заготовка.</param>
         /// <param name="exclude">Предположения, исключаемые из результатов (например, уже выбранные в автокомплите заготовки).</param>
-        /// <returns>Предположения - слово, число и единица или строка запроса.</returns>
-        public List<object> SearchForSuggesstions(string query, object prevEntityBlank, IEnumerable<object> exclude = null)
+        /// <returns>Предположения - слова.</returns>
+        public List<Word> SearchForSuggesstions(string query, object prevEntityBlank, IEnumerable<object> exclude = null)
         {
             Contract.Requires(query != null);
-            Contract.Ensures(Contract.Result<List<object>>().All(o => o is Word || o is string));
+            // Contract.Ensures(Contract.Result<List<object>>().All(o => o is Word || o is string));
 
-            IEnumerable<IDomainObject> found;
-            List<object> results;
+            IEnumerable<Word> found;
 
             found = QueryWords(query, prevEntityBlank);
             if (exclude != null)
@@ -255,7 +255,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 found = found.Where(i => !exclude.Contains(i));
             }
 
-            results = new List<object>(found);
+            var results = new List<Word>(found);
 
             if (AddQueryToSuggestions)
             {
