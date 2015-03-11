@@ -50,7 +50,7 @@ namespace Diagnosis.ViewModels.Screens
         private bool inSetSelected;
         private bool disposed;
 
-        public HrListViewModel(IHrsHolder holder, Action<HealthRecord, HrData.HrInfo> filler, Action<IList<IHrItemObject>> syncer)
+        public HrListViewModel(IHrsHolder holder, Action<HealthRecord, HrData.HrInfo> filler, Action<IList<ConfindenceHrItemObject>> syncer)
         {
             Contract.Requires(holder != null);
             Contract.Requires(filler != null);
@@ -915,7 +915,7 @@ namespace Diagnosis.ViewModels.Screens
 
             public HealthRecordUnit Unit { get; set; }
 
-            public List<IHrItemObject> Hios { get; set; }
+            public List<ConfindenceHrItemObject> Hios { get; set; }
         }
     }
 }

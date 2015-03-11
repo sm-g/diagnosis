@@ -76,7 +76,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private bool _selected;
         private bool _draggable;
         private Signalizations? _signal;
-        private bool _canToIcd;
+        private Confidence _confidence;
         private VisibleRelayCommand sendToSearch;
         private VisibleRelayCommand<BlankType> convertTo;
 
@@ -90,7 +90,6 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             this.autocomplete = parent;
             Reset();
-            CanConvertToIcd = autocomplete.WithConvert;
         }
 
         /// <summary>
@@ -103,7 +102,6 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             this.autocomplete = parent;
             Query = query;
-            CanConvertToIcd = autocomplete.WithConvert;
         }
 
 
@@ -120,7 +118,6 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             Blank = item;
             Entity = item;
-            CanConvertToIcd = autocomplete.WithConvert;
         }
 
 
@@ -176,6 +173,22 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// Копируется.
         /// </summary>
         public IHrItemObject Entity { get; internal set; }
+
+        public Confidence Confidence
+        {
+            get
+            {
+                return _confidence;
+            }
+            set
+            {
+                if (_confidence != value)
+                {
+                    _confidence = value;
+                    OnPropertyChanged(() => Confidence);
+                }
+            }
+        }
 
         /// <summary>
         /// Заготовка, из которой получаются сущности.
@@ -282,21 +295,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                 {
                     IsVisible = autocomplete.WithConvert
                 });
-            }
-        }
-        public bool CanConvertToIcd
-        {
-            get
-            {
-                return _canToIcd;
-            }
-            set
-            {
-                if (_canToIcd != value)
-                {
-                    _canToIcd = value;
-                    OnPropertyChanged(() => CanConvertToIcd);
-                }
             }
         }
 
@@ -611,10 +609,10 @@ namespace Diagnosis.ViewModels.Autocomplete
     {
         public static readonly DataFormat DataFormat = DataFormats.GetDataFormat("tag");
 
-        IList<IHrItemObject> itemobjects;
-        public IList<IHrItemObject> ItemObjects { get { return itemobjects; } }
+        IList<ConfindenceHrItemObject> itemobjects;
+        public IList<ConfindenceHrItemObject> ItemObjects { get { return itemobjects; } }
 
-        public TagData(IList<IHrItemObject> itemobjects)
+        public TagData(IList<ConfindenceHrItemObject> itemobjects)
         {
             this.itemobjects = itemobjects;
         }

@@ -237,6 +237,7 @@ namespace Diagnosis.Common
         }
 
         /// <summary>
+        /// True if two lists contain same items.
         /// from http://stackoverflow.com/questions/3669970/compare-two-listt-objects-for-equality-ignoring-order
         /// </summary>
         /// <typeparam name="T"></typeparam>

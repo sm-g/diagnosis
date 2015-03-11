@@ -14,7 +14,7 @@ namespace Tests
         private string q;
         private string qFull;
         private Word word;
-        private IcdDisease icd;
+        private IcdDisease icd1;
         private static string notExistQ = "qwe";
 
         public TagViewModel First { get { return a.Tags.First(); } }
@@ -29,7 +29,7 @@ namespace Tests
             r = new Recognizer(session, true);
             a = new AutocompleteViewModel(r, true, true, false, null);
             word = session.Get<Word>(IntToGuid<Word>(1));
-            icd = session.Get<IcdDisease>(1);
+            icd1 = session.Get<IcdDisease>(1);
             q = word.Title.Substring(0, word.Title.Length - 1);
             qFull = word.Title;
 
@@ -143,9 +143,9 @@ namespace Tests
             Assert.IsTrue(First.BlankType == BlankType.Word);
             Assert.AreEqual(word, First.Blank);
 
-            var entities = a.GetEntities();
+            var entities = a.GetCHIOs();
 
-            Assert.AreEqual(word, entities.Single());
+            Assert.AreEqual(word, entities.Single().HIO);
             Assert.AreEqual(word, FirstItem);
         }
 
@@ -159,7 +159,7 @@ namespace Tests
             Assert.AreEqual(q, First.Blank);
             Assert.IsTrue(First.BlankType == BlankType.Query);
 
-            var entities = a.GetEntities();
+            var entities = a.GetCHIOs();
 
             Assert.IsTrue(FirstItem is Comment);
             Assert.IsTrue((FirstItem as Comment).String == q);
@@ -175,7 +175,7 @@ namespace Tests
             Assert.AreEqual(notExistQ, First.Blank);
             Assert.IsTrue(First.BlankType == BlankType.Query);
 
-            var entities = a.GetEntities();
+            var entities = a.GetCHIOs();
 
             Assert.IsTrue(FirstItem is Comment);
             Assert.IsTrue((FirstItem as Comment).String == notExistQ);
@@ -195,7 +195,7 @@ namespace Tests
             Assert.IsTrue(newW.Title == notExistQ);
             Assert.IsTrue(newW.IsTransient);
 
-            var entities = a.GetEntities();
+            var entities = a.GetCHIOs();
 
             Assert.AreEqual(newW, FirstItem);
         }
@@ -287,14 +287,14 @@ namespace Tests
         [TestMethod]
         public void CopyPasteIcd()
         {
-            a.AddTag(icd);
+            a.AddTag(icd1);
             a.SelectedTag = a.Tags.First();
             a.Copy();
 
             a.Paste();
 
             Assert.AreEqual(3, a.Tags.Count);
-            Assert.AreEqual(icd, a.Tags[1].Blank);
+            Assert.AreEqual(icd1, a.Tags[1].Blank);
         }
 
         [TestMethod]

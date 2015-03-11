@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using Diagnosis.ViewModels.DragDrop;
+using Diagnosis.Models;
 namespace Diagnosis.ViewModels.Screens
 {
     public partial class HrListViewModel : IDraggable, IDroppable
@@ -137,7 +138,7 @@ namespace Diagnosis.ViewModels.Screens
 
                     // new hr from tags
                     var newHR = master.holder.AddHealthRecord(AuthorityController.CurrentDoctor);
-                    var items = tags.Select(t => t.Entity).ToList();
+                    var items = tags.Select(t => new ConfindenceHrItemObject(t.Entity, t.Confidence)).ToList();
                     newHR.SetItems(items);
                 }
                 master.OnSaveNeeded();

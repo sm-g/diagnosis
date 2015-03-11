@@ -139,6 +139,12 @@
                             <Setter Property="Foreground"
                                     Value="Green" />
                         </DataTrigger>
+
+                        <DataTrigger Binding="{Binding Confidence}"
+                                     Value="{x:Static diag:Confidence.Absent}">
+                            <Setter Property="TextDecorations"
+                                    Value="Overline" />
+                        </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </TextBox.Style>

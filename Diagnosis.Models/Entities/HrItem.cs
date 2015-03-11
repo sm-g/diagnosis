@@ -1,9 +1,13 @@
 ﻿using Diagnosis.Common;
 using System;
 using System.Diagnostics.Contracts;
+using System.Diagnostics;
 
 namespace Diagnosis.Models
 {
+    /// <summary>
+    /// Элемент записи. Value object, создается при изменении хранимой сущности, порядка или уверенности.
+    /// </summary>
     public class HrItem : EntityBase<Guid>, IDomainObject
     {
         private Comment comment;
@@ -40,6 +44,11 @@ namespace Diagnosis.Models
         }
 
         public virtual HealthRecord HealthRecord { get; protected set; }
+
+        /// <summary>
+        /// Уверенность.
+        /// </summary>
+        public virtual Confidence Confidence { get; set; }
 
         public virtual string TextRepr { get; protected set; }
 
@@ -107,11 +116,58 @@ namespace Diagnosis.Models
             }
         }
 
+        public virtual ConfindenceHrItemObject CHIO
+        {
+            get
+            {
+                return new ConfindenceHrItemObject(Entity, Confidence);
+            }
+        }
+
         public virtual int Ord { get; set; }
 
         public override string ToString()
         {
             return string.Format("{0} {1} {2}", this.ShortId(), Ord, Entity);
+        }
+    }
+
+    /// <summary>
+    /// Сущность элемента записи с уверенностью.
+    /// </summary>
+    [Serializable]
+    [DebuggerDisplay("CHIO {HIO} {Confindence}")]
+    public class ConfindenceHrItemObject : IDomainObject, IComparable<ConfindenceHrItemObject>
+    {
+        public Confidence Confindence { get; set; }
+
+        public IHrItemObject HIO { get; set; }
+
+        public ConfindenceHrItemObject(IHrItemObject hio, Confidence conf)
+        {
+            Confindence = conf;
+            HIO = hio;
+        }
+
+        public int CompareTo(ConfindenceHrItemObject other)
+        {
+            int res = this.HIO.CompareTo(other.HIO);
+            if (res != 0) return res;
+
+            return this.Confindence.CompareTo(other.Confindence);
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as ConfindenceHrItemObject;
+            if (other == null)
+                return false;
+            return this.CompareTo(other) == 0;
+        }
+
+        public override int GetHashCode()
+        {
+            return HIO.GetHashCode() * 37 + Confindence.GetHashCode();
         }
     }
 }

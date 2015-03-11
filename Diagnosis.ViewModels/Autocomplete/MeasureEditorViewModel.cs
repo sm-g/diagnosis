@@ -43,16 +43,17 @@ namespace Diagnosis.ViewModels.Autocomplete
                 new Recognizer(Session) { OnlyWords = true, AddQueryToSuggestions = true },
                 false,
                 false,
+                false,
                 true,
-                Word == null ? null : new[] { Word })
+                Word == null ? null : new[] { new ConfindenceHrItemObject(Word, Confidence.Present) })
                 {
                     IsDragSourceEnabled = false,
                     IsDropTargetEnabled = false
                 };
             Autocomplete.EntitiesChanged += (s, e) =>
             {
-                var entities = Autocomplete.GetEntities().ToList();
-                Word = entities.FirstOrDefault() as Word;
+                var wordHio = Autocomplete.GetCHIOs().FirstOrDefault();
+                Word = wordHio != null ? wordHio.HIO as Word : null;
             };
 
             Title = "Редактирование измерения";

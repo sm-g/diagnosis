@@ -46,7 +46,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return string.Join(" ", healthRecord.GetOrderedEntities());// сущности давления надо форматировать
+                return string.Join(" ", healthRecord.GetOrderedEntities());
             }
         }
 

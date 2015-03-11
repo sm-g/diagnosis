@@ -350,7 +350,7 @@ namespace Diagnosis.ViewModels.Screens
                     hr.FromMonth = hrInfo.FromMonth;
                     hr.FromDay = hrInfo.FromDay;
 
-                    // вставляем к пацеинту без возраста
+                    // вставляем к пациенту без возраста
                     var unit = hrInfo.Unit;
                     if (hr.GetPatient().BirthYear == null && hrInfo.Unit == HealthRecordUnit.ByAge)
                         unit = HealthRecordUnit.NotSet;

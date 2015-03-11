@@ -276,7 +276,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             return results;
         }
 
-        public void Sync(IList<IHrItemObject> hios)
+        public void Sync(IList<ConfindenceHrItemObject> hios)
         {
             hios.Sync(session, (w) => SyncTransientWord(w));
         }

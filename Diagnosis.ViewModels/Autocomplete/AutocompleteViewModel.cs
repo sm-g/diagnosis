@@ -20,6 +20,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private readonly Recognizer recognizer;
         private readonly bool allowSendToSearch;
         private readonly bool allowTagConvertion;
+        private readonly bool allowConfidenceToggle;
         private readonly bool singleTag;
 
         private TagViewModel _selTag;
@@ -34,13 +35,14 @@ namespace Diagnosis.ViewModels.Autocomplete
         private VisibleRelayCommand<TagViewModel> sendToSearch;
 
 
-        public AutocompleteViewModel(Recognizer recognizer, bool allowTagConvertion, bool allowSendToSearch, bool singleTag, IEnumerable<IHrItemObject> initItems)
+        public AutocompleteViewModel(Recognizer recognizer, bool allowTagConvertion, bool allowSendToSearch, bool allowConfidenceToggle, bool singleTag, IEnumerable<ConfindenceHrItemObject> initItems)
         {
             Contract.Requires(recognizer != null);
 
             this.recognizer = recognizer;
             this.allowTagConvertion = allowTagConvertion;
             this.allowSendToSearch = allowSendToSearch;
+            this.allowConfidenceToggle = allowConfidenceToggle;
             this.singleTag = singleTag;
 
 
@@ -94,6 +96,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// Возникает, когда меняется набор сущностей в тегах. (Завершение редактирования, конвертация, удаление, cut, paste.)
         /// </summary>
         public event EventHandler EntitiesChanged;
+        public event EventHandler ConfidencesChanged;
 
         public RelayCommand<TagViewModel> EnterCommand
         {
@@ -210,6 +213,22 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
+        public RelayCommand ToggleConfidenceCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    if (SelectedTag != null)
+                    {
+                        var next = SelectedTag.Confidence == Confidence.Present ? Confidence.Absent : Confidence.Present;
+                        SelectedTags.ForEach(t => t.Confidence = next);
+                        OnConfidencesChanged();
+                    }
+                }, () => WithConfidence);
+            }
+        }
+
         /// <summary>
         /// Показывает предположения для редактируемого тега.
         /// </summary>
@@ -235,7 +254,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                     if (t != null)
                         entities = recognizer.EntityOf(t).ToEnumerable();
                     else
-                        entities = GetEntitiesOfSelected();
+                        entities = GetCHIOsOfSelectedCompleted().Select(x => x.HIO);
                     this.Send(Event.SendToSearch, entities.AsParams(MessageKeys.HrItemObjects));
                 }, (t) => WithSendToSearch)
                 {
@@ -346,18 +365,17 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public bool WithSendToSearch
         {
-            get
-            {
-                return allowSendToSearch;
-            }
+            get { return allowSendToSearch; }
         }
 
         public bool WithConvert
         {
-            get
-            {
-                return allowTagConvertion;
-            }
+            get { return allowTagConvertion; }
+        }
+
+        public bool WithConfidence
+        {
+            get { return allowConfidenceToggle; }
         }
 
         public bool InDispose
@@ -367,16 +385,21 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// Создает тег.
         /// </summary>
-        /// <param name="сontent">Строка запроса, IHrsItemObject или null для пустого тега.</param>
+        /// <param name="сontent">Строка запроса, ConfindenceHrItemObject или null для пустого тега.</param>
         public TagViewModel CreateTag(object content = null)
         {
             TagViewModel tag;
             var itemObject = content as IHrItemObject;
+            var chio = content as ConfindenceHrItemObject;
             var str = content as string;
 
             if (itemObject != null)
-                // для давления — искать связный тег и добавлять туда сущность
                 tag = new TagViewModel(this, itemObject);
+            else if (chio != null)
+            {
+                tag = new TagViewModel(this, chio.HIO);
+                tag.Confidence = chio.Confindence;
+            }
             else if (str != null)
                 tag = new TagViewModel(this, str);
             else
@@ -478,7 +501,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         /// <summary>
         /// Добавляет тег в коллекцию.
-        /// <param name="tagOrContent">Созданный тег, строка запроса, IHrsItemObject или null для пустого тега.</param>
+        /// <param name="tagOrContent">Созданный тег, строка запроса, ConfindenceHrItemObject или null для пустого тега.</param>
         /// </summary>
         public TagViewModel AddTag(object tagOrContent = null, int index = -1, bool isLast = false)
         {
@@ -549,29 +572,45 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         /// <summary>
         /// Возвращает сущности из тегов по порядку.
+        /// Не должен вызываться, если есть редактируемый тег.
         /// </summary>
-        public IEnumerable<IHrItemObject> GetEntities()
+        public IEnumerable<ConfindenceHrItemObject> GetCHIOs()
         {
             Contract.Requires(Tags.All(t => t.State != State.Typing));
 
-            List<IHrItemObject> result = new List<IHrItemObject>();
+            var result = new List<ConfindenceHrItemObject>();
             foreach (var tag in Tags)
             {
                 if (tag.BlankType != BlankType.None)
-                    result.Add(recognizer.EntityOf(tag));
+                    result.Add(new ConfindenceHrItemObject(recognizer.EntityOf(tag), tag.Confidence));
                 else if (tag.State != State.Init)
                     logger.WarnFormat("{0} without entity blank, skip", tag);
             }
 
             return result;
         }
+        /// <summary>
+        /// Возвращает сущности из завершенных тегов по порядку.
+        /// </summary>
+        public IEnumerable<ConfindenceHrItemObject> GetCHIOsOfCompleted()
+        {
+            var completed = Tags.Where(t => t.State == State.Completed);
 
-
-        private List<IHrItemObject> GetEntitiesOfSelected()
+            var hios = completed
+                 .Select(t => new ConfindenceHrItemObject(recognizer.EntityOf(t), t.Confidence))
+                 .ToList();
+            return hios;
+        }
+        /// <summary>
+        /// Возвращает сущности из выделенных завершенных тегов по порядку.
+        /// </summary>
+        /// <returns></returns>
+        private List<ConfindenceHrItemObject> GetCHIOsOfSelectedCompleted()
         {
             var completed = SelectedTags.Where(t => t.State == State.Completed);
+
             var hios = completed
-                 .Select(t => recognizer.EntityOf(t))
+                 .Select(t => new ConfindenceHrItemObject(recognizer.EntityOf(t), t.Confidence))
                  .ToList();
             return hios;
         }
@@ -738,7 +777,14 @@ namespace Diagnosis.ViewModels.Autocomplete
                 h(this, EventArgs.Empty);
             }
         }
-
+        protected virtual void OnConfidencesChanged()
+        {
+            var h = ConfidencesChanged;
+            if (h != null)
+            {
+                h(this, EventArgs.Empty);
+            }
+        }
         [ContractInvariantMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()

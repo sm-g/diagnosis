@@ -23,6 +23,7 @@ namespace Tests
         public void AutocompleteTestInit()
         {
             hrIds.ForAll((id) => hr[id] = session.Get<HealthRecord>(IntToGuid<HealthRecord>(id)));
+            hr1 = hr[71]; // without hios
         }
         [TestMethod]
         public void Unit()
@@ -45,7 +46,78 @@ namespace Tests
 
         }
 
-    
+        [TestMethod]
+        public void SetItems()
+        {
 
+            var hiosSequence = new IHrItemObject[] { w1, w2, com };
+            hr1.SetItems(hiosSequence);
+            Assert.AreEqual(hiosSequence.Count(), hr1.HrItems.Count);
+            Assert.IsTrue(hiosSequence.SequenceEqual(hr1.GetOrderedEntities()));
+        }
+
+        [TestMethod]
+        public void SetItemsWithRepeat()
+        {
+            var hiosSequence = new IHrItemObject[] { w1, w1, com };
+            hr1.SetItems(hiosSequence);
+            Assert.AreEqual(hiosSequence.Count(), hr1.HrItems.Count);
+            Assert.IsTrue(hiosSequence.SequenceEqual(hr1.GetOrderedEntities()));
+        }
+        [TestMethod]
+        public void SetItemsAfterReorder()
+        {
+            var hiosSequence = new IHrItemObject[] { w1, w2, com };
+            var hiosSequence2 = new IHrItemObject[] { w1, com, w2 };
+            hr1.SetItems(hiosSequence);
+            hr1.SetItems(hiosSequence2);
+
+            Assert.AreEqual(hiosSequence2.Count(), hr1.HrItems.Count);
+            Assert.IsTrue(hiosSequence2.SequenceEqual(hr1.GetOrderedEntities()));
+
+        }
+        [TestMethod]
+        public void AddItems()
+        {
+            var hiosSequence = new IHrItemObject[] { w1, w2, com };
+            var hiosToAdd = new IHrItemObject[] { w3, w2 };
+
+            hr1.SetItems(hiosSequence);
+            hr1.AddItems(hiosToAdd);
+
+            Assert.AreEqual(hiosSequence.Count() + hiosToAdd.Count(), hr1.HrItems.Count);
+            Assert.IsTrue(hiosSequence.Concat(hiosToAdd).SequenceEqual(hr1.GetOrderedEntities()));
+
+
+        }
+
+        [TestMethod]
+        public void AddItemsWithDefaultConfidence()
+        {
+            var chiosSequence = new IHrItemObject[] { w1, w2, com }
+                .Select(x => new ConfindenceHrItemObject(x, Confidence.Absent))
+                .ToList();
+            var hiosToAdd = new IHrItemObject[] { w3, w2 };
+
+            hr1.SetItems(chiosSequence);
+            hr1.AddItems(hiosToAdd);
+
+            var chios = hr1.HrItems.Select(x => x.CHIO).ToList();
+            Assert.AreEqual(hiosToAdd.Count(), chios.Count(x => x.Confindence == default(Confidence)));
+
+        }
+        [TestMethod]
+        public void SetNewConfidence()
+        {
+            var hiosSequence = new IHrItemObject[] { w1, w2, com };
+
+            hr1.SetItems(hiosSequence);
+            var chios = hr1.GetOrderedCHIOs().ToList();
+            chios[0].Confindence = Confidence.Absent;
+
+            hr1.SetItems(chios);
+
+            Assert.AreEqual(w1, hr1.HrItems.Single(x => x.Confidence == Confidence.Absent).Entity);
+        }
     }
 }

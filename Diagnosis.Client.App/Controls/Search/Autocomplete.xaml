@@ -21,6 +21,8 @@
     <UserControl.InputBindings>
         <KeyBinding Key="F2"
                     Command="{Binding EditCommand}" />
+        <KeyBinding Key="F8"
+                    Command="{Binding ToggleConfidenceCommand}" />
         <KeyBinding Key="Space"
                     Modifiers="Control"
                     Command="{Binding ShowSuggestionsCommand}" />

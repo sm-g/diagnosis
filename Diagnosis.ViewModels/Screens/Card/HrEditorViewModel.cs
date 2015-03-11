@@ -282,11 +282,12 @@ namespace Diagnosis.ViewModels.Screens
                 Autocomplete.Dispose();
             }
 
-            var initials = HealthRecord.healthRecord.GetOrderedEntities();
+            var initials = HealthRecord.healthRecord.GetOrderedCHIOs();
             recognizer = new Recognizer(session) { ShowChildrenFirst = true };
 
             Autocomplete = new AutocompleteViewModel(
                 recognizer,
+                true,
                 true,
                 true,
                 false,
@@ -295,10 +296,15 @@ namespace Diagnosis.ViewModels.Screens
             Autocomplete.EntitiesChanged += (s, e) =>
             {
                 // меняем элементы записи
-                var items = _autocomplete.GetEntities().ToList();
+                var items = _autocomplete.GetCHIOs().ToList();
                 HealthRecord.healthRecord.SetItems(items);
             };
-
+            Autocomplete.ConfidencesChanged += (s, e) =>
+            {
+                // меняем уверенность заверешенных элементов
+                var items = _autocomplete.GetCHIOsOfCompleted().ToList();
+                HealthRecord.healthRecord.SetItems(items);
+            };
         }
 
         #endregion AutoComplete

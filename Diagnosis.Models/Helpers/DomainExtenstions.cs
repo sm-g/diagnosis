@@ -198,17 +198,26 @@ namespace Diagnosis.Models
             var str = mayBeEntities.Select(item =>
             {
                 var pre = "";
-
+                if (item is ConfindenceHrItemObject)
+                {
+                    item = ((ConfindenceHrItemObject)item).HIO;
+                }
                 if (item is IHrItemObject)
                 {
                     dynamic entity = item;
                     try
                     {
-                        pre = entity.Id.ToString() + " ";
+                        if (entity.Id is Guid)
+                            pre = string.Format("#{0}..", entity.Id.ToString().Substring(0, 3));
+                        else
+                            pre = string.Format("#{0}", entity.Id);
                     }
                     catch
                     {
+                        // Comment or Mesure
                     }
+
+                    pre += " ";
                 }
                 return string.Format("{0}{1}", pre, item);
             });
