@@ -210,6 +210,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// Тип заготовки.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "value")]
         public BlankType BlankType
         {
             get
@@ -609,6 +610,13 @@ namespace Diagnosis.ViewModels.Autocomplete
     public class TagData
     {
         public static readonly DataFormat DataFormat = DataFormats.GetDataFormat("tag");
-        public List<IHrItemObject> ItemObjects { get; set; }
+
+        IList<IHrItemObject> itemobjects;
+        public IList<IHrItemObject> ItemObjects { get { return itemobjects; } }
+
+        public TagData(IList<IHrItemObject> itemobjects)
+        {
+            this.itemobjects = itemobjects;
+        }
     }
 }

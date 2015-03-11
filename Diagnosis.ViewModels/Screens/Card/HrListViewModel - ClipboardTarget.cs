@@ -18,7 +18,7 @@ namespace Diagnosis.ViewModels.Screens
         public bool inManualFocusSetting;
 
         private Action<HealthRecord, HrData.HrInfo> fillHr;
-        private Action<List<IHrItemObject>> syncHios;
+        private Action<IList<IHrItemObject>> syncHios;
 
         private string[] acceptFormats = new[] {
             HrData.DataFormat.Name,
@@ -49,7 +49,7 @@ namespace Diagnosis.ViewModels.Screens
                 Hios = new List<IHrItemObject>(hr.HrItems.Select(x => x.Entity))
             }).ToList();
 
-            var data = new HrData() { Hrs = hrInfos };
+            var data = new HrData(hrInfos);
 
             var strings = string.Join(".\n", hrs.Select(hr => string.Join(", ", hr.GetOrderedEntities()))) + ".";
 

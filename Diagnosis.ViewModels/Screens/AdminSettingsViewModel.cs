@@ -26,7 +26,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public SecureString Password
         {
-            private get { return _password; }
+            get { return _password; }
             set
             {
                 _password = value;
@@ -36,7 +36,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public SecureString RepeatPassword
         {
-            private get { return _repeatPassword; }
+            get { return _repeatPassword; }
             set
             {
                 _repeatPassword = value;

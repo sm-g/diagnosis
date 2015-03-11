@@ -32,7 +32,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         public void Copy()
         {
             var hios = GetEntitiesOfSelected();
-            var data = new TagData() { ItemObjects = hios };
+            var data = new TagData(hios);
 
             var strings = string.Join(", ", hios);
 

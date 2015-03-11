@@ -118,7 +118,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         public ObservableCollection<object> Suggestions
         {
             get;
-            set;
+            private set;
         }
 
         public object SelectedSuggestion
@@ -144,7 +144,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         public ObservableCollection<TagViewModel> Tags
         {
             get;
-            set;
+            private set;
         }
 
         public TagViewModel SelectedTag
@@ -593,7 +593,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             CompleteEnding(tag);
 
-            if (tag.Query == "")
+            if (tag.Query.IsNullOrEmpty())
             {
                 tag.DeleteCommand.Execute(null);
             }

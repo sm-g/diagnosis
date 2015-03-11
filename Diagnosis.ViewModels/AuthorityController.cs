@@ -27,7 +27,7 @@ namespace Diagnosis.ViewModels
         public static Doctor CurrentDoctor { get; private set; }
         public static IUser CurrentUser { get; private set; }
         public static bool AutoLogon { get; set; }
-        public static bool LogIn(IUser user, SecureString password = null, bool remember = false)
+        public static bool LogIn(IUser user, SecureString password = null)
         {
             if (user is Admin)
             {

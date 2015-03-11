@@ -50,7 +50,7 @@ namespace Diagnosis.ViewModels.Screens
         private bool inSetSelected;
         private bool disposed;
 
-        public HrListViewModel(IHrsHolder holder, Action<HealthRecord, HrData.HrInfo> filler, Action<List<IHrItemObject>> syncer)
+        public HrListViewModel(IHrsHolder holder, Action<HealthRecord, HrData.HrInfo> filler, Action<IList<IHrItemObject>> syncer)
         {
             Contract.Requires(holder != null);
             Contract.Requires(filler != null);
@@ -889,8 +889,14 @@ namespace Diagnosis.ViewModels.Screens
     public class HrData
     {
         public static readonly DataFormat DataFormat = DataFormats.GetDataFormat("hr");
+        private IList<HrInfo> hrs;
 
-        public List<HrInfo> Hrs { get; set; }
+        public IList<HrInfo> Hrs { get { return hrs; } }
+
+        public HrData(IList<HrInfo> hrs)
+        {
+            this.hrs = hrs;
+        }
 
         [Serializable]
         public class HrInfo

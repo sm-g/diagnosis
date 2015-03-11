@@ -156,7 +156,7 @@ namespace Diagnosis.ViewModels.Screens
                     try
                     {
                         var user = SelectedUser;
-                        AuthorityController.LogIn(user, Password, Remember);
+                        AuthorityController.LogIn(user, Password);
 
                         if (user is Doctor)
                         {

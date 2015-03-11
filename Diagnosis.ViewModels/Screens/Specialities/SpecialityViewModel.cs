@@ -44,7 +44,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public ObservableCollection<DiagnosisViewModel> Blocks { get; private set; }
 
-        public ObservableCollection<DiagnosisViewModel> SelectedBlocks { get; set; }
+        public ObservableCollection<DiagnosisViewModel> SelectedBlocks { get; private set; }
 
         public override string this[string columnName]
         {

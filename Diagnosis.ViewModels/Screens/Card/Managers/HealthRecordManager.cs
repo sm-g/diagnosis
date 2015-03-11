@@ -70,7 +70,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public INCCReadOnlyObservableCollection<ShortHealthRecordViewModel> HealthRecords { get; private set; }
 
-        public INCCReadOnlyObservableCollection<ShortHealthRecordViewModel> DeletedHealthRecords { get; set; }
+        public INCCReadOnlyObservableCollection<ShortHealthRecordViewModel> DeletedHealthRecords { get; private set; }
 
         public List<HealthRecord> GetSelectedHrs()
         {
