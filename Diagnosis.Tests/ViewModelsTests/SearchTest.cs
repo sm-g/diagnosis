@@ -10,14 +10,6 @@ namespace Tests
     [TestClass]
     public class SearchTest : InMemoryDatabaseTest
     {
-        private Dictionary<int, HealthRecord> hr = new Dictionary<int, HealthRecord>();
-        private Dictionary<int, Appointment> a = new Dictionary<int, Appointment>();
-        private Dictionary<int, Word> w = new Dictionary<int, Word>();
-
-        private static int[] hrIds = new[] { 1, 2, 20, 21, 22, 30, 31, 32, 40, 70, 71, 72, 73, 74 };
-        private static int[] wIds = new[] { 1, 2, 3, 4, 5, 6, 22, 51, 94 };
-        private static int[] aIds = new[] { 1, 2, 3, 4, 5 };
-
         private SearchViewModel s;
 
         [TestInitialize]

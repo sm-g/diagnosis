@@ -9,11 +9,6 @@ namespace Tests.ModelTests
     [TestClass]
     public class OrderedBagTest : InMemoryDatabaseTest
     {
-        private Dictionary<int, Word> w = new Dictionary<int, Word>();
-        private Dictionary<int, IcdDisease> icd = new Dictionary<int, IcdDisease>();
-        private static int[] wIds = new[] { 1, 2, 3, 4 };
-        private static int[] icdIds = new[] { 1, 2, 3, 4 };
-
         [TestInitialize]
         public void Init()
         {

@@ -14,19 +14,7 @@ namespace Tests
     [TestClass]
     public class HrListTest : InMemoryDatabaseTest
     {
-        private Dictionary<int, Patient> p = new Dictionary<int, Patient>();
-        private Dictionary<int, Course> c = new Dictionary<int, Course>();
-        private Dictionary<int, HrCategory> cat = new Dictionary<int, HrCategory>();
-        private Dictionary<int, Appointment> a = new Dictionary<int, Appointment>();
-        private Dictionary<int, HealthRecord> hr = new Dictionary<int, HealthRecord>();
-
         private Doctor d1;
-
-        private static int[] pIds = new[] { 1, 2, 3, 4, 5 };
-        private static int[] cIds = new[] { 1, 2, 3, 4 };
-        private static int[] catIds = new[] { 1, 2, 3, 4, 5, 6 };
-        private static int[] aIds = new[] { 1, 2, 3, 4, 5 };
-        private static int[] hrIds = new[] { 1, 2, 20, 21, 22, 30, 31, 32, 40, 70, 71, 72, 73, 74 };
 
         [TestInitialize]
         public void Init()

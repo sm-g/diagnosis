@@ -13,8 +13,11 @@ namespace Tests
     [TestClass]
     public class HealthRecordTest : InMemoryDatabaseTest
     {
-        private Dictionary<int, HealthRecord> hr = new Dictionary<int, HealthRecord>();
-        private static int[] hrIds = new[] { 1, 2, 20, 21, 22, 30, 31, 31, 40, 70, 71, 72, 73, 74 };
+        static Word w1 = new Word("1");
+        static Word w2 = new Word("2");
+        static Word w3 = new Word("3");
+        static Comment com = new Comment("comment");
+        HealthRecord hr1;
 
         [TestInitialize]
         public void AutocompleteTestInit()

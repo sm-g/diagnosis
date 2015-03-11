@@ -3,6 +3,7 @@ using Diagnosis.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHibernate;
 using System;
+using System.Collections.Generic;
 
 namespace Tests
 {
@@ -10,6 +11,22 @@ namespace Tests
     public abstract class InMemoryDatabaseTest
     {
         protected ISession session;
+
+        protected Dictionary<int, Word> w = new Dictionary<int, Word>();
+        protected Dictionary<int, IcdDisease> icd = new Dictionary<int, IcdDisease>();
+        protected Dictionary<int, Patient> p = new Dictionary<int, Patient>();
+        protected Dictionary<int, Course> c = new Dictionary<int, Course>();
+        protected Dictionary<int, Appointment> a = new Dictionary<int, Appointment>();
+        protected Dictionary<int, HealthRecord> hr = new Dictionary<int, HealthRecord>();
+        protected Dictionary<int, HrCategory> cat = new Dictionary<int, HrCategory>();
+
+        protected static int[] hrIds = new[] { 1, 2, 20, 21, 22, 30, 31, 32, 40, 70, 71, 72, 73, 74 };
+        protected static int[] wIds = new[] { 1, 2, 3, 4, 5, 6, 22, 51, 94 };
+        protected static int[] pIds = new[] { 1, 2, 3, 4, 5 };
+        protected static int[] cIds = new[] { 1, 2, 3, 4 };
+        protected static int[] aIds = new[] { 1, 2, 3, 4, 5 };
+        protected static int[] icdIds = new[] { 1, 2, 3, 4 };
+        protected static int[] catIds = new[] { 1, 2, 3, 4, 5, 6 };
 
         public InMemoryDatabaseTest()
         {
