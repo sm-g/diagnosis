@@ -915,7 +915,7 @@ namespace Diagnosis.ViewModels.Screens
 
             public HealthRecordUnit Unit { get; set; }
 
-            public List<ConfindenceHrItemObject> Hios { get; set; }
+            public List<ConfindenceHrItemObject> Chios { get; set; }
         }
     }
 }

@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Threading.Tasks;
+﻿using Diagnosis.Common;
 using Diagnosis.Models;
-using Diagnosis.ViewModels;
-using Diagnosis.Common;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Linq;
 
 namespace Tests
 {
     [TestClass]
     public class HealthRecordTest : InMemoryDatabaseTest
     {
-        static Word w1 = new Word("1");
-        static Word w2 = new Word("2");
-        static Word w3 = new Word("3");
-        static Comment com = new Comment("comment");
-        HealthRecord hr1;
+        private static Word w1 = new Word("1");
+        private static Word w2 = new Word("2");
+        private static Word w3 = new Word("3");
+        private static Comment com = new Comment("comment");
+        private HealthRecord hr1;
 
         [TestInitialize]
         public void AutocompleteTestInit()
@@ -25,12 +21,12 @@ namespace Tests
             hrIds.ForAll((id) => hr[id] = session.Get<HealthRecord>(IntToGuid<HealthRecord>(id)));
             hr1 = hr[71]; // without hios
         }
+
         [TestMethod]
         public void Unit()
         {
             Assert.AreEqual(HealthRecordUnit.Year, hr[40].Unit);
             Assert.AreEqual(2005, hr[40].FromYear);
-
 
             Assert.AreEqual(HealthRecordUnit.Month, hr[20].Unit);
             Assert.AreEqual(2014, hr[20].FromYear);
@@ -43,13 +39,11 @@ namespace Tests
             Assert.AreEqual(HealthRecordUnit.ByAge, hr[2].Unit);
             Assert.AreEqual(2013, hr[2].FromYear);
             Assert.AreEqual(12, hr[2].FromMonth);
-
         }
 
         [TestMethod]
         public void SetItems()
         {
-
             var hiosSequence = new IHrItemObject[] { w1, w2, com };
             hr1.SetItems(hiosSequence);
             Assert.AreEqual(hiosSequence.Count(), hr1.HrItems.Count);
@@ -64,6 +58,7 @@ namespace Tests
             Assert.AreEqual(hiosSequence.Count(), hr1.HrItems.Count);
             Assert.IsTrue(hiosSequence.SequenceEqual(hr1.GetOrderedEntities()));
         }
+
         [TestMethod]
         public void SetItemsAfterReorder()
         {
@@ -74,8 +69,8 @@ namespace Tests
 
             Assert.AreEqual(hiosSequence2.Count(), hr1.HrItems.Count);
             Assert.IsTrue(hiosSequence2.SequenceEqual(hr1.GetOrderedEntities()));
-
         }
+
         [TestMethod]
         public void AddItems()
         {
@@ -87,8 +82,6 @@ namespace Tests
 
             Assert.AreEqual(hiosSequence.Count() + hiosToAdd.Count(), hr1.HrItems.Count);
             Assert.IsTrue(hiosSequence.Concat(hiosToAdd).SequenceEqual(hr1.GetOrderedEntities()));
-
-
         }
 
         [TestMethod]
@@ -104,8 +97,8 @@ namespace Tests
 
             var chios = hr1.HrItems.Select(x => x.CHIO).ToList();
             Assert.AreEqual(hiosToAdd.Count(), chios.Count(x => x.Confindence == default(Confidence)));
-
         }
+
         [TestMethod]
         public void SetNewConfidence()
         {

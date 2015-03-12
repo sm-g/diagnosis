@@ -37,6 +37,7 @@ namespace Diagnosis.Models
                 comment = obj as Comment;
                 TextRepr = (obj as Comment).String;
             }
+            else throw new NotImplementedException();
         }
 
         protected HrItem()
@@ -112,7 +113,7 @@ namespace Diagnosis.Models
                 if (Disease != null) return Disease;
                 if (TextRepr != null) return comment ?? (comment = new Comment(TextRepr));
 
-                return null;
+                return null; // still not initialized
             }
         }
 
@@ -145,6 +146,8 @@ namespace Diagnosis.Models
 
         public ConfindenceHrItemObject(IHrItemObject hio, Confidence conf)
         {
+            Contract.Requires(hio != null);
+
             Confindence = conf;
             HIO = hio;
         }

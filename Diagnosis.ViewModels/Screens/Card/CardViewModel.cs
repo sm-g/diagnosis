@@ -340,7 +340,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 HrList = new HrListViewModel(holder, (hr, hrInfo) =>
                 {
-                    hrInfo.Hios.Sync(Session, (w) => HrEditor.SyncTransientWord(w));
+                    hrInfo.Chios.Sync(Session, (w) => HrEditor.SyncTransientWord(w));
 
                     if (hrInfo.CategoryId != null)
                     {
@@ -356,7 +356,7 @@ namespace Diagnosis.ViewModels.Screens
                         unit = HealthRecordUnit.NotSet;
 
                     hr.Unit = unit;
-                    hr.SetItems(hrInfo.Hios);
+                    hr.SetItems(hrInfo.Chios);
                 }, (hios) =>
                 {
                     hios.Sync(Session, (w) => HrEditor.SyncTransientWord(w));

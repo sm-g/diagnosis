@@ -10,7 +10,7 @@ namespace Tests
     public class AutocompleteTest : InMemoryDatabaseTest
     {
         private Recognizer r;
-        private AutocompleteViewModel a;
+        private new AutocompleteViewModel a;
         private string q;
         private string qFull;
         private Word word;
@@ -27,7 +27,7 @@ namespace Tests
         public void AutocompleteTestInit()
         {
             r = new Recognizer(session, true);
-            a = new AutocompleteViewModel(r, true, true, false, null);
+            a = new AutocompleteViewModel(r, true, true, true, false, null);
             word = session.Get<Word>(IntToGuid<Word>(1));
             icd1 = session.Get<IcdDisease>(1);
             q = word.Title.Substring(0, word.Title.Length - 1);
@@ -98,7 +98,7 @@ namespace Tests
             a.InverseEnterCommand.Execute(a.SelectedTag);
 
             var r = new Recognizer(session);
-            var other = new AutocompleteViewModel(r, true, true, false, null);
+            var other = new AutocompleteViewModel(r, true, true, true, false, null);
             other.StartEdit();
             other.SelectedTag.Query = notExistQ;
 
@@ -223,7 +223,7 @@ namespace Tests
         [TestMethod]
         public void AddTagWhenSingleTag()
         {
-            var a = new AutocompleteViewModel(r, true, true, true, null);
+            var a = new AutocompleteViewModel(r, true, true, true, true, null);
             Assert.IsTrue(a.Tags.Count == 1);
 
             a.AddTag(word);
@@ -305,7 +305,7 @@ namespace Tests
             a.Copy();
 
             var r2 = new Recognizer(session);
-            var a2 = new AutocompleteViewModel(r2, true, true, false, null);
+            var a2 = new AutocompleteViewModel(r2, true, true, true, false, null);
             a2.Paste();
 
             Assert.AreEqual(word, a2.Tags[0].Blank);
@@ -320,7 +320,7 @@ namespace Tests
             a.Copy();
 
             var r2 = new Recognizer(session);
-            var a2 = new AutocompleteViewModel(r2, true, true, false, null);
+            var a2 = new AutocompleteViewModel(r2, true, true, true, false, null);
 
             new Saver(session).Save(new[] { w });
             a2.Paste();

@@ -46,7 +46,7 @@ namespace Diagnosis.ViewModels.Screens
                 FromMonth = hr.FromMonth,
                 FromYear = hr.FromYear,
                 Unit = hr.Unit,
-                Hios = new List<ConfindenceHrItemObject>(hr.HrItems.Select(x => x.CHIO))
+                Chios = new List<ConfindenceHrItemObject>(hr.GetOrderedCHIOs())
             }).ToList();
 
             var data = new HrData(hrInfos);

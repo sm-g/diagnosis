@@ -12,11 +12,11 @@ namespace Tests.ViewModelsTests
     {
         private Doctor d1;
         private HrEditorViewModel e;
-        private HealthRecord hr;
+        private new HealthRecord hr;
         private Word word;
         private string q;
 
-        private AutocompleteViewModel a { get { return e.Autocomplete; } }
+        private new AutocompleteViewModel a { get { return e.Autocomplete; } }
 
         [TestInitialize]
         public void HrEditorTestInit()

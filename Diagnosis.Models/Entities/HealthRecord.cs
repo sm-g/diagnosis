@@ -200,6 +200,8 @@ namespace Diagnosis.Models
         /// <param name="items"></param>
         public virtual void AddItems(IEnumerable<ConfindenceHrItemObject> items)
         {
+            Contract.Requires(items != null);
+
             SetItems(GetOrderedCHIOs().Concat(items).ToList());
         }
 
@@ -209,6 +211,8 @@ namespace Diagnosis.Models
         /// <param name="items"></param>
         public virtual void AddItems(IEnumerable<IHrItemObject> items)
         {
+            Contract.Requires(items != null);
+
             SetItems(GetOrderedCHIOs()
                 .Concat(items.Select(x => new ConfindenceHrItemObject(x, Confidence.Present))).ToList());
         }
@@ -220,6 +224,8 @@ namespace Diagnosis.Models
         /// <param name="entitiesToBe"></param>
         public virtual void SetItems(IList<IHrItemObject> entitiesToBe)
         {
+            Contract.Requires(entitiesToBe != null);
+
             SetItems(entitiesToBe.Select(x => new ConfindenceHrItemObject(x, Confidence.Present)).ToList());
         }
 
@@ -230,6 +236,7 @@ namespace Diagnosis.Models
         /// <param name="entitiesToBe"></param>
         public virtual void SetItems(IList<ConfindenceHrItemObject> entitiesToBe)
         {
+            Contract.Requires(entitiesToBe != null);
             Contract.Ensures(HrItems.Count == entitiesToBe.Count);
             Contract.Ensures(HrItems.Select(x => x.Entity)
                 .ScrambledEquals(entitiesToBe.Select(x => x.HIO))); // same HIOs
@@ -366,7 +373,6 @@ namespace Diagnosis.Models
                     IsDirty = true;
                 }
                 OnItemsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
-                // order устанавливается в редакторе записи
             }
         }
 
