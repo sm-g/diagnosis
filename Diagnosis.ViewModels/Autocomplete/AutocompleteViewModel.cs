@@ -34,6 +34,15 @@ namespace Diagnosis.ViewModels.Autocomplete
         private bool inDispose;
         private VisibleRelayCommand<TagViewModel> sendToSearch;
 
+        public AutocompleteViewModel(Recognizer recognizer, OptionsMode mode, IEnumerable<ConfindenceHrItemObject> initItems)
+            : this(recognizer,
+                allowTagConvertion: mode == OptionsMode.HrEditor,
+                allowSendToSearch: mode == OptionsMode.HrEditor,
+                allowConfidenceToggle: mode == OptionsMode.HrEditor,
+                singleTag: mode == OptionsMode.MeasureEditor,
+                initItems: initItems)
+        {
+        }
 
         public AutocompleteViewModel(Recognizer recognizer, bool allowTagConvertion, bool allowSendToSearch, bool allowConfidenceToggle, bool singleTag, IEnumerable<ConfindenceHrItemObject> initItems)
         {
@@ -96,7 +105,15 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// Возникает, когда меняется набор сущностей в тегах. (Завершение редактирования, конвертация, удаление, cut, paste.)
         /// </summary>
         public event EventHandler EntitiesChanged;
+
         public event EventHandler ConfidencesChanged;
+
+        public enum OptionsMode
+        {
+            HrEditor,
+            MeasureEditor,
+            Search
+        }
 
         public RelayCommand<TagViewModel> EnterCommand
         {
@@ -231,6 +248,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         /// <summary>
         /// Показывает предположения для редактируемого тега.
+        /// Затем дополняет ввод выбранным предположением без завершения.
         /// </summary>
         public RelayCommand ShowSuggestionsCommand
         {
@@ -238,6 +256,29 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 return new RelayCommand(() =>
                 {
+                    if (IsPopupOpen)
+                    {
+                        SelectedTag.Query = SelectedSuggestion.Hio.ToString();
+                    }
+                    else
+                    {
+                        MakeSuggestions(SelectedTag);
+                        RefreshPopup();
+                    }
+                }, () => SelectedTag != null && SelectedTag.IsTextBoxFocused);
+            }
+        }
+
+        /// <summary>
+        /// Переключает режим добавления запроса в предположения.
+        /// </summary>
+        public RelayCommand ToggleSuggestionModeCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    recognizer.AddQueryToSuggestions = !recognizer.AddQueryToSuggestions;
                     MakeSuggestions(SelectedTag);
                     RefreshPopup();
                 }, () => SelectedTag != null && SelectedTag.IsTextBoxFocused);
@@ -439,7 +480,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                         }
                         else
                         {
-                            MakeSuggestions(SelectedTag); // предположения для недописанных, новых
+                            MakeSuggestions(SelectedTag); // предположения для тегов с сигнализацией
                         }
 
                         CanCompleteOnLostFocus = true;
@@ -717,6 +758,8 @@ namespace Diagnosis.ViewModels.Autocomplete
             RefreshPopup();
             tag.Validate();
 
+            recognizer.AfterCompleteTag(tag);
+
             // добавляем пустое поле
             if (LastTag.State == State.Completed
                 && !SingleTag)
@@ -727,6 +770,8 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         private object MakeSuggestions(TagViewModel tag)
         {
+            Contract.Requires(tag != null);
+
             var tagIndex = Tags.IndexOf(tag);
             var exclude = Tags.Select((t, i) => i != tagIndex ? t.Blank : null); // все сущности кроме сущности редактируемого тега
 
@@ -793,6 +838,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             Contract.Invariant(inDispose || LastTag.IsLast != SingleTag); // единственный тег не IsLast
             Contract.Invariant(Tags.Count(t => t.State == State.Typing) <= 1); // только один тег редактируется
             Contract.Invariant(Tags.Count == 1 || !SingleTag); // единственный тег
+            Contract.Invariant(!(WithConvert && recognizer.OnlyWords)); // конвертировать, когда только слова, бессмысленно
         }
 
         protected override void Dispose(bool disposing)

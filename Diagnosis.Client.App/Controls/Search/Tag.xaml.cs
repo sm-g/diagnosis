@@ -10,6 +10,11 @@ namespace Diagnosis.Client.App.Controls.Search
         public Tag()
         {
             InitializeComponent();
+            query.TargetUpdated += (s, e) =>
+            {
+                // текст поменялся из кода
+                query.CaretIndex = query.Text.Length;
+            };
         }
     }
 }

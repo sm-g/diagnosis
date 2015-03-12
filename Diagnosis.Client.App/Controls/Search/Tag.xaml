@@ -60,12 +60,12 @@
             <ContentPresenter Content="{StaticResource line}"
                               Margin="2,0,0,0" />
         </StackPanel>
-        
+
         <TextBox x:Name="query"
                  diag:FocusExtension.IsFocused="{Binding IsTextBoxFocused, Mode=TwoWay}"
                  dd:DragDrop.IsDropTarget="{Binding DataContext.IsDropTargetEnabled, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2} }"
                  dd:DragDrop.DropHandler="{Binding DataContext.DropHandler, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2} }"
-                 Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
+                 Text="{Binding Query, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}"
                  Focusable="{Binding Focusable}"
                  IsReadOnly="{Binding IsDeleteOnly}">
             <TextBox.Style>
@@ -91,21 +91,21 @@
                         <DataTrigger Binding="{Binding Signalization}"
                                      Value="{x:Static diag:Signalizations.NewWord}">
                             <Setter Property="Background"
-                                    Value="#FFEFFFD8" />
+                                    Value="{StaticResource newWordBrush}" />
                             <Setter Property="ToolTip"
-                                    Value="Новое ключевое слово" />
+                                    Value="{Binding NewWordToolTip, Source={StaticResource Resources}}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Signalization}"
                                      Value="{x:Static diag:Signalizations.Forbidden}">
                             <Setter Property="Background"
-                                    Value="#FFFFD8D8" />
+                                    Value="{StaticResource forbiddenTagBrush}" />
                             <Setter Property="ToolTip"
                                     Value="Некорректный текст, игнорируется" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Signalization}"
                                      Value="{x:Static diag:Signalizations.PartialMeasure}">
                             <Setter Property="Background"
-                                    Value="#FFFFFDD8" />
+                                    Value="{StaticResource partialMeasureBrush}" />
                             <Setter Property="ToolTip"
                                     Value="Неизвестная единица измерения, сохраняется без единицы" />
                         </DataTrigger>

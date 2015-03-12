@@ -40,11 +40,13 @@ namespace Diagnosis.ViewModels.Autocomplete
             Value = Measure.Value.ToString();
 
             Autocomplete = new AutocompleteViewModel(
-                new Recognizer(Session) { OnlyWords = true, AddQueryToSuggestions = true },
-                false,
-                false,
-                false,
-                true,
+                new Recognizer(Session)
+                {
+                    OnlyWords = true,
+                    AddQueryToSuggestions = true,
+                    CanChangeAddQueryToSuggstions = false
+                },
+                AutocompleteViewModel.OptionsMode.MeasureEditor,
                 Word == null ? null : new[] { new ConfindenceHrItemObject(Word, Confidence.Present) })
                 {
                     IsDragSourceEnabled = false,

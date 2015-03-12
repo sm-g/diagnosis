@@ -42,11 +42,9 @@ namespace Diagnosis.ViewModels.Screens
         {
             ContentId = ToolContentId;
 
-            Autocomplete = new AutocompleteViewModel(new Recognizer(Session) { OnlyWords = true, AddNotPersistedToSuggestions = false },
-                false,
-                false,
-                false,
-                false,
+            Autocomplete = new AutocompleteViewModel(
+                new Recognizer(Session) { OnlyWords = true, AddNotPersistedToSuggestions = false },
+                AutocompleteViewModel.OptionsMode.Search,
                 null);
 
             ControlsVisible = true;

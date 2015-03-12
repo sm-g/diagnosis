@@ -287,10 +287,7 @@ namespace Diagnosis.ViewModels.Screens
 
             Autocomplete = new AutocompleteViewModel(
                 recognizer,
-                true,
-                true,
-                true,
-                false,
+                AutocompleteViewModel.OptionsMode.HrEditor,
                 initials);
 
             Autocomplete.EntitiesChanged += (s, e) =>

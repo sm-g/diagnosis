@@ -17,9 +17,12 @@ namespace Diagnosis.ViewModels.Autocomplete
     public class Recognizer
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Recognizer));
-        private readonly ISession session;
-
         private static List<Word> created = new List<Word>();
+
+        private readonly ISession session;
+        private readonly bool allowChangeAddQueryToSuggstions;
+        private bool _addQueryToSug;
+
         /// <summary>
         ///
         /// </summary>
@@ -38,7 +41,20 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// Добавлять запрос как новое слово в список предположений, если нет соответствующего слова.
         /// </summary>
-        public bool AddQueryToSuggestions { get; set; }
+        public bool AddQueryToSuggestions
+        {
+            get { return _addQueryToSug; }
+            set
+            {
+                if (CanChangeAddQueryToSuggstions)
+                    _addQueryToSug = value;
+            }
+        }
+
+        /// <summary>
+        /// Можно менять режим добавления запроса в предположения. Default is true.
+        /// </summary>
+        public bool CanChangeAddQueryToSuggstions { get; set; }
 
         /// <summary>
         /// Добавлять созданное несохраненное слово в список предположений. Default is true.
@@ -52,6 +68,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 // now word can be retrieved from storage
                 var word = e.GetValue<Word>(MessageKeys.Word);
                 created.Remove(word);
+
             });
         }
 
@@ -68,6 +85,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 created.Clear();
 
             AddNotPersistedToSuggestions = true;
+            CanChangeAddQueryToSuggstions = true;
         }
 
         private bool CanMakeEntityFrom(string query)
@@ -269,11 +287,27 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (!existsSame && !query.IsNullOrEmpty())
                 {
                     var w = FirstMatchingOrNewWord(query);
-                    results.Insert(0, w); // добавленное слово для редактора измерений дожлно быть первым
+                    results.Insert(0, w); // добавленное слово должно быть первым
                 }
             }
 
             return results;
+        }
+
+        /// <summary>
+        /// Запоминает новое слово для списка предположений.
+        /// </summary>
+        /// <param name="tag"></param>
+        public void AfterCompleteTag(TagViewModel tag)
+        {
+            if (tag.BlankType == BlankType.Word //|| tag.BlankType == BlankType.Measure
+                )
+            {
+                var w = tag.Blank as Word;
+                if (w.IsTransient)
+                    created.Add(w);
+
+            }
         }
 
         public void Sync(IList<ConfindenceHrItemObject> hios)
@@ -292,7 +326,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 // несохраненное слово
                 // word1.Equals(word2) == false, but word1.CompareTo(word2) == 0
                 // willSet in SetOrderedHrItems будет с первым совпадающим элементом в entitiesToBe
-                var same = created.Where(e => e is Word).Where(e => (e as Word).CompareTo(word) == 0).FirstOrDefault();
+                var same = created.Where(e => e.CompareTo(word) == 0).FirstOrDefault();
 
                 if (same != null)
                     return same;
@@ -309,10 +343,10 @@ namespace Diagnosis.ViewModels.Autocomplete
             else
             {
                 var word = new Word(q); // или создаем слово из запроса
-                created.Add(word);
                 return word;
             }
         }
+
 
         /// <summary>
         /// Определяет сходство предположения и запроса.

@@ -187,4 +187,7 @@
   <data name="AddHr_ToList" xml:space="preserve">
     <value>Новая запись</value>
   </data>
+  <data name="NewWordToolTip" xml:space="preserve">
+    <value>Новое ключевое слово</value>
+  </data>
 </root>

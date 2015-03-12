@@ -17,15 +17,12 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance diag:AutocompleteViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="300"
-             d:DesignWidth="300">    
+             d:DesignWidth="300">
     <UserControl.InputBindings>
         <KeyBinding Key="F2"
                     Command="{Binding EditCommand}" />
         <KeyBinding Key="F8"
                     Command="{Binding ToggleConfidenceCommand}" />
-        <KeyBinding Key="Space"
-                    Modifiers="Control"
-                    Command="{Binding ShowSuggestionsCommand}" />
     </UserControl.InputBindings>
     <UserControl.Resources>
         <InputBindingCollection x:Shared="False"
@@ -94,6 +91,10 @@
                             Modifiers="Shift"
                             Command="{Binding InverseEnterCommand}"
                             CommandParameter="{Binding EditingTag}" />
+                <KeyBinding Gesture="Control+Space"
+                            Command="{Binding ShowSuggestionsCommand}" />
+                <KeyBinding Gesture="Control+Alt+Space"
+                            Command="{Binding ToggleSuggestionModeCommand}" />
             </ListBox.InputBindings>
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}"
@@ -112,7 +113,7 @@
                             Value="White" />
                     <Setter Property="SnapsToDevicePixels"
                             Value="True" />
-                    
+
                     <Setter Property="IsSelected"
                             Value="{Binding IsSelected, Mode=TwoWay}" />
                     <Setter Property="diag:FocusExtension.Direct"
@@ -171,7 +172,7 @@
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>
-                    
+
                     <Style.Triggers>
                         <Trigger Property="IsSelected"
                                  Value="True">
@@ -232,12 +233,31 @@
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <!--<TextBlock Visibility="{Binding IsAlter, Converter={StaticResource BooleanToVisibilityConverter}}" Text="НЕ "/>-->
+                        <DockPanel LastChildFill="True">
+                            <DockPanel.Style>                                
+                                <Style TargetType="DockPanel">
+                                    <Setter Property="Background"
+                                            Value="Transparent" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsNew}"
+                                                     Value="True">
+                                            <Setter Property="ToolTip"
+                                                    Value="{Binding NewWordToolTip, Source={StaticResource Resources}}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DockPanel.Style>
+                            <!--<TextBlock Visibility="{Binding IsAlter, Converter={StaticResource BooleanToVisibilityConverter}}" Text="НЕ " />-->
 
                             <TextBlock Text="{Binding}"
                                        FontSize="{DynamicResource ContentFontSize}" />
-                        </StackPanel>
+                            <TextBlock DockPanel.Dock="Right"
+                                       Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                       Text="★" />
+                            <Separator MinWidth="30"
+                                       Height="0"
+                                       Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        </DockPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

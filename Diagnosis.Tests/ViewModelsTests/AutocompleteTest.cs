@@ -26,7 +26,7 @@ namespace Tests
         [TestInitialize]
         public void AutocompleteTestInit()
         {
-            r = new Recognizer(session, true);
+            r = new Recognizer(session, clearCreated: true);
             a = new AutocompleteViewModel(r, true, true, true, false, null);
             word = session.Get<Word>(IntToGuid<Word>(1));
             icd1 = session.Get<IcdDisease>(1);
