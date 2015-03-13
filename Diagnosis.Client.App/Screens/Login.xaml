@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="clr-namespace:Diagnosis.Client.App.Controls"
+             xmlns:editors="clr-namespace:Diagnosis.Client.App.Controls.Editors"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
              Padding="{StaticResource SreenPadding}"
@@ -45,7 +45,7 @@
                     </ComboBox>
                 </Grid>
 
-                <controls:NewPasswordControl x:Name="passwords"
+                <editors:ConfirmPasswordControl x:Name="passwords"
                                              Grid.Row="1"
                                              Visibility="{Binding IsPasswordVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
 

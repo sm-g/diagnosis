@@ -12,14 +12,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Diagnosis.Client.App.Controls
+namespace Diagnosis.Client.App.Controls.Editors
 {
-    /// <summary>
-    /// Interaction logic for NewPasswordControl.xaml
-    /// </summary>
-    public partial class NewPasswordControl : UserControl
+    public partial class ConfirmPasswordControl : UserControl
     {
-        public NewPasswordControl()
+        public ConfirmPasswordControl()
         {
             InitializeComponent();
         }

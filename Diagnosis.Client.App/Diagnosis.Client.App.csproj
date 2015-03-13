@@ -261,8 +261,8 @@
       <DependentUpon>Patient.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Common\HrsHolderDataTemplateSelector.cs" />
-    <Compile Include="Controls\NewPasswordControl.xaml.cs">
-      <DependentUpon>NewPasswordControl.xaml</DependentUpon>
+    <Compile Include="Controls\Editors\ConfirmPasswordControl.xaml.cs">
+      <DependentUpon>ConfirmPasswordControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="DesignData\SampleViewModels.cs" />
     <Compile Include="Resources\Themes\Helpers.cs" />
@@ -387,7 +387,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\NewPasswordControl.xaml">
+    <Page Include="Controls\Editors\ConfirmPasswordControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
