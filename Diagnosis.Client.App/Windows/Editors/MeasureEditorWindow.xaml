@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:editors="clr-namespace:Diagnosis.Client.App.Controls.Editors"
+        xmlns:forms="clr-namespace:Diagnosis.Client.App.Controls.FormParts"
         xmlns:controls="clr-namespace:Diagnosis.Client.App.Controls"
         xmlns:search="clr-namespace:Diagnosis.Client.App.Controls.Search"
         xmlns:ex="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"

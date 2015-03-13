@@ -1,16 +1,13 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using EventAggregator;
+using NHibernate.Linq;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using NHibernate.Linq;
 using System.Windows.Threading;
-using Diagnosis.ViewModels.Screens;
-using System.Windows.Markup;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -18,10 +15,10 @@ namespace Diagnosis.ViewModels.Screens
     {
         private IUser _selected;
         private bool _passVis;
-        private SecureString _password;
         private bool _remember;
         private bool _rememberVis;
         private bool _wrongpassword;
+        private bool _repPassVis;
 
         public LoginViewModel()
         {
@@ -49,6 +46,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         public IUser SelectedUser
         {
             get { return _selected; }
@@ -59,13 +57,18 @@ namespace Diagnosis.ViewModels.Screens
                     _selected = value;
                     if (value is Admin)
                     {
-                        PasswordVisible = true;
-                        RememberVisible = false;
+                        IsPasswordVisible = true;
+                        IsRememberVisible = false;
+                        if (AuthorityController.ValidatePassword(value, Admin.DefaultPassword))
+                        {
+                            // первый вход - надо поменять пароль
+                            IsRepeatVisible = true;
+                        }
                     }
                     else
                     {
-                        PasswordVisible = false;
-                        RememberVisible = true;
+                        IsPasswordVisible = false;
+                        IsRememberVisible = true;
                     }
                     OnPropertyChanged(() => SelectedUser);
                 }
@@ -74,13 +77,19 @@ namespace Diagnosis.ViewModels.Screens
 
         public ObservableCollection<IUser> Users { get; private set; }
 
-        public bool IsLoginEnabled
+        public bool CanLogin
         {
             get
             {
-                // пароль введен или не нужен
-                return !PasswordVisible ||
-                    Password != null && Password.Length > 0;
+                return !IsPasswordVisible || // пароль не нужен
+                    Password != null && Password.Length > 0 && (
+                        !IsRepeatVisible || // пароль введен
+                        ( // новый пароль
+                            RepeatPassword != null &&
+                            AuthorityController.IsStrong(Password) &&
+                            Password.GetString() == RepeatPassword.GetString()
+                        )
+                    );
             }
         }
 
@@ -97,16 +106,11 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public SecureString Password
-        {
-            private get { return _password; }
-            set
-            {
-                _password = value;
-            }
-        }
+        public SecureString Password { get; set; }
 
-        public bool PasswordVisible
+        public SecureString RepeatPassword { get; set; }
+
+        public bool IsPasswordVisible
         {
             get { return _passVis; }
             set
@@ -114,11 +118,25 @@ namespace Diagnosis.ViewModels.Screens
                 if (_passVis != value)
                 {
                     _passVis = value;
-                    OnPropertyChanged(() => PasswordVisible);
+                    OnPropertyChanged(() => IsPasswordVisible);
                 }
             }
         }
-        public bool Remember
+
+        public bool IsRepeatVisible
+        {
+            get { return _repPassVis; }
+            set
+            {
+                if (_repPassVis != value)
+                {
+                    _repPassVis = value;
+                    OnPropertyChanged(() => IsRepeatVisible);
+                }
+            }
+        }
+
+        public bool IsRemembered
         {
             get { return _remember; }
             set
@@ -126,12 +144,12 @@ namespace Diagnosis.ViewModels.Screens
                 if (_remember != value)
                 {
                     _remember = value;
-                    OnPropertyChanged(() => Remember);
+                    OnPropertyChanged(() => IsRemembered);
                 }
             }
         }
 
-        public bool RememberVisible
+        public bool IsRememberVisible
         {
             get { return _rememberVis; }
             set
@@ -139,7 +157,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (_rememberVis != value)
                 {
                     _rememberVis = value;
-                    OnPropertyChanged(() => RememberVisible);
+                    OnPropertyChanged(() => IsRememberVisible);
                 }
             }
         }
@@ -150,26 +168,27 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    if (Password != null)
-                        Password.MakeReadOnly();
-
-                    try
+                    var user = SelectedUser;
+                    // первый запуск
+                    if (IsRepeatVisible && user is Admin)
                     {
-                        var user = SelectedUser;
-                        AuthorityController.LogIn(user, Password);
-
+                        AuthorityController.ChangePassword(user, Password);
+                        new Diagnosis.Data.Saver(Session).Save(user.Passport);
+                    }
+                    if (AuthorityController.TryLogIn(user, Password != null ? Password.GetString() : null))
+                    {
                         if (user is Doctor)
                         {
                             // сохраняем remember после входа
-                            user.Passport.Remember = Remember;
+                            user.Passport.Remember = IsRemembered;
                             new Diagnosis.Data.Saver(Session).Save(user);
                         }
                     }
-                    catch (Exception)
+                    else
                     {
-                        // show error
+                        // TODO show login error
                     }
-                }, () => IsLoginEnabled);
+                }, () => CanLogin);
             }
         }
 
@@ -182,7 +201,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 disp.Invoke((Action)delegate
                 {
-                    Remember = true;
+                    IsRemembered = true;
                     LoginCommand.Execute(null);
                 });
             };

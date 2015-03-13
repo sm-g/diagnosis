@@ -7,7 +7,7 @@
              MinWidth="200"
              MaxWidth="300">
     <Border Background="{StaticResource overlayBackgroundBrush}"
-            BorderBrush="{StaticResource overlayBorderBrush}"
+            BorderBrush="{StaticResource AccentColorBrush3}"
             BorderThickness="3"
             CornerRadius="10">
         <DockPanel Margin="5">

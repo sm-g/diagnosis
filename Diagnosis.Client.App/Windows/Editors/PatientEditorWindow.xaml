@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:editors="clr-namespace:Diagnosis.Client.App.Controls.Editors"
+        xmlns:forms="clr-namespace:Diagnosis.Client.App.Controls.FormParts"
         xmlns:controls="clr-namespace:Diagnosis.Client.App.Controls"
         xmlns:card="clr-namespace:Diagnosis.Client.App.Controls.CardParts"
         xmlns:diag="http://schemas.smg.com/diagnosis"
@@ -80,12 +80,12 @@
                 </DockPanel>-->
             <DockPanel>
                 <Label Content="Дата рождения" />
-                <editors:ComboBoxDatePicker x:Name="comboDatePicker"
+                <forms:ComboBoxDatePicker x:Name="comboDatePicker"
                                             VerticalAlignment="Top"
                                             Year="{Binding BirthYear}"
                                             Month="{Binding BirthMonth}"
                                             Day="{Binding BirthDay}">
-                </editors:ComboBoxDatePicker>
+                </forms:ComboBoxDatePicker>
             </DockPanel>
             <DockPanel>
                 <Label Content="Возраст" />
@@ -101,7 +101,7 @@
             <DockPanel>
                 <Label Content="Пол"
                        VerticalAlignment="Top" />
-                <editors:SexChooser HorizontalAlignment="Left"
+                <forms:SexChooser HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     WithUnknown="True" />
             </DockPanel>

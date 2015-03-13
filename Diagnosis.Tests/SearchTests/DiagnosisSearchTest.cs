@@ -16,7 +16,7 @@ namespace Tests.SearchTests
         public void Test1()
         {
             var d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
-            AuthorityController.LogIn(d1);
+            AuthorityController.TryLogIn(d1);
 
             var filter = new FilterViewModel<IcdDisease>(DiagnosisQuery.StartingWith(session));
             filter.Query = "перикард";

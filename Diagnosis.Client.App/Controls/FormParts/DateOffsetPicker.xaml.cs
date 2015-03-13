@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Diagnosis.Client.App.Controls.Editors
+namespace Diagnosis.Client.App.Controls.FormParts
 {
     public partial class DateOffsetPicker : UserControl
     {

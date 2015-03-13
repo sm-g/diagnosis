@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:forms="clr-namespace:Diagnosis.Client.App.Controls.FormParts"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
              Padding="{StaticResource SreenPadding}"
@@ -11,42 +12,56 @@
              d:DesignHeight="300"
              d:DesignWidth="350">
     <UserControl.Resources>
-        <Style TargetType="Label"
-               BasedOn="{StaticResource label90}" />
-
-        <Style TargetType="DockPanel"
-               BasedOn="{StaticResource formLine}">
-        </Style>
     </UserControl.Resources>
     <Grid>
         <StackPanel Width="300">
             <TextBlock Style="{StaticResource ScreenTitle}"
                        Padding="5,0,0,10">Вход</TextBlock>
-            <DockPanel>
-                <Label Content="Доктор" />
-                <ComboBox x:Name="doctors"
-                          SelectedItem="{Binding SelectedUser}"
-                          ItemsSource="{Binding Users}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Converter={StaticResource ManToName}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </DockPanel>
+            <Grid Margin="10,10,0,0"
+                  Grid.IsSharedSizeScope="True">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-            <DockPanel Visibility="{Binding PasswordVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Label Content="Пароль" />
-                <Border DataContext="{Binding IsWrongPassword}">
-                    <PasswordBox x:Name="password"
-                                 VerticalContentAlignment="Center"
-                                 PasswordChanged="password_PasswordChanged" />
-                </Border>
-            </DockPanel>
-            <DockPanel Visibility="{Binding RememberVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Label />
-                <CheckBox IsChecked="{Binding Remember, Mode=TwoWay}">Запомнить</CheckBox>
-            </DockPanel>
+                <Grid Margin="{StaticResource FormLineMargin}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition SharedSizeGroup="label"
+                                          Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Content="Доктор" />
+                    <ComboBox x:Name="doctors"
+                              Grid.Column="1"
+                              SelectedItem="{Binding SelectedUser}"
+                              ItemsSource="{Binding Users}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource ManToName}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Grid>
+
+                <forms:ConfirmPasswordControl x:Name="passwords"
+                                             Grid.Row="1"
+                                             Visibility="{Binding IsPasswordVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                <Grid Visibility="{Binding IsRememberVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      Margin="{StaticResource FormLineMargin}"
+                      Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition SharedSizeGroup="label"
+                                          Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <CheckBox Grid.Column="1"
+                              IsChecked="{Binding IsRemembered, Mode=TwoWay}">Запомнить</CheckBox>
+                </Grid>
+            </Grid>
             <Button x:Name="login"
                     Content="Войти"
                     IsDefault="True"

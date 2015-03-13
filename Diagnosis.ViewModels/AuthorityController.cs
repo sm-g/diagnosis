@@ -1,23 +1,23 @@
-﻿using Diagnosis.Models;
-using NHibernate;
+﻿using Diagnosis.Common;
+using Diagnosis.Models;
+using Diagnosis.ViewModels.Screens;
+using PasswordHash;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Security;
-using System.Text;
-using Diagnosis.Common;
-using PasswordHash;
-using System.Diagnostics.Contracts;
-using Diagnosis.ViewModels.Screens;
 
 namespace Diagnosis.ViewModels
 {
     public static class AuthorityController
     {
         public static event EventHandler<UserEventArgs> LoggedIn;
+
         public static event EventHandler LoggedOut;
-        static List<Screen> doctorScreens = new List<Screen> { Screen.Login, Screen.Card, Screen.Patients, Screen.Words };
-        static List<Screen> adminScreens = new List<Screen> { Screen.Login, Screen.Doctors, Screen.Sync };
+
+        private static List<Screen> doctorScreens = new List<Screen> { Screen.Login, Screen.Card, Screen.Patients, Screen.Words };
+        private static List<Screen> adminScreens = new List<Screen> { Screen.Login, Screen.Doctors, Screen.Sync };
 
         static AuthorityController()
         {
@@ -25,30 +25,32 @@ namespace Diagnosis.ViewModels
         }
 
         public static Doctor CurrentDoctor { get; private set; }
-        public static IUser CurrentUser { get; private set; }
-        public static bool AutoLogon { get; set; }
-        public static bool LogIn(IUser user, SecureString password = null)
-        {
-            if (user is Admin)
-            {
-                // сравниваем хеш пароля в базе с вычисленным по паролю
-                if (PasswordHashManager.ValidatePassword(password.GetString(), user.Passport.HashAndSalt))
-                {
-                    CurrentUser = user;
-                    OnLoggedIn(user);
-                    return true;
-                }
-                return false;
 
-            }
-            else // (user is Doctor) // врач входит без пароля
+        public static IUser CurrentUser { get; private set; }
+
+        public static bool AutoLogon { get; set; }
+
+        public static bool TryLogIn(IUser user, string password = null)
+        {
+            if (ValidatePassword(user, password))
             {
-                CurrentDoctor = user as Doctor;
                 CurrentUser = user;
+                CurrentDoctor = user as Doctor;
                 OnLoggedIn(user);
                 return true;
             }
+            return false;
+        }
 
+        public static bool ValidatePassword(IUser user, string pass)
+        {
+            if (user is Admin && pass != null)
+            {
+                // сравниваем хеш пароля в базе с вычисленным по паролю
+                return PasswordHashManager.ValidatePassword(pass, user.Passport.HashAndSalt);
+            }
+            // врач входит без пароля
+            return user is Doctor;
         }
 
         public static void LogOut()
@@ -77,7 +79,11 @@ namespace Diagnosis.ViewModels
 
         public static bool IsStrong(SecureString password)
         {
-            return password.Length > 3;
+#if DEBUG
+            return password.Length > 1;
+#else
+            return password.Length > 3 && password.GetString() != Admin.DefaultPassword;
+#endif
         }
 
         [Pure]
@@ -103,6 +109,7 @@ namespace Diagnosis.ViewModels
                 h(typeof(AuthorityController), new UserEventArgs(user));
             }
         }
+
         private static void OnLoggedOut()
         {
             var h = LoggedOut;

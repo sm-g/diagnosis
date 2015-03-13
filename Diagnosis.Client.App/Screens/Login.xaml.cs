@@ -26,14 +26,14 @@ namespace Diagnosis.Client.App.Screens
 
         private void Vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "PasswordVisibility" && !Vm.PasswordVisible)
+            if (e.PropertyName == "PasswordVisibility" && !Vm.IsPasswordVisible)
             {
-                password.Clear();
+                passwords.password.Clear();
             }
         }
         private void password_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            Vm.Password = password.SecurePassword;
+            Vm.Password = passwords.password.SecurePassword;
         }
     }
 }

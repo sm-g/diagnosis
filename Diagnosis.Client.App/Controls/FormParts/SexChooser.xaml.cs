@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Diagnosis.Client.App.Controls.Editors
+namespace Diagnosis.Client.App.Controls.FormParts
 {
     /// <summary>
     /// Interaction logic for SexChooser.xaml

@@ -261,6 +261,9 @@
       <DependentUpon>Patient.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Common\HrsHolderDataTemplateSelector.cs" />
+    <Compile Include="Controls\FormParts\ConfirmPasswordControl.xaml.cs">
+      <DependentUpon>ConfirmPasswordControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DesignData\SampleViewModels.cs" />
     <Compile Include="Resources\Themes\Helpers.cs" />
     <Compile Include="Screens\Sync.xaml.cs">
@@ -290,13 +293,13 @@
     <Compile Include="Controls\Search\Autocomplete.xaml.cs">
       <DependentUpon>Autocomplete.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Editors\CategoryChooser.xaml.cs">
+    <Compile Include="Controls\FormParts\CategoryChooser.xaml.cs">
       <DependentUpon>CategoryChooser.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Editors\DateOffsetPicker.xaml.cs">
+    <Compile Include="Controls\FormParts\DateOffsetPicker.xaml.cs">
       <DependentUpon>DateOffsetPicker.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Editors\ComboBoxDatePicker.xaml.cs">
+    <Compile Include="Controls\FormParts\ComboBoxDatePicker.xaml.cs">
       <DependentUpon>ComboBoxDatePicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="Screens\Doctors.xaml.cs">
@@ -327,7 +330,7 @@
     <Compile Include="Windows\Editors\PatientEditorWindow.xaml.cs">
       <DependentUpon>PatientEditorWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Editors\SexChooser.xaml.cs">
+    <Compile Include="Controls\FormParts\SexChooser.xaml.cs">
       <DependentUpon>SexChooser.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Search\Tag.xaml.cs">
@@ -345,9 +348,6 @@
     </Compile>
     <Compile Include="Screens\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Directory\WordTreeItem.xaml.cs">
-      <DependentUpon>WordTreeItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Common\FullTree.xaml.cs">
       <DependentUpon>FullTree.xaml</DependentUpon>
@@ -387,6 +387,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\FormParts\ConfirmPasswordControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Search\HrSearchResult2.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -407,15 +411,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Editors\CategoryChooser.xaml">
+    <Page Include="Controls\FormParts\CategoryChooser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Editors\DateOffsetPicker.xaml">
+    <Page Include="Controls\FormParts\DateOffsetPicker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\Editors\ComboBoxDatePicker.xaml">
+    <Page Include="Controls\FormParts\ComboBoxDatePicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -487,7 +491,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Editors\SexChooser.xaml">
+    <Page Include="Controls\FormParts\SexChooser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -554,10 +558,6 @@
     <Page Include="Styles\NonFocusableExpander.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\Directory\WordTreeItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Common\FullTree.xaml">
       <SubType>Designer</SubType>
