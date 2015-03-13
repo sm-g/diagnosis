@@ -61,7 +61,7 @@ namespace Diagnosis.Models
             get { return _ln; }
             set
             {
-                Contract.Requires(!String.IsNullOrWhiteSpace(value));
+                if (value == null) return;
                 SetProperty(ref _ln, value.Trim(), "LastName");
             }
         }
@@ -110,7 +110,7 @@ namespace Diagnosis.Models
         {
             get
             {
-                return LastName + " " + FirstName + " " + MiddleName;
+                return NameFormatter.GetFullName(this);
             }
         }
 
