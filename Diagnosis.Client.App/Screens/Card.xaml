@@ -84,7 +84,7 @@
                         <DataTrigger Binding="{Binding IsHighlighted}"
                                      Value="True">
                             <Setter Property="Background"
-                                    Value="LightCyan" />
+                                    Value="{StaticResource AccentColorBrush4}" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
