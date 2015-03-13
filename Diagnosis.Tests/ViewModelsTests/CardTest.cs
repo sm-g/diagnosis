@@ -18,7 +18,7 @@ namespace Tests
         public void Init()
         {
             d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
-            AuthorityController.LogIn(d1);
+            AuthorityController.TryLogIn(d1);
 
             pIds.ForAll((id) => p[id] = session.Get<Patient>(IntToGuid<Patient>(id)));
             cIds.ForAll((id) => c[id] = session.Get<Course>(IntToGuid<Course>(id)));

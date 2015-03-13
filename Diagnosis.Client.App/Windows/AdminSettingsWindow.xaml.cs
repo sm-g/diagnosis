@@ -12,14 +12,5 @@ namespace Diagnosis.Client.App.Windows
         {
             InitializeComponent();
         }
-        private AdminSettingsViewModel Vm { get { return (DataContext as AdminSettingsViewModel); } }
-
-        private void password_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            if (sender == password)
-                Vm.Password = password.SecurePassword;
-            else if (sender == passwordRepeat)
-                Vm.RepeatPassword = passwordRepeat.SecurePassword;
-        }
     }
 }

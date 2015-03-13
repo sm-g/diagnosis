@@ -12,11 +12,12 @@ namespace Diagnosis.Models
         public const string DefaultPassword = "123";
         public static Guid DefaultId = Guid.Parse("3B817ABA-9110-45EF-B81E-A5B975A720DF");
         private const string DefaultLastName = "Администратор";
+        private readonly Passport _passport;
 
         public Admin(Passport passport)
             : this()
         {
-            Passport = passport;
+            _passport = passport;
         }
 
         protected Admin()
@@ -26,33 +27,30 @@ namespace Diagnosis.Models
         public override Guid Id
         {
             get { return DefaultId; }
-            protected set
-            {
-            }
+            protected set { }
         }
 
-        public Passport Passport
+        public virtual Passport Passport
         {
-            get;
-            private set;
+            get { return _passport; }
         }
 
-        public string LastName
+        public virtual string LastName
         {
             get { return DefaultLastName; }
-            private set { }
+            set { }
         }
 
-        public string FirstName
+        public virtual string FirstName
         {
             get;
-            private set;
+            set;
         }
 
-        public string MiddleName
+        public virtual string MiddleName
         {
             get;
-            private set;
+            set;
         }
     }
 }

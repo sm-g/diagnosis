@@ -22,7 +22,7 @@ namespace Tests.ViewModelsTests
         public void HrEditorTestInit()
         {
             d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
-            AuthorityController.LogIn(d1);
+            AuthorityController.TryLogIn(d1);
 
             e = new HrEditorViewModel(session);
             hr = session.Get<HealthRecord>(IntToGuid<HealthRecord>(1));

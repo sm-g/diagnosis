@@ -178,6 +178,7 @@
     <Compile Include="..\GeneralAssemblyInfo.cs">
       <Link>Properties\GeneralAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Mappings\AdminMap.cs" />
     <Compile Include="Mappings\UomTypeMap.cs" />
     <Compile Include="Mappings\PassportMap.cs" />
     <Compile Include="Mappings\HrItemMap.cs" />
