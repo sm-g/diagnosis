@@ -346,9 +346,6 @@
     <Compile Include="Screens\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Directory\WordTreeItem.xaml.cs">
-      <DependentUpon>WordTreeItem.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Common\FullTree.xaml.cs">
       <DependentUpon>FullTree.xaml</DependentUpon>
     </Compile>
@@ -554,10 +551,6 @@
     <Page Include="Styles\NonFocusableExpander.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\Directory\WordTreeItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Common\FullTree.xaml">
       <SubType>Designer</SubType>
