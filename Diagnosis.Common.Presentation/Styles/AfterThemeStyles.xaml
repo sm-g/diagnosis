@@ -221,13 +221,9 @@
     <!--  forms  -->
 
     <Style x:Key="formLine"
-           TargetType="DockPanel">
-        <Setter Property="Margin">
-            <Setter.Value>
-                <Thickness Bottom="10">
-                </Thickness>
-            </Setter.Value>
-        </Setter>
+           TargetType="FrameworkElement">
+        <Setter Property="Margin"
+                Value="{StaticResource FormLineMargin}" />
     </Style>
 
     <Style x:Key="{x:Type Label}"
