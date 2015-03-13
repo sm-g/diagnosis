@@ -1,4 +1,4 @@
-﻿<UserControl xmlns:editors="clr-namespace:Diagnosis.Client.App.Controls.Editors"
+﻿<UserControl xmlns:forms="clr-namespace:Diagnosis.Client.App.Controls.FormParts"
              xmlns:controls="clr-namespace:Diagnosis.Client.App.Controls"
              xmlns:search="clr-namespace:Diagnosis.Client.App.Controls.Search"
              xmlns:screens="clr-namespace:Diagnosis.Client.App.Screens"
@@ -185,7 +185,7 @@
             <!--<DockPanel>
                 --><!--DataContext is HrEditorViewModel--><!--
                 <Label VerticalAlignment="Top">_Раздел ИБ</Label>
-                <editors:CategoryChooser HorizontalAlignment="Left"
+                <forms:CategoryChooser HorizontalAlignment="Left"
                                          DataContext="{Binding DataContext, ElementName=editor}" />
             </DockPanel>-->
             <DockPanel>
@@ -279,13 +279,13 @@
                                     Cursor="Arrow">
                             <DockPanel>
                                 <Label Content="Дата" />
-                                <editors:ComboBoxDatePicker Year="{Binding DateOffset.Year, Mode=TwoWay}"
+                                <forms:ComboBoxDatePicker Year="{Binding DateOffset.Year, Mode=TwoWay}"
                                                             Month="{Binding DateOffset.Month, Mode=TwoWay}"
                                                             Day="{Binding DateOffset.Day, Mode=TwoWay}" />
                             </DockPanel>
                             <DockPanel>
                                 <Label Content="Давность" />
-                                <editors:DateOffsetPicker DataContext="{Binding DateOffset}" />
+                                <forms:DateOffsetPicker DataContext="{Binding DateOffset}" />
                             </DockPanel>
                             <DockPanel IsEnabled="{Binding CanShowAsAge}">
                                 <Label Content="Возраст" />

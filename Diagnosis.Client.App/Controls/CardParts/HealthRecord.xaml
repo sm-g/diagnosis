@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.Client.App.Controls"
-             xmlns:editors="clr-namespace:Diagnosis.Client.App.Controls.Editors"
+             xmlns:forms="clr-namespace:Diagnosis.Client.App.Controls.FormParts"
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"

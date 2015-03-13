@@ -4,7 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             x:Class="Diagnosis.Client.App.Controls.Editors.DateOffsetPicker"
+             x:Class="Diagnosis.Client.App.Controls.FormParts.DateOffsetPicker"
              mc:Ignorable="d"
              VerticalAlignment="Bottom"
              d:DesignWidth="300"

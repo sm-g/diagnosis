@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Diagnosis.Client.App.Controls.Editors
+namespace Diagnosis.Client.App.Controls.FormParts
 {
     public partial class ConfirmPasswordControl : UserControl
     {
