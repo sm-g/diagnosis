@@ -40,7 +40,7 @@ namespace Diagnosis.Data.Mappings
                     k.Column("SpecialityID");
                 });
                 s.Inverse(true);
-                s.Cascade(Cascade.All);
+                s.Cascade(Cascade.All | Cascade.DeleteOrphans);
                 s.Access(Accessor.Field);
             }, r =>
             {
