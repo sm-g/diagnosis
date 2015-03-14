@@ -22,6 +22,9 @@ namespace Diagnosis.ViewModels
         static AuthorityController()
         {
             AutoLogon = true;
+#if DEBUG
+            doctorScreens.Add(Screen.Sync);
+#endif
         }
 
         public static Doctor CurrentDoctor { get; private set; }

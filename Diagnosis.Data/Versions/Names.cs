@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Diagnosis.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,7 @@ namespace Diagnosis.Data.Versions
         public static string WordTbl = "Word";
         public static string SpecialityTbl = "Speciality";
         public static string UomTbl = "Uom";
+        public static string UomTypeTbl = "UomType";
 
         public static string IcdChapterTbl = "IcdChapter";
         public static string IcdBlockTbl = "IcdBlock";
@@ -26,7 +28,29 @@ namespace Diagnosis.Data.Versions
 
         public static string PassportTbl = "Passport";
         public static string SettingTbl = "Setting";
-        public static string UomTypeTbl = "UomType";
+
+        public static Dictionary<string, Type> tblToTypeMap = new Dictionary<string, Type> {
+            { DoctorTbl,            typeof(Doctor) },
+            { PatientTbl,           typeof(Patient) },
+            { CourseTbl,            typeof(Course) },
+            { AppointmentTbl,       typeof(Appointment) },
+            { HealthRecordTbl,      typeof(HealthRecord) },
+            { HrCategoryTbl,        typeof(HrCategory) },
+
+            { HrItemTbl,            typeof(HrItem) },
+            { WordTbl,              typeof(Word) },
+            { SpecialityTbl,        typeof(Speciality) },
+            { UomTbl,               typeof(Uom) },
+            { UomTypeTbl,           typeof(UomType) },
+
+            { IcdChapterTbl,        typeof(IcdChapter) },
+            { IcdBlockTbl,          typeof(IcdBlock) },
+            { IcdDiseaseTbl,        typeof(IcdDisease) },
+            { SpecialityIcdBlockTbl,typeof(SpecialityIcdBlocks) },
+
+            { PassportTbl,          typeof(Passport) },
+            { SettingTbl,           typeof(Setting) },
+        };
 
     }
 }

@@ -1,10 +1,13 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Data.Versions;
+using Diagnosis.Models;
 using Microsoft.Synchronization;
 using Microsoft.Synchronization.Data;
 using Microsoft.Synchronization.Data.SqlServer;
 using Microsoft.Synchronization.Data.SqlServerCe;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Data.SqlServerCe;
@@ -33,12 +36,12 @@ namespace Diagnosis.Data.Sync
         private string serverProviderName;
         private string clientProviderName;
 
-        public Syncer(string serverConStr, string clientConStr, string serverProviderName, string clientProviderName = Constants.SqlCeProvider)
+        public Syncer(string serverConStr, string clientConStr, string serverProviderName)
         {
             this.serverConStr = serverConStr;
             this.clientConStr = clientConStr;
             this.serverProviderName = serverProviderName;
-            this.clientProviderName = clientProviderName;
+            this.clientProviderName = Constants.SqlCeProvider;
         }
 
         public static event EventHandler<StringEventArgs> MessagePosted;
@@ -52,17 +55,26 @@ namespace Diagnosis.Data.Sync
             {
                 lock (lockInSync)
                 {
-                    inSync = value;
-                    if (value)
-                        sw.Restart();
-                    else
+                    if (inSync != value)
                     {
-                        sw.Stop();
-                        OnSyncEnded(sw.Elapsed);
+                        inSync = value;
+                        if (value)
+                        {
+                            sw.Restart();
+                        }
+                        else
+                        {
+                            sw.Stop();
+                        }
                     }
                 }
             }
         }
+
+        /// <summary>
+        /// ID добавленных во время последней синхронизации сущностей.
+        /// </summary>
+        public Dictionary<Type, IEnumerable<object>> AddedIdsPerType { get; set; }
 
         /// <summary>
         /// Sync scopes determined by <paramref name="from"/>. Specify conncetions in correct order in ctor.
@@ -71,7 +83,7 @@ namespace Diagnosis.Data.Sync
         /// <returns></returns>
         public Task SendFrom(Side from)
         {
-            return SendFrom(from, from.GetOrderedScopes(), false);
+            return SendFrom(from, from.GetOrderedScopes());
         }
 
         /// <summary>
@@ -80,9 +92,8 @@ namespace Diagnosis.Data.Sync
         /// </summary>
         /// <param name="from"></param>
         /// <param name="scopes"></param>
-        /// <param name="createSdf">When sync from Server, we can create new sdf.</param>
         /// <returns></returns>
-        public Task SendFrom(Side from, IEnumerable<Scope> scopes, bool createSdf)
+        public Task SendFrom(Side from, IEnumerable<Scope> scopes)
         {
             if (InSync)
                 return GetEndedTask();
@@ -93,14 +104,18 @@ namespace Diagnosis.Data.Sync
             {
                 foreach (var scope in scopes)
                 {
-                    var toContinue = Sync(from, scope, createSdf);
+                    var toContinue = Sync(from, scope);
                     if (!toContinue)
                         break;
                 }
             });
 
             t.Start();
-            t.ContinueWith((task) => InSync = false);
+            t.ContinueWith((task) =>
+            {
+                InSync = false;
+                OnSyncEnded(sw.Elapsed);
+            });
             return t;
         }
 
@@ -112,7 +127,6 @@ namespace Diagnosis.Data.Sync
             }
             return Deprovision(serverConStr, serverProviderName, scopesToDeprovision);
         }
-
         public static Task Deprovision(string connstr, string provider, IEnumerable<Scope> scopesToDeprovision = null)
         {
             if (InSync)
@@ -173,15 +187,6 @@ namespace Diagnosis.Data.Sync
             }
         }
 
-        private static void OnSyncEnded(TimeSpan time)
-        {
-            var h = SyncEnded;
-            if (h != null)
-            {
-                h(typeof(Syncer), new TimeSpanEventArgs(time));
-            }
-        }
-
         private DbConnection CreateConnection(Side db)
         {
             if (db == Side.Client)
@@ -212,17 +217,13 @@ namespace Diagnosis.Data.Sync
         /// </summary>
         /// <param name="from"></param>
         /// <param name="scope"></param>
-        /// <param name="createSdf"></param>
         /// <returns>Could connect</returns>
-        private bool Sync(Side from, Scope scope, bool createSdf)
+        private bool Sync(Side from, Scope scope)
         {
             Poster.PostMessage("Begin sync scope '{0}' from {1}", scope, from);
             using (var serverConn = CreateConnection(Side.Server))
             using (var clientConn = CreateConnection(Side.Client))
             {
-                if (createSdf && clientProviderName == Constants.SqlCeProvider)
-                    SqlHelper.CreateSqlCeByConStr(clientConStr);
-
                 if (!serverConn.IsAvailable())
                 {
                     CanNotConnect(serverConn);
@@ -254,7 +255,8 @@ namespace Diagnosis.Data.Sync
                     case Side.Server:
                         syncOrchestrator = new DownloadSyncOrchestrator(
                             serverProvider,
-                            clientProvider);
+                            clientProvider,
+                            Scope.Reference.ToTableNames()); // на клиенте могут быть справочные сущности с другими ID, но такие же по значению
                         break;
                 }
 
@@ -264,6 +266,7 @@ namespace Diagnosis.Data.Sync
 
                     var syncStats = syncOrchestrator.Synchronize();
 
+                    // выводим статистику конфликтов
                     var conflicts = syncOrchestrator.ConflictsCounter.Keys.Where(k => syncOrchestrator.ConflictsCounter[k] > 0).ToList();
                     if (conflicts.Count > 0)
                     {
@@ -272,6 +275,13 @@ namespace Diagnosis.Data.Sync
                         {
                             Poster.PostMessage("{0} = {1}", conflict, syncOrchestrator.ConflictsCounter[conflict]);
                         });
+                    }
+
+                    // запоминаем добавленные строки
+                    AddedIdsPerType = new Dictionary<Type, IEnumerable<object>>();
+                    foreach (var table in syncOrchestrator.AddedIdsPerTable.Keys)
+                    {
+                        AddedIdsPerType[Names.tblToTypeMap[table]] = syncOrchestrator.AddedIdsPerTable[table];
                     }
 
                     Poster.PostMessage("ChangesApplied: {0}, ChangesFailed: {1}\n", syncStats.DownloadChangesApplied, syncStats.DownloadChangesFailed);
@@ -295,6 +305,7 @@ namespace Diagnosis.Data.Sync
 
             return serverProvider;
         }
+
         private static void Provision(DbConnection con, Scope scope, DbConnection conToGetScopeDescr)
         {
             var scopeDescr = new DbSyncScopeDescription(scope.ToScopeString());
@@ -361,7 +372,6 @@ namespace Diagnosis.Data.Sync
                 return true;
             }
             return false;
-
         }
 
         private static DbSyncScopeDescription GetScopeDescription(Scope scope, DbConnection conn)
@@ -406,6 +416,13 @@ namespace Diagnosis.Data.Sync
             scopeDeprovisioning.DeprovisionScope(scopeName);
         }
 
+        /// <summary>
+        /// Добавляет таблицы в область синхронизации.
+        /// </summary>
+        /// <param name="tableNames"></param>
+        /// <param name="scope"></param>
+        /// <param name="connection"></param>
+        /// <returns>Таблицы, которые не были добавлены.</returns>
         private static IList<string> AddTablesToScopeDescr(string[] tableNames, DbSyncScopeDescription scope, DbConnection connection)
         {
             var failed = new List<string>();
@@ -447,6 +464,15 @@ namespace Diagnosis.Data.Sync
             return t;
         }
 
+        private static void OnSyncEnded(TimeSpan time)
+        {
+            var h = SyncEnded;
+            if (h != null)
+            {
+                h(typeof(Syncer), new TimeSpanEventArgs(time));
+            }
+        }
+
         private static class Poster
         {
             public static void PostMessage(string str)
@@ -482,9 +508,10 @@ namespace Diagnosis.Data.Sync
 
         public class DownloadSyncOrchestrator : SyncOrchestrator
         {
-            public DownloadSyncOrchestrator(RelationalSyncProvider from, RelationalSyncProvider to)
+            public DownloadSyncOrchestrator(RelationalSyncProvider from, RelationalSyncProvider to, IEnumerable<string> tablesToTrack = null)
             {
                 ConflictsCounter = new Dictionary<DbConflictType, int>();
+                AddedIdsPerTable = new Dictionary<string, IEnumerable<object>>();
 
                 this.RemoteProvider = from;
                 this.LocalProvider = to;
@@ -509,6 +536,31 @@ namespace Diagnosis.Data.Sync
                     if (e.Conflict.Type != DbConflictType.ErrorsOccurred)
                         e.Action = ApplyAction.RetryWithForceWrite;
                 };
+                to.ChangesApplied += (s, e) =>
+                {
+                    // запоминаем добавленные строки для желаемых таблиц
+                    if (tablesToTrack != null)
+                    {
+                        foreach (var table in tablesToTrack)
+                        {
+                            if (e.Context.DataSet.Tables.Contains(table))
+                            {
+                                var dataTable = e.Context.DataSet.Tables[table];
+                                var rows = new List<DataRow>();
+                                for (int j = 0; j < dataTable.Rows.Count; j++)
+                                {
+                                    DataRow row = dataTable.Rows[j];
+
+                                    if (row.RowState == DataRowState.Added)
+                                    {
+                                        rows.Add(row);
+                                    }
+                                }
+                                AddedIdsPerTable.Add(dataTable.TableName, rows.Select(x => x["Id"]));
+                            }
+                        }
+                    }
+                };
                 to.DbConnectionFailure += (s, e) =>
                 {
                     Poster.PostMessage("DbConnectionFailure: {0}", e.FailureException.Message);
@@ -516,6 +568,8 @@ namespace Diagnosis.Data.Sync
             }
 
             public Dictionary<DbConflictType, int> ConflictsCounter { get; set; }
+
+            public Dictionary<string, IEnumerable<object>> AddedIdsPerTable { get; set; }
         }
     }
 }

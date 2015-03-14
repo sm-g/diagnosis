@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Data.Versions;
+using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -109,6 +110,16 @@ namespace Diagnosis.Data.Sync
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        public static Scope GetScope(this Type type)
+        {
+            var tbl = Names.tblToTypeMap.FirstOrDefault(x => x.Value == type).Key;
+            if (tbl == default(String))
+                throw new ArgumentOutOfRangeException("Type is not syncronized");
+
+            return scopeToTables.FirstOrDefault(x => x.Value.Contains(tbl)).Key;
+        }
+
         public static IList<Scope> GetOrderedScopes()
         {
             return new List<Scope>(Enum.GetValues(typeof(Scope)).Cast<Scope>());
