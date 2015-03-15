@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="Diagnosis.Models.Appointment">
+  <Class Name="Diagnosis.Models.Appointment" Collapsed="true">
     <Position X="10.5" Y="3.25" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
@@ -15,8 +15,8 @@
     </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Diagnosis.Models.Course">
-    <Position X="8.25" Y="0.75" Width="1.5" />
+  <Class Name="Diagnosis.Models.Course" Collapsed="true">
+    <Position X="8.25" Y="1" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
@@ -43,8 +43,8 @@
     </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Diagnosis.Models.Doctor">
-    <Position X="13.25" Y="0.75" Width="1.5" />
+  <Class Name="Diagnosis.Models.Doctor" Collapsed="true">
+    <Position X="13.25" Y="1" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
@@ -83,7 +83,7 @@
     </ShowAsCollectionAssociation>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Diagnosis.Models.Patient">
+  <Class Name="Diagnosis.Models.Patient" Collapsed="true">
     <Position X="0.75" Y="1" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
@@ -134,7 +134,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.Models.Speciality">
-    <Position X="12.75" Y="11" Width="1.5" />
+    <Position X="12.75" Y="11.75" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
@@ -159,7 +159,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.Models.HrCategory" Collapsed="true">
-    <Position X="10.25" Y="7.5" Width="1.5" />
+    <Position X="9.25" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAQEgAAAAAQAAAAAAIAgAAIAAAAAAiA=</HashCode>
       <FileName>Entities\HrCategory.cs</FileName>
@@ -167,7 +167,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.Models.HrItem" Collapsed="true">
-    <Position X="9" Y="9.5" Width="1.5" />
+    <Position X="9.25" Y="9.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>kAUAAAAAAAAEAAAEAAwAgAAAAIACAAAgAABAAAAAIAA=</HashCode>
       <FileName>Entities\HrItem.cs</FileName>
@@ -180,7 +180,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.Models.Measure" Collapsed="true">
-    <Position X="6.75" Y="10.5" Width="1.5" />
+    <Position X="6.5" Y="10.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAAAAAAAAAAAQEgAIAAAAAAAIEAIAAAAAgABAAEiA=</HashCode>
       <FileName>Entities\Measure.cs</FileName>
@@ -196,12 +196,15 @@
       <HashCode>AAAAAABAAAAgAAREABAAAAAAAAZAAAAAAQIAAAAAAAA=</HashCode>
       <FileName>Entities\Uom.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Type" />
+    </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.Models.Admin" Collapsed="true">
     <Position X="15" Y="7.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACAEAAAAAAAAAAABAQAAAAABAAAAAAAAAAAAEAAAg=</HashCode>
+      <HashCode>AAQCAEAAAAAAAAAAABAQAAAAABAAAAAAAAAAAAEAAAg=</HashCode>
       <FileName>Entities\Admin.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -219,6 +222,26 @@
       <FileName>Entities\Passport.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
+  </Class>
+  <Enum Name="Diagnosis.Models.HealthRecordUnit" Collapsed="true">
+  <Class Name="Diagnosis.Models.UomType" Collapsed="true">
+    <Position X="10.75" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIIAAAGQEAAAAAAAAAAAAAAAgAAAAAAAAQAA=</HashCode>
+      <FileName>Entities\UomType.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.Models.SpecialityIcdBlocks" Collapsed="true">
+    <Position X="6.75" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAACAAA=</HashCode>
+      <FileName>Entities\SpecialityIcdBlock.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="IcdBlock" />
+      <Property Name="Speciality" />
+    </ShowAsAssociation>
   </Class>
   <Enum Name="Diagnosis.Models.HealthRecordUnit" Collapsed="true">
     <Position X="4.25" Y="8.25" Width="1.5" />

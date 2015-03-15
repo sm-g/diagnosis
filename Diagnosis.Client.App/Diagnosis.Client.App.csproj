@@ -144,6 +144,9 @@
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\Images\D-icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
     <Reference Include="EventAggregator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -658,40 +661,20 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\save_16xLG.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\AddControl_371.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\Close_16xLG.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\Arrow_UndoRevertRestore_16xLG.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\126_Edit_24x24_72.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\Find_5650.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\splash.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\GroupBy.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\SortAscending.png" />
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
     <Resource Include="Resources\Images\DeleteHS.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\Copy_6524.png" />
     <Resource Include="Resources\Images\Cut_6523.png" />
     <Resource Include="Resources\Images\Paste_6520.png" />
     <Resource Include="Resources\Images\Tag_7213.png" />
+    <Resource Include="Resources\Images\D-icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Entypo.ttf" />
@@ -701,8 +684,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\WindowsIcons-license.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Entypo-license.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

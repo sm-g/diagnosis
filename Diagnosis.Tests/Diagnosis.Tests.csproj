@@ -139,6 +139,7 @@
     <Compile Include="CommonTests\DateOffsetFormatterTest.cs" />
     <Compile Include="CommonTests\TimeSpanFormatterTest.cs" />
     <Compile Include="CommonTests\EnumerableExtensionsTest.cs" />
+    <Compile Include="DataTests\SyncerTest.cs" />
     <Compile Include="ModelTests\CourseTest.cs" />
     <Compile Include="ModelTests\HrItemTest.cs" />
     <Compile Include="ModelTests\HealthRecordTest.cs" />

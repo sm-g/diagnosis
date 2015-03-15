@@ -9,7 +9,7 @@ namespace Diagnosis.Models
         {
         }
 
-        public virtual Speciality Speciality { get; protected set; }
+        public virtual Speciality Speciality { get; set; }
 
         public virtual IcdBlock IcdBlock { get; protected set; }
     }

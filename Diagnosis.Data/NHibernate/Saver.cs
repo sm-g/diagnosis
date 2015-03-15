@@ -55,7 +55,7 @@ namespace Diagnosis.Data
             savingPatient = null;
         }
 
-        public bool Delete(params IDomainObject[] domainObjects)
+        public bool Delete(params IEntity[] domainObjects)
         {
             if (domainObjects.Length == 0) return true;
             logger.DebugFormat("deleting {0} IDomainObject", domainObjects.Length);
@@ -78,10 +78,12 @@ namespace Diagnosis.Data
                     logger.Error(e);
 #if DEBUG
                     throw;
+#else
+                    return false;
 #endif
                 }
             }
-            return false;
+
         }
 
         public bool Save(params IEntity[] entities)
@@ -107,10 +109,11 @@ namespace Diagnosis.Data
                     logger.Error(e);
 #if DEBUG
                     throw;
+#else
+                    return false;
 #endif
                 }
             }
-            return false;
         }
     }
 }

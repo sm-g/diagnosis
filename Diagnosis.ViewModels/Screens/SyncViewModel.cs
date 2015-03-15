@@ -1,14 +1,17 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
 using Diagnosis.Data.Sync;
+using Diagnosis.Models;
 using Diagnosis.ViewModels.Framework;
 using EventAggregator;
+using NHibernate.Linq;
 using System;
+
+using System;
+
 using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -24,18 +27,13 @@ namespace Diagnosis.ViewModels.Screens
         private string _remoteProvider;
         private string _localConStr;
         private string _localProvider;
-        private Syncer syncer;
 
         public SyncViewModel()
         {
             Title = "Синхронизация";
 
             LocalConnectionString = NHibernateHelper.ConnectionString;
-            // TODO get LocalProviderName 
             LocalProviderName = LocalConnectionString.Contains(".sdf") ? Constants.SqlCeProvider : Constants.SqlServerProvider;
-
-            Syncer.MessagePosted += syncer_MessagePosted;
-            Syncer.SyncEnded += syncer_SyncEnded;
 
             var server = Constants.ServerConnectionInfo; // из Settings
             if (server != null)
@@ -47,6 +45,8 @@ namespace Diagnosis.ViewModels.Screens
             //    RemoteConnectionString = "Data Source=remote.sdf";
             RemoteProviderName = Constants.SqlCeProvider;
 #endif
+            Syncer.MessagePosted += syncer_MessagePosted;
+            Syncer.SyncEnded += syncer_SyncEnded;
         }
 
         /// <summary>
@@ -72,6 +72,10 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
+        /// <summary>
+        /// Local, NHibernate connected.
+        /// </summary>
         public string LocalConnectionString
         {
             get
@@ -103,6 +107,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         public string LocalProviderName
         {
             get
@@ -119,6 +124,9 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        /// <summary>
+        /// Open remote SqlCe DB.
+        /// </summary>
         public RelayCommand OpenSdfCommand
         {
             get
@@ -139,22 +147,36 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        /// <summary>
+        /// Загружает справочные данные с удаленной серверной БД на клиент.
+        /// </summary>
         public RelayCommand DownloadCommand
         {
             get
             {
                 return new RelayCommand(() =>
                 {
-                    syncer = new Syncer(
-                        serverConStr: RemoteConnectionString,
-                        clientConStr: LocalConnectionString,
-                        serverProviderName: RemoteProviderName);
+                    Contract.Requires(LocalProviderName == Constants.SqlCeProvider); // загружаем только на клиента
 
-                    DoWithCursor(syncer.SendFrom(Side.Server), Cursors.AppStarting);
+                    var syncer = new Syncer(
+                         serverConStr: RemoteConnectionString,
+                         clientConStr: LocalConnectionString,
+                         serverProviderName: RemoteProviderName);
+
+                    DoWithCursor(syncer.SendFrom(Side.Server).ContinueWith((t) =>
+                        // после загрузки проверяем справочные сущности на совпадение
+                        CheckReferenceEntitiesAfterDownload(syncer.AddedIdsPerType)), Cursors.AppStarting);
                 },
                 () => CanSync(true, true));
             }
         }
+
+        /// <summary>
+        /// Выгружает области из локальной в промежуточную БД.
+        /// С сервера - справочные, с клиента - остальные.
+        ///
+        /// Промежуточная БД готова к последующей синхронизации.
+        /// </summary>
         public RelayCommand SaveCommand
         {
             get
@@ -171,10 +193,10 @@ namespace Diagnosis.ViewModels.Screens
                         var sdfPath = result.FileName;
                         var remoteConstr = "Data Source=" + sdfPath;
 
-                        syncer = new Syncer(
-                            serverConStr: LocalConnectionString,
-                            clientConStr: remoteConstr,
-                            serverProviderName: LocalProviderName);
+                        var syncer = new Syncer(
+                             serverConStr: LocalConnectionString,
+                             clientConStr: remoteConstr,
+                             serverProviderName: LocalProviderName);
 
                         IEnumerable<Scope> scopes;
                         if (Constants.IsClient)
@@ -182,8 +204,12 @@ namespace Diagnosis.ViewModels.Screens
                         else
                             scopes = Scope.Reference.ToEnumerable();
 
+                        // создаем промежуточную БД
+                        SqlHelper.CreateSqlCeByConStr(RemoteConnectionString);
+
                         DoWithCursor(
-                            syncer.SendFrom(Side.Server, scopes, true).ContinueWith((t) =>
+                            syncer.SendFrom(Side.Server, scopes).ContinueWith((t) =>
+                                // после выгрузки сразу готовим промежуточную БД к следующей синхронизации
                             Syncer.Deprovision(remoteConstr, Constants.SqlCeProvider, scopes)), Cursors.AppStarting);
                     }
                 },
@@ -191,6 +217,9 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        /// <summary>
+        /// Загружает клиентские данные с клиента на сервер.
+        /// </summary>
         public RelayCommand UploadCommand
         {
             get
@@ -229,6 +258,7 @@ namespace Diagnosis.ViewModels.Screens
                 () => CanSync(false, true));
             }
         }
+
         public RelayCommand DeprovisLocalCommand
         {
             get
@@ -271,7 +301,6 @@ namespace Diagnosis.ViewModels.Screens
                 result &= !RemoteConnectionString.IsNullOrEmpty() &&
                         (RemoteProviderName == Constants.SqlCeProvider ||
                          RemoteProviderName == Constants.SqlServerProvider);
-
             }
             return result;
         }
@@ -286,6 +315,150 @@ namespace Diagnosis.ViewModels.Screens
             Log += "\n=== " + e.ts.ToString() + "\n";
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                 CommandManager.InvalidateRequerySuggested()));
+        }
+
+        private void CheckReferenceEntitiesAfterDownload(Dictionary<Type, IEnumerable<object>> addedIdsPerType)
+        {
+            Contract.Requires(addedIdsPerType != null);
+            var scopesToDeprovision = new HashSet<Scope>();
+            var types = addedIdsPerType.Keys
+                .OrderByDescending(x => x, new RefModelsComparer()); // сначала родители
+
+            // дети обновляются на нового родителя
+            // старый родитель удаляется без каскадного удаления детей
+            // потом удаляются дети
+
+            foreach (var type in types)
+            {
+                var ids = addedIdsPerType[type];
+                var entities = ids.Select(id => Session.Get(type, id)).ToList();
+
+                // проверяем справочные сущности на совпадение
+                if (type == typeof(HrCategory))
+                {
+                    var replaced = ReplaceRefEntities<HrCategory>(entities);
+                    if (replaced.Count > 0)
+                    {
+                        UpdateParents<HrCategory, HealthRecord>(replaced,
+                            x => x.Category,
+                            (x, value) => x.Category = value);
+
+                        scopesToDeprovision.Add(typeof(HealthRecord).GetScope());
+                    }
+                    CleanupReplaced(replaced);
+                }
+                else if (type == typeof(Uom))
+                {
+                    var replaced = ReplaceRefEntities<Uom>(entities);
+                    if (replaced.Count > 0)
+                    {
+                        UpdateParents<Uom, HrItem>(replaced,
+                            x => x.Measure != null ? x.Measure.Uom : null,
+                            (x, value) => x.Measure.Uom = value);
+
+                        scopesToDeprovision.Add(typeof(HrItem).GetScope());
+                    }
+                    CleanupReplaced(replaced);
+                }
+                else if (type == typeof(UomType))
+                {
+                    var replaced = ReplaceRefEntities<UomType>(entities);
+                    if (replaced.Count > 0)
+                    {
+                        UpdateParents<UomType, Uom>(replaced,
+                            x => x.Type,
+                            (x, value) => x.Type = value);
+
+                        scopesToDeprovision.Add(typeof(Uom).GetScope());
+                    }
+                    CleanupReplaced(replaced);
+                }
+                else if (type == typeof(Speciality))
+                {
+                    var replaced = ReplaceRefEntities<Speciality>(entities);
+                    if (replaced.Count > 0)
+                    {
+                        UpdateParents<Speciality, Doctor>(replaced,
+                            x => x.Speciality,
+                            (x, value) => x.Speciality = value);
+                        UpdateParents<Speciality, SpecialityIcdBlocks>(replaced,
+                            x => x.Speciality,
+                            (x, value) => x.Speciality = value);
+
+                        scopesToDeprovision.Add(typeof(Doctor).GetScope());
+                        scopesToDeprovision.Add(typeof(SpecialityIcdBlocks).GetScope());
+                    }
+                    CleanupReplaced(replaced);
+                }
+                else if (type == typeof(SpecialityIcdBlocks))
+                {
+                    var replaced = ReplaceRefEntities<SpecialityIcdBlocks>(entities);
+                    CleanupReplaced(replaced);
+                    // нет ссылок на SpecialityIcdBlocks, нечего обновлять
+                }
+                else
+                    throw new NotImplementedException();
+            }
+
+            // deprovision scopes обновленных сущностей
+            Syncer.Deprovision(LocalConnectionString, LocalProviderName, scopesToDeprovision);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <typeparam name="T">Тип сущности справочника для замены</typeparam>
+        /// <param name="entities"></param>
+        private Dictionary<T, T> ReplaceRefEntities<T>(IList<object> entities)
+            where T : IEntity
+        {
+            // ищем сущности для замены с таким же значением
+            var toReplace = new Dictionary<T, T>();
+
+            foreach (var item in entities.Cast<T>())
+            {
+                var existing = Session.Query<T>()
+                    .Where(x => x.Id != item.Id)
+                    .Where(IEntityExtensions.EqualsByVal(item))
+                    .FirstOrDefault();
+
+                if (existing != null)
+                    toReplace[existing] = item;
+            }
+
+            return toReplace;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <typeparam name="T">Тип сущности справочника для замены</typeparam>
+        /// <typeparam name="TUpdate">Тип сущности, в которой меняются сущности справочника для замены</typeparam>
+        /// <param name="toReplace"></param>
+        /// <param name="propertyGetter">Геттер свойства для обновления</param>
+        /// <param name="propertySetter">Сеттер свойства для обновления</param>
+        private void UpdateParents<T, TUpdate>(Dictionary<T, T> toReplace, Func<TUpdate, T> propertyGetter, Action<TUpdate, T> propertySetter)
+            where T : IEntity
+            where TUpdate : IEntity
+        {
+            // меняем поле в сущностях для обновления
+            var toUpdate = Session.Query<TUpdate>()
+                .ToList()
+                .Where(x => propertyGetter(x) != null && toReplace.Keys.Contains(propertyGetter(x)))
+                .ToList();
+
+            toUpdate.ForEach(x => propertySetter(x, toReplace[propertyGetter(x)]));
+
+            // сохраняем обновленные
+            new Saver(Session).Save(toUpdate.Cast<IEntity>().ToArray());
+        }
+
+        private void CleanupReplaced<T>(Dictionary<T, T> replaced) where T : IEntity
+        {
+            new Saver(Session).Delete(replaced.Keys.Cast<IEntity>().ToArray());
+
+            if (replaced.Count > 0)
+                Log += string.Format("[{0:mm:ss:fff}] replaced {1} {2}\n", DateTime.Now, replaced.Count, replaced.Keys.First().Actual.GetType().Name);
         }
 
         private void DoWithCursor(Task act, Cursor cursor)

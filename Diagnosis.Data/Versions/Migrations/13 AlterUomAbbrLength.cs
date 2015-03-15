@@ -5,10 +5,10 @@ using System.Linq;
 
 namespace Diagnosis.Data.Versions
 {
-    [Migration(201502091200)]
-    public class AlterUomFactor : SyncronizedMigration
+    [Migration(201503151200)]
+    public class AlterUomAbbrLength : SyncronizedMigration
     {
-        public AlterUomFactor()
+        public AlterUomAbbrLength()
         {
             Provider = Constants.SqlCeProvider;
         }
@@ -23,10 +23,8 @@ namespace Diagnosis.Data.Versions
 
         public override void Up()
         {
-            // Fix
-            // 'The conversion is not supported. [ Type to convert from (if known) = varbinary, Type to convert to (if known) = float ]'
-            // in syncronization
-            Execute.Sql("alter table Uom alter column Factor numeric(18,6) NOT NULL");
+            // 10 символов может не хватить для обозначения единицы
+            Execute.Sql("alter table Uom alter column Abbr nvarchar(20) NOT NULL");
         }
 
         public override void Down()
