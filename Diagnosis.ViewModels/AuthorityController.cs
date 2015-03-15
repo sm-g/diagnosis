@@ -88,6 +88,8 @@ namespace Diagnosis.ViewModels
 
         public static bool IsStrong(string password)
         {
+            if (password.IsNullOrEmpty())
+                return false;
 #if DEBUG
             return password.Length > 1;
 #else

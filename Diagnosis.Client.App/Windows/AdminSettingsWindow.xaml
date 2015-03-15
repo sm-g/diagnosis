@@ -19,7 +19,8 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <forms:ConfirmPasswordControl Grid.IsSharedSizeScope="True"/>
+        <forms:ConfirmPasswordControl DataContext="{Binding Passwords}" 
+                                      Grid.IsSharedSizeScope="True"/>
 
         <StackPanel Grid.Row="1"
                     Style="{StaticResource DialogButtonsPanel}">

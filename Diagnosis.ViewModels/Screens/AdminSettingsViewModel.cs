@@ -12,67 +12,33 @@ namespace Diagnosis.ViewModels.Screens
     {
         private readonly Admin admin;
 
-        private SecureString _password;
-        private bool _repPassVis;
-        private SecureString _repeatPassword;
-
         public AdminSettingsViewModel(Admin admin)
         {
             Contract.Requires(admin != null);
             this.admin = admin;
-            IsRepeatVisible = true;
+            Passwords = new ConfirmPasswordViewModel()
+            {
+                IsRepeatVisible = true
+            };
+
             CanOk = false;
-        }
-        private string pass;
-
-        public string Password
-        {
-            get { return pass; }
-            set
+            Passwords.PropertyChanged += (s, e) =>
             {
-                pass = value;
-                SetCanOk();
-            }
-        }
-
-        private string passRep;
-
-        public string PasswordRepeat
-        {
-            get { return passRep; }
-            set
-            {
-                passRep = value;
-                SetCanOk();
-            }
-        }
-
-        public bool IsRepeatVisible
-        {
-            get { return _repPassVis; }
-            set
-            {
-                if (_repPassVis != value)
-                {
-                    _repPassVis = value;
-                    OnPropertyChanged(() => IsRepeatVisible);
-                }
-            }
+                CanOk = Passwords.CanConfirm;
+            };
         }
 
         protected override void OnOk()
         {
-            AuthorityController.ChangePassword(admin, Password);
+            if (!CanOk)
+                return;
+
+            AuthorityController.ChangePassword(admin, Passwords.Password);
 
             new Saver(Session).Save(admin.Passport);
             this.Send(Event.SettingsSaved, admin.AsParams(MessageKeys.User));
         }
 
-        private void SetCanOk()
-        {
-            CanOk = PasswordRepeat != null && Password != null &&
-                AuthorityController.IsStrong(Password) &&
-                Password == PasswordRepeat;
-        }
+        public ConfirmPasswordViewModel Passwords { get; private set; }
     }
 }

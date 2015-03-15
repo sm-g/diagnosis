@@ -17,8 +17,6 @@ namespace Diagnosis.ViewModels.Screens
         private bool _passVis;
         private bool _remember;
         private bool _rememberVis;
-        private bool _wrongpassword;
-        private bool _repPassVis;
 
         public LoginViewModel()
         {
@@ -30,6 +28,11 @@ namespace Diagnosis.ViewModels.Screens
                 Where(u => u.Id == Admin.DefaultId).FirstOrDefault();
             var admin = new Admin(adminUser);
 
+            Passwords = new ConfirmPasswordViewModel();
+            Passwords.PropertyChanged += (s, e) =>
+            {
+                //      OnPropertyChanged(() => CanLogin);
+            };
             Users = new ObservableCollection<IUser>(doctors);
             Users.Add(admin);
 
@@ -62,7 +65,7 @@ namespace Diagnosis.ViewModels.Screens
                         if (AuthorityController.ValidatePassword(value, Admin.DefaultPassword))
                         {
                             // первый вход - надо поменять пароль
-                            IsRepeatVisible = true;
+                            Passwords.IsRepeatVisible = true;
                         }
                     }
                     else
@@ -77,52 +80,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public ObservableCollection<IUser> Users { get; private set; }
 
-        public bool CanLogin
-        {
-            get
-            {
-                return !IsPasswordVisible || // пароль не нужен
-                    !Password.IsNullOrEmpty() && (
-                        !IsRepeatVisible || // пароль введен
-                        ( // новый пароль
-                            PasswordRepeat != null &&
-                            AuthorityController.IsStrong(Password) &&
-                            Password == PasswordRepeat
-                        )
-                    );
-            }
-        }
-
-        public bool IsWrongPassword
-        {
-            get { return _wrongpassword; }
-            set
-            {
-                if (_wrongpassword != value)
-                {
-                    _wrongpassword = value;
-                    OnPropertyChanged(() => IsWrongPassword);
-                };
-            }
-        }
-
-
-        private string pass;
-
-        public string Password
-        {
-            get { return pass; }
-            set { pass = value; }
-        }
-
-        private string passRep;
-
-        public string PasswordRepeat
-        {
-            get { return passRep; }
-            set { passRep = value; }
-        }
-
+        public ConfirmPasswordViewModel Passwords { get; private set; }
 
 
         public bool IsPasswordVisible
@@ -133,20 +91,12 @@ namespace Diagnosis.ViewModels.Screens
                 if (_passVis != value)
                 {
                     _passVis = value;
+                    if (!value)
+                    {
+                        Passwords.Password = string.Empty;
+                        Passwords.PasswordRepeat = string.Empty;
+                    }
                     OnPropertyChanged(() => IsPasswordVisible);
-                }
-            }
-        }
-
-        public bool IsRepeatVisible
-        {
-            get { return _repPassVis; }
-            set
-            {
-                if (_repPassVis != value)
-                {
-                    _repPassVis = value;
-                    OnPropertyChanged(() => IsRepeatVisible);
                 }
             }
         }
@@ -185,12 +135,12 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     var user = SelectedUser;
                     // первый запуск
-                    if (IsRepeatVisible && user is Admin)
+                    if (Passwords.IsRepeatVisible && user is Admin)
                     {
-                        AuthorityController.ChangePassword(user, Password);
+                        AuthorityController.ChangePassword(user, Passwords.Password);
                         new Diagnosis.Data.Saver(Session).Save(user.Passport);
                     }
-                    if (AuthorityController.TryLogIn(user, Password))
+                    if (AuthorityController.TryLogIn(user, Passwords.Password))
                     {
                         if (user is Doctor)
                         {
@@ -201,9 +151,9 @@ namespace Diagnosis.ViewModels.Screens
                     }
                     else
                     {
-                        // TODO show login error
+                        Passwords.IsWrongPassword = true;
                     }
-                }, () => CanLogin);
+                }, () => !IsPasswordVisible || Passwords.CanLogin || Passwords.CanConfirm);
             }
         }
 
