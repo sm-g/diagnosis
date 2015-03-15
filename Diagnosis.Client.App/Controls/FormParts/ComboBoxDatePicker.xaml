@@ -4,6 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.Client.App.Controls"
              xmlns:diag="http://schemas.smg.com/diagnosis"
+             xmlns:mahControls="http://metro.mahapps.com/winfx/xaml/controls"
              x:Class="Diagnosis.Client.App.Controls.FormParts.ComboBoxDatePicker"
              mc:Ignorable="d"
              d:DesignWidth="300"
@@ -23,11 +24,8 @@
                   IsEditable="True"
                   SelectionChanged="comboYears_SelectionChanged"
                   LostFocus="comboYears_LostFocus"
+                  mahControls:TextBoxHelper.Watermark="Год"
                   SelectedValue="{Binding Year, FallbackValue='', Converter={StaticResource IntToString}, ElementName=root}">
-            <diag:WatermarkService.Watermark>
-                <TextBlock Style="{StaticResource watermark}"
-                           Margin="5,0,0,0">Год</TextBlock>
-            </diag:WatermarkService.Watermark>
         </ComboBox>
         <ComboBox x:Name="comboMonths"
                   Style="{StaticResource comboRight}"

@@ -7,6 +7,7 @@
         xmlns:controls="clr-namespace:Diagnosis.Client.App.Controls"
         xmlns:card="clr-namespace:Diagnosis.Client.App.Controls.CardParts"
         xmlns:diag="http://schemas.smg.com/diagnosis"
+        xmlns:mahControls="http://metro.mahapps.com/winfx/xaml/controls"
         Title="{Binding Title}"
         Width="500"
         SizeToContent="Height"
@@ -56,11 +57,8 @@
                 <Label Content="Имя"
                        VerticalAlignment="Top" />
                 <TextBox Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         mahControls:TextBoxHelper.Watermark="ФИО"
                          Grid.Column="1">
-                    <diag:WatermarkService.Watermark>
-                        <TextBlock Style="{StaticResource watermark}"
-                                   Margin="5,0,0,0">ФИО</TextBlock>
-                    </diag:WatermarkService.Watermark>
                 </TextBox>
                 <TextBlock TextWrapping="Wrap"
                            Grid.Row="1"

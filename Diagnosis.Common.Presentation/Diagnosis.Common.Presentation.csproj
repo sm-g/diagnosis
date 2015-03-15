@@ -85,10 +85,16 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="MahApps.Metro">
+      <HintPath>..\packages\MahApps.Metro.1.0.0.0\lib\net40\MahApps.Metro.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.1.0.0.0\lib\net40\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
@@ -162,8 +168,6 @@
     <Compile Include="Controls\Helpers\ItemCollectionExtensions.cs" />
     <Compile Include="Controls\Helpers\TreeViewItemExtenstions.cs" />
     <Compile Include="Controls\Helpers\VisualTreeExtensions.cs" />
-    <Compile Include="Controls\Helpers\WatermarkAdorner.cs" />
-    <Compile Include="Controls\Helpers\WatermarkService.cs" />
     <Compile Include="Controls\Helpers\XamlExtensions.cs" />
     <Compile Include="Controls\PopupSearch.xaml.cs">
       <DependentUpon>PopupSearch.xaml</DependentUpon>
