@@ -82,12 +82,12 @@ namespace Diagnosis.ViewModels.Screens
             get
             {
                 return !IsPasswordVisible || // пароль не нужен
-                    Password != null && Password.Length > 0 && (
+                    !Password.IsNullOrEmpty() && (
                         !IsRepeatVisible || // пароль введен
                         ( // новый пароль
-                            RepeatPassword != null &&
+                            PasswordRepeat != null &&
                             AuthorityController.IsStrong(Password) &&
-                            Password.GetString() == RepeatPassword.GetString()
+                            Password == PasswordRepeat
                         )
                     );
             }
@@ -106,9 +106,24 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public SecureString Password { get; set; }
 
-        public SecureString RepeatPassword { get; set; }
+        private string pass;
+
+        public string Password
+        {
+            get { return pass; }
+            set { pass = value; }
+        }
+
+        private string passRep;
+
+        public string PasswordRepeat
+        {
+            get { return passRep; }
+            set { passRep = value; }
+        }
+
+
 
         public bool IsPasswordVisible
         {
@@ -175,7 +190,7 @@ namespace Diagnosis.ViewModels.Screens
                         AuthorityController.ChangePassword(user, Password);
                         new Diagnosis.Data.Saver(Session).Save(user.Passport);
                     }
-                    if (AuthorityController.TryLogIn(user, Password != null ? Password.GetString() : null))
+                    if (AuthorityController.TryLogIn(user, Password))
                     {
                         if (user is Doctor)
                         {

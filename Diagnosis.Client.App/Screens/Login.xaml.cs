@@ -31,9 +31,5 @@ namespace Diagnosis.Client.App.Screens
                 passwords.password.Clear();
             }
         }
-        private void password_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            Vm.Password = passwords.password.SecurePassword;
-        }
     }
 }

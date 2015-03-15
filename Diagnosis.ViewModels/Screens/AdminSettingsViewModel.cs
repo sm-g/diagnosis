@@ -23,23 +23,26 @@ namespace Diagnosis.ViewModels.Screens
             IsRepeatVisible = true;
             CanOk = false;
         }
+        private string pass;
 
-        public SecureString Password
+        public string Password
         {
-            get { return _password; }
+            get { return pass; }
             set
             {
-                _password = value;
+                pass = value;
                 SetCanOk();
             }
         }
 
-        public SecureString RepeatPassword
+        private string passRep;
+
+        public string PasswordRepeat
         {
-            get { return _repeatPassword; }
+            get { return passRep; }
             set
             {
-                _repeatPassword = value;
+                passRep = value;
                 SetCanOk();
             }
         }
@@ -67,9 +70,9 @@ namespace Diagnosis.ViewModels.Screens
 
         private void SetCanOk()
         {
-            CanOk = RepeatPassword != null && Password != null &&
+            CanOk = PasswordRepeat != null && Password != null &&
                 AuthorityController.IsStrong(Password) &&
-                Password.GetString() == RepeatPassword.GetString();
+                Password == PasswordRepeat;
         }
     }
 }

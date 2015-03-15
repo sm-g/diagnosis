@@ -20,15 +20,5 @@ namespace Diagnosis.Client.App.Controls.FormParts
         {
             InitializeComponent();
         }
-
-        private void password_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            dynamic vm = DataContext;
-
-            if (sender == password)
-                vm.Password = password.SecurePassword;
-            else if (sender == passwordRepeat)
-                vm.RepeatPassword = passwordRepeat.SecurePassword;
-        }
     }
 }

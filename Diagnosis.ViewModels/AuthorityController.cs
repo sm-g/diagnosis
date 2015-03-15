@@ -45,6 +45,12 @@ namespace Diagnosis.ViewModels
             return false;
         }
 
+        /// <summary>
+        /// Проверяет верный ли пароль для пользователя.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="pass"></param>
+        /// <returns></returns>
         public static bool ValidatePassword(IUser user, string pass)
         {
             if (user is Admin && pass != null)
@@ -70,22 +76,22 @@ namespace Diagnosis.ViewModels
         /// <param name="user"></param>
         /// <param name="password"></param>
         /// <returns>False, если пароль совпадает с текущим.</returns>
-        public static bool ChangePassword(IUser user, SecureString password)
+        public static bool ChangePassword(IUser user, string password)
         {
-            if (PasswordHashManager.ValidatePassword(password.GetString(), user.Passport.HashAndSalt))
+            if (ValidatePassword(user, password))
                 return false;
 
-            var hash = PasswordHashManager.CreateHash(password.GetString());
+            var hash = PasswordHashManager.CreateHash(password);
             user.Passport.HashAndSalt = hash;
             return true;
         }
 
-        public static bool IsStrong(SecureString password)
+        public static bool IsStrong(string password)
         {
 #if DEBUG
             return password.Length > 1;
 #else
-            return password.Length > 3 && password.GetString() != Admin.DefaultPassword;
+            return password.Length > 3 && password != Admin.DefaultPassword;
 #endif
         }
 
