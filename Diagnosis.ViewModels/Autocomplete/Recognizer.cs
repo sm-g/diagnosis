@@ -104,8 +104,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 if (CanMakeEntityFrom(tag.Query))
                 {
-                    tag.Blank = tag.Query; // текст-комментарий
-                    Debug.Assert(tag.BlankType == BlankType.Query);
+                    tag.Blank = new Comment(tag.Query); // текст-комментарий
                 }
                 else
                 {
@@ -124,8 +123,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 }
                 else
                 {
-                    tag.Blank = tag.Query; // запрос не совпал с предположением (CompleteOnLostFocus)
-                    Debug.Assert(tag.BlankType == BlankType.Query);
+                    tag.Blank = new Comment(tag.Query); // запрос не совпал с предположением (CompleteOnLostFocus)
                 }
             }
             else // inverse, no suggestion
@@ -263,11 +261,9 @@ namespace Diagnosis.ViewModels.Autocomplete
         public List<Word> SearchForSuggesstions(string query, object prevEntityBlank, IEnumerable<object> exclude = null)
         {
             Contract.Requires(query != null);
-            // Contract.Ensures(Contract.Result<List<object>>().All(o => o is Word || o is string));
 
-            IEnumerable<Word> found;
+            var found = QueryWords(query, prevEntityBlank);
 
-            found = QueryWords(query, prevEntityBlank);
             if (exclude != null)
             {
                 found = found.Where(i => !exclude.Contains(i));

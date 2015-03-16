@@ -156,8 +156,8 @@ namespace Tests
             a.InverseEnterCommand.Execute(a.SelectedTag);
 
             Assert.IsTrue(First.State == State.Completed);
-            Assert.AreEqual(q, First.Blank);
-            Assert.IsTrue(First.BlankType == BlankType.Query);
+            Assert.AreEqual(q, First.Blank.ToString());
+            Assert.IsTrue(First.BlankType == BlankType.Comment);
 
             var entities = a.GetCHIOs();
 
@@ -172,8 +172,8 @@ namespace Tests
             a.EnterCommand.Execute(a.SelectedTag);
 
             Assert.IsTrue(First.State == State.Completed);
-            Assert.AreEqual(notExistQ, First.Blank);
-            Assert.IsTrue(First.BlankType == BlankType.Query);
+            Assert.AreEqual(notExistQ, First.Blank.ToString());
+            Assert.IsTrue(First.BlankType == BlankType.Comment);
 
             var entities = a.GetCHIOs();
 

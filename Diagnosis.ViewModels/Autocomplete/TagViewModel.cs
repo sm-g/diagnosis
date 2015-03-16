@@ -123,8 +123,6 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public event EventHandler Deleted;
         public event EventHandler<BlankTypeEventArgs> Converting;
-
-
         /// <summary>
         /// Текстовое представление.
         /// </summary>
@@ -574,6 +572,8 @@ namespace Diagnosis.ViewModels.Autocomplete
                 || Signalization == null || Signalization == Signalizations.Forbidden); // завершенный тег → есть бланк (тег завершается после смены бланка) в поиске бланк мб пустой
             Contract.Invariant(State != State.Init || (BlankType == BlankType.None && Entity == null)); // в начальном состоянии → нет бланка и сущностей
             // при редактировании нет сущностей
+
+            Contract.Invariant(BlankType != BlankType.Query); // заготовка всегда сущность, если есть
         }
 
     }
