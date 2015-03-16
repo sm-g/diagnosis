@@ -441,6 +441,9 @@ namespace Diagnosis.ViewModels.Screens
 
         private HealthRecord AddHr(IHrsHolder holder, bool fromCommand = false)
         {
+            Contract.Requires(holder != null);
+            Contract.Ensures(Contract.Result<HealthRecord>().IsEmpty());
+
             if (HrList.holder != holder)
                 Open(holder); // open holder list first
 

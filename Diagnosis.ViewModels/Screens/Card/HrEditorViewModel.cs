@@ -302,6 +302,15 @@ namespace Diagnosis.ViewModels.Screens
                 var items = _autocomplete.GetCHIOsOfCompleted().ToList();
                 HealthRecord.healthRecord.SetItems(items);
             };
+            Autocomplete.InputEnded += (s, e) =>
+            {
+                // завершаем выбранное перед добавлением записи
+                if (e.value)
+                {
+                    var stratEdit = true;
+                    this.Send(Event.AddHr, new object[] { HealthRecord.healthRecord.Holder, stratEdit }.AsParams(MessageKeys.Holder, MessageKeys.Boolean));
+                }
+            };
         }
 
         #endregion AutoComplete

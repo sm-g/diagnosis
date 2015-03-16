@@ -95,7 +95,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// Возникает, когда работа с автокомплитом окончена. (Enter второй раз.)
         /// </summary>
-        public event EventHandler InputEnded;
+        public event EventHandler<BoolEventArgs> InputEnded;
 
         /// <summary>
         /// Возникает, когда завершается редактирование тега.
@@ -125,13 +125,22 @@ namespace Diagnosis.ViewModels.Autocomplete
                     (tag) => tag != null);
             }
         }
+        public RelayCommand<TagViewModel> ControlEnterCommand
+        {
+            get
+            {
+                return new RelayCommand<TagViewModel>(
+                    (tag) => CompleteOnEnter(tag, withControl: true),
+                    (tag) => tag != null);
+            }
+        }
 
         public RelayCommand<TagViewModel> InverseEnterCommand
         {
             get
             {
                 return new RelayCommand<TagViewModel>(
-                    (tag) => CompleteOnEnter(tag, true),
+                    (tag) => CompleteOnEnter(tag, inverse: true),
                     (tag) => tag != null && !recognizer.OnlyWords);
             }
         }
@@ -713,14 +722,14 @@ namespace Diagnosis.ViewModels.Autocomplete
             return converted;
         }
 
-        public void CompleteOnEnter(TagViewModel tag, bool inverse = false)
+        public void CompleteOnEnter(TagViewModel tag, bool inverse = false, bool withControl = false)
         {
             switch (tag.State)
             {
                 case State.Init:
                     if (tag.IsLast)
                     {
-                        OnInputEnded();
+                        OnInputEnded(withControl);
                         return;
                     }
                     else
@@ -740,8 +749,8 @@ namespace Diagnosis.ViewModels.Autocomplete
                         CompleteCommon(tag, SelectedSuggestion, false, false);
                     break;
             }
-            if (SingleTag)
-                OnInputEnded();
+            if (SingleTag || withControl)
+                OnInputEnded(withControl);
             else
                 // переходим к вводу нового слова
                 StartEdit(LastTag);
@@ -801,12 +810,12 @@ namespace Diagnosis.ViewModels.Autocomplete
             IsPopupOpen = Suggestions.Count > 0; // not on suggestion.collectionchanged - мигание при очистке
         }
 
-        protected virtual void OnInputEnded()
+        protected virtual void OnInputEnded(bool addHr)
         {
             var h = InputEnded;
             if (h != null)
             {
-                h(this, EventArgs.Empty);
+                h(this, new BoolEventArgs(addHr));
             }
         }
 

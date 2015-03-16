@@ -40,8 +40,7 @@
             <KeyBinding Key="Enter"
                         Command="{Binding DataContext.EnterCommand,ElementName=suggestions}"
                         CommandParameter="{Binding DataContext.EditingTag,ElementName=suggestions}" />
-            <KeyBinding Key="Enter"
-                        Modifiers="Shift"
+            <KeyBinding Gesture="Shift+Enter"
                         Command="{Binding DataContext.InverseEnterCommand,ElementName=suggestions}"
                         CommandParameter="{Binding DataContext.EditingTag,ElementName=suggestions}" />
             <MouseBinding MouseAction="LeftDoubleClick"
@@ -87,9 +86,11 @@
                 <KeyBinding Key="Enter"
                             Command="{Binding EnterCommand}"
                             CommandParameter="{Binding EditingTag}" />
-                <KeyBinding Key="Enter"
-                            Modifiers="Shift"
+                <KeyBinding Gesture="Shift+Enter"
                             Command="{Binding InverseEnterCommand}"
+                            CommandParameter="{Binding EditingTag}" />
+                <KeyBinding Gesture="Control+Enter"
+                            Command="{Binding ControlEnterCommand}"
                             CommandParameter="{Binding EditingTag}" />
                 <KeyBinding Gesture="Control+Space"
                             Command="{Binding ShowSuggestionsCommand}" />
