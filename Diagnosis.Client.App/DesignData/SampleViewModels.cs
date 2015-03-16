@@ -1,10 +1,10 @@
 ﻿using Diagnosis.Models;
 using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.ViewModels.Screens;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Moq;
 
 namespace Diagnosis.Client.App.DesignData
 {
@@ -17,7 +17,9 @@ namespace Diagnosis.Client.App.DesignData
             IsDraggable = true;
         }
     }
+
 #pragma warning disable 0618
+
     // ctor for xaml
     public class SampleHrEditorViewModel : HrEditorViewModel
 #pragma warning restore 0618
@@ -54,20 +56,23 @@ namespace Diagnosis.Client.App.DesignData
         {
         }
     }
+
     public class SampleHrListViewModel : HrListViewModel
     {
         public SampleHrListViewModel() :
-            base(Mocks.holder, (hr, info) => { }, (hios) => { })
+            base(Mocks.course, (hr, info) => { }, (hios) => { })
         {
         }
     }
+
     public class SampleDoctorEditorViewModel : DoctorEditorViewModel
     {
         public SampleDoctorEditorViewModel()
         {
-            this.doctor = new Doctor("Петров", "Иван", "Иванович");
+            this.doctor = Mocks.doc;
         }
     }
+
     public class SampleMeasureEditorViewModel : MeasureEditorViewModel
     {
         public SampleMeasureEditorViewModel()
@@ -87,57 +92,55 @@ namespace Diagnosis.Client.App.DesignData
     public class SampleHeaderViewModel : HeaderViewModel
     {
         public SampleHeaderViewModel()
-            : base(new Patient("Иванов", "Иван", year: 2000))
+            : base(Mocks.course)
         {
         }
     }
 
     public class SampleShortHealthRecordViewModel : ShortHealthRecordViewModel
     {
-        private static Patient pat = new Patient();
-        private static Doctor doc = new Doctor("Ivanov");
-        private static Course holder = new Course(pat, doc);
-
-        private static HealthRecord hr = new HealthRecord(holder, doc)
-        {
-            Category = new HrCategory() { Name = "жалоба" },
-            FromMonth = 5,
-        };
-
         public SampleShortHealthRecordViewModel()
             : base(Mocks.hr)
         {
-            SortingExtraInfo = hr.Category.Name;
+            SortingExtraInfo = Mocks.hr.Category.Name;
         }
     }
 
     internal static class Mocks
     {
-        public static Patient pat = new Patient();
+        public static Patient pat = new Patient("Иванов", "Иван", year: 2000);
         public static Doctor doc = new Doctor("Ivanov");
-        public static Course holder = new Course(pat, doc);
+        public static Course course;
+        public static Course course2;
         public static HrCategory[] cats = new[] {
-        
-        new HrCategory() { Name = "Жалоба" },
-        new HrCategory() { Name = "История" },
-        new HrCategory() { Name = "Осмотр" },
-        new HrCategory() { Name = "Обследование" },
-        new HrCategory() { Name = "Диагноз" },
-        new HrCategory() { Name = "Лечение" },
-        new HrCategory() { Name = "Не указано" },
+            new HrCategory() { Name = "Жалоба" },
+            new HrCategory() { Name = "История" },
+            new HrCategory() { Name = "Осмотр" },
+            new HrCategory() { Name = "Обследование" },
+            new HrCategory() { Name = "Диагноз" },
+            new HrCategory() { Name = "Лечение" },
+            new HrCategory() { Name = "Не указано" },
         };
 
-
-
-        public static HealthRecord hr = new HealthRecord(holder, doc)
-        {
-            Category = cats[0],
-            FromMonth = 5,
-        };
+        public static HealthRecord hr;
 
         static Mocks()
         {
             hr.AddItems(new IHrItemObject[] { new Word("анемия"), new Word("впервые"), new Comment("без осложнений") });
+            course = new Course(pat, doc)
+            {
+                Start = DateTime.Now
+            };
+            course2 = new Course(pat, doc)
+            {
+                Start = DateTime.Now.AddDays(-4),
+                End = DateTime.Now
+            };
+            hr = new HealthRecord(course, doc)
+            {
+                Category = cats[0],
+                FromMonth = 5,
+            };
         }
     }
 }

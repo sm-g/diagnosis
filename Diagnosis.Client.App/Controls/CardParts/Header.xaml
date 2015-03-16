@@ -10,19 +10,9 @@
              mc:Ignorable="d"
              x:Name="header"
              d:DataContext="{d:DesignInstance design:SampleHeaderViewModel, IsDesignTimeCreatable=True}"
-             d:DesignHeight="300"
+             d:DesignHeight="50"
              d:DesignWidth="300">
     <UserControl.Resources>
-        <Style x:Key="HeaderNavButton"
-               TargetType="{x:Type Button}"
-               BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Width"
-                    Value="30" />
-            <Setter Property="Height"
-                    Value="30" />
-            <Setter Property="Margin"
-                    Value="5" />
-        </Style>
 
         <controls:HrsHolderDataTemplateSelector x:Key="selector">
             <controls:HrsHolderDataTemplateSelector.PatientTemplate>
@@ -141,10 +131,18 @@
         <!-- prev -->
         <DockPanel DockPanel.Dock="Left"
                    Visibility="{Binding PrevHolder, Converter={StaticResource NotNullToVis}}">
-            <Button DockPanel.Dock="Left"
-                    Command="{Binding OpenPrevCommand}"
-                    Style="{StaticResource HeaderNavButton}">
-                «
+
+            <Button  DockPanel.Dock="Left"
+                     Command="{Binding OpenPrevCommand}"
+                     Style="{StaticResource metroCircleButton}">
+                <Rectangle Width="12"
+                           Height="12"
+                           Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Uniform"
+                                     Visual="{DynamicResource appbar_chevron_left}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
             </Button>
             <headers:Holder DockPanel.Dock="Top"
                             DataContext="{Binding PrevHolder}"
@@ -157,10 +155,17 @@
         <DockPanel DockPanel.Dock="Right"
                    HorizontalAlignment="Right"
                    Visibility="{Binding NextHolder, Converter={StaticResource NotNullToVis}}">
-            <Button DockPanel.Dock="Right"
-                    Command="{Binding OpenNextCommand}"
-                    Style="{StaticResource HeaderNavButton}">
-                »
+            <Button  DockPanel.Dock="Right"
+                     Command="{Binding OpenNextCommand}"
+                     Style="{StaticResource metroCircleButton}">
+                <Rectangle Width="12"
+                           Height="12"
+                           Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Uniform"
+                                     Visual="{DynamicResource appbar_chevron_right}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
             </Button>
             <headers:Holder HorizontalAlignment="Right"
                             DockPanel.Dock="Top"
