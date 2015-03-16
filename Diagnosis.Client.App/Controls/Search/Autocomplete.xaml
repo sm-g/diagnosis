@@ -127,7 +127,7 @@
                     <Setter Property="ContextMenu">
                         <Setter.Value>
                             <ContextMenu>
-                                <!-- Autocomplete, для выделенных -->
+                                <!-- AutocompleteViewModel, для всех выделенных -->
                                 <MenuItem Header="Редактировать"
                                           InputGestureText="F2"
                                           Command="{Binding PlacementTarget.Tag.EditCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
@@ -136,33 +136,20 @@
                                           Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <MenuItem Header="Искать"
                                           Style="{StaticResource searchMenuItem}"
+                                          Visibility="{Binding PlacementTarget.Tag.SendToSearchCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                           Command="{Binding PlacementTarget.Tag.SendToSearchCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                                <!--<MenuItem Command="{Binding ConvertCommand}">
-                                    <MenuItem.Header>
-                                        <TextBlock>
-                                <Run>
-                                    <Run.Style>
-                                        <Style TargetType="Run">
-                                            <Setter Property="Text"
-                                                        Value="Создать слово" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding BlankType}"
-                                                             Value="{x:Static auto:BlankType.Word}">
-                                                    <Setter Property="Text"
-                                                                Value="Убрать слово" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Run.Style>
-                                </Run> «<Run Text="{Binding Query, TargetNullValue=' — '}" />»
-                                        </TextBlock>
-                                    </MenuItem.Header>
-                                </MenuItem>-->
+                                <MenuItem Header="Изменить уверенность"
+                                          InputGestureText="F8"
+                                          Visibility="{Binding PlacementTarget.Tag.ToggleConfidenceCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                          Command="{Binding PlacementTarget.Tag.ToggleConfidenceCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+
                                 <!-- TagViewModel -->
-                                <Separator />
+                                <Separator Visibility="{Binding AddLeftCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                 <MenuItem Header="Добавить слева"
+                                          Visibility="{Binding AddLeftCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                           Command="{Binding AddLeftCommand}" />
                                 <MenuItem Header="Добавить справа"
+                                          Visibility="{Binding AddRightCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                           Command="{Binding AddRightCommand}" />
                                 <Separator />
                                 <!-- для выделенных -->
@@ -234,7 +221,7 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <DockPanel LastChildFill="True">
-                            <DockPanel.Style>                                
+                            <DockPanel.Style>
                                 <Style TargetType="DockPanel">
                                     <Setter Property="Background"
                                             Value="Transparent" />
@@ -256,7 +243,7 @@
                                        Text="★" />
                             <Separator MinWidth="30"
                                        Height="0"
-                                       Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                       Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         </DockPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

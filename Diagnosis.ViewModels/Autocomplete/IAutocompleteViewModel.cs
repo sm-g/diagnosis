@@ -14,10 +14,12 @@ namespace Diagnosis.ViewModels.Autocomplete
         bool WithConvert { get; }
 
         bool WithSendToSearch { get; }
-
+        bool WithConfidence { get; }
+        
         ICommand EditCommand { get; }
 
         ICommand SendToSearchCommand { get; }
+        ICommand ToggleConfidenceCommand { get; }
 
 
         void AddAndEditTag(TagViewModel tag, bool up);

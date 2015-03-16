@@ -79,6 +79,9 @@ namespace Diagnosis.ViewModels.Autocomplete
         private Confidence _confidence;
         private VisibleRelayCommand sendToSearch;
         private VisibleRelayCommand<BlankType> convertTo;
+        private VisibleRelayCommand tooggleConfid;
+        private VisibleRelayCommand addLeft;
+        private VisibleRelayCommand addRight;
 
         /// <summary>
         /// Создает пустой тег.
@@ -123,6 +126,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public event EventHandler Deleted;
         public event EventHandler<BlankTypeEventArgs> Converting;
+
         /// <summary>
         /// Текстовое представление.
         /// </summary>
@@ -295,25 +299,45 @@ namespace Diagnosis.ViewModels.Autocomplete
                 });
             }
         }
-
-        public RelayCommand AddLeftCommand
+        public VisibleRelayCommand ToggleConfidenceCommand
         {
             get
             {
-                return new RelayCommand(() =>
+                return tooggleConfid ?? (tooggleConfid = new VisibleRelayCommand(() =>
                 {
-                    autocomplete.AddAndEditTag(this, true);
-                }, () => !autocomplete.SingleTag);
+                    autocomplete.ToggleConfidenceCommand.Execute(null);
+                },
+                () => autocomplete.WithConfidence)
+                {
+                    IsVisible = autocomplete.WithConfidence
+                });
             }
         }
-        public RelayCommand AddRightCommand
+
+        public VisibleRelayCommand AddLeftCommand
         {
             get
             {
-                return new RelayCommand(() =>
+                return addLeft ?? (addLeft = new VisibleRelayCommand(() =>
+                {
+                    autocomplete.AddAndEditTag(this, true);
+                }, () => !autocomplete.SingleTag)
+                {
+                    IsVisible = !autocomplete.SingleTag
+                });
+            }
+        }
+        public VisibleRelayCommand AddRightCommand
+        {
+            get
+            {
+                return addRight ?? (addRight = new VisibleRelayCommand(() =>
                 {
                     autocomplete.AddAndEditTag(this, false);
-                }, () => !IsLast && !autocomplete.SingleTag);
+                }, () => !IsLast && !autocomplete.SingleTag)
+                {
+                    IsVisible = !autocomplete.SingleTag // все равно показываем пункт меню, если иногда можно
+                });
             }
         }
 

@@ -269,7 +269,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 found = found.Where(i => !exclude.Contains(i));
             }
 
-            var results = new List<Word>(found);
+            var results = new List<Word>(found.OrderBy(x => x.Title)); // слова по алфавиту
 
             if (AddQueryToSuggestions)
             {

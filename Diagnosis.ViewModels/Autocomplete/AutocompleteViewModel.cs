@@ -33,6 +33,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private EventAggregator.EventMessageHandler hanlder;
         private bool inDispose;
         private VisibleRelayCommand<TagViewModel> sendToSearch;
+        private VisibleRelayCommand toggleConfidence;
 
         public AutocompleteViewModel(Recognizer recognizer, OptionsMode mode, IEnumerable<ConfindenceHrItemObject> initItems)
             : this(recognizer,
@@ -230,11 +231,11 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-        public RelayCommand ToggleConfidenceCommand
+        public VisibleRelayCommand ToggleConfidenceCommand
         {
             get
             {
-                return new RelayCommand(() =>
+                return toggleConfidence ?? (toggleConfidence = new VisibleRelayCommand(() =>
                 {
                     if (SelectedTag != null)
                     {
@@ -242,7 +243,10 @@ namespace Diagnosis.ViewModels.Autocomplete
                         SelectedTags.ForEach(t => t.Confidence = next);
                         OnConfidencesChanged();
                     }
-                }, () => WithConfidence);
+                }, () => WithConfidence)
+                {
+                    IsVisible = WithConfidence
+                });
             }
         }
 
@@ -773,7 +777,9 @@ namespace Diagnosis.ViewModels.Autocomplete
             Contract.Requires(tag != null);
 
             var tagIndex = Tags.IndexOf(tag);
-            var exclude = Tags.Select((t, i) => i != tagIndex ? t.Blank : null); // все сущности кроме сущности редактируемого тега
+
+            // все сущности кроме сущности редактируемого тега
+            var tagBlanksExceptEditing = Tags.Select((t, i) => i != tagIndex ? t.Blank : null);
 
             var results = recognizer.SearchForSuggesstions(
                 query: tag.Query,
@@ -896,6 +902,11 @@ namespace Diagnosis.ViewModels.Autocomplete
         System.Windows.Input.ICommand IAutocompleteViewModel.SendToSearchCommand
         {
             get { return SendToSearchCommand; }
+        }
+
+        System.Windows.Input.ICommand IAutocompleteViewModel.ToggleConfidenceCommand
+        {
+            get { return ToggleConfidenceCommand; }
         }
     }
 

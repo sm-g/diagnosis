@@ -202,8 +202,13 @@
                               Visibility="{Binding SendToSearchCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                               Style="{StaticResource searchMenuItem}"
                               Command="{Binding SendToSearchCommand}" />
+                    <MenuItem Header="Изменить уверенность"
+                              InputGestureText="F8"
+                              Visibility="{Binding ToggleConfidenceCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                              Command="{Binding ToggleConfidenceCommand}" />
 
                     <Separator Visibility="{Binding ConvertToCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
                     <MenuItem Header="Ключевое слово"
                               CommandParameter="{x:Static diag:BlankType.Word}"
                               Style="{StaticResource convert}" />
@@ -211,17 +216,19 @@
                               CommandParameter="{x:Static diag:BlankType.Comment}"
                               Style="{StaticResource convert}" />
                     <MenuItem Header="МКБ..."
-                              Visibility="{Binding CanConvertToIcd, Converter={StaticResource BooleanToVisibilityConverter}}"
                               CommandParameter="{x:Static diag:BlankType.Icd}"
                               Style="{StaticResource convert}" />
                     <MenuItem Header="Измерение..."
                               CommandParameter="{x:Static diag:BlankType.Measure}"
                               Style="{StaticResource convert}" />
 
-                    <Separator />
+                    <Separator Visibility="{Binding AddLeftCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
                     <MenuItem Header="Добавить слева"
+                              Visibility="{Binding AddLeftCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                               Command="{Binding AddLeftCommand}" />
                     <MenuItem Header="Добавить справа"
+                              Visibility="{Binding AddRightCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                               Command="{Binding AddRightCommand}" />
                     <Separator />
                     <MenuItem Style="{StaticResource cutMenuItem}" />
