@@ -361,6 +361,25 @@
                         <Setter Property="diag:Attached.InputBindings"
                                 Value="{StaticResource HRInputBindings}" />
 
+                        <Setter Property="ToolTip">
+                            <Setter.Value>
+                                <DockPanel>
+                                    <StackPanel TextElement.Foreground="{DynamicResource {x:Static  SystemColors.GrayTextBrushKey}}" Margin="0 0 5 0">
+                                        <TextBlock Text="{Binding Source={StaticResource Resources}, Path=HrCategory, StringFormat={}{0}:}" />
+                                        <TextBlock Text="Дата создания:" />
+                                        <TextBlock Text="Дата изменения:" />
+                                        <TextBlock Text="Автор:" />
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Category}" />
+                                        <TextBlock Text="{Binding CreatedAt, StringFormat={}{0:dd.MM.yy hh:mm}}" />
+                                        <TextBlock Text="{Binding UpdatedAt, StringFormat={}{0:dd.MM.yy hh:mm}}" />
+                                        <TextBlock Text="{Binding Doctor.FullName}" />
+                                    </StackPanel>
+                                </DockPanel>
+                            </Setter.Value>
+                        </Setter>
+
                         <Setter Property="Tag"
                                 Value="{Binding DataContext, ElementName=hrList}" />
                         <Setter Property="ContextMenu">
@@ -382,8 +401,8 @@
                                     <MenuItem Header="Удалить"
                                               Style="{StaticResource deleteMenuItem}"
                                               Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                                    <Separator Visibility="{Binding PlacementTarget.Tag.MoveHrCommand.IsVisible, 
-                                               Converter={StaticResource BooleanToVisibilityConverter}, 
+                                    <Separator Visibility="{Binding PlacementTarget.Tag.MoveHrCommand.IsVisible,
+                                               Converter={StaticResource BooleanToVisibilityConverter},
                                                RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                     <MenuItem DataContext="{Binding PlacementTarget.Tag,  RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                               Command="{Binding MoveHrCommand}"

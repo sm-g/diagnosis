@@ -150,6 +150,11 @@ namespace Diagnosis.Models
             get { return _createdAt; }
         }
 
+        public virtual DateTime UpdatedAt
+        {
+            get { return _updatedAt; }
+        }
+
         DateTime IHaveAuditInformation.CreatedAt
         {
             get { return _updatedAt; }
@@ -163,11 +168,6 @@ namespace Diagnosis.Models
         {
             get { return _updatedAt; }
             set { SetProperty(ref _updatedAt, value, () => UpdatedAt); }
-        }
-
-        public virtual DateTime UpdatedAt
-        {
-            get { return _updatedAt; }
         }
 
         /// <summary>

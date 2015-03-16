@@ -1,13 +1,8 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Autocomplete;
-using GongSolutions.Wpf.DragDrop;
-using GongSolutions.Wpf.DragDrop.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
@@ -40,7 +35,6 @@ namespace Diagnosis.ViewModels.Screens
             DropHandler = new DropTargetHandler(this);
             IsDropTargetEnabled = true;
         }
-
 
         public string Name
         {
@@ -100,6 +94,11 @@ namespace Diagnosis.ViewModels.Screens
             get { return healthRecord.CreatedAt; }
         }
 
+        public DateTime UpdatedAt
+        {
+            get { return healthRecord.UpdatedAt; }
+        }
+
         public int Ord
         {
             get { return healthRecord.Ord; }
@@ -115,6 +114,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get { return healthRecord.IsDeleted; }
         }
+
         public bool IsFocused
         {
             get
@@ -131,6 +131,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         #endregion Model
 
         public DateTime SortingDate
@@ -285,7 +286,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-
         private void patient_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -313,7 +313,5 @@ namespace Diagnosis.ViewModels.Screens
             }
             base.Dispose(disposing);
         }
-
     }
-
 }
