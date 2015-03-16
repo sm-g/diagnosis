@@ -11,15 +11,13 @@
              x:Name="root">
     <StackPanel Orientation="Horizontal">
         <StackPanel.Resources>
-            <Style x:Key="comboRight"
-                   TargetType="{x:Type ComboBox}"
+            <Style TargetType="{x:Type ComboBox}"
                    BasedOn="{StaticResource {x:Type ComboBox}}">
                 <Setter Property="Margin"
                         Value="0,0,5,0" />
             </Style>
         </StackPanel.Resources>
         <ComboBox x:Name="comboYears"
-                  Style="{StaticResource comboRight}"
                   MinWidth="70"
                   IsEditable="True"
                   SelectionChanged="comboYears_SelectionChanged"
@@ -27,8 +25,7 @@
                   mahControls:TextBoxHelper.Watermark="Год"
                   SelectedValue="{Binding Year, FallbackValue='', Converter={StaticResource IntToString}, ElementName=root}">
         </ComboBox>
-        <ComboBox x:Name="comboMonths"
-                  Style="{StaticResource comboRight}"
+        <ComboBox x:Name="comboMonths"                 
                   MinWidth="80"
                   SelectionChanged="comboMonths_SelectionChanged"
                   SelectedValue="{Binding Month, FallbackValue='', Converter={StaticResource MonthToString}, ElementName=root}" />
@@ -39,7 +36,17 @@
                   LostFocus="comboDays_LostFocus"
                   SelectedValue="{Binding Day, FallbackValue='', Converter={StaticResource IntToString}, ElementName=root}">
         </ComboBox>
-
+        
+        <DatePicker x:Name="picker" 
+                    Visibility="{Binding WithPicker, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    SelectedDateChanged="DatePicker_SelectedDateChanged">
+            <DatePicker.Resources>
+                <Style TargetType="DatePickerTextBox">
+                    <Setter Property="Visibility"
+                            Value="Collapsed" />
+                </Style>
+            </DatePicker.Resources>
+        </DatePicker>
         <!--<Slider Value="{Binding YearsDepth, ElementName=root}" Minimum="-5" Maximum="10" Width="100"/>-->
     </StackPanel>
 </UserControl>

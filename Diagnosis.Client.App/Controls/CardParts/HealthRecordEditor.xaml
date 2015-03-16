@@ -134,7 +134,7 @@
                 </Button>
                 <Separator />
                 <ToggleButton IsChecked="{Binding AddQueryToSuggestions}"
-                        ToolTip="Переключить режим завершения слов (Ctrl+Alt+ПРОБЕЛ)">
+                              ToolTip="Переключить режим завершения слов (Ctrl+Alt+ПРОБЕЛ)">
                     <DockPanel>
                         <diag:AutoGreyableImage Source="{StaticResource completionModeImage}" />
                     </DockPanel>
@@ -189,7 +189,9 @@
                                      DataContext="{Binding DataContext.Autocomplete, ElementName=editor}" />
             </DockPanel>
             <!--<DockPanel>
-                --><!--DataContext is HrEditorViewModel--><!--
+                -->
+            <!--DataContext is HrEditorViewModel-->
+            <!--
                 <Label VerticalAlignment="Top">_Раздел ИБ</Label>
                 <forms:CategoryChooser HorizontalAlignment="Left"
                                          DataContext="{Binding DataContext, ElementName=editor}" />
@@ -269,7 +271,7 @@
                                                     <DataTrigger Binding="{Binding IsExpanded,RelativeSource={RelativeSource AncestorType=Expander}}"
                                                                  Value="True">
                                                         <Setter Property="Content"
-                                                                Value="Скрыть редактор" />
+                                                                Value="Скрыть редактор даты" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -286,8 +288,9 @@
                             <DockPanel>
                                 <Label Content="Дата" />
                                 <forms:ComboBoxDatePicker Year="{Binding DateOffset.Year, Mode=TwoWay}"
-                                                            Month="{Binding DateOffset.Month, Mode=TwoWay}"
-                                                            Day="{Binding DateOffset.Day, Mode=TwoWay}" />
+                                                          Month="{Binding DateOffset.Month, Mode=TwoWay}"
+                                                          Day="{Binding DateOffset.Day, Mode=TwoWay}"
+                                                          WithPicker="True" />
                             </DockPanel>
                             <DockPanel>
                                 <Label Content="Давность" />

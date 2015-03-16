@@ -3,7 +3,6 @@ using log4net;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -17,12 +16,22 @@ namespace Diagnosis.Client.App.Controls.FormParts
     public partial class ComboBoxDatePicker : UserControl
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(ComboBoxDatePicker));
+        private bool inSelectedDateChanged;
 
         public ObservableCollection<string> Days
         {
             get;
             set;
         }
+
+        public bool WithPicker
+        {
+            get { return (bool)GetValue(WithPickerProperty); }
+            set { SetValue(WithPickerProperty, value); }
+        }
+
+        public static readonly DependencyProperty WithPickerProperty =
+            DependencyProperty.Register("WithPicker", typeof(bool), typeof(ComboBoxDatePicker), new PropertyMetadata(false));
 
         public int? Year
         {
@@ -38,7 +47,6 @@ namespace Diagnosis.Client.App.Controls.FormParts
             // new CoerceValueCallback(CoerceYear)
                     ));
 
-
         private static void OnYearChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             // logger.DebugFormat("year {0} -> {1}", e.OldValue, e.NewValue);
@@ -53,6 +61,7 @@ namespace Diagnosis.Client.App.Controls.FormParts
             // else
             // смена года — было 29 февраля, меняем на 28
             cdp.FillDaysCombo();
+            cdp.SetPickerDate();
         }
 
         private static object CoerceYear(DependencyObject d, object baseValue)
@@ -87,7 +96,7 @@ namespace Diagnosis.Client.App.Controls.FormParts
             var cdp = (ComboBoxDatePicker)d;
             // смена месяца — другой набор дней, если был день 31, меням на 30
             cdp.FillDaysCombo();
-
+            cdp.SetPickerDate();
         }
 
         public int? Day
@@ -99,8 +108,16 @@ namespace Diagnosis.Client.App.Controls.FormParts
         public static readonly DependencyProperty DayProperty =
             DependencyProperty.Register("Day", typeof(int?), typeof(ComboBoxDatePicker),
                 new FrameworkPropertyMetadata(null,
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                    new PropertyChangedCallback(OnDayChanged)
                     ));
+
+        private static void OnDayChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var cdp = (ComboBoxDatePicker)d;
+
+            cdp.SetPickerDate();
+        }
 
         /// <summary>
         /// Глубина годов в списке, с сегодняшнего и ранее. По умолчанию 120.
@@ -139,7 +156,7 @@ namespace Diagnosis.Client.App.Controls.FormParts
         /// <summary>
         /// Минимальный год для выбора.
         /// </summary>
-        int MinYear { get { return DateTime.Now.Year - YearsDepth; } }
+        private int MinYear { get { return DateTime.Now.Year - YearsDepth; } }
 
         public ComboBoxDatePicker()
         {
@@ -178,7 +195,7 @@ namespace Diagnosis.Client.App.Controls.FormParts
 
         private void FillDaysCombo()
         {
-            // комбобокс остается, после DateOffset = null месяц = null, биндинг успевает сработать для дня 
+            // комбобокс остается, после DateOffset = null месяц = null, биндинг успевает сработать для дня
             var hrvm = (DataContext as Diagnosis.ViewModels.Screens.HealthRecordViewModel);
             if (hrvm != null && hrvm.DateOffset == null)
                 return;
@@ -220,12 +237,10 @@ namespace Diagnosis.Client.App.Controls.FormParts
 
         private void comboYears_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
         }
 
         private void comboMonths_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
         }
 
         private void comboDays_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -245,6 +260,24 @@ namespace Diagnosis.Client.App.Controls.FormParts
             // исправляем после потери фокуса, чтобы можно было стереть написанное
             if (Day == null)
                 comboDays.SelectedIndex = 0;
+        }
+
+        private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (picker.SelectedDate.HasValue)
+            {
+                inSelectedDateChanged = true;
+                Year = picker.SelectedDate.Value.Year;
+                Month = picker.SelectedDate.Value.Month;
+                Day = picker.SelectedDate.Value.Day;
+                inSelectedDateChanged = false;
+            }
+        }
+
+        private void SetPickerDate()
+        {
+            if (!inSelectedDateChanged)
+                picker.SelectedDate = DateHelper.NullableDate(Year, Month, Day);
         }
     }
 }
