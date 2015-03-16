@@ -14,13 +14,12 @@ namespace Diagnosis.ViewModels.Autocomplete
     /// <summary>
     /// Создает сущности из тегов, ищет предположения.
     /// </summary>
-    public class Recognizer
+    public class Recognizer : NotifyPropertyChangedBase
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Recognizer));
         private static List<Word> created = new List<Word>();
 
         private readonly ISession session;
-        private readonly bool allowChangeAddQueryToSuggstions;
         private bool _addQueryToSug;
 
         /// <summary>
@@ -46,8 +45,11 @@ namespace Diagnosis.ViewModels.Autocomplete
             get { return _addQueryToSug; }
             set
             {
-                if (CanChangeAddQueryToSuggstions)
+                if (CanChangeAddQueryToSuggstions && _addQueryToSug != value)
+                {
                     _addQueryToSug = value;
+                    OnPropertyChanged(() => AddQueryToSuggestions);
+                }
             }
         }
 

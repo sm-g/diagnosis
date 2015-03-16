@@ -22,13 +22,13 @@
                  UriSource="/Resources/Images/SortAscending.png" />
     <BitmapImage x:Key="groupByImage"
                  UriSource="/Resources/Images/GroupBy.png" />
+    <BitmapImage x:Key="completionModeImage"
+                 UriSource="/Resources/Images/CompletionMode.png" />
 
     <BitmapImage x:Key="cutImage"
                  UriSource="/Resources/Images/Cut_6523.png" />
-
     <BitmapImage x:Key="copyImage"
                  UriSource="/Resources/Images/Copy_6524.png" />
-
     <BitmapImage x:Key="pasteImage"
                  UriSource="/Resources/Images/Paste_6520.png" />
 </ResourceDictionary>

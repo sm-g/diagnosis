@@ -132,7 +132,13 @@
                         <diag:AutoGreyableImage Source="{StaticResource deleteImage}" />
                     </DockPanel>
                 </Button>
-               
+                <Separator />
+                <ToggleButton IsChecked="{Binding AddQueryToSuggestions}"
+                        ToolTip="Переключить режим завершения слов (Ctrl+Alt+ПРОБЕЛ)">
+                    <DockPanel>
+                        <diag:AutoGreyableImage Source="{StaticResource completionModeImage}" />
+                    </DockPanel>
+                </ToggleButton>
                 <!--<Button Command="{Binding AddIcdCommand}"
                         ToolTip="Добавить МКБ">
                     <DockPanel>
