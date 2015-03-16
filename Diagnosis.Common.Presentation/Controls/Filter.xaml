@@ -6,8 +6,9 @@
              xmlns:beh="clr-namespace:Diagnosis.Common.Presentation.Behaviors"
              xmlns:controls="clr-namespace:Diagnosis.Common.Presentation.Controls"
              xmlns:diag="http://schemas.smg.com/diagnosis"
+             xmlns:mahControls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance diag:Filter}"
+             x:Name="filter"
              d:DesignHeight="30"
              d:DesignWidth="300">
     <Grid>
@@ -19,16 +20,27 @@
         <TextBox x:Name="input"
                  GotKeyboardFocus="input_GotKeyboardFocus"
                  beh:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
+                 mahControls:TextBoxHelper.Watermark="{Binding WatermarkText, ElementName=filter}"
                  Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}">
-            <controls:WatermarkService.Watermark>
-                <TextBlock Style="{DynamicResource watermark}"
-                           Text="{Binding WatermarkText, RelativeSource={RelativeSource Self}}" />
-            </controls:WatermarkService.Watermark>
+            <TextBox.Style>
+                <Style TargetType="{x:Type TextBox}"
+                       BasedOn="{StaticResource {x:Type TextBox}}">
+                    <Setter Property="mahControls:TextBoxHelper.ClearTextButton"
+                            Value="True" />
+                    <!--<Style.Triggers>
+                        <Trigger Property="mahControls:TextBoxHelper.HasText"
+                                 Value="False">
+                            <Setter Property="mahControls:TextBoxHelper.ClearTextButton"
+                                    Value="False" />
+                        </Trigger>
+                        <Trigger Property="mahControls:TextBoxHelper.HasText"
+                                 Value="True">
+                            <Setter Property="mahControls:TextBoxHelper.ClearTextButton"
+                                    Value="True" />
+                        </Trigger>
+                    </Style.Triggers>-->
+                </Style>
+            </TextBox.Style>
         </TextBox>
-        <Button Grid.Column="1"
-                Content="×"
-                Height="{Binding ActualHeight, ElementName=input}"
-                Style="{DynamicResource squareButton}"
-                Command="{Binding ClearCommand}" />
     </Grid>
 </UserControl>

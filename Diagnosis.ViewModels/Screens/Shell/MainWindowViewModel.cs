@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Diagnosis.Common;
+using Diagnosis.Models;
+using Diagnosis.ViewModels.Search;
+using EventAggregator;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Xceed.Wpf.AvalonDock.Layout.Serialization;
-using EventAggregator;
-using Diagnosis.Common;
-using Diagnosis.Models;
-using Diagnosis.ViewModels.Search;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -16,7 +16,8 @@ namespace Diagnosis.ViewModels.Screens
         private SearchViewModel searchPanel;
         private bool? searchVisByUser = null;
         private string _sexes;
-        string titlePrefix;
+        private ScreenBaseViewModel _curView;
+        private string titlePrefix;
 
         public MainWindowViewModel(bool demoMode = false)
         {
@@ -32,21 +33,24 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (e.PropertyName == "CurrentView")
                 {
+                    if (CurrentView != null)
+                        CurrentView.PropertyChanged -= CurrentView_PropertyChanged;
+                    CurrentView = switcher.CurrentView;
+
                     MenuBar.Visible = switcher.Screen != Screen.Login;
 
                     var prevScreen = Panes.FirstOrDefault(p => p.ContentId == ScreenBaseViewModel.ScreenContentId);
                     logger.DebugFormat("CurrentView '{0}' -> '{1}'", prevScreen, CurrentView);
 
                     // показываем поиск на первом экране, где он может быть
-                    // searchPanel.IsVisible = CanShowSearch && (searchVisByUser ?? true);                    
+                    // searchPanel.IsVisible = CanShowSearch && (searchVisByUser ?? true);
 
                     Panes.Add(CurrentView);
                     Panes.Remove(prevScreen);
+
                     CurrentView.IsActive = true;
 
-                    Title = titlePrefix + CurrentView.Title;
-
-                    OnPropertyChanged("CurrentView");
+                    CurrentView.PropertyChanged += CurrentView_PropertyChanged;
                 }
             };
 
@@ -87,15 +91,21 @@ namespace Diagnosis.ViewModels.Screens
 
                     this.Send(Event.ChangeFont, doc.Settings.BigFontSize.AsParams(MessageKeys.Boolean));
                 }
-
             };
             this.Subscribe(Event.SettingsSaved, (e) =>
             {
                 var doc = e.GetValue<IUser>(MessageKeys.User) as Doctor;
                 if (doc != null)
                     Sexes = doc.Settings.SexSigns;
-
             });
+        }
+
+        private void CurrentView_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Title")
+            {
+                OnPropertyChanged(() => Title);
+            }
         }
 
         private void ReloadContentOnStartUp(LayoutSerializationCallbackEventArgs args)
@@ -119,7 +129,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
                 else if (cId == ScreenBaseViewModel.ScreenContentId)
                 {
-                    args.Content = CurrentView;
+                    args.Content = switcher.CurrentView;
                 }
 
                 //args.Content = ReloadDocument(args.Model.ContentId);
@@ -127,26 +137,28 @@ namespace Diagnosis.ViewModels.Screens
                     args.Cancel = true;
             }
         }
-
         public ScreenBaseViewModel CurrentView
         {
-            get { return switcher.CurrentView; }
+            get
+            {
+                return _curView;
+            }
+            set
+            {
+                if (_curView != value)
+                {
+                    _curView = value;
+                    OnPropertyChanged(() => CurrentView);
+                    OnPropertyChanged(() => Title);
+                }
+            }
         }
 
-        private string _title;
         public string Title
         {
             get
             {
-                return _title;
-            }
-            set
-            {
-                if (_title != value)
-                {
-                    _title = value;
-                    OnPropertyChanged(() => Title);
-                }
+                return CurrentView == null ? null : titlePrefix + CurrentView.Title;
             }
         }
 

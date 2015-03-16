@@ -99,19 +99,4 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
-
-    <!--  forms  -->
-
-    <Style x:Key="watermark"
-           TargetType="TextBlock">
-        <Setter Property="VerticalAlignment"
-                Value="Center" />
-        <Setter Property="Margin">
-            <Setter.Value>
-                <Thickness Left="5" />
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-
 </ResourceDictionary>
