@@ -105,6 +105,7 @@
                             <ContextMenu>
                                 <!--WordsViewModel-->
                                 <MenuItem Header="Изменить..."
+                                          FontWeight="Bold"
                                           InputGestureText="F2"
                                           Command="{Binding EditCommand}" />
                                 <!--WordsListViewModel-->
