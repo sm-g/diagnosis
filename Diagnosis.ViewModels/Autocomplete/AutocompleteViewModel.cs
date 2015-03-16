@@ -20,6 +20,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private readonly Recognizer recognizer;
         private readonly bool allowSendToSearch;
         private readonly bool allowTagConvertion;
+        private readonly bool allowConfidenceToggle;
         private readonly bool singleTag;
 
         private TagViewModel _selTag;
@@ -32,15 +33,26 @@ namespace Diagnosis.ViewModels.Autocomplete
         private EventAggregator.EventMessageHandler hanlder;
         private bool inDispose;
         private VisibleRelayCommand<TagViewModel> sendToSearch;
+        private VisibleRelayCommand toggleConfidence;
 
+        public AutocompleteViewModel(Recognizer recognizer, OptionsMode mode, IEnumerable<ConfindenceHrItemObject> initItems)
+            : this(recognizer,
+                allowTagConvertion: mode == OptionsMode.HrEditor,
+                allowSendToSearch: mode == OptionsMode.HrEditor,
+                allowConfidenceToggle: mode == OptionsMode.HrEditor,
+                singleTag: mode == OptionsMode.MeasureEditor,
+                initItems: initItems)
+        {
+        }
 
-        public AutocompleteViewModel(Recognizer recognizer, bool allowTagConvertion, bool allowSendToSearch, bool singleTag, IEnumerable<IHrItemObject> initItems)
+        public AutocompleteViewModel(Recognizer recognizer, bool allowTagConvertion, bool allowSendToSearch, bool allowConfidenceToggle, bool singleTag, IEnumerable<ConfindenceHrItemObject> initItems)
         {
             Contract.Requires(recognizer != null);
 
             this.recognizer = recognizer;
             this.allowTagConvertion = allowTagConvertion;
             this.allowSendToSearch = allowSendToSearch;
+            this.allowConfidenceToggle = allowConfidenceToggle;
             this.singleTag = singleTag;
 
 
@@ -83,7 +95,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// Возникает, когда работа с автокомплитом окончена. (Enter второй раз.)
         /// </summary>
-        public event EventHandler InputEnded;
+        public event EventHandler<BoolEventArgs> InputEnded;
 
         /// <summary>
         /// Возникает, когда завершается редактирование тега.
@@ -95,6 +107,15 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// </summary>
         public event EventHandler EntitiesChanged;
 
+        public event EventHandler ConfidencesChanged;
+
+        public enum OptionsMode
+        {
+            HrEditor,
+            MeasureEditor,
+            Search
+        }
+
         public RelayCommand<TagViewModel> EnterCommand
         {
             get
@@ -104,13 +125,22 @@ namespace Diagnosis.ViewModels.Autocomplete
                     (tag) => tag != null);
             }
         }
+        public RelayCommand<TagViewModel> ControlEnterCommand
+        {
+            get
+            {
+                return new RelayCommand<TagViewModel>(
+                    (tag) => CompleteOnEnter(tag, withControl: true),
+                    (tag) => tag != null);
+            }
+        }
 
         public RelayCommand<TagViewModel> InverseEnterCommand
         {
             get
             {
                 return new RelayCommand<TagViewModel>(
-                    (tag) => CompleteOnEnter(tag, true),
+                    (tag) => CompleteOnEnter(tag, inverse: true),
                     (tag) => tag != null && !recognizer.OnlyWords);
             }
         }
@@ -210,8 +240,28 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
+        public VisibleRelayCommand ToggleConfidenceCommand
+        {
+            get
+            {
+                return toggleConfidence ?? (toggleConfidence = new VisibleRelayCommand(() =>
+                {
+                    if (SelectedTag != null)
+                    {
+                        var next = SelectedTag.Confidence == Confidence.Present ? Confidence.Absent : Confidence.Present;
+                        SelectedTags.ForEach(t => t.Confidence = next);
+                        OnConfidencesChanged();
+                    }
+                }, () => WithConfidence)
+                {
+                    IsVisible = WithConfidence
+                });
+            }
+        }
+
         /// <summary>
         /// Показывает предположения для редактируемого тега.
+        /// Затем дополняет ввод выбранным предположением без завершения.
         /// </summary>
         public RelayCommand ShowSuggestionsCommand
         {
@@ -219,6 +269,29 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 return new RelayCommand(() =>
                 {
+                    if (IsPopupOpen)
+                    {
+                        SelectedTag.Query = SelectedSuggestion.Hio.ToString();
+                    }
+                    else
+                    {
+                        MakeSuggestions(SelectedTag);
+                        RefreshPopup();
+                    }
+                }, () => SelectedTag != null && SelectedTag.IsTextBoxFocused);
+            }
+        }
+
+        /// <summary>
+        /// Переключает режим добавления запроса в предположения.
+        /// </summary>
+        public RelayCommand ToggleSuggestionModeCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    recognizer.AddQueryToSuggestions = !recognizer.AddQueryToSuggestions;
                     MakeSuggestions(SelectedTag);
                     RefreshPopup();
                 }, () => SelectedTag != null && SelectedTag.IsTextBoxFocused);
@@ -235,7 +308,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                     if (t != null)
                         entities = recognizer.EntityOf(t).ToEnumerable();
                     else
-                        entities = GetEntitiesOfSelected();
+                        entities = GetCHIOsOfSelectedCompleted().Select(x => x.HIO);
                     this.Send(Event.SendToSearch, entities.AsParams(MessageKeys.HrItemObjects));
                 }, (t) => WithSendToSearch)
                 {
@@ -346,18 +419,17 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public bool WithSendToSearch
         {
-            get
-            {
-                return allowSendToSearch;
-            }
+            get { return allowSendToSearch; }
         }
 
         public bool WithConvert
         {
-            get
-            {
-                return allowTagConvertion;
-            }
+            get { return allowTagConvertion; }
+        }
+
+        public bool WithConfidence
+        {
+            get { return allowConfidenceToggle; }
         }
 
         public bool InDispose
@@ -367,16 +439,21 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// Создает тег.
         /// </summary>
-        /// <param name="сontent">Строка запроса, IHrsItemObject или null для пустого тега.</param>
+        /// <param name="сontent">Строка запроса, ConfindenceHrItemObject или null для пустого тега.</param>
         public TagViewModel CreateTag(object content = null)
         {
             TagViewModel tag;
             var itemObject = content as IHrItemObject;
+            var chio = content as ConfindenceHrItemObject;
             var str = content as string;
 
             if (itemObject != null)
-                // для давления — искать связный тег и добавлять туда сущность
                 tag = new TagViewModel(this, itemObject);
+            else if (chio != null)
+            {
+                tag = new TagViewModel(this, chio.HIO);
+                tag.Confidence = chio.Confindence;
+            }
             else if (str != null)
                 tag = new TagViewModel(this, str);
             else
@@ -416,7 +493,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                         }
                         else
                         {
-                            MakeSuggestions(SelectedTag); // предположения для недописанных, новых
+                            MakeSuggestions(SelectedTag); // предположения для тегов с сигнализацией
                         }
 
                         CanCompleteOnLostFocus = true;
@@ -478,7 +555,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         /// <summary>
         /// Добавляет тег в коллекцию.
-        /// <param name="tagOrContent">Созданный тег, строка запроса, IHrsItemObject или null для пустого тега.</param>
+        /// <param name="tagOrContent">Созданный тег, строка запроса, ConfindenceHrItemObject или null для пустого тега.</param>
         /// </summary>
         public TagViewModel AddTag(object tagOrContent = null, int index = -1, bool isLast = false)
         {
@@ -549,29 +626,45 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         /// <summary>
         /// Возвращает сущности из тегов по порядку.
+        /// Не должен вызываться, если есть редактируемый тег.
         /// </summary>
-        public IEnumerable<IHrItemObject> GetEntities()
+        public IEnumerable<ConfindenceHrItemObject> GetCHIOs()
         {
             Contract.Requires(Tags.All(t => t.State != State.Typing));
 
-            List<IHrItemObject> result = new List<IHrItemObject>();
+            var result = new List<ConfindenceHrItemObject>();
             foreach (var tag in Tags)
             {
                 if (tag.BlankType != BlankType.None)
-                    result.Add(recognizer.EntityOf(tag));
+                    result.Add(new ConfindenceHrItemObject(recognizer.EntityOf(tag), tag.Confidence));
                 else if (tag.State != State.Init)
                     logger.WarnFormat("{0} without entity blank, skip", tag);
             }
 
             return result;
         }
+        /// <summary>
+        /// Возвращает сущности из завершенных тегов по порядку.
+        /// </summary>
+        public IEnumerable<ConfindenceHrItemObject> GetCHIOsOfCompleted()
+        {
+            var completed = Tags.Where(t => t.State == State.Completed);
 
-
-        private List<IHrItemObject> GetEntitiesOfSelected()
+            var hios = completed
+                 .Select(t => new ConfindenceHrItemObject(recognizer.EntityOf(t), t.Confidence))
+                 .ToList();
+            return hios;
+        }
+        /// <summary>
+        /// Возвращает сущности из выделенных завершенных тегов по порядку.
+        /// </summary>
+        /// <returns></returns>
+        private List<ConfindenceHrItemObject> GetCHIOsOfSelectedCompleted()
         {
             var completed = SelectedTags.Where(t => t.State == State.Completed);
+
             var hios = completed
-                 .Select(t => recognizer.EntityOf(t))
+                 .Select(t => new ConfindenceHrItemObject(recognizer.EntityOf(t), t.Confidence))
                  .ToList();
             return hios;
         }
@@ -629,14 +722,14 @@ namespace Diagnosis.ViewModels.Autocomplete
             return converted;
         }
 
-        public void CompleteOnEnter(TagViewModel tag, bool inverse = false)
+        public void CompleteOnEnter(TagViewModel tag, bool inverse = false, bool withControl = false)
         {
             switch (tag.State)
             {
                 case State.Init:
                     if (tag.IsLast)
                     {
-                        OnInputEnded();
+                        OnInputEnded(withControl);
                         return;
                     }
                     else
@@ -656,8 +749,8 @@ namespace Diagnosis.ViewModels.Autocomplete
                         CompleteCommon(tag, SelectedSuggestion, false, false);
                     break;
             }
-            if (SingleTag)
-                OnInputEnded();
+            if (SingleTag || withControl)
+                OnInputEnded(withControl);
             else
                 // переходим к вводу нового слова
                 StartEdit(LastTag);
@@ -678,6 +771,8 @@ namespace Diagnosis.ViewModels.Autocomplete
             RefreshPopup();
             tag.Validate();
 
+            recognizer.AfterCompleteTag(tag);
+
             // добавляем пустое поле
             if (LastTag.State == State.Completed
                 && !SingleTag)
@@ -688,8 +783,12 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         private object MakeSuggestions(TagViewModel tag)
         {
+            Contract.Requires(tag != null);
+
             var tagIndex = Tags.IndexOf(tag);
-            var exclude = Tags.Select((t, i) => i != tagIndex ? t.Blank : null); // все сущности кроме сущности редактируемого тега
+
+            // все сущности кроме сущности редактируемого тега
+            var tagBlanksExceptEditing = Tags.Select((t, i) => i != tagIndex ? t.Blank : null);
 
             var results = recognizer.SearchForSuggesstions(
                 query: tag.Query,
@@ -711,12 +810,12 @@ namespace Diagnosis.ViewModels.Autocomplete
             IsPopupOpen = Suggestions.Count > 0; // not on suggestion.collectionchanged - мигание при очистке
         }
 
-        protected virtual void OnInputEnded()
+        protected virtual void OnInputEnded(bool addHr)
         {
             var h = InputEnded;
             if (h != null)
             {
-                h(this, EventArgs.Empty);
+                h(this, new BoolEventArgs(addHr));
             }
         }
 
@@ -738,7 +837,14 @@ namespace Diagnosis.ViewModels.Autocomplete
                 h(this, EventArgs.Empty);
             }
         }
-
+        protected virtual void OnConfidencesChanged()
+        {
+            var h = ConfidencesChanged;
+            if (h != null)
+            {
+                h(this, EventArgs.Empty);
+            }
+        }
         [ContractInvariantMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
@@ -747,6 +853,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             Contract.Invariant(inDispose || LastTag.IsLast != SingleTag); // единственный тег не IsLast
             Contract.Invariant(Tags.Count(t => t.State == State.Typing) <= 1); // только один тег редактируется
             Contract.Invariant(Tags.Count == 1 || !SingleTag); // единственный тег
+            Contract.Invariant(!(WithConvert && recognizer.OnlyWords)); // конвертировать, когда только слова, бессмысленно
         }
 
         protected override void Dispose(bool disposing)
@@ -804,6 +911,11 @@ namespace Diagnosis.ViewModels.Autocomplete
         System.Windows.Input.ICommand IAutocompleteViewModel.SendToSearchCommand
         {
             get { return SendToSearchCommand; }
+        }
+
+        System.Windows.Input.ICommand IAutocompleteViewModel.ToggleConfidenceCommand
+        {
+            get { return ToggleConfidenceCommand; }
         }
     }
 

@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Models;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
+using NHibernate.Type;
 
 namespace Diagnosis.Data.Mappings
 {
@@ -25,6 +26,7 @@ namespace Diagnosis.Data.Mappings
             {
                 m.Length(255);
             });
+            Property(x => x.Confidence, m => m.Type<EnumStringType<Confidence>>());
             ManyToOne(x => x.Word, m =>
             {
                 m.Column("WordID");

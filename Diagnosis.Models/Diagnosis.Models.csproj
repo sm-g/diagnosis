@@ -152,6 +152,7 @@
     <Compile Include="Entities\Comment.cs" />
     <Compile Include="Entities\Setting.cs" />
     <Compile Include="Entities\UomType.cs" />
+    <Compile Include="Enums\Confidence.cs" />
     <Compile Include="Enums\HealthRecordQueryScope.cs" />
     <Compile Include="Enums\PatientsView.cs" />
     <Compile Include="Enums\HrView.cs" />

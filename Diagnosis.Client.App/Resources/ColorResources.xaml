@@ -8,5 +8,13 @@
     <SolidColorBrush x:Key="searchHighlightBackgroundBrush" Color="Yellow" />
     <SolidColorBrush x:Key="searchHighlightForegroundBrush" Color="Black" />
 
-    <SolidColorBrush x:Key="treeItemSelectedBrush" Color="#FFFF8A16" />
+    <SolidColorBrush x:Key="treeItemSelectedBrush"
+                     Color="#FFFF8A16" />
+    
+    <SolidColorBrush x:Key="newWordBrush"
+                     Color="#FFEFFFD8" />
+    <SolidColorBrush x:Key="forbiddenTagBrush"
+                     Color="#FFFFD8D8" />
+    <SolidColorBrush x:Key="partialMeasureBrush"
+                     Color="#FFFFFDD8" />
 </ResourceDictionary>

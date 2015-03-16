@@ -19,9 +19,13 @@ namespace Diagnosis.ViewModels
         {
             logger.DebugFormat("{0} hios: {1}", action, hios.FlattenString());
         }
+        public static void LogHrItemObjects(this log4net.ILog logger, string action, IEnumerable<ConfindenceHrItemObject> chios)
+        {
+            logger.DebugFormat("{0} hios: {1}", action, chios.FlattenString());
+        }
         public static void LogHrs(this log4net.ILog logger, string action, IEnumerable<HrData.HrInfo> hrs)
         {
-            logger.DebugFormat("{0} hrs with hios: {1}", action, string.Join("\n", hrs.Select((hr, i) => string.Format("{0} {1}", i, hr.Hios.FlattenString()))));
+            logger.DebugFormat("{0} hrs with hios: {1}", action, string.Join("\n", hrs.Select((hr, i) => string.Format("{0} {1}", i, hr.Chios.FlattenString()))));
         }
     }
 }

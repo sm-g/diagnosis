@@ -19,9 +19,9 @@ namespace Diagnosis.ViewModels.Screens
         private static readonly ILog logger = LogManager.GetLogger(typeof(HrEditorViewModel));
 
         private AutocompleteViewModel _autocomplete;
-
         private HealthRecordViewModel _hr;
         private ISession session;
+        private Doctor doctor;
         private bool _focused;
         private IEnumerable<HrCategory> _categories;
         private Recognizer recognizer;
@@ -29,6 +29,9 @@ namespace Diagnosis.ViewModels.Screens
         public HrEditorViewModel(ISession session)
         {
             this.session = session;
+
+            doctor = AuthorityController.CurrentDoctor;
+
         }
 
         [Obsolete("For xaml only.")]
@@ -156,6 +159,23 @@ namespace Diagnosis.ViewModels.Screens
             get { return Autocomplete != null ? Autocomplete.SendToSearchCommand : null; }
         }
 
+        public RelayCommand ToggleSuggestionModeCommand
+        {
+            get { return Autocomplete != null ? Autocomplete.ToggleSuggestionModeCommand : null; }
+        }
+
+        public bool AddQueryToSuggestions
+        {
+            get
+            {
+                return recognizer != null ? recognizer.AddQueryToSuggestions : false;
+            }
+            set
+            {
+                if (recognizer != null)
+                    recognizer.AddQueryToSuggestions = value;
+            }
+        }
 
         public void Cut()
         {
@@ -282,23 +302,48 @@ namespace Diagnosis.ViewModels.Screens
                 Autocomplete.Dispose();
             }
 
-            var initials = HealthRecord.healthRecord.GetOrderedEntities();
-            recognizer = new Recognizer(session) { ShowChildrenFirst = true };
+            var initials = HealthRecord.healthRecord.GetOrderedCHIOs();
+            recognizer = new Recognizer(session)
+            {
+                ShowChildrenFirst = true,
+                AddQueryToSuggestions = doctor.Settings.AddQueryToSuggestions,
+            };
+            // update button state
+            OnPropertyChanged(() => AddQueryToSuggestions);
+            recognizer.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "AddQueryToSuggestions")
+                {
+                    OnPropertyChanged(() => AddQueryToSuggestions);
+                }
+            };
 
             Autocomplete = new AutocompleteViewModel(
                 recognizer,
-                true,
-                true,
-                false,
+                AutocompleteViewModel.OptionsMode.HrEditor,
                 initials);
 
             Autocomplete.EntitiesChanged += (s, e) =>
             {
                 // меняем элементы записи
-                var items = _autocomplete.GetEntities().ToList();
+                var items = _autocomplete.GetCHIOs().ToList();
                 HealthRecord.healthRecord.SetItems(items);
             };
-
+            Autocomplete.ConfidencesChanged += (s, e) =>
+            {
+                // меняем уверенность заверешенных элементов
+                var items = _autocomplete.GetCHIOsOfCompleted().ToList();
+                HealthRecord.healthRecord.SetItems(items);
+            };
+            Autocomplete.InputEnded += (s, e) =>
+            {
+                // завершаем выбранное перед добавлением записи
+                if (e.value)
+                {
+                    var stratEdit = true;
+                    this.Send(Event.AddHr, new object[] { HealthRecord.healthRecord.Holder, stratEdit }.AsParams(MessageKeys.Holder, MessageKeys.Boolean));
+                }
+            };
         }
 
         #endregion AutoComplete
@@ -420,11 +465,16 @@ namespace Diagnosis.ViewModels.Screens
                 session.SetReadOnly(hr, false);
                 session.Evict(hr);
 
+                var addQuery = recognizer.AddQueryToSuggestions;
+
                 Autocomplete.Dispose();
                 _autocomplete = null;
                 recognizer = null; // editor closed, created words persisted
 
                 OnUnloaded(hr);
+
+                doctor.Settings.AddQueryToSuggestions = addQuery;
+                new Saver(session).Save(doctor);
             }
         }
 

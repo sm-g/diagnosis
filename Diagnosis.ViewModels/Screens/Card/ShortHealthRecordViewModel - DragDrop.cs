@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using Diagnosis.ViewModels.DragDrop;
+using Diagnosis.Models;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -69,7 +70,7 @@ namespace Diagnosis.ViewModels.Screens
                     var tags = data.Cast<TagViewModel>();
 
                     var hr = master.healthRecord;
-                    var items = tags.Select(t => t.Entity).ToList();
+                    var items = tags.Select(t => new ConfindenceHrItemObject(t.Entity, t.Confidence)).ToList();
                     hr.AddItems(items);
                 }
             }

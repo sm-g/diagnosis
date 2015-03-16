@@ -10,11 +10,11 @@ namespace Tests
     public class AutocompleteTest : InMemoryDatabaseTest
     {
         private Recognizer r;
-        private AutocompleteViewModel a;
+        private new AutocompleteViewModel a;
         private string q;
         private string qFull;
         private Word word;
-        private IcdDisease icd;
+        private IcdDisease icd1;
         private static string notExistQ = "qwe";
 
         public TagViewModel First { get { return a.Tags.First(); } }
@@ -26,10 +26,10 @@ namespace Tests
         [TestInitialize]
         public void AutocompleteTestInit()
         {
-            r = new Recognizer(session, true);
-            a = new AutocompleteViewModel(r, true, true, false, null);
+            r = new Recognizer(session, clearCreated: true);
+            a = new AutocompleteViewModel(r, true, true, true, false, null);
             word = session.Get<Word>(IntToGuid<Word>(1));
-            icd = session.Get<IcdDisease>(1);
+            icd1 = session.Get<IcdDisease>(1);
             q = word.Title.Substring(0, word.Title.Length - 1);
             qFull = word.Title;
 
@@ -98,7 +98,7 @@ namespace Tests
             a.InverseEnterCommand.Execute(a.SelectedTag);
 
             var r = new Recognizer(session);
-            var other = new AutocompleteViewModel(r, true, true, false, null);
+            var other = new AutocompleteViewModel(r, true, true, true, false, null);
             other.StartEdit();
             other.SelectedTag.Query = notExistQ;
 
@@ -143,9 +143,9 @@ namespace Tests
             Assert.IsTrue(First.BlankType == BlankType.Word);
             Assert.AreEqual(word, First.Blank);
 
-            var entities = a.GetEntities();
+            var entities = a.GetCHIOs();
 
-            Assert.AreEqual(word, entities.Single());
+            Assert.AreEqual(word, entities.Single().HIO);
             Assert.AreEqual(word, FirstItem);
         }
 
@@ -156,10 +156,10 @@ namespace Tests
             a.InverseEnterCommand.Execute(a.SelectedTag);
 
             Assert.IsTrue(First.State == State.Completed);
-            Assert.AreEqual(q, First.Blank);
-            Assert.IsTrue(First.BlankType == BlankType.Query);
+            Assert.AreEqual(q, First.Blank.ToString());
+            Assert.IsTrue(First.BlankType == BlankType.Comment);
 
-            var entities = a.GetEntities();
+            var entities = a.GetCHIOs();
 
             Assert.IsTrue(FirstItem is Comment);
             Assert.IsTrue((FirstItem as Comment).String == q);
@@ -172,10 +172,10 @@ namespace Tests
             a.EnterCommand.Execute(a.SelectedTag);
 
             Assert.IsTrue(First.State == State.Completed);
-            Assert.AreEqual(notExistQ, First.Blank);
-            Assert.IsTrue(First.BlankType == BlankType.Query);
+            Assert.AreEqual(notExistQ, First.Blank.ToString());
+            Assert.IsTrue(First.BlankType == BlankType.Comment);
 
-            var entities = a.GetEntities();
+            var entities = a.GetCHIOs();
 
             Assert.IsTrue(FirstItem is Comment);
             Assert.IsTrue((FirstItem as Comment).String == notExistQ);
@@ -195,7 +195,7 @@ namespace Tests
             Assert.IsTrue(newW.Title == notExistQ);
             Assert.IsTrue(newW.IsTransient);
 
-            var entities = a.GetEntities();
+            var entities = a.GetCHIOs();
 
             Assert.AreEqual(newW, FirstItem);
         }
@@ -223,7 +223,7 @@ namespace Tests
         [TestMethod]
         public void AddTagWhenSingleTag()
         {
-            var a = new AutocompleteViewModel(r, true, true, true, null);
+            var a = new AutocompleteViewModel(r, true, true, true, true, null);
             Assert.IsTrue(a.Tags.Count == 1);
 
             a.AddTag(word);
@@ -287,14 +287,14 @@ namespace Tests
         [TestMethod]
         public void CopyPasteIcd()
         {
-            a.AddTag(icd);
+            a.AddTag(icd1);
             a.SelectedTag = a.Tags.First();
             a.Copy();
 
             a.Paste();
 
             Assert.AreEqual(3, a.Tags.Count);
-            Assert.AreEqual(icd, a.Tags[1].Blank);
+            Assert.AreEqual(icd1, a.Tags[1].Blank);
         }
 
         [TestMethod]
@@ -305,7 +305,7 @@ namespace Tests
             a.Copy();
 
             var r2 = new Recognizer(session);
-            var a2 = new AutocompleteViewModel(r2, true, true, false, null);
+            var a2 = new AutocompleteViewModel(r2, true, true, true, false, null);
             a2.Paste();
 
             Assert.AreEqual(word, a2.Tags[0].Blank);
@@ -320,7 +320,7 @@ namespace Tests
             a.Copy();
 
             var r2 = new Recognizer(session);
-            var a2 = new AutocompleteViewModel(r2, true, true, false, null);
+            var a2 = new AutocompleteViewModel(r2, true, true, true, false, null);
 
             new Saver(session).Save(new[] { w });
             a2.Paste();

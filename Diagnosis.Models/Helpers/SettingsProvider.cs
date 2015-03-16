@@ -15,6 +15,7 @@ namespace Diagnosis.Models
         private static string PatientsListSortingSetting = "PatientsListSorting";
         private static string PatientsListSortingDirectionSetting = "PatientsListSortingDirection";
         private static string PatientsListVisibleColumnsSetting = "PatientsListVisibleColumns";
+        private static string AddQueryToSuggestionsSetting = "AddQueryToSuggestions";
 
         public SettingsProvider(Doctor doc)
         {
@@ -24,7 +25,7 @@ namespace Diagnosis.Models
         public bool IcdTopLevelOnly
         {
             get
-            {
+            {                
                 bool res = false;
                 bool.TryParse(Get(IcdTopLevelOnlySetting), out res);
                 return res;
@@ -77,6 +78,17 @@ namespace Diagnosis.Models
                 return res;
             }
             set { Set(FontSizesSetting, value.ToString()); }
+        }
+
+        public bool AddQueryToSuggestions
+        {
+            get
+            {
+                bool res = false;
+                bool.TryParse(Get(AddQueryToSuggestionsSetting), out res);
+                return res;
+            }
+            set { Set(AddQueryToSuggestionsSetting, value.ToString()); }
         }
 
         private string Get(string setting)

@@ -42,8 +42,10 @@ namespace Diagnosis.ViewModels.Screens
         {
             ContentId = ToolContentId;
 
-            Autocomplete = new AutocompleteViewModel(new Recognizer(Session) { OnlyWords = true, AddNotPersistedToSuggestions = false },
-                false, false, false, null);
+            Autocomplete = new AutocompleteViewModel(
+                new Recognizer(Session) { OnlyWords = true, AddNotPersistedToSuggestions = false },
+                AutocompleteViewModel.OptionsMode.Search,
+                null);
 
             ControlsVisible = true;
             AllWords = true;
@@ -417,8 +419,8 @@ namespace Diagnosis.ViewModels.Screens
             options.AllWords = AllWords;
             options.QueryScope = QueryScope;
 
-            var entities = Autocomplete.GetEntities().ToList();
-            options.Words = entities.Where(x => x is Word).Cast<Word>().ToList();
+            var entities = Autocomplete.GetCHIOs().ToList();
+            options.Words = entities.Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
             options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
 
             Options = options;

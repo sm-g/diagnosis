@@ -17,13 +17,12 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance diag:AutocompleteViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="300"
-             d:DesignWidth="300">    
+             d:DesignWidth="300">
     <UserControl.InputBindings>
         <KeyBinding Key="F2"
                     Command="{Binding EditCommand}" />
-        <KeyBinding Key="Space"
-                    Modifiers="Control"
-                    Command="{Binding ShowSuggestionsCommand}" />
+        <KeyBinding Key="F8"
+                    Command="{Binding ToggleConfidenceCommand}" />
     </UserControl.InputBindings>
     <UserControl.Resources>
         <InputBindingCollection x:Shared="False"
@@ -41,8 +40,7 @@
             <KeyBinding Key="Enter"
                         Command="{Binding DataContext.EnterCommand,ElementName=suggestions}"
                         CommandParameter="{Binding DataContext.EditingTag,ElementName=suggestions}" />
-            <KeyBinding Key="Enter"
-                        Modifiers="Shift"
+            <KeyBinding Gesture="Shift+Enter"
                         Command="{Binding DataContext.InverseEnterCommand,ElementName=suggestions}"
                         CommandParameter="{Binding DataContext.EditingTag,ElementName=suggestions}" />
             <MouseBinding MouseAction="LeftDoubleClick"
@@ -88,10 +86,16 @@
                 <KeyBinding Key="Enter"
                             Command="{Binding EnterCommand}"
                             CommandParameter="{Binding EditingTag}" />
-                <KeyBinding Key="Enter"
-                            Modifiers="Shift"
+                <KeyBinding Gesture="Shift+Enter"
                             Command="{Binding InverseEnterCommand}"
                             CommandParameter="{Binding EditingTag}" />
+                <KeyBinding Gesture="Control+Enter"
+                            Command="{Binding ControlEnterCommand}"
+                            CommandParameter="{Binding EditingTag}" />
+                <KeyBinding Gesture="Control+Space"
+                            Command="{Binding ShowSuggestionsCommand}" />
+                <KeyBinding Gesture="Control+Alt+Space"
+                            Command="{Binding ToggleSuggestionModeCommand}" />
             </ListBox.InputBindings>
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}"
@@ -110,7 +114,7 @@
                             Value="White" />
                     <Setter Property="SnapsToDevicePixels"
                             Value="True" />
-                    
+
                     <Setter Property="IsSelected"
                             Value="{Binding IsSelected, Mode=TwoWay}" />
                     <Setter Property="diag:FocusExtension.Direct"
@@ -124,7 +128,7 @@
                     <Setter Property="ContextMenu">
                         <Setter.Value>
                             <ContextMenu>
-                                <!-- Autocomplete, для выделенных -->
+                                <!-- AutocompleteViewModel, для всех выделенных -->
                                 <MenuItem Header="Редактировать"
                                           InputGestureText="F2"
                                           Command="{Binding PlacementTarget.Tag.EditCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
@@ -133,33 +137,20 @@
                                           Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                 <MenuItem Header="Искать"
                                           Style="{StaticResource searchMenuItem}"
+                                          Visibility="{Binding PlacementTarget.Tag.SendToSearchCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                           Command="{Binding PlacementTarget.Tag.SendToSearchCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                                <!--<MenuItem Command="{Binding ConvertCommand}">
-                                    <MenuItem.Header>
-                                        <TextBlock>
-                                <Run>
-                                    <Run.Style>
-                                        <Style TargetType="Run">
-                                            <Setter Property="Text"
-                                                        Value="Создать слово" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding BlankType}"
-                                                             Value="{x:Static auto:BlankType.Word}">
-                                                    <Setter Property="Text"
-                                                                Value="Убрать слово" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Run.Style>
-                                </Run> «<Run Text="{Binding Query, TargetNullValue=' — '}" />»
-                                        </TextBlock>
-                                    </MenuItem.Header>
-                                </MenuItem>-->
+                                <MenuItem Header="Изменить уверенность"
+                                          InputGestureText="F8"
+                                          Visibility="{Binding PlacementTarget.Tag.ToggleConfidenceCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                          Command="{Binding PlacementTarget.Tag.ToggleConfidenceCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+
                                 <!-- TagViewModel -->
-                                <Separator />
+                                <Separator Visibility="{Binding AddLeftCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                 <MenuItem Header="Добавить слева"
+                                          Visibility="{Binding AddLeftCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                           Command="{Binding AddLeftCommand}" />
                                 <MenuItem Header="Добавить справа"
+                                          Visibility="{Binding AddRightCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                           Command="{Binding AddRightCommand}" />
                                 <Separator />
                                 <!-- для выделенных -->
@@ -169,7 +160,7 @@
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>
-                    
+
                     <Style.Triggers>
                         <Trigger Property="IsSelected"
                                  Value="True">
@@ -230,12 +221,31 @@
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <!--<TextBlock Visibility="{Binding IsAlter, Converter={StaticResource BooleanToVisibilityConverter}}" Text="НЕ "/>-->
+                        <DockPanel LastChildFill="True">
+                            <DockPanel.Style>
+                                <Style TargetType="DockPanel">
+                                    <Setter Property="Background"
+                                            Value="Transparent" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsNew}"
+                                                     Value="True">
+                                            <Setter Property="ToolTip"
+                                                    Value="{Binding NewWordToolTip, Source={StaticResource Resources}}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DockPanel.Style>
+                            <!--<TextBlock Visibility="{Binding IsAlter, Converter={StaticResource BooleanToVisibilityConverter}}" Text="НЕ " />-->
 
                             <TextBlock Text="{Binding}"
                                        FontSize="{DynamicResource ContentFontSize}" />
-                        </StackPanel>
+                            <TextBlock DockPanel.Dock="Right"
+                                       Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                       Text="★" />
+                            <Separator MinWidth="30"
+                                       Height="0"
+                                       Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        </DockPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

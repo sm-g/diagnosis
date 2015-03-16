@@ -76,9 +76,12 @@ namespace Diagnosis.ViewModels.Autocomplete
         private bool _selected;
         private bool _draggable;
         private Signalizations? _signal;
-        private bool _canToIcd;
+        private Confidence _confidence;
         private VisibleRelayCommand sendToSearch;
         private VisibleRelayCommand<BlankType> convertTo;
+        private VisibleRelayCommand tooggleConfid;
+        private VisibleRelayCommand addLeft;
+        private VisibleRelayCommand addRight;
 
         /// <summary>
         /// Создает пустой тег.
@@ -90,7 +93,6 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             this.autocomplete = parent;
             Reset();
-            CanConvertToIcd = autocomplete.WithConvert;
         }
 
         /// <summary>
@@ -103,7 +105,6 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             this.autocomplete = parent;
             Query = query;
-            CanConvertToIcd = autocomplete.WithConvert;
         }
 
 
@@ -120,13 +121,11 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             Blank = item;
             Entity = item;
-            CanConvertToIcd = autocomplete.WithConvert;
         }
 
 
         public event EventHandler Deleted;
         public event EventHandler<BlankTypeEventArgs> Converting;
-
 
         /// <summary>
         /// Текстовое представление.
@@ -176,6 +175,22 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// Копируется.
         /// </summary>
         public IHrItemObject Entity { get; internal set; }
+
+        public Confidence Confidence
+        {
+            get
+            {
+                return _confidence;
+            }
+            set
+            {
+                if (_confidence != value)
+                {
+                    _confidence = value;
+                    OnPropertyChanged(() => Confidence);
+                }
+            }
+        }
 
         /// <summary>
         /// Заготовка, из которой получаются сущности.
@@ -284,40 +299,45 @@ namespace Diagnosis.ViewModels.Autocomplete
                 });
             }
         }
-        public bool CanConvertToIcd
+        public VisibleRelayCommand ToggleConfidenceCommand
         {
             get
             {
-                return _canToIcd;
-            }
-            set
-            {
-                if (_canToIcd != value)
+                return tooggleConfid ?? (tooggleConfid = new VisibleRelayCommand(() =>
                 {
-                    _canToIcd = value;
-                    OnPropertyChanged(() => CanConvertToIcd);
-                }
+                    autocomplete.ToggleConfidenceCommand.Execute(null);
+                },
+                () => autocomplete.WithConfidence)
+                {
+                    IsVisible = autocomplete.WithConfidence
+                });
             }
         }
 
-        public RelayCommand AddLeftCommand
+        public VisibleRelayCommand AddLeftCommand
         {
             get
             {
-                return new RelayCommand(() =>
+                return addLeft ?? (addLeft = new VisibleRelayCommand(() =>
                 {
                     autocomplete.AddAndEditTag(this, true);
-                }, () => !autocomplete.SingleTag);
+                }, () => !autocomplete.SingleTag)
+                {
+                    IsVisible = !autocomplete.SingleTag
+                });
             }
         }
-        public RelayCommand AddRightCommand
+        public VisibleRelayCommand AddRightCommand
         {
             get
             {
-                return new RelayCommand(() =>
+                return addRight ?? (addRight = new VisibleRelayCommand(() =>
                 {
                     autocomplete.AddAndEditTag(this, false);
-                }, () => !IsLast && !autocomplete.SingleTag);
+                }, () => !IsLast && !autocomplete.SingleTag)
+                {
+                    IsVisible = !autocomplete.SingleTag // все равно показываем пункт меню, если иногда можно
+                });
             }
         }
 
@@ -576,6 +596,8 @@ namespace Diagnosis.ViewModels.Autocomplete
                 || Signalization == null || Signalization == Signalizations.Forbidden); // завершенный тег → есть бланк (тег завершается после смены бланка) в поиске бланк мб пустой
             Contract.Invariant(State != State.Init || (BlankType == BlankType.None && Entity == null)); // в начальном состоянии → нет бланка и сущностей
             // при редактировании нет сущностей
+
+            Contract.Invariant(BlankType != BlankType.Query); // заготовка всегда сущность, если есть
         }
 
     }
@@ -611,10 +633,10 @@ namespace Diagnosis.ViewModels.Autocomplete
     {
         public static readonly DataFormat DataFormat = DataFormats.GetDataFormat("tag");
 
-        IList<IHrItemObject> itemobjects;
-        public IList<IHrItemObject> ItemObjects { get { return itemobjects; } }
+        IList<ConfindenceHrItemObject> itemobjects;
+        public IList<ConfindenceHrItemObject> ItemObjects { get { return itemobjects; } }
 
-        public TagData(IList<IHrItemObject> itemobjects)
+        public TagData(IList<ConfindenceHrItemObject> itemobjects)
         {
             this.itemobjects = itemobjects;
         }

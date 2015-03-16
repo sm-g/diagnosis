@@ -132,6 +132,16 @@ namespace Diagnosis.Client.App.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap CompletionMode {
+            get {
+                object obj = ResourceManager.GetObject("CompletionMode", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         public static System.Drawing.Icon D_icon {
@@ -222,6 +232,15 @@ namespace Diagnosis.Client.App.Properties {
         public static string HrCategory {
             get {
                 return ResourceManager.GetString("HrCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Новое ключевое слово.
+        /// </summary>
+        public static string NewWordToolTip {
+            get {
+                return ResourceManager.GetString("NewWordToolTip", resourceCulture);
             }
         }
         

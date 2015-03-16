@@ -340,7 +340,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 HrList = new HrListViewModel(holder, (hr, hrInfo) =>
                 {
-                    hrInfo.Hios.Sync(Session, (w) => HrEditor.SyncTransientWord(w));
+                    hrInfo.Chios.Sync(Session, (w) => HrEditor.SyncTransientWord(w));
 
                     if (hrInfo.CategoryId != null)
                     {
@@ -350,13 +350,13 @@ namespace Diagnosis.ViewModels.Screens
                     hr.FromMonth = hrInfo.FromMonth;
                     hr.FromDay = hrInfo.FromDay;
 
-                    // вставляем к пацеинту без возраста
+                    // вставляем к пациенту без возраста
                     var unit = hrInfo.Unit;
                     if (hr.GetPatient().BirthYear == null && hrInfo.Unit == HealthRecordUnit.ByAge)
                         unit = HealthRecordUnit.NotSet;
 
                     hr.Unit = unit;
-                    hr.SetItems(hrInfo.Hios);
+                    hr.SetItems(hrInfo.Chios);
                 }, (hios) =>
                 {
                     hios.Sync(Session, (w) => HrEditor.SyncTransientWord(w));
@@ -441,6 +441,9 @@ namespace Diagnosis.ViewModels.Screens
 
         private HealthRecord AddHr(IHrsHolder holder, bool fromCommand = false)
         {
+            Contract.Requires(holder != null);
+            Contract.Ensures(Contract.Result<HealthRecord>().IsEmpty());
+
             if (HrList.holder != holder)
                 Open(holder); // open holder list first
 

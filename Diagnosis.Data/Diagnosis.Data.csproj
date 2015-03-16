@@ -204,6 +204,7 @@
     <Compile Include="Sync\Syncer.cs" />
     <Compile Include="Sync\Scopes.cs" />
     <Compile Include="Versions\Migrations\09 AddHolderHrUpdatedAt.cs" />
+    <Compile Include="Versions\Migrations\13 AddHrItemConfidence.cs" />
     <Compile Include="Versions\Migrations\13 AlterUomAbbrLength.cs" />
     <Compile Include="Versions\Migrations\11 AlterUomFactor.cs" />
     <Compile Include="Versions\Migrations\10 AddUomType.cs" />

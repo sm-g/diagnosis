@@ -31,7 +31,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public void Copy()
         {
-            var hios = GetEntitiesOfSelected();
+            var hios = GetCHIOsOfSelectedCompleted();
             var data = new TagData(hios);
 
             var strings = string.Join(", ", hios);
