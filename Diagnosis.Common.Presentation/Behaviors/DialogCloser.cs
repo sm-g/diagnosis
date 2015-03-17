@@ -22,11 +22,22 @@ namespace Diagnosis.Common.Presentation.Behaviors
         {
             var window = d as Window;
             if (window != null)
+            {
                 window.DialogResult = e.NewValue as bool?;
+                return;
+            }
+            var chwindow = d as Xceed.Wpf.Toolkit.ChildWindow;
+            if (chwindow != null)
+            {
+                chwindow.DialogResult = e.NewValue as bool?;
+                return;
+            }
         }
-        public static void SetDialogResult(Window target, bool? value)
+        public static void SetDialogResult(DependencyObject target, bool? value)
         {
             target.SetValue(DialogResultProperty, value);
         }
+
+
     }
 }

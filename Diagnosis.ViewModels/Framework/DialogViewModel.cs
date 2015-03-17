@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Screens;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +11,16 @@ namespace Diagnosis.ViewModels
 {
     public class DialogViewModel : SessionVMBase, IDialogViewModel
     {
+        public static Type[] ChildWindowModalDialogs = new Type[] {
+                typeof(AppointmentEditorViewModel),
+                typeof(CourseEditorViewModel),
+                typeof(AdminSettingsViewModel),
+                typeof(SettingsViewModel),
+                typeof(MeasureEditorViewModel),
+                typeof(DoctorEditorViewModel),
+                typeof(WordEditorViewModel),
+        };
+
         private ICommand _okCommand;
         private ICommand _applyCommand;
         private ICommand _cancelCommand;

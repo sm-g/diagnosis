@@ -7,6 +7,7 @@
              xmlns:diag="http://schemas.smg.com/diagnosis"
              diag:HelpProvider.Topic="{Binding HelpTopic}"
              mc:Ignorable="d"
+             Focusable="True"
              d:DesignHeight="300"
              d:DesignWidth="300">
     <UserControl.Resources>
@@ -17,7 +18,7 @@
             <editors:AppEditor diag:FocusBehavior.FocusFirst="True" />
         </DataTemplate>
         <DataTemplate DataType="{x:Type diag:MeasureEditorViewModel}">
-            <editors:MeasureEditor diag:FocusBehavior.FocusFirst="True" />
+            <editors:MeasureEditor />
         </DataTemplate>
         <DataTemplate DataType="{x:Type diag:SettingsViewModel}">
             <editors:DoctorSettings diag:FocusBehavior.FocusFirst="True" />
@@ -33,7 +34,7 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />

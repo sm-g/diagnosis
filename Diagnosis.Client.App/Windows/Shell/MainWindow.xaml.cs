@@ -1,6 +1,7 @@
 ﻿// using AvalonDock.Layout.Serialization;
 using Diagnosis.Client.App.Behaviors;
 using Diagnosis.Common;
+using Diagnosis.Common.Presentation.Controls;
 using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.ViewModels.Screens;
@@ -14,16 +15,16 @@ using Xceed.Wpf.AvalonDock.Controls;
 using Xceed.Wpf.AvalonDock.Layout;
 using System.Collections.Generic;
 using System.Windows.Controls;
-using MahApps.Metro.Controls;
 using System.Threading;
 using System;
+using Xceed.Wpf.Toolkit;
 
 namespace Diagnosis.Client.App.Windows.Shell
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class MainWindow : MahApps.Metro.Controls.MetroWindow
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(MainWindow));
         private HelpViewModel help;
@@ -42,6 +43,7 @@ namespace Diagnosis.Client.App.Windows.Shell
             this.Subscribe(Event.OpenDialog, (e) =>
             {
                 var dialogVM = e.GetValue<IDialogViewModel>(MessageKeys.Dialog);
+
                 if (dialogVM is PatientEditorViewModel)
                 {
                     ShowDialog(dialogVM, new PatientEditorWindow());
@@ -50,10 +52,11 @@ namespace Diagnosis.Client.App.Windows.Shell
                 {
                     ShowDialog(dialogVM, new IcdSelectorWindow());
                 }
-                else if (dialogVM is MeasureEditorViewModel)
+                else if (!DialogViewModel.ChildWindowModalDialogs.Contains(dialogVM.GetType()))
                 {
                     ShowDialog(dialogVM, new EditorWindow());
                 }
+
             });
 
             this.Subscribe(Event.ShowHelp, (e) =>
@@ -110,7 +113,7 @@ namespace Diagnosis.Client.App.Windows.Shell
 #if !DEBUG
                 new Thread(new ThreadStart(delegate
                 {
-                    MessageBox.Show(
+                    System.Windows.MessageBox.Show(
                         "Проверьте строку подключения в файле '{0}'".FormatStr(Constants.ClientConfigFilePath),
                         "Демонстрационный режим",
                         MessageBoxButton.OK,
@@ -125,6 +128,42 @@ namespace Diagnosis.Client.App.Windows.Shell
                 if (pane != null)
                 {
                     logger.DebugFormat("AD active = {0} ", pane);
+                }
+            };
+
+            childWindow.Closing += (s, e1) =>
+            {
+                var vm = childWindow.DataContext as IDialogViewModel;
+                if (vm != null && vm.DialogResult == null)
+                {
+                    vm.CancelCommand.Execute(null);
+                }
+            };
+            childWindow.DataContextChanged += (s, e) =>
+            {
+                childWindow.WindowState = childWindow.DataContext != null ? Xceed.Wpf.Toolkit.WindowState.Open : Xceed.Wpf.Toolkit.WindowState.Closed;
+            };
+            editorCommon.IsVisibleChanged += (s, e) =>
+            {
+                if (editorCommon.IsVisible)
+                {
+                    // manual size
+                    //var editor = editorCommon.FindChild<UserControl>();
+                    //double width = childWindow.ActualWidth;
+                    //if (editor != null)
+                    //    width = editor.Width;
+                    //if (Width == 0)
+                    //{
+                    //    width = childWindow.ActualWidth;
+                    //}
+                    //childWindow.Left = (this.ActualWidth - childWindow.ActualWidth) / 2;
+                    //childWindow.Top = (this.ActualHeight - childWindow.ActualHeight) / 2;
+
+                    if (childWindow.DataContext != null)
+                    {
+                        Keyboard.Focus(editorCommon);
+                    }
+
                 }
             };
         }
@@ -217,7 +256,7 @@ namespace Diagnosis.Client.App.Windows.Shell
                                           .GetName()
                                           .Version
                                           .ToString();
-            MessageBox.Show(version, "Версия", MessageBoxButton.OK);
+            System.Windows.MessageBox.Show(version, "Версия", MessageBoxButton.OK);
         }
     }
 }

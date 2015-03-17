@@ -1,9 +1,11 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.ViewModels.Search;
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using Xceed.Wpf.AvalonDock.Layout.Serialization;
 
@@ -17,6 +19,7 @@ namespace Diagnosis.ViewModels.Screens
         private bool? searchVisByUser = null;
         private string _sexes;
         private ScreenBaseViewModel _curView;
+        private IDialogViewModel _modalDialog;
         private string titlePrefix;
 
         public MainWindowViewModel(bool demoMode = false)
@@ -98,45 +101,33 @@ namespace Diagnosis.ViewModels.Screens
                 if (doc != null)
                     Sexes = doc.Settings.SexSigns;
             });
-        }
 
-        private void CurrentView_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "Title")
+            this.Subscribe(Event.OpenDialog, (e) =>
             {
-                OnPropertyChanged(() => Title);
-            }
-        }
-
-        private void ReloadContentOnStartUp(LayoutSerializationCallbackEventArgs args)
-        {
-            string cId = args.Model.ContentId;
-            if (string.IsNullOrWhiteSpace(cId) == true)
-            {
-                args.Cancel = true;
-                return;
-            }
-
-            var pane = Panes.FirstOrDefault(p => p.ContentId == cId);
-
-            if (pane != null)
-                args.Content = pane;
-            else
-            {
-                if (cId == SearchViewModel.ToolContentId)
+                var dialogVM = e.GetValue<IDialogViewModel>(MessageKeys.Dialog);
+                if (DialogViewModel.ChildWindowModalDialogs.Contains(dialogVM.GetType()))
                 {
-                    args.Content = searchPanel;
+                    ShowDialog(dialogVM);
                 }
-                else if (cId == ScreenBaseViewModel.ScreenContentId)
-                {
-                    args.Content = switcher.CurrentView;
-                }
+            });
+        }
 
-                //args.Content = ReloadDocument(args.Model.ContentId);
-                if (args.Content == null)
-                    args.Cancel = true;
+        public IDialogViewModel Modal
+        {
+            get
+            {
+                return _modalDialog;
+            }
+            set
+            {
+                if (_modalDialog != value)
+                {
+                    _modalDialog = value;
+                    OnPropertyChanged(() => Modal);
+                }
             }
         }
+
         public ScreenBaseViewModel CurrentView
         {
             get
@@ -222,6 +213,61 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return (switcher.Screen != Screen.Login) &&
                       (switcher.Screen != Screen.Doctors);
+            }
+        }
+
+        private void ShowDialog(IDialogViewModel vm)
+        {
+            Contract.Requires(vm != null);
+            vm.PropertyChanged += vm_PropertyChanged;
+            Modal = vm;
+        }
+
+        private void vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            var dialog = sender as IDialogViewModel;
+            if (e.PropertyName == "DialogResult")
+            {
+                Contract.Assert(dialog.DialogResult.HasValue);
+                dialog.PropertyChanged -= vm_PropertyChanged;
+                Modal = null;
+            }
+        }
+        private void CurrentView_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Title")
+            {
+                OnPropertyChanged(() => Title);
+            }
+        }
+
+        private void ReloadContentOnStartUp(LayoutSerializationCallbackEventArgs args)
+        {
+            string cId = args.Model.ContentId;
+            if (string.IsNullOrWhiteSpace(cId) == true)
+            {
+                args.Cancel = true;
+                return;
+            }
+
+            var pane = Panes.FirstOrDefault(p => p.ContentId == cId);
+
+            if (pane != null)
+                args.Content = pane;
+            else
+            {
+                if (cId == SearchViewModel.ToolContentId)
+                {
+                    args.Content = searchPanel;
+                }
+                else if (cId == ScreenBaseViewModel.ScreenContentId)
+                {
+                    args.Content = switcher.CurrentView;
+                }
+
+                //args.Content = ReloadDocument(args.Model.ContentId);
+                if (args.Content == null)
+                    args.Cancel = true;
             }
         }
     }

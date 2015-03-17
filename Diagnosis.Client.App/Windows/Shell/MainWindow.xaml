@@ -7,6 +7,7 @@
                      xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
                      xmlns:beh="clr-namespace:Diagnosis.Client.App.Behaviors"
                      xmlns:controls="clr-namespace:Diagnosis.Client.App.Controls"
+                     xmlns:editors="clr-namespace:Diagnosis.Client.App.Windows.Editors"
                      xmlns:diag="http://schemas.smg.com/diagnosis"
                      xmlns:screen="clr-namespace:Diagnosis.Client.App.Screens"
                      xmlns:shell="clr-namespace:Diagnosis.Client.App.Windows.Shell"
@@ -62,6 +63,8 @@
             <DataTemplate DataType="{x:Type diag:SearchViewModel}">
                 <screen:Search />
             </DataTemplate>
+
+
         </ResourceDictionary>
     </Window.Resources>
 
@@ -314,6 +317,18 @@
         <shell:MenuBar DataContext="{Binding MenuBar}"
                        Visibility="{Binding Visible, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
+        <Border Grid.Row="1"
+                x:Name="childWrap"
+                DataContext="{Binding Modal, NotifyOnTargetUpdated=True}">
+            <xctk:ChildWindow x:Name="childWindow"
+                              Caption="{Binding Title}"
+                              diag:DialogCloser.DialogResult="{Binding DialogResult}"
+                              IsModal="True"  
+                              WindowStartupLocation="Center">
+                <editors:EditorCommon x:Name="editorCommon"/>
+            </xctk:ChildWindow>
+        </Border>
+        
         <ItemsControl DataContext="{Binding OverlayService}"
                       ItemsSource="{Binding Overlays}"
                       HorizontalAlignment="Right"

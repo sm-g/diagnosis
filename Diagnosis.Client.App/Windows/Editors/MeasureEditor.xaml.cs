@@ -20,7 +20,11 @@ namespace Diagnosis.Client.App.Windows.Editors
             };
             Unloaded += (s, e) =>
             {
-                (DataContext as MeasureEditorViewModel).Autocomplete.InputEnded -= Autocomplete_InputEnded;
+                var vm = DataContext as MeasureEditorViewModel;
+                if (vm != null)
+                {
+                    vm.Autocomplete.InputEnded -= Autocomplete_InputEnded;
+                }
             };
         }
 
