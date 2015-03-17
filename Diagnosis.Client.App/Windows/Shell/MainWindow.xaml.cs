@@ -46,37 +46,13 @@ namespace Diagnosis.Client.App.Windows.Shell
                 {
                     ShowDialog(dialogVM, new PatientEditorWindow());
                 }
-                else if (dialogVM is CourseEditorViewModel)
-                {
-                    ShowDialog(dialogVM, new CourseEditorWindow());
-                }
-                else if (dialogVM is AppointmentEditorViewModel)
-                {
-                    ShowDialog(dialogVM, new AppointmentEditorWindow());
-                }
-                else if (dialogVM is SettingsViewModel)
-                {
-                    ShowDialog(dialogVM, new SettingsWindow());
-                }
-                else if (dialogVM is AdminSettingsViewModel)
-                {
-                    ShowDialog(dialogVM, new AdminSettingsWindow());
-                }
-                else if (dialogVM is WordEditorViewModel)
-                {
-                    ShowDialog(dialogVM, new WordEditorWindow());
-                }
-                else if (dialogVM is DoctorEditorViewModel)
-                {
-                    ShowDialog(dialogVM, new DoctorEditorWindow());
-                }
                 else if (dialogVM is IcdSelectorViewModel)
                 {
                     ShowDialog(dialogVM, new IcdSelectorWindow());
                 }
                 else if (dialogVM is MeasureEditorViewModel)
                 {
-                    ShowDialog(dialogVM, new MeasureEditorWindow());
+                    ShowDialog(dialogVM, new EditorWindow());
                 }
             });
 

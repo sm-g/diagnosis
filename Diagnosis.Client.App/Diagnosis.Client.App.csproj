@@ -272,6 +272,30 @@
     <Compile Include="Screens\Sync.xaml.cs">
       <DependentUpon>Sync.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Editors\AdminSettings.xaml.cs">
+      <DependentUpon>AdminSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Editors\DoctorEditor.xaml.cs">
+      <DependentUpon>DoctorEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Editors\DoctorSettings.xaml.cs">
+      <DependentUpon>DoctorSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Editors\EditorCommon.xaml.cs">
+      <DependentUpon>EditorCommon.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Editors\MeasureEditor.xaml.cs">
+      <DependentUpon>MeasureEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Editors\WordEditor.xaml.cs">
+      <DependentUpon>WordEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Editors\CourseEditor.xaml.cs">
+      <DependentUpon>CourseEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Editors\AppEditor.xaml.cs">
+      <DependentUpon>AppEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Helpers\AvalonExtensions.cs" />
     <Compile Include="Resources\Themes\ThemeManager.cs" />
     <Compile Include="Windows\Helpers\WindowHelper.cs" />
@@ -357,6 +381,9 @@
     </Compile>
     <Compile Include="Windows\Editors\AppointmentEditorWindow.xaml.cs">
       <DependentUpon>AppointmentEditorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Editors\EditorWindow.xaml.cs">
+      <DependentUpon>EditorWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Editors\CourseEditorWindow.xaml.cs">
       <DependentUpon>CourseEditorWindow.xaml</DependentUpon>
@@ -470,6 +497,38 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\Editors\AdminSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Editors\DoctorEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Editors\DoctorSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Editors\EditorCommon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Editors\MeasureEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Editors\WordEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Editors\CourseEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Editors\AppEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\Editors\DoctorEditorWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -525,6 +584,10 @@
     <Page Include="Windows\Editors\AppointmentEditorWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Editors\EditorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Editors\CourseEditorWindow.xaml">
       <SubType>Designer</SubType>

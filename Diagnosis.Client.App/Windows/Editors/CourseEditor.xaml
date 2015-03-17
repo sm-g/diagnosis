@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="Diagnosis.Client.App.Windows.Editors.CourseEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"
+             Width="250"
+             Height="100"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <StackPanel>
+        <StackPanel.Resources>
+            <Style TargetType="DockPanel"
+                   BasedOn="{StaticResource formLine}" />
+            <Style TargetType="Label"
+                   BasedOn="{StaticResource label90}" />
+        </StackPanel.Resources>
+        <DockPanel>
+            <Label Content="Начало" />
+            <DatePicker Text="{Binding Course.Start, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+        </DockPanel>
+        <DockPanel Visibility="{Binding Course.IsEnded, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Label Content="Конец" />
+            <DatePicker Text="{Binding Course.End, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+        </DockPanel>
+        <DockPanel>
+            <Label />
+            <TextBlock TextElement.FontSize="{DynamicResource ContentFontSize}">
+                    <Hyperlink Command="{Binding ToggleIsEndedCommand}">
+                        <Run>
+                            <Run.Style>
+                                <Style TargetType="Run">
+                                    <Setter Property="Text"
+                                            Value="Завершить" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Course.IsEnded}"
+                                                     Value="True">
+                                            <Setter Property="Text"
+                                                    Value="Продолжить" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Run.Style>
+                        </Run>
+                    </Hyperlink>
+            </TextBlock>
+        </DockPanel>
+    </StackPanel>
+</UserControl>

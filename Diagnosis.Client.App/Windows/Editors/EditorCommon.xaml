@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="Diagnosis.Client.App.Windows.Editors.EditorCommon"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:editors="clr-namespace:Diagnosis.Client.App.Windows.Editors"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
+             diag:HelpProvider.Topic="{Binding HelpTopic}"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="300">
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type diag:CourseEditorViewModel}">
+            <editors:CourseEditor diag:FocusBehavior.FocusFirst="True" />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type diag:AppointmentEditorViewModel}">
+            <editors:AppEditor diag:FocusBehavior.FocusFirst="True" />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type diag:MeasureEditorViewModel}">
+            <editors:MeasureEditor diag:FocusBehavior.FocusFirst="True" />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type diag:SettingsViewModel}">
+            <editors:DoctorSettings diag:FocusBehavior.FocusFirst="True" />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type diag:AdminSettingsViewModel}">
+            <editors:AdminSettings diag:FocusBehavior.FocusFirst="True" />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type diag:DoctorEditorViewModel}">
+            <editors:DoctorEditor diag:FocusBehavior.FocusFirst="True" />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type diag:WordEditorViewModel}">
+            <editors:WordEditor diag:FocusBehavior.FocusFirst="True" />
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="10" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <Button Grid.Column="1"
+                Grid.ColumnSpan="2"
+                Visibility="{Binding WithHelpButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Style="{StaticResource HelpButton}"
+                diag:HelpProvider.Topic="{Binding HelpTopic}" />
+
+        <ContentPresenter Content="{Binding}"
+                          Margin="10 10 0 0" />
+
+        <StackPanel Grid.Row="1"
+                    Margin="0,0,10,10"
+                    Style="{StaticResource DialogButtonsPanel}"
+                    Grid.ColumnSpan="3">
+            <Button Name="saveButton"
+                    IsDefault="True"
+                    Command="{Binding OkCommand}">
+                Сохранить
+            </Button>
+            <Button Name="cancelButton"
+                    IsCancel="True"
+                    Command="{Binding CancelCommand}">
+                Отмена
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

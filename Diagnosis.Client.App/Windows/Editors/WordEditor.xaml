@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="Diagnosis.Client.App.Windows.Editors.WordEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"
+             Width="300"
+             d:DesignHeight="300" >
+    <StackPanel>
+        <StackPanel.Resources>
+            <Style TargetType="DockPanel"
+                   BasedOn="{StaticResource formLine}" />
+            <Style TargetType="Label"
+                   BasedOn="{StaticResource label90}" />
+        </StackPanel.Resources>
+        <DockPanel>
+            <Label Content="Текст"
+                   VerticalAlignment="Top" />
+            <TextBox Text="{Binding Word.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     TextWrapping="Wrap"
+                     Height="60"
+                     VerticalContentAlignment="Top" />
+        </DockPanel>
+    </StackPanel>
+</UserControl>

@@ -6,7 +6,7 @@
         xmlns:diag="http://schemas.smg.com/diagnosis"
         Title="{Binding Title}"
         Height="170"
-        Width="250"
+        Width="300"
         diag:DialogCloser.DialogResult="{Binding DialogResult}"
         diag:FocusBehavior.FocusFirst="True"
         diag:HelpProvider.Topic="editholder"

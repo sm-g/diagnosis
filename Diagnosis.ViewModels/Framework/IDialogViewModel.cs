@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
-    public interface IDialogViewModel
+    public interface IDialogViewModel : INotifyPropertyChanged
     {
         bool? DialogResult { get; }
         string Title { get; }

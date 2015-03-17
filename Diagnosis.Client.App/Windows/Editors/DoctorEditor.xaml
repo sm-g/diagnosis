@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="Diagnosis.Client.App.Windows.Editors.DoctorEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:forms="clr-namespace:Diagnosis.Client.App.Controls.FormParts"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             Width="400"
+             x:Name="editor"
+             d:DesignHeight="300"
+             d:DesignWidth="300">
+    <StackPanel DataContext="{Binding Doctor}">
+        <StackPanel.Resources>
+            <Style TargetType="DockPanel"
+                   BasedOn="{StaticResource formLine}" />
+            <Style TargetType="Label"
+                   BasedOn="{StaticResource label120}" />
+        </StackPanel.Resources>
+        <!-- DoctorViewModel -->
+        <DockPanel>
+            <Label Content="Фамилия" />
+            <TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+        </DockPanel>
+        <DockPanel>
+            <Label Content="Имя" />
+            <TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+        </DockPanel>
+        <DockPanel>
+            <Label Content="Отчество" />
+            <TextBox Text="{Binding MiddleName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+        </DockPanel>
+        <DockPanel>
+            <Label Content="Пол"
+                   VerticalAlignment="Top" />
+            <forms:SexChooser Width="100"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Center" />
+        </DockPanel>
+        <DockPanel>
+            <Label Content="Специальность" />
+            <ComboBox SelectedItem="{Binding Speciality, ValidatesOnDataErrors=True, TargetNullValue=—}"
+                      ItemsSource="{Binding DataContext.Specialities,ElementName=editor}" />
+        </DockPanel>
+    </StackPanel>
+</UserControl>

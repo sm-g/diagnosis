@@ -1,0 +1,19 @@
+﻿<Window x:Class="Diagnosis.Client.App.Windows.EditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        xmlns:editors="clr-namespace:Diagnosis.Client.App.Windows.Editors"
+        xmlns:diag="http://schemas.smg.com/diagnosis"
+        Title="{Binding Title}"
+        UseLayoutRounding="True"
+        diag:DialogCloser.DialogResult="{Binding DialogResult}"
+        ShowInTaskbar="False"
+        ResizeMode="{Binding ResizeMode}"
+        SizeToContent="WidthAndHeight"
+        d:DesignHeight="150"
+        d:DesignWidth="300">
+
+    <editors:EditorCommon />
+</Window>
