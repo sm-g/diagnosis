@@ -26,6 +26,10 @@ namespace Diagnosis.ViewModels.Screens
             {
                 CanOk = Passwords.CanConfirm;
             };
+
+            Title = "Настройки";
+            HelpTopic = "adminsettings";
+            WithHelpButton = false;
         }
 
         protected override void OnOk()

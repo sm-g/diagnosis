@@ -31,6 +31,10 @@ namespace Diagnosis.ViewModels.Screens
             BigFont = doctor.Settings.BigFontSize;
             OnlyTopLevelIcdDisease = doctor.Settings.IcdTopLevelOnly;
             SelectedSex = doctor.Settings.SexSigns ?? Sexes[0];
+
+            Title = "Настройки";
+            HelpTopic = "doctorsettings";
+            WithHelpButton = false;
         }
 
         public ObservableCollection<string> Sexes { get; private set; }

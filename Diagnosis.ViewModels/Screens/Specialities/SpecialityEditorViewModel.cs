@@ -51,6 +51,8 @@ namespace Diagnosis.ViewModels.Screens
             DiagnosisSearch.Filter.Clear();
 
             Title = "Редактор специальности";
+            HelpTopic = "editspeciality";
+            WithHelpButton = false;
         }
 
         /// <summary>

@@ -24,7 +24,6 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Requires(uom != null);
             this.uom = uom;
 
-            Title = "Единица";
             Types = new List<UomType>(Session.QueryOver<UomType>().List());
 
             (uom as IEditableObject).BeginEdit();
@@ -43,6 +42,10 @@ namespace Diagnosis.ViewModels.Screens
             };
 
             TestExisting(Uom, uoms);
+
+            Title = "Единица";
+            HelpTopic = "edituom";
+            WithHelpButton = false;
         }
 
         [Obsolete]

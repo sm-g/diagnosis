@@ -25,6 +25,8 @@ namespace Diagnosis.ViewModels.Screens
             (app as IEditableObject).BeginEdit();
 
             Title = "Редактирование осмотра";
+            HelpTopic = "editholder";
+            WithHelpButton = true;
         }
 
 

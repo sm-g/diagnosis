@@ -11,10 +11,36 @@ namespace Diagnosis.ViewModels.Screens
 {
     public class DoctorEditorViewModel : DialogViewModel
     {
-        private static readonly ILog logger = LogManager.GetLogger(typeof(DoctorEditorViewModel));
         protected Doctor doctor;
+        private static readonly ILog logger = LogManager.GetLogger(typeof(DoctorEditorViewModel));
         private List<Speciality> _specialities;
         private DoctorViewModel _vm;
+
+        /// <summary>
+        /// Начинает редактировать врача.
+        /// </summary>
+        public DoctorEditorViewModel(Doctor doctor)
+        {
+            this.doctor = doctor;
+
+            _specialities = new List<Speciality> { Speciality.Null };
+            _specialities.AddRange(Session.Query<Speciality>()
+                .OrderBy(s => s.Title));
+
+            Doctor = new DoctorViewModel(doctor);
+            (doctor as IEditableObject).BeginEdit();
+
+            Title = "Данные врача";
+            HelpTopic = "editdoctor";
+            WithHelpButton = false;
+        }
+
+        /// <summary>
+        /// Начинает редактировать нового врача.
+        /// </summary>
+        public DoctorEditorViewModel()
+            : this(new Doctor("Врач"))
+        { }
 
         public DoctorViewModel Doctor
         {
@@ -49,36 +75,6 @@ namespace Diagnosis.ViewModels.Screens
                 }, () => CanSave());
             }
         }
-
-        /// <summary>
-        /// Начинает редактировать врача.
-        /// </summary>
-        public DoctorEditorViewModel(Doctor doctor)
-        {
-            this.doctor = doctor;
-
-            _specialities = new List<Speciality> { Speciality.Null };
-            _specialities.AddRange(Session.Query<Speciality>()
-                .OrderBy(s => s.Title));
-
-            Doctor = new DoctorViewModel(doctor);
-            (doctor as IEditableObject).BeginEdit();
-
-            Title = "Данные врача";
-        }
-
-        /// <summary>
-        /// Начинает редактировать нового врача.
-        /// </summary>
-        public DoctorEditorViewModel()
-            : this(new Doctor("Врач"))
-        { }
-
-        private bool CanSave()
-        {
-            return (doctor.IsTransient || doctor.IsDirty) && doctor.IsValid(); // есть изменения или при создании
-        }
-
         protected override void OnCancel()
         {
             (doctor as IEditableObject).CancelEdit();
@@ -91,6 +87,11 @@ namespace Diagnosis.ViewModels.Screens
                 Doctor.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private bool CanSave()
+        {
+            return (doctor.IsTransient || doctor.IsDirty) && doctor.IsValid(); // есть изменения или при создании
         }
     }
 }

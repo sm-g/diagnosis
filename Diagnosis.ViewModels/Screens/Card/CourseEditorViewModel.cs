@@ -19,6 +19,8 @@ namespace Diagnosis.ViewModels.Screens
             (course as IEditableObject).BeginEdit();
 
             Title = "Редактирование курса";
+            HelpTopic = "editholder";
+            WithHelpButton = true;
         }
 
         public CourseViewModel Course

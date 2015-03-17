@@ -41,6 +41,9 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
 
             Title = "Выбор диагноза МКБ";
+            HelpTopic = "icdselector";
+            WithHelpButton = false;
+
             DiagnosisSearch.Filter.IsFocused = true; // TODO фокус на список если выбранно
         }
 

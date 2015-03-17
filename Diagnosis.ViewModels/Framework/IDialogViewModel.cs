@@ -9,7 +9,9 @@ namespace Diagnosis.ViewModels
     public interface IDialogViewModel
     {
         bool? DialogResult { get; }
-        string Title { get; set; }
+        string Title { get; }
+        string HelpTopic { get; }
+        bool WithHelpButton { get; }
         ICommand OkCommand { get; }
         ICommand ApplyCommand { get; }
         ICommand CancelCommand { get; }

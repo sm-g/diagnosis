@@ -59,6 +59,8 @@ namespace Diagnosis.ViewModels.Autocomplete
             };
 
             Title = "Редактирование измерения";
+            HelpTopic = "editmeasure";
+            WithHelpButton = false;
         }
         /// <summary>
         /// Edit

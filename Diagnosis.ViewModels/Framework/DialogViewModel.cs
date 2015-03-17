@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
@@ -15,10 +16,12 @@ namespace Diagnosis.ViewModels
         private bool _canApply;
         private bool? _dialogResult;
         private string _title;
+        private bool _withHelpButton;
 
         public DialogViewModel()
         {
             _canOk = true;
+            ResizeMode = System.Windows.ResizeMode.NoResize;
         }
 
         public string Title
@@ -118,6 +121,30 @@ namespace Diagnosis.ViewModels
                 {
                     _dialogResult = value;
                     OnPropertyChanged(() => DialogResult);
+                }
+            }
+        }
+
+        public string HelpTopic
+        {
+            get;
+            set;
+        }
+
+        public ResizeMode ResizeMode { get; set; }
+
+        public bool WithHelpButton
+        {
+            get
+            {
+                return _withHelpButton;
+            }
+            set
+            {
+                if (_withHelpButton != value)
+                {
+                    _withHelpButton = value;
+                    OnPropertyChanged(() => WithHelpButton);
                 }
             }
         }

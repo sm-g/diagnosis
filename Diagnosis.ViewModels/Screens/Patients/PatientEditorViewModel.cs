@@ -28,6 +28,8 @@ namespace Diagnosis.ViewModels.Screens
                 Title = "Добавление пациента";
             else
                 Title = "Паспортные данные пациента";
+            HelpTopic = "editholder";
+            WithHelpButton = true;
         }
 
         /// <summary>
