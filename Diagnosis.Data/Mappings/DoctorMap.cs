@@ -59,6 +59,18 @@ namespace Diagnosis.Data.Mappings
             {
                 r.OneToMany();
             });
+            Set(x => x.HealthRecords, s =>
+            {
+                s.Key(k =>
+                {
+                    k.Column("DoctorID");
+                });
+                s.Inverse(true);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.OneToMany();
+            });
             ManyToOne(x => x.Speciality, m =>
             {
                 m.Column("SpecialityID");

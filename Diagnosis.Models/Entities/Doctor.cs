@@ -14,6 +14,8 @@ namespace Diagnosis.Models
         private Iesi.Collections.Generic.ISet<Appointment> appointments = new HashedSet<Appointment>();
         private Iesi.Collections.Generic.ISet<Course> courses = new HashedSet<Course>();
         private Iesi.Collections.Generic.ISet<Setting> settingsSet = new HashedSet<Setting>();
+        private Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
+
         private string _fn;
         private string _ln;
         private string _mn;
@@ -106,6 +108,11 @@ namespace Diagnosis.Models
             get { return courses; }
         }
 
+        public virtual IEnumerable<HealthRecord> HealthRecords
+        {
+            get { return healthRecords.OrderBy(x => x.Ord); }
+        }
+
         public virtual string FullName
         {
             get
@@ -128,6 +135,7 @@ namespace Diagnosis.Models
             patient.AddCourse(course);
             return course;
         }
+
         public override string ToString()
         {
             return FullName;
