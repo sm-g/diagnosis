@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
-             x:Name="doctors"
+             x:Name="syncServer"
              diag:FocusBehavior.FocusFirst="True"
              Padding="{StaticResource SreenPadding}"
              Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
@@ -19,43 +19,75 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        <StackPanel Grid.IsSharedSizeScope="True">
 
-        <Grid Margin="0 0 0 10">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
+            <Grid Margin="0 0 0 10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"
+                                      SharedSizeGroup="label" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
 
-            <Label Content="Источник"
-                   VerticalAlignment="Top" />
-            <TextBox x:Name="connectionString"
-                     IsReadOnly="True"                     
-                     Text="{Binding RemoteConnectionString,
+                <Label Content="Сервер" />
+                <TextBox x:Name="localConnectionString"
+                         IsReadOnly="True"
+                         IsTabStop="False"
+                         Text="{Binding LocalConnectionString}"
+                         Grid.Column="1" />
+
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,5,0,0"
+                            Grid.Row="1"
+                            Grid.Column="1">
+                    <Button Content="Выгрузить справочники..."
+                            ToolTip="Выгрузить справочные данные в промежуточную БД"
+                            Command="{Binding SaveCommand}" />
+                </StackPanel>
+            </Grid>
+            <Grid Margin="0 0 0 10"
+                  Background="Transparent"
+                  ToolTip="Промежуточная БД — источник клиентских данных">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"
+                                      SharedSizeGroup="label" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+
+                <Label Content="Источник" />
+                <TextBox x:Name="remoteConnectionString"
+                         IsReadOnly="True"
+                         IsTabStop="False"
+                         Text="{Binding RemoteConnectionString,
                                     UpdateSourceTrigger=PropertyChanged,
                                     ValidatesOnDataErrors=True}"
-                     Grid.Column="1" />
-            <Button Command="{Binding OpenSdfCommand}"
-                    Grid.Column="2"
-                    Margin="10 0 0 0"
-                    Padding="5 0"
-                    Content="Выбрать файл..." />
-        </Grid>
+                         Grid.Column="1" />
+                <Button Command="{Binding OpenSdfCommand}"
+                        Grid.Column="2"
+                        Margin="10 0 0 0"
+                        Padding="5 0"
+                        Content="Выбрать файл..." />
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,5,0,0"
+                            Grid.Row="1"
+                            Grid.Column="1">
+                    <Button  Content="Загрузить клиентские данные"
+                             Command="{Binding UploadCommand}" />
+                </StackPanel>
+            </Grid>
+        </StackPanel>
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Center"
-                    Grid.Row="1">           
-            <Button Content="Выгрузить справочники..."
-                    Command="{Binding SaveCommand}" />
-            <Separator Width="10"
-                       Height="0" />
-            <Button Content="Загрузить из источника"
-                    Command="{Binding UploadCommand}" />
-            <Separator Width="50"
-                       Height="0" />
+                    Grid.Row="1">
             <Button Content="Deprovision Local"
                     Command="{Binding DeprovisLocalCommand}" />
             <Separator Width="10"
