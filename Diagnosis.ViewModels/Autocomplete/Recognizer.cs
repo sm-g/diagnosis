@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Diagnosis.ViewModels.Autocomplete
 {
@@ -139,81 +140,90 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// Изменяет заготовку тега с одной сущности на другую.
         /// Возвращает успешность конвертации.
         /// </summary>
-        public bool ConvertBlank(TagViewModel tag, BlankType toType)
+        public Task<bool> ConvertBlank(TagViewModel tag, BlankType toType)
         {
             Contract.Requires(tag.BlankType != toType);
             Contract.Requires(toType != BlankType.None && toType != BlankType.Query);
 
+            var uiFactory = new TaskFactory(TaskScheduler.FromCurrentSynchronizationContext());
 
-            bool? result = null;
 
-            string queryOrMeasureWord;
-            if (tag.BlankType == BlankType.Measure)
-                queryOrMeasureWord = (tag.Blank as Measure).Word.Title;
-            else
-                queryOrMeasureWord = tag.Query;
-
-            // if queryOrMeasureWord == null - initial or after clear query
-
-            switch (toType)
+            var t = new Task<bool>(() =>
             {
-                case BlankType.Comment:
-                    tag.Blank = new Comment(tag.Query);
-                    result = true;
-                    break;
+                bool? result = null;
 
-                case BlankType.Word: // новое или существующее
-                    Contract.Assume(!queryOrMeasureWord.IsNullOrEmpty());
+                string queryOrMeasureWord;
+                if (tag.BlankType == BlankType.Measure)
+                    queryOrMeasureWord = (tag.Blank as Measure).Word.Title;
+                else
+                    queryOrMeasureWord = tag.Query;
 
-                    tag.Blank = FirstMatchingOrNewWord(queryOrMeasureWord);
-                    result = true;
-                    break;
+                // if queryOrMeasureWord == null - initial or after clear query
 
-                case BlankType.Measure: // слово
-                    MeasureEditorViewModel meVm;
-                    if (queryOrMeasureWord.IsNullOrEmpty())
-                    {
-                        meVm = new MeasureEditorViewModel();
-                    }
-                    else
-                    {
-                        var w = FirstMatchingOrNewWord(queryOrMeasureWord);
-                        meVm = new MeasureEditorViewModel(w);
-                    }
-                    meVm.OnDialogResult(() =>
-                    {
-                        tag.Blank = meVm.Measure;
+                switch (toType)
+                {
+                    case BlankType.Comment:
+                        tag.Blank = new Comment(tag.Query);
                         result = true;
-                    }, () =>
-                        result = false
-                     );
-                    this.Send(Event.OpenDialog, meVm.AsParams(MessageKeys.Dialog));
-                    break;
+                        break;
 
-                case BlankType.Icd: // слово/коммент в поисковый запрос
-                    IcdSelectorViewModel isVm;
-                    if (queryOrMeasureWord.IsNullOrEmpty())
-                        isVm = new IcdSelectorViewModel();
-                    else
-                        isVm = new IcdSelectorViewModel(queryOrMeasureWord);
+                    case BlankType.Word: // новое или существующее
+                        Contract.Assume(!queryOrMeasureWord.IsNullOrEmpty());
 
-                    isVm.OnDialogResult(() =>
-                    {
-                        tag.Blank = isVm.SelectedIcd;
+                        tag.Blank = FirstMatchingOrNewWord(queryOrMeasureWord);
                         result = true;
-                    }, () =>
-                        result = false
-                    );
-                    this.Send(Event.OpenDialog, isVm.AsParams(MessageKeys.Dialog));
-                    break;
-            }
+                        break;
 
-            // ждем пока не завершится диалог
-            while (result == null)
-                System.Threading.Thread.Sleep(500);
-            Contract.Assume(result.Value == (tag.BlankType == toType));
-            return result.Value;
+                    case BlankType.Measure: // слово
+                        MeasureEditorViewModel meVm;
+                        Application.Current.Dispatcher.Invoke((Action)(() =>
+                            {
+                                if (queryOrMeasureWord.IsNullOrEmpty())
+                                {
+                                    meVm = new MeasureEditorViewModel();
+                                }
+                                else
+                                {
+                                    var w = FirstMatchingOrNewWord(queryOrMeasureWord);
+                                    meVm = new MeasureEditorViewModel(w);
+                                }
+                                meVm.OnDialogResult(() =>
+                                {
+                                    tag.Blank = meVm.Measure;
+                                    result = true;
+                                }, () =>
+                                    result = false
+                                 );
+                                this.Send(Event.OpenDialog, meVm.AsParams(MessageKeys.Dialog));
+                            }));
+                        break;
 
+                    case BlankType.Icd: // слово/коммент в поисковый запрос
+                        IcdSelectorViewModel isVm;
+                        if (queryOrMeasureWord.IsNullOrEmpty())
+                            isVm = new IcdSelectorViewModel();
+                        else
+                            isVm = new IcdSelectorViewModel(queryOrMeasureWord);
+
+                        isVm.OnDialogResult(() =>
+                        {
+                            tag.Blank = isVm.SelectedIcd;
+                            result = true;
+                        }, () =>
+                            result = false
+                        );
+                        this.Send(Event.OpenDialog, isVm.AsParams(MessageKeys.Dialog));
+                        break;
+                }
+
+                // ждем пока не завершится диалог
+                while (result == null)
+                    System.Threading.Thread.Sleep(200);
+                Contract.Assume(result.Value == (tag.BlankType == toType));
+                return result.Value;
+            });
+            t.Start();
+            return t;
         }
 
         /// <summary>

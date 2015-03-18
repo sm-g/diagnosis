@@ -44,19 +44,21 @@ namespace Diagnosis.Client.App.Windows.Shell
             {
                 var dialogVM = e.GetValue<IDialogViewModel>(MessageKeys.Dialog);
 
-                if (dialogVM is PatientEditorViewModel)
+                Dispatcher.Invoke((Action)(() =>
                 {
-                    ShowDialog(dialogVM, new PatientEditorWindow());
-                }
-                else if (dialogVM is IcdSelectorViewModel)
-                {
-                    ShowDialog(dialogVM, new IcdSelectorWindow());
-                }
-                else if (!DialogViewModel.ChildWindowModalDialogs.Contains(dialogVM.GetType()))
-                {
-                    ShowDialog(dialogVM, new EditorWindow());
-                }
-
+                    if (dialogVM is PatientEditorViewModel)
+                    {
+                        ShowDialog(dialogVM, new PatientEditorWindow());
+                    }
+                    else if (dialogVM is IcdSelectorViewModel)
+                    {
+                        ShowDialog(dialogVM, new IcdSelectorWindow());
+                    }
+                    else if (!DialogViewModel.ChildWindowModalDialogs.Contains(dialogVM.GetType()))
+                    {
+                        ShowDialog(dialogVM, new EditorWindow());
+                    }
+                }));
             });
 
             this.Subscribe(Event.ShowHelp, (e) =>

@@ -469,13 +469,9 @@ namespace Diagnosis.ViewModels.Autocomplete
             };
             tag.Converting += (s, e) =>
             {
-                var last = tag.IsLast;
-                if (CompleteOnConvert(tag, e.type))
+                CompleteOnConvert(tag, e.type);
                 {
-                    OnEntitiesChanged();
-                    if (last)
-                        // convert from Last - continue typing
-                        StartEdit();
+
                 }
             };
             tag.PropertyChanged += (s, e) =>
@@ -692,11 +688,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
             recognizer.SetBlank(tag, suggestion, exactMatchRequired, inverse);
 
-            //if (vm != null && vm.IsAbsent)
-            //    tag.Confidence = Confidence.Absent;
-            //else
-            //    tag.Confidence = Confidence.Present;
-
             CompleteEnding(tag);
 
             if (tag.Query.IsNullOrEmpty())
@@ -705,23 +696,35 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-        private bool CompleteOnConvert(TagViewModel tag, BlankType toType)
+        private void CompleteOnConvert(TagViewModel tag, BlankType toType)
         {
             var measure = (tag.Blank as Measure);
-            var converted = recognizer.ConvertBlank(tag, toType);
+            var wasLast = tag.IsLast;
+            var x = recognizer.ConvertBlank(tag, toType) //.ConfigureAwait<bool>(false);
+                .ContinueWith(t =>
+                 {
 
-            if (converted)
-            {
-                if (measure != null && toType != BlankType.Comment)
-                {
-                    // отдельный комментарий из числа измерения
-                    var comment = new Comment(string.Format("{0} {1}", measure.Value, measure.Uom).Trim());
-                    AddTag(comment, Tags.IndexOf(tag) + 1);
-                }
+                     if (t.Result)
+                     {
+                         Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+                         {
+                             if (measure != null && toType != BlankType.Comment)
+                             {
+                                 // отдельный комментарий из числа измерения
+                                 var comment = new Comment(string.Format("{0} {1}", measure.Value, measure.Uom).Trim());
+                                 AddTag(comment, Tags.IndexOf(tag) + 1);
+                             }
 
-                CompleteEnding(tag);
-            }
-            return converted;
+                             CompleteEnding(tag);
+
+                             OnEntitiesChanged(); // повторно, тк при конверте сначала меняется query, поэтому меняется state на completed
+
+                             if (wasLast)
+                                 // convert from Last - continue typing
+                                 StartEdit();
+                         }));
+                     }
+                 }, TaskContinuationOptions.ExecuteSynchronously);
         }
 
         public void CompleteOnEnter(TagViewModel tag, bool inverse = false, bool withControl = false)
