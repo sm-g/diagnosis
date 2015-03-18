@@ -191,11 +191,11 @@ namespace Diagnosis.ViewModels.Screens
                     if (result.IsValid)
                     {
                         var sdfPath = result.FileName;
-                        var remoteConstr = "Data Source=" + sdfPath;
+                        var sdfFileConstr = "Data Source=" + sdfPath;
 
                         var syncer = new Syncer(
                              serverConStr: LocalConnectionString,
-                             clientConStr: remoteConstr,
+                             clientConStr: sdfFileConstr,
                              serverProviderName: LocalProviderName);
 
                         IEnumerable<Scope> scopes;
@@ -205,12 +205,12 @@ namespace Diagnosis.ViewModels.Screens
                             scopes = Scope.Reference.ToEnumerable();
 
                         // создаем промежуточную БД
-                        SqlHelper.CreateSqlCeByConStr(RemoteConnectionString);
+                        SqlHelper.CreateSqlCeByConStr(sdfFileConstr);
 
                         DoWithCursor(
                             syncer.SendFrom(Side.Server, scopes).ContinueWith((t) =>
                                 // после выгрузки сразу готовим промежуточную БД к следующей синхронизации
-                            Syncer.Deprovision(remoteConstr, Constants.SqlCeProvider, scopes)), Cursors.AppStarting);
+                            Syncer.Deprovision(sdfFileConstr, Constants.SqlCeProvider, scopes)), Cursors.AppStarting);
                     }
                 },
                 () => CanSync(true, false));
