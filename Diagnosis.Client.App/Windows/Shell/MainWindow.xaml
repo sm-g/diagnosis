@@ -121,7 +121,7 @@
 
             <Menu HorizontalAlignment="Right"
                   Background="Transparent">
-                <MenuItem Style="{StaticResource topMenuItem}">
+                <MenuItem Style="{StaticResource topMenuItem}" IsEnabled="{Binding Modal, Converter={StaticResource IsNullToBoolean}}" >
                     <MenuItem.Header>
                         <Rectangle Width="16"
                                    Height="16"
@@ -317,7 +317,7 @@
         <shell:MenuBar DataContext="{Binding MenuBar}"
                        Visibility="{Binding Visible, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-        <Border Grid.Row="1"
+        <Border Grid.RowSpan="2"
                 x:Name="childWrap"
                 DataContext="{Binding Modal, NotifyOnTargetUpdated=True}">
             <xctk:ChildWindow x:Name="childWindow"
