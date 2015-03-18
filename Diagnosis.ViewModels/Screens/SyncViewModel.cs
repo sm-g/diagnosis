@@ -183,7 +183,7 @@ namespace Diagnosis.ViewModels.Screens
                     var result = new FileDialogService().ShowSaveFileDialog(null,
                          FileType.Sdf.ToEnumerable(),
                          FileType.Sdf,
-                         "diagnosis-ref");
+                         "diagnosis-exchange");
 
                     if (result.IsValid)
                     {
@@ -205,9 +205,13 @@ namespace Diagnosis.ViewModels.Screens
                         SqlHelper.CreateSqlCeByConStr(sdfFileConstr);
 
                         DoWithCursor(
-                            syncer.SendFrom(Side.Server, scopes).ContinueWith((t) =>
+                            // выгрузка в существующую БД, которая может быть изменена после этого
+                            // можно создавать файл заново
+                            // или сначала депровизить, чтобы добавить данные к существующим
+                            Syncer.Deprovision(sdfFileConstr, Constants.SqlCeProvider, scopes).ContinueWith(t =>
+                            syncer.SendFrom(Side.Server, scopes).ContinueWith((t1) =>
                                 // после выгрузки сразу готовим промежуточную БД к следующей синхронизации
-                            Syncer.Deprovision(sdfFileConstr, Constants.SqlCeProvider, scopes)), Cursors.AppStarting);
+                            Syncer.Deprovision(sdfFileConstr, Constants.SqlCeProvider, scopes))), Cursors.AppStarting);
                     }
                 },
                 () => CanSync(true, false));
