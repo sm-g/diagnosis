@@ -19,8 +19,8 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        
         <StackPanel Grid.IsSharedSizeScope="True">
-
             <Grid Margin="0 0 0 10">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
@@ -85,6 +85,7 @@
                 </StackPanel>
             </Grid>
         </StackPanel>
+        
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Center"
                     Grid.Row="1">

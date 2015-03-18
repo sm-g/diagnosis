@@ -22,61 +22,101 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid Margin="0 0 0 10">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <StackPanel Grid.IsSharedSizeScope="True">
+            <Grid Margin="0 0 0 10"
+                  ToolTip="Клиентская БД">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"
+                                      SharedSizeGroup="label" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
 
-            <Label Content="Источник" />
-            <TextBox x:Name="connectionString"
-                     IsReadOnly="True"
-                     IsTabStop="False"
-                     Text="{Binding RemoteConnectionString,
+                <Label Content="Клиент" />
+                <TextBox x:Name="localConnectionString"
+                         IsReadOnly="True"
+                         IsTabStop="False"
+                         Text="{Binding LocalConnectionString}"
+                         Grid.Column="1" />
+
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,5,0,0"
+                            Grid.Row="1"
+                            Grid.Column="1">
+                    <Button Content="Сохранить в файл..."
+                            ToolTip="Сохранить клиентские данные в промежуточную БД"
+                            Command="{Binding SaveCommand}" />
+                </StackPanel>
+            </Grid>
+
+            <Grid Margin="0 0 0 10"
+                  ToolTip="Сервер или промежуточная БД — источник справочных данных">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"
+                                      SharedSizeGroup="label" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+
+                <Label Content="Источник" />
+                <TextBox x:Name="connectionString"
+                         IsReadOnly="True"
+                         IsTabStop="False"
+                         Text="{Binding RemoteConnectionString,
                                     UpdateSourceTrigger=PropertyChanged,
                                     ValidatesOnDataErrors=True}"
-                     Grid.Column="1" />
+                         Grid.Column="1" />              
 
-            <TextBlock x:Name="providerName"
-                       ToolTip="Провайдер"
-                       Grid.Row="1"
-                       Text="{Binding RemoteProviderName}"
-                       Grid.Column="1" />
+                <StackPanel Orientation="Horizontal"
+                            Margin="10 0 0 0"
+                            Grid.Row="0"
+                            Grid.Column="2">
+                    <Button Command="{Binding OpenSdfCommand}"
+                            Content="Выбрать файл..." />
+                    <TextBlock Text="или"
+                               Margin="5 0"
+                               VerticalAlignment="Center" />
+                    <Button Content="Выбрать сервер..."
+                            Click="Button_Click" />
+                </StackPanel>
+                
+                <TextBlock x:Name="providerName"
+                           ToolTip="Провайдер источника"
+                           Grid.ColumnSpan="3"
+                           Grid.Row="1"
+                           Text="{Binding RemoteProviderName}"
+                           Grid.Column="1" />
+                
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,5,0,0"
+                            Grid.Row="3"
+                            Grid.ColumnSpan="3"
+                            Grid.Column="1">
+                    <Button Content="Отправить в источник"
+                            ToolTip="Отправить клиентские данные в источник"
+                            Command="{Binding UploadCommand}" />
+                    <Separator Width="10"
+                               Height="0" />
+                    <Button Content="Загрузить справочники"
+                            ToolTip="Загрузить справочные данные из источника"
+                            Command="{Binding DownloadCommand}" />
+                </StackPanel>
+            </Grid>
+        </StackPanel>
 
-            <StackPanel Orientation="Horizontal"
-                        Margin="0,5,0,0"
-                        Grid.Row="2"
-                        Grid.Column="1">
-
-                <Button Command="{Binding OpenSdfCommand}"
-                        Content="Выбрать файл..." />
-                <TextBlock Text="или"
-                           Margin="10 0 10 0"
-                           VerticalAlignment="Center" />
-                <Button Content="Выбрать сервер..."
-                        Click="Button_Click" />
-            </StackPanel>
-        </Grid>
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Center"
                     Grid.Row="1">
-            <Button Content="Отправить в источник"
-                    Command="{Binding UploadCommand}" />
-            <Separator Width="10"
-                       Height="0" />
-            <Button Content="Отправить в файл..."
-                    Command="{Binding SaveCommand}" />
-            <Separator Width="10"
-                       Height="0" />
-            <Button Content="Загрузить справочники"
-                    Command="{Binding DownloadCommand}" />
-            <Separator Width="50"
-                       Height="0" />
             <Button Content="Deprovision Client"
                     Command="{Binding DeprovisLocalCommand}" />
             <Separator Width="10"
