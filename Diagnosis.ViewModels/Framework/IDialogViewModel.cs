@@ -14,6 +14,7 @@ namespace Diagnosis.ViewModels
         string HelpTopic { get; }
         bool WithHelpButton { get; }
         void OnDialogResult(Action trueAct, Action falseAct = null);
+        void OnDialogResult(Action<bool> act);
         ICommand OkCommand { get; }
         ICommand ApplyCommand { get; }
         ICommand CancelCommand { get; }

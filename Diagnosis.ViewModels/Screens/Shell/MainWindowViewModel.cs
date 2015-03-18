@@ -219,7 +219,7 @@ namespace Diagnosis.ViewModels.Screens
         private void ShowDialog(IDialogViewModel vm)
         {
             Contract.Requires(vm != null);
-            vm.OnDialogResult(() => Modal = null);
+            vm.OnDialogResult((result) => Modal = null);
             Modal = vm;
         }
 

@@ -64,7 +64,7 @@
                     Style="{StaticResource DialogButtonsPanel}">
             <Button Name="saveButton"
                     IsDefault="True"
-                    Command="{Binding SaveCommand}"
+                    Command="{Binding OkCommand}"
                     Content="Сохранить" />
             <Button Name="cancelButton"
                     IsCancel="True"

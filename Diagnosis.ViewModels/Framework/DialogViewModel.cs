@@ -186,6 +186,22 @@ namespace Diagnosis.ViewModels
             this.PropertyChanged += f;
         }
 
+        public void OnDialogResult(Action<bool> act)
+        {
+            System.ComponentModel.PropertyChangedEventHandler f = null;
+            f = (s, e) =>
+            {
+                if (e.PropertyName == "DialogResult")
+                {
+                    var dialog = s as IDialogViewModel;
+                    Contract.Assert(dialog.DialogResult.HasValue);
+                    dialog.PropertyChanged -= f;
+                    act(dialog.DialogResult.Value);
+                }
+            };
+            this.PropertyChanged += f;
+        }
+
         protected virtual void OnOk() { }
         protected virtual void OnCancel() { }
         protected virtual void OnApply() { }

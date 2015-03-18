@@ -60,21 +60,23 @@ namespace Diagnosis.ViewModels.Screens
 
         public IEnumerable<Speciality> Specialities { get { return _specialities; } }
 
-        public RelayCommand SaveCommand
+        public override bool CanOk
         {
             get
             {
-                return new RelayCommand(() =>
-                {
-                    (doctor as IEditableObject).EndEdit();
-
-                    new Saver(Session).Save(doctor);
-
-                    this.Send(Event.DoctorSaved, doctor.AsParams(MessageKeys.Doctor));
-                    DialogResult = true;
-                }, () => CanSave());
+                return (doctor.IsTransient || doctor.IsDirty) && doctor.IsValid(); // есть изменения или при создании
             }
         }
+
+        protected override void OnOk()
+        {
+            (doctor as IEditableObject).EndEdit();
+
+            new Saver(Session).Save(doctor);
+
+            this.Send(Event.DoctorSaved, doctor.AsParams(MessageKeys.Doctor));
+        }
+
         protected override void OnCancel()
         {
             (doctor as IEditableObject).CancelEdit();
@@ -87,11 +89,6 @@ namespace Diagnosis.ViewModels.Screens
                 Doctor.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        private bool CanSave()
-        {
-            return (doctor.IsTransient || doctor.IsDirty) && doctor.IsValid(); // есть изменения или при создании
         }
     }
 }

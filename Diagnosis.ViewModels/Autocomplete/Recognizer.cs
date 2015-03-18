@@ -187,13 +187,11 @@ namespace Diagnosis.ViewModels.Autocomplete
                                     var w = FirstMatchingOrNewWord(queryOrMeasureWord);
                                     meVm = new MeasureEditorViewModel(w);
                                 }
-                                meVm.OnDialogResult(() =>
+                                meVm.OnDialogResult((res) =>
                                 {
                                     tag.Blank = meVm.Measure;
-                                    result = true;
-                                }, () =>
-                                    result = false
-                                 );
+                                    result = res;
+                                });
                                 this.Send(Event.OpenDialog, meVm.AsParams(MessageKeys.Dialog));
                             }));
                         break;
@@ -205,13 +203,11 @@ namespace Diagnosis.ViewModels.Autocomplete
                         else
                             isVm = new IcdSelectorViewModel(queryOrMeasureWord);
 
-                        isVm.OnDialogResult(() =>
+                        isVm.OnDialogResult((res) =>
                         {
                             tag.Blank = isVm.SelectedIcd;
-                            result = true;
-                        }, () =>
-                            result = false
-                        );
+                            result = res;
+                        });
                         this.Send(Event.OpenDialog, isVm.AsParams(MessageKeys.Dialog));
                         break;
                 }
