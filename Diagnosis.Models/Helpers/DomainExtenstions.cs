@@ -148,19 +148,23 @@ namespace Diagnosis.Models
                 { typeof(Doctor), () => 
                     {
                         var doc = entity as Doctor;
-                        return doc.Appointments.Count() == 0 && doc.Courses.Count() == 0;
+                        return doc.Appointments.Count() == 0 && 
+                            doc.Courses.Count() == 0 && 
+                            doc.HealthRecords.All(h => h.IsEmpty());;
                     } 
                 },
                 { typeof(Patient), () => 
                     {
                         var pat = entity as Patient;
-                        return pat.Courses.Count() == 0 && pat.HealthRecords.All(h => h.IsEmpty());
+                        return pat.Courses.Count() == 0 && 
+                            pat.HealthRecords.All(h => h.IsEmpty());
                     } 
                 },
                 { typeof(Course), () => 
                     {
                         var course = entity as Course;
-                        return course.Appointments.Count() == 0 && course.HealthRecords.All(h => h.IsEmpty());
+                        return course.Appointments.Count() == 0 && 
+                            course.HealthRecords.All(h => h.IsEmpty());
                     } 
                 },
                 { typeof(Appointment), () => 
