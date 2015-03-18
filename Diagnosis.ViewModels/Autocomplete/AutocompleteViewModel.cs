@@ -10,7 +10,9 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Diagnosis.ViewModels.Autocomplete
 {
@@ -215,20 +217,20 @@ namespace Diagnosis.ViewModels.Autocomplete
                         {
                             case BlankType.Measure:
                                 var vm = new MeasureEditorViewModel(SelectedTag.Entity as Measure);
-                                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
-                                if (vm.DialogResult == true)
+                                vm.OnDialogResult(() =>
                                 {
                                     CompleteCommon(SelectedTag, vm.Measure, false);
-                                }
+                                });
+                                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
                                 break;
 
                             case BlankType.Icd:
                                 var vm0 = new IcdSelectorViewModel(SelectedTag.Entity as IcdDisease);
-                                this.Send(Event.OpenDialog, vm0.AsParams(MessageKeys.Dialog));
-                                if (vm0.DialogResult == true)
+                                vm0.OnDialogResult(() =>
                                 {
                                     CompleteCommon(SelectedTag, vm0.SelectedIcd, false);
-                                }
+                                });
+                                this.Send(Event.OpenDialog, vm0.AsParams(MessageKeys.Dialog));
                                 break;
 
                             default:
@@ -536,20 +538,20 @@ namespace Diagnosis.ViewModels.Autocomplete
             if (type == BlankType.Measure)
             {
                 var vm = new MeasureEditorViewModel();
-                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
-                if (vm.DialogResult == true)
+                vm.OnDialogResult(() =>
                 {
                     AddTag(vm.Measure, index);
-                }
+                });
+                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
             }
             else if (type == BlankType.Icd)
             {
                 var vm = new IcdSelectorViewModel();
-                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
-                if (vm.DialogResult == true)
+                vm.OnDialogResult(() =>
                 {
                     AddTag(vm.SelectedIcd, index);
-                }
+                });
+                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
             }
         }
 

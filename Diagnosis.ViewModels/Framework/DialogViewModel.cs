@@ -2,6 +2,7 @@
 using Diagnosis.ViewModels.Screens;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -159,6 +160,30 @@ namespace Diagnosis.ViewModels
                     OnPropertyChanged(() => WithHelpButton);
                 }
             }
+        }
+
+        public void OnDialogResult(Action trueAct, Action falseAct = null)
+        {
+            System.ComponentModel.PropertyChangedEventHandler f = null;
+            f = (s, e) =>
+            {
+                if (e.PropertyName == "DialogResult")
+                {
+                    var dialog = s as IDialogViewModel;
+                    Contract.Assert(dialog.DialogResult.HasValue);
+                    dialog.PropertyChanged -= f;
+                    if (dialog.DialogResult.Value)
+                    {
+                        if (trueAct != null)
+                            trueAct();
+                    }
+                    else if (falseAct != null)
+                    {
+                        falseAct();
+                    }
+                }
+            };
+            this.PropertyChanged += f;
         }
 
         protected virtual void OnOk() { }

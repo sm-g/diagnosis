@@ -1,13 +1,13 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Screens;
 using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Diagnosis.ViewModels.Autocomplete
 {
@@ -70,7 +70,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                 // now word can be retrieved from storage
                 var word = e.GetValue<Word>(MessageKeys.Word);
                 created.Remove(word);
-
             });
         }
 
@@ -144,73 +143,77 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             Contract.Requires(tag.BlankType != toType);
             Contract.Requires(toType != BlankType.None && toType != BlankType.Query);
-            Contract.Ensures(Contract.Result<bool>() == (tag.BlankType == toType));
 
-            if (tag.Query.IsNullOrEmpty())
-            {
-                // initial or after clear query
-                if (toType == BlankType.Measure)
-                {
-                    var vm = new MeasureEditorViewModel();
-                    this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
-                    if (vm.DialogResult == true)
-                    {
-                        tag.Blank = vm.Measure;
-                        return true;
-                    }
-                }
-                else if (toType == BlankType.Icd)
-                {
-                    var vm = new IcdSelectorViewModel();
-                    this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
-                    if (vm.DialogResult == true)
-                    {
-                        tag.Blank = vm.SelectedIcd;
-                        return true;
-                    }
-                }
 
-                return false;
-            }
+            bool? result = null;
 
-            string query;
+            string queryOrMeasureWord;
             if (tag.BlankType == BlankType.Measure)
-                query = (tag.Blank as Measure).Word.Title;
+                queryOrMeasureWord = (tag.Blank as Measure).Word.Title;
             else
-                query = tag.Query;
+                queryOrMeasureWord = tag.Query;
+
+            // if queryOrMeasureWord == null - initial or after clear query
 
             switch (toType)
             {
                 case BlankType.Comment:
                     tag.Blank = new Comment(tag.Query);
-                    return true;
+                    result = true;
+                    break;
 
                 case BlankType.Word: // новое или существующее
-                    tag.Blank = FirstMatchingOrNewWord(query);
-                    return true;
+                    Contract.Assume(!queryOrMeasureWord.IsNullOrEmpty());
+
+                    tag.Blank = FirstMatchingOrNewWord(queryOrMeasureWord);
+                    result = true;
+                    break;
 
                 case BlankType.Measure: // слово
-                    var w = FirstMatchingOrNewWord(query);
-                    var vm = new MeasureEditorViewModel(w);
-                    this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
-                    if (vm.DialogResult == true)
+                    MeasureEditorViewModel meVm;
+                    if (queryOrMeasureWord.IsNullOrEmpty())
                     {
-                        tag.Blank = vm.Measure;
-                        return true;
+                        meVm = new MeasureEditorViewModel();
                     }
+                    else
+                    {
+                        var w = FirstMatchingOrNewWord(queryOrMeasureWord);
+                        meVm = new MeasureEditorViewModel(w);
+                    }
+                    meVm.OnDialogResult(() =>
+                    {
+                        tag.Blank = meVm.Measure;
+                        result = true;
+                    }, () =>
+                        result = false
+                     );
+                    this.Send(Event.OpenDialog, meVm.AsParams(MessageKeys.Dialog));
                     break;
 
                 case BlankType.Icd: // слово/коммент в поисковый запрос
-                    var vm0 = new IcdSelectorViewModel(query);
-                    this.Send(Event.OpenDialog, vm0.AsParams(MessageKeys.Dialog));
-                    if (vm0.DialogResult == true)
+                    IcdSelectorViewModel isVm;
+                    if (queryOrMeasureWord.IsNullOrEmpty())
+                        isVm = new IcdSelectorViewModel();
+                    else
+                        isVm = new IcdSelectorViewModel(queryOrMeasureWord);
+
+                    isVm.OnDialogResult(() =>
                     {
-                        tag.Blank = vm0.SelectedIcd;
-                        return true;
-                    }
+                        tag.Blank = isVm.SelectedIcd;
+                        result = true;
+                    }, () =>
+                        result = false
+                    );
+                    this.Send(Event.OpenDialog, isVm.AsParams(MessageKeys.Dialog));
                     break;
             }
-            return false;
+
+            // ждем пока не завершится диалог
+            while (result == null)
+                System.Threading.Thread.Sleep(500);
+            Contract.Assume(result.Value == (tag.BlankType == toType));
+            return result.Value;
+
         }
 
         /// <summary>
@@ -298,13 +301,11 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <param name="tag"></param>
         public void AfterCompleteTag(TagViewModel tag)
         {
-            if (tag.BlankType == BlankType.Word //|| tag.BlankType == BlankType.Measure
-                )
+            if (tag.BlankType == BlankType.Word)
             {
                 var w = tag.Blank as Word;
                 if (w.IsTransient)
                     created.Add(w);
-
             }
         }
 
@@ -344,7 +345,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                 return word;
             }
         }
-
 
         /// <summary>
         /// Определяет сходство предположения и запроса.

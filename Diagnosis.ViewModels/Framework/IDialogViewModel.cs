@@ -13,6 +13,7 @@ namespace Diagnosis.ViewModels
         string Title { get; }
         string HelpTopic { get; }
         bool WithHelpButton { get; }
+        void OnDialogResult(Action trueAct, Action falseAct = null);
         ICommand OkCommand { get; }
         ICommand ApplyCommand { get; }
         ICommand CancelCommand { get; }

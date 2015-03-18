@@ -6,9 +6,6 @@ using Diagnosis.ViewModels.Framework;
 using EventAggregator;
 using NHibernate.Linq;
 using System;
-
-using System;
-
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;

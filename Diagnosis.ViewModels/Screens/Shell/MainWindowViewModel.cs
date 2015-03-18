@@ -219,20 +219,10 @@ namespace Diagnosis.ViewModels.Screens
         private void ShowDialog(IDialogViewModel vm)
         {
             Contract.Requires(vm != null);
-            vm.PropertyChanged += vm_PropertyChanged;
+            vm.OnDialogResult(() => Modal = null);
             Modal = vm;
         }
 
-        private void vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            var dialog = sender as IDialogViewModel;
-            if (e.PropertyName == "DialogResult")
-            {
-                Contract.Assert(dialog.DialogResult.HasValue);
-                dialog.PropertyChanged -= vm_PropertyChanged;
-                Modal = null;
-            }
-        }
         private void CurrentView_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "Title")
