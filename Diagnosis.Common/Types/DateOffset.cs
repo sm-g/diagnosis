@@ -1001,7 +1001,19 @@ namespace Diagnosis.Common
 
         public override int GetHashCode()
         {
-            return base.GetHashCode(); // TODO GetHashCode
+            // по значению
+            unchecked
+            {
+                int hash = 17;
+                if (Year != null)
+                    hash = hash * 23 + Year.GetHashCode();
+                if (Month != null)
+                    hash = hash * 23 + Month.GetHashCode();
+                if (Day != null)
+                    hash = hash * 23 + Day.GetHashCode();
+                hash = hash * 23 + Unit.GetHashCode();
+                return hash;
+            }
         }
     }
 }

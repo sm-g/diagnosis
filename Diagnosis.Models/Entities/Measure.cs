@@ -121,7 +121,16 @@ namespace Diagnosis.Models
 
         public override int GetHashCode()
         {
-            return base.GetHashCode(); // TODO GetHashCode
+            unchecked
+            {
+                int hash = 17;
+                if (Word != null)
+                    hash = hash * 23 + Word.GetHashCode();
+                if (Uom != null)
+                    hash = hash * 23 + Uom.GetHashCode();
+                hash = hash * 23 + DbValue.GetHashCode();
+                return hash;
+            }
         }
     }
 }
