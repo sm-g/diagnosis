@@ -74,7 +74,6 @@
                 <Button Command="{Binding OpenSdfCommand}"
                         Grid.Column="2"
                         Margin="10 0 0 0"
-                        Padding="5 0"
                         Content="Выбрать файл..." />
                 <StackPanel Orientation="Horizontal"
                             Margin="0,5,0,0"

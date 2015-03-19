@@ -22,7 +22,7 @@
                                Command="{Binding DataContext.EditCommand, ElementName=specialities}" />
             </InputBindingCollection>
         </DockPanel.Resources>
-        <Grid MaxWidth="180" 
+        <Grid MaxWidth="180"
               IsEnabled="{Binding Editor,Converter={StaticResource IsNullToBoolean}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="36" />
@@ -30,10 +30,12 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <Label Content="Специальности" VerticalAlignment="Bottom" />
+            <Label Content="Специальности"
+                   VerticalAlignment="Bottom" />
 
             <ListBox Grid.Row="1"
                      ItemsSource="{Binding Specialities}"
+                     BorderThickness="1"
                      SelectedItem="{Binding SelectedSpeciality}">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}"
@@ -80,7 +82,7 @@
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            
+
             <TextBlock Grid.ColumnSpan="4"
                        FontSize="20"
                        Text="Редактирование специальности"
@@ -98,6 +100,7 @@
             <Label Content="Блоки МКБ"
                    Grid.Row="2" />
             <ListBox Grid.Column="1"
+                     BorderThickness="1"
                      ItemsSource="{Binding Speciality.Blocks}"
                      diag:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding Speciality.SelectedBlocks}"
                      Grid.Row="2" />
