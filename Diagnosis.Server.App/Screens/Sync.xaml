@@ -35,8 +35,7 @@
 
                 <Label Content="Сервер" />
                 <TextBox x:Name="localConnectionString"
-                         IsReadOnly="True"
-                         IsTabStop="False"
+                         Style="{StaticResource conStrTextBox}"
                          Text="{Binding LocalConnectionString}"
                          Grid.Column="1" />
 
@@ -65,8 +64,7 @@
 
                 <Label Content="Источник" />
                 <TextBox x:Name="remoteConnectionString"
-                         IsReadOnly="True"
-                         IsTabStop="False"
+                         Style="{StaticResource conStrTextBox}"
                          Text="{Binding RemoteConnectionString,
                                     UpdateSourceTrigger=PropertyChanged,
                                     ValidatesOnDataErrors=True}"

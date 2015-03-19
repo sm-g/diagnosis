@@ -1,4 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:mahControls="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!--This styles overwrites theme styles-->
 
@@ -224,6 +225,17 @@
            TargetType="FrameworkElement">
         <Setter Property="Margin"
                 Value="{StaticResource FormLineMargin}" />
+    </Style>
+
+    <Style x:Key="conStrTextBox"
+           TargetType="TextBox"
+           BasedOn="{StaticResource {x:Type TextBox}}">
+        <Setter Property="IsReadOnly"
+                Value="True" />
+        <Setter Property="IsTabStop"
+                Value="False" />
+        <Setter Property="mahControls:TextBoxHelper.SelectAllOnFocus"
+                Value="True" />
     </Style>
 
     <Style x:Key="{x:Type Label}"
