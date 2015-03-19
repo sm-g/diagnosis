@@ -752,6 +752,9 @@
   <ItemGroup>
     <Resource Include="Resources\Images\CompletionMode.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Help\img\move.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
