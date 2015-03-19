@@ -9,6 +9,8 @@
              xmlns:mahControls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d"
              x:Name="filter"
+             Focusable="True"
+             GotFocus="filter_GotFocus"
              d:DesignHeight="30"
              d:DesignWidth="300">
     <Grid>

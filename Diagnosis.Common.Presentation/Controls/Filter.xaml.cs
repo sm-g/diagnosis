@@ -52,5 +52,10 @@ namespace Diagnosis.Common.Presentation.Controls.Search
             logger.DebugFormat("filter got kb focus, to input={0}", e.NewFocus == input);
 
         }
+
+        private void filter_GotFocus(object sender, RoutedEventArgs e)
+        {
+            input.Focus();
+        }
     }
 }

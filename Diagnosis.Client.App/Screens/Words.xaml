@@ -16,7 +16,7 @@
         <KeyBinding Gesture="Control+Enter"
                     Command="{Binding AddCommand}" />
         <KeyBinding Gesture="Control+F"
-                    Command="{Binding SendToSearchCommand}" />       
+                    Command="{Binding SendToSearchCommand}" />
         <KeyBinding Key="Delete"
                     Command="{Binding DeleteCommand}" />
         <KeyBinding Key="F2"
@@ -49,8 +49,10 @@
             </Button>
         </ToolBar>
 
-        <diag:Filter DataContext="{Binding Filter}"
-                       Grid.Row="1" />
+        <diag:Filter x:Name="filter"
+                     DataContext="{Binding Filter}"
+                     WatermarkText="Фильтр"
+                     Grid.Row="1" />
 
         <!-- Set VirtualizationMode for IsSelected binding -->
         <DataGrid x:Name="dataGrid"
@@ -69,7 +71,6 @@
                     <Setter Property="Focusable"
                             Value="False" />
                 </Style>
-                
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn Header=""

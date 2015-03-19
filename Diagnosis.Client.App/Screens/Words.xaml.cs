@@ -9,6 +9,10 @@ namespace Diagnosis.Client.App.Screens
         public Words()
         {
             InitializeComponent();
+            Loaded += (s, e) =>
+            {
+                filter.Focus();
+            };
         }
 
         private void dataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)

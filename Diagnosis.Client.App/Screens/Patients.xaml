@@ -89,6 +89,7 @@
             <diag:Filter  x:Name="filter"
                           DataContext="{Binding Filter}"
                           Visibility="{Binding DataContext.NoPatients, ElementName=patients, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                          WatermarkText="ФИО"
                           Grid.Row="1" />
 
             <DockPanel Grid.Row="2">
