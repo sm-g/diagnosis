@@ -63,8 +63,6 @@
             <DataTemplate DataType="{x:Type diag:SearchViewModel}">
                 <screen:Search />
             </DataTemplate>
-
-
         </ResourceDictionary>
     </Window.Resources>
 
@@ -121,7 +119,8 @@
 
             <Menu HorizontalAlignment="Right"
                   Background="Transparent">
-                <MenuItem Style="{StaticResource topMenuItem}" IsEnabled="{Binding Modal, Converter={StaticResource IsNullToBoolean}}" >
+                <MenuItem Style="{StaticResource topMenuItem}"
+                          IsEnabled="{Binding Modal, Converter={StaticResource IsNullToBoolean}}">
                     <MenuItem.Header>
                         <Rectangle Width="16"
                                    Height="16"
@@ -320,15 +319,18 @@
         <Border Grid.RowSpan="2"
                 x:Name="childWrap"
                 DataContext="{Binding Modal, NotifyOnTargetUpdated=True}">
-            <xctk:ChildWindow x:Name="childWindow"
-                              Caption="{Binding Title}"
-                              diag:DialogCloser.DialogResult="{Binding DialogResult}"
-                              IsModal="True"  
-                              WindowStartupLocation="Center">
-                <editors:EditorCommon x:Name="editorCommon"/>
-            </xctk:ChildWindow>
+            <shell:MyChildWindow x:Name="childWindow"
+                                 Caption="{Binding Title}"
+                                 diag:DialogCloser.DialogResult="{Binding DialogResult}"
+                                 IsModal="True"
+                                 KeyboardNavigation.DirectionalNavigation="Contained"
+                                 KeyboardNavigation.TabNavigation="Contained"
+                                 KeyboardNavigation.ControlTabNavigation="Contained"
+                                 WindowStartupLocation="Center">
+                <editors:EditorCommon x:Name="editorCommon" />
+            </shell:MyChildWindow>
         </Border>
-        
+
         <ItemsControl DataContext="{Binding OverlayService}"
                       ItemsSource="{Binding Overlays}"
                       HorizontalAlignment="Right"
