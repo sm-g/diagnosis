@@ -34,8 +34,8 @@ namespace Diagnosis.ViewModels.Screens
             TestExisting(Word, ws);
 
             Title = "Редактирование слова";
-            HelpTopic = "editword";
-            WithHelpButton = false;
+            HelpTopic = "addword";
+            WithHelpButton = true;
         }
 
         /// <summary>
