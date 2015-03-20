@@ -157,59 +157,60 @@ namespace Diagnosis.ViewModels.Autocomplete
 
                 // if queryOrMeasureWord == null - initial or after clear query
 
-                switch (toType)
+                Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
-                    case BlankType.Comment:
-                        tag.Blank = new Comment(tag.Query);
-                        result = true;
-                        break;
+                    switch (toType)
+                    {
+                        case BlankType.Comment:
+                            tag.Blank = new Comment(tag.Query);
+                            result = true;
+                            break;
 
-                    case BlankType.Word: // новое или существующее
-                        Contract.Assume(!queryOrMeasureWord.IsNullOrEmpty());
+                        case BlankType.Word: // новое или существующее
+                            Contract.Assume(!queryOrMeasureWord.IsNullOrEmpty());
 
-                        tag.Blank = FirstMatchingOrNewWord(queryOrMeasureWord);
-                        result = true;
-                        break;
+                            tag.Blank = FirstMatchingOrNewWord(queryOrMeasureWord);
+                            result = true;
+                            break;
 
-                    case BlankType.Measure: // слово
-                        MeasureEditorViewModel meVm;
-                        Application.Current.Dispatcher.Invoke((Action)(() =>
+                        case BlankType.Measure: // слово
+                            MeasureEditorViewModel meVm;
+                            if (queryOrMeasureWord.IsNullOrEmpty())
                             {
-                                if (queryOrMeasureWord.IsNullOrEmpty())
-                                {
-                                    meVm = new MeasureEditorViewModel();
-                                }
-                                else
-                                {
-                                    var w = FirstMatchingOrNewWord(queryOrMeasureWord);
-                                    meVm = new MeasureEditorViewModel(w);
-                                }
-                                meVm.OnDialogResult((res) =>
-                                {
-                                    if (res)
-                                        tag.Blank = meVm.Measure;
-                                    result = res;
-                                });
-                                this.Send(Event.OpenDialog, meVm.AsParams(MessageKeys.Dialog));
-                            }));
-                        break;
+                                meVm = new MeasureEditorViewModel();
+                            }
+                            else
+                            {
+                                var w = FirstMatchingOrNewWord(queryOrMeasureWord);
+                                meVm = new MeasureEditorViewModel(w);
+                            }
+                            meVm.OnDialogResult((res) =>
+                            {
+                                if (res)
+                                    tag.Blank = meVm.Measure;
+                                result = res;
+                            });
+                            this.Send(Event.OpenDialog, meVm.AsParams(MessageKeys.Dialog));
 
-                    case BlankType.Icd: // слово/коммент в поисковый запрос
-                        IcdSelectorViewModel isVm;
-                        if (queryOrMeasureWord.IsNullOrEmpty())
-                            isVm = new IcdSelectorViewModel();
-                        else
-                            isVm = new IcdSelectorViewModel(queryOrMeasureWord);
+                            break;
 
-                        isVm.OnDialogResult((res) =>
-                        {
-                            if (res)
-                                tag.Blank = isVm.SelectedIcd;
-                            result = res;
-                        });
-                        this.Send(Event.OpenDialog, isVm.AsParams(MessageKeys.Dialog));
-                        break;
-                }
+                        case BlankType.Icd: // слово/коммент в поисковый запрос
+                            IcdSelectorViewModel isVm;
+                            if (queryOrMeasureWord.IsNullOrEmpty())
+                                isVm = new IcdSelectorViewModel();
+                            else
+                                isVm = new IcdSelectorViewModel(queryOrMeasureWord);
+
+                            isVm.OnDialogResult((res) =>
+                            {
+                                if (res)
+                                    tag.Blank = isVm.SelectedIcd;
+                                result = res;
+                            });
+                            this.Send(Event.OpenDialog, isVm.AsParams(MessageKeys.Dialog));
+                            break;
+                    }
+                }));
 
                 // ждем пока не завершится диалог
                 while (result == null)
