@@ -223,7 +223,7 @@
                                               Margin="5"
                                               Visibility="{Binding Statistic.Count, Converter={StaticResource MoreThanToVisibility}}">
                 <TextBlock>
-                    Пациентов: <Run Text="{Binding Statistic.Count, Mode=OneWay}" />,
+                    Пациентов: <Run Text="{Binding Statistic.PatientsCount, Mode=OneWay}" />,
                     М: <Run Text="{Binding Statistic.Males, Mode=OneWay}" />
                     Ж: <Run Text="{Binding Statistic.Females, Mode=OneWay}" />
                     ?: <Run Text="{Binding Statistic.UnknownSex, Mode=OneWay}" />

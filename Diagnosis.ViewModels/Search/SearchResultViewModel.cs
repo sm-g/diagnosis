@@ -20,7 +20,7 @@ namespace Diagnosis.ViewModels.Search
                 Patients.Add(x);
             });
 
-            Statistic = new Statistic(Patients.Select(r => r.Holder as Patient));
+            Statistic = new Statistic(hrs);
         }
 
         public ObservableCollection<HrHolderSearchResultViewModel> Patients { get; private set; }

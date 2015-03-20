@@ -1,16 +1,22 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Models;
 using Diagnosis.ViewModels.Framework;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace Diagnosis.ViewModels.Search
 {
     internal class Exporter
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Exporter));
-        private const string defName = "sample";
+        private const string defName = "diagnosis export";
+        private const double hrIdColWidth = 13;
+        private const string uomHeader = "ед. изм.";
 
         public void ExportToXlsx(Statistic stats)
         {
@@ -32,60 +38,101 @@ namespace Diagnosis.ViewModels.Search
             ExcelPackage package = new ExcelPackage();
             ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Матрица");
 
-            var patientCols = 3;
+            // колонок на заголовок строки
+            var patientCols = 4;
+            // строк на заголовок колонок
             var headerRows = 1;
 
-            var rangeColStart = patientCols + 1;
-            var rangeColEnd = patientCols + stats.Words.Count;
-            var rangeRowStart = headerRows + 1;
-            var rangeRowEnd = headerRows + stats.Patients.Count;
+            int cIndex = 1, rIndex = 1; // индексация с 1
 
-            for (int r = 0; r < stats.Patients.Count; r++)
+            // добавляем значения
+            Dictionary<HealthRecord, int> additionalRows = new Dictionary<HealthRecord, int>();
+            foreach (var hr in stats.HealthRecords)
             {
-                for (int c = 0; c < stats.Words.Count; c++)
+                cIndex = 1;
+                foreach (var word in stats.Words)
                 {
-                    worksheet.Cells[r + 1, c + 1].Value = stats.PatientHasWord[r, c];
+                    int additionalRow = 0;
+
+                    if (stats.GridValues[hr][word].Bool.HasValue)
+                        worksheet.Cells[rIndex, cIndex].Value = stats.GridValues[hr][word].Bool;
+                    else if (stats.GridValues[hr][word].Measures != null)
+                    {
+                        Debug.Assert(stats.HasMeasuresFor(word));
+                        foreach (var measure in stats.GridValues[hr][word].Measures)
+                        {
+                            // При повторе слова с числом в одной записи — только это число в дополнительной строке.
+                            worksheet.Cells[rIndex + additionalRow, cIndex].Value = measure.Value;
+                            worksheet.Cells[rIndex + additionalRow, cIndex + 1].Value = measure.Uom != null ? measure.Uom.Abbr : null;
+                            additionalRow++;
+                        }
+                    }
+
+                    // есть измерение со словом - доп. колонка
+                    if (stats.HasMeasuresFor(word))
+                        cIndex++;
+
+                    cIndex++;
+                    additionalRows[hr] = Math.Max(additionalRows.GetValueOrDefault(hr), additionalRow - 1);
                 }
+                rIndex = rIndex + 1 + additionalRows[hr];
             }
-            // row headers
+
+            // заголовки строк
             worksheet.InsertColumn(1, patientCols);
-            for (int r = 0; r < stats.Patients.Count; r++)
+
+            rIndex = 1;
+            foreach (var hr in stats.HealthRecords)
             {
-                worksheet.Cells[r + 1, 1].Value = stats.Patients[r].LastName;
-                worksheet.Cells[r + 1, 2].Value = stats.Patients[r].IsMale;
-                worksheet.Cells[r + 1, 3].Value = stats.Patients[r].Age;
+                var pat = hr.GetPatient();
+                worksheet.Cells[rIndex, 1].Value = pat.FullNameOrCreatedAt;
+                worksheet.Cells[rIndex, 2].Value = pat.IsMale;
+                worksheet.Cells[rIndex, 3].Value = pat.Age;
+                worksheet.Cells[rIndex, 4].Value = hr.CreatedAt;
+                // доп. строки
+                rIndex += 1 + additionalRows[hr];
             }
-            // column headers
+            // заголовки колонок на заголовок строки
             worksheet.InsertRow(1, headerRows);
-            worksheet.Cells[1, 1].Value = "Фамилия";
+            worksheet.Cells[1, 1].Value = "Имя";
             worksheet.Cells[1, 2].Value = "Пол";
             worksheet.Cells[1, 3].Value = "Возраст";
+            worksheet.Cells[1, 4].Value = "Дата создания записи";
 
-            for (int c = 0; c < stats.Words.Count; c++)
+            cIndex = patientCols + 1;
+            // заголовки колонок со значениями
+            foreach (var word in stats.Words)
             {
-                worksheet.Cells[1, c + patientCols + 1].Value = stats.Words[c];
+                worksheet.Cells[1, cIndex++].Value = word;
+
+                // есть измерение со словом - доп. колонка
+                if (stats.HasMeasuresFor(word))
+                    worksheet.Cells[1, cIndex++].Value = uomHeader;
             }
+
+            // область значений
+            var rangeColStart = patientCols + 1;
+            var rangeColEnd = patientCols + stats.Words.Count + stats.WordsWithMeasure.Count;
+            var rangeRowStart = headerRows + 1;
+            var rangeRowEnd = headerRows + stats.HealthRecords.Count + additionalRows.Values.Sum();
 
             // format headers
-            using (var range = worksheet.Cells[1, 1, headerRows, rangeColEnd])
-            {
-                range.Style.Font.Bold = true;
-            }
+            worksheet.Cells[1, 1, headerRows, rangeColEnd].Style.Font.Bold = true;
+
             worksheet.Cells[1, patientCols, rangeRowEnd, patientCols].Style.Border.Right.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells[1, 1, 1, rangeColEnd].AutoFilter = true;
+            worksheet.Cells[1, 1, rangeRowEnd, rangeColEnd].AutoFitColumns();
             worksheet.View.FreezePanes(rangeRowStart, rangeColStart);
 
-            worksheet.Cells[1, 1, rangeRowEnd, rangeColEnd].AutoFitColumns();
-
-            //worksheet.Cells["A5:E5"].Style.Font.Bold = true;
+            // hr id column
+            worksheet.Cells[rangeRowStart, 4, rangeRowEnd, 4].Style.Numberformat.Format = "dd/mm/yy h:mm";
+            worksheet.Column(4).Width = hrIdColWidth;
 
             //worksheet.Cells[5, 3, 5, 5].Formula = string.Format("SUBTOTAL(9,{0})", new ExcelAddress(2, 3, 4, 3).Address);
-            //worksheet.Cells["C2:C5"].Style.Numberformat.Format = "#,##0";
-            //worksheet.Cells["D2:E5"].Style.Numberformat.Format = "#,##0.00";
 
             // format page
-            worksheet.HeaderFooter.OddHeader.CenteredText = "Матрица";
+            worksheet.HeaderFooter.OddHeader.CenteredText = "Эскпорт";
 
             worksheet.HeaderFooter.OddFooter.RightAlignedText =
                 string.Format("Стр. {0} / {1}", ExcelHeaderFooter.PageNumber, ExcelHeaderFooter.NumberOfPages);
@@ -95,11 +142,8 @@ namespace Diagnosis.ViewModels.Search
             //worksheet.PrinterSettings.RepeatRows = worksheet.Cells[1, 1, headerRows, rangeColEnd];
             //worksheet.PrinterSettings.RepeatColumns = worksheet.Cells[1, 1, rangeRowEnd, patientCols];
 
-            // Change the sheet view to show it in page layout mode
-            // worksheet.View.PageLayoutView = true;
-
             // set some document properties
-            package.Workbook.Properties.Title = "Матрица";
+            package.Workbook.Properties.Title = "Diagnosis Эскпорт";
             return package;
         }
 

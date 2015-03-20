@@ -61,15 +61,25 @@ namespace Diagnosis.Models
         }
 
         public virtual event NotifyCollectionChangedEventHandler ItemsChanged;
-
+        /// <summary>
+        /// Пациент, если запись на уровне пациента
+        /// </summary>
         public virtual Patient Patient { get; protected set; }
-
+        /// <summary>
+        /// Курс, если запись на уровне курса
+        /// </summary>
         public virtual Course Course { get; protected set; }
-
+        /// <summary>
+        /// Осмотр, если запись на уровне осмотра
+        /// </summary>
         public virtual Appointment Appointment { get; protected set; }
-
+        /// <summary>
+        /// Автор записи
+        /// </summary>
         public virtual Doctor Doctor { get; protected set; }
-
+        /// <summary>
+        /// В чьем списке запись
+        /// </summary>
         public virtual IHrsHolder Holder
         {
             get

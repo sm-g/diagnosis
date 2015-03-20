@@ -9,11 +9,20 @@ namespace Diagnosis.Models
 {
     public static class HrExtensions
     {
+        /// <summary>
+        /// Пациент, к которому относится запись
+        /// </summary>
+        /// <param name="hr"></param>
+        /// <returns></returns>
         public static Patient GetPatient(this HealthRecord hr)
         {
             return hr.Patient ?? (hr.Course != null ? hr.Course.Patient : hr.Appointment.Course.Patient);
         }
-
+        /// <summary>
+        /// Курс, к которому относится запись
+        /// </summary>
+        /// <param name="hr"></param>
+        /// <returns></returns>
         public static Course GetCourse(this HealthRecord hr)
         {
             return hr.Course ?? (hr.Appointment != null ? hr.Appointment.Course : null);

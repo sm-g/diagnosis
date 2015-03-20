@@ -372,7 +372,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return Result != null && Result.Statistic.Count == 0;
+                return Result != null && Result.Statistic.PatientsCount == 0;
             }
         }
 
