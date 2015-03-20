@@ -145,9 +145,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             Contract.Requires(tag.BlankType != toType);
             Contract.Requires(toType != BlankType.None && toType != BlankType.Query);
 
-            var uiFactory = new TaskFactory(TaskScheduler.FromCurrentSynchronizationContext());
-
-
             var t = new Task<bool>(() =>
             {
                 bool? result = null;
@@ -189,7 +186,8 @@ namespace Diagnosis.ViewModels.Autocomplete
                                 }
                                 meVm.OnDialogResult((res) =>
                                 {
-                                    tag.Blank = meVm.Measure;
+                                    if (res)
+                                        tag.Blank = meVm.Measure;
                                     result = res;
                                 });
                                 this.Send(Event.OpenDialog, meVm.AsParams(MessageKeys.Dialog));
@@ -205,7 +203,8 @@ namespace Diagnosis.ViewModels.Autocomplete
 
                         isVm.OnDialogResult((res) =>
                         {
-                            tag.Blank = isVm.SelectedIcd;
+                            if (res)
+                                tag.Blank = isVm.SelectedIcd;
                             result = res;
                         });
                         this.Send(Event.OpenDialog, isVm.AsParams(MessageKeys.Dialog));
