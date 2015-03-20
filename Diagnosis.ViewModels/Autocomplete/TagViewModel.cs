@@ -93,6 +93,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             this.autocomplete = parent;
             Reset();
+            IsDraggable = !autocomplete.SingleTag;
         }
 
         /// <summary>
@@ -105,6 +106,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             this.autocomplete = parent;
             Query = query;
+            IsDraggable = !autocomplete.SingleTag;
         }
 
 
@@ -121,6 +123,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             Blank = item;
             Entity = item;
+            IsDraggable = !autocomplete.SingleTag;
         }
 
 
@@ -146,12 +149,14 @@ namespace Diagnosis.ViewModels.Autocomplete
 
                     State = State.Typing;
 
-                    // show drag when type in last
-                    if (IsLast && !value.IsNullOrEmpty())
-                        IsDraggable = true;
 
                     _query = value ?? string.Empty;
                     Entity = null;
+
+                    // show drag when type in last
+                    if (IsLast)
+                        IsDraggable = !value.IsNullOrEmpty();
+
                     OnPropertyChanged("Query");
                 }
             }
@@ -230,7 +235,18 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             get
             {
-                return GetBlankType(Blank);
+                if (Blank is Word)
+                    return BlankType.Word;
+                if (Blank is Comment)
+                    return BlankType.Comment;
+                if (Blank is string)
+                    return BlankType.Query;
+                if (Blank is Measure)
+                    return BlankType.Measure;
+                if (Blank is IcdDisease)
+                    return BlankType.Icd;
+
+                return BlankType.None;
             }
             set
             {
@@ -376,8 +392,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                     _isLast = value;
 
                     // Last tag is not draggable before it has query
-                    if (value)
-                        IsDraggable = false;
+                    IsDraggable = !value || !Query.IsNullOrEmpty() || autocomplete.SingleTag;
 
                     OnPropertyChanged(() => IsLast);
                 }
@@ -535,24 +550,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-        public static BlankType GetBlankType(object blank)
-        {
-            if (blank is Word)
-                return BlankType.Word;
-            if (blank is Comment)
-                return BlankType.Comment;
-            if (blank is string)
-                return BlankType.Query;
-            if (blank == null)
-                return BlankType.None;
-            if (blank is Measure)
-                return BlankType.Measure;
-            if (blank is IcdDisease)
-                return BlankType.Icd;
-
-            throw new ArgumentOutOfRangeException("blank");
-        }
-
         public override string ToString()
         {
             return string.Format("tag q:{0}({3}) b:{1}({2})", Query, Blank, BlankType, State);
@@ -598,6 +595,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             // при редактировании нет сущностей
 
             Contract.Invariant(BlankType != BlankType.Query); // заготовка всегда сущность, если есть
+            Contract.Invariant((IsLast && Query.IsNullOrEmpty()) != IsDraggable || autocomplete.SingleTag); // последний пустой без маркера переноса
         }
 
     }

@@ -451,10 +451,8 @@ namespace Diagnosis.ViewModels.Screens
 
             if (HealthRecord != null)
             {
-                // завершаем теги
-                var tag = Autocomplete.Tags.Where(t => t.State == State.Typing).FirstOrDefault();
-                if (tag != null)
-                    Autocomplete.CompleteOnLostFocus(tag);
+                // завершаем теги               
+                Autocomplete.CompleteTypings();
 
                 var hr = HealthRecord.healthRecord;
                 HealthRecord.Dispose();

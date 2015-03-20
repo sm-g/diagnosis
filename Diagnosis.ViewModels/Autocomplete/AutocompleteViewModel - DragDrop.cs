@@ -60,19 +60,28 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public class DragSourceHandler : IDragSource
         {
+            private readonly AutocompleteViewModel master;
+
+            public DragSourceHandler(AutocompleteViewModel master)
+            {
+                this.master = master;
+            }
+
             /// <summary>
-            /// Data is tags without Last tag.
+            /// Data is tags without empty Last tag.
             /// </summary>
             /// <param name="dragInfo"></param>
             public void StartDrag(IDragInfo dragInfo)
             {
-                var tags = dragInfo.SourceItems.Cast<TagViewModel>().Where(t => !t.IsLast);
+                var tags = dragInfo.SourceItems.Cast<TagViewModel>().Where(t => !(t.State == State.Init && t.IsLast));
+                master.CompleteTypings();
+
                 dragInfo.StartDragWith(tags);
             }
 
             public bool CanStartDrag(IDragInfo dragInfo)
             {
-                var tags = dragInfo.SourceItems.Cast<TagViewModel>().Where(t => !t.IsLast);
+                var tags = dragInfo.SourceItems.Cast<TagViewModel>().Where(t => !(t.State == State.Init && t.IsLast));
                 return tags.Count() > 0;
             }
 

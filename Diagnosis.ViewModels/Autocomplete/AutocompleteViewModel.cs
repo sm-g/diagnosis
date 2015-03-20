@@ -89,7 +89,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             Suggestions = new ObservableCollection<SuggestionViewModel>();
 
             DropHandler = new AutocompleteViewModel.DropTargetHandler(this);
-            DragHandler = new AutocompleteViewModel.DragSourceHandler();
+            DragHandler = new AutocompleteViewModel.DragSourceHandler(this);
             IsDropTargetEnabled = true;
             IsDragSourceEnabled = true;
         }
@@ -521,10 +521,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                         OnEntitiesChanged();
                     }
                 }
-                else if (e.PropertyName == "IsSelected")
-                {
-                    tag.IsDraggable = tag.IsSelected;
-                }
             };
             return tag;
         }
@@ -768,6 +764,11 @@ namespace Diagnosis.ViewModels.Autocomplete
                 logger.Debug("CompleteOnLostFocus");
                 CompleteCommon(tag, prevSelectedSuggestion, true);
             }
+        }
+        public void CompleteTypings()
+        {
+            Tags.Where(t => t.State == State.Typing)
+                .ForEach(tag => CompleteOnLostFocus(tag));
         }
 
         private void CompleteEnding(TagViewModel tag)
