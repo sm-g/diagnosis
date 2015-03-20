@@ -1,7 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Linq;

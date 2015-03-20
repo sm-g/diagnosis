@@ -1,10 +1,8 @@
-﻿using GongSolutions.Wpf.DragDrop;
-using GongSolutions.Wpf.DragDrop.Utilities;
+﻿using Diagnosis.ViewModels.DragDrop;
+using GongSolutions.Wpf.DragDrop;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using Diagnosis.ViewModels.DragDrop;
 
 namespace Diagnosis.ViewModels.Autocomplete
 {
@@ -180,8 +178,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                     }
                     master.LastTag.IsSelected = false;
                 }
-
-
             }
         }
     }

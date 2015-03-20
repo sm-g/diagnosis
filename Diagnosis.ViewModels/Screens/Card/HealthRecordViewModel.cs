@@ -75,6 +75,7 @@ namespace Diagnosis.ViewModels.Screens
                 healthRecord.FromDay = value;
             }
         }
+
         public HealthRecordUnit Unit { get; set; }
 
         #endregion Model
@@ -105,8 +106,8 @@ namespace Diagnosis.ViewModels.Screens
         //        }
         //    }
         //}
-        #region DateEditor
 
+        #region DateEditor
 
         public DateOffsetViewModel DateOffset
         {
@@ -216,16 +217,15 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        void DateOffset_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void DateOffset_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "RoundedUnit" && ShowAsOffset)
             {
                 healthRecord.Unit = DateOffset.RoundedUnit.ToHealthRecordUnit();
             }
         }
-        #endregion
 
-
+        #endregion DateEditor
 
         public ICommand SendToSearchCommand
         {
@@ -248,7 +248,6 @@ namespace Diagnosis.ViewModels.Screens
                        });
             }
         }
-
 
         public override string ToString()
         {
@@ -286,7 +285,6 @@ namespace Diagnosis.ViewModels.Screens
                     OnPropertyChanged(() => AtAgeString);
                     OnPropertyChanged(() => AtAge);
                     break;
-
             }
         }
 

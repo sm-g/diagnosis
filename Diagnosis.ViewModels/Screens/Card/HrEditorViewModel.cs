@@ -31,7 +31,6 @@ namespace Diagnosis.ViewModels.Screens
             this.session = session;
 
             doctor = AuthorityController.CurrentDoctor;
-
         }
 
         [Obsolete("For xaml only.")]
@@ -123,6 +122,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         #region Commands
 
         public RelayCommand RevertCommand
@@ -266,7 +266,8 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
-        #endregion
+
+        #endregion Commands
 
         #region AutoComplete
 
@@ -279,7 +280,6 @@ namespace Diagnosis.ViewModels.Screens
                 OnPropertyChanged("Autocomplete");
                 OnPropertyChanged(() => SendToSearchCommand);
                 OnPropertyChanged(() => DeleteItemsCommand);
-
             }
         }
 
@@ -451,7 +451,7 @@ namespace Diagnosis.ViewModels.Screens
 
             if (HealthRecord != null)
             {
-                // завершаем теги               
+                // завершаем теги
                 Autocomplete.CompleteTypings();
 
                 var hr = HealthRecord.healthRecord;
@@ -483,6 +483,5 @@ namespace Diagnosis.ViewModels.Screens
                 OnPropertyChanged(e.PropertyName);
             }
         }
-
     }
 }

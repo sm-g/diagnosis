@@ -1,12 +1,11 @@
-﻿using Diagnosis.ViewModels.Autocomplete;
+﻿using Diagnosis.Models;
+using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.DragDrop;
 using GongSolutions.Wpf.DragDrop;
-using GongSolutions.Wpf.DragDrop.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using Diagnosis.ViewModels.DragDrop;
-using Diagnosis.Models;
+
 namespace Diagnosis.ViewModels.Screens
 {
     public partial class HrListViewModel : IDraggable, IDroppable

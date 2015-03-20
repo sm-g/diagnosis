@@ -2,14 +2,10 @@
 using Diagnosis.Common.Util;
 using Diagnosis.Models;
 using Diagnosis.Models.Enums;
-using Diagnosis.ViewModels.Autocomplete;
-using GongSolutions.Wpf.DragDrop;
-using GongSolutions.Wpf.DragDrop.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows;
@@ -206,6 +202,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;
+
         public HolderViewModel HolderVm { get; private set; }
 
         public INCCReadOnlyObservableCollection<ShortHealthRecordViewModel> HealthRecords { get { return hrManager.HealthRecords; } }
@@ -309,7 +306,6 @@ namespace Diagnosis.ViewModels.Screens
             get { return HealthRecords.Where(vm => vm.IsSelected).ToList(); }
         }
 
-
         #region Commands
 
         public ICommand AddHealthRecordCommand
@@ -318,11 +314,10 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                     {
-
                         var stratEdit = true;
                         this.Send(Event.AddHr, new object[] { holder, stratEdit }.AsParams(MessageKeys.Holder, MessageKeys.Boolean));
 
-                        // async?                       
+                        // async?
                     });
             }
         }
@@ -781,8 +776,6 @@ namespace Diagnosis.ViewModels.Screens
             vms.ForAll(setter);
         }
 
-
-
         public override string ToString()
         {
             return "HrList for " + holder.ToString();
@@ -881,8 +874,6 @@ namespace Diagnosis.ViewModels.Screens
                 base.Dispose(disposing);
             }
         }
-
-
     }
 
     [Serializable]

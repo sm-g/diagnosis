@@ -208,7 +208,8 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-                public bool IsDraggable
+
+        public bool IsDraggable
         {
             get
             {

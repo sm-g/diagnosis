@@ -1,8 +1,5 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Screens;
-using GongSolutions.Wpf.DragDrop;
-using GongSolutions.Wpf.DragDrop.Utilities;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -56,7 +53,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             this.allowSendToSearch = allowSendToSearch;
             this.allowConfidenceToggle = allowConfidenceToggle;
             this.singleTag = singleTag;
-
 
             Tags = new ObservableCollection<TagViewModel>();
             Tags.CollectionChanged += (s, e) =>
@@ -127,6 +123,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                     (tag) => tag != null);
             }
         }
+
         public RelayCommand<TagViewModel> ControlEnterCommand
         {
             get
@@ -205,6 +202,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             get { return Tags.Where(t => t.IsSelected).ToList(); }
         }
+
         public RelayCommand EditCommand
         {
             get
@@ -438,6 +436,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             get { return inDispose; }
         }
+
         /// <summary>
         /// Создает тег.
         /// </summary>
@@ -471,7 +470,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 CompleteOnConvert(tag, e.type);
                 {
-
                 }
             };
             tag.PropertyChanged += (s, e) =>
@@ -581,6 +579,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 Tags.Insert(index, tag);
             return tag;
         }
+
         /// <summary>
         /// Добавляет пустой тег рядом с другим.
         /// </summary>
@@ -637,6 +636,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             return result;
         }
+
         /// <summary>
         /// Возвращает сущности из завершенных тегов по порядку.
         /// </summary>
@@ -649,6 +649,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                  .ToList();
             return hios;
         }
+
         /// <summary>
         /// Возвращает сущности из выделенных завершенных тегов по порядку.
         /// </summary>
@@ -667,7 +668,6 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             return recognizer.OnlyWords && tag.BlankType != BlankType.Word ? Signalizations.Forbidden : Signalizations.None;
         }
-
 
         /// <summary>
         /// Завершает тег.
@@ -699,7 +699,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             var x = recognizer.ConvertBlank(tag, toType) //.ConfigureAwait<bool>(false);
                 .ContinueWith(t =>
                  {
-
                      if (t.Result)
                      {
                          Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
@@ -765,6 +764,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 CompleteCommon(tag, prevSelectedSuggestion, true);
             }
         }
+
         public void CompleteTypings()
         {
             Tags.Where(t => t.State == State.Typing)
@@ -843,6 +843,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 h(this, EventArgs.Empty);
             }
         }
+
         protected virtual void OnConfidencesChanged()
         {
             var h = ConfidencesChanged;
@@ -851,6 +852,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 h(this, EventArgs.Empty);
             }
         }
+
         [ContractInvariantMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
@@ -872,7 +874,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
             base.Dispose(disposing);
         }
-
 
         public void OnDrop(DragEventArgs e)
         {
@@ -908,7 +909,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-
         System.Windows.Input.ICommand IAutocompleteViewModel.EditCommand
         {
             get { return EditCommand; }
@@ -924,5 +924,4 @@ namespace Diagnosis.ViewModels.Autocomplete
             get { return ToggleConfidenceCommand; }
         }
     }
-
 }

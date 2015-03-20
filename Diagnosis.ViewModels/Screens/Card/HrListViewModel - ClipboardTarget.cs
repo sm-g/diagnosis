@@ -78,7 +78,6 @@ namespace Diagnosis.ViewModels.Screens
                     var hiosData = (TagData)ido.GetData(TagData.DataFormat.Name);
                     PasteTags(hiosData);
                 }
-
         }
 
         public bool CanPaste()
@@ -89,6 +88,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         #endregion IClipboardTarget
+
         /// <summary>
         /// Add HealthRecords before SelectedHealthRecords or to the end of list.
         /// </summary>
@@ -129,6 +129,7 @@ namespace Diagnosis.ViewModels.Screens
 
             logger.LogHrs("paste", hrData.Hrs);
         }
+
         /// <summary>
         /// Add HrItems to selected HealthRecords or create new HealthRecords with them.
         /// </summary>
@@ -154,7 +155,5 @@ namespace Diagnosis.ViewModels.Screens
             }
             logger.LogHrItemObjects("paste", data.ItemObjects);
         }
-
-
     }
 }

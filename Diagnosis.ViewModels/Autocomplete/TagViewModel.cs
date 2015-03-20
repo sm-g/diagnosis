@@ -1,12 +1,11 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.Common;
+using Diagnosis.Models;
 using log4net;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using Diagnosis.Common;
 using System.Windows;
-using GongSolutions.Wpf.DragDrop;
 
 namespace Diagnosis.ViewModels.Autocomplete
 {
@@ -14,29 +13,35 @@ namespace Diagnosis.ViewModels.Autocomplete
     public enum Signalizations
     {
         None,
+
         /// <summary>
         /// Тег содержит новое слово
         /// </summary>
         NewWord,
+
         /// <summary>
         /// Частичное измерение с неправильной единицей.
         /// </summary>
         PartialMeasure = 2,
+
         /// <summary>
         /// Некорректный тег (новый без заготовки).
         /// </summary>
         Forbidden = 4
     }
+
     /// <summary>
     /// Типы заготовок в теге.
     /// </summary>
     public enum BlankType
     {
         None,
+
         /// <summary>
         /// Строка-запрос
         /// </summary>
         Query,
+
         Comment,
         Word,
         Measure,
@@ -52,10 +57,12 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// Новый (пустой) - начальное состояние
         /// </summary>
         Init,
+
         /// <summary>
         /// Редактируется
         /// </summary>
         Typing,
+
         /// <summary>
         /// Завершен
         /// </summary>
@@ -65,7 +72,7 @@ namespace Diagnosis.ViewModels.Autocomplete
     public class TagViewModel : ViewModelBase
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(TagViewModel));
-        readonly IAutocompleteViewModel autocomplete;
+        private readonly IAutocompleteViewModel autocomplete;
         private object _blank;
         private bool _focused;
         private string _query;
@@ -109,7 +116,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             IsDraggable = !autocomplete.SingleTag;
         }
 
-
         /// <summary>
         /// Создает тег с сущностями.
         /// </summary>
@@ -126,8 +132,8 @@ namespace Diagnosis.ViewModels.Autocomplete
             IsDraggable = !autocomplete.SingleTag;
         }
 
-
         public event EventHandler Deleted;
+
         public event EventHandler<BlankTypeEventArgs> Converting;
 
         /// <summary>
@@ -148,7 +154,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                     Contract.Assume(!IsDeleteOnly);
 
                     State = State.Typing;
-
 
                     _query = value ?? string.Empty;
                     Entity = null;
@@ -254,8 +259,8 @@ namespace Diagnosis.ViewModels.Autocomplete
                 // replace ConvertTo with 4 bools?
             }
         }
-        #region AutocompleteRelated
 
+        #region AutocompleteRelated
 
         public RelayCommand EditCommand
         {
@@ -300,6 +305,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 });
             }
         }
+
         public VisibleRelayCommand<BlankType> ConvertToCommand
         {
             get
@@ -315,6 +321,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 });
             }
         }
+
         public VisibleRelayCommand ToggleConfidenceCommand
         {
             get
@@ -343,6 +350,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 });
             }
         }
+
         public VisibleRelayCommand AddRightCommand
         {
             get
@@ -356,7 +364,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                 });
             }
         }
-
 
         /// <summary>
         /// Тег не редактируется, можно только удалить.
@@ -378,7 +385,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         }
 
         /// <summary>
-        /// Специальный последний тег для набора текста по умолчанию. 
+        /// Специальный последний тег для набора текста по умолчанию.
         /// Не удаляется. Не копируется.
         /// Всегда есть, кроме случая, когда в автокомплите единствевнный тег.
         /// </summary>
@@ -403,10 +410,11 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             autocomplete.OnDrop(e);
         }
-        #endregion
 
+        #endregion AutocompleteRelated
 
         #region ViewRelated
+
         public Signalizations? Signalization
         {
             get
@@ -423,6 +431,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 }
             }
         }
+
         /// <summary>
         /// Редактируется (слово или коммент)
         /// </summary>
@@ -451,6 +460,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                     && BlankType != BlankType.Measure;
             }
         }
+
         /// <summary>
         /// Тег выделен
         /// </summary>
@@ -459,7 +469,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             get
             {
                 return _listItemFocused;
-
             }
             set
             {
@@ -472,6 +481,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 }
             }
         }
+
         public bool IsSelected
         {
             get
@@ -488,6 +498,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 }
             }
         }
+
         public bool IsDraggable
         {
             get
@@ -503,6 +514,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 }
             }
         }
+
         /// <summary>
         /// Radio group name
         /// </summary>
@@ -528,7 +540,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-        #endregion
+        #endregion ViewRelated
 
         public void Validate(Func<TagViewModel, Signalizations> filter = null)
         {
@@ -597,7 +609,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             Contract.Invariant(BlankType != BlankType.Query); // заготовка всегда сущность, если есть
             Contract.Invariant((IsLast && Query.IsNullOrEmpty()) != IsDraggable || autocomplete.SingleTag); // последний пустой без маркера переноса
         }
-
     }
 
     [Serializable]
@@ -612,7 +623,6 @@ namespace Diagnosis.ViewModels.Autocomplete
         }
     }
 
-
     [Serializable]
     public class BlankTypeEventArgs : EventArgs
     {
@@ -625,13 +635,13 @@ namespace Diagnosis.ViewModels.Autocomplete
         }
     }
 
-
     [Serializable]
     public class TagData
     {
         public static readonly DataFormat DataFormat = DataFormats.GetDataFormat("tag");
 
-        IList<ConfindenceHrItemObject> itemobjects;
+        private IList<ConfindenceHrItemObject> itemobjects;
+
         public IList<ConfindenceHrItemObject> ItemObjects { get { return itemobjects; } }
 
         public TagData(IList<ConfindenceHrItemObject> itemobjects)

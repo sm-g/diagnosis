@@ -276,6 +276,7 @@ namespace Diagnosis.ViewModels
                 res.Dispose();
             }
         }
+
         private void healthRecord_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             var hr = sender as HealthRecord;
@@ -335,6 +336,7 @@ namespace Diagnosis.ViewModels
                 }
             }
         }
+
         private void SetRoundedOffsetUnitMonthOrYear()
         {
             var months = DateHelper.GetTotalMonthsBetween(Now, Year.Value, Month.Value);

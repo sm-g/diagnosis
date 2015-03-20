@@ -74,7 +74,7 @@ namespace Diagnosis.ViewModels.Screens
             {
             };
 
-            handlers = new EventMessageHandlersManager(new EventMessageHandler[] { 
+            handlers = new EventMessageHandlersManager(new EventMessageHandler[] {
                 this.Subscribe(Event.DeleteHolder, (e) =>
                 {
                     var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
@@ -104,7 +104,7 @@ namespace Diagnosis.ViewModels.Screens
                         app.Course.RemoveAppointment(app);
                         saver.SaveWithCleanup(viewer.OpenedPatient);
                     }
-                }), 
+                }),
                 this.Subscribe(Event.AddHr, (e) =>
                     {
                     var h= e.GetValue<IHrsHolder>(MessageKeys.Holder);
@@ -514,7 +514,6 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
