@@ -49,6 +49,7 @@ namespace Diagnosis.ViewModels.Screens
         private bool _focused;
         private bool inSetSelected;
         private bool disposed;
+        private VisibleRelayCommand<bool> _moveHr;
 
         public HrListViewModel(IHrsHolder holder, Action<HealthRecord, HrData.HrInfo> filler, Action<IList<ConfindenceHrItemObject>> syncer)
         {
@@ -205,8 +206,6 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;
-        private VisibleRelayCommand<bool> _moveHr;
-
         public HolderViewModel HolderVm { get; private set; }
 
         public INCCReadOnlyObservableCollection<ShortHealthRecordViewModel> HealthRecords { get { return hrManager.HealthRecords; } }
@@ -503,6 +502,7 @@ namespace Diagnosis.ViewModels.Screens
                     _canReorder = value;
 
                     MoveHrCommand.IsVisible = value;
+                    HealthRecords.ForAll(x => x.IsDraggable = value);
                     OnPropertyChanged(() => CanReorder);
                 }
             }

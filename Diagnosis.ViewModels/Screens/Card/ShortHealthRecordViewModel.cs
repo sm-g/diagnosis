@@ -14,6 +14,7 @@ namespace Diagnosis.ViewModels.Screens
         private readonly Patient patient;
         private bool _focused;
         private string _extra;
+        private bool _draggable;
 
         public ShortHealthRecordViewModel(HealthRecord hr)
         {
@@ -204,6 +205,21 @@ namespace Diagnosis.ViewModels.Screens
                         return string.Format("{0} {1}",
                             DateOffset.RoundedOffset,
                             DateOffsetFormatter.GetUnitString(DateOffset.RoundedOffset, DateOffset.RoundedUnit));
+                }
+            }
+        }
+                public bool IsDraggable
+        {
+            get
+            {
+                return _draggable;
+            }
+            set
+            {
+                if (_draggable != value)
+                {
+                    _draggable = value;
+                    OnPropertyChanged(() => IsDraggable);
                 }
             }
         }

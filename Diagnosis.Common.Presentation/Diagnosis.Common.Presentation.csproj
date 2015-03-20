@@ -149,6 +149,7 @@
     <Compile Include="Controls\Common\CommaList.xaml.cs">
       <DependentUpon>CommaList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Common\DragMarker.cs" />
     <Compile Include="Controls\Common\RadioListBox.xaml.cs">
       <DependentUpon>RadioListBox.xaml</DependentUpon>
     </Compile>

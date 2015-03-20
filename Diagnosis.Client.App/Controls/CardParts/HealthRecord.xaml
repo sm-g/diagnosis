@@ -49,12 +49,42 @@
             </Style>
         </Grid.Style>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10" />
             <ColumnDefinition Width="20" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="25" />
         </Grid.ColumnDefinitions>
 
-        <CheckBox IsChecked="{Binding IsChecked}"
+        <Thumb x:Name="drag"
+               Foreground="Gray">
+            <Thumb.Style>
+                <Style TargetType="{x:Type Thumb}">
+                    <Setter Property="Template"
+                            Value="{StaticResource DragThumbTemplate}" />
+
+                    <Setter Property="Visibility"
+                            Value="Hidden" />
+
+                    <Style.Triggers>
+                        <DataTrigger Value="True">
+                            <DataTrigger.Binding>
+                                <MultiBinding Converter="{StaticResource AndBoolean}">
+                                    <Binding Path="IsMouseOver"
+                                             RelativeSource="{RelativeSource AncestorType=ListBoxItem}" />
+                                    <Binding Path="IsDraggable" />
+                                </MultiBinding>
+                            </DataTrigger.Binding>
+                            
+                            <Setter Property="Visibility"
+                                    Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Thumb.Style>
+        </Thumb>
+
+        <CheckBox Grid.Column="1"
+                  IsChecked="{Binding IsChecked}"
                   Focusable="False"
                   PreviewMouseUp="CheckBox_PreviewMouseUp"
                   HorizontalAlignment="Stretch"
@@ -80,7 +110,7 @@
             </CheckBox.Style>
         </CheckBox>
 
-        <Grid Grid.Column="1">
+        <Grid Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
@@ -100,9 +130,9 @@
                            Text="{Binding DateOffsetString, Mode=OneWay}" />
             </StackPanel>
             <TextBox x:Name="order"
-                       Grid.Row="1"
-                       Grid.Column="1"
-                       Text="{Binding Ord, Mode=TwoWay}" />
+                     Grid.Row="1"
+                     Grid.Column="1"
+                     Text="{Binding Ord, Mode=TwoWay}" />
             <TextBlock x:Name="extra"
                        Grid.Row="1"
                        Grid.Column="1"
@@ -112,17 +142,18 @@
         </Grid>
 
         <StackPanel x:Name="buttons"
-                    Grid.Column="2"
+                    Grid.Column="3"
                     Style="{StaticResource hidingButtons}">
             <StackPanel.Resources>
-                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                <Style TargetType="Button"
+                       BasedOn="{StaticResource {x:Type Button}}">
                     <Setter Property="Height"
                             Value="20" />
                     <Setter Property="Width"
                             Value="20" />
                 </Style>
             </StackPanel.Resources>
-            <Button Command="{Binding SendToSearchCommand}"                    
+            <Button Command="{Binding SendToSearchCommand}"
                     Margin="5,0,0,0"
                     ToolTip="Искать (Ctrl+F)">
                 <Image Source="{StaticResource findImage}" />
