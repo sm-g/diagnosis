@@ -18,7 +18,7 @@ namespace Diagnosis.Client.App.Controls.CardParts
             InitializeComponent();
             Loaded += (s, e) =>
             {
-                debugFocus.IsChecked = true;
+                //debugFocus.IsChecked = true;
 #if !DEBUG
                 debugFocus.IsChecked = false;
                 debug.Visibility = System.Windows.Visibility.Collapsed;

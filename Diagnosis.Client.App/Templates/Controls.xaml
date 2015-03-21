@@ -65,11 +65,6 @@
         <Border Cursor="SizeAll"
                 SnapsToDevicePixels="True"
                 Background="Transparent">
-            <!--<Rectangle Height="{TemplateBinding Height}"
-                       Margin="0 2"
-                       Width="7"
-                       Fill="{StaticResource squareDotsBrush}">
-            </Rectangle>-->
             <diag:DragMarker IsCircle="True"
                              Margin="0 2"
                              Width="8" />

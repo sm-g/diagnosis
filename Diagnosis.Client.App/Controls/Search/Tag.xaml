@@ -16,48 +16,14 @@
 
     <DockPanel>
         <DockPanel.Style>
+            <!--restore style-->
             <Style TargetType="DockPanel" />
         </DockPanel.Style>
-        <Thumb x:Name="drag"
-               DockPanel.Dock="Left"
-               Foreground="Gray"
-               Width="15">
-            <Thumb.Style>
-                <Style TargetType="{x:Type Thumb}">
-                    <Setter Property="Template"
-                            Value="{StaticResource DragCircleThumbTemplate}" />
 
-                    <Setter Property="Visibility"
-                            Value="Hidden" />
-                    <Style.Triggers>
-                        <DataTrigger Value="True">
-                            <DataTrigger.Binding>
-                                <MultiBinding Converter="{StaticResource AndBoolean}">
-                                    <Binding Path="IsMouseOver"
-                                                 RelativeSource="{RelativeSource AncestorType=ListBoxItem}" />
-                                    <Binding Path="IsDraggable" />
-                                </MultiBinding>
-                            </DataTrigger.Binding>
-
-                            <Setter Property="Visibility"
-                                    Value="Visible" />
-                        </DataTrigger>
-                        <!--or-->
-                        <!--<DataTrigger Value="True">
-                            <DataTrigger.Binding>
-                                <MultiBinding Converter="{StaticResource AndBoolean}">
-                                    <Binding Path="IsSelected" />
-                                    <Binding Path="IsDraggable" />
-                                </MultiBinding>
-                            </DataTrigger.Binding>
-
-                            <Setter Property="Visibility"
-                                    Value="Visible" />
-                        </DataTrigger>-->
-                    </Style.Triggers>
-                </Style>
-            </Thumb.Style>
-        </Thumb>
+        <diag:DragControl DockPanel.Dock="Left"
+                          Width="15"
+                          Foreground="Gray"
+                          IsCircle="True" />
 
         <TextBox x:Name="query"
                  diag:FocusExtension.IsFocused="{Binding IsTextBoxFocused, Mode=TwoWay}"

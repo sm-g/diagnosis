@@ -31,6 +31,18 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
+    <!--<UserControl.Style>
+        <Style>
+            <Style.Triggers>
+        <Trigger SourceName="drag"
+                 Property="IsFocused"
+                 Value="True">
+            <Setter Property="IsSelected"
+                    Value="True" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Style>-->
 
     <Grid>
         <Grid.Style>
@@ -55,33 +67,7 @@
             <ColumnDefinition Width="25" />
         </Grid.ColumnDefinitions>
 
-        <Thumb x:Name="drag"
-               Foreground="Gray">
-            <Thumb.Style>
-                <Style TargetType="{x:Type Thumb}">
-                    <Setter Property="Template"
-                            Value="{StaticResource DragThumbTemplate}" />
-
-                    <Setter Property="Visibility"
-                            Value="Hidden" />
-
-                    <Style.Triggers>
-                        <DataTrigger Value="True">
-                            <DataTrigger.Binding>
-                                <MultiBinding Converter="{StaticResource AndBoolean}">
-                                    <Binding Path="IsMouseOver"
-                                             RelativeSource="{RelativeSource AncestorType=ListBoxItem}" />
-                                    <Binding Path="IsDraggable" />
-                                </MultiBinding>
-                            </DataTrigger.Binding>
-                            
-                            <Setter Property="Visibility"
-                                    Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Thumb.Style>
-        </Thumb>
+        <diag:DragControl Foreground="Gray" />
 
         <CheckBox Grid.Column="1"
                   IsChecked="{Binding IsChecked}"
@@ -129,10 +115,10 @@
                 <TextBlock Grid.Row="1"
                            Text="{Binding DateOffsetString, Mode=OneWay}" />
             </StackPanel>
-            <TextBox x:Name="order"
+            <!--<TextBox x:Name="order"
                      Grid.Row="1"
                      Grid.Column="1"
-                     Text="{Binding Ord, Mode=TwoWay}" />
+                     Text="{Binding Ord, Mode=TwoWay}" />-->
             <TextBlock x:Name="extra"
                        Grid.Row="1"
                        Grid.Column="1"
