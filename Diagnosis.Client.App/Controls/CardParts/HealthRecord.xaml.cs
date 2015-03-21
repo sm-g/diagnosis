@@ -18,6 +18,7 @@ namespace Diagnosis.Client.App.Controls.CardParts
 #if !DEBUG
                 order.Visibility = System.Windows.Visibility.Collapsed;
 #endif
+                order.Visibility = System.Windows.Visibility.Collapsed;
             };
         }
 

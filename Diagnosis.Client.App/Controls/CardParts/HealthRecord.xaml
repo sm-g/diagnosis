@@ -31,18 +31,6 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-    <!--<UserControl.Style>
-        <Style>
-            <Style.Triggers>
-        <Trigger SourceName="drag"
-                 Property="IsFocused"
-                 Value="True">
-            <Setter Property="IsSelected"
-                    Value="True" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </UserControl.Style>-->
 
     <Grid>
         <Grid.Style>
@@ -115,10 +103,10 @@
                 <TextBlock Grid.Row="1"
                            Text="{Binding DateOffsetString, Mode=OneWay}" />
             </StackPanel>
-            <!--<TextBox x:Name="order"
+            <TextBox x:Name="order"
                      Grid.Row="1"
                      Grid.Column="1"
-                     Text="{Binding Ord, Mode=TwoWay}" />-->
+                     Text="{Binding Ord, Mode=TwoWay}" />
             <TextBlock x:Name="extra"
                        Grid.Row="1"
                        Grid.Column="1"
