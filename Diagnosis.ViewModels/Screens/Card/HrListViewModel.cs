@@ -6,12 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Diagnostics;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -26,7 +26,7 @@ namespace Diagnosis.ViewModels.Screens
         /// <summary>
         /// If set, selection changes not meaningfull.
         /// </summary>
-        internal readonly FlagActionWrapper<IEnumerable<ShortHealthRecordViewModel>> preserveSelected;
+        internal readonly FlagActionWrapper<IList<ShortHealthRecordViewModel>> preserveSelected;
 
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HrListViewModel));
         private static HrViewer hrViewer = new HrViewer();
@@ -66,7 +66,13 @@ namespace Diagnosis.ViewModels.Screens
                 logger.DebugFormat("(bulk) selected in order\n{0}", string.Join("\n", selectedOrder));
             });
 
-            preserveSelected = new FlagActionWrapper<IEnumerable<ShortHealthRecordViewModel>>((hrs) => { hrs.ForEach(vm => vm.IsSelected = true); });
+            preserveSelected = new FlagActionWrapper<IList<ShortHealthRecordViewModel>>((hrs) =>
+            {
+                hrs.ForEach(vm => vm.IsSelected = true);
+                // fix new selected item appears in listbox after movement hrs from diff categories in grouped by category
+                // TODO fix when diff createdAt
+                HealthRecords.Except(hrs).ForEach(x => x.IsSelected = false);
+            });
             hrManager = new HealthRecordManager(holder, onHrVmPropChanged: (s, e) =>
             {
                 var hrvm = s as ShortHealthRecordViewModel;
@@ -303,7 +309,7 @@ namespace Diagnosis.ViewModels.Screens
 
 #endif
 
-        public IEnumerable<ShortHealthRecordViewModel> SelectedHealthRecords
+        public IList<ShortHealthRecordViewModel> SelectedHealthRecords
         {
             get { return HealthRecords.Where(vm => vm.IsSelected).ToList(); }
         }
@@ -396,28 +402,10 @@ namespace Diagnosis.ViewModels.Screens
 
                     int current = GetCurrentSelectedIndex(up);
 
-                    int newIndex = current;
-                    if (up)
-                    {
-                        if (current > 0)
-                            newIndex = current - 1;
-                    }
-                    else
-                    {
-                        if (current < HealthRecordsView.Count - 1)
-                            newIndex = current + 1;
-                    }
-
-                    // разные группы
-                    var border = GetGroupObject(HealthRecordsView[newIndex]) != GetGroupObject(SelectedHealthRecord);
-                    var group = GetGroupObject(HealthRecordsView[newIndex]);
-
-                    if (up && border)
-                        newIndex = current;
-                    // вниз — через 2, если не над границей группы и не в конце
-                    if (!up && !border)
-                        newIndex++;
-
+                    object group;
+                    bool crossBorder;
+                    int newIndex = GetMovementTargetIndex(up, current, out group, out crossBorder);
+                    //var x = newIndex < HealthRecordsView.Count ? HealthRecordsView[newIndex] : HealthRecordsView[newIndex - 1];
                     Reorder(SelectedHealthRecords, newIndex, group);
 
                     logger.DebugFormat("end move hrs");
@@ -427,21 +415,57 @@ namespace Diagnosis.ViewModels.Screens
                         return false;
 
                     int current = GetCurrentSelectedIndex(up);
+                    // нельзя перемещать 
+                    // за границы
+                    if (up && current == 0 || !up && current >= HealthRecordsView.Count - 1)
+                        return false;
 
-                    if (up)
-                        return current > 0;
-                    else
-                        return current < HealthRecordsView.Count - 1;
+                    object targetGroup;
+                    bool crossBorder;
+                    int newIndex = GetMovementTargetIndex(up, current, out targetGroup, out crossBorder);
+                    // и в друрую группу, если нельзя дропнуть в нее первую выбранную запись
+                    return CanDropTo(SelectedHealthRecord.ToEnumerable(), targetGroup);
                 }));
             }
         }
 
         /// <summary>
-        /// Индекс текущей записи при переупорядочивании.
+        /// Индекс целевой позиции в представлении при переупорядочивании.
+        /// </summary>
+        /// <param name="up">Направление перемещения записей</param>
+        /// <param name="current">Индекс текущей записи в представлении</param>
+        /// <param name="targetGroup">Объект целевой группы</param>
+        /// <param name="crossBorder">Целевая группа не совпадает с группой SelectedHealthRecord</param>
+        /// <returns></returns>
+        private int GetMovementTargetIndex(bool up, int current, out object targetGroup, out bool crossBorder)
+        {
+            int newIndex = current;
+            if (up && current > 0)
+                newIndex--;
+            else if (!up && current < HealthRecordsView.Count - 1)
+                newIndex++;
+
+            targetGroup = GetGroupObject(HealthRecordsView[newIndex]);
+            crossBorder = targetGroup != GetGroupObject(SelectedHealthRecord);
+
+            // под границей вверх - оставляем индекс прежним, будет меняться группа
+            // не над границей группы вниз — через 2 (move = remove + insert)
+            if (up && crossBorder)
+                newIndex = current;
+            else if (!up && !crossBorder)
+                newIndex++;
+
+            // над границей вниз - меняем группу, в конце вниз - отдельный случай
+
+            return newIndex;
+        }
+
+        /// <summary>
+        /// Индекс текущей записи в представлении при переупорядочивании.
         /// </summary>
         /// <param name="up">Направление перемещения записей</param>
         /// <returns></returns>
-        private int GetCurrentSelectedIndex(bool up)
+        internal int GetCurrentSelectedIndex(bool up)
         {
             var selectedIndexes = SelectedHealthRecords.Select(v => HealthRecordsView.IndexOf(v));
             var allNear = selectedIndexes.OrderBy(x => x).IsSequential();
@@ -654,7 +678,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private object GetGroupObject(ShortHealthRecordViewModel vm)
+        internal object GetGroupObject(ShortHealthRecordViewModel vm)
         {
             switch (Grouping)
             {
@@ -700,17 +724,22 @@ namespace Diagnosis.ViewModels.Screens
         /// Can drop to group.
         /// </summary>
         /// <param name="vms"></param>
-        /// <param name="group"></param>
+        /// <param name="group">CollectionViewGroup or CollectionViewGroup.Name.</param>
         /// <returns></returns>
-        public bool CanDropTo(IEnumerable<ShortHealthRecordViewModel> vms, CollectionViewGroup group)
+        public bool CanDropTo(IEnumerable<ShortHealthRecordViewModel> vms, object group)
         {
+            if (!CanReorder)
+                return false;
+
+            if (group is CollectionViewGroup)
+                group = ((CollectionViewGroup)group).Name;
+
             // группы не важны
             if (group == null)
             {
                 Contract.Assume(Grouping == HrViewGroupingColumn.None);
                 return CanReorder;
             }
-            return false;
 
             // изменяем порядок внутри группы
             switch (Grouping)
@@ -719,7 +748,8 @@ namespace Diagnosis.ViewModels.Screens
                     return true;
 
                 case HrViewGroupingColumn.GroupingCreatedAt:
-                    return vms.All(vm => vm.GroupingCreatedAt == (group.Name as string)); // если все в одной группе
+                    Contract.Assume(group is string);
+                    return vms.All(vm => vm.GroupingCreatedAt == (group as string)); // если все в одной группе
                 default:
                     break;
             }
@@ -731,7 +761,7 @@ namespace Diagnosis.ViewModels.Screens
             return col.ToString();
         }
 
-        private void Reorder(IEnumerable<object> data, int insertView, object group)
+        private void Reorder(IEnumerable<object> data, int insertView, object targetGroup)
         {
             Contract.Requires(data.All(o => o is ShortHealthRecordViewModel));
             // don't change selection
@@ -741,20 +771,23 @@ namespace Diagnosis.ViewModels.Screens
 
             // insertView [0..view.Count]
             bool aboveBorder = false;
-            if (0 < insertView && insertView < view.Count && group != null)
+            if (0 < insertView && insertView < view.Count && targetGroup != null)
             {
                 // gong can show adoner in both groups, above and below border
+                // --- gr1
+                // ord 0
+                // --- gr2
+                // ord 1
 
                 var hrView = HealthRecordsView[insertView];
                 var hrPrevView = HealthRecordsView[insertView - 1];
 
-                // var groups = view.Groups;
                 // разные группы и у верхнего элемента — целевая
                 aboveBorder = GetGroupObject(hrPrevView) != GetGroupObject(hrView)
-                    && group == GetGroupObject(hrPrevView);
+                    && targetGroup == GetGroupObject(hrPrevView);
             }
 
-            hrManager.Reorder(hrs, HealthRecordsView, insertView, group, aboveBorder, SetGroupObject);
+            hrManager.Reorder(hrs, HealthRecordsView, insertView, targetGroup, aboveBorder, SetGroupObject);
         }
 
         private void SetHrExtra(IList<ShortHealthRecordViewModel> vms)

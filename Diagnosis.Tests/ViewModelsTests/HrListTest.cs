@@ -205,13 +205,9 @@ namespace Tests
         {
             using (var card = new CardViewModel(a[5], true))
             {
-                card.HrList.AddHealthRecordCommand.Execute(null);
-                var hr0 = card.HrList.HealthRecords.Last();
-                card.HrList.AddHealthRecordCommand.Execute(null);
-                var hr1 = card.HrList.HealthRecords.Last();
-                card.HrList.AddHealthRecordCommand.Execute(null);
-                var hr2 = card.HrList.HealthRecords.Last();
-
+                var hr0 = AddHrToCard(card);
+                var hr1 = AddHrToCard(card);
+                var hr2 = AddHrToCard(card);
                 card.HrList.Sorting = HrViewSortingColumn.CreatedAt;
                 card.HrList.Grouping = HrViewGroupingColumn.Category;
 
@@ -221,18 +217,20 @@ namespace Tests
                 // 2 cat
                 // 1
 
-                hr0.healthRecord.Category = cat[1];
-                hr1.healthRecord.Category = cat[2];
-                hr2.healthRecord.Category = cat[1];
+                hr0.Category = cat[1];
+                hr1.Category = cat[2];
+                hr2.Category = cat[1];
 
-                card.HrList.SelectedHealthRecord = hr0;
+                card.HrList.SelectHealthRecord(hr0);
                 card.HrList.MoveHrSelectionCommand.Execute(true); // up
 
-                Assert.AreEqual(hr1, card.HrList.SelectedHealthRecord);
+                // move selection to last in view
+                Assert.AreEqual(hr1, card.HrList.SelectedHealthRecord.healthRecord);
             }
         }
 
         #endregion
+        #region CurCopyPaste
 
         [TestMethod]
         public void CopyPasteHr()
@@ -336,23 +334,18 @@ namespace Tests
                 // Assert.AreNotEqual(hr[20].UpdatedAt, new20.UpdatedAt);
             }
         }
+        #endregion
+        #region Movement
+
         [TestMethod]
         public void Reorder()
         {
             using (var card = new CardViewModel(a[5], true))
             {
-                card.HrList.AddHealthRecordCommand.Execute(null);
-                var hr0 = card.HrList.HealthRecords.Last();
-                hr0.healthRecord.AddItems(new Comment("a").ToEnumerable());
-                card.HrList.AddHealthRecordCommand.Execute(null);
-                var hr1 = card.HrList.HealthRecords.Last();
-                hr1.healthRecord.AddItems(new Comment("b").ToEnumerable());
-                card.HrList.AddHealthRecordCommand.Execute(null);
-                var hr2 = card.HrList.HealthRecords.Last();
-                hr2.healthRecord.AddItems(new Comment("c").ToEnumerable());
-                card.HrList.AddHealthRecordCommand.Execute(null);
-                var hr3 = card.HrList.HealthRecords.Last();
-                hr3.healthRecord.AddItems(new Comment("d").ToEnumerable());
+                var hr0 = AddHrToCard(card, "a");
+                var hr1 = AddHrToCard(card, "b");
+                var hr2 = AddHrToCard(card, "c");
+                var hr3 = AddHrToCard(card, "d");
 
                 // hrs -> a b c d
                 card.SaveHealthRecords(card.HrList, new ListEventArgs<HealthRecord>(null));
@@ -381,43 +374,28 @@ namespace Tests
 
             }
         }
+
         [TestMethod]
         public void ReorderDeleted()
         {
             using (var card = new CardViewModel(a[5], true))
             {
-                card.HrList.AddHealthRecordCommand.Execute(null);
-                var hr0 = card.HrList.HealthRecords.Last();
-                hr0.healthRecord.AddItems(new Comment("a").ToEnumerable());
-                card.HrList.AddHealthRecordCommand.Execute(null);
-                var hr1 = card.HrList.HealthRecords.Last();
-                hr1.healthRecord.AddItems(new Comment("b").ToEnumerable());
-                card.HrList.AddHealthRecordCommand.Execute(null);
-                var hr2 = card.HrList.HealthRecords.Last();
-                hr2.healthRecord.AddItems(new Comment("c").ToEnumerable());
-                card.HrList.AddHealthRecordCommand.Execute(null);
-                var hr3 = card.HrList.HealthRecords.Last();
-                hr3.healthRecord.AddItems(new Comment("d").ToEnumerable());
+                var hr0 = AddHrToCard(card, "a");
+                var hr1 = AddHrToCard(card, "b");
+                var hr2 = AddHrToCard(card, "c");
+                var hr3 = AddHrToCard(card, "d");
 
                 // hrs -> a b c d
                 card.SaveHealthRecords(card.HrList, new ListEventArgs<HealthRecord>(null));
 
-                Assert.AreEqual(0, hr0.Ord);
-                Assert.AreEqual(1, hr1.Ord);
-                Assert.AreEqual(2, hr2.Ord);
-                Assert.AreEqual(3, hr3.Ord);
-
-                hr2.healthRecord.IsDeleted = true;
+                hr2.IsDeleted = true;
 
                 // hrs -> a b (c) d
 
                 card.HrList.Sorting = HrViewSortingColumn.Ord;
                 card.HrList.Grouping = HrViewGroupingColumn.None;
 
-                Assert.IsTrue(card.HrList.CanReorder);
                 var vms = card.HrList.HealthRecords[1].ToEnumerable();
-                Assert.IsTrue(card.HrList.CanDropTo(vms, null));
-
                 card.HrList.hrManager.Reorder(vms, card.HrList.HealthRecords, 3);
                 // hrs -> a (c) d b
 
@@ -428,7 +406,7 @@ namespace Tests
                 Assert.AreEqual(1, hr2.Ord);
                 Assert.AreEqual(2, hr3.Ord);
 
-                hr2.healthRecord.IsDeleted = false;
+                hr2.IsDeleted = false;
                 // hrs -> a c d b
                 Assert.AreEqual(0, card.HrList.HealthRecords[0].Ord);
                 Assert.AreEqual(1, card.HrList.HealthRecords[1].Ord);
@@ -436,5 +414,168 @@ namespace Tests
                 Assert.AreEqual(3, card.HrList.HealthRecords[3].Ord);
             }
         }
+
+        [TestMethod]
+        public void MoveToOtherCategory()
+        {
+            using (var card = new CardViewModel(a[5], true))
+            {
+                card.HrList.Sorting = HrViewSortingColumn.Ord;
+                card.HrList.Grouping = HrViewGroupingColumn.Category;
+
+                var hr0 = AddHrToCard(card, "a");
+                var hr1 = AddHrToCard(card, "b");
+                var hr2 = AddHrToCard(card, "c");
+                hr0.Category = cat[1];
+                hr1.Category = cat[2];
+                hr2.Category = cat[2];
+
+                card.HrList.SelectHealthRecord(hr0);
+
+                Assert.IsTrue(card.HrList.MoveHrCommand.CanExecute(false));
+
+                card.HrList.MoveHrCommand.Execute(false); //down
+                Assert.AreEqual(cat[2], hr0.Category);
+            }
+        }
+        [TestMethod]
+        public void MoveToEnd()
+        {
+            using (var card = new CardViewModel(a[5], true))
+            {
+                card.HrList.Sorting = HrViewSortingColumn.Ord;
+                card.HrList.Grouping = HrViewGroupingColumn.None;
+
+                var hr0 = AddHrToCard(card, "a");
+                var hr1 = AddHrToCard(card, "b");
+                var hr3 = AddHrToCard(card, "c");
+
+                card.HrList.SelectHealthRecord(hr0);
+
+                Assert.IsTrue(card.HrList.MoveHrCommand.CanExecute(false));
+                card.HrList.MoveHrCommand.Execute(false); //down
+                Assert.IsTrue(card.HrList.MoveHrCommand.CanExecute(false));
+                card.HrList.MoveHrCommand.Execute(false); //down
+
+                Assert.AreEqual(hr0, card.HrList.HealthRecordsView.Last().healthRecord);
+            }
+        }
+        [TestMethod]
+        public void CanMoveFirstLast()
+        {
+            using (var card = new CardViewModel(a[5], true))
+            {
+                card.HrList.Sorting = HrViewSortingColumn.Ord;
+                card.HrList.Grouping = HrViewGroupingColumn.None;
+
+                var hr0 = AddHrToCard(card, "a");
+                var hr1 = AddHrToCard(card, "b");
+
+                card.HrList.SelectHealthRecord(hr0);
+
+                Assert.IsTrue(card.HrList.MoveHrCommand.CanExecute(false)); // down
+                Assert.IsFalse(card.HrList.MoveHrCommand.CanExecute(true)); // up
+
+                card.HrList.SelectHealthRecord(hr1);
+
+                Assert.IsFalse(card.HrList.MoveHrCommand.CanExecute(false)); // down
+                Assert.IsTrue(card.HrList.MoveHrCommand.CanExecute(true)); // up
+            }
+        }
+
+        [TestMethod]
+        public void CanMoveGroupingCreatedAt()
+        {
+            using (var card = new CardViewModel(a[5], true))
+            {
+                card.HrList.Sorting = HrViewSortingColumn.Ord;
+                card.HrList.Grouping = HrViewGroupingColumn.GroupingCreatedAt;
+
+                var hr0 = AddHrToCard(card, "a");
+                var hr1 = AddHrToCard(card, "b");
+                var hr2 = AddHrToCard(card, "c");
+                var hr3 = AddHrToCard(card, "d");
+
+                var dtOld = new DateTime(2015, 1, 1);
+                var dtNow = DateTime.Now;
+                (hr0 as IHaveAuditInformation).CreatedAt = dtOld;
+                (hr1 as IHaveAuditInformation).CreatedAt = dtOld;
+                (hr2 as IHaveAuditInformation).CreatedAt = dtNow;
+                (hr3 as IHaveAuditInformation).CreatedAt = dtNow;
+
+                // old
+                // a
+                // b
+                // now
+                // c
+                // d
+
+                // можно перемещать только в пределах группы
+                card.HrList.SelectHealthRecord(hr0);
+
+                Assert.IsTrue(card.HrList.MoveHrCommand.CanExecute(false)); // down
+                Assert.IsFalse(card.HrList.MoveHrCommand.CanExecute(true)); // up
+
+                card.HrList.SelectHealthRecord(hr1);
+
+                Assert.IsFalse(card.HrList.MoveHrCommand.CanExecute(false)); // down
+                Assert.IsTrue(card.HrList.MoveHrCommand.CanExecute(true)); // up
+
+                card.HrList.SelectHealthRecord(hr2);
+
+                Assert.IsTrue(card.HrList.MoveHrCommand.CanExecute(false)); // down
+                Assert.IsFalse(card.HrList.MoveHrCommand.CanExecute(true)); // up
+
+                card.HrList.SelectHealthRecord(hr3);
+
+                Assert.IsFalse(card.HrList.MoveHrCommand.CanExecute(false)); // down
+                Assert.IsTrue(card.HrList.MoveHrCommand.CanExecute(true)); // up
+            }
+        }
+
+        [TestMethod]
+        public void CanDropGroupingCreatedAt()
+        {
+            using (var card = new CardViewModel(a[5], true))
+            {
+                card.HrList.Sorting = HrViewSortingColumn.Ord;
+                card.HrList.Grouping = HrViewGroupingColumn.GroupingCreatedAt;
+
+                var hr0 = AddHrToCard(card, "a");
+                var hr1 = AddHrToCard(card, "b");
+                var hr2 = AddHrToCard(card, "c");
+                var hr3 = AddHrToCard(card, "d");
+
+                var dtOld = new DateTime(2015, 1, 1);
+                var dtNow = DateTime.Now;
+                (hr0 as IHaveAuditInformation).CreatedAt = dtOld;
+                (hr1 as IHaveAuditInformation).CreatedAt = dtOld;
+                (hr2 as IHaveAuditInformation).CreatedAt = dtNow;
+                (hr3 as IHaveAuditInformation).CreatedAt = dtNow;
+
+                // old
+                // a
+                // b
+                // now
+                // c
+                // d
+
+                // можно перемещать только в пределах группы
+                var group = card.HrList.GetGroupObject(card.HrList.HealthRecords[0]);
+                Assert.IsTrue(card.HrList.CanDropTo(card.HrList.HealthRecords.Take(2), group));
+                Assert.IsFalse(card.HrList.CanDropTo(card.HrList.HealthRecords.Skip(1).Take(2), group));
+            }
+        }
+
+        private static HealthRecord AddHrToCard(CardViewModel card, string comment = null)
+        {
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            var hr0 = card.HrList.HealthRecords.Last();
+            if (comment != null)
+                hr0.healthRecord.AddItems(new Comment(comment).ToEnumerable());
+            return hr0.healthRecord;
+        }
+        #endregion
+
     }
 }

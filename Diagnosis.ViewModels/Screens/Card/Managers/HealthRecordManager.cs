@@ -104,7 +104,7 @@ namespace Diagnosis.ViewModels.Screens
             });
         }
 
-        public void Reorder(IEnumerable<ShortHealthRecordViewModel> moved, IList<ShortHealthRecordViewModel> view, int insertView, object group,
+        public void Reorder(IEnumerable<ShortHealthRecordViewModel> moved, IList<ShortHealthRecordViewModel> view, int insertView, object targetGroup,
                bool aboveBorder, Action<ShortHealthRecordViewModel, object> SetGroupObject)
         {
             Contract.Requires(insertView >= 0);
@@ -143,7 +143,7 @@ namespace Diagnosis.ViewModels.Screens
                     old, oldView, dest, insertView,
                     hr, toCompareHr,
                     aboveBorderOrAtEnd,
-                    group);
+                    targetGroup);
                 if (old != dest)
                 {
                     inner.Move(old, dest);
@@ -153,10 +153,10 @@ namespace Diagnosis.ViewModels.Screens
             // Dragging to other group makes in two passes: first change group, second reorder items in that group.
 
             // set group
-            if (group != null)
+            if (targetGroup != null)
                 foreach (var hr in moved)
                 {
-                    SetGroupObject(hr, group);
+                    SetGroupObject(hr, targetGroup);
                 }
 
             // set order
