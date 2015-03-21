@@ -415,7 +415,7 @@ namespace Diagnosis.ViewModels.Screens
                         return false;
 
                     int current = GetCurrentSelectedIndex(up);
-                    // нельзя перемещать 
+                    // нельзя перемещать
                     // за границы
                     if (up && current == 0 || !up && current >= HealthRecordsView.Count - 1)
                         return false;
@@ -572,12 +572,12 @@ namespace Diagnosis.ViewModels.Screens
                             // сначала сортируем по группам
                             if (Grouping != HrViewGroupingColumn.None)
                             {
-                                var groupingSd = new SortDescription(Group2SortString(Grouping), ListSortDirection.Ascending);
+                                var groupingSd = new SortDescription(Grouping.ToString(), ListSortDirection.Ascending);
                                 view.SortDescriptions.Add(groupingSd);
                             }
 
                             // основная сортировка, если уже нет
-                            if (value != HrViewSortingColumn.Ord && Group2Sort(Grouping) != value)
+                            if (value != HrViewSortingColumn.Ord && Grouping.ToSortingColumn() != value)
                             {
                                 var sort = new SortDescription(value.ToString(), ListSortDirection.Ascending);
                                 view.SortDescriptions.Add(sort);
@@ -615,9 +615,9 @@ namespace Diagnosis.ViewModels.Screens
                     using (view.DeferRefresh())
                     {
                         // убрать сортировку по старой группировке, если Sorting не по ней
-                        var oldGroupingSd = new SortDescription(Group2SortString(_group), ListSortDirection.Ascending);
+                        var oldGroupingSd = new SortDescription(_group.ToString(), ListSortDirection.Ascending);
                         var oldind = view.SortDescriptions.IndexOf(oldGroupingSd);
-                        if (Sorting != Group2Sort(_group) && oldind >= 0)
+                        if (Sorting != _group.ToSortingColumn() && oldind >= 0)
                         {
                             view.SortDescriptions.RemoveAt(oldind);
                         }
@@ -626,7 +626,7 @@ namespace Diagnosis.ViewModels.Screens
                         if (value != HrViewGroupingColumn.None)
                         {
                             // сортировка по новой группировке первая
-                            var groupingSd = new SortDescription(Group2SortString(value), ListSortDirection.Ascending);
+                            var groupingSd = new SortDescription(value.ToString(), ListSortDirection.Ascending);
                             var ind = view.SortDescriptions.IndexOf(groupingSd);
                             if (ind > 0)
                             {
@@ -646,36 +646,69 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private HrViewGroupingColumn Sort2Group(HrViewSortingColumn col)
+        /// <summary>
+        /// Can drop to group.
+        /// </summary>
+        /// <param name="vms"></param>
+        /// <param name="group">CollectionViewGroup or CollectionViewGroup.Name.</param>
+        /// <returns></returns>
+        internal bool CanDropTo(IEnumerable<ShortHealthRecordViewModel> vms, object group)
         {
-            switch (col)
+            if (!CanReorder)
+                return false;
+
+            if (group is CollectionViewGroup)
+                group = ((CollectionViewGroup)group).Name;
+
+            // группы не важны
+            if (group == null)
             {
-                case HrViewSortingColumn.Category:
-                    return HrViewGroupingColumn.Category;
-
-                case HrViewSortingColumn.CreatedAt:
-                    return HrViewGroupingColumn.GroupingCreatedAt;
-
-                case HrViewSortingColumn.SortingDate:
-                default:
-                    return HrViewGroupingColumn.None;
+                Contract.Assume(Grouping == HrViewGroupingColumn.None);
+                return CanReorder;
             }
-        }
 
-        private HrViewSortingColumn? Group2Sort(HrViewGroupingColumn col)
-        {
-            switch (col)
+            // изменяем порядок внутри группы
+            switch (Grouping)
             {
                 case HrViewGroupingColumn.Category:
-                    return HrViewSortingColumn.Category;
+                    return true;
 
                 case HrViewGroupingColumn.GroupingCreatedAt:
-                    return HrViewSortingColumn.CreatedAt;
-
-                case HrViewGroupingColumn.None:
+                    Contract.Assume(group is string);
+                    return vms.All(vm => vm.GroupingCreatedAt == (group as string)); // если все в одной группе
                 default:
-                    return null;
+                    break;
             }
+            return false;
+        }
+
+        private void Reorder(IEnumerable<object> data, int insertView, object targetGroup)
+        {
+            Contract.Requires(data.All(o => o is ShortHealthRecordViewModel));
+            // don't change selection
+            Contract.Ensures(Contract.OldValue<IEnumerable<ShortHealthRecordViewModel>>(SelectedHealthRecords).ScrambledEquals(SelectedHealthRecords));
+
+            var hrs = data.Cast<ShortHealthRecordViewModel>().ToList();
+
+            // insertView [0..view.Count]
+            bool aboveBorder = false;
+            if (0 < insertView && insertView < view.Count && targetGroup != null)
+            {
+                // gong can show adoner in both groups, above and below border
+                // --- gr1
+                // ord 0
+                // --- gr2
+                // ord 1
+
+                var hrView = HealthRecordsView[insertView];
+                var hrPrevView = HealthRecordsView[insertView - 1];
+
+                // разные группы и у верхнего элемента — целевая
+                aboveBorder = GetGroupObject(hrPrevView) != GetGroupObject(hrView)
+                    && targetGroup == GetGroupObject(hrPrevView);
+            }
+
+            hrManager.Reorder(hrs, HealthRecordsView, insertView, targetGroup, aboveBorder, SetGroupObject);
         }
 
         internal object GetGroupObject(ShortHealthRecordViewModel vm)
@@ -718,76 +751,6 @@ namespace Diagnosis.ViewModels.Screens
                 default:
                     break;
             }
-        }
-
-        /// <summary>
-        /// Can drop to group.
-        /// </summary>
-        /// <param name="vms"></param>
-        /// <param name="group">CollectionViewGroup or CollectionViewGroup.Name.</param>
-        /// <returns></returns>
-        public bool CanDropTo(IEnumerable<ShortHealthRecordViewModel> vms, object group)
-        {
-            if (!CanReorder)
-                return false;
-
-            if (group is CollectionViewGroup)
-                group = ((CollectionViewGroup)group).Name;
-
-            // группы не важны
-            if (group == null)
-            {
-                Contract.Assume(Grouping == HrViewGroupingColumn.None);
-                return CanReorder;
-            }
-
-            // изменяем порядок внутри группы
-            switch (Grouping)
-            {
-                case HrViewGroupingColumn.Category:
-                    return true;
-
-                case HrViewGroupingColumn.GroupingCreatedAt:
-                    Contract.Assume(group is string);
-                    return vms.All(vm => vm.GroupingCreatedAt == (group as string)); // если все в одной группе
-                default:
-                    break;
-            }
-            return false;
-        }
-
-        private string Group2SortString(HrViewGroupingColumn col)
-        {
-            return col.ToString();
-        }
-
-        private void Reorder(IEnumerable<object> data, int insertView, object targetGroup)
-        {
-            Contract.Requires(data.All(o => o is ShortHealthRecordViewModel));
-            // don't change selection
-            Contract.Ensures(Contract.OldValue<IEnumerable<ShortHealthRecordViewModel>>(SelectedHealthRecords).ScrambledEquals(SelectedHealthRecords));
-
-            var hrs = data.Cast<ShortHealthRecordViewModel>().ToList();
-
-            // insertView [0..view.Count]
-            bool aboveBorder = false;
-            if (0 < insertView && insertView < view.Count && targetGroup != null)
-            {
-                // gong can show adoner in both groups, above and below border
-                // --- gr1
-                // ord 0
-                // --- gr2
-                // ord 1
-
-                var hrView = HealthRecordsView[insertView];
-                var hrPrevView = HealthRecordsView[insertView - 1];
-
-                // разные группы и у верхнего элемента — целевая
-                aboveBorder = GetGroupObject(hrPrevView) != GetGroupObject(hrView)
-                    && targetGroup == GetGroupObject(hrPrevView);
-            }
-
-            hrManager.Reorder(hrs, HealthRecordsView, insertView, targetGroup, aboveBorder, SetGroupObject);
         }
 
         private void SetHrExtra(IList<ShortHealthRecordViewModel> vms)

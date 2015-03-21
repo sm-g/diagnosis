@@ -36,9 +36,42 @@ namespace Diagnosis.Models.Enums
         [LocalizableDescription(@"Sorting_Category")]
         Category,
 
-        //[LocalizableDescription(@"Sorting_Date")]
-        //GroupingDate,
         [LocalizableDescription(@"Sorting_CreatedAt")]
         GroupingCreatedAt
+    }
+
+    public static class HrViewConverter
+    {
+        public static HrViewGroupingColumn ToGroupingColumn(this HrViewSortingColumn col)
+        {
+            switch (col)
+            {
+                case HrViewSortingColumn.Category:
+                    return HrViewGroupingColumn.Category;
+
+                case HrViewSortingColumn.CreatedAt:
+                    return HrViewGroupingColumn.GroupingCreatedAt;
+
+                case HrViewSortingColumn.SortingDate:
+                default:
+                    return HrViewGroupingColumn.None;
+            }
+        }
+
+        public static HrViewSortingColumn? ToSortingColumn(this HrViewGroupingColumn col)
+        {
+            switch (col)
+            {
+                case HrViewGroupingColumn.Category:
+                    return HrViewSortingColumn.Category;
+
+                case HrViewGroupingColumn.GroupingCreatedAt:
+                    return HrViewSortingColumn.CreatedAt;
+
+                case HrViewGroupingColumn.None:
+                default:
+                    return null;
+            }
+        }
     }
 }
