@@ -1,9 +1,7 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
 
 namespace Tests
 {
@@ -51,15 +49,27 @@ namespace Tests
 
             Assert.AreEqual(1, s.Result.Statistic.Patients.Count);
             Assert.AreEqual(a[1], s.Result.Patients[0].Children[0].Children[0].Holder);
+            Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
         }
 
         [TestMethod]
-        public void AllPatientWordsInStat()
+        public void WordsFromHrsInStat()
         {
             s.Autocomplete.AddTag(w[5]);
             s.SearchCommand.Execute(null);
 
-            Assert.AreEqual(10, s.Result.Statistic.Words.Count);
+            Assert.AreEqual(3, s.Result.Statistic.Words.Count); // 10 - все слова пациента
+            Assert.AreEqual(0, s.Result.Statistic.WordsWithMeasure.Count);
+        }
+
+        [TestMethod]
+        public void WordsWithMeasureInStat()
+        {
+            s.Autocomplete.AddTag(w[1]);
+            s.SearchCommand.Execute(null);
+
+            Assert.AreEqual(1, s.Result.Statistic.WordsWithMeasure.Count);
+            Assert.AreEqual(w[3], s.Result.Statistic.WordsWithMeasure[0]);
         }
 
         [TestMethod]

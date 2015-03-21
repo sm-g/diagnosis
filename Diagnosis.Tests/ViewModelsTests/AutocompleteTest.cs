@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Data;
 using Diagnosis.Models;
+using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Autocomplete;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
@@ -233,6 +234,9 @@ namespace Tests
         [TestMethod]
         public void AddMeasureWhenTyping()
         {
+            var d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
+            AuthorityController.TryLogIn(d1);
+
             var hre = new Diagnosis.ViewModels.Screens.HrEditorViewModel(session);
             hre.Load(session.Get<HealthRecord>(IntToGuid<HealthRecord>(1)));
             var a = hre.Autocomplete;
