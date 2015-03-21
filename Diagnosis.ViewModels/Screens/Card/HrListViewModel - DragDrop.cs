@@ -94,7 +94,7 @@ namespace Diagnosis.ViewModels.Screens
                 else if (dropInfo.FromSameCollection())
                 {
                     var vms = ExtractData(dropInfo.Data).Cast<ShortHealthRecordViewModel>();
-                    if (master.CanMove(vms, dropInfo.TargetGroup))
+                    if (master.CanDropTo(vms, dropInfo.TargetGroup))
                     {
                         dropInfo.Effects = DragDropEffects.Move;
                         dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;

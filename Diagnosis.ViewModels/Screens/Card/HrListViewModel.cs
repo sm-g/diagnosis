@@ -11,9 +11,11 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Diagnostics;
 
 namespace Diagnosis.ViewModels.Screens
 {
+    [DebuggerDisplay("HrList for {holder}")]
     public partial class HrListViewModel : ViewModelBase
     {
         /// <summary>
@@ -392,15 +394,7 @@ namespace Diagnosis.ViewModels.Screens
 
                     logger.DebugFormat("begin move hrs, up={0}", up);
 
-                    var hrs = SelectedHealthRecords;
-                    var selectedInd = hrs.Select(v => HealthRecordsView.IndexOf(v));
-                    var allNear = selectedInd.OrderBy(x => x).IsSequential();
-
-                    int current;
-                    if (allNear)
-                        current = up ? selectedInd.Min() : selectedInd.Max();
-                    else
-                        current = HealthRecordsView.IndexOf(SelectedHealthRecord);
+                    int current = GetCurrentSelectedIndex(up);
 
                     int newIndex = current;
                     if (up)
@@ -424,7 +418,7 @@ namespace Diagnosis.ViewModels.Screens
                     if (!up && !border)
                         newIndex++;
 
-                    Reorder(hrs, newIndex, group);
+                    Reorder(SelectedHealthRecords, newIndex, group);
 
                     logger.DebugFormat("end move hrs");
                 }, (up) =>
@@ -432,22 +426,32 @@ namespace Diagnosis.ViewModels.Screens
                     if (SelectedHealthRecord == null || !CanReorder)
                         return false;
 
-                    var selectedInd = SelectedHealthRecords.Select(v => HealthRecordsView.IndexOf(v));
-                    var allNear = selectedInd.OrderBy(x => x).IsSequential();
+                    int current = GetCurrentSelectedIndex(up);
 
-                    int current;
-                    if (allNear)
-                        current = up ? selectedInd.Min() : selectedInd.Max();
-                    else
-                        current = HealthRecordsView.IndexOf(SelectedHealthRecord);
-
-                    int newIndex = current;
                     if (up)
                         return current > 0;
                     else
                         return current < HealthRecordsView.Count - 1;
                 }));
             }
+        }
+
+        /// <summary>
+        /// Индекс текущей записи при переупорядочивании.
+        /// </summary>
+        /// <param name="up">Направление перемещения записей</param>
+        /// <returns></returns>
+        private int GetCurrentSelectedIndex(bool up)
+        {
+            var selectedIndexes = SelectedHealthRecords.Select(v => HealthRecordsView.IndexOf(v));
+            var allNear = selectedIndexes.OrderBy(x => x).IsSequential();
+
+            int current;
+            if (allNear)
+                current = up ? selectedIndexes.Min() : selectedIndexes.Max(); // ближайшая по направлению перемещения
+            else
+                current = HealthRecordsView.IndexOf(SelectedHealthRecord); // первая запись
+            return current;
         }
 
         #endregion Commands
@@ -692,7 +696,13 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public bool CanMove(IEnumerable<ShortHealthRecordViewModel> vms, CollectionViewGroup group)
+        /// <summary>
+        /// Can drop to group.
+        /// </summary>
+        /// <param name="vms"></param>
+        /// <param name="group"></param>
+        /// <returns></returns>
+        public bool CanDropTo(IEnumerable<ShortHealthRecordViewModel> vms, CollectionViewGroup group)
         {
             // группы не важны
             if (group == null)
@@ -774,11 +784,6 @@ namespace Diagnosis.ViewModels.Screens
             }
 
             vms.ForAll(setter);
-        }
-
-        public override string ToString()
-        {
-            return "HrList for " + holder.ToString();
         }
 
         /// <summary>

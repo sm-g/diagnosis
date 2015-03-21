@@ -150,6 +150,8 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
 
+            // Dragging to other group makes in two passes: first change group, second reorder items in that group.
+
             // set group
             if (group != null)
                 foreach (var hr in moved)

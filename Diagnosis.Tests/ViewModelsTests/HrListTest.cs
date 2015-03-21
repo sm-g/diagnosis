@@ -367,7 +367,7 @@ namespace Tests
 
                 Assert.IsTrue(card.HrList.CanReorder);
                 var vms = card.HrList.HealthRecords[1].ToEnumerable();
-                Assert.IsTrue(card.HrList.CanMove(vms, null));
+                Assert.IsTrue(card.HrList.CanDropTo(vms, null));
 
                 card.HrList.hrManager.Reorder(vms, card.HrList.HealthRecords, 0);
                 // hrs -> b a c d
@@ -416,7 +416,7 @@ namespace Tests
 
                 Assert.IsTrue(card.HrList.CanReorder);
                 var vms = card.HrList.HealthRecords[1].ToEnumerable();
-                Assert.IsTrue(card.HrList.CanMove(vms, null));
+                Assert.IsTrue(card.HrList.CanDropTo(vms, null));
 
                 card.HrList.hrManager.Reorder(vms, card.HrList.HealthRecords, 3);
                 // hrs -> a (c) d b
