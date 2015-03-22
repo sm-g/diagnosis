@@ -31,7 +31,6 @@ namespace Diagnosis.ViewModels.Screens
         private int? _appYearUpper;
         private SearchResultViewModel _res;
 
-        private HrSearcher searcher = new HrSearcher();
         private EventMessageHandlersManager msgManager;
 
         #endregion Fields
@@ -346,7 +345,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public AutocompleteViewModel Autocomplete { get; private set; }
+        public AutocompleteViewModel Autocomplete { get;  set; }
 
         public SearchResultViewModel Result
         {
@@ -430,7 +429,7 @@ namespace Diagnosis.ViewModels.Screens
         private void Search()
         {
             MakeOptions();
-            var hrs = searcher.Search(Session, Options);
+            var hrs =  new HrSearcher().Search(Session, Options);
             Result = new SearchResultViewModel(hrs);
             ControlsVisible = false;
         }

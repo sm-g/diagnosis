@@ -21,5 +21,18 @@ namespace Diagnosis.Client.App.Controls.FormParts
 
         public static readonly DependencyProperty CategoryMultiSelectionProperty =
             DependencyProperty.Register("CategoryMultiSelection", typeof(bool), typeof(CategoryChooser));
+
+
+
+        public ItemsPanelTemplate ItemsPanelTemplate
+        {
+            get { return (ItemsPanelTemplate)GetValue(ItemsPanelTemplateProperty); }
+            set { SetValue(ItemsPanelTemplateProperty, value); }
+        }
+
+        public static readonly DependencyProperty ItemsPanelTemplateProperty =
+            DependencyProperty.Register("ItemsPanelTemplate", typeof(ItemsPanelTemplate), typeof(CategoryChooser));
+
+
     }
 }

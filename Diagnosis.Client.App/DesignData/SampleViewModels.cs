@@ -8,6 +8,19 @@ using System.Linq;
 
 namespace Diagnosis.Client.App.DesignData
 {
+    public class SampleSearchViewModel : SearchViewModel
+    {
+        public SampleSearchViewModel()
+        {
+            //Autocomplete = new AutocompleteViewModel(
+            //    new Recognizer(Session) { OnlyWords = true, AddNotPersistedToSuggestions = false },
+            //    AutocompleteViewModel.OptionsMode.Search,
+            //    Mocks.hr.HrItems.Select(x => x.CHIO));
+
+            ControlsVisible = true;
+            AllWords = true;
+        }
+    }
     public class SampleTagViewModel : TagViewModel
     {
         public SampleTagViewModel()

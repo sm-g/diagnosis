@@ -8,10 +8,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              x:Name="search"
              mc:Ignorable="d"
              d:DesignHeight="400"
+             d:DataContext="{d:DesignInstance design:SampleSearchViewModel, IsDesignTimeCreatable=True}"
              MinWidth="300">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -37,8 +39,8 @@
                                Command="{Binding OpenCommand}" />
             </InputBindingCollection>
         </ResourceDictionary>
-    </UserControl.Resources>    
-    
+    </UserControl.Resources>
+
     <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -63,7 +65,7 @@
                                     Value="{DynamicResource HelpFontSize}" />
                         </Style>
                     </StackPanel.Resources>
-                    
+
                     <StackPanel DataContext="{Binding Options}"
                                 Visibility="{Binding DataContext.Result, ElementName=search, Converter={StaticResource NotNullToVis}}">
                         <StackPanel Orientation="Horizontal"
@@ -71,13 +73,13 @@
                             <TextBlock Text="любое из слов: "
                                        Visibility="{Binding AllWords, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
                             <TextBlock Visibility="{Binding AllWords, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Run Text="все слова: " /><Run Text="{Binding AndScope, StringFormat='{}{0}: ', Converter={StaticResource ScopeToLabel}}" />
+                                <Run Text="все слова " /><Run Text="{Binding QueryScope, StringFormat='{}{0}: ', Converter={StaticResource ScopeToLabel}}" />
                             </TextBlock>
                             <diag:CommaList ItemsSource="{Binding Words}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal"
                                     Visibility="{Binding Categories.Count, Converter={StaticResource MoreThanToVisibility}}">
-                            <TextBlock Text="{Binding HrCategories, Source={StaticResource Resources}, Converter={StaticResource ToLower}, StringFormat={}{0}: }"></TextBlock>
+                            <TextBlock Text="{Binding HrCategories, Source={StaticResource Resources}, Converter={StaticResource ToLower}, StringFormat='{}{0}: '}"></TextBlock>
                             <diag:CommaList ItemsSource="{Binding Categories}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal"
@@ -134,9 +136,7 @@
                             <Run BaselineAlignment="Center">Все слова</Run>
                                 <ComboBox ItemsSource="{Binding Source={diag:EnumListExtension {x:Type diag:HealthRecordQueryAndScope}}}"
                                           SelectedItem="{Binding QueryScope, Mode=TwoWay}"
-                                          ItemTemplate="{StaticResource EnumComboTemplate}"
-                                          VerticalContentAlignment="Bottom" />
-                                <!--TODO with metro-->
+                                          ItemTemplate="{StaticResource EnumComboTemplate}" />
                             </TextBlock>
                         </CheckBox>
                     </Grid>
@@ -144,7 +144,14 @@
                 <Label Content="{Binding HrCategories, Source={StaticResource Resources}}" />
                 <DockPanel Style="{StaticResource formLine}"
                            HorizontalAlignment="Left">
-                    <forms:CategoryChooser CategoryMultiSelection="{StaticResource True}" />
+                    <forms:CategoryChooser CategoryMultiSelection="{StaticResource True}">
+                        <forms:CategoryChooser.ItemsPanelTemplate>
+                            <ItemsPanelTemplate>
+                                <diag:UniformGridWithOrientation Orientation="Vertical"
+                                                                 Columns="2" />
+                            </ItemsPanelTemplate>
+                        </forms:CategoryChooser.ItemsPanelTemplate>
+                    </forms:CategoryChooser>
                 </DockPanel>
                 <!--<DockPanel>
                     <TextBlock Style="{StaticResource lineHeader}">Дата осмотра</TextBlock>
@@ -220,8 +227,8 @@
               Visibility="{Binding Result, Converter={StaticResource NotNullToVis}}"
               Background="{x:Static SystemColors.ControlBrush}">
             <diag:WrapPanelLastChildFill  DataContext="{Binding Result}"
-                                              Margin="5"
-                                              Visibility="{Binding Statistic.Count, Converter={StaticResource MoreThanToVisibility}}">
+                                          Margin="5"
+                                          Visibility="{Binding Statistic.PatientsCount, Converter={StaticResource MoreThanToVisibility}}">
                 <TextBlock>
                     Пациентов: <Run Text="{Binding Statistic.PatientsCount, Mode=OneWay}" />,
                     М: <Run Text="{Binding Statistic.Males, Mode=OneWay}" />
