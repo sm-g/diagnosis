@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
+using Diagnosis.Models.Enums;
 using System;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -140,32 +141,11 @@ namespace Diagnosis.ViewModels.Screens
             get { return DateOffset.GetSortingDate(); }
         }
 
-        public string GroupingDate
+        public HrCreatedAtOffset GroupingCreatedAt
         {
             get
             {
-                string res = "";
-                return res;
-            }
-        }
-
-        public string GroupingCreatedAt
-        {
-            get
-            {
-                string res;
-                var span = (DateTime.Today - CreatedAt).Days;
-                if (span < 1)
-                    res = "сегодня";
-                else if (span < 2)
-                    res = "вчера";
-                else if (span < 7)
-                    res = "за неделю";
-                else if (span < 30)
-                    res = "за последний месяц";
-                else
-                    res = "давно";
-                return res;
+                return new HrCreatedAtOffset(CreatedAt);
             }
         }
 
@@ -289,7 +269,6 @@ namespace Diagnosis.ViewModels.Screens
                 case "FromYear":
                 case "Unit":
                     OnPropertyChanged(() => SortingDate);
-                    OnPropertyChanged(() => GroupingDate);
                     OnPropertyChanged(() => DateOffsetString);
                     break;
 

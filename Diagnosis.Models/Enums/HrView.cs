@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common.Util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
@@ -67,6 +68,27 @@ namespace Diagnosis.Models.Enums
 
                 case HrViewGroupingColumn.GroupingCreatedAt:
                     return HrViewSortingColumn.CreatedAt;
+
+                case HrViewGroupingColumn.None:
+                default:
+                    return null;
+            }
+        }
+        /// <summary>
+        /// Свойство для сортировки при группировке по колонке.
+        /// </summary>
+        /// <param name="col"></param>
+        /// <returns></returns>
+        [Pure]
+        public static string ToSortingProperty(this HrViewGroupingColumn col)
+        {
+            switch (col)
+            {
+                case HrViewGroupingColumn.Category:
+                    return col.ToString();
+
+                case HrViewGroupingColumn.GroupingCreatedAt:
+                    return col.ToString();
 
                 case HrViewGroupingColumn.None:
                 default:

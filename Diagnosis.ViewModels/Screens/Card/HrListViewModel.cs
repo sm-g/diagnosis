@@ -557,6 +557,7 @@ namespace Diagnosis.ViewModels.Screens
             }
             set
             {
+                Contract.Ensures(Grouping == Contract.OldValue(Grouping));
                 if (_sort != value)
                 {
 #if DEBUG
@@ -564,30 +565,23 @@ namespace Diagnosis.ViewModels.Screens
                         view.SortDescriptions.Clear();
                     else
 #endif
-                    {
                         using (view.DeferRefresh())
                         {
                             view.SortDescriptions.Clear();
 
                             // сначала сортируем по группам
-                            if (Grouping != HrViewGroupingColumn.None)
-                            {
-                                var groupingSd = new SortDescription(Grouping.ToString(), ListSortDirection.Ascending);
-                                view.SortDescriptions.Add(groupingSd);
-                            }
+                            AddSortForGrouping(Grouping);
 
-                            // основная сортировка, если уже нет
-                            if (value != HrViewSortingColumn.Ord && Grouping.ToSortingColumn() != value)
-                            {
-                                var sort = new SortDescription(value.ToString(), ListSortDirection.Ascending);
+                            // основная сортировка
+                            var sort = new SortDescription(value.ToString(), ListSortDirection.Ascending);
+                            if (view.SortDescriptions.IndexOf(sort) == -1)
                                 view.SortDescriptions.Add(sort);
-                            }
 
                             // сортировка по порядку всегда есть
-                            var ord = new SortDescription(HrViewSortingColumn.Ord.ToString(), ListSortDirection.Ascending);
-                            view.SortDescriptions.Add(ord);
+                            var ordSd = new SortDescription(HrViewSortingColumn.Ord.ToString(), ListSortDirection.Ascending);
+                            if (view.SortDescriptions.IndexOf(ordSd) == -1)
+                                view.SortDescriptions.Add(ordSd);
                         }
-                    }
 
                     _sort = value;
 
@@ -610,29 +604,22 @@ namespace Diagnosis.ViewModels.Screens
             }
             set
             {
+                Contract.Ensures(Sorting == Contract.OldValue(Sorting));
                 if (_group != value)
                 {
                     using (view.DeferRefresh())
                     {
                         // убрать сортировку по старой группировке, если Sorting не по ней
-                        var oldGroupingSd = new SortDescription(_group.ToString(), ListSortDirection.Ascending);
-                        var oldind = view.SortDescriptions.IndexOf(oldGroupingSd);
-                        if (Sorting != _group.ToSortingColumn() && oldind >= 0)
-                        {
-                            view.SortDescriptions.RemoveAt(oldind);
-                        }
+                        // TODO заново отсортировать, если порядок сортировки при группировке другой
+                        var oldGroupingSd = new SortDescription(_group.ToSortingProperty(), ListSortDirection.Ascending);
+                        view.SortDescriptions.Remove(oldGroupingSd);
+                        if (Sorting == _group.ToSortingColumn())
+                            view.SortDescriptions.Insert(0, oldGroupingSd);
 
                         view.GroupDescriptions.Clear();
                         if (value != HrViewGroupingColumn.None)
                         {
-                            // сортировка по новой группировке первая
-                            var groupingSd = new SortDescription(value.ToString(), ListSortDirection.Ascending);
-                            var ind = view.SortDescriptions.IndexOf(groupingSd);
-                            if (ind > 0)
-                            {
-                                view.SortDescriptions.Remove(groupingSd);
-                            }
-                            view.SortDescriptions.Insert(0, groupingSd);
+                            AddSortForGrouping(value);
 
                             var groupingGd = new PropertyGroupDescription(value.ToString());
                             view.GroupDescriptions.Add(groupingGd);
@@ -644,6 +631,23 @@ namespace Diagnosis.ViewModels.Screens
                     OnPropertyChanged(() => Grouping);
                 }
             }
+        }
+
+        /// <summary>
+        /// Добавляет сортировку при группировке (первой).
+        /// </summary>
+        /// <param name="value"></param>
+        private void AddSortForGrouping(HrViewGroupingColumn value)
+        {
+            Contract.Ensures(value == HrViewGroupingColumn.None ||
+                view.SortDescriptions[0].PropertyName == value.ToSortingProperty());
+
+            if (value == HrViewGroupingColumn.None)
+                return;
+
+            var groupingSd = new SortDescription(value.ToSortingProperty(), ListSortDirection.Ascending);
+            view.SortDescriptions.Remove(groupingSd);
+            view.SortDescriptions.Insert(0, groupingSd);
         }
 
         /// <summary>
@@ -674,8 +678,8 @@ namespace Diagnosis.ViewModels.Screens
                     return true;
 
                 case HrViewGroupingColumn.GroupingCreatedAt:
-                    Contract.Assume(group is string);
-                    return vms.All(vm => vm.GroupingCreatedAt == (group as string)); // если все в одной группе
+                    Contract.Assume(group is HrCreatedAtOffset);
+                    return vms.All(vm => vm.GroupingCreatedAt.Equals((HrCreatedAtOffset)group)); // если все в одной группе
                 default:
                     break;
             }
