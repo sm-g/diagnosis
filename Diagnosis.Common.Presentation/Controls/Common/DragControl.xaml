@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Diagnosis.Common.Presentation.Controls"
              mc:Ignorable="d"
+             x:Name="drag"
              Cursor="SizeAll"
              SnapsToDevicePixels="True"
              Background="Transparent"
