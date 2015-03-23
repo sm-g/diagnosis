@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Models;
 using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.DataTransfer;
 using Diagnosis.ViewModels.Screens;
 using GongSolutions.Wpf.DragDrop;
 using GongSolutions.Wpf.DragDrop.Utilities;

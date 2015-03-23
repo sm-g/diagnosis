@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.DataTransfer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;

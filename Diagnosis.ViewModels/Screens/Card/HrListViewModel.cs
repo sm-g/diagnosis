@@ -2,6 +2,7 @@
 using Diagnosis.Common.Util;
 using Diagnosis.Models;
 using Diagnosis.Models.Enums;
+using Diagnosis.ViewModels.DataTransfer;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,7 +10,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -903,40 +903,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 base.Dispose(disposing);
             }
-        }
-    }
-
-    [Serializable]
-    public class HrData
-    {
-        public static readonly DataFormat DataFormat = DataFormats.GetDataFormat("hr");
-        private IList<HrInfo> hrs;
-
-        public IList<HrInfo> Hrs { get { return hrs; } }
-
-        public HrData(IList<HrInfo> hrs)
-        {
-            this.hrs = hrs;
-        }
-
-        [Serializable]
-        public class HrInfo
-        {
-            public Guid HolderId { get; set; }
-
-            public Guid DoctorId { get; set; }
-
-            public Guid? CategoryId { get; set; }
-
-            public int? FromDay { get; set; }
-
-            public int? FromMonth { get; set; }
-
-            public int? FromYear { get; set; }
-
-            public HealthRecordUnit Unit { get; set; }
-
-            public List<ConfindenceHrItemObject> Chios { get; set; }
         }
     }
 }

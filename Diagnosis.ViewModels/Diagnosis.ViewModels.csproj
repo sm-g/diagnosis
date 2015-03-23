@@ -198,6 +198,8 @@
     <Compile Include="DataTransfer\ClipboardHelper.cs" />
     <Compile Include="DataTransfer\DragDropHelper.cs" />
     <Compile Include="DataTransfer\DragDropInterfaces.cs" />
+    <Compile Include="DataTransfer\HrData.cs" />
+    <Compile Include="DataTransfer\TagData.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Framework\MenuItem.cs" />
     <Compile Include="Framework\VisibleRelayCommand.cs" />

@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.DataTransfer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

@@ -2,7 +2,6 @@
 using Diagnosis.Models;
 using log4net;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Windows;
@@ -632,21 +631,6 @@ namespace Diagnosis.ViewModels.Autocomplete
         public BlankTypeEventArgs(BlankType type)
         {
             this.type = type;
-        }
-    }
-
-    [Serializable]
-    public class TagData
-    {
-        public static readonly DataFormat DataFormat = DataFormats.GetDataFormat("tag");
-
-        private IList<ConfindenceHrItemObject> itemobjects;
-
-        public IList<ConfindenceHrItemObject> ItemObjects { get { return itemobjects; } }
-
-        public TagData(IList<ConfindenceHrItemObject> itemobjects)
-        {
-            this.itemobjects = itemobjects;
         }
     }
 }
