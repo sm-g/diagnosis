@@ -105,7 +105,7 @@ namespace Diagnosis.Models
             get { return _category; }
             set
             {
-                if (value == HrCategory.Null) value = null;
+                if (HrCategory.ConsideredNull(value)) value = null;
                 SetProperty(ref _category, value, () => Category);
             }
         }

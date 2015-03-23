@@ -215,46 +215,6 @@ namespace Diagnosis.Models
         /// <returns></returns>
         public static Expression<Func<T, bool>> EqualsByVal<T>(T x) where T : IEntity
         {
-            //Contract.Requires(x.Actual.GetType() == y.Actual.GetType());
-            //var @switch = new Dictionary<Type, Func<bool>> {
-            //    { typeof(Uom), () => 
-            //        {
-            //            var a = x as Uom;
-            //            var b = y as Uom;
-            //            return a.Abbr == b.Abbr &&
-            //                   a.Type == b.Type;
-            //        }
-            //    },
-            //    { typeof(UomType), () => 
-            //        {
-            //             var a = x as UomType;
-            //            var b = y as UomType;
-            //            return a.Title == b.Title;
-            //        } 
-            //    },
-            //    { typeof(HrCategory), () => 
-            //        {
-            //            var a = x as HrCategory;
-            //            var b = y as HrCategory;
-            //            return a.Name == b.Name;
-            //        } 
-            //    },
-            //    { typeof(Speciality), () => 
-            //        {
-            //            var a = x as Speciality;
-            //            var b = y as Speciality;
-            //            return a.Title == b.Title;
-            //        } 
-            //    },
-            //    { typeof(SpecialityIcdBlocks),() =>
-            //        {
-            //            var a = x as SpecialityIcdBlocks;
-            //            var b = y as SpecialityIcdBlocks;
-            //            return a.IcdBlock == b.IcdBlock &&
-            //                   a.Speciality == b.Speciality;
-            //        }
-            //    }
-            //};
             var @switch2 = new Dictionary<Type, Expression<Func<T, bool>>> {
                 { typeof(Uom), (y) => 
                     (x as Uom).Abbr == (y as Uom).Abbr &&
@@ -278,6 +238,56 @@ namespace Diagnosis.Models
 
             if (@switch2.Keys.Contains(type))
                 return @switch2[type];
+
+            throw new NotImplementedException();
+        }
+        public static bool EqualsByVal<T>(this T x, T y) where T : IEntity
+        {
+            Contract.Requires(x.Actual.GetType() == y.Actual.GetType());
+            var @switch = new Dictionary<Type, Func<bool>> {
+                { typeof(Uom), () => 
+                    {
+                        var a = x as Uom;
+                        var b = y as Uom;
+                        return a.Abbr == b.Abbr &&
+                               a.Type == b.Type;
+                    }
+                },
+                { typeof(UomType), () => 
+                    {
+                         var a = x as UomType;
+                        var b = y as UomType;
+                        return a.Title == b.Title;
+                    } 
+                },
+                { typeof(HrCategory), () => 
+                    {
+                        var a = x as HrCategory;
+                        var b = y as HrCategory;
+                        return a.Name == b.Name;
+                    } 
+                },
+                { typeof(Speciality), () => 
+                    {
+                        var a = x as Speciality;
+                        var b = y as Speciality;
+                        return a.Title == b.Title;
+                    } 
+                },
+                { typeof(SpecialityIcdBlocks),() =>
+                    {
+                        var a = x as SpecialityIcdBlocks;
+                        var b = y as SpecialityIcdBlocks;
+                        return a.IcdBlock == b.IcdBlock &&
+                               a.Speciality == b.Speciality;
+                    }
+                }
+            };
+
+            var type = x.Actual.GetType();
+
+            if (@switch.Keys.Contains(type))
+                return @switch[type]();
 
             throw new NotImplementedException();
         }
