@@ -64,11 +64,13 @@ namespace Diagnosis.Client.App.Windows
 
             if (topic.IsNullOrEmpty())
                 return new Uri(string.Format("{0}index.html", helpPath));
+#pragma warning disable 0618
+            // use dont escape to open anchor url on win xp
             if (topic.Contains("key"))
+                return new Uri(string.Format("{0}hotkeys.html#{1}", helpPath, topic), true);
+            return new Uri(string.Format("{0}index.html#{1}", helpPath, topic), true);
+#pragma warning restore 0618
 
-                return new Uri(string.Format("{0}hotkeys.html#{1}", helpPath, topic));
-
-            return new Uri(string.Format("{0}index.html#{1}", helpPath, topic));
         }
 
         private void Vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
