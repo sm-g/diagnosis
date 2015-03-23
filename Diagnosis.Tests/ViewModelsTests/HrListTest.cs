@@ -193,7 +193,7 @@ namespace Tests
             using (var card = new CardViewModel(a[2], true))
             {
                 card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
-                card.HrList.Grouping = HrViewGroupingColumn.None;
+                card.HrList.Grouping = HrViewColumn.None;
                 card.HrList.MoveHrSelectionCommand.Execute(true); // up to 20
 
                 Assert.AreEqual(hr[20], card.HrList.SelectedHealthRecord.healthRecord);
@@ -208,8 +208,8 @@ namespace Tests
                 var hr0 = AddHrToCard(card);
                 var hr1 = AddHrToCard(card);
                 var hr2 = AddHrToCard(card);
-                card.HrList.Sorting = HrViewSortingColumn.CreatedAt;
-                card.HrList.Grouping = HrViewGroupingColumn.Category;
+                card.HrList.Sorting = HrViewColumn.CreatedAt;
+                card.HrList.Grouping = HrViewColumn.Category;
 
                 // 1 cat
                 // 0
@@ -355,8 +355,8 @@ namespace Tests
                 Assert.AreEqual(2, hr2.Ord);
                 Assert.AreEqual(3, hr3.Ord);
 
-                card.HrList.Sorting = HrViewSortingColumn.Ord;
-                card.HrList.Grouping = HrViewGroupingColumn.None;
+                card.HrList.Sorting = HrViewColumn.Ord;
+                card.HrList.Grouping = HrViewColumn.None;
 
                 Assert.IsTrue(card.HrList.CanReorder);
                 var vms = card.HrList.HealthRecords[1].ToEnumerable();
@@ -392,8 +392,8 @@ namespace Tests
 
                 // hrs -> a b (c) d
 
-                card.HrList.Sorting = HrViewSortingColumn.Ord;
-                card.HrList.Grouping = HrViewGroupingColumn.None;
+                card.HrList.Sorting = HrViewColumn.Ord;
+                card.HrList.Grouping = HrViewColumn.None;
 
                 var vms = card.HrList.HealthRecords[1].ToEnumerable();
                 card.HrList.hrManager.Reorder(vms, card.HrList.HealthRecords, 3);
@@ -420,8 +420,8 @@ namespace Tests
         {
             using (var card = new CardViewModel(a[5], true))
             {
-                card.HrList.Sorting = HrViewSortingColumn.Ord;
-                card.HrList.Grouping = HrViewGroupingColumn.Category;
+                card.HrList.Sorting = HrViewColumn.Ord;
+                card.HrList.Grouping = HrViewColumn.Category;
 
                 var hr0 = AddHrToCard(card, "a");
                 var hr1 = AddHrToCard(card, "b");
@@ -443,8 +443,8 @@ namespace Tests
         {
             using (var card = new CardViewModel(a[5], true))
             {
-                card.HrList.Sorting = HrViewSortingColumn.Ord;
-                card.HrList.Grouping = HrViewGroupingColumn.None;
+                card.HrList.Sorting = HrViewColumn.Ord;
+                card.HrList.Grouping = HrViewColumn.None;
 
                 var hr0 = AddHrToCard(card, "a");
                 var hr1 = AddHrToCard(card, "b");
@@ -465,8 +465,8 @@ namespace Tests
         {
             using (var card = new CardViewModel(a[5], true))
             {
-                card.HrList.Sorting = HrViewSortingColumn.Ord;
-                card.HrList.Grouping = HrViewGroupingColumn.None;
+                card.HrList.Sorting = HrViewColumn.Ord;
+                card.HrList.Grouping = HrViewColumn.None;
 
                 var hr0 = AddHrToCard(card, "a");
                 var hr1 = AddHrToCard(card, "b");
@@ -488,8 +488,8 @@ namespace Tests
         {
             using (var card = new CardViewModel(a[5], true))
             {
-                card.HrList.Sorting = HrViewSortingColumn.Ord;
-                card.HrList.Grouping = HrViewGroupingColumn.GroupingCreatedAt;
+                card.HrList.Sorting = HrViewColumn.Ord;
+                card.HrList.Grouping = HrViewColumn.CreatedAt;
 
                 var hr0 = AddHrToCard(card, "a");
                 var hr1 = AddHrToCard(card, "b");
@@ -538,8 +538,8 @@ namespace Tests
         {
             using (var card = new CardViewModel(a[5], true))
             {
-                card.HrList.Sorting = HrViewSortingColumn.Ord;
-                card.HrList.Grouping = HrViewGroupingColumn.GroupingCreatedAt;
+                card.HrList.Sorting = HrViewColumn.Ord;
+                card.HrList.Grouping = HrViewColumn.CreatedAt;
 
                 var hr0 = AddHrToCard(card, "a");
                 var hr1 = AddHrToCard(card, "b");

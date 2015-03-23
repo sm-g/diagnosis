@@ -40,8 +40,8 @@ namespace Diagnosis.ViewModels.Screens
         private ReentrantFlag unselectPrev = new ReentrantFlag();
         private ReentrantFlag doNotNotifySelectedChanged = new ReentrantFlag();
         private FlagActionWrapper doNotNotifyLastSelectedChanged;
-        private HrViewSortingColumn _sort = HrViewSortingColumn.SortingDate; // to change in ctor
-        private HrViewGroupingColumn _group = HrViewGroupingColumn.GroupingCreatedAt;
+        private HrViewColumn _sort = HrViewColumn.None; // to change in ctor
+        private HrViewColumn _group = HrViewColumn.None;
         private bool _rectSelect;
         private bool _canReorder;
         private bool _focused;
@@ -59,6 +59,23 @@ namespace Diagnosis.ViewModels.Screens
             this.syncHios = syncer;
 
             HolderVm = new HolderViewModel(holder);
+            Sortings = new List<HrViewColumn>() {
+#if DEBUG
+               HrViewColumn.None,
+#endif
+               HrViewColumn.Ord,
+               HrViewColumn.Category,
+               HrViewColumn.Date,
+               HrViewColumn.CreatedAt,
+            };
+            Groupings = new List<HrViewColumn>() {
+               HrViewColumn.None,
+               HrViewColumn.Category,
+               HrViewColumn.CreatedAt,
+            };
+
+            var sortPropNames = Sortings.Select(x => x.ToSortingProperty());
+            var groupPropNames = Groupings.Select(x => x.ToGroupingProperty());
 
             doNotNotifyLastSelectedChanged = new FlagActionWrapper(() =>
             {
@@ -73,6 +90,7 @@ namespace Diagnosis.ViewModels.Screens
                 // TODO fix when diff createdAt
                 HealthRecords.Except(hrs).ForEach(x => x.IsSelected = false);
             });
+
             hrManager = new HealthRecordManager(holder, onHrVmPropChanged: (s, e) =>
             {
                 var hrvm = s as ShortHealthRecordViewModel;
@@ -123,8 +141,8 @@ namespace Diagnosis.ViewModels.Screens
                             logger.DebugFormat("selected in order\n{0}", string.Join("\n", selectedOrder));
                         }
                     }
-                    if (Enum.GetNames(typeof(HrViewGroupingColumn)).Contains(e.PropertyName) ||
-                       Enum.GetNames(typeof(HrViewSortingColumn)).Contains(e.PropertyName))
+                    if (sortPropNames.Contains(e.PropertyName) ||
+                        groupPropNames.Contains(e.PropertyName))
                     {
                         // simulate liveshaping
                         using (preserveSelected.Enter(SelectedHealthRecords)) // fix selection after CommitEdit when view grouping
@@ -195,8 +213,9 @@ namespace Diagnosis.ViewModels.Screens
             };
 
             view = (ListCollectionView)CollectionViewSource.GetDefaultView(HealthRecords);
-            Grouping = HrViewGroupingColumn.Category;
-            Sorting = HrViewSortingColumn.Ord;
+
+            Grouping = HrViewColumn.Category;
+            Sorting = HrViewColumn.Ord;
             SetHrExtra(HealthRecords);
 
             DropHandler = new DropTargetHandler(this);
@@ -210,6 +229,10 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;
+
+        public IList<HrViewColumn> Sortings { get; private set; }
+
+        public IList<HrViewColumn> Groupings { get; private set; }
 
         public HolderViewModel HolderVm { get; private set; }
 
@@ -549,7 +572,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public HrViewSortingColumn Sorting
+        public HrViewColumn Sorting
         {
             get
             {
@@ -558,10 +581,11 @@ namespace Diagnosis.ViewModels.Screens
             set
             {
                 Contract.Ensures(Grouping == Contract.OldValue(Grouping));
+                Contract.Ensures(Sortings.Contains(Sorting));
                 if (_sort != value)
                 {
 #if DEBUG
-                    if (value == HrViewSortingColumn.None)
+                    if (value == HrViewColumn.None)
                         view.SortDescriptions.Clear();
                     else
 #endif
@@ -573,12 +597,12 @@ namespace Diagnosis.ViewModels.Screens
                             AddSortForGrouping(Grouping);
 
                             // основная сортировка
-                            var sort = new SortDescription(value.ToString(), ListSortDirection.Ascending);
+                            var sort = new SortDescription(value.ToSortingProperty(), ListSortDirection.Ascending);
                             if (view.SortDescriptions.IndexOf(sort) == -1)
                                 view.SortDescriptions.Add(sort);
 
                             // сортировка по порядку всегда есть
-                            var ordSd = new SortDescription(HrViewSortingColumn.Ord.ToString(), ListSortDirection.Ascending);
+                            var ordSd = new SortDescription(HrViewColumn.Ord.ToSortingProperty(), ListSortDirection.Ascending);
                             if (view.SortDescriptions.IndexOf(ordSd) == -1)
                                 view.SortDescriptions.Add(ordSd);
                         }
@@ -587,16 +611,16 @@ namespace Diagnosis.ViewModels.Screens
 
                     SetHrExtra(HealthRecords);
                     OnPropertyChanged(() => Sorting);
-                    CanReorder = (Sorting == HrViewSortingColumn.Ord
+                    CanReorder = (Sorting == HrViewColumn.Ord
 #if DEBUG
- || Sorting == HrViewSortingColumn.None
+ || Sorting == HrViewColumn.None
 #endif
 );
                 }
             }
         }
 
-        public HrViewGroupingColumn Grouping
+        public HrViewColumn Grouping
         {
             get
             {
@@ -605,6 +629,7 @@ namespace Diagnosis.ViewModels.Screens
             set
             {
                 Contract.Ensures(Sorting == Contract.OldValue(Sorting));
+                Contract.Ensures(Groupings.Contains(Grouping));
                 if (_group != value)
                 {
                     using (view.DeferRefresh())
@@ -613,15 +638,15 @@ namespace Diagnosis.ViewModels.Screens
                         // TODO заново отсортировать, если порядок сортировки при группировке другой
                         var oldGroupingSd = new SortDescription(_group.ToSortingProperty(), ListSortDirection.Ascending);
                         view.SortDescriptions.Remove(oldGroupingSd);
-                        if (Sorting == _group.ToSortingColumn())
+                        if (Sorting == _group && oldGroupingSd.PropertyName != null)
                             view.SortDescriptions.Insert(0, oldGroupingSd);
 
                         view.GroupDescriptions.Clear();
-                        if (value != HrViewGroupingColumn.None)
+                        if (value != HrViewColumn.None)
                         {
                             AddSortForGrouping(value);
 
-                            var groupingGd = new PropertyGroupDescription(value.ToString());
+                            var groupingGd = new PropertyGroupDescription(value.ToGroupingProperty());
                             view.GroupDescriptions.Add(groupingGd);
                         }
                     }
@@ -636,13 +661,13 @@ namespace Diagnosis.ViewModels.Screens
         /// <summary>
         /// Добавляет сортировку при группировке (первой).
         /// </summary>
-        /// <param name="value"></param>
-        private void AddSortForGrouping(HrViewGroupingColumn value)
+        /// <param name="value">Колонка для группировки</param>
+        private void AddSortForGrouping(HrViewColumn value)
         {
-            Contract.Ensures(value == HrViewGroupingColumn.None ||
+            Contract.Ensures(value == HrViewColumn.None ||
                 view.SortDescriptions[0].PropertyName == value.ToSortingProperty());
 
-            if (value == HrViewGroupingColumn.None)
+            if (value == HrViewColumn.None)
                 return;
 
             var groupingSd = new SortDescription(value.ToSortingProperty(), ListSortDirection.Ascending);
@@ -667,17 +692,17 @@ namespace Diagnosis.ViewModels.Screens
             // группы не важны
             if (group == null)
             {
-                Contract.Assume(Grouping == HrViewGroupingColumn.None);
+                Contract.Assume(Grouping == HrViewColumn.None);
                 return CanReorder;
             }
 
             // изменяем порядок внутри группы
             switch (Grouping)
             {
-                case HrViewGroupingColumn.Category:
+                case HrViewColumn.Category:
                     return true;
 
-                case HrViewGroupingColumn.GroupingCreatedAt:
+                case HrViewColumn.CreatedAt:
                     Contract.Assume(group is HrCreatedAtOffset);
                     return vms.All(vm => vm.GroupingCreatedAt.Equals((HrCreatedAtOffset)group)); // если все в одной группе
                 default:
@@ -719,10 +744,10 @@ namespace Diagnosis.ViewModels.Screens
         {
             switch (Grouping)
             {
-                case HrViewGroupingColumn.Category:
+                case HrViewColumn.Category:
                     return vm.Category;
 
-                case HrViewGroupingColumn.GroupingCreatedAt:
+                case HrViewColumn.CreatedAt:
                     return vm.GroupingCreatedAt;
 
                 default:
@@ -745,13 +770,13 @@ namespace Diagnosis.ViewModels.Screens
 
             switch (Grouping)
             {
-                case HrViewGroupingColumn.Category:
+                case HrViewColumn.Category:
                     // перенос в другую группу меняет категорию
                     Contract.Assume(group is HrCategory);
                     vm.healthRecord.Category = group as HrCategory;
                     break;
 
-                case HrViewGroupingColumn.GroupingCreatedAt:
+                case HrViewColumn.CreatedAt:
                 default:
                     break;
             }
@@ -765,17 +790,17 @@ namespace Diagnosis.ViewModels.Screens
 
             switch (Sorting)
             {
-                case HrViewSortingColumn.Category:
-                    if (Grouping != HrViewGroupingColumn.Category)
+                case HrViewColumn.Category:
+                    if (Grouping != HrViewColumn.Category)
                         setter = (vm) => vm.SortingExtraInfo = vm.Category != null && vm.Category != HrCategory.Null ? vm.Category.ToString() : "";
                     break;
 
-                case HrViewSortingColumn.CreatedAt:
-                    if (Grouping != HrViewGroupingColumn.GroupingCreatedAt)
+                case HrViewColumn.CreatedAt:
+                    if (Grouping != HrViewColumn.CreatedAt)
                         setter = (vm) => vm.SortingExtraInfo = string.Format("{0} {1:H:mm}", DateFormatter.GetDateString(vm.CreatedAt), vm.CreatedAt);
                     break;
 
-                case HrViewSortingColumn.SortingDate:
+                case HrViewColumn.Date:
                     // дата записи всегда видна
                     break;
 

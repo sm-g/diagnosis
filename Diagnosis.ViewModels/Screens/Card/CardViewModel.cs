@@ -362,11 +362,11 @@ namespace Diagnosis.ViewModels.Screens
                     hios.Sync(Session, (w) => HrEditor.SyncTransientWord(w));
                 });
 
-                HrViewGroupingColumn gr;
-                if (Enum.TryParse<HrViewGroupingColumn>(doctor.Settings.HrListGrouping, true, out gr))
+                HrViewColumn gr;
+                if (Enum.TryParse<HrViewColumn>(doctor.Settings.HrListGrouping, true, out gr))
                     HrList.Grouping = gr;
-                HrViewSortingColumn sort;
-                if (Enum.TryParse<HrViewSortingColumn>(doctor.Settings.HrListSorting, true, out sort))
+                HrViewColumn sort;
+                if (Enum.TryParse<HrViewColumn>(doctor.Settings.HrListSorting, true, out sort))
                     HrList.Sorting = sort;
 
                 HrList.PropertyChanged += HrList_PropertyChanged;

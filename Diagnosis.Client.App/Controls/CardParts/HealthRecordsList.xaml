@@ -91,7 +91,7 @@
                 <!--<TextBlock>Сортировать</TextBlock>-->
                 <Image Source="{StaticResource sortAscImage}" />
 
-                <ComboBox ItemsSource="{Binding Source={diag:EnumListExtension {x:Type diag:HrViewSortingColumn}}}"
+                <ComboBox ItemsSource="{Binding Sortings}"
                           SelectedItem="{Binding Sorting, Mode=TwoWay}"
                           ItemTemplate="{StaticResource EnumComboTemplate}">
                 </ComboBox>
@@ -102,7 +102,7 @@
                 <!--<TextBlock>Группировать</TextBlock>-->
                 <Image Source="{StaticResource groupByImage}" />
 
-                <ComboBox ItemsSource="{Binding Source={diag:EnumListExtension {x:Type diag:HrViewGroupingColumn}}}"
+                <ComboBox ItemsSource="{Binding Groupings}"
                           SelectedItem="{Binding Grouping, Mode=TwoWay}"
                           ItemTemplate="{StaticResource EnumComboTemplate}" />
             </DockPanel>
