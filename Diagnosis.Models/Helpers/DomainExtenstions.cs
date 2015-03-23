@@ -208,10 +208,9 @@ namespace Diagnosis.Models
         }
 
         /// <summary>
-        /// Проверяет равенство двух сущностей по значению, несмотря на разные ID.
+        /// Выражение для проверки равенства двух сущностей по значению, несмотря на разные ID.
         /// </summary>
         /// <param name="x"></param>
-        /// <param name="y"></param>
         /// <returns></returns>
         public static Expression<Func<T, bool>> EqualsByVal<T>(T x) where T : IEntity
         {
@@ -241,6 +240,12 @@ namespace Diagnosis.Models
 
             throw new NotImplementedException();
         }
+        /// <summary>
+        /// Проверяет равенство двух сущностей по значению, несмотря на разные ID.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         public static bool EqualsByVal<T>(this T x, T y) where T : IEntity
         {
             Contract.Requires(x.Actual.GetType() == y.Actual.GetType());

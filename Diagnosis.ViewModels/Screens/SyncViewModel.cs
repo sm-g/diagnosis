@@ -328,7 +328,6 @@ namespace Diagnosis.ViewModels.Screens
             // дети обновляются на нового родителя
             // старый родитель удаляется без каскадного удаления детей
             // потом удаляются дети
-
             foreach (var type in types)
             {
                 var ids = addedIdsPerType[type];
@@ -337,64 +336,64 @@ namespace Diagnosis.ViewModels.Screens
                 // проверяем справочные сущности на совпадение
                 if (type == typeof(HrCategory))
                 {
-                    var replaced = ReplaceRefEntities<HrCategory>(entities);
-                    if (replaced.Count > 0)
+                    var replacing = GetReplaceEntities<HrCategory>(entities);
+                    if (replacing.Count > 0)
                     {
-                        UpdateParents<HrCategory, HealthRecord>(replaced,
+                        UpdateParents<HrCategory, HealthRecord>(replacing,
                             x => x.Category,
                             (x, value) => x.Category = value);
 
                         scopesToDeprovision.Add(typeof(HealthRecord).GetScope());
                     }
-                    CleanupReplaced(replaced);
+                    CleanupReplaced(replacing.Keys);
                 }
                 else if (type == typeof(Uom))
                 {
-                    var replaced = ReplaceRefEntities<Uom>(entities);
-                    if (replaced.Count > 0)
+                    var replacing = GetReplaceEntities<Uom>(entities);
+                    if (replacing.Count > 0)
                     {
-                        UpdateParents<Uom, HrItem>(replaced,
+                        UpdateParents<Uom, HrItem>(replacing,
                             x => x.Measure != null ? x.Measure.Uom : null,
-                            (x, value) => x.Measure.Uom = value);
+                            (x, value) => { if (x.Measure != null) x.Measure.Uom = value; });
 
                         scopesToDeprovision.Add(typeof(HrItem).GetScope());
                     }
-                    CleanupReplaced(replaced);
+                    CleanupReplaced(replacing.Keys);
                 }
                 else if (type == typeof(UomType))
                 {
-                    var replaced = ReplaceRefEntities<UomType>(entities);
-                    if (replaced.Count > 0)
+                    var replacing = GetReplaceEntities<UomType>(entities);
+                    if (replacing.Count > 0)
                     {
-                        UpdateParents<UomType, Uom>(replaced,
+                        UpdateParents<UomType, Uom>(replacing,
                             x => x.Type,
                             (x, value) => x.Type = value);
 
                         scopesToDeprovision.Add(typeof(Uom).GetScope());
                     }
-                    CleanupReplaced(replaced);
+                    CleanupReplaced(replacing.Keys);
                 }
                 else if (type == typeof(Speciality))
                 {
-                    var replaced = ReplaceRefEntities<Speciality>(entities);
-                    if (replaced.Count > 0)
+                    var replacing = GetReplaceEntities<Speciality>(entities);
+                    if (replacing.Count > 0)
                     {
-                        UpdateParents<Speciality, Doctor>(replaced,
+                        UpdateParents<Speciality, Doctor>(replacing,
                             x => x.Speciality,
                             (x, value) => x.Speciality = value);
-                        UpdateParents<Speciality, SpecialityIcdBlocks>(replaced,
+                        UpdateParents<Speciality, SpecialityIcdBlocks>(replacing,
                             x => x.Speciality,
                             (x, value) => x.Speciality = value);
 
                         scopesToDeprovision.Add(typeof(Doctor).GetScope());
                         scopesToDeprovision.Add(typeof(SpecialityIcdBlocks).GetScope());
                     }
-                    CleanupReplaced(replaced);
+                    CleanupReplaced(replacing.Keys);
                 }
                 else if (type == typeof(SpecialityIcdBlocks))
                 {
-                    var replaced = ReplaceRefEntities<SpecialityIcdBlocks>(entities);
-                    CleanupReplaced(replaced);
+                    var replacing = GetReplaceEntities<SpecialityIcdBlocks>(entities);
+                    CleanupReplaced(replacing.Keys);
                     // нет ссылок на SpecialityIcdBlocks, нечего обновлять
                 }
                 else
@@ -406,14 +405,13 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         /// <summary>
-        ///
+        /// Возвращает сущности для замены с таким же значением. Cловарь со значениями { oldEntity, newEntity }
         /// </summary>
         /// <typeparam name="T">Тип сущности справочника для замены</typeparam>
         /// <param name="entities"></param>
-        private Dictionary<T, T> ReplaceRefEntities<T>(IList<object> entities)
+        private Dictionary<T, T> GetReplaceEntities<T>(IList<object> entities)
             where T : IEntity
         {
-            // ищем сущности для замены с таким же значением
             var toReplace = new Dictionary<T, T>();
 
             foreach (var item in entities.Cast<T>())
@@ -431,21 +429,20 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         /// <summary>
-        ///
+        /// Меняем поле в сущностях для обновления.
         /// </summary>
         /// <typeparam name="T">Тип сущности справочника для замены</typeparam>
         /// <typeparam name="TUpdate">Тип сущности, в которой меняются сущности справочника для замены</typeparam>
-        /// <param name="toReplace"></param>
+        /// <param name="toReplace">Сущности для замены, значения { oldEntity, newEntity }</param>
         /// <param name="propertyGetter">Геттер свойства для обновления</param>
         /// <param name="propertySetter">Сеттер свойства для обновления</param>
         private void UpdateParents<T, TUpdate>(Dictionary<T, T> toReplace, Func<TUpdate, T> propertyGetter, Action<TUpdate, T> propertySetter)
             where T : IEntity
             where TUpdate : IEntity
         {
-            // меняем поле в сущностях для обновления
-            var toUpdate = Session.Query<TUpdate>()
-                .ToList()
-                .Where(x => propertyGetter(x) != null && toReplace.Keys.Contains(propertyGetter(x)))
+            var existing = Session.Query<TUpdate>()
+                .ToList();
+            var toUpdate = existing.Where(x => propertyGetter(x) != null && toReplace.Keys.Contains(propertyGetter(x)))
                 .ToList();
 
             toUpdate.ForEach(x => propertySetter(x, toReplace[propertyGetter(x)]));
@@ -454,12 +451,18 @@ namespace Diagnosis.ViewModels.Screens
             new Saver(Session).Save(toUpdate.Cast<IEntity>().ToArray());
         }
 
-        private void CleanupReplaced<T>(Dictionary<T, T> replaced) where T : IEntity
+        /// <summary>
+        /// Удаляет замененные.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="replaced">Замененные сущности для удаления</param>
+        private void CleanupReplaced(IEnumerable<IEntity> replaced)
         {
-            new Saver(Session).Delete(replaced.Keys.Cast<IEntity>().ToArray());
+            var list = replaced.ToArray();
+            new Saver(Session).Delete(list);
 
-            if (replaced.Count > 0)
-                Log += string.Format("[{0:mm:ss:fff}] replaced {1} {2}\n", DateTime.Now, replaced.Count, replaced.Keys.First().Actual.GetType().Name);
+            if (list.Count() > 0)
+                Log += string.Format("[{0:mm:ss:fff}] replaced {1} {2}\n", DateTime.Now, list.Count(), list.First().Actual.GetType().Name);
         }
 
         private void DoWithCursor(Task act, Cursor cursor)
