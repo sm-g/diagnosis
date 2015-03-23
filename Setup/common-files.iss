@@ -1,8 +1,9 @@
 ; dist
 Source: "{#MyDistFolder}\DotNetFX40KB2468871\dotNetFx40_Full_x86_x64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Check: not IsRequiredDotNetDetected
-Source: "{#MyDistFolder}\DotNetFX40KB2468871\NDP40-KB2468871-v2-x86.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Check: not IsRequiredDotNetDetected
-Source: "{#MyDistFolder}\DotNetFX40KB2468871\ru\dotNetFx40LP_Full_x86_x64ru.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Check: not IsRequiredDotNetDetected
+Source: "{#MyDistFolder}\DotNetFX40KB2468871\NDP40-KB2468871-v2-x86.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Check: not IsRequiredDotNetUpdateDetected
+Source: "{#MyDistFolder}\DotNetFX40KB2468871\ru\dotNetFx40LP_Full_x86_x64ru.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Check: not IsRequiredDotNetLPDetected
 Source: "{#MyDistFolder}\SyncFramework21\Synchronization-v2.1-x86-ENU.msi"; DestDir: "{tmp}"; Flags: deleteafterinstall; Check: not IsRequiredSyncFrDetected
+Source: "{#MyDistFolder}\SyncFramework21\DatabaseProviders-v3.1-x86-ENU.msi"; DestDir: "{tmp}"; Flags: deleteafterinstall; Check: not IsRequiredSyncFrDetected
 ; common dlls
 Source: "{#ClientBuildOutputFolder}\bin\Diagnosis.Common.dll"; DestDir: "{app}\bin"; Flags: sharedfile
 Source: "{#ClientBuildOutputFolder}\bin\Diagnosis.Common.Presentation.dll"; DestDir: "{app}\bin"; Flags: sharedfile

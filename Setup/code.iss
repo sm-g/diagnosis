@@ -1,4 +1,12 @@
 [Code]
+var 
+  syncCoreInstalled: boolean;
+  
+procedure InitializeWizard(); 
+begin 
+    syncCoreInstalled := false;
+end;
+
 // http://kynosarges.org/DotNetVersion.html
 function IsDotNetDetected(version: string; service: cardinal): boolean;
 // Indicates whether the specified version and service pack of the .NET Framework is installed.
@@ -68,6 +76,16 @@ begin
     key:= 'SOFTWARE\Microsoft\Microsoft Sync Framework\v2.1\Setup\SynchronizationX86';
     success := RegQueryDWordValue(HKLM, key, 'Install', install);
     result := success and (install = 1);
+end;
+
+procedure SetSyncCoreInstalled();
+begin
+    syncCoreInstalled := true;
+end;
+
+function IsNeedToInstallDatabaseProviders(): Boolean; 
+begin
+    result := syncCoreInstalled;
 end;
 
 function IsRequiredDotNetLPDetected(): Boolean; 
