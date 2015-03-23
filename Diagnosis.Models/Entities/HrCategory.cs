@@ -1,10 +1,22 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
     public class HrCategory : EntityBase<Guid>, IDomainObject, IComparable//, IEquatable<HrCategory>
     {
-        public static HrCategory Null = new HrCategory() { Name = "Не задано", Ord = int.MaxValue }; // upper case to show in checkbox
+        public static HrCategory Null = new HrCategory("Не задано", int.MaxValue); // upper case to show in checkbox
+
+        public HrCategory(string name, int ord)
+        {
+            Contract.Requires(name != null);
+            Name = name;
+            Ord = ord;
+        }
+
+        protected HrCategory()
+        {
+        }
 
         public virtual string Name { get; set; }
 

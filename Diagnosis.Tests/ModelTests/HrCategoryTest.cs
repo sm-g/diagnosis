@@ -9,8 +9,8 @@ namespace Tests
         [TestMethod]
         public void SameName()
         {
-            var cat = new HrCategory() { Name = "test" };
-            var cat2 = new HrCategory() { Name = "test" };
+            var cat = new HrCategory("test", 1);
+            var cat2 = new HrCategory("test", 1);
             Assert.IsTrue(cat != cat2);
             Assert.AreNotEqual(cat, cat2);
             Assert.IsTrue(cat.EqualsByVal(cat2));
@@ -20,7 +20,7 @@ namespace Tests
         public void NullName()
         {
             var cat = HrCategory.Null;
-            var cat2 = new HrCategory() { Name = "test" };
+            var cat2 = new HrCategory("test", 1);
             Assert.IsTrue(cat != cat2);
             Assert.AreNotEqual(cat, cat2);
         }
@@ -48,7 +48,7 @@ namespace Tests
         public void NullNameOfNull()
         {
             var cat = HrCategory.Null;
-            var cat2 = new HrCategory() { Name = HrCategory.Null.Name };
+            var cat2 = new HrCategory(HrCategory.Null.Name, 1);
             Assert.IsTrue(cat != cat2);
             Assert.AreNotEqual(cat, cat2);
             Assert.IsTrue(cat.EqualsByVal(cat2));

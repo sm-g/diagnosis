@@ -170,7 +170,15 @@ namespace Diagnosis.Models
 
         public override int GetHashCode()
         {
-            return HIO.GetHashCode() * 37 + Confindence.GetHashCode();
+            unchecked
+            {
+                return HIO.GetHashCode() * 37 + Confindence.GetHashCode();
+            }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("CHIO {0} {1}", HIO, Confindence);
         }
     }
 }

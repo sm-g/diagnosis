@@ -161,6 +161,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DesignData\SampleViewModels.cs" />
     <Compile Include="Screens\Specialities.xaml.cs">
       <DependentUpon>Specialities.xaml</DependentUpon>
     </Compile>

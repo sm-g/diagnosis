@@ -48,13 +48,6 @@ namespace Diagnosis.ViewModels.Screens
             WithHelpButton = false;
         }
 
-        [Obsolete]
-        public UomEditorViewModel()
-        {
-            this.uom = new Uom("kg", 1, new UomType("mass"));
-            Uom = new UomViewModel(uom);
-        }
-
         public override bool CanOk
         {
             get

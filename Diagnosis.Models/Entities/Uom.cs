@@ -11,7 +11,7 @@ namespace Diagnosis.Models
     [Serializable]
     public class Uom : ValidatableEntity<Guid>, IDomainObject
     {
-        public static Uom Null = new Uom("—", 1, new UomType(""));  // для измерения без единицы
+        public static Uom Null = new Uom("—", 1, new UomType("", int.MinValue));  // для измерения без единицы
         private string _description;
         private string _abbr;
         private double _factor;

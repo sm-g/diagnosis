@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:diag="http://schemas.smg.com/diagnosis"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:design="clr-namespace:Diagnosis.Server.App.DesignData"
         Title="{Binding Title}"
         Width="300"
         SizeToContent="Height"
@@ -13,7 +14,7 @@
         x:Name="uomEditor"
         diag:FocusBehavior.FocusFirst="True"
         diag:DialogCloser.DialogResult="{Binding DialogResult}"
-        d:DataContext="{d:DesignInstance diag:UomEditorViewModel, IsDesignTimeCreatable=True}"
+        d:DataContext="{d:DesignInstance design:SampleUomEditorViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d">
     <Window.Resources>
     </Window.Resources>

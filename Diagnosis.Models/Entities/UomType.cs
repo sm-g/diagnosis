@@ -15,10 +15,11 @@ namespace Diagnosis.Models
         private Iesi.Collections.Generic.ISet<Uom> uoms = new HashedSet<Uom>();
         string _title;
 
-        public UomType(string title)
+        public UomType(string title, int ord)
         {
             Contract.Requires(title != null);
             Title = title;
+            Ord = ord;
         }
 
         protected UomType()

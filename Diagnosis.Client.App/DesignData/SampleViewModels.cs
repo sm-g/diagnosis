@@ -21,6 +21,7 @@ namespace Diagnosis.Client.App.DesignData
             AllWords = true;
         }
     }
+
     public class SampleTagViewModel : TagViewModel
     {
         public SampleTagViewModel()
@@ -89,7 +90,7 @@ namespace Diagnosis.Client.App.DesignData
     public class SampleMeasureEditorViewModel : MeasureEditorViewModel
     {
         public SampleMeasureEditorViewModel()
-            : base(new Measure(36, new Uom("C", 0, new UomType("температура"))) { Word = new Word("температура") })
+            : base(new Measure(36, Mocks.uom) { Word = Mocks.word })
         {
         }
     }
@@ -125,21 +126,27 @@ namespace Diagnosis.Client.App.DesignData
         public static Doctor doc = new Doctor("Ivanov");
         public static Course course;
         public static Course course2;
+        public static Word word;
+        public static Word word2;
+        public static Uom uom;
+        public static UomType uomType;
+
         public static HrCategory[] cats = new[] {
-            new HrCategory() { Name = "Жалоба" },
-            new HrCategory() { Name = "История" },
-            new HrCategory() { Name = "Осмотр" },
-            new HrCategory() { Name = "Обследование" },
-            new HrCategory() { Name = "Диагноз" },
-            new HrCategory() { Name = "Лечение" },
-            new HrCategory() { Name = "Не указано" },
+            new HrCategory("Жалоба",1),
+            new HrCategory("История",2),
+            HrCategory.Null
         };
 
         public static HealthRecord hr;
 
         static Mocks()
         {
-            hr.AddItems(new IHrItemObject[] { new Word("анемия"), new Word("впервые"), new Comment("без осложнений") });
+            uomType = new UomType("температура", 1);
+            uom = new Uom("C", 36, uomType);
+
+            word = new Word("анемия");
+            word2 = new Word("впервые");
+            hr.AddItems(new IHrItemObject[] { word, word2, new Comment("без осложнений") });
             course = new Course(pat, doc)
             {
                 Start = DateTime.Now
