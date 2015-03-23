@@ -141,6 +141,7 @@
     <Compile Include="CommonTests\EnumerableExtensionsTest.cs" />
     <Compile Include="DataTests\SyncerTest.cs" />
     <Compile Include="ModelTests\CourseTest.cs" />
+    <Compile Include="ModelTests\MeasureTest.cs" />
     <Compile Include="ModelTests\HrItemTest.cs" />
     <Compile Include="ModelTests\HealthRecordTest.cs" />
     <Compile Include="ModelTests\HrCategoryTest.cs" />

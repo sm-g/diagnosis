@@ -19,6 +19,7 @@ namespace Tests
         public void AutocompleteTestInit()
         {
             hrIds.ForAll((id) => hr[id] = session.Get<HealthRecord>(IntToGuid<HealthRecord>(id)));
+            uomIds.ForAll((id) => uom[id] = session.Get<Uom>(IntToGuid<Uom>(id)));
             hr1 = hr[71]; // without hios
         }
 
@@ -111,6 +112,19 @@ namespace Tests
             hr1.SetItems(chios);
 
             Assert.AreEqual(w1, hr1.HrItems.Single(x => x.Confidence == Confidence.Absent).Entity);
+        }
+
+        [TestMethod]
+        public void ChangeMeasure()
+        {
+            var m = new Measure(0, uom[1]) { Word = w1 };
+            var hiosSequence = new IHrItemObject[] { m };
+
+            hr1.SetItems(hiosSequence);
+            var m2 = new Measure(0, uom[2]) { Word = w1 };
+            hr1.SetItems(new IHrItemObject[] { m2 });
+            Assert.AreEqual(uom[2], hr1.HrItems.First().Measure.Uom);
+        
         }
     }
 }

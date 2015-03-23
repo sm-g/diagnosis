@@ -27,6 +27,8 @@ namespace Diagnosis.Models
             get { return _uom; }
             set
             {
+                if (value == _uom) return;
+
                 if (value == Uom.Null) value = null;
 
                 // save value after chanage uom
@@ -85,25 +87,37 @@ namespace Diagnosis.Models
 
         public virtual int CompareTo(Measure other)
         {
-            // сравниваем по словам
-            if (this.Word != null)
-            {
-                if (other.Word == null)
-                    return 1;
-                else
-                {
-                    var byWord = this.Word.CompareTo(other.Word);
-                    if (byWord != 0)
-                        return byWord;
-                }
-            }
-            // по типу
-            if (this.Uom != null && other.Uom != null
-                && this.Uom.Type != other.Uom.Type)
-                return this.Uom.Type.CompareTo(other.Uom.Type);
+            if (other == null) return 1;
+            if (this == other) return 0;
 
-            // по значению
-            return this.DbValue.CompareTo(other.DbValue);
+            // сравниваем по словам - больше измерение со словом
+            if (this.Word == null && other.Word != null)
+                return -1;
+            if (this.Word != null && other.Word == null)
+                return 1;
+            else if (this.Word != null && other.Word != null)
+            {
+                var byWord = this.Word.CompareTo(other.Word);
+                if (byWord != 0)
+                    return byWord;
+            }
+
+            // по типу единицы - если разный тип, больше измерение с типом, большим по порядку
+            if (this.Uom == null && other.Uom != null)
+                return -1;
+            if (this.Uom != null && other.Uom == null)
+                return 1;
+            else if (this.Uom != null && other.Uom != null)
+                if (this.Uom.Type != other.Uom.Type)
+                    return this.Uom.Type.CompareTo(other.Uom.Type);
+
+            // одинаковые слова и тип единицы - по значению
+            var byDbVal = this.DbValue.CompareTo(other.DbValue);
+            if (byDbVal != 0)
+                return byDbVal;
+
+            // значение одинково, но единицы (одного типа) разные
+            return this.Uom.Abbr.CompareTo(other.Uom.Abbr);
         }
 
         public override bool Equals(object obj)
@@ -115,6 +129,8 @@ namespace Diagnosis.Models
             }
             else
             {
+                // не равны, даже если одно значение выражено разными единицами
+                // 1 л != 1000 мл
                 return this.Word == other.Word && this.Uom == other.Uom && this.DbValue == other.DbValue;
             }
         }

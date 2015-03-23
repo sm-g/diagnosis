@@ -14,6 +14,7 @@ namespace Tests.ModelTests
         {
             wIds.ForAll((id) => w[id] = session.Get<Word>(IntToGuid<Word>(id)));
             icdIds.ForAll((id) => icd[id] = session.Get<IcdDisease>(id));
+            uomIds.ForAll((id) => uom[id] = session.Get<Uom>(IntToGuid<Uom>(id)));
         }
 
         [TestMethod]
@@ -92,6 +93,25 @@ namespace Tests.ModelTests
             var diff2 = bag2.Difference(bag1);
             Assert.IsTrue(diff1.Count == 4);
             Assert.IsTrue(diff2.Count == 2);
+        }
+
+        [TestMethod]
+        public void MeasureSameUomType()
+        {
+            var bag1 = new OrderedBag<IHrItemObject>();
+            var bag2 = new OrderedBag<IHrItemObject>();
+            var m = new Measure(0, uom[1]);
+            var m2 = new Measure(0, uom[2]);
+
+            bag1.AddMany(new List<IHrItemObject> { m, m2 });
+            bag2.AddMany(new List<IHrItemObject> { m });
+
+            var diff1 = bag1.Difference(bag2);
+            var diff2 = bag2.Difference(bag1);
+            Assert.IsTrue(diff1.Count == 1);
+            Assert.IsTrue(diff2.Count == 0);
+            Assert.IsTrue(diff1.Contains(m2));
+
         }
     }
 }
