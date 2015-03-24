@@ -1,10 +1,5 @@
 --2015 02 06
 
-TODO guid
-
--- creates server's db as client but 
--- no word index
-
 -- snowflake with Doctors
 
 -- dbo - справочники
@@ -27,7 +22,7 @@ CREATE TABLE [dbo].[UomType] (
 GO
 CREATE TABLE [dbo].[Uom] (
   [Id] uniqueidentifier NOT NULL ROWGUIDCOL DEFAULT NEWID()
-, [Abbr] nvarchar(10) NOT NULL
+, [Abbr] nvarchar(20) NOT NULL
 , [Description] nvarchar(100) NULL
 , [Factor] float NOT NULL
 , [UomTypeID] uniqueidentifier NOT NULL
@@ -158,7 +153,7 @@ CREATE TABLE [staging].[HrItem] (
 , [IcdDiseaseID] int NULL
 , [WordID] uniqueidentifier NULL
 , [UomID] uniqueidentifier NULL
-, [MeasureValue] float NULL
+, [MeasureValue] numeric(18,6) NULL
 , [HealthRecordID] uniqueidentifier NOT NULL
 );
 GO
@@ -231,7 +226,7 @@ CREATE TABLE [olap].[HrItem] (
 , [OriginalWordID] uniqueidentifier NULL
 , [ReplaceWordID] uniqueidentifier NULL
 , [UomID] uniqueidentifier NULL
-, [MeasureValue] float NULL
+, [MeasureValue] numeric(18,6) NULL
 , [HealthRecordID] uniqueidentifier NOT NULL
 , [Hash] char(66) NOT NULL
 );

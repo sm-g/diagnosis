@@ -6,9 +6,9 @@
 
 CREATE TABLE [Uom] (
   [Id] int IDENTITY (1,1) NOT NULL
-, [Abbr] nvarchar(10) NOT NULL
+, [Abbr] nvarchar(20) NOT NULL
 , [Description] nvarchar(100) NULL
-, [Factor] float NOT NULL
+, [Factor] numeric(18,6) NOT NULL
 , [UomType] int NOT NULL
 );
 GO
@@ -94,9 +94,12 @@ CREATE TABLE [Appointment] (
 GO
 CREATE TABLE [HealthRecord] (
   [Id] uniqueidentifier NOT NULL ROWGUIDCOL DEFAULT NEWID() 
+, [Ord] tinyint NOT NULL DEFAULT 0
+, [CreatedAt] datetime NOT NULL DEFAULT GETDATE()
 , [PatientID] uniqueidentifier NULL
 , [CourseID] uniqueidentifier NULL
 , [AppointmentID] uniqueidentifier NULL
+, [DoctorID] uniqueidentifier NOT NULL
 , [HrCategoryID] int NULL
 , [FromDay] smallint NULL
 , [FromMonth] smallint NULL
@@ -111,7 +114,7 @@ CREATE TABLE [HrItem] (
 , [IcdDiseaseID] int NULL
 , [WordID] uniqueidentifier NULL
 , [UomID] int NULL
-, [MeasureValue] float NULL
+, [MeasureValue] numeric(18,6) NULL
 , [HealthRecordID] uniqueidentifier NOT NULL
 , [TextRepr] nvarchar(255) NULL
 );
@@ -185,6 +188,8 @@ GO
 ALTER TABLE [HealthRecord] ADD CONSTRAINT [FK_Hr_Patient] FOREIGN KEY ([PatientID]) REFERENCES [Patient]([Id]) ON DELETE no action ON UPDATE no action;
 GO
 ALTER TABLE [HealthRecord] ADD CONSTRAINT [FK_Hr_HrCategory] FOREIGN KEY ([HrCategoryID]) REFERENCES [HrCategory]([Id]) ON DELETE set null ON UPDATE cascade;
+GO
+ALTER TABLE [HealthRecord] ADD CONSTRAINT [FK_Hr_Doctor] FOREIGN KEY ([DoctorID]) REFERENCES [Doctor]([Id]) ON DELETE no action ON UPDATE no action;
 GO
 ALTER TABLE [HrItem] ADD CONSTRAINT [FK_HrItem_IcdDisease] FOREIGN KEY ([IcdDiseaseID]) REFERENCES [IcdDisease]([Id]) ON DELETE set null ON UPDATE cascade;
 GO
