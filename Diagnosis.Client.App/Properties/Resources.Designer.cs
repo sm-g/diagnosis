@@ -172,6 +172,15 @@ namespace Diagnosis.Client.App.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Такого слова нет в словаре, игнорируется.
+        /// </summary>
+        public static string ForbiddenTagToolTip {
+            get {
+                return ResourceManager.GetString("ForbiddenTagToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap GroupBy {

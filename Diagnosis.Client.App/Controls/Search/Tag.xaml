@@ -39,8 +39,8 @@
                             Value="White" />
                     <Setter Property="FontSize"
                             Value="{DynamicResource TagFontSize}" />
-                    <Setter Property="FontStyle"
-                            Value="Italic" />
+                    <!--<Setter Property="FontStyle"
+                            Value="Italic" />-->
                     <!--border on focused /hover only-->
                     <Setter Property="BorderBrush"
                             Value="{x:Null}" />
@@ -64,21 +64,14 @@
                             <Setter Property="Background"
                                     Value="{StaticResource forbiddenTagBrush}" />
                             <Setter Property="ToolTip"
-                                    Value="Некорректный текст, игнорируется" />
+                                    Value="{Binding ForbiddenTagToolTip, Source={StaticResource Resources}}" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding Signalization}"
-                                     Value="{x:Static diag:Signalizations.PartialMeasure}">
-                            <Setter Property="Background"
-                                    Value="{StaticResource partialMeasureBrush}" />
-                            <Setter Property="ToolTip"
-                                    Value="Неизвестная единица измерения, сохраняется без единицы" />
-                        </DataTrigger>
-
+                        
                         <DataTrigger Binding="{Binding BlankType}"
-                                     Value="{x:Static diag:BlankType.Query}">
-                            <!--<Setter Property="Foreground"
-                                    Value="Red" />-->
+                                     Value="{x:Static diag:BlankType.None}">   
+                            
                         </DataTrigger>
+                        
                         <DataTrigger Binding="{Binding BlankType}"
                                      Value="{x:Static diag:BlankType.Comment}">
                             <Setter Property="FontStyle"

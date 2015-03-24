@@ -27,7 +27,7 @@ namespace Diagnosis.Client.App.DesignData
         public SampleTagViewModel()
             : base(new Mock<IAutocompleteViewModel>().Object)
         {
-            Blank = new Comment("query");
+            Blank = Mocks.word;
             IsDraggable = true;
         }
     }
