@@ -27,13 +27,14 @@ namespace Diagnosis.ViewModels.Screens
             _specialities.AddRange(Session.Query<Speciality>()
                 .OrderBy(s => s.Title));
 
-                Doctor = new DoctorViewModel(doctor);
-                (doctor as IEditableObject).BeginEdit();
-                Doctor.canEditComboBoxValues = true;
+            Doctor = new DoctorViewModel(doctor);
+            (doctor as IEditableObject).BeginEdit();
+            Doctor.canEditComboBoxValues = true;
 
             Title = "Данные врача";
             HelpTopic = "editdoctor";
             WithHelpButton = false;
+
         }
 
         /// <summary>

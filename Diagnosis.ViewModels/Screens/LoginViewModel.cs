@@ -29,10 +29,6 @@ namespace Diagnosis.ViewModels.Screens
             var admin = new Admin(adminUser);
 
             Passwords = new ConfirmPasswordViewModel();
-            Passwords.PropertyChanged += (s, e) =>
-            {
-                //      OnPropertyChanged(() => CanLogin);
-            };
             Users = new ObservableCollection<IUser>(doctors);
             Users.Add(admin);
 

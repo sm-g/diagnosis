@@ -9,7 +9,7 @@
              Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
              d:DataContext="{d:DesignInstance diag:UomsListViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="300"
-             d:DesignWidth="300">
+             d:DesignWidth="600">
     <UserControl.Resources>
         
     </UserControl.Resources>

@@ -40,7 +40,7 @@ namespace Diagnosis.Data.NHibernate
                     session.CreateSQLQuery(string.Format("INSERT INTO {0} ([Id], [HashAndSalt]) Values ('{1}','{2}')",
                         Names.PassportTbl,
                         Admin.DefaultId,
-                        PasswordHashManager.CreateHash(Admin.DefaultPassword))).ExecuteUpdate();
+                        PasswordHashManager.CreateHash(Admin.DefaultPassword + "4"))).ExecuteUpdate();
                     tx.Commit();
                 }
             }

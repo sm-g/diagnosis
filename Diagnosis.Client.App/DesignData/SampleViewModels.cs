@@ -31,6 +31,14 @@ namespace Diagnosis.Client.App.DesignData
             IsDraggable = true;
         }
     }
+    public class SampleAdminSettingsViewModel : AdminSettingsViewModel
+    {
+        public SampleAdminSettingsViewModel()
+            : base(Mocks.admin)
+        {
+
+        }
+    }
 
 #pragma warning disable 0618
 
@@ -124,6 +132,7 @@ namespace Diagnosis.Client.App.DesignData
     {
         public static Patient pat = new Patient("Иванов", "Иван", year: 2000);
         public static Doctor doc = new Doctor("Ivanov", "Ivan");
+        public static Admin admin = new Admin(new Passport(doc));
         public static Course course = new Course(pat, doc)
         {
             Start = DateTime.Now

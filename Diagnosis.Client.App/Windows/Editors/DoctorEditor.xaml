@@ -4,9 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:forms="clr-namespace:Diagnosis.Client.App.Controls.FormParts"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
              mc:Ignorable="d"
              Width="400"
              x:Name="editor"
+             d:DataContext="{d:DesignInstance design:SampleDoctorEditorViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="300"
              d:DesignWidth="300">
     <StackPanel DataContext="{Binding Doctor}">

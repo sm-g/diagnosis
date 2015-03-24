@@ -18,6 +18,10 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        public SessionVMBase()
+        {
+        }
+
         protected IStatelessSession StatelessSession
         {
             get
@@ -35,11 +39,6 @@ namespace Diagnosis.ViewModels
                 return NHibernateHelper.GetSession();
             }
         }
-
-        public SessionVMBase()
-        {
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)
