@@ -143,7 +143,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         public Task<bool> ConvertBlank(TagViewModel tag, BlankType toType)
         {
             Contract.Requires(tag.BlankType != toType);
-            Contract.Requires(toType != BlankType.None && toType != BlankType.Query);
+            Contract.Requires(toType != BlankType.None);
 
             var t = new Task<bool>(() =>
             {
@@ -238,11 +238,6 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             switch (tag.BlankType)
             {
-                case BlankType.Query: // нераспознаный запрос
-                    var c = new Comment(tag.Blank as string);
-                    tag.Entity = c;
-                    break;
-
                 case BlankType.Word:
                     tag.Entity = tag.Blank as Word;
                     break;

@@ -35,12 +35,6 @@ namespace Diagnosis.ViewModels.Autocomplete
     public enum BlankType
     {
         None,
-
-        /// <summary>
-        /// Строка-запрос
-        /// </summary>
-        Query,
-
         Comment,
         Word,
         Measure,
@@ -243,13 +237,13 @@ namespace Diagnosis.ViewModels.Autocomplete
                     return BlankType.Word;
                 if (Blank is Comment)
                     return BlankType.Comment;
-                if (Blank is string)
-                    return BlankType.Query;
                 if (Blank is Measure)
                     return BlankType.Measure;
                 if (Blank is IcdDisease)
                     return BlankType.Icd;
 
+                // заготовка всегда сущность, если есть
+                Contract.Assume(Blank == null);
                 return BlankType.None;
             }
             set
@@ -605,7 +599,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             Contract.Invariant(State != State.Init || (BlankType == BlankType.None && Entity == null)); // в начальном состоянии → нет бланка и сущностей
             // при редактировании нет сущностей
 
-            Contract.Invariant(BlankType != BlankType.Query); // заготовка всегда сущность, если есть
             Contract.Invariant((IsLast && Query.IsNullOrEmpty()) != IsDraggable || autocomplete.SingleTag); // последний пустой без маркера переноса
         }
     }
