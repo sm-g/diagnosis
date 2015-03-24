@@ -9,7 +9,7 @@ namespace Tests
     [TestClass]
     public class MeasureTest : InMemoryDatabaseTest
     {
-        private Word w = new Word("word");
+        private new Word w = new Word("word");
 
         [TestInitialize]
         public void Init()

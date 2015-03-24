@@ -974,6 +974,27 @@ namespace Diagnosis.Common
             {
                 return !(do1 == do2);
             }
+
+            public override bool Equals(object obj)
+            {
+                var other = obj as DateOffsetSettings;
+                if (other == null)
+                    return false;
+                return this == other;
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    int hash = 17;
+                    hash = hash * 23 + Unit.GetHashCode();
+                    hash = hash * 23 + Date.GetHashCode();
+                    hash = hash * 23 + AutoCorrection.GetHashCode();
+                    hash = hash * 23 + CutsDate.GetHashCode();
+                    return hash;
+                }
+            }
         }
 
         [ContractInvariantMethod]
