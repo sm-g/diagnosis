@@ -143,6 +143,7 @@
     <Compile Include="Behaviors\MultiSelectorBehaviours.cs" />
     <Compile Include="Behaviors\PasswordBoxAssistant.cs" />
     <Compile Include="Behaviors\RowDblClick.cs" />
+    <Compile Include="Behaviors\SelectorBehavior.cs" />
     <Compile Include="Behaviors\TwoListSynchronizer.cs" />
     <Compile Include="Controls\Common\AlignableWrapPanel.cs" />
     <Compile Include="Controls\Common\AutoGreyableImage.cs" />

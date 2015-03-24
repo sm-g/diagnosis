@@ -38,7 +38,7 @@
         </DockPanel>
         <DockPanel>
             <Label Content="Специальность" />
-            <ComboBox SelectedItem="{Binding Speciality, ValidatesOnDataErrors=True, TargetNullValue=—}"
+            <ComboBox SelectedItem="{Binding Speciality, ValidatesOnDataErrors=True}"
                       ItemsSource="{Binding DataContext.Specialities,ElementName=editor}" />
         </DockPanel>
     </StackPanel>

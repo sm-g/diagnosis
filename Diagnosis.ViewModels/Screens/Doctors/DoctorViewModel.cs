@@ -8,6 +8,7 @@ namespace Diagnosis.ViewModels.Screens
     public class DoctorViewModel : ViewModelBase, IMan
     {
         internal readonly Doctor doctor;
+        internal bool canEditComboBoxValues; // WPF ComboBox SelectedItem Set to Null when close editor
 
         public DoctorViewModel(Doctor d)
         {
@@ -83,11 +84,12 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return doctor.Speciality;
+                return doctor.Speciality ?? Speciality.Null;
             }
             set
             {
-                doctor.Speciality = value;
+                if (canEditComboBoxValues)
+                    doctor.Speciality = value;
             }
         }
         private void doctor_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

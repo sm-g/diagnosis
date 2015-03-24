@@ -27,8 +27,9 @@ namespace Diagnosis.ViewModels.Screens
             _specialities.AddRange(Session.Query<Speciality>()
                 .OrderBy(s => s.Title));
 
-            Doctor = new DoctorViewModel(doctor);
-            (doctor as IEditableObject).BeginEdit();
+                Doctor = new DoctorViewModel(doctor);
+                (doctor as IEditableObject).BeginEdit();
+                Doctor.canEditComboBoxValues = true;
 
             Title = "Данные врача";
             HelpTopic = "editdoctor";
@@ -71,6 +72,7 @@ namespace Diagnosis.ViewModels.Screens
         protected override void OnOk()
         {
             (doctor as IEditableObject).EndEdit();
+            Doctor.canEditComboBoxValues = false;
 
             new Saver(Session).Save(doctor);
 
@@ -80,6 +82,7 @@ namespace Diagnosis.ViewModels.Screens
         protected override void OnCancel()
         {
             (doctor as IEditableObject).CancelEdit();
+            Doctor.canEditComboBoxValues = false;
         }
 
         protected override void Dispose(bool disposing)
