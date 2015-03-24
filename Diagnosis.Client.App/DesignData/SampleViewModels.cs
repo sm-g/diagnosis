@@ -82,8 +82,8 @@ namespace Diagnosis.Client.App.DesignData
     public class SampleDoctorEditorViewModel : DoctorEditorViewModel
     {
         public SampleDoctorEditorViewModel()
+            : base(Mocks.doc)
         {
-            this.doctor = Mocks.doc;
         }
     }
 
@@ -120,16 +120,23 @@ namespace Diagnosis.Client.App.DesignData
         }
     }
 
-    internal static class Mocks
+    public class Mocks
     {
         public static Patient pat = new Patient("Иванов", "Иван", year: 2000);
-        public static Doctor doc = new Doctor("Ivanov");
-        public static Course course;
-        public static Course course2;
-        public static Word word;
-        public static Word word2;
-        public static Uom uom;
-        public static UomType uomType;
+        public static Doctor doc = new Doctor("Ivanov", "Ivan");
+        public static Course course = new Course(pat, doc)
+        {
+            Start = DateTime.Now
+        };
+        public static Course course2 = new Course(pat, doc)
+        {
+            Start = DateTime.Now.AddDays(-4),
+            End = DateTime.Now
+        };
+        public static Word word = new Word("анемия");
+        public static Word word2 = new Word("впервые");
+        public static UomType uomType = new UomType("температура", 1);
+        public static Uom uom = new Uom("C", 36, uomType);
 
         public static HrCategory[] cats = new[] {
             new HrCategory("Жалоба",1),
@@ -141,26 +148,12 @@ namespace Diagnosis.Client.App.DesignData
 
         static Mocks()
         {
-            uomType = new UomType("температура", 1);
-            uom = new Uom("C", 36, uomType);
-
-            word = new Word("анемия");
-            word2 = new Word("впервые");
-            hr.AddItems(new IHrItemObject[] { word, word2, new Comment("без осложнений") });
-            course = new Course(pat, doc)
-            {
-                Start = DateTime.Now
-            };
-            course2 = new Course(pat, doc)
-            {
-                Start = DateTime.Now.AddDays(-4),
-                End = DateTime.Now
-            };
             hr = new HealthRecord(course, doc)
             {
                 Category = cats[0],
                 FromMonth = 5,
             };
+            hr.AddItems(new IHrItemObject[] { word, word2, new Comment("без осложнений") });
         }
     }
 }
