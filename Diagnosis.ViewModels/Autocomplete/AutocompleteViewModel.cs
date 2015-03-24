@@ -69,7 +69,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 // созданные слова можно искать из поиска
                 var word = e.GetValue<Word>(MessageKeys.Word);
-                Tags.Where(t => (t.Entity as Word) == word)
+                Tags.Where(t => (t.Blank as Word) == word)
                     .ForAll(t => t.Validate());
             });
 
@@ -214,7 +214,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                         switch (SelectedTag.BlankType)
                         {
                             case BlankType.Measure:
-                                var vm = new MeasureEditorViewModel(SelectedTag.Entity as Measure);
+                                var vm = new MeasureEditorViewModel(SelectedTag.Blank as Measure);
                                 vm.OnDialogResult(() =>
                                 {
                                     CompleteCommon(SelectedTag, vm.Measure, false);
@@ -223,7 +223,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                                 break;
 
                             case BlankType.Icd:
-                                var vm0 = new IcdSelectorViewModel(SelectedTag.Entity as IcdDisease);
+                                var vm0 = new IcdSelectorViewModel(SelectedTag.Blank as IcdDisease);
                                 vm0.OnDialogResult(() =>
                                 {
                                     CompleteCommon(SelectedTag, vm0.SelectedIcd, false);
@@ -677,12 +677,14 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
         private void CompleteCommon(TagViewModel tag, object suggestion, bool exactMatchRequired, bool inverse = false)
         {
+            Contract.Requires(suggestion is SuggestionViewModel || suggestion is Word || suggestion == null);
+
+            var hio = suggestion as IHrItemObject;
             var vm = suggestion as SuggestionViewModel;
             if (vm != null)
-            {
-                suggestion = vm.Hio;
-            }
-            recognizer.SetBlank(tag, suggestion, exactMatchRequired, inverse);
+                hio = vm.Hio;
+
+            recognizer.SetBlank(tag, hio, exactMatchRequired, inverse);
 
             CompleteEnding(tag);
 

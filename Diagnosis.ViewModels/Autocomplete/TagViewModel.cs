@@ -66,7 +66,7 @@ namespace Diagnosis.ViewModels.Autocomplete
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(TagViewModel));
         private readonly IAutocompleteViewModel autocomplete;
-        private object _blank;
+        private IHrItemObject _blank;
         private bool _focused;
         private string _query;
         private State _state;
@@ -121,7 +121,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             this.autocomplete = parent;
 
             Blank = item;
-            Entity = item;
             IsDraggable = !autocomplete.SingleTag;
         }
 
@@ -149,7 +148,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                     State = State.Typing;
 
                     _query = value ?? string.Empty;
-                    Entity = null;
 
                     // show drag when type in last
                     if (IsLast)
@@ -173,12 +171,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-        /// <summary>
-        /// Сущность, созданная из тега. При изменении запроса или бланка сбрасывается.
-        /// Копируется.
-        /// </summary>
-        public IHrItemObject Entity { get; internal set; }
-
         public Confidence Confidence
         {
             get
@@ -196,10 +188,9 @@ namespace Diagnosis.ViewModels.Autocomplete
         }
 
         /// <summary>
-        /// Заготовка, из которой получаются сущности.
-        /// То, что оказалось введенным - найденное слово, текст запроса, МКБ, измерение или ничего.
+        /// Сущность в теге.
         /// </summary>
-        public object Blank
+        public IHrItemObject Blank
         {
             get
             {
@@ -242,7 +233,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (Blank is IcdDisease)
                     return BlankType.Icd;
 
-                // заготовка всегда сущность, если есть
                 Contract.Assume(Blank == null);
                 return BlankType.None;
             }
@@ -588,6 +578,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             _blank = null;
             OnPropertyChanged("Blank");
             OnPropertyChanged("BlankType");
+            OnPropertyChanged(() => Focusable);
         }
 
         [ContractInvariantMethod]
@@ -596,8 +587,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             Contract.Invariant(State != State.Completed || BlankType != BlankType.None
                 || Signalization == null || Signalization == Signalizations.Forbidden); // завершенный тег → есть бланк (тег завершается после смены бланка) в поиске бланк мб пустой
-            Contract.Invariant(State != State.Init || (BlankType == BlankType.None && Entity == null)); // в начальном состоянии → нет бланка и сущностей
-            // при редактировании нет сущностей
+            Contract.Invariant(State != State.Init || (BlankType == BlankType.None)); // в начальном состоянии → нет бланка
 
             Contract.Invariant((IsLast && Query.IsNullOrEmpty()) != IsDraggable || autocomplete.SingleTag); // последний пустой без маркера переноса
         }

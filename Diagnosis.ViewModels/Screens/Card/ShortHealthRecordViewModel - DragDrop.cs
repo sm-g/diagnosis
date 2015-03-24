@@ -68,7 +68,7 @@ namespace Diagnosis.ViewModels.Screens
                     var tags = data.Cast<TagViewModel>();
 
                     var hr = master.healthRecord;
-                    var items = tags.Select(t => new ConfindenceHrItemObject(t.Entity, t.Confidence)).ToList();
+                    var items = tags.Select(t => new ConfindenceHrItemObject(t.Blank, t.Confidence)).ToList();
                     hr.AddItems(items);
                 }
             }

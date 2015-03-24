@@ -97,10 +97,9 @@ namespace Diagnosis.ViewModels.Autocomplete
             return true;
         }
 
-        public void SetBlank(TagViewModel tag, object suggestion, bool exactMatchRequired, bool inverse)
+        public void SetBlank(TagViewModel tag, IHrItemObject suggestion, bool exactMatchRequired, bool inverse)
         {
             Contract.Requires(tag != null);
-            Contract.Requires(suggestion == null || suggestion is IHrItemObject || suggestion is string);
 
             if (suggestion == null ^ inverse) // direct no suggestion or inverse with suggestion
             {
@@ -119,9 +118,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (!exactMatchRequired || Recognizer.Matches(suggestion, tag.Query))
                 {
                     tag.Blank = suggestion; // main
-                    Debug.Assert(tag.BlankType == BlankType.Word ||
-                                 tag.BlankType == BlankType.Measure ||
-                                 tag.BlankType == BlankType.Icd);
+                    Debug.Assert(tag.BlankType != BlankType.None);
                 }
                 else
                 {
@@ -223,38 +220,12 @@ namespace Diagnosis.ViewModels.Autocomplete
         }
 
         /// <summary>
-        /// Возвращает сущность из тега. Может получиться одно: слово, коммент, диагноз, измерение со словом.
-        /// Кеширует сущность в теге.
+        /// Возвращает сущность из тега.
         /// </summary>
         public IHrItemObject EntityOf(TagViewModel tag)
         {
             Contract.Requires(tag.BlankType != BlankType.None);
-
-            // неизмененые теги - сущности уже созданы
-            if (tag.Entity != null)
-            {
-                return tag.Entity;
-            }
-
-            switch (tag.BlankType)
-            {
-                case BlankType.Word:
-                    tag.Entity = tag.Blank as Word;
-                    break;
-
-                case BlankType.Comment:
-                    tag.Entity = tag.Blank as Comment;
-                    break;
-
-                case BlankType.Icd:
-                    tag.Entity = tag.Blank as IcdDisease;
-                    break;
-
-                case BlankType.Measure:
-                    tag.Entity = tag.Blank as Measure;
-                    break;
-            }
-            return tag.Entity;
+            return tag.Blank;
         }
 
         /// <summary>
