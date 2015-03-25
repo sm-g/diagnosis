@@ -425,16 +425,6 @@ namespace Diagnosis.ViewModels.Screens
                 Log += string.Format("[{0:mm:ss:fff}] replaced {1} {2}\n", DateTime.Now, list.Count(), list.First().Actual.GetType().Name);
         }
 
-        private void DoWithCursor(Task act, Cursor cursor)
-        {
-            Mouse.OverrideCursor = cursor;
-            act.ContinueWith((t) =>
-            {
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
-                    Mouse.OverrideCursor = null));
-            });
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)
