@@ -152,6 +152,8 @@
     <Compile Include="Entities\Comment.cs" />
     <Compile Include="Entities\Setting.cs" />
     <Compile Include="Entities\UomType.cs" />
+    <Compile Include="Entities\Vocabulary.cs" />
+    <Compile Include="Entities\TempWord.cs" />
     <Compile Include="Enums\Confidence.cs" />
     <Compile Include="Enums\HrCreatedAtOffset.cs" />
     <Compile Include="Enums\HealthRecordQueryScope.cs" />

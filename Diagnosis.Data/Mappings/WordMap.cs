@@ -56,6 +56,24 @@ namespace Diagnosis.Data.Mappings
                     x.Class(typeof(HealthRecord));
                 });
             });
+
+            Bag(x => x.Vocabularies, s =>
+            {
+                s.Table("VocabularyWords");
+                s.Key(k =>
+                {
+                    k.Column("WordID");
+                });
+                s.Cascade(Cascade.All);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.ManyToMany(x =>
+                {
+                    x.Column("VocabularyID");
+                    x.Class(typeof(Vocabulary));
+                });
+            });
         }
     }
 }

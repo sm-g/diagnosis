@@ -12,6 +12,8 @@ namespace Diagnosis.Models
     {
         [NonSerialized]
         private Iesi.Collections.Generic.ISet<Word> children = new HashedSet<Word>();
+        [NonSerialized]
+        private IList<Vocabulary> vocs = new List<Vocabulary>();
 
         [NonSerialized]
         private IList<HealthRecord> healthRecords = new List<HealthRecord>(); // many-2-many bag
@@ -41,7 +43,10 @@ namespace Diagnosis.Models
                 SetProperty(ref _title, filtered, () => Title);
             }
         }
-
+        public virtual IEnumerable<Vocabulary> Vocabularies
+        {
+            get { return vocs; }
+        }
         public virtual Word Parent
         {
             get { return _parent; }
