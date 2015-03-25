@@ -30,7 +30,7 @@ namespace Diagnosis.Common.Presentation.Controls
             DataSource.AddStandardDataSources(d);
             if (DataConnectionDialog.Show(d) == System.Windows.Forms.DialogResult.OK)
             {
-                var vm = DataContext as dynamic; //OpenRemoteViewModel;
+                var vm = DataContext as dynamic;
                 try
                 {
                     vm.RemoteConnectionString = d.ConnectionString;

@@ -2,6 +2,7 @@
 using Diagnosis.Data;
 using Diagnosis.Data.Sync;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Controls;
 using Diagnosis.ViewModels.Framework;
 using EventAggregator;
 using NHibernate.Linq;
@@ -20,10 +21,9 @@ namespace Diagnosis.ViewModels.Screens
     {
         private static string _log;
 
-        private string _remoteConStr;
-        private string _remoteProvider;
         private string _localConStr;
         private string _localProvider;
+        private DataConnectionViewModel _remote;
 
         public SyncViewModel()
         {
@@ -33,13 +33,12 @@ namespace Diagnosis.ViewModels.Screens
             LocalProviderName = LocalConnectionString.Contains(".sdf") ? Constants.SqlCeProvider : Constants.SqlServerProvider;
 
             var server = Constants.ServerConnectionInfo; // из Settings
-            OpenRemoteViewModel = new OpenRemoteViewModel(server);
+            Remote = new DataConnectionViewModel(server);
 
             Syncer.MessagePosted += syncer_MessagePosted;
             Syncer.SyncEnded += syncer_SyncEnded;
         }
-        private OpenRemoteViewModel _remote;
-        public OpenRemoteViewModel OpenRemoteViewModel
+        public DataConnectionViewModel Remote
         {
             get
             {
@@ -50,7 +49,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (_remote != value)
                 {
                     _remote = value;
-                    OnPropertyChanged(() => OpenRemoteViewModel);
+                    OnPropertyChanged(() => Remote);
                 }
             }
         }
@@ -59,18 +58,12 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         public string RemoteConnectionString
         {
-            get
-            {
-                return OpenRemoteViewModel.RemoteConnectionString;
-            }
+            get { return Remote.ConnectionString; }
         }
 
         public string RemoteProviderName
         {
-            get
-            {
-                return OpenRemoteViewModel.RemoteProviderName;
-            }
+            get { return Remote.ProviderName; }
         }
 
         /// <summary>
@@ -237,6 +230,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+
         public string Log
         {
             get
@@ -252,7 +246,6 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-
         public bool CanSync(bool local, bool remote)
         {
             bool result = !Syncer.InSync;
@@ -282,6 +275,8 @@ namespace Diagnosis.ViewModels.Screens
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                 CommandManager.InvalidateRequerySuggested()));
         }
+
+
 
         private void CheckReferenceEntitiesAfterDownload(Dictionary<Type, IEnumerable<object>> addedIdsPerType)
         {

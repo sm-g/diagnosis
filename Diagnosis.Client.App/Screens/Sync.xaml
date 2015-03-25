@@ -65,7 +65,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <diag:OpenRemote Grid.ColumnSpan="2" DataContext="{Binding OpenRemoteViewModel}"/>              
+                <diag:OpenRemote Grid.ColumnSpan="2" DataContext="{Binding Remote}"/>              
                
 
                 <StackPanel Orientation="Horizontal"

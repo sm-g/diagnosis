@@ -5,23 +5,28 @@ using EventAggregator;
 using System;
 using System.Linq;
 
-namespace Diagnosis.ViewModels.Screens
+namespace Diagnosis.ViewModels.Controls
 {
-    public class OpenRemoteViewModel : ViewModelBase
+    public class DataConnectionViewModel : ViewModelBase
     {
         private string _remoteConStr;
         private string _remoteProvider;
 
-        public OpenRemoteViewModel(ConnectionInfo initial)
+        public DataConnectionViewModel()
+        {
+
+        }
+
+        public DataConnectionViewModel(ConnectionInfo initial)
         {
             if (initial != null)
             {
-                RemoteConnectionString = initial.ConnectionString;
-                RemoteProviderName = initial.ProviderName;
+                ConnectionString = initial.ConnectionString;
+                ProviderName = initial.ProviderName;
             }
 #if DEBUG
 
-            RemoteProviderName = Constants.SqlCeProvider;
+            ProviderName = Constants.SqlCeProvider;
 #endif
         }
 
@@ -41,14 +46,14 @@ namespace Diagnosis.ViewModels.Screens
 
                     if (result.IsValid)
                     {
-                        RemoteConnectionString = result.FileName;
-                        RemoteProviderName = Constants.SqlCeProvider;
+                        ConnectionString = result.FileName;
+                        ProviderName = Constants.SqlCeProvider;
                     }
                 });
             }
         }
 
-        public string RemoteConnectionString
+        public string ConnectionString
         {
             get
             {
@@ -64,12 +69,12 @@ namespace Diagnosis.ViewModels.Screens
                     }
 
                     _remoteConStr = value;
-                    OnPropertyChanged(() => RemoteConnectionString);
+                    OnPropertyChanged(() => ConnectionString);
                 }
             }
         }
 
-        public string RemoteProviderName
+        public string ProviderName
         {
             get
             {
@@ -80,7 +85,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (_remoteProvider != value)
                 {
                     _remoteProvider = value;
-                    OnPropertyChanged(() => RemoteProviderName);
+                    OnPropertyChanged(() => ProviderName);
                 }
             }
         }
