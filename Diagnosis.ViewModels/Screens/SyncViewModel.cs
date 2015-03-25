@@ -33,19 +33,27 @@ namespace Diagnosis.ViewModels.Screens
             LocalProviderName = LocalConnectionString.Contains(".sdf") ? Constants.SqlCeProvider : Constants.SqlServerProvider;
 
             var server = Constants.ServerConnectionInfo; // из Settings
-            if (server != null)
-            {
-                RemoteConnectionString = server.ConnectionString;
-                RemoteProviderName = server.ProviderName;
-            }
-#if DEBUG
-            //    RemoteConnectionString = "Data Source=remote.sdf";
-            RemoteProviderName = Constants.SqlCeProvider;
-#endif
+            OpenRemoteViewModel = new OpenRemoteViewModel(server);
+
             Syncer.MessagePosted += syncer_MessagePosted;
             Syncer.SyncEnded += syncer_SyncEnded;
         }
-
+        private OpenRemoteViewModel _remote;
+        public OpenRemoteViewModel OpenRemoteViewModel
+        {
+            get
+            {
+                return _remote;
+            }
+            set
+            {
+                if (_remote != value)
+                {
+                    _remote = value;
+                    OnPropertyChanged(() => OpenRemoteViewModel);
+                }
+            }
+        }
         /// <summary>
         /// Remote, server or middle on Client.exe, middle on Server.exe
         /// </summary>
@@ -53,20 +61,15 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return _remoteConStr;
+                return OpenRemoteViewModel.RemoteConnectionString;
             }
-            set
-            {
-                if (_remoteConStr != value)
-                {
-                    if (!value.StartsWith("Data Source="))
-                    {
-                        value = "Data Source=" + value;
-                    }
+        }
 
-                    _remoteConStr = value;
-                    OnPropertyChanged(() => RemoteConnectionString);
-                }
+        public string RemoteProviderName
+        {
+            get
+            {
+                return OpenRemoteViewModel.RemoteProviderName;
             }
         }
 
@@ -89,22 +92,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public string RemoteProviderName
-        {
-            get
-            {
-                return _remoteProvider;
-            }
-            set
-            {
-                if (_remoteProvider != value)
-                {
-                    _remoteProvider = value;
-                    OnPropertyChanged(() => RemoteProviderName);
-                }
-            }
-        }
-
         public string LocalProviderName
         {
             get
@@ -121,28 +108,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        /// <summary>
-        /// Open remote SqlCe DB.
-        /// </summary>
-        public RelayCommand OpenSdfCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    var result = new FileDialogService().ShowOpenFileDialog(null,
-                         FileType.Sdf.ToEnumerable(),
-                         FileType.Sdf,
-                         "diagnosis");
-
-                    if (result.IsValid)
-                    {
-                        RemoteConnectionString = result.FileName;
-                        RemoteProviderName = Constants.SqlCeProvider;
-                    }
-                });
-            }
-        }
 
         /// <summary>
         /// Загружает справочные данные с удаленной серверной БД на клиент.

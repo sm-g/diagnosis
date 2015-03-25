@@ -1,5 +1,4 @@
 ﻿using Diagnosis.ViewModels.Screens;
-using Microsoft.Data.ConnectionUI;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,20 +28,5 @@ namespace Diagnosis.Client.App.Screens
 
         }
 
-        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            var d = new DataConnectionDialog();
-            DataSource.AddStandardDataSources(d);
-            if (DataConnectionDialog.Show(d) == System.Windows.Forms.DialogResult.OK)
-            {
-                var vm = DataContext as SyncViewModel;
-                if (vm != null)
-                {
-                    vm.RemoteConnectionString = d.ConnectionString;
-                    vm.RemoteProviderName = d.SelectedDataProvider.Name;
-                }
-            }
-
-        }
     }
 }
