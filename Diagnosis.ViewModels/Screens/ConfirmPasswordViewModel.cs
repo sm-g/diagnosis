@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class ConfirmPasswordViewModel : ScreenBaseViewModel
+    public class ConfirmPasswordViewModel : ViewModelBase
     {
         private bool _wrongpassword;
         private bool _repPassVis;
