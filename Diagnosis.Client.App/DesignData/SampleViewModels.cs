@@ -124,7 +124,7 @@ namespace Diagnosis.Client.App.DesignData
         public SampleShortHealthRecordViewModel()
             : base(Mocks.hr)
         {
-            SortingExtraInfo = Mocks.hr.Category.Name;
+            SortingExtraInfo = Mocks.hr.Category.Title;
         }
     }
 

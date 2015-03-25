@@ -48,7 +48,7 @@ namespace Tests
         public void NullNameOfNull()
         {
             var cat = HrCategory.Null;
-            var cat2 = new HrCategory(HrCategory.Null.Name, 1);
+            var cat2 = new HrCategory(HrCategory.Null.Title, 1);
             Assert.IsTrue(cat != cat2);
             Assert.AreNotEqual(cat, cat2);
             Assert.IsTrue(cat.EqualsByVal(cat2));

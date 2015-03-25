@@ -7,10 +7,10 @@ namespace Diagnosis.Models
     {
         public static HrCategory Null = new HrCategory("Не задано", int.MaxValue); // upper case to show in checkbox
 
-        public HrCategory(string name, int ord)
+        public HrCategory(string title, int ord)
         {
-            Contract.Requires(name != null);
-            Name = name;
+            Contract.Requires(title != null);
+            Title = title;
             Ord = ord;
         }
 
@@ -18,7 +18,7 @@ namespace Diagnosis.Models
         {
         }
 
-        public virtual string Name { get; set; }
+        public virtual string Title { get; set; }
 
         /// <summary>
         /// Порядок, уникальный.
@@ -32,7 +32,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return Name;
+            return Title;
         }
 
         public virtual int CompareTo(object obj)

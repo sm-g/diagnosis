@@ -223,7 +223,7 @@ namespace Diagnosis.Models
                     (x as UomType).Title == (y as UomType).Title
                 },
                 { typeof(HrCategory), (y) => 
-                    (x as HrCategory).Name == (y as HrCategory).Name
+                    (x as HrCategory).Title == (y as HrCategory).Title
                 },
                 { typeof(Speciality), (y) => 
                     (x as Speciality).Title == (y as Speciality).Title
@@ -269,7 +269,7 @@ namespace Diagnosis.Models
                     {
                         var a = x as HrCategory;
                         var b = y as HrCategory;
-                        return a.Name == b.Name;
+                        return a.Title == b.Title;
                     } 
                 },
                 { typeof(Speciality), () => 

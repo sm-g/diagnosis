@@ -18,11 +18,6 @@
                            ItemMargin="0,0,0,3"
                            ItemsPanel="{Binding ItemsPanelTemplate, ElementName=chooser}"
                            MultiSelection="{Binding CategoryMultiSelection, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:CategoryChooser}}}">
-            <diag:RadioListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Name}" />
-                </DataTemplate>
-            </diag:RadioListBox.ItemTemplate>
         </diag:RadioListBox>
     </Grid>
 </UserControl>
