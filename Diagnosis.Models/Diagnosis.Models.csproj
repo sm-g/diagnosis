@@ -196,7 +196,9 @@
     <Compile Include="Validators\PatientValidator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ModelsClassDiagram.cd" />
+    <None Include="ModelsClassDiagram.cd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -13,7 +13,7 @@ namespace Diagnosis.Models
         [NonSerialized]
         private Iesi.Collections.Generic.ISet<Word> children = new HashedSet<Word>();
         [NonSerialized]
-        private IList<Vocabulary> vocs = new List<Vocabulary>();
+        private IList<Vocabulary> vocabularies = new List<Vocabulary>();
 
         [NonSerialized]
         private IList<HealthRecord> healthRecords = new List<HealthRecord>(); // many-2-many bag
@@ -45,7 +45,7 @@ namespace Diagnosis.Models
         }
         public virtual IEnumerable<Vocabulary> Vocabularies
         {
-            get { return vocs; }
+            get { return vocabularies; }
         }
         public virtual Word Parent
         {

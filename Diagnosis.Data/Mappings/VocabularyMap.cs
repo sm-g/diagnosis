@@ -33,20 +33,6 @@ namespace Diagnosis.Data.Mappings
                 r.OneToMany();
             });
 
-            //Set(x => x.SpecialityIcdBlocks, s =>
-            //{
-            //    s.Key(k =>
-            //    {
-            //        k.Column("SpecialityID");
-            //    });
-            //    s.Inverse(true);
-            //    s.Cascade(Cascade.All | Cascade.DeleteOrphans);
-            //    s.Access(Accessor.Field);
-            //}, r =>
-            //{
-            //    r.OneToMany();
-            //});
-
             Bag(x => x.Words, s =>
             {
                 s.Table("VocabularyWords");
