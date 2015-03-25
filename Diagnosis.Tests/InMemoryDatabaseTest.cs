@@ -32,15 +32,15 @@ namespace Tests
 
         public InMemoryDatabaseTest()
         {
-            NHibernateHelper.InMemory = true;
-            NHibernateHelper.ShowSql = true;
-            NHibernateHelper.FromTest = true;
+            NHibernateHelper.Default.InMemory = true;
+            NHibernateHelper.Default.ShowSql = true;
+            NHibernateHelper.Default.FromTest = true;
         }
 
         [TestInitialize]
         public void InMemoryDatabaseTestInit()
         {
-            session = NHibernateHelper.OpenSession();
+            session = NHibernateHelper.Default.OpenSession();
         }
 
         [TestCleanup]

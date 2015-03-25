@@ -9,7 +9,7 @@ namespace Diagnosis.Data.Mappings
         {
             get
             {
-                if (NHibernateHelper.InMemory)
+                if (NHibernateHelper.Default.InMemory)
                     return "now"; // sqlite
                 else
                     return "GETDATE()"; // sqlserver ce

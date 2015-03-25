@@ -29,7 +29,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             Title = "Синхронизация";
 
-            LocalConnectionString = NHibernateHelper.ConnectionString;
+            LocalConnectionString = NHibernateHelper.Default.ConnectionString;
             LocalProviderName = LocalConnectionString.Contains(".sdf") ? Constants.SqlCeProvider : Constants.SqlServerProvider;
 
             var server = Constants.ServerConnectionInfo; // из Settings

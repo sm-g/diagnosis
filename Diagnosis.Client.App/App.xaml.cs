@@ -52,7 +52,7 @@ namespace Diagnosis.Client.App
             {
                 if (e.Args[i] == "-inmemory")
                 {
-                    NHibernateHelper.InMemory = true;
+                    NHibernateHelper.Default.InMemory = true;
                 }
             }
 
@@ -144,17 +144,17 @@ namespace Diagnosis.Client.App
             if (constrsettings != null)
                 conInfo = new ConnectionInfo(constrsettings.ConnectionString.ExpandVariables(), constrsettings.ProviderName);
 
-            if (!NHibernateHelper.Init(conInfo, Side.Client))
+            if (!NHibernateHelper.Default.Init(conInfo, Side.Client))
             {
                 demoMode = true;
             }
 
-            if (NHibernateHelper.InMemory)
+            if (NHibernateHelper.Default.InMemory)
                 return;
 
             // backup
 #if !DEBUG
-            var sdfPath = new SqlCeConnectionStringBuilder(NHibernateHelper.ConnectionString).DataSource;
+            var sdfPath = new SqlCeConnectionStringBuilder(NHibernateHelper.Default.ConnectionString).DataSource;
             FileHelper.Backup(sdfPath, Constants.BackupDir, 5, 7);
 #endif
 
@@ -168,11 +168,11 @@ namespace Diagnosis.Client.App
             {
                 if (migrateUp.Value)
                 {
-                    new Migrator(NHibernateHelper.ConnectionString, Constants.BackupDir).MigrateToLatest();
+                    new Migrator(NHibernateHelper.Default.ConnectionString, Constants.BackupDir).MigrateToLatest();
                 }
                 else
                 {
-                    new Migrator(NHibernateHelper.ConnectionString, Constants.BackupDir).Rollback();
+                    new Migrator(NHibernateHelper.Default.ConnectionString, Constants.BackupDir).Rollback();
                 }
             }
         }
@@ -202,7 +202,7 @@ namespace Diagnosis.Client.App
             };
             debWin.Show();
 
-            // NHibernateHelper.ShowSql = !NHibernateHelper.InMemory;
+            // NHibernateHelper.Default.ShowSql = !NHibernateHelper.Default.InMemory;
         }
 
         [DebuggerStepThrough]

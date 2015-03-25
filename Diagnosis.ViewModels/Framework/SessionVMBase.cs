@@ -12,9 +12,9 @@ namespace Diagnosis.ViewModels
         {
             if (IsInDesignMode)
             {
-                NHibernateHelper.InMemory = true;
-                NHibernateHelper.ShowSql = false;
-                NHibernateHelper.FromTest = false;
+                NHibernateHelper.Default.InMemory = true;
+                NHibernateHelper.Default.ShowSql = false;
+                NHibernateHelper.Default.FromTest = false;
             }
         }
 
@@ -27,7 +27,7 @@ namespace Diagnosis.ViewModels
             get
             {
                 if (statelessSession == null)
-                    statelessSession = NHibernateHelper.OpenStatelessSession();
+                    statelessSession = NHibernateHelper.Default.OpenStatelessSession();
                 return statelessSession;
             }
         }
@@ -36,7 +36,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return NHibernateHelper.GetSession();
+                return NHibernateHelper.Default.GetSession();
             }
         }
         protected override void Dispose(bool disposing)
