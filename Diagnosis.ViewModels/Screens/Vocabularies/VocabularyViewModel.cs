@@ -46,7 +46,7 @@ namespace Diagnosis.ViewModels.Screens
         //    {
         //        return new RelayCommand(() =>
         //        {
-        //            this.Send(Event.EditWord, voc.AsParams(MessageKeys.Word));
+        //            this.Send(Event.EditVoc, voc.AsParams(MessageKeys.Voc));
         //        });
         //    }
         //}

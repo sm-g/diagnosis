@@ -86,5 +86,10 @@ namespace Diagnosis.Models
         {
             return new WordValidator().Validate(this);
         }
+
+        internal protected virtual void RemoveVoc(Vocabulary vocabulary)
+        {
+            vocabularies.Remove(vocabulary);
+        }
     }
 }

@@ -6,7 +6,6 @@ using Diagnosis.Models;
 using Diagnosis.ViewModels.Controls;
 using Diagnosis.ViewModels.Search;
 using EventAggregator;
-using NHibernate;
 using NHibernate.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,31 +17,31 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class VocabularyListViewModel : ScreenBaseViewModel, IFilterableList
+    public class VocabularyListViewModel : ScreenBaseViewModel
     {
+        private static NHibernateHelper nhib;
         private ObservableCollection<VocabularyViewModel> _vocs;
         private ObservableCollection<VocabularyViewModel> _availableVocs;
         private bool _noVocs;
-        private Saver saver;
         private bool _noNewVocs;
-        private ISession remoteSession;
-
-        private DataConnectionViewModel _remote;
-
         private bool _connected;
+        private DataConnectionViewModel _remote;
         private string LocalConnectionString;
         private string LocalProviderName;
-        private static NHibernateHelper nhib;
+        private Saver saver;
+        private VocLoader loader;
 
         public VocabularyListViewModel()
         {
             Title = "Словари";
             saver = new Saver(Session);
+            loader = new VocLoader(Session);
+
             SelectedVocs = new ObservableCollection<VocabularyViewModel>();
             SelectedAvailableVocs = new ObservableCollection<VocabularyViewModel>();
 
-            MakeInstalledVms(Session.Query<Vocabulary>());
-            //NoVocs = Vocs.Count == 0;
+            LocalConnectionString = NHibernateHelper.Default.ConnectionString;
+            LocalProviderName = LocalConnectionString.Contains(".sdf") ? Constants.SqlCeProvider : Constants.SqlServerProvider;
 
             var server = Constants.ServerConnectionInfo; // из Settings
             Remote = new DataConnectionViewModel(server);
@@ -54,9 +53,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             };
 
-            LocalConnectionString = NHibernateHelper.Default.ConnectionString;
-            LocalProviderName = LocalConnectionString.Contains(".sdf") ? Constants.SqlCeProvider : Constants.SqlServerProvider;
-
+            MakeInstalledVms(Session.Query<Vocabulary>());
             TryGetAvailableVocs();
         }
 
@@ -126,33 +123,18 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     Contract.Requires(LocalProviderName == Constants.SqlCeProvider); // загружаем только на клиента
-                    Contract.Requires(IsConnected);
 
-                    var syncer = new Syncer(
-                         serverConStr: Remote.ConnectionString,
-                         clientConStr: LocalConnectionString,
-                         serverProviderName: Remote.ProviderName);
+                    var vms = SelectedAvailableVocs.ToList();
+                    var mergerdVocs = new List<Vocabulary>();
+                    vms.ForEach(vm => mergerdVocs.Add(Session.Merge(vm.voc))); // new id! синхронизировать?
+                    loader.LoadOrUpdateVocs(mergerdVocs);
+                    vms.ForEach(vm => AvailableVocs.Remove(vm));
 
-                    // синхронизируем словари
-                    //DoWithCursor(syncer.SendFrom(Side.Server, Scope.Voc.ToEnumerable()).ContinueWith((t) =>
-                    //    // после загрузки проверяем словари
-                    //    //    CheckReferenceEntitiesAfterDownload(syncer.AddedIdsPerType)).ContinueWith((t) =>
-                    //new VocLoader(Session).ProceedDeletedOnServerVocs(syncer.DeletedIdsPerType))
-                    //, Cursors.AppStarting);
-
-                    // делаем слова из выбранных
-                    var loader = new VocLoader(Session);
-                    foreach (var voc in SelectedAvailableVocs.Select(x => x.voc))
-                    {
-                        remoteSession.Evict(voc);
-                        Session.Merge(voc);
-
-                        loader.LoadVoc(voc);
-                    }
                     MakeInstalledVms(Session.Query<Vocabulary>());
-                }, () => SelectedAvailableVocs.Count > 0);
+                }, () => SelectedAvailableVocs.Count > 0 && IsConnected);
             }
         }
+
         /// <summary>
         /// Обновляет выбранные установленные словари.
         /// </summary>
@@ -163,18 +145,10 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     // это же при синхронизации для всех словарей?
-                    var loader = new VocLoader(Session);
-                    foreach (var voc in SelectedAvailableVocs.Select(x => x.voc))
-                    {
-                        remoteSession.Evict(voc);
-                        Session.Merge(voc);
-
-                        loader.UpdateVoc(voc);
-                    }
-
                 }, () => SelectedVocs.Count > 0);
             }
         }
+
         /// <summary>
         /// Удаляет выбранные установленные словари.
         /// </summary>
@@ -187,14 +161,10 @@ namespace Diagnosis.ViewModels.Screens
                     var toDel = SelectedVocs
                         .Select(w => w.voc)
                         .ToArray();
-                    var loader = new VocLoader(Session);
 
                     loader.DeleteVocs(toDel);
 
                     MakeInstalledVms(Session.Query<Vocabulary>());
-
-
-                    //NoVocs = !Session.Query<Vocabulary>().Any();
                 }, () => SelectedVocs.Count > 0);
             }
         }
@@ -236,6 +206,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         /// <summary>
         /// Не подключен источник словарей.
         /// </summary>
@@ -254,12 +225,10 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         private void TryGetAvailableVocs()
         {
             // подкключаемся к источнику
-            if (remoteSession != null)
-                remoteSession.Dispose();
-
             var conn = new ConnectionInfo(Remote.ConnectionString, Remote.ProviderName);
 
             if (nhib == null || nhib.ConnectionString != conn.ConnectionString)
@@ -268,27 +237,26 @@ namespace Diagnosis.ViewModels.Screens
             var ids = Vocs.Select(y => y.voc.Id).ToList();
             try
             {
-                remoteSession = nhib.OpenSession();
-                using (var tr = remoteSession.BeginTransaction())
+                using (var s = nhib.OpenSession())
+                using (var tr = s.BeginTransaction())
                 {
-
-                    var vocs = remoteSession.Query<Vocabulary>()
+                    var vocs = s.Query<Vocabulary>()
                         .Where(x => !ids.Contains(x.Id))
                         .ToList();
                     MakeAvailableVms(vocs);
+                    tr.Commit();
                 }
                 IsConnected = true;
                 NoAvailableVocs = AvailableVocs.Count == 0;
             }
             catch (System.Exception)
             {
-                remoteSession = null;
                 MakeAvailableVms(Enumerable.Empty<Vocabulary>());
                 IsConnected = false;
                 NoAvailableVocs = false; // пока нет подключения, этого сообщения нет
             }
-
         }
+
         private void MakeInstalledVms(IEnumerable<Vocabulary> results)
         {
             var vms = results.Select(w => Vocs
@@ -311,10 +279,6 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (disposing)
             {
-                //  emhManager.Dispose();
-                if (remoteSession != null)
-                    remoteSession.Dispose();
-
                 this.Send(Event.PushToSettings, new object[] { Constants.SyncServerConstrSettingName, Remote.ConnectionString }.AsParams(MessageKeys.Name, MessageKeys.Value));
                 this.Send(Event.PushToSettings, new object[] { Constants.SyncServerProviderSettingName, Remote.ProviderName }.AsParams(MessageKeys.Name, MessageKeys.Value));
             }

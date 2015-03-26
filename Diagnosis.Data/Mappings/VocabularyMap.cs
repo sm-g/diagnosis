@@ -25,8 +25,9 @@ namespace Diagnosis.Data.Mappings
                 {
                     k.Column("VocabularyID");
                 });
+                s.Lazy(CollectionLazy.NoLazy); // для создания слов после закрытия сессии
                 s.Inverse(true);
-                s.Cascade(Cascade.All);
+                s.Cascade(Cascade.All | Cascade.DeleteOrphans);
                 s.Access(Accessor.Field);
             }, r =>
             {
@@ -40,7 +41,7 @@ namespace Diagnosis.Data.Mappings
                 {
                     k.Column("VocabularyID");
                 });
-                s.Cascade(Cascade.All);
+                s.Cascade(Cascade.Persist);
                 s.Access(Accessor.Field);
             }, r =>
             {

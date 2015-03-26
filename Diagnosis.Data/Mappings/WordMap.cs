@@ -64,7 +64,7 @@ namespace Diagnosis.Data.Mappings
                 {
                     k.Column("WordID");
                 });
-                s.Cascade(Cascade.All);
+                s.Cascade(Cascade.None);
                 s.Access(Accessor.Field);
             }, r =>
             {

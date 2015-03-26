@@ -22,38 +22,99 @@ namespace Diagnosis.Data.Sync
         }
 
         /// <summary>
-        ///
+        /// Создает слова по шаблонам словаря, убирает слова, для которых нет шаблона.
         /// </summary>
         /// <param name="voc"></param>
-        public void LoadVoc(Vocabulary voc)
+        public void LoadOrUpdateVocs(IEnumerable<Vocabulary> vocs)
         {
-            // делаем слова по текстам из словаря
-            CreateWordsFromTemp(voc);
-
-            // save created and updated - by voc cascade
-            new Saver(session).Save(voc);
+            var wordsToSave = new List<Word>();
+            foreach (var voc in vocs)
+            {
+                // убираем лишние слова из словаря
+                var templates = voc.WordTemplates;
+                var removed = GetRemovedWordsByTemp(voc, templates);
+                var wordsInOtherVoc = RemoveFromVoc(voc, removed);
+                wordsToSave.AddRange(wordsInOtherVoc);
+                // делаем слова по текстам из словаря
+                CreateWordsFromTemp(voc, templates);
+            }
+            // save words - by voc cascade
+            new Saver(session).Save(vocs.ToArray());
+            // сохраняем убранность словаря в оставшихся словах
+            new Saver(session).Save(wordsToSave.ToArray());
         }
-        public void UpdateVoc(Vocabulary voc)
-        {
 
-            // убираем лишние слова из словаря
-            var removed = GetRemovedWordsByTemp(voc);
-            RemoveFromVoc(voc, removed);
-            // делаем слова по текстам из словаря
-            CreateWordsFromTemp(voc);
-
-            // save created and updated - by voc cascade
-            new Saver(session).Save(voc);
-        }
         /// <summary>
-        /// Убирает слова из словаря. 
+        /// Удаляет словари, сначала убирая из них все слова.
+        /// </summary>
+        /// <param name="vocs"></param>
+        public void DeleteVocs(IEnumerable<Vocabulary> vocs)
+        {
+            var wordsToSave = new List<Word>();
+            var vocsToDel = vocs.ToArray();
+            vocsToDel.ForAll(x =>
+            {
+                var wordsInOtherVoc = RemoveFromVoc(x, x.Words.ToList());
+                wordsToSave.AddRange(wordsInOtherVoc);
+            });
+            // убрали все слова из словаря - удаляем его на клиенте
+            new Saver(session).Delete(vocsToDel);
+
+            // сохраняем убранность словаря в оставшихся словах
+            new Saver(session).Save(wordsToSave.ToArray());
+        }
+
+        /// <summary>
+        /// Удаляем убранные, обновляем оставшиеся загруженные словари
+        /// </summary>
+        /// <param name="mustBeDeletedIdsPerType"></param>
+        public void AfterSyncVocs(Dictionary<Type, IEnumerable<object>> mustBeDeletedIdsPerType)
+        {
+            var vocs = session.Query<Vocabulary>().ToList();
+
+            IEnumerable<object> ids;
+            mustBeDeletedIdsPerType.TryGetValue(typeof(Vocabulary), out ids);
+
+            if (ids != null)
+            {
+                var vocsToDel = vocs.Where(x => ids.Contains(x.Id)).ToList();
+                DeleteVocs(vocsToDel);
+            }
+            vocs = session.Query<Vocabulary>().ToList();
+            LoadOrUpdateVocs(vocs);
+        }
+
+        /// <summary>
+        /// Возвращает слова, для которых больше нет шаблонов в словаре.
+        /// </summary>
+        /// <param name="voc"></param>
+        /// <returns></returns>
+        private static IList<Word> GetRemovedWordsByTemp(Vocabulary voc, IEnumerable<WordTemplate> templates)
+        {
+            Contract.Ensures(voc.Words.ScrambledEquals(Contract.OldValue(voc.Words))); // только возвращает слова
+
+            var strings = templates.Select(X => X.Title).ToList();
+            var removed = new List<Word>();
+            foreach (var word in voc.Words)
+            {
+                if (!strings.Contains(word.Title))
+                    removed.Add(word);
+            }
+            return removed;
+        }
+
+        /// <summary>
+        /// Убирает слова из словаря.
         /// Возвращает слова словаря, оставшиеся в других словарях (нужно сохранить).
         /// </summary>
         /// <param name="voc"></param>
         /// <param name="toRemove"></param>
         /// <returns></returns>
-        private List<Word> RemoveFromVoc(Vocabulary voc, IList<Word> toRemove)
+        private IEnumerable<Word> RemoveFromVoc(Vocabulary voc, IList<Word> toRemove)
         {
+            Contract.Ensures(voc.Words.Intersect(toRemove).Count() == 0);
+            Contract.Ensures(Contract.Result<IEnumerable<Word>>().All(x => x.Vocabularies.Count() > 0));
+
             var toDelete = new List<Word>();
             foreach (var word in toRemove)
             {
@@ -72,15 +133,17 @@ namespace Diagnosis.Data.Sync
         }
 
         /// <summary>
-        /// Делает тексты словаря словами словаря. 
+        /// Делает тексты словаря словами словаря.
         /// Возвращает созданные слова.
         /// </summary>
         /// <param name="voc"></param>
-        private IEnumerable<Word> CreateWordsFromTemp(Vocabulary voc)
+        private IEnumerable<Word> CreateWordsFromTemp(Vocabulary voc, IEnumerable<WordTemplate> templates)
         {
-            var wordTextes = voc.WordTemplates.Select(x => x.Title);
+            Contract.Ensures(templates.Select(x => x.Title.ToLower())
+                     .Except(voc.Words.Select(x => x.Title.ToLower())).Count() == 0);
+
             var created = new List<Word>();
-            foreach (var text in wordTextes)
+            foreach (var text in templates.Select(x => x.Title))
             {
                 var existing = WordQuery.ByTitle(session)(text);
                 if (existing == null)
@@ -95,65 +158,6 @@ namespace Diagnosis.Data.Sync
                 }
             }
             return created;
-        }
-
-        /// <summary>
-        /// Возвращает слова, для которых больше нет шаблонов в словаре.
-        /// </summary>
-        /// <param name="voc"></param>
-        /// <returns></returns>
-        private static List<Word> GetRemovedWordsByTemp(Vocabulary voc)
-        {
-            Contract.Ensures(voc.Words.ScrambledEquals(Contract.OldValue(voc.Words))); // только возвращает слова
-
-            var wordTextes = voc.WordTemplates.Select(x => x.Title);
-            var removed = new List<Word>();
-            foreach (var word in voc.Words)
-            {
-                if (!wordTextes.Contains(word.Title))
-                    removed.Add(word);
-            }
-            return removed;
-        }
-
-        /// <summary>
-        /// Удаляет словари, сначала убирая из них все слова.
-        /// </summary>
-        /// <param name="vocs"></param>
-        public void DeleteVocs(IEnumerable<Vocabulary> vocs)
-        {
-            var wordsToSave = new List<Word>();
-            var vocsToDel = vocs.ToArray();
-            vocsToDel.ForAll(x =>
-            {
-                x.ClearWordTemplates();
-                var removed = GetRemovedWordsByTemp(x);
-                var wordsInOtherVoc = RemoveFromVoc(x, removed);
-                wordsToSave.AddRange(wordsInOtherVoc);
-            });
-            // убрали все слова из словаря - удаляем его на клиенте
-            new Saver(session).Delete(vocsToDel);
-
-            // сохраняем убранность словаря в словах
-            new Saver(session).Save(wordsToSave.ToArray());
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="mustBeDeletedIdsPerType"></param>
-        public void ProceedDeletedOnServerVocs(Dictionary<Type, IEnumerable<object>> mustBeDeletedIdsPerType)
-        {
-            var vocs = session.Query<Vocabulary>().ToList();
-
-            IEnumerable<object> ids;
-            mustBeDeletedIdsPerType.TryGetValue(typeof(Vocabulary), out ids);
-
-            if (ids != null)
-            {
-                var vocsToDel = vocs.Where(x => ids.Contains(x.Id)).ToList();
-                DeleteVocs(vocsToDel);
-            }
         }
     }
 }

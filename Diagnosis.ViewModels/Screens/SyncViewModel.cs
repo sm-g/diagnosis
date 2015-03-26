@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
+using Diagnosis.Data.Queries;
 using Diagnosis.Data.Sync;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Controls;
@@ -120,7 +121,10 @@ namespace Diagnosis.ViewModels.Screens
 
                     DoWithCursor(syncer.SendFrom(Side.Server).ContinueWith((t) =>
                         // после загрузки проверяем справочные сущности на совпадение
-                        CheckReferenceEntitiesAfterDownload(syncer.AddedIdsPerType)), Cursors.AppStarting);
+                        CheckReferenceEntitiesAfterDownload(syncer.AddedIdsPerType)).ContinueWith((t) =>
+                            // обновляем загруженные словари или удаляем
+                        new VocLoader(Session).AfterSyncVocs(syncer.DeletedIdsPerType))
+                    , Cursors.AppStarting);
                 },
                 () => CanSync(true, true));
             }
@@ -157,7 +161,7 @@ namespace Diagnosis.ViewModels.Screens
                         if (Constants.IsClient)
                             scopes = Scopes.GetOrderedUploadScopes();
                         else
-                            scopes = Scope.Reference.ToEnumerable();
+                            scopes = Scopes.GetOrderedDownloadScopes();
 
                         // создаем промежуточную БД
                         SqlHelper.CreateSqlCeByConStr(sdfFileConstr);

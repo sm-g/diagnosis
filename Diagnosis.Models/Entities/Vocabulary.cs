@@ -60,7 +60,10 @@ namespace Diagnosis.Models
         public virtual void RemoveWord(Word w)
         {
             if (words.Remove(w))
+            {
+                w.RemoveVoc(this);
                 OnWordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, w));
+            }
         }
 
         public virtual void ClearWordTemplates()

@@ -20,6 +20,7 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -27,7 +28,11 @@
                     ToolTip="Сервер или промежуточная БД — источник справочных данных">
             <diag:OpenRemote DataContext="{Binding Remote}" />
         </StackPanel>
-        <StackPanel Grid.Row="1"
+        <TextBlock Style="{StaticResource whatToDoScreenMessage}" Grid.Row="1">
+            Установка и удаление вспомогательных словарей влияет 
+            на подсказки при вводе и не меняет содержимое записей.
+        </TextBlock>
+        <StackPanel Grid.Row="2"
                     Visibility="{Binding Vocs.Count, Converter={StaticResource MoreThanToVisibility}}">
             <Label Content="Загруженные" />
             <DataGrid x:Name="installedVocs"
@@ -72,14 +77,15 @@
                         HorizontalAlignment="Center"
                         Grid.Row="1"
                         Margin="120,0">
-                <Button Content="Обновить"
-                        Command="{Binding ReloadVocsCommand}" />
-                <Button Content="Удалить"
+                <!--<Button Content="Обновить"
+                        Command="{Binding ReloadVocsCommand}" />-->
+                <Button Content="Убрать словарь"
+                        ToolTip="Удаляет неиспользованные слова из словаря"
                         Command="{Binding DeleteVocsCommand}" />
             </StackPanel>
         </StackPanel>
 
-        <StackPanel Grid.Row="1"
+        <StackPanel Grid.Row="2"
                     Style="{StaticResource whatToDoScreenMessage}">
 
             <TextBlock Visibility="{Binding Vocs.Count, Converter={StaticResource LessThanToVisibility}}">
@@ -87,7 +93,7 @@
             </TextBlock>
         </StackPanel>
 
-        <StackPanel Grid.Row="2"
+        <StackPanel Grid.Row="3"
                     Visibility="{Binding AvailableVocs.Count, Converter={StaticResource MoreThanToVisibility}}">
             <Label Content="Новые" />
             <DataGrid x:Name="availableVocs"
@@ -132,7 +138,7 @@
             </StackPanel>
         </StackPanel>
 
-        <StackPanel Grid.Row="2"
+        <StackPanel Grid.Row="3"
                     Style="{StaticResource whatToDoScreenMessage}">
             <TextBlock Visibility="{Binding IsConnected, Converter={StaticResource NegBooleanToVisibilityConverter}}">
                 <Run Text="Выберите источник словарей." />
@@ -142,7 +148,7 @@
             </TextBlock>
         </StackPanel>
 
-        <DockPanel Grid.Row="3">
+        <DockPanel Grid.Row="4">
             <Label Content="Лог"
                    DockPanel.Dock="Top" />
             <TextBox x:Name="log"

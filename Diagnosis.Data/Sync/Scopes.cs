@@ -43,6 +43,8 @@ namespace Diagnosis.Data.Sync
         private static string[] vocTableNames = new[] {
                 Names.VocabularyTbl,
                 Names.WordTemplateTbl,
+                Names.SpecialityTbl,
+                Names.SpecialityVocabulariesTbl,
             };
 
         private static string[] referenceTableNames = new[] {
@@ -51,7 +53,6 @@ namespace Diagnosis.Data.Sync
                 Names.UomTbl,
                 Names.SpecialityTbl,
                 Names.SpecialityIcdBlocksTbl,
-                Names.SpecialityVocabulariesTbl, //?
             };
 
         private static string[] userTableNames = new[] {
@@ -104,7 +105,7 @@ namespace Diagnosis.Data.Sync
         {
             return new List<Scope>()
             {
-                //Scope.Icd,
+                //Scope.Icd, МКБ не меняется
                 Scope.Voc,
                 Scope.Reference,
             };
