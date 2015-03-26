@@ -12,7 +12,7 @@ namespace Diagnosis.Models
     {
         public static string CustomTitle = "Пользовательский";
 
-        private Iesi.Collections.Generic.ISet<WordTemplate> tempWords = new HashedSet<WordTemplate>();
+        private Iesi.Collections.Generic.ISet<WordTemplate> wordTemplates = new HashedSet<WordTemplate>();
         private IList<Word> words = new List<Word>(); // many-2-many
         private string _title;
 
@@ -42,7 +42,7 @@ namespace Diagnosis.Models
 
         public virtual IEnumerable<WordTemplate> WordTemplates
         {
-            get { return tempWords; }
+            get { return wordTemplates; }
         }
 
         public virtual IEnumerable<Word> Words
@@ -65,7 +65,7 @@ namespace Diagnosis.Models
 
         public virtual void ClearWordTemplates()
         {
-            tempWords.Clear();
+            wordTemplates.Clear();
         }
 
         public override string ToString()
