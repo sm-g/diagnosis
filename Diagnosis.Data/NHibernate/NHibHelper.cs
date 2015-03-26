@@ -20,12 +20,14 @@ namespace Diagnosis.Data
 {
     public class NHibernateHelper
     {
-        private static readonly System.Lazy<NHibernateHelper> lazyInstance = new System.Lazy<NHibernateHelper>(() => new NHibernateHelper());
+        private static readonly System.Lazy<NHibernateHelper> lazyInstance = new System.Lazy<NHibernateHelper>(() => new NHibernateHelper() { loadSavedCfg = true });
         private Configuration _cfg;
         private HbmMapping _mapping;
         private ISession _session;
         private ISessionFactory _sessionFactory;
         private ConnectionInfo connection;
+        bool loadSavedCfg;
+
         protected NHibernateHelper()
         {
         }
@@ -95,7 +97,9 @@ namespace Diagnosis.Data
         public static NHibernateHelper FromServerConnectionInfo(ConnectionInfo conn)
         {
             var instance = new NHibernateHelper();
+            instance.loadSavedCfg = false;
             instance.Init(conn, Side.Server);
+
             return instance;
         }
 
@@ -247,7 +251,7 @@ namespace Diagnosis.Data
 
         private Configuration LoadConfiguration()
         {
-            if (InMemory || IsConfigurationFileValid == false)
+            if (InMemory || IsConfigurationFileValid == false || !loadSavedCfg)
                 return null;
             try
             {
