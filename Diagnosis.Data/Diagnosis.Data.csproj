@@ -179,6 +179,7 @@
       <Link>Properties\GeneralAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Mappings\AdminMap.cs" />
+    <Compile Include="Mappings\VocabularyMap.cs" />
     <Compile Include="Mappings\UomTypeMap.cs" />
     <Compile Include="Mappings\PassportMap.cs" />
     <Compile Include="Mappings\HrItemMap.cs" />
@@ -191,6 +192,7 @@
     <Compile Include="Mappings\IcdBlockMap.cs" />
     <Compile Include="Mappings\IcdChapterMap.cs" />
     <Compile Include="Mappings\SpecialityIcdBlockMap.cs" />
+    <Compile Include="Mappings\TempWordMap.cs" />
     <Compile Include="Mappings\WordMap.cs" />
     <Compile Include="Mappings\HealthRecordMap.cs" />
     <Compile Include="Mappings\DoctorMap.cs" />
