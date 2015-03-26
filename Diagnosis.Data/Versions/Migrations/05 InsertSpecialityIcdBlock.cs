@@ -9,12 +9,12 @@ namespace Diagnosis.Data.Versions
         {
             // I00-I99 blocks для специальноcти Кардиолог
             for (int block = 91; block <= 100; block++)
-                Insert.IntoTable(Names.SpecialityIcdBlockTbl).Row(new { SpecialityID = 1, IcdBlockID = block });
+                Insert.IntoTable(Names.SpecialityIcdBlocksTbl).Row(new { SpecialityID = 1, IcdBlockID = block });
         }
 
         public override void Down()
         {
-            Delete.FromTable(Names.SpecialityIcdBlockTbl).AllRows();
+            Delete.FromTable(Names.SpecialityIcdBlocksTbl).AllRows();
         }
     }
 }

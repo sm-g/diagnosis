@@ -26,7 +26,7 @@ namespace Diagnosis.Data.Versions
         public static string IcdChapterTbl = "IcdChapter";
         public static string IcdBlockTbl = "IcdBlock";
         public static string IcdDiseaseTbl = "IcdDisease";
-        public static string SpecialityIcdBlockTbl = "SpecialityIcdBlocks";
+        public static string SpecialityIcdBlocksTbl = "SpecialityIcdBlocks";
         public static string SpecialityVocabulariesTbl = "SpecialityVocabularies";
 
         public static string PassportTbl = "Passport";
@@ -53,7 +53,7 @@ namespace Diagnosis.Data.Versions
             { IcdChapterTbl,        typeof(IcdChapter) },
             { IcdBlockTbl,          typeof(IcdBlock) },
             { IcdDiseaseTbl,        typeof(IcdDisease) },
-            { SpecialityIcdBlockTbl,typeof(SpecialityIcdBlocks) },
+            { SpecialityIcdBlocksTbl,typeof(SpecialityIcdBlocks) },
 
             { PassportTbl,          typeof(Passport) },
             { SettingTbl,           typeof(Setting) },

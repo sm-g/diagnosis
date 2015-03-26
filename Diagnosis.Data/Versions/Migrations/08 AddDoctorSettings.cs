@@ -1,9 +1,6 @@
-﻿using Diagnosis.Models;
-using FluentMigrator;
-using PasswordHash;
-using NHibernate.Linq;
-using System.Linq;
+﻿using FluentMigrator;
 using System;
+using System.Linq;
 
 namespace Diagnosis.Data.Versions
 {
@@ -20,15 +17,14 @@ namespace Diagnosis.Data.Versions
         {
             Create.Table(Names.SettingTbl)
                 .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK__Setting")
-                .WithColumn(Title).AsString().NotNullable().WithDefaultValue("")
-                .WithColumn(Value).AsString().NotNullable().WithDefaultValue("")
+                .WithColumn(Title).AsString().NotNullable()
+                .WithColumn(Value).AsString().NotNullable()
                 .WithColumn(DoctorId).AsGuid().Nullable();
 
             Create.ForeignKey(FK_Setting_Doctor).FromTable(Names.SettingTbl)
                .ForeignColumn(DoctorId)
                .ToTable(Names.DoctorTbl)
                .PrimaryColumn("Id");
-
 
             Delete.Column(DoctorSettings)
                 .FromTable(Names.DoctorTbl);
