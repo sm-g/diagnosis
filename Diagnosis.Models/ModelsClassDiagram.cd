@@ -254,11 +254,11 @@
     </ShowAsCollectionAssociation>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Diagnosis.Models.TempWord" Collapsed="true">
+  <Class Name="Diagnosis.Models.WordTemplate" Collapsed="true">
     <Position X="14.75" Y="10" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAEIAAAEAEAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entities\TempWord.cs</FileName>
+      <FileName>Entities\WordTemplate.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Vocabulary" />

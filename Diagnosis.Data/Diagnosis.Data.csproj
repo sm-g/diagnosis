@@ -192,7 +192,7 @@
     <Compile Include="Mappings\IcdBlockMap.cs" />
     <Compile Include="Mappings\IcdChapterMap.cs" />
     <Compile Include="Mappings\SpecialityIcdBlockMap.cs" />
-    <Compile Include="Mappings\TempWordMap.cs" />
+    <Compile Include="Mappings\WordTemplateMap.cs" />
     <Compile Include="Mappings\WordMap.cs" />
     <Compile Include="Mappings\HealthRecordMap.cs" />
     <Compile Include="Mappings\DoctorMap.cs" />

@@ -4,9 +4,9 @@ using NHibernate.Mapping.ByCode.Conformist;
 
 namespace Diagnosis.Data.Mappings
 {
-    public class TempWordMap : ClassMapping<TempWord>
+    public class WordTemplateMap : ClassMapping<WordTemplate>
     {
-        public TempWordMap()
+        public WordTemplateMap()
         {
             Id(x => x.Id, m =>
             {

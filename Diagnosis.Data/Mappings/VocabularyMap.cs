@@ -19,7 +19,7 @@ namespace Diagnosis.Data.Mappings
                 m.Length(50);
             });
 
-            Set(x => x.TempWords, s =>
+            Set(x => x.WordTemplates, s =>
             {
                 s.Key(k =>
                 {

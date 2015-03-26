@@ -7,11 +7,11 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class TempWord : EntityBase<Guid>
+    public class WordTemplate : EntityBase<Guid>
     {
         private string _title;
         private Vocabulary _voc;
-        protected TempWord()
+        protected WordTemplate()
         {
         }
 

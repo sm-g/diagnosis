@@ -12,7 +12,7 @@ namespace Diagnosis.Models
     {
         public static string CustomTitle = "Пользовательский";
 
-        private Iesi.Collections.Generic.ISet<TempWord> tempWords = new HashedSet<TempWord>();
+        private Iesi.Collections.Generic.ISet<WordTemplate> tempWords = new HashedSet<WordTemplate>();
         private IList<Word> words = new List<Word>(); // many-2-many
         private string _title;
 
@@ -28,7 +28,7 @@ namespace Diagnosis.Models
         }
 
         public virtual event NotifyCollectionChangedEventHandler WordsChanged;
-        public virtual event NotifyCollectionChangedEventHandler TempWordsChanged;
+        public virtual event NotifyCollectionChangedEventHandler WordTemplatesChanged;
 
         public virtual string Title
         {
@@ -40,7 +40,7 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual IEnumerable<TempWord> TempWords
+        public virtual IEnumerable<WordTemplate> WordTemplates
         {
             get { return tempWords; }
         }
@@ -63,7 +63,7 @@ namespace Diagnosis.Models
                 OnWordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, w));
         }
 
-        public virtual void ClearTempWords()
+        public virtual void ClearWordTemplates()
         {
             tempWords.Clear();
         }
@@ -81,9 +81,9 @@ namespace Diagnosis.Models
                 h(this, e);
             }
         }
-        protected virtual void OnTempWordsChanged(NotifyCollectionChangedEventArgs e)
+        protected virtual void OnWordTemplatesChanged(NotifyCollectionChangedEventArgs e)
         {
-            var h = TempWordsChanged;
+            var h = WordTemplatesChanged;
             if (h != null)
             {
                 h(this, e);
