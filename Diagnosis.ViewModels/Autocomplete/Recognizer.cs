@@ -2,6 +2,7 @@
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using NHibernate;
+using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,6 +23,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         private readonly ISession session;
         private bool _addQueryToSug;
+        private Vocabulary custom;
 
         /// <summary>
         ///
@@ -83,6 +85,8 @@ namespace Diagnosis.ViewModels.Autocomplete
             Contract.Requires(session != null);
 
             this.session = session;
+            custom = VocabularyQuery.Custom(session)();
+
             if (clearCreated)
                 created.Clear();
 
@@ -314,6 +318,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             else
             {
                 var word = new Word(q); // или создаем слово из запроса
+                custom.AddWord(word);
                 return word;
             }
         }

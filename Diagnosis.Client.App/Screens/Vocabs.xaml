@@ -1,0 +1,179 @@
+﻿<UserControl x:Class="Diagnosis.Client.App.Screens.Vocabs"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:search="clr-namespace:Diagnosis.Client.App.Controls.Search"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
+             xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
+             mc:Ignorable="d"
+             x:Name="syncClient"
+             diag:FocusBehavior.FocusFirst="True"
+             Padding="{StaticResource SreenPadding}"
+             Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+             d:DataContext="{d:DesignInstance design:SampleVocabularyListViewModel,
+                                              IsDesignTimeCreatable=True}"
+             d:DesignHeight="300"
+             d:DesignWidth="500">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.IsSharedSizeScope="True"
+                    ToolTip="Сервер или промежуточная БД — источник справочных данных">
+            <diag:OpenRemote DataContext="{Binding Remote}" />
+        </StackPanel>
+        <StackPanel Grid.Row="1"
+                    Visibility="{Binding Vocs.Count, Converter={StaticResource MoreThanToVisibility}}">
+            <Label Content="Загруженные" />
+            <DataGrid x:Name="installedVocs"
+                      ItemsSource="{Binding Vocs}"
+                      diag:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedVocs}"
+                      Visibility="{Binding Vocs.Count, Converter={StaticResource MoreThanToVisibility}}"
+                      Margin="0,10,0,0"
+                      Style="{DynamicResource MyDataGridStyle}">
+                <DataGrid.Resources>
+                    <Style x:Key="Checkbox"
+                           TargetType="{x:Type CheckBox}"
+                           BasedOn="{StaticResource {x:Type CheckBox}}">
+                        <Setter Property="Focusable"
+                                Value="False" />
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Header=""
+                                            IsReadOnly="True"
+                                            ElementStyle="{StaticResource Checkbox}"
+                                            Binding="{Binding IsChecked, Mode=TwoWay}" />
+                    <DataGridTextColumn Header="Словарь"
+                                        IsReadOnly="True"
+                                        Binding="{Binding Title, Mode=OneWay}" />
+                    <DataGridTextColumn Header="Обновлен"
+                                        IsReadOnly="True"
+                                        ElementStyle="{StaticResource RightCellTextBlock}"
+                                        Binding="{Binding Updated, Mode=OneWay}" />
+                    <DataGridTextColumn Header="Использование"
+                                        IsReadOnly="True"
+                                        ElementStyle="{StaticResource RightCellTextBlock}"
+                                        Binding="{Binding Usage, Mode=OneWay}" />
+                </DataGrid.Columns>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="IsSelected"
+                                Value="{Binding IsSelected, Mode=TwoWay}" />
+                    </Style>
+                </DataGrid.RowStyle>
+            </DataGrid>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Grid.Row="1"
+                        Margin="120,0">
+                <Button Content="Обновить"
+                        Command="{Binding ReloadVocsCommand}" />
+                <Button Content="Удалить"
+                        Command="{Binding DeleteVocsCommand}" />
+            </StackPanel>
+        </StackPanel>
+
+        <DockPanel Grid.Row="1">
+            <DockPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontSize"
+                            Value="{DynamicResource HelpFontSize}" />
+                </Style>
+            </DockPanel.Resources>
+
+            <TextBlock TextWrapping="Wrap"
+                       Margin="10"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"
+                       Visibility="{Binding Vocs.Count, Converter={StaticResource LessThanToVisibility}}">
+                <Run Text="Нет загруженных словарей." />
+            </TextBlock>
+        </DockPanel>
+
+        <StackPanel Grid.Row="2"
+                    Visibility="{Binding AvailableVocs.Count, Converter={StaticResource MoreThanToVisibility}}">
+            <Label Content="Новые" />
+            <DataGrid x:Name="availableVocs"
+                      ItemsSource="{Binding AvailableVocs}"
+                      diag:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedAvailableVocs}"
+                      Margin="0,10,0,0"
+                      Style="{DynamicResource MyDataGridStyle}">
+                <DataGrid.Resources>
+                    <Style x:Key="Checkbox"
+                           TargetType="{x:Type CheckBox}"
+                           BasedOn="{StaticResource {x:Type CheckBox}}">
+                        <Setter Property="Focusable"
+                                Value="False" />
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Header=""
+                                            IsReadOnly="True"
+                                            ElementStyle="{StaticResource Checkbox}"
+                                            Binding="{Binding IsChecked, Mode=TwoWay}" />
+                    <DataGridTextColumn Header="Словарь"
+                                        IsReadOnly="True"
+                                        Binding="{Binding Title, Mode=OneWay}" />
+                    <DataGridTextColumn Header="Кол-во слов"
+                                        IsReadOnly="True"
+                                        ElementStyle="{StaticResource RightCellTextBlock}"
+                                        Binding="{Binding Words.Count, Mode=OneWay}" />
+                </DataGrid.Columns>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="IsSelected"
+                                Value="{Binding IsSelected, Mode=TwoWay}" />
+                    </Style>
+                </DataGrid.RowStyle>
+            </DataGrid>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Grid.Row="1"
+                        Margin="120,0">
+                <Button Content="Установить"
+                        Command="{Binding LoadVocsCommand}" />
+            </StackPanel>
+        </StackPanel>
+
+        <DockPanel Grid.Row="2">
+            <DockPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontSize"
+                            Value="{DynamicResource HelpFontSize}" />
+                </Style>
+            </DockPanel.Resources>
+            <TextBlock TextWrapping="Wrap"
+                       Margin="10"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"
+                       Visibility="{Binding IsConnected, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                <Run Text="Сначала выберите источник." />
+            </TextBlock>
+            <TextBlock TextWrapping="Wrap"
+                       Margin="10"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"
+                       Visibility="{Binding NoAvailableVocs, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Run Text="Нет новых словарей в выбранном источнике." />
+            </TextBlock>
+        </DockPanel>
+
+        <DockPanel Grid.Row="3">
+            <Label Content="Лог"
+                   DockPanel.Dock="Top" />
+            <TextBox x:Name="log"
+                     Text="{Binding Log}"
+                     IsReadOnly="True"
+                     IsReadOnlyCaretVisible="True"
+                     TextWrapping="Wrap"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto" />
+        </DockPanel>
+    </Grid>
+</UserControl>

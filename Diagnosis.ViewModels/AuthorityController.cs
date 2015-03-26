@@ -17,7 +17,7 @@ namespace Diagnosis.ViewModels
         public static event EventHandler LoggedOut;
 
         private static List<Screen> doctorScreens = new List<Screen> { Screen.Login, Screen.Card, Screen.Patients, Screen.Words };
-        private static List<Screen> adminScreens = new List<Screen> { Screen.Login, Screen.Doctors, Screen.Sync };
+        private static List<Screen> adminScreens = new List<Screen> { Screen.Login, Screen.Doctors, Screen.Sync, Screen.Vocabularies };
 
         static AuthorityController()
         {

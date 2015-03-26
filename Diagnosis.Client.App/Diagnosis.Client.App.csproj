@@ -261,6 +261,9 @@
     </Compile>
     <Compile Include="DesignData\SampleViewModels.cs" />
     <Compile Include="Resources\Themes\Helpers.cs" />
+    <Compile Include="Screens\Vocabs.xaml.cs">
+      <DependentUpon>Vocabs.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Screens\Sync.xaml.cs">
       <DependentUpon>Sync.xaml</DependentUpon>
     </Compile>
@@ -457,6 +460,10 @@
     <Page Include="Resources\NormalFontResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Screens\Vocabs.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Screens\Sync.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -10,7 +10,7 @@ namespace Diagnosis.ViewModels.Screens
 {
     public enum Screen
     {
-        Login, Doctors, Patients, Words, Card, Sync
+        Login, Doctors, Patients, Words, Card, Sync, Vocabularies
     }
 
     public class ScreenSwitcher : ViewModelBase
@@ -230,6 +230,10 @@ namespace Diagnosis.ViewModels.Screens
 
                     case Screen.Sync:
                         CurrentView = new SyncViewModel();
+                        break;
+
+                    case Screen.Vocabularies:
+                        CurrentView = new VocabularyListViewModel();
                         break;
 
                     case Screen.Patients:

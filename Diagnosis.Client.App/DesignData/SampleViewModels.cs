@@ -39,6 +39,14 @@ namespace Diagnosis.Client.App.DesignData
 
         }
     }
+    public class SampleVocabularyListViewModel : VocabularyListViewModel
+    {
+        public SampleVocabularyListViewModel()
+        {
+            Vocs.Add(new VocabularyViewModel(Mocks.voc));
+            AvailableVocs.Add(new VocabularyViewModel(Mocks.voc2));
+        }
+    }
 
 #pragma warning disable 0618
 
@@ -146,6 +154,8 @@ namespace Diagnosis.Client.App.DesignData
         public static Word word2 = new Word("впервые");
         public static UomType uomType = new UomType("температура", 1);
         public static Uom uom = new Uom("C", 36, uomType);
+        public static Vocabulary voc = new Vocabulary("словарь");
+        public static Vocabulary voc2 = new Vocabulary("словарь 2");
 
         public static HrCategory[] cats = new[] {
             new HrCategory("Жалоба",1),
