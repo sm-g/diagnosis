@@ -254,18 +254,6 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                //  emhManager.Dispose();
-                if (remoteSession != null)
-                    remoteSession.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
         private void TryGetAvailableVocs()
         {
             // подкключаемся к источнику
@@ -290,14 +278,15 @@ namespace Diagnosis.ViewModels.Screens
                     MakeAvailableVms(vocs);
                 }
                 IsConnected = true;
+                NoAvailableVocs = AvailableVocs.Count == 0;
             }
             catch (System.Exception)
             {
                 remoteSession = null;
                 MakeAvailableVms(Enumerable.Empty<Vocabulary>());
                 IsConnected = false;
+                NoAvailableVocs = false; // пока нет подключения, этого сообщения нет
             }
-            NoAvailableVocs = AvailableVocs.Count == 0;
 
         }
         private void MakeInstalledVms(IEnumerable<Vocabulary> results)
@@ -316,6 +305,20 @@ namespace Diagnosis.ViewModels.Screens
                 .FirstOrDefault() ?? new VocabularyViewModel(w));
 
             AvailableVocs.SyncWith(vms);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                //  emhManager.Dispose();
+                if (remoteSession != null)
+                    remoteSession.Dispose();
+
+                this.Send(Event.PushToSettings, new object[] { Constants.SyncServerConstrSettingName, Remote.ConnectionString }.AsParams(MessageKeys.Name, MessageKeys.Value));
+                this.Send(Event.PushToSettings, new object[] { Constants.SyncServerProviderSettingName, Remote.ProviderName }.AsParams(MessageKeys.Name, MessageKeys.Value));
+            }
+            base.Dispose(disposing);
         }
     }
 }

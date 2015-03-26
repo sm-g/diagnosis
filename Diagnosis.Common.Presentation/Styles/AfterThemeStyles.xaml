@@ -28,7 +28,21 @@
         <Setter Property="FontSize"
                 Value="{DynamicResource LabelFontSize}" />
     </Style>-->
-    
+
+    <Style x:Key="whatToDoScreenMessage"
+           TargetType="FrameworkElement">
+        <Setter Property="TextBlock.FontSize"
+                Value="{DynamicResource HelpFontSize}" />
+        <Setter Property="Margin"
+                Value="10" />
+        <Setter Property="HorizontalAlignment"
+                Value="Center" />
+        <Setter Property="VerticalAlignment"
+                Value="Top" />
+        <Setter Property="TextBlock.TextWrapping"
+                Value="Wrap" />
+    </Style>
+
     <!--image-->
     <Style x:Key="EnableDisableImageStyle"
            TargetType="{x:Type Image}">

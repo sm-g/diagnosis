@@ -79,22 +79,13 @@
             </StackPanel>
         </StackPanel>
 
-        <DockPanel Grid.Row="1">
-            <DockPanel.Resources>
-                <Style TargetType="TextBlock">
-                    <Setter Property="FontSize"
-                            Value="{DynamicResource HelpFontSize}" />
-                </Style>
-            </DockPanel.Resources>
+        <StackPanel Grid.Row="1"
+                    Style="{StaticResource whatToDoScreenMessage}">
 
-            <TextBlock TextWrapping="Wrap"
-                       Margin="10"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Top"
-                       Visibility="{Binding Vocs.Count, Converter={StaticResource LessThanToVisibility}}">
+            <TextBlock Visibility="{Binding Vocs.Count, Converter={StaticResource LessThanToVisibility}}">
                 <Run Text="Нет загруженных словарей." />
             </TextBlock>
-        </DockPanel>
+        </StackPanel>
 
         <StackPanel Grid.Row="2"
                     Visibility="{Binding AvailableVocs.Count, Converter={StaticResource MoreThanToVisibility}}">
@@ -141,28 +132,15 @@
             </StackPanel>
         </StackPanel>
 
-        <DockPanel Grid.Row="2">
-            <DockPanel.Resources>
-                <Style TargetType="TextBlock">
-                    <Setter Property="FontSize"
-                            Value="{DynamicResource HelpFontSize}" />
-                </Style>
-            </DockPanel.Resources>
-            <TextBlock TextWrapping="Wrap"
-                       Margin="10"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Top"
-                       Visibility="{Binding IsConnected, Converter={StaticResource NegBooleanToVisibilityConverter}}">
-                <Run Text="Сначала выберите источник." />
+        <StackPanel Grid.Row="2"
+                    Style="{StaticResource whatToDoScreenMessage}">
+            <TextBlock Visibility="{Binding IsConnected, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                <Run Text="Выберите источник словарей." />
             </TextBlock>
-            <TextBlock TextWrapping="Wrap"
-                       Margin="10"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Top"
-                       Visibility="{Binding NoAvailableVocs, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock Visibility="{Binding NoAvailableVocs, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Run Text="Нет новых словарей в выбранном источнике." />
             </TextBlock>
-        </DockPanel>
+        </StackPanel>
 
         <DockPanel Grid.Row="3">
             <Label Content="Лог"
