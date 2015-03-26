@@ -1,4 +1,6 @@
-﻿using Iesi.Collections.Generic;
+﻿using Diagnosis.Models.Validators;
+using FluentValidation.Results;
+using Iesi.Collections.Generic;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -6,7 +8,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class Vocabulary : EntityBase<Guid>, IDomainObject
+    public class Vocabulary : ValidatableEntity<Guid>, IDomainObject
     {
         public static string CustomTitle = "Пользовательский";
 
@@ -86,6 +88,11 @@ namespace Diagnosis.Models
             {
                 h(this, e);
             }
+        }
+
+        public override ValidationResult SelfValidate()
+        {
+            return new VocabularyValidator().Validate(this);
         }
     }
 }

@@ -147,6 +147,7 @@ namespace Diagnosis.Models
         /// осмотр — без записей
         /// запись — без элементов и даты или удаленная
         /// слово — без записей с этим словом
+        /// словарь — без слов
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
@@ -196,6 +197,12 @@ namespace Diagnosis.Models
                     {
                         var w = entity as Word;
                         return w.HealthRecords.Count() == 0;
+                    }
+                },
+                { typeof(Vocabulary),() =>
+                    {
+                        var w = entity as Vocabulary;
+                        return w.Words.Count() == 0;
                     }
                 },
             };
