@@ -2,6 +2,7 @@
 using FluentValidation.Results;
 using Iesi.Collections.Generic;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
@@ -89,18 +90,21 @@ namespace Diagnosis.Models
 
         // for refresh state of many-2-many relations
 
-        internal protected virtual void RemoveVoc(Vocabulary vocabulary)
+        internal protected virtual void RemoveVoc(Vocabulary voc)
         {
-            vocabularies.Remove(vocabulary);
+            Contract.Requires(!voc.Words.Contains(this));
+            vocabularies.Remove(voc);
         }
 
-        internal protected virtual void AddVoc(Vocabulary vocabulary)
+        internal protected virtual void AddVoc(Vocabulary voc)
         {
-            vocabularies.Add(vocabulary);
+            Contract.Requires(voc.Words.Contains(this));
+            vocabularies.Add(voc);
         }
 
         internal protected virtual void AddHr(HealthRecord hr)
         {
+            Contract.Requires(hr.Words.Contains(this));
             healthRecords.Add(hr);
         }
     }

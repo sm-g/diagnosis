@@ -150,7 +150,7 @@
   <Class Name="Diagnosis.Models.Word" Collapsed="true">
     <Position X="11.5" Y="8.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAIAAAEQEABAEQAQQAAAEAAAAAAAEAAAABAA=</HashCode>
+      <HashCode>AAAAAAAgAIAAIEQEABAEQAQQAAAEAAAAAAkgAAAAAAA=</HashCode>
       <FileName>Entities\Word.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -244,9 +244,9 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Diagnosis.Models.Vocabulary" Collapsed="true">
-    <Position X="14.75" Y="8.5" Width="1.5" />
+    <Position X="14.75" Y="7.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>CAAAAAAAAIAABMAEQAAAAQBAAAAAQAAAACAAYAAgAAA=</HashCode>
+      <HashCode>CAgAAAAAAIAABMAEABAAAQCAAEAAABAAACAQQAAoAAA=</HashCode>
       <FileName>Entities\Vocabulary.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -257,7 +257,7 @@
   <Class Name="Diagnosis.Models.WordTemplate" Collapsed="true">
     <Position X="14.75" Y="10" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAEIAAAEAEAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAEIAAAEAEAAEAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\WordTemplate.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>

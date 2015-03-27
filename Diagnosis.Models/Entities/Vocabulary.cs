@@ -69,16 +69,23 @@ namespace Diagnosis.Models
                 OnWordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, w));
             }
         }
-        public virtual void RemoveWordTemplate(WordTemplate wt)
+        internal protected virtual WordTemplate AddWordTemplate(WordTemplate wt)
         {
+            Contract.Requires(wt.Vocabulary == this);
+            if (!wordTemplates.Contains(wt))
+            {
+                wordTemplates.Add(wt);
+                OnWordTemplatesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, wt));
+            }
+            return wt;
+        }
+        internal protected virtual void RemoveWordTemplate(WordTemplate wt)
+        {
+            Contract.Requires(wt.Vocabulary == this);
             if (wordTemplates.Remove(wt))
             {
                 OnWordTemplatesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, wt));
             }
-        }
-        public virtual void ClearWordTemplates()
-        {
-            wordTemplates.Clear();
         }
 
         public override string ToString()
