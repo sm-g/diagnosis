@@ -48,9 +48,24 @@ INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (20, 'I06.
 INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (21, 'I06.8', 'Другие ревматические болезни аортального клапана', 92);
 INSERT INTO [IcdDisease] ([ID], [Code], [Title], [IcdBlockID]) VALUES (22, 'I06.9', 'Ревматическая болезнь аортального клапана неуточненная (ый)', 92);
 
+-- '00000001-1200-0000-0001-000000000001'
+INSERT INTO Vocabulary ([Id], [Title]) VALUES ('00000001-1200-0000-0000-000000000001', 'Общий словарь');
+INSERT INTO Vocabulary ([Id], [Title]) VALUES ('00000002-1200-0000-0000-000000000002', 'Слова кардиолога');
+
+-- '00000001-1300-0000-0001-000000000001'
+INSERT INTO [WordTemplate] ([Id],[VocabularyID],[Title]) VALUES ('00000001-1300-0000-0000-000000000001','00000001-1200-0000-0000-000000000001','порфирия');
+INSERT INTO [WordTemplate] ([Id],[VocabularyID],[Title]) VALUES ('00000002-1300-0000-0000-000000000002','00000001-1200-0000-0000-000000000001','тест');
+INSERT INTO [WordTemplate] ([Id],[VocabularyID],[Title]) VALUES ('00000003-1300-0000-0000-000000000003','00000001-1200-0000-0000-000000000001','шаблон');
+INSERT INTO [WordTemplate] ([Id],[VocabularyID],[Title]) VALUES ('00000004-1300-0000-0000-000000000004','00000002-1200-0000-0000-000000000002','понос'); -- w6
+INSERT INTO [WordTemplate] ([Id],[VocabularyID],[Title]) VALUES ('00000005-1300-0000-0000-000000000005','00000002-1200-0000-0000-000000000002','повторно');
+INSERT INTO [WordTemplate] ([Id],[VocabularyID],[Title]) VALUES ('00000006-1300-0000-0000-000000000006','00000002-1200-0000-0000-000000000002','тест');
+INSERT INTO [WordTemplate] ([Id],[VocabularyID],[Title]) VALUES ('00000007-1300-0000-0000-000000000007','00000002-1200-0000-0000-000000000002','шаблон');
+
+-- '00000001-1400-0000-0001-000000000001'
+--INSERT INTO [SpecialityIcdBlocks] ([Id],[VocabularyID], [WordTemplateID]) VALUES ('00000001-1400-0000-0001-000000000001','00000001-1000-0000-0001-000000000001', 92);
+
 
 -- '00000001-0000-0000-0001-000000000001'
-
 INSERT INTO [Word] ([Id],[Title]) VALUES ('00000001-0000-0000-0001-000000000001','анемия');
 INSERT INTO [Word] ([Id],[Title]) VALUES ('00000002-0000-0000-0001-000000000002','озноб');
 INSERT INTO [Word] ([Id],[Title]) VALUES ('00000003-0000-0000-0001-000000000003','кашель');
@@ -153,16 +168,16 @@ INSERT INTO [Word] ([Id],[Title]) VALUES ('00000099-0000-0000-0001-000000000099'
 INSERT INTO [Word] ([Id],[Title]) VALUES ('00000100-0000-0000-0001-000000000100','нитроминт');
 
 -- '00000001-1000-0000-0001-000000000001'
-INSERT INTO [Speciality] ([Id], [Title]) VALUES ('00000001-1000-0000-0001-000000000001', 'Кардиолог');
+INSERT INTO [Speciality] ([Id], [Title]) VALUES ('00000001-1000-0000-0000-000000000001', 'Кардиолог');
 
 -- '00000001-1100-0000-0001-000000000001'
-INSERT INTO [SpecialityIcdBlocks] ([Id],[SpecialityID], [IcdBlockID]) VALUES ('00000001-1100-0000-0001-000000000001','00000001-1000-0000-0001-000000000001', 92);
+INSERT INTO [SpecialityIcdBlocks] ([Id],[SpecialityID], [IcdBlockID]) VALUES ('00000001-1100-0000-0000-000000000001','00000001-1000-0000-0000-000000000001', 92);
 
 -- '00000001-1000-0000-0000-000000000001'
 INSERT INTO [Passport] ([ID]) VALUES ('00000001-1000-0000-0000-000000000001');
 INSERT INTO [Passport] ([ID],[Remember]) VALUES ('00000002-1000-0000-0000-000000000002',1);
 INSERT INTO [Doctor] ([ID], [LastName], [MiddleName], [FirstName], [IsMale]) VALUES ('00000001-1000-0000-0000-000000000001', 'Смирнов', NULL, 'Василий', 1);
-INSERT INTO [Doctor] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [SpecialityID]) VALUES ('00000002-1000-0000-0000-000000000002', 'Вахрушев', 'Константинович', 'Александр', 1, '00000001-1000-0000-0001-000000000001');
+INSERT INTO [Doctor] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [SpecialityID]) VALUES ('00000002-1000-0000-0000-000000000002', 'Вахрушев', 'Константинович', 'Александр', 1, '00000001-1000-0000-0000-000000000001');
 -- '00000001-2000-0000-0000-000000000001'
 INSERT INTO [Patient] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [BirthYear], [BirthMonth], [BirthDay],[CreatedAt],[UpdatedAt]) VALUES ('00000001-2000-0000-0000-000000000001', 'Андреев', NULL, 'Иван', 1, 1982, 11, NULL,'2014-11-19 00:00:00','2014-11-19 00:00:00');
 INSERT INTO [Patient] ([ID], [LastName], [MiddleName], [FirstName], [IsMale], [BirthYear], [BirthMonth], [BirthDay],[CreatedAt],[UpdatedAt]) VALUES ('00000002-2000-0000-0000-000000000002', 'Петров', 'Иванович', 'Иван', 1, 1980, 2, 15,'2014-11-19 00:00:00','2014-11-19 00:00:00');
