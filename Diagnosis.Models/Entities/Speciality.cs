@@ -57,9 +57,11 @@ namespace Diagnosis.Models
         }
         public virtual IcdBlock AddBlock(IcdBlock block)
         {
-            icdBlocks.Add(block);
-            OnBlocksChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, block));
-
+            if (!icdBlocks.Contains(block))
+            {
+                icdBlocks.Add(block);
+                OnBlocksChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, block));
+            }
             return block;
         }
 

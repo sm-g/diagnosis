@@ -46,7 +46,8 @@ namespace Diagnosis.Data.Mappings
                 {
                     k.Column("WordID");
                 });
-                s.Cascade(Cascade.All);
+                s.Inverse(true); // hr in owner of that relation, that prop is readonly
+                s.Cascade(Cascade.None);
                 s.Access(Accessor.Field);
             }, r =>
             {
@@ -57,14 +58,14 @@ namespace Diagnosis.Data.Mappings
                 });
             });
 
-            Bag(x => x.Vocabularies, s =>
+            Set(x => x.Vocabularies, s =>
             {
                 s.Table("VocabularyWords");
                 s.Key(k =>
                 {
                     k.Column("WordID");
                 });
-                s.Cascade(Cascade.None);
+                s.Cascade(Cascade.Persist);
                 s.Access(Accessor.Field);
             }, r =>
             {

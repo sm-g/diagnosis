@@ -13,7 +13,7 @@ namespace Diagnosis.Models
         [NonSerialized]
         private Iesi.Collections.Generic.ISet<Word> children = new HashedSet<Word>();
         [NonSerialized]
-        private IList<Vocabulary> vocabularies = new List<Vocabulary>();
+        private Iesi.Collections.Generic.ISet<Vocabulary> vocabularies = new HashedSet<Vocabulary>();
 
         [NonSerialized]
         private IList<HealthRecord> healthRecords = new List<HealthRecord>(); // many-2-many bag
@@ -87,9 +87,21 @@ namespace Diagnosis.Models
             return new WordValidator().Validate(this);
         }
 
+        // for refresh state of many-2-many relations
+
         internal protected virtual void RemoveVoc(Vocabulary vocabulary)
         {
             vocabularies.Remove(vocabulary);
+        }
+
+        internal protected virtual void AddVoc(Vocabulary vocabulary)
+        {
+            vocabularies.Add(vocabulary);
+        }
+
+        internal protected virtual void AddHr(HealthRecord hr)
+        {
+            healthRecords.Add(hr);
         }
     }
 }

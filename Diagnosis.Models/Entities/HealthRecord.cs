@@ -320,6 +320,12 @@ namespace Diagnosis.Models
             {
                 this.AddItem(item);
             }
+
+            // обновляем другую сторону many-2-many
+            foreach (var word in hiosToBe.Cast<Word>())
+            {
+                word.AddHr(this);
+            }
         }
 
         public virtual IEnumerable<IHrItemObject> GetOrderedEntities()

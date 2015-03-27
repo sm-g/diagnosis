@@ -35,8 +35,7 @@ namespace Diagnosis.Models
             get { return _title; }
             set
             {
-                Contract.Requires(!String.IsNullOrEmpty(value));
-                SetProperty(ref _title, value, () => Title);
+                SetProperty(ref _title, value ?? "", () => Title);
             }
         }
 
@@ -52,8 +51,13 @@ namespace Diagnosis.Models
 
         public virtual Word AddWord(Word w)
         {
-            words.Add(w);
-            OnWordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, w));
+            if (!words.Contains(w))
+            {
+                words.Add(w);
+                w.AddVoc(this);
+
+                OnWordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, w));
+            }
             return w;
         }
 
@@ -65,7 +69,13 @@ namespace Diagnosis.Models
                 OnWordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, w));
             }
         }
-
+        public virtual void RemoveWordTemplate(WordTemplate wt)
+        {
+            if (wordTemplates.Remove(wt))
+            {
+                OnWordTemplatesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, wt));
+            }
+        }
         public virtual void ClearWordTemplates()
         {
             wordTemplates.Clear();

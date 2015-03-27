@@ -41,6 +41,7 @@ namespace Diagnosis.Data.Mappings
                 {
                     k.Column("VocabularyID");
                 });
+                s.Inverse(true);
                 s.Cascade(Cascade.Persist);
                 s.Access(Accessor.Field);
             }, r =>
