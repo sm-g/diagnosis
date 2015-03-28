@@ -141,6 +141,7 @@ namespace Diagnosis.Models
             Contract.Requires(author != null);
             Contract.Ensures(test.HealthRecords.Count() == Contract.OldValue(test.HealthRecords.Count()) + 1);
             Contract.Ensures(test.HealthRecords.Contains(Contract.Result<HealthRecord>()));
+            Contract.Ensures(Contract.Result<HealthRecord>().Words.All(x => x.HealthRecords.Contains(Contract.Result<HealthRecord>())));
 
             return null;
         }
@@ -150,6 +151,7 @@ namespace Diagnosis.Models
             IHrsHolder test = this;
             Contract.Ensures(test.HealthRecords.Count() <= Contract.OldValue(test.HealthRecords.Count()));
             Contract.Ensures(!test.HealthRecords.Contains(hr));
+            Contract.Ensures(hr.Words.All(x => !x.HealthRecords.Contains(hr)));
         }
         int IComparable<IHrsHolder>.CompareTo(IHrsHolder other) { throw new NotImplementedException(); }
 

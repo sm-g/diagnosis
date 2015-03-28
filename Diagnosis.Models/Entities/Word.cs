@@ -107,5 +107,12 @@ namespace Diagnosis.Models
             Contract.Requires(hr.Words.Contains(this));
             healthRecords.Add(hr);
         }
+
+        internal protected virtual void RemoveHr(HealthRecord hr)
+        {
+            // при удалении записи слова не удаляются отдельно
+            // при удалении элемента слово уже удалено
+            healthRecords.Remove(hr);
+        }
     }
 }

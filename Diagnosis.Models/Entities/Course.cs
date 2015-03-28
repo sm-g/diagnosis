@@ -137,7 +137,10 @@ namespace Diagnosis.Models
         public virtual void RemoveHealthRecord(HealthRecord hr)
         {
             if (healthRecords.Remove(hr))
+            {
+                hr.OnDelete();
                 OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, hr));
+            }
         }
 
         /// <summary>
