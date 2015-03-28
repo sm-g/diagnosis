@@ -19,12 +19,15 @@ namespace Diagnosis.ViewModels.Autocomplete
     public class Recognizer : NotifyPropertyChangedBase
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Recognizer));
+        /// <summary>
+        /// несохраненные слова, созданные через автокомплит
+        /// </summary>
         private static List<Word> created = new List<Word>();
 
         private readonly ISession session;
         private bool _addQueryToSug;
-        private Vocabulary custom;
 
+        static Doctor doctor;
         /// <summary>
         ///
         /// </summary>
@@ -70,10 +73,16 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             typeof(Recognizer).Subscribe(Event.WordPersisted, (e) =>
             {
-                // now word can be retrieved from storage
+                // now word can be retrieved from db
                 var word = e.GetValue<Word>(MessageKeys.Word);
                 created.Remove(word);
+
+                doctor.CustomVocabulary.AddWord(word);
             });
+            AuthorityController.LoggedOut += (s, e) =>
+            {
+                created.Clear();
+            };
         }
 
         /// <summary>
@@ -85,13 +94,13 @@ namespace Diagnosis.ViewModels.Autocomplete
             Contract.Requires(session != null);
 
             this.session = session;
-            custom = VocabularyQuery.Custom(session)();
 
             if (clearCreated)
                 created.Clear();
 
             AddNotPersistedToSuggestions = true;
             CanChangeAddQueryToSuggstions = true;
+            doctor = AuthorityController.CurrentDoctor;
         }
 
         private bool CanMakeEntityFrom(string query)
@@ -281,7 +290,9 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 var w = tag.Blank as Word;
                 if (w.IsTransient)
+                {
                     created.Add(w);
+                }
             }
         }
 
@@ -318,7 +329,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             else
             {
                 var word = new Word(q); // или создаем слово из запроса
-                custom.AddWord(word);
                 return word;
             }
         }
@@ -342,10 +352,26 @@ namespace Diagnosis.ViewModels.Autocomplete
                 created.Where(w => w.Title.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)) :
                 Enumerable.Empty<Word>();
 
+
+            //  Contract.Assume(unsaved.All(x => x.Vocabularies.Contains(AuthorityController.CurrentDoctor.CustomVoc)));
+
             if (ShowChildrenFirst)
-                return WordQuery.StartingWithChildrenFirst(session)(parent, query).Union(unsaved);
+                return WordQuery.StartingWithChildrenFirst(session)(parent, query)
+                    .Where(x => doctor.Words.Contains(x))
+                    .Union(unsaved);
             else
-                return WordQuery.StartingWith(session)(query).Union(unsaved);
+                return WordQuery.StartingWith(session)(query)
+                    .Where(x => doctor.Words.Contains(x))
+                    .Union(unsaved);
         }
+
+        [ContractInvariantMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+        private void ObjectInvariant()
+        {
+            // все несохраннные слова - не в словаре
+            Contract.Invariant(created.All(x => x.Vocabularies.Count() == 0));
+        }
+
     }
 }

@@ -13,22 +13,32 @@ namespace Diagnosis.Models
         public static string CustomTitle = "Пользовательский";
 
         private Iesi.Collections.Generic.ISet<WordTemplate> wordTemplates = new HashedSet<WordTemplate>();
+        private Iesi.Collections.Generic.ISet<Speciality> specialities = new HashedSet<Speciality>();
         private IList<Word> words = new List<Word>(); // many-2-many
         private string _title;
 
-        public Vocabulary(string title)
+        public Vocabulary(string title, Doctor d = null)
         {
             Contract.Requires(title != null);
 
             Title = title;
+            if (d != null)
+            {
+                Doctor = d;
+                IsCustom = true;
+            }
         }
 
         protected Vocabulary()
         {
         }
 
+
         public virtual event NotifyCollectionChangedEventHandler WordsChanged;
         public virtual event NotifyCollectionChangedEventHandler WordTemplatesChanged;
+        private bool _custom;
+        private Models.Doctor _doc;
+        private string p;
 
         public virtual string Title
         {
@@ -38,12 +48,31 @@ namespace Diagnosis.Models
                 SetProperty(ref _title, value ?? "", () => Title);
             }
         }
+        public virtual bool IsCustom
+        {
+            get { return Doctor != null; }
+            set
+            {
+                SetProperty(ref _custom, value, () => IsCustom);
+            }
+        }
+        public virtual Doctor Doctor
+        {
+            get { return _doc; }
+            set
+            {
+                SetProperty(ref _doc, value, () => Doctor);
+            }
+        }
 
         public virtual IEnumerable<WordTemplate> WordTemplates
         {
             get { return wordTemplates; }
         }
-
+        public virtual IEnumerable<Speciality> Specialities
+        {
+            get { return specialities; }
+        }
         public virtual IEnumerable<Word> Words
         {
             get { return words; }

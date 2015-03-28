@@ -19,6 +19,12 @@ namespace Diagnosis.Data.Mappings
                 m.Length(50);
             });
 
+            OneToOne(x => x.Doctor, m =>
+            {
+                m.PropertyReference(typeof(Doctor).GetPropertyOrFieldMatchingName("CustomVocabulary"));
+
+            });
+
             Set(x => x.WordTemplates, s =>
             {
                 s.Key(k =>

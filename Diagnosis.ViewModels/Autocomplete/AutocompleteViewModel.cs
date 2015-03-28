@@ -66,7 +66,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                     OnEntitiesChanged();
             };
             hanlder = this.Subscribe(Event.WordPersisted, (e) =>
-            {
+            {// TODO двжды здесь?
                 // созданные слова можно искать из поиска
                 var word = e.GetValue<Word>(MessageKeys.Word);
                 Tags.Where(t => (t.Blank as Word) == word)

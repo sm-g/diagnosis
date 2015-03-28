@@ -73,7 +73,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             (word as IEditableObject).EndEdit();
 
-            VocabularyQuery.Custom(Session)().AddWord(word);
+            AuthorityController.CurrentDoctor.CustomVocabulary.AddWord(word);
             new Saver(Session).Save(word);
 
             this.Send(Event.WordSaved, word.AsParams(MessageKeys.Word));

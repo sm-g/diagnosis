@@ -13,6 +13,7 @@ namespace Diagnosis.Data.Versions
         private string FK_SpecVoc_Voc = "FK_SpecialityVocabularies_Word";
         private string FK_SpecVoc_Spec = "FK_SpecialityVocabularies_Speciality";
         private string FK_WordTemplate_Voc = "FK_WordTemplate_Vocabulary";
+        private string FK_Doc_Voc = "FK_Doctor_Vocabulary";
 
         private const string VocabularyID = "VocabularyID";
         private const string SpecialityID = "SpecialityID";
@@ -54,6 +55,9 @@ namespace Diagnosis.Data.Versions
                 .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK__VocabularyWords").WithDefault(SystemMethods.NewGuid)
                 .WithColumn(VocabularyID).AsGuid().NotNullable().ForeignKey(FK_VocWord_Voc, Names.VocabularyTbl, "Id")
                 .WithColumn(WordID).AsGuid().NotNullable().ForeignKey(FK_VocWord_Word, Names.WordTbl, "Id");
+
+            Alter.Table(Names.DoctorTbl)
+                .AddColumn("CustomVocabularyID").AsGuid().Nullable().ForeignKey(FK_Doc_Voc, Names.VocabularyTbl, "Id");
         }
 
         public override void Down()

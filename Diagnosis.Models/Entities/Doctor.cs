@@ -23,6 +23,7 @@ namespace Diagnosis.Models
         private Speciality _speciality;
         private Passport passport;
         private SettingsProvider settingsProvider;
+        private Vocabulary _customVocabulary;
 
         public Doctor(string lastName, string firstName = null, string middleName = null, Speciality speciality = null)
         {
@@ -38,6 +39,23 @@ namespace Diagnosis.Models
 
         protected Doctor()
         {
+        }
+
+        private List<Word> myVar = new List<Word>();
+        /// <summary>
+        /// Слова из всех словарей, доступных врачу, кроме пользовательского.
+        /// </summary>
+        public virtual List<Word> SpecialityWords
+        {
+            get { return myVar; }
+            set { myVar = value; }
+        }
+        /// <summary>
+        /// Все слова, доступные врачу.
+        /// </summary>
+        public virtual IEnumerable<Word> Words
+        {
+            get { return SpecialityWords.Union(CustomVocabulary.Words); }
         }
 
         public virtual string FirstName
@@ -86,6 +104,14 @@ namespace Diagnosis.Models
             {
                 if (value == Speciality.Null) value = null;
                 SetProperty(ref _speciality, value, () => Speciality);
+            }
+        }
+        public virtual Vocabulary CustomVocabulary
+        {
+            get { return _customVocabulary ?? (_customVocabulary = new Vocabulary(Vocabulary.CustomTitle, this)); }
+            set
+            {
+                SetProperty(ref _customVocabulary, value, () => CustomVocabulary);
             }
         }
 

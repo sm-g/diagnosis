@@ -5,6 +5,7 @@ using NHibernate;
 using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -15,10 +16,10 @@ namespace Diagnosis.Data.Sync
         private ISession session;
         private Vocabulary custom;
 
-        public VocLoader(ISession session)
+        public VocLoader(ISession session, Doctor doc)
         {
             this.session = session;
-            custom = VocabularyQuery.Custom(session)();
+            // custom = VocabularyQuery.Custom(session)(doc);
         }
         /// <summary>
         /// Создает слова по шаблонам словаря, убирает слова, для которых нет шаблона.
@@ -36,7 +37,7 @@ namespace Diagnosis.Data.Sync
         public void LoadOrUpdateVocs(IEnumerable<Vocabulary> vocs)
         {
             var wordsToSave = new List<Word>();
-            foreach (var voc in vocs)
+            foreach (var voc in vocs.Where(x => !x.IsCustom))
             {
                 // убираем лишние слова из словаря
                 var templates = voc.WordTemplates;
@@ -67,7 +68,7 @@ namespace Diagnosis.Data.Sync
         public void DeleteVocs(IEnumerable<Vocabulary> vocs)
         {
             var wordsToSave = new List<Word>();
-            var vocsToDel = vocs.ToArray();
+            var vocsToDel = vocs.Where(x => !x.IsCustom).ToArray();
             vocsToDel.ForAll(x =>
             {
                 var wordsInOtherVoc = RemoveFromVoc(x, x.Words.ToList());
@@ -135,14 +136,30 @@ namespace Diagnosis.Data.Sync
             foreach (var word in toRemove)
             {
                 voc.RemoveWord(word);
-                if (word.Vocabularies.Count() == 0)
-                    if (word.HealthRecords.Count() == 0)
-                        // убрать слово, если не используется и только из этого словаря
+                if (word.HealthRecords.Count() == 0)
+                {
+                    // убрать слово, если не используется и не в словарях
+                    if (word.Vocabularies.Count() == 0) // или только в пользовательских словарях
+                    {
+                        word.Vocabularies.ToList().ForEach(x => x.RemoveWord(word));
                         toDelete.Add(word);
-                    else
-                        // использованное старое становится Пользовательскикм если у него нет других словарей
-                        custom.AddWord(word);
-                // есть еще словари у слова - оставляем в них
+                    }
+                }
+                else
+                {
+                    var docs = word.HealthRecords.Select(x => x.Doctor).Distinct();
+                    foreach (var doc in docs)
+                    {
+                        if (!doc.Words.Contains(word))
+                            doc.CustomVocabulary.AddWord(word);
+                    }
+                    // использованное становится Пользовательским 
+                    // для всех врачей, которые его использовали
+                    // если его нет в других словарях, доступных врачу
+
+                    // должно стать пользовательским для тех врачей, у которых нет словаря с этим словом
+                }
+
             }
 
             // delete removed words
@@ -164,7 +181,7 @@ namespace Diagnosis.Data.Sync
             var created = new List<Word>();
             foreach (var text in templates.Select(x => x.Title))
             {
-                var existing = WordQuery.ByTitle(session)(text);
+                var existing = WordQuery.ByTitle(session)(text); // для любого врача
                 if (existing == null)
                 {
                     var w = new Word(text);

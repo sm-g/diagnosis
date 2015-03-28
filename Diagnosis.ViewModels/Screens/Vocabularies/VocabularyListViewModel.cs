@@ -36,7 +36,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             Title = "Словари";
             saver = new Saver(Session);
-            loader = new VocLoader(Session);
+            loader = new VocLoader(Session, AuthorityController.CurrentDoctor);
 
             SelectedVocs = new ObservableCollection<VocabularyViewModel>();
             SelectedAvailableVocs = new ObservableCollection<VocabularyViewModel>();
@@ -265,7 +265,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             var results = Session.Query<Vocabulary>().ToList();
             var vms = results
-                .Where(x => x.Title != Vocabulary.CustomTitle)
+                .Where(x => !x.IsCustom)
                 .Select(voc => Vocs
                     .Where(vm => vm.voc == voc)
                     .FirstOrDefault() ?? new VocabularyViewModel(voc))

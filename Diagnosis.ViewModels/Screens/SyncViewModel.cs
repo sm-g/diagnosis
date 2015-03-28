@@ -123,7 +123,7 @@ namespace Diagnosis.ViewModels.Screens
                         // после загрузки проверяем справочные сущности на совпадение
                         CheckReferenceEntitiesAfterDownload(syncer.AddedIdsPerType)).ContinueWith((t) =>
                             // обновляем загруженные словари или удаляем
-                        new VocLoader(Session).AfterSyncVocs(syncer.DeletedIdsPerType))
+                        new VocLoader(Session, AuthorityController.CurrentDoctor).AfterSyncVocs(syncer.DeletedIdsPerType))
                     , Cursors.AppStarting);
                 },
                 () => CanSync(true, true));

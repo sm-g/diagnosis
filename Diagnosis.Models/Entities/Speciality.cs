@@ -14,6 +14,7 @@ namespace Diagnosis.Models
         public static Speciality Null = new Speciality("—");  // для врача без специальности
 
         private IList<IcdBlock> icdBlocks = new List<IcdBlock>(); // many-2-many bag
+        private Iesi.Collections.Generic.ISet<Vocabulary> vocabularies = new HashedSet<Vocabulary>();
         private Iesi.Collections.Generic.ISet<Doctor> doctors = new HashedSet<Doctor>();
         private Iesi.Collections.Generic.ISet<SpecialityIcdBlocks> specialityIcdBlocks = new HashedSet<SpecialityIcdBlocks>();
         private string _title;
@@ -49,6 +50,11 @@ namespace Diagnosis.Models
         public virtual IEnumerable<Doctor> Doctors
         {
             get { return doctors; }
+        }
+
+        public virtual IEnumerable<Vocabulary> Vocabularies
+        {
+            get { return vocabularies; }
         }
 
         public virtual IEnumerable<SpecialityIcdBlocks> SpecialityIcdBlocks

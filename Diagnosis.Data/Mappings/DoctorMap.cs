@@ -18,6 +18,14 @@ namespace Diagnosis.Data.Mappings
                 m.Cascade(Cascade.All | Cascade.DeleteOrphans);
                 m.Access(Accessor.Field);
                 m.Constrained(true);
+
+            });
+
+            ManyToOne(x => x.CustomVocabulary, m =>
+            {
+                m.Column("CustomVocabularyID");
+                m.Cascade(Cascade.All | Cascade.DeleteOrphans);
+                m.Access(Accessor.Field);
             });
 
             Property(x => x.FirstName, m =>

@@ -12,15 +12,15 @@ namespace Diagnosis.Data.Queries
         /// <summary>
         /// Возвращает пользовательский словарь.
         /// </summary>
-        public static Func<Vocabulary> Custom(ISession session)
+        public static Func<Doctor, Vocabulary> Custom(ISession session)
         {
-            return () =>
+            return (Doctor d) =>
             {
                 using (var tr = session.BeginTransaction())
                 {
                     var voc = session.Query<Vocabulary>()
-                        .Where(x => x.Title == Vocabulary.CustomTitle)
-                        .FirstOrDefault() ?? new Vocabulary(Vocabulary.CustomTitle);
+                        .Where(x => x.Doctor == d)
+                        .FirstOrDefault() ?? new Vocabulary(Vocabulary.CustomTitle, d);
 
                     return voc;
                 }

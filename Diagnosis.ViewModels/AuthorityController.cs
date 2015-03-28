@@ -38,8 +38,14 @@ namespace Diagnosis.ViewModels
         {
             if (ValidatePassword(user, password))
             {
+                LogOut();
                 CurrentUser = user;
                 CurrentDoctor = user as Doctor;
+                if (user is Doctor)
+                {
+                    var ws = CurrentDoctor.Speciality != null ? CurrentDoctor.Speciality.Vocabularies.SelectMany(x => x.Words) : Enumerable.Empty<Word>();
+                    CurrentDoctor.SpecialityWords = new List<Word>(ws);
+                }
                 OnLoggedIn(user);
                 return true;
             }

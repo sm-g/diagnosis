@@ -5,6 +5,7 @@ using Diagnosis.Models;
 using Diagnosis.ViewModels.Search;
 using EventAggregator;
 using NHibernate.Linq;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -26,11 +27,15 @@ namespace Diagnosis.ViewModels.Screens
         {
             _filter = new FilterViewModel<Word>(WordQuery.StartingWith(Session));
             saver = new Saver(Session);
+            var doctor = AuthorityController.CurrentDoctor;
+
             SelectedWords = new ObservableCollection<WordViewModel>();
 
             Filter.Filtered += (s, e) =>
             {
-                MakeVms(Filter.Results);
+                // показываем только слова, доступные врачу
+                MakeVms(Filter.Results
+                    .Where(x => doctor.Words.Contains(x)));
             };
             Filter.Clear(); // показываем все
 
@@ -54,7 +59,7 @@ namespace Diagnosis.ViewModels.Screens
             });
 
             Title = "Словарь";
-            NoWords = !Session.Query<Word>().Any();
+            NoWords = Words.Count == 0;
         }
 
         public FilterViewModel<Word> Filter
@@ -146,6 +151,7 @@ namespace Diagnosis.ViewModels.Screens
                         .Where(w => w.IsEmpty())
                         .ToArray();
 
+                    // maintain m2m relation
                     toDel.ForAll(x => x.Vocabularies.ToList()
                         .ForEach(v => v.RemoveWord(x)));
                     saver.Delete(toDel);
@@ -153,7 +159,7 @@ namespace Diagnosis.ViewModels.Screens
                     // убираем удаленных из списка
                     Filter.Filter();
 
-                    NoWords = !Session.Query<Word>().Any();
+                    NoWords = Words.Count == 0;
                 }, () => SelectedWords.Any(w => w.word.IsEmpty()));
             }
         }
@@ -167,7 +173,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         /// <summary>
-        /// В БД нет слов.
+        /// Нет слов, доступных врачу.
         /// </summary>
         public bool NoWords
         {
@@ -185,7 +191,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private void MakeVms(ObservableCollection<Word> results)
+        private void MakeVms(IEnumerable<Word> results)
         {
             var vms = results.Select(w => Words
                 .Where(vm => vm.word == w)
@@ -202,6 +208,13 @@ namespace Diagnosis.ViewModels.Screens
                 _filter.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        internal void SelectWord(Word w)
+        {
+            var toSelect = Words.FirstOrDefault(vm => vm.word == w);
+            SelectedWord = toSelect;
+
         }
     }
 }
