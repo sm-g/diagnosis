@@ -7,6 +7,7 @@ using System.Diagnostics.Contracts;
 using Diagnosis.Data;
 using System.Linq;
 using System.Collections.Generic;
+using Diagnosis.Data.Queries;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -72,6 +73,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             (word as IEditableObject).EndEdit();
 
+            VocabularyQuery.Custom(Session)().AddWord(word);
             new Saver(Session).Save(word);
 
             this.Send(Event.WordSaved, word.AsParams(MessageKeys.Word));

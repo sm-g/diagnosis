@@ -34,6 +34,7 @@ namespace Diagnosis.ViewModels
                     // скопированно новое в поиск - после WordPersisted можно будет найти
                     logger.WarnFormat("Word not synced: {0}, recreate", word);
                     res = new Word(word.Title);
+                    // voc?
                 }
                 return res;
             };
