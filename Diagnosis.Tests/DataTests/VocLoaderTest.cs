@@ -47,6 +47,24 @@ namespace Tests
         [TestMethod]
         public void DeleteWordUpdateVoc()
         {
+            l.LoadOrUpdateVocs(voc[1]);
+            var word = voc[1].Words.First();
+            Assert.IsTrue(word.IsEmpty());
+
+            var origTitle = word.Title;
+            using (var tr = session.BeginTransaction())
+            {
+                voc[1].RemoveWord(word);
+                session.Delete(word);
+                tr.Commit();
+            }
+            Assert.IsFalse(GetWordTitles().Contains(origTitle));
+            Assert.IsFalse(voc[1].Words.Select(x => x.Title).Contains(origTitle));
+
+            // слово заново создается
+            l.LoadOrUpdateVocs(voc[1]);
+            Assert.IsTrue(GetWordTitles().Contains(origTitle));
+            Assert.IsTrue(voc[1].Words.Select(x => x.Title).Contains(origTitle));
         }
 
         [TestMethod]
@@ -70,12 +88,9 @@ namespace Tests
             // измененное слово остается в словаре до обновления словаря,
             // надо вручную перевести в пользовательский словарь, чтобы
             // при удалении словаря измененные слова не удалены
-
-            // заново создается слово по шаблону после обновления
-
             l.LoadOrUpdateVocs(voc[1]);
             var vocTemplates = voc[1].WordTemplates.Count();
-            var word = voc[1].Words.ElementAt(vocTemplates - 1);
+            var word = voc[1].Words.Where(x => x.Title == wTemp[3].Title).Single();
             var origTitle = word.Title;
 
             Assert.IsTrue(word.Vocabularies.Single() == voc[1]);
@@ -88,6 +103,7 @@ namespace Tests
             }
             Assert.IsTrue(voc[1].Words.Contains(word));
 
+            // заново создается слово по шаблону после обновления
             l.LoadOrUpdateVocs(voc[1]);
 
             Assert.IsFalse(voc[1].Words.Contains(word));
@@ -101,11 +117,12 @@ namespace Tests
         {
             l.LoadOrUpdateVocs(voc[1]);
             var vocWords = voc[1].Words.Count();
-
+            var word = voc[1].Words.Where(x => x.Title == wTemp[3].Title).Single();
             voc[1].RemoveWordTemplate(wTemp[3]);
 
             l.LoadOrUpdateVocs(voc[1]);
             // слово больше не в словаре
+            Assert.IsFalse(voc[1].Words.Contains(word));
             Assert.AreEqual(vocWords - 1, voc[1].Words.Count());
         }
 
@@ -113,9 +130,9 @@ namespace Tests
         public void AddTemplateUpdateVoc()
         {
             var newT = new WordTemplate("qwe", voc[1]);
+            Assert.IsFalse(GetWordTitles().Contains("qwe"));
             l.LoadOrUpdateVocs(voc[1]);
             Assert.IsTrue(GetWordTitles().Contains("qwe"));
-
         }
 
         [TestMethod]
@@ -140,16 +157,6 @@ namespace Tests
         }
 
         [TestMethod]
-        public void LoadVoc()
-        {
-        }
-
-        [TestMethod]
-        public void RemoveVoc()
-        {
-        }
-
-        [TestMethod]
         public void Sequence()
         {
             // новое слово
@@ -157,7 +164,7 @@ namespace Tests
             var wEditor = new WordEditorViewModel(newW);
             wEditor.OkCommand.Execute(null);
 
-            // загружаем словарь, не использованных слов
+            // загружаем словарь, нет использованных слов
             l.LoadOrUpdateVocs(voc[1]);
             Assert.IsTrue(voc[1].Words.All(x => x.HealthRecords.Count() == 0));
 
@@ -166,6 +173,8 @@ namespace Tests
             Assert.IsTrue(word3.HealthRecords.Count() == 0);
 
             word3.Title = "qwe";
+            // надо вручную перевести в пользовательский словарь, чтобы
+            // при удалении словаря измененные слова не удалены
             voc[1].RemoveWord(word3);
             VocabularyQuery.Custom(session)().AddWord(word3);
             using (var tr = session.BeginTransaction())
@@ -200,13 +209,13 @@ namespace Tests
             Assert.IsTrue(word4.HealthRecords.Count() > 0);
 
             // менем шаблон 4, добавляем шаблон 5
-            wTemp[4].Title = "poiuyy";
+            wTemp[4].Title = "poiuy";
             new WordTemplate("555", voc[2]);
             session.SaveOrUpdate(voc[2]);
 
             Assert.AreEqual(5, voc[2].WordTemplates.Count());
 
-            // обновляем 2 словарь
+            // обновляем 2 словарь, снова есть 2 и3
             l.LoadOrUpdateVocs(voc[2]);
             wordTitles = GetWordTitles();
             Assert.IsTrue(wordTitles.Contains(wTemp[2].Title));

@@ -146,6 +146,8 @@ namespace Diagnosis.ViewModels.Screens
                         .Where(w => w.IsEmpty())
                         .ToArray();
 
+                    toDel.ForAll(x => x.Vocabularies.ToList()
+                        .ForEach(v => v.RemoveWord(x)));
                     saver.Delete(toDel);
 
                     // убираем удаленных из списка

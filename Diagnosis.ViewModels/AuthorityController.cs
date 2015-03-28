@@ -24,6 +24,7 @@ namespace Diagnosis.ViewModels
             AutoLogon = true;
 #if DEBUG
             doctorScreens.Add(Screen.Sync);
+            doctorScreens.Add(Screen.Vocabularies);
 #endif
         }
 
