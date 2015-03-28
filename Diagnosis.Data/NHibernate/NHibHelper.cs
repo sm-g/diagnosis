@@ -9,6 +9,7 @@ using NHibernate.Connection;
 using NHibernate.Dialect;
 using NHibernate.Driver;
 using NHibernate.Event;
+using NHibernate.Event.Default;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Tool.hbm2ddl;
 using System.IO;
@@ -18,6 +19,40 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Diagnosis.Data
 {
+    [System.Serializable]
+    public class FixedDefaultFlushEventListener : DefaultFlushEventListener
+    {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        protected override void PerformExecutions(IEventSource session)
+        {
+            if (log.IsDebugEnabled)
+            {
+                log.Debug("executing flush");
+            }
+            try
+            {
+                session.ConnectionManager.FlushBeginning();
+                session.PersistenceContext.Flushing = true;
+                session.ActionQueue.PrepareActions();
+                session.ActionQueue.ExecuteActions();
+            }
+            catch (HibernateException exception)
+            {
+                if (log.IsErrorEnabled)
+                {
+                    log.Error("Could not synchronize database state with session", exception);
+                }
+                throw;
+            }
+            finally
+            {
+                session.PersistenceContext.Flushing = false;
+                session.ConnectionManager.FlushEnding();
+            }
+
+        }
+    }
     public class NHibernateHelper
     {
         private static readonly System.Lazy<NHibernateHelper> lazyInstance = new System.Lazy<NHibernateHelper>(() => new NHibernateHelper() { useSavedCfg = true });
@@ -168,7 +203,7 @@ namespace Diagnosis.Data
 
             if (InMemory)
                 InMemoryHelper.FillData(Configuration, s);
-            if (FromTest)
+            if (FromTest) // same session in VMBase
                 _session = s;
             return s;
         }
@@ -225,6 +260,8 @@ namespace Diagnosis.Data
             cfg.AppendListeners(ListenerType.PostInsert, new IPostInsertEventListener[] { postListener });
             cfg.AppendListeners(ListenerType.PostDelete, new IPostDeleteEventListener[] { postListener });
             cfg.AppendListeners(ListenerType.PostLoad, new IPostLoadEventListener[] { postListener });
+
+            cfg.EventListeners.FlushEventListeners = new IFlushEventListener[] { new FixedDefaultFlushEventListener() };
 
             cfg.AddMapping(Mapping);
             return cfg;
