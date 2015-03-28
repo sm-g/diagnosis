@@ -255,15 +255,18 @@ namespace Tests
 
                 card.HrList.AddHealthRecordCommand.Execute(null);
                 card.HrEditor.Autocomplete.AddTag(w);
-                card.ToogleHrEditor();
+                card.HrEditor.CloseCommand.Execute(null);
 
                 Assert.IsTrue(!w.IsTransient);
+                Assert.AreEqual(1, w.HealthRecords.Count());
 
                 card.HrList.Cut();
 
                 Assert.AreEqual(0, w.HealthRecords.Count());
 
-                new Saver(session).Delete(w);
+                var wordList = new WordsListViewModel();
+                wordList.SelectWord(w);
+                wordList.DeleteCommand.Execute(null);
 
                 card.HrList.Paste();
 

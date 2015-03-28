@@ -25,6 +25,8 @@ namespace Tests
         [TestInitialize]
         public void AutocompleteTestInit()
         {
+          var  d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
+            AuthorityController.TryLogIn(d1);
             r = new Recognizer(session, clearCreated: true);
             a = new AutocompleteViewModel(r, true, true, true, false, null);
             word = session.Get<Word>(IntToGuid<Word>(1));
