@@ -54,7 +54,6 @@ namespace Diagnosis.ViewModels.Screens
                 }
             };
 
-            MakeInstalledVms(Session.Query<Vocabulary>());
             TryGetAvailableVocs();
         }
 
@@ -129,9 +128,8 @@ namespace Diagnosis.ViewModels.Screens
                     var mergerdVocs = new List<Vocabulary>();
                     vms.ForEach(vm => mergerdVocs.Add(Session.Merge(vm.voc))); // new id! синхронизировать?
                     loader.LoadOrUpdateVocs(mergerdVocs);
-                    //  vms.ForEach(vm => AvailableVocs.Remove(vm));
 
-                    MakeInstalledVms(Session.Query<Vocabulary>());
+                    MakeInstalledVms();
                     MakeAvailableVms();
 
                 }, () => SelectedAvailableVocs.Count > 0 && IsConnected);
@@ -167,7 +165,7 @@ namespace Diagnosis.ViewModels.Screens
 
                     loader.DeleteVocs(toDel);
 
-                    MakeInstalledVms(Session.Query<Vocabulary>());
+                    MakeInstalledVms();
                     MakeAvailableVms();
 
                 }, () => SelectedVocs.Count > 0);
@@ -239,6 +237,7 @@ namespace Diagnosis.ViewModels.Screens
             if (nhib == null || nhib.ConnectionString != conn.ConnectionString)
                 nhib = NHibernateHelper.FromServerConnectionInfo(conn);
 
+            MakeInstalledVms();
             try
             {
                 using (var s = nhib.OpenSession())
@@ -262,24 +261,29 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private void MakeInstalledVms(IEnumerable<Vocabulary> results)
+        private void MakeInstalledVms()
         {
-            var vms = results.Select(w => Vocs
-                .Where(vm => vm.voc == w)
-                .FirstOrDefault() ?? new VocabularyViewModel(w));
+            var results = Session.Query<Vocabulary>().ToList();
+            var vms = results
+                .Where(x => x.Title != Vocabulary.CustomTitle)
+                .Select(voc => Vocs
+                    .Where(vm => vm.voc == voc)
+                    .FirstOrDefault() ?? new VocabularyViewModel(voc))
+                .ToList();
 
             Vocs.SyncWith(vms);
         }
 
         private void MakeAvailableVms()
         {
-            var ids = Vocs.Select(y => y.voc.Id).ToList();
+            var ids = Session.Query<Vocabulary>().Select(y => y.Id).ToList();
             var notInstalled = serverVocs
                 .Where(x => !ids.Contains(x.Id));
 
-            var vms = notInstalled.Select(w => AvailableVocs
-                .Where(vm => vm.voc == w)
-                .FirstOrDefault() ?? new VocabularyViewModel(w));
+            var vms = notInstalled.Select(voc => AvailableVocs
+                    .Where(vm => vm.voc == voc)
+                    .FirstOrDefault() ?? new VocabularyViewModel(voc))
+                .ToList();
 
             AvailableVocs.SyncWith(vms);
         }
