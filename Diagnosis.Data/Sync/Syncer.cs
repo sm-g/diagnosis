@@ -104,6 +104,9 @@ namespace Diagnosis.Data.Sync
 
             InSync = true;
 
+            AddedIdsPerType = new Dictionary<Type, IEnumerable<object>>();
+            DeletedIdsPerType = new Dictionary<Type, IEnumerable<object>>();
+
             var t = new Task(() =>
             {
                 foreach (var scope in scopes.OrderScopes())
@@ -285,13 +288,11 @@ namespace Diagnosis.Data.Sync
                     }
 
                     // запоминаем добавленные строки
-                    AddedIdsPerType = new Dictionary<Type, IEnumerable<object>>();
                     foreach (var table in syncOrchestrator.AddedIdsPerTable.Keys)
                     {
                         AddedIdsPerType[Names.tblToTypeMap[table]] = syncOrchestrator.AddedIdsPerTable[table];
                     }
 
-                    DeletedIdsPerType = new Dictionary<Type, IEnumerable<object>>();
                     foreach (var table in syncOrchestrator.DeletedIdsPerTable.Keys)
                     {
                         DeletedIdsPerType[Names.tblToTypeMap[table]] = syncOrchestrator.DeletedIdsPerTable[table];
@@ -534,9 +535,29 @@ namespace Diagnosis.Data.Sync
                 this.LocalProvider = to;
                 this.Direction = SyncDirectionOrder.Download;
 
-                to.ChangesSelected += (s, e) =>
+                from.ChangesSelected += (s, e) =>
                 {
+                    if (tablesToIgnoreAdding != null)
+                    {
+                        foreach (var table in tablesToIgnoreAdding)
+                        {
+                            if (e.Context.DataSet.Tables.Contains(table))
+                            {
+                                var dataTable = e.Context.DataSet.Tables[table];
 
+                                for (int j = 0; j < dataTable.Rows.Count; j++)
+                                {
+                                    DataRow row = dataTable.Rows[j];
+                                    if (row.RowState == DataRowState.Added)
+                                    {
+                                        // не синхронизируем новые словари
+                                        dataTable.Rows.Remove(row);
+                                        j--;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 };
 
                 to.ApplyChangeFailed += (s, e) =>
@@ -616,27 +637,7 @@ namespace Diagnosis.Data.Sync
                             }
                         }
                     }
-                    if (tablesToIgnoreAdding != null)
-                    {
-                        foreach (var table in tablesToIgnoreAdding)
-                        {
-                            if (e.Context.DataSet.Tables.Contains(table))
-                            {
-                                var dataTable = e.Context.DataSet.Tables[table];
-
-                                for (int j = 0; j < dataTable.Rows.Count; j++)
-                                {
-                                    DataRow row = dataTable.Rows[j];
-                                    if (row.RowState == DataRowState.Added)
-                                    {
-                                        // не синхронизируем новые словари
-                                        dataTable.Rows.Remove(row);
-                                        j--;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    
                 };
                 to.ApplyingChanges += (s, e) =>
                 {

@@ -20,6 +20,14 @@ namespace Diagnosis.Data.Sync
             this.session = session;
             custom = VocabularyQuery.Custom(session)();
         }
+        /// <summary>
+        /// Создает слова по шаблонам словаря, убирает слова, для которых нет шаблона.
+        /// </summary>
+        /// <param name="voc"></param>
+        public void LoadOrUpdateVocs(Vocabulary voc)
+        {
+            LoadOrUpdateVocs(voc.ToEnumerable());
+        }
 
         /// <summary>
         /// Создает слова по шаблонам словаря, убирает слова, для которых нет шаблона.
@@ -43,9 +51,17 @@ namespace Diagnosis.Data.Sync
             // сохраняем убранность словаря в оставшихся словах
             new Saver(session).Save(wordsToSave.ToArray());
         }
+        /// <summary>
+        /// Удаляет словарь, сначала убирая все слова.
+        /// </summary>
+        /// <param name="vocabulary"></param>
+        public void DeleteVocs(Vocabulary vocabulary)
+        {
+            DeleteVocs(vocabulary.ToEnumerable());
+        }
 
         /// <summary>
-        /// Удаляет словари, сначала убирая из них все слова.
+        /// Удаляет словари, сначала убирая все слова.
         /// </summary>
         /// <param name="vocs"></param>
         public void DeleteVocs(IEnumerable<Vocabulary> vocs)
@@ -124,9 +140,11 @@ namespace Diagnosis.Data.Sync
                         // убрать слово, если не используется и только из этого словаря
                         toDelete.Add(word);
                     else
-                        // 	использованное старое становится Пользовательскикм если у него нет других словарей
+                        // использованное старое становится Пользовательскикм если у него нет других словарей
                         custom.AddWord(word);
+                // есть еще словари у слова - оставляем в них
             }
+
             // delete removed words
             new Saver(session).Delete(toDelete.ToArray());
             return toRemove.Except(toDelete).ToList();
@@ -139,6 +157,7 @@ namespace Diagnosis.Data.Sync
         /// <param name="voc"></param>
         private IEnumerable<Word> CreateWordsFromTemp(Vocabulary voc, IEnumerable<WordTemplate> templates)
         {
+            // для каждого шаблона есть слово
             Contract.Ensures(templates.Select(x => x.Title.ToLower())
                      .Except(voc.Words.Select(x => x.Title.ToLower())).Count() == 0);
 

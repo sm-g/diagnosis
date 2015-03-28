@@ -43,8 +43,8 @@ namespace Diagnosis.Data.Sync
         private static string[] vocTableNames = new[] {
                 Names.VocabularyTbl,
                 Names.WordTemplateTbl,
-                Names.SpecialityTbl,
-                Names.SpecialityVocabulariesTbl,
+              //  Names.SpecialityTbl,
+             //   Names.SpecialityVocabulariesTbl,
             };
 
         private static string[] referenceTableNames = new[] {

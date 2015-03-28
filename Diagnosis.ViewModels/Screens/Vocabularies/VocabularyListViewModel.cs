@@ -30,6 +30,7 @@ namespace Diagnosis.ViewModels.Screens
         private string LocalProviderName;
         private Saver saver;
         private VocLoader loader;
+        private List<Vocabulary> serverVocs = new List<Vocabulary>();
 
         public VocabularyListViewModel()
         {
@@ -128,9 +129,11 @@ namespace Diagnosis.ViewModels.Screens
                     var mergerdVocs = new List<Vocabulary>();
                     vms.ForEach(vm => mergerdVocs.Add(Session.Merge(vm.voc))); // new id! синхронизировать?
                     loader.LoadOrUpdateVocs(mergerdVocs);
-                    vms.ForEach(vm => AvailableVocs.Remove(vm));
+                    //  vms.ForEach(vm => AvailableVocs.Remove(vm));
 
                     MakeInstalledVms(Session.Query<Vocabulary>());
+                    MakeAvailableVms();
+
                 }, () => SelectedAvailableVocs.Count > 0 && IsConnected);
             }
         }
@@ -165,6 +168,8 @@ namespace Diagnosis.ViewModels.Screens
                     loader.DeleteVocs(toDel);
 
                     MakeInstalledVms(Session.Query<Vocabulary>());
+                    MakeAvailableVms();
+
                 }, () => SelectedVocs.Count > 0);
             }
         }
@@ -234,16 +239,15 @@ namespace Diagnosis.ViewModels.Screens
             if (nhib == null || nhib.ConnectionString != conn.ConnectionString)
                 nhib = NHibernateHelper.FromServerConnectionInfo(conn);
 
-            var ids = Vocs.Select(y => y.voc.Id).ToList();
             try
             {
                 using (var s = nhib.OpenSession())
                 using (var tr = s.BeginTransaction())
                 {
-                    var vocs = s.Query<Vocabulary>()
-                        .Where(x => !ids.Contains(x.Id))
-                        .ToList();
-                    MakeAvailableVms(vocs);
+                    serverVocs = s.Query<Vocabulary>()
+                       .ToList();
+
+                    MakeAvailableVms();
                     tr.Commit();
                 }
                 IsConnected = true;
@@ -251,7 +255,8 @@ namespace Diagnosis.ViewModels.Screens
             }
             catch (System.Exception)
             {
-                MakeAvailableVms(Enumerable.Empty<Vocabulary>());
+                serverVocs.Clear();
+                MakeAvailableVms();
                 IsConnected = false;
                 NoAvailableVocs = false; // пока нет подключения, этого сообщения нет
             }
@@ -266,9 +271,13 @@ namespace Diagnosis.ViewModels.Screens
             Vocs.SyncWith(vms);
         }
 
-        private void MakeAvailableVms(IEnumerable<Vocabulary> results)
+        private void MakeAvailableVms()
         {
-            var vms = results.Select(w => AvailableVocs
+            var ids = Vocs.Select(y => y.voc.Id).ToList();
+            var notInstalled = serverVocs
+                .Where(x => !ids.Contains(x.Id));
+
+            var vms = notInstalled.Select(w => AvailableVocs
                 .Where(vm => vm.voc == w)
                 .FirstOrDefault() ?? new VocabularyViewModel(w));
 
