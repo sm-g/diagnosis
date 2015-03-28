@@ -38,6 +38,8 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public int TemplatesCount { get { return voc.WordTemplates.Count(); } }
+
         #endregion Model
 
         //public ICommand EditCommand

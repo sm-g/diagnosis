@@ -13,7 +13,7 @@
              Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
              d:DataContext="{d:DesignInstance design:SampleVocabularyListViewModel,
                                               IsDesignTimeCreatable=True}"
-             d:DesignHeight="300"
+             d:DesignHeight="500"
              d:DesignWidth="500">
     <Grid>
         <Grid.RowDefinitions>
@@ -37,23 +37,12 @@
             <Label Content="Загруженные" />
             <DataGrid x:Name="installedVocs"
                       ItemsSource="{Binding Vocs}"
+                      HeadersVisibility="All"
                       diag:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedVocs}"
                       Visibility="{Binding Vocs.Count, Converter={StaticResource MoreThanToVisibility}}"
                       Margin="0,10,0,0"
                       Style="{DynamicResource MyDataGridStyle}">
-                <DataGrid.Resources>
-                    <Style x:Key="Checkbox"
-                           TargetType="{x:Type CheckBox}"
-                           BasedOn="{StaticResource {x:Type CheckBox}}">
-                        <Setter Property="Focusable"
-                                Value="False" />
-                    </Style>
-                </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Header=""
-                                            IsReadOnly="True"
-                                            ElementStyle="{StaticResource Checkbox}"
-                                            Binding="{Binding IsChecked, Mode=TwoWay}" />
                     <DataGridTextColumn Header="Словарь"
                                         IsReadOnly="True"
                                         Binding="{Binding Title, Mode=OneWay}" />
@@ -61,7 +50,7 @@
                                         IsReadOnly="True"
                                         ElementStyle="{StaticResource RightCellTextBlock}"
                                         Binding="{Binding Updated, Mode=OneWay}" />
-                    <DataGridTextColumn Header="Использование"
+                    <DataGridTextColumn Header="Использовано слов"
                                         IsReadOnly="True"
                                         ElementStyle="{StaticResource RightCellTextBlock}"
                                         Binding="{Binding Usage, Mode=OneWay}" />
@@ -97,30 +86,19 @@
                     Visibility="{Binding AvailableVocs.Count, Converter={StaticResource MoreThanToVisibility}}">
             <Label Content="Новые" />
             <DataGrid x:Name="availableVocs"
+                      HeadersVisibility="All"
                       ItemsSource="{Binding AvailableVocs}"
                       diag:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedAvailableVocs}"
                       Margin="0,10,0,0"
                       Style="{DynamicResource MyDataGridStyle}">
-                <DataGrid.Resources>
-                    <Style x:Key="Checkbox"
-                           TargetType="{x:Type CheckBox}"
-                           BasedOn="{StaticResource {x:Type CheckBox}}">
-                        <Setter Property="Focusable"
-                                Value="False" />
-                    </Style>
-                </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Header=""
-                                            IsReadOnly="True"
-                                            ElementStyle="{StaticResource Checkbox}"
-                                            Binding="{Binding IsChecked, Mode=TwoWay}" />
                     <DataGridTextColumn Header="Словарь"
                                         IsReadOnly="True"
                                         Binding="{Binding Title, Mode=OneWay}" />
                     <DataGridTextColumn Header="Кол-во слов"
                                         IsReadOnly="True"
                                         ElementStyle="{StaticResource RightCellTextBlock}"
-                                        Binding="{Binding Words.Count, Mode=OneWay}" />
+                                        Binding="{Binding TemplatesCount, Mode=OneWay}" />
                 </DataGrid.Columns>
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
