@@ -26,25 +26,21 @@ namespace Diagnosis.ViewModels.Screens
         private bool _noNewVocs;
         private bool _connected;
         private DataConnectionViewModel _remote;
-        private string LocalConnectionString;
-        private string LocalProviderName;
         private Saver saver;
         private VocLoader loader;
+        Doctor doctor;
         private List<Vocabulary> serverVocs = new List<Vocabulary>();
 
-        public VocabularyListViewModel()
+        public VocabularyListViewModel(ConnectionInfo server = null)
         {
             Title = "Словари";
             saver = new Saver(Session);
-            loader = new VocLoader(Session, AuthorityController.CurrentDoctor);
+            doctor = AuthorityController.CurrentDoctor;
+            loader = new VocLoader(Session, doctor);
 
             SelectedVocs = new ObservableCollection<VocabularyViewModel>();
             SelectedAvailableVocs = new ObservableCollection<VocabularyViewModel>();
 
-            LocalConnectionString = NHibernateHelper.Default.ConnectionString;
-            LocalProviderName = LocalConnectionString.Contains(".sdf") ? Constants.SqlCeProvider : Constants.SqlServerProvider;
-
-            var server = Constants.ServerConnectionInfo; // из Settings
             Remote = new DataConnectionViewModel(server);
             Remote.PropertyChanged += (s, e) =>
             {
@@ -122,7 +118,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    Contract.Requires(LocalProviderName == Constants.SqlCeProvider); // загружаем только на клиента
+                    Contract.Requires(Constants.IsClient);
 
                     var vms = SelectedAvailableVocs.ToList();
                     var mergerdVocs = new List<Vocabulary>();
@@ -263,8 +259,10 @@ namespace Diagnosis.ViewModels.Screens
 
         private void MakeInstalledVms()
         {
-            var results = Session.Query<Vocabulary>().ToList();
-            var vms = results
+            var vocs = Session.Query<Vocabulary>()
+                .ToList();
+            var vms = vocs
+                .Where(x => doctor.Speciality != null ? doctor.Speciality.Vocabularies.Contains(x) : false)
                 .Where(x => !x.IsCustom)
                 .Select(voc => Vocs
                     .Where(vm => vm.voc == voc)

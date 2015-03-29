@@ -229,11 +229,11 @@ namespace Diagnosis.ViewModels.Screens
                         break;
 
                     case Screen.Sync:
-                        CurrentView = new SyncViewModel();
+                        CurrentView = new SyncViewModel(Constants.ServerConnectionInfo);
                         break;
 
                     case Screen.Vocabularies:
-                        CurrentView = new VocabularyListViewModel();
+                        CurrentView = new VocabularyListViewModel(Constants.ServerConnectionInfo);
                         break;
 
                     case Screen.Patients:

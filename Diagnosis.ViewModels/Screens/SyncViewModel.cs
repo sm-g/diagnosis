@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Common.Types;
 using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Data.Sync;
@@ -26,14 +27,13 @@ namespace Diagnosis.ViewModels.Screens
         private string _localProvider;
         private DataConnectionViewModel _remote;
 
-        public SyncViewModel()
+        public SyncViewModel(ConnectionInfo server = null)
         {
             Title = "Синхронизация";
 
             LocalConnectionString = NHibernateHelper.Default.ConnectionString;
             LocalProviderName = LocalConnectionString.Contains(".sdf") ? Constants.SqlCeProvider : Constants.SqlServerProvider;
 
-            var server = Constants.ServerConnectionInfo; // из Settings
             Remote = new DataConnectionViewModel(server);
 
             Syncer.MessagePosted += syncer_MessagePosted;
@@ -112,7 +112,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    Contract.Requires(LocalProviderName == Constants.SqlCeProvider); // загружаем только на клиента
+                    Contract.Requires(Constants.IsClient);
 
                     var syncer = new Syncer(
                          serverConStr: RemoteConnectionString,
