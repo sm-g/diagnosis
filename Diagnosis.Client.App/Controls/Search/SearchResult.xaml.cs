@@ -5,9 +5,9 @@ namespace Diagnosis.Client.App.Controls.Search
     /// <summary>
     /// Interaction logic for SearchResult.xaml
     /// </summary>
-    public partial class HrSearchResult2 : UserControl
+    public partial class SearchResult : UserControl
     {
-        public HrSearchResult2()
+        public SearchResult()
         {
             InitializeComponent();
         }

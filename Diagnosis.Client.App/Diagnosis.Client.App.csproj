@@ -294,8 +294,8 @@
     <Compile Include="Windows\Helpers\AvalonExtensions.cs" />
     <Compile Include="Resources\Themes\ThemeManager.cs" />
     <Compile Include="Windows\Helpers\WindowHelper.cs" />
-    <Compile Include="Controls\Search\HrSearchResult2.xaml.cs">
-      <DependentUpon>HrSearchResult2.xaml</DependentUpon>
+    <Compile Include="Controls\Search\SearchResult.xaml.cs">
+      <DependentUpon>SearchResult.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\ScopeToLabel.cs" />
     <Compile Include="Converters\HrToItemsString.cs" />
@@ -417,7 +417,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Search\HrSearchResult2.xaml">
+    <Page Include="Controls\Search\SearchResult.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
