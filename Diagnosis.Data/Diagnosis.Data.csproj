@@ -220,7 +220,7 @@
     <Compile Include="Versions\Migrations\12 UomHrCatSpecialityGuidAndRemoveDefCat.cs" />
     <Compile Include="Versions\Migrations\SyncronizedMigration.cs" />
     <Compile Include="Versions\Migrator.cs" />
-    <Compile Include="Versions\Names.cs" />
+    <Compile Include="Names.cs" />
     <Compile Include="Versions\Migrations\03 InsertFirstWordSet.cs" />
     <Compile Include="Versions\Migrations\02 InsertAllIcd.cs" />
     <Compile Include="Versions\Migrations\04 InsertUomHrCatSpeciality.cs" />

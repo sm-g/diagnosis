@@ -7,8 +7,6 @@ namespace Diagnosis.Data.Versions
     [Migration(201412111200)]
     public class AddPassportTable : Migration
     {
-        private const string FK_Doctor_Passport = "FK_Doctor_Passport";
-
         public override void Up()
         {
             Create.Table(Names.Passport)
@@ -27,7 +25,7 @@ namespace Diagnosis.Data.Versions
             // для каждого врача - пасспорт без пароля
             Execute.Sql(string.Format("INSERT INTO {0} ([Id]) Select Id from {1}", Names.Passport, Names.Doctor));
 
-            Create.ForeignKey(FK_Doctor_Passport).FromTable(Names.Doctor)
+            Create.ForeignKey(Names.FK.Doctor_Passport).FromTable(Names.Doctor)
                .ForeignColumn("Id")
                .ToTable(Names.Passport)
                .PrimaryColumn("Id");
@@ -35,7 +33,7 @@ namespace Diagnosis.Data.Versions
 
         public override void Down()
         {
-            Delete.ForeignKey(FK_Doctor_Passport).OnTable(Names.Doctor);
+            Delete.ForeignKey(Names.FK.Doctor_Passport).OnTable(Names.Doctor);
             Delete.Table(Names.Passport);
         }
     }

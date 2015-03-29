@@ -9,9 +9,7 @@ namespace Diagnosis.Data.Versions
     {
         private const string Title = "Title";
         private const string Ord = "Ord";
-        private const string UomTypeId = Names.Id.UomType;
         private const string UomType = "UomType";
-        private const string FK_Uom_UomType = "FK_Uom_UomType";
         private const string Description = "Description";
 
         private const string Volume = "Объем";
@@ -28,26 +26,26 @@ namespace Diagnosis.Data.Versions
             Execute.Sql(string.Format("INSERT INTO {0} ({1},{2}) VALUES ('{3}',2)", Names.UomType, Title, Ord, Date));
 
             Alter.Table(Names.Uom)
-                .AddColumn(UomTypeId).AsInt32().NotNullable()
-                    .ForeignKey(FK_Uom_UomType, Names.UomType, "Id").WithDefaultValue(1);
+                .AddColumn(Names.Id.UomType).AsInt32().NotNullable()
+                    .ForeignKey(Names.FK.Uom_UomType, Names.UomType, "Id").WithDefaultValue(1);
 
             Alter.Table(Names.Uom)
                 .AlterColumn(Description).AsString(100).NotNullable();
 
-            Execute.Sql(string.Format("update {0} set {1} = {2}", Names.Uom, UomTypeId, UomType));
+            Execute.Sql(string.Format("update {0} set {1} = {2}", Names.Uom, Names.Id.UomType, UomType));
             Delete.Column(UomType).FromTable(Names.Uom);
         }
 
         public override void Down()
         {
-            Delete.ForeignKey(FK_Uom_UomType).OnTable(Names.Uom);
+            Delete.ForeignKey(Names.FK.Uom_UomType).OnTable(Names.Uom);
             Delete.Table(Names.UomType);
 
             // rename back
             Alter.Table(Names.Uom)
                .AddColumn(UomType).AsInt32().NotNullable().WithDefaultValue(1);
-            Execute.Sql(string.Format("update {0} set {1} = {2}", Names.Uom, UomType, UomTypeId));
-            Delete.Column(UomTypeId).FromTable(Names.Uom);
+            Execute.Sql(string.Format("update {0} set {1} = {2}", Names.Uom, UomType, Names.Id.UomType));
+            Delete.Column(Names.Id.UomType).FromTable(Names.Uom);
         }
     }
 }

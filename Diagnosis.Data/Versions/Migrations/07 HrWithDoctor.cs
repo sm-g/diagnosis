@@ -11,7 +11,7 @@ namespace Diagnosis.Data.Versions
     //[Migration(201412191200)]
     //public class HrWithDoctor : Migration
     //{
-    //    private const string FK_Hr_Doctor = "FK_Hr_Doctor";
+    //    private const string Names.FK.Hr_Doctor = "Names.FK.Hr_Doctor";
     //    private const string CreatedAt = "CreatedAt";
     //    private const string Ord = "Ord";
     //    private const string DoctorId = Names.Id.Doctor;
@@ -33,7 +33,7 @@ namespace Diagnosis.Data.Versions
     //            //s.Query<HealthRecord>().Where(hr => hr.Patient != null).ForEach(hr => hr.Doctor = doc);
     //        }
 
-    //        //Create.ForeignKey(FK_Hr_Doctor).FromTable(Names.HealthRecordTbl)
+    //        //Create.ForeignKey(Names.FK.Hr_Doctor).FromTable(Names.HealthRecordTbl)
     //        //   .ForeignColumn(DoctorId)
     //        //   .ToTable(Names.DoctorTbl)
     //        //   .PrimaryColumn("Id");
@@ -41,7 +41,7 @@ namespace Diagnosis.Data.Versions
 
     //    public override void Down()
     //    {
-    //        //  Delete.ForeignKey(FK_Hr_Doctor).OnTable(Names.HealthRecordTbl);
+    //        //  Delete.ForeignKey(Names.FK.Hr_Doctor).OnTable(Names.HealthRecordTbl);
     //        Delete.Column(CreatedAt).FromTable(Names.HealthRecordTbl);
     //        Delete.Column(DoctorId).FromTable(Names.HealthRecordTbl);
     //        Delete.Column(Ord).FromTable(Names.HealthRecordTbl);

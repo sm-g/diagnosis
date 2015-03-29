@@ -42,28 +42,28 @@ namespace Diagnosis.Data.Versions
                 conn.Open();
                 SqlCeCommand cmd = conn.CreateCommand();
 
-                ExecuteNonQuery(cmd, "ALTER TABLE {0} DROP constraint {1}", Names.Word, "FK_Word_HrCategory");
+                ExecuteNonQuery(cmd, "ALTER TABLE {0} DROP constraint {1}", Names.Word, Names.FK.Word_HrCategory);
                 ExecuteNonQuery(cmd, "ALTER TABLE {0} DROP Column {1}", Names.Word, "DefHrCategoryID");
             }
 
             // change Id PK to Guid
 
             IntToGuidPK(Names.UomType,
-                new[] { new Child() { table = Names.Uom, fk = "FK_Uom_UomType", notnull = true } },
+                new[] { new Child() { table = Names.Uom, fk = Names.FK.Uom_UomType, notnull = true } },
                 "PK_UomType");
 
             IntToGuidPK(Names.Uom,
-                new[] { new Child() { table = Names.HrItem, fk = "FK_HrItem_Uom", notnull = false } },
+                new[] { new Child() { table = Names.HrItem, fk = Names.FK.HrItem_Uom, notnull = false } },
                 "PK__Uom");
 
             IntToGuidPK(Names.HrCategory,
-                new[] { new Child() { table = Names.HealthRecord, fk = "FK_Hr_HrCategory", notnull = false } },
+                new[] { new Child() { table = Names.HealthRecord, fk = Names.FK.Hr_HrCategory, notnull = false } },
                 "PK__HrCategory");
 
             IntToGuidPK(Names.Speciality,
                 new[] {
-                    new Child() { table = Names.Doctor, fk = "FK_Doctor_Speciality", notnull = false } ,
-                    new Child() { table = Names.SpecialityIcdBlocks, fk = "FK_SpecialityIcdBlocks_Specia", notnull = false } ,
+                    new Child() { table = Names.Doctor, fk = Names.FK.Doctor_Speciality, notnull = false } ,
+                    new Child() { table = Names.SpecialityIcdBlocks, fk = Names.FK.SpecialityIcdBlocks_Specia, notnull = false } ,
                 },
                 "PK__Speciality");
 
