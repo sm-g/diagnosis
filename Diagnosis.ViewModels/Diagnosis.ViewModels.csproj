@@ -212,11 +212,11 @@
     <Compile Include="Framework\Services\FileType.cs" />
     <Compile Include="Screens\Card\HolderViewModel.cs" />
     <Compile Include="Autocomplete\MeasureEditorViewModel.cs" />
-    <Compile Include="Screens\Card\HrListViewModel - ClipboardTarget.cs" />
-    <Compile Include="Screens\Card\HrListViewModel - DragDrop.cs" />
-    <Compile Include="Screens\Card\ShortHealthRecordViewModel - DragDrop.cs" />
+    <Compile Include="Screens\HealthRecords\HrListViewModel - ClipboardTarget.cs" />
+    <Compile Include="Screens\HealthRecords\HrListViewModel - DragDrop.cs" />
+    <Compile Include="Screens\HealthRecords\ShortHealthRecordViewModel - DragDrop.cs" />
     <Compile Include="Controls\DataConnectionViewModel.cs" />
-    <Compile Include="Screens\ConfirmPasswordViewModel.cs" />
+    <Compile Include="Controls\ConfirmPasswordViewModel.cs" />
     <Compile Include="Screens\SyncViewModel.cs" />
     <Compile Include="Screens\Shell\ServerMainWindowViewModel.cs" />
     <Compile Include="Screens\Uoms\UomEditorViewModel.cs" />
@@ -230,13 +230,13 @@
     <Compile Include="Screens\Card\CourseEditorViewModel.cs" />
     <Compile Include="Screens\Card\CardViewModel.cs" />
     <Compile Include="Screens\Card\Holders\CourseViewModel.cs" />
-    <Compile Include="Screens\Card\HrListViewModel.cs" />
+    <Compile Include="Screens\HealthRecords\HrListViewModel.cs" />
     <Compile Include="Screens\Card\Managers\AppointmentsManager.cs" />
-    <Compile Include="Screens\Card\ShortHealthRecordViewModel.cs" />
+    <Compile Include="Screens\HealthRecords\ShortHealthRecordViewModel.cs" />
     <Compile Include="Screens\Card\Holders\ShortAppointmentViewModel.cs" />
     <Compile Include="Screens\Card\Holders\ShortCourseViewModel.cs" />
-    <Compile Include="Screens\Card\Holders\PatientViewModel.cs" />
-    <Compile Include="Screens\Card\Managers\HrViewer.cs" />
+    <Compile Include="Screens\Patients\PatientViewModel.cs" />
+    <Compile Include="Screens\HealthRecords\HrViewer.cs" />
     <Compile Include="Screens\AdminSettingsViewModel.cs" />
     <Compile Include="Screens\Specialities\SpecialityListViewModel.cs" />
     <Compile Include="Screens\Specialities\SpecialityEditorViewModel.cs" />
@@ -263,16 +263,16 @@
     <Compile Include="Screens\Card\Managers\CoursesManager.cs" />
     <Compile Include="Screens\Card\Holders\CourseWithSpecialCaseViewModel.cs" />
     <Compile Include="Autocomplete\DiagnosisViewModel.cs" />
-    <Compile Include="Screens\Card\Managers\HealthRecordManager.cs" />
+    <Compile Include="Screens\HealthRecords\HealthRecordManager.cs" />
     <Compile Include="Screens\Card\HealthRecordViewModel.cs" />
     <Compile Include="Screens\Words\WordViewModel.cs" />
     <Compile Include="Framework\SessionVMBase.cs" />
-    <Compile Include="Screens\Card\DateOffsetViewModel.cs" />
+    <Compile Include="Screens\HealthRecords\DateOffsetViewModel.cs" />
     <Compile Include="Types\HierarchicalBase.cs" />
     <Compile Include="Screens\Card\HrEditorViewModel.cs" />
     <Compile Include="Search\IFilter.cs" />
     <Compile Include="Search\Searchers\ISimpleSearcher.cs" />
-    <Compile Include="Screens\Card\Managers\PatientViewer.cs" />
+    <Compile Include="Screens\Card\PatientViewer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
@@ -321,6 +321,7 @@
     <None Include="packages.config" />
     <None Include="Screens\Card\Card.cd" />
     <None Include="Autocomplete\CodeMap1.dgml" />
+    <None Include="Screens\Card\CodeMap1.dgml" />
     <None Include="Search\SearchClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup />

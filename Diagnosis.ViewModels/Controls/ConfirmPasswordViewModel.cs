@@ -4,7 +4,7 @@ using EventAggregator;
 using System;
 using System.Linq;
 
-namespace Diagnosis.ViewModels.Screens
+namespace Diagnosis.ViewModels.Controls
 {
     public class ConfirmPasswordViewModel : ViewModelBase
     {

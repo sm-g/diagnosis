@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Controls;
 using EventAggregator;
 using NHibernate.Linq;
 using System;
