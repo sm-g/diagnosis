@@ -265,8 +265,8 @@ namespace Diagnosis.Data.Sync
                             serverProvider,
                             clientProvider,
                             tablesToTrackAdding: Scope.Reference.ToTableNames(),  // на клиенте могут быть справочные сущности с другими ID, но такие же по значению
-                            tablesToTrackDeleting: Names.VocabularyTbl.ToEnumerable(), //  перед удалением словаря надо убрать связь со словами на клиенте
-                            tablesToIgnoreAdding: new[] { Names.SpecialityVocabulariesTbl, Names.VocabularyTbl, Names.WordTemplateTbl } // новые словари загружаются отдельно
+                            tablesToTrackDeleting: Names.Vocabulary.ToEnumerable(), //  перед удалением словаря надо убрать связь со словами на клиенте
+                            tablesToIgnoreAdding: new[] { Names.SpecialityVocabularies, Names.Vocabulary, Names.WordTemplate } // новые словари загружаются отдельно
                           );
                         break;
                 }

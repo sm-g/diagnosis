@@ -21,7 +21,7 @@ namespace Diagnosis.Data.Mappings
 
             ManyToOne(x => x.Vocabulary, m =>
             {
-                m.Column("VocabularyID");
+                m.Column(Names.Id.Vocabulary);
                 m.NotNullable(true);
             });
         }

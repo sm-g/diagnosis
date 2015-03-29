@@ -17,19 +17,19 @@ namespace Diagnosis.Data.Mappings
             {
                 m.NotNullable(true);
                 m.Length(100);
-                m.UniqueKey("WordTitle");
+                m.UniqueKey(Names.Unique.WordTitle);
             });
 
             ManyToOne(x => x.Parent, m =>
             {
-                m.Column("ParentID");
+                m.Column(Names.Col.WordParent);
             });
 
             Set(x => x.Children, s =>
             {
                 s.Key(k =>
                 {
-                    k.Column("ParentID");
+                    k.Column(Names.Col.WordParent);
                 });
                 s.Inverse(true);
                 s.Cascade(Cascade.All | Cascade.DeleteOrphans);
@@ -41,10 +41,10 @@ namespace Diagnosis.Data.Mappings
 
             Bag(x => x.HealthRecords, s =>
             {
-                s.Table("HrItem");
+                s.Table(Names.HrItem);
                 s.Key(k =>
                 {
-                    k.Column("WordID");
+                    k.Column(Names.Id.Word);
                 });
                 s.Inverse(true); // hr in owner of that relation, that prop is readonly
                 s.Cascade(Cascade.None);
@@ -53,17 +53,17 @@ namespace Diagnosis.Data.Mappings
             {
                 r.ManyToMany(x =>
                 {
-                    x.Column("HealthRecordID");
+                    x.Column(Names.Id.HealthRecord);
                     x.Class(typeof(HealthRecord));
                 });
             });
 
             Set(x => x.Vocabularies, s =>
             {
-                s.Table("VocabularyWords");
+                s.Table(Names.VocabularyWords);
                 s.Key(k =>
                 {
-                    k.Column("WordID");
+                    k.Column(Names.Id.Word);
                 });
                 s.Cascade(Cascade.Persist);
                 s.Access(Accessor.Field);
@@ -71,7 +71,7 @@ namespace Diagnosis.Data.Mappings
             {
                 r.ManyToMany(x =>
                 {
-                    x.Column("VocabularyID");
+                    x.Column(Names.Id.Vocabulary);
                     x.Class(typeof(Vocabulary));
                 });
             });

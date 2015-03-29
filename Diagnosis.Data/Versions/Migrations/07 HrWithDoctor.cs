@@ -14,7 +14,7 @@ namespace Diagnosis.Data.Versions
     //    private const string FK_Hr_Doctor = "FK_Hr_Doctor";
     //    private const string CreatedAt = "CreatedAt";
     //    private const string Ord = "Ord";
-    //    private const string DoctorId = "DoctorID";
+    //    private const string DoctorId = Names.Id.Doctor;
 
     //    public override void Up()
     //    {

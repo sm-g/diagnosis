@@ -28,7 +28,7 @@ namespace Diagnosis.Data.Mappings
             {
                 s.Key(k =>
                 {
-                    k.Column("VocabularyID");
+                    k.Column(Names.Id.Vocabulary);
                 });
                 s.Lazy(CollectionLazy.NoLazy); // для создания слов после закрытия сессии
                 s.Inverse(true);
@@ -41,10 +41,10 @@ namespace Diagnosis.Data.Mappings
 
             Bag(x => x.Words, s =>
             {
-                s.Table("VocabularyWords");
+                s.Table(Names.VocabularyWords);
                 s.Key(k =>
                 {
-                    k.Column("VocabularyID");
+                    k.Column(Names.Id.Vocabulary);
                 });
                 s.Inverse(true);
                 s.Cascade(Cascade.Persist);
@@ -53,7 +53,7 @@ namespace Diagnosis.Data.Mappings
             {
                 r.ManyToMany(x =>
                 {
-                    x.Column("WordID");
+                    x.Column(Names.Id.Word);
                     x.Class(typeof(Word));
                 });
             });

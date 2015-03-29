@@ -19,13 +19,13 @@ namespace Diagnosis.Data.Versions
         {
             get
             {
-                return new[] { Names.HrItemTbl };
+                return new[] { Names.HrItem };
             }
         }
 
         public override void Up()
         {
-            Alter.Table(Names.HrItemTbl)
+            Alter.Table(Names.HrItem)
                 .AddColumn(ConfidenceCol).AsString().WithDefaultValue(Confidence.Present.ToString());
         }
 

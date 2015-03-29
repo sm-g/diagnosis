@@ -12,9 +12,9 @@ namespace Diagnosis.Data.Versions
 
         public override void Down()
         {
-            Delete.FromTable(Names.IcdDiseaseTbl).AllRows();
-            Delete.FromTable(Names.IcdBlockTbl).AllRows();
-            Delete.FromTable(Names.IcdChapterTbl).AllRows();
+            Delete.FromTable(Names.IcdDisease).AllRows();
+            Delete.FromTable(Names.IcdBlock).AllRows();
+            Delete.FromTable(Names.IcdChapter).AllRows();
         }
     }
 }

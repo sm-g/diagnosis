@@ -35,42 +35,42 @@ namespace Diagnosis.Data.Sync
 
         // parent before child
         private static string[] icdTableNames = new[] {
-                Names.IcdChapterTbl,
-                Names.IcdBlockTbl,
-                Names.IcdDiseaseTbl,
+                Names.IcdChapter,
+                Names.IcdBlock,
+                Names.IcdDisease,
             };
 
         private static string[] vocTableNames = new[] {
-                Names.VocabularyTbl,
-                Names.WordTemplateTbl,
+                Names.Vocabulary,
+                Names.WordTemplate,
               //  Names.SpecialityTbl,
              //   Names.SpecialityVocabulariesTbl,
             };
 
         private static string[] referenceTableNames = new[] {
-                Names.HrCategoryTbl,
-                Names.UomTypeTbl,
-                Names.UomTbl,
-                Names.SpecialityTbl,
-                Names.SpecialityIcdBlocksTbl,
+                Names.HrCategory,
+                Names.UomType,
+                Names.Uom,
+                Names.Speciality,
+                Names.SpecialityIcdBlocks,
             };
 
         private static string[] userTableNames = new[] {
                 //Names.PassportTbl,
-                Names.DoctorTbl,
+                Names.Doctor,
                // Names.SettingTbl,
             };
 
         private static string[] holderTableNames = new[] {
-                Names.PatientTbl,
-                Names.CourseTbl,
-                Names.AppointmentTbl,
+                Names.Patient,
+                Names.Course,
+                Names.Appointment,
             };
 
         private static string[] hrTableNames = new[] {
-                Names.WordTbl,
-                Names.HealthRecordTbl,
-                Names.HrItemTbl,
+                Names.Word,
+                Names.HealthRecord,
+                Names.HrItem,
             };
         private static Dictionary<Scope, string> scopeNames = new Dictionary<Scope, string>
         {

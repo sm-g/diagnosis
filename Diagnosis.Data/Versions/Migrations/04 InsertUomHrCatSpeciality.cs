@@ -12,9 +12,9 @@ namespace Diagnosis.Data.Versions
 
         public override void Down()
         {
-            Delete.FromTable(Names.UomTbl).AllRows();
-            Delete.FromTable(Names.HrCategoryTbl).AllRows();
-            Delete.FromTable(Names.SpecialityTbl).AllRows();
+            Delete.FromTable(Names.Uom).AllRows();
+            Delete.FromTable(Names.HrCategory).AllRows();
+            Delete.FromTable(Names.Speciality).AllRows();
         }
     }
 }

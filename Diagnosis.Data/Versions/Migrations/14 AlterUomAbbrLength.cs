@@ -17,7 +17,7 @@ namespace Diagnosis.Data.Versions
         {
             get
             {
-                return new[] { Names.UomTbl };
+                return new[] { Names.Uom };
             }
         }
 

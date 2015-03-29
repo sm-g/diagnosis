@@ -50,7 +50,7 @@ namespace Diagnosis.Data.Mappings
             {
                 s.Key(k =>
                 {
-                    k.Column("PatientID");
+                    k.Column(Names.Id.Patient);
                 });
                 s.Inverse(true);
                 s.Cascade(Cascade.All | Cascade.DeleteOrphans);
@@ -63,7 +63,7 @@ namespace Diagnosis.Data.Mappings
             {
                 s.Key(k =>
                 {
-                    k.Column("PatientID");
+                    k.Column(Names.Id.Patient);
                 });
                 s.Inverse(true);
                 s.Cascade(Cascade.All | Cascade.DeleteOrphans);

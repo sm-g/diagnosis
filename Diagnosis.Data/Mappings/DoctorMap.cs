@@ -22,7 +22,7 @@ namespace Diagnosis.Data.Mappings
 
             ManyToOne(x => x.CustomVocabulary, m =>
             {
-                m.Column("CustomVocabularyID");
+                m.Column(Names.Col.DoctorCustomVocabulary);
                 m.Cascade(Cascade.All | Cascade.DeleteOrphans);
                 m.Access(Accessor.Field);
             });
@@ -46,7 +46,7 @@ namespace Diagnosis.Data.Mappings
             {
                 s.Key(k =>
                 {
-                    k.Column("DoctorID");
+                    k.Column(Names.Id.Doctor);
                 });
                 s.Inverse(true);
                 s.Access(Accessor.Field);
@@ -58,7 +58,7 @@ namespace Diagnosis.Data.Mappings
             {
                 s.Key(k =>
                 {
-                    k.Column("DoctorID");
+                    k.Column(Names.Id.Doctor);
                 });
                 s.Inverse(true);
                 s.Access(Accessor.Field);
@@ -70,7 +70,7 @@ namespace Diagnosis.Data.Mappings
             {
                 s.Key(k =>
                 {
-                    k.Column("DoctorID");
+                    k.Column(Names.Id.Doctor);
                 });
                 s.Inverse(true);
                 s.Access(Accessor.Field);
@@ -80,13 +80,13 @@ namespace Diagnosis.Data.Mappings
             });
             ManyToOne(x => x.Speciality, m =>
             {
-                m.Column("SpecialityID");
+                m.Column(Names.Id.Speciality);
             });
             Set(x => x.SettingsSet, s =>
             {
                 s.Key(k =>
                 {
-                    k.Column("DoctorID");
+                    k.Column(Names.Id.Doctor);
                 });
                 s.Inverse(true);
                 s.Access(Accessor.Field);

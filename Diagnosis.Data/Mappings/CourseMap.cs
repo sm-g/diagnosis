@@ -15,10 +15,10 @@ namespace Diagnosis.Data.Mappings
 
             Property(x => x.Start, m =>
             {
-                m.Column("StartDate");
+                m.Column(Names.Col.CourseStart);
                 m.NotNullable(true);
             });
-            Property(x => x.End, m => m.Column("EndDate"));
+            Property(x => x.End, m => m.Column(Names.Col.CourseEnd));
             Property(x => x.CreatedAt, m =>
             {
                 m.NotNullable(true);
@@ -40,7 +40,7 @@ namespace Diagnosis.Data.Mappings
             {
                 s.Key(k =>
                 {
-                    k.Column("CourseID");
+                    k.Column(Names.Id.Course);
                 });
                 s.Inverse(true);
                 s.Cascade(Cascade.All | Cascade.DeleteOrphans);
@@ -53,7 +53,7 @@ namespace Diagnosis.Data.Mappings
             {
                 s.Key(k =>
                 {
-                    k.Column("CourseID");
+                    k.Column(Names.Id.Course);
                 });
                 s.Inverse(true);
                 s.Cascade(Cascade.All | Cascade.DeleteOrphans);
@@ -65,12 +65,12 @@ namespace Diagnosis.Data.Mappings
 
             ManyToOne(x => x.Patient, m =>
             {
-                m.Column("PatientID");
+                m.Column(Names.Id.Patient);
                 m.NotNullable(true);
             });
             ManyToOne(x => x.LeadDoctor, m =>
             {
-                m.Column("DoctorID");
+                m.Column(Names.Id.Doctor);
                 m.NotNullable(true);
             });
         }

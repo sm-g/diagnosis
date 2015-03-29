@@ -29,7 +29,7 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.Confidence, m => m.Type<EnumStringType<Confidence>>());
             ManyToOne(x => x.Word, m =>
             {
-                m.Column("WordID");
+                m.Column(Names.Id.Word);
                 m.Cascade(Cascade.Persist);
             });
 
@@ -37,23 +37,23 @@ namespace Diagnosis.Data.Mappings
             {
                 m.Property(x => x.DbValue, x =>
                 {
-                    x.Column("MeasureValue");
+                    x.Column(Names.Col.HrItemMeasure);
                     x.Precision(Measure.Precision);
                     x.Scale(Measure.Scale);
                 });
                 m.ManyToOne(x => x.Uom, x =>
                 {
-                    x.Column("UomID");
+                    x.Column(Names.Id.Uom);
                 });
             });
             ManyToOne(x => x.Disease, m =>
             {
-                m.Column("IcdDiseaseID");
+                m.Column(Names.Id.IcdDisease);
             });
 
             ManyToOne(x => x.HealthRecord, m =>
             {
-                m.Column("HealthRecordID");
+                m.Column(Names.Id.HealthRecord);
                 m.NotNullable(true);
             });
         }

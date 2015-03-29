@@ -14,42 +14,42 @@ namespace Diagnosis.Data.Versions
 
         public override void Up()
         {
-            Alter.Table(Names.AppointmentTbl)
+            Alter.Table(Names.Appointment)
                 .AddColumn(CreatedAt).AsDateTime().NotNullable().WithDefault(SystemMethods.CurrentDateTime)
                 .AddColumn(UpdatedAt).AsDateTime().NotNullable().WithDefault(SystemMethods.CurrentDateTime);
-            Alter.Table(Names.CourseTbl)
+            Alter.Table(Names.Course)
                 .AddColumn(CreatedAt).AsDateTime().NotNullable().WithDefault(SystemMethods.CurrentDateTime)
                 .AddColumn(UpdatedAt).AsDateTime().NotNullable().WithDefault(SystemMethods.CurrentDateTime);
-            Alter.Table(Names.PatientTbl)
+            Alter.Table(Names.Patient)
                 .AddColumn(CreatedAt).AsDateTime().NotNullable().WithDefault(SystemMethods.CurrentDateTime)
                 .AddColumn(UpdatedAt).AsDateTime().NotNullable().WithDefault(SystemMethods.CurrentDateTime);
 
-            Alter.Table(Names.HealthRecordTbl)
+            Alter.Table(Names.HealthRecord)
                 .AddColumn(UpdatedAt).AsDateTime().NotNullable().WithDefault(SystemMethods.CurrentDateTime);
 
-            Execute.Sql(string.Format("UPDATE {0} SET {1} = {2}", Names.HealthRecordTbl, UpdatedAt, CreatedAt));
-            Execute.Sql(string.Format("UPDATE {0} SET {1} = {3}, {2} = {3}", Names.AppointmentTbl, UpdatedAt, CreatedAt, defaultSqlCe));
-            Execute.Sql(string.Format("UPDATE {0} SET {1} = {3}, {2} = {3}", Names.CourseTbl, UpdatedAt, CreatedAt, defaultSqlCe));
-            Execute.Sql(string.Format("UPDATE {0} SET {1} = {3}, {2} = {3}", Names.PatientTbl, UpdatedAt, CreatedAt, defaultSqlCe));
+            Execute.Sql(string.Format("UPDATE {0} SET {1} = {2}", Names.HealthRecord, UpdatedAt, CreatedAt));
+            Execute.Sql(string.Format("UPDATE {0} SET {1} = {3}, {2} = {3}", Names.Appointment, UpdatedAt, CreatedAt, defaultSqlCe));
+            Execute.Sql(string.Format("UPDATE {0} SET {1} = {3}, {2} = {3}", Names.Course, UpdatedAt, CreatedAt, defaultSqlCe));
+            Execute.Sql(string.Format("UPDATE {0} SET {1} = {3}, {2} = {3}", Names.Patient, UpdatedAt, CreatedAt, defaultSqlCe));
         }
 
         public override void Down()
         {
             Delete.Column(UpdatedAt)
-               .FromTable(Names.AppointmentTbl);
+               .FromTable(Names.Appointment);
             Delete.Column(UpdatedAt)
-               .FromTable(Names.CourseTbl);
+               .FromTable(Names.Course);
             Delete.Column(UpdatedAt)
-              .FromTable(Names.PatientTbl);
+              .FromTable(Names.Patient);
             Delete.Column(CreatedAt)
-               .FromTable(Names.AppointmentTbl);
+               .FromTable(Names.Appointment);
             Delete.Column(CreatedAt)
-               .FromTable(Names.CourseTbl);
+               .FromTable(Names.Course);
             Delete.Column(CreatedAt)
-              .FromTable(Names.PatientTbl);
+              .FromTable(Names.Patient);
 
             Delete.Column(UpdatedAt)
-              .FromTable(Names.HealthRecordTbl);
+              .FromTable(Names.HealthRecord);
         }
     }
 }

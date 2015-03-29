@@ -16,7 +16,7 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.Title, m =>
             {
                 m.NotNullable(true);
-                m.UniqueKey("DiseaseCode");
+                m.UniqueKey(Names.Unique.DiseaseCode);
             });
             Property(x => x.Code, m =>
             {
@@ -25,7 +25,7 @@ namespace Diagnosis.Data.Mappings
 
             ManyToOne(x => x.IcdBlock, m =>
             {
-                m.Column("IcdBlockID");
+                m.Column(Names.Id.IcdBlock);
                 m.NotNullable(true);
             });
         }

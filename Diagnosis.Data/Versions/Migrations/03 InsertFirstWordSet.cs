@@ -14,11 +14,11 @@ namespace Diagnosis.Data.Versions
 
         public override void Down()
         {
-            Delete.ForeignKey(FKWordWord).OnTable(Names.WordTbl);
-            Delete.FromTable(Names.WordTbl).AllRows();
-            Create.ForeignKey(FKWordWord).FromTable(Names.WordTbl)
-                .ForeignColumn("WordID")
-                .ToTable(Names.WordTbl)
+            Delete.ForeignKey(FKWordWord).OnTable(Names.Word);
+            Delete.FromTable(Names.Word).AllRows();
+            Create.ForeignKey(FKWordWord).FromTable(Names.Word)
+                .ForeignColumn(Names.Id.Word)
+                .ToTable(Names.Word)
                 .PrimaryColumn("Id")
                 .OnDeleteOrUpdate(System.Data.Rule.None);
         }
