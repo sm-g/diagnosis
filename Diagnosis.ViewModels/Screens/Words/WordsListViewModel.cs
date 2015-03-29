@@ -152,8 +152,7 @@ namespace Diagnosis.ViewModels.Screens
                         .ToArray();
 
                     // maintain m2m relation
-                    toDel.ForAll(x => x.Vocabularies.ToList()
-                        .ForEach(v => v.RemoveWord(x)));
+                    toDel.ForAll(x => x.OnDelete());
                     saver.Delete(toDel);
 
                     // убираем удаленных из списка
@@ -214,6 +213,8 @@ namespace Diagnosis.ViewModels.Screens
         {
             var toSelect = Words.FirstOrDefault(vm => vm.word == w);
             SelectedWord = toSelect;
+            if (!SelectedWords.Contains(toSelect))
+                SelectedWords.Add(toSelect);
 
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Models.Validators;
+using Diagnosis.Common;
 using FluentValidation.Results;
 using Iesi.Collections.Generic;
 using System;
@@ -63,6 +64,14 @@ namespace Diagnosis.Models
         {
             get { return healthRecords; }
         }
+        /// <summary>
+        /// Вызвать перед удалением слова.
+        /// </summary>
+        public virtual void OnDelete()
+        {
+            Vocabularies.ForEach(x => x.RemoveWord(this));
+        }
+
         public override string ToString()
         {
             return Title;

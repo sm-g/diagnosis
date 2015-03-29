@@ -16,6 +16,7 @@ namespace Diagnosis.Models
         private Iesi.Collections.Generic.ISet<Setting> settingsSet = new HashedSet<Setting>();
         private Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
 
+        private List<Word> chachedWords = new List<Word>();
         private string _fn;
         private string _ln;
         private string _mn;
@@ -41,14 +42,13 @@ namespace Diagnosis.Models
         {
         }
 
-        private List<Word> myVar = new List<Word>();
         /// <summary>
         /// Слова из всех словарей, доступных врачу, кроме пользовательского.
         /// </summary>
         public virtual List<Word> SpecialityWords
         {
-            get { return myVar; }
-            set { myVar = value; }
+            get { return chachedWords; }
+            set { chachedWords = value; }
         }
         /// <summary>
         /// Все слова, доступные врачу.
@@ -160,6 +160,19 @@ namespace Diagnosis.Models
             var course = new Course(patient, this);
             patient.AddCourse(course);
             return course;
+        }
+
+        /// <summary>
+        /// Доктор cможет видеть эти слова.
+        /// Использовать перед сохранением слова.
+        /// </summary>
+        /// <param name="words"></param>
+        public virtual void AddWords(IEnumerable<Word> words)
+        {
+            Contract.Ensures(words.All(x => Words.Contains(x)));
+
+            words.Where(x => !Words.Contains(x))
+                .ForAll(x => CustomVocabulary.AddWord(x));
         }
 
         public override string ToString()

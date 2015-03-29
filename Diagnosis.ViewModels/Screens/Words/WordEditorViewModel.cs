@@ -15,13 +15,14 @@ namespace Diagnosis.ViewModels.Screens
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(WordEditorViewModel));
         private readonly Word word;
-
+        internal Word saved;
+        List<Word> dbWords;
         public WordEditorViewModel(Word word)
         {
             this.word = word;
             (word as IEditableObject).BeginEdit();
 
-            var ws = Session.Query<Word>()
+            dbWords = Session.Query<Word>()
                 .ToList();
 
             Word = new WordViewModel(word);
@@ -29,10 +30,10 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (e.PropertyName == "Title")
                 {
-                    TestExisting(Word, ws);
+                    TestExisting(Word);
                 }
             };
-            TestExisting(Word, ws);
+            TestExisting(Word);
 
             Title = "Редактирование слова";
             HelpTopic = "addword";
@@ -40,11 +41,13 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         /// <summary>
-        /// Нельзя ввести слово, которое уже есть в словаре
+        /// Нельзя ввести слово, которое уже есть в словаре врача.
         /// </summary>
-        private void TestExisting(WordViewModel vm, IEnumerable<Word> ws)
+        private void TestExisting(WordViewModel vm)
         {
-            vm.HasExistingTitle = ws.Any(w => w.Title == word.Title && w != word);
+            vm.HasExistingTitle = dbWords.Any(w =>
+                AuthorityController.CurrentDoctor.Words.Contains(w) &&
+                w.Title == word.Title && w != word);
         }
 
         /// <summary>
@@ -73,10 +76,14 @@ namespace Diagnosis.ViewModels.Screens
         {
             (word as IEditableObject).EndEdit();
 
-            AuthorityController.CurrentDoctor.CustomVocabulary.AddWord(word);
-            new Saver(Session).Save(word);
+            // если такое слово уже было, делааем доступным врачу
+
+            var toSave = dbWords.FirstOrDefault(w => w.Title == word.Title && w != word) ?? word;
+            AuthorityController.CurrentDoctor.AddWords(toSave.ToEnumerable());
+            new Saver(Session).Save(toSave);
 
             this.Send(Event.WordSaved, word.AsParams(MessageKeys.Word));
+            saved = toSave;
         }
 
         protected override void OnCancel()

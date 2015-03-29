@@ -139,9 +139,9 @@ namespace Diagnosis.Data.Sync
                 if (word.HealthRecords.Count() == 0)
                 {
                     // убрать слово, если не используется и не в словарях
-                    if (word.Vocabularies.Count() == 0) // или только в пользовательских словарях
+                    if (word.Vocabularies.Count() == 0) // ?или только в пользовательских словарях
                     {
-                        word.Vocabularies.ToList().ForEach(x => x.RemoveWord(word));
+                        word.OnDelete();
                         toDelete.Add(word);
                     }
                 }
@@ -150,14 +150,13 @@ namespace Diagnosis.Data.Sync
                     var docs = word.HealthRecords.Select(x => x.Doctor).Distinct();
                     foreach (var doc in docs)
                     {
-                        if (!doc.Words.Contains(word))
-                            doc.CustomVocabulary.AddWord(word);
-                    }
-                    // использованное становится Пользовательским 
-                    // для всех врачей, которые его использовали
-                    // если его нет в других словарях, доступных врачу
+                        // использованное становится Пользовательским 
+                        // для всех врачей, которые его использовали
+                        // если его нет в других словарях, доступных врачу
 
-                    // должно стать пользовательским для тех врачей, у которых нет словаря с этим словом
+                        // должно стать пользовательским для тех врачей, у которых нет словаря с этим словом
+                        doc.AddWords(word.ToEnumerable());
+                    }
                 }
 
             }
