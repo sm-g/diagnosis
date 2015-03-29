@@ -77,7 +77,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                 var word = e.GetValue<Word>(MessageKeys.Word);
                 created.Remove(word);
 
-                doctor.CustomVocabulary.AddWord(word);
             });
             AuthorityController.LoggedOut += (s, e) =>
             {
@@ -252,22 +251,22 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             Contract.Requires(query != null);
 
-            var found = QueryWords(query, prevEntityBlank);
+            // слова, доступные для ввода
+            var found = QueryWords(query, prevEntityBlank)
+                    .Where(x => created.Contains(x) || doctor.Words.Contains(x));
 
+            // кроме исключенных
             if (exclude != null)
-            {
                 found = found.Where(i => !exclude.Contains(i));
-            }
 
-            var results = new List<Word>(found.OrderBy(x => x.Title)); // слова по алфавиту
+            // по алфавиту
+            var results = new List<Word>(found.OrderBy(x => x.Title));
 
             if (AddQueryToSuggestions)
             {
-                bool existsSame = results.Any(item => query.MatchesAsStrings(item));
+                bool existsSame = results.Any(item => Matches(item, query));
                 if (exclude != null)
-                {
-                    existsSame |= exclude.Any(item => item != null ? query.MatchesAsStrings(item) : false);
-                }
+                    existsSame |= exclude.Any(item => item != null ? Matches(item, query) : false);
 
                 // не добавляем запрос, совпадающий со словом в результатах или словом/запросом в исключенных предположениях
                 if (!existsSame && !query.IsNullOrEmpty())
@@ -320,12 +319,16 @@ namespace Diagnosis.ViewModels.Autocomplete
             return word;
         }
 
-        // первое подходящее слово или новое
-        private Word FirstMatchingOrNewWord(string q)
+        /// <summary>
+        /// Первое точно подходящее слово или новое
+        /// </summary>
+        /// <param name="q"></param>
+        /// <returns></returns>
+        internal Word FirstMatchingOrNewWord(string q)
         {
-            var exists = (Word)SearchForSuggesstions(q, null, q.ToEnumerable()).FirstOrDefault();
-            if (exists != null && Recognizer.Matches(exists, q))
-                return exists; // берем слово из словаря
+            var existing = QueryWords(q, null).FirstOrDefault();
+            if (existing != null && Matches(existing, q))
+                return existing; // берем слово из словаря
             else
             {
                 var word = new Word(q); // или создаем слово из запроса
@@ -341,6 +344,12 @@ namespace Diagnosis.ViewModels.Autocomplete
             return query.MatchesAsStrings(suggestion);
         }
 
+        /// <summary>
+        /// Все слова с началом как у запроса с учетом предыдущего.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="prev"></param>
+        /// <returns></returns>
         private IEnumerable<Word> QueryWords(string query, object prev)
         {
             if (query.IsNullOrEmpty() && !ShowAllWordsOnEmptyQuery)
@@ -352,17 +361,13 @@ namespace Diagnosis.ViewModels.Autocomplete
                 created.Where(w => w.Title.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)) :
                 Enumerable.Empty<Word>();
 
-
             //  Contract.Assume(unsaved.All(x => x.Vocabularies.Contains(AuthorityController.CurrentDoctor.CustomVoc)));
 
-            if (ShowChildrenFirst)
-                return WordQuery.StartingWithChildrenFirst(session)(parent, query)
-                    .Where(x => doctor.Words.Contains(x))
-                    .Union(unsaved);
-            else
-                return WordQuery.StartingWith(session)(query)
-                    .Where(x => doctor.Words.Contains(x))
-                    .Union(unsaved);
+            var fromDB = ShowChildrenFirst ?
+                WordQuery.StartingWithChildrenFirst(session)(parent, query) :
+                WordQuery.StartingWith(session)(query);
+
+            return fromDB.Union(unsaved);
         }
 
         [ContractInvariantMethod]

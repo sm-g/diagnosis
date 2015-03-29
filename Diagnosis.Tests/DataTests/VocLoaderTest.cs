@@ -165,7 +165,7 @@ namespace Tests
         public void RemoveVoc()
         {
             // при удалении остаются использованные слова и слова из других словарей
-            var newW = CreateWord(wTemp[1].Title);
+            CreateWord(wTemp[1].Title);
             l.LoadOrUpdateVocs(voc[1]);
             l.DeleteVocs(voc[1]);
 
@@ -177,7 +177,7 @@ namespace Tests
         public void Sequence()
         {
             // новое слово
-            var newW = CreateWord(wTemp[1].Title);
+            CreateWord(wTemp[1].Title);
 
             // загружаем словарь, нет использованных слов
             l.LoadOrUpdateVocs(voc[1]);
@@ -252,11 +252,10 @@ namespace Tests
             Assert.IsTrue(newW.Vocabularies.Single().IsCustom);
             Assert.AreEqual(d1, newW.Vocabularies.Single().Doctor);
 
-            AuthorityController.TryLogIn(d2);
-
             // другой врач не видит это слово
-            var words = new WordsListViewModel();
-            Assert.IsFalse(words.Words.Select(x => x.word).Contains(newW));
+            AuthorityController.TryLogIn(d2);
+            var wordList = new WordsListViewModel();
+            Assert.IsFalse(wordList.Words.Select(x => x.word).Contains(newW));
 
             // но может добавить
             var newW2 = CreateWord(wTemp[1].Title);
@@ -267,15 +266,12 @@ namespace Tests
             Assert.IsTrue(newW.Vocabularies.All(x => x.IsCustom));
 
             // при удалении одним врачом остается для другого
-            using (var tr = session.BeginTransaction())
-            {
-                d2.CustomVocabulary.RemoveWord(newW2);
-                session.Delete(newW2);
-                tr.Commit();
-            }
-            Assert.IsFalse(words.Words.Select(x => x.word).Contains(newW2));
-            Assert.AreEqual(d1, newW.Vocabularies.Single().Doctor);
+            wordList.SelectWord(newW2);
+            wordList.DeleteCommand.Execute(null);
 
+            Assert.IsFalse(wordList.Words.Select(x => x.word).Contains(newW2));
+            // пока врач удаляет как админ, сразу для всех врачей
+            //Assert.AreEqual(d1, newW.Vocabularies.Single().Doctor);
         }
 
         [TestMethod]
@@ -294,10 +290,32 @@ namespace Tests
         }
 
         [TestMethod]
-        public void CreateWordInHiddenVoc()
+        public void CanCreateWordInHiddenVoc()
         {
             // врач создает слово, которое есть в недоступном ему словаре
+
+            var d1w = w[1];
+            Assert.IsTrue(d1.Words.Contains(d1w));
+
+            AuthorityController.TryLogIn(d2);
+
+            // другой врач не видит это слово
+            Assert.IsFalse(d2.Words.Contains(d1w));
+
+            // но может добавить
+            var newW2 = CreateWord(d1w.Title);
+            Assert.AreEqual(d1w, newW2);
         }
+        [TestMethod]
+        public void CustomVocCreatedAfterSaveNewWord()
+        {
+            AuthorityController.TryLogIn(d2);
+            var newW = CreateWord(wTemp[1].Title);
+
+            Assert.IsFalse(newW.IsTransient);
+            Assert.IsFalse(d2.CustomVocabulary.IsTransient);
+        }
+
         IList<string> GetWordTitles()
         {
             return session.Query<Word>()
@@ -307,17 +325,10 @@ namespace Tests
         {
             var newW = new Word(title);
             var wEditor = new WordEditorViewModel(newW);
+
+            Assert.IsTrue(wEditor.OkCommand.CanExecute(null));
             wEditor.OkCommand.Execute(null);
-            return newW;
-        }
-
-        [TestMethod]
-        public void CreateCustomVocWhenCreateWord()
-        {
-            AuthorityController.TryLogIn(d2);
-            var newW = CreateWord(wTemp[1].Title);
-            Assert.IsTrue(!newW.IsTransient);
-
+            return wEditor.saved;
         }
     }
 }
