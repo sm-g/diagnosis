@@ -1,7 +1,7 @@
 ﻿using Diagnosis.ViewModels.Autocomplete;
 using System.Collections.Generic;
 
-namespace Diagnosis.ViewModels.Search
+namespace Diagnosis.ViewModels.Controls
 {
     /// <summary>
     /// Для поиска по дереву, когда в Collection только элементы первого уровня.

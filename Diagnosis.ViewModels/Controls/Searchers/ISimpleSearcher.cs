@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels.Search
+namespace Diagnosis.ViewModels.Controls
 {
     public interface ISimpleSearcher<T>
     {

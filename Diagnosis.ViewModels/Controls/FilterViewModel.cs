@@ -4,22 +4,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels.Search
+namespace Diagnosis.ViewModels.Controls
 {
     public class FilterViewModel<T> : ViewModelBase, IFilter<T> where T : class
     {
-        private readonly ISimpleSearcher<T> searcher;
-        private Func<string, IEnumerable<T>> finder;
+        private readonly Func<string, IEnumerable<T>> finder;
         private string _query;
         private bool _isFocused;
         private bool _resultsOnQueryChanges;
-
-        public FilterViewModel(ISimpleSearcher<T> searcher)
-        {
-            this.searcher = searcher;
-            Results = new ObservableCollection<T>();
-            UpdateResultsOnQueryChanges = true;
-        }
 
         public FilterViewModel(Func<string, IEnumerable<T>> finder)
         {
@@ -102,24 +94,14 @@ namespace Diagnosis.ViewModels.Search
         public void Filter()
         {
             IEnumerable<T> res;
-            if (searcher != null)
-                if (IsQueryEmpty)
-                {
-                    res = searcher.Search("");
-                }
-                else
-                {
-                    res = searcher.Search(Query);
-                }
+            if (IsQueryEmpty)
+            {
+                res = finder.Invoke("");
+            }
             else
-                if (IsQueryEmpty)
-                {
-                    res = finder.Invoke("");
-                }
-                else
-                {
-                    res = finder.Invoke(Query);
-                }
+            {
+                res = finder.Invoke(Query);
+            }
 
             Results.SyncWith(res);
 

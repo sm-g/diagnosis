@@ -195,6 +195,7 @@
     <Compile Include="Autocomplete\AutocompleteViewModel - DragDrop.cs" />
     <Compile Include="Autocomplete\IAutocompleteViewModel.cs" />
     <Compile Include="Autocomplete\SuggestionViewModel.cs" />
+    <Compile Include="Controls\Interfaces.cs" />
     <Compile Include="DataTransfer\ClipboardHelper.cs" />
     <Compile Include="DataTransfer\DragDropHelper.cs" />
     <Compile Include="DataTransfer\DragDropInterfaces.cs" />
@@ -217,6 +218,7 @@
     <Compile Include="Screens\HealthRecords\ShortHealthRecordViewModel - DragDrop.cs" />
     <Compile Include="Controls\DataConnectionViewModel.cs" />
     <Compile Include="Controls\ConfirmPasswordViewModel.cs" />
+    <Compile Include="Screens\Interfaces.cs" />
     <Compile Include="Screens\SyncViewModel.cs" />
     <Compile Include="Screens\Shell\ServerMainWindowViewModel.cs" />
     <Compile Include="Screens\Uoms\UomEditorViewModel.cs" />
@@ -270,8 +272,7 @@
     <Compile Include="Screens\HealthRecords\DateOffsetViewModel.cs" />
     <Compile Include="Types\HierarchicalBase.cs" />
     <Compile Include="Screens\Card\HrEditorViewModel.cs" />
-    <Compile Include="Search\IFilter.cs" />
-    <Compile Include="Search\Searchers\ISimpleSearcher.cs" />
+    <Compile Include="Controls\Searchers\ISimpleSearcher.cs" />
     <Compile Include="Screens\Card\PatientViewer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\VersionInfo.cs">
@@ -292,12 +293,12 @@
     <Compile Include="Autocomplete\AutocompleteViewModel.cs" />
     <Compile Include="Autocomplete\Recognizer.cs" />
     <Compile Include="Autocomplete\TagViewModel.cs" />
-    <Compile Include="Search\FilterViewModel.cs" />
+    <Compile Include="Controls\FilterViewModel.cs" />
     <Compile Include="Search\HrSearchOptions.cs" />
-    <Compile Include="Search\PopupSearchViewModel.cs" />
-    <Compile Include="Search\Searchers\DiagnosisFiltratingSearcher.cs" />
-    <Compile Include="Search\Searchers\DiagnosisSearcher.cs" />
-    <Compile Include="Search\Searchers\HrSearcher.cs" />
+    <Compile Include="Controls\PopupSearchViewModel.cs" />
+    <Compile Include="Controls\Searchers\DiagnosisFiltratingSearcher.cs" />
+    <Compile Include="Controls\Searchers\DiagnosisSearcher.cs" />
+    <Compile Include="Search\HrSearcher.cs" />
     <Compile Include="Framework\ViewModelBase.cs" />
     <Compile Include="Types\SpecialCaseItem.cs" />
     <Compile Include="Screens\Vocabularies\VocabularyListViewModel.cs" />

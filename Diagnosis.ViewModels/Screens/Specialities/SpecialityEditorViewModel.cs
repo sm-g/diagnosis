@@ -3,6 +3,7 @@ using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls;
 using Diagnosis.ViewModels.Search;
 using log4net;
 using NHibernate.Linq;

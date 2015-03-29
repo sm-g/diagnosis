@@ -3,6 +3,7 @@ using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.Models.Enums;
+using Diagnosis.ViewModels.Controls;
 using Diagnosis.ViewModels.Search;
 using EventAggregator;
 using NHibernate.Linq;

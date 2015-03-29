@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using Diagnosis.ViewModels.Autocomplete;
 
-namespace Diagnosis.ViewModels.Search
+namespace Diagnosis.ViewModels.Controls
 {
     public class DiagnosisSearcher : IHierarchicalSearcher<DiagnosisViewModel>
     {

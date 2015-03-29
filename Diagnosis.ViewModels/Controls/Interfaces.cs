@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels.Search
+namespace Diagnosis.ViewModels.Controls
 {
     internal interface IFilter<T>
     {
@@ -21,10 +24,5 @@ namespace Diagnosis.ViewModels.Search
 
         void Clear();
         void Filter();
-    }
-
-    interface IFilterableList
-    {
-        //  FilterViewModel<T> Filter { get; }
     }
 }
