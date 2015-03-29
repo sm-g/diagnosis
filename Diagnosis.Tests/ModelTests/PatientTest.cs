@@ -1,12 +1,9 @@
-﻿using System;
+﻿using Diagnosis.Common;
+using Diagnosis.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Threading.Tasks;
-using Diagnosis.Models;
-using Diagnosis.ViewModels;
-using Diagnosis.Common;
 
 namespace Tests
 {

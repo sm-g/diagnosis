@@ -1,6 +1,5 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data.Versions;
-using Diagnosis.Models;
 using Microsoft.Synchronization;
 using Microsoft.Synchronization.Data;
 using Microsoft.Synchronization.Data.SqlServer;
@@ -75,6 +74,7 @@ namespace Diagnosis.Data.Sync
         /// ID добавленных во время последней синхронизации сущностей.
         /// </summary>
         public Dictionary<Type, IEnumerable<object>> AddedIdsPerType { get; set; }
+
         /// <summary>
         /// ID сущностей, которые должны быть удалены.
         /// </summary>
@@ -134,6 +134,7 @@ namespace Diagnosis.Data.Sync
             }
             return Deprovision(serverConStr, serverProviderName, scopesToDeprovision);
         }
+
         public static Task Deprovision(string connstr, string provider, IEnumerable<Scope> scopesToDeprovision = null)
         {
             if (InSync)
@@ -627,7 +628,6 @@ namespace Diagnosis.Data.Sync
                             {
                                 var dataTable = e.Context.DataSet.Tables[table];
 
-
                                 DeletedIdsPerTable.Add(
                                     dataTable.TableName,
                                     dataTable.Rows
@@ -637,7 +637,6 @@ namespace Diagnosis.Data.Sync
                             }
                         }
                     }
-                    
                 };
                 to.ApplyingChanges += (s, e) =>
                 {
@@ -651,6 +650,7 @@ namespace Diagnosis.Data.Sync
             public Dictionary<DbConflictType, int> ConflictsCounter { get; set; }
 
             public Dictionary<string, IEnumerable<object>> AddedIdsPerTable { get; set; }
+
             public Dictionary<string, IEnumerable<object>> DeletedIdsPerTable { get; set; }
         }
     }

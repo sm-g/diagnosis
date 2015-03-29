@@ -16,6 +16,8 @@ namespace Diagnosis.Models
         private Iesi.Collections.Generic.ISet<Speciality> specialities = new HashedSet<Speciality>();
         private IList<Word> words = new List<Word>(); // many-2-many
         private string _title;
+        private bool _custom;
+        private Doctor _doc;
 
         public Vocabulary(string title, Doctor d = null)
         {
@@ -33,12 +35,10 @@ namespace Diagnosis.Models
         {
         }
 
-
         public virtual event NotifyCollectionChangedEventHandler WordsChanged;
+
         public virtual event NotifyCollectionChangedEventHandler WordTemplatesChanged;
-        private bool _custom;
-        private Models.Doctor _doc;
-        private string p;
+
 
         public virtual string Title
         {
@@ -48,6 +48,7 @@ namespace Diagnosis.Models
                 SetProperty(ref _title, value ?? "", () => Title);
             }
         }
+
         public virtual bool IsCustom
         {
             get { return Doctor != null; }
@@ -56,6 +57,7 @@ namespace Diagnosis.Models
                 SetProperty(ref _custom, value, () => IsCustom);
             }
         }
+
         public virtual Doctor Doctor
         {
             get { return _doc; }
@@ -69,10 +71,12 @@ namespace Diagnosis.Models
         {
             get { return wordTemplates; }
         }
+
         public virtual IEnumerable<Speciality> Specialities
         {
             get { return specialities; }
         }
+
         public virtual IEnumerable<Word> Words
         {
             get { return words; }
@@ -98,7 +102,8 @@ namespace Diagnosis.Models
                 OnWordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, w));
             }
         }
-        internal protected virtual WordTemplate AddWordTemplate(WordTemplate wt)
+
+        protected internal virtual WordTemplate AddWordTemplate(WordTemplate wt)
         {
             Contract.Requires(wt.Vocabulary == this);
             if (!wordTemplates.Contains(wt))
@@ -108,7 +113,8 @@ namespace Diagnosis.Models
             }
             return wt;
         }
-        internal protected virtual void RemoveWordTemplate(WordTemplate wt)
+
+        protected internal virtual void RemoveWordTemplate(WordTemplate wt)
         {
             Contract.Requires(wt.Vocabulary == this);
             if (wordTemplates.Remove(wt))
@@ -130,6 +136,7 @@ namespace Diagnosis.Models
                 h(this, e);
             }
         }
+
         protected virtual void OnWordTemplatesChanged(NotifyCollectionChangedEventArgs e)
         {
             var h = WordTemplatesChanged;

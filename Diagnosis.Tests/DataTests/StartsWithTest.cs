@@ -1,16 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Diagnosis.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHibernate.Linq;
-using Diagnosis.Models;
-using Diagnosis.ViewModels.Search;
+using System;
+using System.Linq;
 
 namespace Tests
 {
     [TestClass]
-
     public class StartsWithTest : InMemoryDatabaseTest
     {
         [TestMethod]

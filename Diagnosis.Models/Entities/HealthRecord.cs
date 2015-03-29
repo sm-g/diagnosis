@@ -417,7 +417,7 @@ namespace Diagnosis.Models
             }
         }
 
-        internal protected virtual void OnDelete()
+        protected internal virtual void OnDelete()
         {
             this.Words.ForEach(x => x.RemoveHr(this));
         }

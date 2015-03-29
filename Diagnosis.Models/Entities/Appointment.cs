@@ -1,4 +1,5 @@
-﻿using Diagnosis.Models.Validators;
+﻿using Diagnosis.Common;
+using Diagnosis.Models.Validators;
 using FluentValidation.Results;
 using Iesi.Collections.Generic;
 using System;
@@ -6,7 +7,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using Diagnosis.Common;
 
 namespace Diagnosis.Models
 {
@@ -35,6 +35,7 @@ namespace Diagnosis.Models
         }
 
         public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
+
         public virtual Course Course { get; protected set; }
 
         public virtual Doctor Doctor { get; set; }
@@ -74,6 +75,7 @@ namespace Diagnosis.Models
         {
             get { return healthRecords.OrderBy(x => x.Ord); }
         }
+
         public virtual HealthRecord AddHealthRecord(Doctor author)
         {
             var hr = new HealthRecord(this, author);

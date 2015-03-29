@@ -50,9 +50,9 @@ namespace Diagnosis.Data
                 session.PersistenceContext.Flushing = false;
                 session.ConnectionManager.FlushEnding();
             }
-
         }
     }
+
     public class NHibernateHelper
     {
         private static readonly System.Lazy<NHibernateHelper> lazyInstance = new System.Lazy<NHibernateHelper>(() => new NHibernateHelper() { useSavedCfg = true });
@@ -61,7 +61,7 @@ namespace Diagnosis.Data
         private ISession _session;
         private ISessionFactory _sessionFactory;
         private ConnectionInfo connection;
-        bool useSavedCfg;
+        private bool useSavedCfg;
 
         protected NHibernateHelper()
         {

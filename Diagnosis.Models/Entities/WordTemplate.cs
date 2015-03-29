@@ -1,8 +1,4 @@
-﻿using Diagnosis.Models.Validators;
-using FluentValidation.Results;
-using Iesi.Collections.Generic;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
@@ -11,6 +7,7 @@ namespace Diagnosis.Models
     {
         private string _title;
         private Vocabulary _voc;
+
         public WordTemplate(string title, Vocabulary voc)
         {
             Contract.Requires(title != null);
@@ -20,7 +17,11 @@ namespace Diagnosis.Models
             _voc = voc;
             _voc.AddWordTemplate(this);
         }
-        protected WordTemplate() { }
+
+        protected WordTemplate()
+        {
+        }
+
         public virtual string Title
         {
             get { return _title; }
@@ -43,7 +44,5 @@ namespace Diagnosis.Models
         {
             return Title;
         }
-
-
     }
 }

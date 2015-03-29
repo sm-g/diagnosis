@@ -24,7 +24,6 @@ namespace Diagnosis.Data.Mappings
                 m.Column("VocabularyID");
                 m.NotNullable(true);
             });
-
         }
     }
 }

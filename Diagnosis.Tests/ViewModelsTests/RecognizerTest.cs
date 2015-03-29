@@ -1,18 +1,13 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Data;
 using Diagnosis.Models;
-using Diagnosis.Models.Enums;
 using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Autocomplete;
-using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Tests
 {
-
     [TestClass]
     public class RecognizerTest : InMemoryDatabaseTest
     {
@@ -20,6 +15,7 @@ namespace Tests
         private Doctor d1;
         private static string notExistQ = "qwe";
         private Doctor d2;
+
         [TestInitialize]
         public void RecognizerTestInit()
         {

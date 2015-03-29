@@ -1,11 +1,11 @@
-﻿using Diagnosis.Models.Validators;
-using Diagnosis.Common;
+﻿using Diagnosis.Common;
+using Diagnosis.Models.Validators;
 using FluentValidation.Results;
 using Iesi.Collections.Generic;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.Models
 {
@@ -14,6 +14,7 @@ namespace Diagnosis.Models
     {
         [NonSerialized]
         private Iesi.Collections.Generic.ISet<Word> children = new HashedSet<Word>();
+
         [NonSerialized]
         private Iesi.Collections.Generic.ISet<Vocabulary> vocabularies = new HashedSet<Vocabulary>();
 
@@ -45,10 +46,12 @@ namespace Diagnosis.Models
                 SetProperty(ref _title, filtered, () => Title);
             }
         }
+
         public virtual IEnumerable<Vocabulary> Vocabularies
         {
             get { return vocabularies; }
         }
+
         public virtual Word Parent
         {
             get { return _parent; }
@@ -64,6 +67,7 @@ namespace Diagnosis.Models
         {
             get { return healthRecords; }
         }
+
         /// <summary>
         /// Вызвать перед удалением слова.
         /// </summary>
@@ -99,25 +103,25 @@ namespace Diagnosis.Models
 
         // for refresh state of many-2-many relations
 
-        internal protected virtual void RemoveVoc(Vocabulary voc)
+        protected internal virtual void RemoveVoc(Vocabulary voc)
         {
             Contract.Requires(!voc.Words.Contains(this));
             vocabularies.Remove(voc);
         }
 
-        internal protected virtual void AddVoc(Vocabulary voc)
+        protected internal virtual void AddVoc(Vocabulary voc)
         {
             Contract.Requires(voc.Words.Contains(this));
             vocabularies.Add(voc);
         }
 
-        internal protected virtual void AddHr(HealthRecord hr)
+        protected internal virtual void AddHr(HealthRecord hr)
         {
             Contract.Requires(hr.Words.Contains(this));
             healthRecords.Add(hr);
         }
 
-        internal protected virtual void RemoveHr(HealthRecord hr)
+        protected internal virtual void RemoveHr(HealthRecord hr)
         {
             // при удалении записи слова не удаляются отдельно
             // при удалении элемента слово уже удалено

@@ -1,10 +1,8 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -91,12 +89,10 @@ namespace Diagnosis.ViewModels.Screens
                     OpenScreen(Screen.Doctors);
                 else if (e.user is Doctor)
                     OpenScreen(Screen.Patients);
-
             };
             AuthorityController.LoggedOut += (s, e) =>
             {
                 OpenScreen(Screen.Login);
-
             };
             // карточка
 
@@ -161,7 +157,6 @@ namespace Diagnosis.ViewModels.Screens
                 if (CurrentView != null)
                 {
                     CurrentView.Dispose();
-
                 }
             });
         }

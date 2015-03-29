@@ -1,14 +1,9 @@
-﻿using Diagnosis.Client.App;
-using Diagnosis.Common;
-using Diagnosis.Data;
-using Diagnosis.Data.Mappings;
+﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using Diagnosis.ViewModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
-using System.Reflection;
-using NHibernate.Tool.hbm2ddl;
 
 namespace Tests
 {
@@ -32,7 +27,6 @@ namespace Tests
             }
 
             session.Clear();
-
 
             using (var tx = session.BeginTransaction())
             {

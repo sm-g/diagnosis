@@ -111,7 +111,6 @@ namespace Tests.ModelTests
             Assert.IsTrue(diff1.Count == 1);
             Assert.IsTrue(diff2.Count == 0);
             Assert.IsTrue(diff1.Contains(m2));
-
         }
     }
 }

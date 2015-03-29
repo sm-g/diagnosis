@@ -18,7 +18,6 @@ namespace Diagnosis.Data.Mappings
                 m.Cascade(Cascade.All | Cascade.DeleteOrphans);
                 m.Access(Accessor.Field);
                 m.Constrained(true);
-
             });
 
             ManyToOne(x => x.CustomVocabulary, m =>

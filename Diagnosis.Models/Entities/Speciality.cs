@@ -61,6 +61,7 @@ namespace Diagnosis.Models
         {
             get { return specialityIcdBlocks; }
         }
+
         public virtual IcdBlock AddBlock(IcdBlock block)
         {
             if (!icdBlocks.Contains(block))

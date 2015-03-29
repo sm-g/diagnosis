@@ -1,13 +1,11 @@
 ﻿using Diagnosis.Common;
-using EventAggregator;
-using Diagnosis.Models;
-using NHibernate.Linq;
-using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using Diagnosis.Data;
-using System.Linq;
+using Diagnosis.Models;
+using EventAggregator;
+using NHibernate.Linq;
 using System.Collections.Generic;
-using Diagnosis.Data.Queries;
+using System.ComponentModel;
+using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -16,7 +14,8 @@ namespace Diagnosis.ViewModels.Screens
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(WordEditorViewModel));
         private readonly Word word;
         internal Word saved;
-        List<Word> dbWords;
+        private List<Word> dbWords;
+
         public WordEditorViewModel(Word word)
         {
             this.word = word;
@@ -40,6 +39,20 @@ namespace Diagnosis.ViewModels.Screens
             WithHelpButton = true;
         }
 
+        public WordViewModel Word
+        {
+            get;
+            private set;
+        }
+
+        public override bool CanOk
+        {
+            get
+            {
+                return word.IsValid() && !Word.HasExistingTitle;
+            }
+        }
+
         /// <summary>
         /// Нельзя ввести слово, которое уже есть в словаре врача.
         /// </summary>
@@ -48,28 +61,6 @@ namespace Diagnosis.ViewModels.Screens
             vm.HasExistingTitle = dbWords.Any(w =>
                 AuthorityController.CurrentDoctor.Words.Contains(w) &&
                 w.Title == word.Title && w != word);
-        }
-
-        /// <summary>
-        /// Начинает редактировать новое слово.
-        /// </summary>
-        public WordEditorViewModel(string text)
-            : this(new Word(text))
-        { }
-
-        public WordViewModel Word
-        {
-            get;
-            private set;
-        }
-
-
-        public override bool CanOk
-        {
-            get
-            {
-                return word.IsValid() && !Word.HasExistingTitle;
-            }
         }
 
         protected override void OnOk()

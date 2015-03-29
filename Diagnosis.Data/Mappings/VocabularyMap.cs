@@ -22,7 +22,6 @@ namespace Diagnosis.Data.Mappings
             OneToOne(x => x.Doctor, m =>
             {
                 m.PropertyReference(typeof(Doctor).GetPropertyOrFieldMatchingName("CustomVocabulary"));
-
             });
 
             Set(x => x.WordTemplates, s =>

@@ -50,7 +50,9 @@ namespace Diagnosis.Models
         }
 
         public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
+
         public virtual event NotifyCollectionChangedEventHandler CoursesChanged;
+
         public virtual string FirstName
         {
             get { return _fn; }
@@ -228,6 +230,7 @@ namespace Diagnosis.Models
                     return this.UpdatedAt;
             }
         }
+
         public virtual HealthRecord AddHealthRecord(Doctor author)
         {
             var hr = new HealthRecord(this, author);
@@ -311,6 +314,7 @@ namespace Diagnosis.Models
                 OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, course));
             }
         }
+
         protected virtual void OnCoursesChanged(NotifyCollectionChangedEventArgs e)
         {
             var h = CoursesChanged;

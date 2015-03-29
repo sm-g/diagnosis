@@ -57,6 +57,7 @@ namespace Diagnosis.Models
                 DbValue = value * (Uom != null ? (double)Math.Pow(10, Uom.Factor) : 1);
             }
         }
+
         public static bool operator ==(Measure x, Measure y)
         {
             return Object.Equals(x, y);

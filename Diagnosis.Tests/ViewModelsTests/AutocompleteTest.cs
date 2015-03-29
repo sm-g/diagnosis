@@ -92,6 +92,7 @@ namespace Tests
             Assert.AreEqual(1, a.Suggestions.Count);
             Assert.IsTrue(a.IsPopupOpen);
         }
+
         [TestMethod]
         public void QueryNotExistingCreatedInOtherAutocomplete()
         {
@@ -106,6 +107,7 @@ namespace Tests
             Assert.AreEqual(1, other.Suggestions.Count);
             Assert.IsTrue(other.IsPopupOpen);
         }
+
         /// <summary>
         /// Можно вводить такое же слово.
         /// </summary>
@@ -231,6 +233,7 @@ namespace Tests
             Assert.AreEqual(word, a.LastTag.Blank);
             Assert.IsTrue(a.Tags.Count == 1);
         }
+
         [TestMethod]
         public void AddMeasureWhenTyping()
         {
@@ -247,6 +250,7 @@ namespace Tests
             // from measureEditor
             a.AddTag(new Measure(5));
         }
+
         [TestMethod]
         public void CopyPasteWord()
         {

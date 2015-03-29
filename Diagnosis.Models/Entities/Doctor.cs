@@ -50,6 +50,7 @@ namespace Diagnosis.Models
             get { return chachedWords; }
             set { chachedWords = value; }
         }
+
         /// <summary>
         /// Все слова, доступные врачу.
         /// </summary>
@@ -106,6 +107,7 @@ namespace Diagnosis.Models
                 SetProperty(ref _speciality, value, () => Speciality);
             }
         }
+
         public virtual Vocabulary CustomVocabulary
         {
             get { return _customVocabulary ?? (_customVocabulary = new Vocabulary(Vocabulary.CustomTitle, this)); }

@@ -19,6 +19,7 @@ namespace Diagnosis.Models
         }
 
         public virtual string String { get; set; }
+
         public override string ToString()
         {
             return String;

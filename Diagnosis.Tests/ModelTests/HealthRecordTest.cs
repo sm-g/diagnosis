@@ -124,7 +124,6 @@ namespace Tests
             var m2 = new Measure(0, uom[2]) { Word = w1 };
             hr1.SetItems(new IHrItemObject[] { m2 });
             Assert.AreEqual(uom[2], hr1.HrItems.First().Measure.Uom);
-        
         }
     }
 }

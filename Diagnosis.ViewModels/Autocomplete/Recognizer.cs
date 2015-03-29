@@ -2,7 +2,6 @@
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using NHibernate;
-using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,15 +18,17 @@ namespace Diagnosis.ViewModels.Autocomplete
     public class Recognizer : NotifyPropertyChangedBase
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Recognizer));
+
         /// <summary>
         /// несохраненные слова, созданные через автокомплит
         /// </summary>
         private static List<Word> created = new List<Word>();
+        private Doctor doctor;
 
         private readonly ISession session;
         private bool _addQueryToSug;
 
-        static Doctor doctor;
+
         /// <summary>
         ///
         /// </summary>
@@ -76,7 +77,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                 // now word can be retrieved from db
                 var word = e.GetValue<Word>(MessageKeys.Word);
                 created.Remove(word);
-
             });
             AuthorityController.LoggedOut += (s, e) =>
             {
@@ -377,6 +377,5 @@ namespace Diagnosis.ViewModels.Autocomplete
             // все несохраннные слова - не в словаре
             Contract.Invariant(created.All(x => x.Vocabularies.Count() == 0));
         }
-
     }
 }

@@ -5,7 +5,6 @@ using NHibernate;
 using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -21,6 +20,7 @@ namespace Diagnosis.Data.Sync
             this.session = session;
             // custom = VocabularyQuery.Custom(session)(doc);
         }
+
         /// <summary>
         /// Создает слова по шаблонам словаря, убирает слова, для которых нет шаблона.
         /// </summary>
@@ -52,6 +52,7 @@ namespace Diagnosis.Data.Sync
             // сохраняем убранность словаря в оставшихся словах
             new Saver(session).Save(wordsToSave.ToArray());
         }
+
         /// <summary>
         /// Удаляет словарь, сначала убирая все слова.
         /// </summary>
@@ -150,7 +151,7 @@ namespace Diagnosis.Data.Sync
                     var docs = word.HealthRecords.Select(x => x.Doctor).Distinct();
                     foreach (var doc in docs)
                     {
-                        // использованное становится Пользовательским 
+                        // использованное становится Пользовательским
                         // для всех врачей, которые его использовали
                         // если его нет в других словарях, доступных врачу
 
@@ -158,7 +159,6 @@ namespace Diagnosis.Data.Sync
                         doc.AddWords(word.ToEnumerable());
                     }
                 }
-
             }
 
             // delete removed words

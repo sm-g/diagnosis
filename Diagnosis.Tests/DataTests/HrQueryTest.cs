@@ -1,8 +1,7 @@
-﻿using Diagnosis.Data.Queries;
+﻿using Diagnosis.Common;
+using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using Diagnosis.Common;
 using System.Linq;
 
 namespace Tests

@@ -1,13 +1,8 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Data.Queries;
-using Diagnosis.Data.Sync;
 using Diagnosis.Models;
 using Diagnosis.ViewModels;
-using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NHibernate.Linq;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Tests
@@ -49,11 +44,10 @@ namespace Tests
         [TestMethod]
         public void Uom()
         {
-
             var uom = new Uom("x", 0, uomType[1]);
             Assert.IsTrue(uomType[1].Uoms.Contains(uom));
-
         }
+
         [TestMethod]
         public void AddIcdToSpec()
         {

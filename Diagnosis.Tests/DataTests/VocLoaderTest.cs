@@ -1,5 +1,4 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Data.Queries;
 using Diagnosis.Data.Sync;
 using Diagnosis.Models;
 using Diagnosis.ViewModels;
@@ -87,7 +86,6 @@ namespace Tests
             Assert.IsTrue(newW.Vocabularies.Contains(voc[1]));
         }
 
-
         [TestMethod]
         public void RenameWordUpdateVoc()
         {
@@ -161,6 +159,7 @@ namespace Tests
             Assert.IsFalse(w[6].Vocabularies.Contains(voc[2]));
             Assert.IsTrue(voc[2].Words.Count() == voc[2].WordTemplates.Count());
         }
+
         [TestMethod]
         public void RemoveVoc()
         {
@@ -171,8 +170,8 @@ namespace Tests
 
             var wordTitles = GetWordTitles();
             Assert.IsTrue(wordTitles.Contains(wTemp[1].Title));
-
         }
+
         [TestMethod]
         public void Sequence()
         {
@@ -240,8 +239,8 @@ namespace Tests
             Assert.IsTrue(wordTitles.Contains(wTemp[2].Title));
             Assert.IsTrue(wordTitles.Contains(wTemp[3].Title));
             Assert.AreEqual(w4Title, word4.Title);
-
         }
+
         [TestMethod]
         public void MultiCustom()
         {
@@ -306,6 +305,7 @@ namespace Tests
             var newW2 = CreateWord(d1w.Title);
             Assert.AreEqual(d1w, newW2);
         }
+
         [TestMethod]
         public void CustomVocCreatedAfterSaveNewWord()
         {
@@ -316,11 +316,12 @@ namespace Tests
             Assert.IsFalse(d2.CustomVocabulary.IsTransient);
         }
 
-        IList<string> GetWordTitles()
+        private IList<string> GetWordTitles()
         {
             return session.Query<Word>()
                .Select(x => x.Title).ToList();
         }
+
         private static Word CreateWord(string title)
         {
             var newW = new Word(title);

@@ -1,12 +1,10 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Data;
 using Diagnosis.Models;
 using Diagnosis.Models.Enums;
 using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Tests
@@ -43,6 +41,7 @@ namespace Tests
                 Assert.AreEqual(hr[20], card.HrList.SelectedHealthRecord.healthRecord);
             }
         }
+
         [TestMethod]
         public void SelectNotInList()
         {
@@ -54,6 +53,7 @@ namespace Tests
                 Assert.AreEqual(0, card.HrList.SelectedHealthRecords.Count());
             }
         }
+
         [TestMethod]
         public void DeselectHr()
         {
@@ -65,6 +65,7 @@ namespace Tests
                 Assert.AreEqual(null, card.HrList.SelectedHealthRecord);
             }
         }
+
         [TestMethod]
         public void DeselectWhenManySelected()
         {
@@ -77,6 +78,7 @@ namespace Tests
                 Assert.AreEqual(0, card.HrList.SelectedHealthRecords.Count());
             }
         }
+
         [TestMethod]
         public void SelectManySelectedLast()
         {
@@ -101,6 +103,7 @@ namespace Tests
                 Assert.AreEqual(2, card.HrList.SelectedHealthRecords.Count());
             }
         }
+
         [TestMethod]
         public void SelectManyThenOne()
         {
@@ -113,6 +116,7 @@ namespace Tests
                 Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
             }
         }
+
         [TestMethod]
         public void SelectManyThenChangeSelected()
         {
@@ -137,6 +141,7 @@ namespace Tests
                 Assert.AreEqual(2, card.HrList.SelectedHealthRecords.Count());
             }
         }
+
         [TestMethod]
         public void AddToSelectedNotInList()
         {
@@ -149,6 +154,7 @@ namespace Tests
                 Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
             }
         }
+
         [TestMethod]
         public void SelectOneByOne()
         {
@@ -187,6 +193,7 @@ namespace Tests
                 Assert.AreNotEqual(null, card.HrList.SelectedHealthRecord);
             }
         }
+
         [TestMethod]
         public void MoveHrSelectionMany()
         {
@@ -200,6 +207,7 @@ namespace Tests
                 Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
             }
         }
+
         [TestMethod]
         public void MoveHrSelectionManySorted()
         {
@@ -229,7 +237,8 @@ namespace Tests
             }
         }
 
-        #endregion
+        #endregion Selection
+
         #region CurCopyPaste
 
         [TestMethod]
@@ -237,7 +246,6 @@ namespace Tests
         {
             using (var card = new CardViewModel(a[2], true))
             {
-
                 card.HrList.SelectHealthRecord(hr[20]);
                 card.HrList.Copy();
                 card.HrList.Paste();
@@ -276,6 +284,7 @@ namespace Tests
                 Assert.IsTrue(!newWord.IsTransient);
             }
         }
+
         [TestMethod]
         public void NoSelectedAfterCut()
         {
@@ -290,6 +299,7 @@ namespace Tests
                 Assert.AreEqual(0, card.HrList.SelectedHealthRecords.Count());
             }
         }
+
         [TestMethod]
         public void CutPasteHrs()
         {
@@ -305,6 +315,7 @@ namespace Tests
                 Assert.AreEqual(2, card.HrList.SelectedHealthRecords.Count());
             }
         }
+
         [TestMethod]
         public void PastedHrEqual()
         {
@@ -337,7 +348,9 @@ namespace Tests
                 // Assert.AreNotEqual(hr[20].UpdatedAt, new20.UpdatedAt);
             }
         }
-        #endregion
+
+        #endregion CurCopyPaste
+
         #region Movement
 
         [TestMethod]
@@ -374,7 +387,6 @@ namespace Tests
                 Assert.AreEqual(0, hr1.Ord);
                 Assert.AreEqual(2, hr2.Ord);
                 Assert.AreEqual(3, hr3.Ord);
-
             }
         }
 
@@ -441,6 +453,7 @@ namespace Tests
                 Assert.AreEqual(cat[2], hr0.Category);
             }
         }
+
         [TestMethod]
         public void MoveToEnd()
         {
@@ -463,6 +476,7 @@ namespace Tests
                 Assert.AreEqual(hr0, card.HrList.HealthRecordsView.Last().healthRecord);
             }
         }
+
         [TestMethod]
         public void CanMoveFirstLast()
         {
@@ -578,7 +592,7 @@ namespace Tests
                 hr0.healthRecord.AddItems(new Comment(comment).ToEnumerable());
             return hr0.healthRecord;
         }
-        #endregion
 
+        #endregion Movement
     }
 }

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Diagnosis.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Diagnosis.Common;
-using System.Globalization;
+using System;
+using System.Linq;
 
 namespace Tests
 {
@@ -21,6 +18,7 @@ namespace Tests
 
             Assert.AreEqual("2 дня 6 ч 5 м", str);
         }
+
         [TestMethod]
         public void ManyDays()
         {
@@ -31,6 +29,7 @@ namespace Tests
 
             Assert.AreEqual("4 дня", str);
         }
+
         [TestMethod]
         public void LessThanDay()
         {
@@ -41,6 +40,7 @@ namespace Tests
 
             Assert.AreEqual("20 ч 1 м", str);
         }
+
         [TestMethod]
         public void SameMinutes()
         {
@@ -62,6 +62,7 @@ namespace Tests
 
             Assert.AreEqual("2 дня 0 ч", str);
         }
+
         [TestMethod]
         public void LessThanDaySameMinutes()
         {
@@ -72,6 +73,7 @@ namespace Tests
 
             Assert.AreEqual("1 ч", str);
         }
+
         [TestMethod]
         public void LessThanDaySameHours()
         {
@@ -82,6 +84,7 @@ namespace Tests
 
             Assert.AreEqual("0 ч 1 м", str);
         }
+
         [TestMethod]
         public void Equal()
         {
@@ -92,6 +95,7 @@ namespace Tests
 
             Assert.AreEqual("equal", str);
         }
+
         [TestMethod]
         public void Negative()
         {

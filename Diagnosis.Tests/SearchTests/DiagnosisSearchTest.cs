@@ -1,11 +1,10 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
+using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Search;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
-using Diagnosis.ViewModels;
-using Diag = Diagnosis.Models.Diagnosis;
 
 namespace Tests.SearchTests
 {
@@ -23,7 +22,6 @@ namespace Tests.SearchTests
             var res1 = filter.Results;
 
             Assert.IsTrue(res1.Count() > 0);
-
         }
     }
 }

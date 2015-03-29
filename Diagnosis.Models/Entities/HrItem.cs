@@ -1,7 +1,7 @@
 ﻿using Diagnosis.Common;
 using System;
-using System.Diagnostics.Contracts;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
