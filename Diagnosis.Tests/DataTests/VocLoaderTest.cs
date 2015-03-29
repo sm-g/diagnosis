@@ -2,7 +2,6 @@
 using Diagnosis.Data.Sync;
 using Diagnosis.Models;
 using Diagnosis.ViewModels;
-using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHibernate.Linq;
 using System;
@@ -77,7 +76,7 @@ namespace Tests
         public void CreateWordLoadVoc()
         {
             // созданное слово в пользовательском словаре
-            var newW = CreateWord(wTemp[1].Title);
+            var newW = CreateWordInEditor(wTemp[1].Title);
             Assert.IsTrue(newW.Vocabularies.Single().IsCustom);
 
             // загружен словарь - слово также в нем
@@ -164,7 +163,7 @@ namespace Tests
         public void RemoveVoc()
         {
             // при удалении остаются использованные слова и слова из других словарей
-            CreateWord(wTemp[1].Title);
+            CreateWordInEditor(wTemp[1].Title);
             l.LoadOrUpdateVocs(voc[1]);
             l.DeleteVocs(voc[1]);
 
@@ -176,7 +175,7 @@ namespace Tests
         public void Sequence()
         {
             // новое слово
-            CreateWord(wTemp[1].Title);
+            CreateWordInEditor(wTemp[1].Title);
 
             // загружаем словарь, нет использованных слов
             l.LoadOrUpdateVocs(voc[1]);
@@ -242,42 +241,10 @@ namespace Tests
         }
 
         [TestMethod]
-        public void MultiCustom()
-        {
-            // отдельный пользовательский словарь на врача
-
-            // первый создает слово
-            var newW = CreateWord(wTemp[1].Title);
-            Assert.IsTrue(newW.Vocabularies.Single().IsCustom);
-            Assert.AreEqual(d1, newW.Vocabularies.Single().Doctor);
-
-            // другой врач не видит это слово
-            AuthorityController.TryLogIn(d2);
-            var wordList = new WordsListViewModel();
-            Assert.IsFalse(wordList.Words.Select(x => x.word).Contains(newW));
-
-            // но может добавить
-            var newW2 = CreateWord(wTemp[1].Title);
-            Assert.AreEqual(newW, newW2);
-
-            // это слово в двух пользовательских словарях
-            Assert.IsTrue(newW.Vocabularies.Count() == 2);
-            Assert.IsTrue(newW.Vocabularies.All(x => x.IsCustom));
-
-            // при удалении одним врачом остается для другого
-            wordList.SelectWord(newW2);
-            wordList.DeleteCommand.Execute(null);
-
-            Assert.IsFalse(wordList.Words.Select(x => x.word).Contains(newW2));
-            // пока врач удаляет как админ, сразу для всех врачей
-            //Assert.AreEqual(d1, newW.Vocabularies.Single().Doctor);
-        }
-
-        [TestMethod]
         public void RemoveUpdateCustom()
         {
             // не имеет смысла удалять/обновлять пользовательские словари
-            var newW = CreateWord("123");
+            var newW = CreateWordInEditor("123");
             var words = d1.CustomVocabulary.Words.ToList();
             Assert.IsTrue(words.Contains(newW));
 
@@ -288,48 +255,10 @@ namespace Tests
             Assert.IsTrue(words.ScrambledEquals(d1.CustomVocabulary.Words));
         }
 
-        [TestMethod]
-        public void CanCreateWordInHiddenVoc()
-        {
-            // врач создает слово, которое есть в недоступном ему словаре
-
-            var d1w = w[1];
-            Assert.IsTrue(d1.Words.Contains(d1w));
-
-            AuthorityController.TryLogIn(d2);
-
-            // другой врач не видит это слово
-            Assert.IsFalse(d2.Words.Contains(d1w));
-
-            // но может добавить
-            var newW2 = CreateWord(d1w.Title);
-            Assert.AreEqual(d1w, newW2);
-        }
-
-        [TestMethod]
-        public void CustomVocCreatedAfterSaveNewWord()
-        {
-            AuthorityController.TryLogIn(d2);
-            var newW = CreateWord(wTemp[1].Title);
-
-            Assert.IsFalse(newW.IsTransient);
-            Assert.IsFalse(d2.CustomVocabulary.IsTransient);
-        }
-
         private IList<string> GetWordTitles()
         {
             return session.Query<Word>()
                .Select(x => x.Title).ToList();
-        }
-
-        private static Word CreateWord(string title)
-        {
-            var newW = new Word(title);
-            var wEditor = new WordEditorViewModel(newW);
-
-            Assert.IsTrue(wEditor.OkCommand.CanExecute(null));
-            wEditor.OkCommand.Execute(null);
-            return wEditor.saved;
         }
     }
 }

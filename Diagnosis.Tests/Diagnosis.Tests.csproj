@@ -142,6 +142,7 @@
     <Compile Include="DataTests\RelationsTest.cs" />
     <Compile Include="DataTests\VocLoaderTest.cs" />
     <Compile Include="DataTests\SyncerTest.cs" />
+    <Compile Include="ModelTests\DoctorTest.cs" />
     <Compile Include="ModelTests\CourseTest.cs" />
     <Compile Include="ModelTests\MeasureTest.cs" />
     <Compile Include="ModelTests\HrItemTest.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="ModelTests\OrderedBagTest.cs" />
     <Compile Include="ViewModelsTests\RecognizerTest.cs" />
     <Compile Include="ViewModelsTests\SearchTest.cs" />
+    <Compile Include="ViewModelsTests\WordListTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Diagnosis.Client.App\Diagnosis.Client.App.csproj">

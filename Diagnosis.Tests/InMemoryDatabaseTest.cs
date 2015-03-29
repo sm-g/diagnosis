@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Data;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHibernate;
 using System;
@@ -57,6 +58,16 @@ namespace Tests
         public void InMemoryDatabaseTestCleanup()
         {
             session.Dispose();
+        }
+
+        protected static Word CreateWordInEditor(string title)
+        {
+            var newW = new Word(title);
+            var wEditor = new WordEditorViewModel(newW);
+
+            Assert.IsTrue(wEditor.OkCommand.CanExecute(null));
+            wEditor.OkCommand.Execute(null);
+            return wEditor.saved;
         }
 
         protected Guid IntToGuid<T>(int id) where T : EntityBase<Guid>
