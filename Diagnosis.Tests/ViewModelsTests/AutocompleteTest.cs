@@ -25,7 +25,7 @@ namespace Tests
         [TestInitialize]
         public void AutocompleteTestInit()
         {
-            var d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
+            Load<Doctor>();
             AuthorityController.TryLogIn(d1);
             r = new Recognizer(session, clearCreated: true);
             a = new AutocompleteViewModel(r, true, true, true, false, null);
@@ -237,7 +237,7 @@ namespace Tests
         [TestMethod]
         public void AddMeasureWhenTyping()
         {
-            var d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
+            Load<Doctor>();
             AuthorityController.TryLogIn(d1);
 
             var hre = new Diagnosis.ViewModels.Screens.HrEditorViewModel(session);

@@ -10,12 +10,12 @@ namespace Tests
     [TestClass]
     public class DoctorTest : InMemoryDatabaseTest
     {
-        private Doctor d2;
+
 
         [TestInitialize]
         public void Init()
         {
-            d2 = session.Get<Doctor>(IntToGuid<Doctor>(2));
+            Load<Doctor>();
         }
 
         [TestMethod]

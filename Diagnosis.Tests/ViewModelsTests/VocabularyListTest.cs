@@ -11,15 +11,15 @@ namespace Tests
     [TestClass]
     public class VocabularyListTest : InMemoryDatabaseTest
     {
-        private Doctor d1;
-        private Doctor d2;
+
+
         private VocabularyListViewModel vl;
 
         [TestInitialize]
         public void Init()
         {
-            d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
-            d2 = session.Get<Doctor>(IntToGuid<Doctor>(1));
+            Load<Doctor>();
+
             AuthorityController.TryLogIn(d1);
 
             vl = new VocabularyListViewModel();

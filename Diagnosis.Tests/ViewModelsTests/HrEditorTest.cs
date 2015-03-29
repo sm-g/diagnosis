@@ -11,7 +11,7 @@ namespace Tests.ViewModelsTests
     [TestClass]
     public class HrEditorTest : InMemoryDatabaseTest
     {
-        private Doctor d1;
+        
         private HrEditorViewModel e;
         private new HealthRecord hr;
         private Word word;
@@ -23,7 +23,7 @@ namespace Tests.ViewModelsTests
         [TestInitialize]
         public void HrEditorTestInit()
         {
-            d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
+            Load<Doctor>();
             AuthorityController.TryLogIn(d1);
 
             e = new HrEditorViewModel(session);
@@ -308,7 +308,6 @@ namespace Tests.ViewModelsTests
         public void AddWordToDoctorAfterSaveHr()
         {
             // слова становятся видны доктору только после сохранения записи
-            var d2 = session.Get<Doctor>(IntToGuid<Doctor>(2));
             AuthorityController.TryLogIn(d2);
 
             Word wForD1Only = word;

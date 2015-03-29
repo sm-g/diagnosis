@@ -9,20 +9,16 @@ using System.Linq;
 namespace Tests
 {
     [TestClass]
-
     public class WordListTest : InMemoryDatabaseTest
     {
-        private Doctor d1;
-        private Doctor d2;
         [TestInitialize]
         public void Init()
         {
-            d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
-            d2 = session.Get<Doctor>(IntToGuid<Doctor>(2));
+            Load<Doctor>();
+            Load<Word>();
+            Load<Vocabulary>();
 
             AuthorityController.TryLogIn(d1);
-            wIds.ForAll((id) => w[id] = session.Get<Word>(IntToGuid<Word>(id)));
-            vocIds.ForAll((id) => voc[id] = session.Get<Vocabulary>(IntToGuid<Vocabulary>(id)));
         }
 
         [TestMethod]
@@ -74,8 +70,5 @@ namespace Tests
             var newW2 = CreateWordInEditor(d1w.Title);
             Assert.AreEqual(d1w, newW2);
         }
-
-
-
     }
 }

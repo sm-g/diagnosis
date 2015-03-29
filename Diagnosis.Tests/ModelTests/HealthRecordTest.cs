@@ -18,8 +18,8 @@ namespace Tests
         [TestInitialize]
         public void AutocompleteTestInit()
         {
-            hrIds.ForAll((id) => hr[id] = session.Get<HealthRecord>(IntToGuid<HealthRecord>(id)));
-            uomIds.ForAll((id) => uom[id] = session.Get<Uom>(IntToGuid<Uom>(id)));
+            Load<HealthRecord>();
+            Load<Uom>();
             hr1 = hr[71]; // without hios
         }
 

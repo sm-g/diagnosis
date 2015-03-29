@@ -10,21 +10,21 @@ namespace Tests
     [TestClass]
     public class RelationsTest : InMemoryDatabaseTest
     {
-        private Doctor d1;
+
 
         [TestInitialize]
         public void Init()
         {
-            d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
-            AuthorityController.TryLogIn(d1);
+            Load<Doctor>();
+            Load<Appointment>();
+            Load<Word>();
+            Load<Vocabulary>();
+            Load<WordTemplate>();
+            Load<UomType>();
+            Load<Speciality>();
+            Load<IcdBlock>();
 
-            aIds.ForAll((id) => a[id] = session.Get<Appointment>(IntToGuid<Appointment>(id)));
-            wIds.ForAll((id) => w[id] = session.Get<Word>(IntToGuid<Word>(id)));
-            vocIds.ForAll((id) => voc[id] = session.Get<Vocabulary>(IntToGuid<Vocabulary>(id)));
-            wTempIds.ForAll((id) => wTemp[id] = session.Get<WordTemplate>(IntToGuid<WordTemplate>(id)));
-            uomTypeIds.ForAll((id) => uomType[id] = session.Get<UomType>(IntToGuid<UomType>(id)));
-            specIds.ForAll((id) => spec[id] = session.Get<Speciality>(IntToGuid<Speciality>(id)));
-            blockIds.ForAll((id) => block[id] = session.Get<IcdBlock>(id));
+            AuthorityController.TryLogIn(d1);
         }
 
         [TestMethod]

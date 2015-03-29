@@ -12,20 +12,20 @@ namespace Tests
     [TestClass]
     public class HrListTest : InMemoryDatabaseTest
     {
-        private Doctor d1;
+
 
         [TestInitialize]
         public void Init()
         {
-            d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
+            Load<Doctor>();
+
+            Load<Patient>();
+            Load<Course>();
+            Load<HrCategory>();
+            Load<Appointment>();
+            Load<HealthRecord>();
+
             AuthorityController.TryLogIn(d1);
-
-            pIds.ForAll((id) => p[id] = session.Get<Patient>(IntToGuid<Patient>(id)));
-            cIds.ForAll((id) => c[id] = session.Get<Course>(IntToGuid<Course>(id)));
-            cIds.ForAll((id) => cat[id] = session.Get<HrCategory>(IntToGuid<HrCategory>(id)));
-            aIds.ForAll((id) => a[id] = session.Get<Appointment>(IntToGuid<Appointment>(id)));
-            hrIds.ForAll((id) => hr[id] = session.Get<HealthRecord>(IntToGuid<HealthRecord>(id)));
-
             // a[2] with hrs 20,21,22
         }
 

@@ -14,22 +14,19 @@ namespace Tests
     public class VocLoaderTest : InMemoryDatabaseTest
     {
         private VocLoader l;
-        private Doctor d1;
-        private Doctor d2;
 
         [TestInitialize]
         public void Init()
         {
-            d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
-            d2 = session.Get<Doctor>(IntToGuid<Doctor>(2));
+            l = new VocLoader(session, d1);
+
+            Load<Doctor>();
+            Load<Appointment>();
+            Load<Word>();
+            Load<Vocabulary>();
+            Load<WordTemplate>();
 
             AuthorityController.TryLogIn(d1);
-            l = new VocLoader(session, d1);
-            aIds.ForAll((id) => a[id] = session.Get<Appointment>(IntToGuid<Appointment>(id)));
-
-            wIds.ForAll((id) => w[id] = session.Get<Word>(IntToGuid<Word>(id)));
-            vocIds.ForAll((id) => voc[id] = session.Get<Vocabulary>(IntToGuid<Vocabulary>(id)));
-            wTempIds.ForAll((id) => wTemp[id] = session.Get<WordTemplate>(IntToGuid<WordTemplate>(id)));
         }
 
         [TestMethod]

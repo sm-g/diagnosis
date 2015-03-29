@@ -13,9 +13,9 @@ namespace Tests
         [TestInitialize]
         public void Init()
         {
-            hrIds.ForAll((id) => hr[id] = session.Get<HealthRecord>(IntToGuid<HealthRecord>(id)));
-            wIds.ForAll((id) => w[id] = session.Get<Word>(IntToGuid<Word>(id)));
-            aIds.ForAll((id) => a[id] = session.Get<Appointment>(IntToGuid<Appointment>(id)));
+            Load<HealthRecord>();
+            Load<Word>();
+            Load<Appointment>();
 
             s = new SearchViewModel();
         }

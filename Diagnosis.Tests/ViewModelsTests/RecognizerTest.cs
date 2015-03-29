@@ -12,18 +12,17 @@ namespace Tests
     public class RecognizerTest : InMemoryDatabaseTest
     {
         private Recognizer r;
-        private Doctor d1;
+
         private static string notExistQ = "qwe";
-        private Doctor d2;
+
 
         [TestInitialize]
         public void RecognizerTestInit()
         {
-            d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
-            d2 = session.Get<Doctor>(IntToGuid<Doctor>(2));
-            AuthorityController.TryLogIn(d1);
+            Load<Doctor>();
+            Load<Word>();
             r = new Recognizer(session, clearCreated: true);
-            wIds.ForAll((id) => w[id] = session.Get<Word>(IntToGuid<Word>(id)));
+            AuthorityController.TryLogIn(d1);
         }
 
         [TestMethod]
