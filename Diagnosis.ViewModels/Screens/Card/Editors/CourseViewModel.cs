@@ -1,6 +1,5 @@
 ﻿using Diagnosis.Models;
 using System;
-using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
@@ -10,8 +9,6 @@ namespace Diagnosis.ViewModels.Screens
     public class CourseViewModel : ViewModelBase
     {
         internal readonly Course course;
-        private ShortAppointmentViewModel _selApp;
-        private AppointmentsManager appManager;
 
         public CourseViewModel(Course course)
         {
@@ -20,9 +17,7 @@ namespace Diagnosis.ViewModels.Screens
             this.validatableEntity = course;
 
             course.PropertyChanged += course_PropertyChanged;
-            appManager = new AppointmentsManager(course);
         }
-
 
         #region Model
 
@@ -68,30 +63,6 @@ namespace Diagnosis.ViewModels.Screens
 
         #endregion Model
 
-        public ObservableCollection<ShortAppointmentViewModel> Appointments
-        {
-            get
-            {
-                return appManager.Appointments;
-            }
-        }
-
-        public ShortAppointmentViewModel SelectedAppointment
-        {
-            get
-            {
-                return _selApp;
-            }
-            set
-            {
-                if (_selApp != value)
-                {
-                    _selApp = value;
-                    OnPropertyChanged(() => SelectedAppointment);
-                }
-            }
-        }
-
         public ICommand AddAppointmentCommand
         {
             get
@@ -107,7 +78,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return Appointments.Count == 0;
+                return course.Appointments.Count() == 0;
             }
         }
 
@@ -124,11 +95,6 @@ namespace Diagnosis.ViewModels.Screens
             return string.Format("{0} {1}", GetType().Name, course);
         }
 
-        internal void SelectAppointment(Appointment appointment)
-        {
-            SelectedAppointment = Appointments.FirstOrDefault(x => x.appointment == appointment);
-        }
-
         private void course_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             OnPropertyChanged(e.PropertyName);
@@ -139,7 +105,6 @@ namespace Diagnosis.ViewModels.Screens
             if (disposing)
             {
                 course.PropertyChanged -= course_PropertyChanged;
-                appManager.Dispose();
             }
             base.Dispose(disposing);
         }

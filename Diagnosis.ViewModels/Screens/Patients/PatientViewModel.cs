@@ -14,8 +14,6 @@ namespace Diagnosis.ViewModels.Screens
     public class PatientViewModel : ViewModelBase
     {
         internal readonly Patient patient;
-        private ShortCourseViewModel _selectedCourse;
-        private CoursesManager coursesManager;
 
         public PatientViewModel(Patient p)
         {
@@ -24,11 +22,6 @@ namespace Diagnosis.ViewModels.Screens
             this.validatableEntity = p;
 
             patient.PropertyChanged += patient_PropertyChanged;
-
-            coursesManager = new CoursesManager(patient, onCoursesChanged: (s, e) =>
-            {
-                OnPropertyChanged("NoCourses");
-            });
         }
 
         #region Model
@@ -186,24 +179,6 @@ namespace Diagnosis.ViewModels.Screens
         }
         #endregion Model related
 
-        public ObservableCollection<ShortCourseViewModel> Courses { get { return coursesManager.Courses; } }
-
-        public ShortCourseViewModel SelectedCourse
-        {
-            get
-            {
-                return _selectedCourse;
-            }
-            set
-            {
-                if (_selectedCourse != value)
-                {
-                    _selectedCourse = value;
-                    OnPropertyChanged(() => SelectedCourse);
-                }
-            }
-        }
-
         public RelayCommand EditCommand
         {
             get
@@ -230,13 +205,8 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return Courses.Count == 0;
+                return patient.Courses.Count() == 0;
             }
-        }
-
-        public void SelectCourse(Course course)
-        {
-            SelectedCourse = Courses.FirstOrDefault(x => x.course == course);
         }
 
         private void patient_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -254,7 +224,6 @@ namespace Diagnosis.ViewModels.Screens
             if (disposing)
             {
                 patient.PropertyChanged -= patient_PropertyChanged;
-                coursesManager.Dispose();
             }
             base.Dispose(disposing);
         }
