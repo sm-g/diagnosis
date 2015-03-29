@@ -39,12 +39,12 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         /// <summary>
-        /// Запись выгружена.
+        /// Запись выгружена, но редактор еще открыт.
         /// </summary>
         public event EventHandler<DomainEntityEventArgs> Unloaded;
 
         /// <summary>
-        /// Редактор закрыт. Перед этим выгружается запись.
+        /// Редактор закрыт. Запись выгружается перед этим.
         /// </summary>
         public event EventHandler<DomainEntityEventArgs> Closed;
 
@@ -261,8 +261,10 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    OnClosing(HealthRecord != null ? HealthRecord.healthRecord : null);
+                    var hr = HealthRecord != null ? HealthRecord.healthRecord : null;
+                    OnClosing(hr);
                     Unload();
+                    OnClosed(hr);
                 });
             }
         }
@@ -349,7 +351,7 @@ namespace Diagnosis.ViewModels.Screens
         #endregion AutoComplete
 
         /// <summary>
-        /// Загружает запись в редактор.
+        /// Загружает запись в редактор. Текущая запсиь выгружается, редактор осатется открытым.
         /// </summary>
         /// <param name="hr"></param>
         public void Load(HealthRecord hr)
@@ -388,10 +390,9 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (HealthRecord != null)
             {
-                var hr = HealthRecord.healthRecord;
+                var hr = HealthRecord != null ? HealthRecord.healthRecord : null;
                 FinishCurrentHr();
                 HealthRecord = null;
-
                 OnClosed(hr);
             }
         }
@@ -467,10 +468,12 @@ namespace Diagnosis.ViewModels.Screens
 
                 Autocomplete.Dispose();
                 _autocomplete = null;
-                recognizer = null; // editor closed, created words persisted
+                recognizer = null;
 
+                // сохраняем запись
                 OnUnloaded(hr);
 
+                // сохраняем настройки редактора
                 doctor.Settings.AddQueryToSuggestions = addQuery;
                 new Saver(session).Save(doctor);
             }

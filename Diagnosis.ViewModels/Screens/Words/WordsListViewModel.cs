@@ -22,12 +22,13 @@ namespace Diagnosis.ViewModels.Screens
         private WordViewModel _current;
         private EventMessageHandlersManager emhManager;
         private Saver saver;
+        Doctor doctor;
 
         public WordsListViewModel()
         {
             _filter = new FilterViewModel<Word>(WordQuery.StartingWith(Session));
             saver = new Saver(Session);
-            var doctor = AuthorityController.CurrentDoctor;
+            doctor = AuthorityController.CurrentDoctor;
 
             SelectedWords = new ObservableCollection<WordViewModel>();
 
@@ -151,7 +152,7 @@ namespace Diagnosis.ViewModels.Screens
                         .Where(w => w.IsEmpty())
                         .ToArray();
 
-                    // maintain m2m relation
+                    // todo не просто удалять, а убирать для этого врача
                     toDel.ForAll(x => x.OnDelete());
                     saver.Delete(toDel);
 

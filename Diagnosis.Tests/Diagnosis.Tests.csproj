@@ -165,6 +165,7 @@
     <Compile Include="CommonTests\StringExtensionTest.cs" />
     <Compile Include="ViewModelsTests\HrEditorTest.cs" />
     <Compile Include="ModelTests\OrderedBagTest.cs" />
+    <Compile Include="ViewModelsTests\RecognizerTest.cs" />
     <Compile Include="ViewModelsTests\SearchTest.cs" />
   </ItemGroup>
   <ItemGroup>

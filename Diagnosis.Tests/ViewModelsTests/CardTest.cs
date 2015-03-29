@@ -13,6 +13,7 @@ namespace Tests
     public class CardTest : InMemoryDatabaseTest
     {
         private Doctor d1;
+        CardViewModel card;
 
         [TestInitialize]
         public void Init()
@@ -26,6 +27,12 @@ namespace Tests
             hrIds.ForAll((id) => hr[id] = session.Get<HealthRecord>(IntToGuid<HealthRecord>(id)));
 
             // p[3] c[4] a[5] are empty, for deletions
+        }
+        [TestCleanup]
+        public void Cleanup()
+        {
+            if (card != null)
+                card.Dispose();
         }
         #region Opening
 
