@@ -9,8 +9,9 @@ namespace Diagnosis.Common
 {
     public static class Constants
     {
+        // TODO fix for tests
         private static AssemblyInfo info = new AssemblyInfo(Assembly.GetEntryAssembly());
-        private static bool isClient = Assembly.GetEntryAssembly().FullName.Contains("Client");
+        private static bool isClient = Assembly.GetEntryAssembly().FullName.Contains("Client") || Assembly.GetEntryAssembly().FullName.Contains("Test");
         private static string _localAppDataDir;
 
         public const string SqlCeProvider = "System.Data.SqlServerCE.4.0";

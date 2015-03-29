@@ -23,7 +23,7 @@ namespace Diagnosis.Data.Versions
     //            .AddColumn(Ord).AsByte().NotNullable().WithDefaultValue(0)
     //            .AddColumn(DoctorId).AsGuid().NotNullable().WithDefaultValue(Guid.Empty);
 
-    //        using (var s = NHibernateHelper.OpenSession())
+    //        using (var s = NHibernateHelper.Default.OpenSession())
     //        {
     //            //s.Query<HealthRecord>().Where(hr => hr.Course != null).ForEach(hr => hr.Doctor = hr.Course.LeadDoctor);
     //            //s.Query<HealthRecord>().Where(hr => hr.Appointment != null).ForEach(hr => hr.Doctor = hr.Appointment.Doctor);

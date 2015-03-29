@@ -515,7 +515,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 get
                 {
-                    return category.Name;
+                    return category.Title;
                 }
             }
             public int CompareTo(object obj)

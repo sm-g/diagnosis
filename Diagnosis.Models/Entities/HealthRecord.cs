@@ -61,22 +61,27 @@ namespace Diagnosis.Models
         }
 
         public virtual event NotifyCollectionChangedEventHandler ItemsChanged;
+
         /// <summary>
         /// Пациент, если запись на уровне пациента
         /// </summary>
         public virtual Patient Patient { get; protected set; }
+
         /// <summary>
         /// Курс, если запись на уровне курса
         /// </summary>
         public virtual Course Course { get; protected set; }
+
         /// <summary>
         /// Осмотр, если запись на уровне осмотра
         /// </summary>
         public virtual Appointment Appointment { get; protected set; }
+
         /// <summary>
         /// Автор записи
         /// </summary>
         public virtual Doctor Doctor { get; protected set; }
+
         /// <summary>
         /// В чьем списке запись
         /// </summary>
@@ -243,20 +248,21 @@ namespace Diagnosis.Models
         /// Устанавливает сущности элементов записи.
         /// Полученные элементы нумеруются по порядку.
         /// </summary>
-        /// <param name="entitiesToBe"></param>
-        public virtual void SetItems(IList<ConfindenceHrItemObject> entitiesToBe)
+        /// <param name="chiosToBe"></param>
+        public virtual void SetItems(IList<ConfindenceHrItemObject> chiosToBe)
         {
-            Contract.Requires(entitiesToBe != null);
-            Contract.Ensures(HrItems.Count == entitiesToBe.Count);
+            Contract.Requires(chiosToBe != null);
+            Contract.Ensures(HrItems.Count == chiosToBe.Count);
             Contract.Ensures(HrItems.Select(x => x.Entity)
-                .ScrambledEquals(entitiesToBe.Select(x => x.HIO))); // same HIOs
+                .ScrambledEquals(chiosToBe.Select(x => x.HIO))); // same HIOs
             Contract.Ensures(HrItems.Select(x => x.Ord).Distinct().Count() == HrItems.Count); // Order is unique
+            Contract.Ensures(HrItems.Select(x => x.Word).Where(x => x != null).All(x => x.HealthRecords.Contains(this))); // word2hr relation
 
-            var hrEntities = this.HrItems.Select(x => x.CHIO).ToList();
-            var hiosToBe = entitiesToBe.Select(x => x.HIO).ToList();
+            var hrChios = this.HrItems.Select(x => x.CHIO).ToList();
+            var hiosToBe = chiosToBe.Select(x => x.HIO).ToList();
 
-            var willSet = new OrderedBag<ConfindenceHrItemObject>(entitiesToBe);
-            var wasSet = new OrderedBag<ConfindenceHrItemObject>(hrEntities);
+            var willSet = new OrderedBag<ConfindenceHrItemObject>(chiosToBe);
+            var wasSet = new OrderedBag<ConfindenceHrItemObject>(hrChios);
             var toA = willSet.Difference(wasSet);
             var toR = wasSet.Difference(willSet);
 
@@ -269,12 +275,12 @@ namespace Diagnosis.Models
             var itemsToBe = new List<HrItem>();
 
             // добалвяем все существующие, чьи сущности не надо убирать
-            for (int i = 0; i < hrEntities.Count; i++)
+            for (int i = 0; i < hrChios.Count; i++)
             {
-                var needRem = toR.Contains(hrEntities[i]);
+                var needRem = toR.Contains(hrChios[i]);
                 if (needRem)
                 {
-                    toR.Remove(hrEntities[i]);
+                    toR.Remove(hrChios[i]);
                     itemsToRem.Add(this.HrItems.ElementAt(i));
                 }
                 else
@@ -377,6 +383,10 @@ namespace Diagnosis.Models
             var hrItemsCopy = new HashedSet<HrItem>(hrItems);
             if (hrItems.Add(item))
             {
+                // обновляем другую сторону many-2-many
+                if (item.Word != null)
+                    item.Word.AddHr(this);
+
                 EditHelper.Edit("HrItems", hrItemsCopy);
                 if (InEdit)
                 {
@@ -394,6 +404,10 @@ namespace Diagnosis.Models
             var hrItemsCopy = new HashedSet<HrItem>(hrItems);
             if (hrItems.Remove(item))
             {
+                // обновляем другую сторону many-2-many
+                if (item.Word != null)
+                    item.Word.RemoveHr(this);
+
                 EditHelper.Edit("HrItems", hrItemsCopy);
                 if (InEdit)
                 {
@@ -401,6 +415,11 @@ namespace Diagnosis.Models
                 }
                 OnItemsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
             }
+        }
+
+        protected internal virtual void OnDelete()
+        {
+            this.Words.ForEach(x => x.RemoveHr(this));
         }
     }
 }

@@ -9,6 +9,7 @@ using NHibernate.Connection;
 using NHibernate.Dialect;
 using NHibernate.Driver;
 using NHibernate.Event;
+using NHibernate.Event.Default;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Tool.hbm2ddl;
 using System.IO;
@@ -18,21 +19,63 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Diagnosis.Data
 {
-    public static class NHibernateHelper
+    [System.Serializable]
+    public class FixedDefaultFlushEventListener : DefaultFlushEventListener
     {
-        private static Configuration _cfg;
-        private static HbmMapping _mapping;
-        private static ISession _session;
-        private static ISessionFactory _sessionFactory;
-        private static ConnectionInfo connection;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static bool InMemory { get; set; }
+        protected override void PerformExecutions(IEventSource session)
+        {
+            if (log.IsDebugEnabled)
+            {
+                log.Debug("executing flush");
+            }
+            try
+            {
+                session.ConnectionManager.FlushBeginning();
+                session.PersistenceContext.Flushing = true;
+                session.ActionQueue.PrepareActions();
+                session.ActionQueue.ExecuteActions();
+            }
+            catch (HibernateException exception)
+            {
+                if (log.IsErrorEnabled)
+                {
+                    log.Error("Could not synchronize database state with session", exception);
+                }
+                throw;
+            }
+            finally
+            {
+                session.PersistenceContext.Flushing = false;
+                session.ConnectionManager.FlushEnding();
+            }
+        }
+    }
 
-        public static bool ShowSql { get; set; }
+    public class NHibernateHelper
+    {
+        private static readonly System.Lazy<NHibernateHelper> lazyInstance = new System.Lazy<NHibernateHelper>(() => new NHibernateHelper() { useSavedCfg = true });
+        private Configuration _cfg;
+        private HbmMapping _mapping;
+        private ISession _session;
+        private ISessionFactory _sessionFactory;
+        private ConnectionInfo connection;
+        private bool useSavedCfg;
 
-        public static bool FromTest { get; set; }
+        protected NHibernateHelper()
+        {
+        }
 
-        public static Configuration Configuration
+        public static NHibernateHelper Default { get { return lazyInstance.Value; } }
+
+        public bool InMemory { get; set; }
+
+        public bool ShowSql { get; set; }
+
+        public bool FromTest { get; set; }
+
+        public Configuration Configuration
         {
             get
             {
@@ -49,28 +92,22 @@ namespace Diagnosis.Data
             }
         }
 
-        public static string ConnectionString
+        public string ConnectionString
         {
             get { return Configuration.GetProperty(Environment.ConnectionString); }
         }
 
-        private static HbmMapping Mapping
+        private HbmMapping Mapping
         {
-            get
-            {
-                return _mapping ?? (_mapping = CreateMapping());
-            }
+            get { return _mapping ?? (_mapping = CreateMapping()); }
         }
 
-        private static ISessionFactory SessionFactory
+        private ISessionFactory SessionFactory
         {
-            get
-            {
-                return _sessionFactory ?? (_sessionFactory = Configuration.BuildSessionFactory());
-            }
+            get { return _sessionFactory ?? (_sessionFactory = Configuration.BuildSessionFactory()); }
         }
 
-        private static bool IsConfigurationFileValid
+        private bool IsConfigurationFileValid
         {
             get
             {
@@ -92,13 +129,22 @@ namespace Diagnosis.Data
             }
         }
 
+        public static NHibernateHelper FromServerConnectionInfo(ConnectionInfo conn)
+        {
+            var instance = new NHibernateHelper();
+            instance.useSavedCfg = false;
+            instance.Init(conn, Side.Server);
+
+            return instance;
+        }
+
         /// <summary>
         /// Initialize connection, set InMemory if any error occured.
         /// </summary>
         /// <param name="conn"></param>
         /// <param name="side"></param>
         /// <returns>Connection success</returns>
-        public static bool Init(ConnectionInfo conn, Side side)
+        public bool Init(ConnectionInfo conn, Side side)
         {
             if (conn == null)
             {
@@ -136,7 +182,7 @@ namespace Diagnosis.Data
             return true;
         }
 
-        public static ISession GetSession()
+        public ISession GetSession()
         {
             if (_session == null)
             {
@@ -150,19 +196,19 @@ namespace Diagnosis.Data
             return _session;
         }
 
-        public static ISession OpenSession()
+        public ISession OpenSession()
         {
             var s = SessionFactory.OpenSession();
             s.FlushMode = FlushMode.Commit;
 
             if (InMemory)
                 InMemoryHelper.FillData(Configuration, s);
-            if (FromTest)
+            if (FromTest) // same session in VMBase
                 _session = s;
             return s;
         }
 
-        public static IStatelessSession OpenStatelessSession()
+        public IStatelessSession OpenStatelessSession()
         {
             var s = SessionFactory.OpenStatelessSession();
             if (InMemory)
@@ -170,7 +216,7 @@ namespace Diagnosis.Data
             return s;
         }
 
-        private static HbmMapping CreateMapping()
+        private HbmMapping CreateMapping()
         {
             var mapper = new ModelMapper();
             var mapType = typeof(WordMap);
@@ -180,7 +226,7 @@ namespace Diagnosis.Data
             return mapper.CompileMappingForAllExplicitlyAddedEntities();
         }
 
-        private static Configuration CreateConfiguration()
+        private Configuration CreateConfiguration()
         {
             var cfg = new Configuration();
 
@@ -215,11 +261,13 @@ namespace Diagnosis.Data
             cfg.AppendListeners(ListenerType.PostDelete, new IPostDeleteEventListener[] { postListener });
             cfg.AppendListeners(ListenerType.PostLoad, new IPostLoadEventListener[] { postListener });
 
+            cfg.EventListeners.FlushEventListeners = new IFlushEventListener[] { new FixedDefaultFlushEventListener() };
+
             cfg.AddMapping(Mapping);
             return cfg;
         }
 
-        private static void ConfigureSqlServer(Configuration cfg, string constr, bool showSql)
+        private void ConfigureSqlServer(Configuration cfg, string constr, bool showSql)
         {
             cfg.SetProperty(Environment.Dialect, typeof(MsSql2012Dialect).AssemblyQualifiedName)
                 .SetProperty(Environment.ConnectionDriver, typeof(SqlClientDriver).AssemblyQualifiedName)
@@ -228,7 +276,7 @@ namespace Diagnosis.Data
                 .SetProperty(Environment.ShowSql, showSql ? "true" : "false");
         }
 
-        private static void ConfigureSqlCe(Configuration cfg, string constr, bool showSql)
+        private void ConfigureSqlCe(Configuration cfg, string constr, bool showSql)
         {
             cfg.SetProperty(Environment.ReleaseConnections, "on_close")
                .SetProperty(Environment.Dialect, typeof(MsSqlCe40Dialect).AssemblyQualifiedName)
@@ -238,9 +286,9 @@ namespace Diagnosis.Data
                .SetProperty(Environment.ShowSql, showSql ? "true" : "false");
         }
 
-        private static Configuration LoadConfiguration()
+        private Configuration LoadConfiguration()
         {
-            if (InMemory || IsConfigurationFileValid == false)
+            if (InMemory || IsConfigurationFileValid == false || !useSavedCfg)
                 return null;
             try
             {
@@ -256,9 +304,9 @@ namespace Diagnosis.Data
             }
         }
 
-        private static void SaveConfiguration(Configuration cfg)
+        private void SaveConfiguration(Configuration cfg)
         {
-            if (InMemory)
+            if (InMemory || !useSavedCfg)
                 return;
 
             try
@@ -274,7 +322,7 @@ namespace Diagnosis.Data
             }
         }
 
-        private static void ExportSchemaToFile()
+        private void ExportSchemaToFile()
         {
             string desktop = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop);
             new SchemaExport(Configuration)

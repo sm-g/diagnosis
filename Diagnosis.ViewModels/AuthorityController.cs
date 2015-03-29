@@ -17,13 +17,14 @@ namespace Diagnosis.ViewModels
         public static event EventHandler LoggedOut;
 
         private static List<Screen> doctorScreens = new List<Screen> { Screen.Login, Screen.Card, Screen.Patients, Screen.Words };
-        private static List<Screen> adminScreens = new List<Screen> { Screen.Login, Screen.Doctors, Screen.Sync };
+        private static List<Screen> adminScreens = new List<Screen> { Screen.Login, Screen.Doctors, Screen.Sync, Screen.Vocabularies };
 
         static AuthorityController()
         {
             AutoLogon = true;
 #if DEBUG
             doctorScreens.Add(Screen.Sync);
+            doctorScreens.Add(Screen.Vocabularies);
 #endif
         }
 
@@ -37,8 +38,14 @@ namespace Diagnosis.ViewModels
         {
             if (ValidatePassword(user, password))
             {
+                LogOut();
                 CurrentUser = user;
                 CurrentDoctor = user as Doctor;
+                if (user is Doctor)
+                {
+                    var ws = CurrentDoctor.Speciality != null ? CurrentDoctor.Speciality.Vocabularies.SelectMany(x => x.Words) : Enumerable.Empty<Word>();
+                    CurrentDoctor.SpecialityWords = new List<Word>(ws);
+                }
                 OnLoggedIn(user);
                 return true;
             }

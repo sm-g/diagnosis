@@ -25,7 +25,10 @@
                       Header="_Словарь" />
             <MenuItem Command="{Binding OpenSyncCommand}"
                       Visibility="{Binding OpenSyncCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                      Header="_Синхронизация" />
+                      Header="С_инхронизация" />
+            <MenuItem Command="{Binding OpenVocsCommand}"
+                      Visibility="{Binding OpenVocsCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      Header="_Словари" />
             
             <MenuItem x:Name="view"
                       Header="_Вид">

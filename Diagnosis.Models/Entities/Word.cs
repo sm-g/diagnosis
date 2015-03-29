@@ -1,9 +1,11 @@
-﻿using Diagnosis.Models.Validators;
+﻿using Diagnosis.Common;
+using Diagnosis.Models.Validators;
 using FluentValidation.Results;
 using Iesi.Collections.Generic;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.Models
 {
@@ -12,6 +14,9 @@ namespace Diagnosis.Models
     {
         [NonSerialized]
         private Iesi.Collections.Generic.ISet<Word> children = new HashedSet<Word>();
+
+        [NonSerialized]
+        private Iesi.Collections.Generic.ISet<Vocabulary> vocabularies = new HashedSet<Vocabulary>();
 
         [NonSerialized]
         private IList<HealthRecord> healthRecords = new List<HealthRecord>(); // many-2-many bag
@@ -41,11 +46,15 @@ namespace Diagnosis.Models
                 SetProperty(ref _title, filtered, () => Title);
             }
         }
-
         public virtual Word Parent
         {
             get { return _parent; }
             set { SetProperty(ref _parent, value, () => Parent); }
+        }
+
+        public virtual IEnumerable<Vocabulary> Vocabularies
+        {
+            get { return vocabularies; }
         }
 
         public virtual IEnumerable<Word> Children
@@ -57,6 +66,15 @@ namespace Diagnosis.Models
         {
             get { return healthRecords; }
         }
+
+        /// <summary>
+        /// Вызвать перед удалением слова.
+        /// </summary>
+        public virtual void OnDelete()
+        {
+            Vocabularies.ForEach(x => x.RemoveWord(this));
+        }
+
         public override string ToString()
         {
             return Title;
@@ -80,6 +98,33 @@ namespace Diagnosis.Models
         public override ValidationResult SelfValidate()
         {
             return new WordValidator().Validate(this);
+        }
+
+        // for refresh state of many-2-many relations
+
+        protected internal virtual void RemoveVoc(Vocabulary voc)
+        {
+            Contract.Requires(!voc.Words.Contains(this));
+            vocabularies.Remove(voc);
+        }
+
+        protected internal virtual void AddVoc(Vocabulary voc)
+        {
+            Contract.Requires(voc.Words.Contains(this));
+            vocabularies.Add(voc);
+        }
+
+        protected internal virtual void AddHr(HealthRecord hr)
+        {
+            Contract.Requires(hr.Words.Contains(this));
+            healthRecords.Add(hr);
+        }
+
+        protected internal virtual void RemoveHr(HealthRecord hr)
+        {
+            // при удалении записи слова не удаляются отдельно
+            // при удалении элемента слово уже удалено
+            healthRecords.Remove(hr);
         }
     }
 }

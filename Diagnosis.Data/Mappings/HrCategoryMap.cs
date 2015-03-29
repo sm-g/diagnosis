@@ -13,9 +13,8 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.GuidComb);
             });
 
-            Property(x => x.Name, m =>
+            Property(x => x.Title, m =>
             {
-                m.Column("Title");
                 m.NotNullable(true);
                 m.Length(20);
             });

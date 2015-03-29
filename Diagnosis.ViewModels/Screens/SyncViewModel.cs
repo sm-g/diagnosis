@@ -1,7 +1,10 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Common.Types;
 using Diagnosis.Data;
+using Diagnosis.Data.Queries;
 using Diagnosis.Data.Sync;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Controls;
 using Diagnosis.ViewModels.Framework;
 using EventAggregator;
 using NHibernate.Linq;
@@ -20,54 +23,48 @@ namespace Diagnosis.ViewModels.Screens
     {
         private static string _log;
 
-        private string _remoteConStr;
-        private string _remoteProvider;
         private string _localConStr;
         private string _localProvider;
+        private DataConnectionViewModel _remote;
 
-        public SyncViewModel()
+        public SyncViewModel(ConnectionInfo server = null)
         {
             Title = "Синхронизация";
 
-            LocalConnectionString = NHibernateHelper.ConnectionString;
+            LocalConnectionString = NHibernateHelper.Default.ConnectionString;
             LocalProviderName = LocalConnectionString.Contains(".sdf") ? Constants.SqlCeProvider : Constants.SqlServerProvider;
 
-            var server = Constants.ServerConnectionInfo; // из Settings
-            if (server != null)
-            {
-                RemoteConnectionString = server.ConnectionString;
-                RemoteProviderName = server.ProviderName;
-            }
-#if DEBUG
-            //    RemoteConnectionString = "Data Source=remote.sdf";
-            RemoteProviderName = Constants.SqlCeProvider;
-#endif
+            Remote = new DataConnectionViewModel(server);
+
             Syncer.MessagePosted += syncer_MessagePosted;
             Syncer.SyncEnded += syncer_SyncEnded;
         }
-
+        public DataConnectionViewModel Remote
+        {
+            get
+            {
+                return _remote;
+            }
+            set
+            {
+                if (_remote != value)
+                {
+                    _remote = value;
+                    OnPropertyChanged(() => Remote);
+                }
+            }
+        }
         /// <summary>
         /// Remote, server or middle on Client.exe, middle on Server.exe
         /// </summary>
         public string RemoteConnectionString
         {
-            get
-            {
-                return _remoteConStr;
-            }
-            set
-            {
-                if (_remoteConStr != value)
-                {
-                    if (!value.StartsWith("Data Source="))
-                    {
-                        value = "Data Source=" + value;
-                    }
+            get { return Remote.ConnectionString; }
+        }
 
-                    _remoteConStr = value;
-                    OnPropertyChanged(() => RemoteConnectionString);
-                }
-            }
+        public string RemoteProviderName
+        {
+            get { return Remote.ProviderName; }
         }
 
         /// <summary>
@@ -89,22 +86,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public string RemoteProviderName
-        {
-            get
-            {
-                return _remoteProvider;
-            }
-            set
-            {
-                if (_remoteProvider != value)
-                {
-                    _remoteProvider = value;
-                    OnPropertyChanged(() => RemoteProviderName);
-                }
-            }
-        }
-
         public string LocalProviderName
         {
             get
@@ -121,28 +102,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        /// <summary>
-        /// Open remote SqlCe DB.
-        /// </summary>
-        public RelayCommand OpenSdfCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    var result = new FileDialogService().ShowOpenFileDialog(null,
-                         FileType.Sdf.ToEnumerable(),
-                         FileType.Sdf,
-                         "diagnosis");
-
-                    if (result.IsValid)
-                    {
-                        RemoteConnectionString = result.FileName;
-                        RemoteProviderName = Constants.SqlCeProvider;
-                    }
-                });
-            }
-        }
 
         /// <summary>
         /// Загружает справочные данные с удаленной серверной БД на клиент.
@@ -153,7 +112,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    Contract.Requires(LocalProviderName == Constants.SqlCeProvider); // загружаем только на клиента
+                    Contract.Requires(Constants.IsClient);
 
                     var syncer = new Syncer(
                          serverConStr: RemoteConnectionString,
@@ -162,7 +121,10 @@ namespace Diagnosis.ViewModels.Screens
 
                     DoWithCursor(syncer.SendFrom(Side.Server).ContinueWith((t) =>
                         // после загрузки проверяем справочные сущности на совпадение
-                        CheckReferenceEntitiesAfterDownload(syncer.AddedIdsPerType)), Cursors.AppStarting);
+                        CheckReferenceEntitiesAfterDownload(syncer.AddedIdsPerType)).ContinueWith((t) =>
+                            // обновляем загруженные словари или удаляем
+                        new VocLoader(Session, AuthorityController.CurrentDoctor).AfterSyncVocs(syncer.DeletedIdsPerType))
+                    , Cursors.AppStarting);
                 },
                 () => CanSync(true, true));
             }
@@ -199,7 +161,7 @@ namespace Diagnosis.ViewModels.Screens
                         if (Constants.IsClient)
                             scopes = Scopes.GetOrderedUploadScopes();
                         else
-                            scopes = Scope.Reference.ToEnumerable();
+                            scopes = Scopes.GetOrderedDownloadScopes();
 
                         // создаем промежуточную БД
                         SqlHelper.CreateSqlCeByConStr(sdfFileConstr);
@@ -272,6 +234,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+
         public string Log
         {
             get
@@ -287,7 +250,6 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-
         public bool CanSync(bool local, bool remote)
         {
             bool result = !Syncer.InSync;
@@ -317,6 +279,8 @@ namespace Diagnosis.ViewModels.Screens
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                 CommandManager.InvalidateRequerySuggested()));
         }
+
+
 
         private void CheckReferenceEntitiesAfterDownload(Dictionary<Type, IEnumerable<object>> addedIdsPerType)
         {
@@ -463,16 +427,6 @@ namespace Diagnosis.ViewModels.Screens
 
             if (list.Count() > 0)
                 Log += string.Format("[{0:mm:ss:fff}] replaced {1} {2}\n", DateTime.Now, list.Count(), list.First().Actual.GetType().Name);
-        }
-
-        private void DoWithCursor(Task act, Cursor cursor)
-        {
-            Mouse.OverrideCursor = cursor;
-            act.ContinueWith((t) =>
-            {
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
-                    Mouse.OverrideCursor = null));
-            });
         }
 
         protected override void Dispose(bool disposing)

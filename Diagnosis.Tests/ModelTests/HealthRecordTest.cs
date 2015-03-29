@@ -18,8 +18,8 @@ namespace Tests
         [TestInitialize]
         public void AutocompleteTestInit()
         {
-            hrIds.ForAll((id) => hr[id] = session.Get<HealthRecord>(IntToGuid<HealthRecord>(id)));
-            uomIds.ForAll((id) => uom[id] = session.Get<Uom>(IntToGuid<Uom>(id)));
+            Load<HealthRecord>();
+            Load<Uom>();
             hr1 = hr[71]; // without hios
         }
 
@@ -124,7 +124,6 @@ namespace Tests
             var m2 = new Measure(0, uom[2]) { Word = w1 };
             hr1.SetItems(new IHrItemObject[] { m2 });
             Assert.AreEqual(uom[2], hr1.HrItems.First().Measure.Uom);
-        
         }
     }
 }

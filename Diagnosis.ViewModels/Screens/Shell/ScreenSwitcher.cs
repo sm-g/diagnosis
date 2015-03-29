@@ -1,16 +1,14 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
     public enum Screen
     {
-        Login, Doctors, Patients, Words, Card, Sync
+        Login, Doctors, Patients, Words, Card, Sync, Vocabularies
     }
 
     public class ScreenSwitcher : ViewModelBase
@@ -91,12 +89,10 @@ namespace Diagnosis.ViewModels.Screens
                     OpenScreen(Screen.Doctors);
                 else if (e.user is Doctor)
                     OpenScreen(Screen.Patients);
-
             };
             AuthorityController.LoggedOut += (s, e) =>
             {
                 OpenScreen(Screen.Login);
-
             };
             // карточка
 
@@ -161,7 +157,6 @@ namespace Diagnosis.ViewModels.Screens
                 if (CurrentView != null)
                 {
                     CurrentView.Dispose();
-
                 }
             });
         }
@@ -229,7 +224,11 @@ namespace Diagnosis.ViewModels.Screens
                         break;
 
                     case Screen.Sync:
-                        CurrentView = new SyncViewModel();
+                        CurrentView = new SyncViewModel(Constants.ServerConnectionInfo);
+                        break;
+
+                    case Screen.Vocabularies:
+                        CurrentView = new VocabularyListViewModel(Constants.ServerConnectionInfo);
                         break;
 
                     case Screen.Patients:

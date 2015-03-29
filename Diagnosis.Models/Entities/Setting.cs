@@ -23,6 +23,7 @@ namespace Diagnosis.Models
         public virtual string Value { get; set; }
 
         public virtual Doctor Doctor { get; protected set; }
+
         public override string ToString()
         {
             return Title;

@@ -1,8 +1,7 @@
-﻿using Diagnosis.Data.Queries;
+﻿using Diagnosis.Common;
+using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using Diagnosis.Common;
 using System.Linq;
 
 namespace Tests
@@ -13,8 +12,8 @@ namespace Tests
         [TestInitialize]
         public void Init()
         {
-            hrIds.ForAll((id) => hr[id] = session.Get<HealthRecord>(IntToGuid<HealthRecord>(id)));
-            wIds.ForAll((id) => w[id] = session.Get<Word>(IntToGuid<Word>(id)));
+            Load<HealthRecord>();
+            Load<Word>();
         }
 
         [TestMethod]

@@ -1,4 +1,5 @@
-﻿using Diagnosis.Models.Validators;
+﻿using Diagnosis.Common;
+using Diagnosis.Models.Validators;
 using FluentValidation.Results;
 using Iesi.Collections.Generic;
 using System;
@@ -34,6 +35,7 @@ namespace Diagnosis.Models
         }
 
         public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
+
         public virtual Course Course { get; protected set; }
 
         public virtual Doctor Doctor { get; set; }
@@ -73,6 +75,7 @@ namespace Diagnosis.Models
         {
             get { return healthRecords.OrderBy(x => x.Ord); }
         }
+
         public virtual HealthRecord AddHealthRecord(Doctor author)
         {
             var hr = new HealthRecord(this, author);
@@ -85,7 +88,10 @@ namespace Diagnosis.Models
         public virtual void RemoveHealthRecord(HealthRecord hr)
         {
             if (healthRecords.Remove(hr))
+            {
+                hr.OnDelete();
                 OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, hr));
+            }
         }
 
         public override string ToString()

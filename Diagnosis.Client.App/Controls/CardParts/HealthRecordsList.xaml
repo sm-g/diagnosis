@@ -208,18 +208,16 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
-            <TextBlock TextWrapping="Wrap"
-                       Margin="10"
-                       HorizontalAlignment="Center">
+            <TextBlock Style="{StaticResource whatToDoScreenMessage}">
                 <Run Text="Записей нет." />
                 <Hyperlink Command="{Binding AddHealthRecordCommand}">Добавить?</Hyperlink>
             </TextBlock>
 
             <StackPanel Grid.Row="1"
-                        HorizontalAlignment="Center">
+                        Style="{StaticResource whatToDoScreenMessage}">
                 <TextBlock Visibility="{Binding ShowCanAlso, Converter={StaticResource BooleanToVisibilityConverter}}">Тaкже можно</TextBlock>
 
-                <ContentControl Content="{Binding HolderVm}"
+                <ContentControl Content="{Binding HolderVm}"                               
                                 ContentTemplateSelector="{StaticResource canAlso}" />
             </StackPanel>
         </Grid>

@@ -13,7 +13,7 @@ namespace Diagnosis.Models
     public class UomType : EntityBase<Guid>, IDomainObject, IComparable<UomType>
     {
         private Iesi.Collections.Generic.ISet<Uom> uoms = new HashedSet<Uom>();
-        string _title;
+        private string _title;
 
         public UomType(string title, int ord)
         {

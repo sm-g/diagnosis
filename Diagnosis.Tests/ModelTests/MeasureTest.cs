@@ -14,7 +14,7 @@ namespace Tests
         [TestInitialize]
         public void Init()
         {
-            uomIds.ForAll((id) => uom[id] = session.Get<Uom>(IntToGuid<Uom>(id)));
+            Load<Uom>();
             // uom 1 2 3 - same UomType
             Assert.IsTrue(new[] { 1, 2, 3 }.Select(x => uom[x]).Select(x => x.Type).Distinct().Count() == 1);
         }

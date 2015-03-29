@@ -39,6 +39,7 @@ namespace Diagnosis.Models
         public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
 
         public virtual event NotifyCollectionChangedEventHandler AppointmentsChanged;
+
         public virtual Patient Patient { get; protected set; }
 
         public virtual Doctor LeadDoctor { get; protected set; }
@@ -103,6 +104,7 @@ namespace Diagnosis.Models
         {
             get { return healthRecords.OrderBy(x => x.Ord); }
         }
+
         /// <summary>
         ///
         /// </summary>
@@ -137,7 +139,10 @@ namespace Diagnosis.Models
         public virtual void RemoveHealthRecord(HealthRecord hr)
         {
             if (healthRecords.Remove(hr))
+            {
+                hr.OnDelete();
                 OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, hr));
+            }
         }
 
         /// <summary>
@@ -150,6 +155,7 @@ namespace Diagnosis.Models
             var end = last != null ? last.DateAndTime : DateTime.Now;
             End = end > DateTime.Now ? end : DateTime.Now;
         }
+
         public virtual void Open()
         {
             End = null;

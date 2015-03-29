@@ -18,10 +18,16 @@ namespace Diagnosis.ViewModels.Autocomplete
     public class Recognizer : NotifyPropertyChangedBase
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Recognizer));
+
+        /// <summary>
+        /// несохраненные слова, созданные через автокомплит
+        /// </summary>
         private static List<Word> created = new List<Word>();
+        private Doctor doctor;
 
         private readonly ISession session;
         private bool _addQueryToSug;
+
 
         /// <summary>
         ///
@@ -68,10 +74,14 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             typeof(Recognizer).Subscribe(Event.WordPersisted, (e) =>
             {
-                // now word can be retrieved from storage
+                // now word can be retrieved from db
                 var word = e.GetValue<Word>(MessageKeys.Word);
                 created.Remove(word);
             });
+            AuthorityController.LoggedOut += (s, e) =>
+            {
+                created.Clear();
+            };
         }
 
         /// <summary>
@@ -83,11 +93,13 @@ namespace Diagnosis.ViewModels.Autocomplete
             Contract.Requires(session != null);
 
             this.session = session;
+
             if (clearCreated)
                 created.Clear();
 
             AddNotPersistedToSuggestions = true;
             CanChangeAddQueryToSuggstions = true;
+            doctor = AuthorityController.CurrentDoctor;
         }
 
         private bool CanMakeEntityFrom(string query)
@@ -239,22 +251,22 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             Contract.Requires(query != null);
 
-            var found = QueryWords(query, prevEntityBlank);
+            // слова, доступные для ввода
+            var found = QueryWords(query, prevEntityBlank)
+                    .Where(x => created.Contains(x) || doctor.Words.Contains(x));
 
+            // кроме исключенных
             if (exclude != null)
-            {
                 found = found.Where(i => !exclude.Contains(i));
-            }
 
-            var results = new List<Word>(found.OrderBy(x => x.Title)); // слова по алфавиту
+            // по алфавиту
+            var results = new List<Word>(found.OrderBy(x => x.Title));
 
             if (AddQueryToSuggestions)
             {
-                bool existsSame = results.Any(item => query.MatchesAsStrings(item));
+                bool existsSame = results.Any(item => Matches(item, query));
                 if (exclude != null)
-                {
-                    existsSame |= exclude.Any(item => item != null ? query.MatchesAsStrings(item) : false);
-                }
+                    existsSame |= exclude.Any(item => item != null ? Matches(item, query) : false);
 
                 // не добавляем запрос, совпадающий со словом в результатах или словом/запросом в исключенных предположениях
                 if (!existsSame && !query.IsNullOrEmpty())
@@ -277,7 +289,9 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 var w = tag.Blank as Word;
                 if (w.IsTransient)
+                {
                     created.Add(w);
+                }
             }
         }
 
@@ -305,12 +319,16 @@ namespace Diagnosis.ViewModels.Autocomplete
             return word;
         }
 
-        // первое подходящее слово или новое
-        private Word FirstMatchingOrNewWord(string q)
+        /// <summary>
+        /// Первое точно подходящее слово или новое
+        /// </summary>
+        /// <param name="q"></param>
+        /// <returns></returns>
+        internal Word FirstMatchingOrNewWord(string q)
         {
-            var exists = (Word)SearchForSuggesstions(q, null, q.ToEnumerable()).FirstOrDefault();
-            if (exists != null && Recognizer.Matches(exists, q))
-                return exists; // берем слово из словаря
+            var existing = QueryWords(q, null).FirstOrDefault();
+            if (existing != null && Matches(existing, q))
+                return existing; // берем слово из словаря
             else
             {
                 var word = new Word(q); // или создаем слово из запроса
@@ -326,6 +344,12 @@ namespace Diagnosis.ViewModels.Autocomplete
             return query.MatchesAsStrings(suggestion);
         }
 
+        /// <summary>
+        /// Все слова с началом как у запроса с учетом предыдущего.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="prev"></param>
+        /// <returns></returns>
         private IEnumerable<Word> QueryWords(string query, object prev)
         {
             if (query.IsNullOrEmpty() && !ShowAllWordsOnEmptyQuery)
@@ -337,10 +361,21 @@ namespace Diagnosis.ViewModels.Autocomplete
                 created.Where(w => w.Title.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)) :
                 Enumerable.Empty<Word>();
 
-            if (ShowChildrenFirst)
-                return WordQuery.StartingWithChildrenFirst(session)(parent, query).Union(unsaved);
-            else
-                return WordQuery.StartingWith(session)(query).Union(unsaved);
+            //  Contract.Assume(unsaved.All(x => x.Vocabularies.Contains(AuthorityController.CurrentDoctor.CustomVoc)));
+
+            var fromDB = ShowChildrenFirst ?
+                WordQuery.StartingWithChildrenFirst(session)(parent, query) :
+                WordQuery.StartingWith(session)(query);
+
+            return fromDB.Union(unsaved);
+        }
+
+        [ContractInvariantMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+        private void ObjectInvariant()
+        {
+            // все несохраннные слова - не в словаре
+            Contract.Invariant(created.All(x => x.Vocabularies.Count() == 0));
         }
     }
 }

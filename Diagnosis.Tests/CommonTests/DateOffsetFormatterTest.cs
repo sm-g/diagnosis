@@ -31,6 +31,7 @@ namespace Tests
 
             Assert.AreEqual(Plurals.days[2], str);
         }
+
         [TestMethod]
         public void UnitNegative()
         {

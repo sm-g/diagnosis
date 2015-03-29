@@ -215,6 +215,7 @@
     <Compile Include="Screens\Card\HrListViewModel - ClipboardTarget.cs" />
     <Compile Include="Screens\Card\HrListViewModel - DragDrop.cs" />
     <Compile Include="Screens\Card\ShortHealthRecordViewModel - DragDrop.cs" />
+    <Compile Include="Controls\DataConnectionViewModel.cs" />
     <Compile Include="Screens\ConfirmPasswordViewModel.cs" />
     <Compile Include="Screens\SyncViewModel.cs" />
     <Compile Include="Screens\Shell\ServerMainWindowViewModel.cs" />
@@ -250,6 +251,7 @@
     <Compile Include="Screens\Uoms\UomsListViewModel.cs" />
     <Compile Include="Screens\Uoms\UomViewModel.cs" />
     <Compile Include="Screens\Words\WordEditorViewModel.cs" />
+    <Compile Include="Screens\Vocabularies\VocabularyViewModel.cs" />
     <Compile Include="Search\Exporter.cs" />
     <Compile Include="Autocomplete\IcdSelectorViewModel.cs" />
     <Compile Include="Search\HrHolderSearchResultViewModel.cs" />
@@ -298,6 +300,7 @@
     <Compile Include="Search\Searchers\HrSearcher.cs" />
     <Compile Include="Framework\ViewModelBase.cs" />
     <Compile Include="Types\SpecialCaseItem.cs" />
+    <Compile Include="Screens\Vocabularies\VocabularyListViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Diagnosis.Common\Diagnosis.Common.csproj">

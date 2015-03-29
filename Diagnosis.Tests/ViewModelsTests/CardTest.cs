@@ -4,7 +4,6 @@ using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Tests
@@ -12,21 +11,29 @@ namespace Tests
     [TestClass]
     public class CardTest : InMemoryDatabaseTest
     {
-        private Doctor d1;
+
+        private CardViewModel card;
 
         [TestInitialize]
         public void Init()
         {
-            d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
+            Load<Doctor>();
+            Load<Patient>();
+            Load<Course>();
+            Load<Appointment>();
+            Load<HealthRecord>();
+
             AuthorityController.TryLogIn(d1);
-
-            pIds.ForAll((id) => p[id] = session.Get<Patient>(IntToGuid<Patient>(id)));
-            cIds.ForAll((id) => c[id] = session.Get<Course>(IntToGuid<Course>(id)));
-            aIds.ForAll((id) => a[id] = session.Get<Appointment>(IntToGuid<Appointment>(id)));
-            hrIds.ForAll((id) => hr[id] = session.Get<HealthRecord>(IntToGuid<HealthRecord>(id)));
-
             // p[3] c[4] a[5] are empty, for deletions
         }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            if (card != null)
+                card.Dispose();
+        }
+
         #region Opening
 
         [TestMethod]
@@ -48,6 +55,7 @@ namespace Tests
                 Assert.AreEqual(a[4], card.Navigator.Current.Holder);
             }
         }
+
         [TestMethod]
         public void OpenCourse()
         {
@@ -56,12 +64,12 @@ namespace Tests
                 Assert.AreEqual(c[1], card.Navigator.Current.Holder);
             }
         }
+
         [TestMethod]
         public void OpenApp()
         {
             using (var card = new CardViewModel(a[1], true))
             {
-
                 Assert.AreEqual(a[1], card.Navigator.Current.Holder);
             }
         }
@@ -125,11 +133,11 @@ namespace Tests
         {
             using (var card = new CardViewModel(p[1], true))
             {
-
                 card.HrList.AddHealthRecordCommand.Execute(null);
                 Assert.AreEqual(p[1].HealthRecords.Last(), card.HrEditor.HealthRecord.healthRecord);
             }
         }
+
         [TestMethod]
         public void OpenLastAppInCourse()
         {
@@ -148,7 +156,8 @@ namespace Tests
                 Assert.AreEqual(c[3], card.Navigator.Current.Holder);
             }
         }
-        #endregion
+
+        #endregion Opening
 
         [TestMethod]
         [ExpectedException(typeof(AssertFailedException))]
@@ -178,7 +187,6 @@ namespace Tests
         {
             using (var card = new CardViewModel(p[1], true))
             {
-
                 card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
                 card.HrList.AddHealthRecordCommand.Execute(null);
 
@@ -186,6 +194,7 @@ namespace Tests
                 Assert.AreEqual(p[1].HealthRecords.Last(), card.HrList.SelectedHealthRecord.healthRecord);
             }
         }
+
         [TestMethod]
         public void SelectManyShowEditor()
         {
@@ -211,6 +220,7 @@ namespace Tests
                 Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
             }
         }
+
         [TestMethod]
         public void SelectManyShowHideEditor()
         {
@@ -224,6 +234,7 @@ namespace Tests
                 Assert.AreEqual(2, card.HrList.SelectedHealthRecords.Count());
             }
         }
+
         [TestMethod]
         public void SelectManyOpenCloseEditor()
         {
@@ -238,7 +249,7 @@ namespace Tests
             }
         }
 
-        #endregion
+        #endregion Selection
 
         #region Saving
 
@@ -300,6 +311,7 @@ namespace Tests
                 Assert.IsTrue(!hr[21].IsDirty);
             }
         }
+
         [TestMethod]
         public void DeleteHolderWithDeltedHr()
         {
@@ -331,13 +343,11 @@ namespace Tests
             }
         }
 
-
         [TestMethod]
         public void ChangeAppWithDeletedHrs()
         {
             using (var card = new CardViewModel(a[2], true))
             {
-
                 card.HrList.SelectHealthRecords(a[2].HealthRecords);
                 card.HrList.HealthRecords.ForEach(x => x.DeleteCommand.Execute(null));
 
@@ -346,7 +356,7 @@ namespace Tests
                 Assert.AreEqual(0, a[2].HealthRecords.Count());
             }
         }
-        #endregion
 
+        #endregion Saving
     }
 }

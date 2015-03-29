@@ -68,18 +68,10 @@
                       Margin="0,10,0,0"
                       Style="{DynamicResource MyDataGridStyle}"
                       SelectedCellsChanged="dataGrid_SelectedCellsChanged">
-                <DataGrid.Resources>
-                    <Style x:Key="Checkbox"
-                           TargetType="{x:Type CheckBox}"
-                           BasedOn="{StaticResource {x:Type CheckBox}}">
-                        <Setter Property="Focusable"
-                                Value="False" />
-                    </Style>
-                </DataGrid.Resources>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Header=""
                                             IsReadOnly="True"
-                                            ElementStyle="{StaticResource Checkbox}"
+                                            ElementStyle="{StaticResource DataGridCheckbox}"
                                             Binding="{Binding IsChecked, Mode=OneWay}" />
                     <DataGridTextColumn Header="Текст"
                                         IsReadOnly="True"

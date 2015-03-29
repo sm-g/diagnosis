@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Diagnosis.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.ComponentModel;
-using Diagnosis.Common;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Tests
 {
@@ -31,8 +29,8 @@ namespace Tests
             coll.AddSorted(2, x => x);
 
             Assert.AreEqual(1, coll.IndexOf(2));
-
         }
+
         [TestMethod]
         public void TestAddSortedReverse()
         {
@@ -40,7 +38,6 @@ namespace Tests
             coll.AddSorted(2, x => x, true);
 
             Assert.AreEqual(2, coll.IndexOf(2));
-
         }
 
         [TestMethod]
@@ -95,7 +92,6 @@ namespace Tests
 
             list = new List<int> { 3, 2, 3, 4 };
             Assert.IsFalse(list.IsOrdered(x => x));
-
         }
     }
 }

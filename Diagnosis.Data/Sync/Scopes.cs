@@ -12,6 +12,7 @@ namespace Diagnosis.Data.Sync
     public enum Scope
     {
         Icd,
+        Voc,
         Reference,
         User,
         Holder,
@@ -27,6 +28,7 @@ namespace Diagnosis.Data.Sync
         private static string userScope = "userScope";
         private static string referenceScope = "referenceScope";
         private static string icdScope = "icdScope";
+        private static string vocScope = "vocScope";
 
         private static string stagingSchema = "staging";
         private static string referenceSchema = "dbo";
@@ -38,12 +40,19 @@ namespace Diagnosis.Data.Sync
                 Names.IcdDiseaseTbl,
             };
 
+        private static string[] vocTableNames = new[] {
+                Names.VocabularyTbl,
+                Names.WordTemplateTbl,
+              //  Names.SpecialityTbl,
+             //   Names.SpecialityVocabulariesTbl,
+            };
+
         private static string[] referenceTableNames = new[] {
                 Names.HrCategoryTbl,
                 Names.UomTypeTbl,
                 Names.UomTbl,
                 Names.SpecialityTbl,
-                Names.SpecialityIcdBlockTbl,
+                Names.SpecialityIcdBlocksTbl,
             };
 
         private static string[] userTableNames = new[] {
@@ -70,6 +79,7 @@ namespace Diagnosis.Data.Sync
             {Scope.User,        userScope},
             {Scope.Reference,   referenceScope},
             {Scope.Icd,         icdScope},
+            {Scope.Voc,         vocScope},
         };
 
         private static Dictionary<Scope, string[]> scopeToTables = new Dictionary<Scope, string[]>
@@ -79,6 +89,7 @@ namespace Diagnosis.Data.Sync
             {Scope.User,        userTableNames},
             {Scope.Reference,   referenceTableNames},
             {Scope.Icd,         icdTableNames},
+            {Scope.Voc,         vocTableNames},
         };
 
         public static IList<Scope> GetOrderedUploadScopes()
@@ -94,7 +105,8 @@ namespace Diagnosis.Data.Sync
         {
             return new List<Scope>()
             {
-                //Scope.Icd,
+                //Scope.Icd, МКБ не меняется
+                Scope.Voc,
                 Scope.Reference,
             };
         }
@@ -122,7 +134,12 @@ namespace Diagnosis.Data.Sync
 
         public static IList<Scope> GetOrderedScopes()
         {
-            return new List<Scope>(Enum.GetValues(typeof(Scope)).Cast<Scope>());
+            return new List<Scope>(Enum.GetValues(typeof(Scope)).Cast<Scope>().OrderScopes());
+        }
+
+        public static IEnumerable<Scope> OrderScopes(this IEnumerable<Scope> scopes)
+        {
+            return scopes.OrderBy(x => x);
         }
 
         public static string ToScopeString(this Scope scope)
@@ -151,5 +168,6 @@ namespace Diagnosis.Data.Sync
         {
             return referenceTableNames.Contains(table) ? referenceSchema : stagingSchema;
         }
+
     }
 }

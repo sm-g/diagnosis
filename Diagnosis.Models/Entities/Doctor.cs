@@ -16,6 +16,7 @@ namespace Diagnosis.Models
         private Iesi.Collections.Generic.ISet<Setting> settingsSet = new HashedSet<Setting>();
         private Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
 
+        private List<Word> chachedWords = new List<Word>();
         private string _fn;
         private string _ln;
         private string _mn;
@@ -23,6 +24,7 @@ namespace Diagnosis.Models
         private Speciality _speciality;
         private Passport passport;
         private SettingsProvider settingsProvider;
+        private Vocabulary _customVocabulary;
 
         public Doctor(string lastName, string firstName = null, string middleName = null, Speciality speciality = null)
         {
@@ -38,6 +40,23 @@ namespace Diagnosis.Models
 
         protected Doctor()
         {
+        }
+
+        /// <summary>
+        /// Слова из всех словарей, доступных врачу, кроме пользовательского.
+        /// </summary>
+        public virtual List<Word> SpecialityWords
+        {
+            get { return chachedWords; }
+            set { chachedWords = value; }
+        }
+
+        /// <summary>
+        /// Все слова, доступные врачу.
+        /// </summary>
+        public virtual IEnumerable<Word> Words
+        {
+            get { return SpecialityWords.Union(CustomVocabulary.Words); }
         }
 
         public virtual string FirstName
@@ -89,6 +108,15 @@ namespace Diagnosis.Models
             }
         }
 
+        public virtual Vocabulary CustomVocabulary
+        {
+            get { return _customVocabulary ?? (_customVocabulary = new Vocabulary(Vocabulary.CustomTitle, this)); }
+            set
+            {
+                SetProperty(ref _customVocabulary, value, () => CustomVocabulary);
+            }
+        }
+
         public virtual Passport Passport
         {
             get { return passport; }
@@ -134,6 +162,19 @@ namespace Diagnosis.Models
             var course = new Course(patient, this);
             patient.AddCourse(course);
             return course;
+        }
+
+        /// <summary>
+        /// Доктор cможет видеть эти слова.
+        /// Использовать перед сохранением слова.
+        /// </summary>
+        /// <param name="words"></param>
+        public virtual void AddWords(IEnumerable<Word> words)
+        {
+            Contract.Ensures(words.All(x => Words.Contains(x)));
+
+            words.Where(x => !Words.Contains(x))
+                .ForAll(x => CustomVocabulary.AddWord(x));
         }
 
         public override string ToString()

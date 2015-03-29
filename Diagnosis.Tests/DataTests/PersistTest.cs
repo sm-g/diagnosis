@@ -1,14 +1,9 @@
-﻿using Diagnosis.Client.App;
-using Diagnosis.Common;
-using Diagnosis.Data;
-using Diagnosis.Data.Mappings;
+﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using Diagnosis.ViewModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
-using System.Reflection;
-using NHibernate.Tool.hbm2ddl;
 
 namespace Tests
 {
@@ -33,7 +28,6 @@ namespace Tests
 
             session.Clear();
 
-
             using (var tx = session.BeginTransaction())
             {
                 var pat = session.Get<Patient>(id);
@@ -48,7 +42,7 @@ namespace Tests
         [TestMethod]
         public void MyTestMethod()
         {
-            var d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
+            Load<Doctor>();
             AuthorityController.TryLogIn(d1);
             using (var tx = session.BeginTransaction())
             {

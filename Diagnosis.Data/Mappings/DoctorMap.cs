@@ -20,6 +20,13 @@ namespace Diagnosis.Data.Mappings
                 m.Constrained(true);
             });
 
+            ManyToOne(x => x.CustomVocabulary, m =>
+            {
+                m.Column("CustomVocabularyID");
+                m.Cascade(Cascade.All | Cascade.DeleteOrphans);
+                m.Access(Accessor.Field);
+            });
+
             Property(x => x.FirstName, m =>
             {
                 m.Length(20);

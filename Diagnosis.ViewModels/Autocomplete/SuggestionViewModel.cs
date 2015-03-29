@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Models;
 using System;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Diagnosis.ViewModels.Autocomplete
@@ -14,6 +15,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public SuggestionViewModel(IHrItemObject hio, bool isAlt, bool isNew)
         {
+            Contract.Requires(hio != null);
             Hio = hio;
             IsAlter = isAlt;
             IsNew = isNew;

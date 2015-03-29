@@ -23,6 +23,7 @@ namespace Diagnosis.Models
         public virtual IcdDisease Disease { get; set; }
 
         public virtual Diagnosis Parent { get; set; }
+
         public override string ToString()
         {
             return Code + ' ' + Title;

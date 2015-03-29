@@ -12,9 +12,9 @@ namespace Tests.ModelTests
         [TestInitialize]
         public void Init()
         {
-            wIds.ForAll((id) => w[id] = session.Get<Word>(IntToGuid<Word>(id)));
-            icdIds.ForAll((id) => icd[id] = session.Get<IcdDisease>(id));
-            uomIds.ForAll((id) => uom[id] = session.Get<Uom>(IntToGuid<Uom>(id)));
+            Load<Word>();
+            Load<IcdDisease>();
+            Load<Uom>();
         }
 
         [TestMethod]
@@ -111,7 +111,6 @@ namespace Tests.ModelTests
             Assert.IsTrue(diff1.Count == 1);
             Assert.IsTrue(diff2.Count == 0);
             Assert.IsTrue(diff1.Contains(m2));
-
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data.Versions;
-using Diagnosis.Models;
 using Microsoft.Synchronization;
 using Microsoft.Synchronization.Data;
 using Microsoft.Synchronization.Data.SqlServer;
@@ -77,6 +76,11 @@ namespace Diagnosis.Data.Sync
         public Dictionary<Type, IEnumerable<object>> AddedIdsPerType { get; set; }
 
         /// <summary>
+        /// ID сущностей, которые должны быть удалены.
+        /// </summary>
+        public Dictionary<Type, IEnumerable<object>> DeletedIdsPerType { get; set; }
+
+        /// <summary>
         /// Sync scopes determined by <paramref name="from"/>. Specify conncetions in correct order in ctor.
         /// </summary>
         /// <param name="from"></param>
@@ -100,9 +104,12 @@ namespace Diagnosis.Data.Sync
 
             InSync = true;
 
+            AddedIdsPerType = new Dictionary<Type, IEnumerable<object>>();
+            DeletedIdsPerType = new Dictionary<Type, IEnumerable<object>>();
+
             var t = new Task(() =>
             {
-                foreach (var scope in scopes)
+                foreach (var scope in scopes.OrderScopes())
                 {
                     var toContinue = Sync(from, scope);
                     if (!toContinue)
@@ -127,6 +134,7 @@ namespace Diagnosis.Data.Sync
             }
             return Deprovision(serverConStr, serverProviderName, scopesToDeprovision);
         }
+
         public static Task Deprovision(string connstr, string provider, IEnumerable<Scope> scopesToDeprovision = null)
         {
             if (InSync)
@@ -256,7 +264,10 @@ namespace Diagnosis.Data.Sync
                         syncOrchestrator = new DownloadSyncOrchestrator(
                             serverProvider,
                             clientProvider,
-                            Scope.Reference.ToTableNames()); // на клиенте могут быть справочные сущности с другими ID, но такие же по значению
+                            tablesToTrackAdding: Scope.Reference.ToTableNames(),  // на клиенте могут быть справочные сущности с другими ID, но такие же по значению
+                            tablesToTrackDeleting: Names.VocabularyTbl.ToEnumerable(), //  перед удалением словаря надо убрать связь со словами на клиенте
+                            tablesToIgnoreAdding: new[] { Names.SpecialityVocabulariesTbl, Names.VocabularyTbl, Names.WordTemplateTbl } // новые словари загружаются отдельно
+                          );
                         break;
                 }
 
@@ -278,10 +289,14 @@ namespace Diagnosis.Data.Sync
                     }
 
                     // запоминаем добавленные строки
-                    AddedIdsPerType = new Dictionary<Type, IEnumerable<object>>();
                     foreach (var table in syncOrchestrator.AddedIdsPerTable.Keys)
                     {
                         AddedIdsPerType[Names.tblToTypeMap[table]] = syncOrchestrator.AddedIdsPerTable[table];
+                    }
+
+                    foreach (var table in syncOrchestrator.DeletedIdsPerTable.Keys)
+                    {
+                        DeletedIdsPerType[Names.tblToTypeMap[table]] = syncOrchestrator.DeletedIdsPerTable[table];
                     }
 
                     Poster.PostMessage("ChangesApplied: {0}, ChangesFailed: {1}\n", syncStats.DownloadChangesApplied, syncStats.DownloadChangesFailed);
@@ -508,14 +523,43 @@ namespace Diagnosis.Data.Sync
 
         public class DownloadSyncOrchestrator : SyncOrchestrator
         {
-            public DownloadSyncOrchestrator(RelationalSyncProvider from, RelationalSyncProvider to, IEnumerable<string> tablesToTrack = null)
+            public DownloadSyncOrchestrator(RelationalSyncProvider from, RelationalSyncProvider to,
+                IEnumerable<string> tablesToTrackAdding = null,
+                IEnumerable<string> tablesToTrackDeleting = null,
+                IEnumerable<string> tablesToIgnoreAdding = null)
             {
                 ConflictsCounter = new Dictionary<DbConflictType, int>();
                 AddedIdsPerTable = new Dictionary<string, IEnumerable<object>>();
+                DeletedIdsPerTable = new Dictionary<string, IEnumerable<object>>();
 
                 this.RemoteProvider = from;
                 this.LocalProvider = to;
                 this.Direction = SyncDirectionOrder.Download;
+
+                from.ChangesSelected += (s, e) =>
+                {
+                    if (tablesToIgnoreAdding != null)
+                    {
+                        foreach (var table in tablesToIgnoreAdding)
+                        {
+                            if (e.Context.DataSet.Tables.Contains(table))
+                            {
+                                var dataTable = e.Context.DataSet.Tables[table];
+
+                                for (int j = 0; j < dataTable.Rows.Count; j++)
+                                {
+                                    DataRow row = dataTable.Rows[j];
+                                    if (row.RowState == DataRowState.Added)
+                                    {
+                                        // не синхронизируем новые словари
+                                        dataTable.Rows.Remove(row);
+                                        j--;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
 
                 to.ApplyChangeFailed += (s, e) =>
                 {
@@ -524,7 +568,10 @@ namespace Diagnosis.Data.Sync
                         return;
 #endif
                     if (e.Conflict.Type == DbConflictType.ErrorsOccurred)
+                    {
+                        var rows = e.Conflict.LocalChange.Rows.Cast<DataRow>();
                         Poster.PostMessage("ApplyChangeFailed. Error: {0}", e.Error);
+                    }
                     //else
                     //    Poster.PostMessage("ApplyChangeFailed. ConflictType: {0}", e.Conflict.Type);
 
@@ -539,27 +586,60 @@ namespace Diagnosis.Data.Sync
                 to.ChangesApplied += (s, e) =>
                 {
                     // запоминаем добавленные строки для желаемых таблиц
-                    if (tablesToTrack != null)
+                    if (tablesToTrackAdding != null)
                     {
-                        foreach (var table in tablesToTrack)
+                        foreach (var table in tablesToTrackAdding)
                         {
                             if (e.Context.DataSet.Tables.Contains(table))
                             {
                                 var dataTable = e.Context.DataSet.Tables[table];
-                                var rows = new List<DataRow>();
+                                var addedRows = new List<DataRow>();
+                                var deletedRows = new List<DataRow>();
                                 for (int j = 0; j < dataTable.Rows.Count; j++)
                                 {
                                     DataRow row = dataTable.Rows[j];
 
                                     if (row.RowState == DataRowState.Added)
                                     {
-                                        rows.Add(row);
+                                        addedRows.Add(row);
+                                    }
+                                    else if (row.RowState == DataRowState.Deleted)
+                                    {
+                                        deletedRows.Add(row);
                                     }
                                 }
-                                AddedIdsPerTable.Add(dataTable.TableName, rows.Select(x => x["Id"]));
+                                AddedIdsPerTable.Add(dataTable.TableName, addedRows.Select(x => x["Id"]));
+
+                                //DeletedIdsPerTable.Add(
+                                //    dataTable.TableName,
+                                //    dataTable.Rows
+                                //        .Cast<DataRow>()
+                                //        .Where(x => x.RowState == DataRowState.Deleted)
+                                //        .Select(x => x["Id"]));
                             }
                         }
                     }
+                    // запоминаем удаляемые строки для желаемых таблиц
+                    if (tablesToTrackDeleting != null)
+                    {
+                        foreach (var table in tablesToTrackDeleting)
+                        {
+                            if (e.Context.DataSet.Tables.Contains(table))
+                            {
+                                var dataTable = e.Context.DataSet.Tables[table];
+
+                                DeletedIdsPerTable.Add(
+                                    dataTable.TableName,
+                                    dataTable.Rows
+                                        .Cast<DataRow>()
+                                        .Where(x => x.RowState == DataRowState.Deleted)
+                                        .Select(x => x["Id"]));
+                            }
+                        }
+                    }
+                };
+                to.ApplyingChanges += (s, e) =>
+                {
                 };
                 to.DbConnectionFailure += (s, e) =>
                 {
@@ -570,6 +650,8 @@ namespace Diagnosis.Data.Sync
             public Dictionary<DbConflictType, int> ConflictsCounter { get; set; }
 
             public Dictionary<string, IEnumerable<object>> AddedIdsPerTable { get; set; }
+
+            public Dictionary<string, IEnumerable<object>> DeletedIdsPerTable { get; set; }
         }
     }
 }

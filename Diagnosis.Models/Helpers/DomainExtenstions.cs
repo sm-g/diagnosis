@@ -147,6 +147,7 @@ namespace Diagnosis.Models
         /// осмотр — без записей
         /// запись — без элементов и даты или удаленная
         /// слово — без записей с этим словом
+        /// словарь — без слов
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
@@ -198,6 +199,12 @@ namespace Diagnosis.Models
                         return w.HealthRecords.Count() == 0;
                     }
                 },
+                { typeof(Vocabulary),() =>
+                    {
+                        var w = entity as Vocabulary;
+                        return w.Words.Count() == 0;
+                    }
+                },
             };
 
             var type = entity.Actual.GetType();
@@ -223,7 +230,7 @@ namespace Diagnosis.Models
                     (x as UomType).Title == (y as UomType).Title
                 },
                 { typeof(HrCategory), (y) => 
-                    (x as HrCategory).Name == (y as HrCategory).Name
+                    (x as HrCategory).Title == (y as HrCategory).Title
                 },
                 { typeof(Speciality), (y) => 
                     (x as Speciality).Title == (y as Speciality).Title
@@ -269,7 +276,7 @@ namespace Diagnosis.Models
                     {
                         var a = x as HrCategory;
                         var b = y as HrCategory;
-                        return a.Name == b.Name;
+                        return a.Title == b.Title;
                     } 
                 },
                 { typeof(Speciality), () => 

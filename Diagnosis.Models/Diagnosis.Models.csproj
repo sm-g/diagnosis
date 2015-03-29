@@ -152,6 +152,8 @@
     <Compile Include="Entities\Comment.cs" />
     <Compile Include="Entities\Setting.cs" />
     <Compile Include="Entities\UomType.cs" />
+    <Compile Include="Entities\Vocabulary.cs" />
+    <Compile Include="Entities\WordTemplate.cs" />
     <Compile Include="Enums\Confidence.cs" />
     <Compile Include="Enums\HrCreatedAtOffset.cs" />
     <Compile Include="Enums\HealthRecordQueryScope.cs" />
@@ -188,13 +190,16 @@
     <Compile Include="Validators\AppointmentValidator.cs" />
     <Compile Include="Validators\CourseValidator.cs" />
     <Compile Include="Validators\DoctorValidator.cs" />
+    <Compile Include="Validators\VocabularyValidator.cs" />
     <Compile Include="Validators\SpecialityValidator.cs" />
     <Compile Include="Validators\UomValidator.cs" />
     <Compile Include="Validators\WordValidator.cs" />
     <Compile Include="Validators\PatientValidator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ModelsClassDiagram.cd" />
+    <None Include="ModelsClassDiagram.cd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

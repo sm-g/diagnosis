@@ -24,7 +24,7 @@ namespace Diagnosis.Data.Versions
                     Names.UomTypeTbl,
                     Names.UomTbl,
                     Names.SpecialityTbl,
-                    Names.SpecialityIcdBlockTbl,
+                    Names.SpecialityIcdBlocksTbl,
                     Names.HrCategoryTbl,
                     Names.HrItemTbl,
                     Names.HealthRecordTbl,
@@ -63,11 +63,11 @@ namespace Diagnosis.Data.Versions
             IntToGuidPK(Names.SpecialityTbl,
                 new[] {
                     new Child() { table = Names.DoctorTbl, fk = "FK_Doctor_Speciality", notnull = false } ,
-                    new Child() { table = Names.SpecialityIcdBlockTbl, fk = "FK_SpecialityIcdBlocks_Specia", notnull = false } ,
+                    new Child() { table = Names.SpecialityIcdBlocksTbl, fk = "FK_SpecialityIcdBlocks_Specia", notnull = false } ,
                 },
                 "PK__Speciality");
 
-            IntToGuidPK(Names.SpecialityIcdBlockTbl,
+            IntToGuidPK(Names.SpecialityIcdBlocksTbl,
               new Child[] { },
               "PK__SpecialityIcdBlocks");
         }

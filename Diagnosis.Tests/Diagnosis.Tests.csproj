@@ -139,7 +139,10 @@
     <Compile Include="CommonTests\DateOffsetFormatterTest.cs" />
     <Compile Include="CommonTests\TimeSpanFormatterTest.cs" />
     <Compile Include="CommonTests\EnumerableExtensionsTest.cs" />
+    <Compile Include="DataTests\RelationsTest.cs" />
+    <Compile Include="DataTests\VocLoaderTest.cs" />
     <Compile Include="DataTests\SyncerTest.cs" />
+    <Compile Include="ModelTests\DoctorTest.cs" />
     <Compile Include="ModelTests\CourseTest.cs" />
     <Compile Include="ModelTests\MeasureTest.cs" />
     <Compile Include="ModelTests\HrItemTest.cs" />
@@ -147,6 +150,7 @@
     <Compile Include="ModelTests\HrCategoryTest.cs" />
     <Compile Include="SearchTests\DiagnosisSearchTest.cs" />
     <Compile Include="ViewModelsTests\AutocompleteTest.cs" />
+    <Compile Include="ViewModelsTests\VocabularyListTest.cs" />
     <Compile Include="ViewModelsTests\HrListTest.cs" />
     <Compile Include="ViewModelsTests\CardTest.cs" />
     <Compile Include="CommonTests\DateFormatterTest.cs" />
@@ -163,7 +167,9 @@
     <Compile Include="CommonTests\StringExtensionTest.cs" />
     <Compile Include="ViewModelsTests\HrEditorTest.cs" />
     <Compile Include="ModelTests\OrderedBagTest.cs" />
+    <Compile Include="ViewModelsTests\RecognizerTest.cs" />
     <Compile Include="ViewModelsTests\SearchTest.cs" />
+    <Compile Include="ViewModelsTests\WordListTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Diagnosis.Client.App\Diagnosis.Client.App.csproj">

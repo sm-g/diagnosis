@@ -28,7 +28,21 @@
         <Setter Property="FontSize"
                 Value="{DynamicResource LabelFontSize}" />
     </Style>-->
-    
+
+    <Style x:Key="whatToDoScreenMessage"
+           TargetType="FrameworkElement">
+        <Setter Property="TextBlock.FontSize"
+                Value="{DynamicResource HelpFontSize}" />
+        <Setter Property="Margin"
+                Value="10" />
+        <Setter Property="HorizontalAlignment"
+                Value="Center" />
+        <Setter Property="VerticalAlignment"
+                Value="Top" />
+        <Setter Property="TextBlock.TextWrapping"
+                Value="Wrap" />
+    </Style>
+
     <!--image-->
     <Style x:Key="EnableDisableImageStyle"
            TargetType="{x:Type Image}">
@@ -193,6 +207,13 @@
                 Value="0,0,5,0" />
     </Style>
 
+    <Style x:Key="DataGridCheckbox"
+           TargetType="{x:Type CheckBox}"
+           BasedOn="{StaticResource {x:Type CheckBox}}">
+        <Setter Property="Focusable"
+                Value="False" />
+    </Style>
+
     <Style x:Key="MyDataGridStyle"
            TargetType="{x:Type DataGrid}"
            BasedOn="{StaticResource {x:Type DataGrid}}">
@@ -201,6 +222,8 @@
         <Setter Property="IsReadOnly"
                 Value="True" />
         <Setter Property="CanUserReorderColumns"
+                Value="False" />
+        <Setter Property="CanUserResizeRows"
                 Value="False" />
         <Setter Property="SelectionUnit"
                 Value="FullRow" />
@@ -218,6 +241,16 @@
 
         <Setter Property="VirtualizingStackPanel.VirtualizationMode"
                 Value="Standard" />
+        <Setter Property="RowHeaderTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Grid>
+                        <CheckBox IsChecked="{Binding Path=IsSelected, Mode=TwoWay,
+                                  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}}" />
+                    </Grid>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
     <!--  forms  -->
 

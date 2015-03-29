@@ -304,6 +304,7 @@ namespace Tests
             Assert.IsTrue(date.Month == 4);
             Assert.IsTrue(date.Day == null);
         }
+
         [TestMethod]
         public void SetNow()
         {
@@ -316,6 +317,7 @@ namespace Tests
             Assert.AreEqual(2014, d.Year);
             Assert.AreEqual(10, d.Offset);
         }
+
         [TestMethod]
         public void CutsYearNull()
         {
@@ -329,6 +331,7 @@ namespace Tests
             date2.Year = null;
             Assert.IsTrue(date2.IsEmpty);
         }
+
         [TestMethod]
         public void CutsMonthNull()
         {
@@ -339,6 +342,7 @@ namespace Tests
             Assert.IsTrue(date.Month == null);
             Assert.IsTrue(date.Day == null);
         }
+
         [TestMethod]
         public void NoCutsYearNull()
         {
@@ -356,6 +360,7 @@ namespace Tests
             Assert.IsTrue(date2.Month == 3);
             Assert.IsTrue(date2.Day == null);
         }
+
         [TestMethod]
         public void NoCutsMonthNull()
         {
@@ -366,10 +371,11 @@ namespace Tests
             Assert.IsTrue(date.Month == null);
             Assert.IsTrue(date.Day == 31);
         }
+
         #endregion Setters
 
-
         #region Fill Empty
+
         // начинаем заполнять
 
         [TestMethod]
@@ -382,6 +388,7 @@ namespace Tests
             Assert.AreEqual(getNow().Month, date.Month);
             Assert.AreEqual(getNow().Year, date.Year);
         }
+
         [TestMethod]
         public void FillMonthByNow()
         {
@@ -392,6 +399,7 @@ namespace Tests
             Assert.AreEqual(5, date.Month);
             Assert.AreEqual(getNow().Year, date.Year);
         }
+
         [TestMethod]
         public void FillYear()
         {
@@ -402,6 +410,7 @@ namespace Tests
             Assert.AreEqual(null, date.Month);
             Assert.AreEqual(2014, date.Year);
         }
+
         [TestMethod]
         public void FillOffset()
         {
@@ -411,7 +420,8 @@ namespace Tests
             Assert.AreEqual(5, date.Offset);
             Assert.AreEqual(DateUnit.Day, date.Unit);
         }
-        #endregion
+
+        #endregion Fill Empty
 
         #region compare
 
@@ -498,6 +508,7 @@ namespace Tests
             Assert.IsTrue(date1 == date2);
             Assert.AreEqual(date1, date2);
         }
+
         [TestMethod]
         public void TestEqual3()
         {
@@ -723,6 +734,5 @@ namespace Tests
         }
 
         #endregion Setting
-
     }
 }

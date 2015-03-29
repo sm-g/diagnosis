@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Diagnosis.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Diagnosis.Common;
-using System.Globalization;
+using System;
+using System.Linq;
 
 namespace Tests
 {
@@ -18,17 +15,18 @@ namespace Tests
         // 1 | -   0/1  0   0/1
         // 2 | -   0    1   0
         // 3 | -   0    1   1
-        // 4 | 0   1    1   0    
-        // 5 | 0   1    1   1    
-        // 6 | 1   1    1   1  
-        // 7 | 1   1    1   0  
-        Tuple<string, string> first = new Tuple<string, string>("d MMMM yyyy", "d MMMM yyyy");
-        Tuple<string, string> second = new Tuple<string, string>("d MMMM", "d MMMM yyyy");
-        Tuple<string, string> third = new Tuple<string, string>("d MMMM", "d MMMM");
-        Tuple<string, string> fourth = new Tuple<string, string>("%d", "d MMMM yyyy");
-        Tuple<string, string> fifth = new Tuple<string, string>("%d", "d MMMM");
-        Tuple<string, string> sixth = new Tuple<string, string>("d MMMM", "");
-        Tuple<string, string> seventh = new Tuple<string, string>("d MMMM yyyy", "");
+        // 4 | 0   1    1   0
+        // 5 | 0   1    1   1
+        // 6 | 1   1    1   1
+        // 7 | 1   1    1   0
+        private Tuple<string, string> first = new Tuple<string, string>("d MMMM yyyy", "d MMMM yyyy");
+
+        private Tuple<string, string> second = new Tuple<string, string>("d MMMM", "d MMMM yyyy");
+        private Tuple<string, string> third = new Tuple<string, string>("d MMMM", "d MMMM");
+        private Tuple<string, string> fourth = new Tuple<string, string>("%d", "d MMMM yyyy");
+        private Tuple<string, string> fifth = new Tuple<string, string>("%d", "d MMMM");
+        private Tuple<string, string> sixth = new Tuple<string, string>("d MMMM", "");
+        private Tuple<string, string> seventh = new Tuple<string, string>("d MMMM yyyy", "");
 
         [TestMethod]
         public void TestFirstCase()

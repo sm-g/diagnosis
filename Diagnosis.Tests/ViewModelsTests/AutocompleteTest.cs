@@ -25,6 +25,8 @@ namespace Tests
         [TestInitialize]
         public void AutocompleteTestInit()
         {
+            Load<Doctor>();
+            AuthorityController.TryLogIn(d1);
             r = new Recognizer(session, clearCreated: true);
             a = new AutocompleteViewModel(r, true, true, true, false, null);
             word = session.Get<Word>(IntToGuid<Word>(1));
@@ -90,6 +92,7 @@ namespace Tests
             Assert.AreEqual(1, a.Suggestions.Count);
             Assert.IsTrue(a.IsPopupOpen);
         }
+
         [TestMethod]
         public void QueryNotExistingCreatedInOtherAutocomplete()
         {
@@ -104,6 +107,7 @@ namespace Tests
             Assert.AreEqual(1, other.Suggestions.Count);
             Assert.IsTrue(other.IsPopupOpen);
         }
+
         /// <summary>
         /// Можно вводить такое же слово.
         /// </summary>
@@ -229,10 +233,11 @@ namespace Tests
             Assert.AreEqual(word, a.LastTag.Blank);
             Assert.IsTrue(a.Tags.Count == 1);
         }
+
         [TestMethod]
         public void AddMeasureWhenTyping()
         {
-            var d1 = session.Get<Doctor>(IntToGuid<Doctor>(1));
+            Load<Doctor>();
             AuthorityController.TryLogIn(d1);
 
             var hre = new Diagnosis.ViewModels.Screens.HrEditorViewModel(session);
@@ -245,6 +250,7 @@ namespace Tests
             // from measureEditor
             a.AddTag(new Measure(5));
         }
+
         [TestMethod]
         public void CopyPasteWord()
         {

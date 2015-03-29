@@ -18,6 +18,7 @@ namespace Diagnosis.ViewModels.Screens
         private VisibleRelayCommand _openWordsCommand;
         private VisibleRelayCommand _openSettingsCommand;
         private VisibleRelayCommand _logoutCommand;
+        private VisibleRelayCommand _openVocsCommand;
 
         public MenuBarViewModel(ScreenSwitcher switcher, SearchViewModel sPanel)
         {
@@ -32,8 +33,10 @@ namespace Diagnosis.ViewModels.Screens
                 OpenDoctorsCommand.IsVisible = AuthorityController.CurrentUserCanOpen(Screen.Doctors);
                 OpenPatientsCommand.IsVisible = AuthorityController.CurrentUserCanOpen(Screen.Patients);
                 OpenWordsCommand.IsVisible = AuthorityController.CurrentUserCanOpen(Screen.Words);
+                OpenVocsCommand.IsVisible = AuthorityController.CurrentUserCanOpen(Screen.Vocabularies);
 #if DEBUG
                 OpenSyncCommand.IsVisible = true;
+                OpenVocsCommand.IsVisible = true;
 #endif
             };
 
@@ -133,6 +136,17 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         switcher.OpenScreen(Screen.Words);
                     }, () => switcher.Screen != Screen.Words && AuthorityController.CurrentUserCanOpen(Screen.Words)));
+            }
+        }
+        public VisibleRelayCommand OpenVocsCommand
+        {
+            get
+            {
+                return _openVocsCommand ?? (_openVocsCommand = new VisibleRelayCommand(
+                    () =>
+                    {
+                        switcher.OpenScreen(Screen.Vocabularies);
+                    }, () => switcher.Screen != Screen.Vocabularies && AuthorityController.CurrentUserCanOpen(Screen.Vocabularies)));
             }
         }
 
