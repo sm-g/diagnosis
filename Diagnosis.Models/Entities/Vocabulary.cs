@@ -27,7 +27,6 @@ namespace Diagnosis.Models
             if (d != null)
             {
                 Doctor = d;
-                IsCustom = true;
             }
         }
 
@@ -48,23 +47,19 @@ namespace Diagnosis.Models
                 SetProperty(ref _title, value ?? "", () => Title);
             }
         }
-
-        public virtual bool IsCustom
-        {
-            get { return Doctor != null; }
-            set
-            {
-                SetProperty(ref _custom, value, () => IsCustom);
-            }
-        }
-
         public virtual Doctor Doctor
         {
             get { return _doc; }
             set
             {
-                SetProperty(ref _doc, value, () => Doctor);
+                if (SetProperty(ref _doc, value, () => Doctor))
+                    OnPropertyChanged(() => IsCustom);
             }
+        }
+
+        public virtual bool IsCustom
+        {
+            get { return Doctor != null; }
         }
 
         public virtual IEnumerable<WordTemplate> WordTemplates

@@ -46,16 +46,15 @@ namespace Diagnosis.Models
                 SetProperty(ref _title, filtered, () => Title);
             }
         }
-
-        public virtual IEnumerable<Vocabulary> Vocabularies
-        {
-            get { return vocabularies; }
-        }
-
         public virtual Word Parent
         {
             get { return _parent; }
             set { SetProperty(ref _parent, value, () => Parent); }
+        }
+
+        public virtual IEnumerable<Vocabulary> Vocabularies
+        {
+            get { return vocabularies; }
         }
 
         public virtual IEnumerable<Word> Children
