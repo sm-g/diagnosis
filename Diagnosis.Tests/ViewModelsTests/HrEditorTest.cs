@@ -11,7 +11,7 @@ namespace Tests.ViewModelsTests
     [TestClass]
     public class HrEditorTest : InMemoryDatabaseTest
     {
-        
+
         private HrEditorViewModel e;
         private new HealthRecord hr;
         private Word word;
@@ -305,7 +305,7 @@ namespace Tests.ViewModelsTests
         }
 
         [TestMethod]
-        public void AddWordToDoctorAfterSaveHr()
+        public void AddWordToDoctorAfterSaveHisHr()
         {
             // слова становятся видны доктору только после сохранения записи
             AuthorityController.TryLogIn(d2);
@@ -314,7 +314,7 @@ namespace Tests.ViewModelsTests
             Assert.IsTrue(!d2.Words.Contains(wForD1Only));
             using (var card = new CardViewModel(hr))
             {
-                card.HrEditor.Load(hr);
+                card.HrList.AddHealthRecordCommand.Execute(null);
                 card.HrEditor.Autocomplete.AddTag(wForD1Only);
 
                 Assert.IsTrue(!d2.Words.Contains(wForD1Only));

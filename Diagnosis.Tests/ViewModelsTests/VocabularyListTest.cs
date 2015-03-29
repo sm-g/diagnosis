@@ -37,6 +37,7 @@ namespace Tests
             Assert.AreEqual(null, d1.Speciality);
             Assert.AreEqual(0, vl.Vocs.Count);
 
+            // fix settings saving
             vl.Dispose();
             vl = new VocabularyListViewModel();
 
