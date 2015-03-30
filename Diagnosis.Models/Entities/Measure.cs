@@ -70,7 +70,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("{0} {1}{2}", Word, Value, Uom != null ? " " + Uom.Abbr : "");
+            return string.Format("{0} {1}{2}", Word, Value, Uom != null ? "\u00A0" + Uom.Abbr.Replace(" ", "\u00A0") : ""); // nbsp in and before abbr
         }
 
         public virtual int CompareTo(IHrItemObject hio)
