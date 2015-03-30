@@ -100,6 +100,12 @@ namespace Diagnosis.ViewModels.Autocomplete
             AddNotPersistedToSuggestions = true;
             CanChangeAddQueryToSuggstions = true;
             doctor = AuthorityController.CurrentDoctor;
+
+            AuthorityController.LoggedIn += (s, e) =>
+            {
+                // fix, search надо создавать после логина
+                doctor = AuthorityController.CurrentDoctor;
+            };
         }
 
         private bool CanMakeEntityFrom(string query)
