@@ -2,6 +2,7 @@
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels;
+using Diagnosis.ViewModels.Controls;
 using Diagnosis.ViewModels.Search;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;

@@ -30,12 +30,15 @@ namespace Tests
         [TestMethod]
         public void Hrs2Words()
         {
+            // новая запись со словом
             var hrsBefore = w[6].HealthRecords.Count();
             var hr = new HealthRecord(a[1], d1);
             hr.SetItems(new[] { w[6] });
 
             Assert.AreEqual(hrsBefore + 1, w[6].HealthRecords.Count());
 
+            // запись удалена
+            hr.OnDelete();
             session.Delete(hr);
 
             Assert.AreEqual(hrsBefore, w[6].HealthRecords.Count());
