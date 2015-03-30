@@ -28,7 +28,7 @@ namespace Diagnosis.Models
             DateAndTime = DateTime.Now;
         }
 
-        protected Appointment()
+        protected internal Appointment()
         {
             _createdAt = DateTime.Now;
             _updatedAt = DateTime.Now;
@@ -36,7 +36,7 @@ namespace Diagnosis.Models
 
         public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
 
-        public virtual Course Course { get; protected set; }
+        public virtual Course Course { get; protected internal set; }
 
         public virtual Doctor Doctor { get; set; }
 

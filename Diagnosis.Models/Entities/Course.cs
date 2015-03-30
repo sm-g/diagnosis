@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Models.Validators;
+using Diagnosis.Common;
 using FluentValidation.Results;
 using Iesi.Collections.Generic;
 using System;
@@ -119,7 +120,18 @@ namespace Diagnosis.Models
             OnAppointmentsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, a));
             return a;
         }
+        protected internal virtual void AddAppointment(Appointment app)
+        {
+            Contract.Requires(app.Course == null);
+            if (appointments.Add(app))
+            {
+                app.Course = this;
+                if (app.Doctor == null)
+                    app.Doctor = this.LeadDoctor;
 
+                OnAppointmentsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, app));
+            }
+        }
         public virtual void RemoveAppointment(Appointment app)
         {
             Contract.Requires(app.IsEmpty());
@@ -151,6 +163,10 @@ namespace Diagnosis.Models
         public virtual void Finish()
         {
             Contract.Requires(!IsEnded);
+            Contract.Ensures(IsEnded);
+            Contract.Ensures(appointments.Count == 0 && End == DateTime.Today ||
+                End >= GetOrderedAppointments().Last().DateAndTime);
+
             var last = Appointments.OrderBy(x => x.DateAndTime).LastOrDefault();
             var end = last != null ? last.DateAndTime : DateTime.Now;
             End = end > DateTime.Now ? end : DateTime.Now;
@@ -162,10 +178,30 @@ namespace Diagnosis.Models
         }
 
         /// <summary>
+        /// Меняет начало-конец круса так, чтобы осмотры входили в этот интервал.
+        /// </summary>
+        public virtual void FitDatesToApps()
+        {
+            Contract.Ensures(appointments.Count == 0 ||
+                Start <= GetOrderedAppointments().First().DateAndTime && IsEnded ?
+                End >= GetOrderedAppointments().Last().DateAndTime : true);
+
+            var last = Appointments.OrderBy(x => x.DateAndTime).LastOrDefault();
+            var first = Appointments.OrderBy(x => x.DateAndTime).FirstOrDefault();
+
+            if (End.HasValue && last != null && last.DateAndTime > End.Value)
+                End = last.DateAndTime;
+            if (first != null && first.DateAndTime < Start)
+                Start = first.DateAndTime;
+        }
+
+        /// <summary>
         /// Осмотры, отсортированные по дате. Первый — самый ранний осмотр.
         /// </summary>
         public virtual IEnumerable<Appointment> GetOrderedAppointments()
         {
+            Contract.Ensures(Contract.Result<IEnumerable<Appointment>>().IsOrdered(x => x.DateAndTime));
+
             return Appointments.OrderBy(a => a);
         }
 

@@ -116,5 +116,58 @@ namespace Tests.ModelTests
             var r = new CourseEarlierFirst().Compare(c1, c2);
             Assert.IsTrue(r == -1);
         }
+        [TestMethod]
+        public void Finish()
+        {
+            var c = new Course() { Start = dt[1] };
+            c.Finish();
+
+            Assert.AreEqual(DateTime.Today, c.End);
+
+        }
+        [TestMethod]
+        public void FinishByLastApp()
+        {
+            var c = new Course() { Start = dt[1] };
+            var a = new Appointment() { DateAndTime = DateTime.Today.AddDays(5) };
+            c.AddAppointment(a);
+            c.Finish();
+            Assert.AreEqual(a.DateAndTime.Date, c.End);
+        }
+        [TestMethod]
+        public void FitDateToApps()
+        {
+            var c = new Course() { Start = dt[1] };
+            var a = new Appointment() { DateAndTime = dt[0] };
+            c.AddAppointment(a);
+            c.FitDatesToApps();
+            Assert.AreEqual(a.DateAndTime, c.Start);
+            Assert.AreEqual(null, c.End);
+
+        }
+        [TestMethod]
+        public void FitDateToApps2()
+        {
+            var c = new Course() { Start = dt[1], End = dt[5] };
+            var a = new Appointment() { DateAndTime = dt[0] };
+            var a2 = new Appointment() { DateAndTime = dt[6] };
+            c.AddAppointment(a);
+            c.AddAppointment(a2);
+            c.FitDatesToApps();
+            Assert.AreEqual(dt[0], c.Start);
+            Assert.AreEqual(dt[6], c.End);
+
+        }
+        [TestMethod]
+        public void FitDateToApps3()
+        {
+            var c = new Course() { Start = dt[1], End = dt[5] };
+            var a2 = new Appointment() { DateAndTime = dt[6] };
+            c.AddAppointment(a2);
+            c.FitDatesToApps();
+            Assert.AreEqual(dt[1], c.Start);
+            Assert.AreEqual(dt[6], c.End);
+
+        }
     }
 }
