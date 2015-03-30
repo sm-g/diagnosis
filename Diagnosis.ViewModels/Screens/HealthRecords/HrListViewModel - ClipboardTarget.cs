@@ -52,7 +52,7 @@ namespace Diagnosis.ViewModels.Screens
 
             var data = new HrData(hrInfos);
 
-            var strings = string.Join(".\n", hrs.Select(hr => string.Join(", ", hr.GetOrderedEntities()))) + ".";
+            var strings = string.Join(".\n", hrs.Select(hr => string.Join(", ", hr.GetOrderedCHIOs()))) + ".";
 
             IDataObject dataObj = new DataObject();
             dataObj.SetData(HrData.DataFormat.Name, data);

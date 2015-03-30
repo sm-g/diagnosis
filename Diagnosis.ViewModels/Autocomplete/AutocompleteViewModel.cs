@@ -453,7 +453,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             else if (chio != null)
             {
                 tag = new TagViewModel(this, chio.HIO);
-                tag.Confidence = chio.Confindence;
+                tag.Confidence = chio.Confidence;
             }
             else if (str != null)
                 tag = new TagViewModel(this, str);

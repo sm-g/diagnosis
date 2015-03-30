@@ -42,7 +42,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return string.Join(" ", healthRecord.GetOrderedEntities());
+                return string.Join(", ", healthRecord.GetOrderedCHIOs());
             }
         }
 
@@ -255,7 +255,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private void healthRecord_ItemsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            OnPropertyChanged("Name");
+            OnPropertyChanged(() => Name);
         }
 
         private void healthRecord_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

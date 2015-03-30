@@ -291,7 +291,7 @@ namespace Diagnosis.Models
             // добавляем новые
             foreach (var item in toA)
             {
-                var n = new HrItem(this, item.HIO) { Confidence = item.Confindence };
+                var n = new HrItem(this, item.HIO) { Confidence = item.Confidence };
                 itemsToAdd.Add(n);
                 itemsToBe.Add(n);
             }

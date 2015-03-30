@@ -97,7 +97,7 @@ namespace Tests
             hr1.AddItems(hiosToAdd);
 
             var chios = hr1.HrItems.Select(x => x.CHIO).ToList();
-            Assert.AreEqual(hiosToAdd.Count(), chios.Count(x => x.Confindence == default(Confidence)));
+            Assert.AreEqual(hiosToAdd.Count(), chios.Count(x => x.Confidence == default(Confidence)));
         }
 
         [TestMethod]
@@ -107,7 +107,7 @@ namespace Tests
 
             hr1.SetItems(hiosSequence);
             var chios = hr1.GetOrderedCHIOs().ToList();
-            chios[0].Confindence = Confidence.Absent;
+            chios[0].Confidence = Confidence.Absent;
 
             hr1.SetItems(chios);
 
