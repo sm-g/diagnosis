@@ -60,7 +60,6 @@
     <CallTarget Condition="$(BuildRelease) == '1'" Targets="CleanupAfterBuild" />
     <CallTarget Condition="$(BuildRelease) == '1'" Targets="CopyRelease" />
     <!-- <CallTarget Condition="$(RunTests) == '1'" Targets="Test" /> -->
-    <CallTarget Condition="$(CopyWorking) == '1'" Targets="CopyWorking" />
     <CallTarget Condition="$(BuildAndZipSetup) == '1'" Targets="BuildInnoSetup" />
   </Target>
 
@@ -71,7 +70,6 @@
       <AppProject>$(DirSource)\Diagnosis.Client.App\Diagnosis.Client.App.csproj</AppProject>
 
       <DirLast>$(DirMainOutput)\$(AppWithVersionName)</DirLast>
-      <DirWorking>$(DirMainOutput)\diagnosis-working-client</DirWorking>
 
       <SetupProject>Diagnosis.Client.Setup</SetupProject>
       <DirSetup>$(DirSource)\$(SetupProject)</DirSetup>
@@ -98,7 +96,6 @@
       <AppProject>$(DirSource)\Diagnosis.Server.App\Diagnosis.Server.App.csproj</AppProject>
 
       <DirLast>$(DirMainOutput)\$(AppWithVersionName)</DirLast>
-      <DirWorking>$(DirMainOutput)\diagnosis-working-server</DirWorking>
 
       <SetupProject>Diagnosis.Server.Setup</SetupProject>
       <DirSetup>$(DirSource)\$(SetupProject)</DirSetup>
@@ -155,17 +152,6 @@
       </ReleaseFiles>
     </ItemGroup>
     <Copy SourceFiles="@(ReleaseFiles)" DestinationFiles="@(ReleaseFiles->'$(DirLast)\%(RecursiveDir)%(Filename)%(Extension)')"  SkipUnchangedFiles="true" />
-  </Target>
-
-  <!-- copy files to working folder -->
-  <Target Name="CopyWorking">
-    <ItemGroup>
-      <ReleaseFiles
-          Include="$(DirAppOutput)\**\*.*"
-          Exclude="$(DirAppOutput)\*.pdb">
-      </ReleaseFiles>
-    </ItemGroup>
-    <Copy SourceFiles="@(ReleaseFiles)" DestinationFiles="@(ReleaseFiles->'$(DirWorking)\%(RecursiveDir)%(Filename)%(Extension)')"  SkipUnchangedFiles="true" />
   </Target>
 
   <Target Name="UpdateVersion"
