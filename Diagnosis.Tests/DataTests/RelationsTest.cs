@@ -62,5 +62,27 @@ namespace Tests
 
             Assert.AreEqual(blocksBefore + 1, blocksAfter);
         }
+
+        [TestMethod]
+        public void Course2App()
+        {
+            var c = new Course();
+            var app = c.AddAppointment(d1);
+
+            Assert.AreEqual(app, c.Appointments.Single());
+            Assert.AreEqual(c, app.Course);
+
+
+        }
+
+        [TestMethod]
+        public void Pat2Course()
+        {
+            var p = new Patient();
+            var c = p.AddCourse(d1);
+
+            Assert.AreEqual(c, p.Courses.Single());
+            Assert.AreEqual(p, c.Patient);
+        }
     }
 }

@@ -41,9 +41,9 @@ namespace Diagnosis.Models
 
         public virtual event NotifyCollectionChangedEventHandler AppointmentsChanged;
 
-        public virtual Patient Patient { get; protected set; }
+        public virtual Patient Patient { get; protected internal set; }
 
-        public virtual Doctor LeadDoctor { get; protected set; }
+        public virtual Doctor LeadDoctor { get; protected internal set; }
 
         public virtual DateTime Start
         {
@@ -113,6 +113,8 @@ namespace Diagnosis.Models
         /// <returns></returns>
         public virtual Appointment AddAppointment(Doctor doctor)
         {
+            Contract.Ensures(Contract.Result<Appointment>().Course.Equals(this));
+
             var a = new Appointment(this, doctor ?? LeadDoctor);
             appointments.Add(a);
             a.FitDateToCourse();
@@ -120,9 +122,11 @@ namespace Diagnosis.Models
             OnAppointmentsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, a));
             return a;
         }
+
         protected internal virtual void AddAppointment(Appointment app)
         {
             Contract.Requires(app.Course == null);
+
             if (appointments.Add(app))
             {
                 app.Course = this;

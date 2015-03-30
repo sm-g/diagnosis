@@ -218,7 +218,7 @@ namespace Diagnosis.ViewModels.Screens
             var lastCourse = patient.GetOrderedCourses().FirstOrDefault();
             if (lastCourse == null)
             {
-                AuthorityController.CurrentDoctor.StartCourse(patient);
+                patient.AddCourse(AuthorityController.CurrentDoctor);
             }
             else
             {

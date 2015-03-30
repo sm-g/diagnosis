@@ -47,7 +47,7 @@ namespace Tests
             using (var tx = session.BeginTransaction())
             {
                 var p = new Patient();
-                var c = d1.StartCourse(p);
+                var c = p.AddCourse(d1);
                 p.RemoveCourse(c);
                 Assert.IsTrue(p.Courses.Count() == 0); // see output
 

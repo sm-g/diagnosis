@@ -40,7 +40,7 @@ namespace Tests
             var d1 = new Doctor("last", "first");
 
             var patientCoursesBefore = p1.Courses.Count();
-            d1.StartCourse(p1);
+            p1.AddCourse(d1);
 
             Assert.AreEqual(patientCoursesBefore + 1, p1.Courses.Count());
         }

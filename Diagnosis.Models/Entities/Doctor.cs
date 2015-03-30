@@ -154,16 +154,6 @@ namespace Diagnosis.Models
             get { return settingsProvider ?? (settingsProvider = new SettingsProvider(this)); }
         }
 
-        public virtual Course StartCourse(Patient patient)
-        {
-            Contract.Requires(patient != null);
-            Contract.Ensures(patient.Courses.Contains(Contract.Result<Course>()));
-
-            var course = new Course(patient, this);
-            patient.AddCourse(course);
-            return course;
-        }
-
         /// <summary>
         /// Доктор cможет видеть эти слова.
         /// Использовать перед сохранением слова.

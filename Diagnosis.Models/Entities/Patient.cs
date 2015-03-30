@@ -249,6 +249,18 @@ namespace Diagnosis.Models
             }
         }
 
+        public virtual Course AddCourse(Doctor doctor)
+        {
+            Contract.Requires(doctor != null);
+            Contract.Ensures(Contract.Result<Course>().Patient.Equals(this));
+
+            var course = new Course(this, doctor);
+
+            courses.Add(course);
+            OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, course));
+            return course;
+        }
+
         public virtual void RemoveCourse(Course course)
         {
             Contract.Requires(course.IsEmpty());
@@ -308,8 +320,12 @@ namespace Diagnosis.Models
 
         protected internal virtual void AddCourse(Course course)
         {
+            Contract.Requires(course.Patient == null);
+            //Contract.Requires(course.LeadDoctor != null);
+
             if (!courses.Contains(course))
             {
+                course.Patient = this;
                 courses.Add(course);
                 OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, course));
             }

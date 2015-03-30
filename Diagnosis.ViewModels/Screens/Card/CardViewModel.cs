@@ -117,7 +117,11 @@ namespace Diagnosis.ViewModels.Screens
                 }
             );
         }
-
+        /// <summary>
+        /// Создает карту и тут же вызывает Open(entity).
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="resetHistory"></param>
         public CardViewModel(object entity, bool resetHistory = false)
             : this(resetHistory)
         {
@@ -173,7 +177,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    AuthorityController.CurrentDoctor.StartCourse(viewer.OpenedPatient);
+                    viewer.OpenedPatient.AddCourse(AuthorityController.CurrentDoctor);
                 });
             }
         }

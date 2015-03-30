@@ -196,7 +196,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    var course = AuthorityController.CurrentDoctor.StartCourse(patient);
+                    var course = patient.AddCourse(AuthorityController.CurrentDoctor);
                 });
             }
         }

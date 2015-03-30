@@ -83,7 +83,7 @@ namespace Tests
             Assert.AreEqual(p[1], card.Navigator.Current.Holder);
 
             // начинаем курс
-            d1.StartCourse(p[1]);
+            p[1].AddCourse(d1);
 
             // курс открывается
             Assert.AreEqual(p[1].Courses.LastOrDefault(), card.Navigator.Current.Holder);
@@ -147,7 +147,7 @@ namespace Tests
         public void CreateCourseWithFirstHrFails()
         {
             card.Open(p[1]);
-            d1.StartCourse(p[1]);
+            p[1].AddCourse(d1);
             var newCourse = p[1].Courses.LastOrDefault();
 
             // в курсе есть осмотр с записью
