@@ -81,7 +81,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     (Holder as Course).AddAppointment(AuthorityController.CurrentDoctor);
                 },
-                () => Holder is Course && !(Holder as Course).IsEnded));
+                () => Holder is Course));
             }
         }
 

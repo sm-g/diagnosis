@@ -31,14 +31,15 @@ namespace Diagnosis.Client.App.DesignData
             IsDraggable = true;
         }
     }
+
     public class SampleAdminSettingsViewModel : AdminSettingsViewModel
     {
         public SampleAdminSettingsViewModel()
             : base(Mocks.admin)
         {
-
         }
     }
+
     public class SampleVocabularyListViewModel : VocabularyListViewModel
     {
         public SampleVocabularyListViewModel()
@@ -103,6 +104,22 @@ namespace Diagnosis.Client.App.DesignData
         }
     }
 
+    public class SampleCourseEditorViewModel : CourseEditorViewModel
+    {
+        public SampleCourseEditorViewModel()
+            : base(Mocks.course2)
+        {
+        }
+    }
+
+    public class SampleAppointmentEditorViewModel : AppointmentEditorViewModel
+    {
+        public SampleAppointmentEditorViewModel()
+            : base(Mocks.app)
+        {
+        }
+    }
+
     public class SampleMeasureEditorViewModel : MeasureEditorViewModel
     {
         public SampleMeasureEditorViewModel()
@@ -141,15 +158,20 @@ namespace Diagnosis.Client.App.DesignData
         public static Patient pat = new Patient("Иванов", "Иван", year: 2000);
         public static Doctor doc = new Doctor("Ivanov", "Ivan");
         public static Admin admin = new Admin(new Passport(doc));
+
         public static Course course = new Course(pat, doc)
         {
             Start = DateTime.Now
         };
+
         public static Course course2 = new Course(pat, doc)
         {
             Start = DateTime.Now.AddDays(-4),
             End = DateTime.Now
         };
+
+        public static Appointment app = new Appointment(course, doc) { DateAndTime = DateTime.Now.AddDays(-4) };
+
         public static Word word = new Word("анемия");
         public static Word word2 = new Word("впервые");
         public static UomType uomType = new UomType("температура", 1);

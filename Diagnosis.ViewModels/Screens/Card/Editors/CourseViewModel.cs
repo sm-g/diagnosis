@@ -70,7 +70,7 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                         {
                             course.AddAppointment(AuthorityController.CurrentDoctor);
-                        }, () => !IsEnded);
+                        });
             }
         }
 

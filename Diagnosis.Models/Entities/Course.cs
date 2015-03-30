@@ -113,9 +113,9 @@ namespace Diagnosis.Models
         /// <returns></returns>
         public virtual Appointment AddAppointment(Doctor doctor)
         {
-            Contract.Requires(!IsEnded);
             var a = new Appointment(this, doctor ?? LeadDoctor);
             appointments.Add(a);
+            a.FitDateToCourse();
 
             OnAppointmentsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, a));
             return a;
@@ -126,6 +126,8 @@ namespace Diagnosis.Models
             if (appointments.Add(app))
             {
                 app.Course = this;
+                app.FitDateToCourse();
+
                 if (app.Doctor == null)
                     app.Doctor = this.LeadDoctor;
 

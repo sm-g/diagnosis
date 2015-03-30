@@ -2,9 +2,9 @@
 using Diagnosis.Models;
 using log4net;
 using System;
-using System.Linq;
-using System.ComponentModel;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -22,13 +22,15 @@ namespace Diagnosis.ViewModels.Screens
                 {"Time", "DateAndTime"}
             };
 
+            app.PropertyChanged += app_PropertyChanged;
             (app as IEditableObject).BeginEdit();
+            (app.Course as IEditableObject).BeginEdit();
 
             Title = "Редактирование осмотра";
             HelpTopic = "editholder";
             WithHelpButton = true;
-        }
 
+        }
 
         public DateTime Time
         {
@@ -42,6 +44,26 @@ namespace Diagnosis.ViewModels.Screens
             set { app.DateAndTime = value.Add(app.DateAndTime.TimeOfDay); }
         }
 
+        public RelayCommand CorrectCourseDatesCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    app.Course.FitDatesToApps();
+                    OnPropertyChanged("Date", "Time");
+                    OnPropertyChanged(() => DateTimeInvalid);
+                });
+            }
+        }
+
+        public bool DateTimeInvalid
+        {
+            get
+            {
+                return !app.IsValid() && app.GetErrors().Any(x => x.PropertyName == "DateAndTime");
+            }
+        }
 
         public override bool CanOk
         {
@@ -53,13 +75,15 @@ namespace Diagnosis.ViewModels.Screens
 
         protected override void OnOk()
         {
+            (app.Course as IEditableObject).EndEdit();
             (app as IEditableObject).EndEdit();
 
-            new Saver(Session).Save(app);
+            new Saver(Session).Save(app, app.Course);
         }
 
         protected override void OnCancel()
         {
+            (app.Course as IEditableObject).CancelEdit();
             (app as IEditableObject).CancelEdit();
         }
 
@@ -67,8 +91,14 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (disposing)
             {
+                app.PropertyChanged -= app_PropertyChanged;
             }
             base.Dispose(disposing);
+        }
+
+        private void app_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(() => DateTimeInvalid);
         }
     }
 }
