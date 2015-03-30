@@ -4,6 +4,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
 
+using System.Linq;
+
 namespace Tests
 {
     [TestClass]
@@ -66,8 +68,15 @@ namespace Tests
             var hiosSequence = new IHrItemObject[] { w1, w2, com };
             var hiosSequence2 = new IHrItemObject[] { w1, com, w2 };
             hr1.SetItems(hiosSequence);
+
+            bool reordered = false;
+            hr1.ItemsChanged += (s, e) =>
+            {
+                reordered = true;
+            };
             hr1.SetItems(hiosSequence2);
 
+            Assert.IsTrue(reordered);
             Assert.AreEqual(hiosSequence2.Count(), hr1.HrItems.Count);
             Assert.IsTrue(hiosSequence2.SequenceEqual(hr1.GetOrderedEntities()));
         }
@@ -79,10 +88,33 @@ namespace Tests
             var hiosToAdd = new IHrItemObject[] { w3, w2 };
 
             hr1.SetItems(hiosSequence);
+            bool changed = false;
+            hr1.ItemsChanged += (s, e) =>
+            {
+                changed = true;
+            };
             hr1.AddItems(hiosToAdd);
 
+            Assert.IsTrue(changed);
             Assert.AreEqual(hiosSequence.Count() + hiosToAdd.Count(), hr1.HrItems.Count);
             Assert.IsTrue(hiosSequence.Concat(hiosToAdd).SequenceEqual(hr1.GetOrderedEntities()));
+        }
+
+        [TestMethod]
+        public void SetSameItems()
+        {
+            var hiosSequence = new IHrItemObject[] { w1, w2, com };
+            var hiosSequence2 = new IHrItemObject[] { w1, w2, com };
+            hr1.SetItems(hiosSequence);
+
+            bool changed = false;
+            hr1.ItemsChanged += (s, e) =>
+            {
+                changed = true;
+            };
+            hr1.SetItems(hiosSequence2);
+
+            Assert.IsFalse(changed);
         }
 
         [TestMethod]
