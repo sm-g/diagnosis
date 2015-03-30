@@ -673,11 +673,11 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// Завершает тег.
         /// </summary>
         /// <param name="tag"></param>
-        /// <param name="suggestion">Слово или запрос</param>
+        /// <param name="suggestion">Предложение или hio</param>
         /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
         private void CompleteCommon(TagViewModel tag, object suggestion, bool exactMatchRequired, bool inverse = false)
         {
-            Contract.Requires(suggestion is SuggestionViewModel || suggestion is Word || suggestion == null);
+            Contract.Requires(suggestion is SuggestionViewModel || suggestion is IHrItemObject || suggestion == null);
 
             var hio = suggestion as IHrItemObject;
             var vm = suggestion as SuggestionViewModel;
