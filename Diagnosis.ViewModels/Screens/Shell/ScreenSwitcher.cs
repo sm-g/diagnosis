@@ -11,7 +11,7 @@ namespace Diagnosis.ViewModels.Screens
         Login, Doctors, Patients, Words, Card, Sync, Vocabularies
     }
 
-    public class ScreenSwitcher : ViewModelBase
+    public class ScreenSwitcher : NotifyPropertyChangedBase
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(ScreenSwitcher));
         private List<Screen> history = new List<Screen>();

@@ -32,7 +32,6 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             _chapters = new ObservableCollection<DiagnosisViewModel>();
             CreateDiagnosisSearch();
-            SelectedIcd = initial; // TODO chapter пусты
 
             UpdateDiagnosisQueryCode(initial, true);
 
@@ -45,6 +44,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             HelpTopic = "icdselector";
             WithHelpButton = false;
 
+            SelectedIcd = initial;
             DiagnosisSearch.Filter.IsFocused = true; // TODO фокус на список если выбранно
         }
 
