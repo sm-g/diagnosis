@@ -93,7 +93,23 @@ namespace Diagnosis.Models
                 OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, hr));
             }
         }
+        /// <summary>
+        /// Меняет дату так, чтобы осмотр входил в интервал курса.
+        /// </summary>
+        public virtual void FitDateToCourse()
+        {
+            Contract.Ensures(
+                Course.Start <= DateAndTime && Course.IsEnded ?
+                Course.Start > Course.End || Course.End >= DateAndTime.Date : true); // курс может быть в некорректном состоянии (начало>конец)
+            Contract.Ensures(DateAndTime.TimeOfDay == Contract.OldValue(DateAndTime).TimeOfDay);
 
+            if (Course.Start > DateAndTime)
+                DateAndTime = Course.Start.Add(DateAndTime.TimeOfDay);
+            else if (Course.IsEnded && Course.End < DateAndTime)
+                DateAndTime = Course.End.Value.Add(DateAndTime.TimeOfDay);
+
+            Course.ResetValidationCache();
+        }
         public override string ToString()
         {
             return string.Format("app {0:d} {1}", DateAndTime, Doctor);

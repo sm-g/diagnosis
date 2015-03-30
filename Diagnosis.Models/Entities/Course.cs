@@ -165,7 +165,7 @@ namespace Diagnosis.Models
             Contract.Requires(!IsEnded);
             Contract.Ensures(IsEnded);
             Contract.Ensures(appointments.Count == 0 && End == DateTime.Today ||
-                End >= GetOrderedAppointments().Last().DateAndTime);
+                End >= GetOrderedAppointments().Last().DateAndTime.Date);
 
             var last = Appointments.OrderBy(x => x.DateAndTime).LastOrDefault();
             var end = last != null ? last.DateAndTime : DateTime.Now;
@@ -178,21 +178,23 @@ namespace Diagnosis.Models
         }
 
         /// <summary>
-        /// Меняет начало-конец круса так, чтобы осмотры входили в этот интервал.
+        /// Меняет начало-конец так, чтобы осмотры входили в этот интервал.
         /// </summary>
         public virtual void FitDatesToApps()
         {
             Contract.Ensures(appointments.Count == 0 ||
                 Start <= GetOrderedAppointments().First().DateAndTime && IsEnded ?
-                End >= GetOrderedAppointments().Last().DateAndTime : true);
+                End >= GetOrderedAppointments().Last().DateAndTime.Date : true);
 
-            var last = Appointments.OrderBy(x => x.DateAndTime).LastOrDefault();
-            var first = Appointments.OrderBy(x => x.DateAndTime).FirstOrDefault();
+            var last = GetOrderedAppointments().LastOrDefault();
+            var first = GetOrderedAppointments().FirstOrDefault();
 
             if (End.HasValue && last != null && last.DateAndTime > End.Value)
                 End = last.DateAndTime;
             if (first != null && first.DateAndTime < Start)
                 Start = first.DateAndTime;
+
+            appointments.ForAll(x => x.ResetValidationCache());
         }
 
         /// <summary>
