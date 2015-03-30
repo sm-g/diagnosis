@@ -9,7 +9,7 @@
              xmlns:search="clr-namespace:Diagnosis.Client.App.Controls.Search"
              Width="450"
              d:DataContext="{d:DesignInstance design:SampleMeasureEditorViewModel,
-                                         IsDesignTimeCreatable=True}"
+                                              IsDesignTimeCreatable=True}"
              d:DesignHeight="100">
     <Grid>
         <Grid.Resources>
@@ -51,15 +51,16 @@
 
             <TextBox x:Name="value"
                      Text="{Binding Value,
-                                        Mode=TwoWay,
-                                        ValidatesOnDataErrors=True}"
+                                    Mode=TwoWay,
+                                    ValidatesOnDataErrors=True,
+                                    UpdateSourceTrigger=PropertyChanged}"
                      mahControls:TextBoxHelper.SelectAllOnFocus="True"
                      HorizontalContentAlignment="Right"
                      VerticalContentAlignment="Top" />
             <ComboBox x:Name="uom"
                       MinWidth="120"
                       SelectedItem="{Binding Uom,
-                                                 ValidatesOnDataErrors=True}"
+                                             ValidatesOnDataErrors=True}"
                       IsEditable="True"
                       ItemsSource="{Binding Uoms}"
                       TextSearch.TextPath="Abbr"
@@ -69,10 +70,10 @@
                         <GroupStyle.HeaderTemplate>
                             <DataTemplate>
                                 <TextBlock>
-                                        <TextBlock Text="{Binding Name.Title, StringFormat={}{0}}" />
-                                        <!--<TextBlock Text="{Binding Name.Base.Abbr, StringFormat={}({0})}"
+                                    <TextBlock Text="{Binding Name.Title, StringFormat={}{0}}" />
+                                    <!--<TextBlock Text="{Binding Name.Base.Abbr, StringFormat={}({0})}"
                                                    FontStyle="Italic" />-->
-                                    </TextBlock>
+                                </TextBlock>
                             </DataTemplate>
                         </GroupStyle.HeaderTemplate>
                     </GroupStyle>
