@@ -43,8 +43,9 @@ namespace Diagnosis.Data.Sync
         private static string[] vocTableNames = new[] {
                 Names.Vocabulary,
                 Names.WordTemplate,
-              //  Names.SpecialityTbl,
-             //   Names.SpecialityVocabulariesTbl,
+                Names.Speciality,
+                Names.SpecialityVocabularies,
+                // do not sync VocabularyWords - its client-only
             };
 
         private static string[] referenceTableNames = new[] {
@@ -72,6 +73,8 @@ namespace Diagnosis.Data.Sync
                 Names.HealthRecord,
                 Names.HrItem,
             };
+
+
         private static Dictionary<Scope, string> scopeNames = new Dictionary<Scope, string>
         {
             {Scope.Holder,      holderScope},
@@ -135,6 +138,11 @@ namespace Diagnosis.Data.Sync
         public static IList<Scope> GetOrderedScopes()
         {
             return new List<Scope>(Enum.GetValues(typeof(Scope)).Cast<Scope>().OrderScopes());
+        }
+
+        public static IEnumerable<string> GetVocOnlyTables()
+        {
+            return new[] { Names.SpecialityVocabularies, Names.Vocabulary, Names.WordTemplate };
         }
 
         public static IEnumerable<Scope> OrderScopes(this IEnumerable<Scope> scopes)

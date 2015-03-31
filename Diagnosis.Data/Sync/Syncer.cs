@@ -73,12 +73,21 @@ namespace Diagnosis.Data.Sync
         /// <summary>
         /// ID добавленных во время последней синхронизации сущностей.
         /// </summary>
-        public Dictionary<Type, IEnumerable<object>> AddedIdsPerType { get; set; }
+        public Dictionary<Type, IEnumerable<object>> AddedIdsPerType { get; private set; }
 
         /// <summary>
-        /// ID сущностей, которые должны быть удалены.
+        /// ID сущностей, которые должны быть удалены на клиенте.
         /// </summary>
-        public Dictionary<Type, IEnumerable<object>> DeletedIdsPerType { get; set; }
+        public Dictionary<Type, IEnumerable<object>> DeletedIdsPerType { get; private set; }
+
+        /// <summary>
+        /// Не синхронизировать новые сущности в таблицах.
+        /// </summary>
+        public IEnumerable<string> TablesIgnoreAdding { get; set; }
+        /// <summary>
+        /// Синхронизировать только эти сущности.
+        /// </summary>
+        public Dictionary<Type, IEnumerable<object>> IdsToSyncPerType { get; set; }
 
         /// <summary>
         /// Sync scopes determined by <paramref name="from"/>. Specify conncetions in correct order in ctor.
@@ -264,9 +273,10 @@ namespace Diagnosis.Data.Sync
                         syncOrchestrator = new DownloadSyncOrchestrator(
                             serverProvider,
                             clientProvider,
-                            tablesToTrackAdding: Scope.Reference.ToTableNames(),  // на клиенте могут быть справочные сущности с другими ID, но такие же по значению
-                            tablesToTrackDeleting: Names.Vocabulary.ToEnumerable(), //  перед удалением словаря надо убрать связь со словами на клиенте
-                            tablesToIgnoreAdding: new[] { Names.SpecialityVocabularies, Names.Vocabulary, Names.WordTemplate } // новые словари загружаются отдельно
+                            tablesToTrackAdding: Scope.Reference.ToTableNames()  // на клиенте могут быть справочные сущности с другими ID, но такие же по значению
+                           , tablesToTrackDeleting: Names.Vocabulary.ToEnumerable() //  перед удалением словаря надо убрать связь со словами на клиенте
+                           , tablesToIgnoreAdding: TablesIgnoreAdding
+                           , tableIdsToSync: IdsToSyncPerType != null ? IdsToSyncPerType.ToDictionary(x => Names.GetTblByType(x.Key), x => x.Value) : null
                           );
                         break;
                 }
@@ -523,10 +533,24 @@ namespace Diagnosis.Data.Sync
 
         public class DownloadSyncOrchestrator : SyncOrchestrator
         {
+            void DoPerTableRow(DataTableCollection tables, string table, Action<DataTable, DataRow> act)
+            {
+                if (tables.Contains(table))
+                {
+                    var dataTable = tables[table];
+                    var rows = dataTable.Rows.Cast<DataRow>().ToList();
+
+                    foreach (var row in rows)
+                    {
+                        act(dataTable, row);
+                    }
+                }
+            }
             public DownloadSyncOrchestrator(RelationalSyncProvider from, RelationalSyncProvider to,
                 IEnumerable<string> tablesToTrackAdding = null,
                 IEnumerable<string> tablesToTrackDeleting = null,
-                IEnumerable<string> tablesToIgnoreAdding = null)
+                IEnumerable<string> tablesToIgnoreAdding = null,
+                Dictionary<String, IEnumerable<object>> tableIdsToSync = null)
             {
                 ConflictsCounter = new Dictionary<DbConflictType, int>();
                 AddedIdsPerTable = new Dictionary<string, IEnumerable<object>>();
@@ -542,21 +566,58 @@ namespace Diagnosis.Data.Sync
                     {
                         foreach (var table in tablesToIgnoreAdding)
                         {
-                            if (e.Context.DataSet.Tables.Contains(table))
+                            DoPerTableRow(e.Context.DataSet.Tables, table, (dataTable, row) =>
                             {
-                                var dataTable = e.Context.DataSet.Tables[table];
-
-                                for (int j = 0; j < dataTable.Rows.Count; j++)
+                                if (row.RowState == DataRowState.Added)
                                 {
-                                    DataRow row = dataTable.Rows[j];
-                                    if (row.RowState == DataRowState.Added)
-                                    {
-                                        // не синхронизируем новые словари
-                                        dataTable.Rows.Remove(row);
-                                        j--;
-                                    }
+                                    // не синхронизируем новые словари
+                                    dataTable.Rows.Remove(row);
                                 }
-                            }
+                            });
+                            //if (e.Context.DataSet.Tables.Contains(table))
+                            //{
+                            //    var dataTable = e.Context.DataSet.Tables[table];
+
+                            //    for (int j = 0; j < dataTable.Rows.Count; j++)
+                            //    {
+                            //        DataRow row = dataTable.Rows[j];
+                            //        if (row.RowState == DataRowState.Added)
+                            //        {
+                            //            // не синхронизируем новые словари
+                            //            dataTable.Rows.Remove(row);
+                            //            j--;
+                            //        }
+                            //    }
+                            //}
+                        }
+                    }
+                    if (tableIdsToSync != null)
+                    {
+                        foreach (var table in tableIdsToSync.Keys)
+                        {
+                            DoPerTableRow(e.Context.DataSet.Tables, table, (dataTable, row) =>
+                            {
+                                if (!tableIdsToSync[table].Contains(row["Id"]))
+                                {
+                                    dataTable.Rows.Remove(row);
+                                }
+                            });
+
+                            //if (e.Context.DataSet.Tables.Contains(table))
+                            //{
+                            //    var dataTable = e.Context.DataSet.Tables[table];
+
+                            //    for (int j = 0; j < dataTable.Rows.Count; j++)
+                            //    {
+                            //        DataRow row = dataTable.Rows[j];
+                            //        if (!tableIdsToSync[table].Contains((Guid)row["Id"]))
+                            //        {
+                            //            dataTable.Rows.Remove(row);
+                            //            j--;
+                            //        }
+                            //    }
+                            //}
+
                         }
                     }
                 };
@@ -590,33 +651,30 @@ namespace Diagnosis.Data.Sync
                     {
                         foreach (var table in tablesToTrackAdding)
                         {
-                            if (e.Context.DataSet.Tables.Contains(table))
+                            var addedRows = new List<DataRow>();
+
+                            DoPerTableRow(e.Context.DataSet.Tables, table, (dataTable, row) =>
                             {
-                                var dataTable = e.Context.DataSet.Tables[table];
-                                var addedRows = new List<DataRow>();
-                                var deletedRows = new List<DataRow>();
-                                for (int j = 0; j < dataTable.Rows.Count; j++)
+                                if (row.RowState == DataRowState.Added)
                                 {
-                                    DataRow row = dataTable.Rows[j];
-
-                                    if (row.RowState == DataRowState.Added)
-                                    {
-                                        addedRows.Add(row);
-                                    }
-                                    else if (row.RowState == DataRowState.Deleted)
-                                    {
-                                        deletedRows.Add(row);
-                                    }
+                                    addedRows.Add(row);
                                 }
-                                AddedIdsPerTable.Add(dataTable.TableName, addedRows.Select(x => x["Id"]));
+                            });
+                            //if (e.Context.DataSet.Tables.Contains(table))
+                            //{
+                            //    var dataTable = e.Context.DataSet.Tables[table];
+                            //    for (int j = 0; j < dataTable.Rows.Count; j++)
+                            //    {
+                            //        DataRow row = dataTable.Rows[j];
 
-                                //DeletedIdsPerTable.Add(
-                                //    dataTable.TableName,
-                                //    dataTable.Rows
-                                //        .Cast<DataRow>()
-                                //        .Where(x => x.RowState == DataRowState.Deleted)
-                                //        .Select(x => x["Id"]));
-                            }
+                            //        if (row.RowState == DataRowState.Added)
+                            //        {
+                            //            addedRows.Add(row);
+                            //        }
+                            //    }
+
+                            //}
+                            AddedIdsPerTable.Add(table, addedRows.Select(x => x["Id"]));
                         }
                     }
                     // запоминаем удаляемые строки для желаемых таблиц

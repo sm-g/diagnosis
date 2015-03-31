@@ -56,6 +56,14 @@ namespace Diagnosis.Data
             { Setting,           typeof(Setting) },
         };
 
+        public static string GetTblByType(Type type)
+        {
+            var tbl = tblToTypeMap.FirstOrDefault(x => x.Value == type).Key;
+            if (tbl == default(string))
+                throw new NotSupportedException("No table for type");
+            return tbl;
+        }
+
         public static class Id
         {
             public static string Doctor = Names.Doctor + "ID";

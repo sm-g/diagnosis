@@ -134,7 +134,7 @@ namespace Diagnosis.ViewModels.Screens
                     }
                     ).ContinueWith((t) =>
                         // обновляем загруженные словари или удаляем
-                        new VocLoader(Session, AuthorityController.CurrentDoctor).AfterSyncVocs(syncer.DeletedIdsPerType))
+                        new VocLoader(Session).AfterSyncVocs(syncer.DeletedIdsPerType))
                     , Cursors.AppStarting);
                 },
                 () => CanSync(true, true));
