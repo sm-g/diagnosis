@@ -195,8 +195,11 @@ namespace Diagnosis.ViewModels.Screens
             }
             set
             {
+                DateOffset.FirstSet = DateOffsetViewModel.ShowAs.AtAge;
+
                 // установка возраста меняет только год
                 DateOffset.Year = patient.BirthYear.Value + value;
+
                 OnPropertyChanged(() => AtAge);
             }
         }
@@ -223,6 +226,22 @@ namespace Diagnosis.ViewModels.Screens
             {
                 healthRecord.Unit = DateOffset.RoundedUnit.ToHealthRecordUnit();
             }
+
+            if (e.PropertyName == "FirstSet")
+                // первая установка даты также ставит ShowAs
+                switch (DateOffset.FirstSet)
+                {
+                    default:
+                    case DateOffsetViewModel.ShowAs.Date:
+                        ShowAsDate = true;
+                        break;
+                    case DateOffsetViewModel.ShowAs.Offset:
+                        ShowAsOffset = true;
+                        break;
+                    case DateOffsetViewModel.ShowAs.AtAge:
+                        ShowAsAge = true;
+                        break;
+                }
         }
 
         #endregion DateEditor

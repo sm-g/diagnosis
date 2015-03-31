@@ -13,10 +13,11 @@ namespace Diagnosis.ViewModels
     public class DateOffsetViewModel : ViewModelBase
     {
         private static readonly Dictionary<HealthRecord, DateOffsetViewModel> dict = new Dictionary<HealthRecord, DateOffsetViewModel>();
+
         private readonly DateOffset d;
         private readonly HealthRecord hr;
         private DateUnit _roundUnit;
-
+        private ShowAs? _firstSet;
         private int? _roundOffset;
 
         static DateOffsetViewModel()
@@ -58,8 +59,19 @@ namespace Diagnosis.ViewModels
             };
             hr.PropertyChanged += healthRecord_PropertyChanged;
 
-            if (Year != null)
+            if (Year != null) // есть дата у записи
+            {
+                this._firstSet = ShowAs.Date; // не новая запись — не меняем showas при вводе
+
                 RoundOffsetUnitByDate();
+            }
+        }
+
+        public enum ShowAs
+        {
+            Date,
+            Offset,
+            AtAge
         }
 
         public DateOffset Do
@@ -77,6 +89,7 @@ namespace Diagnosis.ViewModels
             {
                 if (d.Offset != value)
                 {
+                    FirstSet = ShowAs.Offset;
                     d.Offset = value;
                     OnPropertyChanged(() => Offset);
                 }
@@ -93,6 +106,7 @@ namespace Diagnosis.ViewModels
             {
                 if (d.Unit != value)
                 {
+                    FirstSet = ShowAs.Offset;
                     d.Unit = value;
                     OnPropertyChanged(() => Unit);
                 }
@@ -109,6 +123,8 @@ namespace Diagnosis.ViewModels
             {
                 if (d.Year != value)
                 {
+                    FirstSet = ShowAs.Date;
+
                     d.Year = value;
                     if (value != null)
                         RoundOffsetUnitByDate();
@@ -127,6 +143,7 @@ namespace Diagnosis.ViewModels
             {
                 if (d.Month != value)
                 {
+                    FirstSet = ShowAs.Date;
                     d.Month = value;
                     RoundOffsetUnitByDate();
                     OnPropertyChanged(() => Month);
@@ -144,6 +161,7 @@ namespace Diagnosis.ViewModels
             {
                 if (d.Day != value)
                 {
+                    FirstSet = ShowAs.Date;
                     d.Day = value;
                     RoundOffsetUnitByDate();
                     OnPropertyChanged(() => Day);
@@ -187,10 +205,6 @@ namespace Diagnosis.ViewModels
         public DateTime Now
         {
             get { return d.Now; }
-            set
-            {
-                d.Now = value;
-            }
         }
 
         /// <summary>
@@ -198,10 +212,7 @@ namespace Diagnosis.ViewModels
         /// </summary>
         public bool IsEmpty
         {
-            get
-            {
-                return Year == null && Month == null && Day == null;
-            }
+            get { return d.IsEmpty; }
         }
 
         public RelayCommand SpinUnitCommand
@@ -212,6 +223,24 @@ namespace Diagnosis.ViewModels
                 {
                     RoundedUnit = RoundedUnit.GetNextDateUnit();
                 });
+            }
+        }
+        /// <summary>
+        /// В какое поле был первый ввод (для новой записи).
+        /// </summary>
+        public ShowAs? FirstSet
+        {
+            get
+            {
+                return _firstSet;
+            }
+            set
+            {
+                if (_firstSet == null) // только один раз
+                {
+                    _firstSet = value;
+                    OnPropertyChanged(() => FirstSet);
+                }
             }
         }
 

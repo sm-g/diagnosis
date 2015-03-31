@@ -206,6 +206,7 @@
                     <StackPanel Grid.Row="0"
                                 diag:HelpProvider.Topic="hrdate"
                                 Orientation="Horizontal"
+                                ToolTip="Как показывать дату в списке записей?"
                                 Visibility="{Binding DateOffset.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
                         <Label Content="Это было" />
                         <StackPanel Orientation="Horizontal"
