@@ -428,6 +428,7 @@ namespace Tests
         [TestMethod]
         public void TestLtDayMonth()
         {
+            // 40 дней назад < сейчас
             var date1 = new DateOffset(40, DateUnit.Day, getNow);
             var date2 = new DateOffset(0, DateUnit.Month, getNow);
 
@@ -437,15 +438,16 @@ namespace Tests
         [TestMethod]
         public void TestGtDayYear()
         {
+            // 40 дней назад > год назад
             var date1 = new DateOffset(40, DateUnit.Day, getNow);
             var date2 = new DateOffset(1, DateUnit.Year, getNow);
 
             Assert.IsTrue(date1 > date2);
         }
-
         [TestMethod]
         public void TestLtMonthYear()
         {
+            // 40 месяцев назад < 2 года назад
             var date1 = new DateOffset(40, DateUnit.Month, getNow);
             var date2 = new DateOffset(2, DateUnit.Year, getNow);
 
@@ -453,8 +455,9 @@ namespace Tests
         }
 
         [TestMethod]
-        public void TestLtSameUnit()
+        public void TestLtSameUnitDay()
         {
+            // 40 дней назад < сейчас
             var date1 = new DateOffset(40, DateUnit.Day, getNow);
             var date2 = new DateOffset(0, DateUnit.Day, getNow);
 
@@ -462,8 +465,9 @@ namespace Tests
         }
 
         [TestMethod]
-        public void TestLtSameUnit2()
+        public void TestLtSameUnitMonth()
         {
+            // 2013.12 < 2014.02
             var date1 = new DateOffset(2013, 12, null, getNow);
             var date2 = new DateOffset(2014, 02, 0, getNow);
 
@@ -473,16 +477,18 @@ namespace Tests
         [TestMethod]
         public void TestLtGtNull()
         {
+            // 5 лет назад < пустая дата
             var date1 = new DateOffset(null, DateUnit.Month, getNow);
             var date2 = new DateOffset(5, DateUnit.Year, getNow);
 
             Assert.IsFalse(date1 < date2);
-            Assert.IsFalse(date1 > date2);
+            Assert.IsTrue(date1 > date2);
         }
 
         [TestMethod]
         public void TestLtOrEqual()
         {
+            // 2013.12 <= 2014.02
             var date1 = new DateOffset(2013, 12, null, getNow);
             var date2 = new DateOffset(2014, 02, 0, getNow);
 
@@ -490,7 +496,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public void TestEqual()
+        public void TestEqualSameDay()
         {
             var date1 = new DateOffset(2013, 12, 1, getNow);
             var date2 = new DateOffset(2013, 12, 1, getNow);
@@ -500,7 +506,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public void TestEqual2()
+        public void TestEqualSameMonth()
         {
             var date1 = new DateOffset(2, DateUnit.Month, getNow);
             var date2 = new DateOffset(2014, 2, null, getNow);
@@ -510,27 +516,49 @@ namespace Tests
         }
 
         [TestMethod]
-        public void TestEqual3()
+        public void TestEqualPartialMonthDay()
         {
+            // 2014.02 !=  2014.02.15
             var date1 = new DateOffset(2, DateUnit.Month, getNow);
             var date2 = new DateOffset(2014, 2, 15, getNow);
 
-            date2.Settings = DateOffset.DateOffsetSettings.Rounding();
-
-            date2.Unit = DateUnit.Month;
-
+            // всегда больше
+            Assert.IsTrue(date1 > date2);
+            Assert.IsTrue(date2 > date1);
             Assert.IsTrue(date1 != date2);
             Assert.AreNotEqual(date1, date2);
         }
 
         [TestMethod]
-        public void TestEqualSameYear()
+        public void TestEqualPartialYearDay()
         {
+            // 2014.04.1 != 2014
             var date1 = new DateOffset(3, DateUnit.Day, getNow);
             var date2 = new DateOffset(0, DateUnit.Year, getNow);
 
-            Assert.IsTrue(date1 <= date2);
-            Assert.IsTrue(date1 >= date2);
+            // всегда больше
+            Assert.IsTrue(date1 > date2);
+            Assert.IsTrue(date2 > date1);
+            Assert.IsTrue(date1 != date2);
+            Assert.AreNotEqual(date1, date2);
+        }
+
+        [TestMethod]
+        public void TestEqualPartialMonthDayAfterRound()
+        {
+            // 2014.02 !=  2014.02.15
+            var date1 = new DateOffset(2, DateUnit.Month, getNow);
+            var date2 = new DateOffset(2014, 2, 15, getNow);
+
+            date2.Settings = DateOffset.DateOffsetSettings.Rounding();
+            date2.Unit = DateUnit.Month;
+
+            Assert.IsTrue(date1 != date2);
+            Assert.AreNotEqual(date1, date2);
+
+            // всегда больше
+            Assert.IsTrue(date1 > date2);
+            Assert.IsTrue(date2 > date1);
         }
 
         [TestMethod]
@@ -545,6 +573,7 @@ namespace Tests
         [TestMethod]
         public void TestCompareWithWeek()
         {
+            // сейчас > 2 недели назад
             var date1 = new DateOffset(getNow(), getNow);
             var date2 = new DateOffset(2, DateUnit.Week, getNow);
 

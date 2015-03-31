@@ -19,7 +19,7 @@ namespace Diagnosis.Common
     /// Заданная днём, месяцем и годом дата будет иметь смещение в неделях, если число дней нацело делится на 7.
     /// При указании даты отсутствующий более крупный компонент считается сегодняшним (_ _ d -> now.y now.m d).
     /// </summary>
-    public class DateOffset : NotifyPropertyChangedBase // should be struct
+    public class DateOffset : NotifyPropertyChangedBase, IComparable // should be struct
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(DateOffset));
         private DateTime _now = DateTime.Now;
@@ -782,45 +782,12 @@ namespace Diagnosis.Common
 
         public static bool operator <(DateOffset do1, DateOffset do2)
         {
-            if (do1.Unit == do2.Unit)
-            {
-                // давность больше - дата меньше
-                return do1.Offset > do2.Offset;
-            }
-
-            if (do1.Unit == DateUnit.Week)
-            {
-                var d1 = (DateOffset)do1.MemberwiseClone();
-                d1.SetOffset(do1.Offset * 7, DateUnit.Day);
-                return d1 < do2;
-            }
-            else if (do2.Unit == DateUnit.Week)
-            {
-                var d2 = (DateOffset)do2.MemberwiseClone();
-                d2.SetOffset(do2.Offset * 7, DateUnit.Day);
-                return do1 < d2;
-            }
-
-            if (!do1.Month.HasValue || !do2.Month.HasValue)
-            {
-                // сравниваем месяц и год или день и год
-                return do1.Year < do2.Year;
-            }
-            // сравниваем день и месяц
-            return do1.Month < do2.Month;
+            return do1.CompareTo(do2) == -1;
         }
 
         public static bool operator >(DateOffset do1, DateOffset do2)
         {
-            if (do1.Unit == do2.Unit)
-            {
-                return do1.Offset < do2.Offset;
-            }
-            if (!do1.Month.HasValue || !do2.Month.HasValue)
-            {
-                return do1.Year > do2.Year;
-            }
-            return do1.Month > do2.Month;
+            return do1.CompareTo(do2) == 1;
         }
 
         public static bool operator <=(DateOffset do1, DateOffset do2)
@@ -1035,6 +1002,50 @@ namespace Diagnosis.Common
                 hash = hash * 23 + Unit.GetHashCode();
                 return hash;
             }
+        }
+
+        public int CompareTo(object obj)
+        {
+            var other = obj as DateOffset;
+            if (other == null)
+                return 1;
+
+            if (other == this)
+                return 0;
+
+            if (this.Unit == other.Unit)
+            {
+                // давность больше - дата меньше
+                if (this.Offset > other.Offset)
+                    return -1;
+                return 1;
+            }
+
+            // для недель сравниваем дни
+            if (this.Unit == DateUnit.Week)
+            {
+                var thisInDays = (DateOffset)this.MemberwiseClone();
+                thisInDays.SetOffset(this.Offset * 7, DateUnit.Day);
+                return thisInDays.CompareTo(other);
+            }
+            else if (other.Unit == DateUnit.Week)
+            {
+                var otherInDays = (DateOffset)other.MemberwiseClone();
+                otherInDays.SetOffset(other.Offset * 7, DateUnit.Day);
+                return this.CompareTo(otherInDays);
+            }
+
+            if (!this.Month.HasValue || !other.Month.HasValue)
+            {
+                // сравниваем месяц и год или день и год
+                if (this.Year < other.Year)
+                    return -1;
+                return 1;
+            }
+            // сравниваем день и месяц
+            if (this.Month < other.Month)
+                return -1;
+            return 1;
         }
     }
 }
