@@ -21,6 +21,7 @@ namespace Tests
             Load<Course>();
             Load<Appointment>();
             Load<HealthRecord>();
+            Load<Word>();
 
             AuthorityController.TryLogIn(d1);
             // p[3] c[4] a[5] are empty, for deletions
@@ -322,5 +323,27 @@ namespace Tests
         }
 
         #endregion Saving
+
+        [TestMethod]
+        public void AddUsedHiddenWordToCustomVoc()
+        {
+            card.Dispose();
+            AuthorityController.TryLogIn(d2);
+
+            card = new CardViewModel(true);
+            // слово в словарях, но недоступно врачу
+            Assert.IsTrue(w[6].Vocabularies.Count() > 0);
+            Assert.IsTrue(!d2.Words.Contains(w[6]));
+
+            card.Open(a[1]);
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            // используеум слово в записи
+            card.HrEditor.HealthRecord.healthRecord.SetItems(new[] { w[6] });
+            // сохраняем запись
+            card.HrEditor.Unload();
+
+            Assert.IsTrue(d2.Words.Contains(w[6]));
+            Assert.IsTrue(d2.CustomVocabulary.Words.Contains(w[6]));
+        }
     }
 }

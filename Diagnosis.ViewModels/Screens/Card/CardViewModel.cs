@@ -308,7 +308,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (disposing)
                 {
-                    _header.Dispose();
+                    if (_header != null)
+                        _header.Dispose();
                     _hrEditor.Dispose();
 
                     CloseHrList();
