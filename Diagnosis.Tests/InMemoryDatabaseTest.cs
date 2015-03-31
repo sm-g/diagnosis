@@ -70,6 +70,7 @@ namespace Tests
             NHibernateHelper.Default.InMemory = true;
             NHibernateHelper.Default.ShowSql = true;
             NHibernateHelper.Default.FromTest = true;
+            Constants.IsClient = true;
         }
 
         [TestInitialize]
@@ -117,11 +118,12 @@ namespace Tests
         protected static Word CreateWordInEditor(string title)
         {
             var newW = new Word(title);
-            var wEditor = new WordEditorViewModel(newW);
-
-            Assert.IsTrue(wEditor.OkCommand.CanExecute(null));
-            wEditor.OkCommand.Execute(null);
-            return wEditor.saved;
+            using (var wEditor = new WordEditorViewModel(newW))
+            {
+                Assert.IsTrue(wEditor.OkCommand.CanExecute(null));
+                wEditor.OkCommand.Execute(null);
+                return wEditor.saved;
+            }
         }
 
         protected Guid IntToGuid<T>(int id) where T : EntityBase<Guid>

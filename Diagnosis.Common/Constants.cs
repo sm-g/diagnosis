@@ -9,9 +9,7 @@ namespace Diagnosis.Common
 {
     public static class Constants
     {
-        // TODO fix for tests
-        private static AssemblyInfo info = new AssemblyInfo(Assembly.GetEntryAssembly());
-        private static bool isClient = Assembly.GetEntryAssembly().FullName.Contains("Client") || Assembly.GetEntryAssembly().FullName.Contains("Test");
+        private static bool? _isClient;
         private static string _localAppDataDir;
 
         public const string SqlCeProvider = "System.Data.SqlServerCE.4.0";
@@ -23,15 +21,27 @@ namespace Diagnosis.Common
         public static string clientConfigFileName = "Diagnosis.Client.App.exe.config";
         public static string serverConfigFileName = "Diagnosis.Server.App.exe.config";
 
-        public static string productName = info.Product;
-        public static string companyName = info.Company;
+        public static string SerializedConfig { get { return AppDataDir + "Configuration.serialized"; } }
+        public static string LayoutFileName { get { return AppDataDir + "avalon-layout.config"; } }
+        public static string BackupDir { get { return AppDataDir + "Backup\\"; } }
 
-        public static string SerializedConfig = AppDataDir + "Configuration.serialized";
-        public static string LayoutFileName = AppDataDir + "avalon-layout.config";
-        public static string BackupDir = AppDataDir + "Backup\\";
-        public static string HelpDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Help\\");
+        public static string HelpDir { get { return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Help\\"); } }
 
-        public static bool IsClient { get { return isClient; } }
+        public static bool IsClient
+        {
+            get
+            {
+                if (_isClient == null)
+                {
+                    _isClient = Assembly.GetEntryAssembly().FullName.Contains("Client");
+                }
+                return _isClient.Value;
+            }
+            set // for tests
+            {
+                _isClient = value;
+            }
+        }
 
         public static string AppDataDir
         {
@@ -39,10 +49,11 @@ namespace Diagnosis.Common
             {
                 if (_localAppDataDir == null)
                 {
+                    var info = new AssemblyInfo(Assembly.GetEntryAssembly());
                     _localAppDataDir = Path.Combine(
                         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                        companyName.Replace(' ', '_'),
-                        productName,
+                        info.Company.Replace(' ', '_'),
+                        info.Product,
                         (IsClient ? "Client\\" : "Server\\"));
                     FileHelper.CreateDirectoryForPath(_localAppDataDir);
                 }

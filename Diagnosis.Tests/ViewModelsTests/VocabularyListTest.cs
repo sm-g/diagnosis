@@ -28,24 +28,31 @@ namespace Tests
         [TestCleanup]
         public void Cleanup()
         {
-            vl.Dispose();
+            if (vl != null)
+                vl.Dispose();
+            vl = null;
+        }
+
+        [TestMethod]
+        public void DoctorDontSeeCustomVoc()
+        {
+            Assert.AreEqual(null, d1.Speciality);
+            Assert.IsTrue(d1.CustomVocabulary != null);
+
+            Assert.AreEqual(0, vl.Vocs.Count);
         }
 
         [TestMethod]
         public void DoctorSeeAllVocsForHisSpeciality()
         {
-            Assert.AreEqual(null, d1.Speciality);
-            Assert.AreEqual(0, vl.Vocs.Count);
-
-            // fix settings saving
             vl.Dispose();
-            vl = new VocabularyListViewModel();
 
             AuthorityController.TryLogIn(d2);
+            vl = new VocabularyListViewModel();
 
-            Assert.IsTrue(d1.Speciality != null);
+            Assert.IsTrue(d2.Speciality != null);
             Assert.AreEqual(1, vl.Vocs.Count);
-            Assert.IsTrue(vl.Vocs.Select(y => y.voc).All(x => d1.Speciality.Vocabularies.Contains(x)));
+            Assert.IsTrue(vl.Vocs.Select(y => y.voc).All(x => d2.Speciality.Vocabularies.Contains(x)));
         }
     }
 }
