@@ -32,8 +32,7 @@
         <KeyBinding Gesture="Control+J"
                     Command="{Binding Tag.MoveHrSelectionCommand, ElementName=editor}"
                     CommandParameter="{StaticResource False}" />
-        <KeyBinding Modifiers="Control"
-                    Key="S"
+        <KeyBinding Gesture="Control+S"
                     Command="{Binding CloseCommand}" />
     </UserControl.InputBindings>
     <Grid x:Name="grid"

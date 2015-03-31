@@ -14,8 +14,7 @@
         
     </UserControl.Resources>
     <UserControl.InputBindings>
-        <KeyBinding Modifiers="Control"
-                    Key="Enter"
+        <KeyBinding Gesture="Control+Enter"
                     Command="{Binding AddCommand}" />
         <KeyBinding Key="Delete"
                     Command="{Binding DeleteCommand}" />
@@ -104,8 +103,7 @@
                             Command="{Binding EditCommand}" />
                 <KeyBinding Key="Delete"
                             Command="{Binding DeleteCommand}" />-->
-                <KeyBinding Key="Enter"
-                            Modifiers="Control"
+                <KeyBinding Gesture="Control+Enter"
                             Command="{Binding AddCommand}"
                             CommandParameter="{Binding SelectedUom}" />
             </DataGrid.InputBindings>
