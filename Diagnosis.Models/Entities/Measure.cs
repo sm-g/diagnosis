@@ -50,7 +50,9 @@ namespace Diagnosis.Models
         {
             get
             {
-                return Math.Round(DbValue * (Uom != null ? (double)Math.Pow(10, -Uom.Factor) : 1), Scale);
+                return Math.Round(
+                    DbValue * (Uom != null ? (double)Math.Pow(10, -Uom.Factor) : 1),
+                    Uom != null && (Uom.Factor % 1) == 0 ? Scale : 3); // для времени с дробным фактором округляем до 3
             }
             set
             {
