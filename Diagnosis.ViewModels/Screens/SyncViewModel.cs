@@ -1,18 +1,17 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Common.Types;
 using Diagnosis.Data;
-using Diagnosis.Data.Queries;
 using Diagnosis.Data.Sync;
-using Diagnosis.Models;
 using Diagnosis.ViewModels.Controls;
 using Diagnosis.ViewModels.Framework;
 using EventAggregator;
-using NHibernate.Linq;
 using System;
+
+using System;
+
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -39,6 +38,7 @@ namespace Diagnosis.ViewModels.Screens
             Syncer.MessagePosted += syncer_MessagePosted;
             Syncer.SyncEnded += syncer_SyncEnded;
         }
+
         public DataConnectionViewModel Remote
         {
             get
@@ -54,6 +54,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         /// <summary>
         /// Remote, server or middle on Client.exe, middle on Server.exe
         /// </summary>
@@ -102,7 +103,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-
         /// <summary>
         /// Загружает справочные данные с удаленной серверной БД на клиент.
         /// </summary>
@@ -120,9 +120,20 @@ namespace Diagnosis.ViewModels.Screens
                          serverProviderName: RemoteProviderName);
 
                     DoWithCursor(syncer.SendFrom(Side.Server).ContinueWith((t) =>
+                    {
+                        var checker = new AfterSyncChecker(Session);
+                        checker.Replaced += (s, e) =>
+                        {
+                            if (e.list.Count() > 0)
+                                Log += string.Format("[{0:mm:ss:fff}] replaced {1} {2}\n", DateTime.Now, e.list.Count(), e.list.First().Actual.GetType().Name);
+                        };
                         // после загрузки проверяем справочные сущности на совпадение
-                        CheckReferenceEntitiesAfterDownload(syncer.AddedIdsPerType)).ContinueWith((t) =>
-                            // обновляем загруженные словари или удаляем
+                        var scopesToDeprovision = checker.CheckReferenceEntitiesAfterDownload(syncer.AddedIdsPerType);
+                        // deprovision scopes обновленных сущностей
+                        Syncer.Deprovision(LocalConnectionString, LocalProviderName, scopesToDeprovision);
+                    }
+                    ).ContinueWith((t) =>
+                        // обновляем загруженные словари или удаляем
                         new VocLoader(Session, AuthorityController.CurrentDoctor).AfterSyncVocs(syncer.DeletedIdsPerType))
                     , Cursors.AppStarting);
                 },
@@ -234,7 +245,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-
         public string Log
         {
             get
@@ -250,6 +260,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         public bool CanSync(bool local, bool remote)
         {
             bool result = !Syncer.InSync;
@@ -278,155 +289,6 @@ namespace Diagnosis.ViewModels.Screens
             Log += "\n=== " + e.ts.ToString() + "\n";
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                 CommandManager.InvalidateRequerySuggested()));
-        }
-
-
-
-        private void CheckReferenceEntitiesAfterDownload(Dictionary<Type, IEnumerable<object>> addedIdsPerType)
-        {
-            Contract.Requires(addedIdsPerType != null);
-            var scopesToDeprovision = new HashSet<Scope>();
-            var types = addedIdsPerType.Keys
-                .OrderByDescending(x => x, new RefModelsComparer()); // сначала родители
-
-            // дети обновляются на нового родителя
-            // старый родитель удаляется без каскадного удаления детей
-            // потом удаляются дети
-            foreach (var type in types)
-            {
-                var ids = addedIdsPerType[type];
-                var entities = ids.Select(id => Session.Get(type, id)).ToList();
-
-                // проверяем справочные сущности на совпадение
-                if (type == typeof(HrCategory))
-                {
-                    var replacing = GetReplaceEntities<HrCategory>(entities);
-                    if (replacing.Count > 0)
-                    {
-                        UpdateParents<HrCategory, HealthRecord>(replacing,
-                            x => x.Category,
-                            (x, value) => x.Category = value);
-
-                        scopesToDeprovision.Add(typeof(HealthRecord).GetScope());
-                    }
-                    CleanupReplaced(replacing.Keys);
-                }
-                else if (type == typeof(Uom))
-                {
-                    var replacing = GetReplaceEntities<Uom>(entities);
-                    if (replacing.Count > 0)
-                    {
-                        UpdateParents<Uom, HrItem>(replacing,
-                            x => x.Measure != null ? x.Measure.Uom : null,
-                            (x, value) => { if (x.Measure != null) x.Measure.Uom = value; });
-
-                        scopesToDeprovision.Add(typeof(HrItem).GetScope());
-                    }
-                    CleanupReplaced(replacing.Keys);
-                }
-                else if (type == typeof(UomType))
-                {
-                    var replacing = GetReplaceEntities<UomType>(entities);
-                    if (replacing.Count > 0)
-                    {
-                        UpdateParents<UomType, Uom>(replacing,
-                            x => x.Type,
-                            (x, value) => x.Type = value);
-
-                        scopesToDeprovision.Add(typeof(Uom).GetScope());
-                    }
-                    CleanupReplaced(replacing.Keys);
-                }
-                else if (type == typeof(Speciality))
-                {
-                    var replacing = GetReplaceEntities<Speciality>(entities);
-                    if (replacing.Count > 0)
-                    {
-                        UpdateParents<Speciality, Doctor>(replacing,
-                            x => x.Speciality,
-                            (x, value) => x.Speciality = value);
-                        UpdateParents<Speciality, SpecialityIcdBlocks>(replacing,
-                            x => x.Speciality,
-                            (x, value) => x.Speciality = value);
-
-                        scopesToDeprovision.Add(typeof(Doctor).GetScope());
-                        scopesToDeprovision.Add(typeof(SpecialityIcdBlocks).GetScope());
-                    }
-                    CleanupReplaced(replacing.Keys);
-                }
-                else if (type == typeof(SpecialityIcdBlocks))
-                {
-                    var replacing = GetReplaceEntities<SpecialityIcdBlocks>(entities);
-                    CleanupReplaced(replacing.Keys);
-                    // нет ссылок на SpecialityIcdBlocks, нечего обновлять
-                }
-                else
-                    throw new NotImplementedException();
-            }
-
-            // deprovision scopes обновленных сущностей
-            Syncer.Deprovision(LocalConnectionString, LocalProviderName, scopesToDeprovision);
-        }
-
-        /// <summary>
-        /// Возвращает сущности для замены с таким же значением. Cловарь со значениями { oldEntity, newEntity }
-        /// </summary>
-        /// <typeparam name="T">Тип сущности справочника для замены</typeparam>
-        /// <param name="entities"></param>
-        private Dictionary<T, T> GetReplaceEntities<T>(IList<object> entities)
-            where T : IEntity
-        {
-            var toReplace = new Dictionary<T, T>();
-
-            foreach (var item in entities.Cast<T>())
-            {
-                var existing = Session.Query<T>()
-                    .Where(x => x.Id != item.Id)
-                    .Where(IEntityExtensions.EqualsByVal(item))
-                    .FirstOrDefault();
-
-                if (existing != null)
-                    toReplace[existing] = item;
-            }
-
-            return toReplace;
-        }
-
-        /// <summary>
-        /// Меняем поле в сущностях для обновления.
-        /// </summary>
-        /// <typeparam name="T">Тип сущности справочника для замены</typeparam>
-        /// <typeparam name="TUpdate">Тип сущности, в которой меняются сущности справочника для замены</typeparam>
-        /// <param name="toReplace">Сущности для замены, значения { oldEntity, newEntity }</param>
-        /// <param name="propertyGetter">Геттер свойства для обновления</param>
-        /// <param name="propertySetter">Сеттер свойства для обновления</param>
-        private void UpdateParents<T, TUpdate>(Dictionary<T, T> toReplace, Func<TUpdate, T> propertyGetter, Action<TUpdate, T> propertySetter)
-            where T : IEntity
-            where TUpdate : IEntity
-        {
-            var existing = Session.Query<TUpdate>()
-                .ToList();
-            var toUpdate = existing.Where(x => propertyGetter(x) != null && toReplace.Keys.Contains(propertyGetter(x)))
-                .ToList();
-
-            toUpdate.ForEach(x => propertySetter(x, toReplace[propertyGetter(x)]));
-
-            // сохраняем обновленные
-            new Saver(Session).Save(toUpdate.Cast<IEntity>().ToArray());
-        }
-
-        /// <summary>
-        /// Удаляет замененные.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="replaced">Замененные сущности для удаления</param>
-        private void CleanupReplaced(IEnumerable<IEntity> replaced)
-        {
-            var list = replaced.ToArray();
-            new Saver(Session).Delete(list);
-
-            if (list.Count() > 0)
-                Log += string.Format("[{0:mm:ss:fff}] replaced {1} {2}\n", DateTime.Now, list.Count(), list.First().Actual.GetType().Name);
         }
 
         protected override void Dispose(bool disposing)

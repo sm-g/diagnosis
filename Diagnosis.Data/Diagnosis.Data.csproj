@@ -204,6 +204,7 @@
     <Compile Include="Queries\VocabularyQuery.cs" />
     <Compile Include="Side.cs" />
     <Compile Include="SqlHelper.cs" />
+    <Compile Include="Sync\AfterSyncChecker.cs" />
     <Compile Include="Sync\Syncer.cs" />
     <Compile Include="Sync\Scopes.cs" />
     <Compile Include="Sync\VocLoader.cs" />
