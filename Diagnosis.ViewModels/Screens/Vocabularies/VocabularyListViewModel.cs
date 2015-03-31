@@ -4,14 +4,15 @@ using Diagnosis.Data;
 using Diagnosis.Data.Sync;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Controls;
-using Diagnosis.ViewModels.Search;
 using EventAggregator;
 using NHibernate.Linq;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -22,21 +23,23 @@ namespace Diagnosis.ViewModels.Screens
         private static NHibernateHelper nhib;
         private ObservableCollection<VocabularyViewModel> _vocs;
         private ObservableCollection<VocabularyViewModel> _availableVocs;
-        private bool _noVocs;
         private bool _noNewVocs;
         private bool _connected;
         private DataConnectionViewModel _remote;
         private Saver saver;
         private VocLoader loader;
-        Doctor doctor;
         private List<Vocabulary> serverVocs = new List<Vocabulary>();
+        private string LocalConnectionString;
+        private string LocalProviderName;
 
         public VocabularyListViewModel(ConnectionInfo server = null)
         {
             Title = "Словари";
             saver = new Saver(Session);
-            doctor = AuthorityController.CurrentDoctor;
-            loader = new VocLoader(Session, doctor);
+            loader = new VocLoader(Session);
+
+            LocalConnectionString = NHibernateHelper.Default.ConnectionString;
+            LocalProviderName = LocalConnectionString.Contains(".sdf") ? Constants.SqlCeProvider : Constants.SqlServerProvider;
 
             SelectedVocs = new ObservableCollection<VocabularyViewModel>();
             SelectedAvailableVocs = new ObservableCollection<VocabularyViewModel>();
@@ -121,13 +124,34 @@ namespace Diagnosis.ViewModels.Screens
                     Contract.Requires(Constants.IsClient);
 
                     var vms = SelectedAvailableVocs.ToList();
-                    var mergerdVocs = new List<Vocabulary>();
-                    vms.ForEach(vm => mergerdVocs.Add(Session.Merge(vm.voc))); // new id! синхронизировать?
-                    loader.LoadOrUpdateVocs(mergerdVocs);
+                    var selectedIds = vms.Select(x => x.voc.Id).ToList();
 
-                    MakeInstalledVms();
-                    MakeAvailableVms();
+                    var syncer = new Syncer(
+                         serverConStr: Remote.ConnectionString,
+                         clientConStr: LocalConnectionString,
+                         serverProviderName: Remote.ProviderName);
 
+                    // только выбранные словари и всё для них
+                    syncer.IdsToSyncPerType = new Dictionary<Type, IEnumerable<object>>();
+                    syncer.IdsToSyncPerType.Add(typeof(Vocabulary), selectedIds.Cast<object>());
+                    syncer.IdsToSyncPerType.Add(typeof(WordTemplate), vms.SelectMany(x => x.voc.WordTemplates.Select(y => y.Id)).Cast<object>());
+                    syncer.IdsToSyncPerType.Add(typeof(Speciality), vms.SelectMany(x => x.voc.Specialities.Select(y => y.Id)).Cast<object>());
+                    // syncer.IdsToSyncPerType.Add(typeof(SpecialityVocabularies), vms.SelectMany(x => x.voc.Specialities.Select(y => y.Id)).Cast<object>());
+
+                    DoWithCursor(syncer.SendFrom(Side.Server, Scope.Voc.ToEnumerable()).ContinueWith((t) =>
+                    {
+                        var selectedSynced = Session.Query<Vocabulary>()
+                            .Where(v => selectedIds.Contains(v.Id))
+                            .ToList();
+
+                        loader.LoadOrUpdateVocs(selectedSynced);
+                    }
+                    ).ContinueWith((t) =>
+                    {
+                        MakeInstalledVms();
+                        MakeAvailableVms();
+                    })
+                    , Cursors.AppStarting);
                 }, () => SelectedAvailableVocs.Count > 0 && IsConnected);
             }
         }
@@ -163,29 +187,9 @@ namespace Diagnosis.ViewModels.Screens
 
                     MakeInstalledVms();
                     MakeAvailableVms();
-
                 }, () => SelectedVocs.Count > 0);
             }
         }
-
-        ///// <summary>
-        ///// Нет установленных словарей.
-        ///// </summary>
-        //public bool NoVocs
-        //{
-        //    get
-        //    {
-        //        return _noVocs;
-        //    }
-        //    set
-        //    {
-        //        if (_noVocs != value)
-        //        {
-        //            _noVocs = value;
-        //            OnPropertyChanged(() => NoVocs);
-        //        }
-        //    }
-        //}
 
         /// <summary>
         /// Нет новых словарей на сервере.
@@ -262,14 +266,17 @@ namespace Diagnosis.ViewModels.Screens
             var vocs = Session.Query<Vocabulary>()
                 .ToList();
             var vms = vocs
-                .Where(x => doctor.Speciality != null ? doctor.Speciality.Vocabularies.Contains(x) : false)
+                // .Where(x => doctor.Speciality != null ? doctor.Speciality.Vocabularies.Contains(x) : false)
                 .Where(x => !x.IsCustom)
                 .Select(voc => Vocs
                     .Where(vm => vm.voc == voc)
                     .FirstOrDefault() ?? new VocabularyViewModel(voc))
                 .ToList();
 
-            Vocs.SyncWith(vms);
+            Application.Current.Dispatcher.Invoke((Action)(() =>
+            {
+                Vocs.SyncWith(vms);
+            }));
         }
 
         private void MakeAvailableVms()
@@ -283,7 +290,10 @@ namespace Diagnosis.ViewModels.Screens
                     .FirstOrDefault() ?? new VocabularyViewModel(voc))
                 .ToList();
 
-            AvailableVocs.SyncWith(vms);
+            Application.Current.Dispatcher.Invoke((Action)(() =>
+            {
+                AvailableVocs.SyncWith(vms);
+            }));
         }
 
         protected override void Dispose(bool disposing)

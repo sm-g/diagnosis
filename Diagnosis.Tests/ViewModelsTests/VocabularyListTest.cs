@@ -34,25 +34,25 @@ namespace Tests
         }
 
         [TestMethod]
-        public void DoctorDontSeeCustomVoc()
+        public void DontShowCustomVoc()
         {
-            Assert.AreEqual(null, d1.Speciality);
+            // есть пльзовательский словарь в бд
             Assert.IsTrue(d1.CustomVocabulary != null);
-
-            Assert.AreEqual(0, vl.Vocs.Count);
+            // но еего нет в списке установленных
+            Assert.IsFalse(vl.Vocs.Any(x => x.voc == d1.CustomVocabulary));
         }
 
         [TestMethod]
-        public void DoctorSeeAllVocsForHisSpeciality()
+        public void DoctorSeeAllVocsForHisSpeciality() // если бы он видел список словарей
         {
-            vl.Dispose();
+            //vl.Dispose();
 
-            AuthorityController.TryLogIn(d2);
-            vl = new VocabularyListViewModel();
+            //AuthorityController.TryLogIn(d2);
+            //vl = new VocabularyListViewModel();
 
-            Assert.IsTrue(d2.Speciality != null);
-            Assert.AreEqual(1, vl.Vocs.Count);
-            Assert.IsTrue(vl.Vocs.Select(y => y.voc).All(x => d2.Speciality.Vocabularies.Contains(x)));
+            //Assert.IsTrue(d2.Speciality != null);
+            //Assert.AreEqual(1, vl.Vocs.Count);
+            //Assert.IsTrue(vl.Vocs.Select(y => y.voc).All(x => d2.Speciality.Vocabularies.Contains(x)));
         }
     }
 }

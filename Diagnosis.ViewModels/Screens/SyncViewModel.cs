@@ -8,6 +8,7 @@ using EventAggregator;
 using System;
 
 using System;
+using System;
 
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -118,6 +119,9 @@ namespace Diagnosis.ViewModels.Screens
                          serverConStr: RemoteConnectionString,
                          clientConStr: LocalConnectionString,
                          serverProviderName: RemoteProviderName);
+
+                    // новые словари загружаются отдельно
+                    syncer.TablesIgnoreAdding = Scopes.GetVocOnlyTables();
 
                     DoWithCursor(syncer.SendFrom(Side.Server).ContinueWith((t) =>
                     {
