@@ -80,6 +80,7 @@ namespace Diagnosis.Models
         {
             var hr = new HealthRecord(this, author);
             healthRecords.Add(hr);
+            author.AddHr(hr);
             OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, hr));
 
             return hr;

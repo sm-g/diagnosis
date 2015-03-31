@@ -24,6 +24,7 @@ namespace Diagnosis.Models
             this.Abbr = abbr;
             this.Factor = factor;
             this.Type = type;
+            type.AddUom(this);
         }
 
         protected Uom()
@@ -87,5 +88,7 @@ namespace Diagnosis.Models
         {
             return new UomValidator().Validate(this);
         }
+
+
     }
 }

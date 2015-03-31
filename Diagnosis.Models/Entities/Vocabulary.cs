@@ -47,6 +47,10 @@ namespace Diagnosis.Models
                 SetProperty(ref _title, value ?? "", () => Title);
             }
         }
+
+        /// <summary>
+        /// Если словарь пользовательский
+        /// </summary>
         public virtual Doctor Doctor
         {
             get { return _doc; }

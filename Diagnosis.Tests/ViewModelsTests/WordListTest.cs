@@ -33,24 +33,26 @@ namespace Tests
 
             // другой врач не видит это слово
             AuthorityController.TryLogIn(d2);
-            var wordList = new WordsListViewModel();
-            Assert.IsFalse(wordList.Words.Select(x => x.word).Contains(newW));
+            using (var wordList = new WordsListViewModel())
+            {
+                Assert.IsFalse(wordList.Words.Select(x => x.word).Contains(newW));
 
-            // но может добавить
-            var newW2 = CreateWordInEditor("123");
-            Assert.AreEqual(newW, newW2);
+                // но может добавить
+                var newW2 = CreateWordInEditor("123");
+                Assert.AreEqual(newW, newW2);
 
-            // это слово в двух пользовательских словарях
-            Assert.IsTrue(newW.Vocabularies.Count() == 2);
-            Assert.IsTrue(newW.Vocabularies.All(x => x.IsCustom));
+                // это слово в двух пользовательских словарях
+                Assert.IsTrue(newW.Vocabularies.Count() == 2);
+                Assert.IsTrue(newW.Vocabularies.All(x => x.IsCustom));
 
-            // при удалении одним врачом остается для другого
-            wordList.SelectWord(newW2);
-            wordList.DeleteCommand.Execute(null);
+                // при удалении одним врачом остается для другого
+                wordList.SelectWord(newW2);
+                wordList.DeleteCommand.Execute(null);
 
-            Assert.IsFalse(wordList.Words.Select(x => x.word).Contains(newW2));
-            // пока врач удаляет как админ, сразу для всех врачей
-            //Assert.AreEqual(d1, newW.Vocabularies.Single().Doctor);
+                Assert.IsFalse(wordList.Words.Select(x => x.word).Contains(newW2));
+                // пока врач удаляет как админ, сразу для всех врачей
+                //Assert.AreEqual(d1, newW.Vocabularies.Single().Doctor);
+            }
         }
 
         [TestMethod]

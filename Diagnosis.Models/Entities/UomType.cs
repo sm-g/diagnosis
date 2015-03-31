@@ -78,5 +78,10 @@ namespace Diagnosis.Models
         {
             return this.Ord.CompareTo(other.Ord);
         }
+        protected internal virtual void AddUom(Uom uom)
+        {
+            Contract.Requires(uom.Type == this);
+            uoms.Add(uom);
+        }
     }
 }

@@ -28,6 +28,7 @@ namespace Diagnosis.Models
 
             Patient = patient;
             LeadDoctor = doctor;
+
             Start = DateTime.Today;
         }
 
@@ -117,6 +118,8 @@ namespace Diagnosis.Models
 
             var a = new Appointment(this, doctor ?? LeadDoctor);
             appointments.Add(a);
+            a.Doctor.AddApp(a);
+
             a.FitDateToCourse();
 
             OnAppointmentsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, a));
@@ -142,13 +145,17 @@ namespace Diagnosis.Models
         {
             Contract.Requires(app.IsEmpty());
             if (appointments.Remove(app))
+            {
+                app.Doctor.RemoveApp(app);
                 OnAppointmentsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, app));
+            }
         }
 
         public virtual HealthRecord AddHealthRecord(Doctor author)
         {
             var hr = new HealthRecord(this, author);
             healthRecords.Add(hr);
+            author.AddHr(hr);
             OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, hr));
 
             return hr;

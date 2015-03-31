@@ -193,5 +193,41 @@ namespace Diagnosis.Models
             }
             return byLast;
         }
+
+        protected internal virtual void AddApp(Appointment app)
+        {
+            Contract.Requires(app.Doctor == this);
+            appointments.Add(app);
+        }
+
+        protected internal virtual void RemoveApp(Appointment app)
+        {
+            Contract.Requires(app.Doctor == this);
+            appointments.Remove(app);
+        }
+
+        protected internal virtual void AddCourse(Course c)
+        {
+            Contract.Requires(c.LeadDoctor == this);
+            courses.Add(c);
+        }
+
+        protected internal virtual void RemoveCourse(Course c)
+        {
+            Contract.Requires(c.LeadDoctor == this);
+            courses.Remove(c);
+        }
+
+        protected internal virtual void AddHr(HealthRecord hr)
+        {
+            Contract.Requires(hr.Doctor == this);
+            healthRecords.Add(hr);
+        }
+
+        protected internal virtual void RemoveHr(HealthRecord hr)
+        {
+            Contract.Requires(hr.Doctor == this);
+            healthRecords.Remove(hr);
+        }
     }
 }

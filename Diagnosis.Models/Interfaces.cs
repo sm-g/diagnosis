@@ -142,6 +142,7 @@ namespace Diagnosis.Models
             Contract.Ensures(test.HealthRecords.Count() == Contract.OldValue(test.HealthRecords.Count()) + 1);
             Contract.Ensures(test.HealthRecords.Contains(Contract.Result<HealthRecord>()));
             Contract.Ensures(Contract.Result<HealthRecord>().Words.All(x => x.HealthRecords.Contains(Contract.Result<HealthRecord>())));
+            Contract.Ensures(author.HealthRecords.Contains(Contract.Result<HealthRecord>()));
 
             return null;
         }

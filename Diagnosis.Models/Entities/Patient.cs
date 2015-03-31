@@ -235,6 +235,7 @@ namespace Diagnosis.Models
         {
             var hr = new HealthRecord(this, author);
             healthRecords.Add(hr);
+            author.AddHr(hr);
             OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, hr));
 
             return hr;
@@ -257,6 +258,8 @@ namespace Diagnosis.Models
             var course = new Course(this, doctor);
 
             courses.Add(course);
+            doctor.AddCourse(course);
+
             OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, course));
             return course;
         }
@@ -267,6 +270,7 @@ namespace Diagnosis.Models
 
             if (courses.Remove(course))
             {
+                course.LeadDoctor.RemoveCourse(course);
                 OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, course));
             }
         }
