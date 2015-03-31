@@ -62,7 +62,7 @@ namespace Diagnosis.ViewModels.Screens
                 var hr = e.entity as HealthRecord;
                 if (hr.Doctor == doctor)  // добавлять только если врач редактировал свою запись?
                     doctor.AddWords(hr.Words);
-                saver.SaveHealthRecord(hr);
+                saver.Save(hr);
             };
             HrEditor.Closing += (s, e) =>
             {
