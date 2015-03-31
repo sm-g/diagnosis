@@ -283,32 +283,54 @@
                                 </Grid>
                             </StackPanel>
                         </Expander.Header>
-                        <StackPanel FlowDirection="LeftToRight"
-                                    Background="Transparent"
-                                    Cursor="Arrow">
-                            <DockPanel>
-                                <Label Content="Дата" />
-                                <forms:ComboBoxDatePicker Year="{Binding DateOffset.Year, Mode=TwoWay}"
-                                                          Month="{Binding DateOffset.Month, Mode=TwoWay}"
-                                                          Day="{Binding DateOffset.Day, Mode=TwoWay}"
-                                                          WithPicker="True" />
-                            </DockPanel>
-                            <DockPanel>
-                                <Label Content="Давность" />
-                                <forms:DateOffsetPicker DataContext="{Binding DateOffset}" />
-                            </DockPanel>
-                            <DockPanel IsEnabled="{Binding CanShowAsAge}">
-                                <Label Content="Возраст" />
-                                <TextBox Text="{Binding AtAge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, TargetNullValue=''}"
-                                         Width="50"
-                                         HorizontalContentAlignment="Right">
-                                </TextBox>
+                        <Grid FlowDirection="LeftToRight"
+                              Background="Transparent"
+                              Cursor="Arrow">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <DockPanel>
+                                    <Label Content="Дата" />
+                                    <forms:ComboBoxDatePicker Year="{Binding DateOffset.Year, Mode=TwoWay}"
+                                                              Month="{Binding DateOffset.Month, Mode=TwoWay}"
+                                                              Day="{Binding DateOffset.Day, Mode=TwoWay}"
+                                                              WithPicker="True" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <Label Content="Давность" />
+                                    <forms:DateOffsetPicker DataContext="{Binding DateOffset}" />
+                                </DockPanel>
+                                <DockPanel IsEnabled="{Binding CanShowAsAge}">
+                                    <Label Content="Возраст" />
+                                    <TextBox Text="{Binding AtAge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                                             Width="50"
+                                             HorizontalContentAlignment="Right">
+                                    </TextBox>
 
-                                <TextBlock Text="{Binding AtAge, Converter={StaticResource AgeToLabel}}"
-                                           Margin="3,0,0,0"
-                                           VerticalAlignment="Center"></TextBlock>
-                            </DockPanel>
-                        </StackPanel>
+                                    <TextBlock Text="{Binding AtAge, Converter={StaticResource AgeToLabel}}"
+                                               Margin="3,0,0,0"
+                                               VerticalAlignment="Center"></TextBlock>
+                                </DockPanel>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2"
+                                        Visibility="{Binding DateSuggestions.Count, Converter={StaticResource MoreThanToVisibility}}">
+                                <TextBlock Text="Вставить:" />
+                                <ItemsControl ItemsSource="{Binding DateSuggestions}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock>
+                                            <Hyperlink Command="{Binding SetDateCommand}">
+                                                <Run Text="{Binding Mode=OneWay}" />
+                                            </Hyperlink>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Grid>
                     </Expander>
                 </Grid>
             </DockPanel>

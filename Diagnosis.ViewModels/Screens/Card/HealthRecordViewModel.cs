@@ -1,6 +1,8 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
+using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
@@ -9,8 +11,8 @@ namespace Diagnosis.ViewModels.Screens
     {
         internal readonly HealthRecord healthRecord;
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HealthRecordViewModel));
-        private readonly Patient patient;
         private static bool _isExpanded;
+        private readonly Patient patient;
         private DateOffsetViewModel _do;
 
         public HealthRecordViewModel(HealthRecord hr)
@@ -24,6 +26,21 @@ namespace Diagnosis.ViewModels.Screens
 
             DateOffset = DateOffsetViewModel.FromHr(healthRecord);
             DateOffset.PropertyChanged += DateOffset_PropertyChanged;
+
+            DateSuggestions = new ObservableCollection<DateSuggestion>();
+
+            // показываем даты из записей этого же списка для быстрой вставки
+            if (DateOffset.FirstSet == null)
+            {
+                var holderHrsWithDates = healthRecord.Holder.HealthRecords
+                    .Where(x => x.Unit == HealthRecordUnit.NotSet && !x.IsDeleted);
+                var ds = holderHrsWithDates.Select(x => new DateSuggestion(x, healthRecord))
+                    .Where(x => !x.Do.IsEmpty)
+                    .DistinctBy(x => x.Do)
+                    .OrderBy(x => x.Do)
+                    .Take(5);
+                DateSuggestions.SyncWith(ds);
+            }
         }
 
         #region Model
@@ -220,6 +237,8 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public ObservableCollection<DateSuggestion> DateSuggestions { get; private set; }
+
         private void DateOffset_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "RoundedUnit" && ShowAsOffset)
@@ -235,13 +254,49 @@ namespace Diagnosis.ViewModels.Screens
                     case DateOffsetViewModel.ShowAs.Date:
                         ShowAsDate = true;
                         break;
+
                     case DateOffsetViewModel.ShowAs.Offset:
                         ShowAsOffset = true;
                         break;
+
                     case DateOffsetViewModel.ShowAs.AtAge:
                         ShowAsAge = true;
                         break;
                 }
+        }
+
+        public class DateSuggestion : ViewModelBase
+        {
+            private HealthRecord target;
+            private HealthRecord source;
+            private DateOffset sourceDo;
+
+            public DateSuggestion(HealthRecord source, HealthRecord target)
+            {
+                this.source = source;
+                this.target = target;
+                sourceDo = DateOffsetViewModel.FromHr(source).Do;
+            }
+
+            public DateOffset Do { get { return sourceDo; } }
+
+            public RelayCommand SetDateCommand
+            {
+                get
+                {
+                    return new RelayCommand(() =>
+                    {
+                        target.FromYear = source.FromYear;
+                        target.FromMonth = source.FromMonth;
+                        target.FromDay = source.FromDay;
+                    });
+                }
+            }
+
+            public override string ToString()
+            {
+                return DateOffsetFormatter.GetPartialDateString(sourceDo);
+            }
         }
 
         #endregion DateEditor

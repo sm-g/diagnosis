@@ -18,7 +18,7 @@ namespace Tests
         [TestInitialize]
         public void Init()
         {
-            l = new VocLoader(session, d1);
+            l = new VocLoader(session);
 
             Load<Doctor>();
             Load<Appointment>();
