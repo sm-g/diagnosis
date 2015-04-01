@@ -87,7 +87,7 @@ namespace Tests
         {
             // измененное слово остается в словаре до обновления словаря,
             // надо вручную перевести в пользовательский словарь, чтобы
-            // при удалении словаря измененные слова не удалены
+            // при удалении словаря измененные слова не удались
             l.LoadOrUpdateVocs(voc[1]);
             var vocTemplates = voc[1].WordTemplates.Count();
             var word = voc[1].Words.Where(x => x.Title == wTemp[3].Title).Single();
@@ -134,22 +134,69 @@ namespace Tests
             l.LoadOrUpdateVocs(voc[1]);
             Assert.IsTrue(GetWordTitles().Contains("qwe"));
         }
+        [TestMethod]
+        public void ChangeTemplateForExistingWordUpdateVoc()
+        {
+            // есть шаблон для слова w[6] 
+            l.LoadOrUpdateVocs(voc[2]);
+            Assert.IsTrue(w[6].Vocabularies.Contains(voc[2]));
+            Assert.IsTrue(voc[2].Words.Count() == voc[2].WordTemplates.Count());
+
+            // меняем шаблон в словаре, обновляем словарь, слово больше не в словаре
+            wTemp[4].Title = "asdf";
+            l.LoadOrUpdateVocs(voc[2]);
+
+            Assert.IsFalse(w[6].Vocabularies.Contains(voc[2]));
+            Assert.IsTrue(voc[2].Words.Count() == voc[2].WordTemplates.Count());
+        }
+
 
         [TestMethod]
-        public void ChangeTemplateUpdateVoc()
+        public void ChangeUsedTemplateUpdateVoc()
+        {
+            l.LoadOrUpdateVocs(voc[2]);
+            var word4 = voc[2].Words.Where(x => x.Title == wTemp[4].Title).Single();
+            Assert.IsTrue(word4.Vocabularies.Contains(voc[2]));
+
+            // используем слово
+            var hr = new HealthRecord(a[1], d1);
+            hr.SetItems(new[] { word4 });
+            session.SaveOrUpdate(hr);
+
+            // меняем шаблон в словаре, обновляем словарь, слово больше не в словаре
+            wTemp[4].Title = "asdf";
+            l.LoadOrUpdateVocs(voc[2]);
+            Assert.IsFalse(word4.Vocabularies.Contains(voc[2]));
+            // создано новое слово
+            var word4new = voc[2].Words.Where(x => x.Title == wTemp[4].Title).Single();
+            Assert.IsTrue(word4new.Vocabularies.Contains(voc[2]));
+        }
+
+        [TestMethod]
+        public void ChangeUnusedTemplateUpdateVoc()
+        {
+            // если слово по шаблону не использовано и у него один словарь - поменять текст слова (это новое слово)
+            l.LoadOrUpdateVocs(voc[1]);
+            var unused = voc[1].Words.FirstOrDefault(x => x.Title == wTemp[1].Title);
+            Assert.IsNotNull(unused);
+            Assert.AreEqual(0, unused.HealthRecords.Count());
+            Assert.AreEqual(1, unused.Vocabularies.Count());
+
+            wTemp[1].Title = "qwe";
+            l.LoadOrUpdateVocs(voc[1]);
+            var unused2 = voc[1].Words.FirstOrDefault(x => x.Title == wTemp[1].Title);
+            Assert.IsNotNull(unused2);
+            Assert.AreNotEqual(unused2, unused);
+        }
+        [TestMethod]
+        public void ChangeTemplateCaseUpdateVoc()
         {
             l.LoadOrUpdateVocs(voc[2]);
             Assert.IsTrue(w[6].Vocabularies.Contains(voc[2]));
             Assert.IsTrue(voc[2].Words.Count() == voc[2].WordTemplates.Count());
 
-            var hr = new HealthRecord(a[1], d1);
-            hr.SetItems(new[] { w[6] });
-            session.SaveOrUpdate(hr);
-
-            Assert.IsTrue(w[6].HealthRecords.Count() == 1);
-
-            // меняем шаблон в словаре, обновляем словарь, слово больше не в словаре
-            wTemp[4].Title = "asdf";
+            // меняем регистр шаблона в словаре, обновляем словарь, слово больше не в словаре
+            wTemp[4].Title = wTemp[4].Title.ToUpper();
             l.LoadOrUpdateVocs(voc[2]);
 
             Assert.IsFalse(w[6].Vocabularies.Contains(voc[2]));
