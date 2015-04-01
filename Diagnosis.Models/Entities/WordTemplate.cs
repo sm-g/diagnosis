@@ -6,6 +6,8 @@ namespace Diagnosis.Models
 {
     public class WordTemplate : EntityBase<Guid>
     {
+        public const int MaxLength = 100;
+
         private string _title;
         private Vocabulary _voc;
 

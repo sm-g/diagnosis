@@ -69,13 +69,13 @@ namespace Diagnosis.ViewModels.Screens
                         title = SelectedSpeciality.Title;
 
                     Editor = new SpecialityEditorViewModel(new Speciality(title));
-
                     Editor.PropertyChanged += (s, e) =>
                     {
                         if (e.PropertyName == "DialogResult")
                         {
                             if (!Editor.Speciality.spec.IsTransient)
                                 SelectLastChanged(Editor.Speciality.spec);
+                            Editor.Dispose();
                             Editor = null;
                         }
                     };
@@ -95,6 +95,7 @@ namespace Diagnosis.ViewModels.Screens
                         if (e.PropertyName == "DialogResult")
                         {
                             SelectLastChanged(Editor.Speciality.spec);
+                            Editor.Dispose();
                             Editor = null;
                         }
                     };

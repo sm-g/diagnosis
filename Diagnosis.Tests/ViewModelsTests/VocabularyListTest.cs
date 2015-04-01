@@ -13,7 +13,7 @@ namespace Tests
     {
 
 
-        private VocabularyListViewModel vl;
+        private VocabularySyncViewModel vl;
 
         [TestInitialize]
         public void Init()
@@ -22,7 +22,7 @@ namespace Tests
 
             AuthorityController.TryLogIn(d1);
 
-            vl = new VocabularyListViewModel();
+            vl = new VocabularySyncViewModel();
         }
 
         [TestCleanup]

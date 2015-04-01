@@ -249,6 +249,8 @@
     <Compile Include="Screens\Shell\UndoOverlayViewModel.cs" />
     <Compile Include="Screens\Uoms\UomsListViewModel.cs" />
     <Compile Include="Screens\Uoms\UomViewModel.cs" />
+    <Compile Include="Screens\Vocabularies\VocabularyListViewModel.cs" />
+    <Compile Include="Screens\Vocabularies\VocabularyEditorViewModel.cs" />
     <Compile Include="Screens\Words\WordEditorViewModel.cs" />
     <Compile Include="Screens\Vocabularies\VocabularyViewModel.cs" />
     <Compile Include="Search\Exporter.cs" />
@@ -295,7 +297,7 @@
     <Compile Include="Search\HrSearcher.cs" />
     <Compile Include="Framework\ViewModelBase.cs" />
     <Compile Include="Types\SpecialCaseItem.cs" />
-    <Compile Include="Screens\Vocabularies\VocabularyListViewModel.cs" />
+    <Compile Include="Screens\Vocabularies\VocabularySyncViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Diagnosis.Common\Diagnosis.Common.csproj">

@@ -145,6 +145,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Screens\Vocabularies.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Screens\Specialities.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -162,6 +166,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DesignData\SampleViewModels.cs" />
+    <Compile Include="Screens\Vocabularies.xaml.cs">
+      <DependentUpon>Vocabularies.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Screens\Specialities.xaml.cs">
       <DependentUpon>Specialities.xaml</DependentUpon>
     </Compile>

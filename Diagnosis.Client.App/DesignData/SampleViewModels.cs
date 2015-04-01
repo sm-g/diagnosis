@@ -40,7 +40,7 @@ namespace Diagnosis.Client.App.DesignData
         }
     }
 
-    public class SampleVocabularyListViewModel : VocabularyListViewModel
+    public class SampleVocabularyListViewModel : VocabularySyncViewModel
     {
         public SampleVocabularyListViewModel()
         {
