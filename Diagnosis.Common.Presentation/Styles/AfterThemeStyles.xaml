@@ -212,6 +212,8 @@
            BasedOn="{StaticResource {x:Type CheckBox}}">
         <Setter Property="Focusable"
                 Value="False" />
+        <Setter Property="HorizontalAlignment"
+                Value="Center" />
     </Style>
 
     <Style x:Key="MyDataGridStyle"
@@ -239,8 +241,10 @@
         <Setter Property="CellStyle"
                 Value="{StaticResource CellStyle}" />
 
+        <!-- Set VirtualizationMode for IsSelected binding -->
         <Setter Property="VirtualizingStackPanel.VirtualizationMode"
                 Value="Standard" />
+        <!--checkboxes to select row-->
         <Setter Property="RowHeaderTemplate">
             <Setter.Value>
                 <DataTemplate>
