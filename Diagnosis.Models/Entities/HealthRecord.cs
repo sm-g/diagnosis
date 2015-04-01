@@ -283,7 +283,6 @@ namespace Diagnosis.Models
                 var needRem = toR.Contains(hrChios[i]);
                 if (needRem)
                 {
-                    toR.Remove(hrChios[i]);
                     itemsToRem.Add(this.HrItems.ElementAt(i));
                 }
                 else

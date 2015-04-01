@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using Diagnosis.Common;
 
 namespace Diagnosis.Models
 {
@@ -10,7 +11,7 @@ namespace Diagnosis.Models
 
         public WordTemplate(string title, Vocabulary voc)
         {
-            Contract.Requires(title != null);
+            Contract.Requires(!title.IsNullOrEmpty());
             Contract.Requires(voc != null);
 
             Title = title;
@@ -25,16 +26,16 @@ namespace Diagnosis.Models
         public virtual string Title
         {
             get { return _title; }
-            set
+            protected internal set
             {
-                SetProperty(ref _title, value ?? "", () => Title);
+                SetProperty(ref _title, value.TrimedOrNull() ?? "", () => Title);
             }
         }
 
         public virtual Vocabulary Vocabulary
         {
             get { return _voc; }
-            set
+            protected set
             {
                 SetProperty(ref _voc, value, () => Vocabulary);
             }

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.Models
 {
@@ -16,7 +17,6 @@ namespace Diagnosis.Models
         private Iesi.Collections.Generic.ISet<Speciality> specialities = new HashedSet<Speciality>();
         private IList<Word> words = new List<Word>(); // many-2-many
         private string _title;
-        private bool _custom;
         private Doctor _doc;
 
         public Vocabulary(string title, Doctor d = null)
@@ -37,7 +37,6 @@ namespace Diagnosis.Models
         public virtual event NotifyCollectionChangedEventHandler WordsChanged;
 
         public virtual event NotifyCollectionChangedEventHandler WordTemplatesChanged;
-
 
         public virtual string Title
         {
@@ -148,6 +147,59 @@ namespace Diagnosis.Models
         public override ValidationResult SelfValidate()
         {
             return new VocabularyValidator().Validate(this);
+        }
+
+        public virtual void AddTemplates(IEnumerable<string> templatesToAdd)
+        {
+            Contract.Requires(templatesToAdd != null);
+
+            SetTemplates(wordTemplates.Select(x => x.Title).Union(templatesToAdd));
+        }
+
+        public virtual void SetTemplates(IEnumerable<string> titlesToBe)
+        {
+            Contract.Requires(titlesToBe != null);
+
+            var wasTitles = this.WordTemplates.Select(x => x.Title).ToList();
+
+            // сохраняем регистр слов, но заменяем при смене регистра
+
+            var toAdd = new HashSet<string>(titlesToBe);
+            toAdd.ExceptWith(wasTitles);
+
+            var toRemove = new HashSet<string>(wasTitles);
+            toRemove.ExceptWith(titlesToBe);
+
+            var templatesToRem = new List<WordTemplate>();
+            var templatesToAdd = new List<WordTemplate>();
+
+            // убираем ненужные
+            foreach (var item in toRemove)
+            {
+                var old = wordTemplates.FirstOrDefault(x => x.Title == item);
+                templatesToRem.Add(old);
+            }
+
+            // добавляем новые
+            foreach (var item in toAdd)
+            {
+                var n = new WordTemplate(item, this);
+                templatesToAdd.Add(n);
+            }
+
+            foreach (var item in templatesToRem)
+            {
+                wordTemplates.Remove(item);
+            }
+            foreach (var item in templatesToAdd)
+            {
+                wordTemplates.Add(item);
+            }
+
+            if (templatesToRem.Count > 0 || templatesToAdd.Count > 0)
+            {
+                OnWordTemplatesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            }
         }
     }
 }

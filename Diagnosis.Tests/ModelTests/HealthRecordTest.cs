@@ -20,7 +20,12 @@ namespace Tests
         {
             Load<HealthRecord>();
             Load<Uom>();
-            hr1 = hr[71]; // without hios
+        }
+
+        [TestMethod]
+        public void DataConditions()
+        {
+            Assert.IsTrue(hr1.HrItems.Count == 0);
         }
 
         [TestMethod]
