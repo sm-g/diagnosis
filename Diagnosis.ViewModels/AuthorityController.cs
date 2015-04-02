@@ -49,16 +49,23 @@ namespace Diagnosis.ViewModels
                 if (CurrentDoctor != null)
                 {
                     var sesion = NHibernateHelper.Default.GetSession();
-                    var vocsForDoc = VocabularyQuery.NonCustom(sesion)();
-                    if (CurrentDoctor.Speciality != null)
-                    {
-                        vocsForDoc = CurrentDoctor.Speciality.Vocabularies;
-                    }
-                    CurrentDoctor.OnLogin(vocsForDoc);
+                    LoadVocsAfterLogin(sesion);
                 }
                 return true;
             }
             return false;
+        }
+
+        public static void LoadVocsAfterLogin(NHibernate.ISession sesion)
+        {
+            if (CurrentDoctor == null) return;
+
+            var vocsForDoc = VocabularyQuery.NonCustom(sesion)();
+            if (CurrentDoctor.Speciality != null)
+            {
+                vocsForDoc = CurrentDoctor.Speciality.Vocabularies;
+            }
+            CurrentDoctor.OnLogin(vocsForDoc);
         }
 
         /// <summary>

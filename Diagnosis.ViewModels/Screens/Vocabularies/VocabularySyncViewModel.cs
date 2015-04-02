@@ -153,6 +153,9 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         MakeInstalledVms();
                         MakeAvailableVms();
+#if DEBUG
+                        AuthorityController.LoadVocsAfterLogin(Session); // загружаем словари не меняя пользователя                        
+#endif
                     })
                     , Cursors.AppStarting);
                 }, () => SelectedAvailableVocs.Count > 0 && IsConnected);
