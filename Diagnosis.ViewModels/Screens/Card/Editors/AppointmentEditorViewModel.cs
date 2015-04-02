@@ -61,7 +61,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return !app.IsValid() && app.GetErrors().Any(x => x.PropertyName == "DateAndTime");
+                return !app.IsValid() && app.GetErrors().Any(x => x.PropertyName.Contains("DateAndTime"));
             }
         }
 
