@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Data;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Screens;
 using PasswordHash;
@@ -7,6 +8,8 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Security;
+using NHibernate.Linq;
+using Diagnosis.Data.Queries;
 
 namespace Diagnosis.ViewModels
 {
@@ -41,12 +44,18 @@ namespace Diagnosis.ViewModels
                 LogOut();
                 CurrentUser = user;
                 CurrentDoctor = user as Doctor;
-                if (user is Doctor)
-                {
-                    var ws = CurrentDoctor.Speciality != null ? CurrentDoctor.Speciality.Vocabularies.SelectMany(x => x.Words) : Enumerable.Empty<Word>();
-                    CurrentDoctor.SpecialityWords = new List<Word>(ws);
-                }
                 OnLoggedIn(user);
+
+                if (CurrentDoctor != null)
+                {
+                    var sesion = NHibernateHelper.Default.GetSession();
+                    var vocsForDoc = VocabularyQuery.NonCustom(sesion)();
+                    if (CurrentDoctor.Speciality != null)
+                    {
+                        vocsForDoc = CurrentDoctor.Speciality.Vocabularies;
+                    }
+                    CurrentDoctor.OnLogin(vocsForDoc);
+                }
                 return true;
             }
             return false;

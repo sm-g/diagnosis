@@ -36,8 +36,7 @@ namespace Diagnosis.ViewModels.Screens
             Filter.Filtered += (s, e) =>
             {
                 // показываем только слова, доступные врачу
-                MakeVms(Filter.Results
-                    .Where(x => doctor.Words.Contains(x)));
+                MakeVms(Filter.Results.Where(x => doctor.Words.Contains(x)));
             };
             Filter.Clear(); // показываем все
 

@@ -54,7 +54,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         /// <summary>
-        /// Нельзя ввести слово, которое уже есть в словаре врача.
+        /// Нельзя ввести слово, которое уже есть в словарях врача.
         /// </summary>
         private void TestExisting(WordViewModel vm)
         {

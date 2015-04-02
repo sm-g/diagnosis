@@ -44,11 +44,11 @@ namespace Diagnosis.Models
 
         /// <summary>
         /// Слова из всех словарей, доступных врачу, кроме пользовательского.
+        /// Если у врача нет специальности — слова всех уставновленных непользовательских словарей.
         /// </summary>
-        public virtual List<Word> SpecialityWords
+        public virtual IEnumerable<Word> SpecialityWords
         {
             get { return chachedWords; }
-            set { chachedWords = value; }
         }
 
         /// <summary>
@@ -153,7 +153,15 @@ namespace Diagnosis.Models
         {
             get { return settingsProvider ?? (settingsProvider = new SettingsProvider(this)); }
         }
-
+        /// <summary>
+        /// Заполняем слова из словарей.
+        /// Вызвать после логина.
+        /// </summary>
+        public virtual void OnLogin(IEnumerable<Vocabulary> vocs)
+        {
+            var words = vocs.SelectMany(x => x.Words);
+            chachedWords = new List<Word>(words);
+        }
         /// <summary>
         /// Доктор cможет видеть эти слова.
         /// Использовать перед сохранением слова.
