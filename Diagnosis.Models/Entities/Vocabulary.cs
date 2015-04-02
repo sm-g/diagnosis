@@ -35,6 +35,7 @@ namespace Diagnosis.Models
         }
 
         public virtual event NotifyCollectionChangedEventHandler WordsChanged;
+        public virtual event NotifyCollectionChangedEventHandler SpecialitiesChanged;
 
         public virtual event NotifyCollectionChangedEventHandler WordTemplatesChanged;
 
@@ -101,26 +102,29 @@ namespace Diagnosis.Models
             }
         }
 
-        protected internal virtual WordTemplate AddWordTemplate(WordTemplate wt)
+        protected internal virtual Speciality AddSpec(Speciality spec)
         {
-            Contract.Requires(wt.Vocabulary == this);
-            if (!wordTemplates.Contains(wt))
+            Contract.Requires(spec.Vocabularies.Contains(this));
+            if (!specialities.Contains(spec))
             {
-                wordTemplates.Add(wt);
-                OnWordTemplatesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, wt));
+                specialities.Add(spec);
+                OnSpecialitiesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, spec));
             }
-            return wt;
+            return spec;
         }
 
-        protected internal virtual void RemoveWordTemplate(WordTemplate wt)
+        protected internal virtual void RemoveSpec(Speciality spec)
         {
-            Contract.Requires(wt.Vocabulary == this);
-            if (wordTemplates.Remove(wt))
+            Contract.Requires(!spec.Vocabularies.Contains(this));
+            if (specialities.Remove(spec))
             {
-                OnWordTemplatesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, wt));
+                OnSpecialitiesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, spec));
             }
         }
-
+        public virtual IEnumerable<string> GetOrderedTemplateTitles()
+        {
+            return WordTemplates.Select(x => x.Title).OrderBy(x => x);
+        }
         public override string ToString()
         {
             return Title;
@@ -143,7 +147,14 @@ namespace Diagnosis.Models
                 h(this, e);
             }
         }
-
+        protected virtual void OnSpecialitiesChanged(NotifyCollectionChangedEventArgs e)
+        {
+            var h = SpecialitiesChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
         public override ValidationResult SelfValidate()
         {
             return new VocabularyValidator().Validate(this);

@@ -17,8 +17,7 @@ namespace Diagnosis.Models
             Contract.Requires(voc != null);
 
             Title = title;
-            _voc = voc;
-            _voc.AddWordTemplate(this);
+            Vocabulary = voc;
         }
 
         protected WordTemplate()
@@ -33,7 +32,9 @@ namespace Diagnosis.Models
                 SetProperty(ref _title, value.TrimedOrNull() ?? "", () => Title);
             }
         }
-
+        /// <summary>
+        /// Словарь, для которого создан шаблон.
+        /// </summary>
         public virtual Vocabulary Vocabulary
         {
             get { return _voc; }

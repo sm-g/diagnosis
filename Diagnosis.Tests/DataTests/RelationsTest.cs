@@ -10,8 +10,6 @@ namespace Tests
     [TestClass]
     public class RelationsTest : InMemoryDatabaseTest
     {
-
-
         [TestInitialize]
         public void Init()
         {
@@ -23,6 +21,7 @@ namespace Tests
             Load<UomType>();
             Load<Speciality>();
             Load<IcdBlock>();
+            Load<Vocabulary>();
 
             AuthorityController.TryLogIn(d1);
         }
@@ -31,8 +30,14 @@ namespace Tests
         public void Hrs2Words()
         {
             var hr = new HealthRecord(a[1], d1);
-            hr.SetItems(new[] { w[6] });
+            hr.SetItems(new[] { w[6], w[3] });
             Assert.IsTrue(w[6].HealthRecords.Contains(hr));
+            Assert.IsTrue(hr.GetOrderedEntities().Contains(w[3]));
+
+            hr.SetItems(new[] { w[6] });
+
+            Assert.IsFalse(hr.GetOrderedEntities().Contains(w[3]));
+            Assert.IsFalse(w[3].HealthRecords.Contains(hr));
 
             hr.OnDelete();
             session.Delete(hr);
@@ -47,7 +52,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public void Icd2Spec()
+        public void Spec2Icd()
         {
             Assert.IsFalse(spec[1].IcdBlocks.Contains(block[91]));
 
@@ -56,8 +61,58 @@ namespace Tests
 
             spec[1].RemoveBlock(block[91]);
             Assert.IsFalse(spec[1].IcdBlocks.Contains(block[91]));
+        }
 
+        [TestMethod]
+        public void Spec2Voc()
+        {
+            Assert.IsFalse(spec[1].Vocabularies.Contains(voc[1]));
 
+            spec[1].AddVoc(voc[1]);
+            Assert.IsTrue(spec[1].Vocabularies.Contains(voc[1]));
+            Assert.IsTrue(voc[1].Specialities.Contains(spec[1]));
+
+            spec[1].RemoveVoc(voc[1]);
+            Assert.IsFalse(spec[1].Vocabularies.Contains(voc[1]));
+            Assert.IsFalse(voc[1].Specialities.Contains(spec[1]));
+        }
+
+        [TestMethod]
+        public void Hr2HrItem()
+        {
+            Assert.IsFalse(spec[1].Vocabularies.Contains(voc[1]));
+
+            var hr = new HealthRecord(a[1], d1);
+            hr.AddItems(new[] { w[1], w[2] });
+            Assert.IsTrue(hr.GetOrderedEntities().Contains(w[2]));
+
+            var hrItem = hr.HrItems.FirstOrDefault(x => x.Entity.Equals(w[2]));
+            Assert.IsNotNull(hrItem);
+            Assert.AreEqual(hr, hrItem.HealthRecord);
+
+            hr.SetItems(new[] { w[1] });
+            Assert.IsFalse(hr.GetOrderedEntities().Contains(w[2]));
+
+            hrItem = hr.HrItems.FirstOrDefault(x => x.Entity.Equals(w[2]));
+            Assert.IsNull(hrItem);
+        }
+
+        [TestMethod]
+        public void Voc2WordTemplate()
+        {
+            var titleswas = voc[1].GetOrderedTemplateTitles().ToList();
+            Assert.IsFalse(titleswas.Contains("123"));
+            voc[1].SetTemplates(titleswas.Union("123".ToEnumerable()));
+
+            var wt = voc[1].WordTemplates.FirstOrDefault(x => x.Title == "123");
+            Assert.IsNotNull(wt);
+            Assert.AreEqual(voc[1], wt.Vocabulary);
+
+            voc[1].SetTemplates(titleswas);
+            Assert.IsFalse(voc[1].GetOrderedTemplateTitles().Contains("123"));
+
+            wt = voc[1].WordTemplates.FirstOrDefault(x => x.Title == "123");
+            Assert.IsNull(wt);
         }
 
         [TestMethod]
@@ -100,6 +155,7 @@ namespace Tests
             p.RemoveCourse(c);
             Assert.IsFalse(d1.Courses.Contains(c));
         }
+
         [TestMethod]
         public void Doctor2App()
         {
@@ -112,6 +168,7 @@ namespace Tests
             c.RemoveAppointment(app);
             Assert.IsFalse(d1.Appointments.Contains(app));
         }
+
         [TestMethod]
         public void Pat2Hr()
         {
@@ -125,6 +182,7 @@ namespace Tests
 
             Assert.IsFalse(p.HealthRecords.Contains(hr));
         }
+
         [TestMethod]
         public void Course2Hr()
         {
@@ -138,6 +196,7 @@ namespace Tests
 
             Assert.IsFalse(c.HealthRecords.Contains(hr));
         }
+
         [TestMethod]
         public void App2Hr()
         {
@@ -174,8 +233,6 @@ namespace Tests
         [TestMethod]
         public void HrCascade()
         {
-
         }
-
     }
 }

@@ -118,7 +118,9 @@ namespace Tests
             l.LoadOrUpdateVocs(voc[1]);
             var vocWords = voc[1].Words.Count();
             var word = voc[1].Words.Where(x => x.Title == wTemp[3].Title).Single();
-            voc[1].RemoveWordTemplate(wTemp[3]);
+            // remove wTemp[3]
+            voc[1].SetTemplates(voc[1].WordTemplates.Select(x => x.Title)
+                .Except(word.Title.ToEnumerable()));
 
             l.LoadOrUpdateVocs(voc[1]);
             // слово больше не в словаре

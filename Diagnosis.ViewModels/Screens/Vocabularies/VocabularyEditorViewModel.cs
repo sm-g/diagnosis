@@ -46,9 +46,7 @@ namespace Diagnosis.ViewModels.Screens
             HelpTopic = "editVocabulary";
             WithHelpButton = false;
 
-            TemplatesString = string.Join(Environment.NewLine, voc.WordTemplates
-                .Select(x => x.Title)
-                .OrderBy(x => x));
+            TemplatesString = string.Join(Environment.NewLine, voc.GetOrderedTemplateTitles());
         }
 
         public VocabularyViewModel Vocabulary { get; set; }
