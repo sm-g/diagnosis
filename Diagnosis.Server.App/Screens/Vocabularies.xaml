@@ -82,6 +82,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="36" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="10" />
                 <RowDefinition Height="auto"
                                MaxHeight="100" />
                 <RowDefinition Height="*" />
@@ -107,49 +108,22 @@
                                     ValidatesOnDataErrors=True}"
                      Grid.Row="1" />
 
-            <!--<Label Content="Выберите специальности"
-                   Grid.Row="1"
-                   Grid.Column="3" />
-            <Label Content="Специальности"
-                   Grid.Row="2" />
-            <ListBox Grid.Column="1"
-                     BorderThickness="1"
-                     ItemsSource="{Binding Speciality.Blocks}"
-                     diag:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding Speciality.SelectedBlocks}"
-                     Grid.Row="2" />
-
-            <StackPanel Grid.Column="2"
-                        VerticalAlignment="Center"
-                        Grid.Row="2">
-                <Button Command="{Binding AddBlocksCommand}"
-                        Margin="5 0"
-                        Content="← _Добавить" />
-                <Button Command="{Binding RemoveBlocksCommand}"
-                        Margin="5"
-                        Content="_Удалить →" />
-            </StackPanel>-->
-
-            <!--<diag:SearchTree DataContext="{Binding DiagnosisSearch}"
-                             Collection="{Binding DataContext.Chapters,
-                                                  ElementName=vocEditor}"
-                             TreeBorderThickness="1"
-                             Grid.Column="3"
-                             Grid.Row="2" />-->
-
             <Label Content="Слова"
-                   Grid.Row="3" />
+                   Grid.Row="4" />
             <StackPanel Margin="10 0"
                         Grid.Column="3"
-                        Grid.Row="3">
+                        Grid.Row="4">
                 <TextBlock Text="Всего слов:" />
                 <TextBlock Text="{Binding TemplatesCount}" />
 
-                <StackPanel Margin="0 10" Visibility="{Binding TooLongTemplates.Count, Converter={StaticResource MoreThanToVisibility}}">
+                <StackPanel Margin="0 10"
+                            Visibility="{Binding TooLongTemplates.Count, Converter={StaticResource MoreThanToVisibility}}">
                     <TextBlock TextWrapping="Wrap">Эти слова длиннее <Run Text="{Binding MaxLength,Mode=OneWay}" /> символов и будут обрезаны:</TextBlock>
-                    <ItemsControl ItemsSource="{Binding TooLongTemplates}" >
+                    <ItemsControl ItemsSource="{Binding TooLongTemplates}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding}"/>
+                                <TextBlock TextTrimming="CharacterEllipsis"
+                                           Text="{Binding}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -157,7 +131,7 @@
                 </StackPanel>
             </StackPanel>
             <TextBox Grid.Column="1"
-                     Grid.Row="3"
+                     Grid.Row="4"
                      Text="{Binding TemplatesString,
                                     UpdateSourceTrigger=PropertyChanged,
                                     ValidatesOnDataErrors=True}"
@@ -165,7 +139,7 @@
                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
                      AcceptsReturn="True" />
 
-            <StackPanel Grid.Row="4"
+            <StackPanel Grid.Row="5"
                         Style="{StaticResource DialogButtonsPanel}"
                         Grid.ColumnSpan="4">
                 <Button Name="saveButton"

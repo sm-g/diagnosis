@@ -31,12 +31,15 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Requires(spec != null);
             this.spec = spec;
             spec.BlocksChanged += spec_BlocksChanged;
+            spec.VocsChanged += spec_VocsChanged;
             blocksBeforeEdit = new List<IcdBlock>(spec.IcdBlocks);
 
             (spec as IEditableObject).BeginEdit();
 
             Chapters = new ObservableCollection<DiagnosisViewModel>();
-            Chapters2 = new ObservableCollection<DiagnosisViewModel>();
+            SpecChapters = new ObservableCollection<DiagnosisViewModel>();
+            AllVocs = new ObservableCollection<VocabularyViewModel>();
+            SpecVocs = new ObservableCollection<VocabularyViewModel>();
 
             var specs = Session.Query<Speciality>()
                 .ToList();
@@ -52,12 +55,21 @@ namespace Diagnosis.ViewModels.Screens
 
             CreateDiagnosisSearch();
             DiagnosisSearch.Filter.Clear();
-            DiagnosisSearch2.Filter.Clear();
+            SpecDiagnosisSearch.Filter.Clear();
+
+            var vocs = Session.Query<Vocabulary>();
+            vocs.ToList().Where(x => !x.IsCustom).ForAll(x => AllVocs.Add(new VocabularyViewModel(x)));
 
             Title = "Редактор специальности";
             HelpTopic = "editspeciality";
             WithHelpButton = false;
         }
+
+        public SpecialityViewModel Speciality { get; set; }
+
+        public ObservableCollection<VocabularyViewModel> SpecVocs { get; private set; }
+
+        public ObservableCollection<VocabularyViewModel> AllVocs { get; private set; }
 
         /// <summary>
         /// Корневые элементы дерева.
@@ -67,9 +79,7 @@ namespace Diagnosis.ViewModels.Screens
         /// <summary>
         /// Корневые элементы дерева.
         /// </summary>
-        public ObservableCollection<DiagnosisViewModel> Chapters2 { get; private set; }
-
-        public SpecialityViewModel Speciality { get; set; }
+        public ObservableCollection<DiagnosisViewModel> SpecChapters { get; private set; }
 
         public PopupSearchViewModel<IcdBlock> DiagnosisSearch
         {
@@ -87,7 +97,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public PopupSearchViewModel<IcdBlock> DiagnosisSearch2
+        public PopupSearchViewModel<IcdBlock> SpecDiagnosisSearch
         {
             get
             {
@@ -98,7 +108,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (_diagnosisSearch2 != value)
                 {
                     _diagnosisSearch2 = value;
-                    OnPropertyChanged(() => DiagnosisSearch2);
+                    OnPropertyChanged(() => SpecDiagnosisSearch);
                 }
             }
         }
@@ -125,15 +135,41 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    //Speciality.SelectedBlocks.ToList().ForAll(vm =>
-                    //    spec.RemoveBlock(vm.Icd as IcdBlock));
-                    var selecetedBlocks = Chapters2
+                    var selecetedBlocks = SpecChapters
                        .SelectMany(ch => ch.IsSelected ? ch.Children : ch.Children.Where(b => b.IsSelected)) // все выделенные блоки
                        .ToList();
                     selecetedBlocks.ForEach(vm =>
                         spec.RemoveBlock(vm.Icd as IcdBlock));
                 },
-                () => Chapters2 != null && Chapters2.Any(ch => ch.IsSelected || ch.Children.Any(b => b.IsSelected)));
+                () => SpecChapters != null && SpecChapters.Any(ch => ch.IsSelected || ch.Children.Any(b => b.IsSelected)));
+            }
+        }
+
+        public RelayCommand AddVocsCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    var selected = AllVocs.Where(x => x.IsSelected).ToList();
+                    selected.ForAll(vm =>
+                         spec.AddVoc(vm.voc));
+                },
+                () => AllVocs != null && AllVocs.Any(v => v.IsSelected));
+            }
+        }
+
+        public RelayCommand RemoveVocsCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    var selected = SpecVocs.Where(x => x.IsSelected).ToList();
+                    selected.ForAll(vm =>
+                         spec.RemoveVoc(vm.voc));
+                },
+                () => SpecVocs != null && SpecVocs.Any(v => v.IsSelected));
             }
         }
 
@@ -179,6 +215,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 Speciality.Dispose();
                 spec.BlocksChanged -= spec_BlocksChanged;
+                spec.VocsChanged -= spec_VocsChanged;
             }
             base.Dispose(disposing);
         }
@@ -267,18 +304,26 @@ namespace Diagnosis.ViewModels.Screens
                     x.Code.StartsWith(s, StringComparison.OrdinalIgnoreCase) ||
                     x.Title.StartsWith(s, StringComparison.OrdinalIgnoreCase));
             };
-            DiagnosisSearch2 = new PopupSearchViewModel<IcdBlock>(specBlocksQuery);
-            DiagnosisSearch2.Filter.Filtered += (s, e) =>
+            SpecDiagnosisSearch = new PopupSearchViewModel<IcdBlock>(specBlocksQuery);
+            SpecDiagnosisSearch.Filter.Filtered += (s, e) =>
             {
                 inFiltered = true;
-                MakeVms(Chapters2, DiagnosisSearch2.Filter.Results);
+                MakeVms(SpecChapters, SpecDiagnosisSearch.Filter.Results);
                 inFiltered = false;
             };
         }
 
         private void spec_BlocksChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            MakeVms(Chapters2, spec.IcdBlocks);
+            MakeVms(SpecChapters, spec.IcdBlocks);
+        }
+
+        private void spec_VocsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            var vms = spec.Vocabularies.Select(v => SpecVocs
+               .Where(vm => vm.voc == v)
+               .FirstOrDefault() ?? new VocabularyViewModel(v));
+            SpecVocs.SyncWith(vms);
         }
     }
 }
