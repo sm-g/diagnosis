@@ -94,17 +94,19 @@
                      Text="{Binding Speciality.Title, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                      Grid.Row="1" />
 
-            <Label Content="Выберите блоки МКБ"
+            <Label Content="Выберите класс или блок МКБ"
                    Grid.Row="1"
                    Grid.Column="3" />
             <Label Content="Блоки МКБ"
                    Grid.Row="2" />
-            <ListBox Grid.Column="1"
-                     BorderThickness="1"
-                     ItemsSource="{Binding Speciality.Blocks}"
-                     diag:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding Speciality.SelectedBlocks}"
-                     Grid.Row="2" />
-
+            <DockPanel Grid.Column="1"
+                       Grid.Row="2">
+                <diag:SearchTree DataContext="{Binding DiagnosisSearch2}"
+                                 Collection="{Binding DataContext.Chapters2, ElementName=specEditor}"
+                                 TreeBorderThickness="1"
+                             Grid.Column="3"
+                             Grid.Row="2" />
+            </DockPanel>
             <StackPanel Grid.Column="2"
                         VerticalAlignment="Center"
                         Grid.Row="2">
@@ -113,7 +115,7 @@
                         Content="← _Добавить" />
                 <Button Command="{Binding RemoveBlocksCommand}"
                         Margin="5"
-                        Content="_Удалить →" />
+                        Content="_Убрать →" />
             </StackPanel>
 
             <diag:SearchTree DataContext="{Binding DiagnosisSearch}"

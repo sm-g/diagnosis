@@ -4,7 +4,6 @@ using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.ViewModels.Controls;
-using Diagnosis.ViewModels.Search;
 using log4net;
 using NHibernate.Linq;
 using System;
@@ -22,19 +21,22 @@ namespace Diagnosis.ViewModels.Screens
 
         private PopupSearchViewModel<IcdBlock> _diagnosisSearch;
         private bool inFiltered;
-        List<IcdBlock> blocksBeforeEdit;
+        private List<IcdBlock> blocksBeforeEdit;
 
         private Speciality spec;
+        private PopupSearchViewModel<IcdBlock> _diagnosisSearch2;
 
         public SpecialityEditorViewModel(Speciality spec)
         {
             Contract.Requires(spec != null);
             this.spec = spec;
+            spec.BlocksChanged += spec_BlocksChanged;
             blocksBeforeEdit = new List<IcdBlock>(spec.IcdBlocks);
 
             (spec as IEditableObject).BeginEdit();
 
             Chapters = new ObservableCollection<DiagnosisViewModel>();
+            Chapters2 = new ObservableCollection<DiagnosisViewModel>();
 
             var specs = Session.Query<Speciality>()
                 .ToList();
@@ -50,6 +52,7 @@ namespace Diagnosis.ViewModels.Screens
 
             CreateDiagnosisSearch();
             DiagnosisSearch.Filter.Clear();
+            DiagnosisSearch2.Filter.Clear();
 
             Title = "Редактор специальности";
             HelpTopic = "editspeciality";
@@ -60,6 +63,11 @@ namespace Diagnosis.ViewModels.Screens
         /// Корневые элементы дерева.
         /// </summary>
         public ObservableCollection<DiagnosisViewModel> Chapters { get; private set; }
+
+        /// <summary>
+        /// Корневые элементы дерева.
+        /// </summary>
+        public ObservableCollection<DiagnosisViewModel> Chapters2 { get; private set; }
 
         public SpecialityViewModel Speciality { get; set; }
 
@@ -74,7 +82,23 @@ namespace Diagnosis.ViewModels.Screens
                 if (_diagnosisSearch != value)
                 {
                     _diagnosisSearch = value;
-                    OnPropertyChanged("DiagnosisSearch");
+                    OnPropertyChanged(() => DiagnosisSearch);
+                }
+            }
+        }
+
+        public PopupSearchViewModel<IcdBlock> DiagnosisSearch2
+        {
+            get
+            {
+                return _diagnosisSearch2;
+            }
+            private set
+            {
+                if (_diagnosisSearch2 != value)
+                {
+                    _diagnosisSearch2 = value;
+                    OnPropertyChanged(() => DiagnosisSearch2);
                 }
             }
         }
@@ -86,12 +110,12 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     var selecetedBlocks = Chapters
-                        .SelectMany(ch => ch.Children.Where(b => b.IsSelected))
+                        .SelectMany(ch => ch.IsSelected ? ch.Children : ch.Children.Where(b => b.IsSelected)) // все выделенные блоки
                         .ToList();
                     selecetedBlocks.ForEach(vm =>
                         spec.AddBlock(vm.Icd as IcdBlock));
                 },
-                () => Chapters != null && Chapters.Any(ch => ch.Children.Any(b => b.IsSelected)));
+                () => Chapters != null && Chapters.Any(ch => ch.IsSelected || ch.Children.Any(b => b.IsSelected)));
             }
         }
 
@@ -101,10 +125,15 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    Speciality.SelectedBlocks.ToList().ForAll(vm =>
+                    //Speciality.SelectedBlocks.ToList().ForAll(vm =>
+                    //    spec.RemoveBlock(vm.Icd as IcdBlock));
+                    var selecetedBlocks = Chapters2
+                       .SelectMany(ch => ch.IsSelected ? ch.Children : ch.Children.Where(b => b.IsSelected)) // все выделенные блоки
+                       .ToList();
+                    selecetedBlocks.ForEach(vm =>
                         spec.RemoveBlock(vm.Icd as IcdBlock));
                 },
-                () => Speciality != null && Speciality.SelectedBlocks.Count > 0);
+                () => Chapters2 != null && Chapters2.Any(ch => ch.IsSelected || ch.Children.Any(b => b.IsSelected)));
             }
         }
 
@@ -149,6 +178,7 @@ namespace Diagnosis.ViewModels.Screens
             if (disposing)
             {
                 Speciality.Dispose();
+                spec.BlocksChanged -= spec_BlocksChanged;
             }
             base.Dispose(disposing);
         }
@@ -165,7 +195,7 @@ namespace Diagnosis.ViewModels.Screens
         /// Обновляет VMs по найденным болезням
         /// </summary>
         /// <param name="results"></param>
-        private void MakeVms(ObservableCollection<IcdBlock> results)
+        private static void MakeVms(ObservableCollection<DiagnosisViewModel> chapters, IEnumerable<IcdBlock> results)
         {
             Dictionary<IcdChapter, IEnumerable<IcdBlock>>
                 dict = (from d in results
@@ -183,7 +213,7 @@ namespace Diagnosis.ViewModels.Screens
             var inMaking = true;
             var chVms = dict.Keys.Select(ch =>
             {
-                var chVm = Chapters.Where(i => i.Icd as IcdChapter == ch).FirstOrDefault();
+                var chVm = chapters.Where(i => i.Icd as IcdChapter == ch).FirstOrDefault();
                 if (chVm == null)
                 {
                     chVm = new DiagnosisViewModel(ch);
@@ -216,31 +246,39 @@ namespace Diagnosis.ViewModels.Screens
             }).ToList();
             inMaking = false;
 
-            Chapters.SyncWith(chVms, compareKey);
+            chapters.SyncWith(chVms, compareKey);
         }
 
         private void CreateDiagnosisSearch()
         {
             var query = DiagnosisQuery.BlockStartingWith(Session);
             DiagnosisSearch = new PopupSearchViewModel<IcdBlock>(query);
-
-            DiagnosisSearch.Filter.Cleared += (s, e) =>
-            {
-            };
-            DiagnosisSearch.ResultItemSelected += (s, e) =>
-            {
-                var dvm = e.arg as DiagnosisViewModel;
-                if (dvm != null)
-                {
-                }
-            };
             DiagnosisSearch.Filter.Filtered += (s, e) =>
             {
                 inFiltered = true;
-                MakeVms(DiagnosisSearch.Filter.Results);
+                MakeVms(Chapters, DiagnosisSearch.Filter.Results);
                 inFiltered = false;
             };
             DiagnosisSearch.IsResultsVisible = true;
+
+            Func<string, IEnumerable<IcdBlock>> specBlocksQuery = (s) =>
+            {
+                return spec.IcdBlocks.Where(x =>
+                    x.Code.StartsWith(s, StringComparison.OrdinalIgnoreCase) ||
+                    x.Title.StartsWith(s, StringComparison.OrdinalIgnoreCase));
+            };
+            DiagnosisSearch2 = new PopupSearchViewModel<IcdBlock>(specBlocksQuery);
+            DiagnosisSearch2.Filter.Filtered += (s, e) =>
+            {
+                inFiltered = true;
+                MakeVms(Chapters2, DiagnosisSearch2.Filter.Results);
+                inFiltered = false;
+            };
+        }
+
+        private void spec_BlocksChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            MakeVms(Chapters2, spec.IcdBlocks);
         }
     }
 }

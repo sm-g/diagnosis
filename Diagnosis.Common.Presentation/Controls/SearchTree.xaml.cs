@@ -200,7 +200,14 @@ namespace Diagnosis.Common.Presentation.Controls.Search
             }
             // выбираем только листья
             if (item != null && item.IsTerminal)
-                (DataContext as dynamic).RaiseResultItemSelected(item);  //  DataContext is PopupSearch<>;
+                try
+                {
+                    (DataContext as dynamic).RaiseResultItemSelected(item);
+                }
+                catch
+                {
+                    //  DataContext is not PopupSearch<>;
+                }
         }
     }
 }
