@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Common.Types;
 using Diagnosis.Data;
+using Diagnosis.Data.Queries;
 using Diagnosis.Data.Sync;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Controls;
@@ -265,11 +266,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private void MakeInstalledVms()
         {
-            var vocs = Session.Query<Vocabulary>()
-                .ToList();
-            var vms = vocs
-                // .Where(x => doctor.Speciality != null ? doctor.Speciality.Vocabularies.Contains(x) : false)
-                .Where(x => !x.IsCustom)
+            var vms = VocabularyQuery.NonCustom(Session)()
                 .Select(voc => Vocs
                     .Where(vm => vm.voc == voc)
                     .FirstOrDefault() ?? new VocabularyViewModel(voc))

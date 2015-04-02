@@ -57,8 +57,8 @@ namespace Diagnosis.ViewModels.Screens
             DiagnosisSearch.Filter.Clear();
             SpecDiagnosisSearch.Filter.Clear();
 
-            var vocs = Session.Query<Vocabulary>();
-            vocs.ToList().Where(x => !x.IsCustom).ForAll(x => AllVocs.Add(new VocabularyViewModel(x)));
+            VocabularyQuery.NonCustom(Session)()
+                .ForAll(x => AllVocs.Add(new VocabularyViewModel(x)));
 
             Title = "Редактор специальности";
             HelpTopic = "editspeciality";
