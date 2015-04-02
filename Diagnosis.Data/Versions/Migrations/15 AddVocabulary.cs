@@ -3,7 +3,7 @@ using FluentMigrator;
 using System;
 using System.Linq;
 
-namespace Diagnosis.Data.Versions
+namespace Diagnosis.Data.Versions.Off
 {
     [Migration(201503251200)]
     public class AddVocabulary : SyncronizedMigration

@@ -1,6 +1,6 @@
 ﻿using FluentMigrator;
 
-namespace Diagnosis.Data.Versions
+namespace Diagnosis.Data.Versions.Off
 {
     [Migration(201412080003)]
     public class InsertUomHrCatSpeciality : Migration

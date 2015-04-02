@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Data.SqlServerCe;
 using System.Linq;
 
-namespace Diagnosis.Data.Versions
+namespace Diagnosis.Data.Versions.Off
 {
     [Migration(201502121200)]
     public class UomHrCatSpecialityGuidAndRemoveDefCat : SyncronizedMigration

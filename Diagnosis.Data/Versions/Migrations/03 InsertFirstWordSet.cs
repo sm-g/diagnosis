@@ -1,6 +1,6 @@
 ﻿using FluentMigrator;
 
-namespace Diagnosis.Data.Versions
+namespace Diagnosis.Data.Versions.Off
 {
     [Migration(201412080002)]
     public class InsertFirstWordSet : Migration

@@ -2,13 +2,14 @@
 using System;
 using System.Linq;
 
-namespace Diagnosis.Data.Versions
+namespace Diagnosis.Data.Versions.Off
 {
     [Migration(201501231200)]
     public class AddHolderHrUpdatedAt : Migration
     {
         private const string UpdatedAt = "UpdatedAt";
         private const string CreatedAt = "CreatedAt";
+        // существующие созданы и обновлены 2014.1.1
         private static DateTime DefaultHolderCreatedAt = new DateTime(2014, 1, 1, 0, 0, 0);
         private static string defaultSqlCe = string.Format("'{0}'", DefaultHolderCreatedAt.ToString("yyyy-MM-dd hh:mm:ss"));
 

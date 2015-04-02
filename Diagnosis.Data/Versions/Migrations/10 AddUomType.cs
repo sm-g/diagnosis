@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 
-namespace Diagnosis.Data.Versions
+namespace Diagnosis.Data.Versions.Off
 {
     [Migration(201502031200)]
     public class AddUomType : Migration

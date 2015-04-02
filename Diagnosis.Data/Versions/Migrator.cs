@@ -44,6 +44,7 @@ namespace Diagnosis.Data.Versions
                 {
                     Database = "sqlserverce",
                     Namespace = typeof(CreateClientDb).Namespace
+                    // do not run .Off namespace
                 };
 
                 var options = new MigrationOptions { PreviewOnly = false, Timeout = 15 };

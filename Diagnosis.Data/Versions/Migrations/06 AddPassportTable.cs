@@ -9,10 +9,10 @@ namespace Diagnosis.Data.Versions
     {
         public override void Up()
         {
-            Create.Table(Names.Passport)
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK__Passport")
-                .WithColumn("HashAndSalt").AsFixedLengthString(PasswordHashManager.HASH_LENGTH).Nullable()
-                .WithColumn("Remember").AsBoolean().NotNullable().WithDefaultValue(0);
+            //Create.Table(Names.Passport)
+            //    .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK__Passport")
+            //    .WithColumn("HashAndSalt").AsFixedLengthString(PasswordHashManager.HASH_LENGTH).Nullable()
+            //    .WithColumn("Remember").AsBoolean().NotNullable().WithDefaultValue(0);
 
             // администратор с паролем по умолчанию
             Insert.IntoTable(Names.Passport)
@@ -23,12 +23,12 @@ namespace Diagnosis.Data.Versions
                 });
 
             // для каждого врача - пасспорт без пароля
-            Execute.Sql(string.Format("INSERT INTO {0} ([Id]) Select Id from {1}", Names.Passport, Names.Doctor));
+            // Execute.Sql(string.Format("INSERT INTO {0} ([Id]) Select Id from {1}", Names.Passport, Names.Doctor));
 
-            Create.ForeignKey(Names.FK.Doctor_Passport).FromTable(Names.Doctor)
-               .ForeignColumn("Id")
-               .ToTable(Names.Passport)
-               .PrimaryColumn("Id");
+            //Create.ForeignKey(Names.FK.Doctor_Passport).FromTable(Names.Doctor)
+            //   .ForeignColumn("Id")
+            //   .ToTable(Names.Passport)
+            //   .PrimaryColumn("Id");
         }
 
         public override void Down()

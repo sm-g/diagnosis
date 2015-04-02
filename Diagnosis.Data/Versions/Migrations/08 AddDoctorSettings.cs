@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 
-namespace Diagnosis.Data.Versions
+namespace Diagnosis.Data.Versions.Off
 {
     [Migration(201501141200)]
     public class AddDoctorSettings : Migration

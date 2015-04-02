@@ -7,7 +7,7 @@ namespace Diagnosis.Data.Versions
     {
         public override void Up()
         {
-            Execute.EmbeddedScript("create_client.sql");
+            Execute.EmbeddedScript("create_client_2015_04_01.sql");
         }
 
         public override void Down()
