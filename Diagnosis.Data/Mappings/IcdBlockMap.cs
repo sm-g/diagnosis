@@ -29,12 +29,13 @@ namespace Diagnosis.Data.Mappings
             //        k.Column(Names.Id.IcdBlock);
             //    });
             //    s.Inverse(true);
-            //    s.Cascade(Cascade.All | Cascade.DeleteOrphans);
+            //    s.Cascade(Cascade.None);
             //    s.Access(Accessor.Field);
             //}, r =>
             //{
             //    r.OneToMany();
             //});
+
             Set(x => x.IcdDiseases, s =>
             {
                 s.Key(k =>
