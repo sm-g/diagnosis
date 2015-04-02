@@ -30,7 +30,7 @@ namespace Diagnosis.Data.Mappings
                 {
                     k.Column(Names.Id.Vocabulary);
                 });
-                s.Lazy(CollectionLazy.NoLazy); // для создания слов после закрытия сессии
+                s.Lazy(CollectionLazy.NoLazy); // для синх после закрытия сессии
                 s.Inverse(true);
                 s.Cascade(Cascade.All | Cascade.DeleteOrphans);
                 s.Access(Accessor.Field);
@@ -56,6 +56,40 @@ namespace Diagnosis.Data.Mappings
                     x.Column(Names.Id.Word);
                     x.Class(typeof(Word));
                 });
+            });
+
+            Set(x => x.Specialities, s =>
+            {
+                s.Table(Names.SpecialityVocabularies);
+                s.Key(k =>
+                {
+                    k.Column(Names.Id.Vocabulary);
+                });
+                s.Lazy(CollectionLazy.NoLazy); // для синх после закрытия сессии
+                s.Cascade(Cascade.None); // dont touch other side, just delete relation
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.ManyToMany(x =>
+                {
+                    x.Column(Names.Id.Speciality);
+                    x.Class(typeof(Speciality));
+                });
+            });
+
+            Set(x => x.SpecialityVocabularies, s =>
+            {
+                s.Key(k =>
+                {
+                    k.Column(Names.Id.Vocabulary);
+                });
+                s.Inverse(true);
+                s.Lazy(CollectionLazy.NoLazy); // для синх после закрытия сессии
+                s.Cascade(Cascade.None);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.OneToMany();
             });
         }
     }

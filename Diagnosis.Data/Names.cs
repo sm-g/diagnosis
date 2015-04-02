@@ -43,7 +43,7 @@ namespace Diagnosis.Data
             { Vocabulary,        typeof(Vocabulary) },
          // { VocabularyWordTbl,    typeof() },
             { Speciality,        typeof(Speciality) },
-         // { SpecialityVocabulariesTbl,        typeof() },
+            { SpecialityVocabularies,        typeof(SpecialityVocabularies) },
             { Uom,               typeof(Uom) },
             { UomType,           typeof(UomType) },
 

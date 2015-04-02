@@ -40,7 +40,8 @@ namespace Diagnosis.Data.Mappings
                 {
                     k.Column(Names.Id.Speciality);
                 });
-                s.Cascade(Cascade.None);
+                s.Inverse(true);
+                s.Cascade(Cascade.None); // dont touch other side, just delete relation
                 s.Access(Accessor.Field);
             }, r =>
             {
@@ -57,8 +58,7 @@ namespace Diagnosis.Data.Mappings
             //    {
             //        k.Column(Names.Id.Speciality);
             //    });
-            //    s.Inverse(true);
-            //    s.Cascade(Cascade.All | Cascade.DeleteOrphans);
+            //    s.Cascade(Cascade.None);
             //    s.Access(Accessor.Field);
             //}, r =>
             //{

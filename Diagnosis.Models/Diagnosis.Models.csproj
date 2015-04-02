@@ -151,6 +151,7 @@
     <Compile Include="Entities\HrItem.cs" />
     <Compile Include="Entities\Comment.cs" />
     <Compile Include="Entities\Setting.cs" />
+    <Compile Include="Entities\SpecialityVocabularies.cs" />
     <Compile Include="Entities\UomType.cs" />
     <Compile Include="Entities\Vocabulary.cs" />
     <Compile Include="Entities\WordTemplate.cs" />

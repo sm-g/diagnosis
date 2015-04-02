@@ -110,7 +110,7 @@ namespace Diagnosis.Data.Sync
             {
 #if !DEBUG		  
                 Scope.Icd,
-	#endif
+    #endif
                 Scope.Voc,
                 Scope.Reference,
             };

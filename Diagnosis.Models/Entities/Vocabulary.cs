@@ -15,6 +15,7 @@ namespace Diagnosis.Models
 
         private Iesi.Collections.Generic.ISet<WordTemplate> wordTemplates = new HashedSet<WordTemplate>();
         private Iesi.Collections.Generic.ISet<Speciality> specialities = new HashedSet<Speciality>();
+        private Iesi.Collections.Generic.ISet<SpecialityVocabularies> specialityVocabularies = new HashedSet<SpecialityVocabularies>();
         private IList<Word> words = new List<Word>(); // many-2-many
         private string _title;
         private Doctor _doc;
@@ -38,7 +39,10 @@ namespace Diagnosis.Models
         public virtual event NotifyCollectionChangedEventHandler SpecialitiesChanged;
 
         public virtual event NotifyCollectionChangedEventHandler WordTemplatesChanged;
-
+        public virtual IEnumerable<SpecialityVocabularies> SpecialityVocabularies
+        {
+            get { return specialityVocabularies; }
+        }
         public virtual string Title
         {
             get { return _title; }
