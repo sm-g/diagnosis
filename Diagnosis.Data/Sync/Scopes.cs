@@ -108,7 +108,7 @@ namespace Diagnosis.Data.Sync
         {
             return new List<Scope>()
             {
-                //Scope.Icd, МКБ не меняется
+                Scope.Icd,
                 Scope.Voc,
                 Scope.Reference,
             };
