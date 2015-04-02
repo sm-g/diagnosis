@@ -20,6 +20,7 @@ namespace Diagnosis.Data.Sync
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Syncer));
 
+        static Dictionary<string, DbSyncTableDescription> map = new Dictionary<string, DbSyncTableDescription>();
         private static Stopwatch sw = new Stopwatch();
         private static string prefix = Scopes.syncPrefix;
 
@@ -259,27 +260,7 @@ namespace Diagnosis.Data.Sync
                 var clientProvider = CreateProvider(clientConn, scopeName);
                 var serverProvider = CreateProvider(serverConn, scopeName);
 
-                DownloadSyncOrchestrator syncOrchestrator;
-                switch (from)
-                {
-                    case Side.Client:
-                        syncOrchestrator = new DownloadSyncOrchestrator(
-                            clientProvider,
-                            serverProvider);
-                        break;
-
-                    default:
-                    case Side.Server:
-                        syncOrchestrator = new DownloadSyncOrchestrator(
-                            serverProvider,
-                            clientProvider,
-                            tablesToTrackAdding: Scope.Reference.ToTableNames()  // на клиенте могут быть справочные сущности с другими ID, но такие же по значению
-                           , tablesToTrackDeleting: Names.Vocabulary.ToEnumerable() //  перед удалением словаря надо убрать связь со словами на клиенте
-                           , tablesToIgnoreAdding: TablesIgnoreAdding
-                           , tableIdsToSync: IdsToSyncPerType != null ? IdsToSyncPerType.ToDictionary(x => Names.GetTblByType(x.Key), x => x.Value) : null
-                          );
-                        break;
-                }
+                var syncOrchestrator = CreateOrch(from, clientProvider, serverProvider);
 
                 try
                 {
@@ -319,6 +300,32 @@ namespace Diagnosis.Data.Sync
             }
         }
 
+        private DownloadSyncOrchestrator CreateOrch(Side from, RelationalSyncProvider clientProvider, RelationalSyncProvider serverProvider)
+        {
+            DownloadSyncOrchestrator syncOrchestrator;
+            switch (from)
+            {
+                case Side.Client:
+                    syncOrchestrator = new DownloadSyncOrchestrator(
+                        clientProvider,
+                        serverProvider);
+                    break;
+
+                default:
+                case Side.Server:
+                    syncOrchestrator = new DownloadSyncOrchestrator(
+                        serverProvider,
+                        clientProvider,
+                        tablesToTrackAdding: Scope.Reference.ToTableNames()  // на клиенте могут быть справочные сущности с другими ID, но такие же по значению
+                       , tablesToTrackDeleting: Names.Vocabulary.ToEnumerable() //  перед удалением словаря надо убрать связь со словами на клиенте
+                       , tablesToIgnoreAdding: TablesIgnoreAdding
+                       , tableIdsToSync: IdsToSyncPerType != null ? IdsToSyncPerType.ToDictionary(x => Names.GetTblByType(x.Key), x => x.Value) : null
+                      );
+                    break;
+            }
+            return syncOrchestrator;
+        }
+
         private static RelationalSyncProvider CreateProvider(DbConnection conn, string scopeName)
         {
             RelationalSyncProvider serverProvider;
@@ -345,7 +352,7 @@ namespace Diagnosis.Data.Sync
                     var fromScope = false;
                     if (failedTables.Count > 0 && conToGetScopeDescr != null)
                     {
-                        Poster.PostMessage("Retrieve description for scope '{0}' from '{1}'", scope.ToScopeString(), con.ConnectionString);
+                        Poster.PostMessage("GetScopeDescription for scope '{0}' from '{1}'", scope.ToScopeString(), con.ConnectionString);
                         scopeDescr = GetScopeDescription(scope, conToGetScopeDescr);
                         fromScope = true;
                     }
@@ -459,14 +466,27 @@ namespace Diagnosis.Data.Sync
                 {
                     DbSyncTableDescription desc;
                     if (connection is SqlCeConnection)
-                        desc = SqlCeSyncDescriptionBuilder.GetDescriptionForTable(name, connection as SqlCeConnection);
+                    {
+                        if (!map.TryGetValue(name, out desc))
+                        {
+                            desc = SqlCeSyncDescriptionBuilder.GetDescriptionForTable(name, connection as SqlCeConnection);
+                            map[name] = desc;
+                        }
+                    }
                     else if (connection is SqlConnection)
-                        desc = SqlSyncDescriptionBuilder.GetDescriptionForTable(name.ToSchema() + '.' + name, connection as SqlConnection);
+                    {
+                        var nameWithSchema = name.GetSchemaForTable() + '.' + name;
+                        if (!map.TryGetValue(nameWithSchema, out desc))
+                        {
+                            desc = SqlSyncDescriptionBuilder.GetDescriptionForTable(nameWithSchema, connection as SqlConnection);
+                            map[nameWithSchema] = desc;
+                        }
+                    }
                     else throw new ArgumentOutOfRangeException();
 
                     desc.GlobalName = name;
                     scope.Tables.Add(desc);
-                    Poster.PostMessage("Table '{0}' added", name);
+                    Poster.PostMessage("Table '{0}' added, columns: {1}", name, string.Join(", ", desc.Columns.Select(x => x.UnquotedName)));
                 }
                 catch (Exception ex)
                 {

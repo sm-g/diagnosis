@@ -33,7 +33,7 @@ namespace Diagnosis.Data.Sync
         private static string stagingSchema = "staging";
         private static string referenceSchema = "dbo";
 
-        // parent before child
+        // parent before child (for SetCreateTableDefault)
         private static string[] icdTableNames = new[] {
                 Names.IcdChapter,
                 Names.IcdBlock,
@@ -108,7 +108,9 @@ namespace Diagnosis.Data.Sync
         {
             return new List<Scope>()
             {
+#if !DEBUG		  
                 Scope.Icd,
+	#endif
                 Scope.Voc,
                 Scope.Reference,
             };
@@ -172,7 +174,7 @@ namespace Diagnosis.Data.Sync
             throw new NotImplementedException();
         }
 
-        public static string ToSchema(this string table)
+        public static string GetSchemaForTable(this string table)
         {
             return referenceTableNames.Contains(table) ? referenceSchema : stagingSchema;
         }
