@@ -55,6 +55,8 @@ namespace Diagnosis.ViewModels.Screens
                     TryGetAvailableVocs();
                 }
             };
+            Syncer.MessagePosted += syncer_MessagePosted;
+            Syncer.SyncEnded += syncer_SyncEnded;
 
             TryGetAvailableVocs();
         }
@@ -235,6 +237,23 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        private string _log;
+        public string Log
+        {
+            get
+            {
+                return _log;
+            }
+            set
+            {
+                if (_log != value)
+                {
+                    _log = value;
+                    OnPropertyChanged(() => Log);
+                }
+            }
+        }
+
         private void TryGetAvailableVocs()
         {
             // подкключаемся к источнику
@@ -297,11 +316,23 @@ namespace Diagnosis.ViewModels.Screens
                 AvailableVocs.SyncWith(vms);
             }));
         }
+        private void syncer_MessagePosted(object sender, StringEventArgs e)
+        {
+            Log += string.Format("[{0:mm:ss:fff}] {1}\n", DateTime.Now, e.str);
+        }
+
+        private void syncer_SyncEnded(object sender, TimeSpanEventArgs e)
+        {
+            Log += "\n=== " + e.ts.ToString() + "\n";
+        }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
+                Syncer.SyncEnded -= syncer_SyncEnded;
+                Syncer.MessagePosted -= syncer_MessagePosted;
+
                 this.Send(Event.PushToSettings, new object[] { Constants.SyncServerConstrSettingName, Remote.ConnectionString }.AsParams(MessageKeys.Name, MessageKeys.Value));
                 this.Send(Event.PushToSettings, new object[] { Constants.SyncServerProviderSettingName, Remote.ProviderName }.AsParams(MessageKeys.Name, MessageKeys.Value));
             }

@@ -166,6 +166,7 @@ namespace Diagnosis.Client.App
 #endif
             if (migrateUp.HasValue)
             {
+                var sw = Stopwatch.StartNew();
                 if (migrateUp.Value)
                 {
                     new Migrator(NHibernateHelper.Default.ConnectionString, Constants.BackupDir).MigrateToLatest();
@@ -174,6 +175,8 @@ namespace Diagnosis.Client.App
                 {
                     new Migrator(NHibernateHelper.Default.ConnectionString, Constants.BackupDir).Rollback();
                 }
+                sw.Stop();
+                logger.DebugFormat("migration: {0}", sw.Elapsed);
             }
         }
 

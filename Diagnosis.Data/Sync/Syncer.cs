@@ -120,11 +120,25 @@ namespace Diagnosis.Data.Sync
 
             var t = new Task(() =>
             {
-                foreach (var scope in scopes.OrderScopes())
+                Poster.PostMessage("Going to sync scopes: '{0}' from {1}\n", string.Join("', '", scopes), from);
+                using (var serverConn = CreateConnection(Side.Server))
+                using (var clientConn = CreateConnection(Side.Client))
                 {
-                    var toContinue = Sync(from, scope);
-                    if (!toContinue)
-                        break;
+                    if (!serverConn.IsAvailable())
+                    {
+                        CanNotConnect(serverConn);
+                        return;
+                    }
+                    if (!clientConn.IsAvailable())
+                    {
+                        CanNotConnect(clientConn);
+                        return;
+                    }
+
+                    foreach (var scope in scopes.OrderScopes())
+                    {
+                        Sync(from, scope, serverConn, clientConn);
+                    }
                 }
             });
 
@@ -237,67 +251,56 @@ namespace Diagnosis.Data.Sync
         /// <param name="from"></param>
         /// <param name="scope"></param>
         /// <returns>Could connect</returns>
-        private bool Sync(Side from, Scope scope)
+        private void Sync(Side from, Scope scope, DbConnection serverConn, DbConnection clientConn)
         {
-            Poster.PostMessage("Begin sync scope '{0}' from {1}", scope, from);
-            using (var serverConn = CreateConnection(Side.Server))
-            using (var clientConn = CreateConnection(Side.Client))
+            Poster.PostMessage("Begin sync scope '{0}'", scope);
+
+            Provision(serverConn, scope, null);
+            Provision(clientConn, scope, serverConn);
+
+            var scopeName = scope.ToScopeString();
+            var clientProvider = CreateProvider(clientConn, scopeName);
+            var serverProvider = CreateProvider(serverConn, scopeName);
+
+            var syncOrchestrator = CreateOrch(from, clientProvider, serverProvider);
+
+            try
             {
-                if (!serverConn.IsAvailable())
+                Poster.PostMessage("Synchronize...");
+
+                var syncStats = syncOrchestrator.Synchronize();
+
+                // выводим статистику конфликтов
+                var conflicts = syncOrchestrator.ConflictsCounter.Keys.Where(k => syncOrchestrator.ConflictsCounter[k] > 0).ToList();
+                if (conflicts.Count > 0)
                 {
-                    CanNotConnect(serverConn);
-                    return false;
-                }
-                if (!clientConn.IsAvailable())
-                {
-                    CanNotConnect(clientConn);
-                    return false;
-                }
-
-                Provision(serverConn, scope, null);
-                Provision(clientConn, scope, serverConn);
-
-                var scopeName = scope.ToScopeString();
-                var clientProvider = CreateProvider(clientConn, scopeName);
-                var serverProvider = CreateProvider(serverConn, scopeName);
-
-                var syncOrchestrator = CreateOrch(from, clientProvider, serverProvider);
-
-                try
-                {
-                    Poster.PostMessage("Synchronize...");
-
-                    var syncStats = syncOrchestrator.Synchronize();
-
-                    // выводим статистику конфликтов
-                    var conflicts = syncOrchestrator.ConflictsCounter.Keys.Where(k => syncOrchestrator.ConflictsCounter[k] > 0).ToList();
-                    if (conflicts.Count > 0)
+                    Poster.PostMessage("Conflicts:");
+                    conflicts.ForAll((conflict) =>
                     {
-                        Poster.PostMessage("Conflicts:");
-                        conflicts.ForAll((conflict) =>
-                        {
-                            Poster.PostMessage("{0} = {1}", conflict, syncOrchestrator.ConflictsCounter[conflict]);
-                        });
-                    }
-
-                    // запоминаем добавленные строки
-                    foreach (var table in syncOrchestrator.AddedIdsPerTable.Keys)
-                    {
-                        AddedIdsPerType[Names.tblToTypeMap[table]] = syncOrchestrator.AddedIdsPerTable[table];
-                    }
-
-                    foreach (var table in syncOrchestrator.DeletedIdsPerTable.Keys)
-                    {
-                        DeletedIdsPerType[Names.tblToTypeMap[table]] = syncOrchestrator.DeletedIdsPerTable[table];
-                    }
-
-                    Poster.PostMessage("ChangesApplied: {0}, ChangesFailed: {1}\n", syncStats.DownloadChangesApplied, syncStats.DownloadChangesFailed);
+                        Poster.PostMessage("{0} = {1}", conflict, syncOrchestrator.ConflictsCounter[conflict]);
+                    });
                 }
-                catch (Exception ex)
+
+                // запоминаем добавленные строки
+                foreach (var table in syncOrchestrator.AddedIdsPerTable.Keys)
                 {
-                    Poster.PostMessage(ex);
+                    AddedIdsPerType[Names.tblToTypeMap[table]] = syncOrchestrator.AddedIdsPerTable[table];
                 }
-                return true;
+
+                foreach (var table in syncOrchestrator.DeletedIdsPerTable.Keys)
+                {
+                    DeletedIdsPerType[Names.tblToTypeMap[table]] = syncOrchestrator.DeletedIdsPerTable[table];
+                }
+
+                Poster.PostMessage("ChangesApplied: {0}, ChangesFailed: {1}", syncStats.DownloadChangesApplied, syncStats.DownloadChangesFailed);
+            }
+            catch (Exception ex)
+            {
+                Poster.PostMessage(ex);
+            }
+            finally
+            {
+                Poster.PostMessage("End sync scope '{0}' \n", scope);
             }
         }
 
@@ -542,7 +545,8 @@ namespace Diagnosis.Data.Sync
                 logger.WarnFormat(ex.ToString());
                 Send(ex.Message);
             }
-            static void Send(string str)
+
+            private static void Send(string str)
             {
                 var h = MessagePosted;
                 if (h != null)
