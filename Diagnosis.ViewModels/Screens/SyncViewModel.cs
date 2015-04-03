@@ -135,6 +135,7 @@ namespace Diagnosis.ViewModels.Screens
                         var scopesToDeprovision = checker.CheckReferenceEntitiesAfterDownload(syncer.AddedIdsPerType);
                         // deprovision scopes обновленных сущностей
                         Syncer.Deprovision(LocalConnectionString, LocalProviderName, scopesToDeprovision);
+                        Log += "\n";
                     }
                     ).ContinueWith((t) =>
                         // обновляем загруженные словари или удаляем

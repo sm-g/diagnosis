@@ -169,11 +169,15 @@ namespace Diagnosis.Data.Sync
 
             var t = new Task(() =>
             {
+                var scopes = scopesToDeprovision ?? Scopes.GetOrderedScopes();
+                if (scopes.Count() == 0)
+                    return;
+
+                Poster.PostMessage("Going to deprovision scopes: '{0}' in '{1}'\n", string.Join("', '", scopes), connstr);
                 using (var conn = CreateConnection(connstr, provider))
                 {
                     if (conn.IsAvailable())
                     {
-                        var scopes = scopesToDeprovision ?? Scopes.GetOrderedScopes();
                         foreach (Scope scope in scopes)
                         {
                             Deprovision(conn, scope);
@@ -191,9 +195,11 @@ namespace Diagnosis.Data.Sync
             return t;
         }
 
-        public static void BeforeMigrate(string connectionString, string provider, params string[] tables)
+        public static void BeforeMigrate(string connstr, string provider, params string[] tables)
         {
-            using (var con = CreateConnection(connectionString, provider))
+            Poster.PostMessage("BeforeMigrate tables: '{0}' in '{1}'\n", string.Join("', '", tables));
+
+            using (var con = CreateConnection(connstr, provider))
             {
                 if (!con.IsAvailable())
                 {
@@ -213,6 +219,7 @@ namespace Diagnosis.Data.Sync
                         }
                     }
                 }
+                Poster.PostMessage("Going to deprovision scopes: '{0}' in '{1}'\n", string.Join("', '", scopes, connstr));
                 foreach (var scope in scopes)
                 {
                     Deprovision(con, scope);
@@ -434,7 +441,7 @@ namespace Diagnosis.Data.Sync
                 else if (con is SqlConnection)
                     DeprovisionSqlServer(con as SqlConnection, scope.ToScopeString());
 
-                Poster.PostMessage("Deprovisioned '{0}' in '{1}'\n", scope.ToScopeString(), con.ConnectionString);
+                Poster.PostMessage("Deprovisioned '{0}'\n", scope.ToScopeString());
             }
             catch (Exception ex)
             {
