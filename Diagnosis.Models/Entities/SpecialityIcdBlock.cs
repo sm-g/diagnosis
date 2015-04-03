@@ -9,7 +9,7 @@ namespace Diagnosis.Models
         {
         }
 
-        public virtual Speciality Speciality { get; set; }
+        public virtual Speciality Speciality { get; set; } // public for replace fk after sync
 
         public virtual IcdBlock IcdBlock { get; protected set; }
     }

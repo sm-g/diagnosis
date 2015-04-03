@@ -235,10 +235,21 @@ namespace Diagnosis.Models
                 { typeof(Speciality), (y) => 
                     (x as Speciality).Title == (y as Speciality).Title
                 },
+                { typeof(Vocabulary), (y) => 
+                    (x as Vocabulary).Title == (y as Vocabulary).Title
+                },
                 { typeof(SpecialityIcdBlocks), (y) =>
                     (x as SpecialityIcdBlocks).IcdBlock == (y as SpecialityIcdBlocks).IcdBlock &&
                     (x as SpecialityIcdBlocks).Speciality.Title == (y as SpecialityIcdBlocks).Speciality.Title
-                }
+                },
+                { typeof(SpecialityVocabularies), (y) =>
+                    (x as SpecialityVocabularies).Vocabulary.Title == (y as SpecialityVocabularies).Vocabulary.Title &&
+                    (x as SpecialityVocabularies).Speciality.Title == (y as SpecialityVocabularies).Speciality.Title
+                },
+                //{ typeof(VocabularyWords), (y) => // не загружается с сервера
+                //    (x as VocabularyWords).Vocabulary.Title == (y as VocabularyWords).Vocabulary.Title &&
+                //    (x as VocabularyWords).Word.Title == (y as VocabularyWords).Word.Title
+                //}
             };
             var type = x.Actual.GetType();
 
@@ -286,6 +297,13 @@ namespace Diagnosis.Models
                         return a.Title == b.Title;
                     } 
                 },
+                { typeof(Vocabulary), () => 
+                    {
+                        var a = x as Vocabulary;
+                        var b = y as Vocabulary;
+                        return a.Title == b.Title;
+                    } 
+                },
                 { typeof(SpecialityIcdBlocks),() =>
                     {
                         var a = x as SpecialityIcdBlocks;
@@ -293,7 +311,23 @@ namespace Diagnosis.Models
                         return a.IcdBlock == b.IcdBlock &&
                                a.Speciality == b.Speciality;
                     }
-                }
+                },
+                { typeof(SpecialityVocabularies),() =>
+                    {
+                        var a = x as SpecialityVocabularies;
+                        var b = y as SpecialityVocabularies;
+                        return a.Vocabulary == b.Vocabulary &&
+                               a.Speciality == b.Speciality;
+                    }
+                },
+                //{ typeof(VocabularyWords),() =>
+                //    {
+                //        var a = x as VocabularyWords;
+                //        var b = y as VocabularyWords;
+                //        return a.Vocabulary == b.Vocabulary &&
+                //               a.Word == b.Word;
+                //    }
+                //}
             };
 
             var type = x.Actual.GetType();

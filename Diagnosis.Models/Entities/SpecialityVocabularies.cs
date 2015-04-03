@@ -9,8 +9,8 @@ namespace Diagnosis.Models
         {
         }
 
-        public virtual Speciality Speciality { get; protected set; }
+        public virtual Speciality Speciality { get; set; } // public for replace fk after sync
 
-        public virtual Vocabulary Vocabulary { get; protected set; }
+        public virtual Vocabulary Vocabulary { get; set; }
     }
 }

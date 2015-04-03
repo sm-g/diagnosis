@@ -97,9 +97,30 @@ namespace Diagnosis.Data.Sync
                         UpdateParents<Speciality, SpecialityIcdBlocks>(replacing,
                             x => x.Speciality,
                             (x, value) => x.Speciality = value);
+                        UpdateParents<Speciality, SpecialityVocabularies>(replacing,
+                           x => x.Speciality,
+                           (x, value) => x.Speciality = value);
 
                         scopesToDeprovision.Add(typeof(Doctor).GetScope());
                         scopesToDeprovision.Add(typeof(SpecialityIcdBlocks).GetScope());
+                        scopesToDeprovision.Add(typeof(SpecialityVocabularies).GetScope());
+                    }
+                    replaced = replacing.Keys;
+                }
+                else if (type == typeof(Vocabulary))
+                {
+                    var replacing = GetReplaceEntities<Vocabulary>(entities);
+                    if (replacing.Count > 0)
+                    {
+                        UpdateParents<Vocabulary, VocabularyWords>(replacing,
+                            x => x.Vocabulary,
+                            (x, value) => x.Vocabulary = value);
+                        UpdateParents<Vocabulary, SpecialityVocabularies>(replacing,
+                           x => x.Vocabulary,
+                           (x, value) => x.Vocabulary = value);
+
+                        scopesToDeprovision.Add(typeof(VocabularyWords).GetScope());
+                        scopesToDeprovision.Add(typeof(SpecialityVocabularies).GetScope());
                     }
                     replaced = replacing.Keys;
                 }
@@ -108,6 +129,12 @@ namespace Diagnosis.Data.Sync
                     var replacing = GetReplaceEntities<SpecialityIcdBlocks>(entities);
                     replaced = replacing.Keys;
                     // нет ссылок на SpecialityIcdBlocks, нечего обновлять
+                }
+                else if (type == typeof(SpecialityVocabularies))
+                {
+                    var replacing = GetReplaceEntities<SpecialityVocabularies>(entities);
+                    replaced = replacing.Keys;
+                    // нет ссылок на SpecialityVocabularies, нечего обновлять
                 }
                 else
                     throw new NotImplementedException();
