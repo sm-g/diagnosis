@@ -30,6 +30,7 @@ namespace Diagnosis.ViewModels.Screens
         private Saver saver;
         private VocLoader loader;
         private List<Vocabulary> serverVocs = new List<Vocabulary>();
+        private string _log;
         private string LocalConnectionString;
         private string LocalProviderName;
 
@@ -128,25 +129,49 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     Contract.Requires(Constants.IsClient);
 
-                    var vms = SelectedAvailableVocs.ToList();
-                    var selectedIds = vms.Select(x => x.voc.Id).ToList();
+                    var vocsToLoad = SelectedAvailableVocs.Select(x => x.voc).ToList();
+                    var selectedVocIds = vocsToLoad.Select(x => x.Id).ToList(); // for session
+                    var selectedWtIds = vocsToLoad.SelectMany(x => x.WordTemplates.Select(y => y.Id));
+                    var selectedSpecIds = vocsToLoad.SelectMany(x => x.Specialities.Select(y => y.Id));
+                    var selectedSpecVocIds = vocsToLoad.SelectMany(x => x.SpecialityVocabularies.Select(y => y.Id));
 
                     var syncer = new Syncer(
                          serverConStr: Remote.ConnectionString,
                          clientConStr: LocalConnectionString,
                          serverProviderName: Remote.ProviderName);
 
-                    // только выбранные словари и всё для них
-                    syncer.IdsToSyncPerType = new Dictionary<Type, IEnumerable<object>>();
-                    syncer.IdsToSyncPerType.Add(typeof(Vocabulary), selectedIds.Cast<object>());
-                    syncer.IdsToSyncPerType.Add(typeof(WordTemplate), vms.SelectMany(x => x.voc.WordTemplates.Select(y => y.Id)).Cast<object>());
-                    syncer.IdsToSyncPerType.Add(typeof(Speciality), vms.SelectMany(x => x.voc.Specialities.Select(y => y.Id)).Cast<object>());
-                    // syncer.IdsToSyncPerType.Add(typeof(SpecialityVocabularies), vms.SelectMany(x => x.voc.Specialities.Select(y => y.Id)).Cast<object>());
+                    // только выбранные словари и всё для них с сервера. слова словаря не загружаются с сервера
+                    syncer.IdsToSyncPerType = new Dictionary<Type, IEnumerable<object>>(){
+                       {typeof(Vocabulary),             selectedVocIds.Cast<object>()},
+                       {typeof(WordTemplate),           selectedWtIds.Cast<object>()},
+                       {typeof(Speciality),             selectedSpecIds.Cast<object>()},
+                       {typeof(SpecialityVocabularies), selectedSpecVocIds.Cast<object>()},
+                    };
+                    try
+                    {
+                        using (var s = nhib.OpenSession())
+                        using (var tr = s.BeginTransaction())
+                        {
+                            // повторно загружаем даже если не было изменений на сервере
+                            foreach (var id in selectedVocIds)
+                                s.FakeUpdate(typeof(Vocabulary), id);
+                            foreach (var id in selectedWtIds)
+                                s.FakeUpdate(typeof(WordTemplate), id);
+                            foreach (var id in selectedSpecVocIds)
+                                s.FakeUpdate(typeof(SpecialityVocabularies), id);
+                            // специальность не удаляется при удалении словаря
+                            tr.Commit();
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        return;
+                    }
 
                     DoWithCursor(syncer.SendFrom(Side.Server, Scope.Voc.ToEnumerable()).ContinueWith((t) =>
                     {
                         var selectedSynced = Session.Query<Vocabulary>()
-                            .Where(v => selectedIds.Contains(v.Id))
+                            .Where(v => selectedVocIds.Contains(v.Id))
                             .ToList();
 
                         loader.LoadOrUpdateVocs(selectedSynced);
@@ -156,7 +181,7 @@ namespace Diagnosis.ViewModels.Screens
                         MakeInstalledVms();
                         MakeAvailableVms();
 #if DEBUG
-                        AuthorityController.LoadVocsAfterLogin(Session); // загружаем словари не меняя пользователя                        
+                        AuthorityController.LoadVocsAfterLogin(Session); // загружаем словари не меняя пользователя
 #endif
                     })
                     , Cursors.AppStarting);
@@ -236,8 +261,6 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-
-        private string _log;
         public string Log
         {
             get

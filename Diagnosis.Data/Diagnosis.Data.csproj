@@ -179,6 +179,7 @@
       <Link>Properties\GeneralAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Mappings\AdminMap.cs" />
+    <Compile Include="Mappings\VocabularyWordsMap.cs" />
     <Compile Include="Mappings\SpecialityVocabulariesMap.cs" />
     <Compile Include="Mappings\VocabularyMap.cs" />
     <Compile Include="Mappings\UomTypeMap.cs" />
@@ -206,6 +207,7 @@
     <Compile Include="Side.cs" />
     <Compile Include="SqlHelper.cs" />
     <Compile Include="Sync\AfterSyncChecker.cs" />
+    <Compile Include="Sync\Helpers.cs" />
     <Compile Include="Sync\Syncer.cs" />
     <Compile Include="Sync\Scopes.cs" />
     <Compile Include="Sync\VocLoader.cs" />
