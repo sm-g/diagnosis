@@ -355,29 +355,18 @@ namespace Diagnosis.Data.Sync
 
         private static void Provision(DbConnection con, Scope scope, DbConnection conToGetScopeDescr)
         {
-            var scopeDescr = new DbSyncScopeDescription(scope.ToScopeString());
-
-            var failedTables = AddTablesToScopeDescr(scope.ToTableNames(), scopeDescr, con);
-
             try
             {
                 var applied = false;
                 if (con is SqlCeConnection)
                 {
-                    var fromScope = false;
-                    if (failedTables.Count > 0 && conToGetScopeDescr != null)
-                    {
-                        Poster.PostMessage("GetScopeDescription for scope '{0}' from '{1}'", scope.ToScopeString(), con.ConnectionString);
-                        scopeDescr = GetScopeDescription(scope, conToGetScopeDescr);
-                        fromScope = true;
-                    }
-
-                    applied = ProvisionSqlCe(con as SqlCeConnection, scopeDescr, fromScope);
+                    applied = ProvisionSqlCe(con as SqlCeConnection, scope, conToGetScopeDescr);
                 }
                 else if (con is SqlConnection)
                 {
-                    applied = ProvisionSqlServer(con as SqlConnection, scopeDescr);
+                    applied = ProvisionSqlServer(con as SqlConnection, scope);
                 }
+
                 if (applied)
                     Poster.PostMessage("Provisioned scope '{0}' in '{1}'\n", scope.ToScopeString(), con.ConnectionString);
                 else
@@ -389,16 +378,24 @@ namespace Diagnosis.Data.Sync
             }
         }
 
-        private static bool ProvisionSqlCe(SqlCeConnection con, DbSyncScopeDescription scope, bool populateFromScope)
+        private static bool ProvisionSqlCe(SqlCeConnection con, Scope scope, DbConnection conToGetScopeDescr)
         {
-            var sqlceProv = new SqlCeSyncScopeProvisioning(con, scope);
+            var sqlceProv = new SqlCeSyncScopeProvisioning(con);
             sqlceProv.ObjectPrefix = prefix;
 
-            if (!sqlceProv.ScopeExists(scope.ScopeName))
+            if (!sqlceProv.ScopeExists(scope.ToScopeString()))
             {
-                if (populateFromScope)
+                var scopeDescr = new DbSyncScopeDescription(scope.ToScopeString());
+                var failedTables = AddTablesToScopeDescr(scope.ToTableNames(), scopeDescr, con);
+
+                if (failedTables.Count > 0 && conToGetScopeDescr != null)
+                {
+                    Poster.PostMessage("GetScopeDescription for scope '{0}' from '{1}'", scope.ToScopeString(), con.ConnectionString);
                     //use scope description from server to intitialize the client
-                    sqlceProv.PopulateFromScopeDescription(scope);
+                    scopeDescr = GetScopeDescription(scope, conToGetScopeDescr);
+                }
+
+                sqlceProv.PopulateFromScopeDescription(scopeDescr);
 
                 sqlceProv.SetCreateTableDefault(DbSyncCreationOption.CreateOrUseExisting);
                 sqlceProv.Apply();
@@ -407,13 +404,18 @@ namespace Diagnosis.Data.Sync
             return false;
         }
 
-        private static bool ProvisionSqlServer(SqlConnection con, DbSyncScopeDescription scope)
+        private static bool ProvisionSqlServer(SqlConnection con, Scope scope)
         {
-            var sqlProv = new SqlSyncScopeProvisioning(con, scope);
+            var sqlProv = new SqlSyncScopeProvisioning(con);
             sqlProv.ObjectSchema = prefix;
 
-            if (!sqlProv.ScopeExists(scope.ScopeName))
+            if (!sqlProv.ScopeExists(scope.ToScopeString()))
             {
+                var scopeDescr = new DbSyncScopeDescription(scope.ToScopeString());
+                AddTablesToScopeDescr(scope.ToTableNames(), scopeDescr, con);
+
+                sqlProv.PopulateFromScopeDescription(scopeDescr);
+
                 sqlProv.SetCreateTableDefault(DbSyncCreationOption.CreateOrUseExisting);
                 sqlProv.Apply();
                 return true;
@@ -684,28 +686,11 @@ namespace Diagnosis.Data.Sync
                 }
                 else if (SyncTracer.IsVerboseEnabled() == false)
                 {
-                    DataTable conflictingServerChange = e.Conflict.RemoteChange;
-                    DataTable conflictingClientChange = e.Conflict.LocalChange;
-                    int serverColumnCount = conflictingServerChange.Columns.Count;
-                    int clientColumnCount = conflictingClientChange.Columns.Count;
-                    StringBuilder clientRowAsString = new StringBuilder();
-                    StringBuilder serverRowAsString = new StringBuilder();
-
-                    for (int i = 0; i < clientColumnCount; i++)
-                    {
-                        clientRowAsString.Append(conflictingClientChange.Rows[0][i] + " | ");
-                    }
-
-                    for (int i = 0; i < serverColumnCount; i++)
-                    {
-                        serverRowAsString.Append(conflictingServerChange.Rows[0][i] + " | ");
-                    }
-
                     SyncTracer.Warning(1, "CONFLICT DETECTED FOR CLIENT {0}", toProvider.Connection);
-                    SyncTracer.Warning(2, "** Client change **");
-                    SyncTracer.Warning(2, clientRowAsString.ToString());
-                    SyncTracer.Warning(2, "** Server change **");
-                    SyncTracer.Warning(2, serverRowAsString.ToString());
+                    SyncTracer.Warning(2, "** Local change **");
+                    SyncTracer.Warning(2, TableToStr(e.Conflict.LocalChange));
+                    SyncTracer.Warning(2, "** Remote change **");
+                    SyncTracer.Warning(2, TableToStr(e.Conflict.RemoteChange));
                 }
 
                 if (!ConflictsCounter.Keys.Contains(e.Conflict.Type))
@@ -715,6 +700,25 @@ namespace Diagnosis.Data.Sync
 
                 if (e.Conflict.Type != DbConflictType.ErrorsOccurred)
                     e.Action = ApplyAction.RetryWithForceWrite;
+            }
+
+            private string TableToStr(DataTable table)
+            {
+                if (table == null)
+                    return string.Empty;
+                int rowCount = table.Rows.Count;
+                int colCount = table.Columns.Count;
+                var tableAsStr = new StringBuilder();
+
+                for (int r = 0; r < rowCount; r++)
+                {
+                    for (int i = 0; i < colCount; i++)
+                    {
+                        tableAsStr.Append(table.Rows[r][i] + " | ");
+                    }
+                    tableAsStr.AppendLine();
+                }
+                return tableAsStr.ToString();
             }
 
             private void DoPerTableRow(DataTableCollection tables, string table, Action<DataTable, DataRow> act)
