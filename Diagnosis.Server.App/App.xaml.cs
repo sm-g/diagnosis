@@ -154,7 +154,7 @@ namespace Diagnosis.Server.App
             };
             debWin.Show();
 
-            NHibernateHelper.Default.ShowSql = !NHibernateHelper.Default.InMemory;
+            // NHibernateHelper.Default.ShowSql = !NHibernateHelper.Default.InMemory;
         }
 
         [DebuggerStepThrough]

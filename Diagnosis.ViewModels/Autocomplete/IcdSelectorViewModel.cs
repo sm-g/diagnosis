@@ -17,7 +17,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private static readonly ILog logger = LogManager.GetLogger(typeof(IcdSelectorViewModel));
         private static int MinQueryToExpandBlock = 3;
 
-        private ObservableCollection<DiagnosisViewModel> _chapters;
+        private AsyncObservableCollection<DiagnosisViewModel> _chapters;
         private IcdDisease _selected;
         private PopupSearchViewModel<IcdDisease> _diagnosisSearch;
         private Doctor doctor;
@@ -30,7 +30,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             _icdTopLevelOnly = doctor != null ? doctor.Settings.IcdTopLevelOnly : false;
 
-            _chapters = new ObservableCollection<DiagnosisViewModel>();
+            _chapters = new AsyncObservableCollection<DiagnosisViewModel>();
             CreateDiagnosisSearch();
 
             UpdateDiagnosisQueryCode(initial, true);
@@ -238,14 +238,14 @@ namespace Diagnosis.ViewModels.Autocomplete
                     bVm.IsExpanded = (bVm.UserExpaneded ?? false) ? true : // был раскрыт пользователем
                         (TypedEnough() && (bVm.UserExpaneded ?? true)); // или запрос достаточно точный и блок не был свернут
 
-                    bVm.Children.SyncWith(dVms, compareKey);
+                    bVm.Children.SyncWith(dVms);
                     return bVm;
                 }).ToList();
 
                 // глава раскрыта, если не была свернута пользователем
                 chVm.IsExpanded = chVm.UserExpaneded ?? true;
 
-                chVm.Children.SyncWith(bVms, compareKey);
+                chVm.Children.SyncWith(bVms);
                 return chVm;
             }).ToList();
             inMaking = false;
@@ -254,7 +254,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             // TODO длинный запрос — vm удаляются, сохранять UserExpaneded для каждой
 
-            Chapters.SyncWith(chVms, compareKey);
+            Chapters.SyncWith(chVms);
         }
 
         private bool TypedEnough()

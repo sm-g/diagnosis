@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Input;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Diagnosis.Common;
 
 namespace Diagnosis.ViewModels
 {
@@ -45,7 +46,7 @@ namespace Diagnosis.ViewModels
         /// <summary>
         /// Дети на следующем уровне иерархии.
         /// </summary>
-        public ObservableCollection<T> Children { get; private set; }
+        public AsyncObservableCollection<T> Children { get; private set; }
         /// <summary>
         /// Дети со всех уровней иерархии.
         /// </summary>
@@ -278,7 +279,7 @@ namespace Diagnosis.ViewModels
 
         public HierarchicalBase()
         {
-            Children = new ObservableCollection<T>();
+            Children = new AsyncObservableCollection<T>();
             Children.CollectionChanged += (s, e) =>
             {
                 if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)

@@ -153,6 +153,7 @@
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Formatters\DateFormatter.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Types\AsyncObservableCollection.cs" />
     <Compile Include="Types\ConnectionInfo.cs" />
     <Compile Include="Types\DateOffset.cs" />
     <Compile Include="Extensions\ConvertExtensions.cs" />

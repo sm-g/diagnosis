@@ -36,8 +36,8 @@ namespace Diagnosis.ViewModels.Screens
 
             (spec as IEditableObject).BeginEdit();
 
-            Chapters = new ObservableCollection<DiagnosisViewModel>();
-            SpecChapters = new ObservableCollection<DiagnosisViewModel>();
+            Chapters = new AsyncObservableCollection<DiagnosisViewModel>();
+            SpecChapters = new AsyncObservableCollection<DiagnosisViewModel>();
             AllVocs = new ObservableCollection<VocabularyViewModel>();
             SpecVocs = new ObservableCollection<VocabularyViewModel>();
 
