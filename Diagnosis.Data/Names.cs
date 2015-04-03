@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Diagnosis.Data
 {
-    internal static class Names
+    public static class Names
     {
         public static string Doctor = "Doctor";
         public static string Patient = "Patient";

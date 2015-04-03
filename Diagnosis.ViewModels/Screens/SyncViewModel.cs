@@ -2,15 +2,14 @@
 using Diagnosis.Common.Types;
 using Diagnosis.Data;
 using Diagnosis.Data.Sync;
+using Diagnosis.Models;
 using Diagnosis.ViewModels.Controls;
 using Diagnosis.ViewModels.Framework;
 using EventAggregator;
+using NHibernate.Linq;
 using System;
-
-using System;
-using System;
-
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows;
@@ -120,8 +119,18 @@ namespace Diagnosis.ViewModels.Screens
                          clientConStr: LocalConnectionString,
                          serverProviderName: RemoteProviderName);
 
-                    // новые словари загружаются отдельно
-                    syncer.TablesIgnoreAdding = Scopes.GetVocOnlyTablesToDownload();
+                    // не синхронизируем новые словари,
+                    // но загружаем новые шаблоны для установленных словарей
+                    var installedVocsIds = Session.Query<Vocabulary>().Select(x => x.Id).ToList().Cast<object>();
+                    var filter = new Dictionary<Type, Func<DataRow, bool>>();
+                    foreach (var table in Scopes.GetVocOnlyTablesToDownload())
+                    {
+                        if (table == Names.WordTemplate)
+                            filter.Add(Names.tblToTypeMap[table], (row) => !installedVocsIds.Contains(row[Names.Id.Vocabulary]));
+                        else
+                            filter.Add(Names.tblToTypeMap[table], (row) => true);
+                    }
+                    syncer.IgnoreAddingFilterPerType = filter;
 
                     DoWithCursor(syncer.SendFrom(Side.Server).ContinueWith((t) =>
                     {
@@ -132,14 +141,14 @@ namespace Diagnosis.ViewModels.Screens
                                 Log += string.Format("[{0:mm:ss:fff}] replaced {1} {2}\n", DateTime.Now, e.list.Count(), e.list.First().Actual.GetType().Name);
                         };
                         // после загрузки проверяем справочные сущности на совпадение
-                        var scopesToDeprovision = checker.CheckReferenceEntitiesAfterDownload(syncer.AddedIdsPerType);
+                        var scopesToDeprovision = checker.CheckReferenceEntitiesAfterDownload(syncer.AddedOnServerIdsPerType);
                         // deprovision scopes обновленных сущностей
                         Syncer.Deprovision(LocalConnectionString, LocalProviderName, scopesToDeprovision);
                         Log += "\n";
                     }
                     ).ContinueWith((t) =>
                         // обновляем загруженные словари или удаляем
-                        new VocLoader(Session).AfterSyncVocs(syncer.DeletedIdsPerType))
+                        new VocLoader(Session).AfterSyncVocs(syncer.DeletedOnServerIdsPerType))
                     , Cursors.AppStarting);
                 },
                 () => CanSync(true, true));

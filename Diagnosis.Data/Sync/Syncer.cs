@@ -74,22 +74,22 @@ namespace Diagnosis.Data.Sync
         /// <summary>
         /// ID добавленных во время последней синхронизации сущностей.
         /// </summary>
-        public Dictionary<Type, IEnumerable<object>> AddedIdsPerType { get; private set; }
+        public Dictionary<Type, IEnumerable<object>> AddedOnServerIdsPerType { get; private set; }
 
         /// <summary>
-        /// ID сущностей, которые должны быть удалены на клиенте.
+        /// ID сущностей, которые должны быть удалены на клиенте после загрузки с сервера.
         /// </summary>
-        public Dictionary<Type, IEnumerable<object>> DeletedIdsPerType { get; private set; }
-
-        /// <summary>
-        /// Не синхронизировать новые сущности в таблицах.
-        /// </summary>
-        public IEnumerable<string> TablesIgnoreAdding { get; set; }
+        public Dictionary<Type, IEnumerable<object>> DeletedOnServerIdsPerType { get; private set; }
 
         /// <summary>
         /// Синхронизировать только эти сущности.
         /// </summary>
-        public Dictionary<Type, IEnumerable<object>> IdsToSyncPerType { get; set; }
+        public Dictionary<Type, IEnumerable<object>> IdsForSyncPerType { get; set; }
+
+        /// <summary>
+        /// Не синхронизировать новые сущности, проходящие фильтр.
+        /// </summary>
+        public Dictionary<Type, Func<DataRow, bool>> IgnoreAddingFilterPerType { get; set; }
 
         /// <summary>
         /// Sync scopes determined by <paramref name="from"/>. Specify conncetions in correct order in ctor.
@@ -115,8 +115,8 @@ namespace Diagnosis.Data.Sync
 
             InSync = true;
 
-            AddedIdsPerType = new Dictionary<Type, IEnumerable<object>>();
-            DeletedIdsPerType = new Dictionary<Type, IEnumerable<object>>();
+            AddedOnServerIdsPerType = new Dictionary<Type, IEnumerable<object>>();
+            DeletedOnServerIdsPerType = new Dictionary<Type, IEnumerable<object>>();
 
             var t = new Task(() =>
             {
@@ -291,12 +291,12 @@ namespace Diagnosis.Data.Sync
                 // запоминаем добавленные строки
                 foreach (var table in syncOrchestrator.AddedIdsPerTable.Keys)
                 {
-                    AddedIdsPerType[Names.tblToTypeMap[table]] = syncOrchestrator.AddedIdsPerTable[table];
+                    AddedOnServerIdsPerType[Names.tblToTypeMap[table]] = syncOrchestrator.AddedIdsPerTable[table];
                 }
 
                 foreach (var table in syncOrchestrator.DeletedIdsPerTable.Keys)
                 {
-                    DeletedIdsPerType[Names.tblToTypeMap[table]] = syncOrchestrator.DeletedIdsPerTable[table];
+                    DeletedOnServerIdsPerType[Names.tblToTypeMap[table]] = syncOrchestrator.DeletedIdsPerTable[table];
                 }
 
                 Poster.PostMessage("ChangesApplied: {0}, ChangesFailed: {1}", syncStats.DownloadChangesApplied, syncStats.DownloadChangesFailed);
@@ -328,13 +328,16 @@ namespace Diagnosis.Data.Sync
                         serverProvider,
                         clientProvider)
                         {
-                            TablesToTrackAdding = Scope.Reference.ToTableNames()  // на клиенте могут быть справочные сущности с другими ID, но такие же по значению
-                            ,
-                            TablesToTrackDeleting = Names.Vocabulary.ToEnumerable() //  перед удалением словаря надо убрать связь со словами на клиенте
-                            ,
-                            TablesToIgnoreAdding = TablesIgnoreAdding
-                            ,
-                            TableIdsToSync = IdsToSyncPerType != null ? IdsToSyncPerType.ToDictionary(x => Names.GetTblByType(x.Key), x => x.Value) : null
+                            // на клиенте могут быть справочные сущности с другими ID, но такие же по значению
+                            TablesTrackAdding = Scope.Reference.ToTableNames(),
+                            //  перед удалением словаря надо убрать связь со словами на клиенте
+                            TablesTrackDeleting = Names.Vocabulary.ToEnumerable(),
+                            TableToIdsForSync = IdsForSyncPerType != null ? IdsForSyncPerType.ToDictionary(
+                                x => Names.GetTblByType(x.Key),
+                                x => x.Value) : null,
+                            TablesToIgnoreAddingFilter = IgnoreAddingFilterPerType != null ? IgnoreAddingFilterPerType.ToDictionary(
+                                x => Names.GetTblByType(x.Key),
+                                x => x.Value) : null,
                         };
                     break;
             }
@@ -586,14 +589,16 @@ namespace Diagnosis.Data.Sync
                 };
             }
 
-            public IEnumerable<string> TablesToTrackAdding { get; set; }
+            // settings
+            public IEnumerable<string> TablesTrackAdding { get; set; }
 
-            public IEnumerable<string> TablesToTrackDeleting { get; set; }
+            public IEnumerable<string> TablesTrackDeleting { get; set; }
 
-            public IEnumerable<string> TablesToIgnoreAdding { get; set; }
+            public Dictionary<string, IEnumerable<object>> TableToIdsForSync { get; set; }
 
-            public Dictionary<String, IEnumerable<object>> TableIdsToSync { get; set; }
+            public Dictionary<string, Func<DataRow, bool>> TablesToIgnoreAddingFilter { get; set; }
 
+            // results
             public Dictionary<DbConflictType, int> ConflictsCounter { get; private set; }
 
             public Dictionary<string, IEnumerable<object>> AddedIdsPerTable { get; private set; }
@@ -602,27 +607,27 @@ namespace Diagnosis.Data.Sync
 
             private void from_ChangesSelected(object sender, DbChangesSelectedEventArgs e)
             {
-                if (TablesToIgnoreAdding != null)
+                if (TablesToIgnoreAddingFilter != null)
                 {
-                    foreach (var table in TablesToIgnoreAdding)
+                    foreach (var table in TablesToIgnoreAddingFilter.Keys)
                     {
                         DoPerTableRow(e.Context.DataSet.Tables, table, (dataTable, row) =>
                         {
                             if (row.RowState == DataRowState.Added)
                             {
-                                // не синхронизируем новые словари
-                                dataTable.Rows.Remove(row);
+                                if (TablesToIgnoreAddingFilter[table](row))
+                                    dataTable.Rows.Remove(row);
                             }
                         });
                     }
                 }
-                if (TableIdsToSync != null)
+                if (TableToIdsForSync != null)
                 {
-                    foreach (var table in TableIdsToSync.Keys)
+                    foreach (var table in TableToIdsForSync.Keys)
                     {
                         DoPerTableRow(e.Context.DataSet.Tables, table, (dataTable, row) =>
                         {
-                            if (!TableIdsToSync[table].Contains(row["Id"]))
+                            if (!TableToIdsForSync[table].Contains(row["Id"]))
                             {
                                 dataTable.Rows.Remove(row);
                             }
@@ -634,27 +639,28 @@ namespace Diagnosis.Data.Sync
             private void to_ChangesApplied(object sender, DbChangesAppliedEventArgs e)
             {
                 // запоминаем добавленные строки для желаемых таблиц
-                if (TablesToTrackAdding != null)
+                if (TablesTrackAdding != null)
                 {
-                    foreach (var table in TablesToTrackAdding)
+                    foreach (var table in TablesTrackAdding)
                     {
-                        var addedRows = new List<DataRow>();
-
-                        DoPerTableRow(e.Context.DataSet.Tables, table, (dataTable, row) =>
+                        if (e.Context.DataSet.Tables.Contains(table))
                         {
-                            if (row.RowState == DataRowState.Added)
-                            {
-                                addedRows.Add(row);
-                            }
-                        });
+                            var dataTable = e.Context.DataSet.Tables[table];
 
-                        AddedIdsPerTable.Add(table, addedRows.Select(x => x["Id"]));
+                            AddedIdsPerTable.Add(
+                                   dataTable.TableName,
+                                   dataTable.Rows
+                                       .Cast<DataRow>()
+                                       .Where(x => x.RowState == DataRowState.Added)
+                                       .Select(x => x["Id"])
+                                       .ToList());
+                        }
                     }
                 }
                 // запоминаем удаляемые строки для желаемых таблиц
-                if (TablesToTrackDeleting != null)
+                if (TablesTrackDeleting != null)
                 {
-                    foreach (var table in TablesToTrackDeleting)
+                    foreach (var table in TablesTrackDeleting)
                     {
                         if (e.Context.DataSet.Tables.Contains(table))
                         {
@@ -665,7 +671,8 @@ namespace Diagnosis.Data.Sync
                                 dataTable.Rows
                                     .Cast<DataRow>()
                                     .Where(x => x.RowState == DataRowState.Deleted)
-                                    .Select(x => x["Id"]));
+                                    .Select(x => x["Id"])
+                                    .ToList());
                         }
                     }
                 }

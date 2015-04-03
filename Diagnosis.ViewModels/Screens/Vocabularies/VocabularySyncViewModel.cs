@@ -141,7 +141,7 @@ namespace Diagnosis.ViewModels.Screens
                          serverProviderName: Remote.ProviderName);
 
                     // только выбранные словари и всё для них с сервера. слова словаря не загружаются с сервера
-                    syncer.IdsToSyncPerType = new Dictionary<Type, IEnumerable<object>>(){
+                    syncer.IdsForSyncPerType = new Dictionary<Type, IEnumerable<object>>(){
                        {typeof(Vocabulary),             selectedVocIds.Cast<object>()},
                        {typeof(WordTemplate),           selectedWtIds.Cast<object>()},
                        {typeof(Speciality),             selectedSpecIds.Cast<object>()},
