@@ -317,10 +317,8 @@ namespace Diagnosis.ViewModels.Screens
                     .FirstOrDefault() ?? new VocabularyViewModel(voc))
                 .ToList();
 
-            Application.Current.Dispatcher.Invoke((Action)(() =>
-            {
-                Vocs.SyncWith(vms);
-            }));
+            uiTaskFactory.StartNew(() =>
+                Vocs.SyncWith(vms));
         }
 
         private void MakeAvailableVms()
@@ -334,10 +332,8 @@ namespace Diagnosis.ViewModels.Screens
                     .FirstOrDefault() ?? new VocabularyViewModel(voc))
                 .ToList();
 
-            Application.Current.Dispatcher.Invoke((Action)(() =>
-            {
-                AvailableVocs.SyncWith(vms);
-            }));
+            uiTaskFactory.StartNew(() =>
+               AvailableVocs.SyncWith(vms));
         }
         private void syncer_MessagePosted(object sender, StringEventArgs e)
         {

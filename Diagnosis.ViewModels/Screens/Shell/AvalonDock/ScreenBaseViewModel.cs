@@ -23,8 +23,8 @@ namespace Diagnosis.ViewModels.Screens
             Mouse.OverrideCursor = cursor;
             act.ContinueWith((t) =>
             {
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
-                    Mouse.OverrideCursor = null));
+                uiTaskFactory.StartNew(() =>
+                    Mouse.OverrideCursor = null);
             });
         }
     }

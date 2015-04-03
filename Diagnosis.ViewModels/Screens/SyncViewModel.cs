@@ -301,8 +301,9 @@ namespace Diagnosis.ViewModels.Screens
         private void syncer_SyncEnded(object sender, TimeSpanEventArgs e)
         {
             Log += "\n=== " + e.ts.ToString() + "\n";
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
-                CommandManager.InvalidateRequerySuggested()));
+
+            uiTaskFactory.StartNew(
+                CommandManager.InvalidateRequerySuggested);
         }
 
         protected override void Dispose(bool disposing)

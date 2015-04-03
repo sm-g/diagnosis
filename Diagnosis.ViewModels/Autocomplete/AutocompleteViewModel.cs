@@ -703,23 +703,23 @@ namespace Diagnosis.ViewModels.Autocomplete
                  {
                      if (t.Result)
                      {
-                         Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
-                         {
-                             if (measure != null && toType != BlankType.Comment)
-                             {
-                                 // отдельный комментарий из числа измерения
-                                 var comment = new Comment(string.Format("{0} {1}", measure.Value, measure.Uom).Trim());
-                                 AddTag(comment, Tags.IndexOf(tag) + 1);
-                             }
+                        uiTaskFactory.StartNew(() =>
+                        {
+                            if (measure != null && toType != BlankType.Comment)
+                            {
+                                // отдельный комментарий из числа измерения
+                                var comment = new Comment(string.Format("{0} {1}", measure.Value, measure.Uom).Trim());
+                                AddTag(comment, Tags.IndexOf(tag) + 1);
+                            }
 
-                             CompleteEnding(tag);
+                            CompleteEnding(tag);
 
-                             OnEntitiesChanged(); // повторно, тк при конверте сначала меняется query, поэтому меняется state на completed
+                            OnEntitiesChanged(); // повторно, тк при конверте сначала меняется query, поэтому меняется state на completed
 
-                             if (wasLast)
-                                 // convert from Last - continue typing
-                                 StartEdit();
-                         }));
+                            if (wasLast)
+                                // convert from Last - continue typing
+                                StartEdit();
+                        });
                      }
                  }, TaskContinuationOptions.ExecuteSynchronously);
         }

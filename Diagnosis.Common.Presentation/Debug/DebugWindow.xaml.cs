@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -15,13 +16,16 @@ namespace Diagnosis.Common.Presentation.DebugTools
         {
             InitializeComponent();
 
+            var uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            var uiTaskFactory = new TaskFactory(uiScheduler);
+
             debugListener.LogEntries.CollectionChanged += (s, e) =>
             {
                 if (e.NewItems != null)
                 {
                     // scroll to new
-                    Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() =>
-                    { items.ScrollIntoView(e.NewItems[0]); }));
+                    uiTaskFactory.StartNew(() =>
+                        items.ScrollIntoView(e.NewItems[0]));
                 }
             };
             debugListener.PropertyChanged += (s, e) =>
@@ -30,8 +34,8 @@ namespace Diagnosis.Common.Presentation.DebugTools
                 {
                     // scroll to selected
                     if (items.SelectedItem != null)
-                        Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() =>
-                        { items.ScrollIntoView(items.SelectedItem); }));
+                        uiTaskFactory.StartNew(() =>
+                            { items.ScrollIntoView(items.SelectedItem); });
                 }
             };
 

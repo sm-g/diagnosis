@@ -1,5 +1,6 @@
 ﻿using Diagnosis.ViewModels.Screens;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
@@ -12,17 +13,20 @@ namespace Diagnosis.Client.App.Screens
         public Vocabs()
         {
             InitializeComponent();
+
+            var uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            var uiTaskFactory = new TaskFactory(uiScheduler);
+
             Loaded += (s, e) =>
             {
                 log.ScrollToEnd();
 
                 log.TextChanged += (s1, e1) =>
                 {
-                    Action action = () =>
+                    uiTaskFactory.StartNew(() =>
                     {
                         log.ScrollToEnd();
-                    };
-                    Dispatcher.BeginInvoke(DispatcherPriority.Background, action);
+                    });
                 };
             };
 

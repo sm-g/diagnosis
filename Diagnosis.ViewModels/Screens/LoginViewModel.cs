@@ -158,10 +158,9 @@ namespace Diagnosis.ViewModels.Screens
         {
             // need time to complete LoginViewModel ctor and change Current screen
             var timer = new System.Timers.Timer(100);
-            var disp = Dispatcher.CurrentDispatcher;
             timer.Elapsed += (obj, args) =>
             {
-                disp.Invoke((Action)delegate
+                uiTaskFactory.StartNew(()=>
                 {
                     IsRemembered = true;
                     LoginCommand.Execute(null);

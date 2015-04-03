@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -12,6 +13,7 @@ namespace Diagnosis.Common.Presentation.DebugTools
 {
     public class LogTraceListener : TraceListener, INotifyPropertyChanged
     {
+        protected readonly TaskFactory uiTaskFactory;
         private string _filterContains;
         private bool _filterOn;
         private int index = 0;
@@ -20,6 +22,8 @@ namespace Diagnosis.Common.Presentation.DebugTools
         {
             this.Name = "LogTraceListener";
             LogEntries = new ObservableCollection<LogEntry>();
+            var uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            uiTaskFactory = new TaskFactory(uiScheduler);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -64,7 +68,7 @@ namespace Diagnosis.Common.Presentation.DebugTools
 
         public override void Write(string message)
         {
-            Action action = () =>
+            uiTaskFactory.StartNew(() =>
             {
                 LogEntries.Add(new LogEntry()
                 {
@@ -73,9 +77,7 @@ namespace Diagnosis.Common.Presentation.DebugTools
                     Message = message,
                     IsVisible = !FilterOn || FilterContains == "" || message.Contains(FilterContains)
                 });
-            };
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, action);
-
+            });
         }
 
         public override void WriteLine(string message)
