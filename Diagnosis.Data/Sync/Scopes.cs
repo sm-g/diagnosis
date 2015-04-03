@@ -142,9 +142,9 @@ namespace Diagnosis.Data.Sync
             return new List<Scope>(Enum.GetValues(typeof(Scope)).Cast<Scope>().OrderScopes());
         }
 
-        public static IEnumerable<string> GetVocOnlyTables()
+        public static IEnumerable<string> GetVocOnlyTablesToDownload()
         {
-            return new[] { Names.SpecialityVocabularies, Names.Vocabulary, Names.WordTemplate };
+            return new[] { Names.Vocabulary, Names.WordTemplate, Names.SpecialityVocabularies };
         }
 
         public static IEnumerable<Scope> OrderScopes(this IEnumerable<Scope> scopes)

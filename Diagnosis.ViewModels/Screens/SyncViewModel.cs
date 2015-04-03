@@ -121,7 +121,7 @@ namespace Diagnosis.ViewModels.Screens
                          serverProviderName: RemoteProviderName);
 
                     // новые словари загружаются отдельно
-                    syncer.TablesIgnoreAdding = Scopes.GetVocOnlyTables();
+                    syncer.TablesIgnoreAdding = Scopes.GetVocOnlyTablesToDownload();
 
                     DoWithCursor(syncer.SendFrom(Side.Server).ContinueWith((t) =>
                     {
