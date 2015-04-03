@@ -12,11 +12,15 @@ namespace Tests
         [TestMethod]
         public void GetScope()
         {
-            Assert.AreEqual(Scope.Holder, typeof(Appointment).GetScope());
-            Assert.AreEqual(Scope.Hr, typeof(HrItem).GetScope());
-            Assert.AreEqual(Scope.Icd, typeof(IcdBlock).GetScope());
-            Assert.AreEqual(Scope.Reference, typeof(Uom).GetScope());
-            Assert.AreEqual(Scope.User, typeof(Doctor).GetScope());
+            Assert.AreEqual(Scope.Holder, typeof(Appointment).GetScopes().First());
+            Assert.AreEqual(Scope.Hr, typeof(HrItem).GetScopes().First());
+            Assert.AreEqual(Scope.Icd, typeof(IcdBlock).GetScopes().First());
+            Assert.AreEqual(Scope.Reference, typeof(Uom).GetScopes().First());
+            Assert.AreEqual(Scope.User, typeof(Doctor).GetScopes().First());
+            Assert.AreEqual(Scope.Voc, typeof(Doctor).GetScopes().First());
+
+            Assert.IsTrue(typeof(Speciality).GetScopes().Count() > 1);
+
         }
     }
 }

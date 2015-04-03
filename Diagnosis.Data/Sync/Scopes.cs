@@ -128,13 +128,13 @@ namespace Diagnosis.Data.Sync
             }
         }
 
-        public static Scope GetScope(this Type type)
+        public static IEnumerable<Scope> GetScopes(this Type type)
         {
             var tbl = Names.tblToTypeMap.FirstOrDefault(x => x.Value == type).Key;
             if (tbl == default(String))
                 throw new ArgumentOutOfRangeException("Type is not syncronized");
 
-            return scopeToTables.FirstOrDefault(x => x.Value.Contains(tbl)).Key;
+            return scopeToTables.Where(x => x.Value.Contains(tbl)).Select(x => x.Key);
         }
 
         public static IList<Scope> GetOrderedScopes()

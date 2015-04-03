@@ -31,7 +31,7 @@ namespace Diagnosis.Data.Sync
         public IEnumerable<Scope> CheckReferenceEntitiesAfterDownload(Dictionary<Type, IEnumerable<object>> addedIdsPerType)
         {
             Contract.Requires(addedIdsPerType != null);
-            var scopesToDeprovision = new HashSet<Scope>();
+            var scopesToDeprovision = new List<Scope>();
             var types = addedIdsPerType.Keys
                 .OrderByDescending(x => x, new RefModelsComparer()); // сначала родители
 
@@ -56,7 +56,7 @@ namespace Diagnosis.Data.Sync
                             x => x.Category,
                             (x, value) => x.Category = value);
 
-                        scopesToDeprovision.Add(typeof(HealthRecord).GetScope());
+                        scopesToDeprovision.AddRange(typeof(HealthRecord).GetScopes());
                     }
                     replaced = replacing.Keys;
                 }
@@ -69,7 +69,7 @@ namespace Diagnosis.Data.Sync
                             x => x.Measure != null ? x.Measure.Uom : null,
                             (x, value) => { if (x.Measure != null) x.Measure.Uom = value; });
 
-                        scopesToDeprovision.Add(typeof(HrItem).GetScope());
+                        scopesToDeprovision.AddRange(typeof(HrItem).GetScopes());
                     }
                     replaced = replacing.Keys;
                 }
@@ -82,7 +82,7 @@ namespace Diagnosis.Data.Sync
                             x => x.Type,
                             (x, value) => x.Type = value);
 
-                        scopesToDeprovision.Add(typeof(Uom).GetScope());
+                        scopesToDeprovision.AddRange(typeof(Uom).GetScopes());
                     }
                     replaced = replacing.Keys;
                 }
@@ -101,9 +101,9 @@ namespace Diagnosis.Data.Sync
                            x => x.Speciality,
                            (x, value) => x.Speciality = value);
 
-                        scopesToDeprovision.Add(typeof(Doctor).GetScope());
-                        scopesToDeprovision.Add(typeof(SpecialityIcdBlocks).GetScope());
-                        scopesToDeprovision.Add(typeof(SpecialityVocabularies).GetScope());
+                        scopesToDeprovision.AddRange(typeof(Doctor).GetScopes());
+                        scopesToDeprovision.AddRange(typeof(SpecialityIcdBlocks).GetScopes());
+                        scopesToDeprovision.AddRange(typeof(SpecialityVocabularies).GetScopes());
                     }
                     replaced = replacing.Keys;
                 }
@@ -119,8 +119,8 @@ namespace Diagnosis.Data.Sync
                            x => x.Vocabulary,
                            (x, value) => x.Vocabulary = value);
 
-                        scopesToDeprovision.Add(typeof(VocabularyWords).GetScope());
-                        scopesToDeprovision.Add(typeof(SpecialityVocabularies).GetScope());
+                        scopesToDeprovision.AddRange(typeof(VocabularyWords).GetScopes());
+                        scopesToDeprovision.AddRange(typeof(SpecialityVocabularies).GetScopes());
                     }
                     replaced = replacing.Keys;
                 }
@@ -141,7 +141,7 @@ namespace Diagnosis.Data.Sync
 
                 CleanupReplaced(replaced);
             }
-            return scopesToDeprovision;
+            return scopesToDeprovision.Distinct();
         }
 
         protected virtual void OnReplaced(ListEventArgs<IEntity> e)
