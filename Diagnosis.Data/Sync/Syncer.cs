@@ -393,7 +393,7 @@ namespace Diagnosis.Data.Sync
 
                 if (failedTables.Count > 0 && conToGetScopeDescr != null)
                 {
-                    Poster.PostMessage("GetScopeDescription for scope '{0}' from '{1}'", scope.ToScopeString(), con.ConnectionString);
+                    Poster.PostMessage("GetScopeDescription for scope '{0}' from '{1}'", scope.ToScopeString(), conToGetScopeDescr.ConnectionString);
                     //use scope description from server to intitialize the client
                     scopeDescr = GetScopeDescription(scope, conToGetScopeDescr);
                 }
