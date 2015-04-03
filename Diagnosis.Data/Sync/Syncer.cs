@@ -480,24 +480,24 @@ namespace Diagnosis.Data.Sync
                 try
                 {
                     DbSyncTableDescription desc;
-                    if (connection is SqlCeConnection)
+
+                    // не создаем описание для таблицы повторно, после провизионирования другой области с этой таблицей
+                    var nameWithSchema = connection is SqlCeConnection ? name : name.GetSchemaForTable() + '.' + name;
+                    var nameWithConn = connection.ConnectionString + nameWithSchema;
+
+                    if (!map.TryGetValue(nameWithConn, out desc))
                     {
-                        if (!map.TryGetValue(name, out desc))
-                        {
-                            desc = SqlCeSyncDescriptionBuilder.GetDescriptionForTable(name, connection as SqlCeConnection);
-                            map[name] = desc;
-                        }
-                    }
-                    else if (connection is SqlConnection)
-                    {
-                        var nameWithSchema = name.GetSchemaForTable() + '.' + name;
-                        if (!map.TryGetValue(nameWithSchema, out desc))
-                        {
+                        if (connection is SqlCeConnection)
+                            desc = SqlCeSyncDescriptionBuilder.GetDescriptionForTable(nameWithSchema, connection as SqlCeConnection);
+                        else if (connection is SqlConnection)
                             desc = SqlSyncDescriptionBuilder.GetDescriptionForTable(nameWithSchema, connection as SqlConnection);
-                            map[nameWithSchema] = desc;
-                        }
+
+                        map[nameWithConn] = desc;
                     }
-                    else throw new ArgumentOutOfRangeException();
+                    else
+                    {
+                        Poster.PostMessage("Reuse created Description For Table '{0}'", name);
+                    }
 
                     desc.GlobalName = name;
                     scope.Tables.Add(desc);
