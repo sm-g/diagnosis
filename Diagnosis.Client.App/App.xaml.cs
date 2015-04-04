@@ -144,6 +144,14 @@ namespace Diagnosis.Client.App
             if (constrsettings != null)
                 conInfo = new ConnectionInfo(constrsettings.ConnectionString.ExpandVariables(), constrsettings.ProviderName);
 
+            try
+            {
+                SqlHelper.CreateSqlCeByConStr(conInfo.ConnectionString);
+            }
+            catch
+            {
+            }
+
             if (!NHibernateHelper.Default.Init(conInfo, Side.Client))
             {
                 demoMode = true;
