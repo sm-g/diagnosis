@@ -108,7 +108,7 @@ namespace Diagnosis.Common
         public static void CreateDirectoryForPath(string path)
         {
             string directory = Path.GetDirectoryName(path);
-            if (!Directory.Exists(directory))
+            if (!directory.IsNullOrEmpty() && !Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
         }
     }
