@@ -16,7 +16,7 @@ namespace Diagnosis.ViewModels.Controls
 
         ObservableCollection<T> Results { get; }
 
-        bool UpdateResultsOnQueryChanges { get; set; }
+        bool DoAutoFilter { get; set; }
 
         bool IsQueryEmpty { get; }
 

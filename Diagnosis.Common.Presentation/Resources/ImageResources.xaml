@@ -3,4 +3,7 @@
 
     <Geometry x:Key="CloseX">M0,0 L1,1 M0,1 L1,0</Geometry>
     <Geometry x:Key="TreeArrow">M0,0 L0,6 L6,0</Geometry>
+
+    <BitmapImage x:Key="findImage"
+                 UriSource="/Resources/Images/Find_5650.png"  />
 </ResourceDictionary>

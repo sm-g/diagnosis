@@ -11,13 +11,16 @@ namespace Diagnosis.ViewModels.Controls
         private readonly Func<string, IEnumerable<T>> finder;
         private string _query;
         private bool _isFocused;
+        private int _updResBound;
         private bool _resultsOnQueryChanges;
+        private bool _autoFiltered;
+        private bool filtered;
 
         public FilterViewModel(Func<string, IEnumerable<T>> finder)
         {
             this.finder = finder;
             Results = new ObservableCollection<T>();
-            UpdateResultsOnQueryChanges = true;
+            DoAutoFilter = true;
         }
 
         #region IFilter
@@ -37,6 +40,7 @@ namespace Diagnosis.ViewModels.Controls
                 if (_query != value)
                 {
                     _query = value;
+                    filtered = false;
                     if (IsQueryEmpty)
                     {
                         OnCleared();
@@ -44,16 +48,21 @@ namespace Diagnosis.ViewModels.Controls
                     OnPropertyChanged("Query");
                     OnPropertyChanged("IsQueryEmpty");
                 }
-                if (UpdateResultsOnQueryChanges)
+                if (DoAutoFilter && _query != null && _query.Length >= AutoFilterMinQueryLength)
                 {
+                    AutoFiltered = true;
                     Filter();
+                }
+                else
+                {
+                    AutoFiltered = false;
                 }
             }
         }
 
         public ObservableCollection<T> Results { get; protected set; }
 
-        public bool UpdateResultsOnQueryChanges
+        public bool DoAutoFilter
         {
             get
             {
@@ -64,7 +73,7 @@ namespace Diagnosis.ViewModels.Controls
                 if (_resultsOnQueryChanges != value)
                 {
                     _resultsOnQueryChanges = value;
-                    OnPropertyChanged("UpdateResultsOnQueryChanges");
+                    OnPropertyChanged(() => DoAutoFilter);
                 }
             }
         }
@@ -93,6 +102,9 @@ namespace Diagnosis.ViewModels.Controls
 
         public void Filter()
         {
+            if (filtered) return;
+            filtered = true;
+
             IEnumerable<T> res;
             if (IsQueryEmpty)
             {
@@ -130,6 +142,29 @@ namespace Diagnosis.ViewModels.Controls
                 }
             }
         }
+
+        public int AutoFilterMinQueryLength
+        {
+            get { return _updResBound; }
+            set { _updResBound = value; }
+        }
+
+        public bool AutoFiltered
+        {
+            get
+            {
+                return _autoFiltered;
+            }
+            set
+            {
+                if (_autoFiltered != value)
+                {
+                    _autoFiltered = value;
+                    OnPropertyChanged(() => AutoFiltered);
+                }
+            }
+        }
+
         protected void OnCleared()
         {
             var h = Cleared;

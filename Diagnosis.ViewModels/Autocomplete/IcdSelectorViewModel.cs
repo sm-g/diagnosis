@@ -260,7 +260,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private bool TypedEnough()
         {
             // запрос не после выбора и длинный
-            return inFiltered && DiagnosisSearch.Filter.Query.Length >= MinQueryToExpandBlock;
+            return inFiltered && DiagnosisSearch.Filter.AutoFiltered;
         }
 
         private void CreateDiagnosisSearch()
@@ -268,7 +268,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             DiagnosisSearch = new PopupSearchViewModel<IcdDisease>(
                 DiagnosisQuery.StartingWith(Session)
                 );
-
+            DiagnosisSearch.Filter.AutoFilterMinQueryLength = MinQueryToExpandBlock;
             DiagnosisSearch.Filter.Cleared += (s, e) =>
             {
                 SelectedIcd = null;
@@ -295,14 +295,14 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             if (DiagnosisSearch != null)
             {
-                DiagnosisSearch.Filter.UpdateResultsOnQueryChanges = updateResult;
+                DiagnosisSearch.Filter.DoAutoFilter = updateResult;
 
                 if (d != null)
                     DiagnosisSearch.Filter.Query = d.Code;
                 else
                     DiagnosisSearch.Filter.Clear();
 
-                DiagnosisSearch.Filter.UpdateResultsOnQueryChanges = true;
+                DiagnosisSearch.Filter.DoAutoFilter = true;
             }
         }
 
