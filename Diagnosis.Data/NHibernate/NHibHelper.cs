@@ -196,6 +196,7 @@ namespace Diagnosis.Data
             cfg.EventListeners.FlushEventListeners = new IFlushEventListener[] { new FixedDefaultFlushEventListener() };
 
             cfg.AddMapping(mapping);
+            // ExportSchemaToFile(cfg);
             return cfg;
         }
 
@@ -240,6 +241,8 @@ namespace Diagnosis.Data
                 connection = null;
                 return false;
             }
+            if (InMemory)
+                return false;
             connection = new ConnectionInfo(conn.ConnectionString, conn.ProviderName);
             return true;
         }
@@ -248,7 +251,7 @@ namespace Diagnosis.Data
         {
             if (_session == null)
             {
-                //ExportSchemaToFile();
+                //ExportSchemaToFile(Configuration);
                 _session = SessionFactory.OpenSession();
                 _session.FlushMode = FlushMode.Commit;
 
@@ -313,10 +316,10 @@ namespace Diagnosis.Data
             }
         }
 
-        private void ExportSchemaToFile()
+        private static void ExportSchemaToFile(Configuration cfg)
         {
             string desktop = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop);
-            new SchemaExport(Configuration)
+            new SchemaExport(cfg)
                 .SetDelimiter(";")
                 .SetOutputFile(string.Format(desktop + "\\sqlite create {0:yyyy-MM-dd-HHmm}.sql", System.DateTime.Now))
                 .Execute(true, false, false);
