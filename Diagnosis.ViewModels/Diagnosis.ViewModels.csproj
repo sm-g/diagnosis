@@ -287,7 +287,6 @@
     <Compile Include="Screens\HealthRecords\DateOffsetViewModel.cs" />
     <Compile Include="Types\HierarchicalBase.cs" />
     <Compile Include="Screens\Card\HrEditorViewModel.cs" />
-    <Compile Include="Controls\Searchers\ISimpleSearcher.cs" />
     <Compile Include="Screens\Card\PatientViewer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\VersionInfo.cs">
@@ -311,8 +310,6 @@
     <Compile Include="Controls\FilterViewModel.cs" />
     <Compile Include="Search\HrSearchOptions.cs" />
     <Compile Include="Controls\PopupSearchViewModel.cs" />
-    <Compile Include="Controls\Searchers\DiagnosisFiltratingSearcher.cs" />
-    <Compile Include="Controls\Searchers\DiagnosisSearcher.cs" />
     <Compile Include="Search\HrSearcher.cs" />
     <Compile Include="Framework\ViewModelBase.cs" />
     <Compile Include="Types\SpecialCaseItem.cs" />
