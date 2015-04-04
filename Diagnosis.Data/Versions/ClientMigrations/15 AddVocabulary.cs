@@ -47,6 +47,7 @@ namespace Diagnosis.Data.Versions.Off
 
             Alter.Table(Names.Doctor)
                 .AddColumn(Names.Col.DoctorCustomVocabulary).AsGuid().Nullable().ForeignKey(Names.FK.Doc_Voc, Names.Vocabulary, "Id");
+            
         }
 
         public override void Down()

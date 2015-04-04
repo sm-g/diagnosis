@@ -162,7 +162,7 @@ namespace Diagnosis.Client.App
 
             // backup
 #if !DEBUG
-            var sdfPath = new SqlCeConnectionStringBuilder(NHibernateHelper.Default.ConnectionString).DataSource;
+            var sdfPath = new SqlCeConnectionStringBuilder(conInfo.ConnectionString).DataSource;
             FileHelper.Backup(sdfPath, Constants.BackupDir, 5, 7);
 #endif
 
@@ -177,11 +177,11 @@ namespace Diagnosis.Client.App
                 var sw = Stopwatch.StartNew();
                 if (migrateUp.Value)
                 {
-                    new Migrator(NHibernateHelper.Default.ConnectionString, Constants.BackupDir).MigrateToLatest();
+                    new Migrator(conInfo, Side.Client, Constants.BackupDir).MigrateToLatest();
                 }
                 else
                 {
-                    new Migrator(NHibernateHelper.Default.ConnectionString, Constants.BackupDir).Rollback();
+                    new Migrator(conInfo, Side.Client, Constants.BackupDir).Rollback();
                 }
                 sw.Stop();
                 logger.DebugFormat("migration: {0}", sw.Elapsed);
@@ -213,7 +213,7 @@ namespace Diagnosis.Client.App
             };
             debWin.Show();
 
-            // NHibernateHelper.Default.ShowSql = !NHibernateHelper.Default.InMemory;
+            //NHibernateHelper.Default.ShowSql = true;
         }
 
         [DebuggerStepThrough]

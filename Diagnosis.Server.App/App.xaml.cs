@@ -13,6 +13,7 @@ using System.Windows;
 using Diagnosis.ViewModels.Screens;
 using Diagnosis.Common.Types;
 using Diagnosis.Server.App.Properties;
+using System.Data.SqlServerCe;
 
 namespace Diagnosis.Server.App
 {
@@ -96,6 +97,16 @@ namespace Diagnosis.Server.App
             if (constrsettings != null)
                 conInfo = new ConnectionInfo(constrsettings.ConnectionString.ExpandVariables(), constrsettings.ProviderName);
 
+            // create sdf db
+            if (conInfo.ProviderName == Constants.SqlCeProvider)
+                try
+                {
+                    SqlHelper.CreateSqlCeByConStr(conInfo.ConnectionString);
+                }
+                catch
+                {
+                }
+
             if (!NHibernateHelper.Default.Init(conInfo, Side.Server))
             {
                 demoMode = true;
@@ -106,8 +117,11 @@ namespace Diagnosis.Server.App
 
             // backup
 #if !DEBUG
-            //var sdfPath = new SqlCeConnectionStringBuilder(NHibernateHelper.Default.ConnectionString).DataSource;
-            //FileHelper.Backup(sdfPath, Constants.BackupDir, 5, 7);
+            if (conInfo.ProviderName == Constants.SqlCeProvider)
+            {
+                var sdfPath = new SqlCeConnectionStringBuilder(conInfo.ConnectionString).DataSource;
+                FileHelper.Backup(sdfPath, Constants.BackupDir, 5, 7);
+            }
 #endif
 
             bool? migrateUp = null;
@@ -120,11 +134,11 @@ namespace Diagnosis.Server.App
             {
                 if (migrateUp.Value)
                 {
-                    // new Migrator(NHibernateHelper.Default.ConnectionString, Constants.BackupDir).MigrateToLatest();
+                    new Migrator(conInfo, Side.Server, Constants.BackupDir).MigrateToLatest();
                 }
                 else
                 {
-                    // new Migrator(NHibernateHelper.Default.ConnectionString, Constants.BackupDir).Rollback();
+                    new Migrator(conInfo, Side.Server, Constants.BackupDir).Rollback();
                 }
             }
         }

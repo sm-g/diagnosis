@@ -211,24 +211,25 @@
     <Compile Include="Sync\Syncer.cs" />
     <Compile Include="Sync\Scopes.cs" />
     <Compile Include="Sync\VocLoader.cs" />
-    <Compile Include="Versions\Migrations\09 AddHolderHrUpdatedAt.cs" />
-    <Compile Include="Versions\Migrations\13 AddHrItemConfidence.cs" />
-    <Compile Include="Versions\Migrations\15 AddVocabulary.cs" />
-    <Compile Include="Versions\Migrations\14 AlterUomAbbrLength.cs" />
-    <Compile Include="Versions\Migrations\11 AlterUomFactor.cs" />
-    <Compile Include="Versions\Migrations\10 AddUomType.cs" />
-    <Compile Include="Versions\Migrations\08 AddDoctorSettings.cs" />
-    <Compile Include="Versions\Migrations\07 HrWithDoctor.cs" />
-    <Compile Include="Versions\Migrations\06 AddPassportTable.cs" />
-    <Compile Include="Versions\Migrations\05 InsertSpecialityIcdBlock.cs" />
-    <Compile Include="Versions\Migrations\12 UomHrCatSpecialityGuidAndRemoveDefCat.cs" />
-    <Compile Include="Versions\Migrations\SyncronizedMigration.cs" />
+    <Compile Include="Versions\ClientMigrations\09 AddHolderHrUpdatedAt.cs" />
+    <Compile Include="Versions\ClientMigrations\13 AddHrItemConfidence.cs" />
+    <Compile Include="Versions\ClientMigrations\15 AddVocabulary.cs" />
+    <Compile Include="Versions\ClientMigrations\14 AlterUomAbbrLength.cs" />
+    <Compile Include="Versions\ClientMigrations\11 AlterUomFactor.cs" />
+    <Compile Include="Versions\ClientMigrations\10 AddUomType.cs" />
+    <Compile Include="Versions\ClientMigrations\08 AddDoctorSettings.cs" />
+    <Compile Include="Versions\ClientMigrations\07 HrWithDoctor.cs" />
+    <Compile Include="Versions\ClientMigrations\06 AddPassportTable.cs" />
+    <Compile Include="Versions\ClientMigrations\05 InsertSpecialityIcdBlock.cs" />
+    <Compile Include="Versions\ClientMigrations\12 UomHrCatSpecialityGuidAndRemoveDefCat.cs" />
+    <Compile Include="Versions\ServerMigrations\01 CreateServerSdf.cs" />
+    <Compile Include="Versions\SyncronizedMigration.cs" />
     <Compile Include="Versions\Migrator.cs" />
     <Compile Include="Names.cs" />
-    <Compile Include="Versions\Migrations\03 InsertFirstWordSet.cs" />
-    <Compile Include="Versions\Migrations\02 InsertAllIcd.cs" />
-    <Compile Include="Versions\Migrations\04 InsertUomHrCatSpeciality.cs" />
-    <Compile Include="Versions\Migrations\01 CreateClientDb.cs" />
+    <Compile Include="Versions\ClientMigrations\03 InsertFirstWordSet.cs" />
+    <Compile Include="Versions\ClientMigrations\02 InsertAllIcd.cs" />
+    <Compile Include="Versions\ClientMigrations\04 InsertUomHrCatSpeciality.cs" />
+    <Compile Include="Versions\ClientMigrations\01 CreateClientDb.cs" />
     <Compile Include="NHibernate\EntityChecker.cs" />
     <Compile Include="NHibernate\Extensions.cs" />
     <Compile Include="NHibernate\InMemoryHelper.cs" />
@@ -270,6 +271,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Versions\Sql\inmem_sqlite.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Versions\Sql\create_sdf_server.sql" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Versions\Sql\create_client_2015_04_01.sql" />

@@ -1,4 +1,7 @@
-﻿using FluentMigrator;
+﻿using Diagnosis.Common;
+using Diagnosis.Common.Types;
+using Diagnosis.Data.Versions.Server;
+using FluentMigrator;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.Announcers;
 using FluentMigrator.Runner.Initialization;
@@ -9,13 +12,15 @@ namespace Diagnosis.Data.Versions
 {
     public class Migrator
     {
-        private string connectionString;
+        private ConnectionInfo connectionInfo;
         private string outputDir;
+        private Side side;
 
-        public Migrator(string conStr, string fileOutputDir)
+        public Migrator(ConnectionInfo conInfo, Side side, string fileOutputDir)
         {
-            this.connectionString = conStr;
+            this.connectionInfo = conInfo;
             this.outputDir = fileOutputDir;
+            this.side = side;
         }
 
         public void MigrateToLatest()
@@ -40,16 +45,9 @@ namespace Diagnosis.Data.Versions
                 var announcer = new TextWriterAnnouncer(fs);
                 var assembly = typeof(CreateClientDb).Assembly;
 
-                var migrationContext = new RunnerContext(announcer)
-                {
-                    Database = "sqlserverce",
-                    Namespace = typeof(CreateClientDb).Namespace
-                    // do not run .Off namespace
-                };
-
+                var migrationContext = MakeContext(announcer);
                 var options = new MigrationOptions { PreviewOnly = false, Timeout = 15 };
-                var factory = new FluentMigrator.Runner.Processors.SqlServer.SqlServerCeProcessorFactory();
-                var processor = factory.Create(connectionString, announcer, options);
+                var processor = MakeProcessor(announcer, options);
                 var runner = new MigrationRunner(assembly, migrationContext, processor);
                 runnerAct(runner);
             }
@@ -57,6 +55,45 @@ namespace Diagnosis.Data.Versions
             if (new FileInfo(filename).Length == 0)
             {
                 File.Delete(filename);
+            }
+        }
+
+        private RunnerContext MakeContext(TextWriterAnnouncer announcer)
+        {
+            string db;
+            string nmsp;
+            if (connectionInfo.ProviderName == Constants.SqlCeProvider)
+                db = "sqlserverce";
+            else
+                db = "sqlserver2014";
+
+            // do not run .Off namespace
+            if (side == Side.Client)
+                nmsp = typeof(CreateClientDb).Namespace;
+            else
+                nmsp = typeof(CreateServerSdf).Namespace;
+
+            var migrationContext = new RunnerContext(announcer)
+            {
+                Database = db,
+                Namespace = nmsp
+            };
+            return migrationContext;
+        }
+
+        private IMigrationProcessor MakeProcessor(TextWriterAnnouncer announcer, MigrationOptions options)
+        {
+            if (connectionInfo.ProviderName == Constants.SqlCeProvider)
+            {
+                var factory = new FluentMigrator.Runner.Processors.SqlServer.SqlServerCeProcessorFactory();
+                var processor = factory.Create(connectionInfo.ConnectionString, announcer, options);
+                return processor;
+            }
+            else
+            {
+                var factory = new FluentMigrator.Runner.Processors.SqlServer.SqlServer2012ProcessorFactory();
+                var processor = factory.Create(connectionInfo.ConnectionString, announcer, options);
+                return processor;
             }
         }
 

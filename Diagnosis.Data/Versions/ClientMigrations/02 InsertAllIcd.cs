@@ -1,6 +1,6 @@
 ﻿using FluentMigrator;
 
-namespace Diagnosis.Data.Versions.Off
+namespace Diagnosis.Data.Versions
 {
     [Migration(201412080001)]
     public class InsertAllIcd : Migration
