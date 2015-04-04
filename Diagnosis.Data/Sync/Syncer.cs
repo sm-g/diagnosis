@@ -108,47 +108,51 @@ namespace Diagnosis.Data.Sync
         /// <param name="from"></param>
         /// <param name="scopes"></param>
         /// <returns></returns>
-        public Task SendFrom(Side from, IEnumerable<Scope> scopes)
+        public async Task SendFrom(Side from, IEnumerable<Scope> scopes)
         {
             if (InSync)
-                return GetEndedTask();
+                return;
 
             InSync = true;
 
-            AddedOnServerIdsPerType = new Dictionary<Type, IEnumerable<object>>();
-            DeletedOnServerIdsPerType = new Dictionary<Type, IEnumerable<object>>();
-
             var t = new Task(() =>
             {
-                Poster.PostMessage("Going to sync scopes: '{0}' from {1}\n", string.Join("', '", scopes), from);
-                using (var serverConn = CreateConnection(Side.Server))
-                using (var clientConn = CreateConnection(Side.Client))
-                {
-                    if (!serverConn.IsAvailable())
-                    {
-                        CanNotConnect(serverConn);
-                        return;
-                    }
-                    if (!clientConn.IsAvailable())
-                    {
-                        CanNotConnect(clientConn);
-                        return;
-                    }
-
-                    foreach (var scope in scopes.OrderScopes())
-                    {
-                        Sync(from, scope, serverConn, clientConn);
-                    }
-                }
+                SendFromCore(from, scopes);
             });
 
             t.Start();
-            t.ContinueWith((task) =>
+            await t;
             {
                 InSync = false;
                 OnSyncEnded(sw.Elapsed);
-            });
-            return t;
+            }
+        }
+
+        internal void SendFromCore(Side from, IEnumerable<Scope> scopes)
+        {
+            AddedOnServerIdsPerType = new Dictionary<Type, IEnumerable<object>>();
+            DeletedOnServerIdsPerType = new Dictionary<Type, IEnumerable<object>>();
+
+            Poster.PostMessage("+++\nGoing to sync scopes: '{0}' from {1}\n", string.Join("', '", scopes), from);
+            using (var serverConn = CreateConnection(Side.Server))
+            using (var clientConn = CreateConnection(Side.Client))
+            {
+                if (!serverConn.IsAvailable())
+                {
+                    CanNotConnect(serverConn);
+                    return;
+                }
+                if (!clientConn.IsAvailable())
+                {
+                    CanNotConnect(clientConn);
+                    return;
+                }
+
+                foreach (var scope in scopes.OrderScopes())
+                {
+                    Sync(from, scope, serverConn, clientConn);
+                }
+            }
         }
 
         public Task Deprovision(Side side, IEnumerable<Scope> scopesToDeprovision = null)
@@ -688,7 +692,7 @@ namespace Diagnosis.Data.Sync
 #endif
                 if (e.Conflict.Type == DbConflictType.ErrorsOccurred)
                 {
-                    var rows = e.Conflict.LocalChange.Rows.Cast<DataRow>();
+                    var rows = e.Conflict.LocalChange.Rows.Cast<DataRow>(); // null local
                     Poster.PostMessage("ApplyChangeFailed. Error: {0}", e.Error);
                 }
                 else if (SyncTracer.IsVerboseEnabled() == false)
