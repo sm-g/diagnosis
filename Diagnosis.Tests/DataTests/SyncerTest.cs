@@ -1,26 +1,26 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Data;
 using Diagnosis.Data.Sync;
 using Diagnosis.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
+using NHibernate.Linq;
+using System.Threading.Tasks;
 
 namespace Tests
 {
     [TestClass]
-    public class SyncerTest
+    public class SyncerTest : SdfDatabaseTest
     {
         [TestMethod]
-        public void GetScope()
+        public async Task SendFromServer()
         {
-            Assert.AreEqual(Scope.Holder, typeof(Appointment).GetScopes().First());
-            Assert.AreEqual(Scope.Hr, typeof(HrItem).GetScopes().First());
-            Assert.AreEqual(Scope.Icd, typeof(IcdBlock).GetScopes().First());
-            Assert.AreEqual(Scope.Reference, typeof(Uom).GetScopes().First());
-            Assert.AreEqual(Scope.User, typeof(Doctor).GetScopes().First());
-            Assert.AreEqual(Scope.Voc, typeof(Doctor).GetScopes().First());
+            var sCount = sSession.Query<HrCategory>().Count();
 
-            Assert.IsTrue(typeof(Speciality).GetScopes().Count() > 1);
+            Syncer s = new Syncer(serverCon.ConnectionString, clientCon.ConnectionString, serverCon.ProviderName);
+            await s.SendFrom(Side.Server, Scope.Reference.ToEnumerable());
 
+            Assert.AreEqual(sCount, clSession.Query<HrCategory>().Count());
         }
     }
 }
