@@ -41,17 +41,17 @@ namespace Diagnosis.ViewModels.Screens
         /// <summary>
         /// Запись выгружена, но редактор еще открыт.
         /// </summary>
-        public event EventHandler<DomainEntityEventArgs> Unloaded;
+        public event EventHandler<HealthRecordEventArgs> Unloaded;
 
         /// <summary>
         /// Редактор закрыт. Запись выгружается перед этим.
         /// </summary>
-        public event EventHandler<DomainEntityEventArgs> Closed;
+        public event EventHandler<HealthRecordEventArgs> Closed;
 
         /// <summary>
         /// Редактор закрывается по команде. Запись может быть null.
         /// </summary>
-        public event EventHandler<DomainEntityEventArgs> Closing;
+        public event EventHandler<HealthRecordEventArgs> Closing;
 
         #region HealthRecord
 
@@ -407,7 +407,7 @@ namespace Diagnosis.ViewModels.Screens
             var h = Unloaded;
             if (h != null)
             {
-                h(this, new DomainEntityEventArgs(hr));
+                h(this, new HealthRecordEventArgs(hr));
             }
         }
 
@@ -416,7 +416,7 @@ namespace Diagnosis.ViewModels.Screens
             var h = Closing;
             if (h != null)
             {
-                h(this, new DomainEntityEventArgs(hr));
+                h(this, new HealthRecordEventArgs(hr));
             }
         }
 
@@ -425,7 +425,7 @@ namespace Diagnosis.ViewModels.Screens
             var h = Closed;
             if (h != null)
             {
-                h(this, new DomainEntityEventArgs(hr));
+                h(this, new HealthRecordEventArgs(hr));
             }
         }
 

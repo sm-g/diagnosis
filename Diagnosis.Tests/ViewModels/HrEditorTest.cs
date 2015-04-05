@@ -68,9 +68,9 @@ namespace Diagnosis.Tests.ViewModels
 
             IDomainObject closing, closed, unloaded;
             bool closingWas = false, closedWas = false, unloadedWas = false;
-            var closingEh = (EventHandler<DomainEntityEventArgs>)((s, e1) =>
+            var closingEh = (EventHandler<HealthRecordEventArgs>)((s, e1) =>
             {
-                closing = e1.entity;
+                closing = e1.hr;
                 closingWas = true;
 
                 Assert.AreEqual(hr, closing);
@@ -78,18 +78,18 @@ namespace Diagnosis.Tests.ViewModels
                 Assert.IsFalse(closedWas);
                 Assert.IsTrue(e.HasHealthRecord);
             });
-            var unloadedEh = (EventHandler<DomainEntityEventArgs>)((s, e1) =>
+            var unloadedEh = (EventHandler<HealthRecordEventArgs>)((s, e1) =>
             {
-                unloaded = e1.entity;
+                unloaded = e1.hr;
                 unloadedWas = true;
                 Assert.AreEqual(hr, unloaded);
                 Assert.IsTrue(closingWas);
                 Assert.IsFalse(closedWas);
                 Assert.IsTrue(e.HasHealthRecord);
             });
-            var closedEh = (EventHandler<DomainEntityEventArgs>)((s, e1) =>
+            var closedEh = (EventHandler<HealthRecordEventArgs>)((s, e1) =>
             {
-                closed = e1.entity;
+                closed = e1.hr;
                 closedWas = true;
 
                 Assert.AreEqual(hr, closed);
@@ -122,22 +122,22 @@ namespace Diagnosis.Tests.ViewModels
 
             IDomainObject closing, closed;
             bool closingWas = false, closedWas = false, unloadedWas = false;
-            var closingEh = (EventHandler<DomainEntityEventArgs>)((s, e1) =>
+            var closingEh = (EventHandler<HealthRecordEventArgs>)((s, e1) =>
             {
-                closing = e1.entity;
+                closing = e1.hr;
                 closingWas = true;
 
                 Assert.AreEqual(null, closing);
                 Assert.IsFalse(unloadedWas);
                 Assert.IsFalse(closedWas);
             });
-            var unloadedEh = (EventHandler<DomainEntityEventArgs>)((s, e1) =>
+            var unloadedEh = (EventHandler<HealthRecordEventArgs>)((s, e1) =>
             {
                 unloadedWas = true;
             });
-            var closedEh = (EventHandler<DomainEntityEventArgs>)((s, e1) =>
+            var closedEh = (EventHandler<HealthRecordEventArgs>)((s, e1) =>
             {
-                closed = e1.entity;
+                closed = e1.hr;
                 closedWas = true;
                 Assert.AreEqual(null, closed);
             });
@@ -163,20 +163,20 @@ namespace Diagnosis.Tests.ViewModels
 
             IDomainObject unloaded;
             bool closingWas = false, closedWas = false, unloadedWas = false;
-            var closingEh = (EventHandler<DomainEntityEventArgs>)((s, e1) =>
+            var closingEh = (EventHandler<HealthRecordEventArgs>)((s, e1) =>
             {
                 closingWas = true;
             });
-            var unloadedEh = (EventHandler<DomainEntityEventArgs>)((s, e1) =>
+            var unloadedEh = (EventHandler<HealthRecordEventArgs>)((s, e1) =>
             {
-                unloaded = e1.entity;
+                unloaded = e1.hr;
                 unloadedWas = true;
                 Assert.AreEqual(hr, unloaded);
                 Assert.IsFalse(closedWas);
                 Assert.IsFalse(closingWas);
                 Assert.IsTrue(e.HasHealthRecord);
             });
-            var closedEh = (EventHandler<DomainEntityEventArgs>)((s, e1) =>
+            var closedEh = (EventHandler<HealthRecordEventArgs>)((s, e1) =>
             {
                 closedWas = true;
             });
@@ -201,15 +201,15 @@ namespace Diagnosis.Tests.ViewModels
             // nothing
 
             bool closingWas = false, closedWas = false, unloadedWas = false;
-            var closingEh = (EventHandler<DomainEntityEventArgs>)((s, e1) =>
+            var closingEh = (EventHandler<HealthRecordEventArgs>)((s, e1) =>
             {
                 closingWas = true;
             });
-            var unloadedEh = (EventHandler<DomainEntityEventArgs>)((s, e1) =>
+            var unloadedEh = (EventHandler<HealthRecordEventArgs>)((s, e1) =>
             {
                 unloadedWas = true;
             });
-            var closedEh = (EventHandler<DomainEntityEventArgs>)((s, e1) =>
+            var closedEh = (EventHandler<HealthRecordEventArgs>)((s, e1) =>
             {
                 closedWas = true;
             });
@@ -235,22 +235,22 @@ namespace Diagnosis.Tests.ViewModels
 
             IDomainObject closed, unloaded;
             bool closingWas = false, closedWas = false, unloadedWas = false;
-            var closingEh = (EventHandler<DomainEntityEventArgs>)((s, e1) =>
+            var closingEh = (EventHandler<HealthRecordEventArgs>)((s, e1) =>
             {
                 closingWas = true;
             });
-            var unloadedEh = (EventHandler<DomainEntityEventArgs>)((s, e1) =>
+            var unloadedEh = (EventHandler<HealthRecordEventArgs>)((s, e1) =>
             {
-                unloaded = e1.entity;
+                unloaded = e1.hr;
                 unloadedWas = true;
                 Assert.AreEqual(hr, unloaded);
                 Assert.IsFalse(closedWas);
                 Assert.IsFalse(closingWas);
                 Assert.IsTrue(e.HasHealthRecord);
             });
-            var closedEh = (EventHandler<DomainEntityEventArgs>)((s, e1) =>
+            var closedEh = (EventHandler<HealthRecordEventArgs>)((s, e1) =>
             {
-                closed = e1.entity;
+                closed = e1.hr;
                 closedWas = true;
                 Assert.AreEqual(hr, closed);
                 Assert.IsTrue(unloadedWas);
