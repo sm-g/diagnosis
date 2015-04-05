@@ -1,27 +1,24 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
-using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Controls;
-using Diagnosis.ViewModels.Search;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
-namespace Diagnosis.Tests.Search
+namespace Diagnosis.Tests.ViewModels
 {
     [TestClass]
-    public class DiagnosisSearchTest : InMemoryDatabaseTest
+    public class FilterTest : InMemoryDatabaseTest
     {
         [TestMethod]
-        public void Test1()
+        public void AutoUpdateQuery()
         {
-            Load<Doctor>();
-            AuthorityController.TryLogIn(d1);
-
             var filter = new FilterViewModel<IcdDisease>(DiagnosisQuery.StartingWith(session));
             filter.Query = "перикард";
+
             var res1 = filter.Results;
 
+            Assert.IsTrue(filter.AutoFiltered);
             Assert.IsTrue(res1.Count() > 0);
         }
     }

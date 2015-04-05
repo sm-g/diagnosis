@@ -11,35 +11,6 @@ namespace Diagnosis.Tests.Data
     public class PersistTest : InMemoryDatabaseTest
     {
         [TestMethod]
-        public void Patient()
-        {
-            object id;
-
-            using (var tx = session.BeginTransaction())
-            {
-                id = session.Save(new Patient()
-                {
-                    Age = 15,
-                    LastName = "Hello"
-                });
-
-                tx.Commit();
-            }
-
-            session.Clear();
-
-            using (var tx = session.BeginTransaction())
-            {
-                var pat = session.Get<Patient>(id);
-
-                Assert.AreEqual(15, pat.Age);
-                Assert.AreEqual("Hello", pat.LastName);
-
-                tx.Commit();
-            }
-        }
-
-        [TestMethod]
         public void MyTestMethod()
         {
             Load<Doctor>();

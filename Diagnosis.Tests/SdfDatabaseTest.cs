@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Common.Types;
 using Diagnosis.Data;
+using Diagnosis.Data.NHibernate;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHibernate;
 using NHibernate.Cfg;
@@ -11,7 +12,7 @@ using System.IO;
 namespace Diagnosis.Tests
 {
     [TestClass]
-    public abstract class SdfDatabaseTest
+    public abstract class SdfDatabaseTest : DbTest
     {
         protected static readonly ConnectionInfo serverCon = new ConnectionInfo("Data Source=" + serverSdf, Constants.SqlCeProvider);
         protected static readonly ConnectionInfo clientCon = new ConnectionInfo("Data Source=" + clientSdf, Constants.SqlCeProvider);
@@ -43,9 +44,12 @@ namespace Diagnosis.Tests
             SqlHelper.CreateSqlCeByPath(clientSdf);
             File.Copy("db.sdf", serverSdf, true);
 
-            new SchemaExport(clCfg).Execute(false, true, false);
+            //new SchemaExport(clCfg).Execute(false, true, false);
             clSession = clFactory.OpenSession();
+            InMemoryHelper.FillData(clCfg, clSession);
             sSession = sFactory.OpenSession();
+
+            session = clSession;
         }
 
         [TestCleanup]
