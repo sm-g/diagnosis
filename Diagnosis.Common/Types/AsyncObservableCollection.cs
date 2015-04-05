@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace Diagnosis.Common
+namespace Diagnosis.Common.Types
 {
     /// <summary>
     /// http://www.thomaslevesque.com/2009/04/17/wpf-binding-to-an-asynchronous-collection/

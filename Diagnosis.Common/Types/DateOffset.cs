@@ -4,7 +4,7 @@ using System;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
-namespace Diagnosis.Common
+namespace Diagnosis.Common.Types
 {
     public enum DateUnit
     {

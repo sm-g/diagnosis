@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Common.Types;
 using Diagnosis.Common.Util;
 using Diagnosis.Models;
 using Diagnosis.Models.Enums;

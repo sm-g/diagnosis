@@ -8,6 +8,7 @@ using Diagnosis.Common;
 using Diagnosis.Data.Queries;
 using NHibernate;
 using NHibernate.Linq;
+using Diagnosis.Common.Types;
 
 namespace Diagnosis.ViewModels.Search
 {

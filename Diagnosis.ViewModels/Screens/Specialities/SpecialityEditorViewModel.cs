@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Common.Types;
 using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;

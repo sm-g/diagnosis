@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Common.Types;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 

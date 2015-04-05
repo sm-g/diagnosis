@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Common.Types;
 using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
@@ -252,8 +253,8 @@ namespace Diagnosis.ViewModels
                 Debug.Assert(healthRecord.CreatedAt != DateTime.MinValue);
 
                 var d = new DateOffset(healthRecord.FromYear, healthRecord.FromMonth, healthRecord.FromDay, () => healthRecord.CreatedAt);
-                d.UnitSettingStrategy = Common.DateOffset.UnitSetting.SetsDate;
-                d.DateSettingStrategy = Common.DateOffset.DateSetting.SetsUnitSilly;
+                d.UnitSettingStrategy = DateOffset.UnitSetting.SetsDate;
+                d.DateSettingStrategy = DateOffset.DateSetting.SetsUnitSilly;
 
                 // один раз подписываемся на удаление записи у держателя
                 if (!dict.Keys.Any(hr => hr.Holder == healthRecord.Holder))

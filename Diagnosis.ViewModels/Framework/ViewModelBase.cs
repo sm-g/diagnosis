@@ -11,6 +11,7 @@ using System.Windows;
 using System.Reflection;
 using System.IO;
 using System.Threading.Tasks;
+using Diagnosis.Common.Types;
 
 namespace Diagnosis.ViewModels
 {

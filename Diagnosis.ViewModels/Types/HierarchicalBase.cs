@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Diagnosis.Common;
+using Diagnosis.Common.Types;
 
 namespace Diagnosis.ViewModels
 {

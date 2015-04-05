@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq.Expressions;
 
-namespace Diagnosis.Common
+namespace Diagnosis.Common.Types
 {
     [Serializable]
     public abstract class NotifyPropertyChangedBase : INotifyPropertyChanged
