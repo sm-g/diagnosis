@@ -294,6 +294,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Versions\Sql\create_client_2015_04_01.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Versions\Sql\inmem_sqlce.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

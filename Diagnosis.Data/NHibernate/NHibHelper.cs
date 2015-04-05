@@ -165,7 +165,7 @@ namespace Diagnosis.Data
             var cfg = new Configuration();
 
             if (connection == null)
-                InMemoryHelper.Configure(cfg, showsql);
+                ConfigureSqlLiteInMemory(cfg, showsql);
             else
                 switch (connection.ProviderName)
                 {
@@ -216,6 +216,15 @@ namespace Diagnosis.Data
                .SetProperty(Environment.ConnectionDriver, typeof(SqlServerCeDriver).AssemblyQualifiedName)
                .SetProperty(Environment.ConnectionProvider, typeof(DriverConnectionProvider).AssemblyQualifiedName)
                .SetProperty(Environment.ConnectionString, constr)
+               .SetProperty(Environment.ShowSql, showSql ? "true" : "false");
+        }
+
+        public static void ConfigureSqlLiteInMemory(Configuration cfg, bool showSql)
+        {
+            cfg.SetProperty(Environment.ReleaseConnections, "on_close")
+               .SetProperty(Environment.Dialect, typeof(SQLiteDialect).AssemblyQualifiedName)
+               .SetProperty(Environment.ConnectionDriver, typeof(SQLite20Driver).AssemblyQualifiedName)
+               .SetProperty(Environment.ConnectionString, "data source=:memory:;BinaryGuid=False")
                .SetProperty(Environment.ShowSql, showSql ? "true" : "false");
         }
 
