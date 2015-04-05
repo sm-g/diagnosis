@@ -18,8 +18,8 @@ namespace Diagnosis.Tests.Model
         [TestInitialize]
         public void AutocompleteTestInit()
         {
-            Load<HealthRecord>();
             Load<Uom>();
+            hr1 = session.Load<HealthRecord>(IntToGuid<HealthRecord>(71));
         }
 
         [TestMethod]

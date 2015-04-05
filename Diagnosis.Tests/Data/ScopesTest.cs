@@ -17,7 +17,7 @@ namespace Diagnosis.Tests.Data
             Assert.AreEqual(Scope.Icd, typeof(IcdBlock).GetScopes().First());
             Assert.AreEqual(Scope.Reference, typeof(Uom).GetScopes().First());
             Assert.AreEqual(Scope.User, typeof(Doctor).GetScopes().First());
-            Assert.AreEqual(Scope.Voc, typeof(Doctor).GetScopes().First());
+            Assert.AreEqual(Scope.Voc, typeof(Vocabulary).GetScopes().First());
 
             Assert.IsTrue(typeof(Speciality).GetScopes().Count() > 1);
 
