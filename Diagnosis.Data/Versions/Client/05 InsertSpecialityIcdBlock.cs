@@ -1,6 +1,6 @@
 ﻿using FluentMigrator;
 
-namespace Diagnosis.Data.Versions.Off
+namespace Diagnosis.Data.Versions.Client.Off
 {
     [Migration(201412080004)]
     public class InsertSpecialityIcdBlock : Migration

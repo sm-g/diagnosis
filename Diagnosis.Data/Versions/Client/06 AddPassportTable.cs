@@ -2,7 +2,7 @@
 using FluentMigrator;
 using PasswordHash;
 
-namespace Diagnosis.Data.Versions
+namespace Diagnosis.Data.Versions.Client
 {
     [Migration(201412111200)]
     public class AddPassportTable : Migration

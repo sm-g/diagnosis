@@ -3,7 +3,7 @@ using FluentMigrator;
 using System;
 using System.Linq;
 
-namespace Diagnosis.Data.Versions.Off
+namespace Diagnosis.Data.Versions.Client.Off
 {
     [Migration(201503251200)]
     public class AddVocabulary : SyncronizedMigration
@@ -47,7 +47,7 @@ namespace Diagnosis.Data.Versions.Off
 
             Alter.Table(Names.Doctor)
                 .AddColumn(Names.Col.DoctorCustomVocabulary).AsGuid().Nullable().ForeignKey(Names.FK.Doc_Voc, Names.Vocabulary, "Id");
-            
+
         }
 
         public override void Down()

@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 
-namespace Diagnosis.Data.Versions.Off
+namespace Diagnosis.Data.Versions.Client.Off
 {
     [Migration(201501231200)]
     public class AddHolderHrUpdatedAt : Migration

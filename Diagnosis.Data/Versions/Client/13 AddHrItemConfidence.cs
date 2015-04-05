@@ -4,7 +4,7 @@ using FluentMigrator;
 using System;
 using System.Linq;
 
-namespace Diagnosis.Data.Versions.Off
+namespace Diagnosis.Data.Versions.Client.Off
 {
     [Migration(201503111200)]
     public class AddHrItemConfidence : SyncronizedMigration

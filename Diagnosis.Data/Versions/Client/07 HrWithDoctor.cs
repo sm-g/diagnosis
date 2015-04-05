@@ -5,7 +5,7 @@ using NHibernate.Linq;
 using System.Linq;
 using System;
 
-namespace Diagnosis.Data.Versions
+namespace Diagnosis.Data.Versions.Client
 {
     // this in initial-client.sql 
     //[Migration(201412191200)]

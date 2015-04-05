@@ -1,6 +1,6 @@
 ﻿using FluentMigrator;
 
-namespace Diagnosis.Data.Versions
+namespace Diagnosis.Data.Versions.Client
 {
     [Migration(201412080000)]
     public class CreateClientDb : Migration

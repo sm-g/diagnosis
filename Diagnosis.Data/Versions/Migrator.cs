@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Common.Types;
+using Diagnosis.Data.Versions.Client;
 using Diagnosis.Data.Versions.Server;
 using FluentMigrator;
 using FluentMigrator.Runner;
