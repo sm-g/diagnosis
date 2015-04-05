@@ -213,6 +213,7 @@ namespace Diagnosis.Models
         /// <summary>
         /// Осмотры, отсортированные по дате. Первый — самый ранний осмотр.
         /// </summary>
+        [Pure]
         public virtual IEnumerable<Appointment> GetOrderedAppointments()
         {
             Contract.Ensures(Contract.Result<IEnumerable<Appointment>>().IsOrdered(x => x.DateAndTime));
