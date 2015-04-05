@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Diagnosis.Common.Util
+namespace HdSystemLibrary.Reflection
 {
     /// <summary>
     /// from http://www.codeproject.com/Tips/353819/Get-all-Assembly-Information

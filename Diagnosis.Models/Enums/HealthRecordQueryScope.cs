@@ -1,4 +1,5 @@
-﻿using Diagnosis.Common.Util;
+﻿using Diagnosis.Common.Attributes;
+using Diagnosis.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;

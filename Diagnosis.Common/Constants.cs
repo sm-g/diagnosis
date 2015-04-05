@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common.Types;
 using Diagnosis.Common.Util;
+using HdSystemLibrary.Reflection;
 using System;
 using System.IO;
 using System.Linq;

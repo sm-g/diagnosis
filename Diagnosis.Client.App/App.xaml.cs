@@ -17,6 +17,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using NHibernate.Linq;
+using Diagnosis.Models;
+using Diagnosis.Common.Attributes;
 
 namespace Diagnosis.Client.App
 {

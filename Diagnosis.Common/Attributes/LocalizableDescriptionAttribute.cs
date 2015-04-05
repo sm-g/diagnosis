@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Resources;
 using System.Text;
 
-namespace Diagnosis.Common.Util
+namespace Diagnosis.Common.Attributes
 {
     /// <summary>
     /// Attribute for localization.
