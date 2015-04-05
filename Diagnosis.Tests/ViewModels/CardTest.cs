@@ -9,7 +9,7 @@ using System.Linq;
 namespace Diagnosis.Tests.ViewModels
 {
     [TestClass]
-    public class CardTest : InMemoryDatabaseTest
+    public class CardTest : ViewModelTest
     {
         private CardViewModel card;
 

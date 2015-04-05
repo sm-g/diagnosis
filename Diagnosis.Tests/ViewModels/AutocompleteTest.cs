@@ -8,7 +8,7 @@ using System.Linq;
 namespace Diagnosis.Tests.ViewModels
 {
     [TestClass]
-    public class AutocompleteTest : InMemoryDatabaseTest
+    public class AutocompleteTest : ViewModelTest
     {
         private Recognizer r;
         private new AutocompleteViewModel a;

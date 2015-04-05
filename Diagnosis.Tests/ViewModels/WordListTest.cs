@@ -9,7 +9,7 @@ using System.Linq;
 namespace Diagnosis.Tests.ViewModels
 {
     [TestClass]
-    public class WordListTest : InMemoryDatabaseTest
+    public class WordListTest : ViewModelTest
     {
         [TestInitialize]
         public void Init()

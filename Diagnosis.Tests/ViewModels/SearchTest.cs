@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Diagnosis.Tests.ViewModels
 {
     [TestClass]
-    public class SearchTest : InMemoryDatabaseTest
+    public class SearchTest : ViewModelTest
     {
         private SearchViewModel s;
 

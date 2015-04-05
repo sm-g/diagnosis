@@ -9,7 +9,7 @@ using System.Linq;
 namespace Diagnosis.Tests.ViewModels
 {
     [TestClass]
-    public class HrEditorTest : InMemoryDatabaseTest
+    public class HrEditorTest : ViewModelTest
     {
 
         private HrEditorViewModel e;
