@@ -143,44 +143,44 @@
     <Compile Include="..\GeneralAssemblyInfo.cs">
       <Link>Properties\GeneralAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="CommonTests\DateHelperTest.cs" />
-    <Compile Include="CommonTests\DateOffsetFormatterTest.cs" />
-    <Compile Include="CommonTests\TimeSpanFormatterTest.cs" />
-    <Compile Include="CommonTests\EnumerableExtensionsTest.cs" />
-    <Compile Include="DataTests\RelationsTest.cs" />
-    <Compile Include="DataTests\SyncerTest.cs" />
-    <Compile Include="DataTests\VocLoaderTest.cs" />
-    <Compile Include="DataTests\ScopesTest.cs" />
+    <Compile Include="Common\DateHelperTest.cs" />
+    <Compile Include="Common\DateOffsetFormatterTest.cs" />
+    <Compile Include="Common\TimeSpanFormatterTest.cs" />
+    <Compile Include="Common\EnumerableExtensionsTest.cs" />
+    <Compile Include="Model\RelationsTest.cs" />
+    <Compile Include="Data\SyncerTest.cs" />
+    <Compile Include="Data\VocLoaderTest.cs" />
+    <Compile Include="Data\ScopesTest.cs" />
     <Compile Include="SdfDatabaseTest.cs" />
-    <Compile Include="ModelTests\DoctorTest.cs" />
-    <Compile Include="ModelTests\CourseTest.cs" />
-    <Compile Include="ModelTests\MeasureTest.cs" />
-    <Compile Include="ModelTests\HrItemTest.cs" />
-    <Compile Include="ModelTests\HealthRecordTest.cs" />
-    <Compile Include="ModelTests\HrCategoryTest.cs" />
-    <Compile Include="ModelTests\VocabularyTest.cs" />
-    <Compile Include="SearchTests\DiagnosisSearchTest.cs" />
-    <Compile Include="ViewModelsTests\AutocompleteTest.cs" />
-    <Compile Include="ViewModelsTests\VocabularyListTest.cs" />
-    <Compile Include="ViewModelsTests\HrListTest.cs" />
-    <Compile Include="ViewModelsTests\CardTest.cs" />
-    <Compile Include="CommonTests\DateFormatterTest.cs" />
-    <Compile Include="CommonTests\DateOffsetTest.cs" />
-    <Compile Include="DataTests\PersistTest.cs" />
+    <Compile Include="Model\DoctorTest.cs" />
+    <Compile Include="Model\CourseTest.cs" />
+    <Compile Include="Model\MeasureTest.cs" />
+    <Compile Include="Model\HrItemTest.cs" />
+    <Compile Include="Model\HealthRecordTest.cs" />
+    <Compile Include="Model\HrCategoryTest.cs" />
+    <Compile Include="Model\VocabularyTest.cs" />
+    <Compile Include="Search\DiagnosisSearchTest.cs" />
+    <Compile Include="ViewModels\AutocompleteTest.cs" />
+    <Compile Include="ViewModels\VocabularyListTest.cs" />
+    <Compile Include="ViewModels\HrListTest.cs" />
+    <Compile Include="ViewModels\CardTest.cs" />
+    <Compile Include="Common\DateFormatterTest.cs" />
+    <Compile Include="Common\DateOffsetTest.cs" />
+    <Compile Include="Data\PersistTest.cs" />
     <Compile Include="InMemoryDatabaseTest.cs" />
-    <Compile Include="ModelTests\PatientTest.cs" />
+    <Compile Include="Model\PatientTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="DataTests\HrQueryTest.cs" />
-    <Compile Include="DataTests\StartsWithTest.cs" />
-    <Compile Include="CommonTests\StringExtensionTest.cs" />
-    <Compile Include="ViewModelsTests\HrEditorTest.cs" />
-    <Compile Include="ModelTests\OrderedBagTest.cs" />
-    <Compile Include="ViewModelsTests\RecognizerTest.cs" />
-    <Compile Include="ViewModelsTests\SearchTest.cs" />
-    <Compile Include="ViewModelsTests\WordListTest.cs" />
+    <Compile Include="Data\HrQueryTest.cs" />
+    <Compile Include="Data\StartsWithTest.cs" />
+    <Compile Include="Common\StringExtensionTest.cs" />
+    <Compile Include="ViewModels\HrEditorTest.cs" />
+    <Compile Include="Common\OrderedBagTest.cs" />
+    <Compile Include="ViewModels\RecognizerTest.cs" />
+    <Compile Include="ViewModels\SearchTest.cs" />
+    <Compile Include="ViewModels\WordListTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Diagnosis.Client.App\Diagnosis.Client.App.csproj">
