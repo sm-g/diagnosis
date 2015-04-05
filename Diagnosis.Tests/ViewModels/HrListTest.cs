@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
 
-namespace Tests.ViewModels
+namespace Diagnosis.Tests.ViewModels
 {
     [TestClass]
     public class HrListTest : InMemoryDatabaseTest

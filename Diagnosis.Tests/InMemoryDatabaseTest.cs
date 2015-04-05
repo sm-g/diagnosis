@@ -7,7 +7,7 @@ using NHibernate;
 using System;
 using System.Collections.Generic;
 
-namespace Tests
+namespace Diagnosis.Tests
 {
     [TestClass]
     public abstract class InMemoryDatabaseTest

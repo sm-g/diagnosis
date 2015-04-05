@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Tests.Data
+namespace Diagnosis.Tests.Data
 {
     [TestClass]
     public class VocLoaderTest : InMemoryDatabaseTest

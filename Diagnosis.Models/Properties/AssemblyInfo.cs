@@ -18,7 +18,7 @@ using System.Windows.Markup;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("22d9921a-7b02-4342-8ada-a7f7c092746b")]
 
-[assembly: InternalsVisibleTo("Tests")]
+[assembly: InternalsVisibleTo("Diagnosis.Tests")]
 [assembly: InternalsVisibleTo("Diagnosis.Data")]
 
 [assembly: XmlnsPrefix("http://schemas.smg.com/diagnosis", "diag")]

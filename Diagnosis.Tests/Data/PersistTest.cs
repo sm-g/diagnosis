@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
 
-namespace Tests.Data
+namespace Diagnosis.Tests.Data
 {
     [TestClass]
     public class PersistTest : InMemoryDatabaseTest

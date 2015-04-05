@@ -7,7 +7,7 @@ using Diagnosis.ViewModels.Search;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
-namespace Tests.Search
+namespace Diagnosis.Tests.Search
 {
     [TestClass]
     public class DiagnosisSearchTest : InMemoryDatabaseTest

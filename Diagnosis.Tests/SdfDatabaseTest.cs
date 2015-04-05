@@ -8,7 +8,7 @@ using NHibernate.Tool.hbm2ddl;
 using System;
 using System.IO;
 
-namespace Tests
+namespace Diagnosis.Tests
 {
     [TestClass]
     public abstract class SdfDatabaseTest

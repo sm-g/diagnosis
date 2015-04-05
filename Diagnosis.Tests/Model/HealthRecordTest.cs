@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
 
-namespace Tests.Model
+namespace Diagnosis.Tests.Model
 {
     [TestClass]
     public class HealthRecordTest : InMemoryDatabaseTest

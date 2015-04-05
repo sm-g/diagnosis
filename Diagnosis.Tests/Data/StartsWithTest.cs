@@ -4,7 +4,7 @@ using NHibernate.Linq;
 using System;
 using System.Linq;
 
-namespace Tests.Data
+namespace Diagnosis.Tests.Data
 {
     [TestClass]
     public class StartsWithTest : InMemoryDatabaseTest

@@ -4,7 +4,7 @@ using Diagnosis.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
-namespace Tests.Data
+namespace Diagnosis.Tests.Data
 {
     [TestClass]
     public class HrQueryTest : InMemoryDatabaseTest

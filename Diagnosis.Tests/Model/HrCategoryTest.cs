@@ -1,7 +1,7 @@
 ﻿using Diagnosis.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Tests.Model
+namespace Diagnosis.Tests.Model
 {
     [TestClass]
     public class HrCategoryTest

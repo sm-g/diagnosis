@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Tests.Common
+namespace Diagnosis.Tests.Common
 {
     [TestClass]
     public class EnumerableExtensionsTest

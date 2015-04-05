@@ -3,7 +3,7 @@ using Diagnosis.Models;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Tests.ViewModels
+namespace Diagnosis.Tests.ViewModels
 {
     [TestClass]
     public class SearchTest : InMemoryDatabaseTest

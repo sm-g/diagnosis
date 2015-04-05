@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Tests.Model
+namespace Diagnosis.Tests.Model
 {
     [TestClass]
     public class CourseTest

@@ -5,7 +5,7 @@ using Diagnosis.ViewModels.Autocomplete;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
-namespace Tests.ViewModels
+namespace Diagnosis.Tests.ViewModels
 {
     [TestClass]
     public class AutocompleteTest : InMemoryDatabaseTest

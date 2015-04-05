@@ -7,7 +7,7 @@ using System.Linq;
 using NHibernate.Linq;
 using System.Threading.Tasks;
 
-namespace Tests.Data
+namespace Diagnosis.Tests.Data
 {
     [TestClass]
     public class SyncerTest : SdfDatabaseTest

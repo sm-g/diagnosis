@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Tests.Common
+namespace Diagnosis.Tests.Common
 {
     [TestClass]
     public class DateHelperTest
