@@ -43,6 +43,16 @@ namespace Diagnosis.Models
         {
         }
 
+        public DateOffset(int? offset, DateUnit unit, Func<DateTime> now = null)
+            : this()
+        {
+            // для тестов
+            if (now != null)
+                Now = now();
+
+            SetOffset(offset, unit, true);
+        }
+
         protected DateOffset() { }
         /// <summary>
         /// Момент, с которого считается смещение.

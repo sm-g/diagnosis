@@ -153,6 +153,7 @@
     <Compile Include="Common\EnumerableExtensionsTest.cs" />
     <Compile Include="Data\QueryTest.cs" />
     <Compile Include="DbTest.cs" />
+    <Compile Include="Model\DateOffsetTest.cs" />
     <Compile Include="Model\RelationsTest.cs" />
     <Compile Include="Data\SyncerTest.cs" />
     <Compile Include="Data\VocLoaderTest.cs" />

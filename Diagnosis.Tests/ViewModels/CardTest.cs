@@ -265,7 +265,7 @@ namespace Diagnosis.Tests.ViewModels
             // открыли редактор
             card.HrList.SelectHealthRecord(hr[21]);
             card.ToogleHrEditor();
-            hr[21].FromYear = 2010;
+            hr[21].FromDate.Year = 2010;
 
             // завершили удаление
             OverlayService.Overlays[0].CloseCommand.Execute(true);

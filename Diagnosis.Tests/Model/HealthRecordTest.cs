@@ -32,19 +32,19 @@ namespace Diagnosis.Tests.Model
         public void Unit()
         {
             Assert.AreEqual(HealthRecordUnit.Year, hr[40].Unit);
-            Assert.AreEqual(2005, hr[40].FromYear);
+            Assert.AreEqual(2005, hr[40].FromDate.Year);
 
             Assert.AreEqual(HealthRecordUnit.Month, hr[20].Unit);
-            Assert.AreEqual(2014, hr[20].FromYear);
-            Assert.AreEqual(1, hr[20].FromMonth);
+            Assert.AreEqual(2014, hr[20].FromDate.Year);
+            Assert.AreEqual(1, hr[20].FromDate.Month);
 
             Assert.AreEqual(HealthRecordUnit.NotSet, hr[1].Unit);
-            Assert.AreEqual(2013, hr[1].FromYear);
-            Assert.AreEqual(11, hr[1].FromMonth);
+            Assert.AreEqual(2013, hr[1].FromDate.Year);
+            Assert.AreEqual(11, hr[1].FromDate.Month);
 
             Assert.AreEqual(HealthRecordUnit.ByAge, hr[2].Unit);
-            Assert.AreEqual(2013, hr[2].FromYear);
-            Assert.AreEqual(12, hr[2].FromMonth);
+            Assert.AreEqual(2013, hr[2].FromDate.Year);
+            Assert.AreEqual(12, hr[2].FromDate.Month);
         }
 
         [TestMethod]

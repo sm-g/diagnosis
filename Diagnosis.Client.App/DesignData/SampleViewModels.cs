@@ -192,8 +192,9 @@ namespace Diagnosis.Client.App.DesignData
             hr = new HealthRecord(course, doc)
             {
                 Category = cats[0],
-                FromMonth = 5,
+
             };
+            hr.FromDate.Month = 5;
             hr.AddItems(new IHrItemObject[] { word, word2, new Comment("без осложнений") });
         }
     }
