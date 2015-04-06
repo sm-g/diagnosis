@@ -9,26 +9,9 @@ CREATE TABLE [Word] (
 , [ParentID] uniqueidentifier NULL
 );
 GO
-CREATE TABLE [Vocabulary] (
-  [Id] uniqueidentifier NOT NULL ROWGUIDCOL DEFAULT NEWID()
-, [Title] nvarchar(50) NOT NULL
-);
-GO
-CREATE TABLE [WordTemplate] (
-  [Id] uniqueidentifier NOT NULL ROWGUIDCOL DEFAULT NEWID()
-, [Title] nvarchar(100) NOT NULL
-, [VocabularyID] uniqueidentifier NOT NULL
-);
-GO
-CREATE TABLE [VocabularyWords] (
-  [Id] uniqueidentifier NOT NULL ROWGUIDCOL DEFAULT NEWID()
-, [VocabularyID] uniqueidentifier NOT NULL
-, [WordID] uniqueidentifier NOT NULL
-);
-GO
 CREATE TABLE [UomType] (
   [Id] uniqueidentifier NOT NULL ROWGUIDCOL DEFAULT NEWID()
-, [Title] nvarchar(50) NOT NULL
+, [Title] nvarchar(20) NOT NULL
 , [Ord] int NOT NULL
 );
 GO
@@ -43,12 +26,6 @@ GO
 CREATE TABLE [Speciality] (
   [Id] uniqueidentifier NOT NULL ROWGUIDCOL DEFAULT NEWID()
 , [Title] nvarchar(50) NOT NULL
-);
-GO
-CREATE TABLE [SpecialityVocabularies] (
-  [Id] uniqueidentifier NOT NULL ROWGUIDCOL DEFAULT NEWID()
-, [VocabularyID] uniqueidentifier NOT NULL
-, [SpecialityID] uniqueidentifier NOT NULL
 );
 GO
 CREATE TABLE [Patient] (
@@ -109,7 +86,6 @@ CREATE TABLE [Doctor] (
 , [LastName] nvarchar(20) NOT NULL
 , [IsMale] bit NULL
 , [SpecialityID] uniqueidentifier NULL
-, [CustomVocabularyID] uniqueidentifier NULL
 );
 GO
 CREATE TABLE [Setting] (
@@ -172,19 +148,11 @@ GO
 
 ALTER TABLE [Word] ADD CONSTRAINT [PK__Word] PRIMARY KEY ([Id]);
 GO
-ALTER TABLE [Vocabulary] ADD CONSTRAINT [PK__Vocabulary] PRIMARY KEY ([Id]);
-GO
-ALTER TABLE [WordTemplate] ADD CONSTRAINT [PK__WordTemplate] PRIMARY KEY ([Id]);
-GO
-ALTER TABLE [VocabularyWords] ADD CONSTRAINT [PK__VocabularyWords] PRIMARY KEY ([Id]);
-GO
 ALTER TABLE [UomType] ADD CONSTRAINT [PK__UomType] PRIMARY KEY ([Id]);
 GO
 ALTER TABLE [Uom] ADD CONSTRAINT [PK__Uom] PRIMARY KEY ([Id]);
 GO
 ALTER TABLE [Speciality] ADD CONSTRAINT [PK__Speciality] PRIMARY KEY ([Id]);
-GO
-ALTER TABLE [SpecialityVocabularies] ADD CONSTRAINT [PK__SpecialityVocabularies] PRIMARY KEY ([Id]);
 GO
 ALTER TABLE [Patient] ADD CONSTRAINT [PK__Patient] PRIMARY KEY ([Id]);
 GO
@@ -231,17 +199,7 @@ GO
 
 ALTER TABLE [Word] ADD CONSTRAINT [FK_Word_Word] FOREIGN KEY ([ParentID]) REFERENCES [Word]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
-ALTER TABLE [WordTemplate] ADD CONSTRAINT [FK_WordTemplate_Vocabulary] FOREIGN KEY ([VocabularyID]) REFERENCES [Vocabulary]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-ALTER TABLE [VocabularyWords] ADD CONSTRAINT [FK_VocabularyWords_Vocabulary] FOREIGN KEY ([VocabularyID]) REFERENCES [Vocabulary]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-ALTER TABLE [VocabularyWords] ADD CONSTRAINT [FK_VocabularyWords_Word] FOREIGN KEY ([WordID]) REFERENCES [Word]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
 ALTER TABLE [Uom] ADD CONSTRAINT [FK_Uom_UomType] FOREIGN KEY ([UomTypeID]) REFERENCES [UomType]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-ALTER TABLE [SpecialityVocabularies] ADD CONSTRAINT [FK_SpecialityVocabularies_Speciality] FOREIGN KEY ([SpecialityID]) REFERENCES [Speciality]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-ALTER TABLE [SpecialityVocabularies] ADD CONSTRAINT [FK_SpecialityVocabularies_Vocabulary] FOREIGN KEY ([VocabularyID]) REFERENCES [Vocabulary]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 ALTER TABLE [IcdBlock] ADD CONSTRAINT [FK_IcdBlock_IcdChapter] FOREIGN KEY ([ChapterID]) REFERENCES [IcdChapter]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
@@ -255,8 +213,6 @@ GO
 ALTER TABLE [Doctor] ADD CONSTRAINT [FK_Doctor_Passport] FOREIGN KEY ([Id]) REFERENCES [Passport]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 ALTER TABLE [Doctor] ADD CONSTRAINT [FK_Doctor_Speciality] FOREIGN KEY ([SpecialityID]) REFERENCES [Speciality]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-ALTER TABLE [Doctor] ADD CONSTRAINT [FK_Doctor_Vocabulary] FOREIGN KEY ([CustomVocabularyID]) REFERENCES [Vocabulary]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 ALTER TABLE [Setting] ADD CONSTRAINT [FK_Setting_Doctor] FOREIGN KEY ([DoctorID]) REFERENCES [Doctor]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
