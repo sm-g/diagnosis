@@ -1,5 +1,7 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Common.Types;
+using Diagnosis.Common.Presentation.Converters;
+using Diagnosis.Models;
+using Diagnosis.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -7,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 
-namespace Diagnosis.Common.Presentation.Converters
+namespace Diagnosis.Client.App.Converters
 {
     /// <summary>
     /// Показывает текст DateUnit для DateOffset. 

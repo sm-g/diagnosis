@@ -34,9 +34,6 @@
     <conv:AgeToYearsLabel x:Key="AgeToLabel" />
     <conv:BoolToSexSign x:Key="SexToSign" />
 
-    <conv:UnitForOffsetToUnitLabel x:Key="UnitForOffsetToUnitLabel" />
-    <conv:DateOffsetToUnitLabel x:Key="DateOffsetToUnitLabel" />
-    <conv:DateOffsetToPartialDateLabel x:Key="DateOffsetToPartialDateLabel" />
     <conv:TimeSpanLabel x:Key="TimeSpanToLabel" />
     <conv:DateIntervalLabel x:Key="DateIntervalLabel" />
     <conv:DateLabel x:Key="DateLabel" />

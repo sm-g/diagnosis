@@ -10,4 +10,8 @@
     <conv:ScopeToLabel x:Key="ScopeToLabel" />
     <conv:ManToName x:Key="ManToName" />
 
+    <conv:UnitForOffsetToUnitLabel x:Key="UnitForOffsetToUnitLabel" />
+    <conv:DateOffsetToUnitLabel x:Key="DateOffsetToUnitLabel" />
+    <conv:DateOffsetToPartialDateLabel x:Key="DateOffsetToPartialDateLabel" />
+    
 </ResourceDictionary>
