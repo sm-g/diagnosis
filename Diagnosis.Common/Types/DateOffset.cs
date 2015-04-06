@@ -976,7 +976,7 @@ namespace Diagnosis.Common.Types
 
         public override string ToString()
         {
-            return string.Format("{0} {1} {2}.{3}.{4}", Offset, DateOffsetFormatter.GetUnitString(Offset, Unit), Year ?? 0, Month ?? 0, Day ?? 0);
+            return string.Format("{0} {1} {2}.{3}.{4}", Offset, Unit, Year ?? 0, Month ?? 0, Day ?? 0);
         }
 
         public override bool Equals(object obj)
