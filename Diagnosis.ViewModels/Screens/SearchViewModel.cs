@@ -9,7 +9,6 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
-using Diagnosis.Common.Types;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -229,47 +228,47 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public DateOffset HrDateOffsetLower
-        {
-            get
-            {
-                if (_hrDateOffsetLower == null)
-                {
-                    _hrDateOffsetLower = new DateOffset(null, DateUnit.Day);
-                    _hrDateOffsetLower.PropertyChanged += (s, e) =>
-                    {
-                        if (e.PropertyName == "Offset" || e.PropertyName == "Unit")
-                        {
-                            OnPropertyChanged("HrDateOffsetLower");
-                            OnPropertyChanged("AllEmpty");
-                            PrintHrDate();
-                        }
-                    };
-                }
-                return _hrDateOffsetLower;
-            }
-        }
+        //public DateOffset HrDateOffsetLower
+        //{
+        //    get
+        //    {
+        //        if (_hrDateOffsetLower == null)
+        //        {
+        //            _hrDateOffsetLower = new DateOffset(null, DateUnit.Day);
+        //            _hrDateOffsetLower.PropertyChanged += (s, e) =>
+        //            {
+        //                if (e.PropertyName == "Offset" || e.PropertyName == "Unit")
+        //                {
+        //                    OnPropertyChanged("HrDateOffsetLower");
+        //                    OnPropertyChanged("AllEmpty");
+        //                    PrintHrDate();
+        //                }
+        //            };
+        //        }
+        //        return _hrDateOffsetLower;
+        //    }
+        //}
 
-        public DateOffset HrDateOffsetUpper
-        {
-            get
-            {
-                if (_hrDateOffsetUpper == null)
-                {
-                    _hrDateOffsetUpper = new DateOffset(null, DateUnit.Day);
-                    _hrDateOffsetUpper.PropertyChanged += (s, e) =>
-                    {
-                        if (e.PropertyName == "Offset" || e.PropertyName == "Unit")
-                        {
-                            OnPropertyChanged("HrDateOffsetUpper");
-                            OnPropertyChanged("AllEmpty");
-                            PrintHrDate();
-                        }
-                    };
-                }
-                return _hrDateOffsetUpper;
-            }
-        }
+        //public DateOffset HrDateOffsetUpper
+        //{
+        //    get
+        //    {
+        //        if (_hrDateOffsetUpper == null)
+        //        {
+        //            _hrDateOffsetUpper = new DateOffset(null, DateUnit.Day);
+        //            _hrDateOffsetUpper.PropertyChanged += (s, e) =>
+        //            {
+        //                if (e.PropertyName == "Offset" || e.PropertyName == "Unit")
+        //                {
+        //                    OnPropertyChanged("HrDateOffsetUpper");
+        //                    OnPropertyChanged("AllEmpty");
+        //                    PrintHrDate();
+        //                }
+        //            };
+        //        }
+        //        return _hrDateOffsetUpper;
+        //    }
+        //}
 
         public bool AllWords
         {
@@ -332,7 +331,7 @@ namespace Diagnosis.ViewModels.Screens
             get
             {
                 return AppDateGt == null && AppDateLt == null
-                    && (HrDateOffsetLower.IsEmpty || HrDateOffsetUpper.IsEmpty)
+                  //  && (HrDateOffsetLower.IsEmpty || HrDateOffsetUpper.IsEmpty)
                     && SelectedCategories.Count() == 0
                     && Autocomplete.Tags.Count == 1;
             }
@@ -412,8 +411,8 @@ namespace Diagnosis.ViewModels.Screens
         {
             var options = new HrSearchOptions();
 
-            options.HealthRecordOffsetGt = HrDateOffsetLower;
-            options.HealthRecordOffsetLt = HrDateOffsetUpper;
+            //options.HealthRecordOffsetGt = HrDateOffsetLower;
+            //options.HealthRecordOffsetLt = HrDateOffsetUpper;
             options.AppointmentDateGt = DateHelper.NullableDate(AppYearLower, AppMonthLower, AppDayLower);
             options.AppointmentDateLt = DateHelper.NullableDate(AppYearUpper, AppMonthUpper, AppDayUpper);
             options.AllWords = AllWords;
@@ -485,8 +484,8 @@ namespace Diagnosis.ViewModels.Screens
 
         private void PrintHrDate()
         {
-            Debug.Print("HrDateOffsetUpper = {0}", HrDateOffsetUpper);
-            Debug.Print("HrDateOffsetLower = {0}", HrDateOffsetLower);
+            //Debug.Print("HrDateOffsetUpper = {0}", HrDateOffsetUpper);
+            //Debug.Print("HrDateOffsetLower = {0}", HrDateOffsetLower);
         }
 
         #region IDisposable

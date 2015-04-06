@@ -14,9 +14,22 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.GuidComb);
             });
 
-            Property(x => x.FromYear);
-            Property(x => x.FromMonth);
-            Property(x => x.FromDay);
+            Component(x => x.FromDate, m =>
+            {
+                m.Property(x => x.Day, x =>
+                {
+                    x.Column(Names.Col.HrFromDay);
+                });
+                m.Property(x => x.Month, x =>
+                {
+                    x.Column(Names.Col.HrFromMonth);
+                });
+                m.Property(x => x.Year, x =>
+                {
+                    x.Column(Names.Col.HrFromYear);
+                });
+            });
+
             Property(x => x.IsDeleted, m =>
             {
                 m.NotNullable(true);

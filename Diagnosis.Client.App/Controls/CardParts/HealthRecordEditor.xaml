@@ -138,7 +138,7 @@
                         <diag:AutoGreyableImage Source="{StaticResource completionModeImage}" />
                     </DockPanel>
                 </ToggleButton>
-                <!--<Button Command="{Binding AddIcdCommand}"
+                <Button Command="{Binding AddIcdCommand}"
                         ToolTip="Добавить МКБ">
                     <DockPanel>
                         <TextBlock Text="МКБ" />
@@ -149,7 +149,7 @@
                     <DockPanel>
                         <TextBlock Text="измерение" />
                     </DockPanel>
-                </Button>-->
+                </Button>
             </ToolBar>
 
             <Button DockPanel.Dock="Right"
@@ -212,7 +212,7 @@
                                     VerticalAlignment="Center">
                             <RadioButton IsChecked="{Binding ShowAsDate}"
                                          Margin="0 0 10 0"
-                                         Content="{Binding DateOffset.Do, Converter={StaticResource DateOffsetToPartialDateLabel}}" />
+                                         Content="{Binding DateOffset.PartialDateString}" />
                             <RadioButton IsChecked="{Binding ShowAsOffset}"
                                          Margin="0 0 10 0">
                                 <TextBlock>
@@ -334,7 +334,7 @@
                 </Grid>
             </DockPanel>
 
-            <DockPanel x:Name="offsetSettings">
+            <!--<DockPanel x:Name="offsetSettings">
                 <DockPanel.Resources>
                     <ObjectDataProvider x:Key="dateSetting"
                                         MethodName="GetValues"
@@ -367,7 +367,7 @@
                                  Mode="TwoWay" />
                     </ComboBox.SelectedItem>
                 </ComboBox>
-            </DockPanel>
+            </DockPanel>-->
         </StackPanel>
     </Grid>
 </UserControl>

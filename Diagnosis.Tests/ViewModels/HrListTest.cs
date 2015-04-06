@@ -332,9 +332,9 @@ namespace Diagnosis.Tests.ViewModels
                 Assert.AreEqual(hr[20].Appointment, new20.Appointment);
                 Assert.AreEqual(hr[20].Category, new20.Category);
                 Assert.AreEqual(hr[20].Course, new20.Course);
-                Assert.AreEqual(hr[20].FromDay, new20.FromDay);
-                Assert.AreEqual(hr[20].FromMonth, new20.FromMonth);
-                Assert.AreEqual(hr[20].FromYear, new20.FromYear);
+                Assert.AreEqual(hr[20].FromDate.Day, new20.FromDate.Day);
+                Assert.AreEqual(hr[20].FromDate.Month, new20.FromDate.Month);
+                Assert.AreEqual(hr[20].FromDate.Year, new20.FromDate.Year);
                 Assert.AreEqual(hr[20].Patient, new20.Patient);
                 Assert.AreEqual(hr[20].Unit, new20.Unit);
 

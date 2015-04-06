@@ -1,5 +1,4 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Common.Types;
 using Diagnosis.Models;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
@@ -62,11 +61,11 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return healthRecord.FromYear;
+                return healthRecord.FromDate.Year;
             }
             set
             {
-                healthRecord.FromYear = value;
+                healthRecord.FromDate.Year = value;
             }
         }
 
@@ -74,11 +73,11 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return healthRecord.FromMonth;
+                return healthRecord.FromDate.Month;
             }
             set
             {
-                healthRecord.FromMonth = value;
+                healthRecord.FromDate.Month = value;
             }
         }
 
@@ -86,11 +85,11 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return healthRecord.FromDay;
+                return healthRecord.FromDate.Day;
             }
             set
             {
-                healthRecord.FromDay = value;
+                healthRecord.FromDate.Day = value;
             }
         }
 
@@ -276,7 +275,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 this.source = source;
                 this.target = target;
-                sourceDo = DateOffsetViewModel.FromHr(source).Do;
+                sourceDo = source.FromDate;
             }
 
             public DateOffset Do { get { return sourceDo; } }
@@ -287,9 +286,9 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     return new RelayCommand(() =>
                     {
-                        target.FromYear = source.FromYear;
-                        target.FromMonth = source.FromMonth;
-                        target.FromDay = source.FromDay;
+                        target.FromDate.Year = source.FromDate.Year;
+                        target.FromDate.Month = source.FromDate.Month;
+                        target.FromDate.Day = source.FromDate.Day;
                     });
                 }
             }

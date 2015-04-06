@@ -8,7 +8,6 @@ using Diagnosis.Common;
 using Diagnosis.Data.Queries;
 using NHibernate;
 using NHibernate.Linq;
-using Diagnosis.Common.Types;
 
 namespace Diagnosis.ViewModels.Search
 {
@@ -56,22 +55,22 @@ namespace Diagnosis.ViewModels.Search
             return hrs.ToList();
         }
 
-        bool TestHrDate(HealthRecord hr, HrSearchOptions options)
-        {
-            if (options.HealthRecordOffsetLt.IsEmpty || options.HealthRecordOffsetGt.IsEmpty)
-                return true; // условия поиска не заданы
-            var hrDateOffset = new DateOffset(hr.FromYear, hr.FromMonth, hr.FromDay, () => hr.Appointment.DateAndTime);
-            if (hrDateOffset.Unit == DateUnit.Week)
-            {
-                ;
-            }
+        //bool TestHrDate(HealthRecord hr, HrSearchOptions options)
+        //{
+        //    if (options.HealthRecordOffsetLt.IsEmpty || options.HealthRecordOffsetGt.IsEmpty)
+        //        return true; // условия поиска не заданы
+        //    var hrDateOffset = new DateOffset(hr.FromYear, hr.FromMonth, hr.FromDay, () => hr.Appointment.DateAndTime);
+        //    if (hrDateOffset.Unit == DateUnit.Week)
+        //    {
+        //        ;
+        //    }
 
-            var hrDateLtThat = new DateOffset(options.HealthRecordOffsetLt, () => hr.Appointment.DateAndTime);
-            var grDateGtThat = new DateOffset(options.HealthRecordOffsetGt, () => hr.Appointment.DateAndTime);
+        //    var hrDateLtThat = new DateOffset(options.HealthRecordOffsetLt, () => hr.Appointment.DateAndTime);
+        //    var grDateGtThat = new DateOffset(options.HealthRecordOffsetGt, () => hr.Appointment.DateAndTime);
 
-            return !hrDateOffset.IsEmpty &&
-                   hrDateOffset <= hrDateLtThat &&
-                   hrDateOffset >= grDateGtThat;
-        }
+        //    return !hrDateOffset.IsEmpty &&
+        //           hrDateOffset <= hrDateLtThat &&
+        //           hrDateOffset >= grDateGtThat;
+        //}
     }
 }

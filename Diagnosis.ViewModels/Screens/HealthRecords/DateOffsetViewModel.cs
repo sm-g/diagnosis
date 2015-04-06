@@ -1,5 +1,4 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Common.Types;
 using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
@@ -40,22 +39,8 @@ namespace Diagnosis.ViewModels
             this.hr = hr;
             d.PropertyChanged += (s, e) =>
             {
-                switch (e.PropertyName)
-                {
-                    case "Year":
-                        hr.FromYear = d.Year;
-                        break;
-
-                    case "Month":
-                        hr.FromMonth = d.Month;
-                        break;
-
-                    case "Day":
-                        hr.FromDay = d.Day;
-                        break;
-                }
                 OnPropertyChanged(e.PropertyName);
-                OnPropertyChanged("Do");
+                OnPropertyChanged(() => PartialDateString);
                 RoundOffsetFor(RoundedUnit);
             };
             hr.PropertyChanged += healthRecord_PropertyChanged;
@@ -74,12 +59,6 @@ namespace Diagnosis.ViewModels
             Offset,
             AtAge
         }
-
-        public DateOffset Do
-        {
-            get { return d; }
-        }
-
         public int? Offset
         {
             get
@@ -203,6 +182,14 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        public string PartialDateString
+        {
+            get
+            {
+                return DateOffsetFormatter.GetPartialDateString(hr.FromDate);
+            }
+        }
+
         public DateTime Now
         {
             get { return d.Now; }
@@ -252,15 +239,14 @@ namespace Diagnosis.ViewModels
             {
                 Debug.Assert(healthRecord.CreatedAt != DateTime.MinValue);
 
-                var d = new DateOffset(healthRecord.FromYear, healthRecord.FromMonth, healthRecord.FromDay, () => healthRecord.CreatedAt);
-                d.UnitSettingStrategy = DateOffset.UnitSetting.SetsDate;
-                d.DateSettingStrategy = DateOffset.DateSetting.SetsUnitSilly;
+                // var d = new DateOffset(healthRecord.FromYear, healthRecord.FromMonth, healthRecord.FromDay, () => healthRecord.CreatedAt);
+
 
                 // один раз подписываемся на удаление записи у держателя
                 if (!dict.Keys.Any(hr => hr.Holder == healthRecord.Holder))
                     healthRecord.Holder.HealthRecordsChanged += Holder_HealthRecordsChanged;
 
-                res = new DateOffsetViewModel(d, healthRecord);
+                res = new DateOffsetViewModel(healthRecord.FromDate, healthRecord);
                 dict[healthRecord] = res;
             }
             return res;
@@ -312,18 +298,6 @@ namespace Diagnosis.ViewModels
             var hr = sender as HealthRecord;
             switch (e.PropertyName)
             {
-                case "FromDay":
-                    Day = hr.FromDay;
-                    break;
-
-                case "FromMonth":
-                    Month = hr.FromMonth;
-                    break;
-
-                case "FromYear":
-                    Year = hr.FromYear;
-                    break;
-
                 case "Unit":
                     var doUnit = hr.Unit.ToDateOffsetUnit();
                     RoundedUnit = doUnit ?? RoundedUnit;

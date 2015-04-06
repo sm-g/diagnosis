@@ -43,9 +43,9 @@ namespace Diagnosis.ViewModels.Screens
                 HolderId = (Guid)hr.Holder.Id,
                 DoctorId = hr.Doctor.Id,
                 CategoryId = hr.Category != null ? (Guid?)hr.Category.Id : null,
-                FromDay = hr.FromDay,
-                FromMonth = hr.FromMonth,
-                FromYear = hr.FromYear,
+                FromDay = hr.FromDate.Day,
+                FromMonth = hr.FromDate.Month,
+                FromYear = hr.FromDate.Year,
                 Unit = hr.Unit,
                 Chios = new List<ConfindenceHrItemObject>(hr.GetOrderedCHIOs())
             }).ToList();

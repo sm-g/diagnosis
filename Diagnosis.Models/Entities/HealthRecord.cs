@@ -118,32 +118,46 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual int? FromDay
+        private DateOffset _fromDate;
+
+        public virtual DateOffset FromDate
         {
-            get { return _day; }
+            get { return _fromDate ?? (_fromDate = new DateOffset(null, null, null)); }
             set
             {
-                SetProperty(ref _day, value, () => FromDay);
+                SetProperty(ref _fromDate, value, () => FromDate);
             }
         }
 
-        public virtual int? FromMonth
-        {
-            get { return _month; }
-            set
-            {
-                SetProperty(ref _month, value, () => FromMonth);
-            }
-        }
 
-        public virtual int? FromYear
-        {
-            get { return _year; }
-            set
-            {
-                SetProperty(ref _year, value, () => FromYear);
-            }
-        }
+        //public virtual int? FromDay
+        //{
+        //    get { return _fromDate.Day; }
+        //    set
+        //    {
+        //        _fromDate.Day = value;
+        //    }
+        //}
+
+        //public virtual int? FromMonth
+        //{
+        //    get { return _fromDate.Month; }
+        //    set
+        //    {
+        //        _fromDate.Month = value;
+
+        //    }
+        //}
+
+        //public virtual int? FromYear
+        //{
+        //    get { return _fromDate.Year; }
+        //    set
+        //    {
+        //        _fromDate.Year = value;
+
+        //    }
+        //}
 
         public virtual HealthRecordUnit Unit
         {
@@ -353,7 +367,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("hr({0}) {1} {2} {3}.{4}.{5} {6}", HrItems.FlattenString(), Ord, Category, FromYear, FromMonth, FromDay, this.ShortId());
+            return string.Format("hr({0}) {1} {2} {3}.{4}.{5} {6}", HrItems.FlattenString(), Ord, Category, FromDate.Year, FromDate.Month, FromDate.Day, this.ShortId());
         }
 
         public virtual int CompareTo(HealthRecord other)

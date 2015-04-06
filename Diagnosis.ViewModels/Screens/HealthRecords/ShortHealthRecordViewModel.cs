@@ -60,7 +60,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return healthRecord.FromYear;
+                return healthRecord.FromDate.Year;
             }
         }
 
@@ -68,7 +68,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return healthRecord.FromMonth;
+                return healthRecord.FromDate.Month;
             }
         }
 
@@ -76,7 +76,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return healthRecord.FromDay;
+                return healthRecord.FromDate.Day;
             }
         }
 
@@ -172,7 +172,7 @@ namespace Diagnosis.ViewModels.Screens
                 switch (healthRecord.Unit)
                 {
                     case HealthRecordUnit.NotSet:
-                        return DateOffsetFormatter.GetPartialDateString(DateOffset.Do);
+                        return DateOffsetFormatter.GetPartialDateString(healthRecord.FromDate);
 
                     case HealthRecordUnit.ByAge:
                         var age = DateHelper.GetAge(patient.BirthYear, patient.BirthMonth, patient.BirthDay, DateOffset.GetSortingDate());
