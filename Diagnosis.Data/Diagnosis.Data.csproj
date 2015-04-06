@@ -228,6 +228,7 @@
     <Compile Include="Sync\VocLoader.cs" />
     <Compile Include="Versions\Client\09 AddHolderHrUpdatedAt.cs" />
     <Compile Include="Versions\Client\13 AddHrItemConfidence.cs" />
+    <Compile Include="Versions\Client\16 AlterUomTypeTitleLength.cs" />
     <Compile Include="Versions\Client\15 AddVocabulary.cs" />
     <Compile Include="Versions\Client\14 AlterUomAbbrLength.cs" />
     <Compile Include="Versions\Client\11 AlterUomFactor.cs" />
