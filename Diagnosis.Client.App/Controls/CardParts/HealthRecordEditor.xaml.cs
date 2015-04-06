@@ -14,9 +14,6 @@ namespace Diagnosis.Client.App.Controls.CardParts
         public HealthRecordEditor()
         {
             InitializeComponent();
-            offsetSettings.Visibility = System.Windows.Visibility.Collapsed;
-#if !DEBUG
-#endif
         }
 
         private void grid_Drop(object sender, DragEventArgs e)

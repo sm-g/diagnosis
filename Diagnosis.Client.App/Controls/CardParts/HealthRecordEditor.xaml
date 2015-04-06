@@ -334,40 +334,7 @@
                 </Grid>
             </DockPanel>
 
-            <!--<DockPanel x:Name="offsetSettings">
-                <DockPanel.Resources>
-                    <ObjectDataProvider x:Key="dateSetting"
-                                        MethodName="GetValues"
-                                        ObjectType="{x:Type sys:Enum}">
-                        <ObjectDataProvider.MethodParameters>
-                            <x:Type TypeName="diag:DateOffset+DateSetting" />
-                        </ObjectDataProvider.MethodParameters>
-                    </ObjectDataProvider>
-                    <ObjectDataProvider x:Key="unitSetting"
-                                        MethodName="GetValues"
-                                        ObjectType="{x:Type sys:Enum}">
-                        <ObjectDataProvider.MethodParameters>
-                            <x:Type TypeName="diag:DateOffset+UnitSetting" />
-                        </ObjectDataProvider.MethodParameters>
-                    </ObjectDataProvider>
-                </DockPanel.Resources>
-                <Label Content="DateSetting" />
-                <ComboBox ItemsSource="{Binding Source={StaticResource dateSetting}}"
-                          Width="150">
-                    <ComboBox.SelectedItem>
-                        <Binding Path="DateOffset.DateSettingStrategy"
-                                 Mode="TwoWay" />
-                    </ComboBox.SelectedItem>
-                </ComboBox>
-                <Label Content="UnitSetting"
-                       Margin="10,0,0,0" />
-                <ComboBox ItemsSource="{Binding Source={StaticResource unitSetting}}">
-                    <ComboBox.SelectedItem>
-                        <Binding Path="DateOffset.UnitSettingStrategy"
-                                 Mode="TwoWay" />
-                    </ComboBox.SelectedItem>
-                </ComboBox>
-            </DockPanel>-->
+            
         </StackPanel>
     </Grid>
 </UserControl>
