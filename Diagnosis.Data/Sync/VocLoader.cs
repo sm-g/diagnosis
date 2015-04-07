@@ -178,7 +178,7 @@ namespace Diagnosis.Data.Sync
             var created = new List<Word>();
             foreach (var text in templates.Select(x => x.Title))
             {
-                var existing = WordQuery.ByTitle(session)(text); // для любого врача
+                var existing = WordQuery.ByTitle(session)(text); // для любого врача, в любом регистре
                 if (existing == null)
                 {
                     var w = new Word(text);
