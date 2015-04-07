@@ -74,5 +74,13 @@ namespace Diagnosis.Common
         {
             return string.Format(str, args);
         }
+
+        public static string Truncate(this string str, int maxLength)
+        {
+            if (str != null && str.Length > maxLength)
+                str = str.Substring(0, maxLength);
+
+            return str;
+        }
     }
 }

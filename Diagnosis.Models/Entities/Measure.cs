@@ -50,7 +50,9 @@ namespace Diagnosis.Models
         {
             get
             {
-                return Math.Round(DbValue * (Uom != null ? (double)Math.Pow(10, -Uom.Factor) : 1), Scale);
+                return Math.Round(
+                    DbValue * (Uom != null ? (double)Math.Pow(10, -Uom.Factor) : 1),
+                    Uom != null && (Uom.Factor % 1) == 0 ? Scale : 3); // для времени с дробным фактором округляем до 3
             }
             set
             {
@@ -70,7 +72,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("{0} {1}{2}", Word, Value, Uom != null ? " " + Uom.Abbr : "");
+            return string.Format("{0} {1}{2}", Word, Value, Uom != null ? "\u00A0" + Uom.Abbr.Replace(" ", "\u00A0") : ""); // nbsp in and before abbr
         }
 
         public virtual int CompareTo(IHrItemObject hio)

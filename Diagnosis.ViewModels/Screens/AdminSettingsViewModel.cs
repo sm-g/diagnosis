@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Controls;
 using System;
 using System.Diagnostics.Contracts;
 using System.Linq;

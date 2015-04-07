@@ -31,6 +31,7 @@ namespace Diagnosis.Models
         }
 
         public virtual event NotifyCollectionChangedEventHandler BlocksChanged;
+        public virtual event NotifyCollectionChangedEventHandler VocsChanged;
 
         public virtual string Title
         {
@@ -77,7 +78,25 @@ namespace Diagnosis.Models
             if (icdBlocks.Remove(block))
                 OnBlocksChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, block));
         }
+        public virtual Vocabulary AddVoc(Vocabulary voc)
+        {
+            if (!vocabularies.Contains(voc))
+            {
+                vocabularies.Add(voc);
+                voc.AddSpec(this);
+                OnVocsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, voc));
+            }
+            return voc;
+        }
 
+        public virtual void RemoveVoc(Vocabulary voc)
+        {
+            if (vocabularies.Remove(voc))
+            {
+                voc.RemoveSpec(this);
+                OnVocsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, voc));
+            }
+        }
         public override string ToString()
         {
             return Title;
@@ -91,6 +110,14 @@ namespace Diagnosis.Models
         protected virtual void OnBlocksChanged(NotifyCollectionChangedEventArgs e)
         {
             var h = BlocksChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
+        protected virtual void OnVocsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            var h = VocsChanged;
             if (h != null)
             {
                 h(this, e);

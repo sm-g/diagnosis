@@ -38,7 +38,7 @@ namespace Diagnosis.Data.Mappings
             {
                 s.Key(k =>
                 {
-                    k.Column("AppointmentID");
+                    k.Column(Names.Id.Appointment);
                 });
                 s.Inverse(true);
                 s.Cascade(Cascade.All | Cascade.DeleteOrphans);
@@ -49,13 +49,13 @@ namespace Diagnosis.Data.Mappings
             });
             ManyToOne(x => x.Course, m =>
             {
-                m.Column("CourseID");
+                m.Column(Names.Id.Course);
                 m.Cascade(Cascade.Persist);
                 m.NotNullable(true);
             });
             ManyToOne(x => x.Doctor, m =>
             {
-                m.Column("DoctorID");
+                m.Column(Names.Id.Doctor);
                 m.NotNullable(true);
             });
         }

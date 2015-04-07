@@ -73,6 +73,17 @@ namespace Diagnosis.Models
     #region EventArgs
 
     [Serializable]
+    public class HealthRecordEventArgs : EventArgs
+    {
+        public readonly HealthRecord hr;
+
+        [System.Diagnostics.DebuggerStepThrough]
+        public HealthRecordEventArgs(HealthRecord hr)
+        {
+            this.hr = hr;
+        }
+    }
+    [Serializable]
     public class DomainEntityEventArgs : EventArgs
     {
         public readonly IDomainObject entity;
@@ -83,7 +94,6 @@ namespace Diagnosis.Models
             this.entity = entity;
         }
     }
-
     [Serializable]
     public class HrsHolderEventArgs : EventArgs
     {
@@ -142,6 +152,7 @@ namespace Diagnosis.Models
             Contract.Ensures(test.HealthRecords.Count() == Contract.OldValue(test.HealthRecords.Count()) + 1);
             Contract.Ensures(test.HealthRecords.Contains(Contract.Result<HealthRecord>()));
             Contract.Ensures(Contract.Result<HealthRecord>().Words.All(x => x.HealthRecords.Contains(Contract.Result<HealthRecord>())));
+            Contract.Ensures(author.HealthRecords.Contains(Contract.Result<HealthRecord>()));
 
             return null;
         }

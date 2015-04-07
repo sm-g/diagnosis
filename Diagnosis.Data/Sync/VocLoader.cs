@@ -13,12 +13,10 @@ namespace Diagnosis.Data.Sync
     public class VocLoader
     {
         private ISession session;
-        private Vocabulary custom;
 
-        public VocLoader(ISession session, Doctor doc)
+        public VocLoader(ISession session)
         {
             this.session = session;
-            // custom = VocabularyQuery.Custom(session)(doc);
         }
 
         /// <summary>

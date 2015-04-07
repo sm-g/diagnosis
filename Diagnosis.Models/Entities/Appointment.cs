@@ -28,7 +28,7 @@ namespace Diagnosis.Models
             DateAndTime = DateTime.Now;
         }
 
-        protected Appointment()
+        protected internal Appointment()
         {
             _createdAt = DateTime.Now;
             _updatedAt = DateTime.Now;
@@ -36,7 +36,7 @@ namespace Diagnosis.Models
 
         public virtual event NotifyCollectionChangedEventHandler HealthRecordsChanged;
 
-        public virtual Course Course { get; protected set; }
+        public virtual Course Course { get; protected internal set; }
 
         public virtual Doctor Doctor { get; set; }
 
@@ -80,6 +80,7 @@ namespace Diagnosis.Models
         {
             var hr = new HealthRecord(this, author);
             healthRecords.Add(hr);
+            author.AddHr(hr);
             OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, hr));
 
             return hr;
@@ -93,7 +94,23 @@ namespace Diagnosis.Models
                 OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, hr));
             }
         }
+        /// <summary>
+        /// Меняет дату так, чтобы осмотр входил в интервал курса.
+        /// </summary>
+        public virtual void FitDateToCourse()
+        {
+            Contract.Ensures(
+                Course.Start <= DateAndTime && Course.IsEnded ?
+                Course.Start > Course.End || Course.End >= DateAndTime.Date : true); // курс может быть в некорректном состоянии (начало>конец)
+            Contract.Ensures(DateAndTime.TimeOfDay == Contract.OldValue(DateAndTime).TimeOfDay);
 
+            if (Course.Start > DateAndTime)
+                DateAndTime = Course.Start.Add(DateAndTime.TimeOfDay);
+            else if (Course.IsEnded && Course.End < DateAndTime)
+                DateAndTime = Course.End.Value.Add(DateAndTime.TimeOfDay);
+
+            Course.ResetValidationCache();
+        }
         public override string ToString()
         {
             return string.Format("app {0:d} {1}", DateAndTime, Doctor);

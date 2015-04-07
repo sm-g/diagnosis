@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
+using Diagnosis.Common.Types;
 
 namespace Diagnosis.ViewModels.Screens
 {

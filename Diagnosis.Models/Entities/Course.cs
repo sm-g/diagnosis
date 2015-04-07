@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Models.Validators;
+using Diagnosis.Common;
 using FluentValidation.Results;
 using Iesi.Collections.Generic;
 using System;
@@ -27,6 +28,7 @@ namespace Diagnosis.Models
 
             Patient = patient;
             LeadDoctor = doctor;
+
             Start = DateTime.Today;
         }
 
@@ -40,9 +42,9 @@ namespace Diagnosis.Models
 
         public virtual event NotifyCollectionChangedEventHandler AppointmentsChanged;
 
-        public virtual Patient Patient { get; protected set; }
+        public virtual Patient Patient { get; protected internal set; }
 
-        public virtual Doctor LeadDoctor { get; protected set; }
+        public virtual Doctor LeadDoctor { get; protected internal set; }
 
         public virtual DateTime Start
         {
@@ -112,25 +114,48 @@ namespace Diagnosis.Models
         /// <returns></returns>
         public virtual Appointment AddAppointment(Doctor doctor)
         {
-            Contract.Requires(!IsEnded);
+            Contract.Ensures(Contract.Result<Appointment>().Course.Equals(this));
+
             var a = new Appointment(this, doctor ?? LeadDoctor);
             appointments.Add(a);
+            a.Doctor.AddApp(a);
+
+            a.FitDateToCourse();
 
             OnAppointmentsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, a));
             return a;
         }
 
+        protected internal virtual void AddAppointment(Appointment app)
+        {
+            Contract.Requires(app.Course == null);
+
+            if (appointments.Add(app))
+            {
+                app.Course = this;
+                app.FitDateToCourse();
+
+                if (app.Doctor == null)
+                    app.Doctor = this.LeadDoctor;
+
+                OnAppointmentsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, app));
+            }
+        }
         public virtual void RemoveAppointment(Appointment app)
         {
             Contract.Requires(app.IsEmpty());
             if (appointments.Remove(app))
+            {
+                app.Doctor.RemoveApp(app);
                 OnAppointmentsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, app));
+            }
         }
 
         public virtual HealthRecord AddHealthRecord(Doctor author)
         {
             var hr = new HealthRecord(this, author);
             healthRecords.Add(hr);
+            author.AddHr(hr);
             OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, hr));
 
             return hr;
@@ -151,6 +176,10 @@ namespace Diagnosis.Models
         public virtual void Finish()
         {
             Contract.Requires(!IsEnded);
+            Contract.Ensures(IsEnded);
+            Contract.Ensures(appointments.Count == 0 && End == DateTime.Today ||
+                End >= GetOrderedAppointments().Last().DateAndTime.Date);
+
             var last = Appointments.OrderBy(x => x.DateAndTime).LastOrDefault();
             var end = last != null ? last.DateAndTime : DateTime.Now;
             End = end > DateTime.Now ? end : DateTime.Now;
@@ -162,10 +191,33 @@ namespace Diagnosis.Models
         }
 
         /// <summary>
+        /// Меняет начало-конец так, чтобы осмотры входили в этот интервал.
+        /// </summary>
+        public virtual void FitDatesToApps()
+        {
+            Contract.Ensures(appointments.Count == 0 ||
+                Start <= GetOrderedAppointments().First().DateAndTime && IsEnded ?
+                End >= GetOrderedAppointments().Last().DateAndTime.Date : true);
+
+            var last = GetOrderedAppointments().LastOrDefault();
+            var first = GetOrderedAppointments().FirstOrDefault();
+
+            if (End.HasValue && last != null && last.DateAndTime > End.Value)
+                End = last.DateAndTime;
+            if (first != null && first.DateAndTime < Start)
+                Start = first.DateAndTime;
+
+            appointments.ForAll(x => x.ResetValidationCache());
+        }
+
+        /// <summary>
         /// Осмотры, отсортированные по дате. Первый — самый ранний осмотр.
         /// </summary>
+        [Pure]
         public virtual IEnumerable<Appointment> GetOrderedAppointments()
         {
+            Contract.Ensures(Contract.Result<IEnumerable<Appointment>>().IsOrdered(x => x.DateAndTime));
+
             return Appointments.OrderBy(a => a);
         }
 

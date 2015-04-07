@@ -3,6 +3,7 @@ using Diagnosis.Models;
 using NHibernate;
 using NHibernate.Linq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Diagnosis.Data.Queries
@@ -10,17 +11,18 @@ namespace Diagnosis.Data.Queries
     public static class VocabularyQuery
     {
         /// <summary>
-        /// Возвращает пользовательский словарь.
+        /// Возвращает непользовательские словари.
         /// </summary>
-        public static Func<Doctor, Vocabulary> Custom(ISession session)
+        public static Func<IEnumerable<Vocabulary>> NonCustom(ISession session)
         {
-            return (Doctor d) =>
+            return () =>
             {
                 using (var tr = session.BeginTransaction())
                 {
                     var voc = session.Query<Vocabulary>()
-                        .Where(x => x.Doctor == d)
-                        .FirstOrDefault() ?? new Vocabulary(Vocabulary.CustomTitle, d);
+                        .ToList()
+                        .Where(x => !x.IsCustom)
+                        .ToList();
 
                     return voc;
                 }

@@ -137,10 +137,10 @@ namespace Diagnosis.Models
     /// Сущность элемента записи с уверенностью.
     /// </summary>
     [Serializable]
-    [DebuggerDisplay("CHIO {HIO} {Confindence}")]
+    [DebuggerDisplay("CHIO {HIO} {Confidence}")]
     public class ConfindenceHrItemObject : IDomainObject, IComparable<ConfindenceHrItemObject>
     {
-        public Confidence Confindence { get; set; }
+        public Confidence Confidence { get; set; }
 
         public IHrItemObject HIO { get; set; }
 
@@ -148,7 +148,7 @@ namespace Diagnosis.Models
         {
             Contract.Requires(hio != null);
 
-            Confindence = conf;
+            Confidence = conf;
             HIO = hio;
         }
 
@@ -157,7 +157,7 @@ namespace Diagnosis.Models
             int res = this.HIO.CompareTo(other.HIO);
             if (res != 0) return res;
 
-            return this.Confindence.CompareTo(other.Confindence);
+            return this.Confidence.CompareTo(other.Confidence);
         }
 
         public override bool Equals(object obj)
@@ -172,13 +172,27 @@ namespace Diagnosis.Models
         {
             unchecked
             {
-                return HIO.GetHashCode() * 37 + Confindence.GetHashCode();
+                return HIO.GetHashCode() * 37 + Confidence.GetHashCode();
             }
         }
 
         public override string ToString()
         {
-            return string.Format("CHIO {0} {1}", HIO, Confindence);
+            string suf;
+            switch (Confidence)
+            {
+                case Confidence.Notsure:
+                    suf = " (не уверен)";
+                    break;
+                case Confidence.Absent:
+                    suf = " (нет)";
+                    break;
+                default:
+                case Confidence.Present:
+                    suf = "";
+                    break;
+            }
+            return string.Format("{0}{1}", HIO, suf);
         }
     }
 }

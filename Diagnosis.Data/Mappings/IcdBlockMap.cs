@@ -16,7 +16,7 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.Title, m =>
             {
                 m.NotNullable(true);
-                m.UniqueKey("BlockCode");
+                m.UniqueKey(Names.Unique.BlockCode);
             });
             Property(x => x.Code, m =>
             {
@@ -26,20 +26,21 @@ namespace Diagnosis.Data.Mappings
             //{
             //    s.Key(k =>
             //    {
-            //        k.Column("IcdBlockID");
+            //        k.Column(Names.Id.IcdBlock);
             //    });
             //    s.Inverse(true);
-            //    s.Cascade(Cascade.All | Cascade.DeleteOrphans);
+            //    s.Cascade(Cascade.None);
             //    s.Access(Accessor.Field);
             //}, r =>
             //{
             //    r.OneToMany();
             //});
+
             Set(x => x.IcdDiseases, s =>
             {
                 s.Key(k =>
                 {
-                    k.Column("IcdBlockID");
+                    k.Column(Names.Id.IcdBlock);
                 });
                 s.Inverse(true);
                 s.Cascade(Cascade.All | Cascade.DeleteOrphans);
@@ -50,7 +51,7 @@ namespace Diagnosis.Data.Mappings
             });
             ManyToOne(x => x.IcdChapter, m =>
             {
-                m.Column("ChapterID");
+                m.Column(Names.Id.IcdChapter);
                 m.NotNullable(true);
             });
         }

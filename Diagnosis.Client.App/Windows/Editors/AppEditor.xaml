@@ -5,9 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              xmlns:ex="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              Height="100"
              Width="250"
+             d:DataContext="{d:DesignInstance design:SampleAppointmentEditorViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="300"
              d:DesignWidth="300">
 
@@ -30,6 +32,15 @@
             <ex:TimePicker x:Name="time"
                            TextElement.FontSize="{StaticResource ContentFontSize}"
                            Value="{Binding Time, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+        </DockPanel>
+        <DockPanel Visibility="{Binding DateTimeInvalid, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Label />
+            <TextBlock TextElement.FontSize="{DynamicResource HelpFontSize}"
+                       ToolTip="Меняет курс осмотра так, чтобы осмотр был в интервале начало-конец курса.">
+                    <Hyperlink Command="{Binding CorrectCourseDatesCommand}">
+                        <Run>Исправить даты курса</Run>
+                    </Hyperlink>
+            </TextBlock>
         </DockPanel>
     </StackPanel>
 </UserControl>

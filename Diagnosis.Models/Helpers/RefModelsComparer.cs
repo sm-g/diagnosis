@@ -29,6 +29,18 @@ namespace Diagnosis.Models
             if (y == typeof(IcdBlock) && x == typeof(SpecialityIcdBlocks))
                 return -1;
 
+            // Speciality > SpecialityVocabularies
+            if (x == typeof(Speciality) && y == typeof(SpecialityVocabularies))
+                return 1;
+            if (y == typeof(Speciality) && x == typeof(SpecialityVocabularies))
+                return -1;
+
+            // Vocabulary > VocabularyWords
+            if (x == typeof(Vocabulary) && y == typeof(VocabularyWords))
+                return 1;
+            if (y == typeof(Vocabulary) && x == typeof(VocabularyWords))
+                return -1;
+
             // IcdBlock > IcdDisease
             if (x == typeof(IcdBlock) && y == typeof(IcdDisease))
                 return 1;

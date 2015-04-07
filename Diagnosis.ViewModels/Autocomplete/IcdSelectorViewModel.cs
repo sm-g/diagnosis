@@ -1,7 +1,9 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Common.Types;
 using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Controls;
 using Diagnosis.ViewModels.Search;
 using log4net;
 using System;
@@ -16,7 +18,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private static readonly ILog logger = LogManager.GetLogger(typeof(IcdSelectorViewModel));
         private static int MinQueryToExpandBlock = 3;
 
-        private ObservableCollection<DiagnosisViewModel> _chapters;
+        private AsyncObservableCollection<DiagnosisViewModel> _chapters;
         private IcdDisease _selected;
         private PopupSearchViewModel<IcdDisease> _diagnosisSearch;
         private Doctor doctor;
@@ -29,9 +31,8 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             _icdTopLevelOnly = doctor != null ? doctor.Settings.IcdTopLevelOnly : false;
 
-            _chapters = new ObservableCollection<DiagnosisViewModel>();
+            _chapters = new AsyncObservableCollection<DiagnosisViewModel>();
             CreateDiagnosisSearch();
-            SelectedIcd = initial; // TODO chapter пусты
 
             UpdateDiagnosisQueryCode(initial, true);
 
@@ -44,6 +45,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             HelpTopic = "icdselector";
             WithHelpButton = false;
 
+            SelectedIcd = initial;
             DiagnosisSearch.Filter.IsFocused = true; // TODO фокус на список если выбранно
         }
 
@@ -237,14 +239,14 @@ namespace Diagnosis.ViewModels.Autocomplete
                     bVm.IsExpanded = (bVm.UserExpaneded ?? false) ? true : // был раскрыт пользователем
                         (TypedEnough() && (bVm.UserExpaneded ?? true)); // или запрос достаточно точный и блок не был свернут
 
-                    bVm.Children.SyncWith(dVms, compareKey);
+                    bVm.Children.SyncWith(dVms);
                     return bVm;
                 }).ToList();
 
                 // глава раскрыта, если не была свернута пользователем
                 chVm.IsExpanded = chVm.UserExpaneded ?? true;
 
-                chVm.Children.SyncWith(bVms, compareKey);
+                chVm.Children.SyncWith(bVms);
                 return chVm;
             }).ToList();
             inMaking = false;
@@ -253,13 +255,13 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             // TODO длинный запрос — vm удаляются, сохранять UserExpaneded для каждой
 
-            Chapters.SyncWith(chVms, compareKey);
+            Chapters.SyncWith(chVms);
         }
 
         private bool TypedEnough()
         {
             // запрос не после выбора и длинный
-            return inFiltered && DiagnosisSearch.Filter.Query.Length >= MinQueryToExpandBlock;
+            return inFiltered && DiagnosisSearch.Filter.AutoFiltered;
         }
 
         private void CreateDiagnosisSearch()
@@ -267,7 +269,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             DiagnosisSearch = new PopupSearchViewModel<IcdDisease>(
                 DiagnosisQuery.StartingWith(Session)
                 );
-
+            DiagnosisSearch.Filter.AutoFilterMinQueryLength = MinQueryToExpandBlock;
             DiagnosisSearch.Filter.Cleared += (s, e) =>
             {
                 SelectedIcd = null;
@@ -294,14 +296,14 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             if (DiagnosisSearch != null)
             {
-                DiagnosisSearch.Filter.UpdateResultsOnQueryChanges = updateResult;
+                DiagnosisSearch.Filter.DoAutoFilter = updateResult;
 
                 if (d != null)
                     DiagnosisSearch.Filter.Query = d.Code;
                 else
                     DiagnosisSearch.Filter.Clear();
 
-                DiagnosisSearch.Filter.UpdateResultsOnQueryChanges = true;
+                DiagnosisSearch.Filter.DoAutoFilter = true;
             }
         }
 

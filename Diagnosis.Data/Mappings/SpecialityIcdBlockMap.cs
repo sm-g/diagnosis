@@ -15,12 +15,12 @@ namespace Diagnosis.Data.Mappings
 
             ManyToOne(x => x.Speciality, m =>
             {
-                m.Column("SpecialityID");
+                m.Column(Names.Id.Speciality);
                 m.NotNullable(true);
             });
             ManyToOne(x => x.IcdBlock, m =>
             {
-                m.Column("IcdBlockID");
+                m.Column(Names.Id.IcdBlock);
                 m.NotNullable(true);
             });
         }

@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Common.Types;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using NHibernate;
@@ -100,6 +101,12 @@ namespace Diagnosis.ViewModels.Autocomplete
             AddNotPersistedToSuggestions = true;
             CanChangeAddQueryToSuggstions = true;
             doctor = AuthorityController.CurrentDoctor;
+
+            AuthorityController.LoggedIn += (s, e) =>
+            {
+                // fix, search надо создавать после логина
+                doctor = AuthorityController.CurrentDoctor;
+            };
         }
 
         private bool CanMakeEntityFrom(string query)
@@ -252,15 +259,15 @@ namespace Diagnosis.ViewModels.Autocomplete
             Contract.Requires(query != null);
 
             // слова, доступные для ввода
-            var found = QueryWords(query, prevEntityBlank)
+            var wordsForDoctor = QueryWords(query, prevEntityBlank)
                     .Where(x => created.Contains(x) || doctor.Words.Contains(x));
 
             // кроме исключенных
             if (exclude != null)
-                found = found.Where(i => !exclude.Contains(i));
+                wordsForDoctor = wordsForDoctor.Where(i => !exclude.Contains(i));
 
             // по алфавиту
-            var results = new List<Word>(found.OrderBy(x => x.Title));
+            var results = new List<Word>(wordsForDoctor.OrderBy(x => x.Title));
 
             if (AddQueryToSuggestions)
             {
@@ -320,7 +327,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         }
 
         /// <summary>
-        /// Первое точно подходящее слово или новое
+        /// Первое точно подходящее слово из БД или новое.
         /// </summary>
         /// <param name="q"></param>
         /// <returns></returns>
@@ -360,8 +367,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             var unsaved = AddNotPersistedToSuggestions ?
                 created.Where(w => w.Title.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)) :
                 Enumerable.Empty<Word>();
-
-            //  Contract.Assume(unsaved.All(x => x.Vocabularies.Contains(AuthorityController.CurrentDoctor.CustomVoc)));
 
             var fromDB = ShowChildrenFirst ?
                 WordQuery.StartingWithChildrenFirst(session)(parent, query) :

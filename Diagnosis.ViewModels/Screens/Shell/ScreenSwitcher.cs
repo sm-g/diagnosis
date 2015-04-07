@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Common.Types;
 using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Diagnosis.ViewModels.Screens
         Login, Doctors, Patients, Words, Card, Sync, Vocabularies
     }
 
-    public class ScreenSwitcher : ViewModelBase
+    public class ScreenSwitcher : NotifyPropertyChangedBase
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(ScreenSwitcher));
         private List<Screen> history = new List<Screen>();
@@ -228,7 +229,7 @@ namespace Diagnosis.ViewModels.Screens
                         break;
 
                     case Screen.Vocabularies:
-                        CurrentView = new VocabularyListViewModel(Constants.ServerConnectionInfo);
+                        CurrentView = new VocabularySyncViewModel(Constants.ServerConnectionInfo);
                         break;
 
                     case Screen.Patients:

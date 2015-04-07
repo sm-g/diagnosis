@@ -2,7 +2,6 @@
 using Diagnosis.Models;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -15,6 +14,7 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Requires(voc != null);
             this.voc = voc;
             voc.PropertyChanged += voc_PropertyChanged;
+            voc.WordTemplatesChanged += voc_WordTemplatesChanged;
 
             SyncCheckedAndSelected = true;
         }
@@ -62,6 +62,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         public bool HasExistingTitle { get; set; }
+
         public bool WasEdited { get; set; }
 
         public override string this[string columnName]
@@ -88,6 +89,11 @@ namespace Diagnosis.ViewModels.Screens
             WasEdited = true;
         }
 
+        private void voc_WordTemplatesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(() => TemplatesCount);
+        }
+
         public override string ToString()
         {
             return voc.ToString();
@@ -98,6 +104,7 @@ namespace Diagnosis.ViewModels.Screens
             if (disposing)
             {
                 voc.PropertyChanged -= voc_PropertyChanged;
+                voc.WordTemplatesChanged -= voc_WordTemplatesChanged;
             }
             base.Dispose(disposing);
         }

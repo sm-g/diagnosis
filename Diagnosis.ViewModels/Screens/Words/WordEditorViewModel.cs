@@ -54,13 +54,13 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         /// <summary>
-        /// Нельзя ввести слово, которое уже есть в словаре врача.
+        /// Нельзя ввести слово, которое уже есть в словарях врача.
         /// </summary>
         private void TestExisting(WordViewModel vm)
         {
             vm.HasExistingTitle = dbWords.Any(w =>
                 AuthorityController.CurrentDoctor.Words.Contains(w) &&
-                w.Title == word.Title && w != word);
+                w.Title.MatchesAsStrings(word.Title) && w != word);
         }
 
         protected override void OnOk()

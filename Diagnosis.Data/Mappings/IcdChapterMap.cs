@@ -16,7 +16,7 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.Title, m =>
             {
                 m.NotNullable(true);
-                m.UniqueKey("ChpaterCode");
+                m.UniqueKey(Names.Unique.ChpaterCode);
             });
             Property(x => x.Code, m =>
             {
@@ -26,7 +26,7 @@ namespace Diagnosis.Data.Mappings
             {
                 s.Key(k =>
                 {
-                    k.Column("ChapterID");
+                    k.Column(Names.Id.IcdChapter);
                 });
                 s.Inverse(true);
                 s.Cascade(Cascade.All | Cascade.DeleteOrphans);

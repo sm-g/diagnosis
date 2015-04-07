@@ -11,7 +11,7 @@ namespace Diagnosis.Models.Validators
         {
             Func<Course, DateTime> firstAppDate = (x) =>
             {
-                var first = x.Appointments.OrderBy(a => a.DateAndTime).FirstOrDefault();
+                var first = x.GetOrderedAppointments().FirstOrDefault();
                 if (first != null)
                     return first.DateAndTime.Date;
                 else
@@ -19,7 +19,7 @@ namespace Diagnosis.Models.Validators
             };
             Func<Course, DateTime> lastAppDate = (x) =>
             {
-                var last = x.Appointments.OrderBy(a => a.DateAndTime).LastOrDefault();
+                var last = x.GetOrderedAppointments().LastOrDefault();
                 if (last != null)
                     return last.DateAndTime.Date;
                 else

@@ -2,6 +2,7 @@
 using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Controls;
 using Diagnosis.ViewModels.Search;
 using EventAggregator;
 using NHibernate.Linq;
@@ -35,8 +36,7 @@ namespace Diagnosis.ViewModels.Screens
             Filter.Filtered += (s, e) =>
             {
                 // показываем только слова, доступные врачу
-                MakeVms(Filter.Results
-                    .Where(x => doctor.Words.Contains(x)));
+                MakeVms(Filter.Results.Where(x => doctor.Words.Contains(x)));
             };
             Filter.Clear(); // показываем все
 

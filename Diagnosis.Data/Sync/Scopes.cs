@@ -33,45 +33,48 @@ namespace Diagnosis.Data.Sync
         private static string stagingSchema = "staging";
         private static string referenceSchema = "dbo";
 
-        // parent before child
+        // parent before child (for SetCreateTableDefault)
         private static string[] icdTableNames = new[] {
-                Names.IcdChapterTbl,
-                Names.IcdBlockTbl,
-                Names.IcdDiseaseTbl,
+                Names.IcdChapter,
+                Names.IcdBlock,
+                Names.IcdDisease,
             };
 
         private static string[] vocTableNames = new[] {
-                Names.VocabularyTbl,
-                Names.WordTemplateTbl,
-              //  Names.SpecialityTbl,
-             //   Names.SpecialityVocabulariesTbl,
+                Names.Vocabulary,
+                Names.WordTemplate,
+                Names.Speciality,
+                Names.SpecialityVocabularies,
+                // do not sync VocabularyWords - its client-only
             };
 
         private static string[] referenceTableNames = new[] {
-                Names.HrCategoryTbl,
-                Names.UomTypeTbl,
-                Names.UomTbl,
-                Names.SpecialityTbl,
-                Names.SpecialityIcdBlocksTbl,
+                Names.HrCategory,
+                Names.UomType,
+                Names.Uom,
+                Names.Speciality,
+                Names.SpecialityIcdBlocks,
             };
 
         private static string[] userTableNames = new[] {
                 //Names.PassportTbl,
-                Names.DoctorTbl,
+                Names.Doctor,
                // Names.SettingTbl,
             };
 
         private static string[] holderTableNames = new[] {
-                Names.PatientTbl,
-                Names.CourseTbl,
-                Names.AppointmentTbl,
+                Names.Patient,
+                Names.Course,
+                Names.Appointment,
             };
 
         private static string[] hrTableNames = new[] {
-                Names.WordTbl,
-                Names.HealthRecordTbl,
-                Names.HrItemTbl,
+                Names.Word,
+                Names.HealthRecord,
+                Names.HrItem,
             };
+
+
         private static Dictionary<Scope, string> scopeNames = new Dictionary<Scope, string>
         {
             {Scope.Holder,      holderScope},
@@ -105,7 +108,9 @@ namespace Diagnosis.Data.Sync
         {
             return new List<Scope>()
             {
-                //Scope.Icd, МКБ не меняется
+#if !DEBUG		  
+                Scope.Icd,
+    #endif
                 Scope.Voc,
                 Scope.Reference,
             };
@@ -123,18 +128,23 @@ namespace Diagnosis.Data.Sync
             }
         }
 
-        public static Scope GetScope(this Type type)
+        public static IEnumerable<Scope> GetScopes(this Type type)
         {
             var tbl = Names.tblToTypeMap.FirstOrDefault(x => x.Value == type).Key;
             if (tbl == default(String))
                 throw new ArgumentOutOfRangeException("Type is not syncronized");
 
-            return scopeToTables.FirstOrDefault(x => x.Value.Contains(tbl)).Key;
+            return scopeToTables.Where(x => x.Value.Contains(tbl)).Select(x => x.Key);
         }
 
         public static IList<Scope> GetOrderedScopes()
         {
             return new List<Scope>(Enum.GetValues(typeof(Scope)).Cast<Scope>().OrderScopes());
+        }
+
+        public static IEnumerable<string> GetVocOnlyTablesToDownload()
+        {
+            return new[] { Names.Vocabulary, Names.WordTemplate, Names.SpecialityVocabularies };
         }
 
         public static IEnumerable<Scope> OrderScopes(this IEnumerable<Scope> scopes)
@@ -164,7 +174,7 @@ namespace Diagnosis.Data.Sync
             throw new NotImplementedException();
         }
 
-        public static string ToSchema(this string table)
+        public static string GetSchemaForTable(this string table)
         {
             return referenceTableNames.Contains(table) ? referenceSchema : stagingSchema;
         }

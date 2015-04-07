@@ -67,7 +67,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return startCourse ?? (startCourse = new VisibleRelayCommand(() =>
                 {
-                    AuthorityController.CurrentDoctor.StartCourse(Holder as Patient);
+                    (Holder as Patient).AddCourse(AuthorityController.CurrentDoctor);
                 },
                 () => Holder is Patient));
             }
@@ -81,7 +81,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     (Holder as Course).AddAppointment(AuthorityController.CurrentDoctor);
                 },
-                () => Holder is Course && !(Holder as Course).IsEnded));
+                () => Holder is Course));
             }
         }
 
@@ -99,7 +99,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    var course = AuthorityController.CurrentDoctor.StartCourse(Holder as Patient);
+                    var course = (Holder as Patient).AddCourse(AuthorityController.CurrentDoctor);
                     var app = course.AddAppointment(AuthorityController.CurrentDoctor);
                 },
                 () => Holder is Patient);

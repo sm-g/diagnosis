@@ -8,7 +8,7 @@
              Padding="{StaticResource SreenPadding}"
              d:DataContext="{d:DesignInstance diag:SpecialityListViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="300"
-             d:DesignWidth="500">
+             d:DesignWidth="600">
     <UserControl.Resources>
     </UserControl.Resources>
 
@@ -70,10 +70,25 @@
               d:DataContext="{d:DesignInstance diag:SpecialityEditorViewModel, IsDesignTimeCreatable=False}"
               Visibility="{Binding DataContext.Editor,
                                                Converter={StaticResource NotNullToVis}, ElementName=specialities}">
+            <Grid.Resources>
+                <DataTemplate x:Key="VocTemplate">
+                    <TextBlock Text="{Binding}" />
+                </DataTemplate>
+                <Style x:Key="VocStyle"
+                       TargetType="ListBoxItem"
+                       BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                    <Setter Property="IsSelected"
+                            Value="{Binding IsSelected}" />
+                </Style>
+            </Grid.Resources>
             <Grid.RowDefinitions>
                 <RowDefinition Height="36" />
                 <RowDefinition Height="auto" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="*" MaxHeight="150" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="10" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -85,7 +100,7 @@
 
             <TextBlock Grid.ColumnSpan="4"
                        FontSize="20"
-                       Text="Редактирование специальности"
+                       Text="{Binding Title}"
                        Style="{StaticResource ScreenTitle}" />
 
             <Label Content="Название"
@@ -94,35 +109,62 @@
                      Text="{Binding Speciality.Title, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                      Grid.Row="1" />
 
-            <Label Content="Выберите блоки МКБ"
+            <Label Content="Выберите класс или блок МКБ"
                    Grid.Row="1"
                    Grid.Column="3" />
-            <Label Content="Блоки МКБ"
-                   Grid.Row="2" />
-            <ListBox Grid.Column="1"
-                     BorderThickness="1"
-                     ItemsSource="{Binding Speciality.Blocks}"
-                     diag:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding Speciality.SelectedBlocks}"
-                     Grid.Row="2" />
 
+            <Label Content="Блоки МКБ"
+                   Grid.Row="3" />
+            <diag:SearchTree Grid.Column="1"
+                             Grid.Row="3"
+                             DataContext="{Binding SpecDiagnosisSearch}"
+                             Collection="{Binding DataContext.SpecChapters, ElementName=specEditor}"
+                             TreeBorderThickness="1" />
             <StackPanel Grid.Column="2"
                         VerticalAlignment="Center"
-                        Grid.Row="2">
+                        Grid.Row="3">
                 <Button Command="{Binding AddBlocksCommand}"
                         Margin="5 0"
                         Content="← _Добавить" />
                 <Button Command="{Binding RemoveBlocksCommand}"
                         Margin="5"
-                        Content="_Удалить →" />
+                        Content="_Убрать →" />
             </StackPanel>
 
             <diag:SearchTree DataContext="{Binding DiagnosisSearch}"
                              Collection="{Binding DataContext.Chapters, ElementName=specEditor}"
                              TreeBorderThickness="1"
                              Grid.Column="3"
-                             Grid.Row="2" />
+                             Grid.Row="3" />
 
-            <StackPanel Grid.Row="3"
+            <Label Content="Словари"
+                   Grid.Row="5" />
+            <ListBox Grid.Column="1"
+                     Grid.Row="5"
+                     ItemsSource="{Binding SpecVocs}"
+                     SelectionMode="Extended"
+                     ItemContainerStyle="{StaticResource VocStyle}"
+                     ItemTemplate="{StaticResource VocTemplate}" />
+            <StackPanel Grid.Column="2"
+                        VerticalAlignment="Center"
+                        Grid.Row="5">
+                <Button Command="{Binding AddVocsCommand}"
+                        Margin="5 0"
+                        Content="← _Добавить" />
+                <Button Command="{Binding RemoveVocsCommand}"
+                        Margin="5"
+                        Content="_Убрать →" />
+            </StackPanel>
+
+            <ListBox Grid.Column="3"
+                     Grid.Row="5"
+                     ItemsSource="{Binding AllVocs}"
+                     ItemTemplate="{StaticResource VocTemplate}"
+                     ItemContainerStyle="{StaticResource VocStyle}"
+                     SelectionMode="Extended">
+            </ListBox>
+
+            <StackPanel Grid.Row="7"
                         Style="{StaticResource DialogButtonsPanel}"
                         Grid.ColumnSpan="4">
                 <Button Name="saveButton"

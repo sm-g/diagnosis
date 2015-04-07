@@ -17,10 +17,9 @@ namespace Diagnosis.ViewModels.Screens
             spec = s;
             spec.PropertyChanged += spec_PropertyChanged;
             spec.BlocksChanged += spec_BlocksChanged;
+            spec.VocsChanged += spec_VocsChanged;
 
             var blockVms = spec.IcdBlocks.Select(x => new DiagnosisViewModel(x));
-            Blocks = new ObservableCollection<DiagnosisViewModel>(blockVms);
-            SelectedBlocks = new ObservableCollection<DiagnosisViewModel>();
         }
 
         #region Model
@@ -41,10 +40,6 @@ namespace Diagnosis.ViewModels.Screens
         public bool HasExistingTitle { get; set; }
 
         public bool WasEdited { get; set; }
-
-        public ObservableCollection<DiagnosisViewModel> Blocks { get; private set; }
-
-        public ObservableCollection<DiagnosisViewModel> SelectedBlocks { get; private set; }
 
         public override string this[string columnName]
         {
@@ -75,6 +70,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 spec.PropertyChanged -= spec_PropertyChanged;
                 spec.BlocksChanged -= spec_BlocksChanged;
+                spec.VocsChanged -= spec_VocsChanged;
             }
             base.Dispose(disposing);
         }
@@ -87,22 +83,14 @@ namespace Diagnosis.ViewModels.Screens
 
         private void spec_BlocksChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
-            {
-                foreach (IcdBlock item in e.NewItems)
-                {
-                    var vm = new DiagnosisViewModel(item);
-                    Blocks.Add(vm);
-                }
-            }
-            else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
-            {
-                foreach (IcdBlock item in e.OldItems)
-                {
-                    var vm = Blocks.Where(w => w.Icd as IcdBlock == item).FirstOrDefault();
-                    Blocks.Remove(vm);
-                }
-            }
+            WasEdited = true;
+
         }
+
+        void spec_VocsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            WasEdited = true;
+        }
+
     }
 }

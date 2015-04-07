@@ -60,6 +60,9 @@ namespace Diagnosis.Models
             _updatedAt = DateTime.Now;
         }
 
+        /// <summary>
+        /// Добавление/удаление элементов, изменение порядка элементов (reset).
+        /// </summary>
         public virtual event NotifyCollectionChangedEventHandler ItemsChanged;
 
         /// <summary>
@@ -280,7 +283,6 @@ namespace Diagnosis.Models
                 var needRem = toR.Contains(hrChios[i]);
                 if (needRem)
                 {
-                    toR.Remove(hrChios[i]);
                     itemsToRem.Add(this.HrItems.ElementAt(i));
                 }
                 else
@@ -291,7 +293,7 @@ namespace Diagnosis.Models
             // добавляем новые
             foreach (var item in toA)
             {
-                var n = new HrItem(this, item.HIO) { Confidence = item.Confindence };
+                var n = new HrItem(this, item.HIO) { Confidence = item.Confidence };
                 itemsToAdd.Add(n);
                 itemsToBe.Add(n);
             }
@@ -302,6 +304,7 @@ namespace Diagnosis.Models
             var dict = new Dictionary<IHrItemObject, int>();
 
             // ставим порядок
+            bool reordered = false;
             for (int i = 0; i < itemsToBe.Count; i++)
             {
                 var e = itemsToBe[i].Entity;
@@ -312,6 +315,8 @@ namespace Diagnosis.Models
                 Debug.Assert(index != -1, "entitiesToBe does not contain entity from itemsToBe");
 
                 dict[e] = index + 1;
+
+                reordered = itemsToBe[i].Ord != index;
                 itemsToBe[i].Ord = index;
             }
 
@@ -325,6 +330,10 @@ namespace Diagnosis.Models
             foreach (var item in itemsToAdd)
             {
                 this.AddItem(item);
+            }
+            if (reordered || itemsToRem.Count > 0 || itemsToAdd.Count > 0)
+            {
+                OnItemsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             }
         }
 
@@ -392,7 +401,6 @@ namespace Diagnosis.Models
                 {
                     IsDirty = true;
                 }
-                OnItemsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
             }
         }
 
@@ -413,13 +421,13 @@ namespace Diagnosis.Models
                 {
                     IsDirty = true;
                 }
-                OnItemsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
             }
         }
 
         protected internal virtual void OnDelete()
         {
             this.Words.ForEach(x => x.RemoveHr(this));
+            Doctor.RemoveHr(this);
         }
     }
 }

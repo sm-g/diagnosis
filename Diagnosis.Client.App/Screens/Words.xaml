@@ -58,7 +58,6 @@
                          WatermarkText="Фильтр"
                          Grid.Row="1" />
             
-            <!-- Set VirtualizationMode for IsSelected binding -->
             <DataGrid x:Name="dataGrid"
                       Grid.Row="2"
                       ItemsSource="{Binding Words}"

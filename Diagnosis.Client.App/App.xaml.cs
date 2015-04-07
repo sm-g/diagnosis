@@ -17,6 +17,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using NHibernate.Linq;
+using Diagnosis.Models;
+using Diagnosis.Common.Attributes;
 
 namespace Diagnosis.Client.App
 {
@@ -144,6 +147,14 @@ namespace Diagnosis.Client.App
             if (constrsettings != null)
                 conInfo = new ConnectionInfo(constrsettings.ConnectionString.ExpandVariables(), constrsettings.ProviderName);
 
+            try
+            {
+                SqlHelper.CreateSqlCeByConStr(conInfo.ConnectionString);
+            }
+            catch
+            {
+            }
+
             if (!NHibernateHelper.Default.Init(conInfo, Side.Client))
             {
                 demoMode = true;
@@ -154,7 +165,7 @@ namespace Diagnosis.Client.App
 
             // backup
 #if !DEBUG
-            var sdfPath = new SqlCeConnectionStringBuilder(NHibernateHelper.Default.ConnectionString).DataSource;
+            var sdfPath = new SqlCeConnectionStringBuilder(conInfo.ConnectionString).DataSource;
             FileHelper.Backup(sdfPath, Constants.BackupDir, 5, 7);
 #endif
 
@@ -166,14 +177,17 @@ namespace Diagnosis.Client.App
 #endif
             if (migrateUp.HasValue)
             {
+                var sw = Stopwatch.StartNew();
                 if (migrateUp.Value)
                 {
-                    new Migrator(NHibernateHelper.Default.ConnectionString, Constants.BackupDir).MigrateToLatest();
+                    new Migrator(conInfo, Side.Client, Constants.BackupDir).MigrateToLatest();
                 }
                 else
                 {
-                    new Migrator(NHibernateHelper.Default.ConnectionString, Constants.BackupDir).Rollback();
+                    new Migrator(conInfo, Side.Client, Constants.BackupDir).Rollback();
                 }
+                sw.Stop();
+                logger.DebugFormat("migration: {0}", sw.Elapsed);
             }
         }
 
@@ -202,7 +216,7 @@ namespace Diagnosis.Client.App
             };
             debWin.Show();
 
-            // NHibernateHelper.Default.ShowSql = !NHibernateHelper.Default.InMemory;
+            //NHibernateHelper.Default.ShowSql = true;
         }
 
         [DebuggerStepThrough]

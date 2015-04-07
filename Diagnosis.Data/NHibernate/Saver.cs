@@ -3,6 +3,8 @@ using Diagnosis.Models;
 using log4net;
 using NHibernate;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Diagnosis.Data
 {
@@ -18,21 +20,14 @@ namespace Diagnosis.Data
             this.session = session;
         }
 
-        public void SaveHealthRecord(HealthRecord hr)
-        {
-            if (hr.GetPatient() == savingPatient) return;
-
-            logger.DebugFormat("saving hr {0}", hr);
-
-            Save(hr);
-        }
-
         /// <summary>
         /// Сохраняет пациента, его курсы, осмотры и все записи.
         /// <param name="deleteEmptyHrs">Удалить все пустые записи.</param>
         /// </summary>
         public void SaveWithCleanup(Patient patient, bool deleteEmptyHrs = true)
         {
+            Contract.Ensures(!deleteEmptyHrs || savingPatient == patient || patient.GetAllHrs().All(x => !x.IsEmpty()));
+
             if (savingPatient == patient) return;
 
             logger.DebugFormat("saving patient {0}", patient);
@@ -55,21 +50,22 @@ namespace Diagnosis.Data
             savingPatient = null;
         }
 
-        public bool Delete(params IEntity[] domainObjects)
+        public bool Delete(params IEntity[] entities)
         {
-            if (domainObjects.Length == 0) return true;
-            logger.DebugFormat("deleting {0} IDomainObject", domainObjects.Length);
+            if (entities.Length == 0) return true;
+            logger.DebugFormat("deleting {0} IEntity", entities.Length);
             Debug.Assert(session.IsOpen);
 
             using (var t = session.BeginTransaction())
             {
                 try
                 {
-                    foreach (var item in domainObjects)
+                    foreach (var item in entities)
                     {
                         session.Delete(item);
                     }
                     t.Commit();
+                    logger.DebugFormat("deleted: {0}", string.Join<IEntity>("\n", entities));
                     return true;
                 }
                 catch (System.Exception e)
@@ -83,7 +79,6 @@ namespace Diagnosis.Data
 #endif
                 }
             }
-
         }
 
         public bool Save(params IEntity[] entities)
@@ -101,6 +96,7 @@ namespace Diagnosis.Data
                         session.SaveOrUpdate(item);
                     }
                     t.Commit();
+                    logger.DebugFormat("saved: {0}", string.Join<IEntity>("\n", entities));
                     return true;
                 }
                 catch (System.Exception e)

@@ -1,5 +1,4 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Data.Versions;
 using Microsoft.Synchronization;
 using Microsoft.Synchronization.Data;
 using Microsoft.Synchronization.Data.SqlServer;
@@ -12,6 +11,7 @@ using System.Data.SqlClient;
 using System.Data.SqlServerCe;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Diagnosis.Data.Sync
@@ -20,6 +20,7 @@ namespace Diagnosis.Data.Sync
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Syncer));
 
+        private static Dictionary<string, DbSyncTableDescription> map = new Dictionary<string, DbSyncTableDescription>();
         private static Stopwatch sw = new Stopwatch();
         private static string prefix = Scopes.syncPrefix;
 
@@ -73,12 +74,22 @@ namespace Diagnosis.Data.Sync
         /// <summary>
         /// ID добавленных во время последней синхронизации сущностей.
         /// </summary>
-        public Dictionary<Type, IEnumerable<object>> AddedIdsPerType { get; set; }
+        public Dictionary<Type, IEnumerable<object>> AddedOnServerIdsPerType { get; private set; }
 
         /// <summary>
-        /// ID сущностей, которые должны быть удалены.
+        /// ID сущностей, которые должны быть удалены на клиенте после загрузки с сервера.
         /// </summary>
-        public Dictionary<Type, IEnumerable<object>> DeletedIdsPerType { get; set; }
+        public Dictionary<Type, IEnumerable<object>> DeletedOnServerIdsPerType { get; private set; }
+
+        /// <summary>
+        /// Синхронизировать только эти сущности.
+        /// </summary>
+        public Dictionary<Type, IEnumerable<object>> IdsForSyncPerType { get; set; }
+
+        /// <summary>
+        /// Не синхронизировать новые сущности, проходящие фильтр.
+        /// </summary>
+        public Dictionary<Type, Func<DataRow, bool>> IgnoreAddingFilterPerType { get; set; }
 
         /// <summary>
         /// Sync scopes determined by <paramref name="from"/>. Specify conncetions in correct order in ctor.
@@ -97,33 +108,51 @@ namespace Diagnosis.Data.Sync
         /// <param name="from"></param>
         /// <param name="scopes"></param>
         /// <returns></returns>
-        public Task SendFrom(Side from, IEnumerable<Scope> scopes)
+        public async Task SendFrom(Side from, IEnumerable<Scope> scopes)
         {
             if (InSync)
-                return GetEndedTask();
+                return;
 
             InSync = true;
 
-            AddedIdsPerType = new Dictionary<Type, IEnumerable<object>>();
-            DeletedIdsPerType = new Dictionary<Type, IEnumerable<object>>();
-
             var t = new Task(() =>
             {
-                foreach (var scope in scopes.OrderScopes())
-                {
-                    var toContinue = Sync(from, scope);
-                    if (!toContinue)
-                        break;
-                }
+                SendFromCore(from, scopes);
             });
 
             t.Start();
-            t.ContinueWith((task) =>
+            await t;
             {
                 InSync = false;
                 OnSyncEnded(sw.Elapsed);
-            });
-            return t;
+            }
+        }
+
+        internal void SendFromCore(Side from, IEnumerable<Scope> scopes)
+        {
+            AddedOnServerIdsPerType = new Dictionary<Type, IEnumerable<object>>();
+            DeletedOnServerIdsPerType = new Dictionary<Type, IEnumerable<object>>();
+
+            Poster.PostMessage("+++\nGoing to sync scopes: '{0}' from {1}\n", string.Join("', '", scopes), from);
+            using (var serverConn = CreateConnection(Side.Server))
+            using (var clientConn = CreateConnection(Side.Client))
+            {
+                if (!serverConn.IsAvailable())
+                {
+                    CanNotConnect(serverConn);
+                    return;
+                }
+                if (!clientConn.IsAvailable())
+                {
+                    CanNotConnect(clientConn);
+                    return;
+                }
+
+                foreach (var scope in scopes.OrderScopes())
+                {
+                    Sync(from, scope, serverConn, clientConn);
+                }
+            }
         }
 
         public Task Deprovision(Side side, IEnumerable<Scope> scopesToDeprovision = null)
@@ -144,11 +173,15 @@ namespace Diagnosis.Data.Sync
 
             var t = new Task(() =>
             {
+                var scopes = scopesToDeprovision ?? Scopes.GetOrderedScopes();
+                if (scopes.Count() == 0)
+                    return;
+
+                Poster.PostMessage("Going to deprovision scopes: '{0}' in '{1}'\n", string.Join("', '", scopes), connstr);
                 using (var conn = CreateConnection(connstr, provider))
                 {
                     if (conn.IsAvailable())
                     {
-                        var scopes = scopesToDeprovision ?? Scopes.GetOrderedScopes();
                         foreach (Scope scope in scopes)
                         {
                             Deprovision(conn, scope);
@@ -166,9 +199,11 @@ namespace Diagnosis.Data.Sync
             return t;
         }
 
-        public static void BeforeMigrate(string connectionString, string provider, params string[] tables)
+        public static void BeforeMigrate(string connstr, string provider, params string[] tables)
         {
-            using (var con = CreateConnection(connectionString, provider))
+            Poster.PostMessage("BeforeMigrate tables: '{0}' in '{1}'\n", string.Join("', '", tables));
+
+            using (var con = CreateConnection(connstr, provider))
             {
                 if (!con.IsAvailable())
                 {
@@ -188,6 +223,7 @@ namespace Diagnosis.Data.Sync
                         }
                     }
                 }
+                Poster.PostMessage("Going to deprovision scopes: '{0}' in '{1}'\n", string.Join("', '", scopes, connstr));
                 foreach (var scope in scopes)
                 {
                     Deprovision(con, scope);
@@ -226,87 +262,90 @@ namespace Diagnosis.Data.Sync
         /// <param name="from"></param>
         /// <param name="scope"></param>
         /// <returns>Could connect</returns>
-        private bool Sync(Side from, Scope scope)
+        private void Sync(Side from, Scope scope, DbConnection serverConn, DbConnection clientConn)
         {
-            Poster.PostMessage("Begin sync scope '{0}' from {1}", scope, from);
-            using (var serverConn = CreateConnection(Side.Server))
-            using (var clientConn = CreateConnection(Side.Client))
+            Poster.PostMessage("Begin sync scope '{0}'", scope);
+
+            Provision(serverConn, scope, null);
+            Provision(clientConn, scope, serverConn);
+
+            var scopeName = scope.ToScopeString();
+            var clientProvider = CreateProvider(clientConn, scopeName);
+            var serverProvider = CreateProvider(serverConn, scopeName);
+
+            var syncOrchestrator = CreateOrch(from, clientProvider, serverProvider);
+
+            try
             {
-                if (!serverConn.IsAvailable())
+                Poster.PostMessage("Synchronize...");
+
+                var syncStats = syncOrchestrator.Synchronize();
+
+                // выводим статистику конфликтов
+                var conflicts = syncOrchestrator.ConflictsCounter.Keys.Where(k => syncOrchestrator.ConflictsCounter[k] > 0).ToList();
+                if (conflicts.Count > 0)
                 {
-                    CanNotConnect(serverConn);
-                    return false;
-                }
-                if (!clientConn.IsAvailable())
-                {
-                    CanNotConnect(clientConn);
-                    return false;
-                }
-
-                Provision(serverConn, scope, null);
-                Provision(clientConn, scope, serverConn);
-
-                var scopeName = scope.ToScopeString();
-                var clientProvider = CreateProvider(clientConn, scopeName);
-                var serverProvider = CreateProvider(serverConn, scopeName);
-
-                DownloadSyncOrchestrator syncOrchestrator;
-                switch (from)
-                {
-                    case Side.Client:
-                        syncOrchestrator = new DownloadSyncOrchestrator(
-                            clientProvider,
-                            serverProvider);
-                        break;
-
-                    default:
-                    case Side.Server:
-                        syncOrchestrator = new DownloadSyncOrchestrator(
-                            serverProvider,
-                            clientProvider,
-                            tablesToTrackAdding: Scope.Reference.ToTableNames(),  // на клиенте могут быть справочные сущности с другими ID, но такие же по значению
-                            tablesToTrackDeleting: Names.VocabularyTbl.ToEnumerable(), //  перед удалением словаря надо убрать связь со словами на клиенте
-                            tablesToIgnoreAdding: new[] { Names.SpecialityVocabulariesTbl, Names.VocabularyTbl, Names.WordTemplateTbl } // новые словари загружаются отдельно
-                          );
-                        break;
-                }
-
-                try
-                {
-                    Poster.PostMessage("Synchronize...");
-
-                    var syncStats = syncOrchestrator.Synchronize();
-
-                    // выводим статистику конфликтов
-                    var conflicts = syncOrchestrator.ConflictsCounter.Keys.Where(k => syncOrchestrator.ConflictsCounter[k] > 0).ToList();
-                    if (conflicts.Count > 0)
+                    Poster.PostMessage("Conflicts:");
+                    conflicts.ForAll((conflict) =>
                     {
-                        Poster.PostMessage("Conflicts:");
-                        conflicts.ForAll((conflict) =>
-                        {
-                            Poster.PostMessage("{0} = {1}", conflict, syncOrchestrator.ConflictsCounter[conflict]);
-                        });
-                    }
-
-                    // запоминаем добавленные строки
-                    foreach (var table in syncOrchestrator.AddedIdsPerTable.Keys)
-                    {
-                        AddedIdsPerType[Names.tblToTypeMap[table]] = syncOrchestrator.AddedIdsPerTable[table];
-                    }
-
-                    foreach (var table in syncOrchestrator.DeletedIdsPerTable.Keys)
-                    {
-                        DeletedIdsPerType[Names.tblToTypeMap[table]] = syncOrchestrator.DeletedIdsPerTable[table];
-                    }
-
-                    Poster.PostMessage("ChangesApplied: {0}, ChangesFailed: {1}\n", syncStats.DownloadChangesApplied, syncStats.DownloadChangesFailed);
+                        Poster.PostMessage("{0} = {1}", conflict, syncOrchestrator.ConflictsCounter[conflict]);
+                    });
                 }
-                catch (Exception ex)
+
+                // запоминаем добавленные строки
+                foreach (var table in syncOrchestrator.AddedIdsPerTable.Keys)
                 {
-                    Poster.PostMessage(ex);
+                    AddedOnServerIdsPerType[Names.tblToTypeMap[table]] = syncOrchestrator.AddedIdsPerTable[table];
                 }
-                return true;
+
+                foreach (var table in syncOrchestrator.DeletedIdsPerTable.Keys)
+                {
+                    DeletedOnServerIdsPerType[Names.tblToTypeMap[table]] = syncOrchestrator.DeletedIdsPerTable[table];
+                }
+
+                Poster.PostMessage("ChangesApplied: {0}, ChangesFailed: {1}", syncStats.DownloadChangesApplied, syncStats.DownloadChangesFailed);
             }
+            catch (Exception ex)
+            {
+                Poster.PostMessage(ex);
+            }
+            finally
+            {
+                Poster.PostMessage("End sync scope '{0}' \n", scope);
+            }
+        }
+
+        private DownloadSyncOrchestrator CreateOrch(Side from, RelationalSyncProvider clientProvider, RelationalSyncProvider serverProvider)
+        {
+            DownloadSyncOrchestrator syncOrchestrator;
+            switch (from)
+            {
+                case Side.Client:
+                    syncOrchestrator = new DownloadSyncOrchestrator(
+                        clientProvider,
+                        serverProvider);
+                    break;
+
+                default:
+                case Side.Server:
+                    syncOrchestrator = new DownloadSyncOrchestrator(
+                        serverProvider,
+                        clientProvider)
+                        {
+                            // на клиенте могут быть справочные сущности с другими ID, но такие же по значению
+                            TablesTrackAdding = Scope.Reference.ToTableNames(),
+                            //  перед удалением словаря надо убрать связь со словами на клиенте
+                            TablesTrackDeleting = Names.Vocabulary.ToEnumerable(),
+                            TableToIdsForSync = IdsForSyncPerType != null ? IdsForSyncPerType.ToDictionary(
+                                x => Names.GetTblByType(x.Key),
+                                x => x.Value) : null,
+                            TablesToIgnoreAddingFilter = IgnoreAddingFilterPerType != null ? IgnoreAddingFilterPerType.ToDictionary(
+                                x => Names.GetTblByType(x.Key),
+                                x => x.Value) : null,
+                        };
+                    break;
+            }
+            return syncOrchestrator;
         }
 
         private static RelationalSyncProvider CreateProvider(DbConnection conn, string scopeName)
@@ -323,29 +362,18 @@ namespace Diagnosis.Data.Sync
 
         private static void Provision(DbConnection con, Scope scope, DbConnection conToGetScopeDescr)
         {
-            var scopeDescr = new DbSyncScopeDescription(scope.ToScopeString());
-
-            var failedTables = AddTablesToScopeDescr(scope.ToTableNames(), scopeDescr, con);
-
             try
             {
                 var applied = false;
                 if (con is SqlCeConnection)
                 {
-                    var fromScope = false;
-                    if (failedTables.Count > 0 && conToGetScopeDescr != null)
-                    {
-                        Poster.PostMessage("Retrieve description for scope '{0}' from '{1}'", scope.ToScopeString(), con.ConnectionString);
-                        scopeDescr = GetScopeDescription(scope, conToGetScopeDescr);
-                        fromScope = true;
-                    }
-
-                    applied = ProvisionSqlCe(con as SqlCeConnection, scopeDescr, fromScope);
+                    applied = ProvisionSqlCe(con as SqlCeConnection, scope, conToGetScopeDescr);
                 }
                 else if (con is SqlConnection)
                 {
-                    applied = ProvisionSqlServer(con as SqlConnection, scopeDescr);
+                    applied = ProvisionSqlServer(con as SqlConnection, scope);
                 }
+
                 if (applied)
                     Poster.PostMessage("Provisioned scope '{0}' in '{1}'\n", scope.ToScopeString(), con.ConnectionString);
                 else
@@ -357,16 +385,24 @@ namespace Diagnosis.Data.Sync
             }
         }
 
-        private static bool ProvisionSqlCe(SqlCeConnection con, DbSyncScopeDescription scope, bool populateFromScope)
+        private static bool ProvisionSqlCe(SqlCeConnection con, Scope scope, DbConnection conToGetScopeDescr)
         {
-            var sqlceProv = new SqlCeSyncScopeProvisioning(con, scope);
+            var sqlceProv = new SqlCeSyncScopeProvisioning(con);
             sqlceProv.ObjectPrefix = prefix;
 
-            if (!sqlceProv.ScopeExists(scope.ScopeName))
+            if (!sqlceProv.ScopeExists(scope.ToScopeString()))
             {
-                if (populateFromScope)
+                var scopeDescr = new DbSyncScopeDescription(scope.ToScopeString());
+                var failedTables = AddTablesToScopeDescr(scope.ToTableNames(), scopeDescr, con);
+
+                if (failedTables.Count > 0 && conToGetScopeDescr != null)
+                {
+                    Poster.PostMessage("GetScopeDescription for scope '{0}' from '{1}'", scope.ToScopeString(), conToGetScopeDescr.ConnectionString);
                     //use scope description from server to intitialize the client
-                    sqlceProv.PopulateFromScopeDescription(scope);
+                    scopeDescr = GetScopeDescription(scope, conToGetScopeDescr);
+                }
+
+                sqlceProv.PopulateFromScopeDescription(scopeDescr);
 
                 sqlceProv.SetCreateTableDefault(DbSyncCreationOption.CreateOrUseExisting);
                 sqlceProv.Apply();
@@ -375,13 +411,18 @@ namespace Diagnosis.Data.Sync
             return false;
         }
 
-        private static bool ProvisionSqlServer(SqlConnection con, DbSyncScopeDescription scope)
+        private static bool ProvisionSqlServer(SqlConnection con, Scope scope)
         {
-            var sqlProv = new SqlSyncScopeProvisioning(con, scope);
+            var sqlProv = new SqlSyncScopeProvisioning(con);
             sqlProv.ObjectSchema = prefix;
 
-            if (!sqlProv.ScopeExists(scope.ScopeName))
+            if (!sqlProv.ScopeExists(scope.ToScopeString()))
             {
+                var scopeDescr = new DbSyncScopeDescription(scope.ToScopeString());
+                AddTablesToScopeDescr(scope.ToTableNames(), scopeDescr, con);
+
+                sqlProv.PopulateFromScopeDescription(scopeDescr);
+
                 sqlProv.SetCreateTableDefault(DbSyncCreationOption.CreateOrUseExisting);
                 sqlProv.Apply();
                 return true;
@@ -409,7 +450,7 @@ namespace Diagnosis.Data.Sync
                 else if (con is SqlConnection)
                     DeprovisionSqlServer(con as SqlConnection, scope.ToScopeString());
 
-                Poster.PostMessage("Deprovisioned '{0}' in '{1}'\n", scope.ToScopeString(), con.ConnectionString);
+                Poster.PostMessage("Deprovisioned '{0}'\n", scope.ToScopeString());
             }
             catch (Exception ex)
             {
@@ -448,15 +489,28 @@ namespace Diagnosis.Data.Sync
                 try
                 {
                     DbSyncTableDescription desc;
-                    if (connection is SqlCeConnection)
-                        desc = SqlCeSyncDescriptionBuilder.GetDescriptionForTable(name, connection as SqlCeConnection);
-                    else if (connection is SqlConnection)
-                        desc = SqlSyncDescriptionBuilder.GetDescriptionForTable(name.ToSchema() + '.' + name, connection as SqlConnection);
-                    else throw new ArgumentOutOfRangeException();
+
+                    // не создаем описание для таблицы повторно, после провизионирования другой области с этой таблицей
+                    var nameWithSchema = connection is SqlCeConnection ? name : name.GetSchemaForTable() + '.' + name;
+                    var nameWithConn = connection.ConnectionString + nameWithSchema;
+
+                    if (!map.TryGetValue(nameWithConn, out desc))
+                    {
+                        if (connection is SqlCeConnection)
+                            desc = SqlCeSyncDescriptionBuilder.GetDescriptionForTable(nameWithSchema, connection as SqlCeConnection);
+                        else if (connection is SqlConnection)
+                            desc = SqlSyncDescriptionBuilder.GetDescriptionForTable(nameWithSchema, connection as SqlConnection);
+
+                        map[nameWithConn] = desc;
+                    }
+                    else
+                    {
+                        Poster.PostMessage("Reuse created Description For Table '{0}'", name);
+                    }
 
                     desc.GlobalName = name;
                     scope.Tables.Add(desc);
-                    Poster.PostMessage("Table '{0}' added", name);
+                    Poster.PostMessage("Table '{0}' added, columns: {1}", name, string.Join(", ", desc.Columns.Select(x => x.UnquotedName)));
                 }
                 catch (Exception ex)
                 {
@@ -493,40 +547,34 @@ namespace Diagnosis.Data.Sync
             public static void PostMessage(string str)
             {
                 logger.DebugFormat(str);
+                Send(str);
+            }
+
+            public static void PostMessage(string str, params object[] p)
+            {
+                logger.DebugFormat(string.Format(str, p));
+                Send(string.Format(str, p));
+            }
+
+            public static void PostMessage(Exception ex)
+            {
+                logger.WarnFormat(ex.ToString());
+                Send(ex.Message);
+            }
+
+            private static void Send(string str)
+            {
                 var h = MessagePosted;
                 if (h != null)
                 {
                     h(typeof(Syncer), new StringEventArgs(str));
                 }
             }
-
-            public static void PostMessage(string str, params object[] p)
-            {
-                logger.DebugFormat(string.Format(str, p));
-                var h = MessagePosted;
-                if (h != null)
-                {
-                    h(typeof(Syncer), new StringEventArgs(string.Format(str, p)));
-                }
-            }
-
-            public static void PostMessage(Exception ex)
-            {
-                logger.DebugFormat(ex.ToString());
-                var h = MessagePosted;
-                if (h != null)
-                {
-                    h(typeof(Syncer), new StringEventArgs(ex.Message));
-                }
-            }
         }
 
         public class DownloadSyncOrchestrator : SyncOrchestrator
         {
-            public DownloadSyncOrchestrator(RelationalSyncProvider from, RelationalSyncProvider to,
-                IEnumerable<string> tablesToTrackAdding = null,
-                IEnumerable<string> tablesToTrackDeleting = null,
-                IEnumerable<string> tablesToIgnoreAdding = null)
+            public DownloadSyncOrchestrator(RelationalSyncProvider from, RelationalSyncProvider to)
             {
                 ConflictsCounter = new Dictionary<DbConflictType, int>();
                 AddedIdsPerTable = new Dictionary<string, IEnumerable<object>>();
@@ -536,122 +584,167 @@ namespace Diagnosis.Data.Sync
                 this.LocalProvider = to;
                 this.Direction = SyncDirectionOrder.Download;
 
-                from.ChangesSelected += (s, e) =>
-                {
-                    if (tablesToIgnoreAdding != null)
-                    {
-                        foreach (var table in tablesToIgnoreAdding)
-                        {
-                            if (e.Context.DataSet.Tables.Contains(table))
-                            {
-                                var dataTable = e.Context.DataSet.Tables[table];
-
-                                for (int j = 0; j < dataTable.Rows.Count; j++)
-                                {
-                                    DataRow row = dataTable.Rows[j];
-                                    if (row.RowState == DataRowState.Added)
-                                    {
-                                        // не синхронизируем новые словари
-                                        dataTable.Rows.Remove(row);
-                                        j--;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                };
-
-                to.ApplyChangeFailed += (s, e) =>
-                {
-#if DEBUG
-                    if (to.ScopeName == Scope.Icd.ToScopeString())
-                        return;
-#endif
-                    if (e.Conflict.Type == DbConflictType.ErrorsOccurred)
-                    {
-                        var rows = e.Conflict.LocalChange.Rows.Cast<DataRow>();
-                        Poster.PostMessage("ApplyChangeFailed. Error: {0}", e.Error);
-                    }
-                    //else
-                    //    Poster.PostMessage("ApplyChangeFailed. ConflictType: {0}", e.Conflict.Type);
-
-                    if (!ConflictsCounter.Keys.Contains(e.Conflict.Type))
-                        ConflictsCounter[e.Conflict.Type] = 0;
-
-                    ConflictsCounter[e.Conflict.Type]++;
-
-                    if (e.Conflict.Type != DbConflictType.ErrorsOccurred)
-                        e.Action = ApplyAction.RetryWithForceWrite;
-                };
-                to.ChangesApplied += (s, e) =>
-                {
-                    // запоминаем добавленные строки для желаемых таблиц
-                    if (tablesToTrackAdding != null)
-                    {
-                        foreach (var table in tablesToTrackAdding)
-                        {
-                            if (e.Context.DataSet.Tables.Contains(table))
-                            {
-                                var dataTable = e.Context.DataSet.Tables[table];
-                                var addedRows = new List<DataRow>();
-                                var deletedRows = new List<DataRow>();
-                                for (int j = 0; j < dataTable.Rows.Count; j++)
-                                {
-                                    DataRow row = dataTable.Rows[j];
-
-                                    if (row.RowState == DataRowState.Added)
-                                    {
-                                        addedRows.Add(row);
-                                    }
-                                    else if (row.RowState == DataRowState.Deleted)
-                                    {
-                                        deletedRows.Add(row);
-                                    }
-                                }
-                                AddedIdsPerTable.Add(dataTable.TableName, addedRows.Select(x => x["Id"]));
-
-                                //DeletedIdsPerTable.Add(
-                                //    dataTable.TableName,
-                                //    dataTable.Rows
-                                //        .Cast<DataRow>()
-                                //        .Where(x => x.RowState == DataRowState.Deleted)
-                                //        .Select(x => x["Id"]));
-                            }
-                        }
-                    }
-                    // запоминаем удаляемые строки для желаемых таблиц
-                    if (tablesToTrackDeleting != null)
-                    {
-                        foreach (var table in tablesToTrackDeleting)
-                        {
-                            if (e.Context.DataSet.Tables.Contains(table))
-                            {
-                                var dataTable = e.Context.DataSet.Tables[table];
-
-                                DeletedIdsPerTable.Add(
-                                    dataTable.TableName,
-                                    dataTable.Rows
-                                        .Cast<DataRow>()
-                                        .Where(x => x.RowState == DataRowState.Deleted)
-                                        .Select(x => x["Id"]));
-                            }
-                        }
-                    }
-                };
-                to.ApplyingChanges += (s, e) =>
-                {
-                };
+                from.ChangesSelected += from_ChangesSelected;
+                to.ApplyChangeFailed += to_ApplyChangeFailed;
+                to.ChangesApplied += to_ChangesApplied;
                 to.DbConnectionFailure += (s, e) =>
                 {
                     Poster.PostMessage("DbConnectionFailure: {0}", e.FailureException.Message);
                 };
             }
 
-            public Dictionary<DbConflictType, int> ConflictsCounter { get; set; }
+            // settings
+            public IEnumerable<string> TablesTrackAdding { get; set; }
 
-            public Dictionary<string, IEnumerable<object>> AddedIdsPerTable { get; set; }
+            public IEnumerable<string> TablesTrackDeleting { get; set; }
 
-            public Dictionary<string, IEnumerable<object>> DeletedIdsPerTable { get; set; }
+            public Dictionary<string, IEnumerable<object>> TableToIdsForSync { get; set; }
+
+            public Dictionary<string, Func<DataRow, bool>> TablesToIgnoreAddingFilter { get; set; }
+
+            // results
+            public Dictionary<DbConflictType, int> ConflictsCounter { get; private set; }
+
+            public Dictionary<string, IEnumerable<object>> AddedIdsPerTable { get; private set; }
+
+            public Dictionary<string, IEnumerable<object>> DeletedIdsPerTable { get; private set; }
+
+            private void from_ChangesSelected(object sender, DbChangesSelectedEventArgs e)
+            {
+                if (TablesToIgnoreAddingFilter != null)
+                {
+                    foreach (var table in TablesToIgnoreAddingFilter.Keys)
+                    {
+                        DoPerTableRow(e.Context.DataSet.Tables, table, (dataTable, row) =>
+                        {
+                            if (row.RowState == DataRowState.Added)
+                            {
+                                if (TablesToIgnoreAddingFilter[table](row))
+                                    dataTable.Rows.Remove(row);
+                            }
+                        });
+                    }
+                }
+                if (TableToIdsForSync != null)
+                {
+                    foreach (var table in TableToIdsForSync.Keys)
+                    {
+                        DoPerTableRow(e.Context.DataSet.Tables, table, (dataTable, row) =>
+                        {
+                            if (!TableToIdsForSync[table].Contains(row["Id"]))
+                            {
+                                dataTable.Rows.Remove(row);
+                            }
+                        });
+                    }
+                }
+            }
+
+            private void to_ChangesApplied(object sender, DbChangesAppliedEventArgs e)
+            {
+                // запоминаем добавленные строки для желаемых таблиц
+                if (TablesTrackAdding != null)
+                {
+                    foreach (var table in TablesTrackAdding)
+                    {
+                        if (e.Context.DataSet.Tables.Contains(table))
+                        {
+                            var dataTable = e.Context.DataSet.Tables[table];
+
+                            AddedIdsPerTable.Add(
+                                   dataTable.TableName,
+                                   dataTable.Rows
+                                       .Cast<DataRow>()
+                                       .Where(x => x.RowState == DataRowState.Added)
+                                       .Select(x => x["Id"])
+                                       .ToList());
+                        }
+                    }
+                }
+                // запоминаем удаляемые строки для желаемых таблиц
+                if (TablesTrackDeleting != null)
+                {
+                    foreach (var table in TablesTrackDeleting)
+                    {
+                        if (e.Context.DataSet.Tables.Contains(table))
+                        {
+                            var dataTable = e.Context.DataSet.Tables[table];
+
+                            DeletedIdsPerTable.Add(
+                                dataTable.TableName,
+                                dataTable.Rows
+                                    .Cast<DataRow>()
+                                    .Where(x => x.RowState == DataRowState.Deleted)
+                                    .Select(x => x["Id"])
+                                    .ToList());
+                        }
+                    }
+                }
+            }
+
+            private void to_ApplyChangeFailed(object sender, DbApplyChangeFailedEventArgs e)
+            {
+                var toProvider = sender as RelationalSyncProvider;
+
+#if DEBUG
+                if (toProvider.ScopeName == Scope.Icd.ToScopeString())
+                    return;
+#endif
+                if (e.Conflict.Type == DbConflictType.ErrorsOccurred)
+                {
+                    var rows = e.Conflict.LocalChange.Rows.Cast<DataRow>(); // null local
+                    Poster.PostMessage("ApplyChangeFailed. Error: {0}", e.Error);
+                }
+                else if (SyncTracer.IsVerboseEnabled() == false)
+                {
+                    SyncTracer.Warning(1, "CONFLICT DETECTED FOR CLIENT {0}", toProvider.Connection);
+                    SyncTracer.Warning(2, "** Local change **");
+                    SyncTracer.Warning(2, TableToStr(e.Conflict.LocalChange));
+                    SyncTracer.Warning(2, "** Remote change **");
+                    SyncTracer.Warning(2, TableToStr(e.Conflict.RemoteChange));
+                }
+
+                if (!ConflictsCounter.Keys.Contains(e.Conflict.Type))
+                    ConflictsCounter[e.Conflict.Type] = 0;
+
+                ConflictsCounter[e.Conflict.Type]++;
+
+                if (e.Conflict.Type != DbConflictType.ErrorsOccurred)
+                    e.Action = ApplyAction.RetryWithForceWrite;
+            }
+
+            private string TableToStr(DataTable table)
+            {
+                if (table == null)
+                    return string.Empty;
+                int rowCount = table.Rows.Count;
+                int colCount = table.Columns.Count;
+                var tableAsStr = new StringBuilder();
+
+                for (int r = 0; r < rowCount; r++)
+                {
+                    for (int i = 0; i < colCount; i++)
+                    {
+                        tableAsStr.Append(table.Rows[r][i] + " | ");
+                    }
+                    tableAsStr.AppendLine();
+                }
+                return tableAsStr.ToString();
+            }
+
+            private void DoPerTableRow(DataTableCollection tables, string table, Action<DataTable, DataRow> act)
+            {
+                if (tables.Contains(table))
+                {
+                    var dataTable = tables[table];
+                    var rows = dataTable.Rows.Cast<DataRow>().ToList();
+
+                    foreach (var row in rows)
+                    {
+                        act(dataTable, row);
+                    }
+                }
+            }
         }
     }
 }

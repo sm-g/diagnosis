@@ -17,8 +17,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{B431DCFC-50AB-43F2-BAC5-0C37128F5364}"
 	ProjectSection(SolutionItems) = preProject
 		Database\diagnosis.dgml = Database\diagnosis.dgml
-		Database\diagnosis.sdf = Database\diagnosis.sdf
-		Database\diagnosis.sqlite = Database\diagnosis.sqlite
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.Tests", "Diagnosis.Tests\Diagnosis.Tests.csproj", "{EC5E581D-F591-4A34-B390-0607BA8EE6FA}"
@@ -41,10 +39,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.Server.App", "Diagnosis.Server.App\Diagnosis.Server.App.csproj", "{FFD11AAF-2C02-4035-B5E7-E2BA72670435}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnosis.Common.Presentation", "Diagnosis.Common.Presentation\Diagnosis.Common.Presentation.csproj", "{25357875-228B-46A5-9FB8-1D03677416AF}"
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Diagnosis.Client.Setup", "Diagnosis.Client.Setup\Diagnosis.Client.Setup.vdproj", "{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}"
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Diagnosis.Server.Setup", "Diagnosis.Server.Setup\Diagnosis.Server.Setup.vdproj", "{9773EE62-03AD-4B68-9453-BCB8CA20BE40}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -179,30 +173,6 @@ Global
 		{25357875-228B-46A5-9FB8-1D03677416AF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{25357875-228B-46A5-9FB8-1D03677416AF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{25357875-228B-46A5-9FB8-1D03677416AF}.Release|x86.ActiveCfg = Release|Any CPU
-		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Debug|Any CPU.ActiveCfg = Debug
-		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Debug|Any CPU.Build.0 = Debug
-		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Debug|Mixed Platforms.ActiveCfg = Debug
-		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Debug|x86.ActiveCfg = Debug
-		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Debug|x86.Build.0 = Debug
-		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.InMemory|Any CPU.ActiveCfg = Release
-		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.InMemory|Mixed Platforms.ActiveCfg = Release
-		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.InMemory|x86.ActiveCfg = Release
-		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Release|Any CPU.ActiveCfg = Release
-		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Release|Mixed Platforms.ActiveCfg = Release
-		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Release|x86.ActiveCfg = Release
-		{8FFBA77F-F8A1-43FC-B066-CFF89F74BA08}.Release|x86.Build.0 = Release
-		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.Debug|Any CPU.ActiveCfg = Debug
-		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.Debug|Any CPU.Build.0 = Debug
-		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.Debug|Mixed Platforms.ActiveCfg = Debug
-		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.Debug|x86.ActiveCfg = Debug
-		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.Debug|x86.Build.0 = Debug
-		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.InMemory|Any CPU.ActiveCfg = Release
-		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.InMemory|Mixed Platforms.ActiveCfg = Release
-		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.InMemory|x86.ActiveCfg = Release
-		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.Release|Any CPU.ActiveCfg = Release
-		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.Release|Mixed Platforms.ActiveCfg = Release
-		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.Release|x86.ActiveCfg = Release
-		{9773EE62-03AD-4B68-9453-BCB8CA20BE40}.Release|x86.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

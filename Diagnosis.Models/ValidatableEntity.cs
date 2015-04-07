@@ -1,28 +1,43 @@
 ﻿using FluentValidation.Results;
 using System;
+using System.Collections.Generic;
 
 namespace Diagnosis.Models
 {
     [Serializable]
     public abstract class ValidatableEntity<T> : EntityBase<T>, IValidatable
     {
-        private bool? isValidCache;
+        private ValidationResult resultCache;
 
         protected ValidatableEntity()
         {
             this.PropertyChanged += (s, e) =>
             {
-                isValidCache = null;
+                resultCache = null;
             };
+        }
+
+        public virtual IList<ValidationFailure> GetErrors()
+        {
+            if (resultCache == null)
+            {
+                resultCache = SelfValidate();
+            }
+            return resultCache.Errors;
         }
 
         public virtual bool IsValid()
         {
-            if (isValidCache == null)
+            if (resultCache == null)
             {
-                isValidCache = SelfValidate().IsValid;
+                resultCache = SelfValidate();
             }
-            return isValidCache.Value;
+            return resultCache.IsValid;
+        }
+
+        public virtual void ResetValidationCache()
+        {
+            resultCache = null;
         }
 
         public abstract ValidationResult SelfValidate();
@@ -31,6 +46,9 @@ namespace Diagnosis.Models
     public interface IValidatable
     {
         ValidationResult SelfValidate();
+
+        IList<ValidationFailure> GetErrors();
+
         bool IsValid();
     }
 }

@@ -87,7 +87,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     SaveCommand.Execute(null);
 
-                    var course = AuthorityController.CurrentDoctor.StartCourse(patient);
+                    var course = patient.AddCourse(AuthorityController.CurrentDoctor);
                     var app = course.AddAppointment(AuthorityController.CurrentDoctor);
 
                     this.Send(Event.OpenAppointment, app.AsParams(MessageKeys.Appointment));

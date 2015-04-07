@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Common.Types;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

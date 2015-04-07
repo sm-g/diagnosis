@@ -39,8 +39,7 @@
     </UserControl.Resources>
 
     <UserControl.InputBindings>
-        <KeyBinding Modifiers="Control"
-                    Key="F"
+        <KeyBinding Gesture="Control+F"
                     Command="{Binding SendToSearchCommand}" />
         <KeyBinding Key="Delete"
                     Command="{Binding DeleteCommand}" />

@@ -23,7 +23,7 @@ namespace Diagnosis.Data.Mappings
             });
             ManyToOne(x => x.Doctor, m =>
             {
-                m.Column("DoctorID");
+                m.Column(Names.Id.Doctor);
             });
         }
     }

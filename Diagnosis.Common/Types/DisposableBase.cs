@@ -9,7 +9,7 @@ using System.Text;
 using System.Diagnostics;
 using NHibernate;
 
-namespace Diagnosis.Common
+namespace Diagnosis.Common.Types
 {
     public abstract class DisposableBase : IDisposable
     {

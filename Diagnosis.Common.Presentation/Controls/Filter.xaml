@@ -5,12 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:beh="clr-namespace:Diagnosis.Common.Presentation.Behaviors"
              xmlns:controls="clr-namespace:Diagnosis.Common.Presentation.Controls"
-             xmlns:diag="http://schemas.smg.com/diagnosis"
+             xmlns:design="clr-namespace:Diagnosis.Common.Presentation.DesignData"
              xmlns:mahControls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d"
              x:Name="filter"
              Focusable="True"
              GotFocus="filter_GotFocus"
+             d:DataContext="{d:DesignInstance design:SampleFilterViewModel,
+                                              IsDesignTimeCreatable=True}"
              d:DesignHeight="30"
              d:DesignWidth="300">
     <Grid>
@@ -21,28 +23,37 @@
 
         <TextBox x:Name="input"
                  GotKeyboardFocus="input_GotKeyboardFocus"
-                 beh:FocusExtension.IsFocused="{Binding IsFocused, Mode=TwoWay}"
-                 mahControls:TextBoxHelper.Watermark="{Binding WatermarkText, ElementName=filter}"
-                 Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}">
+                 beh:FocusExtension.IsFocused="{Binding IsFocused,
+                                                        Mode=TwoWay}"
+                 mahControls:TextBoxHelper.Watermark="{Binding WatermarkText,
+                                                               ElementName=filter}"
+                 Text="{Binding Query,
+                                UpdateSourceTrigger=PropertyChanged}">
             <TextBox.Style>
                 <Style TargetType="{x:Type TextBox}"
                        BasedOn="{StaticResource {x:Type TextBox}}">
-                    <Setter Property="mahControls:TextBoxHelper.ClearTextButton"
-                            Value="True" />
-                    <!--<Style.Triggers>
-                        <Trigger Property="mahControls:TextBoxHelper.HasText"
-                                 Value="False">
-                            <Setter Property="mahControls:TextBoxHelper.ClearTextButton"
-                                    Value="False" />
-                        </Trigger>
-                        <Trigger Property="mahControls:TextBoxHelper.HasText"
-                                 Value="True">
-                            <Setter Property="mahControls:TextBoxHelper.ClearTextButton"
-                                    Value="True" />
-                        </Trigger>
-                    </Style.Triggers>-->
+                    <Setter Property="mahControls:TextBoxHelper.ButtonContent">
+                        <Setter.Value>
+                            <Image Source="{StaticResource findImage}"
+                                   Width="16"
+                                   Height="16" />
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="mahControls:TextBoxHelper.ButtonCommand" Value="{Binding FilterCommand}" />
+                    <Setter Property="mahControls:TextBoxHelper.ClearTextButton" Value="True" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding AutoFiltered}"
+                                     Value="True">
+                            <Setter Property="mahControls:TextBoxHelper.ButtonContent" Value="r" />
+                            <Setter Property="mahControls:TextBoxHelper.ButtonCommand" Value="{Binding ClearCommand}" />
+                        </DataTrigger>
+                    </Style.Triggers>
                 </Style>
             </TextBox.Style>
+            <TextBox.InputBindings>
+                <KeyBinding Key="Enter"
+                            Command="{Binding FilterCommand}" />
+            </TextBox.InputBindings>
         </TextBox>
     </Grid>
 </UserControl>

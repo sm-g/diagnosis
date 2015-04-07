@@ -26,7 +26,7 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.Factor, m => m.NotNullable(true));
             ManyToOne(x => x.Type, m =>
             {
-                m.Column("UomTypeID");
+                m.Column(Names.Id.UomType);
                 m.NotNullable(true);
             });
         }

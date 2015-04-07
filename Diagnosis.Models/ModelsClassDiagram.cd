@@ -21,7 +21,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAIAIQCgACABqAQEADBQAEQEQAAFAAABCAmABAQACAg=</HashCode>
+      <HashCode>AAIAIYCgACABqAQEADBQAEQEQAAFAAABCAmABAQACAg=</HashCode>
       <FileName>Entities\Course.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -49,7 +49,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AACAQEAAAAAAAISEQBBQAEQQQAAEgEACkAAAABICCAg=</HashCode>
+      <HashCode>AACAQEAAAwAAAISMQhBQFEQQQQAEgkACkAAgABAiCAk=</HashCode>
       <FileName>Entities\Doctor.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -139,7 +139,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAgAAIAAAECEABAAAAAAAAAAQAAAAkIAAAICAAA=</HashCode>
+      <HashCode>AAAAAAggAIAAIECEABAAAAAAAgAAQAAAAksAAAICAAA=</HashCode>
       <FileName>Entities\Speciality.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -150,7 +150,7 @@
   <Class Name="Diagnosis.Models.Word" Collapsed="true">
     <Position X="11.5" Y="8.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAgAIAAIEQEABAEQAQQAAAEAAAAAAkgAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAgAIAAIEQEIBAEUAQQAAAEAAAAAAkgAAAAAAA=</HashCode>
       <FileName>Entities\Word.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -227,7 +227,7 @@
   <Class Name="Diagnosis.Models.UomType" Collapsed="true">
     <Position X="10" Y="11.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAIIAAAGQEAAAAAAAAAAAAAAAgAAAAAAAAQAA=</HashCode>
+      <HashCode>AAAAAAAAIIAAAGQEAAAAAAAAAAAAAAAgAAIAAAAAQAA=</HashCode>
       <FileName>Entities\UomType.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -244,20 +244,38 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Diagnosis.Models.Vocabulary" Collapsed="true">
-    <Position X="14.75" Y="7.75" Width="1.5" />
+    <Position X="15" Y="8.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="Specialities" Type="Diagnosis.Models.Speciality" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="15" Y="8.8" />
+        <Point X="14.258" Y="8.8" />
+        <Point X="14.258" Y="9.524" />
+        <Point X="13.802" Y="9.524" Type="JumpStart" />
+        <Point X="13.635" Y="9.524" Type="JumpEnd" />
+        <Point X="13.312" Y="9.524" />
+        <Point X="13.312" Y="11.75" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>CAgAAAAAAIAABMAEABAAAQCAAEAAABAAACAQQAAoAAA=</HashCode>
+      <HashCode>CQgAAAEAAIAEBOAEABAQRQCQAEAAAhQAACAQQAAoAAA=</HashCode>
       <FileName>Entities\Vocabulary.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Doctor" />
+    </ShowAsAssociation>
     <ShowAsCollectionAssociation>
       <Property Name="Words" />
+      <Property Name="Specialities" />
     </ShowAsCollectionAssociation>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.Models.WordTemplate" Collapsed="true">
     <Position X="14.75" Y="10" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAEIAAAEAEAAEAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAEIAAAEAEAAEAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
       <FileName>Entities\WordTemplate.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>

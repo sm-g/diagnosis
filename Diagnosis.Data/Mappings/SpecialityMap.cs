@@ -23,7 +23,7 @@ namespace Diagnosis.Data.Mappings
             {
                 s.Key(k =>
                 {
-                    k.Column("SpecialityID");
+                    k.Column(Names.Id.Speciality);
                 });
                 s.Inverse(true);
                 s.Cascade(Cascade.All);
@@ -35,18 +35,19 @@ namespace Diagnosis.Data.Mappings
 
             Set(x => x.Vocabularies, s =>
             {
-                s.Table("SpecialityVocabularies");
+                s.Table(Names.SpecialityVocabularies);
                 s.Key(k =>
                 {
-                    k.Column("SpecialityID");
+                    k.Column(Names.Id.Speciality);
                 });
-                s.Cascade(Cascade.None);
+                s.Inverse(true);
+                s.Cascade(Cascade.None); // dont touch other side, just delete relation
                 s.Access(Accessor.Field);
             }, r =>
             {
                 r.ManyToMany(x =>
                 {
-                    x.Column("VocabularyID");
+                    x.Column(Names.Id.Vocabulary);
                     x.Class(typeof(Vocabulary));
                 });
             });
@@ -55,10 +56,9 @@ namespace Diagnosis.Data.Mappings
             //{
             //    s.Key(k =>
             //    {
-            //        k.Column("SpecialityID");
+            //        k.Column(Names.Id.Speciality);
             //    });
-            //    s.Inverse(true);
-            //    s.Cascade(Cascade.All | Cascade.DeleteOrphans);
+            //    s.Cascade(Cascade.None);
             //    s.Access(Accessor.Field);
             //}, r =>
             //{
@@ -67,10 +67,10 @@ namespace Diagnosis.Data.Mappings
 
             Bag(x => x.IcdBlocks, s =>
             {
-                s.Table("SpecialityIcdBlocks");
+                s.Table(Names.SpecialityIcdBlocks);
                 s.Key(k =>
                 {
-                    k.Column("SpecialityID");
+                    k.Column(Names.Id.Speciality);
                 });
                 s.Cascade(Cascade.All);
                 s.Access(Accessor.Field);
@@ -78,7 +78,7 @@ namespace Diagnosis.Data.Mappings
             {
                 r.ManyToMany(x =>
                 {
-                    x.Column("IcdBlockID");
+                    x.Column(Names.Id.IcdBlock);
                     x.Class(typeof(IcdBlock));
                 });
             });

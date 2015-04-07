@@ -235,6 +235,7 @@ namespace Diagnosis.Models
         {
             var hr = new HealthRecord(this, author);
             healthRecords.Add(hr);
+            author.AddHr(hr);
             OnHealthRecordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, hr));
 
             return hr;
@@ -249,12 +250,27 @@ namespace Diagnosis.Models
             }
         }
 
+        public virtual Course AddCourse(Doctor doctor)
+        {
+            Contract.Requires(doctor != null);
+            Contract.Ensures(Contract.Result<Course>().Patient.Equals(this));
+
+            var course = new Course(this, doctor);
+
+            courses.Add(course);
+            doctor.AddCourse(course);
+
+            OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, course));
+            return course;
+        }
+
         public virtual void RemoveCourse(Course course)
         {
             Contract.Requires(course.IsEmpty());
 
             if (courses.Remove(course))
             {
+                course.LeadDoctor.RemoveCourse(course);
                 OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, course));
             }
         }
@@ -308,8 +324,12 @@ namespace Diagnosis.Models
 
         protected internal virtual void AddCourse(Course course)
         {
+            Contract.Requires(course.Patient == null);
+            //Contract.Requires(course.LeadDoctor != null);
+
             if (!courses.Contains(course))
             {
+                course.Patient = this;
                 courses.Add(course);
                 OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, course));
             }

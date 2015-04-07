@@ -10,11 +10,15 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Reflection;
 using System.IO;
+using System.Threading.Tasks;
+using Diagnosis.Common.Types;
 
 namespace Diagnosis.ViewModels
 {
     public abstract class ViewModelBase : DisposableBase, INotifyPropertyChanged, IDataErrorInfo
     {
+        protected readonly static TaskFactory uiTaskFactory;
+
         #region  INotifyPropertyChanged Members
 
         public virtual event PropertyChangedEventHandler PropertyChanged;
@@ -108,6 +112,11 @@ namespace Diagnosis.ViewModels
                     }
                     return null;
                 };
+            }
+            else
+            {
+                var uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+                uiTaskFactory = new TaskFactory(uiScheduler);
             }
         }
     }

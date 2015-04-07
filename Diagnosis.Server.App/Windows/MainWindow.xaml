@@ -28,6 +28,9 @@
     </Window.Resources>
     <Grid>
         <TabControl>
+            <TabItem Header="Словари">
+                <screens:Vocabularies />
+            </TabItem>
             <TabItem Header="Синхронизация">
                 <screens:Sync />
             </TabItem>

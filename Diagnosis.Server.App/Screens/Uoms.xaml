@@ -11,17 +11,15 @@
              d:DesignHeight="300"
              d:DesignWidth="600">
     <UserControl.Resources>
-        
     </UserControl.Resources>
     <UserControl.InputBindings>
-        <KeyBinding Modifiers="Control"
-                    Key="Enter"
+        <KeyBinding Gesture="Control+Enter"
                     Command="{Binding AddCommand}" />
         <KeyBinding Key="Delete"
                     Command="{Binding DeleteCommand}" />
     </UserControl.InputBindings>
 
-    <Grid MaxWidth="{StaticResource DataGridSreenMaxWidth}">
+    <Grid MaxWidth="700">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
@@ -42,39 +40,21 @@
         </ToolBar>
 
         <diag:Filter DataContext="{Binding Filter}"
-                       Grid.Row="1" />
+                     Grid.Row="1" />
 
         <!--  Set VirtualizationMode for IsSelected binding  -->
         <DataGrid x:Name="dataGrid"
                   Grid.Row="2"
                   ItemsSource="{Binding Uoms}"
                   SelectedItem="{Binding SelectedUom}"
+                  Style="{DynamicResource MyDataGridStyle}"
                   Visibility="{Binding NoUoms,
                                        Converter={StaticResource NegBooleanToVisibilityConverter}}"
-                  CellStyle="{StaticResource CellStyle}"
-                  GridLinesVisibility="None"
                   Margin="0,10,0,0"
-                  FontSize="15"
-                  IsReadOnly="True"
-                  SelectionUnit="FullRow"
                   SelectionMode="Single"
-                  AutoGenerateColumns="False"
-                  VirtualizingStackPanel.VirtualizationMode="Standard"
                   SelectedCellsChanged="dataGrid_SelectedCellsChanged">
-            <DataGrid.Resources>
-                <Style x:Key="Checkbox"
-                       TargetType="{x:Type CheckBox}"
-                       BasedOn="{StaticResource {x:Type CheckBox}}">
-                    <Setter Property="Focusable" Value="False" />
-                </Style>
-                <Style x:Key="RightTextBlock"
-                       TargetType="{x:Type TextBlock}"
-                       BasedOn="{StaticResource {x:Type TextBlock}}">
-                    <Setter Property="HorizontalAlignment" Value="Right" />
-                </Style>
-            </DataGrid.Resources>
             <DataGrid.Columns>
-               
+
                 <DataGridTextColumn Header="Описание"
                                     IsReadOnly="True"
                                     Binding="{Binding Description,
@@ -90,13 +70,13 @@
                                                       Mode=OneWay}" />
                 <DataGridCheckBoxColumn Header="Базовая"
                                         IsReadOnly="True"
-                                        ElementStyle="{StaticResource Checkbox}"
+                                        ElementStyle="{StaticResource DataGridCheckbox}"
                                         Binding="{Binding IsBase,
                                                           Mode=OneWay}" />
                 <DataGridTextColumn Header="Фактор"
                                     IsReadOnly="True"
-                                    ElementStyle="{StaticResource RightTextBlock}"
-                                                                        Binding="{Binding Factor,
+                                    ElementStyle="{StaticResource RightCellTextBlock}"
+                                    Binding="{Binding Factor,
                                                       Mode=OneWay}" />
             </DataGrid.Columns>
             <DataGrid.InputBindings>
@@ -104,23 +84,24 @@
                             Command="{Binding EditCommand}" />
                 <KeyBinding Key="Delete"
                             Command="{Binding DeleteCommand}" />-->
-                <KeyBinding Key="Enter"
-                            Modifiers="Control"
+                <KeyBinding Gesture="Control+Enter"
                             Command="{Binding AddCommand}"
                             CommandParameter="{Binding SelectedUom}" />
             </DataGrid.InputBindings>
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
-                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                    <Setter Property="IsSelected"
+                            Value="{Binding IsSelected, Mode=TwoWay}" />
                     <!--<Setter Property="diag:RowDblClick.DoubleClickCommand" Value="{Binding ElementName=dataGrid, Path=DataContext.EditCommand}" />-->
-                    <Setter Property="Tag" Value="{Binding DataContext, ElementName=dataGrid}" />
+                    <Setter Property="Tag"
+                            Value="{Binding DataContext, ElementName=dataGrid}" />
                     <!--<Setter Property="ContextMenu">
                         <Setter.Value>
                             <ContextMenu>
                                 <MenuItem Header="Изменить..."
                                           InputGestureText="F2"
                                           Command="{Binding EditCommand}" />
-                                
+
                                                          <MenuItem Header="Удалить"
                                           InputGestureText="Delete"
                                           Command="{Binding PlacementTarget.Tag.DeleteCommand,

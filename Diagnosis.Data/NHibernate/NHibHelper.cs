@@ -63,13 +63,22 @@ namespace Diagnosis.Data
         private ConnectionInfo connection;
         private bool useSavedCfg;
 
+        private bool inmem;
+
         protected NHibernateHelper()
         {
         }
 
         public static NHibernateHelper Default { get { return lazyInstance.Value; } }
-
-        public bool InMemory { get; set; }
+        public bool InMemory
+        {
+            get { return inmem; }
+            set
+            {
+                inmem = value;
+                if (value) connection = null;
+            }
+        }
 
         public bool ShowSql { get; set; }
 
@@ -81,10 +90,13 @@ namespace Diagnosis.Data
             {
                 if (_cfg == null)
                 {
+                    if (connection == null && !InMemory)
+                        throw new System.InvalidOperationException("First initialize with right connection.");
+
                     _cfg = LoadConfiguration();
                     if (_cfg == null)
                     {
-                        _cfg = CreateConfiguration();
+                        _cfg = CreateConfiguration(connection, Mapping, ShowSql);
                         SaveConfiguration(_cfg);
                     }
                 }
@@ -138,6 +150,84 @@ namespace Diagnosis.Data
             return instance;
         }
 
+        public static HbmMapping CreateMapping()
+        {
+            var mapper = new ModelMapper();
+            var mapType = typeof(WordMap);
+            var assemblyContainingMapping = Assembly.GetAssembly(mapType);
+            var types = assemblyContainingMapping.GetExportedTypes().Where(t => t.Namespace == mapType.Namespace);
+            mapper.AddMappings(types);
+            return mapper.CompileMappingForAllExplicitlyAddedEntities();
+        }
+
+        public static Configuration CreateConfiguration(ConnectionInfo connection, HbmMapping mapping, bool showsql)
+        {
+            var cfg = new Configuration();
+
+            if (connection == null)
+                ConfigureSqlLiteInMemory(cfg, showsql);
+            else
+                switch (connection.ProviderName)
+                {
+                    case Constants.SqlCeProvider:
+                        ConfigureSqlCe(cfg, connection.ConnectionString, showsql);
+                        break;
+
+                    case Constants.SqlServerProvider:
+                        ConfigureSqlServer(cfg, connection.ConnectionString, showsql);
+                        break;
+
+                    default:
+                        throw new System.NotSupportedException("ProviderName");
+                }
+
+            var preListener = new PreEventListener();
+            cfg.AppendListeners(ListenerType.PreUpdate, new IPreUpdateEventListener[] { preListener });
+            cfg.AppendListeners(ListenerType.PreInsert, new IPreInsertEventListener[] { preListener });
+            cfg.AppendListeners(ListenerType.PreDelete, new IPreDeleteEventListener[] { preListener });
+            cfg.AppendListeners(ListenerType.PreLoad, new IPreLoadEventListener[] { preListener });
+
+            var postListener = new PostEventListener();
+            cfg.AppendListeners(ListenerType.PostUpdate, new IPostUpdateEventListener[] { postListener });
+            cfg.AppendListeners(ListenerType.PostInsert, new IPostInsertEventListener[] { postListener });
+            cfg.AppendListeners(ListenerType.PostDelete, new IPostDeleteEventListener[] { postListener });
+            cfg.AppendListeners(ListenerType.PostLoad, new IPostLoadEventListener[] { postListener });
+
+            cfg.EventListeners.FlushEventListeners = new IFlushEventListener[] { new FixedDefaultFlushEventListener() };
+
+            cfg.AddMapping(mapping);
+            // ExportSchemaToFile(cfg);
+            return cfg;
+        }
+
+        public static void ConfigureSqlServer(Configuration cfg, string constr, bool showSql)
+        {
+            cfg.SetProperty(Environment.Dialect, typeof(MsSql2012Dialect).AssemblyQualifiedName)
+                .SetProperty(Environment.ConnectionDriver, typeof(SqlClientDriver).AssemblyQualifiedName)
+                .SetProperty(Environment.ConnectionProvider, typeof(DriverConnectionProvider).AssemblyQualifiedName)
+                .SetProperty(Environment.ConnectionString, constr)
+                .SetProperty(Environment.ShowSql, showSql ? "true" : "false");
+        }
+
+        public static void ConfigureSqlCe(Configuration cfg, string constr, bool showSql)
+        {
+            cfg.SetProperty(Environment.ReleaseConnections, "on_close")
+               .SetProperty(Environment.Dialect, typeof(MsSqlCe40Dialect).AssemblyQualifiedName)
+               .SetProperty(Environment.ConnectionDriver, typeof(SqlServerCeDriver).AssemblyQualifiedName)
+               .SetProperty(Environment.ConnectionProvider, typeof(DriverConnectionProvider).AssemblyQualifiedName)
+               .SetProperty(Environment.ConnectionString, constr)
+               .SetProperty(Environment.ShowSql, showSql ? "true" : "false");
+        }
+
+        public static void ConfigureSqlLiteInMemory(Configuration cfg, bool showSql)
+        {
+            cfg.SetProperty(Environment.ReleaseConnections, "on_close")
+               .SetProperty(Environment.Dialect, typeof(SQLiteDialect).AssemblyQualifiedName)
+               .SetProperty(Environment.ConnectionDriver, typeof(SQLite20Driver).AssemblyQualifiedName)
+               .SetProperty(Environment.ConnectionString, "data source=:memory:;BinaryGuid=False")
+               .SetProperty(Environment.ShowSql, showSql ? "true" : "false");
+        }
+
         /// <summary>
         /// Initialize connection, set InMemory if any error occured.
         /// </summary>
@@ -152,25 +242,7 @@ namespace Diagnosis.Data
                 return false;
             }
 
-            var fail = false;
-
-            // create db for client side
-            if (side == Side.Client)
-            {
-                fail = conn.ProviderName != Constants.SqlCeProvider;
-
-                if (!fail)
-                    try
-                    {
-                        SqlHelper.CreateSqlCeByConStr(conn.ConnectionString);
-                    }
-                    catch (System.Exception)
-                    {
-                        fail = true;
-                    }
-            }
-
-            fail |= !conn.IsAvailable();
+            var fail = !conn.IsAvailable();
 
             if (fail)
             {
@@ -178,6 +250,8 @@ namespace Diagnosis.Data
                 connection = null;
                 return false;
             }
+            if (InMemory)
+                return false;
             connection = new ConnectionInfo(conn.ConnectionString, conn.ProviderName);
             return true;
         }
@@ -186,7 +260,7 @@ namespace Diagnosis.Data
         {
             if (_session == null)
             {
-                //ExportSchemaToFile();
+                //ExportSchemaToFile(Configuration);
                 _session = SessionFactory.OpenSession();
                 _session.FlushMode = FlushMode.Commit;
 
@@ -215,77 +289,6 @@ namespace Diagnosis.Data
                 InMemoryHelper.FillData(Configuration, s);
             return s;
         }
-
-        private HbmMapping CreateMapping()
-        {
-            var mapper = new ModelMapper();
-            var mapType = typeof(WordMap);
-            var assemblyContainingMapping = Assembly.GetAssembly(mapType);
-            var types = assemblyContainingMapping.GetExportedTypes().Where(t => t.Namespace == mapType.Namespace);
-            mapper.AddMappings(types);
-            return mapper.CompileMappingForAllExplicitlyAddedEntities();
-        }
-
-        private Configuration CreateConfiguration()
-        {
-            var cfg = new Configuration();
-
-            if (InMemory)
-                InMemoryHelper.Configure(cfg, ShowSql);
-            else if (connection != null)
-                switch (connection.ProviderName)
-                {
-                    case Constants.SqlCeProvider:
-                        ConfigureSqlCe(cfg, connection.ConnectionString, ShowSql);
-                        break;
-
-                    case Constants.SqlServerProvider:
-                        ConfigureSqlServer(cfg, connection.ConnectionString, ShowSql);
-                        break;
-
-                    default:
-                        throw new System.NotSupportedException("ProviderName");
-                }
-            else
-                throw new System.InvalidOperationException("First initialize with right connection.");
-
-            var preListener = new PreEventListener();
-            cfg.AppendListeners(ListenerType.PreUpdate, new IPreUpdateEventListener[] { preListener });
-            cfg.AppendListeners(ListenerType.PreInsert, new IPreInsertEventListener[] { preListener });
-            cfg.AppendListeners(ListenerType.PreDelete, new IPreDeleteEventListener[] { preListener });
-            cfg.AppendListeners(ListenerType.PreLoad, new IPreLoadEventListener[] { preListener });
-
-            var postListener = new PostEventListener();
-            cfg.AppendListeners(ListenerType.PostUpdate, new IPostUpdateEventListener[] { postListener });
-            cfg.AppendListeners(ListenerType.PostInsert, new IPostInsertEventListener[] { postListener });
-            cfg.AppendListeners(ListenerType.PostDelete, new IPostDeleteEventListener[] { postListener });
-            cfg.AppendListeners(ListenerType.PostLoad, new IPostLoadEventListener[] { postListener });
-
-            cfg.EventListeners.FlushEventListeners = new IFlushEventListener[] { new FixedDefaultFlushEventListener() };
-
-            cfg.AddMapping(Mapping);
-            return cfg;
-        }
-
-        private void ConfigureSqlServer(Configuration cfg, string constr, bool showSql)
-        {
-            cfg.SetProperty(Environment.Dialect, typeof(MsSql2012Dialect).AssemblyQualifiedName)
-                .SetProperty(Environment.ConnectionDriver, typeof(SqlClientDriver).AssemblyQualifiedName)
-                .SetProperty(Environment.ConnectionProvider, typeof(DriverConnectionProvider).AssemblyQualifiedName)
-                .SetProperty(Environment.ConnectionString, constr)
-                .SetProperty(Environment.ShowSql, showSql ? "true" : "false");
-        }
-
-        private void ConfigureSqlCe(Configuration cfg, string constr, bool showSql)
-        {
-            cfg.SetProperty(Environment.ReleaseConnections, "on_close")
-               .SetProperty(Environment.Dialect, typeof(MsSqlCe40Dialect).AssemblyQualifiedName)
-               .SetProperty(Environment.ConnectionDriver, typeof(SqlServerCeDriver).AssemblyQualifiedName)
-               .SetProperty(Environment.ConnectionProvider, typeof(DriverConnectionProvider).AssemblyQualifiedName)
-               .SetProperty(Environment.ConnectionString, constr)
-               .SetProperty(Environment.ShowSql, showSql ? "true" : "false");
-        }
-
         private Configuration LoadConfiguration()
         {
             if (InMemory || IsConfigurationFileValid == false || !useSavedCfg)
@@ -322,10 +325,10 @@ namespace Diagnosis.Data
             }
         }
 
-        private void ExportSchemaToFile()
+        private static void ExportSchemaToFile(Configuration cfg)
         {
             string desktop = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop);
-            new SchemaExport(Configuration)
+            new SchemaExport(cfg)
                 .SetDelimiter(";")
                 .SetOutputFile(string.Format(desktop + "\\sqlite create {0:yyyy-MM-dd-HHmm}.sql", System.DateTime.Now))
                 .Execute(true, false, false);

@@ -211,7 +211,7 @@
             </TreeView.ItemContainerStyle>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                    <search:HrSearchResult2 />
+                    <search:SearchResult />
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

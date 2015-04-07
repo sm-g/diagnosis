@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using Diagnosis.Common;
 
 namespace Diagnosis.Models
 {
     public class WordTemplate : EntityBase<Guid>
     {
+        public const int MaxLength = 100;
+
         private string _title;
         private Vocabulary _voc;
 
         public WordTemplate(string title, Vocabulary voc)
         {
-            Contract.Requires(title != null);
+            Contract.Requires(!title.IsNullOrEmpty());
             Contract.Requires(voc != null);
 
             Title = title;
-            _voc = voc;
-            _voc.AddWordTemplate(this);
+            Vocabulary = voc;
         }
 
         protected WordTemplate()
@@ -25,16 +27,18 @@ namespace Diagnosis.Models
         public virtual string Title
         {
             get { return _title; }
-            set
+            protected internal set
             {
-                SetProperty(ref _title, value ?? "", () => Title);
+                SetProperty(ref _title, value.TrimedOrNull() ?? "", () => Title);
             }
         }
-
+        /// <summary>
+        /// Словарь, для которого создан шаблон.
+        /// </summary>
         public virtual Vocabulary Vocabulary
         {
             get { return _voc; }
-            set
+            protected set
             {
                 SetProperty(ref _voc, value, () => Vocabulary);
             }

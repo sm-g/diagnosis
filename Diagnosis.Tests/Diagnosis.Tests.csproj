@@ -6,9 +6,9 @@
     <ProjectGuid>{EC5E581D-F591-4A34-B390-0607BA8EE6FA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tests</RootNamespace>
-    <AssemblyName>Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>Diagnosis.Tests</RootNamespace>
+    <AssemblyName>Diagnosis.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -30,6 +30,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -39,6 +40,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'InMemory|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -85,6 +87,7 @@
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FluentNHibernate, Version=1.4.0.0, Culture=neutral, PublicKeyToken=8aa435e3cb308880, processorArchitecture=MSIL">
@@ -103,6 +106,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Synchronization, Version=2.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Synchronization.Data, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Synchronization.Data.SqlServer, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Synchronization.Data.SqlServerCe, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
     <Reference Include="NHibernate, Version=3.3.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NHibernate.3.3.3.4001\lib\Net35\NHibernate.dll</HintPath>
@@ -118,6 +125,11 @@
     <Reference Include="System.Data.SQLite">
       <HintPath>..\libs\System.Data.SQLite.dll</HintPath>
     </Reference>
+    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.SqlServer.Compact.4.0.8876.1\lib\net40\System.Data.SqlServerCe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -135,41 +147,46 @@
     <Compile Include="..\GeneralAssemblyInfo.cs">
       <Link>Properties\GeneralAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="CommonTests\DateHelperTest.cs" />
-    <Compile Include="CommonTests\DateOffsetFormatterTest.cs" />
-    <Compile Include="CommonTests\TimeSpanFormatterTest.cs" />
-    <Compile Include="CommonTests\EnumerableExtensionsTest.cs" />
-    <Compile Include="DataTests\RelationsTest.cs" />
-    <Compile Include="DataTests\VocLoaderTest.cs" />
-    <Compile Include="DataTests\SyncerTest.cs" />
-    <Compile Include="ModelTests\DoctorTest.cs" />
-    <Compile Include="ModelTests\CourseTest.cs" />
-    <Compile Include="ModelTests\MeasureTest.cs" />
-    <Compile Include="ModelTests\HrItemTest.cs" />
-    <Compile Include="ModelTests\HealthRecordTest.cs" />
-    <Compile Include="ModelTests\HrCategoryTest.cs" />
-    <Compile Include="SearchTests\DiagnosisSearchTest.cs" />
-    <Compile Include="ViewModelsTests\AutocompleteTest.cs" />
-    <Compile Include="ViewModelsTests\VocabularyListTest.cs" />
-    <Compile Include="ViewModelsTests\HrListTest.cs" />
-    <Compile Include="ViewModelsTests\CardTest.cs" />
-    <Compile Include="CommonTests\DateFormatterTest.cs" />
-    <Compile Include="CommonTests\DateOffsetTest.cs" />
-    <Compile Include="DataTests\PersistTest.cs" />
+    <Compile Include="Common\DateHelperTest.cs" />
+    <Compile Include="Common\DateOffsetFormatterTest.cs" />
+    <Compile Include="Common\TimeSpanFormatterTest.cs" />
+    <Compile Include="Common\EnumerableExtensionsTest.cs" />
+    <Compile Include="Data\QueryTest.cs" />
+    <Compile Include="DbTest.cs" />
+    <Compile Include="Model\RelationsTest.cs" />
+    <Compile Include="Data\SyncerTest.cs" />
+    <Compile Include="Data\VocLoaderTest.cs" />
+    <Compile Include="Data\ScopesTest.cs" />
+    <Compile Include="SdfDatabaseTest.cs" />
+    <Compile Include="Model\DoctorTest.cs" />
+    <Compile Include="Model\CourseTest.cs" />
+    <Compile Include="Model\MeasureTest.cs" />
+    <Compile Include="Model\HrItemTest.cs" />
+    <Compile Include="Model\HealthRecordTest.cs" />
+    <Compile Include="Model\HrCategoryTest.cs" />
+    <Compile Include="Model\VocabularyTest.cs" />
+    <Compile Include="ViewModels\FilterTest.cs" />
+    <Compile Include="ViewModels\AutocompleteTest.cs" />
+    <Compile Include="ViewModels\ViewModelTest.cs" />
+    <Compile Include="ViewModels\VocabularyListTest.cs" />
+    <Compile Include="ViewModels\HrListTest.cs" />
+    <Compile Include="ViewModels\CardTest.cs" />
+    <Compile Include="Common\DateFormatterTest.cs" />
+    <Compile Include="Common\DateOffsetTest.cs" />
+    <Compile Include="Data\PersistTest.cs" />
     <Compile Include="InMemoryDatabaseTest.cs" />
-    <Compile Include="ModelTests\PatientTest.cs" />
+    <Compile Include="Model\PatientTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="DataTests\HrQueryTest.cs" />
-    <Compile Include="DataTests\StartsWithTest.cs" />
-    <Compile Include="CommonTests\StringExtensionTest.cs" />
-    <Compile Include="ViewModelsTests\HrEditorTest.cs" />
-    <Compile Include="ModelTests\OrderedBagTest.cs" />
-    <Compile Include="ViewModelsTests\RecognizerTest.cs" />
-    <Compile Include="ViewModelsTests\SearchTest.cs" />
-    <Compile Include="ViewModelsTests\WordListTest.cs" />
+    <Compile Include="Data\HrQueryTest.cs" />
+    <Compile Include="Common\StringExtensionTest.cs" />
+    <Compile Include="ViewModels\HrEditorTest.cs" />
+    <Compile Include="Common\OrderedBagTest.cs" />
+    <Compile Include="ViewModels\RecognizerTest.cs" />
+    <Compile Include="ViewModels\SearchTest.cs" />
+    <Compile Include="ViewModels\WordListTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Diagnosis.Client.App\Diagnosis.Client.App.csproj">
@@ -195,7 +212,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="inmem.mm" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="db.sdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Search\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
@@ -220,7 +246,11 @@
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <PropertyGroup>
     <PostBuildEvent>REM copy sqlite.dll
-xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)" /i /d /y</PostBuildEvent>
+xcopy "$(SolutionDir)libs\SQLite.Interop.dll" "$(TargetDir)" /i /d /y
+    if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
+    xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(TargetDir)x86"
+    if not exist "$(TargetDir)amd64" md "$(TargetDir)amd64"
+    xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\amd64\*.*" "$(TargetDir)amd64"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

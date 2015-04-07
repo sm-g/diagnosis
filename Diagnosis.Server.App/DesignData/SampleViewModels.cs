@@ -14,4 +14,11 @@ namespace Diagnosis.Server.App.DesignData
         {
         }
     }
+    public class SampleVocabularyEditorViewModel : VocabularyEditorViewModel
+    {
+        public SampleVocabularyEditorViewModel()
+            : base(new Vocabulary("1"))
+        {
+        }
+    }
 }

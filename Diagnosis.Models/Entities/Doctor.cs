@@ -44,11 +44,11 @@ namespace Diagnosis.Models
 
         /// <summary>
         /// Слова из всех словарей, доступных врачу, кроме пользовательского.
+        /// Если у врача нет специальности — слова всех уставновленных непользовательских словарей.
         /// </summary>
-        public virtual List<Word> SpecialityWords
+        public virtual IEnumerable<Word> SpecialityWords
         {
             get { return chachedWords; }
-            set { chachedWords = value; }
         }
 
         /// <summary>
@@ -153,17 +153,15 @@ namespace Diagnosis.Models
         {
             get { return settingsProvider ?? (settingsProvider = new SettingsProvider(this)); }
         }
-
-        public virtual Course StartCourse(Patient patient)
+        /// <summary>
+        /// Заполняем слова из словарей.
+        /// Вызвать после логина.
+        /// </summary>
+        public virtual void OnLogin(IEnumerable<Vocabulary> vocs)
         {
-            Contract.Requires(patient != null);
-            Contract.Ensures(patient.Courses.Contains(Contract.Result<Course>()));
-
-            var course = new Course(patient, this);
-            patient.AddCourse(course);
-            return course;
+            var words = vocs.SelectMany(x => x.Words);
+            chachedWords = new List<Word>(words);
         }
-
         /// <summary>
         /// Доктор cможет видеть эти слова.
         /// Использовать перед сохранением слова.
@@ -202,6 +200,42 @@ namespace Diagnosis.Models
                 return byFirst;
             }
             return byLast;
+        }
+
+        protected internal virtual void AddApp(Appointment app)
+        {
+            Contract.Requires(app.Doctor == this);
+            appointments.Add(app);
+        }
+
+        protected internal virtual void RemoveApp(Appointment app)
+        {
+            Contract.Requires(app.Doctor == this);
+            appointments.Remove(app);
+        }
+
+        protected internal virtual void AddCourse(Course c)
+        {
+            Contract.Requires(c.LeadDoctor == this);
+            courses.Add(c);
+        }
+
+        protected internal virtual void RemoveCourse(Course c)
+        {
+            Contract.Requires(c.LeadDoctor == this);
+            courses.Remove(c);
+        }
+
+        protected internal virtual void AddHr(HealthRecord hr)
+        {
+            Contract.Requires(hr.Doctor == this);
+            healthRecords.Add(hr);
+        }
+
+        protected internal virtual void RemoveHr(HealthRecord hr)
+        {
+            Contract.Requires(hr.Doctor == this);
+            healthRecords.Remove(hr);
         }
     }
 }

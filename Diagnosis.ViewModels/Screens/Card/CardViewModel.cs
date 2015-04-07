@@ -59,10 +59,10 @@ namespace Diagnosis.ViewModels.Screens
             HrEditor.Unloaded += (s, e) =>
             {
                 // сохраняем запись
-                var hr = e.entity as HealthRecord;
+                var hr = e.hr as HealthRecord;
                 if (hr.Doctor == doctor)  // добавлять только если врач редактировал свою запись?
                     doctor.AddWords(hr.Words);
-                saver.SaveHealthRecord(hr);
+                saver.Save(hr);
             };
             HrEditor.Closing += (s, e) =>
             {
@@ -117,7 +117,11 @@ namespace Diagnosis.ViewModels.Screens
                 }
             );
         }
-
+        /// <summary>
+        /// Создает карту и тут же вызывает Open(entity).
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="resetHistory"></param>
         public CardViewModel(object entity, bool resetHistory = false)
             : this(resetHistory)
         {
@@ -173,7 +177,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    AuthorityController.CurrentDoctor.StartCourse(viewer.OpenedPatient);
+                    viewer.OpenedPatient.AddCourse(AuthorityController.CurrentDoctor);
                 });
             }
         }
@@ -304,7 +308,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (disposing)
                 {
-                    _header.Dispose();
+                    if (_header != null)
+                        _header.Dispose();
                     _hrEditor.Dispose();
 
                     CloseHrList();

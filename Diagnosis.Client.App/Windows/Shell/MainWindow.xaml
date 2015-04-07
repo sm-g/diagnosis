@@ -56,7 +56,7 @@
             <DataTemplate DataType="{x:Type diag:SyncViewModel}">
                 <screen:Sync />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type diag:VocabularyListViewModel}">
+            <DataTemplate DataType="{x:Type diag:VocabularySyncViewModel}">
                 <screen:Vocabs />
             </DataTemplate>
             <DataTemplate DataType="{x:Type diag:UndoOverlayViewModel}">
@@ -70,11 +70,9 @@
     </Window.Resources>
 
     <Window.InputBindings>
-        <KeyBinding Modifiers="Control"
-                    Key="F"
+        <KeyBinding Gesture="Control+F"
                     Command="{Binding OpenSearchCommand}" />
-        <KeyBinding Modifiers="Control"
-                    Key="E"
+        <KeyBinding Gesture="Control+E"
                     Command="{Binding FocusOnFilterCommand}" />
         <KeyBinding Key="F1"
                     Command="{Binding MenuBar.OpenHelpCommand}" />

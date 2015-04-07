@@ -4,22 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 
-namespace Diagnosis.Common
+namespace Diagnosis.Common.Util
 {
+    /// <summary>
+    /// Usage:
+    /// using (PerformanceTester.Start((elapsed) => Console.WriteLine(elapsed)))
+    /// {
+    ///    code to test
+    /// }
+    /// </summary>
     public sealed class PerformanceTester : IDisposable
     {
         private Stopwatch _stopwatch = new Stopwatch();
         private Action<TimeSpan> _callback;
 
-        public PerformanceTester()
-        {
-            _stopwatch.Start();
-        }
-
         public PerformanceTester(Action<TimeSpan> callback)
-            : this()
         {
             _callback = callback;
+            _stopwatch.Start();
         }
 
         public static PerformanceTester Start(Action<TimeSpan> callback)
