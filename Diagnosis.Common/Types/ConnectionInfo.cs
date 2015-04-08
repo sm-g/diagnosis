@@ -9,7 +9,7 @@ namespace Diagnosis.Common.Types
     {
         public ConnectionInfo(string constr, string providerName)
         {
-            if (!constr.StartsWith("Data Source="))
+            if (constr != null && !constr.StartsWith("Data Source="))
                 constr = "Data Source=" + constr;
             ConnectionString = constr;
             ProviderName = providerName;

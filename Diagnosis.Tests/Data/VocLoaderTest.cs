@@ -131,7 +131,7 @@ namespace Diagnosis.Tests.Data
         [TestMethod]
         public void AddTemplateUpdateVoc()
         {
-            var newT = new WordTemplate("qwe", voc[1]);
+            voc[1].AddTemplates(new[] { "qwe" });
             Assert.IsFalse(GetWordTitles().Contains("qwe"));
             l.LoadOrUpdateVocs(voc[1]);
             Assert.IsTrue(GetWordTitles().Contains("qwe"));
@@ -271,12 +271,12 @@ namespace Diagnosis.Tests.Data
 
             // менем шаблон 4, добавляем шаблон 5
             wTemp[4].Title = "poiuy";
-            var newTemp = new WordTemplate("555", voc[2]);
+            voc[2].AddTemplates(new[] { "555" });
             session.SaveOrUpdate(voc[2]);
 
             wordTitles = GetWordTitles();
             Assert.AreEqual(5, voc[2].WordTemplates.Count());
-            Assert.AreEqual(0, wordTitles.Count(x => x == newTemp.Title));
+            Assert.AreEqual(0, wordTitles.Count(x => x == "555"));//
 
             // обновляем 2 словарь, снова есть 2 и 3, слово по 4 шаблону не меняется, есть слово по новому шаблону
             l.LoadOrUpdateVocs(voc[2]);

@@ -39,6 +39,7 @@ namespace Diagnosis.Tests.ViewModels
 
                 // но может добавить
                 var newW2 = CreateWordInEditor("123");
+                wordList.OnWordSaved(newW2);
                 Assert.AreEqual(newW, newW2);
 
                 // это слово в двух пользовательских словарях

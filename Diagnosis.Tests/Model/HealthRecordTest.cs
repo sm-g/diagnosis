@@ -31,6 +31,7 @@ namespace Diagnosis.Tests.Model
         [TestMethod]
         public void Unit()
         {
+            Load<HealthRecord>();
             Assert.AreEqual(HealthRecordUnit.Year, hr[40].Unit);
             Assert.AreEqual(2005, hr[40].FromYear);
 

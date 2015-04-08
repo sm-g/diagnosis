@@ -39,7 +39,7 @@ namespace Diagnosis.Tests
         }
 
         [TestInitialize]
-        public void InMemoryDatabaseTestInit()
+        public void SdfDatabaseTestInit()
         {
             SqlHelper.CreateSqlCeByPath(clientSdf);
             File.Copy("db.sdf", serverSdf, true);
@@ -53,7 +53,7 @@ namespace Diagnosis.Tests
         }
 
         [TestCleanup]
-        public void InMemoryDatabaseTestCleanup()
+        public void SdfDatabaseTestCleanup()
         {
             if (sSession != null)
                 sSession.Dispose();
