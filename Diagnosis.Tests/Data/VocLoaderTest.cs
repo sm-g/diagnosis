@@ -73,7 +73,7 @@ namespace Diagnosis.Tests.Data
         public void CreateWordLoadVoc()
         {
             // созданное слово в пользовательском словаре
-            var newW = CreateWordInEditor(wTemp[1].Title);
+            var newW = CreateWordAsInEditor(wTemp[1].Title);
             Assert.IsTrue(newW.Vocabularies.Single().IsCustom);
 
             // загружен словарь - слово также в нем
@@ -209,7 +209,7 @@ namespace Diagnosis.Tests.Data
         public void RemoveVoc()
         {
             // при удалении остаются использованные слова и слова из других словарей
-            CreateWordInEditor(wTemp[1].Title);
+            CreateWordAsInEditor(wTemp[1].Title);
             l.LoadOrUpdateVocs(voc[1]);
             l.DeleteVocs(voc[1]);
 
@@ -221,7 +221,7 @@ namespace Diagnosis.Tests.Data
         public void Sequence()
         {
             // новое слово
-            CreateWordInEditor(wTemp[1].Title);
+            CreateWordAsInEditor(wTemp[1].Title);
 
             // загружаем словарь, нет использованных слов
             l.LoadOrUpdateVocs(voc[1]);
@@ -290,7 +290,7 @@ namespace Diagnosis.Tests.Data
         public void RemoveUpdateCustom()
         {
             // не имеет смысла удалять/обновлять пользовательские словари
-            var newW = CreateWordInEditor("123");
+            var newW = CreateWordAsInEditor("123");
             var words = d1.CustomVocabulary.Words.ToList();
             Assert.IsTrue(words.Contains(newW));
 

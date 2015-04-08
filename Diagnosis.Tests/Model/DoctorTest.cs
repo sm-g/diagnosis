@@ -24,7 +24,7 @@ namespace Diagnosis.Tests.Model
             AuthorityController.TryLogIn(d2);
             Assert.IsTrue(d2.CustomVocabulary.IsTransient);
 
-            var newW = CreateWordInEditor("123");
+            var newW = CreateWordAsInEditor("123");
 
             Assert.IsFalse(newW.IsTransient);
             Assert.IsFalse(d2.CustomVocabulary.IsTransient);

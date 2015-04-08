@@ -27,7 +27,7 @@ namespace Diagnosis.Tests.ViewModels
             // отдельный пользовательский словарь на врача
 
             // первый создает слово
-            var newW = CreateWordInEditor("123");
+            var newW = CreateWordAsInEditor("123");
             Assert.IsTrue(newW.Vocabularies.Single().IsCustom);
             Assert.AreEqual(d1, newW.Vocabularies.Single().Doctor);
 
@@ -38,7 +38,7 @@ namespace Diagnosis.Tests.ViewModels
                 Assert.IsFalse(wordList.Words.Select(x => x.word).Contains(newW));
 
                 // но может добавить
-                var newW2 = CreateWordInEditor("123");
+                var newW2 = CreateWordAsInEditor("123");
                 wordList.OnWordSaved(newW2);
                 Assert.AreEqual(newW, newW2);
 
@@ -70,7 +70,7 @@ namespace Diagnosis.Tests.ViewModels
             Assert.IsFalse(d2.Words.Contains(d1w));
 
             // но может добавить
-            var newW2 = CreateWordInEditor(d1w.Title);
+            var newW2 = CreateWordAsInEditor(d1w.Title);
             Assert.AreEqual(d1w, newW2);
         }
 

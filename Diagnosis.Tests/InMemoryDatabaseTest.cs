@@ -1,9 +1,12 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
 using Diagnosis.Models;
+using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Linq;
+using NHibernate.Linq;
 
 namespace Diagnosis.Tests
 {
@@ -30,15 +33,17 @@ namespace Diagnosis.Tests
             session.Dispose();
         }
 
-        protected static Word CreateWordInEditor(string title)
+        protected Word CreateWordAsInEditor(string title)
         {
+            var dbWords = session.Query<Word>().ToList();
             var newW = new Word(title);
-            using (var wEditor = new WordEditorViewModel(newW))
-            {
-                Assert.IsTrue(wEditor.OkCommand.CanExecute(null));
-                wEditor.OkCommand.Execute(null);
-                return wEditor.saved;
-            }
+            var toSave = dbWords
+                .Where(w => w.Title == newW.Title && w != newW)
+                .FirstOrDefault() ?? newW;
+
+            AuthorityController.CurrentDoctor.AddWords(toSave.ToEnumerable());
+            new Saver(session).Save(toSave);
+            return toSave;
         }
     }
 }
