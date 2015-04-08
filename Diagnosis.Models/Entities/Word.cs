@@ -16,7 +16,7 @@ namespace Diagnosis.Models
         private Iesi.Collections.Generic.ISet<Word> children = new HashedSet<Word>();
 
         [NonSerialized]
-        private Iesi.Collections.Generic.ISet<Vocabulary> vocabularies = new HashedSet<Vocabulary>();
+        private Iesi.Collections.Generic.ISet<VocabularyWords> vocabularyWords = new HashedSet<VocabularyWords>();
 
         [NonSerialized]
         private IList<HealthRecord> healthRecords = new List<HealthRecord>(); // many-2-many bag
@@ -54,9 +54,17 @@ namespace Diagnosis.Models
 
         public virtual IEnumerable<Vocabulary> Vocabularies
         {
-            get { return vocabularies; }
+            get
+            {
+                return vocabularyWords
+                .Where(x => x.Word == this)
+                  .Select(x => x.Vocabulary);
+            }
         }
-
+        public virtual IEnumerable<VocabularyWords> VocabularyWords
+        {
+            get { return vocabularyWords; }
+        }
         public virtual IEnumerable<Word> Children
         {
             get { return children; }
@@ -105,13 +113,21 @@ namespace Diagnosis.Models
         protected internal virtual void RemoveVoc(Vocabulary voc)
         {
             Contract.Requires(!voc.Words.Contains(this));
-            vocabularies.Remove(voc);
+            var si = vocabularyWords.Where(x => x.Vocabulary == voc).FirstOrDefault();
+            if (si != null)
+            {
+                vocabularyWords.Remove(si);
+            }
         }
 
         protected internal virtual void AddVoc(Vocabulary voc)
         {
             Contract.Requires(voc.Words.Contains(this));
-            vocabularies.Add(voc);
+            if (!Vocabularies.Contains(voc))
+            {
+                var si = voc.VocabularyWords.Where(x => x.Word == this).FirstOrDefault();
+                vocabularyWords.Add(si);
+            }
         }
 
         protected internal virtual void AddHr(HealthRecord hr)

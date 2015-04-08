@@ -12,16 +12,17 @@ namespace Diagnosis.Data.Mappings
             {
                 m.Generator(Generators.GuidComb);
             });
-
             ManyToOne(x => x.Speciality, m =>
             {
                 m.Column(Names.Id.Speciality);
                 m.NotNullable(true);
+                m.Cascade(Cascade.Persist);
             });
             ManyToOne(x => x.IcdBlock, m =>
             {
                 m.Column(Names.Id.IcdBlock);
                 m.NotNullable(true);
+                m.Cascade(Cascade.Persist);
             });
         }
     }

@@ -14,9 +14,8 @@ namespace Diagnosis.Models
         public static string CustomTitle = "Пользовательский";
 
         private Iesi.Collections.Generic.ISet<WordTemplate> wordTemplates = new HashedSet<WordTemplate>();
-        private Iesi.Collections.Generic.ISet<Speciality> specialities = new HashedSet<Speciality>();
         private Iesi.Collections.Generic.ISet<SpecialityVocabularies> specialityVocabularies = new HashedSet<SpecialityVocabularies>();
-        private IList<Word> words = new List<Word>(); // many-2-many
+        private Iesi.Collections.Generic.ISet<VocabularyWords> vocabularyWords = new HashedSet<VocabularyWords>();
         private string _title;
         private Doctor _doc;
 
@@ -42,6 +41,10 @@ namespace Diagnosis.Models
         public virtual IEnumerable<SpecialityVocabularies> SpecialityVocabularies
         {
             get { return specialityVocabularies; }
+        }
+        public virtual IEnumerable<VocabularyWords> VocabularyWords
+        {
+            get { return vocabularyWords; }
         }
         public virtual string Title
         {
@@ -77,19 +80,30 @@ namespace Diagnosis.Models
 
         public virtual IEnumerable<Speciality> Specialities
         {
-            get { return specialities; }
+            get
+            {
+                return specialityVocabularies
+                    .Where(x => x.Vocabulary == this)
+                    .Select(x => x.Speciality);
+            }
         }
 
         public virtual IEnumerable<Word> Words
         {
-            get { return words; }
+            get
+            {
+                return vocabularyWords
+                    .Where(x => x.Vocabulary == this)
+                    .Select(x => x.Word);
+            }
         }
 
         public virtual Word AddWord(Word w)
         {
-            if (!words.Contains(w))
+            if (!Words.Contains(w))
             {
-                words.Add(w);
+                var vw = new VocabularyWords(this, w);
+                vocabularyWords.Add(vw);
                 w.AddVoc(this);
 
                 OnWordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, w));
@@ -99,9 +113,12 @@ namespace Diagnosis.Models
 
         public virtual void RemoveWord(Word w)
         {
-            if (words.Remove(w))
+            var vw = vocabularyWords.Where(x => x.Word == w).FirstOrDefault();
+            if (vw != null)
             {
+                vocabularyWords.Remove(vw);
                 w.RemoveVoc(this);
+
                 OnWordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, w));
             }
         }
@@ -109,9 +126,11 @@ namespace Diagnosis.Models
         protected internal virtual Speciality AddSpec(Speciality spec)
         {
             Contract.Requires(spec.Vocabularies.Contains(this));
-            if (!specialities.Contains(spec))
+            if (!Specialities.Contains(spec))
             {
-                specialities.Add(spec);
+                var sv = spec.SpecialityVocabularies.Where(x => x.Vocabulary == this).FirstOrDefault();
+                specialityVocabularies.Add(sv);
+
                 OnSpecialitiesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, spec));
             }
             return spec;
@@ -120,8 +139,10 @@ namespace Diagnosis.Models
         protected internal virtual void RemoveSpec(Speciality spec)
         {
             Contract.Requires(!spec.Vocabularies.Contains(this));
-            if (specialities.Remove(spec))
+            var sv = specialityVocabularies.Where(x => x.Speciality == spec).FirstOrDefault();
+            if (sv != null)
             {
+                specialityVocabularies.Remove(sv);
                 OnSpecialitiesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, spec));
             }
         }

@@ -17,11 +17,13 @@ namespace Diagnosis.Data.Mappings
             {
                 m.Column(Names.Id.Word);
                 m.NotNullable(true);
+                m.Cascade(Cascade.Persist);
             });
             ManyToOne(x => x.Vocabulary, m =>
             {
                 m.Column(Names.Id.Vocabulary);
                 m.NotNullable(true);
+                m.Cascade(Cascade.Persist);
             });
         }
     }

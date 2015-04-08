@@ -22,19 +22,19 @@ namespace Diagnosis.Data.Mappings
             {
                 m.NotNullable(true);
             });
-            //Set(x => x.SpecialityIcdBlocks, s =>
-            //{
-            //    s.Key(k =>
-            //    {
-            //        k.Column(Names.Id.IcdBlock);
-            //    });
-            //    s.Inverse(true);
-            //    s.Cascade(Cascade.None);
-            //    s.Access(Accessor.Field);
-            //}, r =>
-            //{
-            //    r.OneToMany();
-            //});
+            Set(x => x.SpecialityIcdBlocks, s =>
+            {
+                s.Key(k =>
+                {
+                    k.Column(Names.Id.IcdBlock);
+                });
+                s.Inverse(true);
+                s.Cascade(Cascade.All | Cascade.DeleteOrphans);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.OneToMany();
+            });
 
             Set(x => x.IcdDiseases, s =>
             {
