@@ -26,6 +26,9 @@ namespace Diagnosis.Models
 
         private string _title;
 
+        [NonSerialized]
+        private Many2ManyHelper<Models.VocabularyWords, Vocabulary> vwHelper;
+
         public Word(string title)
         {
             Contract.Requires(title != null); // empty when adding new
@@ -46,6 +49,7 @@ namespace Diagnosis.Models
                 SetProperty(ref _title, filtered, () => Title);
             }
         }
+
         public virtual Word Parent
         {
             get { return _parent; }
@@ -56,15 +60,15 @@ namespace Diagnosis.Models
         {
             get
             {
-                return vocabularyWords
-                .Where(x => x.Word == this)
-                  .Select(x => x.Vocabulary);
+                return VwHelper.Values;
             }
         }
+
         public virtual IEnumerable<VocabularyWords> VocabularyWords
         {
             get { return vocabularyWords; }
         }
+
         public virtual IEnumerable<Word> Children
         {
             get { return children; }
@@ -73,6 +77,21 @@ namespace Diagnosis.Models
         public virtual IEnumerable<HealthRecord> HealthRecords
         {
             get { return healthRecords; }
+        }
+
+        private Many2ManyHelper<Models.VocabularyWords, Vocabulary> VwHelper
+        {
+            get
+            {
+                if (vwHelper == null)
+                {
+                    vwHelper = new Many2ManyHelper<VocabularyWords, Vocabulary>(
+                        vocabularyWords,
+                        x => x.Word == this,
+                        x => x.Vocabulary);
+                }
+                return vwHelper;
+            }
         }
 
         /// <summary>
@@ -113,21 +132,13 @@ namespace Diagnosis.Models
         protected internal virtual void RemoveVoc(Vocabulary voc)
         {
             Contract.Requires(!voc.Words.Contains(this));
-            var si = vocabularyWords.Where(x => x.Vocabulary == voc).FirstOrDefault();
-            if (si != null)
-            {
-                vocabularyWords.Remove(si);
-            }
+            VwHelper.Remove(voc);
         }
 
         protected internal virtual void AddVoc(Vocabulary voc)
         {
             Contract.Requires(voc.Words.Contains(this));
-            if (!Vocabularies.Contains(voc))
-            {
-                var si = voc.VocabularyWords.Where(x => x.Word == this).FirstOrDefault();
-                vocabularyWords.Add(si);
-            }
+            VwHelper.Add(voc);
         }
 
         protected internal virtual void AddHr(HealthRecord hr)

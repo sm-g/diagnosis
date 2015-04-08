@@ -16,7 +16,7 @@ namespace Diagnosis.Models
         private Iesi.Collections.Generic.ISet<Setting> settingsSet = new HashedSet<Setting>();
         private Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
 
-        private List<Word> chachedWords = new List<Word>();
+        private List<Word> cachedWords = new List<Word>();
         private string _fn;
         private string _ln;
         private string _mn;
@@ -48,7 +48,7 @@ namespace Diagnosis.Models
         /// </summary>
         public virtual IEnumerable<Word> SpecialityWords
         {
-            get { return chachedWords; }
+            get { return cachedWords; }
         }
 
         /// <summary>
@@ -160,7 +160,7 @@ namespace Diagnosis.Models
         public virtual void OnLogin(IEnumerable<Vocabulary> vocs)
         {
             var words = vocs.SelectMany(x => x.Words);
-            chachedWords = new List<Word>(words);
+            cachedWords = new List<Word>(words);
         }
         /// <summary>
         /// Доктор cможет видеть эти слова.

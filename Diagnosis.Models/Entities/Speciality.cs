@@ -16,6 +16,8 @@ namespace Diagnosis.Models
         private Iesi.Collections.Generic.ISet<Doctor> doctors = new HashedSet<Doctor>();
         private Iesi.Collections.Generic.ISet<SpecialityIcdBlocks> specialityIcdBlocks = new HashedSet<SpecialityIcdBlocks>();
         private Iesi.Collections.Generic.ISet<SpecialityVocabularies> specialityVocabularies = new HashedSet<SpecialityVocabularies>();
+        private Many2ManyHelper<SpecialityVocabularies, Vocabulary> svHelper;
+        private Many2ManyHelper<SpecialityIcdBlocks, IcdBlock> sbHelper;
         private string _title;
 
         public Speciality(string title)
@@ -31,7 +33,6 @@ namespace Diagnosis.Models
 
         public virtual event NotifyCollectionChangedEventHandler BlocksChanged;
         public virtual event NotifyCollectionChangedEventHandler VocsChanged;
-
         public virtual string Title
         {
             get { return _title; }
@@ -46,10 +47,7 @@ namespace Diagnosis.Models
         {
             get
             {
-                return specialityIcdBlocks
-                        .Where(x => x.Speciality == this)
-                        .Select(x => x.IcdBlock).OrderBy(x => x.Code);
-
+                return SbHelper.Values;
             }
         }
 
@@ -62,9 +60,7 @@ namespace Diagnosis.Models
         {
             get
             {
-                return specialityVocabularies
-                  .Where(x => x.Speciality == this)
-                  .Select(x => x.Vocabulary);
+                return SvHelper.Values;
             }
         }
 
@@ -76,12 +72,42 @@ namespace Diagnosis.Models
         {
             get { return specialityVocabularies; }
         }
+
+        private Many2ManyHelper<SpecialityIcdBlocks, IcdBlock> SbHelper
+        {
+            get
+            {
+                if (sbHelper == null)
+                {
+                    sbHelper = new Many2ManyHelper<SpecialityIcdBlocks, IcdBlock>(
+                        specialityIcdBlocks,
+                        x => x.Speciality == this,
+                        x => x.IcdBlock);
+                }
+                return sbHelper;
+            }
+        }
+        private Many2ManyHelper<SpecialityVocabularies, Vocabulary> SvHelper
+        {
+            get
+            {
+                if (svHelper == null)
+                {
+                    svHelper = new Many2ManyHelper<SpecialityVocabularies, Vocabulary>(
+                       specialityVocabularies,
+                       x => x.Speciality == this,
+                       x => x.Vocabulary);
+                }
+                return svHelper;
+            }
+        }
+
         public virtual IcdBlock AddBlock(IcdBlock block)
         {
             if (!IcdBlocks.Contains(block))
             {
                 var si = new SpecialityIcdBlocks(this, block);
-                specialityIcdBlocks.Add(si);
+                SbHelper.Add(si);
 
                 OnBlocksChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, block));
             }
@@ -90,19 +116,15 @@ namespace Diagnosis.Models
 
         public virtual void RemoveBlock(IcdBlock block)
         {
-            var si = specialityIcdBlocks.Where(x => x.IcdBlock == block).FirstOrDefault();
-            if (si != null)
-            {
-                specialityIcdBlocks.Remove(si);
+            if (SbHelper.Remove(block))
                 OnBlocksChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, block));
-            }
         }
         public virtual Vocabulary AddVoc(Vocabulary voc)
         {
             if (!Vocabularies.Contains(voc))
             {
                 var si = new SpecialityVocabularies(this, voc);
-                specialityVocabularies.Add(si);
+                SvHelper.Add(si);
 
                 voc.AddSpec(this);
                 OnVocsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, voc));
@@ -112,10 +134,8 @@ namespace Diagnosis.Models
 
         public virtual void RemoveVoc(Vocabulary voc)
         {
-            var si = specialityVocabularies.Where(x => x.Vocabulary == voc).FirstOrDefault();
-            if (si != null)
+            if (SvHelper.Remove(voc))
             {
-                specialityVocabularies.Remove(si);
                 voc.RemoveSpec(this);
                 OnVocsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, voc));
             }
