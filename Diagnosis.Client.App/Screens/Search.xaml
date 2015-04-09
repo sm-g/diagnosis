@@ -12,7 +12,7 @@
              xmlns:diag="http://schemas.smg.com/diagnosis"
              x:Name="search"
              mc:Ignorable="d"
-             d:DesignHeight="400"
+             d:DesignHeight="500"
              d:DataContext="{d:DesignInstance design:SampleSearchViewModel, IsDesignTimeCreatable=True}"
              MinWidth="300">
     <UserControl.Resources>
@@ -75,44 +75,12 @@
                             <TextBlock Visibility="{Binding AllWords, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Run Text="все слова " /><Run Text="{Binding QueryScope, StringFormat='{}{0}: ', Converter={StaticResource ScopeToLabel}}" />
                             </TextBlock>
-                            <diag:CommaList ItemsSource="{Binding Words}" />
+                            <diag:CommaList ItemsSource="{Binding WordsAll}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal"
                                     Visibility="{Binding Categories.Count, Converter={StaticResource MoreThanToVisibility}}">
                             <TextBlock Text="{Binding HrCategories, Source={StaticResource Resources}, Converter={StaticResource ToLower}, StringFormat='{}{0}: '}"></TextBlock>
                             <diag:CommaList ItemsSource="{Binding Categories}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal"
-                                    Visibility="{Binding AppDateVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Text="дата осмотра "></TextBlock>
-                            <TextBlock>
-                                <TextBlock.Text>
-                                    <MultiBinding Converter="{StaticResource DateIntervalLabel}">
-                                        <Binding Path="AppointmentDateGt"
-                                                 Mode="OneWay" />
-                                        <Binding Path="AppointmentDateLt"
-                                                 Mode="OneWay" />
-                                        <MultiBinding.ConverterParameter>
-                                            <x:ArrayExtension Type="s:String">
-                                                <s:String>от</s:String>
-                                                <s:String>до</s:String>
-                                            </x:ArrayExtension>
-                                        </MultiBinding.ConverterParameter>
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal"
-                                    Visibility="{Binding HrDateVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Text="давность признака"></TextBlock>
-                            <TextBlock>
-                            <Run Text="{Binding HealthRecordOffsetGt.Offset, StringFormat='{} от {0}', TargetNullValue=''}" />
-                            <Run Text="{Binding HealthRecordOffsetGt, Mode=OneWay, Converter={StaticResource DateOffsetToUnitLabel}}" />
-                            </TextBlock>
-                            <TextBlock>
-                            <Run Text="{Binding HealthRecordOffsetLt.Offset, StringFormat='{} до {0}', TargetNullValue=''}" />
-                            <Run Text="{Binding HealthRecordOffsetLt, Mode=OneWay, Converter={StaticResource DateOffsetToUnitLabel}}" />
-                            </TextBlock>
                         </StackPanel>
                     </StackPanel>
                     <TextBlock Text="Не заданы условия поиска."
@@ -157,44 +125,7 @@
                         </forms:CategoryChooser.ItemsPanelTemplate>
                     </forms:CategoryChooser>
                 </DockPanel>
-                <!--<DockPanel>
-                    <TextBlock Style="{StaticResource lineHeader}">Дата осмотра</TextBlock>
-                    <WrapPanel>
-                        <DockPanel>
-                            <DockPanel.Style>
-                                <Style TargetType="DockPanel">
-                                    <Setter Property="Margin">
-                                        <Setter.Value>
-                                            <Thickness Bottom="{StaticResource lineMargin}"
-                                                       Right="5" />
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </DockPanel.Style>
-                            <TextBlock Width="18">от</TextBlock>
-                            <forms:ComboBoxDatePicker
-                                          Year="{Binding AppYearLower, Mode=TwoWay}"
-                                          Month="{Binding AppMonthLower, Mode=TwoWay}"
-                                          Day="{Binding AppDayLower, Mode=TwoWay}" />
-                        </DockPanel>
-                        <DockPanel Style="{StaticResource line}">
-                            <TextBlock Margin="-5,0,5,0" Padding="5,0,0,0" Width="18">до</TextBlock>
-                            <forms:ComboBoxDatePicker
-                                          Year="{Binding AppYearUpper, Mode=TwoWay}"
-                                          Month="{Binding AppMonthUpper, Mode=TwoWay}"
-                                          Day="{Binding AppDayUpper, Mode=TwoWay}" />
-                        </DockPanel>
-                    </WrapPanel>
-                </DockPanel>
-                <DockPanel Style="{StaticResource line}">
-                    <TextBlock Style="{StaticResource lineHeader}">Давность между</TextBlock>
-                    <DockPanel>
-                        <forms:DateOffsetPicker DateOffset="{Binding HrDateOffsetLower}" />
-                        <TextBlock Margin="5,0,5,0">и</TextBlock>
-                        <forms:DateOffsetPicker DateOffset="{Binding HrDateOffsetUpper}" />
-                    </DockPanel>
-                </DockPanel>-->
-
+               
                 <Button Command="{Binding SearchCommand}"
                         Margin="10,0,10,10"
                         HorizontalAlignment="Stretch">Найти</Button>
@@ -234,7 +165,7 @@
                                           Margin="5"
                                           Visibility="{Binding Statistic.PatientsCount, Converter={StaticResource MoreThanToVisibility}}">
                 <TextBlock>
-                    Пациентов: <Run Text="{Binding Statistic.PatientsCount, Mode=OneWay}" />,
+                    Пациентов: <Run Text="{Binding Statistic.PatientsCount, Mode=OneWay}" />.
                     М: <Run Text="{Binding Statistic.Males, Mode=OneWay}" />
                     Ж: <Run Text="{Binding Statistic.Females, Mode=OneWay}" />
                     ?: <Run Text="{Binding Statistic.UnknownSex, Mode=OneWay}" />

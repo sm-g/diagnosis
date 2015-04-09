@@ -19,17 +19,10 @@ namespace Diagnosis.ViewModels.Screens
 
         private bool _all;
         private bool _controlsVisible;
-        private DateOffset _hrDateOffsetLower;
-        private DateOffset _hrDateOffsetUpper;
         private HealthRecordQueryAndScope _scope;
         private HrSearchOptions _options;
         private IEnumerable<HrCategoryViewModel> _categories;
-        private int? _appDayLower;
-        private int? _appDayUpper;
-        private int? _appMonthLower;
-        private int? _appMonthUpper;
-        private int? _appYearLower;
-        private int? _appYearUpper;
+
         private SearchResultViewModel _res;
 
         private EventMessageHandlersManager msgManager;
@@ -103,30 +96,14 @@ namespace Diagnosis.ViewModels.Screens
             get { return Categories.Where(cat => cat.IsChecked).ToList(); }
         }
 
-        public DateTime? AppDateGt
-        {
-            get
-            {
-                return DateHelper.NullableDate(AppYearLower, AppMonthLower, AppDayLower);
-            }
-        }
-
-        public DateTime? AppDateLt
-        {
-            get
-            {
-                return DateHelper.NullableDate(AppYearUpper, AppMonthUpper, AppDayUpper);
-            }
-        }
-
         public bool AllEmpty
         {
             get
             {
-                return AppDateGt == null && AppDateLt == null
-                    && (HrDateOffsetLower.IsEmpty || HrDateOffsetUpper.IsEmpty)
-                    && SelectedCategories.Count() == 0
-                    && AutocompleteAll.Tags.Count == 1;
+                return SelectedCategories.Count() == 0
+                    && AutocompleteAll.Tags.Count == 1
+                    && AutocompleteAny.Tags.Count == 1
+                    && AutocompleteNot.Tags.Count == 1;
             }
         }
 
@@ -218,114 +195,6 @@ namespace Diagnosis.ViewModels.Screens
 
         #region Options bindings
 
-        public int? AppDayLower
-        {
-            get
-            {
-                return _appDayLower;
-            }
-            set
-            {
-                if (_appDayLower != value)
-                {
-                    _appDayLower = value;
-
-                    OnPropertyChanged("AppDayLower");
-                    OnPropertyChanged("AllEmpty");
-                }
-            }
-        }
-
-        public int? AppDayUpper
-        {
-            get
-            {
-                return _appDayUpper;
-            }
-            set
-            {
-                if (_appDayUpper != value)
-                {
-                    _appDayUpper = value;
-
-                    OnPropertyChanged("AppDayUpper");
-                    OnPropertyChanged("AllEmpty");
-                }
-            }
-        }
-
-        public int? AppMonthLower
-        {
-            get
-            {
-                return _appMonthLower;
-            }
-            set
-            {
-                if (_appMonthLower != value)
-                {
-                    _appMonthLower = value;
-
-                    OnPropertyChanged("AppMonthLower");
-                    OnPropertyChanged("AllEmpty");
-                }
-            }
-        }
-
-        public int? AppMonthUpper
-        {
-            get
-            {
-                return _appMonthUpper;
-            }
-            set
-            {
-                if (_appMonthUpper != value)
-                {
-                    _appMonthUpper = value;
-
-                    OnPropertyChanged("AppMonthUpper");
-                    OnPropertyChanged("AllEmpty");
-                }
-            }
-        }
-
-        public int? AppYearLower
-        {
-            get
-            {
-                return _appYearLower;
-            }
-            set
-            {
-                if (_appYearLower != value)
-                {
-                    _appYearLower = value;
-
-                    OnPropertyChanged("AppYearLower");
-                    OnPropertyChanged("AllEmpty");
-                }
-            }
-        }
-
-        public int? AppYearUpper
-        {
-            get
-            {
-                return _appYearUpper;
-            }
-            set
-            {
-                if (_appYearUpper != value)
-                {
-                    _appYearUpper = value;
-
-                    OnPropertyChanged("AppYearUpper");
-                    OnPropertyChanged("AllEmpty");
-                }
-            }
-        }
-
         public IEnumerable<HrCategoryViewModel> Categories
         {
             get
@@ -349,48 +218,6 @@ namespace Diagnosis.ViewModels.Screens
                     });
                 }
                 return _categories;
-            }
-        }
-
-        public DateOffset HrDateOffsetLower
-        {
-            get
-            {
-                if (_hrDateOffsetLower == null)
-                {
-                    _hrDateOffsetLower = new DateOffset(null, DateUnit.Day);
-                    _hrDateOffsetLower.PropertyChanged += (s, e) =>
-                    {
-                        if (e.PropertyName == "Offset" || e.PropertyName == "Unit")
-                        {
-                            OnPropertyChanged("HrDateOffsetLower");
-                            OnPropertyChanged("AllEmpty");
-                            PrintHrDate();
-                        }
-                    };
-                }
-                return _hrDateOffsetLower;
-            }
-        }
-
-        public DateOffset HrDateOffsetUpper
-        {
-            get
-            {
-                if (_hrDateOffsetUpper == null)
-                {
-                    _hrDateOffsetUpper = new DateOffset(null, DateUnit.Day);
-                    _hrDateOffsetUpper.PropertyChanged += (s, e) =>
-                    {
-                        if (e.PropertyName == "Offset" || e.PropertyName == "Unit")
-                        {
-                            OnPropertyChanged("HrDateOffsetUpper");
-                            OnPropertyChanged("AllEmpty");
-                            PrintHrDate();
-                        }
-                    };
-                }
-                return _hrDateOffsetUpper;
             }
         }
 
@@ -432,10 +259,6 @@ namespace Diagnosis.ViewModels.Screens
         {
             var options = new HrSearchOptions();
 
-            options.HealthRecordOffsetGt = HrDateOffsetLower;
-            options.HealthRecordOffsetLt = HrDateOffsetUpper;
-            options.AppointmentDateGt = DateHelper.NullableDate(AppYearLower, AppMonthLower, AppDayLower);
-            options.AppointmentDateLt = DateHelper.NullableDate(AppYearUpper, AppMonthUpper, AppDayUpper);
             options.AllWords = AllWords;
             options.QueryScope = QueryScope;
 
@@ -508,14 +331,6 @@ namespace Diagnosis.ViewModels.Screens
             ControlsVisible = true;
         }
 
-        private void PrintHrDate()
-        {
-            Debug.Print("HrDateOffsetUpper = {0}", HrDateOffsetUpper);
-            Debug.Print("HrDateOffsetLower = {0}", HrDateOffsetLower);
-        }
-
-        #region IDisposable
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -524,8 +339,6 @@ namespace Diagnosis.ViewModels.Screens
             }
             base.Dispose(disposing);
         }
-
-        #endregion IDisposable
 
         public class HrCategoryViewModel : CheckableBase, IComparable
         {
