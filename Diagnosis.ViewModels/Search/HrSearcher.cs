@@ -21,24 +21,33 @@ namespace Diagnosis.ViewModels.Search
 
             IEnumerable<HealthRecord> hrs;
 
-            if (options.Words.Count() > 0)
-                if (options.AllWords)
-                {
-                    hrs = HealthRecordQuery.WithAllWords(session)(options.Words, options.QueryScope);
-                }
-                else
-                {
-                    hrs = HealthRecordQuery.WithAnyWord(session)(options.Words);
-                }
-            else
-            {
-                hrs = session.Query<HealthRecord>();
-            }
+            //if (options.WordsAll.Count() > 0)
+            //    if (options.AllWords)
+            //    {
+            //        hrs = HealthRecordQuery.WithAllWords(session)(options.WordsAll, options.QueryScope);
+            //    }
+            //    else
+            //    {
+            //        hrs = HealthRecordQuery.WithAnyWord(session)(options.WordsAll);
+            //    }
+            //else
+            //{
+            //    hrs = session.Query<HealthRecord>();
+            //}
+
+            hrs = HealthRecordQuery.WithAllAnyNotWords(session)(options.WordsAll, options.WordsAny, options.WordsNot);
+
+
 
             if (options.MeasuresAll.Count() > 0)
             {
                 hrs = hrs.Where(x =>
                    options.MeasuresAll.All(m => x.Measures.Contains(m, new ValueComparer(m.Operator))));
+            }
+            if (options.MeasuresAny.Count() > 0)
+            {
+                hrs = hrs.Where(x =>
+                   options.MeasuresAny.Any(m => x.Measures.Contains(m, new ValueComparer(m.Operator))));
             }
 
             if (options.Categories.Count() > 0)

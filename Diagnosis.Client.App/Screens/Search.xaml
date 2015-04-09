@@ -125,8 +125,12 @@
                     <KeyBinding Key="Enter"
                                 Command="{Binding SearchCommand}" />
                 </StackPanel.InputBindings>
-                <Label Content="Ключевые _слова" />
-                <search:Autocomplete DataContext="{Binding Autocomplete}" />
+                <Label Content="Все ключевые _слова" />
+                <search:Autocomplete DataContext="{Binding AutocompleteAll}" />
+                <Label Content="И хотя бы одно из" />
+                <search:Autocomplete DataContext="{Binding AutocompleteAny}" />
+                <Label Content="И ни одиного из" />
+                <search:Autocomplete DataContext="{Binding AutocompleteNot}" />
                 <DockPanel Style="{StaticResource formLine}">
                     <Grid>
                         <CheckBox IsChecked="{Binding AllWords}"

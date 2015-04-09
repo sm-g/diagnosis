@@ -18,10 +18,25 @@ namespace Diagnosis.ViewModels.Search
         #region Options
 
         /// <summary>
-        /// Слова, которые есть в записи
+        /// Записи со всеми словами
         /// </summary>
-        public IEnumerable<Word> Words { get; set; }
-
+        public IEnumerable<Word> WordsAll { get; set; }
+        /// <summary>
+        /// И любым словом из
+        /// </summary>
+        public IEnumerable<Word> WordsAny { get; set; }
+        /// <summary>
+        /// B ни одного слова из.
+        /// </summary>
+        public IEnumerable<Word> WordsNot { get; set; }
+        /// <summary>
+        /// Записи со всеми измерениями
+        /// </summary>
+        public IEnumerable<MeasureOp> MeasuresAll { get; set; }
+        /// <summary>
+        /// И любым из
+        /// </summary>
+        public IEnumerable<MeasureOp> MeasuresAny { get; set; }
 
         /// <summary>
         /// В области должны быть все слова из запроса.
@@ -129,7 +144,7 @@ namespace Diagnosis.ViewModels.Search
             }
         }
 
-        public IEnumerable<MeasureOp> MeasuresAll { get; set; }
+
 
         #endregion
 
@@ -158,6 +173,5 @@ namespace Diagnosis.ViewModels.Search
             Contract.Invariant(HealthRecordOffsetGt == null || HealthRecordOffsetLt == null || HealthRecordOffsetGt.IsEmpty || HealthRecordOffsetLt.IsEmpty ||
                 HealthRecordOffsetGt <= HealthRecordOffsetLt);
         }
-
     }
 }

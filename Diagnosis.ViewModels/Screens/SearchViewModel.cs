@@ -42,24 +42,29 @@ namespace Diagnosis.ViewModels.Screens
         {
             ContentId = ToolContentId;
 
-            Autocomplete = new AutocompleteViewModel(
-                new Recognizer(Session) { AddNotPersistedToSuggestions = false, MeasureEditorWithCompare = true },
+            var rec = new Recognizer(Session) { AddNotPersistedToSuggestions = false, MeasureEditorWithCompare = true };
+            AutocompleteAll = new AutocompleteViewModel(
+                rec,
                 AutocompleteViewModel.OptionsMode.Search,
                 null);
-
+            AutocompleteAny = new AutocompleteViewModel(
+                rec,
+                AutocompleteViewModel.OptionsMode.Search,
+                null);
+            AutocompleteNot = new AutocompleteViewModel(
+                rec,
+                AutocompleteViewModel.OptionsMode.Search,
+                null);
             ControlsVisible = true;
-            AllWords = true;
+            //   AllWords = true;
 
-            Autocomplete.InputEnded += (s, e) =>
-            {
-                if (SearchCommand.CanExecute(null))
-                    SearchCommand.Execute(null);
-            };
-            Autocomplete.Tags.CollectionChanged += (s, e) =>
-            {
-                CommandManager.InvalidateRequerySuggested(); // when drop tag, search button still disabled
-                OnPropertyChanged("AllEmpty");
-            };
+            AutocompleteAll.InputEnded += AutocompleteAll_InputEnded;
+            AutocompleteAny.InputEnded += AutocompleteAll_InputEnded;
+            AutocompleteNot.InputEnded += AutocompleteAll_InputEnded;
+            AutocompleteAll.Tags.CollectionChanged += Tags_CollectionChanged;
+            AutocompleteAny.Tags.CollectionChanged += Tags_CollectionChanged;
+            AutocompleteNot.Tags.CollectionChanged += Tags_CollectionChanged;
+
             msgManager = new EventMessageHandlersManager(
                 this.Subscribe(Event.SendToSearch, (e) =>
                 {
@@ -91,6 +96,124 @@ namespace Diagnosis.ViewModels.Screens
                 })
 
             );
+        }
+
+        public IList<HrCategoryViewModel> SelectedCategories
+        {
+            get { return Categories.Where(cat => cat.IsChecked).ToList(); }
+        }
+
+        public DateTime? AppDateGt
+        {
+            get
+            {
+                return DateHelper.NullableDate(AppYearLower, AppMonthLower, AppDayLower);
+            }
+        }
+
+        public DateTime? AppDateLt
+        {
+            get
+            {
+                return DateHelper.NullableDate(AppYearUpper, AppMonthUpper, AppDayUpper);
+            }
+        }
+
+        public bool AllEmpty
+        {
+            get
+            {
+                return AppDateGt == null && AppDateLt == null
+                    && (HrDateOffsetLower.IsEmpty || HrDateOffsetUpper.IsEmpty)
+                    && SelectedCategories.Count() == 0
+                    && AutocompleteAll.Tags.Count == 1;
+            }
+        }
+
+        public ICommand SearchCommand
+        {
+            get
+            {
+                return new RelayCommand(Search, () => !AllEmpty);
+            }
+        }
+
+        public AutocompleteViewModel AutocompleteAll { get; set; }
+
+        public AutocompleteViewModel AutocompleteAny { get; set; }
+
+        public AutocompleteViewModel AutocompleteNot { get; set; }
+
+        public SearchResultViewModel Result
+        {
+            get
+            {
+                return _res;
+            }
+            set
+            {
+                if (_res != value)
+                {
+                    _res = value;
+                    OnPropertyChanged(() => Result);
+                    OnPropertyChanged(() => NothingFound);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Показывать сообщение «ничего не найдено»
+        /// </summary>
+        public bool NothingFound
+        {
+            get
+            {
+                return Result != null && Result.Statistic.PatientsCount == 0;
+            }
+        }
+
+        /// <summary>
+        /// Показывать поисковую форму
+        /// </summary>
+        public bool ControlsVisible
+        {
+            get
+            {
+                return _controlsVisible;
+            }
+            set
+            {
+                if (_controlsVisible != value)
+                {
+                    _controlsVisible = value;
+                    OnPropertyChanged("ControlsVisible");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Опции поиска при последнем поиске.
+        /// </summary>
+        public HrSearchOptions Options
+        {
+            get { return _options; }
+            set
+            {
+                _options = value;
+                OnPropertyChanged("Options");
+            }
+        }
+
+        void AutocompleteAll_InputEnded(object sender, BoolEventArgs e)
+        {
+            if (SearchCommand.CanExecute(null))
+                SearchCommand.Execute(null);
+        }
+
+        void Tags_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            CommandManager.InvalidateRequerySuggested(); // when drop tag, search button still disabled
+            OnPropertyChanged("AllEmpty");
         }
 
         #region Options bindings
@@ -305,109 +428,6 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         #endregion Options bindings
-
-        public IList<HrCategoryViewModel> SelectedCategories
-        {
-            get { return Categories.Where(cat => cat.IsChecked).ToList(); }
-        }
-
-        public DateTime? AppDateGt
-        {
-            get
-            {
-                return DateHelper.NullableDate(AppYearLower, AppMonthLower, AppDayLower);
-            }
-        }
-
-        public DateTime? AppDateLt
-        {
-            get
-            {
-                return DateHelper.NullableDate(AppYearUpper, AppMonthUpper, AppDayUpper);
-            }
-        }
-
-        public bool AllEmpty
-        {
-            get
-            {
-                return AppDateGt == null && AppDateLt == null
-                    && (HrDateOffsetLower.IsEmpty || HrDateOffsetUpper.IsEmpty)
-                    && SelectedCategories.Count() == 0
-                    && Autocomplete.Tags.Count == 1;
-            }
-        }
-
-        public ICommand SearchCommand
-        {
-            get
-            {
-                return new RelayCommand(Search, () => !AllEmpty);
-            }
-        }
-
-        public AutocompleteViewModel Autocomplete { get;  set; }
-
-        public SearchResultViewModel Result
-        {
-            get
-            {
-                return _res;
-            }
-            set
-            {
-                if (_res != value)
-                {
-                    _res = value;
-                    OnPropertyChanged(() => Result);
-                    OnPropertyChanged(() => NothingFound);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Показывать сообщение «ничего не найдено»
-        /// </summary>
-        public bool NothingFound
-        {
-            get
-            {
-                return Result != null && Result.Statistic.PatientsCount == 0;
-            }
-        }
-
-        /// <summary>
-        /// Показывать поисковую форму
-        /// </summary>
-        public bool ControlsVisible
-        {
-            get
-            {
-                return _controlsVisible;
-            }
-            set
-            {
-                if (_controlsVisible != value)
-                {
-                    _controlsVisible = value;
-                    OnPropertyChanged("ControlsVisible");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Опции поиска при последнем поиске.
-        /// </summary>
-        public HrSearchOptions Options
-        {
-            get { return _options; }
-            set
-            {
-                _options = value;
-                OnPropertyChanged("Options");
-            }
-        }
-
         private HrSearchOptions MakeOptions()
         {
             var options = new HrSearchOptions();
@@ -419,9 +439,13 @@ namespace Diagnosis.ViewModels.Screens
             options.AllWords = AllWords;
             options.QueryScope = QueryScope;
 
-            var entities = Autocomplete.GetCHIOs().ToList();
-            options.Words = entities.Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
+            options.WordsAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
+            options.WordsAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
+            options.WordsNot = AutocompleteNot.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
+
             options.MeasuresAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
+            options.MeasuresAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
+
             options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
 
             Options = options;
@@ -431,7 +455,7 @@ namespace Diagnosis.ViewModels.Screens
         private void Search()
         {
             MakeOptions();
-            var hrs =  new HrSearcher().Search(Session, Options);
+            var hrs = new HrSearcher().Search(Session, Options);
             Result = new SearchResultViewModel(hrs);
             ControlsVisible = false;
         }
@@ -470,7 +494,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private void RecieveHrItemObjects(IEnumerable<IHrItemObject> hios)
         {
-            Autocomplete.ReplaceTagsWith(hios);
+            AutocompleteAll.ReplaceTagsWith(hios);
 
             RemoveLastResults();
         }

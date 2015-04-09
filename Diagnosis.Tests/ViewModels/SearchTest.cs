@@ -23,7 +23,7 @@ namespace Diagnosis.Tests.ViewModels
         [TestMethod]
         public void SearchNoWords()
         {
-            s.Autocomplete.AddTag(w[6]);
+            s.AutocompleteAll.AddTag(w[6]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(true, s.NothingFound);
@@ -33,7 +33,7 @@ namespace Diagnosis.Tests.ViewModels
         [TestMethod]
         public void SearchTwoPatients()
         {
-            s.Autocomplete.AddTag(w[22]);
+            s.AutocompleteAll.AddTag(w[22]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(2, s.Result.Patients.Count);
@@ -42,8 +42,8 @@ namespace Diagnosis.Tests.ViewModels
         [TestMethod]
         public void SearchWordsInApp()
         {
-            s.Autocomplete.AddTag(w[1]);
-            s.Autocomplete.AddTag(w[4]);
+            s.AutocompleteAll.AddTag(w[1]);
+            s.AutocompleteAll.AddTag(w[4]);
             s.QueryScope = HealthRecordQueryAndScope.Appointment;
             s.SearchCommand.Execute(null);
 
@@ -55,7 +55,7 @@ namespace Diagnosis.Tests.ViewModels
         [TestMethod]
         public void WordsFromHrsInStat()
         {
-            s.Autocomplete.AddTag(w[5]);
+            s.AutocompleteAll.AddTag(w[5]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(3, s.Result.Statistic.Words.Count); // 10 - все слова пациента
@@ -65,7 +65,7 @@ namespace Diagnosis.Tests.ViewModels
         [TestMethod]
         public void WordsWithMeasureInStat()
         {
-            s.Autocomplete.AddTag(w[1]);
+            s.AutocompleteAll.AddTag(w[1]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(1, s.Result.Statistic.WordsWithMeasure.Count);
@@ -75,8 +75,8 @@ namespace Diagnosis.Tests.ViewModels
         [TestMethod]
         public void FoundHrs()
         {
-            s.Autocomplete.AddTag(w[4]);
-            s.Autocomplete.AddTag(w[22]);
+            s.AutocompleteAll.AddTag(w[4]);
+            s.AutocompleteAll.AddTag(w[22]);
             s.QueryScope = HealthRecordQueryAndScope.Course;
             s.SearchCommand.Execute(null);
 
@@ -89,8 +89,8 @@ namespace Diagnosis.Tests.ViewModels
         [TestMethod]
         public void AppOrder()
         {
-            s.Autocomplete.AddTag(w[4]);
-            s.Autocomplete.AddTag(w[22]);
+            s.AutocompleteAll.AddTag(w[4]);
+            s.AutocompleteAll.AddTag(w[22]);
             s.QueryScope = HealthRecordQueryAndScope.Course;
             s.SearchCommand.Execute(null);
 
