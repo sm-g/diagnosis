@@ -29,12 +29,6 @@ namespace Diagnosis.ViewModels.Autocomplete
         private readonly ISession session;
         private bool _addQueryToSug;
 
-
-        /// <summary>
-        ///
-        /// </summary>
-        public bool OnlyWords { get; set; }
-
         /// <summary>
         /// При поиске предположений-слов первыми - дети предыдущего слова.
         /// </summary>
@@ -111,7 +105,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         private bool CanMakeEntityFrom(string query)
         {
-            if (query.IsNullOrEmpty() || OnlyWords)
+            if (query.IsNullOrEmpty())
                 return false;
             return true;
         }

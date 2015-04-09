@@ -42,7 +42,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             Autocomplete = new AutocompleteViewModel(
                 new Recognizer(Session)
                 {
-                    OnlyWords = true,
                     AddQueryToSuggestions = true,
                     CanChangeAddQueryToSuggstions = false
                 },

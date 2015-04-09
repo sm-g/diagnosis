@@ -12,11 +12,6 @@ namespace Diagnosis.Client.App.DesignData
     {
         public SampleSearchViewModel()
         {
-            //Autocomplete = new AutocompleteViewModel(
-            //    new Recognizer(Session) { OnlyWords = true, AddNotPersistedToSuggestions = false },
-            //    AutocompleteViewModel.OptionsMode.Search,
-            //    Mocks.hr.HrItems.Select(x => x.CHIO));
-
             ControlsVisible = true;
             AllWords = true;
         }

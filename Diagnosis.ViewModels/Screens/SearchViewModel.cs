@@ -43,7 +43,7 @@ namespace Diagnosis.ViewModels.Screens
             ContentId = ToolContentId;
 
             Autocomplete = new AutocompleteViewModel(
-                new Recognizer(Session) { OnlyWords = true, AddNotPersistedToSuggestions = false },
+                new Recognizer(Session) { AddNotPersistedToSuggestions = false },
                 AutocompleteViewModel.OptionsMode.Search,
                 null);
 

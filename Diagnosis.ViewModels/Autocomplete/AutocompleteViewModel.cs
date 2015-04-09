@@ -33,15 +33,16 @@ namespace Diagnosis.ViewModels.Autocomplete
         private bool inDispose;
         private VisibleRelayCommand<TagViewModel> sendToSearch;
         private VisibleRelayCommand toggleConfidence;
-
+        OptionsMode mode;
         public AutocompleteViewModel(Recognizer recognizer, OptionsMode mode, IEnumerable<ConfindenceHrItemObject> initItems)
             : this(recognizer,
-                allowTagConvertion: mode == OptionsMode.HrEditor,
+                allowTagConvertion: mode != OptionsMode.MeasureEditor,
                 allowSendToSearch: mode == OptionsMode.HrEditor,
                 allowConfidenceToggle: mode == OptionsMode.HrEditor,
                 singleTag: mode == OptionsMode.MeasureEditor,
                 initItems: initItems)
         {
+            this.mode = mode;
         }
 
         public AutocompleteViewModel(Recognizer recognizer, bool allowTagConvertion, bool allowSendToSearch, bool allowConfidenceToggle, bool singleTag, IEnumerable<ConfindenceHrItemObject> initItems)
@@ -140,7 +141,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 return new RelayCommand<TagViewModel>(
                     (tag) => CompleteOnEnter(tag, inverse: true),
-                    (tag) => tag != null && !recognizer.OnlyWords);
+                    (tag) => tag != null);
             }
         }
 
@@ -666,7 +667,9 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         private Signalizations Validator(TagViewModel tag)
         {
-            return recognizer.OnlyWords && tag.BlankType != BlankType.Word ? Signalizations.Forbidden : Signalizations.None;
+            return mode == OptionsMode.Search && (tag.BlankType == BlankType.None || tag.BlankType == BlankType.Comment)
+                ? Signalizations.Forbidden
+                : Signalizations.None;
         }
 
         /// <summary>
@@ -703,23 +706,23 @@ namespace Diagnosis.ViewModels.Autocomplete
                  {
                      if (t.Result)
                      {
-                        uiTaskFactory.StartNew(() =>
-                        {
-                            if (measure != null && toType != BlankType.Comment)
-                            {
-                                // отдельный комментарий из числа измерения
-                                var comment = new Comment(string.Format("{0} {1}", measure.Value, measure.Uom).Trim());
-                                AddTag(comment, Tags.IndexOf(tag) + 1);
-                            }
+                         uiTaskFactory.StartNew(() =>
+                         {
+                             if (measure != null && toType != BlankType.Comment)
+                             {
+                                 // отдельный комментарий из числа измерения
+                                 var comment = new Comment(string.Format("{0} {1}", measure.Value, measure.Uom).Trim());
+                                 AddTag(comment, Tags.IndexOf(tag) + 1);
+                             }
 
-                            CompleteEnding(tag);
+                             CompleteEnding(tag);
 
-                            OnEntitiesChanged(); // повторно, тк при конверте сначала меняется query, поэтому меняется state на completed
+                             OnEntitiesChanged(); // повторно, тк при конверте сначала меняется query, поэтому меняется state на completed
 
-                            if (wasLast)
-                                // convert from Last - continue typing
-                                StartEdit();
-                        });
+                             if (wasLast)
+                                 // convert from Last - continue typing
+                                 StartEdit();
+                         });
                      }
                  }, TaskContinuationOptions.ExecuteSynchronously);
         }
@@ -863,7 +866,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             Contract.Invariant(inDispose || LastTag.IsLast != SingleTag); // единственный тег не IsLast
             Contract.Invariant(Tags.Count(t => t.State == State.Typing) <= 1); // только один тег редактируется
             Contract.Invariant(Tags.Count == 1 || !SingleTag); // единственный тег
-            Contract.Invariant(!(WithConvert && recognizer.OnlyWords)); // конвертировать, когда только слова, бессмысленно
         }
 
         protected override void Dispose(bool disposing)
