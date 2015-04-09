@@ -2,6 +2,7 @@
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 
 namespace Diagnosis.Tests.ViewModels
 {
@@ -16,8 +17,15 @@ namespace Diagnosis.Tests.ViewModels
             Load<HealthRecord>();
             Load<Word>();
             Load<Appointment>();
+            Load<Uom>();
 
             s = new SearchViewModel();
+        }
+        [TestCleanup]
+        public void Clean()
+        {
+            if (s != null)
+                s.Dispose();
         }
 
         [TestMethod]
@@ -97,6 +105,29 @@ namespace Diagnosis.Tests.ViewModels
             Assert.AreEqual(0, s.Result.Patients[0].FoundHealthRecords.Count);
             Assert.AreEqual(1, s.Result.Patients[0].Children[0].FoundHealthRecords.Count); // 7-14
             Assert.AreEqual(2, s.Result.Patients[0].Children[0].Children[0].HealthRecords.Count); // 14
+        }
+
+        [TestMethod]
+        public void SearchMeasureAndWord()
+        {
+            s.AutocompleteAll.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal });
+            s.AutocompleteAll.AddTag(w[1]);
+            s.SearchCommand.Execute(null);
+
+            Assert.AreEqual(hr[22], s.Result.Statistic.HealthRecords.Single());
+        }
+
+        [TestMethod]
+        public void SearchMeasureOrWord()
+        {
+            s.AutocompleteAny.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal });
+            s.AutocompleteAny.AddTag(w[5]);
+            s.SearchCommand.Execute(null);
+
+            Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
+            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[30]));
+
         }
     }
 }

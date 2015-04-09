@@ -35,19 +35,34 @@ namespace Diagnosis.ViewModels.Search
             //    hrs = session.Query<HealthRecord>();
             //}
 
-            hrs = HealthRecordQuery.WithAllAnyNotWords(session)(options.WordsAll, options.WordsAny, options.WordsNot);
+            hrs = HealthRecordQuery.WithAllAnyNotWords(session)(
+                options.WordsAll,
+                options.WordsAny,
+                options.WordsNot);
 
-
-
+            // все измерения - просто фильтр
             if (options.MeasuresAll.Count() > 0)
             {
                 hrs = hrs.Where(x =>
                    options.MeasuresAll.All(m => x.Measures.Contains(m, new ValueComparer(m.Operator))));
             }
+            // любое из измерений - ищем со словами из измерений с учетом ограничений all, not, 
+            // добавляем к записям
             if (options.MeasuresAny.Count() > 0)
             {
-                hrs = hrs.Where(x =>
+                var hrsWithM = HealthRecordQuery.WithAllAnyNotWords(session)(
+                    Enumerable.Empty<Word>(),
+                    options.MeasuresAny.Select(x => x.Word),
+                    Enumerable.Empty<Word>());
+
+                hrsWithM = hrsWithM.Where(x =>
+                   options.WordsAll.IsSubsetOf(x.Words) &&
+                   options.MeasuresAll.All(m => x.Measures.Contains(m, new ValueComparer(m.Operator))) &&
+                   !x.Words.Any(w => options.WordsNot.Contains(w)) &&
+
                    options.MeasuresAny.Any(m => x.Measures.Contains(m, new ValueComparer(m.Operator))));
+
+                hrs = hrs.Union(hrsWithM);
             }
 
             if (options.Categories.Count() > 0)
@@ -57,24 +72,6 @@ namespace Diagnosis.ViewModels.Search
             }
 
             return hrs.ToList();
-        }
-
-        bool TestHrDate(HealthRecord hr, HrSearchOptions options)
-        {
-            if (options.HealthRecordOffsetLt.IsEmpty || options.HealthRecordOffsetGt.IsEmpty)
-                return true; // условия поиска не заданы
-            var hrDateOffset = new DateOffset(hr.FromYear, hr.FromMonth, hr.FromDay, () => hr.Appointment.DateAndTime);
-            if (hrDateOffset.Unit == DateUnit.Week)
-            {
-                ;
-            }
-
-            var hrDateLtThat = new DateOffset(options.HealthRecordOffsetLt, () => hr.Appointment.DateAndTime);
-            var grDateGtThat = new DateOffset(options.HealthRecordOffsetGt, () => hr.Appointment.DateAndTime);
-
-            return !hrDateOffset.IsEmpty &&
-                   hrDateOffset <= hrDateLtThat &&
-                   hrDateOffset >= grDateGtThat;
         }
     }
 }
