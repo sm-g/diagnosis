@@ -33,7 +33,7 @@ namespace Diagnosis.Tests
         private static Dictionary<Type, int[]> ids = new Dictionary<Type, int[]>()
         {
             { typeof(HealthRecord), new[] { 1, 2, 20, 21, 22, 30, 31, 32, 40, 70, 71, 72, 73, 74 } },
-            { typeof(Word),         new[] { 1, 2, 3, 4, 5, 6, 22, 51, 94 } },
+            { typeof(Word),         new[] { 1, 2, 3, 4, 5, 6, 22, 31, 51, 94,100 } },
             { typeof(Patient),      new[] { 1, 2, 3, 4, 5 } },
             { typeof(Course),       new[] { 1, 2, 3, 4 } },
             { typeof(Appointment),  new[] { 1, 2, 3, 4, 5 } },
@@ -66,6 +66,10 @@ namespace Diagnosis.Tests
             { typeof(VocabularyWords),       "00000{0:000}-1400-0000-0000-000000000{0:000}" },
             { typeof(SpecialityVocabularies),"00000{0:000}-1500-0000-0000-000000000{0:000}" },
         };
+        static DbTest()
+        {
+            Diagnosis.Models.EntityExtensions.ShortIdsFromEnd = true;
+        }
         protected void Load<T>()
         {
             var @switch = new Dictionary<Type, Action> {
