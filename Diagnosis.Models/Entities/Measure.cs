@@ -176,7 +176,7 @@ namespace Diagnosis.Models
         public override string ToString()
         {
             string operatorString = Operator.ToString();
-            FieldInfo fi = this.GetType().GetField("Operator");
+            FieldInfo fi = Operator.GetType().GetField(operatorString);
             if (fi != null)
             {
                 var attribs = fi.GetCustomAttributes(typeof(DescriptionAttribute), false).Cast<DescriptionAttribute>().ToArray();
