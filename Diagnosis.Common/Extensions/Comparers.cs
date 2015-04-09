@@ -27,6 +27,13 @@ namespace Diagnosis.Common
             }
         }
     }
+    public static class Compare
+    {
+        public static IEqualityComparer<TSource> By<TSource, TIdentity>(Func<TSource, TIdentity> identitySelector)
+        {
+            return new KeyEqualityComparer<TSource, TIdentity>(identitySelector);
+        }
+    }
 
     public class KeyEqualityComparer<T, TKey> : IEqualityComparer<T>
     {

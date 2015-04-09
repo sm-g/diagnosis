@@ -35,23 +35,13 @@ namespace Diagnosis.ViewModels.Search
                 hrs = session.Query<HealthRecord>();
             }
 
-            //hrs = hrs.Where(hr => TestHrDate(hr, options));
 
-            //hrs = hrs.Where(hr =>
-            //   (options.AppointmentDateLt.HasValue ? hr.Appointment.DateAndTime <= options.AppointmentDateLt.Value : true) &&
-            //   (options.AppointmentDateGt.HasValue ? hr.Appointment.DateAndTime >= options.AppointmentDateGt.Value : true)
-            //);
 
             if (options.Categories.Count() > 0)
             {
                 hrs = hrs.Where(hr =>
                     options.Categories.Any(cat => cat.Equals(hr.Category)));
             }
-
-            //if (options.Comment != null)
-            //{
-            //    hrs = hrs.Where(hr => hr.Comment != null && hr.Comment.ToLower().Contains(options.Comment.ToLower()));
-            //}
 
             return hrs.ToList();
         }
