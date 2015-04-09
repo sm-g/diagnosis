@@ -35,7 +35,11 @@ namespace Diagnosis.ViewModels.Search
                 hrs = session.Query<HealthRecord>();
             }
 
-
+            if (options.MeasuresAll.Count() > 0)
+            {
+                hrs = hrs.Where(x =>
+                   options.MeasuresAll.All(m => x.Measures.Contains(m, new ValueComparer(m.Operator))));
+            }
 
             if (options.Categories.Count() > 0)
             {

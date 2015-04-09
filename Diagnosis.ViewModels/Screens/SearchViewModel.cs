@@ -43,7 +43,7 @@ namespace Diagnosis.ViewModels.Screens
             ContentId = ToolContentId;
 
             Autocomplete = new AutocompleteViewModel(
-                new Recognizer(Session) { AddNotPersistedToSuggestions = false },
+                new Recognizer(Session) { AddNotPersistedToSuggestions = false, MeasureEditorWithCompare = true },
                 AutocompleteViewModel.OptionsMode.Search,
                 null);
 
@@ -421,6 +421,7 @@ namespace Diagnosis.ViewModels.Screens
 
             var entities = Autocomplete.GetCHIOs().ToList();
             options.Words = entities.Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
+            options.MeasuresAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
             options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
 
             Options = options;

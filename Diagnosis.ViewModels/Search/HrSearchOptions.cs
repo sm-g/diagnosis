@@ -129,6 +129,8 @@ namespace Diagnosis.ViewModels.Search
             }
         }
 
+        public IEnumerable<MeasureOp> MeasuresAll { get; set; }
+
         #endregion
 
         public bool AppDateVisible

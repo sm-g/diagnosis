@@ -21,6 +21,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private readonly bool allowTagConvertion;
         private readonly bool allowConfidenceToggle;
         private readonly bool singleTag;
+        private readonly bool measureEditorWithCompare;
 
         private TagViewModel _selTag;
         private bool _popupOpened;
@@ -40,12 +41,19 @@ namespace Diagnosis.ViewModels.Autocomplete
                 allowSendToSearch: mode == OptionsMode.HrEditor,
                 allowConfidenceToggle: mode == OptionsMode.HrEditor,
                 singleTag: mode == OptionsMode.MeasureEditor,
+                measureEditorWithCompare: mode == OptionsMode.Search,
                 initItems: initItems)
         {
             this.mode = mode;
         }
 
-        public AutocompleteViewModel(Recognizer recognizer, bool allowTagConvertion, bool allowSendToSearch, bool allowConfidenceToggle, bool singleTag, IEnumerable<ConfindenceHrItemObject> initItems)
+        public AutocompleteViewModel(Recognizer recognizer, 
+            bool allowTagConvertion, 
+            bool allowSendToSearch, 
+            bool allowConfidenceToggle, 
+            bool singleTag, 
+            bool measureEditorWithCompare, 
+            IEnumerable<ConfindenceHrItemObject> initItems)
         {
             Contract.Requires(recognizer != null);
 
@@ -54,6 +62,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             this.allowSendToSearch = allowSendToSearch;
             this.allowConfidenceToggle = allowConfidenceToggle;
             this.singleTag = singleTag;
+            this.measureEditorWithCompare = measureEditorWithCompare;
 
             Tags = new ObservableCollection<TagViewModel>();
             Tags.CollectionChanged += (s, e) =>
@@ -215,7 +224,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                         switch (SelectedTag.BlankType)
                         {
                             case BlankType.Measure:
-                                var vm = new MeasureEditorViewModel(SelectedTag.Blank as Measure);
+                                var vm = new MeasureEditorViewModel(SelectedTag.Blank as Measure, measureEditorWithCompare);
                                 vm.OnDialogResult(() =>
                                 {
                                     CompleteCommon(SelectedTag, vm.Measure, false);
@@ -528,7 +537,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             if (type == BlankType.Measure)
             {
-                var vm = new MeasureEditorViewModel();
+                var vm = new MeasureEditorViewModel(measureEditorWithCompare);
                 vm.OnDialogResult(() =>
                 {
                     AddTag(vm.Measure, index);

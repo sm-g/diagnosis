@@ -1,8 +1,7 @@
 ﻿using Diagnosis.Data.Queries;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Autocomplete;
 using log4net;
-using NHibernate.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Data;
@@ -15,9 +14,14 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         private List<Uom> _uoms;
         private string _val;
+        private MeasureOperator _op;
         private bool isValueValid;
-        MeasureEditorViewModel(Measure measure, Word w)
+        private readonly bool withCompare;
+
+        private MeasureEditorViewModel(Measure measure, Word w, bool withCompare)
         {
+            this.withCompare = withCompare;
+
             _uoms = new List<Uom> { Uom.Null };
             var allUoms = UomQuery.Contains(Session)("");
             _uoms.AddRange(allUoms);
@@ -28,14 +32,15 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             if (measure == null)
             {
-                Measure = new Measure(0) { Word = w };
+                Measure = WithCompare ? new MeasureOp(0) : new Measure(0);
+                Measure.Word = w;
             }
             else
             {
-                Measure = new Measure(measure.Value, measure.Uom)
-                {
-                    Word = w ?? measure.Word  // новое слово или бывшее с измерением
-                };
+                Measure = WithCompare ? new MeasureOp(measure.Value, measure.Uom) : new Measure(measure.Value, measure.Uom);
+                Measure.Word = w ?? measure.Word; // новое слово или бывшее с измерением
+                if (measure is MeasureOp)
+                    Operator = (measure as MeasureOp).Operator;
             }
             Value = Measure.Value.ToString();
 
@@ -61,37 +66,64 @@ namespace Diagnosis.ViewModels.Autocomplete
             HelpTopic = "editmeasure";
             WithHelpButton = false;
         }
+
         /// <summary>
         /// Edit
         /// </summary>
         /// <param name="measure"></param>
-        public MeasureEditorViewModel(Measure measure)
-            : this(measure, null)
+        public MeasureEditorViewModel(Measure measure, bool c)
+            : this(measure, null, c)
         {
-
         }
+
         /// <summary>
         /// Convert
         /// </summary>
         /// <param name="word"></param>
-        public MeasureEditorViewModel(Word word)
-            : this(null, word)
+        public MeasureEditorViewModel(Word word, bool c)
+            : this(null, word, c)
         {
         }
+
         /// <summary>
         /// Create
         /// </summary>
-        public MeasureEditorViewModel()
-            : this(null, null)
+        public MeasureEditorViewModel(bool c)
+            : this(null, null, c)
         {
         }
 
         public AutocompleteViewModel Autocomplete { get; private set; }
 
+        public bool WithCompare { get { return withCompare; } }
+
+        public Word Word
+        {
+            get { return Measure.Word; }
+            set { Measure.Word = value; }
+        }
+
         public string Value
         {
             get { return _val; }
             set { _val = value; }
+        }
+
+        public MeasureOperator Operator
+        {
+            get
+            {
+                return _op;
+            }
+            set
+            {
+                if (_op != value)
+                {
+                    _op = value;
+
+                    OnPropertyChanged(() => Operator);
+                }
+            }
         }
 
         public Uom Uom
@@ -100,12 +132,9 @@ namespace Diagnosis.ViewModels.Autocomplete
             set { Measure.Uom = value; }
         }
 
-        public Word Word
-        {
-            get { return Measure.Word; }
-            set { Measure.Word = value; }
-        }
         public Measure Measure { get; private set; }
+
+        public IEnumerable<MeasureOperator> Operators { get { return Enum.GetValues(typeof(MeasureOperator)).Cast<MeasureOperator>(); } }
 
         public IEnumerable<Uom> Uoms { get { return _uoms; } }
 
@@ -134,6 +163,8 @@ namespace Diagnosis.ViewModels.Autocomplete
         protected override void OnOk()
         {
             Measure.Value = double.Parse(Value);
+            if (WithCompare)
+                (Measure as MeasureOp).Operator = Operator;
         }
 
         protected override void OnCancel()

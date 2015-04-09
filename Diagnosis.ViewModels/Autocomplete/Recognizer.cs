@@ -65,6 +65,8 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// </summary>
         public bool AddNotPersistedToSuggestions { get; set; }
 
+        public bool MeasureEditorWithCompare { get; set; }
+
         static Recognizer()
         {
             typeof(Recognizer).Subscribe(Event.WordPersisted, (e) =>
@@ -187,12 +189,12 @@ namespace Diagnosis.ViewModels.Autocomplete
                             MeasureEditorViewModel meVm;
                             if (queryOrMeasureWord.IsNullOrEmpty())
                             {
-                                meVm = new MeasureEditorViewModel();
+                                meVm = new MeasureEditorViewModel(MeasureEditorWithCompare);
                             }
                             else
                             {
                                 var w = FirstMatchingOrNewWord(queryOrMeasureWord);
-                                meVm = new MeasureEditorViewModel(w);
+                                meVm = new MeasureEditorViewModel(w, MeasureEditorWithCompare);
                             }
                             meVm.OnDialogResult((res) =>
                             {

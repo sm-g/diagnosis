@@ -118,7 +118,7 @@ namespace Diagnosis.Client.App.DesignData
     public class SampleMeasureEditorViewModel : MeasureEditorViewModel
     {
         public SampleMeasureEditorViewModel()
-            : base(new Measure(36, Mocks.uom) { Word = Mocks.word })
+            : base(new Measure(36, Mocks.uom) { Word = Mocks.word }, false)
         {
         }
     }

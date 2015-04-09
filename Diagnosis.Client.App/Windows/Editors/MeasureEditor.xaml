@@ -22,6 +22,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -34,14 +35,23 @@
                VerticalAlignment="Top" />
         <Label Content="Сколько"
                Grid.Column="2"
+               Grid.ColumnSpan="2"
                HorizontalAlignment="Left"
                VerticalAlignment="Top" />
         <search:Autocomplete x:Name="autocomplete"
                              DataContext="{Binding Autocomplete}"
                              Grid.Row="1" />
 
+        <ComboBox Grid.Row="1"
+                  Grid.Column="2"
+                  Visibility="{Binding Compare, Converter={StaticResource BooleanToVisibilityConverter}}"
+                  Margin="0 0 10 0"
+                  ItemsSource="{Binding Operators}"
+                  SelectedItem="{Binding Operator, Mode=TwoWay}"
+                  ItemTemplate="{StaticResource EnumComboTemplate}">
+        </ComboBox>
         <Grid Grid.Row="1"
-              Grid.Column="2"
+              Grid.Column="3"
               VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
