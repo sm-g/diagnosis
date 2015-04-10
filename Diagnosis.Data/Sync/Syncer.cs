@@ -10,6 +10,7 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Data.SqlServerCe;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -92,28 +93,40 @@ namespace Diagnosis.Data.Sync
         public Dictionary<Type, Func<DataRow, bool>> IgnoreAddingFilterPerType { get; set; }
 
         /// <summary>
-        /// Sync scopes determined by <paramref name="from"/>. Specify conncetions in correct order in ctor.
-        /// </summary>
-        /// <param name="from"></param>
-        /// <returns></returns>
-        public Task SendFrom(Side from)
-        {
-            return SendFrom(from, from.GetOrderedScopes());
-        }
-
-        /// <summary>
         /// Sync specified scopes.
+        /// Specify conncetions in correct order in ctor.
         /// We can reverse both <paramref name="from"/> and connections in ctor to get same result.
         /// </summary>
         /// <param name="from"></param>
         /// <param name="scopes"></param>
         /// <returns></returns>
-        public async Task SendFrom(Side from, IEnumerable<Scope> scopes)
+        public async Task SendFrom(Side from, IEnumerable<Scope> scopes = null, IEnumerable<object> installedVocsIds = null)
         {
             if (InSync)
                 return;
 
             InSync = true;
+
+            if (installedVocsIds != null)
+            {
+                Contract.Assume(from == Side.Server);
+
+                // не синхронизируем новые словари,
+                // но загружаем новые шаблоны для установленных словарей
+                var filter = new Dictionary<Type, Func<DataRow, bool>>();
+                foreach (var table in Scopes.GetVocOnlyTablesToDownload())
+                {
+                    if (table == Names.WordTemplate)
+                        filter.Add(Names.tblToTypeMap[table], (row) => !installedVocsIds.Contains(row[Names.Id.Vocabulary]));
+                    else
+                        filter.Add(Names.tblToTypeMap[table], (row) => true);
+                }
+                this.IgnoreAddingFilterPerType = filter;
+            }
+            if (scopes == null)
+            {
+                scopes = from.GetOrderedScopes();
+            }
 
             var t = new Task(() =>
             {

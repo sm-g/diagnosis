@@ -119,20 +119,9 @@ namespace Diagnosis.ViewModels.Screens
                          clientConStr: LocalConnectionString,
                          serverProviderName: RemoteProviderName);
 
-                    // не синхронизируем новые словари,
-                    // но загружаем новые шаблоны для установленных словарей
                     var installedVocsIds = Session.Query<Vocabulary>().Select(x => x.Id).ToList().Cast<object>();
-                    var filter = new Dictionary<Type, Func<DataRow, bool>>();
-                    foreach (var table in Scopes.GetVocOnlyTablesToDownload())
-                    {
-                        if (table == Names.WordTemplate)
-                            filter.Add(Names.tblToTypeMap[table], (row) => !installedVocsIds.Contains(row[Names.Id.Vocabulary]));
-                        else
-                            filter.Add(Names.tblToTypeMap[table], (row) => true);
-                    }
-                    syncer.IgnoreAddingFilterPerType = filter;
 
-                    DoWithCursor(syncer.SendFrom(Side.Server).ContinueWith((t) =>
+                    DoWithCursor(syncer.SendFrom(Side.Server, installedVocsIds: installedVocsIds).ContinueWith((t) =>
                     {
                         var checker = new AfterSyncChecker(Session);
                         checker.Replaced += (s, e) =>

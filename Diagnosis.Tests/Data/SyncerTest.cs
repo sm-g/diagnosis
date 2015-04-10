@@ -7,6 +7,9 @@ using System.Linq;
 using NHibernate.Linq;
 using System.Threading.Tasks;
 using Diagnosis.Data.NHibernate;
+using System.Collections.Generic;
+using System;
+using System.Data;
 
 namespace Diagnosis.Tests.Data
 {
@@ -36,6 +39,25 @@ namespace Diagnosis.Tests.Data
         {
             System.Console.WriteLine(e.str);
             log += e.str + '\n';
+        }
+
+        [TestMethod]
+        public async Task SendVocScopeFromServerDoNotAddVoc()
+        {
+            InMemoryHelper.FillData(sCfg, sSession, true);
+
+            var sWtCount = sSession.Query<WordTemplate>().Count();
+            var cVocCount = clSession.Query<Vocabulary>().Count();
+
+            var s = new Syncer(serverCon.ConnectionString, clientCon.ConnectionString, serverCon.ProviderName);
+
+            // не синхронизируем новые словари
+            var installedVocsIds = sSession.Query<Vocabulary>().Select(x => x.Id).ToList().Cast<object>();
+            await s.SendFrom(Side.Server, Scope.Voc.ToEnumerable(), installedVocsIds);
+
+            Assert.AreEqual(cVocCount, clSession.Query<Vocabulary>().Count());
+            Assert.AreEqual(2, clSession.Query<Speciality>().Count());
+            Assert.AreEqual(0, clSession.Query<WordTemplate>().Count());
         }
 
     }
