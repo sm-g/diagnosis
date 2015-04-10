@@ -44,7 +44,7 @@
 
         <ComboBox Grid.Row="1"
                   Grid.Column="2"
-                  Visibility="{Binding Compare, Converter={StaticResource BooleanToVisibilityConverter}}"
+                  Visibility="{Binding WithCompare, Converter={StaticResource BooleanToVisibilityConverter}}"
                   Margin="0 0 10 0"
                   ItemsSource="{Binding Operators}"
                   SelectedItem="{Binding Operator, Mode=TwoWay}"
