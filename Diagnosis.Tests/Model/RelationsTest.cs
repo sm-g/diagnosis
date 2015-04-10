@@ -5,6 +5,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
 
+using System.Linq;
+
 namespace Diagnosis.Tests.Model
 {
     [TestClass]
@@ -113,6 +115,18 @@ namespace Diagnosis.Tests.Model
 
             wt = voc[1].WordTemplates.FirstOrDefault(x => x.Title == "123");
             Assert.IsNull(wt);
+        }
+
+        [TestMethod]
+        public void Voc2Word()
+        {
+            voc[1].AddWord(w[1]);
+            Assert.IsTrue(w[1].Vocabularies.Contains(voc[1]));
+            Assert.IsTrue(voc[1].Words.Contains(w[1]));
+
+            voc[1].RemoveWord(w[1]);
+            Assert.IsFalse(w[1].Vocabularies.Contains(voc[1]));
+            Assert.IsFalse(voc[1].Words.Contains(w[1]));
         }
 
         [TestMethod]

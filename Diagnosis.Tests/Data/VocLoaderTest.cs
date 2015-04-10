@@ -57,6 +57,7 @@ namespace Diagnosis.Tests.Data
             using (var tr = session.BeginTransaction())
             {
                 voc[1].RemoveWord(word);
+                word.OnDelete();
                 session.Delete(word);
                 tr.Commit();
             }
@@ -299,12 +300,6 @@ namespace Diagnosis.Tests.Data
 
             l.LoadOrUpdateVocs(d1.CustomVocabulary);
             Assert.IsTrue(words.ScrambledEquals(d1.CustomVocabulary.Words));
-        }
-
-        private IList<string> GetWordTitles()
-        {
-            return session.Query<Word>()
-               .Select(x => x.Title).ToList();
-        }
+        }        
     }
 }

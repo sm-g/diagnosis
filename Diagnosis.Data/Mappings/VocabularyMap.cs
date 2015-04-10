@@ -44,6 +44,7 @@ namespace Diagnosis.Data.Mappings
                 s.Key(k =>
                 {
                     k.Column(Names.Id.Vocabulary);
+                    //k.OnDelete(OnDeleteAction.Cascade);
                 });
                 s.Inverse(true);
                 s.Lazy(CollectionLazy.NoLazy); // для синх после закрытия сессии

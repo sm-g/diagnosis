@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
 using NHibernate.Linq;
+using System.Collections.Generic;
 
 namespace Diagnosis.Tests
 {
@@ -44,6 +45,12 @@ namespace Diagnosis.Tests
             AuthorityController.CurrentDoctor.AddWords(toSave.ToEnumerable());
             new Saver(session).Save(toSave);
             return toSave;
+        }
+
+        protected IList<string> GetWordTitles()
+        {
+            return session.Query<Word>()
+               .Select(x => x.Title).ToList();
         }
     }
 }

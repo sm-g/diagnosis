@@ -63,6 +63,7 @@ namespace Diagnosis.Data.Mappings
                 s.Key(k =>
                 {
                     k.Column(Names.Id.Word);
+                    //k.OnDelete(OnDeleteAction.Cascade);
                 });
                 s.Inverse(true);
                 s.Cascade(Cascade.All | Cascade.DeleteOrphans);

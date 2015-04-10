@@ -132,13 +132,13 @@ namespace Diagnosis.Models
         protected internal virtual void RemoveVoc(Vocabulary voc)
         {
             Contract.Requires(!voc.Words.Contains(this));
+            Contract.Ensures(!VwHelper.Values.Contains(voc));
             VwHelper.Remove(voc);
         }
-
-        protected internal virtual void AddVoc(Vocabulary voc)
+        protected internal virtual void AddVocWords(VocabularyWords vw)
         {
-            Contract.Requires(voc.Words.Contains(this));
-            VwHelper.Add(voc);
+            Contract.Requires(vw.Vocabulary.Words.Contains(this));
+            VwHelper.Add(vw);
         }
 
         protected internal virtual void AddHr(HealthRecord hr)

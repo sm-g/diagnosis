@@ -123,10 +123,11 @@ namespace Diagnosis.Models
         {
             if (!Vocabularies.Contains(voc))
             {
-                var si = new SpecialityVocabularies(this, voc);
-                SvHelper.Add(si);
+                var sv = new SpecialityVocabularies(this, voc);
+                SvHelper.Add(sv);
 
-                voc.AddSpec(this);
+                voc.AddSpecVoc(sv);
+
                 OnVocsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, voc));
             }
             return voc;

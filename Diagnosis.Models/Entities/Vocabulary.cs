@@ -136,7 +136,7 @@ namespace Diagnosis.Models
                 var vw = new VocabularyWords(this, w);
                 VwHelper.Add(vw);
 
-                w.AddVoc(this);
+                w.AddVocWords(vw);
 
                 OnWordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, w));
             }
@@ -220,12 +220,11 @@ namespace Diagnosis.Models
                 OnWordTemplatesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             }
         }
-
-        protected internal virtual void AddSpec(Speciality spec)
+        protected internal virtual void AddSpecVoc(SpecialityVocabularies sv)
         {
-            Contract.Requires(spec.Vocabularies.Contains(this));
-            if (SvHelper.Add(spec))
-                OnSpecialitiesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, spec));
+            Contract.Requires(sv.Speciality.Vocabularies.Contains(this));
+            if (SvHelper.Add(sv))
+                OnSpecialitiesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, sv));
         }
 
         protected internal virtual void RemoveSpec(Speciality spec)

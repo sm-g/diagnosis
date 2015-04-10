@@ -13,23 +13,6 @@ namespace Diagnosis.Tests.Data
     public class PersistTest : InMemoryDatabaseTest
     {
         [TestMethod]
-        public void MyTestMethod()
-        {
-            Load<Doctor>();
-            AuthorityController.TryLogIn(d1);
-            using (var tx = session.BeginTransaction())
-            {
-                var p = new Patient();
-                var c = p.AddCourse(d1);
-                p.RemoveCourse(c);
-                Assert.IsTrue(p.Courses.Count() == 0); // see output
-
-                session.SaveOrUpdate(p);
-                tx.Commit();
-            }
-        }
-
-        [TestMethod]
         public void AddWordSaveVoc()
         {
             Load<Vocabulary>();
@@ -57,11 +40,23 @@ namespace Diagnosis.Tests.Data
             new Saver(session).Delete(w); // или после
             new Saver(session).Save(voc[1]);
 
-            Assert.IsTrue(!voc[1].Words.Contains(w));
-            Assert.IsTrue(w.Vocabularies.Count() == 0);
-            Assert.IsTrue(!session.QueryOver<Word>().List().Any(x => x.Title == w.Title));
-            Assert.IsTrue(w.IsTransient);
+            Assert.IsFalse(GetWordTitles().Any(x => x == w.Title));
+        }
 
+        [TestMethod]
+        public void RemoveTemplateSaveVoc()
+        {
+            Load<Vocabulary>();
+            Load<WordTemplate>();
+
+            var title = wTemp[1].Title;
+            // remove unique wTemp[1]
+            voc[1].SetTemplates(voc[1].WordTemplates.Select(x => x.Title)
+                .Except(title.ToEnumerable()));
+
+            new Saver(session).Save(voc[1]);
+
+            Assert.IsTrue(!session.QueryOver<WordTemplate>().List().Any(x => x.Title == title));
         }
     }
 }
