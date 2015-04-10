@@ -38,8 +38,8 @@ namespace Diagnosis.Data.Mappings
                 m.Property(x => x.DbValue, x =>
                 {
                     x.Column(Names.Col.HrItemMeasure);
-                    x.Precision(Measure.Precision);
-                    x.Scale(Measure.Scale);
+                    x.Precision(Types.Numeric.Precision);
+                    x.Scale(Types.Numeric.Scale);
                 });
                 m.ManyToOne(x => x.Uom, x =>
                 {

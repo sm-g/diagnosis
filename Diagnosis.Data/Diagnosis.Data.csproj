@@ -217,6 +217,7 @@
     <Compile Include="Mappings\PatientMap.cs" />
     <Compile Include="Mappings\_Helper.cs" />
     <Compile Include="NHibernate\EventListeners.cs" />
+    <Compile Include="NHibernate\Fixed.cs" />
     <Compile Include="NHibernate\IEntityCrudTracker.cs" />
     <Compile Include="Queries\VocabularyQuery.cs" />
     <Compile Include="Side.cs" />

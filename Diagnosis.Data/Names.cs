@@ -127,4 +127,14 @@ namespace Diagnosis.Data
             public static string WordTitle = "WordTitle";
         }
     }
+
+    class Types
+    {
+        public class Numeric
+        {
+            public const short Scale = 6;
+            public const short Precision = 18;
+
+        }
+    }
 }

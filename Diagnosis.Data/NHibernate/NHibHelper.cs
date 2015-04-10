@@ -12,6 +12,7 @@ using NHibernate.Event;
 using NHibernate.Event.Default;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Tool.hbm2ddl;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -19,39 +20,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Diagnosis.Data
 {
-    [System.Serializable]
-    public class FixedDefaultFlushEventListener : DefaultFlushEventListener
-    {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        protected override void PerformExecutions(IEventSource session)
-        {
-            if (log.IsDebugEnabled)
-            {
-                log.Debug("executing flush");
-            }
-            try
-            {
-                session.ConnectionManager.FlushBeginning();
-                session.PersistenceContext.Flushing = true;
-                session.ActionQueue.PrepareActions();
-                session.ActionQueue.ExecuteActions();
-            }
-            catch (HibernateException exception)
-            {
-                if (log.IsErrorEnabled)
-                {
-                    log.Error("Could not synchronize database state with session", exception);
-                }
-                throw;
-            }
-            finally
-            {
-                session.PersistenceContext.Flushing = false;
-                session.ConnectionManager.FlushEnding();
-            }
-        }
-    }
 
     public class NHibernateHelper
     {
@@ -212,7 +181,7 @@ namespace Diagnosis.Data
         public static void ConfigureSqlCe(Configuration cfg, string constr, bool showSql)
         {
             cfg.SetProperty(Environment.ReleaseConnections, "on_close")
-               .SetProperty(Environment.Dialect, typeof(MsSqlCe40Dialect).AssemblyQualifiedName)
+               .SetProperty(Environment.Dialect, typeof(UpdatedMsSqlCe40Dialect).AssemblyQualifiedName)
                .SetProperty(Environment.ConnectionDriver, typeof(SqlServerCeDriver).AssemblyQualifiedName)
                .SetProperty(Environment.ConnectionProvider, typeof(DriverConnectionProvider).AssemblyQualifiedName)
                .SetProperty(Environment.ConnectionString, constr)
@@ -334,4 +303,7 @@ namespace Diagnosis.Data
                 .Execute(true, false, false);
         }
     }
+
+
+
 }
