@@ -692,7 +692,6 @@ namespace Diagnosis.Data.Sync
 #endif
                 if (e.Conflict.Type == DbConflictType.ErrorsOccurred)
                 {
-                    var rows = e.Conflict.LocalChange.Rows.Cast<DataRow>(); // null local
                     Poster.PostMessage("ApplyChangeFailed. Error: {0}", e.Error);
                 }
                 else if (SyncTracer.IsVerboseEnabled() == false)

@@ -84,8 +84,12 @@ namespace Diagnosis.Data
             }
         }
 
-        public static void CreateSqlCeByPath(string sdfPath)
+        public static void CreateSqlCeByPath(string sdfPath, bool rewrite = false)
         {
+            if (rewrite && File.Exists(sdfPath))
+            {
+                File.Delete(sdfPath);
+            }
             if (!System.IO.File.Exists(sdfPath))
             {
                 FileHelper.CreateDirectoryForPath(sdfPath);

@@ -22,15 +22,16 @@ namespace Diagnosis.Tests
         private const string clientSdf = "client.sdf";
         private static ISessionFactory clFactory;
         private static ISessionFactory sFactory;
-        private static Configuration sCfg;
-        private static Configuration clCfg;
+        protected static Configuration sCfg;
+        protected static Configuration clCfg;
 
         static SdfDatabaseTest()
         {
             Constants.IsClient = true;
 
             SqlHelper.CreateSqlCeByPath(clientSdf);
-            File.Copy("db.sdf", serverSdf, true);
+            SqlHelper.CreateSqlCeByPath(serverSdf);
+          //  File.Copy("db.sdf", serverSdf, true);
 
             clCfg = NHibernateHelper.CreateConfiguration(clientCon, NHibernateHelper.CreateMapping(), true);
             sCfg = NHibernateHelper.CreateConfiguration(serverCon, NHibernateHelper.CreateMapping(), true);
@@ -41,12 +42,12 @@ namespace Diagnosis.Tests
         [TestInitialize]
         public void SdfDatabaseTestInit()
         {
-            SqlHelper.CreateSqlCeByPath(clientSdf);
-            File.Copy("db.sdf", serverSdf, true);
+            SqlHelper.CreateSqlCeByPath(clientSdf, true);
+            SqlHelper.CreateSqlCeByPath(serverSdf, true);
+           // File.Copy("db.sdf", serverSdf, true);
 
-            //new SchemaExport(clCfg).Execute(false, true, false);
+            new SchemaExport(clCfg).Execute(false, true, false);
             clSession = clFactory.OpenSession();
-            InMemoryHelper.FillData(clCfg, clSession);
             sSession = sFactory.OpenSession();
 
             session = clSession;

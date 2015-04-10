@@ -30,7 +30,7 @@ namespace Diagnosis.ViewModels.Screens
         private Saver saver;
         private VocLoader loader;
         private List<Vocabulary> serverVocs = new List<Vocabulary>();
-        private string _log;
+        private static string _log;
         private string LocalConnectionString;
         private string LocalProviderName;
 

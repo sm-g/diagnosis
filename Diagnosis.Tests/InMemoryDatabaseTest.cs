@@ -47,10 +47,5 @@ namespace Diagnosis.Tests
             return toSave;
         }
 
-        protected IList<string> GetWordTitles()
-        {
-            return session.Query<Word>()
-               .Select(x => x.Title).ToList();
-        }
     }
 }
