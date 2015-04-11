@@ -37,16 +37,18 @@ namespace Diagnosis.Data.Sync
             var wordsToSave = new List<Word>();
             foreach (var voc in vocs.Where(x => !x.IsCustom))
             {
-                // убираем лишние слова из словаря
                 var templates = voc.WordTemplates;
+
+                // убираем лишние слова из словаря
                 var removed = GetRemovedWordsByTemp(voc, templates);
                 var wordsInOtherVoc = RemoveFromVoc(voc, removed);
                 wordsToSave.AddRange(wordsInOtherVoc);
                 // делаем слова по текстам из словаря
-                CreateWordsFromTemp(voc, templates);
+                var created = CreateWordsFromTemp(voc, templates);
+
+                // сохраняем слова, добавленные в словарь
+                new Saver(session).Save(voc);
             }
-            // save words - by voc cascade
-            new Saver(session).Save(vocs.ToArray());
             // сохраняем убранность словаря в оставшихся словах
             new Saver(session).Save(wordsToSave.ToArray());
         }
