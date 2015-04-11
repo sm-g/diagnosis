@@ -199,4 +199,19 @@
   <data name="ForbiddenTagToolTip" xml:space="preserve">
     <value>Такого слова нет в словаре, игнорируется</value>
   </data>
+  <data name="Operator_Eq" xml:space="preserve">
+    <value>=</value>
+  </data>
+  <data name="Operator_Gt" xml:space="preserve">
+    <value>&gt;</value>
+  </data>
+  <data name="Operator_GtEq" xml:space="preserve">
+    <value>≥</value>
+  </data>
+  <data name="Operator_Lt" xml:space="preserve">
+    <value>&lt;</value>
+  </data>
+  <data name="Operator_LtEq" xml:space="preserve">
+    <value>≤</value>
+  </data>
 </root>

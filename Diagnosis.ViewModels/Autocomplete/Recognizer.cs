@@ -29,12 +29,6 @@ namespace Diagnosis.ViewModels.Autocomplete
         private readonly ISession session;
         private bool _addQueryToSug;
 
-
-        /// <summary>
-        ///
-        /// </summary>
-        public bool OnlyWords { get; set; }
-
         /// <summary>
         /// При поиске предположений-слов первыми - дети предыдущего слова.
         /// </summary>
@@ -70,6 +64,8 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// Добавлять созданное несохраненное слово в список предположений. Default is true.
         /// </summary>
         public bool AddNotPersistedToSuggestions { get; set; }
+
+        public bool MeasureEditorWithCompare { get; set; }
 
         static Recognizer()
         {
@@ -111,7 +107,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         private bool CanMakeEntityFrom(string query)
         {
-            if (query.IsNullOrEmpty() || OnlyWords)
+            if (query.IsNullOrEmpty())
                 return false;
             return true;
         }
@@ -193,12 +189,12 @@ namespace Diagnosis.ViewModels.Autocomplete
                             MeasureEditorViewModel meVm;
                             if (queryOrMeasureWord.IsNullOrEmpty())
                             {
-                                meVm = new MeasureEditorViewModel();
+                                meVm = new MeasureEditorViewModel(MeasureEditorWithCompare);
                             }
                             else
                             {
                                 var w = FirstMatchingOrNewWord(queryOrMeasureWord);
-                                meVm = new MeasureEditorViewModel(w);
+                                meVm = new MeasureEditorViewModel(w, MeasureEditorWithCompare);
                             }
                             meVm.OnDialogResult((res) =>
                             {

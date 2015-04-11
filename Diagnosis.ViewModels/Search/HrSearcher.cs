@@ -21,26 +21,49 @@ namespace Diagnosis.ViewModels.Search
 
             IEnumerable<HealthRecord> hrs;
 
-            if (options.Words.Count() > 0)
-                if (options.AllWords)
-                {
-                    hrs = HealthRecordQuery.WithAllWords(session)(options.Words, options.QueryScope);
-                }
-                else
-                {
-                    hrs = HealthRecordQuery.WithAnyWord(session)(options.Words);
-                }
-            else
+            //if (options.WordsAll.Count() > 0)
+            //    if (options.AllWords)
+            //    {
+            //        hrs = HealthRecordQuery.WithAllWords(session)(options.WordsAll, options.QueryScope);
+            //    }
+            //    else
+            //    {
+            //        hrs = HealthRecordQuery.WithAnyWord(session)(options.WordsAll);
+            //    }
+            //else
+            //{
+            //    hrs = session.Query<HealthRecord>();
+            //}
+
+            hrs = HealthRecordQuery.WithAllAnyNotWords(session)(
+                options.WordsAll,
+                options.WordsAny,
+                options.WordsNot);
+
+            // все измерения - просто фильтр
+            if (options.MeasuresAll.Count() > 0)
             {
-                hrs = session.Query<HealthRecord>();
+                hrs = hrs.Where(x =>
+                   options.MeasuresAll.All(m => x.Measures.Contains(m, new ValueComparer(m.Operator))));
             }
+            // любое из измерений - ищем со словами из измерений с учетом ограничений all, not, 
+            // добавляем к записям
+            if (options.MeasuresAny.Count() > 0)
+            {
+                var hrsWithM = HealthRecordQuery.WithAllAnyNotWords(session)(
+                    Enumerable.Empty<Word>(),
+                    options.MeasuresAny.Select(x => x.Word),
+                    Enumerable.Empty<Word>());
 
-            //hrs = hrs.Where(hr => TestHrDate(hr, options));
+                hrsWithM = hrsWithM.Where(x =>
+                   options.WordsAll.IsSubsetOf(x.Words) &&
+                   options.MeasuresAll.All(m => x.Measures.Contains(m, new ValueComparer(m.Operator))) &&
+                   !x.Words.Any(w => options.WordsNot.Contains(w)) &&
 
-            //hrs = hrs.Where(hr =>
-            //   (options.AppointmentDateLt.HasValue ? hr.Appointment.DateAndTime <= options.AppointmentDateLt.Value : true) &&
-            //   (options.AppointmentDateGt.HasValue ? hr.Appointment.DateAndTime >= options.AppointmentDateGt.Value : true)
-            //);
+                   options.MeasuresAny.Any(m => x.Measures.Contains(m, new ValueComparer(m.Operator))));
+
+                hrs = hrs.Union(hrsWithM);
+            }
 
             if (options.Categories.Count() > 0)
             {
@@ -48,30 +71,7 @@ namespace Diagnosis.ViewModels.Search
                     options.Categories.Any(cat => cat.Equals(hr.Category)));
             }
 
-            //if (options.Comment != null)
-            //{
-            //    hrs = hrs.Where(hr => hr.Comment != null && hr.Comment.ToLower().Contains(options.Comment.ToLower()));
-            //}
-
             return hrs.ToList();
-        }
-
-        bool TestHrDate(HealthRecord hr, HrSearchOptions options)
-        {
-            if (options.HealthRecordOffsetLt.IsEmpty || options.HealthRecordOffsetGt.IsEmpty)
-                return true; // условия поиска не заданы
-            var hrDateOffset = new DateOffset(hr.FromYear, hr.FromMonth, hr.FromDay, () => hr.Appointment.DateAndTime);
-            if (hrDateOffset.Unit == DateUnit.Week)
-            {
-                ;
-            }
-
-            var hrDateLtThat = new DateOffset(options.HealthRecordOffsetLt, () => hr.Appointment.DateAndTime);
-            var grDateGtThat = new DateOffset(options.HealthRecordOffsetGt, () => hr.Appointment.DateAndTime);
-
-            return !hrDateOffset.IsEmpty &&
-                   hrDateOffset <= hrDateLtThat &&
-                   hrDateOffset >= grDateGtThat;
         }
     }
 }

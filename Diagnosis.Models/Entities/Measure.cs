@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
 
 namespace Diagnosis.Models
 {
@@ -115,8 +119,8 @@ namespace Diagnosis.Models
 
             // одинаковые слова и тип единицы - по значению
             var byDbVal = this.DbValue.CompareTo(other.DbValue);
-            if (byDbVal != 0)
-                return byDbVal;
+            //  if (byDbVal != 0)
+            return byDbVal;
 
             // значение одинково, но единицы (одного типа) разные
             return this.Uom.Abbr.CompareTo(other.Uom.Abbr);
@@ -149,6 +153,78 @@ namespace Diagnosis.Models
                 hash = hash * 23 + DbValue.GetHashCode();
                 return hash;
             }
+        }
+    }
+
+    [Serializable]
+    public class MeasureOp : Measure
+    {
+        private MeasureOperator op;
+
+        public MeasureOp(double value, Uom uom = null)
+            : base(value, uom)
+        {
+        }
+
+        public MeasureOperator Operator
+        {
+            get { return op; }
+            set { op = value; }
+        }
+
+        public override string ToString()
+        {
+            string operatorString = Operator.ToString();
+            FieldInfo fi = Operator.GetType().GetField(operatorString);
+            if (fi != null)
+            {
+                var attribs = fi.GetCustomAttributes(typeof(DescriptionAttribute), false).Cast<DescriptionAttribute>().ToArray();
+                if (null != attribs && attribs.FirstOrDefault() != null && !String.IsNullOrEmpty(attribs[0].Description))
+                {
+                    operatorString = attribs[0].Description;
+                }
+            }
+
+            return string.Format("{0} {1} {2}{3}", Word, operatorString, Value, Uom != null ? "\u00A0" + Uom.Abbr.Replace(" ", "\u00A0") : ""); // nbsp in and before abbr
+        }
+    }
+
+    public class ValueComparer : IEqualityComparer<Measure>
+    {
+        private MeasureOperator op;
+
+        public ValueComparer(MeasureOperator op)
+        {
+            this.op = op;
+        }
+
+        public bool Equals(Measure x, Measure y)
+        {
+            switch (op)
+            {
+                case MeasureOperator.GreaterOrEqual:
+                    return x.CompareTo(y) >= 0;
+
+                case MeasureOperator.Greater:
+                    return x.CompareTo(y) > 0;
+
+                case MeasureOperator.Equal:
+                    return x.CompareTo(y) == 0;
+
+                case MeasureOperator.Less:
+                    return x.CompareTo(y) < 0;
+
+                case MeasureOperator.LessOrEqual:
+                    return x.CompareTo(y) <= 0;
+
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        public int GetHashCode(Measure obj)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Diagnosis.Tests.ViewModels
             Load<Doctor>();
             AuthorityController.TryLogIn(d1);
             r = new Recognizer(session, clearCreated: true);
-            a = new AutocompleteViewModel(r, true, true, true, false, null);
+            a = new AutocompleteViewModel(r, AutocompleteViewModel.OptionsMode.HrEditor, null);
             word = session.Get<Word>(IntToGuid<Word>(1));
             icd1 = session.Get<IcdDisease>(1);
             q = word.Title.Substring(0, word.Title.Length - 1);
@@ -100,7 +100,7 @@ namespace Diagnosis.Tests.ViewModels
             a.InverseEnterCommand.Execute(a.SelectedTag);
 
             var r = new Recognizer(session);
-            var other = new AutocompleteViewModel(r, true, true, true, false, null);
+            var other = new AutocompleteViewModel(r, AutocompleteViewModel.OptionsMode.HrEditor, null);
             other.StartEdit();
             other.SelectedTag.Query = notExistQ;
 
@@ -226,7 +226,7 @@ namespace Diagnosis.Tests.ViewModels
         [TestMethod]
         public void AddTagWhenSingleTag()
         {
-            var a = new AutocompleteViewModel(r, true, true, true, true, null);
+            var a = new AutocompleteViewModel(r, AutocompleteViewModel.OptionsMode.MeasureEditor, null);
             Assert.IsTrue(a.Tags.Count == 1);
 
             a.AddTag(word);
@@ -313,7 +313,7 @@ namespace Diagnosis.Tests.ViewModels
             a.Copy();
 
             var r2 = new Recognizer(session);
-            var a2 = new AutocompleteViewModel(r2, true, true, true, false, null);
+            var a2 = new AutocompleteViewModel(r2, AutocompleteViewModel.OptionsMode.HrEditor, null);
             a2.Paste();
 
             Assert.AreEqual(word, a2.Tags[0].Blank);
@@ -328,7 +328,7 @@ namespace Diagnosis.Tests.ViewModels
             a.Copy();
 
             var r2 = new Recognizer(session);
-            var a2 = new AutocompleteViewModel(r2, true, true, true, false, null);
+            var a2 = new AutocompleteViewModel(r2, AutocompleteViewModel.OptionsMode.HrEditor, null);
 
             new Saver(session).Save(new[] { w });
             a2.Paste();

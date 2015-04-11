@@ -19,6 +19,8 @@ namespace Diagnosis.Tests.Model
             Assert.IsTrue(new[] { 1, 2, 3 }.Select(x => uom[x]).Select(x => x.Type).Distinct().Count() == 1);
         }
 
+        #region Equality
+
         [TestMethod]
         public void OnlyValue()
         {
@@ -77,10 +79,19 @@ namespace Diagnosis.Tests.Model
         [TestMethod]
         public void SameWordDiffUom()
         {
+            var m = new Measure(1, uom[1]) { Word = w };
+            var m2 = new Measure(1, uom[2]) { Word = w };
+            Assert.IsTrue(m != m2);
+            Assert.AreNotEqual(0, m.CompareTo(m2));
+        }
+
+        [TestMethod]
+        public void SameWordDiffUomZero()
+        {
             var m = new Measure(0, uom[1]) { Word = w };
             var m2 = new Measure(0, uom[2]) { Word = w };
             Assert.IsTrue(m != m2);
-            Assert.AreNotEqual(0, m.CompareTo(m2));
+            Assert.AreEqual(0, m.CompareTo(m2));
         }
 
         [TestMethod]
@@ -126,7 +137,58 @@ namespace Diagnosis.Tests.Model
             var m2 = new Measure(Math.Pow(10, uom[1].Factor - uom[2].Factor), uom[2]); // 1000 мл
 
             Assert.IsTrue(m != m2);
-            Assert.AreNotEqual(0, m.CompareTo(m2));
+            Assert.AreEqual(0, m.CompareTo(m2));
         }
+
+        #endregion Equality
+
+        #region ValueComparer
+
+        [TestMethod]
+        public void CompareGr()
+        {
+            var m = new Measure(5, uom[1]);
+            var m2 = new Measure(1, uom[1]);
+
+            Assert.AreEqual(true, new ValueComparer(MeasureOperator.Greater).Equals(m, m2));
+        }
+
+        [TestMethod]
+        public void CompareGrDiffUom()
+        {
+            var m = new Measure(2, uom[1]); // 2 л
+            var m2 = new Measure(Math.Pow(10, uom[1].Factor - uom[2].Factor), uom[2]); // 1000 мл
+
+            Assert.AreEqual(true, new ValueComparer(MeasureOperator.Greater).Equals(m, m2));
+        }
+
+        [TestMethod]
+        public void CompareEqDiffUom()
+        {
+            var m = new Measure(1, uom[1]); // 1 л
+            var m2 = new Measure(Math.Pow(10, uom[1].Factor - uom[2].Factor), uom[2]); // 1000 мл
+
+            Assert.AreEqual(true, new ValueComparer(MeasureOperator.Equal).Equals(m, m2));
+        }
+
+        [TestMethod]
+        public void CompareEqDiffUomType()
+        {
+            var m = new Measure(1, uom[1]);
+            var m2 = new Measure(1, uom[5]);
+
+            Assert.AreEqual(false, new ValueComparer(MeasureOperator.Equal).Equals(m, m2));
+        }
+
+        [TestMethod]
+        public void CompareEqNoUom()
+        {
+            var m = new Measure(1);
+            var m2 = new Measure(1);
+
+            Assert.AreEqual(true, new ValueComparer(MeasureOperator.Equal).Equals(m, m2));
+        }
+
+        #endregion ValueComparer
     }
 }
