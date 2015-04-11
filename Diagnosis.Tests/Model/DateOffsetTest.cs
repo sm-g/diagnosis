@@ -214,6 +214,14 @@ namespace Diagnosis.Tests.Model
             Assert.IsTrue(date.Day == 28); // autocorrection default == true
         }
 
+        [TestMethod]
+        public void DefaultNowIsToday()
+        {
+            var d = new DateOffset(2014, 1, null);
+
+            Assert.AreEqual(DateTime.Today, d.Now);
+        }
+
         #endregion constructors
 
         #region Setters
@@ -314,7 +322,6 @@ namespace Diagnosis.Tests.Model
 
             Assert.AreEqual(10, d.Offset);
         }
-
         [TestMethod]
         public void CutsYearNull()
         {
@@ -567,5 +574,77 @@ namespace Diagnosis.Tests.Model
         }
 
         #endregion compare
+
+        [TestMethod]
+        public void RelativeDayYear()
+        {
+            var date1 = new DateOffset(2013, 12, 1, getNow);
+            var date2 = new DateOffset(2014, null, null, getNow);
+
+            var r = date1.RelativeTo(date2);
+            Assert.AreEqual(1, r.Offset);
+            Assert.AreEqual(DateUnit.Year, r.Unit);
+
+        }
+
+        [TestMethod]
+        public void RelativeDayMonth()
+        {
+            var date1 = new DateOffset(2013, 12, 1, getNow);
+            var date2 = new DateOffset(2014, 1, null, getNow);
+
+            var r = date1.RelativeTo(date2);
+            Assert.AreEqual(1, r.Offset);
+            Assert.AreEqual(DateUnit.Month, r.Unit);
+        }
+
+        [TestMethod]
+        public void RelativeDayDay()
+        {
+            var date1 = new DateOffset(2013, 12, 31, getNow);
+            var date2 = new DateOffset(2014, 1, 1, getNow);
+
+            var r = date1.RelativeTo(date2);
+            Assert.AreEqual(1, r.Offset);
+            Assert.AreEqual(DateUnit.Day, r.Unit);
+        }
+
+        [TestMethod]
+        public void RelativeMonthDay()
+        {
+            var date1 = new DateOffset(2013, 12, null, getNow);
+            var date2 = new DateOffset(2014, 1, 1, getNow);
+
+            var r = date1.RelativeTo(date2);
+            Assert.AreEqual(1, r.Offset);
+            Assert.AreEqual(DateUnit.Month, r.Unit);
+        }
+        [TestMethod]
+        public void RelativeNullYear()
+        {
+            var date1 = new DateOffset(null, null, null, getNow);
+            var date2 = new DateOffset(2011, null, null, getNow);
+
+            var r = date1.RelativeTo(date2);
+            Assert.AreEqual(null, r.Offset);
+        }
+        [TestMethod]
+        public void RelativeNowIsMaxDate()
+        {
+            var date1 = new DateOffset(2013, 12, 1, getNow);
+            var date2 = new DateOffset(2014, null, null, getNow);
+
+            var r = date1.RelativeTo(date2);
+            Assert.AreEqual(date2.GetSortingDate(), r.Now);
+        }
+        [TestMethod]
+        public void RelativeNowIsMaxDate2()
+        {
+            var date1 = new DateOffset(2013, null, 1, getNow);
+            var date2 = new DateOffset(2010, 1, null, getNow);
+
+            var r = date1.RelativeTo(date2);
+            Assert.AreEqual(date1.GetSortingDate(), r.Now);
+        }
     }
 }

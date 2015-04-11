@@ -228,6 +228,43 @@ namespace Diagnosis.Models
             }
         }
 
+        public DateOffset RelativeTo(DateOffset d)
+        {
+            var max = this >= d ? this : d;
+            var min = this < d ? this : d;
+            var com = CommonPartWith(d);
+
+            switch (com)
+            {
+                case DateUnit.Year:
+                    return new DateOffset(min.Year, null, null, () => max.GetSortingDate());
+                case DateUnit.Month:
+                    return new DateOffset(min.Year, min.Month, null, () => max.GetSortingDate());
+                case DateUnit.Day:
+                    return new DateOffset(min.Year, min.Month, min.Day, () => max.GetSortingDate());
+                default:
+                    return new DateOffset(null, null, null, () => max.GetSortingDate());
+            }
+        }
+
+        private DateUnit? CommonPartWith(DateOffset d)
+        {
+            DateUnit? commonPart = null;
+            if (Year != null && d.Year != null)
+            {
+                if (Month != null && d.Month != null)
+                {
+                    if (Day != null && d.Day != null)
+                        commonPart = DateUnit.Day;
+                    else
+                        commonPart = DateUnit.Month;
+                }
+                else
+                    commonPart = DateUnit.Year;
+
+            }
+            return commonPart;
+        }
         /// <summary>
         /// Задает смещение и единицу.
         /// </summary>
@@ -241,7 +278,6 @@ namespace Diagnosis.Models
                     Offset = offset;
                     Unit = unit;
                     SetDateByOffsetUnit();
-
                 }
             }
         }
