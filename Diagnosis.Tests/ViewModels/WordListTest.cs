@@ -72,5 +72,15 @@ namespace Diagnosis.Tests.ViewModels
             var newW2 = CreateWordInEditor(d1w.Title);
             Assert.AreEqual(d1w, newW2);
         }
+
+        [TestMethod]
+        public void CanNotAddWordInOtherCase()
+        {
+            var newW = new Word(w[1].Title.ToUpper());
+            using (var wEditor = new WordEditorViewModel(newW))
+            {
+                Assert.IsFalse(wEditor.OkCommand.CanExecute(null));
+            }
+        }
     }
 }

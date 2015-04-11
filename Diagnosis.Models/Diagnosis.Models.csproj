@@ -160,6 +160,7 @@
     <Compile Include="Enums\Confidence.cs" />
     <Compile Include="Enums\HrCreatedAtOffset.cs" />
     <Compile Include="Enums\HealthRecordQueryScope.cs" />
+    <Compile Include="Enums\MeasureOperator.cs" />
     <Compile Include="Enums\PatientsView.cs" />
     <Compile Include="Enums\HrView.cs" />
     <Compile Include="Helpers\DomainExtenstions.cs" />

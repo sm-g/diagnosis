@@ -60,7 +60,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             vm.HasExistingTitle = dbWords.Any(w =>
                 AuthorityController.CurrentDoctor.Words.Contains(w) &&
-                w.Title == word.Title && w != word);
+                w.Title.MatchesAsStrings(word.Title) && w != word);
         }
 
         protected override void OnOk()

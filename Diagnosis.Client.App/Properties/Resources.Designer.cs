@@ -254,6 +254,51 @@ namespace Diagnosis.Client.App.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to =.
+        /// </summary>
+        public static string Operator_Eq {
+            get {
+                return ResourceManager.GetString("Operator_Eq", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &gt;.
+        /// </summary>
+        public static string Operator_Gt {
+            get {
+                return ResourceManager.GetString("Operator_Gt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ≥.
+        /// </summary>
+        public static string Operator_GtEq {
+            get {
+                return ResourceManager.GetString("Operator_GtEq", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;.
+        /// </summary>
+        public static string Operator_Lt {
+            get {
+                return ResourceManager.GetString("Operator_Lt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ≤.
+        /// </summary>
+        public static string Operator_LtEq {
+            get {
+                return ResourceManager.GetString("Operator_LtEq", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap save_16xLG {
