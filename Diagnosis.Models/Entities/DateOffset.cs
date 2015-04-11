@@ -17,6 +17,11 @@ namespace Diagnosis.Models
         Month,
         Year
     }
+    /// <summary>
+    /// Неполная дата со смещением относительно некоторой даты в днях, неделях, месяцах или годах, зависит от полноты даты.
+    /// Заданная днём, месяцем и годом дата будет иметь смещение в неделях, если число дней нацело делится на 7.
+    /// При создании даты отсутствующий более крупный компонент считается сегодняшним (_ _ d -> now.y now.m d).
+    /// </summary>
     [Serializable]
     public class DateOffset : NotifyPropertyChangedBase, IComparable, IDomainObject
     {
@@ -31,11 +36,11 @@ namespace Diagnosis.Models
         private ReentrantFlag inSetting = new ReentrantFlag();
 
         public DateOffset(int? year, int? month, int? day, Func<DateTime> now = null)
+            : this()
         {
             if (now != null)
                 Now = now();
 
-            CutsDate = true;
             SetDate(year, month, day);
         }
         public DateOffset(DateTime dt, Func<DateTime> now = null)
@@ -50,10 +55,13 @@ namespace Diagnosis.Models
             if (now != null)
                 Now = now();
 
-            SetOffset(offset, unit, true);
+            SetOffset(offset, unit);
         }
 
-        protected DateOffset() { }
+        protected DateOffset()
+        {
+            CutsDate = true;
+        }
         /// <summary>
         /// Момент, с которого считается смещение.
         /// </summary>
@@ -66,6 +74,7 @@ namespace Diagnosis.Models
                 {
                     _now = value;
                     SetDate(Year, Month, Day);
+                    OnPropertyChanged("Now");
                 }
             }
         }
@@ -151,7 +160,7 @@ namespace Diagnosis.Models
                 {
                     _offset = value;
                     //   logger.DebugFormat("{0}, set offset = {1}", this, value);
-                    SetOffset(value, Unit, true);
+                    SetOffset(value, Unit);
                     OnPropertyChanged("Offset");
                 }
             }
@@ -223,7 +232,7 @@ namespace Diagnosis.Models
         /// Задает смещение и единицу.
         /// </summary>
         /// <param name="forceSetDateByOffsetUnit">Установка даты при задании только смещения или создании объекта.</param>
-        private void SetOffset(int? offset, DateUnit unit, bool forceSetDateByOffsetUnit = false)
+        private void SetOffset(int? offset, DateUnit unit)
         {
             if (inSetting.CanEnter)
             {
@@ -231,12 +240,6 @@ namespace Diagnosis.Models
                 {
                     Offset = offset;
                     Unit = unit;
-
-                    if (forceSetDateByOffsetUnit)
-                    {
-                        SetDateByOffsetUnit();
-                        return;
-                    }
                     SetDateByOffsetUnit();
 
                 }
