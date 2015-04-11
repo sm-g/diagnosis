@@ -63,19 +63,27 @@ namespace Diagnosis.Data.Sync
         }
 
         /// <summary>
-        /// Удаляет словари, сначала убирая все слова.
+        /// Удаляет словари, сначала убирая все слова и связи со специальностью.
         /// </summary>
         /// <param name="vocs"></param>
         public void DeleteVocs(IEnumerable<Vocabulary> vocs)
         {
+            Contract.Requires(Constants.IsClient);
+
             var wordsToSave = new List<Word>();
             var vocsToDel = vocs.Where(x => !x.IsCustom).ToArray();
             vocsToDel.ForAll(x =>
             {
+                // убрали словарь из всех специальностей
+                x.Specialities.ToList().ForEach(s =>
+                    s.RemoveVoc(x));
+
+                // убрали все слова из словаря
                 var wordsInOtherVoc = RemoveFromVoc(x, x.Words.ToList());
                 wordsToSave.AddRange(wordsInOtherVoc);
+
             });
-            // убрали все слова из словаря - удаляем его на клиенте
+            // удаляем его, vocword и vocspec на клиенте
             new Saver(session).Delete(vocsToDel);
 
             // сохраняем убранность словаря в оставшихся словах
@@ -156,7 +164,12 @@ namespace Diagnosis.Data.Sync
                         // если его нет в других словарях, доступных врачу
 
                         // должно стать пользовательским для тех врачей, у которых нет словаря с этим словом
-                        doc.AddWords(word.ToEnumerable());
+
+                        // при удалении словаря слово все еще доступно врачу через кеш, но его уже нет в словаре
+                        if (!doc.Vocabularies.Except(voc).SelectMany(x => x.Words).Contains(word))
+                        {
+                            doc.CustomVocabulary.AddWord(word);
+                        }
                     }
                 }
             }

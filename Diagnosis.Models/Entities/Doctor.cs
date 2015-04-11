@@ -25,6 +25,7 @@ namespace Diagnosis.Models
         private Passport passport;
         private SettingsProvider settingsProvider;
         private Vocabulary _customVocabulary;
+        private IEnumerable<Vocabulary> cachedVocs;
 
         public Doctor(string lastName, string firstName = null, string middleName = null, Speciality speciality = null)
         {
@@ -40,23 +41,6 @@ namespace Diagnosis.Models
 
         protected Doctor()
         {
-        }
-
-        /// <summary>
-        /// Слова из всех словарей, доступных врачу, кроме пользовательского.
-        /// Если у врача нет специальности — слова всех уставновленных непользовательских словарей.
-        /// </summary>
-        public virtual IEnumerable<Word> SpecialityWords
-        {
-            get { return cachedWords; }
-        }
-
-        /// <summary>
-        /// Все слова, доступные врачу.
-        /// </summary>
-        public virtual IEnumerable<Word> Words
-        {
-            get { return SpecialityWords.Union(CustomVocabulary.Words); }
         }
 
         public virtual string FirstName
@@ -153,12 +137,41 @@ namespace Diagnosis.Models
         {
             get { return settingsProvider ?? (settingsProvider = new SettingsProvider(this)); }
         }
+
+        /// <summary>
+        /// Слова из всех словарей, доступных врачу, кроме пользовательского.
+        /// Если у врача нет специальности — слова всех уставновленных непользовательских словарей.
+        /// Актуально после логина.
+        /// </summary>
+        public virtual IEnumerable<Word> SpecialityWords
+        {
+            get { return cachedWords; }
+        }
+
+        /// <summary>
+        /// Все слова, доступные врачу.
+        /// </summary>
+        public virtual IEnumerable<Word> Words
+        {
+            get { return SpecialityWords.Union(CustomVocabulary.Words); }
+        }
+        /// <summary>
+        /// Все словари, доступные врачу, кроме пользовательского.
+        /// Актуально после логина.
+        /// </summary>
+        public virtual IEnumerable<Vocabulary> Vocabularies
+        {
+            get { return cachedVocs; }
+        }
         /// <summary>
         /// Заполняем слова из словарей.
         /// Вызвать после логина.
         /// </summary>
-        public virtual void OnLogin(IEnumerable<Vocabulary> vocs)
+        public virtual void CacheSpecialityVocs(IEnumerable<Vocabulary> vocs)
         {
+            Contract.Requires(vocs.All(x => !x.IsCustom));
+
+            cachedVocs = new List<Vocabulary>(vocs);
             var words = vocs.SelectMany(x => x.Words);
             cachedWords = new List<Word>(words);
         }

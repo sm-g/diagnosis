@@ -148,7 +148,7 @@ namespace Diagnosis.ViewModels.Screens
 
                     DoWithCursor(syncer.SendFrom(Side.Server, Scope.Voc.ToEnumerable()).ContinueWith((t) =>
                     {
-                        var ids = vocsToLoad.Select(x=>x.Id).ToList();
+                        var ids = vocsToLoad.Select(x => x.Id).ToList();
                         var selectedSynced = Session.Query<Vocabulary>()
                             .Where(v => ids.Contains(v.Id))
                             .ToList();
@@ -199,6 +199,10 @@ namespace Diagnosis.ViewModels.Screens
 
                     MakeInstalledVms();
                     MakeAvailableVms();
+
+#if DEBUG
+                    AuthorityController.LoadVocsAfterLogin(Session); // обновляем доступные слова не меняя пользователя
+#endif
                 }, () => SelectedVocs.Count > 0);
             }
         }

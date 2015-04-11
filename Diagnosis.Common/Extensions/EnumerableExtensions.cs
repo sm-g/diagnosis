@@ -34,6 +34,10 @@ namespace Diagnosis.Common
         {
             return new[] { item };
         }
+        public static IEnumerable<T> Except<T>(this IEnumerable<T> collection, T item)
+        {
+            return collection.Except(item.ToEnumerable());
+        }
 
         public static T[] Concat<T>(this T[] x, T[] y)
         {

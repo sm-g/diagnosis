@@ -25,6 +25,7 @@ namespace Diagnosis.Tests.Data
             Load<Word>();
             Load<Vocabulary>();
             Load<WordTemplate>();
+            Load<Speciality>();
 
             AuthorityController.TryLogIn(d1);
         }
@@ -44,6 +45,10 @@ namespace Diagnosis.Tests.Data
             // шаблоны 2==6, 3==7
             Assert.AreEqual(wTemp[2].Title, wTemp[6].Title);
             Assert.AreEqual(wTemp[3].Title, wTemp[7].Title);
+
+            // 2 словарь для кардиолога, 2 врача
+            Assert.IsTrue(spec[1].Vocabularies.Contains(voc[2]));
+
         }
 
         [TestMethod]
@@ -217,9 +222,9 @@ namespace Diagnosis.Tests.Data
         }
 
         [TestMethod]
-        public void RemoveVoc()
+        public void CreateWordRemoveVoc()
         {
-            // при удалении остаются использованные слова и слова из других словарей
+            // при удалении остаются слова из других словарей
             CreateWordAsInEditor(wTemp[1].Title);
             l.LoadOrUpdateVocs(voc[1]);
             l.DeleteVocs(voc[1]);
@@ -227,7 +232,62 @@ namespace Diagnosis.Tests.Data
             var wordTitles = GetWordTitles();
             Assert.IsTrue(wordTitles.Contains(wTemp[1].Title));
         }
+        [TestMethod]
+        public void UseWordRemoveVoc()
+        {
+            // при удалении остаются использованные слова
+            l.LoadOrUpdateVocs(voc[1]);
 
+            var hr = new HealthRecord(a[1], d1);
+            var w = voc[1].Words.First();
+            hr.SetItems(new[] { w });
+            session.SaveOrUpdate(hr);
+
+            l.DeleteVocs(voc[1]);
+            Assert.IsTrue(GetWordTitles().Contains(w.Title));
+        }
+
+        [TestMethod]
+        public void RemoveVoc()
+        {
+            AuthorityController.TryLogIn(d2);
+
+            l.LoadOrUpdateVocs(voc[2]);
+
+            // 2 слова только в словаре. используем одно из них
+            var onlyVocWords = voc[2].Words.Where(x => x.Vocabularies.Count() == 1).ToList();
+            Assert.IsTrue(onlyVocWords.Count > 1);
+            Assert.IsTrue(onlyVocWords.All(x => x.HealthRecords.Count() == 0));
+
+            var hr = new HealthRecord(a[1], d2);
+            var usedWord = onlyVocWords.First();
+            hr.SetItems(new[] { usedWord });
+            session.SaveOrUpdate(hr);
+
+            // удаляем словарь
+            l.DeleteVocs(voc[2]);
+            AuthorityController.LoadVocsAfterLogin(session);
+
+            // на клиенте не осталось шаблонов, слов и специальностей, связанных со словарем
+            Assert.AreEqual(0, session.Query<Speciality>().ToList().Where(x => x.Vocabularies.Contains(voc[2])).Count());
+            Assert.AreEqual(0, session.Query<Word>().ToList().Where(x => x.Vocabularies.Contains(voc[2])).Count());
+            Assert.AreEqual(0, session.Query<WordTemplate>().Where(x => x.Vocabulary == voc[2]).Count());
+
+            // слова специальности у врача теперь без слов, кот были только в словаре
+            Assert.IsTrue(d2.SpecialityWords.All(x => !onlyVocWords.Contains(x)));
+
+            // врачу недоступны неиспользованные им слова, бывшие только в убранном словаре
+            var notUsedByDoctor = onlyVocWords.Where(x => 
+                x.HealthRecords.All(y => y.Doctor != d2)).ToList();
+            Assert.IsTrue(d2.Words.All(x => !notUsedByDoctor.Contains(x)));
+
+            // и доступны использованные
+            var usedByDoctor = onlyVocWords.Where(x =>
+                x.HealthRecords.Any() &&
+                x.HealthRecords.All(y => y.Doctor == d2)).ToList();
+            Assert.IsTrue(usedByDoctor.All(x => d2.Words.Contains(x)));
+
+        }
         [TestMethod]
         public void Sequence()
         {
@@ -311,5 +371,7 @@ namespace Diagnosis.Tests.Data
             l.LoadOrUpdateVocs(d1.CustomVocabulary);
             Assert.IsTrue(words.ScrambledEquals(d1.CustomVocabulary.Words));
         }
+
+
     }
 }
