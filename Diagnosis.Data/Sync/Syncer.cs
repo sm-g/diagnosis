@@ -100,29 +100,13 @@ namespace Diagnosis.Data.Sync
         /// <param name="from"></param>
         /// <param name="scopes"></param>
         /// <returns></returns>
-        public async Task SendFrom(Side from, IEnumerable<Scope> scopes = null, IEnumerable<object> installedVocsIds = null)
+        public async Task SendFrom(Side from, IEnumerable<Scope> scopes = null)
         {
             if (InSync)
                 return;
 
             InSync = true;
 
-            if (installedVocsIds != null)
-            {
-                Contract.Assume(from == Side.Server);
-
-                // не синхронизируем новые словари,
-                // но загружаем новые шаблоны для установленных словарей
-                var filter = new Dictionary<Type, Func<DataRow, bool>>();
-                foreach (var table in Scopes.GetVocOnlyTablesToDownload())
-                {
-                    if (table == Names.WordTemplate)
-                        filter.Add(Names.tblToTypeMap[table], (row) => !installedVocsIds.Contains(row[Names.Id.Vocabulary]));
-                    else
-                        filter.Add(Names.tblToTypeMap[table], (row) => true);
-                }
-                this.IgnoreAddingFilterPerType = filter;
-            }
             if (scopes == null)
             {
                 scopes = from.GetOrderedScopes();
@@ -135,10 +119,9 @@ namespace Diagnosis.Data.Sync
 
             t.Start();
             await t;
-            {
-                InSync = false;
-                OnSyncEnded(sw.Elapsed);
-            }
+
+            InSync = false;
+            OnSyncEnded(sw.Elapsed);
         }
 
         internal void SendFromCore(Side from, IEnumerable<Scope> scopes)

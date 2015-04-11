@@ -47,6 +47,16 @@ namespace Diagnosis.Tests.Data
         }
 
         [TestMethod]
+        public void LoadVocsWithSameWt()
+        {
+            l.LoadOrUpdateVocs(new[] { voc[1], voc[2] });
+
+            // только одно слово на каждый шаблон
+            var t = GetWordTitles();
+            Assert.AreEqual(t.Distinct().Count(), t.Count);
+        }
+
+        [TestMethod]
         public void DeleteWordUpdateVoc()
         {
             l.LoadOrUpdateVocs(voc[1]);
@@ -300,6 +310,6 @@ namespace Diagnosis.Tests.Data
 
             l.LoadOrUpdateVocs(d1.CustomVocabulary);
             Assert.IsTrue(words.ScrambledEquals(d1.CustomVocabulary.Words));
-        }        
+        }
     }
 }
