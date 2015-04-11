@@ -21,7 +21,7 @@ namespace Diagnosis.Models
     public class DateOffset : NotifyPropertyChangedBase, IComparable, IDomainObject
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(DateOffset));
-        private DateTime _now = DateTime.Now;
+        private DateTime _now = DateTime.Today;
         private int? _offset;
         private DateUnit _unit;
         private int? _year;
@@ -535,6 +535,11 @@ namespace Diagnosis.Models
             }
         }
 
+        /// <summary>
+        /// Сравниваем дату, а не точку отсчета или смещение.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public virtual int CompareTo(object obj)
         {
             var other = obj as DateOffset;
@@ -544,37 +549,7 @@ namespace Diagnosis.Models
             if (other == this)
                 return 0;
 
-            if (this.Unit == other.Unit)
-            {
-                // давность больше - дата меньше
-                if (this.Offset > other.Offset)
-                    return -1;
-                return 1;
-            }
-
-            // для недель сравниваем дни
-            if (this.Unit == DateUnit.Week)
-            {
-                var thisInDays = (DateOffset)this.MemberwiseClone();
-                thisInDays.SetOffset(this.Offset * 7, DateUnit.Day);
-                return thisInDays.CompareTo(other);
-            }
-            else if (other.Unit == DateUnit.Week)
-            {
-                var otherInDays = (DateOffset)other.MemberwiseClone();
-                otherInDays.SetOffset(other.Offset * 7, DateUnit.Day);
-                return this.CompareTo(otherInDays);
-            }
-
-            if (!this.Month.HasValue || !other.Month.HasValue)
-            {
-                // сравниваем месяц и год или день и год
-                if (this.Year < other.Year)
-                    return -1;
-                return 1;
-            }
-            // сравниваем день и месяц
-            if (this.Month < other.Month)
+            if (this.GetSortingDate() < other.GetSortingDate())
                 return -1;
             return 1;
         }

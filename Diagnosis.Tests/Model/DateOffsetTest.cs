@@ -309,13 +309,9 @@ namespace Diagnosis.Tests.Model
         [TestMethod]
         public void SetNow()
         {
-            var d = new DateOffset(null, null, null);
-            d.Month = 1;
-            d.Year = 2014;
+            var d = new DateOffset(2014, 1, null);
             d.Now = new DateTime(2014, 11, 4);
 
-            Assert.AreEqual(1, d.Month);
-            Assert.AreEqual(2014, d.Year);
             Assert.AreEqual(10, d.Offset);
         }
 
@@ -478,12 +474,12 @@ namespace Diagnosis.Tests.Model
         [TestMethod]
         public void TestLtGtNull()
         {
-            // 5 лет назад < пустая дата
+            // 5 лет назад > пустая дата
             var date1 = new DateOffset(null, DateUnit.Month, getNow);
             var date2 = new DateOffset(5, DateUnit.Year, getNow);
 
-            Assert.IsFalse(date1 < date2);
-            Assert.IsTrue(date1 > date2);
+            Assert.IsFalse(date1 > date2);
+            Assert.IsTrue(date1 < date2);
         }
 
         [TestMethod]
@@ -519,12 +515,11 @@ namespace Diagnosis.Tests.Model
         [TestMethod]
         public void TestEqualPartialMonthDay()
         {
-            // 2014.02 !=  2014.02.15
+            // 2014.02 <  2014.02.15
             var date1 = new DateOffset(2, DateUnit.Month, getNow);
             var date2 = new DateOffset(2014, 2, 15, getNow);
 
-            // всегда больше
-            Assert.IsTrue(date1 > date2);
+            Assert.IsTrue(date1 < date2);
             Assert.IsTrue(date2 > date1);
             Assert.IsTrue(date1 != date2);
             Assert.AreNotEqual(date1, date2);
@@ -533,13 +528,12 @@ namespace Diagnosis.Tests.Model
         [TestMethod]
         public void TestEqualPartialYearDay()
         {
-            // 2014.04.1 != 2014
+            // 2014.04.1 > 2014
             var date1 = new DateOffset(3, DateUnit.Day, getNow);
             var date2 = new DateOffset(0, DateUnit.Year, getNow);
 
-            // всегда больше
             Assert.IsTrue(date1 > date2);
-            Assert.IsTrue(date2 > date1);
+            Assert.IsTrue(date2 < date1);
             Assert.IsTrue(date1 != date2);
             Assert.AreNotEqual(date1, date2);
         }
@@ -561,6 +555,15 @@ namespace Diagnosis.Tests.Model
             var date2 = new DateOffset(2, DateUnit.Week, getNow);
 
             Assert.IsTrue(date1 > date2);
+        }
+
+        [TestMethod]
+        public void CompareDateValuesNotNows()
+        {
+            var date1 = new DateOffset(2013, 5, 5, getNow);
+            var date2 = new DateOffset(2014, 5, null, () => new DateTime(2013, 5, 1));
+
+            Assert.IsTrue(date1 < date2);
         }
 
         #endregion compare
