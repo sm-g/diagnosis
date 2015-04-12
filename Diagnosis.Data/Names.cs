@@ -123,6 +123,7 @@ namespace Diagnosis.Data
             public static string HrToDay = "ToDay";
             public static string HrToMonth = "ToMonth";
             public static string HrToYear = "ToYear";
+            public static string HrDescribedAt = "DescribedAt";
             public static string CreatedAt = "CreatedAt";
         }
 

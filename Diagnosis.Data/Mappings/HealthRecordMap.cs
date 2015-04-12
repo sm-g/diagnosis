@@ -44,9 +44,13 @@ namespace Diagnosis.Data.Mappings
                     x.Column(Names.Col.HrToYear);
                 });
             });
-            Property(x => x.Now, m =>
+            Property(x => x.DescribedAt, m =>
             {
-                m.NotNullable(false);
+                m.NotNullable(true);
+                m.Column(c =>
+                {
+                    c.Default(Helper.SqlDateTimeNow);
+                });
             });
             Property(x => x.IsDeleted, m =>
             {

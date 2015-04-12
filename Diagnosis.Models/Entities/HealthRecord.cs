@@ -22,9 +22,9 @@ namespace Diagnosis.Models
         private HealthRecordUnit _unit;
         private DateTime _createdAt;
         private DateTime _updatedAt;
+        private DateTime _describedAt;
         private DateOffset _fromDate;
         private DateOffset _toDate;
-        private DateTime? _now;
         private int _ord;
 
         public HealthRecord(Appointment appointment, Doctor author)
@@ -61,7 +61,7 @@ namespace Diagnosis.Models
         {
             _createdAt = DateTime.Now;
             _updatedAt = _createdAt;
-            _now = _createdAt.Date;
+            _describedAt = _createdAt;
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace Diagnosis.Models
         }
         public virtual DateOffset FromDate
         {
-            get { return _fromDate ?? (_fromDate = new DateOffset(null, null, null, () => Now.Value)); }
+            get { return _fromDate ?? (_fromDate = new DateOffset(null, null, null, () => DescribedAt)); }
             set
             {
                 SetProperty(ref _fromDate, value, () => FromDate);
@@ -132,7 +132,7 @@ namespace Diagnosis.Models
 
         public virtual DateOffset ToDate
         {
-            get { return _toDate ?? (_toDate = new DateOffset(null, null, null, () => Now.Value)); }
+            get { return _toDate ?? (_toDate = new DateOffset(null, null, null, () => DescribedAt)); }
             set
             {
                 SetProperty(ref _toDate, value, () => ToDate);
@@ -143,23 +143,15 @@ namespace Diagnosis.Models
         /// <summary>
         /// Дата описания события.
         /// </summary>
-        public virtual DateTime? Now
+        public virtual DateTime DescribedAt
         {
-            get { return _now ?? CreatedAt; }
+            get { return _describedAt; }
             set
             {
-                if (SetProperty(ref _now, value, () => Now))
+                if (SetProperty(ref _describedAt, value, () => DescribedAt))
                 {
-                    if (value.HasValue)
-                    {
-                        FromDate.Now = value.Value;
-                        ToDate.Now = value.Value;
-                    }
-                    else
-                    {
-                        FromDate.Now = CreatedAt;
-                        ToDate.Now = CreatedAt;
-                    }
+                    FromDate.Now = value;
+                    ToDate.Now = value;
                 }
             }
         }
