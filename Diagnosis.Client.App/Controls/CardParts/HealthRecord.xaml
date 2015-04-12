@@ -99,9 +99,9 @@
                        TextWrapping="Wrap"
                        FontSize="{DynamicResource HrFontSize}" />
             <StackPanel Grid.Row="1"
-                        Visibility="{Binding DateOffset.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                        Visibility="{Binding  EventDate.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
                 <TextBlock Grid.Row="1"
-                           Text="{Binding DateOffsetString, Mode=OneWay}" />
+                           Text="{Binding EventDateString, Mode=OneWay}" />
             </StackPanel>
             <TextBox x:Name="order"
                      Grid.Row="1"

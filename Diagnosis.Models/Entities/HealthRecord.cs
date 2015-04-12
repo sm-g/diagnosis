@@ -22,6 +22,9 @@ namespace Diagnosis.Models
         private HealthRecordUnit _unit;
         private DateTime _createdAt;
         private DateTime _updatedAt;
+        private DateOffset _fromDate;
+        private DateOffset _toDate;
+        private DateTime? _now;
         private int _ord;
 
         public HealthRecord(Appointment appointment, Doctor author)
@@ -57,7 +60,8 @@ namespace Diagnosis.Models
         protected HealthRecord()
         {
             _createdAt = DateTime.Now;
-            _updatedAt = DateTime.Now;
+            _updatedAt = _createdAt;
+            _now = _createdAt.Date;
         }
 
         /// <summary>
@@ -117,47 +121,48 @@ namespace Diagnosis.Models
                 SetProperty(ref _category, value, () => Category);
             }
         }
-
-        private DateOffset _fromDate;
-
         public virtual DateOffset FromDate
         {
-            get { return _fromDate ?? (_fromDate = new DateOffset(null, null, null)); }
+            get { return _fromDate ?? (_fromDate = new DateOffset(null, null, null, () => Now.Value)); }
             set
             {
                 SetProperty(ref _fromDate, value, () => FromDate);
             }
         }
 
+        public virtual DateOffset ToDate
+        {
+            get { return _toDate ?? (_toDate = new DateOffset(null, null, null, () => Now.Value)); }
+            set
+            {
+                SetProperty(ref _toDate, value, () => ToDate);
+            }
+        }
 
-        //public virtual int? FromDay
-        //{
-        //    get { return _fromDate.Day; }
-        //    set
-        //    {
-        //        _fromDate.Day = value;
-        //    }
-        //}
 
-        //public virtual int? FromMonth
-        //{
-        //    get { return _fromDate.Month; }
-        //    set
-        //    {
-        //        _fromDate.Month = value;
-
-        //    }
-        //}
-
-        //public virtual int? FromYear
-        //{
-        //    get { return _fromDate.Year; }
-        //    set
-        //    {
-        //        _fromDate.Year = value;
-
-        //    }
-        //}
+        /// <summary>
+        /// Дата описания события.
+        /// </summary>
+        public virtual DateTime? Now
+        {
+            get { return _now ?? CreatedAt; }
+            set
+            {
+                if (SetProperty(ref _now, value, () => Now))
+                {
+                    if (value.HasValue)
+                    {
+                        FromDate.Now = value.Value;
+                        ToDate.Now = value.Value;
+                    }
+                    else
+                    {
+                        FromDate.Now = CreatedAt;
+                        ToDate.Now = CreatedAt;
+                    }
+                }
+            }
+        }
 
         public virtual HealthRecordUnit Unit
         {

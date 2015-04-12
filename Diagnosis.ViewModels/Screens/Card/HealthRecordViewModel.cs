@@ -13,7 +13,7 @@ namespace Diagnosis.ViewModels.Screens
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HealthRecordViewModel));
         private static bool _isExpanded;
         private readonly Patient patient;
-        private DateOffsetViewModel _do;
+        private DateOffsetViewModel _doVm;
 
         public HealthRecordViewModel(HealthRecord hr)
         {
@@ -24,13 +24,12 @@ namespace Diagnosis.ViewModels.Screens
             patient.PropertyChanged += patient_PropertyChanged;
             healthRecord.PropertyChanged += healthRecord_PropertyChanged;
 
-            DateOffset = DateOffsetViewModel.FromHr(healthRecord);
-            DateOffset.PropertyChanged += DateOffset_PropertyChanged;
-
+            EventDate = DateOffsetViewModel.FromHr(healthRecord);
+            EventDate.PropertyChanged += DateOffset_PropertyChanged;
             DateSuggestions = new ObservableCollection<DateSuggestion>();
 
             // показываем даты из записей этого же списка для быстрой вставки
-            if (DateOffset.FirstSet == null)
+            if (EventDate.FirstSet == null)
             {
                 var holderHrsWithDates = healthRecord.Holder.HealthRecords
                     .Where(x => x.Unit == HealthRecordUnit.NotSet && !x.IsDeleted);
@@ -54,42 +53,6 @@ namespace Diagnosis.ViewModels.Screens
             set
             {
                 healthRecord.Category = value;
-            }
-        }
-
-        public int? FromYear
-        {
-            get
-            {
-                return healthRecord.FromDate.Year;
-            }
-            set
-            {
-                healthRecord.FromDate.Year = value;
-            }
-        }
-
-        public int? FromMonth
-        {
-            get
-            {
-                return healthRecord.FromDate.Month;
-            }
-            set
-            {
-                healthRecord.FromDate.Month = value;
-            }
-        }
-
-        public int? FromDay
-        {
-            get
-            {
-                return healthRecord.FromDate.Day;
-            }
-            set
-            {
-                healthRecord.FromDate.Day = value;
             }
         }
 
@@ -126,18 +89,18 @@ namespace Diagnosis.ViewModels.Screens
 
         #region DateEditor
 
-        public DateOffsetViewModel DateOffset
+        public DateOffsetViewModel EventDate
         {
             get
             {
-                return _do;
+                return _doVm;
             }
             set
             {
-                if (_do != value)
+                if (_doVm != value)
                 {
-                    _do = value;
-                    OnPropertyChanged(() => DateOffset);
+                    _doVm = value;
+                    OnPropertyChanged(() => EventDate);
                 }
             }
         }
@@ -178,7 +141,7 @@ namespace Diagnosis.ViewModels.Screens
             set
             {
                 if (value)
-                    healthRecord.Unit = DateOffset.RoundedUnit.ToHealthRecordUnit();
+                    healthRecord.Unit = EventDate.RoundedUnit.ToHealthRecordUnit();
             }
         }
 
@@ -190,36 +153,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public string AtAgeString
-        {
-            get
-            {
-                var age = DateHelper.GetAge(patient.BirthYear, patient.BirthMonth, patient.BirthDay, DateOffset.GetSortingDate());
-                if (age == null)
-                    return null;
-                var index = Plurals.GetPluralEnding(age.Value);
-                return string.Format("в {0} {1}", age, Plurals.years[index]);
-            }
-        }
-
-        public int? AtAge
-        {
-            get
-            {
-                return CanShowAsAge && DateOffset.Year.HasValue
-                    ? DateOffset.Year.Value - patient.BirthYear.Value
-                    : (int?)null;
-            }
-            set
-            {
-                DateOffset.FirstSet = DateOffsetViewModel.ShowAs.AtAge;
-
-                // установка возраста меняет только год
-                DateOffset.Year = patient.BirthYear.Value + value;
-
-                OnPropertyChanged(() => AtAge);
-            }
-        }
 
         public bool IsDateEditorExpanded
         {
@@ -243,12 +176,12 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (e.PropertyName == "RoundedUnit" && ShowAsOffset)
             {
-                healthRecord.Unit = DateOffset.RoundedUnit.ToHealthRecordUnit();
+                healthRecord.Unit = EventDate.RoundedUnit.ToHealthRecordUnit();
             }
 
             if (e.PropertyName == "FirstSet")
                 // первая установка даты также ставит ShowAs
-                switch (DateOffset.FirstSet)
+                switch (EventDate.FirstSet)
                 {
                     default:
                     case DateOffsetViewModel.ShowAs.Date:
@@ -334,8 +267,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 healthRecord.PropertyChanged -= healthRecord_PropertyChanged;
                 patient.PropertyChanged -= patient_PropertyChanged;
-                DateOffset.PropertyChanged -= DateOffset_PropertyChanged;
-                DateOffset = null; // unbind DataContext;
+                EventDate.PropertyChanged -= DateOffset_PropertyChanged;
+                EventDate = null; // unbind DataContext;
             }
             base.Dispose(disposing);
         }

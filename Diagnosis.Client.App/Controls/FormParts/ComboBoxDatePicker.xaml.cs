@@ -197,7 +197,7 @@ namespace Diagnosis.Client.App.Controls.FormParts
         {
             // комбобокс остается, после DateOffset = null месяц = null, биндинг успевает сработать для дня
             var hrvm = (DataContext as Diagnosis.ViewModels.Screens.HealthRecordViewModel);
-            if (hrvm != null && hrvm.DateOffset == null)
+            if (hrvm != null && hrvm.EventDate == null)
                 return;
 
             var days = GetDaysComboItems();

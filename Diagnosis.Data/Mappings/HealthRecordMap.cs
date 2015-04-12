@@ -29,7 +29,25 @@ namespace Diagnosis.Data.Mappings
                     x.Column(Names.Col.HrFromYear);
                 });
             });
-
+            Component(x => x.ToDate, m =>
+            {
+                m.Property(x => x.Day, x =>
+                {
+                    x.Column(Names.Col.HrToDay);
+                });
+                m.Property(x => x.Month, x =>
+                {
+                    x.Column(Names.Col.HrToMonth);
+                });
+                m.Property(x => x.Year, x =>
+                {
+                    x.Column(Names.Col.HrToYear);
+                });
+            });
+            Property(x => x.Now, m =>
+            {
+                m.NotNullable(false);
+            });
             Property(x => x.IsDeleted, m =>
             {
                 m.NotNullable(true);

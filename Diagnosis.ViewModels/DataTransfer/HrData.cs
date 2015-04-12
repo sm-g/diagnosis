@@ -29,11 +29,9 @@ namespace Diagnosis.ViewModels.DataTransfer
 
             public Guid? CategoryId { get; set; }
 
-            public int? FromDay { get; set; }
+            public DateOffset From { get; set; }
 
-            public int? FromMonth { get; set; }
-
-            public int? FromYear { get; set; }
+            public DateOffset To { get; set; }
 
             public HealthRecordUnit Unit { get; set; }
 

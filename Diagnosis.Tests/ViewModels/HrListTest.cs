@@ -329,13 +329,21 @@ namespace Diagnosis.Tests.ViewModels
 
                 var new20 = card.HrList.SelectedHealthRecords.First().healthRecord;
 
-                Assert.AreEqual(hr[20].Appointment, new20.Appointment);
-                Assert.AreEqual(hr[20].Category, new20.Category);
+                Assert.AreEqual(hr[20].Patient, new20.Patient);
                 Assert.AreEqual(hr[20].Course, new20.Course);
+                Assert.AreEqual(hr[20].Appointment, new20.Appointment);
+
+                Assert.AreEqual(hr[20].Category, new20.Category);
+
                 Assert.AreEqual(hr[20].FromDate.Day, new20.FromDate.Day);
                 Assert.AreEqual(hr[20].FromDate.Month, new20.FromDate.Month);
                 Assert.AreEqual(hr[20].FromDate.Year, new20.FromDate.Year);
-                Assert.AreEqual(hr[20].Patient, new20.Patient);
+                Assert.AreEqual(hr[20].FromDate.Now, new20.FromDate.Now);
+                Assert.AreEqual(hr[20].ToDate.Day, new20.ToDate.Day);
+                Assert.AreEqual(hr[20].ToDate.Month, new20.ToDate.Month);
+                Assert.AreEqual(hr[20].ToDate.Year, new20.ToDate.Year);
+                Assert.AreEqual(hr[20].ToDate.Now, new20.ToDate.Now);
+
                 Assert.AreEqual(hr[20].Unit, new20.Unit);
 
                 // Assert.AreEqual(hr[20].Ord, new20.Ord); в любое место
