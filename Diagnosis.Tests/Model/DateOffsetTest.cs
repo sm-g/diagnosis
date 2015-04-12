@@ -573,6 +573,17 @@ namespace Diagnosis.Tests.Model
             Assert.IsTrue(date1 < date2);
         }
 
+        [TestMethod]
+        public void EqualByDateValue()
+        {
+            //
+            var date1 = new DateOffset(2013, 5, 5, getNow);
+            var date2 = new DateOffset(2013, 5, 5, () => new DateTime(2013, 5, 1));
+
+            Assert.IsTrue(date1 == date2);
+            Assert.AreEqual(date1, date2);
+        }
+
         #endregion compare
 
         [TestMethod]

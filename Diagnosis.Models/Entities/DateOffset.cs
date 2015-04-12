@@ -21,18 +21,25 @@ namespace Diagnosis.Models
     /// Неполная дата со смещением относительно некоторой даты в днях, неделях, месяцах или годах, зависит от полноты даты.
     /// Заданная днём, месяцем и годом дата будет иметь смещение в неделях, если число дней нацело делится на 7.
     /// При создании даты отсутствующий более крупный компонент считается сегодняшним (_ _ d -> now.y now.m d).
+    /// Смещение и единица - функция Year, Month, Day и Now.
     /// </summary>
     [Serializable]
     public class DateOffset : NotifyPropertyChangedBase, IComparable, IDomainObject
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(DateOffset));
         private DateTime _now = DateTime.Today;
-        private int? _offset;
-        private DateUnit _unit;
         private int? _year;
         private int? _month;
         private int? _day;
+
+        [NonSerialized]
+        private int? _offset;
+        [NonSerialized]
+        private DateUnit _unit;
+
+        [NonSerialized]
         private bool _dateCut;
+        [NonSerialized]
         private ReentrantFlag inSetting = new ReentrantFlag();
 
         public DateOffset(int? year, int? month, int? day, Func<DateTime> now = null)
@@ -56,6 +63,11 @@ namespace Diagnosis.Models
                 Now = now();
 
             SetOffset(offset, unit);
+        }
+
+        public DateOffset(DateOffset d)
+            : this(d.Year, d.Month, d.Day, () => d.Now)
+        {
         }
 
         protected DateOffset()
@@ -146,7 +158,7 @@ namespace Diagnosis.Models
         }
 
         /// <summary>
-        /// Смещение относительно даты, возвращаемой Now.
+        /// Смещение относительно даты, возвращаемой Now. Установка меняет Year, Month, Day.
         /// </summary>
         public virtual int? Offset
         {
@@ -167,7 +179,7 @@ namespace Diagnosis.Models
         }
 
         /// <summary>
-        /// Единица измерения смещения. Устанавливается после Year, Month, Day.
+        /// Единица измерения смещения. Установка меняет Year, Month, Day.
         /// </summary>
         public virtual DateUnit Unit
         {
@@ -513,12 +525,12 @@ namespace Diagnosis.Models
             {
                 return object.ReferenceEquals(do1, do2);
             }
-            // offset и unit могут совпадать с разными датами
+            // offset и unit могут совпадать с разными датами, зависит от Now
+            //
 
             return do1.Year == do2.Year &&
                 do1.Month == do2.Month &&
-                do1.Day == do2.Day &&
-                do1.Unit == do2.Unit;
+                do1.Day == do2.Day;
         }
 
         public static bool operator !=(DateOffset do1, DateOffset do2)
@@ -569,7 +581,6 @@ namespace Diagnosis.Models
                     hash = hash * 23 + Month.GetHashCode();
                 if (Day != null)
                     hash = hash * 23 + Day.GetHashCode();
-                hash = hash * 23 + Unit.GetHashCode();
                 return hash;
             }
         }
