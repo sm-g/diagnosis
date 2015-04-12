@@ -19,9 +19,9 @@ namespace Diagnosis.Data.Versions.Client
         public override void Up()
         {
             Alter.Table(Names.HealthRecord)
-                .AddColumn(Names.Col.HrToYear).AsInt32().Nullable()
-                .AddColumn(Names.Col.HrToMonth).AsInt16().Nullable()
                 .AddColumn(Names.Col.HrToDay).AsInt16().Nullable()
+                .AddColumn(Names.Col.HrToMonth).AsInt16().Nullable()
+                .AddColumn(Names.Col.HrToYear).AsInt32().Nullable()
                 .AddColumn(Names.Col.HrDescribedAt).AsDateTime().Nullable().WithDefault(SystemMethods.CurrentDateTime);
 
             Execute.Sql(string.Format("UPDATE {0} SET {1} = {2}", Names.HealthRecord, Names.Col.HrDescribedAt, Names.Col.CreatedAt));

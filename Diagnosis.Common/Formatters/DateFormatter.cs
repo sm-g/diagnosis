@@ -116,7 +116,14 @@ namespace Diagnosis.Common
 
             return date.ToString("dd.MM.yyyy");
         }
-
+        public static string GetAgeString(int? y, int? m, int? d, DateTime now)
+        {
+            var age = DateHelper.GetAge(y, m, d, now);
+            if (age == null)
+                return string.Empty;
+            var index = Plurals.GetPluralEnding(age.Value);
+            return string.Format("{0} {1}", age, Plurals.years[index]);
+        }
         public static Tuple<string, string> GetFormat(DateTime from, DateTime? to = null)
         {
             DateTime now = DateTime.Today;
@@ -205,5 +212,5 @@ namespace Diagnosis.Common
         }
     }
 
-  
+
 }

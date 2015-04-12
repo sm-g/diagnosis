@@ -49,5 +49,7 @@
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
+        <TextBlock Text="от" Margin="10 0" />
+        <DatePicker Text="{Binding OffsetFrom, Mode=TwoWay}"/>
     </StackPanel>
 </UserControl>

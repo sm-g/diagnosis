@@ -456,6 +456,9 @@ namespace Diagnosis.ViewModels.Screens
                 Autocomplete.CompleteTypings();
 
                 var hr = HealthRecord.healthRecord;
+                if (!HealthRecord.EventDate.IsInterval)
+                    hr.ToDate = new DateOffset(hr.FromDate);
+
                 HealthRecord.Dispose();
 
                 hr.PropertyChanged -= hr_PropertyChanged;

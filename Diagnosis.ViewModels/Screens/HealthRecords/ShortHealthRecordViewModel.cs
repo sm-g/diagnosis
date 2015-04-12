@@ -148,14 +148,10 @@ namespace Diagnosis.ViewModels.Screens
                 switch (healthRecord.Unit)
                 {
                     case HealthRecordUnit.NotSet:
-                        return DateOffsetFormatter.GetPartialDateString(healthRecord.FromDate);
+                        return EventDate.PartialDateString;
 
                     case HealthRecordUnit.ByAge:
-                        var age = DateHelper.GetAge(patient.BirthYear, patient.BirthMonth, patient.BirthDay, EventDate.GetSortingDate());
-                        if (age == null)
-                            return null;
-                        var index = Plurals.GetPluralEnding(age.Value);
-                        return string.Format("в {0} {1}", age, Plurals.years[index]);
+                        return EventDate.AtAgeString;
 
                     default:
                         return string.Format("{0} {1}",

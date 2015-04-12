@@ -21,7 +21,6 @@ namespace Diagnosis.ViewModels.Screens
             this.healthRecord = hr;
             this.patient = hr.GetPatient();
 
-            patient.PropertyChanged += patient_PropertyChanged;
             healthRecord.PropertyChanged += healthRecord_PropertyChanged;
 
             EventDate = DateOffsetViewModel.FromHr(healthRecord);
@@ -145,14 +144,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public bool CanShowAsAge
-        {
-            get
-            {
-                return patient.BirthYear.HasValue;
-            }
-        }
-
 
         public bool IsDateEditorExpanded
         {
@@ -266,7 +257,6 @@ namespace Diagnosis.ViewModels.Screens
             if (disposing)
             {
                 healthRecord.PropertyChanged -= healthRecord_PropertyChanged;
-                patient.PropertyChanged -= patient_PropertyChanged;
                 EventDate.PropertyChanged -= DateOffset_PropertyChanged;
                 EventDate = null; // unbind DataContext;
             }
@@ -279,29 +269,11 @@ namespace Diagnosis.ViewModels.Screens
 
             switch (e.PropertyName)
             {
-                //case "FromDay":
-                //case "FromMonth":
-
                 case "Unit":
                     OnPropertyChanged(() => ShowAsAge);
                     OnPropertyChanged(() => ShowAsOffset);
                     OnPropertyChanged(() => ShowAsDate);
                     break;
-
-                case "FromYear":
-                    OnPropertyChanged(() => AtAgeString);
-                    OnPropertyChanged(() => AtAge);
-                    break;
-            }
-        }
-
-        private void patient_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "BirthYear")
-            {
-                OnPropertyChanged(() => CanShowAsAge);
-                OnPropertyChanged(() => AtAgeString);
-                OnPropertyChanged(() => AtAge);
             }
         }
     }
