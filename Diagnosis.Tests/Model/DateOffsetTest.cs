@@ -23,7 +23,7 @@ namespace Diagnosis.Tests.Model
         #region constructors
 
         [TestMethod]
-        public void TestConstructorOffsetDay()
+        public void OffsetDay()
         {
             date = new DateOffset(offset, DateUnit.Day);
 
@@ -37,7 +37,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestConstructorOffsetWeek()
+        public void OffsetWeek()
         {
             date = new DateOffset(offset, DateUnit.Week);
 
@@ -51,7 +51,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestConstructorOffsetMonth()
+        public void OffsetMonth()
         {
             date = new DateOffset(offset, DateUnit.Month);
 
@@ -65,7 +65,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestConstructorOffsetYear()
+        public void OffsetYear()
         {
             date = new DateOffset(offset, DateUnit.Year);
 
@@ -79,7 +79,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestConstructorOffsetNull()
+        public void OffsetNull()
         {
             date = new DateOffset(null, DateUnit.Day);
 
@@ -91,7 +91,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestConstructorDateTime()
+        public void DateTimeCtor()
         {
             date = new DateOffset(now);
 
@@ -103,7 +103,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestConstructorDateFull()
+        public void DateFull()
         {
             date = new DateOffset(now.Year, now.Month, now.Day);
 
@@ -115,7 +115,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestConstructorDateYear()
+        public void DateYear()
         {
             date = new DateOffset(now.Year, null, null);
 
@@ -127,7 +127,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestConstructorDateYearMonth()
+        public void DateYearMonth()
         {
             date = new DateOffset(now.Year, now.Month, null);
 
@@ -139,7 +139,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestConstructorDateYearDay()
+        public void DateYearDay()
         {
             date = new DateOffset(now.Year, null, now.Day);
 
@@ -151,7 +151,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestConstructorDateMonth()
+        public void DateMonth()
         {
             date = new DateOffset(null, now.Month, null);
 
@@ -163,7 +163,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestConstructorDateMonthDay()
+        public void DateMonthDay()
         {
             date = new DateOffset(null, now.Month, now.Day);
 
@@ -175,7 +175,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestConstructorDateDay()
+        public void DateDay()
         {
             var now = DateOffsetTest.getNow();
 
@@ -189,7 +189,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestConstructorDateNone()
+        public void DateNone()
         {
             date = new DateOffset(null, null, null);
             Assert.IsNull(date.Offset);
@@ -199,7 +199,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestConstructorDepthDays()
+        public void DepthDays()
         {
             var now = DateOffsetTest.getNow();
 
@@ -208,7 +208,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestConstructorWorngDate()
+        public void WorngDate()
         {
             date = new DateOffset(2009, 2, 30, getNow);
             Assert.IsTrue(date.Day == 28); // autocorrection default == true
@@ -227,7 +227,7 @@ namespace Diagnosis.Tests.Model
         #region Setters
 
         [TestMethod]
-        public void TestSetDay()
+        public void SetDay()
         {
             date = new DateOffset(offset, DateUnit.Day, getNow);
 
@@ -238,7 +238,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestSetMonth()
+        public void SetMonth()
         {
             date = new DateOffset(offset, DateUnit.Day, getNow);
             var d = getNow().AddMonths(-2);
@@ -249,7 +249,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestSetMonthNull()
+        public void SetMonthNull()
         {
             date = new DateOffset(offset, DateUnit.Day, getNow);
             date.Month = null;
@@ -259,7 +259,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestSetUnitWider()
+        public void SetUnitWider()
         {
             date = new DateOffset(offset, DateUnit.Day, getNow);
             date.CutsDate = true;
@@ -273,7 +273,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestSetUnitWiderWeek()
+        public void SetUnitWiderWeek()
         {
             date = new DateOffset(offset, DateUnit.Day, getNow);
 
@@ -287,7 +287,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestSetUnitNarrower()
+        public void SetUnitNarrower()
         {
             date = new DateOffset(offset, DateUnit.Year, getNow);
 
@@ -301,7 +301,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestSetMonth2()
+        public void SetMonth2()
         {
             date = new DateOffset(1, DateUnit.Year, getNow);
 
@@ -430,7 +430,7 @@ namespace Diagnosis.Tests.Model
         #region compare
 
         [TestMethod]
-        public void TestLtDayMonth()
+        public void LtDayMonth()
         {
             // 40 дней назад < сейчас
             var date1 = new DateOffset(40, DateUnit.Day, getNow);
@@ -440,7 +440,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestGtDayYear()
+        public void GtDayYear()
         {
             // 40 дней назад > год назад
             var date1 = new DateOffset(40, DateUnit.Day, getNow);
@@ -449,7 +449,7 @@ namespace Diagnosis.Tests.Model
             Assert.IsTrue(date1 > date2);
         }
         [TestMethod]
-        public void TestLtMonthYear()
+        public void LtMonthYear()
         {
             // 40 месяцев назад < 2 года назад
             var date1 = new DateOffset(40, DateUnit.Month, getNow);
@@ -459,7 +459,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestLtSameUnitDay()
+        public void LtSameUnitDay()
         {
             // 40 дней назад < сейчас
             var date1 = new DateOffset(40, DateUnit.Day, getNow);
@@ -469,7 +469,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestLtSameUnitMonth()
+        public void LtSameUnitMonth()
         {
             // 2013.12 < 2014.02
             var date1 = new DateOffset(2013, 12, null, getNow);
@@ -479,7 +479,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestLtGtNull()
+        public void LtGtNull()
         {
             // 5 лет назад > пустая дата
             var date1 = new DateOffset(null, DateUnit.Month, getNow);
@@ -490,7 +490,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestLtOrEqual()
+        public void LtOrEqual()
         {
             // 2013.12 <= 2014.02
             var date1 = new DateOffset(2013, 12, null, getNow);
@@ -500,7 +500,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestEqualSameDay()
+        public void EqualSameDay()
         {
             var date1 = new DateOffset(2013, 12, 1, getNow);
             var date2 = new DateOffset(2013, 12, 1, getNow);
@@ -510,7 +510,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestEqualSameMonth()
+        public void EqualSameMonth()
         {
             var date1 = new DateOffset(2, DateUnit.Month, getNow);
             var date2 = new DateOffset(2014, 2, null, getNow);
@@ -520,7 +520,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestEqualPartialMonthDay()
+        public void EqualPartialMonthDay()
         {
             // 2014.02 <  2014.02.15
             var date1 = new DateOffset(2, DateUnit.Month, getNow);
@@ -533,7 +533,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestEqualPartialYearDay()
+        public void EqualPartialYearDay()
         {
             // 2014.04.1 > 2014
             var date1 = new DateOffset(3, DateUnit.Day, getNow);
@@ -546,7 +546,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestLtSameMonth()
+        public void LtSameMonth()
         {
             var date1 = new DateOffset(2013, 5, 5, getNow);
             var date2 = new DateOffset(2014, 5, 1, getNow);
@@ -555,7 +555,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void TestCompareWithWeek()
+        public void CompareWithWeek()
         {
             // сейчас > 2 недели назад
             var date1 = new DateOffset(getNow(), getNow);
