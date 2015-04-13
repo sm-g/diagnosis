@@ -94,6 +94,7 @@
 
                 <TextBlock Text="{Binding Age, Converter={StaticResource AgeToLabel}}"
                            Margin="3,0,0,0"
+                           FontSize="{StaticResource ContentFontSize}"
                            VerticalAlignment="Center"></TextBlock>
             </DockPanel>
             <DockPanel>

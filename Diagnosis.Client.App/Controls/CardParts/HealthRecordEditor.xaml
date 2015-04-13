@@ -322,6 +322,7 @@
                                     <forms:ComboBoxDatePicker Year="{Binding EventDate.Year, Mode=TwoWay}"
                                                               Month="{Binding EventDate.Month, Mode=TwoWay}"
                                                               Day="{Binding EventDate.Day, Mode=TwoWay}"
+                                                              MaxYearsOverToday="5"
                                                               WithPicker="True"
                                                               Grid.Column="1" />
                                     <TextBlock Text="—"
@@ -335,6 +336,7 @@
                                                               Year="{Binding To.Year, Mode=TwoWay}"
                                                               Month="{Binding To.Month, Mode=TwoWay}"
                                                               Day="{Binding To.Day, Mode=TwoWay}"
+                                                              MaxYearsOverToday="5"
                                                               WithPicker="True"
                                                               Grid.Column="3" />
                                 </Grid>

@@ -138,6 +138,19 @@ namespace Diagnosis.Client.App.Controls.FormParts
                     new PropertyChangedCallback(OnYearsDepthChanged),
                     new CoerceValueCallback(CoerceYearsDepth)));
 
+
+        /// <summary>
+        /// Превышение над сегодняшним годом, определяет максимальный год для выбора.
+        /// </summary>
+        public int MaxYearsOverToday
+        {
+            get { return (int)GetValue(MaxYearsOverTodayProperty); }
+            set { SetValue(MaxYearsOverTodayProperty, value); }
+        }
+
+        public static readonly DependencyProperty MaxYearsOverTodayProperty =
+            DependencyProperty.Register("MaxYearsOverToday", typeof(int), typeof(ComboBoxDatePicker), new PropertyMetadata(0));
+
         private static void OnYearsDepthChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var cdp = (ComboBoxDatePicker)d;
@@ -158,16 +171,18 @@ namespace Diagnosis.Client.App.Controls.FormParts
         /// <summary>
         /// Минимальный год для выбора.
         /// </summary>
-        private int MinYear { get { return DateTime.Now.Year - YearsDepth; } }
+        private int MinYear { get { return DateTime.Now.Year + MaxYearsOverToday - YearsDepth; } }
 
         public ComboBoxDatePicker()
         {
             InitializeComponent();
             Days = new ObservableCollection<string>();
-
-            LoadYearsCombo();
-            LoadMonthsCombo();
-            LoadDaysCombo();
+            Loaded += (s, e) =>
+            {
+                LoadYearsCombo();
+                LoadMonthsCombo();
+                LoadDaysCombo();
+            };
         }
 
         private void LoadYearsCombo()
