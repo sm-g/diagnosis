@@ -33,54 +33,31 @@ namespace Diagnosis.Data.Mappings
                 r.OneToMany();
             });
 
-            Set(x => x.Vocabularies, s =>
+            Set(x => x.SpecialityVocabularies, s =>
             {
-                s.Table(Names.SpecialityVocabularies);
                 s.Key(k =>
                 {
                     k.Column(Names.Id.Speciality);
                 });
                 s.Inverse(true);
-                s.Cascade(Cascade.None); // dont touch other side, just delete relation
+                s.Cascade(Cascade.All | Cascade.DeleteOrphans);
                 s.Access(Accessor.Field);
             }, r =>
             {
-                r.ManyToMany(x =>
-                {
-                    x.Column(Names.Id.Vocabulary);
-                    x.Class(typeof(Vocabulary));
-                });
+                r.OneToMany();
             });
-
-            //Set(x => x.SpecialityIcdBlocks, s =>
-            //{
-            //    s.Key(k =>
-            //    {
-            //        k.Column(Names.Id.Speciality);
-            //    });
-            //    s.Cascade(Cascade.None);
-            //    s.Access(Accessor.Field);
-            //}, r =>
-            //{
-            //    r.OneToMany();
-            //});
-
-            Bag(x => x.IcdBlocks, s =>
+            Set(x => x.SpecialityIcdBlocks, s =>
             {
-                s.Table(Names.SpecialityIcdBlocks);
                 s.Key(k =>
                 {
                     k.Column(Names.Id.Speciality);
                 });
-                s.Cascade(Cascade.All);
+                s.Inverse(true);
+                s.Cascade(Cascade.All | Cascade.DeleteOrphans);
                 s.Access(Accessor.Field);
             }, r =>
             {
-                r.ManyToMany(x =>
-                {
-                    x.Column(Names.Id.IcdBlock);
-                    x.Class(typeof(IcdBlock));
-                });
+                r.OneToMany();
             });
         }
     }

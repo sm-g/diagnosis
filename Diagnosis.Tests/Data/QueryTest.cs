@@ -1,10 +1,10 @@
-﻿using Diagnosis.Data.Queries;
+﻿using Diagnosis.Data.NHibernate;
+using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHibernate.Linq;
 using System;
 using System.Linq;
-
 using System.Linq;
 
 namespace Diagnosis.Tests.Data
@@ -12,6 +12,11 @@ namespace Diagnosis.Tests.Data
     [TestClass]
     public class QueryTest : SdfDatabaseTest
     {
+        [TestInitialize]
+        public void QueryTestInit()
+        {
+            InMemoryHelper.FillData(clCfg, clSession);
+        }
         [TestMethod]
         public void WordQueryByTitleUpperCase()
         {

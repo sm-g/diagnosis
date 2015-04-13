@@ -10,6 +10,7 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Data.SqlServerCe;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -92,28 +93,24 @@ namespace Diagnosis.Data.Sync
         public Dictionary<Type, Func<DataRow, bool>> IgnoreAddingFilterPerType { get; set; }
 
         /// <summary>
-        /// Sync scopes determined by <paramref name="from"/>. Specify conncetions in correct order in ctor.
-        /// </summary>
-        /// <param name="from"></param>
-        /// <returns></returns>
-        public Task SendFrom(Side from)
-        {
-            return SendFrom(from, from.GetOrderedScopes());
-        }
-
-        /// <summary>
         /// Sync specified scopes.
+        /// Specify conncetions in correct order in ctor.
         /// We can reverse both <paramref name="from"/> and connections in ctor to get same result.
         /// </summary>
         /// <param name="from"></param>
         /// <param name="scopes"></param>
         /// <returns></returns>
-        public async Task SendFrom(Side from, IEnumerable<Scope> scopes)
+        public async Task SendFrom(Side from, IEnumerable<Scope> scopes = null)
         {
             if (InSync)
                 return;
 
             InSync = true;
+
+            if (scopes == null)
+            {
+                scopes = from.GetOrderedScopes();
+            }
 
             var t = new Task(() =>
             {
@@ -122,10 +119,9 @@ namespace Diagnosis.Data.Sync
 
             t.Start();
             await t;
-            {
-                InSync = false;
-                OnSyncEnded(sw.Elapsed);
-            }
+
+            InSync = false;
+            OnSyncEnded(sw.Elapsed);
         }
 
         internal void SendFromCore(Side from, IEnumerable<Scope> scopes)
@@ -692,7 +688,6 @@ namespace Diagnosis.Data.Sync
 #endif
                 if (e.Conflict.Type == DbConflictType.ErrorsOccurred)
                 {
-                    var rows = e.Conflict.LocalChange.Rows.Cast<DataRow>(); // null local
                     Poster.PostMessage("ApplyChangeFailed. Error: {0}", e.Error);
                 }
                 else if (SyncTracer.IsVerboseEnabled() == false)

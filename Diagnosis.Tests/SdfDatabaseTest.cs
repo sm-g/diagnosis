@@ -20,17 +20,18 @@ namespace Diagnosis.Tests
         protected ISession sSession;
         private const string serverSdf = "server.sdf";
         private const string clientSdf = "client.sdf";
-        private static ISessionFactory clFactory;
-        private static ISessionFactory sFactory;
-        private static Configuration sCfg;
-        private static Configuration clCfg;
+        protected static ISessionFactory clFactory;
+        protected static ISessionFactory sFactory;
+        protected static Configuration sCfg;
+        protected static Configuration clCfg;
 
         static SdfDatabaseTest()
         {
             Constants.IsClient = true;
 
             SqlHelper.CreateSqlCeByPath(clientSdf);
-            File.Copy("db.sdf", serverSdf, true);
+            SqlHelper.CreateSqlCeByPath(serverSdf);
+            //  File.Copy("db.sdf", serverSdf, true);
 
             clCfg = NHibernateHelper.CreateConfiguration(clientCon, NHibernateHelper.CreateMapping(), true);
             sCfg = NHibernateHelper.CreateConfiguration(serverCon, NHibernateHelper.CreateMapping(), true);
@@ -39,21 +40,24 @@ namespace Diagnosis.Tests
         }
 
         [TestInitialize]
-        public void InMemoryDatabaseTestInit()
+        public void SdfDatabaseTestInit()
         {
-            SqlHelper.CreateSqlCeByPath(clientSdf);
-            File.Copy("db.sdf", serverSdf, true);
+            SqlHelper.CreateSqlCeByPath(clientSdf, true);
+            SqlHelper.CreateSqlCeByPath(serverSdf, true);
+            // File.Copy("db.sdf", serverSdf, true);
 
-            //new SchemaExport(clCfg).Execute(false, true, false);
+            new SchemaExport(clCfg).Execute(false, true, false);
             clSession = clFactory.OpenSession();
-            InMemoryHelper.FillData(clCfg, clSession);
             sSession = sFactory.OpenSession();
+
+            sSession.FlushMode = FlushMode.Commit;
+            clSession.FlushMode = FlushMode.Commit;
 
             session = clSession;
         }
 
         [TestCleanup]
-        public void InMemoryDatabaseTestCleanup()
+        public void SdfDatabaseTestCleanup()
         {
             if (sSession != null)
                 sSession.Dispose();

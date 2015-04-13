@@ -56,16 +56,16 @@ namespace Diagnosis.ViewModels
             return false;
         }
 
-        public static void LoadVocsAfterLogin(NHibernate.ISession sesion)
+        public static void LoadVocsAfterLogin(NHibernate.ISession session)
         {
             if (CurrentDoctor == null) return;
 
-            var vocsForDoc = VocabularyQuery.NonCustom(sesion)();
+            var vocsForDoc = VocabularyQuery.NonCustom(session)();
             if (CurrentDoctor.Speciality != null)
             {
                 vocsForDoc = CurrentDoctor.Speciality.Vocabularies;
             }
-            CurrentDoctor.OnLogin(vocsForDoc);
+            CurrentDoctor.CacheSpecialityVocs(vocsForDoc);
         }
 
         /// <summary>

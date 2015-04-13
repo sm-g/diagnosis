@@ -58,22 +58,19 @@ namespace Diagnosis.Data.Mappings
                 });
             });
 
-            Set(x => x.Vocabularies, s =>
+            Set(x => x.VocabularyWords, s =>
             {
-                s.Table(Names.VocabularyWords);
                 s.Key(k =>
                 {
                     k.Column(Names.Id.Word);
+                    //k.OnDelete(OnDeleteAction.Cascade);
                 });
-                s.Cascade(Cascade.Persist);
+                s.Inverse(true);
+                s.Cascade(Cascade.All | Cascade.DeleteOrphans);
                 s.Access(Accessor.Field);
             }, r =>
             {
-                r.ManyToMany(x =>
-                {
-                    x.Column(Names.Id.Vocabulary);
-                    x.Class(typeof(Vocabulary));
-                });
+                r.OneToMany();
             });
         }
     }

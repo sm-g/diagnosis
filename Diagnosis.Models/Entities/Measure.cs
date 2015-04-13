@@ -10,7 +10,6 @@ namespace Diagnosis.Models
     public class Measure : IDomainObject, IHrItemObject, IComparable<Measure>
     {
         public const short Scale = 6;
-        public const short Precision = 18;
 
         private Uom _uom;
 

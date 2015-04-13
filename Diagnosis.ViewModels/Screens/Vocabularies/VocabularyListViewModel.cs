@@ -125,7 +125,6 @@ namespace Diagnosis.ViewModels.Screens
         private void MakeVms()
         {
             var vocs = Session.QueryOver<Vocabulary>().List();
-            //Contract.Assume(vocs.All(x => !x.IsCustom));
 
             var vms = vocs.Select(v => Vocs
                 .Where(vm => vm.voc == v)

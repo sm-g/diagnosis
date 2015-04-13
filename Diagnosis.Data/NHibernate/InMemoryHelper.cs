@@ -11,7 +11,7 @@ namespace Diagnosis.Data.NHibernate
 {
     internal class InMemoryHelper
     {
-        public static void FillData(Configuration cfg, dynamic session)
+        public static void FillData(Configuration cfg, dynamic session, bool server = false)
         {
             new SchemaExport(cfg).Execute(false, true, false, session.Connection, null);
 
@@ -19,7 +19,8 @@ namespace Diagnosis.Data.NHibernate
             var isSqlite = cfg.GetProperty(Environment.Dialect) == typeof(SQLiteDialect).AssemblyQualifiedName;
             var resourceName = isSqlite
                  ? "Diagnosis.Data.Versions.Sql.inmem_sqlite.sql"
-                 : "Diagnosis.Data.Versions.Sql.inmem_sqlce.sql";
+                 : server ? "Diagnosis.Data.Versions.Sql.inmem_sqlce_server.sql"
+                          : "Diagnosis.Data.Versions.Sql.inmem_sqlce.sql";
 
             using (var stream = assembly.GetManifestResourceStream(resourceName))
             using (var s = new StreamReader(stream))

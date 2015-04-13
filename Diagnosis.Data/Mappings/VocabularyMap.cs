@@ -39,53 +39,30 @@ namespace Diagnosis.Data.Mappings
                 r.OneToMany();
             });
 
-            Bag(x => x.Words, s =>
-            {
-                s.Table(Names.VocabularyWords);
-                s.Key(k =>
-                {
-                    k.Column(Names.Id.Vocabulary);
-                });
-                s.Inverse(true);
-                s.Cascade(Cascade.Persist);
-                s.Access(Accessor.Field);
-            }, r =>
-            {
-                r.ManyToMany(x =>
-                {
-                    x.Column(Names.Id.Word);
-                    x.Class(typeof(Word));
-                });
-            });
-
-            Set(x => x.Specialities, s =>
-            {
-                s.Table(Names.SpecialityVocabularies);
-                s.Key(k =>
-                {
-                    k.Column(Names.Id.Vocabulary);
-                });
-                s.Lazy(CollectionLazy.NoLazy); // для синх после закрытия сессии
-                s.Cascade(Cascade.None); // dont touch other side, just delete relation
-                s.Access(Accessor.Field);
-            }, r =>
-            {
-                r.ManyToMany(x =>
-                {
-                    x.Column(Names.Id.Speciality);
-                    x.Class(typeof(Speciality));
-                });
-            });
-
             Set(x => x.SpecialityVocabularies, s =>
             {
                 s.Key(k =>
                 {
                     k.Column(Names.Id.Vocabulary);
+                    //k.OnDelete(OnDeleteAction.Cascade);
                 });
                 s.Inverse(true);
                 s.Lazy(CollectionLazy.NoLazy); // для синх после закрытия сессии
-                s.Cascade(Cascade.None);
+                s.Cascade(Cascade.All | Cascade.DeleteOrphans);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.OneToMany();
+            });
+
+            Set(x => x.VocabularyWords, s =>
+            {
+                s.Key(k =>
+                {
+                    k.Column(Names.Id.Vocabulary);
+                });
+                s.Inverse(true);
+                s.Cascade(Cascade.All | Cascade.DeleteOrphans);
                 s.Access(Accessor.Field);
             }, r =>
             {

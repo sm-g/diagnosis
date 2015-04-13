@@ -4,7 +4,9 @@ using Diagnosis.Models;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHibernate;
+using NHibernate.Linq;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Diagnosis.Tests
@@ -105,6 +107,13 @@ namespace Diagnosis.Tests
             if (guidFormats.TryGetValue(typeof(T), out format))
                 return Guid.Parse(string.Format(format, id));
             throw new ArgumentOutOfRangeException();
+        }
+
+
+        protected IList<string> GetWordTitles()
+        {
+            return session.Query<Word>()
+               .Select(x => x.Title).ToList();
         }
     }
 }

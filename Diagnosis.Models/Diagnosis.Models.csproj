@@ -180,6 +180,7 @@
     <Compile Include="Entities\HrCategory.cs" />
     <Compile Include="Entities\Speciality.cs" />
     <Compile Include="Helpers\EditableObjectHelper.cs" />
+    <Compile Include="Helpers\Many2ManyHelper.cs" />
     <Compile Include="Helpers\RefModelsComparer.cs" />
     <Compile Include="Helpers\SettingsProvider.cs" />
     <Compile Include="Interfaces.cs" />

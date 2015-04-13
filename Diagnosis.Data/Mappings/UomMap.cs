@@ -23,7 +23,12 @@ namespace Diagnosis.Data.Mappings
                 m.NotNullable(true);
                 m.Length(100);
             });
-            Property(x => x.Factor, m => m.NotNullable(true));
+            Property(x => x.Factor, m =>
+            {
+                m.NotNullable(true);
+                m.Precision(Types.Numeric.Precision);
+                m.Scale(Types.Numeric.Scale);
+            });
             ManyToOne(x => x.Type, m =>
             {
                 m.Column(Names.Id.UomType);

@@ -43,18 +43,8 @@ namespace Diagnosis.ViewModels.Screens
             emhManager = new EventMessageHandlersManager(new[] {
                 this.Subscribe(Event.WordSaved, (e) =>
                 {
-                    // новое слово или изменившееся с учетом фильтра
-                    Filter.Filter();
                     var saved = e.GetValue<Word>(MessageKeys.Word);
-
-                    // сохраненное слово с таким текстом
-                    var persisted = WordQuery.ByTitle(Session)(saved.Title);
-
-                    var vm = Words.Where(w => w.word == persisted).FirstOrDefault();
-                    if (vm != null)
-                        vm.IsSelected = true;
-
-                    NoWords = false;
+                    OnWordSaved(saved);
                 }),
                
             });
@@ -62,7 +52,6 @@ namespace Diagnosis.ViewModels.Screens
             Title = "Словарь";
             NoWords = Words.Count == 0;
         }
-
         public FilterViewModel<Word> Filter
         {
             get { return _filter; }
@@ -210,11 +199,26 @@ namespace Diagnosis.ViewModels.Screens
             base.Dispose(disposing);
         }
 
+        internal void OnWordSaved(Word saved)
+        {
+            // новое слово или изменившееся с учетом фильтра
+            Filter.Filter();
+
+            // сохраненное слово с таким текстом
+            var persisted = WordQuery.ByTitle(Session)(saved.Title);
+
+            var vm = Words.Where(w => w.word == persisted).FirstOrDefault();
+            if (vm != null)
+                vm.IsSelected = true;
+
+            NoWords = false;
+        }
+
         internal void SelectWord(Word w)
         {
             var toSelect = Words.FirstOrDefault(vm => vm.word == w);
             SelectedWord = toSelect;
-            if (!SelectedWords.Contains(toSelect))
+            if (toSelect != null && !SelectedWords.Contains(toSelect))
                 SelectedWords.Add(toSelect);
 
         }

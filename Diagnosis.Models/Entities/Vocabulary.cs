@@ -14,12 +14,14 @@ namespace Diagnosis.Models
         public static string CustomTitle = "Пользовательский";
 
         private Iesi.Collections.Generic.ISet<WordTemplate> wordTemplates = new HashedSet<WordTemplate>();
-        private Iesi.Collections.Generic.ISet<Speciality> specialities = new HashedSet<Speciality>();
         private Iesi.Collections.Generic.ISet<SpecialityVocabularies> specialityVocabularies = new HashedSet<SpecialityVocabularies>();
-        private IList<Word> words = new List<Word>(); // many-2-many
+        private Iesi.Collections.Generic.ISet<VocabularyWords> vocabularyWords = new HashedSet<VocabularyWords>();
         private string _title;
         private Doctor _doc;
 
+        private Many2ManyHelper<VocabularyWords, Word> vwHelper;
+
+        private Many2ManyHelper<Models.SpecialityVocabularies, Speciality> svHelper;
         public Vocabulary(string title, Doctor d = null)
         {
             Contract.Requires(title != null);
@@ -36,13 +38,21 @@ namespace Diagnosis.Models
         }
 
         public virtual event NotifyCollectionChangedEventHandler WordsChanged;
+
         public virtual event NotifyCollectionChangedEventHandler SpecialitiesChanged;
 
         public virtual event NotifyCollectionChangedEventHandler WordTemplatesChanged;
+
         public virtual IEnumerable<SpecialityVocabularies> SpecialityVocabularies
         {
             get { return specialityVocabularies; }
         }
+
+        public virtual IEnumerable<VocabularyWords> VocabularyWords
+        {
+            get { return vocabularyWords; }
+        }
+
         public virtual string Title
         {
             get { return _title; }
@@ -77,20 +87,56 @@ namespace Diagnosis.Models
 
         public virtual IEnumerable<Speciality> Specialities
         {
-            get { return specialities; }
+            get
+            {
+                return SvHelper.Values;
+            }
         }
 
         public virtual IEnumerable<Word> Words
         {
-            get { return words; }
+            get
+            {
+                return VwHelper.Values;
+            }
         }
 
+        private Many2ManyHelper<Models.VocabularyWords, Word> VwHelper
+        {
+            get
+            {
+                if (vwHelper == null)
+                {
+                    vwHelper = new Many2ManyHelper<VocabularyWords, Word>(
+                        vocabularyWords,
+                        x => x.Vocabulary == this,
+                        x => x.Word);
+                }
+                return vwHelper;
+            }
+        }
+        private Many2ManyHelper<SpecialityVocabularies, Speciality> SvHelper
+        {
+            get
+            {
+                if (svHelper == null)
+                {
+                    svHelper = new Many2ManyHelper<SpecialityVocabularies, Speciality>(
+                       specialityVocabularies,
+                       x => x.Vocabulary == this,
+                       x => x.Speciality);
+                }
+                return svHelper;
+            }
+        }
         public virtual Word AddWord(Word w)
         {
-            if (!words.Contains(w))
+            if (!Words.Contains(w))
             {
-                words.Add(w);
-                w.AddVoc(this);
+                var vw = new VocabularyWords(this, w);
+                VwHelper.Add(vw);
+
+                w.AddVocWords(vw);
 
                 OnWordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, w));
             }
@@ -99,66 +145,24 @@ namespace Diagnosis.Models
 
         public virtual void RemoveWord(Word w)
         {
-            if (words.Remove(w))
+            if (VwHelper.Remove(w))
             {
                 w.RemoveVoc(this);
+
                 OnWordsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, w));
             }
         }
 
-        protected internal virtual Speciality AddSpec(Speciality spec)
-        {
-            Contract.Requires(spec.Vocabularies.Contains(this));
-            if (!specialities.Contains(spec))
-            {
-                specialities.Add(spec);
-                OnSpecialitiesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, spec));
-            }
-            return spec;
-        }
-
-        protected internal virtual void RemoveSpec(Speciality spec)
-        {
-            Contract.Requires(!spec.Vocabularies.Contains(this));
-            if (specialities.Remove(spec))
-            {
-                OnSpecialitiesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, spec));
-            }
-        }
         public virtual IEnumerable<string> GetOrderedTemplateTitles()
         {
             return WordTemplates.Select(x => x.Title).OrderBy(x => x);
         }
+
         public override string ToString()
         {
             return Title;
         }
 
-        protected virtual void OnWordsChanged(NotifyCollectionChangedEventArgs e)
-        {
-            var h = WordsChanged;
-            if (h != null)
-            {
-                h(this, e);
-            }
-        }
-
-        protected virtual void OnWordTemplatesChanged(NotifyCollectionChangedEventArgs e)
-        {
-            var h = WordTemplatesChanged;
-            if (h != null)
-            {
-                h(this, e);
-            }
-        }
-        protected virtual void OnSpecialitiesChanged(NotifyCollectionChangedEventArgs e)
-        {
-            var h = SpecialitiesChanged;
-            if (h != null)
-            {
-                h(this, e);
-            }
-        }
         public override ValidationResult SelfValidate()
         {
             return new VocabularyValidator().Validate(this);
@@ -174,10 +178,13 @@ namespace Diagnosis.Models
         public virtual void SetTemplates(IEnumerable<string> titlesToBe)
         {
             Contract.Requires(titlesToBe != null);
+            // шаблоны уникальны без учета регистра
+            Contract.Ensures(WordTemplates.GroupBy(x => x.Title.ToLowerInvariant()).Count() == WordTemplates.Count());
 
             var wasTitles = this.WordTemplates.Select(x => x.Title).ToList();
 
-            // сохраняем регистр слов, но заменяем при смене регистра
+            titlesToBe = titlesToBe.Distinct(
+                StringComparer.CurrentCultureIgnoreCase);
 
             var toAdd = new HashSet<string>(titlesToBe);
             toAdd.ExceptWith(wasTitles);
@@ -214,6 +221,46 @@ namespace Diagnosis.Models
             if (templatesToRem.Count > 0 || templatesToAdd.Count > 0)
             {
                 OnWordTemplatesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            }
+        }
+        protected internal virtual void AddSpecVoc(SpecialityVocabularies sv)
+        {
+            Contract.Requires(sv.Speciality.Vocabularies.Contains(this));
+            if (SvHelper.Add(sv))
+                OnSpecialitiesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, sv));
+        }
+
+        protected internal virtual void RemoveSpec(Speciality spec)
+        {
+            Contract.Requires(!spec.Vocabularies.Contains(this));
+            if (SvHelper.Remove(spec))
+                OnSpecialitiesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, spec));
+        }
+
+        protected virtual void OnWordsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            var h = WordsChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
+
+        protected virtual void OnWordTemplatesChanged(NotifyCollectionChangedEventArgs e)
+        {
+            var h = WordTemplatesChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
+
+        protected virtual void OnSpecialitiesChanged(NotifyCollectionChangedEventArgs e)
+        {
+            var h = SpecialitiesChanged;
+            if (h != null)
+            {
+                h(this, e);
             }
         }
     }

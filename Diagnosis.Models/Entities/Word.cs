@@ -16,7 +16,7 @@ namespace Diagnosis.Models
         private Iesi.Collections.Generic.ISet<Word> children = new HashedSet<Word>();
 
         [NonSerialized]
-        private Iesi.Collections.Generic.ISet<Vocabulary> vocabularies = new HashedSet<Vocabulary>();
+        private Iesi.Collections.Generic.ISet<VocabularyWords> vocabularyWords = new HashedSet<VocabularyWords>();
 
         [NonSerialized]
         private IList<HealthRecord> healthRecords = new List<HealthRecord>(); // many-2-many bag
@@ -25,6 +25,9 @@ namespace Diagnosis.Models
         private Word _parent;
 
         private string _title;
+
+        [NonSerialized]
+        private Many2ManyHelper<Models.VocabularyWords, Vocabulary> vwHelper;
 
         public Word(string title)
         {
@@ -46,6 +49,7 @@ namespace Diagnosis.Models
                 SetProperty(ref _title, filtered, () => Title);
             }
         }
+
         public virtual Word Parent
         {
             get { return _parent; }
@@ -54,7 +58,15 @@ namespace Diagnosis.Models
 
         public virtual IEnumerable<Vocabulary> Vocabularies
         {
-            get { return vocabularies; }
+            get
+            {
+                return VwHelper.Values;
+            }
+        }
+
+        public virtual IEnumerable<VocabularyWords> VocabularyWords
+        {
+            get { return vocabularyWords; }
         }
 
         public virtual IEnumerable<Word> Children
@@ -65,6 +77,21 @@ namespace Diagnosis.Models
         public virtual IEnumerable<HealthRecord> HealthRecords
         {
             get { return healthRecords; }
+        }
+
+        private Many2ManyHelper<Models.VocabularyWords, Vocabulary> VwHelper
+        {
+            get
+            {
+                if (vwHelper == null)
+                {
+                    vwHelper = new Many2ManyHelper<VocabularyWords, Vocabulary>(
+                        vocabularyWords,
+                        x => x.Word == this,
+                        x => x.Vocabulary);
+                }
+                return vwHelper;
+            }
         }
 
         /// <summary>
@@ -105,13 +132,13 @@ namespace Diagnosis.Models
         protected internal virtual void RemoveVoc(Vocabulary voc)
         {
             Contract.Requires(!voc.Words.Contains(this));
-            vocabularies.Remove(voc);
+            Contract.Ensures(!VwHelper.Values.Contains(voc));
+            VwHelper.Remove(voc);
         }
-
-        protected internal virtual void AddVoc(Vocabulary voc)
+        protected internal virtual void AddVocWords(VocabularyWords vw)
         {
-            Contract.Requires(voc.Words.Contains(this));
-            vocabularies.Add(voc);
+            Contract.Requires(vw.Vocabulary.Words.Contains(this));
+            VwHelper.Add(vw);
         }
 
         protected internal virtual void AddHr(HealthRecord hr)

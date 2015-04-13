@@ -17,11 +17,14 @@ namespace Diagnosis.Data.Mappings
             {
                 m.Column(Names.Id.Speciality);
                 m.NotNullable(true);
+                m.Lazy(LazyRelation.NoLazy); // для синх после закрытия сессии
+                m.Cascade(Cascade.Persist);
             });
             ManyToOne(x => x.Vocabulary, m =>
             {
                 m.Column(Names.Id.Vocabulary);
                 m.NotNullable(true);
+                m.Cascade(Cascade.Persist);
             });
         }
     }

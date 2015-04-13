@@ -37,16 +37,18 @@ namespace Diagnosis.Data.Sync
             var wordsToSave = new List<Word>();
             foreach (var voc in vocs.Where(x => !x.IsCustom))
             {
-                // убираем лишние слова из словаря
                 var templates = voc.WordTemplates;
+
+                // убираем лишние слова из словаря
                 var removed = GetRemovedWordsByTemp(voc, templates);
                 var wordsInOtherVoc = RemoveFromVoc(voc, removed);
                 wordsToSave.AddRange(wordsInOtherVoc);
                 // делаем слова по текстам из словаря
-                CreateWordsFromTemp(voc, templates);
+                var created = CreateWordsFromTemp(voc, templates);
+
+                // сохраняем слова, добавленные в словарь
+                new Saver(session).Save(voc);
             }
-            // save words - by voc cascade
-            new Saver(session).Save(vocs.ToArray());
             // сохраняем убранность словаря в оставшихся словах
             new Saver(session).Save(wordsToSave.ToArray());
         }
@@ -61,19 +63,27 @@ namespace Diagnosis.Data.Sync
         }
 
         /// <summary>
-        /// Удаляет словари, сначала убирая все слова.
+        /// Удаляет словари, сначала убирая все слова и связи со специальностью.
         /// </summary>
         /// <param name="vocs"></param>
         public void DeleteVocs(IEnumerable<Vocabulary> vocs)
         {
+            Contract.Requires(Constants.IsClient);
+
             var wordsToSave = new List<Word>();
             var vocsToDel = vocs.Where(x => !x.IsCustom).ToArray();
             vocsToDel.ForAll(x =>
             {
+                // убрали словарь из всех специальностей
+                x.Specialities.ToList().ForEach(s =>
+                    s.RemoveVoc(x));
+
+                // убрали все слова из словаря
                 var wordsInOtherVoc = RemoveFromVoc(x, x.Words.ToList());
                 wordsToSave.AddRange(wordsInOtherVoc);
+
             });
-            // убрали все слова из словаря - удаляем его на клиенте
+            // удаляем его, vocword и vocspec на клиенте
             new Saver(session).Delete(vocsToDel);
 
             // сохраняем убранность словаря в оставшихся словах
@@ -154,7 +164,12 @@ namespace Diagnosis.Data.Sync
                         // если его нет в других словарях, доступных врачу
 
                         // должно стать пользовательским для тех врачей, у которых нет словаря с этим словом
-                        doc.AddWords(word.ToEnumerable());
+
+                        // при удалении словаря слово все еще доступно врачу через кеш, но его уже нет в словаре
+                        if (!doc.Vocabularies.Except(voc).SelectMany(x => x.Words).Contains(word))
+                        {
+                            doc.CustomVocabulary.AddWord(word);
+                        }
                     }
                 }
             }
@@ -178,7 +193,7 @@ namespace Diagnosis.Data.Sync
             var created = new List<Word>();
             foreach (var text in templates.Select(x => x.Title))
             {
-                var existing = WordQuery.ByTitle(session)(text); // для любого врача
+                var existing = WordQuery.ByTitle(session)(text); // для любого врача, в любом регистре
                 if (existing == null)
                 {
                     var w = new Word(text);

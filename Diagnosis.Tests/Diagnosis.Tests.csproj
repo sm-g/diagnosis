@@ -168,7 +168,7 @@
     <Compile Include="ViewModels\FilterTest.cs" />
     <Compile Include="ViewModels\AutocompleteTest.cs" />
     <Compile Include="ViewModels\ViewModelTest.cs" />
-    <Compile Include="ViewModels\VocabularyListTest.cs" />
+    <Compile Include="ViewModels\VocabularySyncTest.cs" />
     <Compile Include="ViewModels\HrListTest.cs" />
     <Compile Include="ViewModels\CardTest.cs" />
     <Compile Include="Common\DateFormatterTest.cs" />

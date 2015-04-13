@@ -59,8 +59,8 @@ namespace Diagnosis.ViewModels.Screens
         private void TestExisting(WordViewModel vm)
         {
             vm.HasExistingTitle = dbWords.Any(w =>
-                AuthorityController.CurrentDoctor.Words.Contains(w) &&
-                w.Title.MatchesAsStrings(word.Title) && w != word);
+                w.Title.MatchesAsStrings(word.Title) && w != word &&
+                AuthorityController.CurrentDoctor.Words.Contains(w));
         }
 
         protected override void OnOk()
