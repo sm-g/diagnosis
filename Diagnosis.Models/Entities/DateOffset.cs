@@ -266,22 +266,28 @@ namespace Diagnosis.Models
             Contract.Requires(d != null);
 
             SetDate(d.Year, d.Month, d.Day);
+            OnPropertyChanged("Year", "Month", "Day");
         }
 
         public void FillDateDownTo(DateTime dt, DateUnit value)
         {
-            if (value <= DateUnit.Year)
-            {
-                Year = dt.Year;
-            }
-            if (value <= DateUnit.Month)
-            {
-                Month = dt.Month;
-            }
-            if (value <= DateUnit.Week)
-            {
-                Day = dt.Day;
-            }
+            //if (value <= DateUnit.Year)
+            //{
+            //    Year = dt.Year;
+            //}
+            //if (value <= DateUnit.Month)
+            //{
+            //    Month = dt.Month;
+            //}
+            //if (value <= DateUnit.Week)
+            //{
+            //    Day = dt.Day;
+            //}
+
+            SetDate(dt.Year,
+                value != DateUnit.Year ? dt.Month : _month,
+                value != DateUnit.Year && value != DateUnit.Month ? dt.Day : _day);
+            OnPropertyChanged("Year", "Month", "Day");
         }
 
         private DateUnit? CommonPartWith(DateOffset d)

@@ -353,8 +353,8 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         hr.Category = Session.Get<HrCategory>(hrInfo.CategoryId.Value);
                     }
-                    hr.FromDate = hrInfo.From;
-                    hr.ToDate = hrInfo.To;
+                    hr.FromDate.FillDateFrom(hrInfo.From);
+                    hr.ToDate.FillDateFrom(hrInfo.To);
 
                     // вставляем к пациенту без возраста
                     var unit = hrInfo.Unit;

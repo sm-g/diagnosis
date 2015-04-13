@@ -42,9 +42,11 @@ namespace Diagnosis.ViewModels
             this.patient = hr.GetPatient();
             this.hr = hr;
             to.PropertyChanged += to_PropertyChanged;
-            from.PropertyChanged += to_PropertyChanged;
+            from.PropertyChanged += from_PropertyChanged;
             hr.PropertyChanged += healthRecord_PropertyChanged;
             patient.PropertyChanged += patient_PropertyChanged;
+
+            Relative = from.RelativeTo(to);
 
             if (Year != null) // есть дата у записи
             {
@@ -53,6 +55,7 @@ namespace Diagnosis.ViewModels
                 RoundOffsetUnitByDate();
             }
         }
+
 
         public enum ShowAs
         {
@@ -66,6 +69,7 @@ namespace Diagnosis.ViewModels
         public bool IsClosedInterval { get { return to != from && !to.IsEmpty; } }
 
         public bool IsOpenedInterval { get { return to != from && to.IsEmpty; } }
+        public bool IsPoint { get { return to == from; } }
 
         public int? Offset
         {
@@ -84,6 +88,8 @@ namespace Diagnosis.ViewModels
                 }
                 else
                 {
+                    if (IsPoint)
+                        to.Offset = value;
                     from.Offset = value;
                 }
 
@@ -116,6 +122,8 @@ namespace Diagnosis.ViewModels
                 }
                 else
                 {
+                    if (IsPoint)
+                        to.Unit = value;
                     from.Unit = value;
                 }
 
@@ -134,7 +142,8 @@ namespace Diagnosis.ViewModels
                 if (from.Year != value)
                 {
                     FirstSet = ShowAs.Date;
-
+                    if (IsPoint)
+                        to.Year = value;
                     from.Year = value;
                     OnPropertyChanged(() => Year);
                 }
@@ -152,6 +161,8 @@ namespace Diagnosis.ViewModels
                 if (from.Month != value)
                 {
                     FirstSet = ShowAs.Date;
+                    if (IsPoint)
+                        to.Month = value;
                     from.Month = value;
                     OnPropertyChanged(() => Month);
                 }
@@ -169,12 +180,100 @@ namespace Diagnosis.ViewModels
                 if (from.Day != value)
                 {
                     FirstSet = ShowAs.Date;
+                    if (IsPoint)
+                        to.Day = value;
                     from.Day = value;
                     OnPropertyChanged(() => Day);
                 }
             }
         }
+        private DatePickerViewModel _toDp;
+        public DatePickerViewModel To
+        {
+            get
+            {
+                return _toDp;
+            }
+            set
+            {
+                if (_toDp != value)
+                {
+                    _toDp = value;
+                    OnPropertyChanged(() => To);
+                }
+            }
+        }
+        public class DatePickerViewModel : ViewModelBase
+        {
+            DateOffsetViewModel dovm;
+            public DatePickerViewModel(DateOffsetViewModel d)
+            {
+                dovm = d;
+                d.to.PropertyChanged += to_PropertyChanged;
+            }
 
+            void to_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+            {
+                switch (e.PropertyName)
+                {
+                    case "Day":
+                    case "Month":
+                    case "Year":
+                        OnPropertyChanged(e.PropertyName);
+                        break;
+                }
+            }
+            public int? Year
+            {
+                get
+                {
+                    return dovm.ToYear;
+                }
+                set
+                {
+                    dovm.ToYear = value;
+                }
+            }
+
+            public int? Month
+            {
+                get
+                {
+                    return dovm.ToMonth;
+                }
+                set
+                {
+                    dovm.ToMonth = value;
+                }
+            }
+
+            public int? Day
+            {
+                get
+                {
+                    return dovm.ToDay;
+                }
+                set
+                {
+                    dovm.ToDay = value;
+                }
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                try
+                {
+                    if (disposing)
+                    {
+                        dovm.to.PropertyChanged -= to_PropertyChanged;
+                    }
+                }
+                finally
+                {
+                    base.Dispose(disposing);
+                }
+            }
+        }
         public int? ToYear
         {
             get
@@ -247,7 +346,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public DateOffset Relative { get { return from.RelativeTo(to); } }
+        DateOffset Relative { get; set; }
 
         public int? RoundedOffset
         {
@@ -339,15 +438,13 @@ namespace Diagnosis.ViewModels
 
         public DateTime OffsetFrom
         {
-            get { return IsClosedInterval ? to.GetSortingDate() : from.Now; }
+            get { return IsClosedInterval ? to.GetSortingDate() : hr.DescribedAt; }
             set
             {
-                if (IsClosedInterval)
-                {
-                }
-                else
+                if (!IsClosedInterval)
                 {
                     hr.DescribedAt = value;
+                    OnPropertyChanged(() => OffsetFrom);
                 }
             }
         }
@@ -423,13 +520,6 @@ namespace Diagnosis.ViewModels
             return res;
         }
 
-        /// <summary>
-        /// Возвращает DateTime представление для объекта DateOffset, отсутствующие значения заменены 1.
-        /// </summary>
-        public DateTime GetSortingDate()
-        {
-            return from.GetSortingDate();
-        }
 
         protected override void Dispose(bool disposing)
         {
@@ -437,8 +527,8 @@ namespace Diagnosis.ViewModels
             {
                 hr.PropertyChanged -= healthRecord_PropertyChanged;
                 to.PropertyChanged -= to_PropertyChanged;
+                from.PropertyChanged -= from_PropertyChanged;
                 patient.PropertyChanged -= patient_PropertyChanged;
-                from.PropertyChanged -= to_PropertyChanged;
                 dict.Remove(this.hr);
             }
             base.Dispose(disposing);
@@ -507,22 +597,6 @@ namespace Diagnosis.ViewModels
             return RoundedOffset;
         }
 
-        private static void FillUpTo(DateOffset to, DateOffset rel, DateUnit value)
-        {
-            if (value <= DateUnit.Year)
-            {
-                to.Year = rel.Year;
-            }
-            if (value <= DateUnit.Month)
-            {
-                to.Month = rel.Month;
-            }
-            if (value <= DateUnit.Week)
-            {
-                to.Day = rel.Day;
-            }
-        }
-
         private static void FillFixedSide(DateOffset d, DateTime dt, DateUnit value)
         {
             d.FillDateDownTo(dt, value);
@@ -531,13 +605,16 @@ namespace Diagnosis.ViewModels
         private void RoundOffsetUnitByDate()
         {
             DateOffset rounding = null;
-            if (IsClosedInterval)
+            if (IsClosedInterval && !Relative.IsEmpty)
                 rounding = RoundOffsetUnitByDate(Relative, hr.DescribedAt);
-            else if (!from.IsEmpty)
+            else if (from.Year != null)
                 rounding = RoundOffsetUnitByDate(from, hr.DescribedAt);
 
-            RoundedOffset = rounding.Offset;
-            RoundedUnit = rounding.Unit;
+            if (rounding != null)
+            {
+                RoundedOffset = rounding.Offset;
+                RoundedUnit = rounding.Unit;
+            }
         }
 
         private void patient_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -553,19 +630,44 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        void from_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            Common_date_PropertyChanged(e);
+
+            switch (e.PropertyName)
+            {
+                case "Day":
+                case "Month":
+                case "Year":
+                case "Offset":
+                case "Unit":
+                    OnPropertyChanged("Day",
+                                      "Month",
+                                      "Year",
+                                      "Offset",
+                                      "Unit");
+                    break;
+            }
+        }
+
         private void to_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            OnPropertyChanged(() => Offset);
-            OnPropertyChanged(() => Unit);
+            Common_date_PropertyChanged(e);
 
-            OnPropertyChanged(() => OffsetFrom);
+            switch (e.PropertyName)
+            {
+                case "Day":
+                case "Month":
+                case "Year":
+                    OnPropertyChanged("To" + e.PropertyName);
+                    break;
+            }
+        }
 
-            OnPropertyChanged(() => PartialDateString);
-
-
+        private void Common_date_PropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)
+        {
             if (e.PropertyName == "Year")
             {
-                OnPropertyChanged(() => AtAgeString);
                 OnPropertyChanged(() => AtAge);
                 OnPropertyChanged(() => ToAtAge);
             }
@@ -574,10 +676,19 @@ namespace Diagnosis.ViewModels
                 case "Day":
                 case "Month":
                 case "Year":
+                    Relative = from.RelativeTo(to);
+
                     RoundOffsetUnitByDate();
                     OnPropertyChanged(() => IsClosedInterval);
                     OnPropertyChanged(() => IsOpenedInterval);
 
+                    OnPropertyChanged(() => OffsetFrom);
+
+                    OnPropertyChanged(() => PartialDateString);
+                    OnPropertyChanged(() => AtAgeString);
+
+                    OnPropertyChanged(() => Offset);
+                    OnPropertyChanged(() => Unit);
                     break;
             }
 
@@ -585,8 +696,13 @@ namespace Diagnosis.ViewModels
                 RoundedOffset = RoundOffsetFor(Relative, RoundedUnit);
             else
                 RoundedOffset = RoundOffsetFor(from, RoundedUnit);
+            Print(e.PropertyName);
         }
-
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(DateOffsetViewModel));
+        void Print(string prop)
+        {
+            logger.DebugFormat("changed {2}\nfrom {0}\nto {1}", hr.FromDate, hr.ToDate, prop);
+        }
         private void healthRecord_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             var hr = sender as HealthRecord;
@@ -655,11 +771,5 @@ namespace Diagnosis.ViewModels
             return new DateOffset(offset, unit, () => d.Now);
         }
 
-        [ContractInvariantMethod]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(to.Now == from.Now);
-        }
     }
 }

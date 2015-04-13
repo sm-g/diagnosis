@@ -31,6 +31,7 @@ namespace Diagnosis.Tests.Model
         [TestMethod]
         public void Unit()
         {
+            Load<HealthRecord>();
             Assert.AreEqual(HealthRecordUnit.Year, hr[40].Unit);
             Assert.AreEqual(2005, hr[40].FromDate.Year);
 
@@ -159,6 +160,17 @@ namespace Diagnosis.Tests.Model
             var m2 = new Measure(0, uom[2]) { Word = w1 };
             hr1.SetItems(new IHrItemObject[] { m2 });
             Assert.AreEqual(uom[2], hr1.HrItems.First().Measure.Uom);
+        }
+
+        [TestMethod]
+        public void ClearFromDate()
+        {
+            hr1.FromDate.Year = 2010;
+            hr1.ToDate.Year = 2010;
+
+            hr1.FromDate.Year = null;
+
+            Assert.AreEqual(true, hr1.ToDate.IsEmpty);
         }
     }
 }

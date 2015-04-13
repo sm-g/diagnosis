@@ -114,7 +114,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public DateTime SortingDate
         {
-            get { return EventDate.GetSortingDate(); }
+            get { return healthRecord.FromDate.GetSortingDate(); }
         }
 
         public HrCreatedAtOffset GroupingCreatedAt

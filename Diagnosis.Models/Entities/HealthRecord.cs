@@ -62,6 +62,7 @@ namespace Diagnosis.Models
             _createdAt = DateTime.Now;
             _updatedAt = _createdAt;
             _describedAt = _createdAt;
+
         }
 
         /// <summary>
@@ -124,16 +125,26 @@ namespace Diagnosis.Models
         public virtual DateOffset FromDate
         {
             get { return _fromDate ?? (_fromDate = new DateOffset(null, null, null, () => DescribedAt)); }
-            set
+            protected set
             {
-                SetProperty(ref _fromDate, value, () => FromDate);
+                if (SetProperty(ref _fromDate, value, () => FromDate) && _fromDate != null)
+                {
+                    _fromDate.PropertyChanged += (s, e) =>
+                    {
+                        if (e.PropertyName == "Year" && _fromDate.IsEmpty)
+                        {
+                            // не может быть только ToDate
+                            ToDate.Year = null;
+                        }
+                    };
+                };
             }
         }
 
         public virtual DateOffset ToDate
         {
             get { return _toDate ?? (_toDate = new DateOffset(null, null, null, () => DescribedAt)); }
-            set
+            protected set
             {
                 SetProperty(ref _toDate, value, () => ToDate);
             }
@@ -439,6 +450,13 @@ namespace Diagnosis.Models
         {
             this.Words.ForEach(x => x.RemoveHr(this));
             Doctor.RemoveHr(this);
+        }
+
+        [ContractInvariantMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+        private void ObjectInvariant()
+        {
+            Contract.Invariant(ToDate.Now == FromDate.Now);
         }
     }
 }

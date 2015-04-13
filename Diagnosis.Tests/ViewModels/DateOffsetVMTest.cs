@@ -85,6 +85,7 @@ namespace Diagnosis.Tests.ViewModels
 
             Assert.AreEqual(DateUnit.Month, vm.Unit);
         }
+
         [TestMethod]
         public void SetToSameAsFrom()
         {
@@ -92,7 +93,6 @@ namespace Diagnosis.Tests.ViewModels
 
             Assert.IsTrue(!vm.IsClosedInterval);
             Assert.IsTrue(!vm.IsOpenedInterval);
-
         }
         [TestMethod]
         public void ClosedIntervalOffsetIsDifference()

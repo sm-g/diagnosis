@@ -1,4 +1,6 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.ViewModels;
+using Diagnosis.ViewModels.Screens;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -195,9 +197,13 @@ namespace Diagnosis.Client.App.Controls.FormParts
 
         private void FillDaysCombo()
         {
-            // комбобокс остается, после DateOffset = null месяц = null, биндинг успевает сработать для дня
-            var hrvm = (DataContext as Diagnosis.ViewModels.Screens.HealthRecordViewModel);
+            // комбобокс остается, после DateOffset = null месяц == null, биндинг успевает сработать для дня
+            var hrvm = (DataContext as HealthRecordViewModel);
             if (hrvm != null && hrvm.EventDate == null)
+                return;
+
+            var dpvm = (DataContext as DateOffsetViewModel);
+            if (dpvm != null && dpvm.To == null)
                 return;
 
             var days = GetDaysComboItems();

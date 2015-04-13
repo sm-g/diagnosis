@@ -184,18 +184,22 @@ namespace Diagnosis.ViewModels.Screens
                 if (_interaval != value)
                 {
                     _interaval = value;
-                    // открыли редактор второй даты - в нем дата, введенная до закрытия
-                    if (!value)
+                    if (value)
                     {
-                        lastToDate = healthRecord.ToDate;
-                        healthRecord.ToDate.FillDateFrom(healthRecord.FromDate);
+                        // открыли редактор второй даты - в нем дата, введенная до закрытия
+                        if (lastToDate != null)
+                        {
+                            healthRecord.ToDate.FillDateFrom(lastToDate);
+                        }
+                        // bind after
+                        EventDate.To = new DateOffsetViewModel.DatePickerViewModel(EventDate);
                     }
                     else
                     {
-                        if (lastToDate != null)
-                        {
-                            healthRecord.ToDate = lastToDate;
-                        }
+                        lastToDate = new DateOffset(healthRecord.ToDate);
+                        EventDate.To = null; // unbind ComboboxDatePicker DataContext;
+
+                        healthRecord.ToDate.FillDateFrom(healthRecord.FromDate);
                     }
                     OnPropertyChanged(() => IsIntervalEditorOpened);
                 }
@@ -299,11 +303,12 @@ namespace Diagnosis.ViewModels.Screens
             {
                 healthRecord.PropertyChanged -= healthRecord_PropertyChanged;
                 EventDate.PropertyChanged -= DateOffset_PropertyChanged;
+                EventDate = null; // unbind ComboboxDatePicker DataContext;
+
                 // редактор интервала закрыт - дата-точка
                 if (!IsIntervalEditorOpened)
                     healthRecord.ToDate.FillDateFrom(healthRecord.FromDate);
 
-                EventDate = null; // unbind DataContext;
             }
             base.Dispose(disposing);
         }

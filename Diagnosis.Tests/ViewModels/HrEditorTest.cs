@@ -349,7 +349,7 @@ namespace Diagnosis.Tests.ViewModels
             e.Load(hr);
             Assert.IsTrue(e.HealthRecord.IsIntervalEditorOpened);
 
-            hr.ToDate = hr.FromDate;
+            hr.ToDate.FillDateFrom(hr.FromDate);
 
             // редактор интервала остается открыт
             Assert.IsTrue(e.HealthRecord.IsIntervalEditorOpened);

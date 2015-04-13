@@ -667,7 +667,7 @@ namespace Diagnosis.Tests.Model
             d.FillDateDownTo(dt, DateUnit.Year);
 
             Assert.AreEqual(2014, d.Year);
-            Assert.AreEqual(null, d.Month);
+            Assert.AreEqual(5, d.Month);
             Assert.AreEqual(1, d.Day);
         }
         [TestMethod]

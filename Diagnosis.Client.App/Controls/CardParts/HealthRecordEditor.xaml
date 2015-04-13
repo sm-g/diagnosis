@@ -176,6 +176,7 @@
 
         <!--DataContext is editing HealthRecordViewModel -->
         <StackPanel Grid.Row="1"
+                    Name="hr"
                     DataContext="{Binding HealthRecord}"
                     Margin="0,10,0,0">
             <StackPanel.Resources>
@@ -322,10 +323,11 @@
                                     <TextBlock Text="—"
                                                Visibility="{Binding IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter}}"
                                                Grid.Column="2" />
-                                    <forms:ComboBoxDatePicker Visibility="{Binding IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                              Year="{Binding EventDate.ToYear, Mode=TwoWay}"
-                                                              Month="{Binding EventDate.ToMonth, Mode=TwoWay}"
-                                                              Day="{Binding EventDate.ToDay, Mode=TwoWay}"
+                                    <forms:ComboBoxDatePicker Visibility="{Binding DataContext.IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter},ElementName=hr}"
+                                                              DataContext="{Binding EventDate}"
+                                                              Year="{Binding To.Year, Mode=TwoWay}"
+                                                              Month="{Binding To.Month, Mode=TwoWay}"
+                                                              Day="{Binding To.Day, Mode=TwoWay}"
                                                               WithPicker="True"
                                                               Grid.Column="3" />
                                 </Grid>
