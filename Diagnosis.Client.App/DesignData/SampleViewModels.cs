@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Models;
+using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.ViewModels.Screens;
 using Moq;
@@ -82,7 +83,13 @@ namespace Diagnosis.Client.App.DesignData
         {
         }
     }
-
+    public class SampleDateOffsetViewModel : DateOffsetViewModel
+    {
+        public SampleDateOffsetViewModel()
+            : base(Mocks.hr)
+        {
+        }
+    }
     public class SampleHrListViewModel : HrListViewModel
     {
         public SampleHrListViewModel() :

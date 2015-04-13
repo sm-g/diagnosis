@@ -35,7 +35,7 @@ namespace Diagnosis.ViewModels
             });
         }
 
-        private DateOffsetViewModel(HealthRecord hr)
+        protected DateOffsetViewModel(HealthRecord hr)
         {
             this.from = hr.FromDate;
             this.to = hr.ToDate;
@@ -379,11 +379,11 @@ namespace Diagnosis.ViewModels
                 var fromAge = DateFormatter.GetAgeString(patient.BirthYear, patient.BirthMonth, patient.BirthDay, from.GetSortingDate());
                 var toAge = DateFormatter.GetAgeString(patient.BirthYear, patient.BirthMonth, patient.BirthDay, to.GetSortingDate());
 
-                return IsClosedInterval
-                    ? string.Format("c {0} до {1}", fromAge, toAge)
-                    : IsOpenedInterval ? string.Format("c {0}", fromAge)
-                    : string.Format("в {0}", fromAge)
-                    ;
+                if (IsClosedInterval)
+                    return string.Format("c {0} до {1}", fromAge, toAge);
+                if (IsOpenedInterval)
+                    return string.Format("c {0}", fromAge);
+                return string.Format("в {0}", fromAge);
             }
         }
 
@@ -429,10 +429,12 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return IsClosedInterval
-                    ? DateOffsetFormatter.GetPartialDateString(from) + " - " +
-                      DateOffsetFormatter.GetPartialDateString(to)
-                    : DateOffsetFormatter.GetPartialDateString(from);
+                if (IsClosedInterval)
+                    return DateOffsetFormatter.GetPartialDateString(from) + " — " +
+                           DateOffsetFormatter.GetPartialDateString(to);
+                if (IsOpenedInterval)
+                    return "с " + DateOffsetFormatter.GetPartialDateString(from);
+                return DateOffsetFormatter.GetPartialDateString(from);
             }
         }
 

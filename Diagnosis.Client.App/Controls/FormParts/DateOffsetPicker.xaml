@@ -4,10 +4,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
              x:Class="Diagnosis.Client.App.Controls.FormParts.DateOffsetPicker"
              mc:Ignorable="d"
              VerticalAlignment="Bottom"
              d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance design:SampleDateOffsetViewModel, IsDesignTimeCreatable=True}"
              x:Name="root">
     <UserControl.Resources>
         <ObjectDataProvider x:Key="dataFromEnum"
@@ -29,8 +31,7 @@
                   ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
                   MinWidth="70">
             <ComboBox.SelectedItem>
-                <Binding Path="DataContext.Unit"  
-                         ElementName="root"
+                <Binding Path="Unit" 
                          Mode="TwoWay" />
             </ComboBox.SelectedItem>
             <ComboBox.ItemTemplate>
@@ -41,15 +42,52 @@
                                 <!-- DateUnit-->
                                 <Binding />
                                 <!-- for some Offset-->
-                                <Binding Path="DataContext.Offset"
-                                         ElementName="root" />
+                                <Binding Path="DataContext.Offset" ElementName="root"/>
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
-        <TextBlock Text="от" Margin="10 0" />
-        <DatePicker Text="{Binding OffsetFrom, Mode=TwoWay}"/>
+        <TextBlock Margin="10 0" VerticalAlignment="Center">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Text"
+                            Value="назад от" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsClosedInterval}"
+                                     Value="True">
+                            <Setter Property="Text"
+                                    Value="до" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsOpenedInterval}"
+                                     Value="True">
+                            <Setter Property="Text"
+                                    Value="к" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <DatePicker Text="{Binding OffsetFrom, Mode=TwoWay}">
+            <DatePicker.Style>
+                <Style TargetType="DatePicker"
+                       BasedOn="{StaticResource {x:Type DatePicker}}">
+                    <Setter Property="ToolTip"
+                            Value="Дата описания события" />
+                    <Setter Property="IsEnabled"
+                            Value="True" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsClosedInterval}"
+                                     Value="True">
+                            <Setter Property="ToolTip"
+                                    Value="Фиксированная дата интервала" />
+                            <Setter Property="IsEnabled"
+                                    Value="False" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DatePicker.Style>
+        </DatePicker>
     </StackPanel>
 </UserControl>

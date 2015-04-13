@@ -217,6 +217,8 @@
                             <RadioButton IsChecked="{Binding ShowAsOffset}"
                                          Margin="0 0 10 0">
                                 <TextBlock>
+                                    <TextBlock Text="уже"
+                                               Visibility="{Binding EventDate.IsOpenedInterval, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                     <Run Text="{Binding EventDate.RoundedOffset, Mode=OneWay}" />
                                     <Hyperlink Command="{Binding EventDate.SpinUnitCommand}">
                                         <Run>
@@ -229,6 +231,8 @@
                                             </Run.Text>
                                         </Run>
                                     </Hyperlink>
+                                    <TextBlock Text="назад"
+                                               Visibility="{Binding EventDate.IsPoint, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                 </TextBlock>
                             </RadioButton>
                             <RadioButton IsChecked="{Binding ShowAsAge}"
@@ -321,6 +325,9 @@
                                                               WithPicker="True"
                                                               Grid.Column="1" />
                                     <TextBlock Text="—"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center"
+                                               Margin="0 0 0 10"
                                                Visibility="{Binding IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter}}"
                                                Grid.Column="2" />
                                     <forms:ComboBoxDatePicker Visibility="{Binding DataContext.IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter},ElementName=hr}"
@@ -332,7 +339,27 @@
                                                               Grid.Column="3" />
                                 </Grid>
                                 <DockPanel>
-                                    <Label Content="Давность" />
+                                    <Label>
+                                        <Label.Style>
+                                            <Style TargetType="Label"
+                                                   BasedOn="{StaticResource {x:Type Label}}">
+                                                <Setter Property="Content"
+                                                        Value="Давность" />
+                                                <Style.Triggers>
+                                                    <DataTrigger    Binding="{Binding EventDate.IsClosedInterval}"
+                                                                    Value="True">
+                                                        <Setter Property="Content"
+                                                                Value="Длительность" />
+                                                    </DataTrigger>
+                                                    <DataTrigger    Binding="{Binding EventDate.IsOpenedInterval}"
+                                                                    Value="True">
+                                                        <Setter Property="Content"
+                                                                Value="Стаж" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Label.Style>
+                                    </Label>
                                     <forms:DateOffsetPicker DataContext="{Binding EventDate}" />
                                 </DockPanel>
                                 <Grid IsEnabled="{Binding EventDate.CanShowAsAge}">
@@ -344,6 +371,23 @@
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
                                     <Label Content="Возраст" />
+                                    <TextBlock HorizontalAlignment="Right"
+                                               VerticalAlignment="Center"
+                                               Margin="0 0 3 10">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text"
+                                                        Value="c" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding EventDate.IsPoint}"
+                                                                 Value="True">
+                                                        <Setter Property="Text"
+                                                                Value="в" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
                                     <DockPanel Grid.Column="1">
                                         <TextBox Text="{Binding EventDate.AtAge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, TargetNullValue=''}"
                                                  Width="50"
@@ -355,6 +399,8 @@
                                                    VerticalAlignment="Center"></TextBlock>
                                     </DockPanel>
                                     <TextBlock Text="до"
+                                               Margin="0 0 3 10"
+                                               VerticalAlignment="Center"
                                                Visibility="{Binding IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter}}"
                                                Grid.Column="2" />
                                     <DockPanel Grid.Column="3"

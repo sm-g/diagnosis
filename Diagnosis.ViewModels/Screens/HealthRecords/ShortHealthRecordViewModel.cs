@@ -67,6 +67,11 @@ namespace Diagnosis.ViewModels.Screens
             get { return healthRecord.Doctor; }
         }
 
+        public DateTime DescribedAt
+        {
+            get { return healthRecord.DescribedAt; }
+        }
+
         public DateTime CreatedAt
         {
             get { return healthRecord.CreatedAt; }
@@ -154,9 +159,11 @@ namespace Diagnosis.ViewModels.Screens
                         return EventDate.AtAgeString;
 
                     default:
-                        return string.Format("{0} {1}",
+                        return string.Format("{0}{1} {2}{3}",
+                            EventDate.IsOpenedInterval ? "уже " : string.Empty,
                             EventDate.RoundedOffset,
-                            DateOffsetFormatter.GetUnitString(EventDate.RoundedOffset, EventDate.RoundedUnit));
+                            DateOffsetFormatter.GetUnitString(EventDate.RoundedOffset, EventDate.RoundedUnit),
+                            EventDate.IsPoint ? " назад" : string.Empty);
                 }
             }
         }
