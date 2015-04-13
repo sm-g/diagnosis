@@ -14,6 +14,7 @@ namespace Diagnosis.ViewModels
     {
         private static readonly Dictionary<HealthRecord, DateOffsetViewModel> dict = new Dictionary<HealthRecord, DateOffsetViewModel>();
 
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(DateOffsetViewModel));
         private readonly DateOffset from;
         private readonly DateOffset to;
         private readonly HealthRecord hr;
@@ -21,6 +22,8 @@ namespace Diagnosis.ViewModels
         private ShowAs? _firstSet;
         private int? _roundOffset;
         private Patient patient;
+
+        private DatePickerViewModel _toDpVm;
 
         static DateOffsetViewModel()
         {
@@ -56,7 +59,6 @@ namespace Diagnosis.ViewModels
             }
         }
 
-
         public enum ShowAs
         {
             Date,
@@ -69,6 +71,7 @@ namespace Diagnosis.ViewModels
         public bool IsClosedInterval { get { return to != from && !to.IsEmpty; } }
 
         public bool IsOpenedInterval { get { return to != from && to.IsEmpty; } }
+
         public bool IsPoint { get { return to == from; } }
 
         public int? Offset
@@ -106,7 +109,6 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-
                 FirstSet = ShowAs.Offset;
                 if (IsClosedInterval)
                 {
@@ -187,93 +189,25 @@ namespace Diagnosis.ViewModels
                 }
             }
         }
-        private DatePickerViewModel _toDp;
+        /// <summary>
+        /// To fix combobox binding set to null.
+        /// </summary>
         public DatePickerViewModel To
         {
             get
             {
-                return _toDp;
+                return _toDpVm;
             }
             set
             {
-                if (_toDp != value)
+                if (_toDpVm != value)
                 {
-                    _toDp = value;
+                    _toDpVm = value;
                     OnPropertyChanged(() => To);
                 }
             }
         }
-        public class DatePickerViewModel : ViewModelBase
-        {
-            DateOffsetViewModel dovm;
-            public DatePickerViewModel(DateOffsetViewModel d)
-            {
-                dovm = d;
-                d.to.PropertyChanged += to_PropertyChanged;
-            }
 
-            void to_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-            {
-                switch (e.PropertyName)
-                {
-                    case "Day":
-                    case "Month":
-                    case "Year":
-                        OnPropertyChanged(e.PropertyName);
-                        break;
-                }
-            }
-            public int? Year
-            {
-                get
-                {
-                    return dovm.ToYear;
-                }
-                set
-                {
-                    dovm.ToYear = value;
-                }
-            }
-
-            public int? Month
-            {
-                get
-                {
-                    return dovm.ToMonth;
-                }
-                set
-                {
-                    dovm.ToMonth = value;
-                }
-            }
-
-            public int? Day
-            {
-                get
-                {
-                    return dovm.ToDay;
-                }
-                set
-                {
-                    dovm.ToDay = value;
-                }
-            }
-
-            protected override void Dispose(bool disposing)
-            {
-                try
-                {
-                    if (disposing)
-                    {
-                        dovm.to.PropertyChanged -= to_PropertyChanged;
-                    }
-                }
-                finally
-                {
-                    base.Dispose(disposing);
-                }
-            }
-        }
         public int? ToYear
         {
             get
@@ -345,8 +279,6 @@ namespace Diagnosis.ViewModels
                 }
             }
         }
-
-        DateOffset Relative { get; set; }
 
         public int? RoundedOffset
         {
@@ -451,6 +383,14 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        /// <summary>
+        /// Пустая дата.
+        /// </summary>
+        public bool IsEmpty
+        {
+            get { return from.IsEmpty; }
+        }
+
         //public DateTime Now
         //{
         //    get { return IsClosedInterval ? Relative.Now : from.Now; }
@@ -463,15 +403,6 @@ namespace Diagnosis.ViewModels
         //        }
         //    }
         //}
-
-        /// <summary>
-        /// Пустая дата.
-        /// </summary>
-        public bool IsEmpty
-        {
-            get { return from.IsEmpty; }
-        }
-
         public bool ToIsEmpty
         {
             get { return to.IsEmpty; }
@@ -507,6 +438,8 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        private DateOffset Relative { get; set; }
+
         public static DateOffsetViewModel FromHr(HealthRecord healthRecord)
         {
             DateOffsetViewModel res;
@@ -521,32 +454,6 @@ namespace Diagnosis.ViewModels
             }
             return res;
         }
-
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                hr.PropertyChanged -= healthRecord_PropertyChanged;
-                to.PropertyChanged -= to_PropertyChanged;
-                from.PropertyChanged -= from_PropertyChanged;
-                patient.PropertyChanged -= patient_PropertyChanged;
-                dict.Remove(this.hr);
-            }
-            base.Dispose(disposing);
-        }
-
-        private static void Holder_HealthRecordsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (HealthRecord item in e.OldItems)
-                {
-                    OnHrRemoved(item);
-                }
-            }
-        }
-
         private static void OnHrRemoved(HealthRecord item)
         {
             DateOffsetViewModel res;
@@ -604,6 +511,62 @@ namespace Diagnosis.ViewModels
             d.FillDateDownTo(dt, value);
         }
 
+        /// <summary>
+        /// Установка даты меняет единицу измерения и смещение на наиболее подходящие.
+        /// </summary>
+        private static DateOffset RoundOffsetUnitByDate(DateOffset d, DateTime described)
+        {
+            Contract.Requires(d.Year != null);
+
+            int? offset = null;
+            DateUnit unit = 0;
+
+            Action setRoundedOffsetUnitMonthOrYear = () =>
+            {
+                var months = DateHelper.GetTotalMonthsBetween(described, d.Year.Value, d.Month.Value);
+                if (months < 12) // меньше года - месяцы
+                {
+                    offset = months;
+                    unit = DateUnit.Month;
+                }
+                else
+                {
+                    offset = described.Year - d.Year.Value;
+                    unit = DateUnit.Year;
+                }
+            };
+
+            if (d.Month == null) // _ _ y (или d _ y без автообрезания)
+            {
+                offset = described.Year - d.Year.Value;
+                unit = DateUnit.Year;
+            }
+            else if (d.Day == null) // _ m y
+            {
+                setRoundedOffsetUnitMonthOrYear();
+            }
+            else // d m y
+            {
+                var days = (described - (DateTime)d).Days;
+                if (days < 7) // меньше недели - дни
+                {
+                    offset = days;
+                    unit = DateUnit.Day;
+                }
+                else if (days < 4 * 7) // меньше месяца - недели
+                {
+                    offset = days / 7;
+                    unit = DateUnit.Week;
+                }
+                else
+                {
+                    setRoundedOffsetUnitMonthOrYear();
+                }
+            }
+
+            return new DateOffset(offset, unit, () => d.Now);
+        }
+
         private void RoundOffsetUnitByDate()
         {
             DateOffset rounding = null;
@@ -616,6 +579,17 @@ namespace Diagnosis.ViewModels
             {
                 RoundedOffset = rounding.Offset;
                 RoundedUnit = rounding.Unit;
+            }
+        }
+
+        private static void Holder_HealthRecordsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (HealthRecord item in e.OldItems)
+                {
+                    OnHrRemoved(item);
+                }
             }
         }
 
@@ -632,7 +606,7 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        void from_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void from_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             Common_date_PropertyChanged(e);
 
@@ -698,13 +672,10 @@ namespace Diagnosis.ViewModels
                 RoundedOffset = RoundOffsetFor(Relative, RoundedUnit);
             else
                 RoundedOffset = RoundOffsetFor(from, RoundedUnit);
-            Print(e.PropertyName);
+
+            logger.DebugFormat("changed {2}\nfrom {0}\nto {1}", hr.FromDate, hr.ToDate, e.PropertyName);
         }
-        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(DateOffsetViewModel));
-        void Print(string prop)
-        {
-            logger.DebugFormat("changed {2}\nfrom {0}\nto {1}", hr.FromDate, hr.ToDate, prop);
-        }
+
         private void healthRecord_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             var hr = sender as HealthRecord;
@@ -717,61 +688,91 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        /// <summary>
-        /// Установка даты меняет единицу измерения и смещение на наиболее подходящие.
-        /// </summary>
-        private static DateOffset RoundOffsetUnitByDate(DateOffset d, DateTime described)
+        protected override void Dispose(bool disposing)
         {
-            Contract.Requires(d.Year != null);
-
-            int? offset = null;
-            DateUnit unit = 0;
-
-            Action setRoundedOffsetUnitMonthOrYear = () =>
+            if (disposing)
             {
-                var months = DateHelper.GetTotalMonthsBetween(described, d.Year.Value, d.Month.Value);
-                if (months < 12) // меньше года - месяцы
-                {
-                    offset = months;
-                    unit = DateUnit.Month;
-                }
-                else
-                {
-                    offset = described.Year - d.Year.Value;
-                    unit = DateUnit.Year;
-                }
-            };
-
-            if (d.Month == null) // _ _ y (или d _ y без автообрезания)
-            {
-                offset = described.Year - d.Year.Value;
-                unit = DateUnit.Year;
+                hr.PropertyChanged -= healthRecord_PropertyChanged;
+                to.PropertyChanged -= to_PropertyChanged;
+                from.PropertyChanged -= from_PropertyChanged;
+                patient.PropertyChanged -= patient_PropertyChanged;
+                dict.Remove(this.hr);
             }
-            else if (d.Day == null) // _ m y
-            {
-                setRoundedOffsetUnitMonthOrYear();
-            }
-            else // d m y
-            {
-                var days = (described - (DateTime)d).Days;
-                if (days < 7) // меньше недели - дни
-                {
-                    offset = days;
-                    unit = DateUnit.Day;
-                }
-                else if (days < 4 * 7) // меньше месяца - недели
-                {
-                    offset = days / 7;
-                    unit = DateUnit.Week;
-                }
-                else
-                {
-                    setRoundedOffsetUnitMonthOrYear();
-                }
-            }
-
-            return new DateOffset(offset, unit, () => d.Now);
+            base.Dispose(disposing);
         }
 
+        public class DatePickerViewModel : ViewModelBase
+        {
+            private DateOffsetViewModel dovm;
+
+            public DatePickerViewModel(DateOffsetViewModel d)
+            {
+                dovm = d;
+                d.to.PropertyChanged += to_PropertyChanged;
+            }
+
+            public int? Year
+            {
+                get
+                {
+                    return dovm.ToYear;
+                }
+                set
+                {
+                    dovm.ToYear = value;
+                }
+            }
+
+            public int? Month
+            {
+                get
+                {
+                    return dovm.ToMonth;
+                }
+                set
+                {
+                    dovm.ToMonth = value;
+                }
+            }
+
+            public int? Day
+            {
+                get
+                {
+                    return dovm.ToDay;
+                }
+                set
+                {
+                    dovm.ToDay = value;
+                }
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                try
+                {
+                    if (disposing)
+                    {
+                        dovm.to.PropertyChanged -= to_PropertyChanged;
+                    }
+                }
+                finally
+                {
+                    base.Dispose(disposing);
+                }
+            }
+
+            private void to_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+            {
+                switch (e.PropertyName)
+                {
+                    case "Day":
+                    case "Month":
+                    case "Year":
+                        OnPropertyChanged(e.PropertyName);
+                        break;
+                }
+            }
+        }
     }
 }
