@@ -42,7 +42,7 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void SetTemplateInOtherCase()
+        public void SetTemplatesDistinctIgnoreCase()
         {
             var voc = new Vocabulary("123");
             voc.SetTemplates(new[] { "qwe", "qWe" });
@@ -59,6 +59,7 @@ namespace Diagnosis.Tests.Model
         [TestMethod]
         public void ChangeTemplateCase()
         {
+            // заменяем шаблон при смене регистра
             var voc = new Vocabulary("123");
             voc.SetTemplates(new[] { "qwe" });
             voc.SetTemplates(new[] { "QWE" });
@@ -66,8 +67,9 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
-        public void DontChangeTemplatesCase()
+        public void DontChangeTemplatesCaseOnSave()
         {
+            // сохраняем регистр шаблонов
             var voc = new Vocabulary("123");
             voc.SetTemplates(new[] { "qwe", "Asd" });
             voc.AddTemplates(new[] { "qweasd" });

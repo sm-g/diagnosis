@@ -211,16 +211,30 @@ namespace Diagnosis.Tests.Data
         {
             l.LoadOrUpdateVocs(voc[2]);
             Assert.IsTrue(w[6].Vocabularies.Contains(voc[2]));
+            var oldTitle = w[6].Title;
             Assert.IsTrue(voc[2].Words.Count() == voc[2].WordTemplates.Count());
 
-            // меняем регистр шаблона в словаре, обновляем словарь, слово больше не в словаре
+            // меняем регистр шаблона в словаре, обновляем словарь, слово не меняется
             wTemp[4].Title = wTemp[4].Title.ToUpper();
             l.LoadOrUpdateVocs(voc[2]);
 
-            Assert.IsFalse(w[6].Vocabularies.Contains(voc[2]));
+            Assert.AreEqual(oldTitle, w[6].Title);
+            Assert.IsTrue(w[6].Vocabularies.Contains(voc[2]));
             Assert.IsTrue(voc[2].Words.Count() == voc[2].WordTemplates.Count());
         }
+        [TestMethod]
+        public void CreateWordLoadTemplateInOtherCase()
+        {
+            // при создании слов по шаблону игнорируется регистр
+            var w = CreateWordAsInEditor(wTemp[1].Title);
+            wTemp[1].Title = wTemp[1].Title.ToUpper();
 
+            l.LoadOrUpdateVocs(voc[1]);
+
+            var wordTitles = GetWordTitles();
+            Assert.IsTrue(!wordTitles.Contains(wTemp[1].Title));
+            Assert.IsTrue(wordTitles.Contains(w.Title));
+        }
         [TestMethod]
         public void CreateWordRemoveVoc()
         {
@@ -277,7 +291,7 @@ namespace Diagnosis.Tests.Data
             Assert.IsTrue(d2.SpecialityWords.All(x => !onlyVocWords.Contains(x)));
 
             // врачу недоступны неиспользованные им слова, бывшие только в убранном словаре
-            var notUsedByDoctor = onlyVocWords.Where(x => 
+            var notUsedByDoctor = onlyVocWords.Where(x =>
                 x.HealthRecords.All(y => y.Doctor != d2)).ToList();
             Assert.IsTrue(d2.Words.All(x => !notUsedByDoctor.Contains(x)));
 

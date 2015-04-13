@@ -178,10 +178,13 @@ namespace Diagnosis.Models
         public virtual void SetTemplates(IEnumerable<string> titlesToBe)
         {
             Contract.Requires(titlesToBe != null);
+            // шаблоны уникальны без учета регистра
+            Contract.Ensures(WordTemplates.GroupBy(x => x.Title.ToLowerInvariant()).Count() == WordTemplates.Count());
 
             var wasTitles = this.WordTemplates.Select(x => x.Title).ToList();
 
-            // сохраняем регистр слов, но заменяем при смене регистра
+            titlesToBe = titlesToBe.Distinct(
+                StringComparer.CurrentCultureIgnoreCase);
 
             var toAdd = new HashSet<string>(titlesToBe);
             toAdd.ExceptWith(wasTitles);
