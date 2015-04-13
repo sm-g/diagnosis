@@ -19,8 +19,6 @@ namespace Diagnosis.Tests.ViewModels
         {
             Load<HealthRecord>();
             h = hr[1];
-            h.FromDate.Now = h.CreatedAt; // 
-            now = h.FromDate.Now;
             vm = DateOffsetViewModel.FromHr(hr[1]);
         }
         [TestCleanup]
@@ -32,6 +30,7 @@ namespace Diagnosis.Tests.ViewModels
         [TestMethod]
         public void DataConditions()
         {
+            Assert.IsTrue(h.ToDate.IsEmpty);
             Assert.AreEqual(2013, h.FromDate.Year);
             Assert.AreEqual(11, h.FromDate.Month);
             Assert.AreEqual(null, h.FromDate.Day);
@@ -86,7 +85,15 @@ namespace Diagnosis.Tests.ViewModels
 
             Assert.AreEqual(DateUnit.Month, vm.Unit);
         }
+        [TestMethod]
+        public void SetToSameAsFrom()
+        {
+            h.ToDate.FillDateFrom(h.FromDate);
 
+            Assert.IsTrue(!vm.IsClosedInterval);
+            Assert.IsTrue(!vm.IsOpenedInterval);
+
+        }
         [TestMethod]
         public void ClosedIntervalOffsetIsDifference()
         {
@@ -113,10 +120,11 @@ namespace Diagnosis.Tests.ViewModels
         [TestMethod]
         public void NonClosedIntervalOffsetFromIsNow()
         {
-            vm.IsInterval = false;
+            Assert.IsTrue(vm.IsOpenedInterval);
             Assert.AreEqual(h.FromDate.Now, vm.OffsetFrom);
 
-            vm.IsInterval = true;
+            h.ToDate.FillDateFrom(h.FromDate);
+            Assert.IsTrue(!vm.IsOpenedInterval && !vm.IsClosedInterval);
             Assert.AreEqual(h.FromDate.Now, vm.OffsetFrom);
         }
 
@@ -165,7 +173,8 @@ namespace Diagnosis.Tests.ViewModels
             Assert.AreEqual(h.DescribedAt, h.FromDate.Now);
             Assert.AreEqual(h.DescribedAt, h.ToDate.Now);
 
-            vm.IsInterval = false;
+            // при закрытии редактора второй даты
+            h.ToDate.FillDateFrom(h.FromDate);
             vm.OffsetFrom = DateTime.Now.Date;
 
             Assert.AreEqual(DateTime.Now.Date, h.FromDate.Now);
@@ -213,14 +222,6 @@ namespace Diagnosis.Tests.ViewModels
             Assert.AreEqual(offset, vm.Offset);
         }
 
-        [TestMethod]
-        public void HideIntervalEditor()
-        {
-            vm.ToYear = 2015;
-            vm.IsInterval = false;
-            // скрыт редактор второй - дата осатется пока запись не сохранена
-            Assert.IsFalse(h.ToDate.IsEmpty);
 
-        }
     }
 }

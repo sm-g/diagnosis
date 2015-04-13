@@ -242,6 +242,8 @@ namespace Diagnosis.Models
 
         public DateOffset RelativeTo(DateOffset d)
         {
+            Contract.Requires(d != null);
+
             var max = this >= d ? this : d;
             var min = this < d ? this : d;
             var com = CommonPartWith(d);
@@ -256,6 +258,29 @@ namespace Diagnosis.Models
                     return new DateOffset(min.Year, min.Month, min.Day, () => max.GetSortingDate());
                 default:
                     return new DateOffset(null, null, null, () => max.GetSortingDate());
+            }
+        }
+
+        public void FillDateFrom(DateOffset d)
+        {
+            Contract.Requires(d != null);
+
+            SetDate(d.Year, d.Month, d.Day);
+        }
+
+        public void FillDateDownTo(DateTime dt, DateUnit value)
+        {
+            if (value <= DateUnit.Year)
+            {
+                Year = dt.Year;
+            }
+            if (value <= DateUnit.Month)
+            {
+                Month = dt.Month;
+            }
+            if (value <= DateUnit.Week)
+            {
+                Day = dt.Day;
             }
         }
 

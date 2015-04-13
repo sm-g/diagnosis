@@ -22,8 +22,6 @@ namespace Diagnosis.ViewModels
         private int? _roundOffset;
         private Patient patient;
 
-        private bool _interaval;
-
         static DateOffsetViewModel()
         {
             typeof(DateOffsetViewModel).Subscribe(Event.DeleteHolder, (e) =>
@@ -48,8 +46,6 @@ namespace Diagnosis.ViewModels
             hr.PropertyChanged += healthRecord_PropertyChanged;
             patient.PropertyChanged += patient_PropertyChanged;
 
-            IsInterval = to != from;
-
             if (Year != null) // есть дата у записи
             {
                 this._firstSet = ShowAs.Date; // не новая запись — не меняем showas при вводе
@@ -65,40 +61,11 @@ namespace Diagnosis.ViewModels
             AtAge
         }
 
-        /// <summary>
-        /// Показывать редактор второй даты.
-        /// </summary>
-        public bool IsInterval
-        {
-            get
-            {
-                return _interaval;
-            }
-            set
-            {
-                if (_interaval != value)
-                {
-                    _interaval = value;
-                    // открыли редактор второй даты - в нем пусто или дата, введенная до закрытия редактора
-                    if (_interaval)
-                    {
-                        if (lastto == null)
-                        {
-                            lastto = to;
-                            to.Year = null;
-                        }
-                    }
-
-                    OnPropertyChanged(() => IsInterval);
-                }
-            }
-        }
-
-        private DateOffset lastto;
-
         public bool FixedIsTo { get; set; }
 
         public bool IsClosedInterval { get { return to != from && !to.IsEmpty; } }
+
+        public bool IsOpenedInterval { get { return to != from && to.IsEmpty; } }
 
         public int? Offset
         {
@@ -113,7 +80,7 @@ namespace Diagnosis.ViewModels
                     var rel = Relative;
                     rel.Offset = value;
 
-                    FillUpTo(from, rel, rel.Unit);
+                    from.FillDateDownTo(rel.GetSortingDate(), rel.Unit);
                 }
                 else
                 {
@@ -133,31 +100,26 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                if (from.Unit != value)
+
+                FirstSet = ShowAs.Offset;
+                if (IsClosedInterval)
                 {
-                    FirstSet = ShowAs.Offset;
-                    if (IsClosedInterval)
-                    {
-                        var rel = Relative;
-                        rel.Unit = value;
+                    var rel = Relative;
+                    rel.Unit = value;
 
-                        // fill fixed side
-                        // но не cuts
-                        FillFixedSide(to, to.GetSortingDate(), value);
+                    // но не cuts
+                    FillFixedSide(to, to.GetSortingDate(), value);
 
-                        from.Year = rel.Year;
-                        from.Month = rel.Month;
-                        from.Day = rel.Day;
-                        //from.Unit = value; // зависит от now, мб неделя
-                    }
-                    else
-                    {
-                        from.Unit = value;
-                    }
-
-                    //to.Unit = value;
-                    OnPropertyChanged(() => Unit);
+                    from.Year = rel.Year;
+                    from.Month = rel.Month;
+                    from.Day = rel.Day;
                 }
+                else
+                {
+                    from.Unit = value;
+                }
+
+                OnPropertyChanged(() => Unit);
             }
         }
 
@@ -171,6 +133,7 @@ namespace Diagnosis.ViewModels
             {
                 if (from.Year != value)
                 {
+                    FirstSet = ShowAs.Date;
 
                     from.Year = value;
                     OnPropertyChanged(() => Year);
@@ -188,6 +151,7 @@ namespace Diagnosis.ViewModels
             {
                 if (from.Month != value)
                 {
+                    FirstSet = ShowAs.Date;
                     from.Month = value;
                     OnPropertyChanged(() => Month);
                 }
@@ -204,6 +168,7 @@ namespace Diagnosis.ViewModels
             {
                 if (from.Day != value)
                 {
+                    FirstSet = ShowAs.Date;
                     from.Day = value;
                     OnPropertyChanged(() => Day);
                 }
@@ -220,7 +185,7 @@ namespace Diagnosis.ViewModels
             {
                 if (to.Year != value)
                 {
-
+                    FirstSet = ShowAs.Date;
                     to.Year = value;
                     OnPropertyChanged(() => ToYear);
                 }
@@ -237,6 +202,7 @@ namespace Diagnosis.ViewModels
             {
                 if (to.Month != value)
                 {
+                    FirstSet = ShowAs.Date;
                     to.Month = value;
                     OnPropertyChanged(() => ToMonth);
                 }
@@ -253,6 +219,7 @@ namespace Diagnosis.ViewModels
             {
                 if (to.Day != value)
                 {
+                    FirstSet = ShowAs.Date;
                     to.Day = value;
 
                     OnPropertyChanged(() => ToDay);
@@ -315,7 +282,7 @@ namespace Diagnosis.ViewModels
 
                 return IsClosedInterval
                     ? string.Format("c {0} до {1}", fromAge, toAge)
-                    : IsInterval ? string.Format("c {0}", fromAge)
+                    : IsOpenedInterval ? string.Format("c {0}", fromAge)
                     : string.Format("в {0}", fromAge)
                     ;
             }
@@ -363,18 +330,13 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return IsInterval
+                return IsClosedInterval
                     ? DateOffsetFormatter.GetPartialDateString(from) + " - " +
                       DateOffsetFormatter.GetPartialDateString(to)
                     : DateOffsetFormatter.GetPartialDateString(from);
             }
         }
 
-        //            from.Now = value;
-        //            to.Now = value;
-        //        }
-        //    }
-        //}
         public DateTime OffsetFrom
         {
             get { return IsClosedInterval ? to.GetSortingDate() : from.Now; }
@@ -397,18 +359,24 @@ namespace Diagnosis.ViewModels
         //    {
         //        //if (!IsClosedInterval)
         //        {
+        //            from.Now = value;
+        //            to.Now = value;
+        //        }
+        //    }
+        //}
+
         /// <summary>
         /// Пустая дата.
         /// </summary>
-        //public bool IsEmpty
-        //{
-        //    get { return from.IsEmpty; }
-        //}
+        public bool IsEmpty
+        {
+            get { return from.IsEmpty; }
+        }
 
-        //public bool ToIsEmpty
-        //{
-        //    get { return to.IsEmpty; }
-        //}
+        public bool ToIsEmpty
+        {
+            get { return to.IsEmpty; }
+        }
 
         public RelayCommand SpinUnitCommand
         {
@@ -557,18 +525,7 @@ namespace Diagnosis.ViewModels
 
         private static void FillFixedSide(DateOffset d, DateTime dt, DateUnit value)
         {
-            if (value <= DateUnit.Year)
-            {
-                d.Year = dt.Year;
-            }
-            if (value <= DateUnit.Month)
-            {
-                d.Month = dt.Month;
-            }
-            if (value <= DateUnit.Week)
-            {
-                d.Day = dt.Day;
-            }
+            d.FillDateDownTo(dt, value);
         }
 
         private void RoundOffsetUnitByDate()
@@ -605,7 +562,6 @@ namespace Diagnosis.ViewModels
 
             OnPropertyChanged(() => PartialDateString);
 
-            OnPropertyChanged(() => IsClosedInterval);
 
             if (e.PropertyName == "Year")
             {
@@ -618,8 +574,9 @@ namespace Diagnosis.ViewModels
                 case "Day":
                 case "Month":
                 case "Year":
-                    FirstSet = ShowAs.Date;
                     RoundOffsetUnitByDate();
+                    OnPropertyChanged(() => IsClosedInterval);
+                    OnPropertyChanged(() => IsOpenedInterval);
 
                     break;
             }

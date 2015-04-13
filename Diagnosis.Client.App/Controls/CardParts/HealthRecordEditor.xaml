@@ -284,7 +284,6 @@
                         </Expander.Header>
                         <Grid FlowDirection="LeftToRight"
                               Background="Transparent"
-                              DataContext="{Binding EventDate}"
                               Cursor="Arrow">
                             <StackPanel Grid.IsSharedSizeScope="True">
                                 <StackPanel.Resources>
@@ -302,7 +301,7 @@
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
                                     <Label />
-                                    <CheckBox IsChecked="{Binding IsInterval}"
+                                    <CheckBox IsChecked="{Binding IsIntervalEditorOpened}"
                                               Grid.Column="3"
                                               Content="Интервал" />
                                 </Grid>
@@ -315,26 +314,26 @@
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
                                     <Label Content="Дата" />
-                                    <forms:ComboBoxDatePicker Year="{Binding Year, Mode=TwoWay}"
-                                                              Month="{Binding Month, Mode=TwoWay}"
-                                                              Day="{Binding Day, Mode=TwoWay}"
+                                    <forms:ComboBoxDatePicker Year="{Binding EventDate.Year, Mode=TwoWay}"
+                                                              Month="{Binding EventDate.Month, Mode=TwoWay}"
+                                                              Day="{Binding EventDate.Day, Mode=TwoWay}"
                                                               WithPicker="True"
                                                               Grid.Column="1" />
                                     <TextBlock Text="—"
-                                               Visibility="{Binding IsInterval,Converter={StaticResource BooleanToVisibilityConverter}}"
+                                               Visibility="{Binding IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter}}"
                                                Grid.Column="2" />
-                                    <forms:ComboBoxDatePicker Visibility="{Binding IsInterval,Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                              Year="{Binding ToYear, Mode=TwoWay}"
-                                                              Month="{Binding ToMonth, Mode=TwoWay}"
-                                                              Day="{Binding ToDay, Mode=TwoWay}"
+                                    <forms:ComboBoxDatePicker Visibility="{Binding IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                              Year="{Binding EventDate.ToYear, Mode=TwoWay}"
+                                                              Month="{Binding EventDate.ToMonth, Mode=TwoWay}"
+                                                              Day="{Binding EventDate.ToDay, Mode=TwoWay}"
                                                               WithPicker="True"
                                                               Grid.Column="3" />
                                 </Grid>
                                 <DockPanel>
                                     <Label Content="Давность" />
-                                    <forms:DateOffsetPicker />
+                                    <forms:DateOffsetPicker DataContext="{Binding EventDate}" />
                                 </DockPanel>
-                                <Grid IsEnabled="{Binding CanShowAsAge}">
+                                <Grid IsEnabled="{Binding EventDate.CanShowAsAge}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="auto" />
                                         <ColumnDefinition Width="auto"
@@ -344,26 +343,26 @@
                                     </Grid.ColumnDefinitions>
                                     <Label Content="Возраст" />
                                     <DockPanel Grid.Column="1">
-                                        <TextBox Text="{Binding AtAge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                                        <TextBox Text="{Binding EventDate.AtAge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, TargetNullValue=''}"
                                                  Width="50"
                                                  HorizontalContentAlignment="Right">
                                         </TextBox>
 
-                                        <TextBlock Text="{Binding AtAge, Converter={StaticResource AgeToLabel}}"
+                                        <TextBlock Text="{Binding EventDate.AtAge, Converter={StaticResource AgeToLabel}}"
                                                    Margin="3,0,0,0"
                                                    VerticalAlignment="Center"></TextBlock>
                                     </DockPanel>
                                     <TextBlock Text="до"
-                                               Visibility="{Binding IsInterval,Converter={StaticResource BooleanToVisibilityConverter}}"
+                                               Visibility="{Binding IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter}}"
                                                Grid.Column="2" />
-                                    <DockPanel Grid.Column="3">
-                                        <TextBox Text="{Binding ToAtAge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                                    <DockPanel Grid.Column="3"
+                                               Visibility="{Binding IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBox Text="{Binding EventDate.ToAtAge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, TargetNullValue=''}"
                                                  Width="50"
-                                                 Visibility="{Binding IsInterval,Converter={StaticResource BooleanToVisibilityConverter}}"
                                                  HorizontalContentAlignment="Right">
                                         </TextBox>
 
-                                        <TextBlock Text="{Binding ToAtAge, Converter={StaticResource AgeToLabel}}"
+                                        <TextBlock Text="{Binding EventDate.ToAtAge, Converter={StaticResource AgeToLabel}}"
                                                    Margin="3,0,0,0"
                                                    VerticalAlignment="Center" />
                                     </DockPanel>

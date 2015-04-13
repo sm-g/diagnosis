@@ -26,6 +26,11 @@ namespace Diagnosis.ViewModels.Screens
             EventDate = DateOffsetViewModel.FromHr(healthRecord);
             EventDate.PropertyChanged += DateOffset_PropertyChanged;
             DateSuggestions = new ObservableCollection<DateSuggestion>();
+            IsIntervalEditorOpened = hr.FromDate != hr.ToDate;
+
+            // в редакторе для даты-точки нет конца интервала
+            if (hr.FromDate == hr.ToDate)
+                hr.ToDate.Year = null;
 
             // показываем даты из записей этого же списка для быстрой вставки
             if (EventDate.FirstSet == null)
@@ -88,6 +93,10 @@ namespace Diagnosis.ViewModels.Screens
 
         #region DateEditor
 
+        private bool _interaval;
+
+        private DateOffset lastToDate;
+
         public DateOffsetViewModel EventDate
         {
             get
@@ -144,7 +153,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-
         public bool IsDateEditorExpanded
         {
             get
@@ -157,6 +165,39 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     _isExpanded = value;
                     OnPropertyChanged(() => IsDateEditorExpanded);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Показывать редактор второй даты.
+        /// Пока запись редактируется, оcтается введенная дата.
+        /// </summary>
+        public bool IsIntervalEditorOpened
+        {
+            get
+            {
+                return _interaval;
+            }
+            set
+            {
+                if (_interaval != value)
+                {
+                    _interaval = value;
+                    // открыли редактор второй даты - в нем дата, введенная до закрытия
+                    if (!value)
+                    {
+                        lastToDate = healthRecord.ToDate;
+                        healthRecord.ToDate.FillDateFrom(healthRecord.FromDate);
+                    }
+                    else
+                    {
+                        if (lastToDate != null)
+                        {
+                            healthRecord.ToDate = lastToDate;
+                        }
+                    }
+                    OnPropertyChanged(() => IsIntervalEditorOpened);
                 }
             }
         }
@@ -258,6 +299,10 @@ namespace Diagnosis.ViewModels.Screens
             {
                 healthRecord.PropertyChanged -= healthRecord_PropertyChanged;
                 EventDate.PropertyChanged -= DateOffset_PropertyChanged;
+                // редактор интервала закрыт - дата-точка
+                if (!IsIntervalEditorOpened)
+                    healthRecord.ToDate.FillDateFrom(healthRecord.FromDate);
+
                 EventDate = null; // unbind DataContext;
             }
             base.Dispose(disposing);

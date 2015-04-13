@@ -651,11 +651,61 @@ namespace Diagnosis.Tests.Model
         [TestMethod]
         public void RelativeNowIsMaxDate2()
         {
-            var date1 = new DateOffset(2013, null, 1, getNow);
+            var date1 = new DateOffset(2013, null, null, getNow);
             var date2 = new DateOffset(2010, 1, null, getNow);
 
             var r = date1.RelativeTo(date2);
             Assert.AreEqual(date1.GetSortingDate(), r.Now);
+        }
+
+        [TestMethod]
+        public void FillDownToYear()
+        {
+            var d = new DateOffset(2013, 5, 1);
+            var dt = new DateTime(2014, 3, 2);
+
+            d.FillDateDownTo(dt, DateUnit.Year);
+
+            Assert.AreEqual(2014, d.Year);
+            Assert.AreEqual(null, d.Month);
+            Assert.AreEqual(1, d.Day);
+        }
+        [TestMethod]
+        public void FillDownToMonth()
+        {
+            var d = new DateOffset(2013, 5, 1);
+            var dt = new DateTime(2014, 3, 2);
+
+            d.FillDateDownTo(dt, DateUnit.Month);
+
+            Assert.AreEqual(2014, d.Year);
+            Assert.AreEqual(3, d.Month);
+            Assert.AreEqual(1, d.Day);
+        }
+
+        [TestMethod]
+        public void FillDownToWeek()
+        {
+            var d = new DateOffset(2013, 5, 1);
+            var dt = new DateTime(2014, 3, 2);
+
+            d.FillDateDownTo(dt, DateUnit.Week);
+
+            Assert.AreEqual(2014, d.Year);
+            Assert.AreEqual(3, d.Month);
+            Assert.AreEqual(2, d.Day);
+        }
+        [TestMethod]
+        public void FillDownToDay()
+        {
+            var d = new DateOffset(2013, 5, 1);
+            var dt = new DateTime(2014, 3, 2);
+
+            d.FillDateDownTo(dt, DateUnit.Day);
+
+            Assert.AreEqual(2014, d.Year);
+            Assert.AreEqual(3, d.Month);
+            Assert.AreEqual(2, d.Day);
         }
     }
 }
