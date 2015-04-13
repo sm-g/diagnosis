@@ -240,6 +240,45 @@ namespace Diagnosis.Models
             }
         }
 
+        /// <summary>
+        /// Добавляет указанное количество дней, недель (как 7 дней), месяцев или лет.
+        /// Нельзя прибавить дни, если Unit - месяц или год и т.п.
+        /// </summary>
+        public void Add(int value, DateUnit unit)
+        {
+            if (unit.CompareTo(Unit) < 0 && !(unit == DateUnit.Day && Unit == DateUnit.Week))
+                throw new ArgumentException("Can not add such part of date to current dateoffset.");
+            Contract.EndContractBlock();
+
+            DateTime dt;
+            switch (unit)
+            {
+                case DateUnit.Day:
+                    dt = new DateTime(Year.Value, Month.Value, Day.Value).AddDays(value);
+                    SetDate(dt.Year, dt.Month, dt.Day);
+                    break;
+
+                case DateUnit.Week:
+                    dt = new DateTime(Year.Value, Month.Value, Day.Value).AddDays(value * 7);
+                    SetDate(dt.Year, dt.Month, dt.Day);
+                    break;
+
+                case DateUnit.Month:
+                    dt = new DateTime(Year.Value, Month.Value, 1).AddMonths(value);
+                    Month = dt.Month;
+                    Year = dt.Year;
+                    break;
+
+                case DateUnit.Year:
+                    dt = new DateTime(Year.Value, 1, 1).AddYears(value);
+                    Year = dt.Year;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
         public DateOffset RelativeTo(DateOffset d)
         {
             Contract.Requires(d != null);

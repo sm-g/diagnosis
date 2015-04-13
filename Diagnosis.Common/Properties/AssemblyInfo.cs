@@ -21,4 +21,3 @@ using System.Windows.Markup;
 
 [assembly: XmlnsPrefix("http://schemas.smg.com/diagnosis", "diag")]
 [assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.Common")]
-//[assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.Common.Types")]

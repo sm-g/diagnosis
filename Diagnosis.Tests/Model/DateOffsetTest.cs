@@ -322,6 +322,7 @@ namespace Diagnosis.Tests.Model
 
             Assert.AreEqual(10, d.Offset);
         }
+
         [TestMethod]
         public void CutsYearNull()
         {
@@ -448,6 +449,7 @@ namespace Diagnosis.Tests.Model
 
             Assert.IsTrue(date1 > date2);
         }
+
         [TestMethod]
         public void LtMonthYear()
         {
@@ -586,6 +588,75 @@ namespace Diagnosis.Tests.Model
 
         #endregion compare
 
+        #region Add
+
+        [TestMethod]
+        public void AddYear()
+        {
+            var date = new DateOffset(2010, 2, null);
+            date.Add(-2, DateUnit.Year);
+
+            Assert.IsTrue(date.Year == 2008);
+            Assert.IsTrue(date.Month == 2);
+            Assert.IsTrue(date.Day == null);
+        }
+
+        [TestMethod]
+        public void AddYear29Feb()
+        {
+            var date = new DateOffset(2012, 2, 29);
+            date.Add(1, DateUnit.Year);
+
+            Assert.IsTrue(date.Year == 2013);
+            Assert.IsTrue(date.Month == 2);
+            Assert.IsTrue(date.Day == 28);
+        }
+
+        [TestMethod]
+        public void AddMonth()
+        {
+            var date = new DateOffset(2012, 2, 29);
+            date.Add(1, DateUnit.Month);
+
+            Assert.IsTrue(date.Year == 2012);
+            Assert.IsTrue(date.Month == 3);
+            Assert.IsTrue(date.Day == 29);
+        }
+
+        [TestMethod]
+        public void AddWeek()
+        {
+            var date = new DateOffset(2012, 1, 1);
+            date.Add(5, DateUnit.Week);
+
+            Assert.IsTrue(date.Year == 2012);
+            Assert.IsTrue(date.Month == 2);
+            Assert.IsTrue(date.Day == 5);
+        }
+
+        [TestMethod]
+        public void AddDay()
+        {
+            var date = new DateOffset(2012, 2, 29);
+            date.Add(-68, DateUnit.Day);
+
+            Assert.IsTrue(date.Year == 2011);
+            Assert.IsTrue(date.Month == 12);
+            Assert.IsTrue(date.Day == 23);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void AddWrong()
+        {
+            var date = new DateOffset(2012, null, null);
+            date.Add(-68, DateUnit.Day);
+        }
+
+        #endregion Add
+
+        #region Relative
+
         [TestMethod]
         public void RelativeDayYear()
         {
@@ -595,7 +666,6 @@ namespace Diagnosis.Tests.Model
             var r = date1.RelativeTo(date2);
             Assert.AreEqual(1, r.Offset);
             Assert.AreEqual(DateUnit.Year, r.Unit);
-
         }
 
         [TestMethod]
@@ -630,6 +700,7 @@ namespace Diagnosis.Tests.Model
             Assert.AreEqual(1, r.Offset);
             Assert.AreEqual(DateUnit.Month, r.Unit);
         }
+
         [TestMethod]
         public void RelativeNullYear()
         {
@@ -639,6 +710,7 @@ namespace Diagnosis.Tests.Model
             var r = date1.RelativeTo(date2);
             Assert.AreEqual(null, r.Offset);
         }
+
         [TestMethod]
         public void RelativeNowIsMaxDate()
         {
@@ -648,6 +720,7 @@ namespace Diagnosis.Tests.Model
             var r = date1.RelativeTo(date2);
             Assert.AreEqual(date2.GetSortingDate(), r.Now);
         }
+
         [TestMethod]
         public void RelativeNowIsMaxDate2()
         {
@@ -657,6 +730,10 @@ namespace Diagnosis.Tests.Model
             var r = date1.RelativeTo(date2);
             Assert.AreEqual(date1.GetSortingDate(), r.Now);
         }
+
+        #endregion Relative
+
+        #region FillDownTo
 
         [TestMethod]
         public void FillDownToYear()
@@ -670,6 +747,7 @@ namespace Diagnosis.Tests.Model
             Assert.AreEqual(5, d.Month);
             Assert.AreEqual(1, d.Day);
         }
+
         [TestMethod]
         public void FillDownToMonth()
         {
@@ -695,6 +773,7 @@ namespace Diagnosis.Tests.Model
             Assert.AreEqual(3, d.Month);
             Assert.AreEqual(2, d.Day);
         }
+
         [TestMethod]
         public void FillDownToDay()
         {
@@ -707,5 +786,7 @@ namespace Diagnosis.Tests.Model
             Assert.AreEqual(3, d.Month);
             Assert.AreEqual(2, d.Day);
         }
+
+        #endregion FillDownTo
     }
 }

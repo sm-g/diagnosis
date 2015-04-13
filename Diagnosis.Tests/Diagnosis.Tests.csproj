@@ -174,7 +174,6 @@
     <Compile Include="ViewModels\HrListTest.cs" />
     <Compile Include="ViewModels\CardTest.cs" />
     <Compile Include="Common\DateFormatterTest.cs" />
-    <Compile Include="Common\DateOffsetTest.cs" />
     <Compile Include="Data\PersistTest.cs" />
     <Compile Include="InMemoryDatabaseTest.cs" />
     <Compile Include="Model\PatientTest.cs" />
