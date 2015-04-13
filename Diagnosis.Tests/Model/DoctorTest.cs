@@ -10,8 +10,6 @@ namespace Diagnosis.Tests.Model
     [TestClass]
     public class DoctorTest : InMemoryDatabaseTest
     {
-
-
         [TestInitialize]
         public void Init()
         {
@@ -28,6 +26,15 @@ namespace Diagnosis.Tests.Model
 
             Assert.IsFalse(newW.IsTransient);
             Assert.IsFalse(d2.CustomVocabulary.IsTransient);
+        }
+
+        [TestMethod]
+        public void DoctorSeeAllWordsForHisSpeciality()
+        {
+            AuthorityController.TryLogIn(d2);
+
+            Assert.IsTrue(d2.Speciality != null);
+            Assert.IsTrue(d2.Speciality.Vocabularies.SelectMany(y => y.Words).All(x => d2.SpecialityWords.Contains(x)));
         }
     }
 }
