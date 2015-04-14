@@ -57,7 +57,10 @@ namespace Diagnosis.Tests.ViewModels
 
             Assert.AreEqual(1, s.Result.Statistic.Patients.Count);
             Assert.AreEqual(a[1], s.Result.Patients[0].Children[0].Children[0].Holder);
+
             Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[1]));
+            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[2]));
         }
 
         [TestMethod]
@@ -127,6 +130,44 @@ namespace Diagnosis.Tests.ViewModels
             Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
             Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
             Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[30]));
+
+        }
+
+        [TestMethod]
+        public void SearchMeasureAndWordOrWords()
+        {
+            s.AutocompleteAll.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.GreaterOrEqual });
+            s.AutocompleteAll.AddTag(w[1]);
+            s.AutocompleteAny.AddTag(w[22]);
+            s.AutocompleteAny.AddTag(w[94]);
+            s.SearchCommand.Execute(null);
+
+            Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
+            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[20]));
+
+        }
+
+        [TestMethod]
+        public void SearchAnyMeasure()
+        {
+            s.AutocompleteAny.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal });
+            s.SearchCommand.Execute(null);
+
+            Assert.AreEqual(1, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
+
+        }
+
+        [TestMethod]
+        public void SearchMeasureAndWordWhenSameWord()
+        {
+            s.AutocompleteAll.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal });
+            s.AutocompleteAll.AddTag(w[3]);
+            s.SearchCommand.Execute(null);
+
+            Assert.AreEqual(1, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
 
         }
     }

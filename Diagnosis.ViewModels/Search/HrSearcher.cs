@@ -53,16 +53,18 @@ namespace Diagnosis.ViewModels.Search
                 var hrsWithM = HealthRecordQuery.WithAllAnyNotWords(session)(
                     Enumerable.Empty<Word>(),
                     options.MeasuresAny.Select(x => x.Word),
-                    Enumerable.Empty<Word>());
+                    options.WordsNot);
 
                 hrsWithM = hrsWithM.Where(x =>
                    options.WordsAll.IsSubsetOf(x.Words) &&
                    options.MeasuresAll.All(m => x.Measures.Contains(m, new ValueComparer(m.Operator))) &&
-                   !x.Words.Any(w => options.WordsNot.Contains(w)) &&
 
                    options.MeasuresAny.Any(m => x.Measures.Contains(m, new ValueComparer(m.Operator))));
 
-                hrs = hrs.Union(hrsWithM);
+                if (options.WordsAll.Any() || options.WordsAny.Any())
+                    hrs = hrs.Union(hrsWithM);
+                else // только измерения в all / any
+                    hrs = hrsWithM;
             }
 
             if (options.Categories.Count() > 0)
