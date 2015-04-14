@@ -1,4 +1,5 @@
--- Uom, HrCategory, Speciality, SpecialityIcdBlocks
+-- Uom, HrCategory, Speciality
+
 SET IDENTITY_INSERT [Uom] ON;
 GO
 INSERT INTO [Uom] ([Id],[Abbr],[Description],[Factor],[UomType]) VALUES (1,'л','литр',3,1);

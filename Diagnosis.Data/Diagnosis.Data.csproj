@@ -239,6 +239,7 @@
     <Compile Include="Versions\Client\06 AddPassportTable.cs" />
     <Compile Include="Versions\Client\05 InsertSpecialityIcdBlock.cs" />
     <Compile Include="Versions\Client\12 UomHrCatSpecialityGuidAndRemoveDefCat.cs" />
+    <Compile Include="Versions\Server\02 InsertInitials.cs" />
     <Compile Include="Versions\Server\01 CreateServerSdf.cs" />
     <Compile Include="Versions\SyncronizedMigration.cs" />
     <Compile Include="Versions\Migrator.cs" />
