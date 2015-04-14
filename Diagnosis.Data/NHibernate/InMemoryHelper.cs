@@ -17,10 +17,7 @@ namespace Diagnosis.Data.NHibernate
 
             var assembly = Assembly.GetAssembly(typeof(InMemoryHelper));
             var isSqlite = cfg.GetProperty(Environment.Dialect) == typeof(SQLiteDialect).AssemblyQualifiedName;
-            var resourceName = isSqlite
-                 ? "Diagnosis.Data.Versions.Sql.inmem_sqlite.sql"
-                 : server ? "Diagnosis.Data.Versions.Sql.inmem_sqlce_server.sql"
-                          : "Diagnosis.Data.Versions.Sql.inmem_sqlce.sql";
+            var resourceName = "Diagnosis.Data.Versions.Sql.inmem_sqlite.sql";
 
             using (var stream = assembly.GetManifestResourceStream(resourceName))
             using (var s = new StreamReader(stream))
@@ -32,7 +29,12 @@ namespace Diagnosis.Data.NHibernate
                     if (!isSqlite) // sqlce
                         foreach (var item in sql.Split(new[] { ';' }, System.StringSplitOptions.RemoveEmptyEntries))
                         {
-                            session.CreateSQLQuery(item).ExecuteUpdate();
+                            if (server && item.StartsWith("-- CLIENT"))
+                                break;
+                            if (item.StartsWith("--SET IDENTITY_INSERT"))
+                                session.CreateSQLQuery(item.Remove(0, 2)).ExecuteUpdate(); // uncomment
+                            else
+                                session.CreateSQLQuery(item).ExecuteUpdate();
                         }
                     else
                         session.CreateSQLQuery(sql).ExecuteUpdate();

@@ -19,12 +19,19 @@ INSERT INTO Uom (ID,Abbr,Factor,UomTypeID,Description) VALUES ('00000005-9000-00
 INSERT INTO Uom (ID,Abbr,Factor,UomTypeID,Description) VALUES ('00000006-9000-0000-0000-000000000006','мес',1.4771,'00000002-8000-0000-0000-000000000002','месяц');
 INSERT INTO Uom (ID,Abbr,Factor,UomTypeID,Description) VALUES ('00000007-9000-0000-0000-000000000007','г',2.5623,'00000002-8000-0000-0000-000000000002','год');
 
+-- for sqlce - use IDENTITY_INSERT and no empty lines after split by semicolon
+
+--SET IDENTITY_INSERT IcdChapter ON;
 INSERT INTO IcdChapter (ID, Code, Title) VALUES (1, 'I', 'Некоторые инфекционные и паразитарные болезни');
 INSERT INTO IcdChapter (ID, Code, Title) VALUES (5, 'IX', 'Болезни системы кровообращения');
+--SET IDENTITY_INSERT IcdChapter OFF;
 
+--SET IDENTITY_INSERT IcdBlock ON;
 INSERT INTO IcdBlock (ID, Code, Title, ChapterID) VALUES (91, '(I00-I02)', 'Острая ревматическая лихорадка', 5);
 INSERT INTO IcdBlock (ID, Code, Title, ChapterID) VALUES (92, '(I05-I09)', 'Хронические ревматические болезни сердца', 5);
+--SET IDENTITY_INSERT IcdBlock OFF;
 
+--SET IDENTITY_INSERT IcdDisease ON;
 INSERT INTO IcdDisease (ID, Code, Title, IcdBlockID) VALUES (1 , 'I00', 'Ревматическая лихорадка без упоминания о  вовлечении сердца', 91);
 INSERT INTO IcdDisease (ID, Code, Title, IcdBlockID) VALUES (2 , 'I01', 'Ревматическая лихорадка с вовлечением сердца', 91);
 INSERT INTO IcdDisease (ID, Code, Title, IcdBlockID) VALUES (3 , 'I01.0', 'Острый ревматический перикардит', 91);
@@ -47,6 +54,7 @@ INSERT INTO IcdDisease (ID, Code, Title, IcdBlockID) VALUES (19, 'I06.1', 'Ре�
 INSERT INTO IcdDisease (ID, Code, Title, IcdBlockID) VALUES (20, 'I06.2', 'Ревматический аортальный стеноз с недостаточностью', 92);
 INSERT INTO IcdDisease (ID, Code, Title, IcdBlockID) VALUES (21, 'I06.8', 'Другие ревматические болезни аортального клапана', 92);
 INSERT INTO IcdDisease (ID, Code, Title, IcdBlockID) VALUES (22, 'I06.9', 'Ревматическая болезнь аортального клапана неуточненная (ый)', 92);
+--SET IDENTITY_INSERT IcdDisease OFF;
 
 -- '00000001-1200-0000-0001-000000000001'
 INSERT INTO Vocabulary (Id, Title) VALUES ('00000001-1200-0000-0000-000000000001', 'Общий словарь');
@@ -62,6 +70,18 @@ INSERT INTO WordTemplate (Id,VocabularyID,Title) VALUES ('00000005-1300-0000-000
 INSERT INTO WordTemplate (Id,VocabularyID,Title) VALUES ('00000006-1300-0000-0000-000000000006','00000002-1200-0000-0000-000000000002','тест');
 INSERT INTO WordTemplate (Id,VocabularyID,Title) VALUES ('00000007-1300-0000-0000-000000000007','00000002-1200-0000-0000-000000000002','шаблон');
 
+-- '00000001-1000-0000-0001-000000000001'
+INSERT INTO Speciality (Id, Title) VALUES ('00000001-1000-0000-0000-000000000001', 'Кардиолог');
+INSERT INTO Speciality (Id, Title) VALUES ('00000002-1000-0000-0000-000000000002', 'Специальность без словаря');
+
+-- '00000001-1100-0000-0001-000000000001'
+INSERT INTO SpecialityIcdBlocks (Id,SpecialityID, IcdBlockID) VALUES ('00000001-1100-0000-0000-000000000001','00000001-1000-0000-0000-000000000001', 92);
+
+-- словарь кардиолога
+INSERT INTO SpecialityVocabularies (Id,SpecialityID, VocabularyID) VALUES ('00000001-1500-0000-0000-000000000001','00000001-1000-0000-0000-000000000001','00000002-1200-0000-0000-000000000002');
+
+
+-- CLIENT only (do not change this comment)
 
 -- '00000001-0000-0000-0001-000000000001'
 INSERT INTO Word (Id,Title) VALUES ('00000001-0000-0000-0001-000000000001','анемия');
@@ -88,81 +108,22 @@ INSERT INTO Word (Id,Title) VALUES ('00000021-0000-0000-0001-000000000021','за
 INSERT INTO Word (Id,Title) VALUES ('00000022-0000-0000-0001-000000000022','роды');
 INSERT INTO Word (Id,Title) VALUES ('00000023-0000-0000-0001-000000000023','кровотечение');
 INSERT INTO Word (Id,Title) VALUES ('00000024-0000-0000-0001-000000000024','гематурия');
---INSERT INTO Word (Id,Title) VALUES ('00000025-0000-0000-0001-000000000025','аритмия');
---INSERT INTO Word (Id,Title) VALUES ('00000026-0000-0000-0001-000000000026','цианоз');
---INSERT INTO Word (Id,Title) VALUES ('00000027-0000-0000-0001-000000000027','тромбоэмболия');
---INSERT INTO Word (Id,Title) VALUES ('00000028-0000-0000-0001-000000000028','желудочковые экстрасистолы');
---INSERT INTO Word (Id,Title) VALUES ('00000029-0000-0000-0001-000000000029','гемоглобин');
---INSERT INTO Word (Id,Title) VALUES ('00000030-0000-0000-0001-000000000030','легочная артерия');
+
 INSERT INTO Word (Id,Title) VALUES ('00000031-0000-0000-0001-000000000031','щитовидная железа');
 INSERT INTO Word (Id,Title) VALUES ('00000032-0000-0000-0001-000000000032','легкие');
---INSERT INTO Word (Id,Title) VALUES ('00000033-0000-0000-0001-000000000033','ЭКГ');
---INSERT INTO Word (Id,Title) VALUES ('00000034-0000-0000-0001-000000000034','коронарография');
---INSERT INTO Word (Id,Title) VALUES ('00000035-0000-0000-0001-000000000035','функция');
---INSERT INTO Word (Id,Title) VALUES ('00000036-0000-0000-0001-000000000036','гипергликемия');
---INSERT INTO Word (Id,Title) VALUES ('00000037-0000-0000-0001-000000000037','белок');
---INSERT INTO Word (Id,Title) VALUES ('00000038-0000-0000-0001-000000000038','лейкоциты');
---INSERT INTO Word (Id,Title) VALUES ('00000039-0000-0000-0001-000000000039','стоя');
+
 INSERT INTO Word (Id,Title) VALUES ('00000040-0000-0000-0001-000000000040','сидя');
---INSERT INTO Word (Id,Title) VALUES ('00000041-0000-0000-0001-000000000041','лежа');
---INSERT INTO Word (Id,Title) VALUES ('00000042-0000-0000-0001-000000000042','справа');
---INSERT INTO Word (Id,Title) VALUES ('00000043-0000-0000-0001-000000000043','слева');
---INSERT INTO Word (Id,Title) VALUES ('00000044-0000-0000-0001-000000000044','пароксизм');
---INSERT INTO Word (Id,Title) VALUES ('00000045-0000-0000-0001-000000000045','физическая нагрузка');
---INSERT INTO Word (Id,Title) VALUES ('00000046-0000-0000-0001-000000000046','инфаркт миокарда');
---INSERT INTO Word (Id,Title) VALUES ('00000047-0000-0000-0001-000000000047','язвенная болезнь');
---INSERT INTO Word (Id,Title) VALUES ('00000048-0000-0000-0001-000000000048','гепатит');
---INSERT INTO Word (Id,Title) VALUES ('00000049-0000-0000-0001-000000000049','инсульт');
---INSERT INTO Word (Id,Title) VALUES ('00000050-0000-0000-0001-000000000050','сахарный диабет');
+
 INSERT INTO Word (Id,Title) VALUES ('00000051-0000-0000-0001-000000000051','фибрилляция предсердий');
---INSERT INTO Word (Id,Title) VALUES ('00000052-0000-0000-0001-000000000052','трикуспидальный');
---INSERT INTO Word (Id,Title) VALUES ('00000053-0000-0000-0001-000000000053','митральный');
---INSERT INTO Word (Id,Title) VALUES ('00000054-0000-0000-0001-000000000054','аортальный');
---INSERT INTO Word (Id,Title) VALUES ('00000055-0000-0000-0001-000000000055','транзиторная ишемическая атака');
---INSERT INTO Word (Id,Title) VALUES ('00000056-0000-0000-0001-000000000056','в груди');
---INSERT INTO Word (Id,Title) VALUES ('00000057-0000-0000-0001-000000000057','в голове');
---INSERT INTO Word (Id,Title) VALUES ('00000058-0000-0000-0001-000000000058','в ноге');
---INSERT INTO Word (Id,Title) VALUES ('00000059-0000-0000-0001-000000000059','в животе');
---INSERT INTO Word (Id,Title) VALUES ('00000060-0000-0000-0001-000000000060','в моче');
---INSERT INTO Word (Id,Title) VALUES ('00000061-0000-0000-0001-000000000061','отделение');
---INSERT INTO Word (Id,Title,ParentID) VALUES ('00000062-0000-0000-0001-000000000062','пульмонологическое','00000061-0000-0000-0001-000000000061');
---INSERT INTO Word (Id,Title,ParentID) VALUES ('00000063-0000-0000-0001-000000000063','глазное','00000061-0000-0000-0001-000000000061');
---INSERT INTO Word (Id,Title,ParentID) VALUES ('00000064-0000-0000-0001-000000000064','хирургическое','00000061-0000-0000-0001-000000000061');
---INSERT INTO Word (Id,Title,ParentID) VALUES ('00000065-0000-0000-0001-000000000065','травматологическое','00000061-0000-0000-0001-000000000061');
---INSERT INTO Word (Id,Title,ParentID) VALUES ('00000066-0000-0000-0001-000000000066','терапевтическое','00000061-0000-0000-0001-000000000061');
---INSERT INTO Word (Id,Title) VALUES ('00000067-0000-0000-0001-000000000067','поликлиника');
---INSERT INTO Word (Id,Title) VALUES ('00000068-0000-0000-0001-000000000068','скорая мед. помощь');
---INSERT INTO Word (Id,Title) VALUES ('00000069-0000-0000-0001-000000000069','гепарин');
+
 INSERT INTO Word (Id,Title) VALUES ('00000070-0000-0000-0001-000000000070','лазикс');
 INSERT INTO Word (Id,Title) VALUES ('00000071-0000-0000-0001-000000000071','варфорин');
 INSERT INTO Word (Id,Title) VALUES ('00000072-0000-0000-0001-000000000072','антибиотики');
 INSERT INTO Word (Id,Title) VALUES ('00000073-0000-0000-0001-000000000073','обезболивание');
 INSERT INTO Word (Id,Title) VALUES ('00000074-0000-0000-0001-000000000074','нитроглицерин');
---INSERT INTO Word (Id,Title) VALUES ('00000075-0000-0000-0001-000000000075','госпитализация');
---INSERT INTO Word (Id,Title) VALUES ('00000076-0000-0000-0001-000000000076','операция');
---INSERT INTO Word (Id,Title) VALUES ('00000077-0000-0000-0001-000000000077','Новокузнецк');
---INSERT INTO Word (Id,Title) VALUES ('00000078-0000-0000-0001-000000000078','Кемерово');
---INSERT INTO Word (Id,Title) VALUES ('00000079-0000-0000-0001-000000000079','Новосибирск');
---INSERT INTO Word (Id,Title) VALUES ('00000080-0000-0000-0001-000000000080','Томск');
---INSERT INTO Word (Id,Title) VALUES ('00000081-0000-0000-0001-000000000081','образование');
---INSERT INTO Word (Id,Title,ParentID) VALUES ('00000082-0000-0000-0001-000000000082','высшее','00000081-0000-0000-0001-000000000081');
---INSERT INTO Word (Id,Title,ParentID) VALUES ('00000083-0000-0000-0001-000000000083','среднее','00000081-0000-0000-0001-000000000081');
---INSERT INTO Word (Id,Title,ParentID) VALUES ('00000084-0000-0000-0001-000000000084','начальное','00000081-0000-0000-0001-000000000081');
---INSERT INTO Word (Id,Title) VALUES ('00000085-0000-0000-0001-000000000085','эндокардит');
---INSERT INTO Word (Id,Title) VALUES ('00000086-0000-0000-0001-000000000086','миокардит');
---INSERT INTO Word (Id,Title) VALUES ('00000087-0000-0000-0001-000000000087','перикардит');
---INSERT INTO Word (Id,Title) VALUES ('00000088-0000-0000-0001-000000000088','давность');
---INSERT INTO Word (Id,Title) VALUES ('00000089-0000-0000-0001-000000000089','группа крови');
---INSERT INTO Word (Id,Title) VALUES ('00000090-0000-0000-0001-000000000090','стенокардия');
---INSERT INTO Word (Id,Title) VALUES ('00000091-0000-0000-0001-000000000091','АД');
---INSERT INTO Word (Id,Title) VALUES ('00000092-0000-0000-0001-000000000092','мелкоочаговый');
---INSERT INTO Word (Id,Title) VALUES ('00000093-0000-0000-0001-000000000093','передне-боковой стенки');
+
 INSERT INTO Word (Id,Title) VALUES ('00000094-0000-0000-0001-000000000094','ЛЖ');
---INSERT INTO Word (Id,Title) VALUES ('00000095-0000-0000-0001-000000000095','давящая');
---INSERT INTO Word (Id,Title) VALUES ('00000096-0000-0000-0001-000000000096','боль');
---INSERT INTO Word (Id,Title) VALUES ('00000097-0000-0000-0001-000000000097','грудина');
---INSERT INTO Word (Id,Title) VALUES ('00000098-0000-0000-0001-000000000098','иррадиация');
---INSERT INTO Word (Id,Title) VALUES ('00000099-0000-0000-0001-000000000099','левая лопатка');
+
 INSERT INTO Word (Id,Title) VALUES ('00000100-0000-0000-0001-000000000100','нитроминт');
 
 
@@ -192,17 +153,6 @@ INSERT INTO VocabularyWords (Id, VocabularyID, WordID) VALUES ('00000021-1400-00
 INSERT INTO VocabularyWords (Id, VocabularyID, WordID) VALUES ('00000022-1400-0000-0000-000000000022', '00000003-1200-0000-0000-000000000003', '00000022-0000-0000-0001-000000000022');
 INSERT INTO VocabularyWords (Id, VocabularyID, WordID) VALUES ('00000023-1400-0000-0000-000000000023', '00000003-1200-0000-0000-000000000003', '00000023-0000-0000-0001-000000000023');
 INSERT INTO VocabularyWords (Id, VocabularyID, WordID) VALUES ('00000024-1400-0000-0000-000000000024', '00000003-1200-0000-0000-000000000003', '00000024-0000-0000-0001-000000000024');
-
-
--- '00000001-1000-0000-0001-000000000001'
-INSERT INTO Speciality (Id, Title) VALUES ('00000001-1000-0000-0000-000000000001', 'Кардиолог');
-
--- '00000001-1100-0000-0001-000000000001'
-INSERT INTO SpecialityIcdBlocks (Id,SpecialityID, IcdBlockID) VALUES ('00000001-1100-0000-0000-000000000001','00000001-1000-0000-0000-000000000001', 92);
-
--- словарь кардиолога
-INSERT INTO SpecialityVocabularies (Id,SpecialityID, VocabularyID) VALUES ('00000001-1500-0000-0000-000000000001','00000001-1000-0000-0000-000000000001','00000002-1200-0000-0000-000000000002');
-
 
 -- '00000001-1000-0000-0000-000000000001'
 INSERT INTO Passport (ID) VALUES ('00000001-1000-0000-0000-000000000001');
