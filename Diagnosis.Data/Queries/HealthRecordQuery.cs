@@ -86,24 +86,25 @@ namespace Diagnosis.Data.Queries
             {
                 //using (var tr = session.BeginTransaction())
                 //{
-                //    var allIds = all.Select(w => w.Id).ToList();
-                //    var anyIds = any.Select(w => w.Id).ToList();
-                //    var notIds = not.Select(w => w.Id).ToList();
+                //var allIds = all.Select(w => w.Id).ToList();
+                //var anyIds = any.Select(w => w.Id).ToList();
+                //var notIds = not.Select(w => w.Id).ToList();
 
 
-                //    var q = from hr in session.Query<HealthRecord>()
-                //            join hri in session.Query<HrItem>() on hr.Id equals hri.HealthRecord.Id
-                //            where hri.Word != null
-                //            join w in session.Query<Word>() on hri.Word.Id equals w.Id
-                //            where (anyIds.Count == 0 || anyIds.Contains(w.Id))
-                //            //&& allIds.IsSubsetOf(hri.)
-                //            select hr;
-                //    var wordsInHr = from hr0 in q
-                //                    join hri0 in session.Query<HrItem>() on hr0.Id equals hri0.HealthRecord.Id
-                //                    where hri0.Word != null
-                //                    where !notIds.Contains(hri0.Word.Id)
+                //var q = from hr in session.Query<HealthRecord>()
+                //        join hri in session.Query<HrItem>() on hr.Id equals hri.HealthRecord.Id
+                //        where hri.Word != null
+                //        join w in session.Query<Word>() on hri.Word.Id equals w.Id
+                //        where !notIds.Contains(w.Id)
+                //        where (anyIds.Count == 0 || anyIds.Contains(w.Id))
+                //        select hr;
 
-                //                    select hr0;
+                //var wordsInHr = from hr0 in q
+                //                join hri0 in session.Query<HrItem>() on hr0.Id equals hri0.HealthRecord.Id
+                //                where hri0.Word != null
+                //                where allIds.Except(hri.W)
+
+                //                select hr0;
                 //    return wordsInHr.Distinct().ToList();
 
                 //}
@@ -118,7 +119,6 @@ namespace Diagnosis.Data.Queries
                     return session.Query<HealthRecord>().ToList()
                         .Where(x => x.Words.All(w => !not.Contains(w))).ToList();
                 }
-
 
             };
         }

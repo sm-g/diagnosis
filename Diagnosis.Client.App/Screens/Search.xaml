@@ -50,6 +50,8 @@
         </Grid.RowDefinitions>
         <!--<TextBlock Style="{StaticResource ScreenTitle}"
                    Margin="5,0,0,0">Поиск</TextBlock>-->
+        <CheckBox IsChecked="{Binding UseOldMode}"
+                  Content="Старый поиск" />
         <Expander x:Name="searchControls"
                   Style="{StaticResource SplitExpanderStyle}"
                   Grid.Row="1"
@@ -89,43 +91,42 @@
             </Expander.Header>
 
             <StackPanel Margin="5,10,5,0">
-                <StackPanel.InputBindings>
-                    <KeyBinding Key="Enter"
-                                Command="{Binding SearchCommand}" />
-                </StackPanel.InputBindings>
-                <Label Content="Все ключевые _слова" />
-                <search:Autocomplete DataContext="{Binding AutocompleteAll}" />
-                <Label Content="И хотя бы одно из" />
-                <search:Autocomplete DataContext="{Binding AutocompleteAny}" />
-                <Label Content="И ни одиного из" />
-                <search:Autocomplete DataContext="{Binding AutocompleteNot}" />
-                <DockPanel Style="{StaticResource formLine}">
-                    <Grid>
-                        <CheckBox IsChecked="{Binding AllWords}"
-                                  VerticalContentAlignment="Center"
-                                  Margin="0,10,0,0">
-                            <TextBlock>
-                            <Run BaselineAlignment="Center">Все слова</Run>
-                                <ComboBox ItemsSource="{Binding Source={diag:EnumListExtension {x:Type diag:HealthRecordQueryAndScope}}}"
-                                          SelectedItem="{Binding QueryScope, Mode=TwoWay}"
-                                          ItemTemplate="{StaticResource EnumComboTemplate}" />
-                            </TextBlock>
-                        </CheckBox>
-                    </Grid>
+                <DockPanel>
+                    <Button Margin="10"
+                            Visibility="{Binding UseOldMode,Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                            DockPanel.Dock="Bottom"
+                            Command="{Binding AddQbCommand}"
+                            Content="+ блок" />
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding QueryBlocks}"
+                                      Name="queryBlocks">
+                            <ItemsControl.Resources>
+                                <DataTemplate x:Key="old">
+                                    <search:OldQueryBlock />
+                                </DataTemplate>
+                                <DataTemplate x:Key="new">
+                                    <search:QueryBlock />
+                                </DataTemplate>
+                            </ItemsControl.Resources>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <ContentControl x:Name="cc"
+                                                    Content="{Binding}"
+                                                    ContentTemplate="{DynamicResource new}" />
+
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding DataContext.UseOldMode,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                     Value="True">
+                                            <Setter TargetName="cc"
+                                                    Property="ContentTemplate"
+                                                    Value="{DynamicResource old}" />
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
                 </DockPanel>
-                <Label Content="{Binding HrCategories, Source={StaticResource Resources}}" />
-                <DockPanel Style="{StaticResource formLine}"
-                           HorizontalAlignment="Left">
-                    <forms:CategoryChooser CategoryMultiSelection="{StaticResource True}">
-                        <forms:CategoryChooser.ItemsPanelTemplate>
-                            <ItemsPanelTemplate>
-                                <diag:UniformGridWithOrientation Orientation="Vertical"
-                                                                 Columns="2" />
-                            </ItemsPanelTemplate>
-                        </forms:CategoryChooser.ItemsPanelTemplate>
-                    </forms:CategoryChooser>
-                </DockPanel>
-               
                 <Button Command="{Binding SearchCommand}"
                         Margin="10,0,10,10"
                         HorizontalAlignment="Stretch">Найти</Button>

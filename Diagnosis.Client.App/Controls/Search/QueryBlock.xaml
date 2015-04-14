@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="Diagnosis.Client.App.Controls.Search.QueryBlock"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:controls="clr-namespace:Diagnosis.Client.App.Controls"
+             xmlns:search="clr-namespace:Diagnosis.Client.App.Controls.Search"
+             xmlns:forms="clr-namespace:Diagnosis.Client.App.Controls.FormParts"
+             xmlns:card="clr-namespace:Diagnosis.Client.App.Controls.CardParts"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance diag:QueryBlockViewModel, IsDesignTimeCreatable=True}"
+             d:DesignHeight="400"
+             d:DesignWidth="300">
+    <Grid>
+        <StackPanel Margin="5,10,5,0">
+            <StackPanel.InputBindings>
+                <KeyBinding Key="Enter"
+                            Command="{Binding SearchCommand}" />
+            </StackPanel.InputBindings>
+            <Label Content="Все ключевые _слова" />
+            <search:Autocomplete DataContext="{Binding AutocompleteAll}" />
+            <Label Content="И хотя бы одно из" />
+            <search:Autocomplete DataContext="{Binding AutocompleteAny}" />
+            <Label Content="И ни одиного из" />
+            <search:Autocomplete DataContext="{Binding AutocompleteNot}" />
+            <DockPanel Style="{StaticResource formLine}">
+                <Label Content="Область поиска" />
+
+                <ComboBox ItemsSource="{Binding Source={diag:EnumListExtension {x:Type diag:HealthRecordQueryAndScope}}}"
+                          SelectedItem="{Binding QueryScope, Mode=TwoWay}"
+                          ItemTemplate="{StaticResource EnumComboTemplate}" />
+            </DockPanel>
+            <Label Content="{Binding HrCategories, Source={StaticResource Resources}}" />
+            <DockPanel Style="{StaticResource formLine}"
+                       HorizontalAlignment="Left">
+                <forms:CategoryChooser CategoryMultiSelection="{StaticResource True}">
+                    <forms:CategoryChooser.ItemsPanelTemplate>
+                        <ItemsPanelTemplate>
+                            <diag:UniformGridWithOrientation Orientation="Vertical"
+                                                             Columns="2" />
+                        </ItemsPanelTemplate>
+                    </forms:CategoryChooser.ItemsPanelTemplate>
+                </forms:CategoryChooser>
+            </DockPanel>
+            <Button Command="{Binding RemoveQbCommand}"
+                    Content="убрать блок" />
+        </StackPanel>
+    </Grid>
+</UserControl>

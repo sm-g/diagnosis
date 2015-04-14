@@ -278,6 +278,12 @@
     <Compile Include="Controls\FormParts\ConfirmPasswordControl.xaml.cs">
       <DependentUpon>ConfirmPasswordControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Search\OldQueryBlock.xaml.cs">
+      <DependentUpon>OldQueryBlock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Search\QueryBlock.xaml.cs">
+      <DependentUpon>QueryBlock.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DesignData\SampleViewModels.cs" />
     <Compile Include="Resources\Themes\Helpers.cs" />
     <Compile Include="Screens\Vocabs.xaml.cs">
@@ -433,6 +439,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\FormParts\ConfirmPasswordControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Search\OldQueryBlock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Search\QueryBlock.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

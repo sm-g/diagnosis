@@ -21,20 +21,6 @@ namespace Diagnosis.ViewModels.Search
 
             IEnumerable<HealthRecord> hrs;
 
-            //if (options.WordsAll.Count() > 0)
-            //    if (options.AllWords)
-            //    {
-            //        hrs = HealthRecordQuery.WithAllWords(session)(options.WordsAll, options.QueryScope);
-            //    }
-            //    else
-            //    {
-            //        hrs = HealthRecordQuery.WithAnyWord(session)(options.WordsAll);
-            //    }
-            //else
-            //{
-            //    hrs = session.Query<HealthRecord>();
-            //}
-
             hrs = HealthRecordQuery.WithAllAnyNotWords(session)(
                 options.WordsAll,
                 options.WordsAny,
@@ -65,6 +51,41 @@ namespace Diagnosis.ViewModels.Search
                     hrs = hrs.Union(hrsWithM);
                 else // только измерения в all / any
                     hrs = hrsWithM;
+            }
+
+            if (options.Categories.Count() > 0)
+            {
+                hrs = hrs.Where(hr =>
+                    options.Categories.Any(cat => cat.Equals(hr.Category)));
+            }
+
+            return hrs.ToList();
+        }
+        public IEnumerable<HealthRecord> SearchOld(ISession session, HrSearchOptions options)
+        {
+            Contract.Requires(options != null);
+            Contract.Requires(session != null);
+
+            IEnumerable<HealthRecord> hrs;
+
+            if (options.WordsAll.Count() > 0)
+                if (options.AllWords)
+                {
+                    hrs = HealthRecordQuery.WithAllWords(session)(options.WordsAll, options.QueryScope);
+                }
+                else
+                {
+                    hrs = HealthRecordQuery.WithAnyWord(session)(options.WordsAll);
+                }
+            else
+            {
+                hrs = session.Query<HealthRecord>();
+            }
+
+            if (options.MeasuresAll.Count() > 0)
+            {
+                hrs = hrs.Where(x =>
+                   options.MeasuresAll.All(m => x.Measures.Contains(m, new ValueComparer(m.Operator))));
             }
 
             if (options.Categories.Count() > 0)

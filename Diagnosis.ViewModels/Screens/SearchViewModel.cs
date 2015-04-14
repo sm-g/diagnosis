@@ -1,33 +1,23 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Search;
-using Diagnosis.ViewModels.Autocomplete;
 using EventAggregator;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
-using Diagnosis.Common.Types;
 
 namespace Diagnosis.ViewModels.Screens
 {
     public class SearchViewModel : ToolViewModel
     {
-        #region Fields
-
-        private bool _all;
         private bool _controlsVisible;
-        private HealthRecordQueryAndScope _scope;
-        private HrSearchOptions _options;
-        private IEnumerable<HrCategoryViewModel> _categories;
-
         private SearchResultViewModel _res;
+        private bool _mode;
 
         private EventMessageHandlersManager msgManager;
-
-        #endregion Fields
 
         public const string ToolContentId = "Search";
 
@@ -35,28 +25,15 @@ namespace Diagnosis.ViewModels.Screens
         {
             ContentId = ToolContentId;
 
-            var rec = new Recognizer(Session) { AddNotPersistedToSuggestions = false, MeasureEditorWithCompare = true };
-            AutocompleteAll = new AutocompleteViewModel(
-                rec,
-                AutocompleteViewModel.OptionsMode.Search,
-                null);
-            AutocompleteAny = new AutocompleteViewModel(
-                rec,
-                AutocompleteViewModel.OptionsMode.Search,
-                null);
-            AutocompleteNot = new AutocompleteViewModel(
-                rec,
-                AutocompleteViewModel.OptionsMode.Search,
-                null);
             ControlsVisible = true;
-            //   AllWords = true;
 
-            AutocompleteAll.InputEnded += AutocompleteAll_InputEnded;
-            AutocompleteAny.InputEnded += AutocompleteAll_InputEnded;
-            AutocompleteNot.InputEnded += AutocompleteAll_InputEnded;
-            AutocompleteAll.Tags.CollectionChanged += Tags_CollectionChanged;
-            AutocompleteAny.Tags.CollectionChanged += Tags_CollectionChanged;
-            AutocompleteNot.Tags.CollectionChanged += Tags_CollectionChanged;
+            QueryBlocks = new ObservableCollection<QueryBlockViewModel>();
+            AddNewQb();
+            QueryBlocks.CollectionChanged += (s, e) =>
+            {
+                OnPropertyChanged(() => AllEmpty);
+
+            };
 
             msgManager = new EventMessageHandlersManager(
                 this.Subscribe(Event.SendToSearch, (e) =>
@@ -91,19 +68,11 @@ namespace Diagnosis.ViewModels.Screens
             );
         }
 
-        public IList<HrCategoryViewModel> SelectedCategories
-        {
-            get { return Categories.Where(cat => cat.IsChecked).ToList(); }
-        }
-
         public bool AllEmpty
         {
             get
             {
-                return SelectedCategories.Count() == 0
-                    && AutocompleteAll.Tags.Count == 1
-                    && AutocompleteAny.Tags.Count == 1
-                    && AutocompleteNot.Tags.Count == 1;
+                return QueryBlocks.All(x => x.AllEmpty);
             }
         }
 
@@ -115,11 +84,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public AutocompleteViewModel AutocompleteAll { get; set; }
-
-        public AutocompleteViewModel AutocompleteAny { get; set; }
-
-        public AutocompleteViewModel AutocompleteNot { get; set; }
+        public ObservableCollection<QueryBlockViewModel> QueryBlocks { get; set; }
 
         public SearchResultViewModel Result
         {
@@ -167,124 +132,148 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-
-        /// <summary>
-        /// Опции поиска при последнем поиске.
-        /// </summary>
-        public HrSearchOptions Options
-        {
-            get { return _options; }
-            set
-            {
-                _options = value;
-                OnPropertyChanged("Options");
-            }
-        }
-
-        void AutocompleteAll_InputEnded(object sender, BoolEventArgs e)
-        {
-            if (SearchCommand.CanExecute(null))
-                SearchCommand.Execute(null);
-        }
-
-        void Tags_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            CommandManager.InvalidateRequerySuggested(); // when drop tag, search button still disabled
-            OnPropertyChanged("AllEmpty");
-        }
-
-        #region Options bindings
-
-        public IEnumerable<HrCategoryViewModel> Categories
+        public bool UseOldMode
         {
             get
             {
-                if (_categories == null)
-                {
-                    var cats = new List<HrCategory>(Session.QueryOver<HrCategory>().List());
-                    cats.Add(HrCategory.Null);
-
-                    _categories = cats
-                        .OrderBy(cat => cat.Ord)
-                        .Select(cat => new HrCategoryViewModel(cat))
-                        .ToList();
-                    _categories.ForAll(cat => cat.PropertyChanged += (s, e) =>
-                    {
-                        if (e.PropertyName == "IsChecked")
-                        {
-                            OnPropertyChanged("SelectedCategories");
-                            OnPropertyChanged("AllEmpty");
-                        }
-                    });
-                }
-                return _categories;
-            }
-        }
-
-        public bool AllWords
-        {
-            get
-            {
-                return _all;
+                return _mode;
             }
             set
             {
-                if (_all != value)
+                if (_mode != value)
                 {
-                    _all = value;
-                    OnPropertyChanged(() => AllWords);
+                    _mode = value;
+                    if (value && QueryBlocks.Count == 0)
+                        AddNewQb();
+                    OnPropertyChanged(() => UseOldMode);
                 }
             }
         }
 
-        public HealthRecordQueryAndScope QueryScope
+        public RelayCommand AddQbCommand
         {
             get
             {
-                return _scope;
-            }
-            set
-            {
-                if (_scope != value)
+                return new RelayCommand(() =>
                 {
-                    _scope = value;
-                    AllWords = true;
-                    OnPropertyChanged(() => QueryScope);
-                }
+                    AddNewQb();
+                });
             }
         }
 
-        #endregion Options bindings
-        private HrSearchOptions MakeOptions()
+        private QueryBlockViewModel AddNewQb()
         {
-            var options = new HrSearchOptions();
-
-            options.AllWords = AllWords;
-            options.QueryScope = QueryScope;
-
-            options.WordsAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
-            options.WordsAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
-            options.WordsNot = AutocompleteNot.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
-
-            options.MeasuresAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
-            options.MeasuresAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
-
-            options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
-
-            Options = options;
-            return options;
+            var qb = new QueryBlockViewModel();
+            qb.Search = this;
+            qb.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "AllEmpty")
+                {
+                    OnPropertyChanged(() => AllEmpty);
+                }
+            };
+            QueryBlocks.Add(qb);
+            return qb;
         }
 
         private void Search()
         {
-            MakeOptions();
-            var hrs = new HrSearcher().Search(Session, Options);
-            Result = new SearchResultViewModel(hrs);
+            IEnumerable<HealthRecord> shrs;
+            if (UseOldMode)
+            {
+                QueryBlocks[0].MakeOptions();
+                shrs = new HrSearcher().SearchOld(Session, QueryBlocks[0].Options);
+            }
+            else
+            {
+                var results = new Dictionary<QueryBlockViewModel, IEnumerable<HealthRecord>>();
+                foreach (var qb in QueryBlocks)
+                {
+                    // ищем записи по каждому блоку
+                    qb.MakeOptions();
+                    var hrs = new HrSearcher().Search(Session, qb.Options);
+                    results.Add(qb, hrs);
+                }
+
+
+                shrs = InOneHolder(results);
+            }
+
+            Result = new SearchResultViewModel(shrs);
             ControlsVisible = false;
+        }
+        /// <summary>
+        /// все в том же списке
+        /// 
+        /// в каждом блоке должны найтись записи из списка, тогда список попадет в результаты,
+        /// где надо объединить все записи по спискам
+        /// </summary>
+        /// <param name="results"></param>
+        /// <returns></returns>
+        private static IEnumerable<HealthRecord> InOneHolder(Dictionary<QueryBlockViewModel, IEnumerable<HealthRecord>> results)
+        {
+            IEnumerable<HealthRecord> shrs;
+            var grs = new Dictionary<QueryBlockViewModel, IEnumerable<IGrouping<IHrsHolder, HealthRecord>>>();
+            foreach (var qb in results.Keys)
+            {
+                var gr = results[qb].GroupBy(x => x.Holder);
+                grs.Add(qb, gr);
+            }
+
+            var allHolders = grs.Values.SelectMany(x => x.Select(y => y.Key)).Distinct();
+
+            var q = (from h in allHolders
+                     where grs.Keys.All(x => grs[x].Select(y => y.Key).Contains(h))
+                     select new
+                     {
+                         h,
+                         hrs = grs.Values
+                             .SelectMany(x => x
+                             .Where(y => y.Key == h)
+                             .SelectMany(t => t.ToList()))
+                             .ToList()
+                     }
+            ).ToDictionary(x => x.h, x => x.hrs.Distinct());
+            shrs = q.Values.SelectMany(x => x);
+            return shrs;
+        }
+        /// <summary>
+        /// все в одной записи
+        /// 
+        /// в результатах пересечение записей каждого блока
+        /// </summary>
+        /// <param name="results"></param>
+        /// <returns></returns>
+        private static IEnumerable<HealthRecord> InOneHr(Dictionary<QueryBlockViewModel, IEnumerable<HealthRecord>> results)
+        {
+            Contract.Requires(results.Count > 0);
+
+            IEnumerable<HealthRecord> shrs = results[results.Keys.First()];
+            for (int i = 1; i < results.Count - 1; i++)
+            {
+                shrs = shrs.Intersect(results[results.Keys.ElementAt(i)]);
+            }
+            return shrs;
+        }
+        /// <summary>
+        /// все в одной области
+        /// 
+        /// </summary>
+        /// <param name="results"></param>
+        /// <returns></returns>
+        private static IEnumerable<HealthRecord> InOneScope(Dictionary<QueryBlockViewModel, IEnumerable<HealthRecord>> results)
+        {
+            throw new NotImplementedException();
         }
 
         private void RecieveHealthRecords(IEnumerable<HealthRecord> hrs)
         {
+            var options = QueryBlocks.FirstOrDefault();
+            if (!UseOldMode || options == null)
+            {
+                options = AddNewQb();
+            }
+
             // все слова из записей
             var allWords = hrs.Aggregate(
                 new HashSet<Word>(),
@@ -295,10 +284,10 @@ namespace Diagnosis.ViewModels.Screens
                 });
 
             // если несколько записей — любое из слов
-            AllWords = hrs.Count() != 1;
+            options.AllWords = hrs.Count() != 1;
 
             // все категории из записей
-            Categories.ForAll((cat) => cat.IsChecked = false);
+            options.Categories.ForAll((cat) => cat.IsChecked = false);
             var allCats = hrs.Aggregate(
                 new HashSet<HrCategory>(),
                 (cats, hr) =>
@@ -306,18 +295,24 @@ namespace Diagnosis.ViewModels.Screens
                     cats.Add(hr.Category);
                     return cats;
                 });
-            Categories.Where(cat => allCats.Contains(cat.category)).ForAll(cat => cat.IsChecked = true);
+            options.Categories.Where(cat => allCats.Contains(cat.category)).ForAll(cat => cat.IsChecked = true);
 
             // давность из последней записи
             //var lastHr = hrs.Last();
             //HrDateOffsetLower = new DateOffset(lastHr.FromYear, lastHr.FromMonth, lastHr.FromDay);
 
-            RecieveHrItemObjects(allWords);
+            options.AutocompleteAll.ReplaceTagsWith(allWords);
+            RemoveLastResults();
         }
 
         private void RecieveHrItemObjects(IEnumerable<IHrItemObject> hios)
         {
-            AutocompleteAll.ReplaceTagsWith(hios);
+            var options = QueryBlocks.FirstOrDefault();
+            if (!UseOldMode || options == null)
+            {
+                options = AddNewQb();
+            }
+            options.AutocompleteAll.ReplaceTagsWith(hios);
 
             RemoveLastResults();
         }
@@ -338,38 +333,6 @@ namespace Diagnosis.ViewModels.Screens
                 msgManager.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        public class HrCategoryViewModel : CheckableBase, IComparable
-        {
-            internal readonly HrCategory category;
-
-            public HrCategoryViewModel(HrCategory category)
-            {
-                Contract.Requires(category != null);
-                this.category = category;
-            }
-
-            public string Name
-            {
-                get
-                {
-                    return category.Title;
-                }
-            }
-            public int CompareTo(object obj)
-            {
-                var other = obj as HrCategoryViewModel;
-                if (other == null)
-                    return -1;
-
-                return this.category.CompareTo(other.category);
-            }
-
-            public override string ToString()
-            {
-                return category.ToString();
-            }
         }
     }
 }

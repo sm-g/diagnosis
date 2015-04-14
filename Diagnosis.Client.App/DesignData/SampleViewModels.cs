@@ -13,7 +13,6 @@ namespace Diagnosis.Client.App.DesignData
         public SampleSearchViewModel()
         {
             ControlsVisible = true;
-            AllWords = true;
         }
     }
 
