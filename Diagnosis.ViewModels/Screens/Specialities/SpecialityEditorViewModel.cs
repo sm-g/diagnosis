@@ -59,7 +59,13 @@ namespace Diagnosis.ViewModels.Screens
             SpecDiagnosisSearch.Filter.Clear();
 
             VocabularyQuery.NonCustom(Session)()
-                .ForAll(x => AllVocs.Add(new VocabularyViewModel(x)));
+                .ForAll(x =>
+                {
+                    if (x.Specialities.Contains(spec))
+                        SpecVocs.Add(new VocabularyViewModel(x));
+                    else
+                        AllVocs.Add(new VocabularyViewModel(x));
+                });
 
             Title = "Редактор специальности";
             HelpTopic = "editspeciality";
@@ -154,7 +160,10 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     var selected = AllVocs.Where(x => x.IsSelected).ToList();
                     selected.ForAll(vm =>
-                         spec.AddVoc(vm.voc));
+                    {
+                        spec.AddVoc(vm.voc);
+                        AllVocs.Remove(vm);
+                    });
                 },
                 () => AllVocs != null && AllVocs.Any(v => v.IsSelected));
             }
@@ -168,7 +177,10 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     var selected = SpecVocs.Where(x => x.IsSelected).ToList();
                     selected.ForAll(vm =>
-                         spec.RemoveVoc(vm.voc));
+                    {
+                        spec.RemoveVoc(vm.voc);
+                        AllVocs.AddSorted(vm, x => x.Title);
+                    });
                 },
                 () => SpecVocs != null && SpecVocs.Any(v => v.IsSelected));
             }
@@ -324,7 +336,7 @@ namespace Diagnosis.ViewModels.Screens
             var vms = spec.Vocabularies.Select(v => SpecVocs
                .Where(vm => vm.voc == v)
                .FirstOrDefault() ?? new VocabularyViewModel(v));
-            SpecVocs.SyncWith(vms);
+            SpecVocs.SyncWith(vms, x => x.Title);
         }
     }
 }

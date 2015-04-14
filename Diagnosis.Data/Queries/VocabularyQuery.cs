@@ -22,6 +22,7 @@ namespace Diagnosis.Data.Queries
                     var voc = session.Query<Vocabulary>()
                         .ToList()
                         .Where(x => !x.IsCustom)
+                        .OrderBy(x => x.Title)
                         .ToList();
 
                     return voc;
