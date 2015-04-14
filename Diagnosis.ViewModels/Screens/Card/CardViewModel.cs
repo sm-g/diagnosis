@@ -347,6 +347,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 HrList = new HrListViewModel(holder, (hr, hrInfo) =>
                 {
+                    // заполняем после вставки записи
+
                     hrInfo.Chios.Sync(Session, (w) => HrEditor.SyncTransientWord(w));
 
                     if (hrInfo.CategoryId != null)
@@ -357,8 +359,8 @@ namespace Diagnosis.ViewModels.Screens
                     hr.FromMonth = hrInfo.FromMonth;
                     hr.FromDay = hrInfo.FromDay;
 
-                    // вставляем к пациенту без возраста
                     var unit = hrInfo.Unit;
+                    // если вставляем к пациенту без возраста
                     if (hr.GetPatient().BirthYear == null && hrInfo.Unit == HealthRecordUnit.ByAge)
                         unit = HealthRecordUnit.NotSet;
 
@@ -366,6 +368,8 @@ namespace Diagnosis.ViewModels.Screens
                     hr.SetItems(hrInfo.Chios);
                 }, (hios) =>
                 {
+                    // после вставки тегов c новыми словами десериализованные слова 
+                    // сравниваются не по ID, а по сслыке, заменяем их на существующие
                     hios.Sync(Session, (w) => HrEditor.SyncTransientWord(w));
                 });
 

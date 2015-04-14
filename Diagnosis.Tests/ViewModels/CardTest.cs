@@ -345,5 +345,29 @@ namespace Diagnosis.Tests.ViewModels
             Assert.IsTrue(d2.Words.Contains(w[6]));
             Assert.IsTrue(d2.CustomVocabulary.Words.Contains(w[6]));
         }
+
+        [TestMethod]
+        public void AddNewPastedWordToCustomVoc()
+        {
+            // вырезаем новое слово
+            var w = new Word("1");
+            card.Open(a[1]);
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            card.HrEditor.Autocomplete.AddTag(w);
+            card.HrEditor.Autocomplete.SelectedTag = card.HrEditor.Autocomplete.Tags[0];
+            card.HrEditor.Autocomplete.Cut();
+            card.HrEditor.Unload();
+            //  вставляем
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            card.HrEditor.Autocomplete.Paste();
+            var replaced = card.HrEditor.Autocomplete.Tags[0].Blank as Word;
+
+            // сохраняем запись - добавляется в словарь
+            card.HrEditor.Unload();
+
+            Assert.IsTrue(w.IsTransient);
+            Assert.IsFalse(d1.CustomVocabulary.Words.Contains(w));
+            Assert.IsTrue(d1.CustomVocabulary.Words.Contains(replaced));
+        }
     }
 }

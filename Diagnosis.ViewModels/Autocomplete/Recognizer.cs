@@ -334,7 +334,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 return existing; // берем слово из словаря
             else
             {
-                var word = new Word(q); // или создаем слово из запроса
+                var word = new Word(q); // или создаем слово из запроса. добавляется в словарь при сохранении записи
                 return word;
             }
         }

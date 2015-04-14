@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace Diagnosis.Models
 {
@@ -152,6 +153,14 @@ namespace Diagnosis.Models
             // при удалении записи слова не удаляются отдельно
             // при удалении элемента слово уже удалено
             healthRecords.Remove(hr);
+        }
+
+        [OnDeserialized]
+        private void OnDeserializedMethod(StreamingContext context)
+        {
+            healthRecords = new List<HealthRecord>(); // many-2-many bag
+            children = new HashedSet<Word>();
+            vocabularyWords = new HashedSet<VocabularyWords>();
         }
     }
 }

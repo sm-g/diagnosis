@@ -104,15 +104,15 @@ namespace Diagnosis.ViewModels.Screens
 
             var pasted = new List<HealthRecord>();
             var pastedVms = new List<ShortHealthRecordViewModel>();
-            foreach (var hr2 in hrData.Hrs)
+            foreach (var hrInfo in hrData.Hrs)
             {
-                if (hr2 == null) continue;
+                if (hrInfo == null) continue;
 
                 var newHr = holder.AddHealthRecord(AuthorityController.CurrentDoctor);
                 // vm уже добавлена
                 var newVm = HealthRecords.FirstOrDefault(vm => vm.healthRecord == newHr);
                 Debug.Assert(newVm != null);
-                fillHr(newHr, hr2);
+                fillHr(newHr, hrInfo);
                 // теперь запись заполнена
                 pastedVms.Add(newVm);
                 pasted.Add(newHr);

@@ -33,8 +33,7 @@ namespace Diagnosis.ViewModels
                     // скопировано и не сохранено / удалено
                     // скопированно новое в поиск - после WordPersisted можно будет найти
                     logger.WarnFormat("Word not synced: {0}, recreate", word);
-                    res = new Word(word.Title);
-                    // TODO voc? это вообще надо?
+                    res = new Word(word.Title); // добавляется в словарь при сохранении записи
                 }
                 return res;
             };
