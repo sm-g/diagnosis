@@ -621,7 +621,8 @@ namespace Diagnosis.ViewModels
                                       "Month",
                                       "Year",
                                       "Offset",
-                                      "Unit");
+                                      "Unit",
+                                      "IsEmpty");
                     break;
             }
         }
@@ -655,16 +656,16 @@ namespace Diagnosis.ViewModels
                     Relative = from.RelativeTo(to);
 
                     RoundOffsetUnitByDate();
-                    OnPropertyChanged(() => IsClosedInterval);
-                    OnPropertyChanged(() => IsOpenedInterval);
+                    OnPropertyChanged("IsClosedInterval");
+                    OnPropertyChanged("IsOpenedInterval");
 
-                    OnPropertyChanged(() => OffsetFrom);
+                    OnPropertyChanged("OffsetFrom");
 
-                    OnPropertyChanged(() => PartialDateString);
-                    OnPropertyChanged(() => AtAgeString);
+                    OnPropertyChanged("PartialDateString");
+                    OnPropertyChanged("AtAgeString");
 
-                    OnPropertyChanged(() => Offset);
-                    OnPropertyChanged(() => Unit);
+                    OnPropertyChanged("Offset");
+                    OnPropertyChanged("Unit");
                     break;
             }
 

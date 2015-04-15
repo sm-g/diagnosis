@@ -304,14 +304,59 @@
                                 </StackPanel.Resources>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto" MinWidth="80"
+                                        <ColumnDefinition Width="auto"
+                                                          MinWidth="110"
                                                           SharedSizeGroup="label" />
                                         <ColumnDefinition Width="auto"
                                                           SharedSizeGroup="gr2" />
                                         <ColumnDefinition Width="20" />
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
-                                    <Label />
+
+                                    <StackPanel Grid.Column="1"
+                                                Background="Transparent"
+                                                Visibility="{Binding DateSuggestions.Count, Converter={StaticResource MoreThanToVisibility}}"
+                                                Name="hoverSource">
+                                        <ToggleButton x:Name="Btn"
+                                                      HorizontalAlignment="Left"
+                                                      IsHitTestVisible="{Binding ElementName=Popup, Path=IsOpen, Mode=OneWay, Converter={StaticResource NegateBoolean}}">
+                                            <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Вставить " />
+                                            <Path Data="{StaticResource RightTriangle}"
+                                                  Stretch="Uniform"
+                                                  Width="10"
+                                                  Height="10"
+                                                  Fill="Black"/>
+                                            </StackPanel>
+                                        </ToggleButton>
+
+                                        <Popup IsOpen="{Binding IsChecked, ElementName=Btn}"
+                                               x:Name="Popup"
+                                               Placement="Right"
+                                               PlacementTarget="{Binding ElementName=Btn}"
+                                               PopupAnimation="Scroll"
+                                               AllowsTransparency="True"
+                                               StaysOpen="False">
+                                            <Border BorderBrush="{StaticResource AccentColorBrush3}"
+                                                    BorderThickness="2"
+                                                    CornerRadius="10"
+                                                    Padding="3"
+                                                    Background="{StaticResource {x:Static SystemColors.ControlBrushKey}}">
+                                                <ItemsControl ItemsSource="{Binding DateSuggestions}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock>
+                                                                <Hyperlink Command="{Binding SetDateCommand}">
+                                                                    <Run Text="{Binding Mode=OneWay}" />
+                                                                </Hyperlink>
+                                                            </TextBlock>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </Border>
+                                        </Popup>                                       
+                                    </StackPanel>
+
                                     <CheckBox IsChecked="{Binding IsIntervalEditorOpened}"
                                               Grid.Column="3"
                                               Content="Интервал" />
@@ -335,7 +380,7 @@
                                     <TextBlock Text="—"
                                                VerticalAlignment="Center"
                                                HorizontalAlignment="Center"
-                                               Margin="0 0 0 10"
+                                               Margin="0 0 0 0"
                                                Visibility="{Binding IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter}}"
                                                Grid.Column="2" />
                                     <forms:ComboBoxDatePicker Visibility="{Binding DataContext.IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter},ElementName=hr}"
@@ -377,7 +422,9 @@
                                             </Style>
                                         </Label.Style>
                                     </Label>
-                                    <forms:DateOffsetPicker Grid.Column="1" Grid.ColumnSpan="3" DataContext="{Binding EventDate}" />
+                                    <forms:DateOffsetPicker Grid.Column="1"
+                                                            Grid.ColumnSpan="3"
+                                                            DataContext="{Binding EventDate}" />
                                 </Grid>
                                 <Grid IsEnabled="{Binding EventDate.CanShowAsAge}">
                                     <Grid.ColumnDefinitions>
@@ -391,6 +438,7 @@
                                     <Label Content="Возраст" />
                                     <TextBlock HorizontalAlignment="Right"
                                                VerticalAlignment="Center"
+                                               FontSize="{StaticResource LabelFontSize}"
                                                Margin="0 0 3 10">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
@@ -414,10 +462,12 @@
 
                                         <TextBlock Text="{Binding EventDate.AtAge, Converter={StaticResource AgeToLabel}}"
                                                    Margin="3,0,0,0"
+                                                   FontSize="{StaticResource LabelFontSize}"
                                                    VerticalAlignment="Center"></TextBlock>
                                     </DockPanel>
                                     <TextBlock Text="до"
                                                Margin="0 0 3 10"
+                                               FontSize="{StaticResource LabelFontSize}"
                                                VerticalAlignment="Center"
                                                Visibility="{Binding IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter}}"
                                                Grid.Column="2" />
@@ -430,26 +480,10 @@
 
                                         <TextBlock Text="{Binding EventDate.ToAtAge, Converter={StaticResource AgeToLabel}}"
                                                    Margin="3,0,0,0"
+                                                   FontSize="{StaticResource LabelFontSize}"
                                                    VerticalAlignment="Center" />
                                     </DockPanel>
                                 </Grid>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="2"
-                                        HorizontalAlignment="Right"
-                                        Visibility="{Binding DateSuggestions.Count, Converter={StaticResource MoreThanToVisibility}}">
-                                <TextBlock Text="Вставить:" />
-                                <ItemsControl ItemsSource="{Binding DateSuggestions}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock>
-                                            <Hyperlink Command="{Binding SetDateCommand}">
-                                                <Run Text="{Binding Mode=OneWay}" />
-                                            </Hyperlink>
-                                            </TextBlock>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
                             </StackPanel>
                         </Grid>
                     </Expander>
