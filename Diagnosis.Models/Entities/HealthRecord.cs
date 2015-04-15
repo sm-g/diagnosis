@@ -139,18 +139,13 @@ namespace Diagnosis.Models
                 if (SetProperty(ref _fromDate, value, () => FromDate) && _fromDate != null)
                 {
                     _fromDate.PropertyChanged += date_PropertyChanged;
-                    _fromDate.PropertyChanged += (s, e) =>
-                    {
-                        if (e.PropertyName == "Year" && _fromDate.IsEmpty)
-                        {
-                            // TODO не может быть только ToDate?
-                            ToDate.Year = null;
-                        }
-                    };
                 };
             }
         }
 
+        /// <summary>
+        /// В БД может быть только ToDate, но это без смысла.
+        /// </summary>
         public virtual DateOffset ToDate
         {
             get
@@ -483,6 +478,8 @@ namespace Diagnosis.Models
 
         private void date_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            if (e.PropertyName == "Now")
+                DescribedAt = (sender as DateOffset).Now;
             if (InEdit)
                 IsDirty = true;
         }

@@ -3,6 +3,7 @@ using Diagnosis.Models;
 using Diagnosis.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Diagnosis.Models.Tests
@@ -177,14 +178,32 @@ namespace Diagnosis.Models.Tests
         }
 
         [TestMethod]
-        public void ClearFromDate()
+        public void ClearFromDate_ToNotEmpty()
         {
             hr1.FromDate.Year = 2010;
             hr1.ToDate.Year = 2010;
 
             hr1.FromDate.Year = null;
 
-            Assert.AreEqual(true, hr1.ToDate.IsEmpty);
+            Assert.AreEqual(false, hr1.ToDate.IsEmpty);
+        }
+
+        [TestMethod]
+        public void SetDateNowChangesDescribedAt()
+        {
+            var d = new DateTime(2000, 1, 1);
+            hr1.FromDate.Now = d;
+
+            Assert.AreEqual(d, hr1.DescribedAt);
+        }
+
+        [TestMethod]
+        public void ChangeHrDate_HrIsDirty()
+        {
+            var hr = session.Load<HealthRecord>(IntToGuid<HealthRecord>(1));
+            (hr as IEditableObject).BeginEdit();
+            hr.FromDate.Year = 2000;
+            Assert.IsTrue(hr.IsDirty);
         }
     }
 }
