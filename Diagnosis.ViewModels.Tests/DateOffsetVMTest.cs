@@ -13,13 +13,12 @@ namespace Diagnosis.ViewModels.Tests
     {
         DateOffsetViewModel vm;
         HealthRecord h;
-        DateTime now;
+
         [TestInitialize]
         public void Init()
         {
-            Load<HealthRecord>();
-            h = hr[1];
-            vm = DateOffsetViewModel.FromHr(hr[1]);
+            h = session.Load<HealthRecord>(IntToGuid<HealthRecord>(1));
+            vm = DateOffsetViewModel.FromHr(h);
         }
         [TestCleanup]
         public void Clean()

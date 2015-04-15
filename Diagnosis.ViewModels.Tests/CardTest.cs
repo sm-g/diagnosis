@@ -1,6 +1,5 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
-using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -231,14 +230,18 @@ namespace Diagnosis.ViewModels.Tests
             card.Open(a[5]);
             IHrsHolder holder = null;
             bool removed = false;
-            card.Navigator.Navigating += (s, e) =>
+
+            var NavigatingEh = (EventHandler<HrsHolderEventArgs>)((s, e) =>
             {
                 holder = e.holder;
-            };
-            card.LastItemRemoved += (s, e) =>
+            });
+            var LastItemRemovedEh = (EventHandler)((s, e) =>
             {
                 removed = true;
-            };
+            });
+            card.Navigator.Navigating += NavigatingEh;
+            card.LastItemRemoved += LastItemRemovedEh;
+
             card.Navigator.Current.HolderVm.DeleteCommand.Execute(null);
             Assert.AreEqual(c[4], holder);
 
@@ -248,6 +251,9 @@ namespace Diagnosis.ViewModels.Tests
             card.Navigator.Current.HolderVm.DeleteCommand.Execute(null);
             Assert.IsNull(holder);
             Assert.IsTrue(removed);
+
+            card.Navigator.Navigating -= NavigatingEh;
+            card.LastItemRemoved -= LastItemRemovedEh;
         }
 
         [TestMethod]

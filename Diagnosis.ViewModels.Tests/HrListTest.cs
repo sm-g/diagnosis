@@ -185,6 +185,8 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void MoveHrSelectionManySorted()
         {
+            OpenEmptyCard();
+
             var hr0 = AddHrToCard(card);
             var hr1 = AddHrToCard(card);
             var hr2 = AddHrToCard(card);
@@ -543,13 +545,12 @@ namespace Diagnosis.ViewModels.Tests
 
         #endregion Movement
 
-        private static HealthRecord AddHrToCard(CardViewModel card, string comment = null)
+        private HealthRecord AddHrToCard(CardViewModel card, string comment = null)
         {
-            card.HrList.AddHealthRecordCommand.Execute(null);
-            var hr0 = card.HrList.HealthRecords.Last();
+            var hr = card.HrList.holder.AddHealthRecord(d1);
             if (comment != null)
-                hr0.healthRecord.AddItems(new Comment(comment).ToEnumerable());
-            return hr0.healthRecord;
+                hr.AddItems(new Comment(comment).ToEnumerable());
+            return hr;
         }
 
         private void OpenEmptyCard()
