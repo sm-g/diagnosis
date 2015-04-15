@@ -134,7 +134,7 @@ namespace Diagnosis.Models
                     {
                         if (e.PropertyName == "Year" && _fromDate.IsEmpty)
                         {
-                            // не может быть только ToDate - test
+                            // TODO не может быть только ToDate?
                             ToDate.Year = null;
                         }
                     };
