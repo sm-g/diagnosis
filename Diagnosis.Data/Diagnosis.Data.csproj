@@ -227,6 +227,7 @@
     <Compile Include="Sync\Syncer.cs" />
     <Compile Include="Sync\Scopes.cs" />
     <Compile Include="Sync\VocLoader.cs" />
+    <Compile Include="Versions\Client\17 AddHrToDateDescribedAt.cs" />
     <Compile Include="Versions\Client\09 AddHolderHrUpdatedAt.cs" />
     <Compile Include="Versions\Client\13 AddHrItemConfidence.cs" />
     <Compile Include="Versions\Client\16 AlterUomTypeTitleLength.cs" />

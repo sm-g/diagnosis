@@ -22,6 +22,9 @@ namespace Diagnosis.Models
         private HealthRecordUnit _unit;
         private DateTime _createdAt;
         private DateTime _updatedAt;
+        private DateTime _describedAt;
+        private DateOffset _fromDate;
+        private DateOffset _toDate;
         private int _ord;
 
         public HealthRecord(Appointment appointment, Doctor author)
@@ -57,7 +60,9 @@ namespace Diagnosis.Models
         protected HealthRecord()
         {
             _createdAt = DateTime.Now;
-            _updatedAt = DateTime.Now;
+            _updatedAt = _createdAt;
+            _describedAt = _createdAt;
+
         }
 
         /// <summary>
@@ -117,31 +122,48 @@ namespace Diagnosis.Models
                 SetProperty(ref _category, value, () => Category);
             }
         }
-
-        public virtual int? FromDay
+        public virtual DateOffset FromDate
         {
-            get { return _day; }
-            set
+            get { return _fromDate ?? (_fromDate = new DateOffset(null, null, null, () => DescribedAt)); }
+            protected set
             {
-                SetProperty(ref _day, value, () => FromDay);
+                if (SetProperty(ref _fromDate, value, () => FromDate) && _fromDate != null)
+                {
+                    _fromDate.PropertyChanged += (s, e) =>
+                    {
+                        if (e.PropertyName == "Year" && _fromDate.IsEmpty)
+                        {
+                            // не может быть только ToDate
+                            ToDate.Year = null;
+                        }
+                    };
+                };
             }
         }
 
-        public virtual int? FromMonth
+        public virtual DateOffset ToDate
         {
-            get { return _month; }
-            set
+            get { return _toDate ?? (_toDate = new DateOffset(null, null, null, () => DescribedAt)); }
+            protected set
             {
-                SetProperty(ref _month, value, () => FromMonth);
+                SetProperty(ref _toDate, value, () => ToDate);
             }
         }
 
-        public virtual int? FromYear
+
+        /// <summary>
+        /// Дата описания события.
+        /// </summary>
+        public virtual DateTime DescribedAt
         {
-            get { return _year; }
+            get { return _describedAt; }
             set
             {
-                SetProperty(ref _year, value, () => FromYear);
+                if (SetProperty(ref _describedAt, value, () => DescribedAt))
+                {
+                    FromDate.Now = value;
+                    ToDate.Now = value;
+                }
             }
         }
 
@@ -266,23 +288,22 @@ namespace Diagnosis.Models
 
             var willSet = new OrderedBag<ConfindenceHrItemObject>(chiosToBe);
             var wasSet = new OrderedBag<ConfindenceHrItemObject>(hrChios);
-            var toA = willSet.Difference(wasSet);
-            var toR = wasSet.Difference(willSet);
 
             logger.DebugFormat("set HrItems. IHrItemObject was: {0}, will: {1}", wasSet.FlattenString(), willSet.FlattenString());
 
+            // items to be in Hr = this.HrItems - itemsToRem + itemsToAdd
+            var itemsToBe = new List<HrItem>();
             var itemsToRem = new List<HrItem>();
             var itemsToAdd = new List<HrItem>();
 
-            // items to be in Hr = this.HrItems - itemsToRem + itemsToAdd
-            var itemsToBe = new List<HrItem>();
-
             // добалвяем все существующие, чьи сущности не надо убирать
+            var toR = wasSet.Difference(willSet);
             for (int i = 0; i < hrChios.Count; i++)
             {
                 var needRem = toR.Contains(hrChios[i]);
                 if (needRem)
                 {
+                    toR.Remove(hrChios[i]);
                     itemsToRem.Add(this.HrItems.ElementAt(i));
                 }
                 else
@@ -291,6 +312,7 @@ namespace Diagnosis.Models
                 }
             }
             // добавляем новые
+            var toA = willSet.Difference(wasSet);
             foreach (var item in toA)
             {
                 var n = new HrItem(this, item.HIO) { Confidence = item.Confidence };
@@ -353,7 +375,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("hr({0}) {1} {2} {3}.{4}.{5} {6}", HrItems.FlattenString(), Ord, Category, FromYear, FromMonth, FromDay, this.ShortId());
+            return string.Format("hr({0}) {1} {2} {3}.{4}.{5} {6}", HrItems.FlattenString(), Ord, Category, FromDate.Year, FromDate.Month, FromDate.Day, this.ShortId());
         }
 
         public virtual int CompareTo(HealthRecord other)
@@ -428,6 +450,13 @@ namespace Diagnosis.Models
         {
             this.Words.ForEach(x => x.RemoveHr(this));
             Doctor.RemoveHr(this);
+        }
+
+        [ContractInvariantMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+        private void ObjectInvariant()
+        {
+            Contract.Invariant(ToDate.Now == FromDate.Now);
         }
     }
 }

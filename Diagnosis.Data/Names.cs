@@ -117,6 +117,14 @@ namespace Diagnosis.Data
             public static string HrItemMeasure = "MeasureValue";
             public static string DoctorCustomVocabulary = "CustomVocabularyID";
             public static string WordParent = "ParentID";
+            public static string HrFromDay = "FromDay";
+            public static string HrFromMonth = "FromMonth";
+            public static string HrFromYear = "FromYear";
+            public static string HrToDay = "ToDay";
+            public static string HrToMonth = "ToMonth";
+            public static string HrToYear = "ToYear";
+            public static string HrDescribedAt = "DescribedAt";
+            public static string CreatedAt = "CreatedAt";
         }
 
         public static class Unique

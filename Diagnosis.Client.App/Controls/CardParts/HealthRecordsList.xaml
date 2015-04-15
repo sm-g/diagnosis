@@ -216,7 +216,7 @@
                         Style="{StaticResource whatToDoScreenMessage}">
                 <TextBlock Visibility="{Binding ShowCanAlso, Converter={StaticResource BooleanToVisibilityConverter}}">Тaкже можно</TextBlock>
 
-                <ContentControl Content="{Binding HolderVm}"                               
+                <ContentControl Content="{Binding HolderVm}"
                                 ContentTemplateSelector="{StaticResource canAlso}" />
             </StackPanel>
         </Grid>
@@ -361,14 +361,19 @@
                         <Setter Property="ToolTip">
                             <Setter.Value>
                                 <DockPanel>
-                                    <StackPanel TextElement.Foreground="{DynamicResource {x:Static  SystemColors.GrayTextBrushKey}}" Margin="0 0 5 0">
+                                    <StackPanel TextElement.Foreground="{DynamicResource {x:Static  SystemColors.GrayTextBrushKey}}"
+                                                Margin="0 0 5 0">
                                         <TextBlock Text="{Binding Source={StaticResource Resources}, Path=HrCategory, StringFormat={}{0}:}" />
+                                        <TextBlock Text="Дата описания:"
+                                                   Visibility="{Binding EventDate.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
                                         <TextBlock Text="Дата создания:" />
                                         <TextBlock Text="Дата изменения:" />
                                         <TextBlock Text="Автор:" />
                                     </StackPanel>
                                     <StackPanel>
                                         <TextBlock Text="{Binding Category}" />
+                                        <TextBlock Text="{Binding DescribedAt, StringFormat={}{0:dd.MM.yy}}"
+                                                   Visibility="{Binding EventDate.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
                                         <TextBlock Text="{Binding CreatedAt, StringFormat={}{0:dd.MM.yy hh:mm}}" />
                                         <TextBlock Text="{Binding UpdatedAt, StringFormat={}{0:dd.MM.yy hh:mm}}" />
                                         <TextBlock Text="{Binding Doctor.FullName}" />

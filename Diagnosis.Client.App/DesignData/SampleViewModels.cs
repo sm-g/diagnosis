@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Models;
+using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.ViewModels.Screens;
 using Moq;
@@ -81,7 +82,13 @@ namespace Diagnosis.Client.App.DesignData
         {
         }
     }
-
+    public class SampleDateOffsetViewModel : DateOffsetViewModel
+    {
+        public SampleDateOffsetViewModel()
+            : base(Mocks.hr)
+        {
+        }
+    }
     public class SampleHrListViewModel : HrListViewModel
     {
         public SampleHrListViewModel() :
@@ -186,8 +193,9 @@ namespace Diagnosis.Client.App.DesignData
             hr = new HealthRecord(course, doc)
             {
                 Category = cats[0],
-                FromMonth = 5,
+
             };
+            hr.FromDate.Month = 5;
             hr.AddItems(new IHrItemObject[] { word, word2, new Comment("без осложнений") });
         }
     }

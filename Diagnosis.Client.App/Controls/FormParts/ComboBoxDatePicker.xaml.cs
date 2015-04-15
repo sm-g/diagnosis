@@ -1,4 +1,6 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.ViewModels;
+using Diagnosis.ViewModels.Screens;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -136,6 +138,19 @@ namespace Diagnosis.Client.App.Controls.FormParts
                     new PropertyChangedCallback(OnYearsDepthChanged),
                     new CoerceValueCallback(CoerceYearsDepth)));
 
+
+        /// <summary>
+        /// Превышение над сегодняшним годом, определяет максимальный год для выбора.
+        /// </summary>
+        public int MaxYearsOverToday
+        {
+            get { return (int)GetValue(MaxYearsOverTodayProperty); }
+            set { SetValue(MaxYearsOverTodayProperty, value); }
+        }
+
+        public static readonly DependencyProperty MaxYearsOverTodayProperty =
+            DependencyProperty.Register("MaxYearsOverToday", typeof(int), typeof(ComboBoxDatePicker), new PropertyMetadata(0));
+
         private static void OnYearsDepthChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var cdp = (ComboBoxDatePicker)d;
@@ -156,16 +171,18 @@ namespace Diagnosis.Client.App.Controls.FormParts
         /// <summary>
         /// Минимальный год для выбора.
         /// </summary>
-        private int MinYear { get { return DateTime.Now.Year - YearsDepth; } }
+        private int MinYear { get { return DateTime.Now.Year + MaxYearsOverToday - YearsDepth; } }
 
         public ComboBoxDatePicker()
         {
             InitializeComponent();
             Days = new ObservableCollection<string>();
-
-            LoadYearsCombo();
-            LoadMonthsCombo();
-            LoadDaysCombo();
+            Loaded += (s, e) =>
+            {
+                LoadYearsCombo();
+                LoadMonthsCombo();
+                LoadDaysCombo();
+            };
         }
 
         private void LoadYearsCombo()
@@ -195,9 +212,13 @@ namespace Diagnosis.Client.App.Controls.FormParts
 
         private void FillDaysCombo()
         {
-            // комбобокс остается, после DateOffset = null месяц = null, биндинг успевает сработать для дня
-            var hrvm = (DataContext as Diagnosis.ViewModels.Screens.HealthRecordViewModel);
-            if (hrvm != null && hrvm.DateOffset == null)
+            // комбобокс остается, после DateOffset = null месяц == null, биндинг успевает сработать для дня
+            var hrvm = (DataContext as HealthRecordViewModel);
+            if (hrvm != null && hrvm.EventDate == null)
+                return;
+
+            var dpvm = (DataContext as DateOffsetViewModel);
+            if (dpvm != null && dpvm.To == null)
                 return;
 
             var days = GetDaysComboItems();

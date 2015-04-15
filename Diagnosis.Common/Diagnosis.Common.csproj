@@ -150,12 +150,10 @@
       <Link>Properties\GeneralAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Extensions\DictionaryExtensions.cs" />
-    <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Formatters\DateFormatter.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Types\AsyncObservableCollection.cs" />
     <Compile Include="Types\ConnectionInfo.cs" />
-    <Compile Include="Types\DateOffset.cs" />
     <Compile Include="Extensions\ConvertExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Formatters\NameFormatter.cs" />

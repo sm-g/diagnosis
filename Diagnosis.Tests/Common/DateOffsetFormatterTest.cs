@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Common.Types;
+using Diagnosis.Models;
+using Diagnosis.ViewModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 

@@ -1,9 +1,9 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Common.Types;
+using Diagnosis.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Diagnosis.Tests.Common
+namespace Diagnosis.Tests.Model
 {
     [TestClass]
     public class DateOffsetTest
@@ -23,7 +23,7 @@ namespace Diagnosis.Tests.Common
         #region constructors
 
         [TestMethod]
-        public void TestConstructorOffsetDay()
+        public void OffsetDay()
         {
             date = new DateOffset(offset, DateUnit.Day);
 
@@ -37,7 +37,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestConstructorOffsetWeek()
+        public void OffsetWeek()
         {
             date = new DateOffset(offset, DateUnit.Week);
 
@@ -51,7 +51,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestConstructorOffsetMonth()
+        public void OffsetMonth()
         {
             date = new DateOffset(offset, DateUnit.Month);
 
@@ -65,7 +65,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestConstructorOffsetYear()
+        public void OffsetYear()
         {
             date = new DateOffset(offset, DateUnit.Year);
 
@@ -79,7 +79,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestConstructorOffsetNull()
+        public void OffsetNull()
         {
             date = new DateOffset(null, DateUnit.Day);
 
@@ -91,7 +91,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestConstructorDateTime()
+        public void DateTimeCtor()
         {
             date = new DateOffset(now);
 
@@ -103,7 +103,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestConstructorDateFull()
+        public void DateFull()
         {
             date = new DateOffset(now.Year, now.Month, now.Day);
 
@@ -115,7 +115,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestConstructorDateYear()
+        public void DateYear()
         {
             date = new DateOffset(now.Year, null, null);
 
@@ -127,7 +127,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestConstructorDateYearMonth()
+        public void DateYearMonth()
         {
             date = new DateOffset(now.Year, now.Month, null);
 
@@ -139,7 +139,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestConstructorDateYearDay()
+        public void DateYearDay()
         {
             date = new DateOffset(now.Year, null, now.Day);
 
@@ -151,7 +151,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestConstructorDateMonth()
+        public void DateMonth()
         {
             date = new DateOffset(null, now.Month, null);
 
@@ -163,7 +163,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestConstructorDateMonthDay()
+        public void DateMonthDay()
         {
             date = new DateOffset(null, now.Month, now.Day);
 
@@ -175,7 +175,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestConstructorDateDay()
+        public void DateDay()
         {
             var now = DateOffsetTest.getNow();
 
@@ -189,7 +189,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestConstructorDateNone()
+        public void DateNone()
         {
             date = new DateOffset(null, null, null);
             Assert.IsNull(date.Offset);
@@ -199,7 +199,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestConstructorDepthDays()
+        public void DepthDays()
         {
             var now = DateOffsetTest.getNow();
 
@@ -208,10 +208,18 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestConstructorWorngDate()
+        public void WorngDate()
         {
             date = new DateOffset(2009, 2, 30, getNow);
             Assert.IsTrue(date.Day == 28); // autocorrection default == true
+        }
+
+        [TestMethod]
+        public void DefaultNowIsToday()
+        {
+            var d = new DateOffset(2014, 1, null);
+
+            Assert.AreEqual(DateTime.Today, d.Now);
         }
 
         #endregion constructors
@@ -219,7 +227,7 @@ namespace Diagnosis.Tests.Common
         #region Setters
 
         [TestMethod]
-        public void TestSetDay()
+        public void SetDay()
         {
             date = new DateOffset(offset, DateUnit.Day, getNow);
 
@@ -230,7 +238,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestSetMonth()
+        public void SetMonth()
         {
             date = new DateOffset(offset, DateUnit.Day, getNow);
             var d = getNow().AddMonths(-2);
@@ -241,7 +249,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestSetMonthNull()
+        public void SetMonthNull()
         {
             date = new DateOffset(offset, DateUnit.Day, getNow);
             date.Month = null;
@@ -251,7 +259,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestSetUnitWider()
+        public void SetUnitWider()
         {
             date = new DateOffset(offset, DateUnit.Day, getNow);
             date.CutsDate = true;
@@ -265,7 +273,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestSetUnitWiderWeek()
+        public void SetUnitWiderWeek()
         {
             date = new DateOffset(offset, DateUnit.Day, getNow);
 
@@ -279,7 +287,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestSetUnitNarrower()
+        public void SetUnitNarrower()
         {
             date = new DateOffset(offset, DateUnit.Year, getNow);
 
@@ -293,7 +301,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestSetMonth2()
+        public void SetMonth2()
         {
             date = new DateOffset(1, DateUnit.Year, getNow);
 
@@ -309,13 +317,9 @@ namespace Diagnosis.Tests.Common
         [TestMethod]
         public void SetNow()
         {
-            var d = new DateOffset(null, null, null);
-            d.Month = 1;
-            d.Year = 2014;
+            var d = new DateOffset(2014, 1, null);
             d.Now = new DateTime(2014, 11, 4);
 
-            Assert.AreEqual(1, d.Month);
-            Assert.AreEqual(2014, d.Year);
             Assert.AreEqual(10, d.Offset);
         }
 
@@ -427,7 +431,7 @@ namespace Diagnosis.Tests.Common
         #region compare
 
         [TestMethod]
-        public void TestLtDayMonth()
+        public void LtDayMonth()
         {
             // 40 дней назад < сейчас
             var date1 = new DateOffset(40, DateUnit.Day, getNow);
@@ -437,7 +441,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestGtDayYear()
+        public void GtDayYear()
         {
             // 40 дней назад > год назад
             var date1 = new DateOffset(40, DateUnit.Day, getNow);
@@ -445,8 +449,9 @@ namespace Diagnosis.Tests.Common
 
             Assert.IsTrue(date1 > date2);
         }
+
         [TestMethod]
-        public void TestLtMonthYear()
+        public void LtMonthYear()
         {
             // 40 месяцев назад < 2 года назад
             var date1 = new DateOffset(40, DateUnit.Month, getNow);
@@ -456,7 +461,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestLtSameUnitDay()
+        public void LtSameUnitDay()
         {
             // 40 дней назад < сейчас
             var date1 = new DateOffset(40, DateUnit.Day, getNow);
@@ -466,7 +471,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestLtSameUnitMonth()
+        public void LtSameUnitMonth()
         {
             // 2013.12 < 2014.02
             var date1 = new DateOffset(2013, 12, null, getNow);
@@ -476,18 +481,18 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestLtGtNull()
+        public void LtGtNull()
         {
-            // 5 лет назад < пустая дата
+            // 5 лет назад > пустая дата
             var date1 = new DateOffset(null, DateUnit.Month, getNow);
             var date2 = new DateOffset(5, DateUnit.Year, getNow);
 
-            Assert.IsFalse(date1 < date2);
-            Assert.IsTrue(date1 > date2);
+            Assert.IsFalse(date1 > date2);
+            Assert.IsTrue(date1 < date2);
         }
 
         [TestMethod]
-        public void TestLtOrEqual()
+        public void LtOrEqual()
         {
             // 2013.12 <= 2014.02
             var date1 = new DateOffset(2013, 12, null, getNow);
@@ -497,7 +502,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestEqualSameDay()
+        public void EqualSameDay()
         {
             var date1 = new DateOffset(2013, 12, 1, getNow);
             var date2 = new DateOffset(2013, 12, 1, getNow);
@@ -507,7 +512,7 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestEqualSameMonth()
+        public void EqualSameMonth()
         {
             var date1 = new DateOffset(2, DateUnit.Month, getNow);
             var date2 = new DateOffset(2014, 2, null, getNow);
@@ -517,53 +522,33 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestEqualPartialMonthDay()
+        public void EqualPartialMonthDay()
         {
-            // 2014.02 !=  2014.02.15
+            // 2014.02 <  2014.02.15
             var date1 = new DateOffset(2, DateUnit.Month, getNow);
             var date2 = new DateOffset(2014, 2, 15, getNow);
 
-            // всегда больше
-            Assert.IsTrue(date1 > date2);
+            Assert.IsTrue(date1 < date2);
             Assert.IsTrue(date2 > date1);
             Assert.IsTrue(date1 != date2);
             Assert.AreNotEqual(date1, date2);
         }
 
         [TestMethod]
-        public void TestEqualPartialYearDay()
+        public void EqualPartialYearDay()
         {
-            // 2014.04.1 != 2014
+            // 2014.04.1 > 2014
             var date1 = new DateOffset(3, DateUnit.Day, getNow);
             var date2 = new DateOffset(0, DateUnit.Year, getNow);
 
-            // всегда больше
             Assert.IsTrue(date1 > date2);
-            Assert.IsTrue(date2 > date1);
+            Assert.IsTrue(date2 < date1);
             Assert.IsTrue(date1 != date2);
             Assert.AreNotEqual(date1, date2);
         }
 
         [TestMethod]
-        public void TestEqualPartialMonthDayAfterRound()
-        {
-            // 2014.02 !=  2014.02.15
-            var date1 = new DateOffset(2, DateUnit.Month, getNow);
-            var date2 = new DateOffset(2014, 2, 15, getNow);
-
-            date2.Settings = DateOffset.DateOffsetSettings.Rounding();
-            date2.Unit = DateUnit.Month;
-
-            Assert.IsTrue(date1 != date2);
-            Assert.AreNotEqual(date1, date2);
-
-            // всегда больше
-            Assert.IsTrue(date1 > date2);
-            Assert.IsTrue(date2 > date1);
-        }
-
-        [TestMethod]
-        public void TestLtSameMonth()
+        public void LtSameMonth()
         {
             var date1 = new DateOffset(2013, 5, 5, getNow);
             var date2 = new DateOffset(2014, 5, 1, getNow);
@@ -572,13 +557,33 @@ namespace Diagnosis.Tests.Common
         }
 
         [TestMethod]
-        public void TestCompareWithWeek()
+        public void CompareWithWeek()
         {
             // сейчас > 2 недели назад
             var date1 = new DateOffset(getNow(), getNow);
             var date2 = new DateOffset(2, DateUnit.Week, getNow);
 
             Assert.IsTrue(date1 > date2);
+        }
+
+        [TestMethod]
+        public void CompareDateValuesNotNows()
+        {
+            var date1 = new DateOffset(2013, 5, 5, getNow);
+            var date2 = new DateOffset(2014, 5, null, () => new DateTime(2013, 5, 1));
+
+            Assert.IsTrue(date1 < date2);
+        }
+
+        [TestMethod]
+        public void EqualByDateValue()
+        {
+            //
+            var date1 = new DateOffset(2013, 5, 5, getNow);
+            var date2 = new DateOffset(2013, 5, 5, () => new DateTime(2013, 5, 1));
+
+            Assert.IsTrue(date1 == date2);
+            Assert.AreEqual(date1, date2);
         }
 
         #endregion compare
@@ -650,119 +655,138 @@ namespace Diagnosis.Tests.Common
 
         #endregion Add
 
-        #region Setting
+        #region Relative
 
         [TestMethod]
-        public void UnitSettingSetsDate()
+        public void RelativeDayYear()
         {
-            var date = new DateOffset(2014, 3, 31, getNow);
-            Assert.IsTrue(date.Offset == 1);
-            date.UnitSettingStrategy = DateOffset.UnitSetting.SetsDate;
-            date.CutsDate = false;
+            var date1 = new DateOffset(2013, 12, 1, getNow);
+            var date2 = new DateOffset(2014, null, null, getNow);
 
-            date.Unit = DateUnit.Year;
-            Assert.IsTrue(date.Year == 2013);
-            Assert.IsTrue(date.Month == 3);
-            Assert.IsTrue(date.Day == 31);
+            var r = date1.RelativeTo(date2);
+            Assert.AreEqual(1, r.Offset);
+            Assert.AreEqual(DateUnit.Year, r.Unit);
         }
 
         [TestMethod]
-        public void UnitSettingSetsAndCutsDate()
+        public void RelativeDayMonth()
         {
-            var date = new DateOffset(2014, 3, 31, getNow);
-            Assert.IsTrue(date.Offset == 1);
-            date.UnitSettingStrategy = DateOffset.UnitSetting.SetsDate;
-            date.CutsDate = true;
+            var date1 = new DateOffset(2013, 12, 1, getNow);
+            var date2 = new DateOffset(2014, 1, null, getNow);
 
-            date.Unit = DateUnit.Year;
-            Assert.IsTrue(date.Year == 2013);
-            Assert.IsTrue(date.Month == null);
-            Assert.IsTrue(date.Day == null);
+            var r = date1.RelativeTo(date2);
+            Assert.AreEqual(1, r.Offset);
+            Assert.AreEqual(DateUnit.Month, r.Unit);
         }
 
         [TestMethod]
-        public void UnitSettingRoundsOffset()
+        public void RelativeDayDay()
         {
-            var date = new DateOffset(2014, 3, 31, getNow);
-            Assert.IsTrue(date.Offset == 1);
-            date.Settings = new DateOffset.DateOffsetSettings(
-                DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.RoundsUnit, true, cutsDate: false); // или DateSetting.SavesUnit
+            var date1 = new DateOffset(2013, 12, 31, getNow);
+            var date2 = new DateOffset(2014, 1, 1, getNow);
 
-            date.Unit = DateUnit.Year;
-            Assert.IsTrue(date.Offset == 0);
-            Assert.IsTrue(date.Year == 2014);
-            Assert.IsTrue(date.Month == 3);
-            Assert.IsTrue(date.Day == 31);
+            var r = date1.RelativeTo(date2);
+            Assert.AreEqual(1, r.Offset);
+            Assert.AreEqual(DateUnit.Day, r.Unit);
         }
 
         [TestMethod]
-        public void OffsetSettingSetsDateWhenUnitSettingRoundsOffset()
+        public void RelativeMonthDay()
         {
-            var date = new DateOffset(getNow(), getNow, new DateOffset.DateOffsetSettings(
-                DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.RoundsUnit, true, true)); // или DateSetting.SavesUnit
+            var date1 = new DateOffset(2013, 12, null, getNow);
+            var date2 = new DateOffset(2014, 1, 1, getNow);
 
-            date.Offset = 5;
-            Assert.IsTrue(date.Year == 2014);
-            Assert.IsTrue(date.Month == 3);
-            Assert.IsTrue(date.Day == 27);
+            var r = date1.RelativeTo(date2);
+            Assert.AreEqual(1, r.Offset);
+            Assert.AreEqual(DateUnit.Month, r.Unit);
         }
 
         [TestMethod]
-        public void DateSettingRoundsUnit()
+        public void RelativeNullYear()
         {
-            var date = new DateOffset(5, DateUnit.Day, getNow);
-            Assert.IsTrue(date.Offset == 5);
-            date.DateSettingStrategy = DateOffset.DateSetting.RoundsUnit;
+            var date1 = new DateOffset(null, null, null, getNow);
+            var date2 = new DateOffset(2011, null, null, getNow);
 
-            date.Year = 2013;
-            Assert.IsTrue(date.Offset == 1);
-            Assert.IsTrue(date.Unit == DateUnit.Year);
-            Assert.IsTrue(date.Month == 3);
-            Assert.IsTrue(date.Day == 27);
+            var r = date1.RelativeTo(date2);
+            Assert.AreEqual(null, r.Offset);
         }
 
         [TestMethod]
-        public void DateSettingSavesUnit()
+        public void RelativeNowIsMaxDate()
         {
-            var date = new DateOffset(5, DateUnit.Day, getNow, new DateOffset.DateOffsetSettings(
-                DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.SavesUnit, true, true)); // только так UnitSetting.RoundsOffset
+            var date1 = new DateOffset(2013, 12, 1, getNow);
+            var date2 = new DateOffset(2014, null, null, getNow);
 
-            // юнит подстраивается
-            date.Year = 2013;
-            Assert.IsTrue(date.Offset == 1);
-            Assert.IsTrue(date.Unit == DateUnit.Year);
-            Assert.IsTrue(date.Month == 3);
-            Assert.IsTrue(date.Day == 27);
-            // юнит сохраняется
-            date.Unit = DateUnit.Month;
-            Assert.IsTrue(date.UnitFixed);
-            Assert.IsTrue(date.Offset == 13);
-            Assert.IsTrue(date.Year == 2013);
-            Assert.IsTrue(date.Month == 3);
-            Assert.IsTrue(date.Day == 27);
-
-            // юнит не меняется
-            date.Year = 2014;
-            Assert.IsTrue(date.Unit == DateUnit.Month);
-            Assert.IsTrue(date.Offset == 1);
+            var r = date1.RelativeTo(date2);
+            Assert.AreEqual(date2.GetSortingDate(), r.Now);
         }
 
         [TestMethod]
-        public void DateSettingSavesUnit2()
+        public void RelativeNowIsMaxDate2()
         {
-            var date = new DateOffset(5, DateUnit.Day, getNow, new DateOffset.DateOffsetSettings(
-                DateOffset.UnitSetting.RoundsOffset, DateOffset.DateSetting.SavesUnit, true, true)); // только так UnitSetting.RoundsOffset
+            var date1 = new DateOffset(2013, null, null, getNow);
+            var date2 = new DateOffset(2010, 1, null, getNow);
 
-            Assert.IsTrue(!date.UnitFixed);
-
-            date.Day = null;
-            // юнит укрупняется
-            Assert.IsTrue(date.Unit == DateUnit.Month);
-            Assert.IsTrue(date.Year == 2014);
-            Assert.IsTrue(date.Month == 3);
-            Assert.IsTrue(date.Offset == 1);
+            var r = date1.RelativeTo(date2);
+            Assert.AreEqual(date1.GetSortingDate(), r.Now);
         }
 
-        #endregion Setting
+        #endregion Relative
+
+        #region FillDownTo
+
+        [TestMethod]
+        public void FillDownToYear()
+        {
+            var d = new DateOffset(2013, 5, 1);
+            var dt = new DateTime(2014, 3, 2);
+
+            d.FillDateDownTo(dt, DateUnit.Year);
+
+            Assert.AreEqual(2014, d.Year);
+            Assert.AreEqual(5, d.Month);
+            Assert.AreEqual(1, d.Day);
+        }
+
+        [TestMethod]
+        public void FillDownToMonth()
+        {
+            var d = new DateOffset(2013, 5, 1);
+            var dt = new DateTime(2014, 3, 2);
+
+            d.FillDateDownTo(dt, DateUnit.Month);
+
+            Assert.AreEqual(2014, d.Year);
+            Assert.AreEqual(3, d.Month);
+            Assert.AreEqual(1, d.Day);
+        }
+
+        [TestMethod]
+        public void FillDownToWeek()
+        {
+            var d = new DateOffset(2013, 5, 1);
+            var dt = new DateTime(2014, 3, 2);
+
+            d.FillDateDownTo(dt, DateUnit.Week);
+
+            Assert.AreEqual(2014, d.Year);
+            Assert.AreEqual(3, d.Month);
+            Assert.AreEqual(2, d.Day);
+        }
+
+        [TestMethod]
+        public void FillDownToDay()
+        {
+            var d = new DateOffset(2013, 5, 1);
+            var dt = new DateTime(2014, 3, 2);
+
+            d.FillDateDownTo(dt, DateUnit.Day);
+
+            Assert.AreEqual(2014, d.Year);
+            Assert.AreEqual(3, d.Month);
+            Assert.AreEqual(2, d.Day);
+        }
+
+        #endregion FillDownTo
     }
 }

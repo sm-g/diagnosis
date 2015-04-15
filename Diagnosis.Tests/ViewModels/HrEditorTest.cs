@@ -11,11 +11,9 @@ namespace Diagnosis.Tests.ViewModels
     [TestClass]
     public class HrEditorTest : ViewModelTest
     {
-
         private HrEditorViewModel e;
         private new HealthRecord hr;
         private Word word;
-        private string q;
         private HealthRecord hr2;
 
         private new AutocompleteViewModel a { get { return e.Autocomplete; } }
@@ -30,7 +28,6 @@ namespace Diagnosis.Tests.ViewModels
             hr = session.Get<HealthRecord>(IntToGuid<HealthRecord>(1));
             hr2 = session.Get<HealthRecord>(IntToGuid<HealthRecord>(2));
             word = session.Get<Word>(IntToGuid<Word>(3));
-            q = word.Title.Substring(0, word.Title.Length - 1);
         }
 
         [TestCleanup]
@@ -39,6 +36,12 @@ namespace Diagnosis.Tests.ViewModels
             if (e != null)
                 e.Dispose();
             // no need to recreate hreditor - create in ctor?
+        }
+
+        [TestMethod]
+        public void DataConditions()
+        {
+            Assert.IsTrue(hr.ToDate.IsEmpty);
         }
 
         [TestMethod]
@@ -280,7 +283,7 @@ namespace Diagnosis.Tests.ViewModels
 
             e.Load(hr);
             a.SelectedTag = a.Tags.Last();
-            a.SelectedTag.Query = q;
+            a.SelectedTag.Query = word.Title.Substring(0, word.Title.Length - 1);
             a.EnterCommand.Execute(a.SelectedTag);
 
             e.Unload();
@@ -323,6 +326,33 @@ namespace Diagnosis.Tests.ViewModels
                 card.HrEditor.CloseCommand.Execute(null);
             }
             Assert.IsTrue(d2.Words.Contains(wForD1Only));
+        }
+
+        [TestMethod]
+        public void HideIntervalEditor()
+        {
+            e.Load(hr);
+            var old = hr.ToDate;
+            Assert.IsTrue(e.HealthRecord.IsIntervalEditorOpened);
+
+            // скрыт редактор интервала - дата-точка, открыт - последний ввод
+            e.HealthRecord.IsIntervalEditorOpened = false;
+            Assert.AreEqual(hr.FromDate, hr.ToDate);
+
+            e.HealthRecord.IsIntervalEditorOpened = true;
+            Assert.AreEqual(old, hr.ToDate);
+        }
+
+        [TestMethod]
+        public void SetToDateSameAsFromDate()
+        {
+            e.Load(hr);
+            Assert.IsTrue(e.HealthRecord.IsIntervalEditorOpened);
+
+            hr.ToDate.FillDateFrom(hr.FromDate);
+
+            // редактор интервала остается открыт
+            Assert.IsTrue(e.HealthRecord.IsIntervalEditorOpened);
         }
     }
 }

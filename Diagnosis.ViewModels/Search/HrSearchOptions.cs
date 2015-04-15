@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using Diagnosis.Data.Queries;
-using Diagnosis.Common.Types;
 
 namespace Diagnosis.ViewModels.Search
 {

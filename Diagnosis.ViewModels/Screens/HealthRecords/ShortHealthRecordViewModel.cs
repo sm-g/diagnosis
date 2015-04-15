@@ -29,10 +29,10 @@ namespace Diagnosis.ViewModels.Screens
             healthRecord.ItemsChanged += healthRecord_ItemsChanged;
 
             SyncCheckedAndSelected = true;
-            DateOffset = DateOffsetViewModel.FromHr(healthRecord);
-            DateOffset.PropertyChanged += (s, e) =>
+            EventDate = DateOffsetViewModel.FromHr(healthRecord);
+            EventDate.PropertyChanged += (s, e) =>
             {
-                OnPropertyChanged(() => DateOffsetString);
+                OnPropertyChanged(() => EventDateString);
             };
             DropHandler = new DropTargetHandler(this);
             IsDropTargetEnabled = true;
@@ -56,31 +56,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public int? FromYear
-        {
-            get
-            {
-                return healthRecord.FromYear;
-            }
-        }
-
-        public int? FromMonth
-        {
-            get
-            {
-                return healthRecord.FromMonth;
-            }
-        }
-
-        public int? FromDay
-        {
-            get
-            {
-                return healthRecord.FromDay;
-            }
-        }
-
-        public DateOffsetViewModel DateOffset
+        public DateOffsetViewModel EventDate
         {
             get;
             private set;
@@ -89,6 +65,11 @@ namespace Diagnosis.ViewModels.Screens
         public Doctor Doctor
         {
             get { return healthRecord.Doctor; }
+        }
+
+        public DateTime DescribedAt
+        {
+            get { return healthRecord.DescribedAt; }
         }
 
         public DateTime CreatedAt
@@ -138,7 +119,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public DateTime SortingDate
         {
-            get { return DateOffset.GetSortingDate(); }
+            get { return healthRecord.FromDate.GetSortingDate(); }
         }
 
         public HrCreatedAtOffset GroupingCreatedAt
@@ -165,26 +146,24 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public string DateOffsetString
+        public string EventDateString
         {
             get
             {
                 switch (healthRecord.Unit)
                 {
                     case HealthRecordUnit.NotSet:
-                        return DateOffsetFormatter.GetPartialDateString(DateOffset.Do);
+                        return EventDate.PartialDateString;
 
                     case HealthRecordUnit.ByAge:
-                        var age = DateHelper.GetAge(patient.BirthYear, patient.BirthMonth, patient.BirthDay, DateOffset.GetSortingDate());
-                        if (age == null)
-                            return null;
-                        var index = Plurals.GetPluralEnding(age.Value);
-                        return string.Format("в {0} {1}", age, Plurals.years[index]);
+                        return EventDate.AtAgeString;
 
                     default:
-                        return string.Format("{0} {1}",
-                            DateOffset.RoundedOffset,
-                            DateOffsetFormatter.GetUnitString(DateOffset.RoundedOffset, DateOffset.RoundedUnit));
+                        return string.Format("{0}{1} {2}{3}",
+                            EventDate.IsOpenedInterval ? "уже " : string.Empty,
+                            EventDate.RoundedOffset,
+                            DateOffsetFormatter.GetUnitString(EventDate.RoundedOffset, EventDate.RoundedUnit),
+                            EventDate.IsPoint ? " назад" : string.Empty);
                 }
             }
         }
@@ -264,12 +243,11 @@ namespace Diagnosis.ViewModels.Screens
 
             switch (e.PropertyName)
             {
-                case "FromDay":
-                case "FromMonth":
-                case "FromYear":
+                case "FromDate":
+                case "ToDate":
                 case "Unit":
                     OnPropertyChanged(() => SortingDate);
-                    OnPropertyChanged(() => DateOffsetString);
+                    OnPropertyChanged(() => EventDateString);
                     break;
 
                 case "HrItems":
@@ -289,7 +267,7 @@ namespace Diagnosis.ViewModels.Screens
                 case "BirthDay":
                 case "BirthMonth":
                 case "BirthYear":
-                    OnPropertyChanged(() => DateOffsetString);
+                    OnPropertyChanged(() => EventDateString);
                     break;
             }
         }

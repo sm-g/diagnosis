@@ -278,6 +278,7 @@
     <Compile Include="Controls\FormParts\ConfirmPasswordControl.xaml.cs">
       <DependentUpon>ConfirmPasswordControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\DateOffsetConverters.cs" />
     <Compile Include="Controls\Search\OldQueryBlock.xaml.cs">
       <DependentUpon>OldQueryBlock.xaml</DependentUpon>
     </Compile>

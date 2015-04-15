@@ -194,9 +194,7 @@ namespace Diagnosis.Models
                     {
                         var hr = entity as HealthRecord;
                         return hr.IsDeleted ||
-                            hr.FromDay == null && 
-                            hr.FromMonth == null && 
-                            hr.FromYear == null && 
+                            hr.FromDate.IsEmpty && 
                             hr.HrItems.Count() == 0;
                     }
                 },

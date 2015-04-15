@@ -33,19 +33,19 @@ namespace Diagnosis.Tests.Model
         {
             Load<HealthRecord>();
             Assert.AreEqual(HealthRecordUnit.Year, hr[40].Unit);
-            Assert.AreEqual(2005, hr[40].FromYear);
+            Assert.AreEqual(2005, hr[40].FromDate.Year);
 
             Assert.AreEqual(HealthRecordUnit.Month, hr[20].Unit);
-            Assert.AreEqual(2014, hr[20].FromYear);
-            Assert.AreEqual(1, hr[20].FromMonth);
+            Assert.AreEqual(2014, hr[20].FromDate.Year);
+            Assert.AreEqual(1, hr[20].FromDate.Month);
 
             Assert.AreEqual(HealthRecordUnit.NotSet, hr[1].Unit);
-            Assert.AreEqual(2013, hr[1].FromYear);
-            Assert.AreEqual(11, hr[1].FromMonth);
+            Assert.AreEqual(2013, hr[1].FromDate.Year);
+            Assert.AreEqual(11, hr[1].FromDate.Month);
 
             Assert.AreEqual(HealthRecordUnit.ByAge, hr[2].Unit);
-            Assert.AreEqual(2013, hr[2].FromYear);
-            Assert.AreEqual(12, hr[2].FromMonth);
+            Assert.AreEqual(2013, hr[2].FromDate.Year);
+            Assert.AreEqual(12, hr[2].FromDate.Month);
         }
 
         [TestMethod]
@@ -122,6 +122,19 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
+        public void RemoveOneOfDoulbeWords()
+        {
+            var hiosSequence = new IHrItemObject[] { w1, w1, com };
+            var hiosSequence2 = new IHrItemObject[] { w1, com };
+
+            hr1.SetItems(hiosSequence);
+            hr1.SetItems(hiosSequence2);
+
+            Assert.AreEqual(2, hr1.HrItems.Count);
+            Assert.IsTrue(hr1.GetOrderedEntities().Contains(w1));
+        }
+
+        [TestMethod]
         public void AddItemsWithDefaultConfidence()
         {
             var chiosSequence = new IHrItemObject[] { w1, w2, com }
@@ -160,6 +173,17 @@ namespace Diagnosis.Tests.Model
             var m2 = new Measure(0, uom[2]) { Word = w1 };
             hr1.SetItems(new IHrItemObject[] { m2 });
             Assert.AreEqual(uom[2], hr1.HrItems.First().Measure.Uom);
+        }
+
+        [TestMethod]
+        public void ClearFromDate()
+        {
+            hr1.FromDate.Year = 2010;
+            hr1.ToDate.Year = 2010;
+
+            hr1.FromDate.Year = null;
+
+            Assert.AreEqual(true, hr1.ToDate.IsEmpty);
         }
     }
 }

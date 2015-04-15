@@ -14,9 +14,44 @@ namespace Diagnosis.Data.Mappings
                 m.Generator(Generators.GuidComb);
             });
 
-            Property(x => x.FromYear);
-            Property(x => x.FromMonth);
-            Property(x => x.FromDay);
+            Component(x => x.FromDate, m =>
+            {
+                m.Property(x => x.Day, x =>
+                {
+                    x.Column(Names.Col.HrFromDay);
+                });
+                m.Property(x => x.Month, x =>
+                {
+                    x.Column(Names.Col.HrFromMonth);
+                });
+                m.Property(x => x.Year, x =>
+                {
+                    x.Column(Names.Col.HrFromYear);
+                });
+            });
+            Component(x => x.ToDate, m =>
+            {
+                m.Property(x => x.Day, x =>
+                {
+                    x.Column(Names.Col.HrToDay);
+                });
+                m.Property(x => x.Month, x =>
+                {
+                    x.Column(Names.Col.HrToMonth);
+                });
+                m.Property(x => x.Year, x =>
+                {
+                    x.Column(Names.Col.HrToYear);
+                });
+            });
+            Property(x => x.DescribedAt, m =>
+            {
+                m.NotNullable(true);
+                m.Column(c =>
+                {
+                    c.Default(Helper.SqlDateTimeNow);
+                });
+            });
             Property(x => x.IsDeleted, m =>
             {
                 m.NotNullable(true);
