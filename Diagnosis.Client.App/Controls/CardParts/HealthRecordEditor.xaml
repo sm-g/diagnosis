@@ -21,8 +21,8 @@
              d:DesignWidth="600">
     <!--Tag is HrListViewModel-->
     <UserControl.Resources>
-        <Style TargetType="Label"
-               BasedOn="{StaticResource label90}" />
+        <!--<Style TargetType="Label"
+               BasedOn="{StaticResource label90}" />-->
     </UserControl.Resources>
 
     <UserControl.InputBindings>
@@ -299,7 +299,8 @@
                                 </StackPanel.Resources>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="auto" MinWidth="80"
+                                                          SharedSizeGroup="label" />
                                         <ColumnDefinition Width="auto"
                                                           SharedSizeGroup="gr2" />
                                         <ColumnDefinition Width="20" />
@@ -312,7 +313,8 @@
                                 </Grid>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="auto"
+                                                          SharedSizeGroup="label" />
                                         <ColumnDefinition Width="auto"
                                                           SharedSizeGroup="gr2" />
                                         <ColumnDefinition Width="20" />
@@ -340,7 +342,15 @@
                                                               WithPicker="True"
                                                               Grid.Column="3" />
                                 </Grid>
-                                <DockPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"
+                                                          SharedSizeGroup="label" />
+                                        <ColumnDefinition Width="auto"
+                                                          SharedSizeGroup="gr2" />
+                                        <ColumnDefinition Width="20" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
                                     <Label>
                                         <Label.Style>
                                             <Style TargetType="Label"
@@ -362,11 +372,12 @@
                                             </Style>
                                         </Label.Style>
                                     </Label>
-                                    <forms:DateOffsetPicker DataContext="{Binding EventDate}" />
-                                </DockPanel>
+                                    <forms:DateOffsetPicker Grid.Column="1" Grid.ColumnSpan="3" DataContext="{Binding EventDate}" />
+                                </Grid>
                                 <Grid IsEnabled="{Binding EventDate.CanShowAsAge}">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="auto"
+                                                          SharedSizeGroup="label" />
                                         <ColumnDefinition Width="auto"
                                                           SharedSizeGroup="gr2" />
                                         <ColumnDefinition Width="20" />

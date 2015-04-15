@@ -83,7 +83,7 @@
                             <Setter Property="ToolTip"
                                     Value="Фиксированная дата интервала" />
                             <Setter Property="IsEnabled"
-                                    Value="False" />
+                                    Value="True" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
