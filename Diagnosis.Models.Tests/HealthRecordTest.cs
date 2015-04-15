@@ -165,7 +165,7 @@ namespace Diagnosis.Models.Tests
         }
 
         [TestMethod]
-        public void ChangeMeasure()
+        public void ChangeMeasureUom()
         {
             var m = new Measure(0, uom[1]) { Word = w1 };
             var hiosSequence = new IHrItemObject[] { m };

@@ -184,6 +184,7 @@
     <Compile Include="Helpers\Many2ManyHelper.cs" />
     <Compile Include="Helpers\RefModelsComparer.cs" />
     <Compile Include="Helpers\SettingsProvider.cs" />
+    <Compile Include="Helpers\StrictIHrItemObjectComparer.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="Entities\SpecialityIcdBlock.cs" />
     <Compile Include="Entities\Word.cs" />

@@ -154,7 +154,10 @@ namespace Diagnosis.Models
 
         public int CompareTo(ConfindenceHrItemObject other)
         {
-            int res = this.HIO.CompareTo(other.HIO);
+            // сравниваем строго, так что измерения с одним значением, 
+            // выраженным разными единицами, не равны
+
+            var res = StrictIHrItemObjectComparer.StrictCompare(this.HIO, other.HIO);
             if (res != 0) return res;
 
             return this.Confidence.CompareTo(other.Confidence);
@@ -165,7 +168,10 @@ namespace Diagnosis.Models
             var other = obj as ConfindenceHrItemObject;
             if (other == null)
                 return false;
-            return this.CompareTo(other) == 0;
+
+            return
+                this.Confidence.Equals(other.Confidence) &&
+                this.HIO.Equals(other.HIO);
         }
 
         public override int GetHashCode()

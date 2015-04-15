@@ -90,6 +90,29 @@ namespace Diagnosis.Models
 
             return -1;
         }
+        /// <summary>
+        /// Сравнивает измерения учитывая единицу измерения (для OrderedBag).
+        /// </summary>
+        /// <param name="hio"></param>
+        /// <returns></returns>
+        public virtual int StrictCompareTo(IHrItemObject hio)
+        {
+            var icd = hio as IcdDisease;
+            if (icd != null)
+                return 1;
+
+            var measure = hio as Measure;
+            if (measure != null)
+            {
+                var comp = this.CompareTo(measure);
+                if (comp == 0)
+                    // значение одинково, но единицы (одного типа) разные
+                    return this.Uom.Abbr.CompareTo(measure.Uom.Abbr);
+                return comp;
+            }
+
+            return -1;
+        }
 
         public virtual int CompareTo(Measure other)
         {
@@ -119,11 +142,7 @@ namespace Diagnosis.Models
 
             // одинаковые слова и тип единицы - по значению
             var byDbVal = this.DbValue.CompareTo(other.DbValue);
-            //  if (byDbVal != 0)
             return byDbVal;
-
-            // значение одинково, но единицы (одного типа) разные
-            return this.Uom.Abbr.CompareTo(other.Uom.Abbr);
         }
 
         public override bool Equals(object obj)

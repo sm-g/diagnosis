@@ -20,7 +20,7 @@ namespace Diagnosis.Models.Tests
             Assert.IsTrue(new[] { 1, 2, 3 }.Select(x => uom[x]).Select(x => x.Type).Distinct().Count() == 1);
         }
 
-        #region Equality
+        #region Equality and compare
 
         [TestMethod]
         public void OnlyValue()
@@ -37,6 +37,8 @@ namespace Diagnosis.Models.Tests
             var m2 = new Measure(0);
             Assert.IsTrue(m == m2);
             Assert.AreEqual(0, m.CompareTo(m2));
+            Assert.AreEqual(true, m.Equals(m2));
+
         }
 
         [TestMethod]
@@ -46,6 +48,7 @@ namespace Diagnosis.Models.Tests
             var m2 = new Measure(0, uom[1]);
             Assert.IsTrue(m == m2);
             Assert.AreEqual(0, m.CompareTo(m2));
+            Assert.AreEqual(true, m.Equals(m2));
         }
 
         [TestMethod]
@@ -55,6 +58,7 @@ namespace Diagnosis.Models.Tests
             var m2 = new Measure(0);
             Assert.IsTrue(m != m2);
             Assert.AreNotEqual(0, m.CompareTo(m2));
+            Assert.AreEqual(false, m.Equals(m2));
         }
 
         [TestMethod]
@@ -65,6 +69,7 @@ namespace Diagnosis.Models.Tests
             Assert.AreEqual(m, m2);
             Assert.IsTrue(m == m2);
             Assert.AreEqual(0, m.CompareTo(m2));
+            Assert.AreEqual(true, m.Equals(m2));
         }
 
         [TestMethod]
@@ -75,6 +80,7 @@ namespace Diagnosis.Models.Tests
             Assert.AreEqual(m, m2);
             Assert.IsTrue(m == m2);
             Assert.AreEqual(0, m.CompareTo(m2));
+            Assert.AreEqual(true, m.Equals(m2));
         }
 
         [TestMethod]
@@ -84,6 +90,7 @@ namespace Diagnosis.Models.Tests
             var m2 = new Measure(1, uom[2]) { Word = w };
             Assert.IsTrue(m != m2);
             Assert.AreNotEqual(0, m.CompareTo(m2));
+            Assert.AreEqual(false, m.Equals(m2));
         }
 
         [TestMethod]
@@ -93,6 +100,9 @@ namespace Diagnosis.Models.Tests
             var m2 = new Measure(0, uom[2]) { Word = w };
             Assert.IsTrue(m != m2);
             Assert.AreEqual(0, m.CompareTo(m2));
+            Assert.AreEqual(false, m.Equals(m2));
+
+            Assert.AreNotEqual(0, m.StrictCompareTo(m2));
         }
 
         [TestMethod]
@@ -102,6 +112,7 @@ namespace Diagnosis.Models.Tests
             var m2 = new Measure(0) { Word = w };
             Assert.IsTrue(m != m2);
             Assert.AreNotEqual(0, m.CompareTo(m2));
+            Assert.AreEqual(false, m.Equals(m2));
         }
 
         [TestMethod]
@@ -111,6 +122,7 @@ namespace Diagnosis.Models.Tests
             var m2 = new Measure(0, uom[1]) { Word = w };
             Assert.IsTrue(m != m2);
             Assert.AreNotEqual(0, m.CompareTo(m2));
+            Assert.AreEqual(false, m.Equals(m2));
         }
 
         [TestMethod]
@@ -120,6 +132,7 @@ namespace Diagnosis.Models.Tests
             var m2 = new Measure(0, uom[2]) { Word = w };
             Assert.IsTrue(m != m2);
             Assert.AreNotEqual(0, m.CompareTo(m2));
+            Assert.AreEqual(false, m.Equals(m2));
         }
 
         [TestMethod]
@@ -129,6 +142,7 @@ namespace Diagnosis.Models.Tests
             var m2 = new Measure(0, uom[4]);
             Assert.IsTrue(m != m2);
             Assert.AreNotEqual(0, m.CompareTo(m2));
+            Assert.AreEqual(false, m.Equals(m2));
         }
 
         [TestMethod]
@@ -139,6 +153,7 @@ namespace Diagnosis.Models.Tests
 
             Assert.IsTrue(m != m2);
             Assert.AreEqual(0, m.CompareTo(m2));
+            Assert.AreEqual(false, m.Equals(m2));
         }
 
         #endregion Equality
