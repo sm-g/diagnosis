@@ -1,3 +1,5 @@
+-- for sqlce - use IDENTITY_INSERT and no no-sql lines after split by semicolon
+
 -- '00000001-7000-0000-0000-000000000001'
 INSERT INTO HrCategory (ID, Title, Ord) VALUES ('00000001-7000-0000-0000-000000000001', 'Жалоба', 1);
 INSERT INTO HrCategory (ID, Title, Ord) VALUES ('00000002-7000-0000-0000-000000000002', 'История', 2);
@@ -18,19 +20,17 @@ INSERT INTO Uom (ID,Abbr,Factor,UomTypeID,Description) VALUES ('00000004-9000-00
 INSERT INTO Uom (ID,Abbr,Factor,UomTypeID,Description) VALUES ('00000005-9000-0000-0000-000000000005','нед',0.8451,'00000002-8000-0000-0000-000000000002','неделя');
 INSERT INTO Uom (ID,Abbr,Factor,UomTypeID,Description) VALUES ('00000006-9000-0000-0000-000000000006','мес',1.4771,'00000002-8000-0000-0000-000000000002','месяц');
 INSERT INTO Uom (ID,Abbr,Factor,UomTypeID,Description) VALUES ('00000007-9000-0000-0000-000000000007','г',2.5623,'00000002-8000-0000-0000-000000000002','год');
-
--- for sqlce - use IDENTITY_INSERT and no empty lines after split by semicolon
-
+;
 --SET IDENTITY_INSERT IcdChapter ON;
 INSERT INTO IcdChapter (ID, Code, Title) VALUES (1, 'I', 'Некоторые инфекционные и паразитарные болезни');
 INSERT INTO IcdChapter (ID, Code, Title) VALUES (5, 'IX', 'Болезни системы кровообращения');
 --SET IDENTITY_INSERT IcdChapter OFF;
-
+;
 --SET IDENTITY_INSERT IcdBlock ON;
 INSERT INTO IcdBlock (ID, Code, Title, ChapterID) VALUES (91, '(I00-I02)', 'Острая ревматическая лихорадка', 5);
 INSERT INTO IcdBlock (ID, Code, Title, ChapterID) VALUES (92, '(I05-I09)', 'Хронические ревматические болезни сердца', 5);
 --SET IDENTITY_INSERT IcdBlock OFF;
-
+;
 --SET IDENTITY_INSERT IcdDisease ON;
 INSERT INTO IcdDisease (ID, Code, Title, IcdBlockID) VALUES (1 , 'I00', 'Ревматическая лихорадка без упоминания о  вовлечении сердца', 91);
 INSERT INTO IcdDisease (ID, Code, Title, IcdBlockID) VALUES (2 , 'I01', 'Ревматическая лихорадка с вовлечением сердца', 91);

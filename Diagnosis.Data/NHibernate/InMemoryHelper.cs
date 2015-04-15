@@ -44,10 +44,14 @@ namespace Diagnosis.Data.NHibernate
             {
                 var sql = s.ReadToEnd();
 
+                var x1 = sql.Split(';')
+                        .Where(x => !string.IsNullOrWhiteSpace(x));
+
                 if (forSqlCe)
-                    return sql.Split(new[] { ";", "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries)
-                        .Select(x => x.StartsWith("--SET IDENTITY_INSERT")
-                            ? x.Remove(0, 2) // uncomment
+                    return sql.Split(';')
+                        .Where(x => !string.IsNullOrWhiteSpace(x))
+                        .Select(x => x.StartsWith("\r\n--SET IDENTITY_INSERT")
+                            ? x.Remove(0, 4) // uncomment
                             : x)
                         .TakeWhile(x => !(forServer && x.StartsWith("-- CLIENT")))
                         .ToArray();
