@@ -122,6 +122,19 @@ namespace Diagnosis.Tests.Model
         }
 
         [TestMethod]
+        public void RemoveOneOfDoulbeWords()
+        {
+            var hiosSequence = new IHrItemObject[] { w1, w1, com };
+            var hiosSequence2 = new IHrItemObject[] { w1, com };
+
+            hr1.SetItems(hiosSequence);
+            hr1.SetItems(hiosSequence2);
+
+            Assert.AreEqual(2, hr1.HrItems.Count);
+            Assert.IsTrue(hr1.GetOrderedEntities().Contains(w1));
+        }
+
+        [TestMethod]
         public void AddItemsWithDefaultConfidence()
         {
             var chiosSequence = new IHrItemObject[] { w1, w2, com }

@@ -288,23 +288,22 @@ namespace Diagnosis.Models
 
             var willSet = new OrderedBag<ConfindenceHrItemObject>(chiosToBe);
             var wasSet = new OrderedBag<ConfindenceHrItemObject>(hrChios);
-            var toA = willSet.Difference(wasSet);
-            var toR = wasSet.Difference(willSet);
 
             logger.DebugFormat("set HrItems. IHrItemObject was: {0}, will: {1}", wasSet.FlattenString(), willSet.FlattenString());
 
+            // items to be in Hr = this.HrItems - itemsToRem + itemsToAdd
+            var itemsToBe = new List<HrItem>();
             var itemsToRem = new List<HrItem>();
             var itemsToAdd = new List<HrItem>();
 
-            // items to be in Hr = this.HrItems - itemsToRem + itemsToAdd
-            var itemsToBe = new List<HrItem>();
-
             // добалвяем все существующие, чьи сущности не надо убирать
+            var toR = wasSet.Difference(willSet);
             for (int i = 0; i < hrChios.Count; i++)
             {
                 var needRem = toR.Contains(hrChios[i]);
                 if (needRem)
                 {
+                    toR.Remove(hrChios[i]);
                     itemsToRem.Add(this.HrItems.ElementAt(i));
                 }
                 else
@@ -313,6 +312,7 @@ namespace Diagnosis.Models
                 }
             }
             // добавляем новые
+            var toA = willSet.Difference(wasSet);
             foreach (var item in toA)
             {
                 var n = new HrItem(this, item.HIO) { Confidence = item.Confidence };
