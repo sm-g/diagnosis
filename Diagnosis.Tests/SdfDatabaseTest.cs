@@ -47,6 +47,11 @@ namespace Diagnosis.Tests
             // File.Copy("db.sdf", serverSdf, true);
 
             new SchemaExport(clCfg).Execute(false, true, false);
+            new SchemaExport(sCfg).Execute(false, true, false);
+
+            ClearCache(clFactory);
+            ClearCache(sFactory);
+
             clSession = clFactory.OpenSession();
             sSession = sFactory.OpenSession();
 
@@ -65,6 +70,14 @@ namespace Diagnosis.Tests
                 clSession.Dispose();
             File.Delete(clientSdf);
             File.Delete(serverSdf);
+        }
+        static void ClearCache(ISessionFactory factory)
+        {
+            factory.EvictQueries();
+            foreach (var collectionMetadata in factory.GetAllCollectionMetadata())
+                factory.EvictCollection(collectionMetadata.Key);
+            foreach (var classMetadata in factory.GetAllClassMetadata())
+                factory.EvictEntity(classMetadata.Key);
         }
     }
 }
