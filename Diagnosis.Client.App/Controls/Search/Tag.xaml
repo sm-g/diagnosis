@@ -13,7 +13,7 @@
              d:DesignWidth="300">
     <UserControl.Resources>
     </UserControl.Resources>
-
+    
     <DockPanel>
         <DockPanel.Style>
             <!--restore style-->
@@ -167,15 +167,19 @@
                     <Separator Visibility="{Binding ConvertToCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                     <MenuItem Header="Ключевое слово"
+                              InputGestureText="Ctrl+Alt+1"
                               CommandParameter="{x:Static diag:BlankType.Word}"
                               Style="{StaticResource convert}" />
                     <MenuItem Header="Комментарий"
+                              InputGestureText="Ctrl+Alt+2"
                               CommandParameter="{x:Static diag:BlankType.Comment}"
                               Style="{StaticResource convert}" />
                     <MenuItem Header="МКБ..."
+                              InputGestureText="Ctrl+Alt+3"
                               CommandParameter="{x:Static diag:BlankType.Icd}"
                               Style="{StaticResource convert}" />
                     <MenuItem Header="Измерение..."
+                              InputGestureText="Ctrl+Alt+4"
                               CommandParameter="{x:Static diag:BlankType.Measure}"
                               Style="{StaticResource convert}" />
 

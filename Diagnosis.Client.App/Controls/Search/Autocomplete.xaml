@@ -34,6 +34,19 @@
                         Command="{Binding DataContext.SendToSearchCommand,ElementName=autocomplete}" />
             <MouseBinding MouseAction="LeftDoubleClick"
                           Command="{Binding EditCommand}" />
+
+            <KeyBinding Gesture="Control+Alt+1"
+                        Command="{Binding ConvertToCommand}"
+                        CommandParameter="{x:Static diag:BlankType.Word}" />
+            <KeyBinding Gesture="Control+Alt+2"
+                        Command="{Binding ConvertToCommand}"
+                        CommandParameter="{x:Static diag:BlankType.Comment}" />
+            <KeyBinding Gesture="Control+Alt+3"
+                        Command="{Binding ConvertToCommand}"
+                        CommandParameter="{x:Static diag:BlankType.Icd}" />
+            <KeyBinding Gesture="Control+Alt+4"
+                        Command="{Binding ConvertToCommand}"
+                        CommandParameter="{x:Static diag:BlankType.Measure}" />
         </InputBindingCollection>
         <InputBindingCollection x:Shared="False"
                                 x:Key="SuggestionInputBindings">
