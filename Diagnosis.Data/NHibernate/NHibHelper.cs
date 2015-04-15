@@ -229,35 +229,27 @@ namespace Diagnosis.Data
         {
             if (_session == null)
             {
-                //ExportSchemaToFile(Configuration);
-                _session = SessionFactory.OpenSession();
-                _session.FlushMode = FlushMode.Commit;
-
-                if (InMemory)
-                    InMemoryHelper.FillData(Configuration, _session);
+                _session = OpenSession();
             }
             return _session;
         }
 
         public ISession OpenSession()
         {
+            //ExportSchemaToFile(Configuration);
             var s = SessionFactory.OpenSession();
             s.FlushMode = FlushMode.Commit;
 
             if (InMemory)
+            {
+                new SchemaExport(Configuration).Execute(false, true, false, s.Connection, null);
                 InMemoryHelper.FillData(Configuration, s);
+            }
             if (FromTest) // same session in VMBase
                 _session = s;
             return s;
         }
 
-        public IStatelessSession OpenStatelessSession()
-        {
-            var s = SessionFactory.OpenStatelessSession();
-            if (InMemory)
-                InMemoryHelper.FillData(Configuration, s);
-            return s;
-        }
         private Configuration LoadConfiguration()
         {
             if (InMemory || IsConfigurationFileValid == false || !useSavedCfg)

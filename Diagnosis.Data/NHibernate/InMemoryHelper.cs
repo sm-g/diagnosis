@@ -14,8 +14,6 @@ namespace Diagnosis.Data.NHibernate
     {
         public static void FillData(Configuration cfg, dynamic session, bool server = false)
         {
-            new SchemaExport(cfg).Execute(false, true, false, session.Connection, null);
-
             var isSqlite = cfg.GetProperty(Environment.Dialect) == typeof(SQLiteDialect).AssemblyQualifiedName;
 
             using (ITransaction tx = session.BeginTransaction())
