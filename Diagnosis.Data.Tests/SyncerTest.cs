@@ -8,8 +8,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHibernate.Linq;
 using System;
 using System.Linq;
-using System.Linq;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Diagnosis.Data.Tests

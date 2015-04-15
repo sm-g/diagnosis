@@ -13,17 +13,15 @@ namespace Diagnosis.Tests
     [TestClass]
     public abstract class InMemoryDatabaseTest : DbTest
     {
-        public InMemoryDatabaseTest()
+        [TestInitialize]
+        public void InMemoryDatabaseTestInit()
         {
+            Diagnosis.Data.Mappings.Helper.Reset();
             NHibernateHelper.Default.InMemory = true;
             NHibernateHelper.Default.ShowSql = true;
             NHibernateHelper.Default.FromTest = true;
             Constants.IsClient = true;
-        }
 
-        [TestInitialize]
-        public void InMemoryDatabaseTestInit()
-        {
             session = NHibernateHelper.Default.OpenSession();
         }
 

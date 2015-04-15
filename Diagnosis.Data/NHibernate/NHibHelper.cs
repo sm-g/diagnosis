@@ -80,7 +80,17 @@ namespace Diagnosis.Data
 
         private HbmMapping Mapping
         {
-            get { return _mapping ?? (_mapping = CreateMapping()); }
+            get
+            {
+                if (_mapping == null)
+                {
+                    var provider = connection == null
+                        ? Constants.SqliteProvider // inmem
+                        : connection.ProviderName;
+                    _mapping = CreateMapping(provider);
+                }
+                return _mapping;
+            }
         }
 
         private ISessionFactory SessionFactory
@@ -119,8 +129,11 @@ namespace Diagnosis.Data
             return instance;
         }
 
-        public static HbmMapping CreateMapping()
+        public static HbmMapping CreateMapping(string provider)
         {
+            if (provider == Constants.SqliteProvider)
+                Helper.MappingForSqlite = true;
+
             var mapper = new ModelMapper();
             var mapType = typeof(WordMap);
             var assemblyContainingMapping = Assembly.GetAssembly(mapType);
@@ -219,7 +232,7 @@ namespace Diagnosis.Data
                 connection = null;
                 return false;
             }
-            if (InMemory)
+            if (inmem)
                 return false;
             connection = new ConnectionInfo(conn.ConnectionString, conn.ProviderName);
             return true;
@@ -240,7 +253,7 @@ namespace Diagnosis.Data
             var s = SessionFactory.OpenSession();
             s.FlushMode = FlushMode.Commit;
 
-            if (InMemory)
+            if (inmem)
             {
                 new SchemaExport(Configuration).Execute(false, true, false, s.Connection, null);
                 InMemoryHelper.FillData(Configuration, s);
@@ -252,7 +265,7 @@ namespace Diagnosis.Data
 
         private Configuration LoadConfiguration()
         {
-            if (InMemory || IsConfigurationFileValid == false || !useSavedCfg)
+            if (inmem || IsConfigurationFileValid == false || !useSavedCfg)
                 return null;
             try
             {
@@ -270,7 +283,7 @@ namespace Diagnosis.Data
 
         private void SaveConfiguration(Configuration cfg)
         {
-            if (InMemory || !useSavedCfg)
+            if (inmem || !useSavedCfg)
                 return;
 
             try

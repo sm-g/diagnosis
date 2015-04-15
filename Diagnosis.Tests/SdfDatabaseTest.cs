@@ -33,8 +33,12 @@ namespace Diagnosis.Tests
             SqlHelper.CreateSqlCeByPath(serverSdf);
             //  File.Copy("db.sdf", serverSdf, true);
 
-            clCfg = NHibernateHelper.CreateConfiguration(clientCon, NHibernateHelper.CreateMapping(), true);
-            sCfg = NHibernateHelper.CreateConfiguration(serverCon, NHibernateHelper.CreateMapping(), true);
+            Diagnosis.Data.Mappings.Helper.Reset();
+            var clMap = NHibernateHelper.CreateMapping(clientCon.ProviderName);
+            var sMap = NHibernateHelper.CreateMapping(serverCon.ProviderName);
+
+            clCfg = NHibernateHelper.CreateConfiguration(clientCon, clMap, true);
+            sCfg = NHibernateHelper.CreateConfiguration(serverCon, sMap, true);
             clFactory = clCfg.BuildSessionFactory();
             sFactory = sCfg.BuildSessionFactory();
         }

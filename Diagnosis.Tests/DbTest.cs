@@ -1,12 +1,11 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Data;
 using Diagnosis.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHibernate;
 using NHibernate.Linq;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Diagnosis.Tests
 {
@@ -67,10 +66,12 @@ namespace Diagnosis.Tests
             { typeof(VocabularyWords),       "00000{0:000}-1400-0000-0000-000000000{0:000}" },
             { typeof(SpecialityVocabularies),"00000{0:000}-1500-0000-0000-000000000{0:000}" },
         };
+
         static DbTest()
         {
             Diagnosis.Models.EntityExtensions.ShortIdsFromEnd = true;
         }
+
         protected void Load<T>()
         {
             var @switch = new Dictionary<Type, Action> {
@@ -100,6 +101,7 @@ namespace Diagnosis.Tests
             else
                 throw new NotImplementedException();
         }
+
         protected Guid IntToGuid<T>(int id) where T : EntityBase<Guid>
         {
             string format;
@@ -107,7 +109,6 @@ namespace Diagnosis.Tests
                 return Guid.Parse(string.Format(format, id));
             throw new ArgumentOutOfRangeException();
         }
-
 
         protected IList<string> GetWordTitles()
         {

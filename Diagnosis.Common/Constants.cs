@@ -14,6 +14,7 @@ namespace Diagnosis.Common
         private static string _localAppDataDir;
 
         public const string SqlCeProvider = "System.Data.SqlServerCE.4.0";
+        public const string SqliteProvider = "System.Data.SQLite";
         public const string SqlServerProvider = "System.Data.SqlClient";
 
         public static string serverConStrName = "server";
