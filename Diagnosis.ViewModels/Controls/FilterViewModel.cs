@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Controls
 {
-    public class FilterViewModel<T> : ViewModelBase, IFilter<T> where T : class
+    public class FilterViewModel<T> : ViewModelBase, IFilter<T>
     {
         private readonly Func<string, IEnumerable<T>> finder;
         private string _query;
