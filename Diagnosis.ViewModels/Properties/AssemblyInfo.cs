@@ -19,6 +19,7 @@ using System.Windows.Markup;
 [assembly: Guid("6d694dfc-b839-4ccd-bd84-9e3b14b961d2")]
 
 [assembly: InternalsVisibleTo("Diagnosis.Tests")]
+[assembly: InternalsVisibleTo("Diagnosis.ViewModels.Tests")]
 
 [assembly: XmlnsPrefix("http://schemas.smg.com/diagnosis", "diag")]
 [assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels.Screens")]
