@@ -1,12 +1,10 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Common.Types;
-using PixelMEDIA.PixelCore.Helpers;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 
 namespace Diagnosis.Models
 {
@@ -18,10 +16,13 @@ namespace Diagnosis.Models
     {
         [NonSerialized]
         private int? cachedHashCode;
+
         [NonSerialized]
         private EditableObjectHelper _editHelper;
+
         [NonSerialized]
         private object _syncRoot = new object();
+
         [NonSerialized]
         private bool? wasChangedBeforeEdit;
 
@@ -138,7 +139,6 @@ namespace Diagnosis.Models
             }
         }
 
-
         public override bool Equals(object obj)
         {
             return EntityEquals(obj as EntityBase<TId>);
@@ -182,6 +182,7 @@ namespace Diagnosis.Models
             OnPropertyChanged(propertyName);
             return true;
         }
+
         /// <summary>
         /// Edits, sets the property and notifies listeners only when necessary.
         /// </summary>
@@ -193,6 +194,12 @@ namespace Diagnosis.Models
             storage = value;
             OnPropertyChanged(propertyExpression);
             return true;
+        }
+
+        [OnDeserialized]
+        private void OnDeserializedMethod(StreamingContext context)
+        {
+            _syncRoot = new object();
         }
     }
 }

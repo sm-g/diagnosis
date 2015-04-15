@@ -298,12 +298,12 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-        public void Sync(IList<ConfindenceHrItemObject> hios)
+        public void SyncAfterPaste(IList<ConfindenceHrItemObject> hios)
         {
-            hios.Sync(session, (w) => SyncTransientWord(w));
+            hios.SyncAfterPaste(session);
         }
 
-        public Word SyncTransientWord(Word word)
+        public static Word GetWordFromCreated(Word word)
         {
             Contract.Requires(word != null);
 

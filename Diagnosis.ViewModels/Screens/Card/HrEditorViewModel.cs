@@ -285,15 +285,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public Word SyncTransientWord(Word w)
-        {
-            if (recognizer != null)
-            {
-                return recognizer.SyncTransientWord(w);
-            }
-            return w;
-        }
-
         /// <summary>
         /// Создает автокомплит с начальными словами и комментами из редактируемой записи.
         /// </summary>
@@ -457,7 +448,7 @@ namespace Diagnosis.ViewModels.Screens
 
                 var hr = HealthRecord.healthRecord;
 
-               
+
 
                 HealthRecord.Dispose();
 

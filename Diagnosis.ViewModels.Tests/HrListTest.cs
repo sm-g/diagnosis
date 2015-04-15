@@ -225,7 +225,23 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void CutDeleteNewWordPaste()
+        public void CopyPasteHrWithIcd()
+        {
+            Load<IcdDisease>();
+            Open(a[3]);
+
+            card.HrList.SelectHealthRecord(hr[31]);
+            card.HrList.Copy();
+            card.HrList.Paste();
+
+            var pastedHr = card.HrList.SelectedHealthRecord.healthRecord;
+            var pastedIcd = pastedHr.GetOrderedEntities().FirstOrDefault(x => x.Equals(icd[1])) as IcdDisease;
+            Assert.IsTrue(pastedIcd != null);
+            Assert.AreEqual(icd[1].IcdBlock, pastedIcd.IcdBlock);
+        }
+
+        [TestMethod]
+        public void CutDeletePastePersistedWord()
         {
             var w = new Word("11");
 
@@ -557,6 +573,12 @@ namespace Diagnosis.ViewModels.Tests
         {
             card.Dispose();
             card = new CardViewModel(a[5], true);
+        }
+
+        private void Open(IHrsHolder h)
+        {
+            card.Dispose();
+            card = new CardViewModel(h, true);
         }
     }
 }

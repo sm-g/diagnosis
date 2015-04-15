@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Data;
 using Diagnosis.Models;
 using Diagnosis.Models.Enums;
+using Diagnosis.ViewModels.Autocomplete;
 using NHibernate;
 using System;
 using System.Collections.Generic;
@@ -14,26 +15,35 @@ namespace Diagnosis.ViewModels
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Extensions));
         /// <summary>
-        /// 
+        /// После вставки десериализованных hio
+        /// нужно использовать существующие сущности (Word, IcdDisease),
+        /// Comment - valueobject, в Measure меняем Word, а Uom не может быть удален между копированием и вставкой
         /// </summary>
         /// <param name="hios"></param>
         /// <param name="session"></param>
-        /// <param name="syncTransientWord"></param>
-        public static void Sync(this IList<ConfindenceHrItemObject> hios, ISession session, Func<Word, Word> syncTransientWord)
+        public static void SyncAfterPaste(this IList<ConfindenceHrItemObject> hios, ISession session)
         {
             Func<Word, Word> syncWord = (word) =>
             {
                 Word res = null;
-                if (word.IsTransient)
-                    res = syncTransientWord(word);
-                else
-                    res = session.Get<Word>(word.Id);
+                if (word.IsTransient) // новое может быть в автокомплите
+                    res = Recognizer.GetWordFromCreated(word);
+
+                if (res == null) // пробуем достать из БД
+                    using (var tr = session.BeginTransaction())
+                    {
+                        res = session.Get<Word>(word.Id);
+                    }
                 if (res == null)
                 {
-                    // скопировано и не сохранено / удалено
-                    // скопированно новое в поиск - после WordPersisted можно будет найти
                     logger.WarnFormat("Word not synced: {0}, recreate", word);
-                    res = new Word(word.Title); // добавляется в словарь при сохранении записи
+                    // новое было сохранено после копирования / сменился доктор - нет в автокомплите
+                    // или сохраненое было удалено из БД
+
+                    // вставили запись/тег с этим словом - которого нет нигде
+
+                    // если вставлено в редактор записи - будет сохранено
+                    res = new Word(word.Title);
                 }
                 return res;
             };
@@ -43,7 +53,6 @@ namespace Diagnosis.ViewModels
                 if (hios[i].HIO is Word)
                 {
                     hios[i].HIO = syncWord(hios[i].HIO as Word);
-                    // Console.WriteLine((hios[i] as Diagnosis.Models.Word).Equals(word.Actual)); false!
                 }
                 else if (hios[i].HIO is Measure)
                 {
@@ -51,6 +60,14 @@ namespace Diagnosis.ViewModels
                     if (m.Word != null)
                     {
                         m.Word = syncWord(m.Word);
+                    }
+                }
+                else if (hios[i].HIO is IcdDisease)
+                {
+                    var icd = hios[i].HIO as IcdDisease;
+                    using (var tr = session.BeginTransaction())
+                    {
+                        hios[i].HIO = session.Get<IcdDisease>(icd.Id); // МКБ точно есть в БД
                     }
                 }
             }

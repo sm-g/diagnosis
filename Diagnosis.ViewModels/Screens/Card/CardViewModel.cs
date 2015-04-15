@@ -349,11 +349,14 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     // заполняем после вставки записи
 
-                    hrInfo.Chios.Sync(Session, (w) => HrEditor.SyncTransientWord(w));
+                    hrInfo.Chios.SyncAfterPaste(Session);
 
                     if (hrInfo.CategoryId != null)
                     {
-                        hr.Category = Session.Get<HrCategory>(hrInfo.CategoryId.Value);
+                        using (var tr = Session.BeginTransaction())
+                        {
+                            hr.Category = Session.Get<HrCategory>(hrInfo.CategoryId.Value);
+                        }
                     }
                     hr.FromDate.FillDateAndNowFrom(hrInfo.From);
                     hr.ToDate.FillDateAndNowFrom(hrInfo.To);
@@ -366,10 +369,8 @@ namespace Diagnosis.ViewModels.Screens
                     hr.Unit = unit;
                     hr.SetItems(hrInfo.Chios);
                 }, (hios) =>
-                {
-                    // после вставки тегов c новыми словами десериализованные слова 
-                    // сравниваются не по ID, а по сслыке, заменяем их на существующие
-                    hios.Sync(Session, (w) => HrEditor.SyncTransientWord(w));
+                {                    
+                    hios.SyncAfterPaste(Session);
                 });
 
                 HrViewColumn gr;

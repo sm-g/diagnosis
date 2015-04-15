@@ -77,7 +77,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             var index = Tags.IndexOf(SelectedTag);
             SelectedTags.ForEach(t => t.IsSelected = false);
 
-            recognizer.Sync(data.ItemObjects);
+            recognizer.SyncAfterPaste(data.ItemObjects);
 
             foreach (var item in data.ItemObjects)
             {

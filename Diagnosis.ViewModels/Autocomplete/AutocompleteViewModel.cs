@@ -47,12 +47,12 @@ namespace Diagnosis.ViewModels.Autocomplete
             this.mode = mode;
         }
 
-        public AutocompleteViewModel(Recognizer recognizer, 
-            bool allowTagConvertion, 
-            bool allowSendToSearch, 
-            bool allowConfidenceToggle, 
-            bool singleTag, 
-            bool measureEditorWithCompare, 
+        public AutocompleteViewModel(Recognizer recognizer,
+            bool allowTagConvertion,
+            bool allowSendToSearch,
+            bool allowConfidenceToggle,
+            bool singleTag,
+            bool measureEditorWithCompare,
             IEnumerable<ConfindenceHrItemObject> initItems)
         {
             Contract.Requires(recognizer != null);
@@ -77,7 +77,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             };
             hanlder = this.Subscribe(Event.WordPersisted, (e) =>
             {// TODO двжды здесь?
-                // созданные слова можно искать из поиска
+                // созданные слова можно искать из поиска, убираем сигнал "новое" после сохранения слова
                 var word = e.GetValue<Word>(MessageKeys.Word);
                 Tags.Where(t => (t.Blank as Word) == word)
                     .ForAll(t => t.Validate());
