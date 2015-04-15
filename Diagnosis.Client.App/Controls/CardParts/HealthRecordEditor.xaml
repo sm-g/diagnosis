@@ -34,6 +34,10 @@
                     CommandParameter="{StaticResource False}" />
         <KeyBinding Gesture="Control+S"
                     Command="{Binding CloseCommand}" />
+        <KeyBinding Gesture="Control+3"
+                    Command="{Binding AddIcdCommand}" />
+        <KeyBinding Gesture="Control+4"
+                    Command="{Binding AddMeasureCommand}" />
     </UserControl.InputBindings>
     <Grid x:Name="grid"
           AllowDrop="True"
@@ -138,16 +142,17 @@
                         <diag:AutoGreyableImage Source="{StaticResource completionModeImage}" />
                     </DockPanel>
                 </ToggleButton>
+                <Separator />
                 <Button Command="{Binding AddIcdCommand}"
-                        ToolTip="Добавить МКБ">
+                        ToolTip="Добавить МКБ (Ctrl+3)">
                     <DockPanel>
                         <TextBlock Text="МКБ" />
                     </DockPanel>
                 </Button>
                 <Button Command="{Binding AddMeasureCommand}"
-                        ToolTip="Добавить измерение">
+                        ToolTip="Добавить измерение (Ctrl+4)">
                     <DockPanel>
-                        <TextBlock Text="измерение" />
+                        <TextBlock Text="Измерение" />
                     </DockPanel>
                 </Button>
             </ToolBar>
