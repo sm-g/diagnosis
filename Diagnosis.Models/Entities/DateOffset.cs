@@ -308,6 +308,16 @@ namespace Diagnosis.Models
             OnPropertyChanged("Year", "Month", "Day");
         }
 
+        public void FillDateAndNowFrom(DateOffset d)
+        {
+            Contract.Requires(d != null);
+
+            SetDate(d.Year, d.Month, d.Day);
+            OnPropertyChanged("Year", "Month", "Day");
+
+            Now = d.Now;
+        }
+
         public void FillDateDownTo(DateTime dt, DateUnit value)
         {
             //if (value <= DateUnit.Year)

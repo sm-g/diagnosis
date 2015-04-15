@@ -310,7 +310,7 @@ namespace Diagnosis.ViewModels.Tests
 
             Assert.AreEqual(hr[20].Doctor, new20.Doctor); // или новый автор?
             Assert.AreNotEqual(hr[20].CreatedAt, new20.CreatedAt);
-            // Assert.AreNotEqual(hr[20].UpdatedAt, new20.UpdatedAt);
+            Assert.AreNotEqual(hr[20].UpdatedAt, new20.UpdatedAt);
         }
 
         #endregion CurCopyPaste
