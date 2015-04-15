@@ -94,32 +94,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\FluentNHibernate.1.4.0.0\lib\net35\FluentNHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="GongSolutions.Wpf.DragDrop, Version=0.1.4.3, Culture=neutral, PublicKeyToken=d19974ea350ccea1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\GongSolutions.Wpf.DragDrop.dll</HintPath>
-    </Reference>
-    <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Iesi.Collections.3.3.3.4001\lib\Net35\Iesi.Collections.dll</HintPath>
-    </Reference>
+    <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL" />
     <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Synchronization, Version=2.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Synchronization.Data, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Synchronization.Data.SqlServer, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Synchronization.Data.SqlServerCe, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
-    <Reference Include="NHibernate, Version=3.3.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NHibernate.3.3.3.4001\lib\Net35\NHibernate.dll</HintPath>
-    </Reference>
-    <Reference Include="PowerCollections, Version=1.0.5428.35854, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\PowerCollections.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
+    <Reference Include="NHibernate, Version=3.3.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite">
@@ -129,7 +109,6 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.SqlServer.Compact.4.0.8876.1\lib\net40\System.Data.SqlServerCe.dll</HintPath>
     </Reference>
-    <Reference Include="System.Net" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -147,53 +126,15 @@
     <Compile Include="..\GeneralAssemblyInfo.cs">
       <Link>Properties\GeneralAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Common\DateHelperTest.cs" />
-    <Compile Include="Common\DateOffsetFormatterTest.cs" />
-    <Compile Include="Common\TimeSpanFormatterTest.cs" />
-    <Compile Include="Common\EnumerableExtensionsTest.cs" />
-    <Compile Include="Data\QueryTest.cs" />
     <Compile Include="DbTest.cs" />
-    <Compile Include="Model\DateOffsetTest.cs" />
-    <Compile Include="Model\RelationsTest.cs" />
-    <Compile Include="Data\SyncerTest.cs" />
-    <Compile Include="Data\VocLoaderTest.cs" />
-    <Compile Include="Data\ScopesTest.cs" />
     <Compile Include="SdfDatabaseTest.cs" />
-    <Compile Include="Model\DoctorTest.cs" />
-    <Compile Include="Model\CourseTest.cs" />
-    <Compile Include="Model\MeasureTest.cs" />
-    <Compile Include="Model\HrItemTest.cs" />
-    <Compile Include="Model\HealthRecordTest.cs" />
-    <Compile Include="Model\HrCategoryTest.cs" />
-    <Compile Include="Model\VocabularyTest.cs" />
-    <Compile Include="ViewModels\DateOffsetVMTest.cs" />
-    <Compile Include="ViewModels\FilterTest.cs" />
-    <Compile Include="ViewModels\AutocompleteTest.cs" />
-    <Compile Include="ViewModels\ViewModelTest.cs" />
-    <Compile Include="ViewModels\VocabularySyncTest.cs" />
-    <Compile Include="ViewModels\HrListTest.cs" />
-    <Compile Include="ViewModels\CardTest.cs" />
-    <Compile Include="Common\DateFormatterTest.cs" />
-    <Compile Include="Data\PersistTest.cs" />
     <Compile Include="InMemoryDatabaseTest.cs" />
-    <Compile Include="Model\PatientTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="Data\HrQueryTest.cs" />
-    <Compile Include="Common\StringExtensionTest.cs" />
-    <Compile Include="ViewModels\HrEditorTest.cs" />
-    <Compile Include="Common\OrderedBagTest.cs" />
-    <Compile Include="ViewModels\RecognizerTest.cs" />
-    <Compile Include="ViewModels\SearchTest.cs" />
-    <Compile Include="ViewModels\WordListTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Diagnosis.Client.App\Diagnosis.Client.App.csproj">
-      <Project>{d7949590-a383-4e34-9c06-a2568db5cdb6}</Project>
-      <Name>Diagnosis.Client.App</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Diagnosis.Common\Diagnosis.Common.csproj">
       <Project>{a91ad3b7-cb0f-426c-a539-1cffc13df0ee}</Project>
       <Name>Diagnosis.Common</Name>
@@ -207,7 +148,7 @@
       <Name>Diagnosis.Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\Diagnosis.ViewModels\Diagnosis.ViewModels.csproj">
-      <Project>{2206a771-0a27-41f2-81e2-d131d95c6862}</Project>
+      <Project>{2206A771-0A27-41F2-81E2-D131D95C6862}</Project>
       <Name>Diagnosis.ViewModels</Name>
     </ProjectReference>
   </ItemGroup>

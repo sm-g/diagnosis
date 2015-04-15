@@ -1,7 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHibernate;
 using NHibernate.Linq;
