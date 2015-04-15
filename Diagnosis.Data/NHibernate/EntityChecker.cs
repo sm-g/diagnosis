@@ -27,6 +27,11 @@ namespace Diagnosis.Data
 
         public void Load(IEntity entity)
         {
+            if (entity is HealthRecord)
+            {
+                var hr = entity as HealthRecord;
+                hr.FixDescribedAtAfterLoad();
+            }
         }
     }
 }

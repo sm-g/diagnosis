@@ -26,6 +26,7 @@ namespace Diagnosis.Models
         private DateOffset _fromDate;
         private DateOffset _toDate;
         private int _ord;
+        private bool loaded;
 
         public HealthRecord(Appointment appointment, Doctor author)
             : this()
@@ -62,7 +63,6 @@ namespace Diagnosis.Models
             _createdAt = DateTime.Now;
             _updatedAt = _createdAt;
             _describedAt = _createdAt;
-
         }
 
         /// <summary>
@@ -122,6 +122,7 @@ namespace Diagnosis.Models
                 SetProperty(ref _category, value, () => Category);
             }
         }
+
         public virtual DateOffset FromDate
         {
             get { return _fromDate ?? (_fromDate = new DateOffset(null, null, null, () => DescribedAt)); }
@@ -133,7 +134,7 @@ namespace Diagnosis.Models
                     {
                         if (e.PropertyName == "Year" && _fromDate.IsEmpty)
                         {
-                            // не может быть только ToDate
+                            // не может быть только ToDate - test
                             ToDate.Year = null;
                         }
                     };
@@ -149,7 +150,6 @@ namespace Diagnosis.Models
                 SetProperty(ref _toDate, value, () => ToDate);
             }
         }
-
 
         /// <summary>
         /// Дата описания события.
@@ -397,6 +397,21 @@ namespace Diagnosis.Models
             return res;
         }
 
+        protected internal virtual void OnDelete()
+        {
+            this.Words.ForEach(x => x.RemoveHr(this));
+            Doctor.RemoveHr(this);
+        }
+
+        protected internal virtual void FixDescribedAtAfterLoad()
+        {
+            // Nhibernate components cannot use shared field
+            // So after load set DateOffset.Now manually
+            ToDate.Now = DescribedAt;
+            FromDate.Now = DescribedAt;
+            loaded = true;
+        }
+
         protected virtual void OnItemsChanged(NotifyCollectionChangedEventArgs e)
         {
             var h = ItemsChanged;
@@ -445,18 +460,11 @@ namespace Diagnosis.Models
                 }
             }
         }
-
-        protected internal virtual void OnDelete()
-        {
-            this.Words.ForEach(x => x.RemoveHr(this));
-            Doctor.RemoveHr(this);
-        }
-
         [ContractInvariantMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            Contract.Invariant(ToDate.Now == FromDate.Now);
+            Contract.Invariant(!loaded || ToDate.Now == FromDate.Now);
         }
     }
 }
