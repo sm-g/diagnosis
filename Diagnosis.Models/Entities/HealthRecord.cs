@@ -125,11 +125,20 @@ namespace Diagnosis.Models
 
         public virtual DateOffset FromDate
         {
-            get { return _fromDate ?? (_fromDate = new DateOffset(null, null, null, () => DescribedAt)); }
+            get
+            {
+                if (_fromDate == null)
+                {
+                    _fromDate = new DateOffset(null, null, null, () => DescribedAt);
+                    _fromDate.PropertyChanged += date_PropertyChanged;
+                }
+                return _fromDate;
+            }
             protected set
             {
                 if (SetProperty(ref _fromDate, value, () => FromDate) && _fromDate != null)
                 {
+                    _fromDate.PropertyChanged += date_PropertyChanged;
                     _fromDate.PropertyChanged += (s, e) =>
                     {
                         if (e.PropertyName == "Year" && _fromDate.IsEmpty)
@@ -144,10 +153,21 @@ namespace Diagnosis.Models
 
         public virtual DateOffset ToDate
         {
-            get { return _toDate ?? (_toDate = new DateOffset(null, null, null, () => DescribedAt)); }
+            get
+            {
+                if (_toDate == null)
+                {
+                    _toDate = new DateOffset(null, null, null, () => DescribedAt);
+                    _toDate.PropertyChanged += date_PropertyChanged;
+                }
+                return _toDate;
+            }
             protected set
             {
-                SetProperty(ref _toDate, value, () => ToDate);
+                if (SetProperty(ref _toDate, value, () => ToDate) && _toDate != null)
+                {
+                    _toDate.PropertyChanged += date_PropertyChanged;
+                };
             }
         }
 
@@ -460,6 +480,13 @@ namespace Diagnosis.Models
                 }
             }
         }
+
+        private void date_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (InEdit)
+                IsDirty = true;
+        }
+
         [ContractInvariantMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
