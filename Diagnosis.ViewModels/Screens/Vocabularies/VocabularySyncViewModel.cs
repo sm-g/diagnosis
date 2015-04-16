@@ -271,17 +271,18 @@ namespace Diagnosis.ViewModels.Screens
             MakeInstalledVms();
             try
             {
+                int available;
                 using (var s = nhib.OpenSession())
                 using (var tr = s.BeginTransaction())
                 {
                     serverVocs = s.Query<Vocabulary>()
                        .ToList();
 
-                    MakeAvailableVms();
+                    available = MakeAvailableVms();
                     tr.Commit();
                 }
                 IsConnected = true;
-                NoAvailableVocs = AvailableVocs.Count == 0;
+                NoAvailableVocs = available == 0;
             }
             catch (System.Exception)
             {
@@ -292,7 +293,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private void MakeInstalledVms()
+        private int MakeInstalledVms()
         {
             var vms = VocabularyQuery.NonCustom(Session)()
                 .Select(voc => Vocs
@@ -302,9 +303,11 @@ namespace Diagnosis.ViewModels.Screens
 
             uiTaskFactory.StartNew(() =>
                 Vocs.SyncWith(vms));
+
+            return vms.Count();
         }
 
-        private void MakeAvailableVms()
+        private int MakeAvailableVms()
         {
             var ids = Session.Query<Vocabulary>().Select(y => y.Id).ToList();
             var notInstalled = serverVocs
@@ -317,6 +320,8 @@ namespace Diagnosis.ViewModels.Screens
 
             uiTaskFactory.StartNew(() =>
                AvailableVocs.SyncWith(vms));
+
+            return vms.Count();
         }
         private void syncer_MessagePosted(object sender, StringEventArgs e)
         {
