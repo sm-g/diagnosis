@@ -1,4 +1,5 @@
-﻿using FluentMigrator;
+﻿using Diagnosis.Common;
+using FluentMigrator;
 using System;
 using System.Linq;
 
@@ -8,6 +9,12 @@ namespace Diagnosis.Data.Versions.Client
     public class AddHrToDateDescribedAt : SyncronizedMigration
     {
         // существующие DescribedAt = createdAt
+
+        public AddHrToDateDescribedAt()
+            : base(Constants.SqlCeProvider)
+        {
+        }
+
         public override string[] UpTables
         {
             get

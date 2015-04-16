@@ -7,7 +7,12 @@ namespace Diagnosis.Data.Versions
 {
     public abstract class SyncronizedMigration : Migration
     {
-        protected string Provider;
+        protected readonly string Provider;
+
+        public SyncronizedMigration(string provider)
+        {
+            Provider = provider;
+        }
 
         public virtual string[] UpTables { get { return new string[] { }; } }
 

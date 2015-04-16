@@ -11,8 +11,8 @@ namespace Diagnosis.Data.Versions.Client.Off
     public class UomHrCatSpecialityGuidAndRemoveDefCat : SyncronizedMigration
     {
         public UomHrCatSpecialityGuidAndRemoveDefCat()
+            : base(Constants.SqlCeProvider)
         {
-            Provider = Constants.SqlCeProvider;
         }
 
         public override string[] UpTables

@@ -11,8 +11,8 @@ namespace Diagnosis.Data.Versions.Client.Off
     {
         private string ConfidenceCol = "Confidence";
         public AddHrItemConfidence()
+            : base(Constants.SqlCeProvider)
         {
-            Provider = Constants.SqlCeProvider;
         }
 
         public override string[] UpTables

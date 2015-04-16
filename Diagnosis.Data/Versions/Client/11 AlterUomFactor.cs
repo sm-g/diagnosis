@@ -9,8 +9,8 @@ namespace Diagnosis.Data.Versions.Client.Off
     public class AlterUomFactor : SyncronizedMigration
     {
         public AlterUomFactor()
+            : base(Constants.SqlCeProvider)
         {
-            Provider = Constants.SqlCeProvider;
         }
 
         public override string[] UpTables

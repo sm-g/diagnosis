@@ -9,8 +9,8 @@ namespace Diagnosis.Data.Versions.Client
     public class AlterUomTypeTitleLength : SyncronizedMigration
     {
         public AlterUomTypeTitleLength()
+            : base(Constants.SqlCeProvider)
         {
-            Provider = Constants.SqlCeProvider;
         }
 
         public override string[] UpTables

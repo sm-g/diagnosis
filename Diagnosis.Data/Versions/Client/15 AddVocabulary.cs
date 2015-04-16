@@ -15,8 +15,8 @@ namespace Diagnosis.Data.Versions.Client
         private const string alterAddPk = "ALTER TABLE {0} ADD CONSTRAINT PK__{0} PRIMARY KEY ([Id])";
 
         public AddVocabulary()
+            : base(Constants.SqlCeProvider)
         {
-            Provider = Constants.SqlCeProvider;
         }
 
         public override string[] UpTables
