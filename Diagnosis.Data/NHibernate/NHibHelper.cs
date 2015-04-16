@@ -265,7 +265,7 @@ namespace Diagnosis.Data
 
         private Configuration LoadConfiguration()
         {
-            if (inmem || IsConfigurationFileValid == false || !useSavedCfg)
+            if (inmem || !useSavedCfg || IsConfigurationFileValid == false)
                 return null;
             try
             {
