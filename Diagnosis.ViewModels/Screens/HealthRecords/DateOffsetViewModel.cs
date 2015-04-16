@@ -22,8 +22,8 @@ namespace Diagnosis.ViewModels
         private ShowAs? _firstSet;
         private int? _roundOffset;
         private Patient patient;
-
         private DatePickerViewModel _toDpVm;
+        private bool _inEdit;
 
         static DateOffsetViewModel()
         {
@@ -66,13 +66,29 @@ namespace Diagnosis.ViewModels
             AtAge
         }
 
-        public bool FixedIsTo { get; set; }
+        public bool IsClosedInterval { get { return hr.IsClosedInterval; } }
 
-        public bool IsClosedInterval { get { return to != from && !to.IsEmpty; } }
+        public bool IsOpenedInterval { get { return hr.IsOpenedInterval; } }
 
-        public bool IsOpenedInterval { get { return to != from && to.IsEmpty; } }
+        public bool IsPoint { get { return hr.IsPoint; } }
 
-        public bool IsPoint { get { return to == from; } }
+        public bool SetToWithFrom { get { return !OpenedInEditor && hr.IsPoint; } }
+
+        public bool OpenedInEditor
+        {
+            get
+            {
+                return _inEdit;
+            }
+            set
+            {
+                if (_inEdit != value)
+                {
+                    _inEdit = value;
+                    OnPropertyChanged(() => OpenedInEditor);
+                }
+            }
+        }
 
         public int? Offset
         {
@@ -91,7 +107,7 @@ namespace Diagnosis.ViewModels
                 }
                 else
                 {
-                    if (IsPoint)
+                    if (SetToWithFrom)
                         to.Offset = value;
                     from.Offset = value;
                 }
@@ -124,7 +140,7 @@ namespace Diagnosis.ViewModels
                 }
                 else
                 {
-                    if (IsPoint)
+                    if (SetToWithFrom)
                         to.Unit = value;
                     from.Unit = value;
                 }
@@ -144,7 +160,7 @@ namespace Diagnosis.ViewModels
                 if (from.Year != value)
                 {
                     FirstSet = ShowAs.Date;
-                    if (IsPoint)
+                    if (SetToWithFrom)
                         to.Year = value;
                     from.Year = value;
                     OnPropertyChanged(() => Year);
@@ -163,7 +179,7 @@ namespace Diagnosis.ViewModels
                 if (from.Month != value)
                 {
                     FirstSet = ShowAs.Date;
-                    if (IsPoint)
+                    if (SetToWithFrom)
                         to.Month = value;
                     from.Month = value;
                     OnPropertyChanged(() => Month);
@@ -182,7 +198,7 @@ namespace Diagnosis.ViewModels
                 if (from.Day != value)
                 {
                     FirstSet = ShowAs.Date;
-                    if (IsPoint)
+                    if (SetToWithFrom)
                         to.Day = value;
                     from.Day = value;
                     OnPropertyChanged(() => Day);

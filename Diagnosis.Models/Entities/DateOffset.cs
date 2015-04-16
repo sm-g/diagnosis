@@ -320,23 +320,17 @@ namespace Diagnosis.Models
 
         public void FillDateDownTo(DateTime dt, DateUnit value)
         {
-            //if (value <= DateUnit.Year)
-            //{
-            //    Year = dt.Year;
-            //}
-            //if (value <= DateUnit.Month)
-            //{
-            //    Month = dt.Month;
-            //}
-            //if (value <= DateUnit.Week)
-            //{
-            //    Day = dt.Day;
-            //}
-
             SetDate(dt.Year,
                 value != DateUnit.Year ? dt.Month : _month,
                 value != DateUnit.Year && value != DateUnit.Month ? dt.Day : _day);
             OnPropertyChanged("Year", "Month", "Day");
+        }
+
+        public void Clear()
+        {
+            Contract.Ensures(IsEmpty);
+
+            Year = null;
         }
 
         private DateUnit? CommonPartWith(DateOffset d)

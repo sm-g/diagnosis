@@ -30,7 +30,7 @@ namespace Diagnosis.ViewModels.Screens
 
             // в редакторе для даты-точки нет конца интервала
             if (hr.FromDate == hr.ToDate)
-                hr.ToDate.Year = null;
+                hr.ToDate.Clear();
 
             // показываем даты из записей этого же списка для быстрой вставки
             if (EventDate.FirstSet == null)
@@ -188,16 +188,19 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         // открыли редактор второй даты - в нем дата, введенная до закрытия
                         if (lastToDate != null)
-                        {
                             healthRecord.ToDate.FillDateFrom(lastToDate);
-                        }
+                        else
+                            healthRecord.ToDate.Clear();
+
                         // bind after
                         EventDate.To = new DateOffsetViewModel.DatePickerViewModel(EventDate);
+                        EventDate.OpenedInEditor = true;
                     }
                     else
                     {
                         lastToDate = new DateOffset(healthRecord.ToDate);
                         EventDate.To = null; // unbind ComboboxDatePicker DataContext;
+                        EventDate.OpenedInEditor = false;
 
                         healthRecord.ToDate.FillDateFrom(healthRecord.FromDate);
                     }

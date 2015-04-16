@@ -241,8 +241,8 @@
                                 </TextBlock>
                             </RadioButton>
                             <RadioButton IsChecked="{Binding ShowAsAge}"
-                                         IsEnabled="{Binding CanShowAsAge}"
-                                         Visibility="{Binding CanShowAsAge, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                         IsEnabled="{Binding EventDate.CanShowAsAge}"
+                                         Visibility="{Binding EventDate.CanShowAsAge, Converter={StaticResource BooleanToVisibilityConverter}}"
                                          Content="{Binding EventDate.AtAgeString}" />
                         </StackPanel>
                     </StackPanel>

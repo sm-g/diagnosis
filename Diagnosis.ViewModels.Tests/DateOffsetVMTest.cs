@@ -221,6 +221,13 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(offset, vm.Offset);
         }
 
+        [TestMethod]
+        public void ClosedIntervalClearNonFixed_FixedNotEmpty()
+        {
+            vm.ToYear = 2014;
+            vm.Year = null;
 
+            Assert.AreEqual(false, vm.ToIsEmpty);
+        }
     }
 }

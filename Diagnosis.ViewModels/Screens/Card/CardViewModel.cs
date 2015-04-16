@@ -369,7 +369,7 @@ namespace Diagnosis.ViewModels.Screens
                     hr.Unit = unit;
                     hr.SetItems(hrInfo.Chios);
                 }, (hios) =>
-                {                    
+                {
                     hios.SyncAfterPaste(Session);
                 });
 
@@ -473,8 +473,9 @@ namespace Diagnosis.ViewModels.Screens
 
             if (HrList.SelectedHealthRecord != null)
             {
-                // копируем категории из выбранной записи
+                // копируем из выбранной записи
                 hr.Category = lastHrVM.healthRecord.Category;
+                hr.DescribedAt = lastHrVM.healthRecord.DescribedAt;
             }
 
             if (fromCommand)

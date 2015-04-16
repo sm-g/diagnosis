@@ -191,6 +191,12 @@ namespace Diagnosis.Models
             }
         }
 
+        public virtual bool IsClosedInterval { get { return ToDate != FromDate && !ToDate.IsEmpty; } }
+
+        public virtual bool IsOpenedInterval { get { return ToDate != FromDate && ToDate.IsEmpty; } }
+
+        public virtual bool IsPoint { get { return ToDate == FromDate; } }
+
         public virtual int Ord
         {
             get { return _ord; }
