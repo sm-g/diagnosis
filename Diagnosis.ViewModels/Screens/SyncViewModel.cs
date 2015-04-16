@@ -9,12 +9,9 @@ using EventAggregator;
 using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -110,7 +107,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return new RelayCommand(() =>
+                return new RelayCommand(async () =>
                 {
                     Contract.Requires(Constants.IsClient);
 
@@ -119,25 +116,27 @@ namespace Diagnosis.ViewModels.Screens
                          clientConStr: LocalConnectionString,
                          serverProviderName: RemoteProviderName);
 
-                    var installedVocs = Session.Query<Vocabulary>();
+                    Mouse.OverrideCursor = Cursors.AppStarting;
 
-                    DoWithCursor(syncer.WithInstalledVocs(installedVocs).SendFrom(Side.Server).ContinueWith((t) =>
+                    var installedVocs = Session.Query<Vocabulary>();
+                    await syncer.WithInstalledVocs(installedVocs).SendFrom(Side.Server);
+
+                    // после загрузки проверяем справочные сущности на совпадение
+                    var checker = new AfterSyncChecker(Session);
+                    checker.Replaced += (s, e) =>
                     {
-                        var checker = new AfterSyncChecker(Session);
-                        checker.Replaced += (s, e) =>
-                        {
-                            if (e.list.Count() > 0)
-                                Log += string.Format("[{0:mm:ss:fff}] replaced {1} {2}\n", DateTime.Now, e.list.Count(), e.list.First().Actual.GetType().Name);
-                        };
-                        // после загрузки проверяем справочные сущности на совпадение
-                        var scopesToDeprovision = checker.CheckReferenceEntitiesAfterDownload(syncer.AddedOnServerIdsPerType);
-                        // deprovision scopes обновленных сущностей
-                        Syncer.Deprovision(LocalConnectionString, LocalProviderName, scopesToDeprovision);
-                        Log += "\n";
-                    }
-                    ).ContinueWith((t) =>
-                        new VocLoader(Session).AfterSyncVocs(syncer.DeletedOnServerIdsPerType))
-                    , Cursors.AppStarting);
+                        if (e.list.Count() > 0)
+                            Log += string.Format("[{0:mm:ss:fff}] replaced {1} {2}\n", DateTime.Now, e.list.Count(), e.list.First().Actual.GetType().Name);
+                    };
+                    var scopesToDeprovision = checker.CheckReferenceEntitiesAfterDownload(syncer.AddedOnServerIdsPerType);
+
+                    // deprovision scopes обновленных сущностей
+                    await Syncer.Deprovision(LocalConnectionString, LocalProviderName, scopesToDeprovision);
+                    Log += "\n";
+
+                    new VocLoader(Session).AfterSyncVocs(syncer.DeletedOnServerIdsPerType);
+
+                    Mouse.OverrideCursor = null;
                 },
                 () => CanSync(true, true));
             }
@@ -153,7 +152,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return new RelayCommand(() =>
+                return new RelayCommand(async () =>
                 {
                     var result = new FileDialogService().ShowSaveFileDialog(null,
                          FileType.Sdf.ToEnumerable(),
@@ -179,14 +178,19 @@ namespace Diagnosis.ViewModels.Screens
                         // создаем промежуточную БД
                         SqlHelper.CreateSqlCeByConStr(sdfFileConstr);
 
-                        DoWithCursor(
-                            // выгрузка в существующую БД, которая может быть изменена после этого
-                            // можно создавать файл заново
-                            // или сначала депровизить, чтобы добавить данные к существующим
-                            Syncer.Deprovision(sdfFileConstr, Constants.SqlCeProvider, scopes).ContinueWith(t =>
-                            syncer.SendFrom(Side.Server, scopes).ContinueWith((t1) =>
-                                // после выгрузки сразу готовим промежуточную БД к следующей синхронизации
-                            Syncer.Deprovision(sdfFileConstr, Constants.SqlCeProvider, scopes))), Cursors.AppStarting);
+                        Mouse.OverrideCursor = Cursors.AppStarting;
+
+                        // выгрузка в существующую БД, которая может быть изменена после этого
+                        // можно создавать файл заново
+                        // или сначала депровизить, чтобы добавить данные к существующим
+                        await Syncer.Deprovision(sdfFileConstr, Constants.SqlCeProvider, scopes);
+
+                        await syncer.SendFrom(Side.Server, scopes);
+
+                        // после выгрузки сразу готовим промежуточную БД к следующей синхронизации
+                        await Syncer.Deprovision(sdfFileConstr, Constants.SqlCeProvider, scopes);
+
+                        Mouse.OverrideCursor = null;
                     }
                 },
                 () => CanSync(true, false));

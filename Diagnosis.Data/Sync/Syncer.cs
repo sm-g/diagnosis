@@ -151,19 +151,18 @@ namespace Diagnosis.Data.Sync
             }
         }
 
-        public Task Deprovision(Side side, IEnumerable<Scope> scopesToDeprovision = null)
+        public async Task Deprovision(Side side, IEnumerable<Scope> scopesToDeprovision = null)
         {
             if (side == Side.Client)
-            {
-                return Deprovision(clientConStr, clientProviderName, scopesToDeprovision);
-            }
-            return Deprovision(serverConStr, serverProviderName, scopesToDeprovision);
+                await Deprovision(clientConStr, clientProviderName, scopesToDeprovision);
+            else
+                await Deprovision(serverConStr, serverProviderName, scopesToDeprovision);
         }
 
-        public static Task Deprovision(string connstr, string provider, IEnumerable<Scope> scopesToDeprovision = null)
+        public async static Task Deprovision(string connstr, string provider, IEnumerable<Scope> scopesToDeprovision = null)
         {
             if (InSync)
-                return GetEndedTask();
+                return;
 
             InSync = true;
 
@@ -191,8 +190,9 @@ namespace Diagnosis.Data.Sync
             });
 
             t.Start();
-            t.ContinueWith((task) => InSync = false);
-            return t;
+            await t;
+
+            InSync = false;
         }
 
         public static void BeforeMigrate(string connstr, string provider, params string[] tables)
@@ -522,12 +522,7 @@ namespace Diagnosis.Data.Sync
             Poster.PostMessage("Невозможно поключиться к {0}", con.ConnectionString);
         }
 
-        private static Task GetEndedTask()
-        {
-            var t = new Task(() => { });
-            t.Start();
-            return t;
-        }
+
 
         private static void OnSyncEnded(TimeSpan time)
         {
